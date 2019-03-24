@@ -1,0 +1,98 @@
+package nil.nadph.qnotified;
+
+import java.lang.reflect.*;
+import android.graphics.*;
+
+import static nil.nadph.qnotified.QConst.load;
+import android.annotation.*;
+import de.robv.android.xposed.*;
+import java.util.*;
+import android.view.*;
+import java.lang.ref.*;
+import android.widget.*;
+import android.app.*;
+
+
+public class FaceImpl implements InvocationHandler{
+
+	public static final int TYPE_USER=1;
+	public static final int TYPE_TROOP=4;
+	
+	private HashMap<String,Bitmap> cachedUserFace;
+	private HashMap<String,Bitmap> cachedTroopFace;
+	private HashMap<String,WeakReference<ImageView>> registeredView;
+	private Object faceMgr;
+	private Object qqAppInterface;
+	private Object mFaceDecoder;
+	static private FaceImpl self;
+	
+	private FaceImpl() throws Throwable{
+
+		qqAppInterface=Utils.getAppRuntime();
+		Class class_FaceDecoder=load("com/tencent/mobileqq/util/FaceDecoder");
+		mFaceDecoder=class_FaceDecoder.getConstructor(load("com/tencent/common/app/AppInterface")).newInstance(qqAppInterface);
+		Utils.invoke_virtual(mFaceDecoder,"a",createListener(),load("com/tencent/mobileqq/util/FaceDecoder$DecodeTaskCompletionListener"));
+		cachedUserFace=new HashMap();
+		cachedTroopFace=new HashMap();
+		registeredView=new HashMap();
+	}
+	
+	public static FaceImpl getInstance() throws Throwable{
+		if(self==null)self=new FaceImpl();
+		return self;
+	}
+
+	private Object createListener(){
+		Class clazz=QConst.load("com/tencent/mobileqq/util/FaceDecoder$DecodeTaskCompletionListener");
+		return Proxy.newProxyInstance(clazz.getClassLoader(),new Class[]{clazz},this);
+	}
+
+	@Override
+	public Object invoke(Object obj,Method method,Object[] args) throws Throwable{
+		if(method.getName().equals("onDecodeTaskCompleted")){
+			onDecodeTaskCompleted((int)args[0],(int)args[1],(String)args[2],(Bitmap)args[3]);
+		}
+		return null;
+	}
+
+	public void onDecodeTaskCompleted(int code,int type,String uin,final Bitmap bitmap){
+		//Utils.log(code+","+type+","+uin+","+bitmap);
+		if(bitmap!=null){
+			if(type==TYPE_USER)cachedUserFace.put(uin,bitmap);
+			if(type==TYPE_TROOP)cachedTroopFace.put(uin,bitmap);
+			WeakReference<ImageView> ref;
+			if((ref=registeredView.remove(type+" "+uin))!=null){
+				final ImageView v=ref.get();
+				if(v!=null)((Activity)v.getContext()).runOnUiThread(new Runnable(){
+							@Override
+							public void run(){
+								v.setImageBitmap(bitmap);
+							}
+						});
+			}
+		}
+	}
+
+	public @Nullable Bitmap getBitmapFromCache(int type,String uin){
+		if(type==TYPE_TROOP)return cachedTroopFace.get(uin);
+		if(type==TYPE_USER)return cachedUserFace.get(uin);
+		return null;
+	}
+
+	public boolean requestDecodeFace(int type,String uin){
+		try{
+			return Utils.invoke_virtual(mFaceDecoder,"a",uin,type,true,(byte)0,String.class,int.class,boolean.class,byte.class,boolean.class);
+		}catch(Exception e){
+			XposedBridge.log(e);
+			return false;
+		}
+	}
+	
+	public boolean registerView(int type,String uin,ImageView v){
+		boolean ret;
+		if(ret=requestDecodeFace(type,uin))registeredView.put(type+" "+uin,new WeakReference(v));
+		return ret;
+	}
+	
+
+}
