@@ -10,6 +10,8 @@ import java.lang.reflect.*;
 
 import static nil.nadph.qnotified.QConst.load;
 import android.app.*;
+import java.util.*;
+import java.text.*;
 
 public class Utils{
 
@@ -18,7 +20,7 @@ public class Utils{
 	public static final int CURRENT_MODULE_VERSION=1;
 
 	public static final String PACKAGE_NAME_QQ = "com.tencent.mobileqq";
-    public static final String PACKAGE_NAME_TIM = "com.tencent.tim";
+    public static final String PACKAGE_NAME_TIM = "com.tencent.tim";//coming...
 	public static final String PACKAGE_NAME_SELF = "nil.nadph.qnotified";
     public static final String PACKAGE_NAME_XPOSED_INSTALLER = "de.robv.android.xposed.installer";
 
@@ -36,12 +38,12 @@ public class Utils{
 		return 0;
 	}
 	
-	/** Use Utils.getApplication() Instead */
+	/** Use Utils.getApplication() Instead *
 	@Deprecated()
     @SuppressWarnings ("all")
     public static Context getSystemContext() {
         return (Context) XposedHelpers.callMethod(XposedHelpers.callStaticMethod(XposedHelpers.findClass("android.app.ActivityThread", null), "currentActivityThread", new Object[0]), "getSystemContext", new Object[0]);
-    }
+    }*/
 	
 	public static Application getApplication(){
 		try{
@@ -137,7 +139,7 @@ public class Utils{
 				}
 			}
 		}while(!Object.class.equals(clazz=clazz.getSuperclass()));
-		if(method==null)throw new NoSuchMethodException(name);
+		if(method==null)throw new NoSuchMethodException(name+" in "+obj.getClass().getName());
 		method.setAccessible(true);
 		return method.invoke(obj,argv);
 	}
@@ -178,6 +180,20 @@ public class Utils{
 		return method.invoke(null,argv);
 	}
 	
+	public static Object new_instance(Class clazz,Object...argsAndTypes) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException{
+		int argc=argsAndTypes.length/2;
+		Class[] argt=new Class[argc];
+		Object[] argv=new Object[argc];
+		int i;
+		Constructor m=null;
+		for(i=0;i<argc;i++){
+			argt[i]=(Class)argsAndTypes[argc+i];
+			argv[i]=argsAndTypes[i];
+		}
+		m=clazz.getDeclaredConstructor(argt);
+		m.setAccessible(true);
+		return m.newInstance(argv);
+	}
 	
 	public static Object getQQAppInterface(){
 		return getAppRuntime();
@@ -338,7 +354,20 @@ public class Utils{
 		}
 		return null;
 	}
+	public static void iput_object(Object obj,String name,Object value){
+		iput_object(obj,name,null,value);
+	}
 
+	public static void iput_object(Object obj,String name,Class type,Object value){
+		Class clazz=obj.getClass();
+		try{
+			Field f=findField(clazz,type,name);
+			f.setAccessible(true);
+			f.set(obj,value);
+		}catch(Exception e){
+			XposedBridge.log(e);
+		}
+	}
 	public static Object getAppRuntime(){
 		Object baseApplicationImpl=sget_object(load("com/tencent/common/app/BaseApplicationImpl"),"sApplication");
 		try{
@@ -408,8 +437,11 @@ public class Utils{
     }
 
 	public static void log(String str){
-		Log.d("QNotified",str);
-		Log.i("Xposed",str);
+		if(DEBUG)Log.i("Xposed",str);
+	}
+	
+	public static void log( Throwable th){
+		if(DEBUG)XposedBridge.log(th);
 	}
 	
 	public static String en(String str){
@@ -464,7 +496,82 @@ public class Utils{
 	public static int getLineNo(int depth){
 		return Thread.currentThread().getStackTrace()[3+depth].getLineNumber();
 	} 
-
+	
+	public static String getRelTimeStrSec(long time_sec){
+		return getRelTimeStrMs(time_sec*1000);
+	}
+	
+	public static String getRelTimeStrMs(long time_ms){
+		SimpleDateFormat format;
+		long curr=System.currentTimeMillis();
+		Date now=new Date(curr);
+		Date t=new Date(time_ms);
+		if(t.getYear()!=now.getYear()){
+			format=new SimpleDateFormat("yyyy/MM/dd HH:mm");
+			return format.format(t);
+		}
+		if(t.getMonth()==now.getMonth()&&t.getDay()==now.getDay()){
+			format=new SimpleDateFormat("HH:mm:ss");
+			return format.format(t);
+		}
+		if((curr-time_ms)/1000f/3600f/24f<6.0f){
+			format=new SimpleDateFormat(" HH:mm");
+			return "星期"+new String[]{"日","一","二","三","四","五","六"}[t.getDay()]+format.format(t);
+		}
+		format=new SimpleDateFormat("MM-dd HH:mm");
+		return format.format(t);
+	}
+	
+	public static String getIntervalDspMs(long ms1,long ms2){
+		Date t1=new Date(Math.min(ms1,ms2));
+		Date t2=new Date(Math.max(ms1,ms2));
+		Date tn=new Date();
+		SimpleDateFormat format;
+		String ret;
+		switch(difTimeMs(t1,tn)){
+			case 4:
+			case 3:
+			case 2:
+				format=new SimpleDateFormat("MM-dd HH:mm");
+				break;
+			case 1:
+			case 0:
+				format=new SimpleDateFormat("HH:mm");
+				break;
+			default:
+				format=new SimpleDateFormat("yyyy-MM-dd HH:mm");
+				break;
+		}
+		ret=format.format(t1);
+		switch(difTimeMs(t1,t2)){
+			case 4:
+			case 3:
+			case 2:
+				format=new SimpleDateFormat("MM-dd HH:mm");
+				break;
+			case 1:
+			case 0:
+				format=new SimpleDateFormat("HH:mm");
+				break;
+			default:
+				format=new SimpleDateFormat("yyyy-MM-dd HH:mm");
+				break;
+		}
+		ret=ret+" 至 "+format.format(t2);
+		return ret;
+	}
+	
+	
+	
+	/** same: t0 d1 w2 m3 y4*/
+	private static int difTimeMs(Date t1,Date t2){
+		if(t1.getYear()!=t2.getYear())return 5;
+		if(t1.getMonth()!=t2.getMonth())return 4;
+		if(t1.getDate()!=t2.getDate())return 3;
+		if(t1.equals(t2))return 0;
+		return 1;
+	}
+	
 	/**
      * 根据手机的分辨率从 dip 的单位 转成为 px(像素)
      */

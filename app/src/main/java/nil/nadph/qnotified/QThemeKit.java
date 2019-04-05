@@ -247,7 +247,7 @@ static int t=0;
 		if((ret=cachedDrawable.get(name))!=null)return ret;
 		try{
 			if(res==null&&mContext!=null)res=mContext.getResources();
-			XposedBridge.log(res+"is not null");
+			log(res+"is not null");
 			InputStream fin=openAsset(name);
 			ret=loadDrawableFromStream(fin,name,res);
 			cachedDrawable.put(name,ret);

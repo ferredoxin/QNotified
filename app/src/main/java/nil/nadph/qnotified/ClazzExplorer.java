@@ -13,6 +13,7 @@ import static android.widget.LinearLayout.*;
 import android.widget.RelativeLayout.*;
 import android.text.*;
 import de.robv.android.xposed.*;
+import static nil.nadph.qnotified.Utils.log;
 
 public class ClazzExplorer{
 	public Application app;
@@ -141,7 +142,7 @@ public class ClazzExplorer{
 						winMgr.addView(_view,_wlp);
 						refresh();
 					}catch(Throwable e){
-						XposedBridge.log(e);
+						log(e);
 					}
 				}
 			});

@@ -5,6 +5,8 @@ import java.lang.reflect.*;
 import nil.nadph.qnotified.*;
 import de.robv.android.xposed.*;
 import java.util.*;
+import static nil.nadph.qnotified.Utils.log;
+
 
 public class FriendChunk implements Serializable,Cloneable{
 	public byte cHasOtherRespFlag;
@@ -47,7 +49,7 @@ public class FriendChunk implements Serializable,Cloneable{
 		try{
 			for(int i=0;i<validLength;i++){
 				to[i].set(this,from[i].get(resp));
-				//XposedBridge.log(from[i].getName()+"=>"+to[i].getName());
+				//log(from[i].getName()+"=>"+to[i].getName());
 			}
 			int len=friend_count;
 			arrStatus=new byte[len];
@@ -64,7 +66,7 @@ public class FriendChunk implements Serializable,Cloneable{
 				arrcSpecialFlag[i]=f_cSpecialFlag.get(fs.get(i));
 			}
 		}catch(IllegalAccessException e){}catch(ClassCastException e){
-			XposedBridge.log(e);
+			log(e);
 		}
 	}
 

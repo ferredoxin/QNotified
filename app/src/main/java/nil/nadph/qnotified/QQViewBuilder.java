@@ -13,6 +13,7 @@ import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.QConst.load;
 
+@SuppressWarnings("unchecked")
 public class QQViewBuilder{
 	/*
 	//L stands for LinearLayout
@@ -68,7 +69,7 @@ public class QQViewBuilder{
 	}*/
 	
 	
-	@SuppressWarnings("unchecked")
+	
 	public static void listView_setAdapter(View v,ListAdapter adapter){
 		try{
 			Class clazz=v.getClass();

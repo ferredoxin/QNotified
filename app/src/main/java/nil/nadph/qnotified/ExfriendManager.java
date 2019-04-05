@@ -13,13 +13,16 @@ import nil.nadph.qnotified.pk.*;
 
 import static nil.nadph.qnotified.Table.*;
 import static nil.nadph.qnotified.QConst.load;
-import static nil.nadph.qnotified.Utils.invoke_virtual;
+import static nil.nadph.qnotified.Utils.*;
 import android.graphics.*;
 import android.widget.*;
 import android.view.View.*;
 import android.view.*;
 import android.graphics.drawable.*;
 import android.os.*;
+import android.content.pm.*;
+import android.content.res.*;
+import android.content.pm.PackageManager.*;
 
 public class ExfriendManager{
 	static private final int ID_EX_NOTIFY=65537;
@@ -64,12 +67,12 @@ public class ExfriendManager{
 					Thread.sleep(1000l*FL_UPDATE_INT_MAX);
 					cuin=Utils.getLongAccountUin();
 					if(cuin>1000){
-						XposedBridge.log("try post task for "+cuin);
+						log("try post task for "+cuin);
 						getCurrent().timeToUpdateFl();
 					}
 				}
 			}catch(Exception e){
-				XposedBridge.log(e);
+				log(e);
 			}
 		}
 	};
@@ -84,7 +87,9 @@ public class ExfriendManager{
 		try{
 			loadSavedPersonsInfo();
 			dbg();
-			mStdRemarks=(ConcurrentHashMap)getFriendsConcurrentHashMap(getFriendsManager());
+			try{
+				mStdRemarks=(ConcurrentHashMap)getFriendsConcurrentHashMap(getFriendsManager());
+			}catch(Throwable e){}
 			if(persons.size()==0&&mStdRemarks!=null){
 				dbg();
 				XposedBridge.log("WARNING:INIT FROM THE INTERNAL");
@@ -92,7 +97,7 @@ public class ExfriendManager{
 				Object fr;
 				Field fuin,fremark,fnick;
 				Class clz_fr=load("com/tencent/mobileqq/data/Friends");
-				fuin=clz_fr.getField("uin");//String!!!
+				fuin=clz_fr.getField("uin");//long!!!
 				fuin.setAccessible(true);
 				fremark=clz_fr.getField("remark");
 				fremark.setAccessible(true);
@@ -330,6 +335,8 @@ public class ExfriendManager{
 			t.init();
 			fileData.put("events",t);
 			initEventsTable();
+		}else{
+			t.records.clear();
 		}
 		EventRecord ev;
 		int k;
@@ -531,9 +538,10 @@ public class ExfriendManager{
 	}
 
 	public void setRedDot(){
+		if(QQMainHook.redDotRef==null)return;
 		final TextView rd=QQMainHook.redDotRef.get();
 		if(rd==null){
-			XposedBridge.log("Red dot missing!");
+			log("Red dot missing!");
 			return;
 		}
 		int m=0;
@@ -566,6 +574,7 @@ public class ExfriendManager{
 		}
 		unread++;
 		fileData.put("unread",unread);
+		if(out==null)return;
 		String title,ticker,tag,c;
 		//Notification.Builder nb=Notification.Builder();
 		if(ev._remark!=null&&ev._remark.length()>0)tag=ev._remark+"("+ev.operator+")";
@@ -657,54 +666,76 @@ public class ExfriendManager{
 			}
 			//requestIndividual(fr.uin);
 		}
+		doNotifyDelFl(ptr);
+		lastUpdateTimeSec=fcs[0].serverTime;
+	}
+
+	public void doNotifyDelFl(Object[] ptr){
 		if(((int)ptr[0])>0){
-			Intent intent=new Intent(QQMainHook.splashActivity,load(ActProxyMgr.DUMMY_ACTIVITY));
+			Intent intent=new Intent(getApplication(),load(ActProxyMgr.DUMMY_ACTIVITY));
 			int id=ActProxyMgr.next();
 			intent.putExtra(QQMainHook.ACTIVITY_PROXY_ID_TAG,id);
-			PendingIntent pi= PendingIntent.getActivity(QQMainHook.splashActivity,0,intent,0);
+			PendingIntent pi= PendingIntent.getActivity(getApplication(),0,intent,0);
 			try{
-				Bitmap bp;
-				InputStream in=QThemeKit.openAsset("ic_del_friend_top.png");
-				bp=BitmapFactory.decodeStream(in);
+				/*Bitmap bp;
+				 InputStream in=QThemeKit.openAsset("ic_del_friend_top.png");
+				 bp=BitmapFactory.decodeStream(in);*/
 				NotificationManager nm=(NotificationManager) Utils.getApplication().getSystemService(Context.NOTIFICATION_SERVICE);
-				Notification n=createNotiComp((String)ptr[1],(String)ptr[2],(String)ptr[3],bp,pi);
+				Notification n=createNotiComp((String)ptr[1],(String)ptr[2],(String)ptr[3],pi);
 				nm.notify(ID_EX_NOTIFY,n);
-				Vibrator vb=(Vibrator)QQMainHook.splashActivity.getSystemService(Context.VIBRATOR_SERVICE);
+				Vibrator vb=(Vibrator)getApplication().getSystemService(Context.VIBRATOR_SERVICE);
 				vb.vibrate(new long[]{100,200,200,100},-1);
 				setRedDot();
 			}catch(Exception e){
-				XposedBridge.log(e);
+				log(e);
 			}
 			dirtyFlag=true;
 		}
-		lastUpdateTimeSec=fcs[0].serverTime;
 		fileData.put("lastUpdateFl",lastUpdateTimeSec);
-		XposedBridge.log("Friendlist updated @"+lastUpdateTimeSec);
+		log("Friendlist updated @"+lastUpdateTimeSec);
 		dbg();
 		saveConfigure();
 		dbg();
 	}
 
-	public Notification createNotiComp(String ticker,String title,String content,Bitmap smallic,PendingIntent pi){
-		Notification.Builder nb=new Notification.Builder(QQMainHook.splashActivity);
-		return nb.setSmallIcon(Icon.createWithBitmap(smallic)).setTicker(ticker).setContentTitle(title).setContentText(content).setContentIntent(pi).build();
-		//n=new Notification(0,(String)ptr[1],System.currentTimeMillis());
-		//Notification n=(Notification)invoke_virtual(Utils.getMobileQQService(),"a",intent,null,ptr[1],ptr[2],ptr[3],Intent.class,Bitmap.class,String.class,String.class,String.class,Notification.class);
-		//n.setLatestEventInfo(QQMainHook.splashActivity,(String)ptr[2],(String)ptr[3],pi);
+	private Context remotePackageContext;
+
+	public Notification createNotiComp(String ticker,String title,String content,PendingIntent pi) throws PackageManager.NameNotFoundException, InvocationTargetException, SecurityException, IllegalAccessException, IllegalArgumentException, NoSuchMethodException, InstantiationException{
+		if(remotePackageContext==null)
+			remotePackageContext=getApplication().createPackageContext(PACKAGE_NAME_SELF,Context.CONTEXT_INCLUDE_CODE|Context.CONTEXT_IGNORE_SECURITY);
+		Object builder=new_instance(load("android/support/v4/app/NotificationCompat$Builder"),remotePackageContext,Context.class);
+		invoke_virtual(builder,"setSmallIcon",R.drawable.ic_del_friend_top,int.class);
+		invoke_virtual(builder,"setTicker",ticker,CharSequence.class);
+		invoke_virtual(builder,"setContentTitle",title,CharSequence.class);
+		invoke_virtual(builder,"setContentText",content,CharSequence.class);
+		invoke_virtual(builder,"setContentIntent",pi,PendingIntent.class);
+		return (Notification)invoke_virtual(builder,"build");
 	}
+
+
+	/*public static int getResourceId(Context context,String name,String type,String packageName){
+	 Resources themeResources=null;
+	 PackageManager pm=context.getPackageManager();
+	 try{
+	 themeResources=pm.getResourcesForApplication(packageName);
+	 return themeResources.getIdentifier(name,type,packageName);
+	 }catch(PackageManager.NameNotFoundException e){}
+	 return 0;
+	 }*/
+
 
 	public void doRequestFlRefresh(){
 		boolean inLogin;
 		inLogin=(Utils.getLongAccountUin()==mUin);
 		if(!inLogin){
-			XposedBridge.log("Uin("+mUin+") isn't logined in.");
+			log("Uin("+mUin+") isn't logined in.");
 			return;
 		}
 		try{
-			XposedBridge.log("Request friendlist update for "+mUin+" ...");
+			log("Request friendlist update for "+mUin+" ...");
 			invoke_virtual(Utils.getFriendListHandler(),"a",true,true,boolean.class,boolean.class,void.class);
 		}catch(Exception e){
-			XposedBridge.log(e);
+			log(e);
 		}
 	}
 
