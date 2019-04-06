@@ -126,16 +126,15 @@ public class QQMainHook <SlideDetectListView extends View,ContactsFPSPinnedHeade
 
 
 	private void performHook(ClassLoader classLoader){
-
-		if("true".equals(System.getProperty(QN_FULL_TAG))){
-			XposedBridge.log("Err:Qnotified reloaded??");
-			System.exit(-1);
-			//QNotified updated(in HookLoader mode),kill QQ to make user restart it.
+		if(Utils.DEBUG){
+			if("true".equals(System.getProperty(QN_FULL_TAG))){
+				XposedBridge.log("Err:Qnotified reloaded??");
+				System.exit(-1);
+				//QNotified updated(in HookLoader mode),kill QQ to make user restart it.
+			}
+			System.setProperty(QN_FULL_TAG,"true");
 		}
-		
-		System.setProperty(QN_FULL_TAG,"true");
 		QConst.init(classLoader);
-
 		//log("Clases init done");
 		if(classLoader==null)log("ERROR:classLoader==null");
 		/*try{
@@ -148,8 +147,6 @@ public class QQMainHook <SlideDetectListView extends View,ContactsFPSPinnedHeade
 					new Thread(new SearchEntrance()).start();
 				}
 			});
-
-
 
 		/*findAndHookMethod(load("com.tencent.mobileqq.data.MessageForQQWalletMsg"),"doParse",new XC_MethodHook(200){
 		 @Override
@@ -261,7 +258,7 @@ public class QQMainHook <SlideDetectListView extends View,ContactsFPSPinnedHeade
 				}
 			});
 
-			
+		/*
 		findAndHookMethod(load("friendlist/DelFriendReq"),"writeTo",load("com/qq/taf/jce/JceOutputStream"),new XC_MethodHook(70){
 				@Override
 				protected void beforeHookedMethod(MethodHookParam param) throws Throwable{

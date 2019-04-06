@@ -1,75 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:gravity="center"
-	android:orientation="vertical">
+	android:layout_width="match_parent"
+	android:gravity="center">
 
-	<TextView
-		android:layout_width="wrap_content"
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:gravity="center"
+		android:orientation="vertical">
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceMedium"
+			android:text="QQ删好友通知"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:text="支持QQ版本:7.6.0-7.9.9"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:text="请在QQ内查看"/>
+
+		<TextView
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:text="暂不支持TIM 暂不支持轻聊版/国际版"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceMedium"
+			android:text="QQ-&gt;联系人-&gt;好友(最下方)-&gt;历史好友"/>
+
+		<TextView
+			android:id="@+id/mainTextView"
+			android:text="ERROR!"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_margin="10dp"/>
+
+		<TextView
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:text="Source code(有问题+Issue):"/>
+
+		<TextView
+			android:autoLink="web"
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:text="https://github.com/cinit/QNotified"/>
+
+		<TextView
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:clickable="true"
+			android:autoLink="web"
+			android:text="Author QQ: 1041703712"
+			android:id="@+id/mainTextViewQqNum"
+			android:onClick="onAddQqClick"/>
+
+		<TextView
+			android:autoLink="all"
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:text="Mail: xenonhydride@gmail.com"/>
+
+		<TextView
+			android:autoLink="web"
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:text="Telegram: https://t.me/Auride"/>
+
+	</LinearLayout>
+
+	<LinearLayout
 		android:layout_height="wrap_content"
-		android:textAppearance="?android:attr/textAppearanceMedium"
-		android:text="QQ删好友通知"/>
+		android:layout_width="match_parent"
+		android:orientation="vertical"
+		android:layout_alignParentTop="true">
 
-	<TextView
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:textAppearance="?android:attr/textAppearanceLarge"
-		android:text="支持QQ版本:7.6.0-7.9.9"/>
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:text="!!! 本模块没有激活 !!!"
+			android:padding="5dp"
+			android:gravity="center"
+			android:id="@+id/mainTextViewStatusA"/>
 
-	<TextView
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:textAppearance="?android:attr/textAppearanceLarge"
-		android:text="请在QQ内查看"/>
+		<View
+			android:background="?android:attr/dividerVertical"
+			android:layout_height="1dp"
+			android:layout_width="match_parent"/>
 
-	<TextView
-		android:layout_height="wrap_content"
-		android:layout_width="wrap_content"
-		android:text="暂不支持TIM 暂不支持轻聊版/国际版"/>
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceMedium"
+			android:text="_status_2"
+			android:gravity="center"
+			android:id="@+id/mainTextViewStatusB"/>
 
-	<TextView
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:textAppearance="?android:attr/textAppearanceMedium"
-		android:text="QQ-&gt;联系人-&gt;好友(最下方)-&gt;历史好友"/>
+	</LinearLayout>
 
-	<TextView
-		android:id="@+id/mainTextView"
-		android:text="ERROR!"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_margin="10dp"/>
-
-	<TextView
-		android:layout_height="wrap_content"
-		android:layout_width="wrap_content"
-		android:text="Source code(有问题推issue):"/>
-
-	<TextView
-		android:autoLink="web"
-		android:layout_height="wrap_content"
-		android:layout_width="wrap_content"
-		android:text="https://github.com/cinit/QNotified"/>
-
-	<TextView
-		android:autoLink="all"
-		android:layout_height="wrap_content"
-		android:layout_width="wrap_content"
-		android:text="Author QQ: 1041703712"/>
-
-	<TextView
-		android:autoLink="email"
-		android:layout_height="wrap_content"
-		android:layout_width="wrap_content"
-		android:text="Mail: xenonhydride@gmail.com"/>
-
-	<TextView
-		android:autoLink="web"
-		android:layout_height="wrap_content"
-		android:layout_width="wrap_content"
-		android:text="Telegram: https://t.me/Auride"/>
-
-</LinearLayout>
+</RelativeLayout>
 
