@@ -12,7 +12,7 @@ import java.util.concurrent.*;
 import nil.nadph.qnotified.pk.*;
 
 import static nil.nadph.qnotified.Table.*;
-import static nil.nadph.qnotified.QConst.load;
+import static nil.nadph.qnotified.Initiator.load;
 import static nil.nadph.qnotified.Utils.*;
 import android.graphics.*;
 import android.widget.*;
@@ -28,7 +28,7 @@ public class ExfriendManager{
 	static private final int ID_EX_NOTIFY=65537;
 
 	static private final int FL_UPDATE_INT_MIN=10*60;//sec
-	static private final int FL_UPDATE_INT_MAX=1*60*60;
+	static private final int FL_UPDATE_INT_MAX=1*60*60;//sec
 
 	static private HashMap<Long,ExfriendManager> instances=new HashMap();
 	static private ExecutorService tp;
@@ -131,7 +131,7 @@ public class ExfriendManager{
 	}
 
 
-	/**  ?(0xFE)QNC I_version I_size I_RAW_reserved 16_md5 RAW_data */
+	/**  ?(0xFE)QNC I_version I_size I_RAW_reserved 16_md5 DATA */
 	public @Nullable void loadSavedPersonsInfo(){
 		if(fileData==null)fileData=new HashMap();
 		else fileData.clear();
@@ -294,10 +294,10 @@ public class ExfriendManager{
 		dbg();
 		/*FriendRecord f=new FriendRecord();
 		 f.uin=1084515740;
-		 f.remark="_LWK";
+		 f.remark="李王凯";
 		 f.nick="三尺竹剑泣血歌";
 		 f.friendStatus=FriendRecord.STATUS_FRIEND_MUTUAL;
-		 f.serverTime=2333333;
+		 f.serverTime=1543202800;
 		 persons.put(f.uin,f);
 		 XposedBridge.log("Faking lwk");*/
 	}
@@ -413,6 +413,7 @@ public class ExfriendManager{
 		File f=new File(Utils.getApplication().getFilesDir().getAbsolutePath()+"/qnotified_"+mUin+".dat");
 		friendToTable();
 		eventsToTable();
+		fileData.put("uin",mUin);
 		try{
 			if(!f.exists())f.createNewFile();
 			ByteArrayOutputStream baos=new ByteArrayOutputStream();
@@ -549,7 +550,7 @@ public class ExfriendManager{
 			m=fileData.get("unread");
 		}catch(Exception e){}
 		final int n=m;
-		((Activity)rd.getContext()).runOnUiThread(new Runnable(){
+		((Activity)Utils.getContext(rd)).runOnUiThread(new Runnable(){
 				@Override
 				public void run(){
 					if(n<1)rd.setVisibility(View.INVISIBLE);
@@ -609,7 +610,7 @@ public class ExfriendManager{
 	}
 
 	private void asyncUpdateFriendListTask(FriendChunk[] fcs){
-		//check totality
+		//check integrity
 		dbg();
 		boolean totality=true;
 		int tmp=fcs[fcs.length-1].totoal_friend_count;
@@ -672,9 +673,10 @@ public class ExfriendManager{
 
 	public void doNotifyDelFl(Object[] ptr){
 		if(((int)ptr[0])>0){
-			Intent intent=new Intent(getApplication(),load(ActProxyMgr.DUMMY_ACTIVITY));
+			Intent intent=new Intent(getApplication(),load(ActProxyMgr.STUB_ACTIVITY));
 			int id=ActProxyMgr.next();
 			intent.putExtra(QQMainHook.ACTIVITY_PROXY_ID_TAG,id);
+			intent.putExtra(QQMainHook.ACTIVITY_PROXY_ACTION,QQMainHook.ACTION_EXFRIEND_LIST);
 			PendingIntent pi= PendingIntent.getActivity(getApplication(),0,intent,0);
 			try{
 				/*Bitmap bp;
@@ -698,7 +700,7 @@ public class ExfriendManager{
 		dbg();
 	}
 
-	private Context remotePackageContext;
+	private static Context remotePackageContext;
 
 	public Notification createNotiComp(String ticker,String title,String content,PendingIntent pi) throws PackageManager.NameNotFoundException, InvocationTargetException, SecurityException, IllegalAccessException, IllegalArgumentException, NoSuchMethodException, InstantiationException{
 		if(remotePackageContext==null)

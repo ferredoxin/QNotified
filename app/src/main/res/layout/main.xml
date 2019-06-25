@@ -15,13 +15,13 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:textAppearance="?android:attr/textAppearanceMedium"
-			android:text="QQ删好友通知"/>
+			android:text="QQ删好友通知 不稳定测试版"/>
 
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:textAppearance="?android:attr/textAppearanceLarge"
-			android:text="支持QQ版本:7.6.0-7.9.9"/>
+			android:text="支持QQ版本:7.6.0-8.0.8beta"/>
 
 		<TextView
 			android:layout_width="wrap_content"
@@ -107,7 +107,8 @@
 			android:textAppearance="?android:attr/textAppearanceMedium"
 			android:text="_status_2"
 			android:gravity="center"
-			android:id="@+id/mainTextViewStatusB"/>
+			android:id="@+id/mainTextViewStatusB"
+			android:background="@drawable/bg_shadow"/>
 
 	</LinearLayout>
 

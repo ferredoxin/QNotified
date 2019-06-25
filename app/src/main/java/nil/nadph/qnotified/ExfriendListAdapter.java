@@ -13,7 +13,7 @@ import android.graphics.*;
 import java.util.*;
 import java.lang.reflect.*;
 import static nil.nadph.qnotified.Utils.*;
-import static nil.nadph.qnotified.QConst.load;
+import static nil.nadph.qnotified.Initiator.load;
 
 public class ExfriendListAdapter extends BaseAdapter implements InvocationHandler{
 
@@ -117,7 +117,7 @@ public class ExfriendListAdapter extends BaseAdapter implements InvocationHandle
 		}catch(Exception e){}
 
 		if(isfri){
-			stat.setTextColor(new ColorStateList(QThemeKit.skin_red.getStates(),QThemeKit.skin_gray3.getColors()));
+			stat.setTextColor(new ColorStateList(QThemeKit.skin_gray3.getStates(),QThemeKit.skin_gray3.getColors()));
 			stat.setText("已恢复");
 		}else{
 			stat.setTextColor(new ColorStateList(QThemeKit.skin_red.getStates(),QThemeKit.skin_red.getColors()));
@@ -217,7 +217,7 @@ public class ExfriendListAdapter extends BaseAdapter implements InvocationHandle
 				@Override
 				public boolean onLongClick(final View v){
 					try{
-						Object qQCustomDialog=invoke_static(QConst.load("com/tencent/mobileqq/utils/DialogUtil"),"a",mListView.getContext(),230,Context.class,int.class,load("com/tencent/mobileqq/utils/QQCustomDialog"));
+						Object qQCustomDialog=invoke_static(load("com/tencent/mobileqq/utils/DialogUtil"),"a",mListView.getContext(),230,Context.class,int.class,load("com/tencent/mobileqq/utils/QQCustomDialog"));
 						invoke_virtual(qQCustomDialog,"setTitle","删除记录",String.class);
 						invoke_virtual(qQCustomDialog,"setMessage","确认删除历史记录("+((EventRecord)v.getTag())._remark+")",CharSequence.class);
 						invoke_virtual(qQCustomDialog,"setPositiveButton","确认",new DialogInterface.OnClickListener(){

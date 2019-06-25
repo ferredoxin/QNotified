@@ -11,7 +11,7 @@ import static nil.nadph.qnotified.Utils.invoke_static;
 import static nil.nadph.qnotified.Utils.invoke_virtual;
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.QConst.load;
+import static nil.nadph.qnotified.Initiator.load;
 
 @SuppressWarnings("unchecked")
 public class QQViewBuilder{

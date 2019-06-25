@@ -3,7 +3,7 @@ package nil.nadph.qnotified;
 import java.lang.reflect.*;
 import android.graphics.*;
 
-import static nil.nadph.qnotified.QConst.load;
+import static nil.nadph.qnotified.Initiator.load;
 import android.annotation.*;
 import de.robv.android.xposed.*;
 import java.util.*;
@@ -25,13 +25,22 @@ public class FaceImpl implements InvocationHandler{
 	private Object qqAppInterface;
 	private Object mFaceDecoder;
 	static private FaceImpl self;
+	private static Class class_FaceDecoder;
 	
 	private FaceImpl() throws Throwable{
-
 		qqAppInterface=Utils.getAppRuntime();
-		Class class_FaceDecoder=load("com/tencent/mobileqq/util/FaceDecoder");
+		class_FaceDecoder=load("com/tencent/mobileqq/util/FaceDecoder");
+		if(class_FaceDecoder==null){
+			Class cl_rxMsg=load("com/tencent/mobileqq/receipt/ReceiptMessageReadMemberListFragment");
+			Field fs[]=cl_rxMsg.getDeclaredFields();
+			for(int i=0;i<fs.length;i++){
+				if(fs[i].getType().equals(View.class))continue;
+				if(fs[i].getType().equals(load("com/tencent/mobileqq/app/QQAppInterface")))continue;
+				class_FaceDecoder=fs[i].getType();
+			}
+		}
 		mFaceDecoder=class_FaceDecoder.getConstructor(load("com/tencent/common/app/AppInterface")).newInstance(qqAppInterface);
-		Utils.invoke_virtual(mFaceDecoder,"a",createListener(),load("com/tencent/mobileqq/util/FaceDecoder$DecodeTaskCompletionListener"));
+		Utils.invoke_virtual(mFaceDecoder,"a",createListener(),clz_DecodeTaskCompletionListener);
 		cachedUserFace=new HashMap();
 		cachedTroopFace=new HashMap();
 		registeredView=new HashMap();
@@ -41,10 +50,23 @@ public class FaceImpl implements InvocationHandler{
 		if(self==null)self=new FaceImpl();
 		return self;
 	}
+	
+	private static Class clz_DecodeTaskCompletionListener;
 
 	private Object createListener(){
-		Class clazz=QConst.load("com/tencent/mobileqq/util/FaceDecoder$DecodeTaskCompletionListener");
-		return Proxy.newProxyInstance(clazz.getClassLoader(),new Class[]{clazz},this);
+		clz_DecodeTaskCompletionListener=load("com/tencent/mobileqq/util/FaceDecoder$DecodeTaskCompletionListener");
+		if(clz_DecodeTaskCompletionListener==null){
+			Class[]argt;
+			Method[] ms=class_FaceDecoder.getDeclaredMethods();
+			for(int i=0;i<ms.length;i++){
+				if(!ms[i].getReturnType().equals(void.class))continue;
+				argt=ms[i].getParameterTypes();
+				if(argt.length!=1)continue;
+				if(argt[0].equals(load("com/tencent/common/app/AppInterface")))continue;
+				clz_DecodeTaskCompletionListener=argt[0];
+			}
+		}
+		return Proxy.newProxyInstance(clz_DecodeTaskCompletionListener.getClassLoader(),new Class[]{clz_DecodeTaskCompletionListener},this);
 	}
 
 	@Override
@@ -63,7 +85,7 @@ public class FaceImpl implements InvocationHandler{
 			WeakReference<ImageView> ref;
 			if((ref=registeredView.remove(type+" "+uin))!=null){
 				final ImageView v=ref.get();
-				if(v!=null)((Activity)v.getContext()).runOnUiThread(new Runnable(){
+				if(v!=null)((Activity)Utils.getContext(v)).runOnUiThread(new Runnable(){
 							@Override
 							public void run(){
 								v.setImageBitmap(bitmap);

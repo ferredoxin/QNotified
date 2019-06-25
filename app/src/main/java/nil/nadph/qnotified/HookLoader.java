@@ -16,6 +16,7 @@ import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import de.robv.android.xposed.*;
 
 /**
  * @author DX
@@ -86,7 +87,7 @@ public class HookLoader implements IXposedHookLoadPackage {
             throw new RuntimeException("!!!!!寻找模块apk失败");
         }
         //加载指定的hook逻辑处理类，并调用它的handleHook方法
-        PathClassLoader pathClassLoader = new PathClassLoader(apkFile.getAbsolutePath(), ClassLoader.getSystemClassLoader());
+        PathClassLoader pathClassLoader = new PathClassLoader(apkFile.getAbsolutePath(), XposedBridge.class.getClassLoader());
         Class<?> cls = Class.forName(handleHookClass, true, pathClassLoader);
 		/*Utils.log(apkFile.getAbsolutePath());
 		Utils.log(cls.toString());
@@ -115,94 +116,5 @@ public class HookLoader implements IXposedHookLoadPackage {
             e.printStackTrace();
         }
         return null;
-    }
-    /**
-     * 寻找这个Android设备上的当前apk文件,不受其它Xposed模块hook SDK_INT的影响
-     *
-     * @param modulePackageName 当前模块包名
-     * @return File 返回apk文件
-     * @throws FileNotFoundException 在/data/app/下的未找到本模块apk文件,请检查本模块包名配置是否正确.
-     *                               具体检查build.gradle中的applicationId和AndroidManifest.xml中的package
-     */
-    @Deprecated
-    private File findApkFile(String modulePackageName) throws FileNotFoundException {
-        File apkFile = null;
-        try {
-            apkFile = findApkFileAfterSDK21(modulePackageName);
-        } catch (Exception e) {
-            try {
-                apkFile = findApkFileBeforeSDK21(modulePackageName);
-            } catch (Exception e2) {
-                //忽略这个异常
-            }
-        }
-        if (apkFile == null) {
-            throw new FileNotFoundException("没在/data/app/下找到文件对应的apk文件");
-        }
-        return apkFile;
-    }
-    /**
-     * 根据当前的SDK_INT寻找这个Android设备上的当前apk文件
-     *
-     * @param modulePackageName 当前模块包名
-     * @return File 返回apk文件
-     * @throws FileNotFoundException 在/data/app/下的未找到本模块apk文件,请检查本模块包名配置是否正确.
-     *                               具体检查build.gradle中的applicationId和AndroidManifest.xml中的package
-     */
-    @Deprecated
-    private File findApkFileBySDK(String modulePackageName) throws FileNotFoundException {
-        File apkFile;
-        //当前Xposed模块hook了Build.VERSION.SDK_INT不用担心，因为这是发生在hook之前，不会有影响
-        //但是其它的Xposed模块hook了当前宿主的这个值以后，就会有影响了,所以这里没有使用这个方法
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            apkFile = findApkFileAfterSDK21(modulePackageName);
-        } else {
-            apkFile = findApkFileBeforeSDK21(modulePackageName);
-        }
-        return apkFile;
-    }
-
-    /**
-     * 寻找apk文件(api_21之后)
-     * 在Android sdk21以及之后，apk文件的路径发生了变化
-     *
-     * @param packageName 当前模块包名
-     * @return File 返回apk文件
-     * @throws FileNotFoundException apk文件未找到
-     */
-    @Deprecated
-    private File findApkFileAfterSDK21(String packageName) throws FileNotFoundException {
-        File apkFile;
-        File path = new File(String.format("/data/app/%s-%s", packageName, "1"));
-        if (!path.exists()) {
-            path = new File(String.format("/data/app/%s-%s", packageName, "2"));
-        }
-        if (!path.exists() || !path.isDirectory()) {
-            throw new FileNotFoundException(String.format("没找到目录/data/app/%s-%s", packageName, "1/2"));
-        }
-        apkFile = new File(path, "base.apk");
-        if (!apkFile.exists() || apkFile.isDirectory()) {
-            throw new FileNotFoundException(String.format("没找到文件/data/app/%s-%s/base.apk", packageName, "1/2"));
-        }
-        return apkFile;
-    }
-
-    /**
-     * 寻找apk文件(api_21之前)
-     *
-     * @param packageName 当前模块包名
-     * @return File 返回apk文件
-     * @throws FileNotFoundException apk文件未找到
-     */
-    @Deprecated
-    private File findApkFileBeforeSDK21(String packageName) throws FileNotFoundException {
-        File apkFile = new File(String.format("/data/app/%s-%s.apk", packageName, "1"));
-        if (!apkFile.exists()) {
-            apkFile = new File(String.format("/data/app/%s-%s.apk", packageName, "2"));
-        }
-        if (!apkFile.exists() || apkFile.isDirectory()) {
-            throw new FileNotFoundException(String.format("没找到文件/data/app/%s-%s.apk", packageName, "1/2"));
-        }
-        return apkFile;
     }
 }

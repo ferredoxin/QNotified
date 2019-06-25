@@ -103,7 +103,24 @@ public class ConfigActivity extends Activity implements Runnable{
 		}catch(Throwable e){
 			tv.setText(""+e);
 		}
+		
+		/*new Thread(new Runnable(){
+				@Override
+				public void run(){
+					try{
+						Thread.sleep(1000);
+					}catch(InterruptedException e){}
+					runOnUiThread(new Runnable(){
+							@Override
+							public void run(){
+								Initiator it=new Initiator();
+								it.showPopup(getWindow().getDecorView());
+							}
+						});
+				}
+			}).start();*/
     }
+	
 	
 	public void onAddQqClick(View v){
 		Uri uri = Uri.parse("http://wpa.qq.com/msgrd?v=3&uin=1041703712&site=qq&menu=yes");

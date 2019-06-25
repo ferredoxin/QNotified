@@ -6,6 +6,7 @@ import nil.nadph.qnotified.*;
 import de.robv.android.xposed.*;
 import java.util.*;
 import static nil.nadph.qnotified.Utils.log;
+import static nil.nadph.qnotified.Initiator.load;
 
 
 public class FriendChunk implements Serializable,Cloneable{
@@ -74,7 +75,7 @@ public class FriendChunk implements Serializable,Cloneable{
 		if(validLength>0)return;
 		from=new Field[maxLength];
 		to=new Field[maxLength];
-		Class clz_gfr=QConst.load("friendlist/GetFriendListResp");
+		Class clz_gfr=load("friendlist/GetFriendListResp");
 		validLength=0;
 		Field[] mine=FriendChunk.class.getDeclaredFields();
 		//Field[] his=clz_gfr.getDeclaredFields();
@@ -94,7 +95,7 @@ public class FriendChunk implements Serializable,Cloneable{
 			f_stSelfInfo=clz_gfr.getField("vecFriendInfo");
 			f_stSelfInfo.setAccessible(true);
 		}catch(NoSuchFieldException e){}
-		Class clz_fi=QConst.load("friendlist/FriendInfo");
+		Class clz_fi=load("friendlist/FriendInfo");
 		try{
 			f_uin=clz_fi.getField("friendUin");
 			f_uin.setAccessible(true);

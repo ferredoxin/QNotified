@@ -8,7 +8,7 @@ import android.widget.*;
 import de.robv.android.xposed.*;
 import java.lang.reflect.*;
 
-import static nil.nadph.qnotified.QConst.load;
+import static nil.nadph.qnotified.Initiator.load;
 import android.app.*;
 import java.util.*;
 import java.text.*;
@@ -27,9 +27,9 @@ public class Utils{
 	public static final int TOAST_TYPE_INFO=0;
 	public static final int TOAST_TYPE_ERROR=1;
 	public static final int TOAST_TYPE_SUCCESS=2;
-	
-	
-	
+
+
+
 	public static int getActiveModuleVersion(){
 		Math.sqrt(1);
 		Math.random();
@@ -37,14 +37,14 @@ public class Utils{
 		//Let's make the function longer,so that it will work in VirtualXposed
 		return 0;
 	}
-	
+
 	/** Use Utils.getApplication() Instead *
-	@Deprecated()
-    @SuppressWarnings ("all")
-    public static Context getSystemContext() {
-        return (Context) XposedHelpers.callMethod(XposedHelpers.callStaticMethod(XposedHelpers.findClass("android.app.ActivityThread", null), "currentActivityThread", new Object[0]), "getSystemContext", new Object[0]);
-    }*/
-	
+	 @Deprecated()
+	 @SuppressWarnings ("all")
+	 public static Context getSystemContext() {
+	 return (Context) XposedHelpers.callMethod(XposedHelpers.callStaticMethod(XposedHelpers.findClass("android.app.ActivityThread", null), "currentActivityThread", new Object[0]), "getSystemContext", new Object[0]);
+	 }*/
+
 	public static Application getApplication(){
 		try{
 			return (Application)invoke_static(load("com/tencent/common/app/BaseApplicationImpl"),"getApplication");
@@ -63,7 +63,7 @@ public class Utils{
             return 0;
         }
     }
-	
+
 	public static long getLongAccountUin(){
 		try{
 			return (long)invoke_virtual(getAppRuntime(),"getLongAccountUin");
@@ -179,7 +179,7 @@ public class Utils{
 		method.setAccessible(true);
 		return method.invoke(null,argv);
 	}
-	
+
 	public static Object new_instance(Class clazz,Object...argsAndTypes) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException{
 		int argc=argsAndTypes.length/2;
 		Class[] argt=new Class[argc];
@@ -194,7 +194,7 @@ public class Utils{
 		m.setAccessible(true);
 		return m.newInstance(argv);
 	}
-	
+
 	public static Object getQQAppInterface(){
 		return getAppRuntime();
 	}
@@ -202,8 +202,8 @@ public class Utils{
 	public static Object getMobileQQService(){
 		return iget_object(getQQAppInterface(),"a",load("com/tencent/mobileqq/service/MobileQQService"));
 	}
-	
-	
+
+
 
 	/*
 	 public static Method findMethodByArgs(Class mclazz,String name,Object...argv)throws NoSuchMethodException{
@@ -323,7 +323,7 @@ public class Utils{
 		}
 		return null;
     }
-	
+
 	public static Object sget_object(Class clazz,String name){
 		return sget_object(clazz,name,null);
 	}
@@ -338,11 +338,11 @@ public class Utils{
 		}
 		return null;
 	}
-	
+
 	public static Object iget_object(Object obj,String name){
 		return iget_object(obj,name,null);
 	}
-	
+
 	public static Object iget_object(Object obj,String name,Class type){
 		Class clazz=obj.getClass();
 		try{
@@ -377,7 +377,7 @@ public class Utils{
 			return null;
 		}
 	}
-	
+
 	public static String getAccount(){
 		Object rt=getAppRuntime();
 		try{
@@ -387,17 +387,28 @@ public class Utils{
 			return null;
 		}
 	}
-	
+
 	public static Object getFriendListHandler(){
 		return getBusinessHandler(1);
 	}
-	
+
+
+
 	public static Object getBusinessHandler(int type){
 		try{
-			return invoke_virtual(getQQAppInterface(),"a",type,int.class,load("com/tencent/mobileqq/app/BusinessHandler"));
+			Class cl_bh=load("com/tencent/mobileqq/app/BusinessHandler");
+			if(cl_bh==null){
+				Class cl_flh=load("com/tencent/mobileqq/app/FriendListHandler");
+				cl_bh=cl_flh.getSuperclass();
+			}
+			Object ret=invoke_virtual(getQQAppInterface(),"a",type,int.class,cl_bh);
+			log("bh("+type+")="+ret);
+			return ret;
 		}catch(Exception e){
+			log(e);
 			return null;
 		}
+
 	}
 
     public static <T> T getObject(Object obj,Class<?> type,String name){
@@ -439,33 +450,47 @@ public class Utils{
 	public static void log(String str){
 		if(DEBUG)Log.i("Xposed",str);
 	}
-	
-	public static void log( Throwable th){
+
+	public static void log(Throwable th){
 		if(DEBUG)XposedBridge.log(th);
 	}
-	
+
 	public static String en(String str){
 		if(str==null)return "null";
 		return "\""+str.replace("\\","\\\\").replace("\"","\\\"")
 			.replace("\n","\\\n").replace("\r","\\\r")+"\"";
 	}
-	
+
 	public static String de(String str){
 		if(str==null)return null;
 		if(str.equals("null"))return null;
 		if(str.startsWith("\""))str=str.substring(1);
 		if(str.endsWith("\"")&&!str.endsWith("\\\""))str=str.substring(0,str.length()-1);
 		return str.replace("\\\"","\"").replace("\\\n","\n")
-		.replace("\\\r","\r").replace("\\\\","\\");
+			.replace("\\\r","\r").replace("\\\\","\\");
 	}
-	
+
 	private static Method method_Toast_show;
 	private static Method method_Toast_makeText;
-	
+	private static Class clazz_QQToast;
+
+
 	public static Toast showToast(Context ctx,int type,CharSequence str,int length)throws Throwable{
+		if(clazz_QQToast==null){
+			clazz_QQToast=load("com/tencent/mobileqq/widget/QQToast");
+		}
+		if(clazz_QQToast==null){
+			Class clz=load("com/tencent/mobileqq/activity/aio/doodle/DoodleLayout");
+			Field fs[]=clz.getDeclaredFields();
+			for(int i=0;i<fs.length;i++){
+				if(View.class.isAssignableFrom(fs[i].getType()))continue;
+				if(fs[i].getType().isPrimitive())continue;
+				if(fs[i].getType().isInterface())continue;
+				clazz_QQToast=fs[i].getType();
+			}
+		}
 		if(method_Toast_show==null){
-			Class cls=QConst.load("com/tencent/mobileqq/widget/QQToast");
-			Method[] ms=cls.getMethods();
+			Method[] ms=clazz_QQToast.getMethods();
 			for(int i=0;i<ms.length;i++){
 				if(Toast.class.equals(ms[i].getReturnType())&&ms[i].getParameterTypes().length==0){
 					method_Toast_show=ms[i];
@@ -474,33 +499,33 @@ public class Utils{
 			}
 		}
 		if(method_Toast_makeText==null){
-			method_Toast_makeText=QConst.load("com/tencent/mobileqq/widget/QQToast").getMethod("a",Context.class,int.class,CharSequence.class,int.class);
+			method_Toast_makeText=clazz_QQToast.getMethod("a",Context.class,int.class,CharSequence.class,int.class);
 		}
 		Object qqToast=method_Toast_makeText.invoke(null,ctx,type,str,length);
 		return (Toast)method_Toast_show.invoke(qqToast);
 	}
-	
+
 	public static Toast showToastShort(Context ctx,CharSequence str)throws Throwable{
 		return showToast(ctx,0,str,0);
 	}
-	
+
 	public static void dumpTrace(){
 		Throwable t=new Throwable("Trace dump");
 		XposedBridge.log(t);
 	}
-	
+
 	public static int getLineNo(){
 		return Thread.currentThread().getStackTrace()[3].getLineNumber();
 	} 
-	
+
 	public static int getLineNo(int depth){
 		return Thread.currentThread().getStackTrace()[3+depth].getLineNumber();
 	} 
-	
+
 	public static String getRelTimeStrSec(long time_sec){
 		return getRelTimeStrMs(time_sec*1000);
 	}
-	
+
 	public static String getRelTimeStrMs(long time_ms){
 		SimpleDateFormat format;
 		long curr=System.currentTimeMillis();
@@ -521,7 +546,7 @@ public class Utils{
 		format=new SimpleDateFormat("MM-dd HH:mm");
 		return format.format(t);
 	}
-	
+
 	public static String getIntervalDspMs(long ms1,long ms2){
 		Date t1=new Date(Math.min(ms1,ms2));
 		Date t2=new Date(Math.max(ms1,ms2));
@@ -560,9 +585,9 @@ public class Utils{
 		ret=ret+" 至 "+format.format(t2);
 		return ret;
 	}
-	
-	
-	
+
+
+
 	/** same: t0 d1 w2 m3 y4*/
 	private static int difTimeMs(Date t1,Date t2){
 		if(t1.getYear()!=t2.getYear())return 5;
@@ -571,7 +596,31 @@ public class Utils{
 		if(t1.equals(t2))return 0;
 		return 1;
 	}
-	
+
+	/**
+	 * 通过view暴力获取getContext()(Android不支持view.getContext()了)
+	 *
+	 * @param view 要获取context的view
+	 * @return 返回一个activity
+	 */
+	public static Context getContext(View view){
+		Context ctx= null;
+		if(view.getContext().getClass().getName().contains("com.android.internal.policy.DecorContext")){
+			try{
+				Field field = view.getContext().getClass().getDeclaredField("mPhoneWindow");
+				field.setAccessible(true);
+				Object obj = field.get(view.getContext());
+				java.lang.reflect.Method m1 = obj.getClass().getMethod("getContext");
+				ctx=(Context) (m1.invoke(obj));
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}else{
+			ctx=view.getContext();
+		}
+		return ctx;
+	}
+
 	/**
      * 根据手机的分辨率从 dip 的单位 转成为 px(像素)
      */
@@ -579,14 +628,14 @@ public class Utils{
 		final float scale = context.getResources().getDisplayMetrics().density;
 		return (int) (dpValue*scale+0.5f);
 	}
-	
+
 	public static int dip2sp(Context context,float dpValue){
 		final float scale = context.getResources().getDisplayMetrics().density/
 			context.getResources().getDisplayMetrics().scaledDensity;
 		return (int) (dpValue*scale+0.5f);
 	}
-	
-	
+
+
 	/**
      * 根据手机的分辨率从 px(像素) 的单位 转成为 dp
      */

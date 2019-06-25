@@ -5,7 +5,7 @@ import android.app.*;
 import android.content.*;
 import android.util.*;
 import android.view.*;
-import org.xmlpull.v1.*;
+
 import java.util.*;
 import android.content.res.*;
 import android.graphics.drawable.*;
@@ -19,10 +19,12 @@ import static nil.nadph.qnotified.Utils.invoke_virtual;
 import static nil.nadph.qnotified.Utils.iget_object;
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.QConst.load;
+import static nil.nadph.qnotified.Initiator.load;
 import java.lang.reflect.*;
+import android.os.*;
 
 public class QThemeKit{
+	
 
 	static private String cachedThemeId;
 
@@ -36,7 +38,7 @@ public class QThemeKit{
 	static public Drawable skin_list_normal=null,skin_list_item_unread=null,skin_list_pressed=null;
 	//static public Drawable skin_tips_newmessage;
 
-static int t=0;
+
 	static private Context mContext;
 
 	static private Map<String,Drawable> cachedDrawable;
@@ -52,7 +54,6 @@ static int t=0;
 		 ce.track.removeAllElements();
 		 ce.init(ctx);//(Activity)ce.getCurrentActivity());//*/
 		if(themeId.equals(cachedThemeId))return;
-
 		skin_gray3
 			=skin_black
 			=skin_red
@@ -62,33 +63,43 @@ static int t=0;
 			=qq_setting_item_bg_pre=null;
 		skin_list_normal=skin_list_item_unread=skin_list_pressed
 			=null;//=skin_tips_newmessage=null;
-		String dir=locateThemeDir(themeId,ctx);
+		if(isColorQQThemeActive()){
+			loadResInDir(Environment.getExternalStorageDirectory()+"/QQColor/theme");
+		}
+		loadResInDir(locateThemeDir(themeId,ctx));
+		
+	}
+
+	
+	public static void loadResInDir(String dir){
 		if(dir==null){
 			//log("Unable to locate theme dir!");
 			//damn!
-			
 		}else{
-			String path;
-			path=findDrawableResource(dir,"skin_list_item_normal.9.png");
-			if(path==null)path=findDrawableResource(dir,"skin_list_item_normal_theme_version2.9.png");
-			if(path!=null)skin_list_normal=loadDrawable(path);
+			String path=null;
+			if(skin_list_normal==null){
+				path=findDrawableResource(dir,"skin_list_item_normal.9.png");
+				if(path==null)path=findDrawableResource(dir,"skin_list_item_normal_theme_version2.9.png");
+				if(path!=null)skin_list_normal=loadDrawable(path);
+			}
 
-			path=findDrawableResource(dir,"skin_list_item_pressed.9.png");
-			if(path==null)path=findDrawableResource(dir,"skin_list_item_pressed_theme_version2.9.png");
-			if(path!=null)skin_list_pressed=loadDrawable(path);
-
+			if(skin_list_pressed==null){
+				path=findDrawableResource(dir,"skin_list_item_pressed.9.png");
+				if(path==null)path=findDrawableResource(dir,"skin_list_item_pressed_theme_version2.9.png");
+				if(path!=null)skin_list_pressed=loadDrawable(path);
+			}
 
 			//path=findDrawableResource(dir,"skin_tips_newmessage.9.png");
 			//if(path!=null)skin_tips_newmessage=loadDrawable(path);
 
 
 			path=dir+"/color/";
-			skin_black=findColorInXmlStupidly(path+"skin_black.xml");
-			skin_red=findColorInXmlStupidly(path+"skin_red.xml");
-			skin_gray3=findColorInXmlStupidly(path+"skin_gray3.xml");
-			skin_text_white=findColorInXmlStupidly(path+"skin_black_item.xml");
-			qq_setting_item_bg_nor=findColorInXmlStupidly(path+"qq_setting_item_bg_nor.xml");
-			qq_setting_item_bg_pre=findColorInXmlStupidly(path+"qq_setting_item_bg_pre.xml");
+			if(skin_black==null)skin_black=findColorInXmlStupidly(path+"skin_black.xml");
+			if(skin_red==null)skin_red=findColorInXmlStupidly(path+"skin_red.xml");
+			if(skin_gray3==null)skin_gray3=findColorInXmlStupidly(path+"skin_gray3.xml");
+			if(skin_text_white==null)skin_text_white=findColorInXmlStupidly(path+"skin_black_item.xml");
+			if(qq_setting_item_bg_nor==null)qq_setting_item_bg_nor=findColorInXmlStupidly(path+"qq_setting_item_bg_nor.xml");
+			if(qq_setting_item_bg_pre==null)qq_setting_item_bg_pre=findColorInXmlStupidly(path+"qq_setting_item_bg_pre.xml");
 		}
 		//if(skin_tips_newmessage==null)skin_tips_newmessage= loadDrawableFromAsset("skin_tips_newmessage.9.png");
 		if(skin_list_normal==null)skin_list_normal=loadDrawableFromAsset("skin_list_item_normal.9.png");
@@ -100,50 +111,64 @@ static int t=0;
 		if(skin_blue==null)skin_blue=ColorStateList.valueOf(Color.argb(255,0,182,249));
 		if(qq_setting_item_bg_nor==null)qq_setting_item_bg_nor=ColorStateList.valueOf(Color.argb(255,249,249,251));
 		if(qq_setting_item_bg_pre==null)qq_setting_item_bg_pre=ColorStateList.valueOf(Color.argb(255,192,192,192));
-		
-		
-		
+
+
+
 		/*Resources res=ctx.getResources();
-		String pkg="com.tencent.mobileqq";
-		//skin_tips_newmessage.se
-		log("inner:"+skin_tips_newmessage.getIntrinsicHeight());
-		skin_tips_newmessage=res.getDrawable(0x7F0220E7);
-		byte[] bt=(byte[])iget_object(iget_object(iget_object(skin_tips_newmessage,"b"),"r"),"mBuffer");
-		/*try{
-			log("blen="+bt.length);
-			FileOutputStream fout=new FileOutputStream("/sdcard/qq_dump_buffer.o");
-			fout.write(bt,0,bt.length);
-			fout.flush();
-			fout.close();
-			fout=new FileOutputStream("/sdcard/qq_dump_ninebuffer.o");
-			 bt=(byte[])iget_object(iget_object(iget_object(skin_tips_newmessage,"b"),"r"),"mNinePatchChunk");
-			
-			fout.write(bt,0,bt.length);
-			fout.flush();
-			fout.close();
-			//log("wtf="+BitmapFactory.decodeByteArray(bt,0,bt.length).getHeight());
-			//log("Den="+bt.getDensity());
+		 String pkg="com.tencent.mobileqq";
+		 //skin_tips_newmessage.se
+		 log("inner:"+skin_tips_newmessage.getIntrinsicHeight());
+		 skin_tips_newmessage=res.getDrawable(0x7F0220E7);
+		 byte[] bt=(byte[])iget_object(iget_object(iget_object(skin_tips_newmessage,"b"),"r"),"mBuffer");
+		 /*try{
+		 log("blen="+bt.length);
+		 FileOutputStream fout=new FileOutputStream("/sdcard/qq_dump_buffer.o");
+		 fout.write(bt,0,bt.length);
+		 fout.flush();
+		 fout.close();
+		 fout=new FileOutputStream("/sdcard/qq_dump_ninebuffer.o");
+		 bt=(byte[])iget_object(iget_object(iget_object(skin_tips_newmessage,"b"),"r"),"mNinePatchChunk");
+
+		 fout.write(bt,0,bt.length);
+		 fout.flush();
+		 fout.close();
+		 //log("wtf="+BitmapFactory.decodeByteArray(bt,0,bt.length).getHeight());
+		 //log("Den="+bt.getDensity());
+		 }catch(Exception e){
+		 log(e.toString());
+		 }
+		 log("official:"+skin_tips_newmessage.getIntrinsicHeight());
+		 //ClazzExplorer ce=ClazzExplorer.get();
+		 //ce.init((Activity)ctx);
+		 //ce.currEle=ce.rootEle=skin_tips_newmessage;
+
+
+
+
+		 skin_list_normal=res.getDrawable(res.getIdentifier("skin_list_item_normal","drawable",pkg));
+		 skin_list_pressed=res.getDrawable(res.getIdentifier("skin_list_item_pressed","drawable",pkg));
+		 skin_tips_newmessage=res.getDrawable(res.getIdentifier("skin_tips_newmessage","drawable",pkg));
+		 skin_black=res.getColorStateList(res.getIdentifier("skin_black","color",pkg));
+		 skin_red=res.getColorStateList(res.getIdentifier("skin_red","color",pkg));
+		 skin_gray3=res.getColorStateList(res.getIdentifier("skin_gray3","color",pkg));
+		 skin_text_white=res.getColorStateList(res.getIdentifier("skin_black_item","color",pkg));
+		 qq_setting_item_bg_nor=res.getColorStateList(res.getIdentifier("qq_setting_item_bg_nor","color",pkg));
+		 qq_setting_item_bg_pre=res.getColorStateList(res.getIdentifier("qq_setting_item_bg_pre","color",pkg));
+		 //*/
+	}
+
+	public static boolean isColorQQThemeActive(){
+		File f=new File(Environment.getExternalStorageDirectory().getAbsoluteFile()+"/QQColor/setting.xml");
+		if(!f.exists())f=new File(Environment.getDataDirectory()+"/data/me.qiwu.colorqq/shared_prefs/me.qiwu.colorqq.xml");
+		XSharedPreferences sp=new XSharedPreferences(f);
+		sp.makeWorldReadable();
+		sp.reload();
+		try{
+			return sp.getBoolean("theme_use_theme",false)&&!sp.getBoolean("module_stophook",false);
 		}catch(Exception e){
-			log(e.toString());
+			log(e);
+			return false;
 		}
-		log("official:"+skin_tips_newmessage.getIntrinsicHeight());
-		//ClazzExplorer ce=ClazzExplorer.get();
-		//ce.init((Activity)ctx);
-		//ce.currEle=ce.rootEle=skin_tips_newmessage;
-		
-		
-		
-		
-		skin_list_normal=res.getDrawable(res.getIdentifier("skin_list_item_normal","drawable",pkg));
-		skin_list_pressed=res.getDrawable(res.getIdentifier("skin_list_item_pressed","drawable",pkg));
-		skin_tips_newmessage=res.getDrawable(res.getIdentifier("skin_tips_newmessage","drawable",pkg));
-		skin_black=res.getColorStateList(res.getIdentifier("skin_black","color",pkg));
-		skin_red=res.getColorStateList(res.getIdentifier("skin_red","color",pkg));
-		skin_gray3=res.getColorStateList(res.getIdentifier("skin_gray3","color",pkg));
-		skin_text_white=res.getColorStateList(res.getIdentifier("skin_black_item","color",pkg));
-		qq_setting_item_bg_nor=res.getColorStateList(res.getIdentifier("qq_setting_item_bg_nor","color",pkg));
-		qq_setting_item_bg_pre=res.getColorStateList(res.getIdentifier("qq_setting_item_bg_pre","color",pkg));
-		//*/
 	}
 
 	public static StateListDrawable getListItemBackground(){
@@ -198,42 +223,42 @@ static int t=0;
 	public static Drawable loadDrawable(String path){
 		return loadDrawable(path,null);
 	}
-	
+
 	public static Drawable loadDrawableFromStream(InputStream in,String name,@Nullable Resources res){
 		Drawable ret;
 		try{
-			
-			
+
+
 			Bitmap bitmap = BitmapFactory.decodeStream(in);
 			/*
-			// 取得想要缩放的matrix参数
-			Matrix matrix = new Matrix();
-			matrix.postScale(1.32f, 1.32f);
-			// 得到新的图片
-			Bitmap bitmap = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix,
-											   true);
-			
-			*
-			
-			
-			log("den="+res.getDisplayMetrics().density);
-			log("sden="+res.getDisplayMetrics().scaledDensity);
-			log("denDpi="+res.getDisplayMetrics().densityDpi);
-			//log("den="+res.getDisplayMetrics());*/
-			
-			
+			 // 取得想要缩放的matrix参数
+			 Matrix matrix = new Matrix();
+			 matrix.postScale(1.32f, 1.32f);
+			 // 得到新的图片
+			 Bitmap bitmap = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix,
+			 true);
+
+			 *
+
+
+			 log("den="+res.getDisplayMetrics().density);
+			 log("sden="+res.getDisplayMetrics().scaledDensity);
+			 log("denDpi="+res.getDisplayMetrics().densityDpi);
+			 //log("den="+res.getDisplayMetrics());*/
+
+
 			bitmap.setDensity(res.getDisplayMetrics().densityDpi);
 			//log(name+"BiHeight:"+bitmap.getHeight());
 			byte[] chunk = bitmap.getNinePatchChunk();
 			//log("Res == "+res);
 			if(NinePatch.isNinePatchChunk(chunk)){
-				Class clz=QConst.load("com/tencent/theme/SkinnableNinePatchDrawable");
+				Class clz=load("com/tencent/theme/SkinnableNinePatchDrawable");
 				ret=(Drawable)XposedHelpers.findConstructorBestMatch(clz,Resources.class,Bitmap.class,byte[].class,Rect.class,String.class)
 					.newInstance(res,bitmap,chunk,new Rect(),name);
 			}else{
 				ret=new BitmapDrawable(res,bitmap);
 			}
-			
+
 			//log(name+"DrHiMin="+ret.getMinimumHeight());
 			return ret;
 		}catch(Exception e){
@@ -301,6 +326,8 @@ static int t=0;
 				bos.write(buffer,0,len);
 			}
 			byteSrc=bos.toByteArray();
+			fis.close();
+			bos.close();
 			//}catch(Exception e){
 			//Utils.log("parse xml error:"+e.toString());
 			if(byteSrc==null)throw new IOException(file);

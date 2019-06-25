@@ -11,7 +11,7 @@ import static nil.nadph.qnotified.Utils.log;
 /* ActivityProxyManager */
 public class ActProxyMgr{
 
-	public static final String DUMMY_ACTIVITY="com/tencent/mobileqq/activity/photo/CameraPreviewActivity";
+	public static final String STUB_ACTIVITY="com/tencent/mobileqq/activity/photo/CameraPreviewActivity";
 
 	/**
 	 * @field HashSet mThreads<Long threadId> :Ids of threads which is calling invokeSuper
@@ -79,7 +79,7 @@ public class ActProxyMgr{
 					stack=new Stack();
 					instance.mThreadStack.put(Thread.currentThread().getId(),stack);
 				}
-				log("invokeSuper("+smethod.getName()+"),tid="+Thread.currentThread().getId()+",stack_before="+stack);
+				//log("invokeSuper("+smethod.getName()+"),tid="+Thread.currentThread().getId()+",stack_before="+stack);
 				stack.push(smethod);
 			}
 			smethod.invoke(obj,args);
@@ -125,7 +125,7 @@ public class ActProxyMgr{
 			long threadId=Thread.currentThread().getId();//make sure shit won't happen
 			synchronized(instance){
 				Stack s=instance.mThreadStack.get(threadId);
-				log("invokeSuper_end("+method.getName()+"),tid="+Thread.currentThread().getId()+",stack="+s);
+				//log("invokeSuper_end("+method.getName()+"),tid="+Thread.currentThread().getId()+",stack="+s);
 				if(s.empty())return;
 				if(!method.equals(s.peek()))return;
 				StackBreak sb=new StackBreak(param.getResult());
