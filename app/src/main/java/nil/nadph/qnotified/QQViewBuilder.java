@@ -79,10 +79,10 @@ public class QQViewBuilder{
 		}
 	}
 	
-	public static View switch_new(Context ctx){
+	public static CompoundButton switch_new(Context ctx){
 		try{
 			Class clazz=load("com/tencent/widget/Switch");
-			return (View)clazz.getConstructor(Context.class).newInstance(ctx);
+			return (CompoundButton)clazz.getConstructor(Context.class).newInstance(ctx);
 		}catch(Exception e){
 			Utils.log("Switch->new: "+e.toString());
 		}

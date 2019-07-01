@@ -27,7 +27,7 @@ import de.robv.android.xposed.*;
  *         Created by DX on 2017/10/4.
  */
 
-public class HookLoader implements IXposedHookLoadPackage {
+public class HookLoader implements IXposedHookLoadPackage{
     //按照实际使用情况修改下面几项的值
     /**
      * 当前Xposed模块的包名,方便寻找apk文件
@@ -55,15 +55,20 @@ public class HookLoader implements IXposedHookLoadPackage {
     private final String handleHookMethod = "handleLoadPackage";
 
     @Override
-    public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
-        if (hostAppPackages.contains(loadPackageParam.packageName)) {
+    public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable{
+        if(hostAppPackages.contains(loadPackageParam.packageName)){
             //将loadPackageParam的classloader替换为宿主程序Application的classloader,解决宿主程序存在多个.dex文件时,有时候ClassNotFound的问题
-            XposedHelpers.findAndHookMethod(Application.class, "attach", Context.class, new XC_MethodHook() {
+            XposedHelpers.findAndHookMethod(Application.class,"attach",Context.class,new XC_MethodHook() {
 					@Override
-					protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-						Context context=(Context) param.args[0];
-						loadPackageParam.classLoader = context.getClassLoader();
-						invokeHandleHookMethod(context,modulePackage, handleHookClass, handleHookMethod, loadPackageParam);
+					protected void afterHookedMethod(MethodHookParam param) throws Throwable{
+						try{
+							Context context=(Context) param.args[0];
+							loadPackageParam.classLoader=context.getClassLoader();
+							invokeHandleHookMethod(context,modulePackage,handleHookClass,handleHookMethod,loadPackageParam);
+						}catch(Throwable e){
+							Utils.log(e);
+							throw e;
+						}
 					}
 				});
         }
@@ -78,24 +83,24 @@ public class HookLoader implements IXposedHookLoadPackage {
      * @param loadPackageParam  传入XC_LoadPackage.LoadPackageParam参数
      * @throws Throwable 抛出各种异常,包括具体hook逻辑的异常,寻找apk文件异常,反射加载Class异常等
      */
-    private void invokeHandleHookMethod(Context context,String modulePackageName, String handleHookClass, String handleHookMethod, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
+    private void invokeHandleHookMethod(Context context,String modulePackageName,String handleHookClass,String handleHookMethod,XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable{
 //        File apkFile = findApkFileBySDK(modulePackageName);//会受其它Xposed模块hook 当前宿主程序的SDK_INT的影响
 //        File apkFile = findApkFile(modulePackageName);
         //原来的两种方式不是很好,改用这种新的方式
         File apkFile=findApkFile(context,modulePackageName);
-        if (apkFile==null){
+        if(apkFile==null){
             throw new RuntimeException("!!!!!寻找模块apk失败");
         }
         //加载指定的hook逻辑处理类，并调用它的handleHook方法
-        PathClassLoader pathClassLoader = new PathClassLoader(apkFile.getAbsolutePath(), XposedBridge.class.getClassLoader());
-        Class<?> cls = Class.forName(handleHookClass, true, pathClassLoader);
+        PathClassLoader pathClassLoader = new PathClassLoader(apkFile.getAbsolutePath(),XposedBridge.class.getClassLoader());
+        Class<?> cls = Class.forName(handleHookClass,true,pathClassLoader);
 		/*Utils.log(apkFile.getAbsolutePath());
-		Utils.log(cls.toString());
-		Utils.log(pathClassLoader.toString());*/
+		 Utils.log(cls.toString());
+		 Utils.log(pathClassLoader.toString());*/
         Object instance =cls.newInstance();
 		//instance.handleLoadPackage(loadPackageParam);
-        Method method = cls.getDeclaredMethod(handleHookMethod, XC_LoadPackage.LoadPackageParam.class);
-        method.invoke(instance, loadPackageParam);
+        Method method = cls.getDeclaredMethod(handleHookMethod,XC_LoadPackage.LoadPackageParam.class);
+        method.invoke(instance,loadPackageParam);
     }
 
     /**
@@ -105,14 +110,14 @@ public class HookLoader implements IXposedHookLoadPackage {
      * @return return apk file
      */
     private File findApkFile(Context context,String modulePackageName){
-        if (context==null){
+        if(context==null){
             return null;
         }
-        try {
-            Context moudleContext = context.createPackageContext(modulePackageName, Context.CONTEXT_INCLUDE_CODE | Context.CONTEXT_IGNORE_SECURITY);
+        try{
+            Context moudleContext = context.createPackageContext(modulePackageName,Context.CONTEXT_INCLUDE_CODE|Context.CONTEXT_IGNORE_SECURITY);
             String apkPath=moudleContext.getPackageCodePath();
             return new File(apkPath);
-        } catch (PackageManager.NameNotFoundException e) {
+        }catch(PackageManager.NameNotFoundException e){
             e.printStackTrace();
         }
         return null;

@@ -120,18 +120,23 @@ public class ActProxyMgr{
 
 		@Override
 		protected void afterHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable{
-			//Utils.log("setEx");
-			if(param.hasThrowable())return;//Sth has already went wrong;don't cope with it
-			long threadId=Thread.currentThread().getId();//make sure shit won't happen
-			synchronized(instance){
-				Stack s=instance.mThreadStack.get(threadId);
-				//log("invokeSuper_end("+method.getName()+"),tid="+Thread.currentThread().getId()+",stack="+s);
-				if(s.empty())return;
-				if(!method.equals(s.peek()))return;
-				StackBreak sb=new StackBreak(param.getResult());
-				s.pop();
-				s.push(param.getResult());
-				param.setThrowable(sb);
+			try{
+				//Utils.log("setEx");
+				if(param.hasThrowable())return;//Sth has already went wrong;don't cope with it
+				long threadId=Thread.currentThread().getId();//make sure shit won't happen
+				synchronized(instance){
+					Stack s=instance.mThreadStack.get(threadId);
+					//log("invokeSuper_end("+method.getName()+"),tid="+Thread.currentThread().getId()+",stack="+s);
+					if(s.empty())return;
+					if(!method.equals(s.peek()))return;
+					StackBreak sb=new StackBreak(param.getResult());
+					s.pop();
+					s.push(param.getResult());
+					param.setThrowable(sb);
+				}
+			}catch(Throwable e){
+				log(e);
+				throw e;
 			}
 		}
 

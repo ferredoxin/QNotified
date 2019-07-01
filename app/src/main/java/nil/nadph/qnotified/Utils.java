@@ -12,11 +12,14 @@ import static nil.nadph.qnotified.Initiator.load;
 import android.app.*;
 import java.util.*;
 import java.text.*;
+import java.io.*;
 
 public class Utils{
 
 	public static boolean DEBUG=true;
-
+	public static boolean V_TOAST=false;
+	
+	
 	public static final int CURRENT_MODULE_VERSION=1;
 
 	public static final String PACKAGE_NAME_QQ = "com.tencent.mobileqq";
@@ -49,7 +52,7 @@ public class Utils{
 		try{
 			return (Application)invoke_static(load("com/tencent/common/app/BaseApplicationImpl"),"getApplication");
 		}catch(Exception e){
-			XposedBridge.log(e);
+			log(e);
 		}
 		return null;
 	}
@@ -68,7 +71,7 @@ public class Utils{
 		try{
 			return (long)invoke_virtual(getAppRuntime(),"getLongAccountUin");
 		}catch(Exception e){
-			XposedBridge.log(e);
+			log(e);
 		}
 		return -1;
 	}
@@ -334,7 +337,7 @@ public class Utils{
 			f.setAccessible(true);
 			return f.get(null);
 		}catch(Exception e){
-			XposedBridge.log(e);
+			log(e);
 		}
 		return null;
 	}
@@ -350,7 +353,7 @@ public class Utils{
 			f.setAccessible(true);
 			return f.get(obj);
 		}catch(Exception e){
-			XposedBridge.log(e);
+			log(e);
 		}
 		return null;
 	}
@@ -365,7 +368,7 @@ public class Utils{
 			f.setAccessible(true);
 			f.set(obj,value);
 		}catch(Exception e){
-			XposedBridge.log(e);
+			log(e);
 		}
 	}
 	public static Object getAppRuntime(){
@@ -383,7 +386,7 @@ public class Utils{
 		try{
 			return (String)invoke_virtual(rt,"getAccount");
 		}catch(Exception e){
-			XposedBridge.log(e);
+			log(e);
 			return null;
 		}
 	}
@@ -449,11 +452,46 @@ public class Utils{
 
 	public static void log(String str){
 		if(DEBUG)Log.i("Xposed",str);
+		if(V_TOAST){
+			String path=Environment.getExternalStorageDirectory().getAbsolutePath()+"/log.txt";
+			File f=new File(path);
+			try{
+				if(!f.exists())f.createNewFile();
+				method2(path,"["+System.currentTimeMillis()+"-"+android.os.Process.myPid()+"] "+str+"\n");
+			}catch(IOException e){}
+		}
 	}
 
 	public static void log(Throwable th){
-		if(DEBUG)XposedBridge.log(th);
+		log(Log.getStackTraceString(th));
 	}
+	
+	
+	/**   
+     * 追加文件：使用FileWriter   
+     *    
+     * @param fileName   
+     * @param content   
+     */    
+    public static void method2(String fileName, String content) {   
+        FileWriter writer = null;  
+        try {     
+            // 打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件     
+            writer = new FileWriter(fileName, true);     
+            writer.write(content);       
+        } catch (IOException e) {     
+            e.printStackTrace();     
+        } finally {     
+            try {     
+                if(writer != null){  
+                    writer.close();     
+                }  
+            } catch (IOException e) {     
+                e.printStackTrace();     
+            }     
+        }   
+    }     
+	
 
 	public static String en(String str){
 		if(str==null)return "null";

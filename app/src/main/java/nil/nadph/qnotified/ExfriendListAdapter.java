@@ -4,7 +4,7 @@ import android.widget.*;
 import android.view.*;
 import android.content.*;
 import android.app.*;
-import de.robv.android.xposed.*;
+//import de.robv.android.xposed.*;
 import android.view.View.*;
 import android.content.res.*;
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
@@ -61,12 +61,12 @@ public class ExfriendListAdapter extends BaseAdapter implements InvocationHandle
 			evs.add(ev);
 		}
 		Collections.sort(evs);
-		//XposedBridge.log("ev size="+evs.size());
+		//log("ev size="+evs.size());
 		/*try{
 		 theme=QThemeKit.getCurrentTheme((Activity)ctx);
 		 }catch(Throwable e){
 		 theme=QThemeKit.getDefaultTheme();
-		 XposedBridge.log(e);
+		 log(e);
 		 }*/
 	}
 
@@ -104,7 +104,7 @@ public class ExfriendListAdapter extends BaseAdapter implements InvocationHandle
 			 */
 			convertView=inflateItemView(ev);//tv;
 		}
-		//XposedBridge.log(position+"/"+getCount());
+		//log(position+"/"+getCount());
 		convertView.setTag(ev);
 		TextView title=convertView.findViewById(R_ID_TITLE);
 		title.setText(ev.getShowStr());

@@ -60,13 +60,23 @@ public class QQMainHook <SlideDetectListView extends View,ContactsFPSPinnedHeade
 
 	@Override
 	public void handleLoadPackage(XC_LoadPackage.LoadPackageParam _lpparam) throws Throwable{
-		this.lpparam=_lpparam;
-		findAndHookMethod("com.tencent.common.app.QFixApplicationImpl",lpparam.classLoader,"isAndroidNPatchEnable",XC_MethodReplacement.returnConstant(500,false));
-		XposedHelpers.findAndHookMethod("com.tencent.mobileqq.app.InjectUtils",lpparam.classLoader,"injectExtraDexes",Application.class,boolean.class,new XC_MethodHook(51) {
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable{
-                    performHook(((Context) param.args[0]).getClassLoader());
-                }
-            });
+		try{
+			this.lpparam=_lpparam;
+			findAndHookMethod("com.tencent.common.app.QFixApplicationImpl",lpparam.classLoader,"isAndroidNPatchEnable",XC_MethodReplacement.returnConstant(500,false));
+			XposedHelpers.findAndHookMethod("com.tencent.mobileqq.app.InjectUtils",lpparam.classLoader,"injectExtraDexes",Application.class,boolean.class,new XC_MethodHook(51) {
+					protected void afterHookedMethod(MethodHookParam param) throws Throwable{
+						try{
+							performHook(((Context) param.args[0]).getClassLoader());
+						}catch(Throwable e){
+							log(e);
+							throw e;
+						}
+					}
+				});
+		}catch(Throwable e){
+			log(e);
+			throw e;
+		}
 	}
 
 
@@ -134,7 +144,7 @@ public class QQMainHook <SlideDetectListView extends View,ContactsFPSPinnedHeade
 	private void performHook(ClassLoader classLoader){
 		if(Utils.DEBUG){
 			if("true".equals(System.getProperty(QN_FULL_TAG))){
-				XposedBridge.log("Err:Qnotified reloaded??");
+				log("Err:Qnotified reloaded??");
 				System.exit(-1);
 				//QNotified updated(in HookLoader mode),kill QQ to make user restart it.
 			}
@@ -185,9 +195,14 @@ public class QQMainHook <SlideDetectListView extends View,ContactsFPSPinnedHeade
 		XposedHelpers.findAndHookMethod(load("com/tencent/mobileqq/activity/SplashActivity"),"doOnResume",new XC_MethodHook(700){
 				@Override
 				protected void afterHookedMethod(MethodHookParam param) throws Throwable{
-					if(Utils.getLongAccountUin()>1000){
-						ExfriendManager ex=ExfriendManager.getCurrent();
-						ex.timeToUpdateFl();
+					try{
+						if(Utils.getLongAccountUin()>1000){
+							ExfriendManager ex=ExfriendManager.getCurrent();
+							ex.timeToUpdateFl();
+						}
+					}catch(Throwable e){
+						log(e);
+						throw e;
 					}
 				}
 			});
@@ -231,7 +246,7 @@ public class QQMainHook <SlideDetectListView extends View,ContactsFPSPinnedHeade
 		 try{
 		 Utils.showToast(Utils.getApplication(),Utils.TOAST_TYPE_ERROR,"拒绝访问: 非法操作",0);
 		 }catch(Throwable e){
-		 XposedBridge.log(e);
+		 log(e);
 		 }
 		 }
 		 });
@@ -257,15 +272,20 @@ public class QQMainHook <SlideDetectListView extends View,ContactsFPSPinnedHeade
 		findAndHookMethod(load("friendlist/GetFriendListResp"),"readFrom",load("com/qq/taf/jce/JceInputStream"),new XC_MethodHook(200){
 				@Override
 				protected void afterHookedMethod(MethodHookParam param) throws Throwable{
-					FriendChunk fc=new FriendChunk(param.thisObject);
-					ExfriendManager.onGetFriendListResp(fc);
-					/*String ret="dump object:"+param.thisObject.getClass().getCanonicalName()+"\n";
-					 Field[] fs=param.thisObject.getClass().getDeclaredFields();
-					 for(int i=0;i<fs.length;i++){
-					 fs[i].setAccessible(true);
-					 ret+=(i<fs.length-1?"├":"└")+fs[i].getName()+"="+ClazzExplorer.en_toStr(fs[i].get(param.thisObject))+"\n";
-					 }
-					 XposedBridge.log(ret);*/
+					try{
+						FriendChunk fc=new FriendChunk(param.thisObject);
+						ExfriendManager.onGetFriendListResp(fc);
+						/*String ret="dump object:"+param.thisObject.getClass().getCanonicalName()+"\n";
+						 Field[] fs=param.thisObject.getClass().getDeclaredFields();
+						 for(int i=0;i<fs.length;i++){
+						 fs[i].setAccessible(true);
+						 ret+=(i<fs.length-1?"├":"└")+fs[i].getName()+"="+ClazzExplorer.en_toStr(fs[i].get(param.thisObject))+"\n";
+						 }
+						 log(ret);*/
+					}catch(Throwable e){
+						log(e);
+						throw e;
+					}
 				}
 			});
 
@@ -375,7 +395,7 @@ public class QQMainHook <SlideDetectListView extends View,ContactsFPSPinnedHeade
 			intent.putExtra("AllInOne",allInOne);
             ctx.startActivity(intent);
 		}catch(Exception e){
-			XposedBridge.log(e);
+			log(e);
 		}
 	}
 
@@ -384,147 +404,168 @@ public class QQMainHook <SlideDetectListView extends View,ContactsFPSPinnedHeade
 	private XC_MethodHook proxyActivity_onCreate=new XC_MethodHook(200){
 		@Override
 		protected void beforeHookedMethod(MethodHookParam param) throws Throwable{
-			if(ActProxyMgr.isInfiniteLoop())return;
-			final Activity self=(Activity)param.thisObject;
-			int id=self.getIntent().getExtras().getInt(ACTIVITY_PROXY_ID_TAG,-1);
-			int action=self.getIntent().getExtras().getInt(ACTIVITY_PROXY_ACTION,-1);
-			if(id<=0)return;
-			if(action<=0)return;
-			param.setResult(null);
-			//ActProxyMgr.set(id,self);
-			Method m=load("mqq/app/AppActivity").getDeclaredMethod("onCreate",Bundle.class);
-			m.setAccessible(true);
 			try{
-				ActProxyMgr.invokeSuper(self,m,param.args);
-			}catch(ActProxyMgr.BreakUnaughtException e){}
-			//log("***onCreate");
-			if(action==ACTION_EXFRIEND_LIST)
+				if(ActProxyMgr.isInfiniteLoop())return;
+				final Activity self=(Activity)param.thisObject;
+				int id=self.getIntent().getExtras().getInt(ACTIVITY_PROXY_ID_TAG,-1);
+				int action=self.getIntent().getExtras().getInt(ACTIVITY_PROXY_ACTION,-1);
+				if(id<=0)return;
+				if(action<=0)return;
+				param.setResult(null);
+				//ActProxyMgr.set(id,self);
+				Method m=load("mqq/app/AppActivity").getDeclaredMethod("onCreate",Bundle.class);
+				m.setAccessible(true);
 				try{
-					exlist_mFlingHandler=new_instance(load("com/tencent/mobileqq/activity/fling/FlingGestureHandler"),self,Activity.class);
-					iput_object(self,"mFlingHandler",exlist_mFlingHandler);
-					QThemeKit.initTheme(self);
+					ActProxyMgr.invokeSuper(self,m,param.args);
+				}catch(ActProxyMgr.BreakUnaughtException e){}
+				//log("***onCreate");
+				if(action==ACTION_EXFRIEND_LIST)
+					try{
+						exlist_mFlingHandler=new_instance(load("com/tencent/mobileqq/activity/fling/FlingGestureHandler"),self,Activity.class);
+						iput_object(self,"mFlingHandler",exlist_mFlingHandler);
+						QThemeKit.initTheme(self);
 
-					SlideDetectListView sdlv=(SlideDetectListView)load("com.tencent.mobileqq.widget.SlideDetectListView").getConstructor(Context.class,AttributeSet.class).newInstance(self,null);
-					sdlv.setFocusable(true);
-					ViewGroup.LayoutParams mmlp=new ViewGroup.LayoutParams(MATCH_PARENT,MATCH_PARENT);
-					RelativeLayout.LayoutParams mwllp=new RelativeLayout.LayoutParams(MATCH_PARENT,WRAP_CONTENT);
-					RelativeLayout rl=new RelativeLayout(self);//)new_instance(load("com/tencent/mobileqq/activity/fling/TopGestureLayout"),self,Context.class);
-					//invoke_virtual(rl,"setInterceptScrollLRFlag",true,boolean.class);
-					//invoke_virtual(rl,"setInterceptTouchFlag",true,boolean.class);
-					//iput_object(rl,"
-					rl.setBackgroundColor(QThemeKit.qq_setting_item_bg_nor.getDefaultColor());
-					mwllp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-					mwllp.addRule(RelativeLayout.CENTER_VERTICAL);
+						SlideDetectListView sdlv=(SlideDetectListView)load("com.tencent.mobileqq.widget.SlideDetectListView").getConstructor(Context.class,AttributeSet.class).newInstance(self,null);
+						sdlv.setFocusable(true);
+						ViewGroup.LayoutParams mmlp=new ViewGroup.LayoutParams(MATCH_PARENT,MATCH_PARENT);
+						RelativeLayout.LayoutParams mwllp=new RelativeLayout.LayoutParams(MATCH_PARENT,WRAP_CONTENT);
+						RelativeLayout rl=new RelativeLayout(self);//)new_instance(load("com/tencent/mobileqq/activity/fling/TopGestureLayout"),self,Context.class);
+						//invoke_virtual(rl,"setInterceptScrollLRFlag",true,boolean.class);
+						//invoke_virtual(rl,"setInterceptTouchFlag",true,boolean.class);
+						//iput_object(rl,"
+						rl.setBackgroundColor(QThemeKit.qq_setting_item_bg_nor.getDefaultColor());
+						mwllp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+						mwllp.addRule(RelativeLayout.CENTER_VERTICAL);
 
-					TextView tv=new TextView(self);
-					tv.setGravity(Gravity.CENTER);
-					tv.setTextColor(QThemeKit.skin_gray3);
-					tv.setTextSize(Utils.dip2sp(self,14));
-					rl.addView(tv,mwllp);
-					rl.addView(sdlv,mmlp);
-					self.setContentView(rl);
-					//sdlv.setBackgroundColor(0xFFAA0000)
-					invoke_virtual(self,"setTitle","历史好友",CharSequence.class);
-					invoke_virtual(self,"setImmersiveStatus");
-					invoke_virtual(self,"enableLeftBtn",true,boolean.class);
-					TextView rightBtn=(TextView)invoke_virtual(self,"getRightTextView");
-					//log("Title:"+invoke_virtual(self,"getTextTitle"));
-					rightBtn.setVisibility(View.VISIBLE);
-					rightBtn.setText("高级");
-					rightBtn.setEnabled(true);
-					rightBtn.setOnClickListener(new View.OnClickListener(){
-							@Override
-							public void onClick(View v){
-								try{
-									//self.onBackPressed();
-									//ExfriendManager.getCurrent().doRequestFlRefresh();
-									//Utils.showToastShort(v.getContext(),"即将开放(没啥好设置的)...");
-									startProxyActivity(self,ACTION_ADV_SETTINGS);
-									//Intent intent=new Intent(v.getContext(),load(ActProxyMgr.DUMMY_ACTIVITY));
-									//int id=ActProxyMgr.next();
-									//intent.putExtra(ACTIVITY_PROXY_ID_TAG,id);
-									//intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-									/*v.getContext().startActivity(intent);/*
-									 new Thread(new Runnable(){
-									 @Override
-									 public void run(){
-									 /*try{
-									 Thread.sleep(10000);
-									 }catch(InterruptedException e){}
-									 EventRecord ev=new EventRecord();
-									 ev.operator=10000;
-									 ev._remark=ev._nick="麻花藤";
-									 *
-									 ExfriendManager.getCurrent().doNotifyDelFl(new Object[]{1,"ticker","title","content"});
-									 }
-									 }).start();*/
-								}catch(Throwable e){
-									log(e);
+						TextView tv=new TextView(self);
+						tv.setGravity(Gravity.CENTER);
+						tv.setTextColor(QThemeKit.skin_gray3);
+						tv.setTextSize(Utils.dip2sp(self,14));
+						rl.addView(tv,mwllp);
+						rl.addView(sdlv,mmlp);
+						self.setContentView(rl);
+						//sdlv.setBackgroundColor(0xFFAA0000)
+						invoke_virtual(self,"setTitle","历史好友",CharSequence.class);
+						invoke_virtual(self,"setImmersiveStatus");
+						invoke_virtual(self,"enableLeftBtn",true,boolean.class);
+						TextView rightBtn=(TextView)invoke_virtual(self,"getRightTextView");
+						//log("Title:"+invoke_virtual(self,"getTextTitle"));
+						rightBtn.setVisibility(View.VISIBLE);
+						rightBtn.setText("高级");
+						rightBtn.setEnabled(true);
+						rightBtn.setOnClickListener(new View.OnClickListener(){
+								@Override
+								public void onClick(View v){
+									try{
+										//self.onBackPressed();
+										//ExfriendManager.getCurrent().doRequestFlRefresh();
+										//Utils.showToastShort(v.getContext(),"即将开放(没啥好设置的)...");
+										startProxyActivity(self,ACTION_ADV_SETTINGS);
+										//Intent intent=new Intent(v.getContext(),load(ActProxyMgr.DUMMY_ACTIVITY));
+										//int id=ActProxyMgr.next();
+										//intent.putExtra(ACTIVITY_PROXY_ID_TAG,id);
+										//intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+										/*v.getContext().startActivity(intent);/*
+										 new Thread(new Runnable(){
+										 @Override
+										 public void run(){
+										 /*try{
+										 Thread.sleep(10000);
+										 }catch(InterruptedException e){}
+										 EventRecord ev=new EventRecord();
+										 ev.operator=10000;
+										 ev._remark=ev._nick="麻花藤";
+										 *
+										 ExfriendManager.getCurrent().doNotifyDelFl(new Object[]{1,"ticker","title","content"});
+										 }
+										 }).start();*/
+									}catch(Throwable e){
+										log(e);
+									}
 								}
-							}
-						});
-					//.addView(sdlv,lp);
-					invoke_virtual(sdlv,"setCanSlide",true,boolean.class);
-					invoke_virtual(sdlv,"setDivider",null,Drawable.class);
-					long uin=Utils.getLongAccountUin();
-					ExfriendManager exm=ExfriendManager.get(uin);
-					exm.clearUnreadFlag();
-					tv.setText("最后更新: "+Utils.getRelTimeStrSec(exm.lastUpdateTimeSec));
-					QQViewBuilder.listView_setAdapter(sdlv,new ExfriendListAdapter(sdlv,exm));
-					//invoke_virtual(sdlv,"setOnScrollGroupFloatingListener",true,load("com/tencent/widget/AbsListView$OnScrollListener"));
-				}catch(Throwable e){
-					XposedBridge.log(e);
-				}
-			else if(action==ACTION_ADV_SETTINGS)
-				try{
-					exlist_mFlingHandler=new_instance(load("com/tencent/mobileqq/activity/fling/FlingGestureHandler"),self,Activity.class);
-					iput_object(self,"mFlingHandler",exlist_mFlingHandler);
-					QThemeKit.initTheme(self);
-					LinearLayout ll=new LinearLayout(self);
-					ViewGroup.LayoutParams mmlp=new ViewGroup.LayoutParams(MATCH_PARENT,MATCH_PARENT);
-					View bounceScrollView=(View)new_instance(load("com/tencent/mobileqq/widget/BounceScrollView"),self,Context.class);
-					bounceScrollView.setLayoutParams(mmlp);
-					invoke_virtual(bounceScrollView,"addView",ll,View.class);
-					bounceScrollView.setBackgroundColor(QThemeKit.qq_setting_item_bg_nor.getDefaultColor());
-					LinearLayout.LayoutParams fixlp=new LinearLayout.LayoutParams(MATCH_PARENT,dip2px(self,36));
-					RelativeLayout.LayoutParams __lp_l=new RelativeLayout.LayoutParams(WRAP_CONTENT,WRAP_CONTENT);
-					int mar=(int)(dip2px(self,3)+0.5f);
-					__lp_l.setMargins(mar,0,mar,0);
-					__lp_l.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-					__lp_l.addRule(RelativeLayout.CENTER_HORIZONTAL);
-					RelativeLayout.LayoutParams __lp_r=new RelativeLayout.LayoutParams(WRAP_CONTENT,WRAP_CONTENT);
-					__lp_r.setMargins(mar,0,mar,0);
-					__lp_r.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-					__lp_r.addRule(RelativeLayout.CENTER_HORIZONTAL);
-					
-					int _countm1=3;
-					RelativeLayout _rl[]=new RelativeLayout[_countm1];
-					TextView _tv[]=new TextView[_countm1];
-					
-					for(int i=0;i<_countm1;i++){
-						_rl[i]=new RelativeLayout(self);
-						_tv[i]=new TextView(self);
-						_tv[i].setTextColor(new ColorStateList(QThemeKit.skin_black.getStates(),QThemeKit.skin_black.getColors()));
-						_rl[i].setBackground(QThemeKit.getListItemBackground());
-						_rl[i].addView(_tv[i],__lp_l);
-						
-						
+							});
+						//.addView(sdlv,lp);
+						invoke_virtual(sdlv,"setCanSlide",true,boolean.class);
+						invoke_virtual(sdlv,"setDivider",null,Drawable.class);
+						long uin=Utils.getLongAccountUin();
+						ExfriendManager exm=ExfriendManager.get(uin);
+						exm.clearUnreadFlag();
+						tv.setText("最后更新: "+Utils.getRelTimeStrSec(exm.lastUpdateTimeSec));
+						QQViewBuilder.listView_setAdapter(sdlv,new ExfriendListAdapter(sdlv,exm));
+						//invoke_virtual(sdlv,"setOnScrollGroupFloatingListener",true,load("com/tencent/widget/AbsListView$OnScrollListener"));
+					}catch(Throwable e){
+						log(e);
 					}
+				else if(action==ACTION_ADV_SETTINGS)
+					try{
+						exlist_mFlingHandler=new_instance(load("com/tencent/mobileqq/activity/fling/FlingGestureHandler"),self,Activity.class);
+						iput_object(self,"mFlingHandler",exlist_mFlingHandler);
+						QThemeKit.initTheme(self);
+						LinearLayout ll=new LinearLayout(self);
+						ll.setOrientation(LinearLayout.VERTICAL);
+						ViewGroup.LayoutParams mmlp=new ViewGroup.LayoutParams(MATCH_PARENT,MATCH_PARENT);
+						View bounceScrollView=(View)new_instance(load("com/tencent/mobileqq/widget/BounceScrollView"),self,Context.class);
+						bounceScrollView.setLayoutParams(mmlp);
+						invoke_virtual(bounceScrollView,"addView",ll,View.class);
+						bounceScrollView.setBackgroundColor(QThemeKit.qq_setting_item_bg_nor.getDefaultColor());
+						invoke_virtual(bounceScrollView,"setNeedHorizontalGesture",true,boolean.class);
+						LinearLayout.LayoutParams fixlp=new LinearLayout.LayoutParams(MATCH_PARENT,dip2px(self,48));
+						RelativeLayout.LayoutParams __lp_l=new RelativeLayout.LayoutParams(WRAP_CONTENT,WRAP_CONTENT);
+						int mar=(int)(dip2px(self,12)+0.5f);
+						__lp_l.setMargins(mar,0,mar,0);
+						__lp_l.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+						__lp_l.addRule(RelativeLayout.CENTER_VERTICAL);
+						RelativeLayout.LayoutParams __lp_r=new RelativeLayout.LayoutParams(WRAP_CONTENT,WRAP_CONTENT);
+						__lp_r.setMargins(mar,0,mar,0);
+						__lp_r.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+						__lp_r.addRule(RelativeLayout.CENTER_VERTICAL);
+
+						int _countm1=30;
+						RelativeLayout _rl[]=new RelativeLayout[_countm1];
+						TextView _tv[]=new TextView[_countm1];
+						CompoundButton[] _sw=new CompoundButton[_countm1];
+
+						for(int i=0;i<_countm1;i++){
+							_rl[i]=new RelativeLayout(self);
+							_tv[i]=new TextView(self);
+							_tv[i].setTextColor(new ColorStateList(QThemeKit.skin_black.getStates(),QThemeKit.skin_black.getColors()));
+							_rl[i].setBackground(QThemeKit.getListItemBackground());
+							_rl[i].addView(_tv[i],__lp_l);
+							_sw[i]=QQViewBuilder.switch_new(self);
+							_sw[i].setTag(i);
+							_sw[i].setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+									@Override
+									public void onCheckedChanged(CompoundButton v,boolean z){
+										try{
+											Utils.showToastShort(self,v.getTag()+"->"+z);
+										}catch(Throwable e){}
+									}
+								});
+							_rl[i].addView(_sw[i],__lp_r);
+							_tv[i].setText("选项-Switch_"+i);
+							_tv[i].setTextSize(dip2sp(self,18));
+							_tv[i].setGravity(Gravity.CENTER_VERTICAL);
+							ll.addView(_rl[i],fixlp);
+						}
 
 
-					self.setContentView(bounceScrollView);
-					//sdlv.setBackgroundColor(0xFFAA0000)
-					invoke_virtual(self,"setTitle","高级与设置",CharSequence.class);
-					invoke_virtual(self,"setImmersiveStatus");
-					invoke_virtual(self,"enableLeftBtn",true,boolean.class);
-					//TextView rightBtn=(TextView)invoke_virtual(self,"getRightTextView");
-					//log("Title:"+invoke_virtual(self,"getTextTitle"));
+						self.setContentView(bounceScrollView);
+						//sdlv.setBackgroundColor(0xFFAA0000)
+						invoke_virtual(self,"setTitle","高级与设置",CharSequence.class);
+						invoke_virtual(self,"setImmersiveStatus");
+						invoke_virtual(self,"enableLeftBtn",true,boolean.class);
+						//TextView rightBtn=(TextView)invoke_virtual(self,"getRightTextView");
+						//log("Title:"+invoke_virtual(self,"getTextTitle"));
 
-					//.addView(sdlv,lp);
+						//.addView(sdlv,lp);
 
-				}catch(Throwable e){
-					XposedBridge.log(e);
-				}
+					}catch(Throwable e){
+						log(e);
+					}
+			}catch(Throwable e){
+				log(e);
+				throw e;
+			}
 		}
 	};
 
@@ -572,7 +613,7 @@ public class QQMainHook <SlideDetectListView extends View,ContactsFPSPinnedHeade
 	 QQViewBuilder.listView_setAdapter(sdlv,new ExfriendListAdapter(sdlv));
 
 	 }catch(Throwable e){
-	 XposedBridge.log(e);
+	 log(e);
 	 }
 	 }
 	 };*/
@@ -580,210 +621,238 @@ public class QQMainHook <SlideDetectListView extends View,ContactsFPSPinnedHeade
 	private XC_MethodHook proxyActivity_doOnDestroy=new XC_MethodHook(200){
 		@Override
 		protected void beforeHookedMethod(MethodHookParam param) throws Throwable{
-			if(ActProxyMgr.isInfiniteLoop())return;
-			Activity self=(Activity)param.thisObject;
-			int id=self.getIntent().getExtras().getInt(ACTIVITY_PROXY_ID_TAG,-1);
-			if(id<=0)return;
-			//ActProxyMgr.remove(id);
-			Method m=self.getClass().getSuperclass().getSuperclass().getDeclaredMethod("doOnDestroy");
-			m.setAccessible(true);
 			try{
-				ActProxyMgr.invokeSuper(self,m);
-			}catch(ActProxyMgr.BreakUnaughtException e){}
-			param.setResult(null);
-			//log("***doOnDestroy");
+				if(ActProxyMgr.isInfiniteLoop())return;
+				Activity self=(Activity)param.thisObject;
+				int id=self.getIntent().getExtras().getInt(ACTIVITY_PROXY_ID_TAG,-1);
+				if(id<=0)return;
+				//ActProxyMgr.remove(id);
+				Method m=self.getClass().getSuperclass().getSuperclass().getDeclaredMethod("doOnDestroy");
+				m.setAccessible(true);
+				try{
+					ActProxyMgr.invokeSuper(self,m);
+				}catch(ActProxyMgr.BreakUnaughtException e){}
+				param.setResult(null);
+				//log("***doOnDestroy");
+			}catch(Throwable e){
+				log(e);
+				throw e;
+			}
 		}
 	};
 
 	private XC_MethodHook proxyActivity_doOnResume=new XC_MethodHook(200){
 		@Override
 		protected void beforeHookedMethod(MethodHookParam param) throws Throwable{
-			if(ActProxyMgr.isInfiniteLoop())return;
-			Activity self=(Activity)param.thisObject;
-			int id=self.getIntent().getExtras().getInt(ACTIVITY_PROXY_ID_TAG,-1);
-			if(id<=0)return;
-			Method m=self.getClass().getSuperclass().getSuperclass().getDeclaredMethod("doOnResume");
-			m.setAccessible(true);
 			try{
-				ActProxyMgr.invokeSuper(self,m);
-			}catch(ActProxyMgr.BreakUnaughtException e){}
-			param.setResult(null);
-			//log("***doOnResume");
+				if(ActProxyMgr.isInfiniteLoop())return;
+				Activity self=(Activity)param.thisObject;
+				int id=self.getIntent().getExtras().getInt(ACTIVITY_PROXY_ID_TAG,-1);
+				if(id<=0)return;
+				Method m=self.getClass().getSuperclass().getSuperclass().getDeclaredMethod("doOnResume");
+				m.setAccessible(true);
+				try{
+					ActProxyMgr.invokeSuper(self,m);
+				}catch(ActProxyMgr.BreakUnaughtException e){}
+				param.setResult(null);
+				//log("***doOnResume");
+			}catch(Throwable e){
+				log(e);
+				throw e;
+			}
 		}
 	};
 
 	private XC_MethodHook proxyActivity_isWrapContent=new XC_MethodHook(200){
 		@Override
 		protected void beforeHookedMethod(MethodHookParam param) throws Throwable{
-			if(ActProxyMgr.isInfiniteLoop())return;
-			Activity self=(Activity)param.thisObject;
-			int id=self.getIntent().getExtras().getInt(ACTIVITY_PROXY_ID_TAG,-1);
-			if(id<=0)return;
-			param.setResult(true);
-			//log("***doOnResume");
+			try{
+				if(ActProxyMgr.isInfiniteLoop())return;
+				Activity self=(Activity)param.thisObject;
+				int id=self.getIntent().getExtras().getInt(ACTIVITY_PROXY_ID_TAG,-1);
+				if(id<=0)return;
+				param.setResult(true);
+				//log("***doOnResume");
+			}catch(Throwable e){
+				log(e);
+				throw e;
+			}
 		}
 	};
 
 	private XC_MethodHook proxyActivity_doOnPause=new XC_MethodHook(200){
 		@Override
 		protected void beforeHookedMethod(MethodHookParam param) throws Throwable{
-			if(ActProxyMgr.isInfiniteLoop())return;
-			Activity self=(Activity)param.thisObject;
-			int id=self.getIntent().getExtras().getInt(ACTIVITY_PROXY_ID_TAG,-1);
-			if(id<=0)return;
-			Method m=self.getClass().getSuperclass().getSuperclass().getDeclaredMethod("doOnPause");
-			m.setAccessible(true);
 			try{
-				ActProxyMgr.invokeSuper(self,m);
-			}catch(ActProxyMgr.BreakUnaughtException e){}
-			param.setResult(null);
-			//log("***doOnPause");
+				if(ActProxyMgr.isInfiniteLoop())return;
+				Activity self=(Activity)param.thisObject;
+				int id=self.getIntent().getExtras().getInt(ACTIVITY_PROXY_ID_TAG,-1);
+				if(id<=0)return;
+				Method m=self.getClass().getSuperclass().getSuperclass().getDeclaredMethod("doOnPause");
+				m.setAccessible(true);
+				try{
+					ActProxyMgr.invokeSuper(self,m);
+				}catch(ActProxyMgr.BreakUnaughtException e){}
+				param.setResult(null);
+				//log("***doOnPause");
+			}catch(Throwable e){
+				log(e);
+				throw e;
+			}
 		}
 	};
 
 	private XC_MethodHook proxyActivity_doOnActivityResult=new XC_MethodHook(200){
 		@Override
 		protected void beforeHookedMethod(MethodHookParam param) throws Throwable{
-			if(ActProxyMgr.isInfiniteLoop())return;
-			Activity self=(Activity)param.thisObject;
-			int id=self.getIntent().getExtras().getInt(ACTIVITY_PROXY_ID_TAG,-1);
-			if(id<=0)return;
-			Method m=self.getClass().getSuperclass().getSuperclass().getDeclaredMethod("doOnActivityResult",int.class,int.class,Intent.class);
-			m.setAccessible(true);
 			try{
-				ActProxyMgr.invokeSuper(self,m,param.args);
-			}catch(ActProxyMgr.BreakUnaughtException e){}
-			param.setResult(null);
-			//log("***doOnActivityResult");
+				if(ActProxyMgr.isInfiniteLoop())return;
+				Activity self=(Activity)param.thisObject;
+				int id=self.getIntent().getExtras().getInt(ACTIVITY_PROXY_ID_TAG,-1);
+				if(id<=0)return;
+				Method m=self.getClass().getSuperclass().getSuperclass().getDeclaredMethod("doOnActivityResult",int.class,int.class,Intent.class);
+				m.setAccessible(true);
+				try{
+					ActProxyMgr.invokeSuper(self,m,param.args);
+				}catch(ActProxyMgr.BreakUnaughtException e){}
+				param.setResult(null);
+				//log("***doOnActivityResult");
+			}catch(Throwable e){
+				log(e);
+				throw e;
+			}
 		}
 	};
 
 	private XC_MethodHook pastEntry=new XC_MethodHook(1200){
 		@Override
 		protected void afterHookedMethod(MethodHookParam param) throws Throwable{
-
-			final android.widget.FrameLayout frameView=Utils.getObject(param.thisObject,View.class,"b");
-			splashActivity=(Activity)Utils.getContext(frameView);
-			QThemeKit.initTheme(splashActivity);
-			ContactsFPSPinnedHeaderExpandableListView lv=(ContactsFPSPinnedHeaderExpandableListView) iget_object(param.thisObject,"a",load("com/tencent/mobileqq/activity/contacts/view/ContactsFPSPinnedHeaderExpandableListView"));
-			TextView unusualContacts;
-			/*if(frameView.getChildAt(0) instanceof LinearLayout){
-			 if(frameView.getVisibility()==View.GONE){
-			 /*兼容QQ净化->隐藏不常用联系人,上面的1200也是一样*
-			 frameView.setVisibility(View.VISIBLE);
-			 if(unusualContacts!=null)unusualContacts.setVisibility(View.GONE);
-			 }
-			 return;
-			 }*/
-			unusualContacts=(TextView)frameView.getChildAt(0);
-			LinearLayout layout=new LinearLayout(splashActivity);
-			RelativeLayout rell=new RelativeLayout(splashActivity);
-			//rell.setLayoutParams(new LinearLayout.LayoutParams(MATCH_PARENT,WRAP_CONTENT));
-
-			//Object adapter=invoke_virtual(lv,"getAdapter",ListAdapter.class);
-			//invoke_virtual(lv,"setAdapter",null,Adapter.class);
-			/*try{
-			 invoke_virtual(lv,"removeFooterView",layout,View.class);
-			 }catch(Exception e){XposedBridge.log(e);}
-			 */
-			if(!addedListView.contains(lv)){
-				invoke_virtual(lv,"addFooterView",layout,View.class);
-				addedListView.add(lv);
-			}
-
-
-			//invoke_virtual(lv,"setAdapter",adapter,ExpandableListAdapter.class);
-
-			layout.setOrientation(LinearLayout.VERTICAL);
-
-			StateListDrawable background=(StateListDrawable)unusualContacts.getBackground();
-
-			exfriend=new TextView(splashActivity);
-			exfriend.setTextColor(unusualContacts.getTextColors());//QThemeKit.skin_red);
-			exfriend.setBackground(Utils._obj_clone(background.mutate()));//damn! mutate() not working!
-			exfriend.setTextSize(TypedValue.COMPLEX_UNIT_PX,unusualContacts.getTextSize());
-			exfriend.setId(VIEW_ID_DELETED_FRIEND);
-			exfriend.setText("历史好友");
-			exfriend.setGravity(Gravity.CENTER);
-			exfriend.setClickable(true);
-			//exfriend.setTranslationY(-Utils.dip2px(splashActivity,1f));
-			//unusualContacts.setVisibility(frameView.getVisibility()==View.GONE?View.GONE:View.VISIBLE);
-			//frameView.setVisibility(View.VISIBLE);
-
-			TextView redDot=new TextView(splashActivity);
-			redDotRef=new WeakReference(redDot);
-			redDot.setTextColor(0xFFFFFFFF);
-
-			redDot.setGravity(Gravity.CENTER);
-			//redDot.setBackground(QThemeKit.skin_tips_newmessage);
-			redDot.getPaint().setFakeBoldText(true);
-			//redDot.setTextAppearance(android.R.style.TextAppearance_Small);
-			redDot.setTextSize(Utils.dip2sp(splashActivity,10));
-			//redDot.setPadding(4,0,4,0);
 			try{
-				invoke_static(load("com/tencent/widget/CustomWidgetUtil"),"a",redDot,3,1,0,TextView.class,int.class,int.class,int.class,void.class);
-			}catch(NullPointerException e){
-				redDot.setTextColor(Color.RED);
+				final android.widget.FrameLayout frameView=Utils.getObject(param.thisObject,View.class,"b");
+				splashActivity=(Activity)Utils.getContext(frameView);
+				QThemeKit.initTheme(splashActivity);
+				ContactsFPSPinnedHeaderExpandableListView lv=(ContactsFPSPinnedHeaderExpandableListView) iget_object(param.thisObject,"a",load("com/tencent/mobileqq/activity/contacts/view/ContactsFPSPinnedHeaderExpandableListView"));
+				TextView unusualContacts;
+				/*if(frameView.getChildAt(0) instanceof LinearLayout){
+				 if(frameView.getVisibility()==View.GONE){
+				 /*兼容QQ净化->隐藏不常用联系人,上面的1200也是一样*
+				 frameView.setVisibility(View.VISIBLE);
+				 if(unusualContacts!=null)unusualContacts.setVisibility(View.GONE);
+				 }
+				 return;
+				 }*/
+				unusualContacts=(TextView)frameView.getChildAt(0);
+				LinearLayout layout=new LinearLayout(splashActivity);
+				RelativeLayout rell=new RelativeLayout(splashActivity);
+				//rell.setLayoutParams(new LinearLayout.LayoutParams(MATCH_PARENT,WRAP_CONTENT));
+
+				//Object adapter=invoke_virtual(lv,"getAdapter",ListAdapter.class);
+				//invoke_virtual(lv,"setAdapter",null,Adapter.class);
+				/*try{
+				 invoke_virtual(lv,"removeFooterView",layout,View.class);
+				 }catch(Exception e){log(e);}
+				 */
+				if(!addedListView.contains(lv)){
+					invoke_virtual(lv,"addFooterView",layout,View.class);
+					addedListView.add(lv);
+				}
+
+
+				//invoke_virtual(lv,"setAdapter",adapter,ExpandableListAdapter.class);
+
+				layout.setOrientation(LinearLayout.VERTICAL);
+
+				StateListDrawable background=(StateListDrawable)unusualContacts.getBackground();
+
+				exfriend=new TextView(splashActivity);
+				exfriend.setTextColor(unusualContacts.getTextColors());//QThemeKit.skin_red);
+				exfriend.setBackground(Utils._obj_clone(background.mutate()));//damn! mutate() not working!
+				exfriend.setTextSize(TypedValue.COMPLEX_UNIT_PX,unusualContacts.getTextSize());
+				exfriend.setId(VIEW_ID_DELETED_FRIEND);
+				exfriend.setText("历史好友");
+				exfriend.setGravity(Gravity.CENTER);
+				exfriend.setClickable(true);
+				//exfriend.setTranslationY(-Utils.dip2px(splashActivity,1f));
+				//unusualContacts.setVisibility(frameView.getVisibility()==View.GONE?View.GONE:View.VISIBLE);
+				//frameView.setVisibility(View.VISIBLE);
+
+				TextView redDot=new TextView(splashActivity);
+				redDotRef=new WeakReference(redDot);
+				redDot.setTextColor(0xFFFFFFFF);
+
+				redDot.setGravity(Gravity.CENTER);
+				//redDot.setBackground(QThemeKit.skin_tips_newmessage);
+				redDot.getPaint().setFakeBoldText(true);
+				//redDot.setTextAppearance(android.R.style.TextAppearance_Small);
+				redDot.setTextSize(Utils.dip2sp(splashActivity,10));
+				//redDot.setPadding(4,0,4,0);
+				try{
+					invoke_static(load("com/tencent/widget/CustomWidgetUtil"),"a",redDot,3,1,0,TextView.class,int.class,int.class,int.class,void.class);
+				}catch(NullPointerException e){
+					redDot.setTextColor(Color.RED);
+				}
+				ExfriendManager.get(Utils.getLongAccountUin()).setRedDot();
+
+
+				//frameView.removeAllViews();
+				int height=unusualContacts.getLayoutParams().height;
+				//layout.addView(unusualContacts);
+				RelativeLayout.LayoutParams exlp=new RelativeLayout.LayoutParams(MATCH_PARENT,unusualContacts.getLayoutParams().height);
+				exlp.topMargin=0;
+				exlp.leftMargin=0;
+
+				rell.addView(exfriend,exlp);
+				RelativeLayout.LayoutParams dotlp=new RelativeLayout.LayoutParams(WRAP_CONTENT,WRAP_CONTENT);
+				dotlp.topMargin=0;
+				dotlp.rightMargin=Utils.dip2px(splashActivity,24);
+				dotlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+				dotlp.addRule(RelativeLayout.CENTER_VERTICAL);
+				rell.addView(redDot,dotlp);
+				layout.addView(rell,unusualContacts.getLayoutParams());
+				ViewGroup.LayoutParams llp=new ViewGroup.LayoutParams(MATCH_PARENT,WRAP_CONTENT);
+				layout.setPadding(0,(int)(height*0.3f),0,(int)(0.3f*height));
+				/*frameView.addView(layout,llp);
+				 ViewGroup.LayoutParams _lp=frameView.getLayoutParams();
+				 _lp.height=WRAP_CONTENT;//(int)(unusual.getLayoutParams().height*());
+				 final View.OnClickListener olds=Utils.getOnClickListener(frameView);
+				 frameView.setOnTouchListener(null);
+				 frameView.setClickable(false);
+				 //unusualContacts_old.setOnTouchListener(null);*/
+				exfriend.setOnClickListener(new View.OnClickListener(){
+						@Override
+						public void onClick(View v){
+							Intent intent=new Intent(splashActivity,load(ActProxyMgr.STUB_ACTIVITY));
+							int id=ActProxyMgr.next();
+							intent.putExtra(ACTIVITY_PROXY_ID_TAG,id);
+							intent.putExtra(ACTIVITY_PROXY_ACTION,ACTION_EXFRIEND_LIST);
+							splashActivity.startActivity(intent);
+							//Toast.makeText(splashActivity,"Test",0).show();
+						}
+					});
+				/*unusualContacts.setOnClickListener(new View.OnClickListener(){
+				 @Override
+				 public void onClick(View v){
+				 olds.onClick(frameView);
+				 }
+				 });
+				 unusualContacts.invalidate();*/
+				exfriend.postInvalidate();
+				/*new Thread(new Runnable(){
+				 @Override
+				 public void run(){
+				 try{
+				 Thread.sleep(500);
+				 }catch(InterruptedException e){}
+				 exfriend.postInvalidate();
+				 unusual.postInvalidate();
+				 }
+				 }).start();*/
+
+
+			}catch(Throwable e){
+				log(e);
+				throw e;
 			}
-			ExfriendManager.get(Utils.getLongAccountUin()).setRedDot();
-
-
-			//frameView.removeAllViews();
-			int height=unusualContacts.getLayoutParams().height;
-			//layout.addView(unusualContacts);
-			RelativeLayout.LayoutParams exlp=new RelativeLayout.LayoutParams(MATCH_PARENT,unusualContacts.getLayoutParams().height);
-			exlp.topMargin=0;
-			exlp.leftMargin=0;
-
-			rell.addView(exfriend,exlp);
-			RelativeLayout.LayoutParams dotlp=new RelativeLayout.LayoutParams(WRAP_CONTENT,WRAP_CONTENT);
-			dotlp.topMargin=0;
-			dotlp.rightMargin=Utils.dip2px(splashActivity,24);
-			dotlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-			dotlp.addRule(RelativeLayout.CENTER_VERTICAL);
-			rell.addView(redDot,dotlp);
-			layout.addView(rell,unusualContacts.getLayoutParams());
-			ViewGroup.LayoutParams llp=new ViewGroup.LayoutParams(MATCH_PARENT,WRAP_CONTENT);
-			layout.setPadding(0,(int)(height*0.3f),0,(int)(0.3f*height));
-			/*frameView.addView(layout,llp);
-			 ViewGroup.LayoutParams _lp=frameView.getLayoutParams();
-			 _lp.height=WRAP_CONTENT;//(int)(unusual.getLayoutParams().height*());
-			 final View.OnClickListener olds=Utils.getOnClickListener(frameView);
-			 frameView.setOnTouchListener(null);
-			 frameView.setClickable(false);
-			 //unusualContacts_old.setOnTouchListener(null);*/
-			exfriend.setOnClickListener(new View.OnClickListener(){
-					@Override
-					public void onClick(View v){
-						Intent intent=new Intent(splashActivity,load(ActProxyMgr.STUB_ACTIVITY));
-						int id=ActProxyMgr.next();
-						intent.putExtra(ACTIVITY_PROXY_ID_TAG,id);
-						intent.putExtra(ACTIVITY_PROXY_ACTION,ACTION_EXFRIEND_LIST);
-						splashActivity.startActivity(intent);
-						//Toast.makeText(splashActivity,"Test",0).show();
-					}
-				});
-			/*unusualContacts.setOnClickListener(new View.OnClickListener(){
-			 @Override
-			 public void onClick(View v){
-			 olds.onClick(frameView);
-			 }
-			 });
-			 unusualContacts.invalidate();*/
-			exfriend.postInvalidate();
-			/*new Thread(new Runnable(){
-			 @Override
-			 public void run(){
-			 try{
-			 Thread.sleep(500);
-			 }catch(InterruptedException e){}
-			 exfriend.postInvalidate();
-			 unusual.postInvalidate();
-			 }
-			 }).start();*/
-
-
-
 		}
 	};
 

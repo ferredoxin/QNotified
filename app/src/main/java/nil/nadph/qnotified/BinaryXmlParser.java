@@ -1,10 +1,11 @@
 package nil.nadph.qnotified;
+
 import java.io.*;
+import java.util.*;
 
 public class BinaryXmlParser{
-	byte[] byteSrc;
 
-	public BinaryXmlParser(String filePath){
+	public static XmlNode parseXml(String filePath){
 		FileInputStream fis = null;
 		ByteArrayOutputStream bos = null;
 		try{
@@ -15,7 +16,7 @@ public class BinaryXmlParser{
 			while((len=fis.read(buffer))!=-1){
 				bos.write(buffer,0,len);
 			}
-			byteSrc=bos.toByteArray();
+			return parseXml(bos.toByteArray());
 			
 		}catch(Exception e){
 			Utils.log("parse xml error:"+e.toString());
@@ -26,9 +27,10 @@ public class BinaryXmlParser{
 				bos.close();
 			}catch(Exception e){}
 		}
+		return null;
 	}
 
-	//Origin:https://gist.github.com/seymores/2425692
+	// Origin:https://gist.github.com/seymores/2425692
 	// decompressXML -- Parse the 'compressed' binary form of Android XML docs
 	// such as for AndroidManifest.xml in .apk files
 	public static int endDocTag = 0x00100101;
@@ -37,11 +39,12 @@ public class BinaryXmlParser{
 
 	static void prt(String str){
 		//System.err.print(str);
+		Utils.log(str);
 	}
 
-	public static String decompressXML(byte[] xml){
+	public static XmlNode parseXml(byte[] xml) {
 
-	//	StringBuilder finalXML = new StringBuilder();
+		//StringBuilder finalXML = new StringBuilder();
 
 		// Compressed XML file/bytes starts with 24x bytes of data,
 		// 9 32 bit words in little endian order (LSB first):
@@ -50,7 +53,7 @@ public class BinaryXmlParser{
 		// 4th word is: Number of strings in string table
 		// WARNING: Sometime I indiscriminently display or refer to word in
 		// little endian storage format, or in integer format (ie MSB first).
-		int numbStrings = LEW(xml,4*4);
+		int numbStrings = LEW(xml, 4 * 4);
 
 		// StringIndexTable starts at offset 24x, an array of 32 bit LE offsets
 		// of the length/string data in the StringTable.
@@ -59,20 +62,20 @@ public class BinaryXmlParser{
 		// StringTable, each string is represented with a 16 bit little endian
 		// character count, followed by that number of 16 bit (LE) (Unicode)
 		// chars.
-		int stOff = sitOff+numbStrings*4; // StringTable follows
+		int stOff = sitOff + numbStrings * 4; // StringTable follows
 		// StrIndexTable
 
 		// XMLTags, The XML tag tree starts after some unknown content after the
 		// StringTable. There is some unknown data after the StringTable, scan
 		// forward from this point to the flag for the start of an XML start
 		// tag.
-		int xmlTagOff = LEW(xml,3*4); // Start from the offset in the 3rd
+		int xmlTagOff = LEW(xml, 3 * 4); // Start from the offset in the 3rd
 		// word.
 		// Scan forward until we find the bytes: 0x02011000(x00100102 in normal
 		// int)
-		for(int ii = xmlTagOff; ii<xml.length-4; ii+=4){
-			if(LEW(xml,ii)==startTag){
-				xmlTagOff=ii;
+		for (int ii = xmlTagOff; ii < xml.length - 4; ii += 4) {
+			if (LEW(xml, ii) == startTag) {
+				xmlTagOff = ii;
 				break;
 			}
 		} // end of hack, scanning for start of first start tag
@@ -110,90 +113,112 @@ public class BinaryXmlParser{
 		// tr.parent();
 
 		// Step through the XML tree element tags and attributes
+		XmlNode root=null;
+
 		int off = xmlTagOff;
-		int indent = 0;
+		//int indent = 0;
+		Stack<XmlNode> nodes=new Stack();
 		int startTagLineNo = -2;
-		while(off<xml.length){
-			int tag0 = LEW(xml,off);
+		while (off < xml.length) {
+			int tag0 = LEW(xml, off);
 			// int tag1 = LEW(xml, off+1*4);
-			int lineNo = LEW(xml,off+2*4);
+			int lineNo = LEW(xml, off + 2 * 4);
 			// int tag3 = LEW(xml, off+3*4);
-			int nameNsSi = LEW(xml,off+4*4);
-			int nameSi = LEW(xml,off+5*4);
-			
-			if(tag0==startTag){ // XML START TAG
-				int tag6 = LEW(xml,off+6*4); // Expected to be 14001400
-				int numbAttrs = LEW(xml,off+7*4); // Number of Attributes
+			int nameNsSi = LEW(xml, off + 4 * 4);
+			int nameSi = LEW(xml, off + 5 * 4);
+
+			if (tag0 == startTag) { // XML START TAG
+				int tag6 = LEW(xml, off + 6 * 4); // Expected to be 14001400
+				int numbAttrs = LEW(xml, off + 7 * 4); // Number of Attributes
 				// to follow
 				// int tag8 = LEW(xml, off+8*4); // Expected to be 00000000
-				off+=9*4; // Skip over 6+3 words of startTag data
-				String name = compXmlString(xml,sitOff,stOff,nameSi);
+				off += 9 * 4; // Skip over 6+3 words of startTag data
+				String name = compXmlString(xml, sitOff, stOff, nameSi);
 				// tr.addSelect(name, null);
-				startTagLineNo=lineNo;
-
+				startTagLineNo = lineNo;
 				// Look for the Attributes
-				StringBuffer sb = new StringBuffer();
-				for(int ii = 0; ii<numbAttrs; ii++){
-					int attrNameNsSi = LEW(xml,off); // AttrName Namespace Str
+				//StringBuffer sb = new StringBuffer();
+				Map<String,Object> attr=new HashMap();
+				XmlNode curr=new XmlNode();
+				curr.name=name;
+				for (int ii = 0; ii < numbAttrs; ii++) {
+					int attrNameNsSi = LEW(xml, off); // AttrName Namespace Str
 					// Ind, or FFFFFFFF
-					int attrNameSi = LEW(xml,off+1*4); // AttrName String
+					int attrNameSi = LEW(xml, off + 1 * 4); // AttrName String
 					// Index
-					int attrValueSi = LEW(xml,off+2*4); // AttrValue Str
+					int attrValueSi = LEW(xml, off + 2 * 4); // AttrValue Str
 					// Ind, or
 					// FFFFFFFF
-					int attrFlags = LEW(xml,off+3*4);
-					int attrResId = LEW(xml,off+4*4); // AttrValue
+					int attrFlags = LEW(xml, off + 3 * 4);
+					int attrResId = LEW(xml, off + 4 * 4); // AttrValue
 					// ResourceId or dup
 					// AttrValue StrInd
-					off+=5*4; // Skip over the 5 words of an attribute
+					off += 5 * 4; // Skip over the 5 words of an attribute
 
-					String attrName = compXmlString(xml,sitOff,stOff,
+					String attrName = compXmlString(xml, sitOff, stOff,
 													attrNameSi);
 
-					String attrValue = "";                
-					if(attrValueSi!=-1){
-						attrValue=compXmlString(xml,sitOff,stOff,attrValueSi);
-					}else{
-						if(attrResId==-1)
-							attrValue="resourceID 0x"+Integer.toHexString(attrResId);
-						else 
-							attrValue=""+Integer.valueOf(Integer.toHexString(attrResId),16).intValue();
+					Object attrValue = "";                
+					if (attrValueSi != -1) {
+						attrValue =  compXmlString(xml, sitOff, stOff, attrValueSi);
+					} else {
+						/*if (attrResId == -1)
+						 attrValue = "resourceID 0x" + Integer.toHexString(attrResId);
+						 else*/
+						attrValue = attrResId;
 
 						//System.out.println(attrName + " >>> " + attrValue.split("0x")[1]);
 					}                
 
 
 					// attrValue = Integer.valueOf(Integer.toHexString(attrResId), 16).intValue();
-
-					sb.append(" "+attrName+"=\""+attrValue+"\"");
+					attr.put(attrName,attrValue);
+					//sb.append(" " + attrName + "=\"" + attrValue + "\"");
 					// tr.add(attrName, attrValue);
 				}
-				finalXML.append("<"+name+sb+">");
-				prtIndent(indent,"<"+name+sb+">");
-				indent++;
+				curr.attributes=attr;
+				nodes.push(curr);
+				//finalXML.append("<" + name + sb + ">");
+				//prtIndent(indent, "<" + name + sb + ">");
+				//indent++;
 
-			}else if(tag0==endTag){ // XML END TAG
-				indent--;
-				off+=6*4; // Skip over 6 words of endTag data
-				String name = compXmlString(xml,sitOff,stOff,nameSi);
-				finalXML.append("</"+name+">");
-				prtIndent(indent,"</"+name+"> (line "+startTagLineNo
-						  +"-"+lineNo+")");
+			} else if (tag0 == endTag) { // XML END TAG
+				XmlNode curr=nodes.pop();
+				//indent--;
+				off += 6 * 4; // Skip over 6 words of endTag data
+				String name = compXmlString(xml, sitOff, stOff, nameSi);
+				if(nodes.size()==0){
+					root=curr;
+				}else{
+					ArrayList<XmlNode> ele=nodes.peek().elements;
+					if(ele==null)ele=new ArrayList<XmlNode>();
+					nodes.peek().elements=ele;
+					ele.add(curr);
+				}
+				//nodes.peek().put(name,curr);
+				//finalXML.append("</" + name + ">");
+				/*prtIndent(indent, "</" + name + "> (line " + startTagLineNo
+				 + "-" + lineNo + ")");*/
 				// tr.parent(); // Step back up the NobTree
 
-			}else if(tag0==endDocTag){ // END OF XML DOC TAG
+			} else if (tag0 == endDocTag) { // END OF XML DOC TAG
 				break;
 
-			}else{
-				prt("  Unrecognized tag code '"+Integer.toHexString(tag0)
-					+"' at offset "+off);
+			} else {
+				prt("  Unrecognized tag code '" + Integer.toHexString(tag0)
+					+ "' at offset " + off);
 				break;
 			}
 		} // end of while loop scanning tags and attributes of XML tree
 		//prt("    end at offset " + off);
-		return finalXML.toString();
+		return root;//finalXML.toString();
 	} // end of decompressXML
-
+	
+		
+		
+		
+		
+		
 	public static String compXmlString(byte[] xml,int sitOff,int stOff,int strInd){
 		if(strInd<0)
 			return null;
@@ -201,12 +226,12 @@ public class BinaryXmlParser{
 		return compXmlStringAt(xml,strOff);
 	}
 
-	public static String spaces = "                                             ";
+	/*public static String spaces = "                                             ";
 
 	public static void prtIndent(int indent,String str){
 		prt(spaces.substring(0,Math.min(indent*2,spaces.length()))+str);
 	}
-
+*/
 	// compXmlStringAt -- Return the string stored in StringTable format at
 	// offset strOff. This offset points to the 16 bit string length, which
 	// is followed by that number of 16 bit (Unicode) chars.
@@ -226,6 +251,10 @@ public class BinaryXmlParser{
 	} // end of LEW
 
 
-
+public static class XmlNode{
+	public String name;
+	public ArrayList<XmlNode>elements;
+	public Map<String,Object>attributes;
+}
 
 }

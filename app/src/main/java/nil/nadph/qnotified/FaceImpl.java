@@ -5,7 +5,7 @@ import android.graphics.*;
 
 import static nil.nadph.qnotified.Initiator.load;
 import android.annotation.*;
-import de.robv.android.xposed.*;
+//import de.robv.android.xposed.*;
 import java.util.*;
 import android.view.*;
 import java.lang.ref.*;
@@ -105,7 +105,7 @@ public class FaceImpl implements InvocationHandler{
 		try{
 			return Utils.invoke_virtual(mFaceDecoder,"a",uin,type,true,(byte)0,String.class,int.class,boolean.class,byte.class,boolean.class);
 		}catch(Exception e){
-			XposedBridge.log(e);
+			Utils.log(e);
 			return false;
 		}
 	}

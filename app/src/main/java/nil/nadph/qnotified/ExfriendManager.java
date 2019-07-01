@@ -55,7 +55,7 @@ public class ExfriendManager{
 	}
 
 	private void dbg(){
-		//XposedBridge.log(Utils.getLineNo(2)+"=>"+(persons!=null?(persons.get(3211711411l)+""):"<null>"));
+		//log(Utils.getLineNo(2)+"=>"+(persons!=null?(persons.get(3211711411l)+""):"<null>"));
 	}
 
 	private static Runnable asyncUpdateAwaitingTask=new Runnable(){
@@ -92,7 +92,7 @@ public class ExfriendManager{
 			}catch(Throwable e){}
 			if(persons.size()==0&&mStdRemarks!=null){
 				dbg();
-				XposedBridge.log("WARNING:INIT FROM THE INTERNAL");
+				log("WARNING:INIT FROM THE INTERNAL");
 				//Here we try to copy friendlist
 				Object fr;
 				Field fuin,fremark,fnick;
@@ -126,7 +126,7 @@ public class ExfriendManager{
 				dbg();
 			}
 		}catch(Exception e){
-			XposedBridge.log(e);
+			log(e);
 		}
 	}
 
@@ -211,7 +211,7 @@ public class ExfriendManager{
 			lastUpdateTimeSec=fileData.getOrDefault("lastUpdateFl",0l);
 			dbg();
 		}catch(IOException e){
-			XposedBridge.log(e);
+			log(e);
 		}
 	}
 
@@ -220,7 +220,7 @@ public class ExfriendManager{
 	private void updateFriendTableVersion(){
 		Table<Long> fr=(Table)fileData.get("friends");
 		if(fr==null){
-			XposedBridge.log("damn! updateFriendTableVersion in null");
+			log("damn! updateFriendTableVersion in null");
 		}
 		/** uin+"" is key */
 		fr.keyName="uin";
@@ -266,7 +266,7 @@ public class ExfriendManager{
 	private void tableToFriend(){
 		Table<Long> t=(Table)fileData.get("friends");
 		if(t==null){
-			XposedBridge.log("t_fr==null,aborting!");
+			log("t_fr==null,aborting!");
 			dbg();
 			return;
 		}
@@ -299,7 +299,7 @@ public class ExfriendManager{
 		 f.friendStatus=FriendRecord.STATUS_FRIEND_MUTUAL;
 		 f.serverTime=1543202800;
 		 persons.put(f.uin,f);
-		 XposedBridge.log("Faking lwk");*/
+		 log("Faking lwk");*/
 	}
 
 
@@ -307,7 +307,7 @@ public class ExfriendManager{
 	private void initEventsTable(){
 		Table<Integer> ev=(Table)fileData.get("events");
 		if(ev==null){
-			XposedBridge.log("damn! initEvT in null");
+			log("damn! initEvT in null");
 			return;
 		}
 		/** uin+"" is key */
@@ -359,14 +359,14 @@ public class ExfriendManager{
 			}catch(NoSuchFieldException e){
 				//shouldn't happen
 			}
-			//XposedBridge.log("addEx,"+ev.operator);
+			//log("addEx,"+ev.operator);
 		}
 	}
 
 	private void tableToEvents(){
 		Table<Integer> t=(Table)fileData.get("events");
 		if(t==null){
-			XposedBridge.log("t_ev==null,aborting!");
+			log("t_ev==null,aborting!");
 			return;
 		}
 		if(events==null)events=new HashMap();
@@ -408,7 +408,7 @@ public class ExfriendManager{
 
 	public void saveConfigure(){
 		dbg();
-		//XposedBridge.log("save: persons.size()="+persons.size()+"event.size="+events.size());
+		//log("save: persons.size()="+persons.size()+"event.size="+events.size());
 		if(persons==null)return;
 		File f=new File(Utils.getApplication().getFilesDir().getAbsolutePath()+"/qnotified_"+mUin+".dat");
 		friendToTable();
@@ -454,7 +454,7 @@ public class ExfriendManager{
 			fout.close();
 			dbg();
 		}catch(IOException e){
-			XposedBridge.log(e);
+			log(e);
 		}
 		dirtyFlag=false;
 	}
@@ -512,18 +512,18 @@ public class ExfriendManager{
 	}
 
 	public static void onGetFriendListResp(FriendChunk fc){
-		//XposedBridge.log("onGetFriendListResp");
+		//log("onGetFriendListResp");
 		get(fc.uin).recordFriendChunk(fc);
 	}
 
 	public synchronized void recordFriendChunk(FriendChunk fc){
-		//XposedBridge.log("recordFriendChunk");
+		//log("recordFriendChunk");
 		if(fc.getfriendCount==0){
 			//ignore it;
 		}else{
 			if(fc.startIndex==0)cachedFriendChunks.clear();
 			cachedFriendChunks.add(fc);
-			//XposedBridge.log(fc.friend_count+","+fc.startIndex+","+fc.totoal_friend_count);
+			//log(fc.friend_count+","+fc.startIndex+","+fc.totoal_friend_count);
 			if(fc.friend_count+fc.startIndex==fc.totoal_friend_count){
 				final FriendChunk[] update=new FriendChunk[cachedFriendChunks.size()];
 				cachedFriendChunks.toArray(update);
@@ -563,7 +563,7 @@ public class ExfriendManager{
 	}
 
 	public void reportEventWithoutSave(EventRecord ev,Object[] out){
-		//XposedBridge.log("Report event,uin="+ev.operator);
+		//log("Report event,uin="+ev.operator);
 		int k=events.size();
 		while(events.containsKey(k)){
 			k++;
@@ -602,7 +602,7 @@ public class ExfriendManager{
 			NotificationManager nm=(NotificationManager) Utils.getApplication().getSystemService(Context.NOTIFICATION_SERVICE);
 			nm.cancel(ID_EX_NOTIFY);
 		}catch(Exception e){
-			XposedBridge.log(e);
+			log(e);
 		}
 		dirtyFlag=true;
 		setRedDot();
@@ -620,7 +620,7 @@ public class ExfriendManager{
 		}
 		totality=tmp==0;
 		if(!totality){
-			XposedBridge.log("Inconsistent friendlist chunk data!Aborting!total="+tmp);
+			log("Inconsistent friendlist chunk data!Aborting!total="+tmp);
 			return;
 		}
 		HashMap<Long,FriendRecord> del=(HashMap<Long, FriendRecord>) persons.clone();
@@ -743,7 +743,7 @@ public class ExfriendManager{
 
 	public void timeToUpdateFl(){
 		long t=System.currentTimeMillis()/1000;
-		//XposedBridge.log(t+"/"+lastUpdateTimeSec);
+		//log(t+"/"+lastUpdateTimeSec);
 		if(t-lastUpdateTimeSec>FL_UPDATE_INT_MIN){
 			tp.execute(new Runnable(){
 					@Override

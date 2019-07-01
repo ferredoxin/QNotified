@@ -94,12 +94,12 @@ public class QThemeKit{
 
 
 			path=dir+"/color/";
-			if(skin_black==null)skin_black=findColorInXmlStupidly(path+"skin_black.xml");
-			if(skin_red==null)skin_red=findColorInXmlStupidly(path+"skin_red.xml");
-			if(skin_gray3==null)skin_gray3=findColorInXmlStupidly(path+"skin_gray3.xml");
-			if(skin_text_white==null)skin_text_white=findColorInXmlStupidly(path+"skin_black_item.xml");
-			if(qq_setting_item_bg_nor==null)qq_setting_item_bg_nor=findColorInXmlStupidly(path+"qq_setting_item_bg_nor.xml");
-			if(qq_setting_item_bg_pre==null)qq_setting_item_bg_pre=findColorInXmlStupidly(path+"qq_setting_item_bg_pre.xml");
+			if(skin_black==null)skin_black=getStateColorInXml(path+"skin_black.xml");
+			if(skin_red==null)skin_red=getStateColorInXml(path+"skin_red.xml");
+			if(skin_gray3==null)skin_gray3=getStateColorInXml(path+"skin_gray3.xml");
+			if(skin_text_white==null)skin_text_white=getStateColorInXml(path+"skin_black_item.xml");
+			if(qq_setting_item_bg_nor==null)qq_setting_item_bg_nor=getStateColorInXml(path+"qq_setting_item_bg_nor.xml");
+			if(qq_setting_item_bg_pre==null)qq_setting_item_bg_pre=getStateColorInXml(path+"qq_setting_item_bg_pre.xml");
 		}
 		//if(skin_tips_newmessage==null)skin_tips_newmessage= loadDrawableFromAsset("skin_tips_newmessage.9.png");
 		if(skin_list_normal==null)skin_list_normal=loadDrawableFromAsset("skin_list_item_normal.9.png");
@@ -262,7 +262,7 @@ public class QThemeKit{
 			//log(name+"DrHiMin="+ret.getMinimumHeight());
 			return ret;
 		}catch(Exception e){
-			XposedBridge.log(e);
+			log(e);
 		}
 		return null;
 	}
@@ -278,7 +278,7 @@ public class QThemeKit{
 			cachedDrawable.put(name,ret);
 			return ret;
 		}catch(Exception e){
-			XposedBridge.log(e);
+			log(e);
 		}
 		return null;
 	}
@@ -312,8 +312,8 @@ public class QThemeKit{
 	}
 
 
-	@Deprecated
-	public static ColorStateList findColorInXmlStupidly(String file){
+	public static ColorStateList getStateColorInXml(String file){
+		log("load xml:"+file);
 		byte[] byteSrc=null;
 		FileInputStream fis = null;
 		ByteArrayOutputStream bos = null;
@@ -331,11 +331,29 @@ public class QThemeKit{
 			//}catch(Exception e){
 			//Utils.log("parse xml error:"+e.toString());
 			if(byteSrc==null)throw new IOException(file);
-			if(byteSrc.length!=0x158)throw new IOException("0x158 bytes expected, "+byteSrc.length+" got.");
-			int color=ub2i(byteSrc[0x10C])|ub2i(byteSrc[0x10D])<<8|ub2i(byteSrc[0x10E])<<16|ub2i(byteSrc[0x10F])<<24;
-			//Utils.log("Decoded:"+Integer.toHexString(color));
-			return ColorStateList.valueOf(color);
+			BinaryXmlParser.XmlNode selector=BinaryXmlParser.parseXml(byteSrc);
+			int[] colors=new int[selector.elements.size()];
+			int[][] states=new int[selector.elements.size()][];
+			BinaryXmlParser.XmlNode item;
+			for(int i=0;i< selector.elements.size();i++){
+				item=selector.elements.get(i);
+				colors[i]=(Integer)item.attributes.get("color");
+				int si=item.attributes.size()-1;
+				IntArray ss=new IntArray();
+				Map.Entry<String,Object> entry;
+				Iterator it=item.attributes.entrySet().iterator();
+				int id=0;
+				while(it.hasNext()){
+					entry=(Map.Entry<String, Object>) it.next();
+					if(!entry.getKey().startsWith("state_"))continue;
+					id=Utils.sget_object(android.R.attr.class,entry.getKey());
+					ss.add(id*(((int)(Integer)entry.getValue())==0?-1:1));
+				}
+				states[i]=ss.toArray();
+			}
+			return new ColorStateList(states,colors);
 		}catch(Exception e){
+			if(!(e instanceof FileNotFoundException))log(e);
 			try{
 				fis.close();
 				bos.close();
