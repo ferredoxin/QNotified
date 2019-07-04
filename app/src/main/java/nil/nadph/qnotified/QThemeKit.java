@@ -24,7 +24,7 @@ import java.lang.reflect.*;
 import android.os.*;
 
 public class QThemeKit{
-	
+
 
 	static private String cachedThemeId;
 
@@ -36,6 +36,7 @@ public class QThemeKit{
 	static public ColorStateList qq_setting_item_bg_nor;
 	static public ColorStateList qq_setting_item_bg_pre;
 	static public Drawable skin_list_normal=null,skin_list_item_unread=null,skin_list_pressed=null;
+	/*skin_group_list_item_pressed_theme_version2*/
 	//static public Drawable skin_tips_newmessage;
 
 
@@ -67,10 +68,10 @@ public class QThemeKit{
 			loadResInDir(Environment.getExternalStorageDirectory()+"/QQColor/theme");
 		}
 		loadResInDir(locateThemeDir(themeId,ctx));
-		
+
 	}
 
-	
+
 	public static void loadResInDir(String dir){
 		if(dir==null){
 			//log("Unable to locate theme dir!");
@@ -158,12 +159,12 @@ public class QThemeKit{
 	}
 
 	public static boolean isColorQQThemeActive(){
-		File f=new File(Environment.getExternalStorageDirectory().getAbsoluteFile()+"/QQColor/setting.xml");
-		if(!f.exists())f=new File(Environment.getDataDirectory()+"/data/me.qiwu.colorqq/shared_prefs/me.qiwu.colorqq.xml");
-		XSharedPreferences sp=new XSharedPreferences(f);
-		sp.makeWorldReadable();
-		sp.reload();
 		try{
+			File f=new File(Environment.getExternalStorageDirectory().getAbsoluteFile()+"/QQColor/setting.xml");
+			if(!f.exists())f=new File(Environment.getDataDirectory()+"/data/me.qiwu.colorqq/shared_prefs/me.qiwu.colorqq.xml");
+			XSharedPreferences sp=new XSharedPreferences(f);
+			sp.makeWorldReadable();
+			sp.reload();
 			return sp.getBoolean("theme_use_theme",false)&&!sp.getBoolean("module_stophook",false);
 		}catch(Exception e){
 			log(e);
@@ -335,7 +336,7 @@ public class QThemeKit{
 			int[] colors=new int[selector.elements.size()];
 			int[][] states=new int[selector.elements.size()][];
 			BinaryXmlParser.XmlNode item;
-			for(int i=0;i< selector.elements.size();i++){
+			for(int i=0;i<selector.elements.size();i++){
 				item=selector.elements.get(i);
 				colors[i]=(Integer)item.attributes.get("color");
 				int si=item.attributes.size()-1;

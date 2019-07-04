@@ -58,17 +58,12 @@ public class HookLoader implements IXposedHookLoadPackage{
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable{
         if(hostAppPackages.contains(loadPackageParam.packageName)){
             //将loadPackageParam的classloader替换为宿主程序Application的classloader,解决宿主程序存在多个.dex文件时,有时候ClassNotFound的问题
-            XposedHelpers.findAndHookMethod(Application.class,"attach",Context.class,new XC_MethodHook() {
+            XposedHelpers.findAndHookMethod(Application.class,"attach",Context.class,new XC_MethodHook(1250) {
 					@Override
 					protected void afterHookedMethod(MethodHookParam param) throws Throwable{
-						try{
-							Context context=(Context) param.args[0];
-							loadPackageParam.classLoader=context.getClassLoader();
-							invokeHandleHookMethod(context,modulePackage,handleHookClass,handleHookMethod,loadPackageParam);
-						}catch(Throwable e){
-							Utils.log(e);
-							throw e;
-						}
+						Context context=(Context) param.args[0];
+						loadPackageParam.classLoader=context.getClassLoader();
+						invokeHandleHookMethod(context,modulePackage,handleHookClass,handleHookMethod,loadPackageParam);
 					}
 				});
         }

@@ -182,8 +182,9 @@ public class QQMainHook <SlideDetectListView extends View,ContactsFPSPinnedHeade
 
 
 		Class clazz=load(".activity.contacts.fragment.FriendFragment");//".activity.Contacts");
-		findAndHookMethod(clazz,"i",pastEntry);
-		findAndHookMethod(clazz,"j",pastEntry);
+		/*findAndHookMethod(clazz,"i",pastEntry);
+		findAndHookMethod(clazz,"j",pastEntry);*/
+		XposedBridge.hookMethod(dump(XposedHelpers.findMethodBestMatch(load("com/tencent/mobileqq/activity/contacts/view/ContactsFPSPinnedHeaderExpandableListView"),"setAdapter",ExpandableListAdapter.class)),exfriendEntryHook);
 		clazz=load(ActProxyMgr.STUB_ACTIVITY);
 		findAndHookMethod(clazz,"onCreate",Bundle.class,proxyActivity_onCreate);
 		//findAndHookMethod(clazz,"doOnCreate",Bundle.class,proxyActivity_doOnCreate);
@@ -196,8 +197,8 @@ public class QQMainHook <SlideDetectListView extends View,ContactsFPSPinnedHeade
 				@Override
 				protected void afterHookedMethod(MethodHookParam param) throws Throwable{
 					try{
-						if(Utils.getLongAccountUin()>1000){
-							ExfriendManager ex=ExfriendManager.getCurrent();
+						if(Utils.getLongAccountUin()>10000){
+								ExfriendManager ex=ExfriendManager.getCurrent();
 							ex.timeToUpdateFl();
 						}
 					}catch(Throwable e){
@@ -723,15 +724,31 @@ public class QQMainHook <SlideDetectListView extends View,ContactsFPSPinnedHeade
 			}
 		}
 	};
+	
+	
 
-	private XC_MethodHook pastEntry=new XC_MethodHook(1200){
+	/*private XC_MethodHook pastEntry=new XC_MethodHook(1200){
+		
+		
+		
 		@Override
 		protected void afterHookedMethod(MethodHookParam param) throws Throwable{
 			try{
-				final android.widget.FrameLayout frameView=Utils.getObject(param.thisObject,View.class,"b");
-				splashActivity=(Activity)Utils.getContext(frameView);
+				
+				*/
+	private XC_MethodHook exfriendEntryHook=new XC_MethodHook(1200){
+		@Override
+		protected void beforeHookedMethod(MethodHookParam param) throws Throwable{
+			try{
+				if(!param.thisObject.getClass().getName().contains("ContactsFPSPinnedHeaderExpandableListView"))return;
+				LinearLayout layout_entrance;
+				android.widget.FrameLayout frameView;
+				ContactsFPSPinnedHeaderExpandableListView lv=(ContactsFPSPinnedHeaderExpandableListView) param.thisObject;
+				//frameView=Utils.getObject(,View.class,"b");
+				splashActivity=(Activity)Utils.getContext(lv);
 				QThemeKit.initTheme(splashActivity);
-				ContactsFPSPinnedHeaderExpandableListView lv=(ContactsFPSPinnedHeaderExpandableListView) iget_object(param.thisObject,"a",load("com/tencent/mobileqq/activity/contacts/view/ContactsFPSPinnedHeaderExpandableListView"));
+				//lv=(ContactsFPSPinnedHeaderExpandableListView) iget_object(param.thisObject,"a",load("com/tencent/mobileqq/activity/contacts/view/ContactsFPSPinnedHeaderExpandableListView"));
+				//log("Fuckee:"+lv.getClass());
 				TextView unusualContacts;
 				/*if(frameView.getChildAt(0) instanceof LinearLayout){
 				 if(frameView.getVisibility()==View.GONE){
@@ -741,33 +758,40 @@ public class QQMainHook <SlideDetectListView extends View,ContactsFPSPinnedHeade
 				 }
 				 return;
 				 }*/
-				unusualContacts=(TextView)frameView.getChildAt(0);
-				LinearLayout layout=new LinearLayout(splashActivity);
+				//unusualContacts=(TextView)frameView.getChildAt(0);
+				
+				
+				
+				
+				layout_entrance=new LinearLayout(splashActivity);
 				RelativeLayout rell=new RelativeLayout(splashActivity);
 				//rell.setLayoutParams(new LinearLayout.LayoutParams(MATCH_PARENT,WRAP_CONTENT));
 
-				//Object adapter=invoke_virtual(lv,"getAdapter",ListAdapter.class);
-				//invoke_virtual(lv,"setAdapter",null,Adapter.class);
+				Object adapter=invoke_virtual(lv,"getAdapter",ListAdapter.class);
+				//invoke_virtual(lv,"setAdapter",null,BaseAdapter.class);
 				/*try{
 				 invoke_virtual(lv,"removeFooterView",layout,View.class);
 				 }catch(Exception e){log(e);}
 				 */
 				if(!addedListView.contains(lv)){
-					invoke_virtual(lv,"addFooterView",layout,View.class);
+					//log("fucking it!");
+					invoke_virtual_original(lv,"addFooterView",layout_entrance,View.class);
 					addedListView.add(lv);
+					invoke_static(XposedBridge.class,"dumpObjectNative",lv,Object.class);
+					//lv.setVisibility(View.GONE);
 				}
 
 
-				//invoke_virtual(lv,"setAdapter",adapter,ExpandableListAdapter.class);
+				//invoke_virtual(lv,"setAdapter",adapter,BaseAdapter.class);
 
-				layout.setOrientation(LinearLayout.VERTICAL);
+				layout_entrance.setOrientation(LinearLayout.VERTICAL);
 
-				StateListDrawable background=(StateListDrawable)unusualContacts.getBackground();
+				//StateListDrawable background=(StateListDrawable)unusualContacts.getBackground();
 
 				exfriend=new TextView(splashActivity);
-				exfriend.setTextColor(unusualContacts.getTextColors());//QThemeKit.skin_red);
-				exfriend.setBackground(Utils._obj_clone(background.mutate()));//damn! mutate() not working!
-				exfriend.setTextSize(TypedValue.COMPLEX_UNIT_PX,unusualContacts.getTextSize());
+				exfriend.setTextColor(QThemeKit.skin_blue);//unusualContacts.getTextColors());//QThemeKit.skin_red);
+				//exfriend.setBackground(Utils._obj_clone(background.mutate()));//damn! mutate() not working!
+				exfriend.setTextSize(dip2sp(splashActivity,17));//TypedValue.COMPLEX_UNIT_PX,unusualContacts.getTextSize());
 				exfriend.setId(VIEW_ID_DELETED_FRIEND);
 				exfriend.setText("历史好友");
 				exfriend.setGravity(Gravity.CENTER);
@@ -778,7 +802,7 @@ public class QQMainHook <SlideDetectListView extends View,ContactsFPSPinnedHeade
 
 				TextView redDot=new TextView(splashActivity);
 				redDotRef=new WeakReference(redDot);
-				redDot.setTextColor(0xFFFFFFFF);
+				redDot.setTextColor(0xFFFF0000);
 
 				redDot.setGravity(Gravity.CENTER);
 				//redDot.setBackground(QThemeKit.skin_tips_newmessage);
@@ -795,9 +819,9 @@ public class QQMainHook <SlideDetectListView extends View,ContactsFPSPinnedHeade
 
 
 				//frameView.removeAllViews();
-				int height=unusualContacts.getLayoutParams().height;
+				int height=dip2px(splashActivity,48);//unusualContacts.getLayoutParams().height;
 				//layout.addView(unusualContacts);
-				RelativeLayout.LayoutParams exlp=new RelativeLayout.LayoutParams(MATCH_PARENT,unusualContacts.getLayoutParams().height);
+				RelativeLayout.LayoutParams exlp=new RelativeLayout.LayoutParams(MATCH_PARENT,height);
 				exlp.topMargin=0;
 				exlp.leftMargin=0;
 
@@ -808,9 +832,9 @@ public class QQMainHook <SlideDetectListView extends View,ContactsFPSPinnedHeade
 				dotlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 				dotlp.addRule(RelativeLayout.CENTER_VERTICAL);
 				rell.addView(redDot,dotlp);
-				layout.addView(rell,unusualContacts.getLayoutParams());
+				layout_entrance.addView(rell);//,unusualContacts.getLayoutParams());
 				ViewGroup.LayoutParams llp=new ViewGroup.LayoutParams(MATCH_PARENT,WRAP_CONTENT);
-				layout.setPadding(0,(int)(height*0.3f),0,(int)(0.3f*height));
+				layout_entrance.setPadding(0,(int)(height*0.3f),0,(int)(0.3f*height));
 				/*frameView.addView(layout,llp);
 				 ViewGroup.LayoutParams _lp=frameView.getLayoutParams();
 				 _lp.height=WRAP_CONTENT;//(int)(unusual.getLayoutParams().height*());
@@ -848,12 +872,13 @@ public class QQMainHook <SlideDetectListView extends View,ContactsFPSPinnedHeade
 				 }
 				 }).start();*/
 
-
+				//log("[End of putting entrance]");
 			}catch(Throwable e){
 				log(e);
 				throw e;
 			}
 		}
+
 	};
 
 
