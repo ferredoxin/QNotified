@@ -208,7 +208,10 @@ public class ExfriendManager{
 			dbg();
 			tableToFriend();
 			tableToEvents();
-			lastUpdateTimeSec=fileData.getOrDefault("lastUpdateFl",0l);
+			lastUpdateTimeSec=0l;
+			try{
+				lastUpdateTimeSec=fileData.get("lastUpdateFl");
+			}catch(Exception e){}
 			dbg();
 		}catch(IOException e){
 			log(e);

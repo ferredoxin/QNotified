@@ -47,7 +47,7 @@ public class ExfriendListAdapter extends BaseAdapter implements InvocationHandle
 		}catch(Throwable e){
 			log(e);
 		}
-		reload();
+		reload();MotionEvent n;
 	}
 	
 	public void reload(){

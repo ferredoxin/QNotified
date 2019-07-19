@@ -18,8 +18,8 @@ public class Utils{
 
 	public static boolean DEBUG=true;
 	public static boolean V_TOAST=false;
-	
-	
+
+
 	public static final int CURRENT_MODULE_VERSION=1;
 
 	public static final String PACKAGE_NAME_QQ = "com.tencent.mobileqq";
@@ -146,7 +146,7 @@ public class Utils{
 		method.setAccessible(true);
 		return method.invoke(obj,argv);
 	}
-	
+
 	public static Object invoke_virtual_original(Object obj,String name,Object...argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException{
 		Class clazz=obj.getClass();
 		int argc=argsTypesAndReturnType.length/2;
@@ -179,8 +179,15 @@ public class Utils{
 			}
 		}while(!Object.class.equals(clazz=clazz.getSuperclass()));
 		if(method==null)throw new NoSuchMethodException(name+" in "+obj.getClass().getName());
-		//method.setAccessible(true);
-		return XposedBridge.invokeOriginalMethod(method,obj,argv);
+		method.setAccessible(true);
+		Object ret;
+		try{
+			ret=XposedBridge.invokeOriginalMethod(method,obj,argv);
+		}catch(IllegalStateException e){
+			//S-EdXp: Method not hookedd.
+			ret=method.invoke(obj,argv);
+		}
+		return ret;
 	}
 
 	public static Object invoke_static(Class staticClass,String name,Object...argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException{
@@ -487,7 +494,13 @@ public class Utils{
     }
 
 	public static void log(String str){
-		if(DEBUG)Log.i("Xposed",str);
+		if(DEBUG)try{
+				XposedBridge.log(str);
+			}catch(NoClassDefFoundError e){
+				Log.i("Xposed",str);
+				Log.i("EdXposed-Bridge",str);
+				
+			}
 		if(V_TOAST){
 			String path=Environment.getExternalStorageDirectory().getAbsolutePath()+"/log.txt";
 			File f=new File(path);
@@ -501,33 +514,34 @@ public class Utils{
 	public static void log(Throwable th){
 		log(Log.getStackTraceString(th));
 	}
-	
-	
+
+
 	/**   
      * 追加文件：使用FileWriter   
      *    
      * @param fileName   
      * @param content   
      */    
-    public static void method2(String fileName, String content) {   
+    public static void method2(String fileName,String content){   
         FileWriter writer = null;  
-        try {     
+        try{     
             // 打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件     
-            writer = new FileWriter(fileName, true);     
+            writer=new FileWriter(fileName,true);     
             writer.write(content);       
-        } catch (IOException e) {     
+        }catch(IOException e){     
             e.printStackTrace();     
-        } finally {     
-            try {     
-                if(writer != null){  
+        }
+		finally{     
+            try{     
+                if(writer!=null){  
                     writer.close();     
                 }  
-            } catch (IOException e) {     
+            }catch(IOException e){     
                 e.printStackTrace();     
             }     
         }   
     }     
-	
+
 
 	public static String en(String str){
 		if(str==null)return "null";
@@ -694,7 +708,7 @@ public class Utils{
 		}
 		return ctx;
 	}
-	
+
 	public static <T extends Object> T dump(T obj){
 		log("dump:"+obj);
 		return obj;

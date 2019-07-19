@@ -10,32 +10,45 @@ public class ConfigManager{
 	private static ConfigManager SELF;
 	private File file;
 	private HashMap <String,Object>config;
-	
+
 	private ConfigManager() throws IOException{
 		file=new File(Utils.getApplication().getFilesDir().getAbsolutePath()+"/qnotified_config.dat");
 		if(!file.exists())file.createNewFile();
 		config=new HashMap<>();
 		reload();
 	}
-	
+
 	public static ConfigManager get() throws IOException{
 		if(SELF==null)SELF=new ConfigManager();
 		return SELF;
 	}
-	
-	
+
+	public Object getOrDefault(String key,Object def){
+		if(!config.containsKey(key))return def;
+		return config.get(key);
+	}
+
+	public boolean getBooleanOrFalse(String key){
+		if(!config.containsKey(key))return false;
+		try{
+			return ((Boolean)config.get(key)).booleanValue();
+		}catch(ClassCastException e){
+			return false;
+		}
+	}
+
 	public String getString(String key){
 		return (String)config.get(key);
 	}
-	
+
 	public void putString(String key,String val){
 		config.put(key,val);
 	}
-	
+
 	public HashMap<String,Object>getAllConfig(){
 		return config;
 	}
-	
+
 	public void reload() throws IOException{
 		FileInputStream fin = null;
 		fin=new FileInputStream(file);
@@ -97,8 +110,8 @@ public class ConfigManager{
 			}
 		}
 	}
-	
-	
+
+
 	public void save() throws IOException{
 		ByteArrayOutputStream baos=new ByteArrayOutputStream();
 		DataOutputStream out=new DataOutputStream(baos);
@@ -137,8 +150,8 @@ public class ConfigManager{
 		out.close();
 		fout.close();
 	}
-	
-	
-	
-	
+
+
+
+
 }

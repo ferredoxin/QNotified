@@ -22,6 +22,7 @@ import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.Initiator.load;
 import java.lang.reflect.*;
 import android.os.*;
+import nil.nadph.qnotified.axml.*;
 
 public class QThemeKit{
 

@@ -10,6 +10,10 @@ import android.text.method.*;
 import android.text.style.*;
 import android.net.*;
 import android.content.*;
+import java.io.*;
+import nil.nadph.qnotified.axml.*;
+import android.content.res.*;
+import org.xmlpull.v1.*;
 
 public class ConfigActivity extends Activity implements Runnable{
 
@@ -83,6 +87,7 @@ public class ConfigActivity extends Activity implements Runnable{
 		((TextView)findViewById(R.id.mainTextView)).setText(str);
 		statusTv=(TextView)findViewById(R.id.mainTextViewStatusA);
 		statusTvB=(TextView)findViewById(R.id.mainTextViewStatusB);
+
 		if(Utils.getActiveModuleVersion()==0){
 			statusTv.setText("!!! 错误:本模块没有激活 !!!");
 			statusTvB.setText("请在正确安装Xposed框架后,在Xposed Installer中(重新)勾选QNotified以激活本模块");
@@ -96,32 +101,64 @@ public class ConfigActivity extends Activity implements Runnable{
 		try{
 			//tv.setMovementMethod(LinkMovementMethod.getInstance());
 			SpannableString ss = new SpannableString("QQ: 1041703712");  
-			ss.setSpan(new URLSpan("http://wpa.qq.com/msgrd?v=3&uin=1041703712&site=qq&menu=yes"), 4, 14,  
+			ss.setSpan(new URLSpan("http://wpa.qq.com/msgrd?v=3&uin=1041703712&site=qq&menu=yes"),4,14,  
 					   Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);  
 			tv.setText(ss);
 			tv.setClickable(true);
 		}catch(Throwable e){
 			tv.setText(""+e);
 		}
-		
-		/*new Thread(new Runnable(){
+
+		InputStream in= ConfigActivity.class.getClassLoader().getResourceAsStream("assets/xposed_init");
+		byte buf[]=new byte[64];
+		String start="";
+		try{
+			int len=in.read(buf);
+			in.close();
+			start=new String(buf,0,len).replace("\n","").replace("\r","").replace(" ","");
+		}catch(IOException e){
+			start=e.toString();
+		}
+		TextView vtv=findViewById(R.id.mainTextViewVersion);
+		if(start.equals("nil.nadph.qnotified.HookLoader")){
+			vtv.setText("动态加载");
+			vtv.setTextColor(Color.BLUE);
+		}else
+		if(start.equals("nil.nadph.qnotified.HookEntry")){
+			vtv.setText("静态");
+			//vtv.setTextColor(Color.BLUE);
+		}else{
+			vtv.setText(start);
+			vtv.setTextColor(Color.RED);
+		}
+/*
+		new Thread(new Runnable(){
 				@Override
 				public void run(){
-					try{
-						Thread.sleep(1000);
-					}catch(InterruptedException e){}
+					final ColorStateList color_=QThemeKit.getStateColorInXml("/tmp/hyc.xml");
+					/*try{
+					 FileInputStream is = new FileInputStream("/tmp/skin_black.xml");
+					 /*byte[] buf = new byte[is.available()];
+					 int bytesRead = is.read(buf);       
+					 is.close();*
+					 AXmlResourceParser axml=new AXmlResourceParser();
+					 axml.open(is);
+					 final ColorStateList color=ResInflater.inflateColorFromXml(getResources(),axml,null);
+					 }catch(XmlPullParserException e){}catch(IOException e){}*
 					runOnUiThread(new Runnable(){
 							@Override
 							public void run(){
-								Initiator it=new Initiator();
-								it.showPopup(getWindow().getDecorView());
+								TextView t=findViewById(R.id.mainTextViewStatusB);
+								t.setEnabled(true);
+								t.setClickable(true);
+								t.setTextColor(color_);
 							}
 						});
 				}
 			}).start();*/
     }
-	
-	
+
+
 	public void onAddQqClick(View v){
 		Uri uri = Uri.parse("http://wpa.qq.com/msgrd?v=3&uin=1041703712&site=qq&menu=yes");
 		Intent intent = new Intent(Intent.ACTION_VIEW,uri);
