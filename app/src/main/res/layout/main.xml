@@ -15,7 +15,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:textAppearance="?android:attr/textAppearanceMedium"
-			android:text="QQ删好友通知 0.1.5"/>
+			android:text="QQ删好友通知 0.1.6"/>
 
 		<TextView
 			android:layout_width="wrap_content"
