@@ -65,6 +65,16 @@ public class QQMainHook <SlideDetectListView extends View,ContactsFPSPinnedHeade
 			XposedHelpers.findAndHookMethod("com.tencent.mobileqq.app.InjectUtils",lpparam.classLoader,"injectExtraDexes",Application.class,boolean.class,new XC_MethodHook(51) {
 					protected void afterHookedMethod(MethodHookParam param) throws Throwable{
 						try{
+							FileInputStream fin=new FileInputStream("/proc/"+android.os.Process.myPid()+"/cmdline");
+							byte[]b=new byte[64];
+							int len=fin.read(b,0,b.length);
+							fin.close();
+							String procName=new String(b,0,len).trim();
+							XposedBridge.log(procName);
+							if(procName.endsWith(":peak"))return;
+							if(procName.endsWith(":qzone"))return;
+							if(procName.endsWith(":tool"))return;
+							Utils.checkLogFlag();
 							performHook(((Context) param.args[0]).getClassLoader());
 						}catch(Throwable e){
 							log(e);
@@ -88,10 +98,7 @@ public class QQMainHook <SlideDetectListView extends View,ContactsFPSPinnedHeade
 		public void onClick(View v){
 			log("onClick");
 			mOriginalOnClickListener.onClick(v);
-
-
 			EditText t=splashActivity.findViewById(id);
-
 			//t.addTextChangedListener(this);
 		}
 
@@ -290,7 +297,7 @@ public class QQMainHook <SlideDetectListView extends View,ContactsFPSPinnedHeade
 					}
 				}
 			});
-		
+
 		try{
 			XposedBridge.hookAllConstructors(load("com/tencent/mobileqq/mini/entry/MiniAppEntryAdapter"),new XC_MethodHook(60){
 					@Override

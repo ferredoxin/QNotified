@@ -17,7 +17,7 @@ import java.io.*;
 public class Utils{
 
 	public static boolean DEBUG=true;
-	public static boolean V_TOAST=true;
+	public static boolean V_TOAST=false;
 
 
 	public static final int CURRENT_MODULE_VERSION=1;
@@ -513,7 +513,7 @@ public class Utils{
 
 			}
 		if(V_TOAST){
-			String path=Environment.getExternalStorageDirectory().getAbsolutePath()+"/log.txt";
+			String path=Environment.getExternalStorageDirectory().getAbsolutePath()+"/qn_log.txt";
 			File f=new File(path);
 			try{
 				if(!f.exists())f.createNewFile();
@@ -526,6 +526,13 @@ public class Utils{
 		log(Log.getStackTraceString(th));
 	}
 
+
+	public static void checkLogFlag(){
+		try{
+			File f=new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/.qn_log_flag");
+			if(f.exists())V_TOAST=true;
+		}catch(Exception e){}
+	}
 
 	/**   
      * 追加文件：使用FileWriter   

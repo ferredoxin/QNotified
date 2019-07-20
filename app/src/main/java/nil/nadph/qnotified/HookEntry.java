@@ -29,15 +29,6 @@ public class HookEntry implements IXposedHookLoadPackage{
 			 }
 			 });
 			 */
-			FileInputStream fin=new FileInputStream("/proc/"+android.os.Process.myPid()+"/cmdline");
-			byte[]b=new byte[64];
-			int len=fin.read(b,0,b.length);
-			fin.close();
-			String procName=new String(b,0,len).trim();
-			XposedBridge.log(procName);
-			if(procName.endsWith(":peak"))return;
-			if(procName.endsWith(":qzone"))return;
-			if(procName.endsWith(":tool"))return;
             new QQMainHook().handleLoadPackage(lpparam);
 			//log("Handle QQ done.");
         }
