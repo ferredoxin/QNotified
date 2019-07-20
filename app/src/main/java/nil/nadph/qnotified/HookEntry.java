@@ -3,28 +3,41 @@ package nil.nadph.qnotified;
 import de.robv.android.xposed.*;
 import de.robv.android.xposed.callbacks.*;
 
-import static nil.nadph.qnotified.Utils.*;
 import android.app.*;
 import android.os.*;
 import android.content.*;
+import java.io.*;
 
 public class HookEntry implements IXposedHookLoadPackage{
+
+	public static final String PACKAGE_NAME_QQ = "com.tencent.mobileqq";
+    public static final String PACKAGE_NAME_TIM = "com.tencent.tim";//coming...
+	public static final String PACKAGE_NAME_SELF = "nil.nadph.qnotified";
+    public static final String PACKAGE_NAME_XPOSED_INSTALLER = "de.robv.android.xposed.installer";
 
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable{
         if(lpparam.packageName.equals(PACKAGE_NAME_SELF)){
-			XposedHelpers.findAndHookMethod("nil.nadph.qnotified.Utils",/*param.args[0].getClass().getClassLoader()*/lpparam.classLoader,"getActiveModuleVersion",XC_MethodReplacement.returnConstant(Utils.CURRENT_MODULE_VERSION));
+			XposedHelpers.findAndHookMethod("nil.nadph.qnotified.Utils",lpparam.classLoader,"getActiveModuleVersion",XC_MethodReplacement.returnConstant(Utils.CURRENT_MODULE_VERSION));
         }else if(lpparam.packageName.equals(PACKAGE_NAME_QQ)){
 			//log("Found QQ!");
 			/*XposedHelpers.findAndHookMethod(Activity.class.getName(),lpparam.classLoader,"onCreate","android.os.Bundle",new XC_MethodHook(0){
-					protected void afterHookedMethod(MethodHookParam param) throws Throwable{
-						log("QQ/Initing ClzExp...");
-						ClazzExplorer.get().init((Activity)param.thisObject);
-						log("QQ/Init clzExp done.");
-					}
-				});
-			*/
-			//log("Handling QQ...");
+			 protected void afterHookedMethod(MethodHookParam param) throws Throwable{
+			 log("QQ/Initing ClzExp...");
+			 ClazzExplorer.get().init((Activity)param.thisObject);
+			 log("QQ/Init clzExp done.");
+			 }
+			 });
+			 */
+			FileInputStream fin=new FileInputStream("/proc/"+android.os.Process.myPid()+"/cmdline");
+			byte[]b=new byte[64];
+			int len=fin.read(b,0,b.length);
+			fin.close();
+			String procName=new String(b,0,len).trim();
+			XposedBridge.log(procName);
+			if(procName.endsWith(":peak"))return;
+			if(procName.endsWith(":qzone"))return;
+			if(procName.endsWith(":tool"))return;
             new QQMainHook().handleLoadPackage(lpparam);
 			//log("Handle QQ done.");
         }

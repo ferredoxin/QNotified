@@ -32,6 +32,13 @@ public class HookLoader implements IXposedHookLoadPackage{
     /**
      * 当前Xposed模块的包名,方便寻找apk文件
      */
+	 
+	 public static final String PACKAGE_NAME_QQ = "com.tencent.mobileqq";
+	 public static final String PACKAGE_NAME_TIM = "com.tencent.tim";//coming...
+	 public static final String PACKAGE_NAME_SELF = "nil.nadph.qnotified";
+	 public static final String PACKAGE_NAME_XPOSED_INSTALLER = "de.robv.android.xposed.installer";
+	 
+	 
     private final String modulePackage = "nil.nadph.qnotified";
     /**
      * 宿主程序的包名(允许多个),过滤无意义的包名,防止无意义的apk文件加载
@@ -40,9 +47,9 @@ public class HookLoader implements IXposedHookLoadPackage{
 
     static {
         // TODO: Add the package name of application your want to hook!
-        hostAppPackages.add(Utils.PACKAGE_NAME_QQ);
-		hostAppPackages.add(Utils.PACKAGE_NAME_SELF);
-		hostAppPackages.add(Utils.PACKAGE_NAME_TIM);
+        hostAppPackages.add(PACKAGE_NAME_QQ);
+		hostAppPackages.add(PACKAGE_NAME_SELF);
+		hostAppPackages.add(PACKAGE_NAME_TIM);
     }
 
     /**

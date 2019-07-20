@@ -17,7 +17,7 @@ import java.io.*;
 public class Utils{
 
 	public static boolean DEBUG=true;
-	public static boolean V_TOAST=false;
+	public static boolean V_TOAST=true;
 
 
 	public static final int CURRENT_MODULE_VERSION=1;
@@ -180,13 +180,24 @@ public class Utils{
 		}while(!Object.class.equals(clazz=clazz.getSuperclass()));
 		if(method==null)throw new NoSuchMethodException(name+" in "+obj.getClass().getName());
 		method.setAccessible(true);
-		Object ret;
+		Object ret=null;
+		boolean needPatch=false;
 		try{
 			ret=XposedBridge.invokeOriginalMethod(method,obj,argv);
 		}catch(IllegalStateException e){
-			//S-EdXp: Method not hookedd.
-			ret=method.invoke(obj,argv);
+			//For S-EdXp: Method not hooked.
+			needPatch=true;
+		}catch(InvocationTargetException e){
+			//For TaiChi
+			Throwable cause=e.getCause();
+			if(cause instanceof NullPointerException){
+				String tr=android.util.Log.getStackTraceString(cause);
+				if(tr.indexOf("ExposedBridge.invokeOriginalMethod")!=0||tr.indexOf("ExposedBridge.invokeOriginalMethod")!=0)
+					needPatch=true;
+			}
+			if(!needPatch)throw e;
 		}
+		if(needPatch)ret=method.invoke(obj,argv);
 		return ret;
 	}
 
@@ -499,7 +510,7 @@ public class Utils{
 			}catch(NoClassDefFoundError e){
 				Log.i("Xposed",str);
 				Log.i("EdXposed-Bridge",str);
-				
+
 			}
 		if(V_TOAST){
 			String path=Environment.getExternalStorageDirectory().getAbsolutePath()+"/log.txt";
