@@ -3,5 +3,6 @@
 
     <string name="app_name">QNotified</string>
     <string name="hello_world">Hello world!</string>
-
+	<string name="xposeddescription">QQ被删好友通知及其它一些微调 by cinit@github</string>
+	
 </resources>

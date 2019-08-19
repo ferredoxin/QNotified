@@ -36,7 +36,7 @@ public class QThemeKit{
 	static public ColorStateList skin_text_white;
 	static public ColorStateList qq_setting_item_bg_nor;
 	static public ColorStateList qq_setting_item_bg_pre;
-	static public Drawable skin_list_normal=null,skin_list_item_unread=null,skin_list_pressed=null;
+	static public Drawable skin_list_normal=null,skin_list_item_unread=null,skin_list_pressed=null,skin_icon_arrow_right_normal=null,skin_background=null;
 	/*skin_group_list_item_pressed_theme_version2*/
 	//static public Drawable skin_tips_newmessage;
 
@@ -64,14 +64,23 @@ public class QThemeKit{
 			=qq_setting_item_bg_nor
 			=qq_setting_item_bg_pre=null;
 		skin_list_normal=skin_list_item_unread=skin_list_pressed
-			=null;//=skin_tips_newmessage=null;
+			=skin_background=null;//=skin_tips_newmessage=null;
 		if(isColorQQThemeActive()){
 			loadResInDir(Environment.getExternalStorageDirectory()+"/QQColor/theme");
 		}
 		loadResInDir(locateThemeDir(themeId,ctx));
-
+		//if(skin_tips_newmessage==null)skin_tips_newmessage= loadDrawableFromAsset("skin_tips_newmessage.9.png");
+		if(skin_list_normal==null)skin_list_normal=loadDrawableFromAsset("skin_list_item_normal.9.png");
+		if(skin_list_pressed==null)skin_list_pressed=loadDrawableFromAsset("skin_list_item_pressed.9.png");
+		if(skin_icon_arrow_right_normal==null)skin_icon_arrow_right_normal=loadDrawableFromAsset("skin_icon_arrow_right_normal.png");
+		if(skin_black==null)skin_black=ColorStateList.valueOf(0xFF000000);
+		if(skin_red==null)skin_red=ColorStateList.valueOf(Color.argb(255,255,70,41));
+		if(skin_gray3==null)skin_gray3=ColorStateList.valueOf(Color.argb(255,128,128,128));
+		if(skin_blue==null)skin_blue=ColorStateList.valueOf(Color.argb(255,0,182,249));
+		if(qq_setting_item_bg_nor==null)qq_setting_item_bg_nor=ColorStateList.valueOf(Color.argb(255,249,249,251));
+		if(qq_setting_item_bg_pre==null)qq_setting_item_bg_pre=ColorStateList.valueOf(Color.argb(255,192,192,192));
+		if(skin_background==null)skin_background=new ColorDrawable(qq_setting_item_bg_nor.getDefaultColor());
 	}
-
 
 	public static void loadResInDir(String dir){
 		if(dir==null){
@@ -84,16 +93,24 @@ public class QThemeKit{
 				if(path==null)path=findDrawableResource(dir,"skin_list_item_normal_theme_version2.9.png");
 				if(path!=null)skin_list_normal=loadDrawable(path);
 			}
-
 			if(skin_list_pressed==null){
 				path=findDrawableResource(dir,"skin_list_item_pressed.9.png");
 				if(path==null)path=findDrawableResource(dir,"skin_list_item_pressed_theme_version2.9.png");
 				if(path!=null)skin_list_pressed=loadDrawable(path);
 			}
+			if(skin_icon_arrow_right_normal==null){
+				path=findDrawableResource(dir,"skin_icon_arrow_right_normal.png");
+				if(path==null)path=findDrawableResource(dir,"skin_icon_arrow_right_normal_theme_version2.png");
+				if(path!=null)skin_icon_arrow_right_normal=loadDrawable(path);
+			}
+			if(skin_background==null){
+				path=findDrawableResource(dir,"skin_background.png");
+				if(path==null)path=findDrawableResource(dir,"skin_background_theme_version2.png");
+				if(path!=null)skin_background=loadDrawable(path);
+			}
 
 			//path=findDrawableResource(dir,"skin_tips_newmessage.9.png");
 			//if(path!=null)skin_tips_newmessage=loadDrawable(path);
-
 
 			path=dir+"/color/";
 			if(skin_black==null)skin_black=getStateColorInXml(path+"skin_black.xml");
@@ -103,18 +120,6 @@ public class QThemeKit{
 			if(qq_setting_item_bg_nor==null)qq_setting_item_bg_nor=getStateColorInXml(path+"qq_setting_item_bg_nor.xml");
 			if(qq_setting_item_bg_pre==null)qq_setting_item_bg_pre=getStateColorInXml(path+"qq_setting_item_bg_pre.xml");
 		}
-		//if(skin_tips_newmessage==null)skin_tips_newmessage= loadDrawableFromAsset("skin_tips_newmessage.9.png");
-		if(skin_list_normal==null)skin_list_normal=loadDrawableFromAsset("skin_list_item_normal.9.png");
-		if(skin_list_pressed==null)skin_list_pressed=loadDrawableFromAsset("skin_list_item_pressed.9.png");
-
-		if(skin_black==null)skin_black=ColorStateList.valueOf(0xFF000000);
-		if(skin_red==null)skin_red=ColorStateList.valueOf(Color.argb(255,255,70,41));
-		if(skin_gray3==null)skin_gray3=ColorStateList.valueOf(Color.argb(255,128,128,128));
-		if(skin_blue==null)skin_blue=ColorStateList.valueOf(Color.argb(255,0,182,249));
-		if(qq_setting_item_bg_nor==null)qq_setting_item_bg_nor=ColorStateList.valueOf(Color.argb(255,249,249,251));
-		if(qq_setting_item_bg_pre==null)qq_setting_item_bg_pre=ColorStateList.valueOf(Color.argb(255,192,192,192));
-
-
 
 		/*Resources res=ctx.getResources();
 		 String pkg="com.tencent.mobileqq";
@@ -143,9 +148,6 @@ public class QThemeKit{
 		 //ClazzExplorer ce=ClazzExplorer.get();
 		 //ce.init((Activity)ctx);
 		 //ce.currEle=ce.rootEle=skin_tips_newmessage;
-
-
-
 
 		 skin_list_normal=res.getDrawable(res.getIdentifier("skin_list_item_normal","drawable",pkg));
 		 skin_list_pressed=res.getDrawable(res.getIdentifier("skin_list_item_pressed","drawable",pkg));

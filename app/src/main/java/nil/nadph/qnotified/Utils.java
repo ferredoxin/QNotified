@@ -1,44 +1,46 @@
 package nil.nadph.qnotified;
 
+import android.app.*;
 import android.content.*;
+import android.graphics.*;
 import android.os.*;
 import android.util.*;
 import android.view.*;
 import android.widget.*;
 import de.robv.android.xposed.*;
+import java.io.*;
 import java.lang.reflect.*;
+import java.text.*;
+import java.util.*;
 
 import static nil.nadph.qnotified.Initiator.load;
-import android.app.*;
-import java.util.*;
-import java.text.*;
-import java.io.*;
 
 public class Utils{
 
 	public static boolean DEBUG=true;
 	public static boolean V_TOAST=false;
-
-
-	public static final int CURRENT_MODULE_VERSION=1;
+	public static final String QN_VERSION_NAME="0.2.0概念版";
+	public static final int QN_VERSION_CODE=9;
 
 	public static final String PACKAGE_NAME_QQ = "com.tencent.mobileqq";
-    public static final String PACKAGE_NAME_TIM = "com.tencent.tim";//coming...
+	public static final String PACKAGE_NAME_QQ_INTERNATIONAL = "com.tencent.mobileqqi";
+	public static final String PACKAGE_NAME_QQ_LITE = "com.tencent.qqlite";
+	public static final String PACKAGE_NAME_TIM = "com.tencent.tim";
 	public static final String PACKAGE_NAME_SELF = "nil.nadph.qnotified";
-    public static final String PACKAGE_NAME_XPOSED_INSTALLER = "de.robv.android.xposed.installer";
-
+	public static final String PACKAGE_NAME_XPOSED_INSTALLER = "de.robv.android.xposed.installer";
+	
 	public static final int TOAST_TYPE_INFO=0;
 	public static final int TOAST_TYPE_ERROR=1;
 	public static final int TOAST_TYPE_SUCCESS=2;
 
 
 
-	public static int getActiveModuleVersion(){
+	public static String getActiveModuleVersion(){
 		Math.sqrt(1);
 		Math.random();
 		Math.expm1(0.001);
 		//Let's make the function longer,so that it will work in VirtualXposed
-		return 0;
+		return null;
 	}
 
 	/** Use Utils.getApplication() Instead *
@@ -49,8 +51,12 @@ public class Utils{
 	 }*/
 
 	public static Application getApplication(){
+		Field f=null;
 		try{
-			return (Application)invoke_static(load("com/tencent/common/app/BaseApplicationImpl"),"getApplication");
+			Class clz=load("com/tencent/common/app/BaseApplicationImpl");
+			f=hasField(clz,"sApplication");
+			if(f==null)return (Application)sget_object(clz,"a",clz);
+			else return (Application)f.get(null);
 		}catch(Exception e){
 			log(e);
 		}
@@ -146,6 +152,45 @@ public class Utils{
 		method.setAccessible(true);
 		return method.invoke(obj,argv);
 	}
+
+	public static Method hasMethod(Object obj,String name,Object...argsTypesAndReturnType) throws IllegalArgumentException{
+		Class clazz;
+		if(obj==null)throw new NullPointerException("obj/clazz == null");
+		if(obj instanceof Class)clazz=(Class)obj;
+		else clazz=obj.getClass();
+		int argc=argsTypesAndReturnType.length/2;
+		Class[] argt=new Class[argc];
+		Object[] argv=new Object[argc];
+		Class returnType=null;
+		if(argc*2+1==argsTypesAndReturnType.length)returnType=(Class)argsTypesAndReturnType[argsTypesAndReturnType.length-1];
+		int i,ii;
+		Method m[]=null;
+		Method method=null;
+		Class[] _argt;
+		for(i=0;i<argc;i++){
+			argt[i]=(Class)argsTypesAndReturnType[argc+i];
+			argv[i]=argsTypesAndReturnType[i];
+		}
+		loop_main:do{
+			m=clazz.getDeclaredMethods();
+			loop:for(i=0;i<m.length;i++){
+				if(m[i].getName().equals(name)){
+					_argt=m[i].getParameterTypes();
+					if(_argt.length==argt.length){
+						for(ii=0;ii<argt.length;ii++){
+							if(!argt[ii].equals(_argt[ii]))continue loop;
+						}
+						if(returnType!=null&&!returnType.equals(m[i].getReturnType()))continue;
+						method=m[i];
+						break loop_main;
+					}
+				}
+			}
+		}while(!Object.class.equals(clazz=clazz.getSuperclass()));
+		if(method!=null)method.setAccessible(true);
+		return method;
+	}
+
 
 	public static Object invoke_virtual_original(Object obj,String name,Object...argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException{
 		Class clazz=obj.getClass();
@@ -260,12 +305,23 @@ public class Utils{
 		return iget_object(getQQAppInterface(),"a",load("com/tencent/mobileqq/service/MobileQQService"));
 	}
 
-
+	public static String get_RGB(int color){
+		int r=0xff&(color>>16);
+		int g=0xff&(color>>8);
+		int b=0xff&color;
+		return "#"+byteStr(r)+byteStr(g)+byteStr(b);
+	}
+	
+	public static String byteStr(int i){
+		String ret=Integer.toHexString(i);
+		if(ret.length()==1)return "0"+ret;
+		else return ret;
+	}
 
 	/*
 	 public static Method findMethodByArgs(Class mclazz,String name,Object...argv)throws NoSuchMethodException{
 	 Method ret=null;
-	 Method[] m;
+	 Method[] m;?
 
 	 int i=0,ii=0;
 	 Class clazz=mclazz;
@@ -277,7 +333,8 @@ public class Utils{
 	 argt=m[i].getParameterTypes();
 	 if(argt.length==argv.length){
 	 for(ii=0;ii<argt.length;ii++){
-	 if(argv[ii]==null&&argt[ii].isPrimitive())continue loop;
+	 if(
+	 argv[ii]==null&&argt[ii].isPrimitive())continue loop;
 	 if(
 	 }
 	 }
@@ -396,6 +453,7 @@ public class Utils{
 		return null;
 	}
 
+
 	public static Object iget_object(Object obj,String name){
 		return iget_object(obj,name,null);
 	}
@@ -426,9 +484,12 @@ public class Utils{
 		}
 	}
 	public static Object getAppRuntime(){
-		Object baseApplicationImpl=sget_object(load("com/tencent/common/app/BaseApplicationImpl"),"sApplication");
+		Object baseApplicationImpl=getApplication();
 		try{
-			return invoke_virtual(baseApplicationImpl,"getRuntime");
+			Method m;
+			m=hasMethod(baseApplicationImpl,"getRuntime");
+			if(m==null)return invoke_virtual(baseApplicationImpl,"a",load("mqq/app/AppRuntime"));
+			else return m.invoke(baseApplicationImpl);
 		}catch(Exception e){
 			log("getRuntime:"+e.toString());
 			return null;
@@ -486,6 +547,17 @@ public class Utils{
         }
     }
 
+	public static Field hasField(Object obj,String name){
+		return hasField(obj,name,null);
+	}
+
+	public static Field hasField(Object obj,String name,Class type){
+		if(obj==null)throw new NullPointerException("obj/class == null");
+		Class clazz;
+		if(obj instanceof Class)clazz=(Class)obj;
+		else clazz=obj.getClass();
+		return findField(clazz,type,name);
+	}
 
     public static Field findField(Class<?> clazz,Class<?> type,String name){
         if(clazz!=null&&!name.isEmpty()){
@@ -499,7 +571,7 @@ public class Utils{
                     }
                 }
             } while ((clz=clz.getSuperclass())!=null);
-            log(String.format("Can't find the field of type: %s and name: %s in class: %s!",type.getName(),name,clazz.getName()));
+            //log(String.format("Can't find the field of type: %s and name: %s in class: %s!",type==null?"[any]":type.getName(),name,clazz.getName()));
         }
         return null;
     }

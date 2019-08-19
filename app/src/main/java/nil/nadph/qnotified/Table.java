@@ -15,12 +15,17 @@ public class Table<K extends Object> implements Serializable,Cloneable{
 	public static final byte TYPE_LONG=6;
 	public static final byte TYPE_FLOAT=7;
 	public static final byte TYPE_DOUBLE=8;
+	
 	public static final byte TYPE_IRAW=9;
 	public static final byte TYPE_ISTR=10;
-	/** B_TABLE ISTR_table_name I_len_types(fields.len) I_len_data(records.len) B_key_type ISTR_key_name (B_field_type I_STR_name)... (B_type_K(THIS-IS-IMPORTANTA!) index (B_type val)...)... */
-	/** B_type ISTR_name val */
+	public static final byte TYPE_ICODEPOINTS=11;
+	/** B_TABLE ISTR_table_name [ I_len_types(fields.len) I_len_data(records.len) B_key_type ISTR_key_name (B_field_type I_STR_name)... (B_type_K(THIS-IS-IMPORTANTA!) index (B_type val)...)... ] */
+	/** B_type  ISTR_name       val */
 	public static final byte TYPE_TABLE=16;
-
+	/** B_ARRAY ISTR_array_name [ I_max_len I_item_count () ] **/
+	public static final byte TYPE_ARRAY=17;
+	public static final byte TYPE_MAP=18;
+	
 	public static final byte TYPE_EOF=(byte)0xFF;//oh,no...it's terrible!
 	
 	

@@ -31,14 +31,14 @@ public class ExfriendListAdapter extends BaseAdapter implements InvocationHandle
 	private HashMap <Integer,EventRecord> eventsMap;
 	private ArrayList<EventRecord> evs;
 
-	private static final int R_ID_TITLE=0x300AFF01;
-	private static final int R_ID_SUBTITLE=0x300AFF02;
-	private static final int R_ID_FACE=0x300AFF03;
-	private static final int R_ID_STATUS=0x300AFF04;
+	private static final int R_ID_EXL_TITLE=0x300AFF01;
+	private static final int R_ID_EXL_SUBTITLE=0x300AFF02;
+	private static final int R_ID_EXL_FACE=0x300AFF03;
+	private static final int R_ID_EXL_STATUS=0x300AFF04;
 
 
 
-	public ExfriendListAdapter(View listView,ExfriendManager m){
+	public ExfriendListAdapter(ViewGroup listView,ExfriendManager m){
 		mListView=listView;
 		exm=m;
 		ctx=mListView.getContext();
@@ -47,7 +47,7 @@ public class ExfriendListAdapter extends BaseAdapter implements InvocationHandle
 		}catch(Throwable e){
 			log(e);
 		}
-		reload();MotionEvent n;
+		reload();
 	}
 	
 	public void reload(){
@@ -106,11 +106,11 @@ public class ExfriendListAdapter extends BaseAdapter implements InvocationHandle
 		}
 		//log(position+"/"+getCount());
 		convertView.setTag(ev);
-		TextView title=convertView.findViewById(R_ID_TITLE);
+		TextView title=convertView.findViewById(R_ID_EXL_TITLE);
 		title.setText(ev.getShowStr());
 		boolean isfri=false;
 		
-		TextView stat=convertView.findViewById(R_ID_STATUS);
+		TextView stat=convertView.findViewById(R_ID_EXL_STATUS);
 		try{
 			if(exm.getPersons().get(ev.operator).friendStatus==FriendRecord.STATUS_FRIEND_MUTUAL)
 				isfri=true;
@@ -123,9 +123,9 @@ public class ExfriendListAdapter extends BaseAdapter implements InvocationHandle
 			stat.setTextColor(new ColorStateList(QThemeKit.skin_red.getStates(),QThemeKit.skin_red.getColors()));
 			stat.setText("已删除");
 		}
-		TextView subtitle=convertView.findViewById(R_ID_SUBTITLE);
+		TextView subtitle=convertView.findViewById(R_ID_EXL_SUBTITLE);
 		subtitle.setText(Utils.getIntervalDspMs(ev.timeRangeBegin*1000,ev.timeRangeEnd*1000));
-		ImageView imgview=convertView.findViewById(R_ID_FACE);
+		ImageView imgview=convertView.findViewById(R_ID_EXL_FACE);
 		Bitmap bm=face.getBitmapFromCache(FaceImpl.TYPE_USER,""+ev.operator);
 		if(bm==null){
 			imgview.setImageDrawable(QThemeKit.loadDrawableFromAsset("face.png"));
@@ -154,7 +154,7 @@ public class ExfriendListAdapter extends BaseAdapter implements InvocationHandle
 		ImageView imgview=new ImageView(ctx);
 		imgview.setFocusable(false);
 		imgview.setClickable(false);
-		imgview.setId(R_ID_FACE);
+		imgview.setId(R_ID_EXL_FACE);
 		
 
 		imgview.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -168,7 +168,7 @@ public class ExfriendListAdapter extends BaseAdapter implements InvocationHandle
 
 
 		TextView title=new TextView(ctx);
-		title.setId(R_ID_TITLE);
+		title.setId(R_ID_EXL_TITLE);
 		title.setSingleLine();
 		//title.setText(ev.getShowStr());
 		title.setGravity(Gravity.CENTER_VERTICAL);
@@ -177,7 +177,7 @@ public class ExfriendListAdapter extends BaseAdapter implements InvocationHandle
 		//title.setPadding(tmp=Utils.dip2px(ctx,8),tmp,0,tmp);
 
 		TextView subtitle=new TextView(ctx);
-		subtitle.setId(R_ID_SUBTITLE);
+		subtitle.setId(R_ID_EXL_SUBTITLE);
 		subtitle.setSingleLine();
 		subtitle.setGravity(Gravity.CENTER_VERTICAL);
 		subtitle.setTextColor(new ColorStateList(QThemeKit.skin_gray3.getStates(),QThemeKit.skin_gray3.getColors()));
@@ -190,7 +190,7 @@ public class ExfriendListAdapter extends BaseAdapter implements InvocationHandle
 		RelativeLayout.LayoutParams statlp=new RelativeLayout.LayoutParams(WRAP_CONTENT,WRAP_CONTENT);
 
 		TextView stat=new TextView(ctx);
-		stat.setId(R_ID_STATUS);
+		stat.setId(R_ID_EXL_STATUS);
 		stat.setSingleLine();
 		stat.setGravity(Gravity.CENTER);
 		stat.setTextSize(Utils.px2sp(ctx,Utils.dip2px(ctx,16)));

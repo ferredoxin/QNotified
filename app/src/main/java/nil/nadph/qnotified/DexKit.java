@@ -8,6 +8,7 @@ import dalvik.bytecode.*;
 public class DexKit{
 
 	public static void a() throws IOException{
+		
 		InputStream fin=new FileInputStream("/tmp/classes4.dex");
 		final byte[]buf=new byte[fin.available()];
 		fin.read(buf);

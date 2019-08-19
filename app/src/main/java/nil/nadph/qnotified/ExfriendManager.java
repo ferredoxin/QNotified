@@ -23,6 +23,7 @@ import android.os.*;
 import android.content.pm.*;
 import android.content.res.*;
 import android.content.pm.PackageManager.*;
+import android.service.autofill.*;
 
 public class ExfriendManager{
 	static private final int ID_EX_NOTIFY=65537;
@@ -133,6 +134,7 @@ public class ExfriendManager{
 
 	/**  ?(0xFE)QNC I_version I_size I_RAW_reserved 16_md5 DATA */
 	public @Nullable void loadSavedPersonsInfo(){
+		synchronized(this){
 		if(fileData==null)fileData=new HashMap();
 		else fileData.clear();
 		if(persons==null){
@@ -215,6 +217,7 @@ public class ExfriendManager{
 			dbg();
 		}catch(IOException e){
 			log(e);
+		}
 		}
 	}
 
@@ -519,6 +522,8 @@ public class ExfriendManager{
 		get(fc.uin).recordFriendChunk(fc);
 	}
 
+
+
 	public synchronized void recordFriendChunk(FriendChunk fc){
 		//log("recordFriendChunk");
 		if(fc.getfriendCount==0){
@@ -572,13 +577,14 @@ public class ExfriendManager{
 			k++;
 		}
 		events.put(k,ev);
+		dirtyFlag=true;
+		if(out==null)return;
 		int unread=0;
 		if(fileData.containsKey("unread")){
 			unread=(Integer)fileData.get("unread");
 		}
 		unread++;
 		fileData.put("unread",unread);
-		if(out==null)return;
 		String title,ticker,tag,c;
 		//Notification.Builder nb=Notification.Builder();
 		if(ev._remark!=null&&ev._remark.length()>0)tag=ev._remark+"("+ev.operator+")";
@@ -596,7 +602,6 @@ public class ExfriendManager{
 		out[1]=ticker;
 		out[2]=title;
 		out[3]=c;
-
 	}
 
 	public void clearUnreadFlag(){
@@ -613,68 +618,96 @@ public class ExfriendManager{
 	}
 
 	private void asyncUpdateFriendListTask(FriendChunk[] fcs){
-		//check integrity
-		dbg();
-		boolean totality=true;
-		int tmp=fcs[fcs.length-1].totoal_friend_count;
-		int len=fcs.length;
-		for(int i=0;i<fcs.length;i++){
-			tmp-=fcs[len-i-1].friend_count;
-		}
-		totality=tmp==0;
-		if(!totality){
-			log("Inconsistent friendlist chunk data!Aborting!total="+tmp);
-			return;
-		}
-		HashMap<Long,FriendRecord> del=(HashMap<Long, FriendRecord>) persons.clone();
-		FriendRecord fr;
-		for(int i=0;i<fcs.length;i++){
-			for(int ii=0;ii<fcs[i].friend_count;ii++){
-				fr=del.remove(fcs[i].arrUin[ii]);
-				if(fr!=null){
-					fr.friendStatus=FriendRecord.STATUS_FRIEND_MUTUAL;
-					fr.nick=fcs[i].arrNick[ii];
-					fr.remark=fcs[i].arrRemark[ii];
-					fr.serverTime=fcs[i].serverTime;
-				}else{
-					fr=new FriendRecord();
-					fr.uin=fcs[i].arrUin[ii];
-					fr.friendStatus=FriendRecord.STATUS_FRIEND_MUTUAL;
-					fr.nick=fcs[i].arrNick[ii];
-					fr.remark=fcs[i].arrRemark[ii];
-					fr.serverTime=fcs[i].serverTime;
-					persons.put(fcs[i].arrUin[ii],fr);
+		Object[] ptr=new Object[4];
+		synchronized(this){
+			//check integrity
+			dbg();
+			boolean totality=true;
+			int tmp=fcs[fcs.length-1].totoal_friend_count;
+			int len=fcs.length;
+			for(int i=0;i<fcs.length;i++){
+				tmp-=fcs[len-i-1].friend_count;
+			}
+			totality=tmp==0;
+			if(!totality){
+				log("Inconsistent friendlist chunk data!Aborting!total="+tmp);
+				return;
+			}
+			HashMap<Long,FriendRecord> del=(HashMap<Long, FriendRecord>) persons.clone();
+			FriendRecord fr;
+			for(int i=0;i<fcs.length;i++){
+				for(int ii=0;ii<fcs[i].friend_count;ii++){
+					fr=del.remove(fcs[i].arrUin[ii]);
+					if(fr!=null){
+						fr.friendStatus=FriendRecord.STATUS_FRIEND_MUTUAL;
+						fr.nick=fcs[i].arrNick[ii];
+						fr.remark=fcs[i].arrRemark[ii];
+						fr.serverTime=fcs[i].serverTime;
+					}else{
+						fr=new FriendRecord();
+						fr.uin=fcs[i].arrUin[ii];
+						fr.friendStatus=FriendRecord.STATUS_FRIEND_MUTUAL;
+						fr.nick=fcs[i].arrNick[ii];
+						fr.remark=fcs[i].arrRemark[ii];
+						fr.serverTime=fcs[i].serverTime;
+						persons.put(fcs[i].arrUin[ii],fr);
+					}
 				}
 			}
-		}
-		dbg();
-		Iterator<Map.Entry<Long,FriendRecord>> it=del.entrySet().iterator();
-		Map.Entry<Long,FriendRecord> ent;
-		EventRecord ev;
-		Object[] ptr=new Object[4];
-		ptr[0]=0;//num,ticker,title,content
-		while(it.hasNext()){
-			ent=it.next();
-			fr=ent.getValue();
-			if(fr.friendStatus==FriendRecord.STATUS_FRIEND_MUTUAL){
-				ev=new EventRecord();
-				ev._friendStatus=fr.friendStatus;
-				ev._nick=fr.nick;
-				ev._remark=fr.remark;
-				ev.event=EventRecord.EVENT_FRIEND_DELETE;
-				ev.operator=fr.uin;
-				ev.timeRangeBegin=fr.serverTime;
-				ev.timeRangeEnd=fcs[fcs.length-1].serverTime;
-				reportEventWithoutSave(ev,ptr);
-				fr.friendStatus=FriendRecord.STATUS_EXFRIEND;
+			dbg();
+			Iterator<Map.Entry<Long,FriendRecord>> it=del.entrySet().iterator();
+			Map.Entry<Long,FriendRecord> ent;
+			EventRecord ev;
+			ptr[0]=0;//num,ticker,title,content
+			while(it.hasNext()){
+				ent=it.next();
+				fr=ent.getValue();
+				if(fr.friendStatus==FriendRecord.STATUS_FRIEND_MUTUAL){
+					ev=new EventRecord();
+					ev._friendStatus=fr.friendStatus;
+					ev._nick=fr.nick;
+					ev._remark=fr.remark;
+					ev.event=EventRecord.EVENT_FRIEND_DELETE;
+					ev.operator=fr.uin;
+					ev.timeRangeBegin=fr.serverTime;
+					ev.timeRangeEnd=fcs[fcs.length-1].serverTime;
+					reportEventWithoutSave(ev,ptr);
+					fr.friendStatus=FriendRecord.STATUS_EXFRIEND;
+				}
+				//requestIndividual(fr.uin);
 			}
-			//requestIndividual(fr.uin);
 		}
-		doNotifyDelFl(ptr);
+		doNotifyDelFlAndSave(ptr);
 		lastUpdateTimeSec=fcs[0].serverTime;
 	}
 
-	public void doNotifyDelFl(Object[] ptr){
+	public void markActiveDelete(long uin){
+		try{
+			if(!ConfigManager.get().getBooleanOrDefault("qn_del_op_silence",true))return;
+		}catch(IOException e){}
+		synchronized(this){
+			FriendRecord fr=persons.get(uin);
+			if(fr==null){
+				try{
+					showToast(QQMainHook.splashActivityRef.get(),TOAST_TYPE_ERROR,"onActDelResp:get("+uin+")==null",Toast.LENGTH_SHORT);
+				}catch(Throwable e){}
+				return;
+			}
+			EventRecord ev=new EventRecord();
+			ev._friendStatus=fr.friendStatus;
+			ev._nick=fr.nick;
+			ev._remark=fr.remark;
+			ev.timeRangeBegin=fr.serverTime;
+			ev.timeRangeEnd=fr.serverTime=System.currentTimeMillis()/1000;
+			fr.friendStatus=FriendRecord.STATUS_EXFRIEND;
+			ev.operator=this.getUin();
+			ev.event=EventRecord.EVENT_FRIEND_DELETE;
+			reportEventWithoutSave(ev,null);
+			saveConfigure();
+		}
+	}
+	
+	public void doNotifyDelFlAndSave(Object[] ptr){
 		if(((int)ptr[0])>0){
 			Intent intent=new Intent(getApplication(),load(ActProxyMgr.STUB_ACTIVITY));
 			int id=ActProxyMgr.next();

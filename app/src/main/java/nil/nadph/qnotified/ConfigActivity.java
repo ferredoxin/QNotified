@@ -80,7 +80,7 @@ public class ConfigActivity extends Activity implements Runnable{
 		try{
 			str+="SystemClassLoader:"+ClassLoader.getSystemClassLoader()+
 				"\nActiveModuleVersion:"+Utils.getActiveModuleVersion()
-				+"\nThisVersion:"+Utils.CURRENT_MODULE_VERSION;
+				+"\nThisVersion:"+Utils.QN_VERSION_NAME;
 		}catch(Throwable r){
 			str+=r;
 		}
@@ -88,7 +88,7 @@ public class ConfigActivity extends Activity implements Runnable{
 		statusTv=(TextView)findViewById(R.id.mainTextViewStatusA);
 		statusTvB=(TextView)findViewById(R.id.mainTextViewStatusB);
 
-		if(Utils.getActiveModuleVersion()==0){
+		if(Utils.getActiveModuleVersion()==null){
 			statusTv.setText("!!! 错误:本模块没有激活 !!!");
 			statusTvB.setText("请在正确安装Xposed框架后,在Xposed Installer中(重新)勾选QNotified以激活本模块");
 			needRun=true;

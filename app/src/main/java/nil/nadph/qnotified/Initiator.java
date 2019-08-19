@@ -26,6 +26,12 @@ public class Initiator{
 	
 	private static ClassLoader qqClassLoader;
 
+	/*public static void patchStub(Context ctx){
+		ClassLoader ld=ctx.getClassLoader();
+		DexClassLoader dcl=new DexClassLoader("/sdcard/AppProjects/QNotified/classes2.dex",ctx.getDir("dex",0).getAbsolutePath(),null,qqClassLoader);
+		qqClassLoader=dcl;
+	}*/
+	
     public static Class<?> load(String className){
         if(qqClassLoader==null||className.isEmpty()){
             return null;

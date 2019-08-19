@@ -15,7 +15,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:textAppearance="?android:attr/textAppearanceMedium"
-			android:text="QQ删好友通知 0.1.6"/>
+			android:text="QQ删好友通知"/>
 
 		<TextView
 			android:layout_width="wrap_content"
@@ -23,12 +23,6 @@
 			android:textAppearance="?android:attr/textAppearanceMedium"
 			android:text="无效版本"
 			android:id="@+id/mainTextViewVersion"/>
-
-		<TextView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:textAppearance="?android:attr/textAppearanceLarge"
-			android:text="支持QQ版本: 7.6.0--8.1.0众测版"/>
 
 		<TextView
 			android:layout_width="wrap_content"
@@ -46,6 +40,12 @@
 			android:layout_height="wrap_content"
 			android:textAppearance="?android:attr/textAppearanceMedium"
 			android:text="QQ-&gt;联系人-&gt;好友(分组最下方)-&gt;历史好友"/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceSmall"
+			android:text="本模块无毒无害且开源免费可放心食用"/>
 
 		<TextView
 			android:id="@+id/mainTextView"
