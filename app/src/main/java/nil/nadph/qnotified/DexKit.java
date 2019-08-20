@@ -1,9 +1,10 @@
 package nil.nadph.qnotified;
 
-import java.io.*;
-import java.lang.reflect.*;
-import java.util.*;
-import dalvik.bytecode.*;
+import dalvik.bytecode.Opcodes;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class DexKit{
 

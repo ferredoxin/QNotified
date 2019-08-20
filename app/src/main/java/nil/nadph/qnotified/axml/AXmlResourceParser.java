@@ -15,12 +15,13 @@
  */
 package nil.nadph.qnotified.axml;
 
+import android.content.res.XmlResourceParser;
+import android.util.TypedValue;
+import org.xmlpull.v1.XmlPullParserException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import org.xmlpull.v1.XmlPullParserException;
-import android.util.TypedValue;
-import android.content.res.*;
 
 /**
  * @author Dmitry Skiba

@@ -1,18 +1,24 @@
 package nil.nadph.qnotified;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.AttributeSet;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
-import android.view.*;
-import android.app.*;
 
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.Utils.*;
 import static nil.nadph.qnotified.Initiator.load;
-import android.content.*;
-import android.util.*;
-import android.text.*;
-import android.graphics.drawable.*;
-import android.view.inputmethod.*;
+import static nil.nadph.qnotified.Utils.invoke_virtual;
+import static nil.nadph.qnotified.Utils.log;
 
 
 
@@ -115,6 +121,7 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
 	
 	
 	
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	public void doOnPostCreate()throws Throwable{
 		LinearLayout main=new LinearLayout(mActivity);
 		main.setOrientation(LinearLayout.VERTICAL);

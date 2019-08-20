@@ -1,20 +1,26 @@
 package nil.nadph.qnotified;
 
-import android.app.*;
-import android.content.*;
-import android.graphics.*;
-import android.os.*;
-import android.util.*;
-import android.view.*;
-import android.widget.*;
-import de.robv.android.xposed.*;
-import java.io.*;
-import java.lang.reflect.*;
-import java.text.*;
-import java.util.*;
+import android.app.Application;
+import android.content.Context;
+import android.os.Build;
+import android.os.Environment;
+import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
+import de.robv.android.xposed.XposedBridge;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static nil.nadph.qnotified.Initiator.load;
 
+@SuppressWarnings("unchecked")
 public class Utils{
 
 	public static boolean DEBUG=true;
@@ -35,6 +41,7 @@ public class Utils{
 
 
 
+	@SuppressWarnings("ResultOfMethodCallIgnored")
 	public static String getActiveModuleVersion(){
 		Math.sqrt(1);
 		Math.random();
@@ -43,7 +50,7 @@ public class Utils{
 		return null;
 	}
 
-	/** Use Utils.getApplication() Instead *
+	/* Use Utils.getApplication() Instead *
 	 @Deprecated()
 	 @SuppressWarnings ("all")
 	 public static Context getSystemContext() {
@@ -192,7 +199,7 @@ public class Utils{
 	}
 
 
-	public static Object invoke_virtual_original(Object obj,String name,Object...argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException{
+	public static Object invoke_virtual_original(android.graphics.drawable.Drawable.Callback obj, String name, Object...argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException{
 		Class clazz=obj.getClass();
 		int argc=argsTypesAndReturnType.length/2;
 		Class[] argt=new Class[argc];
@@ -344,13 +351,11 @@ public class Utils{
 	 throw new NoSuchMethodException(name+"@"+mclazz);
 	 }*/
 
-
 	//Used for APIs lower than ICS (API 14)
 	private static View.OnClickListener getOnClickListenerV(View view){
 		View.OnClickListener retrievedListener = null;
 		String viewStr = "android.view.View";
 		Field field;
-
 		try{
 			field=Class.forName(viewStr).getDeclaredField("mOnClickListener");
 			retrievedListener=(View.OnClickListener) field.get(view);
@@ -361,7 +366,6 @@ public class Utils{
 		}catch(ClassNotFoundException ex){
 			log("Reflection: Class Not Found.");
 		}
-
 		return retrievedListener;
 	}
 
@@ -396,11 +400,11 @@ public class Utils{
 		return retrievedListener;
 	}
 
-	public static <T extends Object> T _obj_clone(T obj){
+	public static <T> T _obj_clone(T obj){
         try{
-			Class clazz=obj.getClass();
-			T ret=(T)clazz.newInstance();
-			Field f[];
+			Class<T> clazz= (Class<T>) obj.getClass();
+			T ret= clazz.newInstance();
+			Field[] f;
 			int i;
 			while(!Object.class.equals(clazz)){
 				f=clazz.getDeclaredFields();
@@ -408,7 +412,7 @@ public class Utils{
 					f[i].setAccessible(true);
 					f[i].set(ret,f[i].get(obj));
 				}
-				clazz=clazz.getSuperclass();
+				clazz= (Class<T>) clazz.getSuperclass();
 			}
 			return ret;
 		}catch(Throwable e){
@@ -419,9 +423,9 @@ public class Utils{
 
 	public static <T extends View> T _view_clone(T obj){
         try{
-			Class clazz=obj.getClass();
-			T ret=(T)clazz.getConstructor(Context.class).newInstance(obj.getContext());
-			Field f[];
+			Class<T> clazz= (Class<T>) obj.getClass();
+			T ret= clazz.getConstructor(Context.class).newInstance(obj.getContext());
+			Field[] f;
 			int i;
 			while(!Object.class.equals(clazz)){
 				f=clazz.getDeclaredFields();
@@ -429,7 +433,7 @@ public class Utils{
 					f[i].setAccessible(true);
 					f[i].set(ret,f[i].get(obj));
 				}
-				clazz=clazz.getSuperclass();
+				clazz= (Class<T>) clazz.getSuperclass();
 			}
 			return ret;
 		}catch(Throwable e){
@@ -517,6 +521,7 @@ public class Utils{
 			Class cl_bh=load("com/tencent/mobileqq/app/BusinessHandler");
 			if(cl_bh==null){
 				Class cl_flh=load("com/tencent/mobileqq/app/FriendListHandler");
+				assert cl_flh != null;
 				cl_bh=cl_flh.getSuperclass();
 			}
 			Object ret=invoke_virtual(getQQAppInterface(),"a",type,int.class,cl_bh);
@@ -537,7 +542,7 @@ public class Utils{
         return getObject(clazz,type,name,null);
     }
 
-    @SuppressWarnings("unchecked")
+
     public static <T> T getObject(Class clazz,Class<?> type,String name,Object obj){
         try{
             Field field = findField(clazz,type,name);
@@ -603,7 +608,7 @@ public class Utils{
 		try{
 			File f=new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/.qn_log_flag");
 			if(f.exists())V_TOAST=true;
-		}catch(Exception e){}
+		}catch(Exception ignored){}
 	}
 
 	/**   
@@ -659,7 +664,8 @@ public class Utils{
 		}
 		if(clazz_QQToast==null){
 			Class clz=load("com/tencent/mobileqq/activity/aio/doodle/DoodleLayout");
-			Field fs[]=clz.getDeclaredFields();
+			assert clz != null;
+			Field[] fs =clz.getDeclaredFields();
 			for(int i=0;i<fs.length;i++){
 				if(View.class.isAssignableFrom(fs[i].getType()))continue;
 				if(fs[i].getType().isPrimitive())continue;
@@ -764,8 +770,6 @@ public class Utils{
 		return ret;
 	}
 
-
-
 	/** same: t0 d1 w2 m3 y4*/
 	private static int difTimeMs(Date t1,Date t2){
 		if(t1.getYear()!=t2.getYear())return 5;
@@ -799,7 +803,7 @@ public class Utils{
 		return ctx;
 	}
 
-	public static <T extends Object> T dump(T obj){
+	public static <T> T dump(T obj){
 		log("dump:"+obj);
 		return obj;
 	}

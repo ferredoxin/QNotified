@@ -1,10 +1,13 @@
 package nil.nadph.qnotified;
-import java.io.*;
-import java.util.*;
 
+import java.io.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import static nil.nadph.qnotified.Table.*;
-import java.security.*;
 
 public class ConfigManager{
 	private static ConfigManager SELF;
@@ -83,7 +86,7 @@ public class ConfigManager{
 			String key;
 			a:while(in.available()>0){
 				int _type=in.read();
-				if(_type<=0||_type>255)throw new IOException("Unexpected type:"+_type+",version:"+ver);
+				if(_type<0||_type>255)throw new IOException("Unexpected type:"+_type+",version:"+ver);
 				key=readIStr(in);
 				switch((byte)_type){
 					case TYPE_NULL:

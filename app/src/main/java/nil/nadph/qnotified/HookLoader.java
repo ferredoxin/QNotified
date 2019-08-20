@@ -1,22 +1,21 @@
 package nil.nadph.qnotified;
 
+import android.annotation.TargetApi;
 import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-
 import dalvik.system.PathClassLoader;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
-import de.robv.android.xposed.*;
+
+import java.io.File;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author DX
@@ -114,7 +113,8 @@ public class HookLoader implements IXposedHookLoadPackage{
      * @param modulePackageName 当前模块包名
      * @return return apk file
      */
-    private File findApkFile(Context context,String modulePackageName){
+    @TargetApi(Build.VERSION_CODES.FROYO)
+    private File findApkFile(Context context, String modulePackageName){
         if(context==null){
             return null;
         }

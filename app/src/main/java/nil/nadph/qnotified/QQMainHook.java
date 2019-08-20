@@ -1,37 +1,43 @@
 package nil.nadph.qnotified;
 
-import android.app.*;
-import android.os.*;
-import android.content.*;
-import android.view.*;
-import android.widget.*;
-import java.lang.reflect.*;
-import android.view.View.*;
-import android.util.*;
-import java.io.*;
-import android.graphics.*;
-import android.content.res.*;
-import android.graphics.drawable.*;
-import android.text.*;
-import nil.nadph.qnotified.pk.*;
-import java.util.*;
-import java.lang.ref.*;
-
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Message;
+import android.os.Parcelable;
+import android.text.Html;
+import android.util.AttributeSet;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ExpandableListAdapter;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import de.robv.android.xposed.*;
-import de.robv.android.xposed.callbacks.XC_LoadPackage.*;
-import de.robv.android.xposed.callbacks.*;
+import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import nil.nadph.qnotified.pk.FriendChunk;
 
-import static nil.nadph.qnotified.Utils.log;
-import static nil.nadph.qnotified.Utils.invoke_static;
-import static nil.nadph.qnotified.Utils.*;
-import static nil.nadph.qnotified.Utils.iget_object;
+import java.io.File;
+import java.io.FileInputStream;
+import java.lang.ref.WeakReference;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.util.HashSet;
+
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static nil.nadph.qnotified.Initiator.load;
 import static nil.nadph.qnotified.QQViewBuilder.*;
-import de.robv.android.xposed.XC_MethodHook.*;
-import dalvik.system.*;
+import static nil.nadph.qnotified.Utils.*;
 
 /*TitleKit:Lcom/tencent/mobileqq/widget/navbar/NavBarCommon*/
 
@@ -49,7 +55,7 @@ public class QQMainHook <SlideDetectListView extends ViewGroup,ContactsFPSPinned
 	public static final int ACTION_SHUTUP_RED_PACKET=6;
 
 	public static final String QN_FULL_TAG="qn_full_tag";
-	public HashSet addedListView=new HashSet();
+	public HashSet<ContactsFPSPinnedHeaderExpandableListView> addedListView=new HashSet<ContactsFPSPinnedHeaderExpandableListView>();
 	private boolean __state_mini_app_hidden=false;
 
 
@@ -153,12 +159,12 @@ public class QQMainHook <SlideDetectListView extends ViewGroup,ContactsFPSPinned
 
 	 @Override
 	 public void beforeTextChanged(CharSequence s,int start,int count,int after){
-	 // TODO: Implement this method
+	 // to: Implement this method
 	 }
 
 	 @Override
 	 public void onTextChanged(CharSequence s,int start,int before,int count){
-	 // TODO: Implement this method
+	 // TO DO: Implement this method
 	 }
 
 	 @Override
@@ -973,7 +979,7 @@ public class QQMainHook <SlideDetectListView extends ViewGroup,ContactsFPSPinned
 				//frameView.setVisibility(View.VISIBLE);
 
 				TextView redDot=new TextView(splashActivity);
-				redDotRef=new WeakReference(redDot);
+				redDotRef=new WeakReference<>(redDot);
 				redDot.setTextColor(0xFFFF0000);
 
 				redDot.setGravity(Gravity.CENTER);

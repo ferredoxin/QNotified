@@ -1,7 +1,13 @@
 package nil.nadph.qnotified;
-import java.io.*;
-import java.util.*;
-import android.annotation.*;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 public class Table<K extends Object> implements Serializable,Cloneable{
 	
@@ -59,7 +65,7 @@ public class Table<K extends Object> implements Serializable,Cloneable{
 		return records.get(key)[i];
 	}
 
-	public void set(K key,String field,Object val) throws NoSuchFieldException{
+	public void set(K key, String field, Serializable val) throws NoSuchFieldException{
 		synchronized(this){
 			int i=getFieldId(field);
 			if(i<0)throw new NoSuchFieldException(field);
@@ -113,7 +119,7 @@ public class Table<K extends Object> implements Serializable,Cloneable{
 
 	public void init(){
 		synchronized(this){
-			if(records==null)records=new HashMap();
+			if(records==null)records=new HashMap<>();
 			if(fields==null)fields=new String[0];
 			if(types==null)types=new byte[0];
 			if(keyName==null)keyName="id";
@@ -315,21 +321,21 @@ public class Table<K extends Object> implements Serializable,Cloneable{
 				if(key!=null){
 					writeIStr(out,key);
 				}
-				out.writeChar(val);
+				out.writeChar((Integer) val);
 			}else if(Integer.class.equals(clz)){
 				type=TYPE_INT;
 				out.write(type);
 				if(key!=null){
 					writeIStr(out,key);
 				}
-				out.writeInt(val);
+				out.writeInt((Integer) val);
 			}else if(Short.class.equals(clz)){
 				type=TYPE_SHORT;
 				out.write(type);
 				if(key!=null){
 					writeIStr(out,key);
 				}
-				out.writeShort(val);
+				out.writeShort((Short) val);
 			}else if(Long.class.equals(clz)){
 				type=TYPE_LONG;
 				out.write(type);

@@ -1,12 +1,12 @@
 package nil.nadph.qnotified.pk;
 
-import java.io.*;
-import java.lang.reflect.*;
-import nil.nadph.qnotified.*;
-import de.robv.android.xposed.*;
-import java.util.*;
-import static nil.nadph.qnotified.Utils.log;
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+
 import static nil.nadph.qnotified.Initiator.load;
+import static nil.nadph.qnotified.Utils.log;
 
 
 public class FriendChunk implements Serializable,Cloneable{
@@ -60,11 +60,11 @@ public class FriendChunk implements Serializable,Cloneable{
 			arrcSpecialFlag=new byte[len];
 			ArrayList fs=(ArrayList)f_stSelfInfo.get(resp);
 			for(int i=0;i<len;i++){
-				arrStatus[i]=f_status.get(fs.get(i));
-				arrUin[i]=f_uin.get(fs.get(i));
+				arrStatus[i]= (byte) f_status.get(fs.get(i));
+				arrUin[i]= (long) f_uin.get(fs.get(i));
 				arrRemark[i]=(String)f_remark.get(fs.get(i));
 				arrNick[i]=(String)f_nick.get(fs.get(i));
-				arrcSpecialFlag[i]=f_cSpecialFlag.get(fs.get(i));
+				arrcSpecialFlag[i]= (byte) f_cSpecialFlag.get(fs.get(i));
 			}
 		}catch(IllegalAccessException e){}catch(ClassCastException e){
 			log(e);

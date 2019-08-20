@@ -1,29 +1,32 @@
 package nil.nadph.qnotified;
 
-import android.annotation.*;
-import android.app.*;
-import android.content.*;
-import de.robv.android.xposed.*;
-import java.io.*;
-import java.lang.reflect.*;
-import java.security.*;
-import java.util.*;
-import java.util.concurrent.*;
-import nil.nadph.qnotified.pk.*;
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Vibrator;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
+import nil.nadph.qnotified.pk.FriendChunk;
 
-import static nil.nadph.qnotified.Table.*;
+import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import static nil.nadph.qnotified.Initiator.load;
+import static nil.nadph.qnotified.Table.*;
 import static nil.nadph.qnotified.Utils.*;
-import android.graphics.*;
-import android.widget.*;
-import android.view.View.*;
-import android.view.*;
-import android.graphics.drawable.*;
-import android.os.*;
-import android.content.pm.*;
-import android.content.res.*;
-import android.content.pm.PackageManager.*;
-import android.service.autofill.*;
 
 public class ExfriendManager{
 	static private final int ID_EX_NOTIFY=65537;
@@ -31,7 +34,7 @@ public class ExfriendManager{
 	static private final int FL_UPDATE_INT_MIN=10*60;//sec
 	static private final int FL_UPDATE_INT_MAX=1*60*60;//sec
 
-	static private HashMap<Long,ExfriendManager> instances=new HashMap();
+	static private HashMap<Long,ExfriendManager> instances=new HashMap<>();
 	static private ExecutorService tp;
 	private long mUin;
 	private int mTotalFriendCount;
@@ -43,7 +46,7 @@ public class ExfriendManager{
 	private HashMap<String,Object> fileData;//Back compatibility
 
 	private ConcurrentHashMap mStdRemarks;
-	private ArrayList<FriendChunk> cachedFriendChunks=new ArrayList();
+	private ArrayList<FriendChunk> cachedFriendChunks=new ArrayList<>();
 
 
 	private boolean dirtyFlag;
@@ -89,7 +92,7 @@ public class ExfriendManager{
 			loadSavedPersonsInfo();
 			dbg();
 			try{
-				mStdRemarks=(ConcurrentHashMap)getFriendsConcurrentHashMap(getFriendsManager());
+				mStdRemarks= getFriendsConcurrentHashMap(getFriendsManager());
 			}catch(Throwable e){}
 			if(persons.size()==0&&mStdRemarks!=null){
 				dbg();
@@ -104,7 +107,7 @@ public class ExfriendManager{
 				fremark.setAccessible(true);
 				fnick=clz_fr.getField("name");
 				fnick.setAccessible(true);
-				persons=new HashMap();
+				persons=new HashMap<>();
 				Iterator<Map.Entry> it=mStdRemarks.entrySet().iterator();
 				while(it.hasNext()){
 					long t=System.currentTimeMillis()/1000;
@@ -120,7 +123,8 @@ public class ExfriendManager{
 					f.nick=(String)fnick.get(fr);
 					f.friendStatus=FriendRecord.STATUS_RESERVED;
 					f.serverTime=t;
-					persons.putIfAbsent(f.uin,f);
+					if(!persons.containsKey(f.uin))
+						persons.put(f.uin,f);
 				}
 				dbg();
 				saveConfigure();
@@ -135,13 +139,13 @@ public class ExfriendManager{
 	/**  ?(0xFE)QNC I_version I_size I_RAW_reserved 16_md5 DATA */
 	public @Nullable void loadSavedPersonsInfo(){
 		synchronized(this){
-		if(fileData==null)fileData=new HashMap();
+		if(fileData==null)fileData=new HashMap<>();
 		else fileData.clear();
 		if(persons==null){
-			persons=new HashMap();
+			persons=new HashMap<>();
 		}
 		if(events==null){
-			events=new HashMap();
+			events=new HashMap<>();
 		}
 		dbg();
 		File f=new File(Utils.getApplication().getFilesDir().getAbsolutePath()+"/qnotified_"+mUin+".dat");
@@ -222,9 +226,9 @@ public class ExfriendManager{
 	}
 
 
-	/** We try to add some columns */
+	/* We try to add some columns */
 	private void updateFriendTableVersion(){
-		Table<Long> fr=(Table)fileData.get("friends");
+		Table<Long> fr=(Table<Long>)fileData.get("friends");
 		if(fr==null){
 			log("damn! updateFriendTableVersion in null");
 		}
@@ -242,9 +246,9 @@ public class ExfriendManager{
 		Iterator<Map.Entry<Long,FriendRecord>> it=/*(Iterator<Map.Entry<Long, FriendRecord>>)*/persons.entrySet().iterator();
 		Map.Entry<Long,FriendRecord> ent;
 		String suin;
-		Table<Long> t=(Table)fileData.get("friends");
+		Table<Long> t=(Table<Long>)fileData.get("friends");
 		if(t==null){
-			t=new Table();
+			t=new Table<>();
 			t.init();
 			fileData.put("friends",t);
 			updateFriendTableVersion();
@@ -270,14 +274,14 @@ public class ExfriendManager{
 	}
 
 	private void tableToFriend(){
-		Table<Long> t=(Table)fileData.get("friends");
+		Table<Long> t=(Table<Long>)fileData.get("friends");
 		if(t==null){
 			log("t_fr==null,aborting!");
 			dbg();
 			return;
 		}
 		dbg();
-		if(persons==null)persons=new HashMap();
+		if(persons==null)persons=new HashMap<>();
 		Iterator<Map.Entry<Long,Object[]>> it=t.records.entrySet().iterator();
 		Map.Entry<Long,Object[]> entry;
 		int _nick,_remark,_fs,_time;
@@ -311,7 +315,7 @@ public class ExfriendManager{
 
 	/** We try to add some columns */
 	private void initEventsTable(){
-		Table<Integer> ev=(Table)fileData.get("events");
+		Table<Integer> ev=(Table<Integer>)fileData.get("events");
 		if(ev==null){
 			log("damn! initEvT in null");
 			return;
@@ -335,9 +339,9 @@ public class ExfriendManager{
 		Iterator<Map.Entry<Integer,EventRecord>> it=/*(Iterator<Map.Entry<Long, FriendRecord>>)*/events.entrySet().iterator();
 		Map.Entry<Integer,EventRecord> ent;
 		String suin;
-		Table<Integer> t=(Table)fileData.get("events");
+		Table<Integer> t=(Table<Integer>)fileData.get("events");
 		if(t==null){
-			t=new Table();
+			t=new Table<>();
 			t.init();
 			fileData.put("events",t);
 			initEventsTable();
@@ -370,12 +374,12 @@ public class ExfriendManager{
 	}
 
 	private void tableToEvents(){
-		Table<Integer> t=(Table)fileData.get("events");
+		Table<Integer> t=(Table<Integer>)fileData.get("events");
 		if(t==null){
 			log("t_ev==null,aborting!");
 			return;
 		}
-		if(events==null)events=new HashMap();
+		if(events==null)events=new HashMap<>();
 		Iterator<Map.Entry<Integer,Object[]>> it=t.records.entrySet().iterator();
 		Map.Entry<Integer,Object[]> entry;
 		int __nick,__remark,__fs,_te,_tb,_ev,_op,_b,_a,_extra;
@@ -707,6 +711,7 @@ public class ExfriendManager{
 		}
 	}
 	
+	@SuppressLint("MissingPermission")
 	public void doNotifyDelFlAndSave(Object[] ptr){
 		if(((int)ptr[0])>0){
 			Intent intent=new Intent(getApplication(),load(ActProxyMgr.STUB_ACTIVITY));

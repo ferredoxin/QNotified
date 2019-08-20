@@ -1,8 +1,6 @@
 package nil.nadph.qnotified;
-import java.io.*;
 
-import static nil.nadph.qnotified.Utils.en;
-import static nil.nadph.qnotified.Utils.de;
+import java.io.Serializable;
 
 
 public class EventRecord implements Serializable,Cloneable,Comparable{

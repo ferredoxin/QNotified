@@ -1,15 +1,18 @@
 package nil.nadph.qnotified;
-import android.content.*;
-import android.widget.*;
-import android.graphics.drawable.*;
-import android.view.*;
 
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import android.app.Activity;
+import android.content.Context;
+import android.graphics.drawable.StateListDrawable;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import android.app.*;
-import com.android.internal.policy.*;
-import dalvik.system.*;
-import android.content.pm.dex.*;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 
 public class Initiator{

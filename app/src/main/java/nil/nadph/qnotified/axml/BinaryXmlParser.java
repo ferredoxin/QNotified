@@ -1,9 +1,14 @@
 package nil.nadph.qnotified.axml;
 
-import java.io.*;
-import java.util.*;
-import nil.nadph.qnotified.*;
-import android.util.*;
+import android.util.TypedValue;
+import nil.nadph.qnotified.Utils;
+
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Stack;
 
 public class BinaryXmlParser{
 
@@ -130,7 +135,7 @@ public class BinaryXmlParser{
 
 		int off = xmlTagOff;
 		//int indent = 0;
-		Stack<XmlNode> nodes=new Stack();
+		Stack<XmlNode> nodes=new Stack<>();
 		int startTagLineNo = -2;
 		while(off<xml.length){
 			int tag0 = LEW(xml,off);
@@ -151,7 +156,7 @@ public class BinaryXmlParser{
 				startTagLineNo=lineNo;
 				// Look for the Attributes
 				//StringBuffer sb = new StringBuffer();
-				Map<String,Object> attr=new HashMap();
+				Map<String,Object> attr=new HashMap<>();
 				XmlNode curr=new XmlNode();
 				curr.name=name;
 				for(int ii = 0; ii<numbAttrs; ii++){
@@ -171,7 +176,7 @@ public class BinaryXmlParser{
 					String attrName = compXmlString(xml,sitOff,stOff,
 													attrNameSi,utf8);
 
-					Object attrValue = "";                
+					java.io.Serializable attrValue = "";
 					if(attrValueSi!=-1){
 						attrValue=compXmlString(xml,sitOff,stOff,attrValueSi,utf8);
 					}else{

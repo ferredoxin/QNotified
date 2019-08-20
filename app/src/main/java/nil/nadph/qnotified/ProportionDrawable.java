@@ -1,7 +1,10 @@
 package nil.nadph.qnotified;
-import android.graphics.drawable.*;
-import android.graphics.*;
-import android.view.*;
+
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
+import android.view.Gravity;
 
 public class ProportionDrawable extends Drawable{
 
@@ -32,18 +35,17 @@ public class ProportionDrawable extends Drawable{
 
 	@Override
 	public void setAlpha(int alpha){
-		// TODO: Implement this method
+		throw new UnsupportedOperationException("Stub!");
 	}
 
 	@Override
 	public void setColorFilter(ColorFilter colorFilter){
-		// TODO: Implement this method
+		throw new UnsupportedOperationException("Stub!");
 	}
 
 	@Override
 	public int getOpacity(){
-		// TODO: Implement this method
-		return 0;
+		throw new UnsupportedOperationException("Stub!");
 	}
 
 	private int iGravity;

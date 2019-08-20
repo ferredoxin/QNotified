@@ -1,16 +1,20 @@
 package nil.nadph.qnotified;
 
-import java.lang.reflect.*;
-import android.graphics.*;
+import android.app.Activity;
+import android.graphics.Bitmap;
+import android.view.View;
+import android.widget.ImageView;
+
+import java.lang.ref.WeakReference;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.HashMap;
 
 import static nil.nadph.qnotified.Initiator.load;
-import android.annotation.*;
+
 //import de.robv.android.xposed.*;
-import java.util.*;
-import android.view.*;
-import java.lang.ref.*;
-import android.widget.*;
-import android.app.*;
 
 
 public class FaceImpl implements InvocationHandler{
@@ -41,9 +45,9 @@ public class FaceImpl implements InvocationHandler{
 		}
 		mFaceDecoder=class_FaceDecoder.getConstructor(load("com/tencent/common/app/AppInterface")).newInstance(qqAppInterface);
 		Utils.invoke_virtual(mFaceDecoder,"a",createListener(),clz_DecodeTaskCompletionListener);
-		cachedUserFace=new HashMap();
-		cachedTroopFace=new HashMap();
-		registeredView=new HashMap();
+		cachedUserFace=new HashMap<>();
+		cachedTroopFace=new HashMap<>();
+		registeredView=new HashMap<>();
 	}
 	
 	public static FaceImpl getInstance() throws Throwable{
@@ -53,7 +57,7 @@ public class FaceImpl implements InvocationHandler{
 	
 	private static Class clz_DecodeTaskCompletionListener;
 
-	private Object createListener(){
+	private Object[] createListener(){
 		clz_DecodeTaskCompletionListener=load("com/tencent/mobileqq/util/FaceDecoder$DecodeTaskCompletionListener");
 		if(clz_DecodeTaskCompletionListener==null){
 			Class[]argt;
@@ -112,7 +116,7 @@ public class FaceImpl implements InvocationHandler{
 	
 	public boolean registerView(int type,String uin,ImageView v){
 		boolean ret;
-		if(ret=requestDecodeFace(type,uin))registeredView.put(type+" "+uin,new WeakReference(v));
+		if(ret=requestDecodeFace(type,uin))registeredView.put(type+" "+uin,new WeakReference<>(v));
 		return ret;
 	}
 	

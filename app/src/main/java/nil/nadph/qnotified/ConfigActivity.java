@@ -1,19 +1,19 @@
 package nil.nadph.qnotified;
 
-import android.app.*;
-import android.os.*;
-import android.widget.*;
-import android.view.*;
-import android.graphics.*;
-import android.text.*;
-import android.text.method.*;
-import android.text.style.*;
-import android.net.*;
-import android.content.*;
-import java.io.*;
-import nil.nadph.qnotified.axml.*;
-import android.content.res.*;
-import org.xmlpull.v1.*;
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Color;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Looper;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.URLSpan;
+import android.view.View;
+import android.widget.TextView;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 public class ConfigActivity extends Activity implements Runnable{
 
@@ -189,8 +189,6 @@ public class ConfigActivity extends Activity implements Runnable{
 
 
 	@Override
-	public void onPointerCaptureChanged(boolean hasCapture){
-		// TODO: Implement this method
-	}
+	public void onPointerCaptureChanged(boolean hasCapture){}
 
 }

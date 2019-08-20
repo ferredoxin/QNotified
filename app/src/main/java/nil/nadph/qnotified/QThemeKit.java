@@ -1,28 +1,27 @@
 package nil.nadph.qnotified;
 
-import java.io.*;
-import android.app.*;
-import android.content.*;
-import android.util.*;
-import android.view.*;
-
-import java.util.*;
-import android.content.res.*;
-import android.graphics.drawable.*;
+import android.content.Context;
+import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.graphics.*;
-import android.annotation.*;
-import de.robv.android.xposed.*;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.StateListDrawable;
+import android.os.Environment;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
+import de.robv.android.xposed.XSharedPreferences;
+import de.robv.android.xposed.XposedHelpers;
 
-import static nil.nadph.qnotified.Utils.log;
-import static nil.nadph.qnotified.Utils.invoke_static;
-import static nil.nadph.qnotified.Utils.invoke_virtual;
-import static nil.nadph.qnotified.Utils.iget_object;
-import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
-import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
+import java.io.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import static nil.nadph.qnotified.Initiator.load;
-import java.lang.reflect.*;
-import android.os.*;
-import nil.nadph.qnotified.axml.*;
+import static nil.nadph.qnotified.Utils.invoke_static;
+import static nil.nadph.qnotified.Utils.log;
 
 public class QThemeKit{
 
@@ -47,7 +46,7 @@ public class QThemeKit{
 
 	public static <SkinnableNinePatchDrawable extends Drawable> void initTheme(Context ctx) throws Throwable{
 		mContext=ctx;
-		if(cachedDrawable==null)cachedDrawable=new HashMap();
+		if(cachedDrawable==null)cachedDrawable=new HashMap<>();
 		String themeId=(String)invoke_static(load("com/tencent/mobileqq/theme/ThemeUtil"),"getUserCurrentThemeId",null,load("mqq/app/AppRuntime"));
 		//ThemeUtil$ThemeInfo themeInfo=(ThemeUtil$ThemeInfo)invoke_static(load("com/tencent/mobileqq/theme/ThemeUtil"),"getThemeInfo",ctx,themeId,Context.class,String.class);
 		//load("com/tencent/mobileqq/theme/ThemeUtil$ThemeInfo").getField(
@@ -345,10 +344,10 @@ public class QThemeKit{
 				int si=item.attributes.size()-1;
 				IntArray ss=new IntArray();
 				Map.Entry<String,Object> entry;
-				Iterator it=item.attributes.entrySet().iterator();
+				Iterator<Map.Entry<String, Object>> it=item.attributes.entrySet().iterator();
 				int id=0;
 				while(it.hasNext()){
-					entry=(Map.Entry<String, Object>) it.next();
+					entry= it.next();
 					if(!entry.getKey().startsWith("state_"))continue;
 					id=Utils.sget_object(android.R.attr.class,entry.getKey());
 					ss.add(id*(((int)(Integer)entry.getValue())==0?-1:1));

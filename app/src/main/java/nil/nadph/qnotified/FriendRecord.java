@@ -1,10 +1,8 @@
 package nil.nadph.qnotified;
-import java.io.*;
-import android.os.*;
-import android.annotation.*;
+
+import java.io.Serializable;
 
 import static nil.nadph.qnotified.Utils.en;
-import static nil.nadph.qnotified.Utils.de;
 
 
 
@@ -34,7 +32,6 @@ public class FriendRecord implements Serializable,Cloneable{
 	
 	@Override
 	public int hashCode(){
-		// TODO: Implement this method
 		return (int)uin;
 	}
 	

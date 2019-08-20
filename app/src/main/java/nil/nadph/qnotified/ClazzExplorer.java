@@ -1,18 +1,25 @@
 package nil.nadph.qnotified;
 
-import android.app.*;
+import android.app.Activity;
+import android.app.Application;
+import android.content.Context;
+import android.graphics.PixelFormat;
+import android.text.Html;
+import android.view.Gravity;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import java.lang.reflect.*;
-import java.util.*;
-import android.content.*;
-import android.view.*;
-import android.widget.*;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Stack;
 
 import static android.view.WindowManager.LayoutParams.*;
-import android.graphics.*;
 import static android.widget.LinearLayout.*;
-import android.widget.RelativeLayout.*;
-import android.text.*;
-import de.robv.android.xposed.*;
 import static nil.nadph.qnotified.Utils.log;
 
 public class ClazzExplorer{

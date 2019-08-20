@@ -1,11 +1,13 @@
 package nil.nadph.qnotified;
 
-import java.util.*;
-import android.app.*;
-import java.lang.reflect.*;
-import de.robv.android.xposed.*;
-import de.robv.android.xposed.XC_MethodHook.*;
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Stack;
 
 import static nil.nadph.qnotified.Utils.log;
 /* ActivityProxyManager */
@@ -20,8 +22,8 @@ public class ActProxyMgr{
 	 * beforeHookMethod->invokeSuper->beforeHookedMethod->invokeSuper->...->StackOverflow :p 
 	 * see isInfiniteLoop():Z 
 	 **/
-	private HashMap<Long,Stack<Member>> mThreadStack=new HashMap();
-	private HashMap<Member,StackBreakHook> hooks=new HashMap();;
+	private HashMap<Long,Stack<Member>> mThreadStack=new HashMap<>();
+	private HashMap<Member,StackBreakHook> hooks=new HashMap<>();;
 
 	private int next_uuid=1;
 
@@ -45,7 +47,7 @@ public class ActProxyMgr{
 	public static boolean isInfiniteLoop(){
 		try{
 			long tid=Thread.currentThread().getId();
-			Stack s=instance.mThreadStack.get(tid);
+			Stack<Member> s=instance.mThreadStack.get(tid);
 			return !s.empty();
 		}catch(Throwable e){
 			//.log(e);
@@ -55,16 +57,16 @@ public class ActProxyMgr{
 
 
 	/**
-	 * @method invokeSuper
+	 * method invokeSuper
 	 * @param obj: thisObject,should be null if it's a static method
-	 * @param smathod: the SUPER method(you must get it from its super class) you want to invoke
+	 * @param smethod: the SUPER method(you must get it from its super class) you want to invoke
 	 * @param args
 	 * @return the return value(if it has,or null)
 	 * //@throws BreakUncaughtException:the super method was invoked,but the return value was lost
 	 * TODO: Replace this fragile method with JNI
 	 **/
 	@Deprecated 
-	public static Object invokeSuper(Object obj,Method smethod,Object...args) throws Throwable{
+	public static Member invokeSuper(android.app.Activity obj, Method smethod, Object...args) throws Throwable{
 		try{
 			synchronized(instance){
 				StackBreakHook hook=instance.hooks.get(smethod);
@@ -74,9 +76,9 @@ public class ActProxyMgr{
 					XposedBridge.hookMethod(smethod,hook);
 				}
 				smethod.setAccessible(true);
-				Stack stack=instance.mThreadStack.get(Thread.currentThread().getId());
+				Stack<Member> stack=instance.mThreadStack.get(Thread.currentThread().getId());
 				if(stack==null){
-					stack=new Stack();
+					stack=new Stack<>();
 					instance.mThreadStack.put(Thread.currentThread().getId(),stack);
 				}
 				//log("invokeSuper("+smethod.getName()+"),tid="+Thread.currentThread().getId()+",stack_before="+stack);
@@ -93,7 +95,7 @@ public class ActProxyMgr{
 		finally{
 			synchronized(instance){
 				/*if(unhook!=null)unhook.unhook();*/
-				Stack s=instance.mThreadStack.get(Thread.currentThread().getId());
+				Stack<Member> s=instance.mThreadStack.get(Thread.currentThread().getId());
 				return s.pop();
 			}
 		}

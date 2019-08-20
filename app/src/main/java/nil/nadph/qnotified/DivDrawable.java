@@ -1,7 +1,7 @@
 package nil.nadph.qnotified;
-import android.graphics.drawable.*;
+
 import android.graphics.*;
-import android.graphics.drawable.shapes.*;
+import android.graphics.drawable.Drawable;
 
 public class DivDrawable extends Drawable{
 
@@ -35,18 +35,17 @@ public class DivDrawable extends Drawable{
 
 	@Override
 	public void setAlpha(int alpha){
-		// TODO: Implement this method
+		throw new RuntimeException("Unsupported operation");
 	}
 
 	@Override
 	public void setColorFilter(ColorFilter colorFilter){
-		// TODO: Implement this method
+		throw new RuntimeException("Unsupported operation");
 	}
 
 	@Override
 	public int getOpacity(){
-		// TODO: Implement this method
-		return 0;
+		throw new RuntimeException("Unsupported operation");
 	}
 
 }

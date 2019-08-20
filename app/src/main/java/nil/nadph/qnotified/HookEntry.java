@@ -1,12 +1,9 @@
 package nil.nadph.qnotified;
 
-import de.robv.android.xposed.*;
-import de.robv.android.xposed.callbacks.*;
-
-import android.app.*;
-import android.os.*;
-import android.content.*;
-import java.io.*;
+import de.robv.android.xposed.IXposedHookLoadPackage;
+import de.robv.android.xposed.XC_MethodReplacement;
+import de.robv.android.xposed.XposedHelpers;
+import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 public class HookEntry implements IXposedHookLoadPackage{
 

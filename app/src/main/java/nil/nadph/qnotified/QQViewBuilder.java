@@ -1,21 +1,22 @@
 package nil.nadph.qnotified;
 
-import android.content.*;
-import android.view.*;
+import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.*;
-import android.app.*;
-import java.lang.reflect.*;
 
-import static nil.nadph.qnotified.Utils.*;
-import static nil.nadph.qnotified.Utils.invoke_static;
-import static nil.nadph.qnotified.Utils.invoke_virtual;
+import java.io.IOException;
+
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.Initiator.load;
-import android.net.*;
-import java.io.*;
-import android.util.*;
-import android.text.*;
+import static nil.nadph.qnotified.Utils.dip2px;
+import static nil.nadph.qnotified.Utils.dip2sp;
 
 @SuppressWarnings("unchecked")
 public class QQViewBuilder{
@@ -26,7 +27,8 @@ public class QQViewBuilder{
 	public static final int R_ID_VALUE=0x300AFF14;
 	public static final int R_ID_ARROW=0x300AFF15;
 
-	public static RelativeLayout newListItemSwitch(Context ctx,CharSequence title,CharSequence desc,boolean on,CompoundButton.OnCheckedChangeListener listener){
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+	public static RelativeLayout newListItemSwitch(Context ctx, CharSequence title, CharSequence desc, boolean on, CompoundButton.OnCheckedChangeListener listener){
 		RelativeLayout root=new RelativeLayout(ctx);
 		root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT,WRAP_CONTENT));
 		root.setBackground(QThemeKit.getListItemBackground());
@@ -120,7 +122,8 @@ public class QQViewBuilder{
 	}
 	
 	
-	public static RelativeLayout newListItemDummy(Context ctx,CharSequence title,CharSequence desc,CharSequence value){
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+	public static RelativeLayout newListItemDummy(Context ctx, CharSequence title, CharSequence desc, CharSequence value){
 		RelativeLayout root=new RelativeLayout(ctx);
 		root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT,WRAP_CONTENT));
 		root.setBackground(QThemeKit.getListItemBackground());
@@ -171,7 +174,8 @@ public class QQViewBuilder{
 		return root;
 	}
 
-	public static RelativeLayout newListItemButton(Context ctx,CharSequence title,CharSequence desc,CharSequence value,View.OnClickListener listener){
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+	public static RelativeLayout newListItemButton(Context ctx, CharSequence title, CharSequence desc, CharSequence value, View.OnClickListener listener){
 		RelativeLayout root=new RelativeLayout(ctx);
 		root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT,WRAP_CONTENT));
 		root.setBackground(QThemeKit.getListItemBackground());
@@ -311,8 +315,8 @@ public class QQViewBuilder{
 
 	public static CompoundButton switch_new(Context ctx){
 		try{
-			Class clazz=load("com/tencent/widget/Switch");
-			return (CompoundButton)clazz.getConstructor(Context.class).newInstance(ctx);
+			Class<CompoundButton> clazz=load("com/tencent/widget/Switch");
+			return clazz.getConstructor(Context.class).newInstance(ctx);
 		}catch(Exception e){
 			Utils.log("Switch->new: "+e.toString());
 		}

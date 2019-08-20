@@ -1,22 +1,26 @@
 package nil.nadph.qnotified.axml;
 
-import android.annotation.*;
-import android.content.res.*;
-import org.xmlpull.v1.*;
-import android.util.*;
-import java.io.*;
-import android.graphics.*;
-import com.android.internal.util.*;
+import android.app.Application;
+import android.content.res.ColorStateList;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
+import android.graphics.Color;
+import android.util.AttributeSet;
+import android.util.StateSet;
+import android.util.Xml;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
-import static nil.nadph.qnotified.Utils.*;
+import java.io.IOException;
+import java.lang.reflect.Field;
+
 import static nil.nadph.qnotified.Initiator.load;
-import java.lang.reflect.*;
-import android.app.*;
+import static nil.nadph.qnotified.Utils.*;
 
 public class ResInflater{
 	/**
      * Creates a ColorStateList from ANY XmlPullParser using given a set of
-     * {@link Resources} and a {@link Theme}.
+     * {@link Resources} and a {@link Resources.Theme}.
      *
      * @param r Resources against which the ColorStateList should be inflated.
      * @param parser Parser for the XML document defining the ColorStateList.

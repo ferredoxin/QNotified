@@ -1,28 +1,30 @@
 package nil.nadph.qnotified;
 
+import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.os.Build;
+import android.view.Gravity;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
+import android.view.ViewGroup;
 import android.widget.*;
-import android.view.*;
-import android.content.*;
-import android.app.*;
-//import de.robv.android.xposed.*;
-import android.view.View.*;
-import android.content.res.*;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.util.*;
+
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
-import android.graphics.*;
-import java.util.*;
-import java.lang.reflect.*;
-import static nil.nadph.qnotified.Utils.*;
 import static nil.nadph.qnotified.Initiator.load;
+import static nil.nadph.qnotified.Utils.*;
 
-public class ExfriendListAdapter extends BaseAdapter implements InvocationHandler{
+//import de.robv.android.xposed.*;
 
-	@Override
-	public Object invoke(Object p1,Method p2,Object[] p3) throws Throwable{
-		// TODO: Implement this method
-		return null;
-	}
-
+public class ExfriendListAdapter extends BaseAdapter{
 
 	private Context ctx;
 	private View mListView;
@@ -52,7 +54,7 @@ public class ExfriendListAdapter extends BaseAdapter implements InvocationHandle
 	
 	public void reload(){
 		eventsMap=exm.getEvents();
-		if(evs==null)evs=new ArrayList();
+		if(evs==null)evs=new ArrayList<>();
 		else evs.clear();
 		Iterator<Map.Entry<Integer,EventRecord>> it=eventsMap.entrySet().iterator();
 		EventRecord ev;
@@ -77,7 +79,6 @@ public class ExfriendListAdapter extends BaseAdapter implements InvocationHandle
 
 	@Override
 	public Object getItem(int position){
-		// TODO: Implement this method
 		return null;
 	}
 
@@ -138,6 +139,7 @@ public class ExfriendListAdapter extends BaseAdapter implements InvocationHandle
 	}
 
 
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	private View inflateItemView(EventRecord ev){
 		int tmp;
 		RelativeLayout rlayout=new RelativeLayout(ctx);
