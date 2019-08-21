@@ -315,8 +315,8 @@ public class QQViewBuilder{
 
 	public static CompoundButton switch_new(Context ctx){
 		try{
-			Class<CompoundButton> clazz=load("com/tencent/widget/Switch");
-			return clazz.getConstructor(Context.class).newInstance(ctx);
+			Class clazz=load("com/tencent/widget/Switch");
+			return (CompoundButton)clazz.getConstructor(Context.class).newInstance(ctx);
 		}catch(Exception e){
 			Utils.log("Switch->new: "+e.toString());
 		}

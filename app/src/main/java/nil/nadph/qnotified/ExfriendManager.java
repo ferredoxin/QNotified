@@ -27,6 +27,7 @@ import java.util.concurrent.Executors;
 import static nil.nadph.qnotified.Initiator.load;
 import static nil.nadph.qnotified.Table.*;
 import static nil.nadph.qnotified.Utils.*;
+import android.annotation.*;
 
 public class ExfriendManager{
 	static private final int ID_EX_NOTIFY=65537;

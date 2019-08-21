@@ -22,9 +22,10 @@ import java.util.Map;
 import static nil.nadph.qnotified.Initiator.load;
 import static nil.nadph.qnotified.Utils.invoke_static;
 import static nil.nadph.qnotified.Utils.log;
+import android.annotation.*;
+import android.util.*;
 
 public class QThemeKit{
-
 
 	static private String cachedThemeId;
 
@@ -340,17 +341,17 @@ public class QThemeKit{
 			BinaryXmlParser.XmlNode item;
 			for(int i=0;i<selector.elements.size();i++){
 				item=selector.elements.get(i);
-				colors[i]=(Integer)item.attributes.get("color");
+				colors[i]=(Integer)item.attributes.get("color").data;
 				int si=item.attributes.size()-1;
 				IntArray ss=new IntArray();
-				Map.Entry<String,Object> entry;
-				Iterator<Map.Entry<String, Object>> it=item.attributes.entrySet().iterator();
+				Map.Entry<String,BinaryXmlParser.XmlNode.Res> entry;
+				Iterator<Map.Entry<String, BinaryXmlParser.XmlNode.Res>> it=item.attributes.entrySet().iterator();
 				int id=0;
 				while(it.hasNext()){
 					entry= it.next();
 					if(!entry.getKey().startsWith("state_"))continue;
 					id=Utils.sget_object(android.R.attr.class,entry.getKey());
-					ss.add(id*(((int)(Integer)entry.getValue())==0?-1:1));
+					ss.add(id*((entry.getValue().data)==0?-1:1));
 				}
 				states[i]=ss.toArray();
 			}

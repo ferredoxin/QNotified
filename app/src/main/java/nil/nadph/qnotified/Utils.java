@@ -199,7 +199,7 @@ public class Utils{
 	}
 
 
-	public static Object invoke_virtual_original(android.graphics.drawable.Drawable.Callback obj, String name, Object...argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException{
+	public static Object invoke_virtual_original(Object obj, String name, Object...argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException{
 		Class clazz=obj.getClass();
 		int argc=argsTypesAndReturnType.length/2;
 		Class[] argt=new Class[argc];

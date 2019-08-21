@@ -42,7 +42,7 @@ import static nil.nadph.qnotified.Utils.*;
 /*TitleKit:Lcom/tencent/mobileqq/widget/navbar/NavBarCommon*/
 
 
-public class QQMainHook <SlideDetectListView extends ViewGroup,ContactsFPSPinnedHeaderExpandableListView extends View> implements IXposedHookLoadPackage{
+public class QQMainHook <SlideDetectListView extends ViewGroup> implements IXposedHookLoadPackage{
 
 	public static final int VIEW_ID_DELETED_FRIEND=0x00EE77AA;
 	public static final String ACTIVITY_PROXY_ID_TAG="qn_act_proxy_id";
@@ -55,7 +55,7 @@ public class QQMainHook <SlideDetectListView extends ViewGroup,ContactsFPSPinned
 	public static final int ACTION_SHUTUP_RED_PACKET=6;
 
 	public static final String QN_FULL_TAG="qn_full_tag";
-	public HashSet<ContactsFPSPinnedHeaderExpandableListView> addedListView=new HashSet<ContactsFPSPinnedHeaderExpandableListView>();
+	public HashSet addedListView=new HashSet();
 	private boolean __state_mini_app_hidden=false;
 
 
@@ -179,14 +179,14 @@ public class QQMainHook <SlideDetectListView extends ViewGroup,ContactsFPSPinned
 
 	 */
 	private void performHook(ClassLoader classLoader){
-		/*if(Utils.DEBUG){
+		if(Utils.DEBUG){
 			if("true".equals(System.getProperty(QN_FULL_TAG))){
 				log("Err:Qnotified reloaded??");
 				System.exit(-1);
 				//QNotified updated(in HookLoader mode),kill QQ to make user restart it.
 			}
 			System.setProperty(QN_FULL_TAG,"true");
-		}*/
+		}
 		Initiator.init(classLoader);
 		log("Clases init done");
 		log("App:"+Utils.getApplication());
@@ -925,7 +925,7 @@ public class QQMainHook <SlideDetectListView extends ViewGroup,ContactsFPSPinned
 				if(!param.thisObject.getClass().getName().contains("ContactsFPSPinnedHeaderExpandableListView"))return;
 				LinearLayout layout_entrance;
 				android.widget.FrameLayout frameView;
-				ContactsFPSPinnedHeaderExpandableListView lv=(ContactsFPSPinnedHeaderExpandableListView) param.thisObject;
+				View lv=(View) param.thisObject;
 				//frameView=Utils.getObject(,View.class,"b");
 				final Activity splashActivity=(Activity)Utils.getContext(lv);
 				QThemeKit.initTheme(splashActivity);

@@ -13,6 +13,7 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 
 import static nil.nadph.qnotified.Initiator.load;
+import android.annotation.*;
 
 //import de.robv.android.xposed.*;
 
@@ -57,7 +58,7 @@ public class FaceImpl implements InvocationHandler{
 	
 	private static Class clz_DecodeTaskCompletionListener;
 
-	private Object[] createListener(){
+	private Object createListener(){
 		clz_DecodeTaskCompletionListener=load("com/tencent/mobileqq/util/FaceDecoder$DecodeTaskCompletionListener");
 		if(clz_DecodeTaskCompletionListener==null){
 			Class[]argt;

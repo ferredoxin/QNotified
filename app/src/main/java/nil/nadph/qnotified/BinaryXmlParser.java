@@ -6,7 +6,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
+import java.io.*;
 
+/**
+ * @author cinit
+ * A simple tool parses Android binary XML
+ */
 public class BinaryXmlParser{
 
 	public static XmlNode parseXml(String filePath){
@@ -21,7 +26,7 @@ public class BinaryXmlParser{
 				bos.write(buffer,0,len);
 			}
 			return parseXml(bos.toByteArray());
-			
+
 		}catch(Exception e){
 			Utils.log("parse xml error:"+e.toString());
 		}
@@ -34,231 +39,256 @@ public class BinaryXmlParser{
 		return null;
 	}
 
-	// Origin:https://gist.github.com/seymores/2425692
-	// decompressXML -- Parse the 'compressed' binary form of Android XML docs
-	// such as for AndroidManifest.xml in .apk files
-	public static int endDocTag = 0x00100101;
-	public static int startTag = 0x00100102;
-	public static int endTag = 0x00100103;
+	public static final short
+	RES_NULL_TYPE               = 0x0000,  
+	RES_STRING_POOL_TYPE        = 0x0001,  
+	RES_TABLE_TYPE              = 0x0002,  
 
-	static void prt(String str){
-		//System.err.print(str);
-		Utils.log(str);
-	}
+	// Chunk types in RES_XML_TYPE
+	RES_XML_TYPE                = 0x0003,  
+	RES_XML_FIRST_CHUNK_TYPE    = 0x0100,  
+	RES_XML_START_NAMESPACE_TYPE= 0x0100,  
+	RES_XML_END_NAMESPACE_TYPE  = 0x0101,  
+	RES_XML_START_ELEMENT_TYPE  = 0x0102,  
+	RES_XML_END_ELEMENT_TYPE    = 0x0103,  
+	RES_XML_CDATA_TYPE          = 0x0104,  
+	RES_XML_LAST_CHUNK_TYPE     = 0x017f,
 
-	public static XmlNode parseXml(byte[] xml) {
+	// This contains a uint32_t array mapping strings in the string  
+	// pool back to resource identifiers.  It is optional.
+	RES_XML_RESOURCE_MAP_TYPE   = 0x0180,  
 
-		//StringBuilder finalXML = new StringBuilder();
+	// Chunk types in RES_TABLE_TYPE
+	RES_TABLE_PACKAGE_TYPE      = 0x0200,  
+	RES_TABLE_TYPE_TYPE         = 0x0201,  
+	RES_TABLE_TYPE_SPEC_TYPE    = 0x0202;
+	public static final int NULL=0xFFFFFFFF;
 
-		// Compressed XML file/bytes starts with 24x bytes of data,
-		// 9 32 bit words in little endian order (LSB first):
-		// 0th word is 03 00 08 00
-		// 3rd word SEEMS TO BE: Offset at then of StringTable
-		// 4th word is: Number of strings in string table
-		// WARNING: Sometime I indiscriminently display or refer to word in
-		// little endian storage format, or in integer format (ie MSB first).
-		int numbStrings = LEW(xml, 4 * 4);
-
-		// StringIndexTable starts at offset 24x, an array of 32 bit LE offsets
-		// of the length/string data in the StringTable.
-		int sitOff = 0x24; // Offset of start of StringIndexTable
-
-		// StringTable, each string is represented with a 16 bit little endian
-		// character count, followed by that number of 16 bit (LE) (Unicode)
-		// chars.
-		int stOff = sitOff + numbStrings * 4; // StringTable follows
-		// StrIndexTable
-
-		// XMLTags, The XML tag tree starts after some unknown content after the
-		// StringTable. There is some unknown data after the StringTable, scan
-		// forward from this point to the flag for the start of an XML start
-		// tag.
-		int xmlTagOff = LEW(xml, 3 * 4); // Start from the offset in the 3rd
-		// word.
-		// Scan forward until we find the bytes: 0x02011000(x00100102 in normal
-		// int)
-		for (int ii = xmlTagOff; ii < xml.length - 4; ii += 4) {
-			if (LEW(xml, ii) == startTag) {
-				xmlTagOff = ii;
-				break;
+	public static XmlNode parseXml(byte[] xml){
+		XmlNode root=new XmlNode();
+		int[] pos={0};
+		short type,headerSize;
+		int size;
+		int xmlSize=xml.length;
+		ArrayList<String>stringPool=null;
+		Stack<XmlNode> stack=new Stack<>();
+		XmlNode node;
+		loop:while(pos[0]<xmlSize){
+			type=readLe16(xml,pos[0]);
+			headerSize=readLe16(xml,pos[0]+2);
+			size=readLe32(xml,pos[0]+4);
+			s:switch(type){
+				case RES_XML_TYPE:
+					assert size<xml.length:"Corrupted AXML data";
+					xmlSize=size;
+					pos[0]+=headerSize;
+					break s;
+				case RES_STRING_POOL_TYPE:
+					int str_num=readLe32(xml,pos[0]+8);
+					int style_num=readLe32(xml,pos[0]+12);
+					int flag=readLe32(xml,pos[0]+16);
+					int str_start=readLe32(xml,pos[0]+20);
+					int style_start=readLe32(xml,pos[0]+24);
+					boolean uft8=(flag&(1<<8))!=0;
+					int strpos;
+					String str;
+					int len;
+					stringPool=new ArrayList<>();
+					for(int i=0;i<str_num;i++){
+						strpos=readLe32(xml,pos[0]+28+i*4);
+						if(uft8){
+							len=xml[pos[0]+str_start+strpos];
+							try{
+								str=new String(xml,pos[0]+str_start+strpos+2,len,"utf-8");
+							}catch(UnsupportedEncodingException e){
+								str=new String(xml,pos[0]+str_start+strpos+2,len);
+							}
+						}else{
+							len=readLe16(xml,pos[0]+str_start+strpos);
+							try{
+								str=new String(xml,pos[0]+str_start+strpos+2,len,"utf-16");
+							}catch(UnsupportedEncodingException e){
+								str=new String(xml,pos[0]+str_start+strpos+2,len);
+							}
+						}
+						stringPool.add(i,str);
+					}
+					pos[0]+=size;
+					break s;
+				case RES_XML_RESOURCE_MAP_TYPE:
+					pos[0]+=size;
+					break s;
+				case RES_XML_START_NAMESPACE_TYPE:
+					pos[0]+=size;
+					break s;
+				case RES_XML_END_NAMESPACE_TYPE:
+					pos[0]+=size;
+					break loop;
+				case RES_XML_START_ELEMENT_TYPE:
+					if(stack.empty())node=root;
+					else node=new XmlNode();
+					node.lineNumber=readLe32(xml,pos[0]+8);
+					int comm_index=readLe32(xml,pos[0]+12);
+					if(comm_index!=NULL){
+						node.comment=stringPool.get(comm_index);
+					}
+					int ns_index=readLe32(xml,pos[0]+16);
+					if(ns_index!=NULL)
+						node.namespace=stringPool.get(ns_index);
+					int name_index=readLe32(xml,pos[0]+20);
+					node.name=stringPool.get(name_index);
+					short attributeStart=readLe16(xml,pos[0]+24);
+					short attributeSize=readLe16(xml,pos[0]+26);
+					short attributeCount=readLe16(xml,pos[0]+28);
+					//3*readLe16(xml,pos[0]+28);next:36
+					int ni;int consumed=0;
+					short ressize;String name;
+					if(attributeCount>0)node.attributes=new HashMap<>();
+					for(int i=0;i<attributeCount;i++){
+						//4nsi
+						ni=readLe32(xml,pos[0]+16+attributeStart+consumed+4);
+						name=stringPool.get(ni);
+						//4rawstr
+						ressize=readLe16(xml,pos[0]+16+attributeStart+consumed+12);
+						XmlNode.Res r=new XmlNode.Res();
+						r.dataType=xml[pos[0]+16+attributeStart+consumed+15];
+						r.data=readLe32(xml,pos[0]+16+attributeStart+consumed+16);
+						if(r.dataType==XmlNode.Res.TYPE_STRING)
+							r.str=stringPool.get(r.data);
+						consumed+=ressize+12;
+						node.attributes.put(name,r);
+					}
+					stack.push(node);
+					pos[0]+=size;
+					break s;
+				case RES_XML_CDATA_TYPE:
+					if(stack.isEmpty())node=root;
+					else node=stack.peek();
+					XmlNode.Res r=node.cdata=new XmlNode.Res();
+					r.dataType=xml[pos[0]+16+3];
+					r.data=readLe16(xml,pos[0]+16+4);
+					if(r.dataType==XmlNode.Res.TYPE_STRING)
+						r.str=stringPool.get(r.data);
+					pos[0]+=size;
+					break s;
+				case RES_XML_END_ELEMENT_TYPE:
+					if(stack.size()>0){
+						node=stack.pop();
+						XmlNode parent;
+						if(!stack.empty()){
+							parent=stack.peek();
+							if(parent.elements==null)
+								parent.elements=new ArrayList<>();
+							parent.elements.add(node);
+						}
+					}
+					pos[0]+=size;
+					break s;
+				default:
+					pos[0]+=size;
+					break s;
 			}
-		} // end of hack, scanning for start of first start tag
-
-		// XML tags and attributes:
-		// Every XML start and end tag consists of 6 32 bit words:
-		// 0th word: 02011000 for startTag and 03011000 for endTag
-		// 1st word: a flag?, like 38000000
-		// 2nd word: Line of where this tag appeared in the original source file
-		// 3rd word: FFFFFFFF ??
-		// 4th word: StringIndex of NameSpace name, or FFFFFFFF for default NS
-		// 5th word: StringIndex of Element Name
-		// (Note: 01011000 in 0th word means end of XML document, endDocTag)
-
-		// Start tags (not end tags) contain 3 more words:
-		// 6th word: 14001400 meaning??
-		// 7th word: Number of Attributes that follow this tag(follow word 8th)
-		// 8th word: 00000000 meaning??
-
-		// Attributes consist of 5 words:
-		// 0th word: StringIndex of Attribute Name's Namespace, or FFFFFFFF
-		// 1st word: StringIndex of Attribute Name
-		// 2nd word: StringIndex of Attribute Value, or FFFFFFF if ResourceId
-		// used
-		// 3rd word: Flags?
-		// 4th word: str ind of attr value again, or ResourceId of value
-
-		// TMP, dump string table to tr for debugging
-		// tr.addSelect("strings", null);
-		// for (int ii=0; ii<numbStrings; ii++) {
-		// // Length of string starts at StringTable plus offset in StrIndTable
-		// String str = compXmlString(xml, sitOff, stOff, ii);
-		// tr.add(String.valueOf(ii), str);
-		// }
-		// tr.parent();
-
-		// Step through the XML tree element tags and attributes
-		XmlNode root=null;
-
-		int off = xmlTagOff;
-		//int indent = 0;
-		Stack<XmlNode> nodes=new Stack<>();
-		int startTagLineNo = -2;
-		while (off < xml.length) {
-			int tag0 = LEW(xml, off);
-			// int tag1 = LEW(xml, off+1*4);
-			int lineNo = LEW(xml, off + 2 * 4);
-			// int tag3 = LEW(xml, off+3*4);
-			int nameNsSi = LEW(xml, off + 4 * 4);
-			int nameSi = LEW(xml, off + 5 * 4);
-
-			if (tag0 == startTag) { // XML START TAG
-				int tag6 = LEW(xml, off + 6 * 4); // Expected to be 14001400
-				int numbAttrs = LEW(xml, off + 7 * 4); // Number of Attributes
-				// to follow
-				// int tag8 = LEW(xml, off+8*4); // Expected to be 00000000
-				off += 9 * 4; // Skip over 6+3 words of startTag data
-				String name = compXmlString(xml, sitOff, stOff, nameSi);
-				// tr.addSelect(name, null);
-				startTagLineNo = lineNo;
-				// Look for the Attributes
-				//StringBuffer sb = new StringBuffer();
-				Map<String,Object> attr=new HashMap<>();
-				XmlNode curr=new XmlNode();
-				curr.name=name;
-				for (int ii = 0; ii < numbAttrs; ii++) {
-					int attrNameNsSi = LEW(xml, off); // AttrName Namespace Str
-					// Ind, or FFFFFFFF
-					int attrNameSi = LEW(xml, off + 1 * 4); // AttrName String
-					// Index
-					int attrValueSi = LEW(xml, off + 2 * 4); // AttrValue Str
-					// Ind, or
-					// FFFFFFFF
-					int attrFlags = LEW(xml, off + 3 * 4);
-					int attrResId = LEW(xml, off + 4 * 4); // AttrValue
-					// ResourceId or dup
-					// AttrValue StrInd
-					off += 5 * 4; // Skip over the 5 words of an attribute
-
-					String attrName = compXmlString(xml, sitOff, stOff,
-													attrNameSi);
-
-					java.io.Serializable attrValue = "";
-					if (attrValueSi != -1) {
-						attrValue =  compXmlString(xml, sitOff, stOff, attrValueSi);
-					} else {
-						/*if (attrResId == -1)
-						 attrValue = "resourceID 0x" + Integer.toHexString(attrResId);
-						 else*/
-						attrValue = attrResId;
-
-						//System.out.println(attrName + " >>> " + attrValue.split("0x")[1]);
-					}                
-
-
-					// attrValue = Integer.valueOf(Integer.toHexString(attrResId), 16).intValue();
-					attr.put(attrName,attrValue);
-					//sb.append(" " + attrName + "=\"" + attrValue + "\"");
-					// tr.add(attrName, attrValue);
-				}
-				curr.attributes=attr;
-				nodes.push(curr);
-				//finalXML.append("<" + name + sb + ">");
-				//prtIndent(indent, "<" + name + sb + ">");
-				//indent++;
-
-			} else if (tag0 == endTag) { // XML END TAG
-				XmlNode curr=nodes.pop();
-				//indent--;
-				off += 6 * 4; // Skip over 6 words of endTag data
-				String name = compXmlString(xml, sitOff, stOff, nameSi);
-				if(nodes.size()==0){
-					root=curr;
-				}else{
-					ArrayList<XmlNode> ele=nodes.peek().elements;
-					if(ele==null)ele=new ArrayList<XmlNode>();
-					nodes.peek().elements=ele;
-					ele.add(curr);
-				}
-				//nodes.peek().put(name,curr);
-				//finalXML.append("</" + name + ">");
-				/*prtIndent(indent, "</" + name + "> (line " + startTagLineNo
-				 + "-" + lineNo + ")");*/
-				// tr.parent(); // Step back up the NobTree
-
-			} else if (tag0 == endDocTag) { // END OF XML DOC TAG
-				break;
-
-			} else {
-				prt("  Unrecognized tag code '" + Integer.toHexString(tag0)
-					+ "' at offset " + off);
-				break;
-			}
-		} // end of while loop scanning tags and attributes of XML tree
-		//prt("    end at offset " + off);
-		return root;//finalXML.toString();
-	} // end of decompressXML
-	
-		
-		
-		
-		
-		
-	public static String compXmlString(byte[] xml,int sitOff,int stOff,int strInd){
-		if(strInd<0)
-			return null;
-		int strOff = stOff+LEW(xml,sitOff+strInd*4);
-		return compXmlStringAt(xml,strOff);
-	}
-
-	/*public static String spaces = "                                             ";
-
-	public static void prtIndent(int indent,String str){
-		prt(spaces.substring(0,Math.min(indent*2,spaces.length()))+str);
-	}
-*/
-	// compXmlStringAt -- Return the string stored in StringTable format at
-	// offset strOff. This offset points to the 16 bit string length, which
-	// is followed by that number of 16 bit (Unicode) chars.
-	public static String compXmlStringAt(byte[] arr,int strOff){
-		int strLen = arr[strOff+1]<<8&0xff00|arr[strOff]&0xff;
-		byte[] chars = new byte[strLen];
-		for(int ii = 0; ii<strLen; ii++){
-			chars[ii]=arr[strOff+2+ii*2];
 		}
-		return new String(chars); // Hack, just use 8 byte chars
-	} // end of compXmlStringAt
+		return root;
+	}
 
-	// LEW -- Return value of a Little Endian 32 bit word from the byte array
-	// at offset off.
-	public static int LEW(byte[] arr,int off){
-		return arr[off+3]<<24&0xff000000|arr[off+2]<<16&0xff0000|arr[off+1]<<8&0xff00|arr[off]&0xFF;
-	} // end of LEW
+	public static int readLe32(byte[] xml,int pos){
+		int i=(xml[pos])&0xff|(xml[pos+1]<<8)&0x0000ff00|(xml[pos+2]<<16)&0x00ff0000|((xml[pos+3]<<24)&0xff000000);
+		return i;
+	}
 
+	public static short readLe16(byte[] xml,int pos){
+		return (short)((xml[pos])&0xff|(xml[pos+1]<<8)&0xff00);
+	}
 
-public static class XmlNode{
-	public String name;
-	public ArrayList<XmlNode>elements;
-	public Map<String,Object>attributes;
-}
-
+	public static class XmlNode{
+		public String name;
+		public Map<String,Res> attributes;
+		public ArrayList<XmlNode> elements;
+		public int lineNumber=-1;
+		public String comment;
+		public String namespace;
+		public Res cdata;
+		public static class Res{
+			public byte dataType;
+			public int data;
+			public String str;
+			public static final byte 
+			TYPE_NULL = 0x00,  
+			// The 'data' holds a ResTable_ref, a reference to another resource  
+			// table entry.  
+			TYPE_REFERENCE = 0x01,  
+			// The 'data' holds an attribute resource identifier.  
+			TYPE_ATTRIBUTE = 0x02,  
+			// The 'data' holds an index into the containing resource table's  
+			// global value string pool.  
+			TYPE_STRING = 0x03,  
+			// The 'data' holds a single-precision floating point number.  
+			TYPE_FLOAT = 0x04,  
+			// The 'data' holds a complex number encoding a dimension value,  
+			// such as "100in".  
+			TYPE_DIMENSION = 0x05,  
+			// The 'data' holds a complex number encoding a fraction of a  
+			// container.  
+			TYPE_FRACTION = 0x06,  
+			// Beginning of integer flavors...  
+			TYPE_FIRST_INT = 0x10,  
+			// The 'data' is a raw integer value of the form n..n.  
+			TYPE_INT_DEC = 0x10,  
+			// The 'data' is a raw integer value of the form 0xn..n.  
+			TYPE_INT_HEX = 0x11,  
+			// The 'data' is either 0 or 1, for input "false" or "true" respectively.  
+			TYPE_INT_BOOLEAN = 0x12,  
+			// Beginning of color integer flavors...  
+			TYPE_FIRST_COLOR_INT = 0x1c,  
+			// The 'data' is a raw integer value of the form #aarrggbb.  
+			TYPE_INT_COLOR_ARGB8 = 0x1c,  
+			// The 'data' is a raw integer value of the form #rrggbb.  
+			TYPE_INT_COLOR_RGB8 = 0x1d,  
+			// The 'data' is a raw integer value of the form #argb.  
+			TYPE_INT_COLOR_ARGB4 = 0x1e,  
+			// The 'data' is a raw integer value of the form #rgb.  
+			TYPE_INT_COLOR_RGB4 = 0x1f,  
+			// ...end of integer flavors.  
+			TYPE_LAST_COLOR_INT = 0x1f,  
+			// ...end of integer flavors.  
+			TYPE_LAST_INT = 0x1f ;
+			public static final int
+			COMPLEX_UNIT_SHIFT = 0,  
+			COMPLEX_UNIT_MASK = 0xf,  
+			// TYPE_DIMENSION: Value is raw pixels.  
+			COMPLEX_UNIT_PX = 0,  
+			// TYPE_DIMENSION: Value is Device Independent Pixels.  
+			COMPLEX_UNIT_DIP = 1,  
+			// TYPE_DIMENSION: Value is a Scaled device independent Pixels.  
+			COMPLEX_UNIT_SP = 2,  
+			// TYPE_DIMENSION: Value is in points.  
+			COMPLEX_UNIT_PT = 3,  
+			// TYPE_DIMENSION: Value is in inches.  
+			COMPLEX_UNIT_IN = 4,  
+			// TYPE_DIMENSION: Value is in millimeters.  
+			COMPLEX_UNIT_MM = 5,  
+			// TYPE_FRACTION: A basic fraction of the overall size.  
+			COMPLEX_UNIT_FRACTION = 0,  
+			// TYPE_FRACTION: A fraction of the parent size.  
+			COMPLEX_UNIT_FRACTION_PARENT = 1,  
+			// Where the radix information is, telling where the decimal place  
+			// appears in the mantissa.  This give us 4 possible fixed point  
+			// representations as defined below.  
+			COMPLEX_RADIX_SHIFT = 4,  
+			COMPLEX_RADIX_MASK = 0x3,  
+			// The mantissa is an integral number -- i.e., 0xnnnnnn.0  
+			COMPLEX_RADIX_23p0 = 0,  
+			// The mantissa magnitude is 16 bits -- i.e, 0xnnnn.nn  
+			COMPLEX_RADIX_16p7 = 1,  
+			// The mantissa magnitude is 8 bits -- i.e, 0xnn.nnnn  
+			COMPLEX_RADIX_8p15 = 2,  
+			// The mantissa magnitude is 0 bits -- i.e, 0x0.nnnnnn  
+			COMPLEX_RADIX_0p23 = 3,  
+			// Where the actual value is.  This gives us 23 bits of  
+			// precision.  The top bit is the sign.  
+			COMPLEX_MANTISSA_SHIFT = 8,  
+			COMPLEX_MANTISSA_MASK = 0xffffff;
+		}
+	}
 }
