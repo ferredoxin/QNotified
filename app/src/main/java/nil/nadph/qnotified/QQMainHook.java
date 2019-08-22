@@ -1,16 +1,15 @@
 package nil.nadph.qnotified;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
-import android.os.Environment;
-import android.os.Message;
-import android.os.Parcelable;
+import android.os.*;
 import android.text.Html;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -448,59 +447,117 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
                 private static final int R_ID_BB_LAYOUT = 0x300AFF41;
                 private static final int R_ID_BB_TEXTVIEW = 0x300AFF42;
 
+                @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                 @Override
                 public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
                     if (ConfigManager.get().getBooleanOrFalse(qn_send_card_msg)) {
-                        Object obj = methodHookParam.args[0];
+                        Object msgObj = methodHookParam.args[0];
                         ViewGroup viewGroup = (ViewGroup) methodHookParam.args[2];
-                        if (load("com.tencent.mobileqq.data.MessageForStructing").isAssignableFrom(obj.getClass())) {
-                            addView(viewGroup, obj);
-                        } else if (load("com.tencent.mobileqq.data.MessageForArkApp").isAssignableFrom(obj.getClass())) {
-                            addView(viewGroup, obj);
+                        if (!load("com.tencent.mobileqq.data.MessageForStructing").isAssignableFrom(msgObj.getClass())
+                                && !load("com.tencent.mobileqq.data.MessageForArkApp").isAssignableFrom(msgObj.getClass()))
+                            return;
+                        if (viewGroup.findViewById(R_ID_BB_LAYOUT) == null) {
+                            Context context = viewGroup.getContext();
+                            LinearLayout linearLayout = new LinearLayout(context);
+                            linearLayout.setId(R_ID_BB_LAYOUT);
+                            linearLayout.setBackground(new SimpleBgDrawable(0x00000000, Color.BLUE, dip2px(context, 2)));
+                            linearLayout.setOrientation(LinearLayout.VERTICAL);
+                            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+                            lp.gravity = Gravity.BOTTOM | Gravity.RIGHT;
+                            TextView textView = new TextView(context);
+                            textView.setId(R_ID_BB_TEXTVIEW);
+                            textView.setGravity(Gravity.CENTER);
+                            textView.setTextColor(Color.BLUE);
+                            textView.setText("长按复制");
+                            linearLayout.addView(textView, lp);
+                            RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
+                            int i = dip2px(context, 5);
+                            rlp.setMargins(i, i, i, i);
+                            viewGroup.addView(linearLayout, rlp);
                         }
-                    }
-                }
-
-                private void addView(ViewGroup viewGroup, final Object obj) {
-                    if (viewGroup.findViewById(R_ID_BB_LAYOUT) == null) {
-                        Context context = viewGroup.getContext();
-                        LinearLayout linearLayout = new LinearLayout(context);
-                        linearLayout.setId(R_ID_BB_LAYOUT);
-                        linearLayout.setOrientation(LinearLayout.VERTICAL);
-
-                        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-                        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                        lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
-                        TextView textView = new TextView(context);
-                        textView.setId(R_ID_BB_TEXTVIEW);
-                        textView.setGravity(Gravity.CENTER);
-                        textView.setTextColor(Color.BLUE);
-                        textView.setText("长按复制卡片");
-                        linearLayout.addView(textView, WRAP_CONTENT, WRAP_CONTENT);
-                        viewGroup.addView(linearLayout, lp);
-                    }
-                    ((TextView) viewGroup.findViewById(R_ID_BB_TEXTVIEW)).setOnLongClickListener(new View.OnLongClickListener() {
-                        @Override
-                        public boolean onLongClick(View view) {
-                            try {
-                                Object val$msgObj = obj;
-                                ClipboardManager clipboardManager = (ClipboardManager) view.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-                                if (load("com.tencent.mobileqq.data.MessageForStructing").isAssignableFrom(val$msgObj.getClass())) {
-                                    clipboardManager.setText((String) invoke_virtual(iget_object(val$msgObj, "structingMsg"), "getXml", new Object[0]));
-                                } else if (load("com.tencent.mobileqq.data.MessageForArkApp").isAssignableFrom(val$msgObj.getClass())) {
-                                    clipboardManager.setText((String) invoke_virtual(iget_object(val$msgObj, "ark_app_message"), "toAppXml", new Object[0]));
+                        ((TextView) viewGroup.findViewById(R_ID_BB_TEXTVIEW)).setOnLongClickListener(new View.OnLongClickListener() {
+                            @Override
+                            public boolean onLongClick(View view) {
+                                try {
+                                    ClipboardManager clipboardManager = (ClipboardManager) view.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                                    if (load("com.tencent.mobileqq.data.MessageForStructing").isAssignableFrom(msgObj.getClass())) {
+                                        clipboardManager.setText((String) invoke_virtual(iget_object(msgObj, "structingMsg"), "getXml", new Object[0]));
+                                    } else if (load("com.tencent.mobileqq.data.MessageForArkApp").isAssignableFrom(msgObj.getClass())) {
+                                        clipboardManager.setText((String) invoke_virtual(iget_object(msgObj, "ark_app_message"), "toAppXml", new Object[0]));
+                                    }
+                                    showToast(view.getContext(), TOAST_TYPE_INFO, "复制成功", Toast.LENGTH_SHORT);
+                                } catch (Throwable th) {
                                 }
-                                showToast(view.getContext(), TOAST_TYPE_INFO, "复制成功", Toast.LENGTH_SHORT);
-                            } catch (Throwable th) {
+                                return true;
                             }
-                            return true;
-                        }
-                    });
+                        });
+                    }
                 }
             });
         } catch (Throwable e) {
             log(e);
         }
+        try {
+            Method m = null;
+            Method[] methods = load("com.tencent.mobileqq.activity.BaseChatPie").getDeclaredMethods();
+            for (int i = 0; i < methods.length; i++) {
+                Method method = methods[i];
+                if (method.getName().equals("e") && method.getParameterTypes().length == 0 && method.getReturnType() == Void.TYPE) {
+                    m = methods[i];
+                    break;
+                }
+            }
+            assert m != null;
+            XposedBridge.hookMethod(m, new XC_MethodHook(51) {
+                @Override
+                public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                    if (ConfigManager.get().getBooleanOrFalse(qn_send_card_msg)) {
+                        final Object qqi = iget_object(methodHookParam.thisObject, "a", load("com.tencent.mobileqq.app.QQAppInterface"));
+                        final Object session = iget_object(methodHookParam.thisObject, "a", load("com.tencent.mobileqq.activity.aio.SessionInfo"));
+                        final ViewGroup viewGroup = (ViewGroup) iget_object(methodHookParam.thisObject, "d", Class.forName("android.view.ViewGroup"));
+                        Resources res = viewGroup.getContext().getResources();
+                        int id_btn = res.getIdentifier("fun_btn", "id", null);
+                        final int id_et = res.getIdentifier("input", "id", null);
+                        if (viewGroup != null)
+                            ((Button) viewGroup.findViewById(id_btn).setOnLongClickListener(new View.OnLongClickListener() {
+                                @Override
+                                public boolean onLongClick(View view) {
+                                    EditText edit = (EditText) viewGroup.findViewById(id_et);
+                                    String input = edit.getText().toString();
+                                    boolean success = false;
+                                    Class cl_msgMgr = load((String) Hook.config.get("MessageManager"));
+                                    try {
+                                        Object msg = invoke_static(load((String) Hook.config.get("TestStructMsg")), "a", input, load("com.tencent.mobileqq.structmsg.AbsStructMsg"));
+                                        if (msg != null) {
+                                            invoke_static(cl_msgMgr, "a", qqi, session, msg);
+                                            success = true;
+                                        }
+                                    } catch (Throwable th) {
+                                        Toast.makeText(view.getContext(), th.toString(), Toast.LENGTH_SHORT).show();
+                                        XposedBridge.log(th);
+                                    }
+                                    try {
+                                        Object arkMsg = new_instance(load("com.tencent.mobileqq.data.ArkAppMessage"));
+                                        if ((Boolean) invoke_virtual(arkMsg, "fromAppXml", input)) {
+                                            invoke_static(cl_msgMgr, "a", qqi, session, arkMsg);
+                                            success = true;
+                                        }
+                                    } catch (Throwable th2) {
+                                        XposedBridge.log(th2);
+                                    }
+                                    if (success) edit.setText("");
+                                    return false;
+                                }
+                            }));
+
+
+                    }
+                }
+            });
+        } catch (Throwable e) {
+            log(e);
+        }
+
 		/*XposedBridge.hookAllMethods(load("aydf"),"a",invokeRecord);
 		 XposedBridge.hookAllMethods(load("aydf"),"b",invokeRecord);
 		 XposedBridge.hookAllMethods(load("aydu"),"a",invokeRecord);/*new XC_MethodHook(60){
@@ -587,7 +644,8 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
         }
     };
 
-    public static XC_MethodHook.Unhook findAndHookMethodIfExists(Class<?> clazz, String methodName, Object... parameterTypesAndCallback) {
+    public static XC_MethodHook.Unhook findAndHookMethodIfExists(Class<?> clazz, String methodName, Object...
+            parameterTypesAndCallback) {
         try {
             return findAndHookMethod(clazz, methodName, parameterTypesAndCallback);
         } catch (Throwable e) {
@@ -596,7 +654,8 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
         }
     }
 
-    public static XC_MethodHook.Unhook findAndHookMethodIfExists(String clazzName, ClassLoader cl, String methodName, Object... parameterTypesAndCallback) {
+    public static XC_MethodHook.Unhook findAndHookMethodIfExists(String clazzName, ClassLoader cl, String
+            methodName, Object... parameterTypesAndCallback) {
         try {
             return findAndHookMethod(clazzName, cl, methodName, parameterTypesAndCallback);
         } catch (Throwable e) {
