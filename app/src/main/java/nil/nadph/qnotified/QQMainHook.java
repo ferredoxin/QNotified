@@ -180,7 +180,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
     private void performHook(ClassLoader classLoader) {
         if (Utils.DEBUG) {
             if ("true".equals(System.getProperty(QN_FULL_TAG))) {
-                log("Err:Qnotified reloaded??");
+                log("Err:QNotified reloaded??");
                 System.exit(-1);
                 //QNotified updated(in HookLoader mode),kill QQ to make user restart it.
             }
@@ -189,7 +189,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
         Initiator.init(classLoader);
         log("Clases init done");
         log("App:" + Utils.getApplication());
-        if (classLoader == null) log("ERROR:classLoader==null");
+        assert classLoader != null : "ERROR:classLoader==null";
 		/*try{
 		 Thread.sleep(5000);
 		 }catch(InterruptedException e){}*
@@ -214,7 +214,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
 		/*XposedBridge.hookAllMethods(load("com/tencent/mobileqq/util/FaceDecoder"),"a",
 		 });*/
 
-        Class clazz = load(".activity.contacts.fragment.FriendFragment");//".activity.Contacts");
+        Class clazz;// = load(".activity.contacts.fragment.FriendFragment");//".activity.Contacts");
 		/*findAndHookMethod(clazz,"i",pastEntry);
 		 findAndHookMethod(clazz,"j",pastEntry);*/
         findAndHookMethod(load("com/tencent/widget/PinnedHeaderExpandableListView"), "setAdapter", ExpandableListAdapter.class, exfriendEntryHook);
@@ -467,14 +467,17 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
                         LinearLayout linearLayout = new LinearLayout(context);
                         linearLayout.setId(R_ID_BB_LAYOUT);
                         linearLayout.setOrientation(LinearLayout.VERTICAL);
-                        linearLayout.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
+
+                        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+                        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                        lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
                         TextView textView = new TextView(context);
                         textView.setId(R_ID_BB_TEXTVIEW);
-                        textView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
+                        textView.setGravity(Gravity.CENTER);
                         textView.setTextColor(Color.BLUE);
                         textView.setText("长按复制卡片");
                         linearLayout.addView(textView, WRAP_CONTENT, WRAP_CONTENT);
-                        viewGroup.addView(linearLayout, WRAP_CONTENT, WRAP_CONTENT);
+                        viewGroup.addView(linearLayout, lp);
                     }
                     ((TextView) viewGroup.findViewById(R_ID_BB_TEXTVIEW)).setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
