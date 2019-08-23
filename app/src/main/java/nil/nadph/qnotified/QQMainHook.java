@@ -31,6 +31,7 @@ import java.util.HashSet;
 
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
+import static android.widget.LinearLayout.LayoutParams.FILL_PARENT;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static nil.nadph.qnotified.Initiator.load;
 import static nil.nadph.qnotified.QQViewBuilder.*;
@@ -451,7 +452,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
                 @Override
                 public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
                     if (ConfigManager.get().getBooleanOrFalse(qn_send_card_msg)) {
-                        Object msgObj = methodHookParam.args[0];
+                        final Object msgObj = methodHookParam.args[0];
                         ViewGroup viewGroup = (ViewGroup) methodHookParam.args[2];
                         if (!load("com.tencent.mobileqq.data.MessageForStructing").isAssignableFrom(msgObj.getClass())
                                 && !load("com.tencent.mobileqq.data.MessageForArkApp").isAssignableFrom(msgObj.getClass()))
@@ -460,7 +461,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
                             Context context = viewGroup.getContext();
                             LinearLayout linearLayout = new LinearLayout(context);
                             linearLayout.setId(R_ID_BB_LAYOUT);
-                            linearLayout.setBackground(new SimpleBgDrawable(0x00000000, Color.BLUE, dip2px(context, 2)));
+                            //linearLayout.setBackground(new DebugDrawable(context));//SimpleBgDrawable(0x00000000, Color.BLUE, dip2px(context, 1)));
                             linearLayout.setOrientation(LinearLayout.VERTICAL);
                             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
                             lp.gravity = Gravity.BOTTOM | Gravity.RIGHT;
@@ -470,10 +471,14 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
                             textView.setTextColor(Color.BLUE);
                             textView.setText("长按复制");
                             linearLayout.addView(textView, lp);
-                            RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-                            int i = dip2px(context, 5);
+                            RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(MATCH_PARENT,MATCH_PARENT);
+							rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+							//rlp.addRule(RelativeLayout.ALIGN_PARENT_TO
+                            int i = dip2px(context, 2);
                             rlp.setMargins(i, i, i, i);
+							linearLayout.hashCode();
                             viewGroup.addView(linearLayout, rlp);
+							//iput_object(viewGroup,"DEBUG_DRAW",true);
                         }
                         ((TextView) viewGroup.findViewById(R_ID_BB_TEXTVIEW)).setOnLongClickListener(new View.OnLongClickListener() {
                             @Override
@@ -491,12 +496,14 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
                                 return true;
                             }
                         });
+						viewGroup.setBackgroundDrawable(new DebugDrawable(viewGroup.getContext()));
                     }
                 }
             });
         } catch (Throwable e) {
             log(e);
         }
+		/*
         try {
             Method m = null;
             Method[] methods = load("com.tencent.mobileqq.activity.BaseChatPie").getDeclaredMethods();

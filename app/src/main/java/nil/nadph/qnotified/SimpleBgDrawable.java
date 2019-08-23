@@ -43,17 +43,17 @@ public class SimpleBgDrawable extends Drawable{
 
 	@Override
 	public void setAlpha(int alpha){
-		throw new UnsupportedOperationException("Stub!");
+		//throw new UnsupportedOperationException("Stub!");
 	}
 
 	@Override
 	public void setColorFilter(ColorFilter colorFilter){
-		throw new UnsupportedOperationException("Stub!");
+		//throw new UnsupportedOperationException("Stub!");
 	}
 
 	@Override
 	public int getOpacity(){
-		throw new UnsupportedOperationException("Stub!");
+		return android.graphics.PixelFormat.TRANSLUCENT;
 	}
 
 }
