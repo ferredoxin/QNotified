@@ -201,13 +201,21 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
 		 new Thread(new SearchEntrance()).start();
 		 }
 		 });
-		 }catch(Exception e){}
-		 /*findAndHookMethod(load("com.tencent.mobileqq.data.MessageForQQWalletMsg"),"doParse",new XC_MethodHook(200){
-		 @Override
-		 protected void afterHookedMethod(MethodHookParam param){
-		 XposedHelpers.setObjectField(param.thisObject,"isread",true);
-		 }
-		 });*/
+		 }catch(Exception e){}*/
+		findAndHookMethod(load("com.tencent.mobileqq.data.MessageForQQWalletMsg"),"doParse",new XC_MethodHook(200){
+				@Override
+				protected void afterHookedMethod(MethodHookParam param)throws Throwable{
+					XposedHelpers.setObjectField(param.thisObject,"isread",true);
+					Field[] fs = param.thisObject.getClass().getFields();
+					String ret="";
+					for (int i = 0; i < fs.length; i++) {
+						fs[i].setAccessible(true);
+						ret += (i < fs.length - 1 ? "├" : "↓") + fs[i].getName() + "=" + ClazzExplorer.en_toStr(fs[i].get(param.thisObject)) + "\n";
+					}
+					android.util.Log.i("QNdump",ret);
+					//dump(param.thisObect);
+				}
+			});
 
 
 
