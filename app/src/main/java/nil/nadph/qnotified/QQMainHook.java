@@ -6,7 +6,6 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.*;
@@ -23,20 +22,15 @@ import nil.nadph.qnotified.pk.FriendChunk;
 import java.io.File;
 import java.io.FileInputStream;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.util.HashSet;
 
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
-import static android.widget.LinearLayout.LayoutParams.FILL_PARENT;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static nil.nadph.qnotified.Initiator.load;
 import static nil.nadph.qnotified.QQViewBuilder.*;
 import static nil.nadph.qnotified.Utils.*;
-import java.lang.reflect.*;
 
 /*TitleKit:Lcom/tencent/mobileqq/widget/navbar/NavBarCommon*/
 
@@ -203,26 +197,26 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
 		 }
 		 });
 		 }catch(Exception e){}*/
-		findAndHookMethod(load("com.tencent.mobileqq.data.MessageForQQWalletMsg"),"doParse",new XC_MethodHook(200){
-				@Override
-				protected void afterHookedMethod(MethodHookParam param)throws Throwable{
-					XposedHelpers.setObjectField(param.thisObject,"isread",true);
-					int istroop=(Integer)iget_object(param.thisObject,"istroop");
-					if(istroop!=1)return;
-					String frienduin=(String)iget_object(param.thisObject,"frienduin");
-					long troop=Long.parseLong(frienduin);
-					
-					Field[] fs = param.thisObject.getClass().getFields();
-					String ret="";
-					for (int i = 0; i < fs.length; i++) {
-						fs[i].setAccessible(true);
-						if(Modifier.isFinal(fs[i].getModifiers()))continue;
-						ret += (i < fs.length - 1 ? "├" : "↓") + fs[i].getName() + "=" + ClazzExplorer.en_toStr(fs[i].get(param.thisObject)) + "\n";
-					}
-					android.util.Log.i("QNdump",ret);
-					//dump(param.thisObect);
-				}
-			});
+        findAndHookMethod(load("com.tencent.mobileqq.data.MessageForQQWalletMsg"), "doParse", new XC_MethodHook(200) {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                XposedHelpers.setObjectField(param.thisObject, "isread", true);
+                int istroop = (Integer) iget_object(param.thisObject, "istroop");
+                if (istroop != 1) return;
+                String frienduin = (String) iget_object(param.thisObject, "frienduin");
+                long troop = Long.parseLong(frienduin);
+
+                Field[] fs = param.thisObject.getClass().getFields();
+                String ret = "";
+                for (int i = 0; i < fs.length; i++) {
+                    fs[i].setAccessible(true);
+                    if (Modifier.isFinal(fs[i].getModifiers())) continue;
+                    ret += (i < fs.length - 1 ? "├" : "↓") + fs[i].getName() + "=" + ClazzExplorer.en_toStr(fs[i].get(param.thisObject)) + "\n";
+                }
+                android.util.Log.i("QNdump", ret);
+                //dump(param.thisObect);
+            }
+        });
 
 
 
@@ -486,14 +480,14 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
                             textView.setTextColor(Color.BLUE);
                             textView.setText("长按复制");
                             linearLayout.addView(textView, lp);
-                            RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(MATCH_PARENT,MATCH_PARENT);
-							rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-							//rlp.addRule(RelativeLayout.ALIGN_PARENT_TO
+                            RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
+                            rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                            //rlp.addRule(RelativeLayout.ALIGN_PARENT_TO
                             int i = dip2px(context, 2);
                             rlp.setMargins(i, i, i, i);
-							linearLayout.hashCode();
+                            linearLayout.hashCode();
                             viewGroup.addView(linearLayout, rlp);
-							//iput_object(viewGroup,"DEBUG_DRAW",true);
+                            //iput_object(viewGroup,"DEBUG_DRAW",true);
                         }
                         ((TextView) viewGroup.findViewById(R_ID_BB_TEXTVIEW)).setOnLongClickListener(new View.OnLongClickListener() {
                             @Override
@@ -511,7 +505,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
                                 return true;
                             }
                         });
-						viewGroup.setBackgroundDrawable(new DebugDrawable(viewGroup.getContext()));
+                        viewGroup.setBackgroundDrawable(new DebugDrawable(viewGroup.getContext()));
                     }
                 }
             });

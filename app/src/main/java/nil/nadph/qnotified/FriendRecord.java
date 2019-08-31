@@ -5,60 +5,61 @@ import java.io.Serializable;
 import static nil.nadph.qnotified.Utils.en;
 
 
+public class FriendRecord implements Serializable, Cloneable {
 
-public class FriendRecord implements Serializable,Cloneable{
+    private static final long serialVersionUID = 1L;
+    public static final int STATUS_ERROR = 0;
+    public static final int STATUS_RESERVED = 1;
+    public static final int STATUS_STRANGER = 2;
+    public static final int STATUS_EXFRIEND = 3;
 
-	private static final long serialVersionUID = 1L;
-	public static final int STATUS_ERROR=0;
-	public static final int STATUS_RESERVED=1;
-	public static final int STATUS_STRANGER=2;
-	public static final int STATUS_EXFRIEND=3;
-	
-	public static final int STATUS_FRIEND_MUTUAL=4;
-	public static final int STATUS_FRIEND_SIDE_0=5;
-	public static final int STATUS_FRIEND_SIDE_1=6;
-	public static final int STATUS_BLACKLIST=7;
-	
-	public long uin;
-	
-	public String nick;
-	
-	public String remark;//local or normal
-	
-	public int friendStatus;
+    public static final int STATUS_FRIEND_MUTUAL = 4;
+    public static final int STATUS_FRIEND_SIDE_0 = 5;
+    public static final int STATUS_FRIEND_SIDE_1 = 6;
+    public static final int STATUS_BLACKLIST = 7;
 
-	/** 10dec-lenth,sec */
-	public long serverTime;
-	
-	@Override
-	public int hashCode(){
-		return (int)uin;
-	}
-	
-	public String getShowStr(){
-		if(remark!=null&&remark.length()>0)return remark;
-		else if(nick!=null&&nick.length()>0)return nick;
-		else return ""+uin;
-	}
-	
-	public String getShowStrWithUin(){
-		if(remark!=null&&remark.length()>0)return remark+"("+uin+")";
-		else if(nick!=null&&nick.length()>0)return nick+"("+uin+")";
-		else return ""+uin;
-	}
-	
-	@Override
-	public String toString(){
-		StringBuilder sb=new StringBuilder("{uin=");
-		sb.append(uin);
-		sb.append(",nick=");
-		sb.append(en(nick));
-		sb.append(",remark=");
-		sb.append(en(remark));
-		sb.append(",friendStatus=");
-		sb.append(friendStatus);
-		sb.append(",serverTime=");
-		sb.append(serverTime);
+    public long uin;
+
+    public String nick;
+
+    public String remark;//local or normal
+
+    public int friendStatus;
+
+    /**
+     * 10dec-lenth,sec
+     */
+    public long serverTime;
+
+    @Override
+    public int hashCode() {
+        return (int) uin;
+    }
+
+    public String getShowStr() {
+        if (remark != null && remark.length() > 0) return remark;
+        else if (nick != null && nick.length() > 0) return nick;
+        else return "" + uin;
+    }
+
+    public String getShowStrWithUin() {
+        if (remark != null && remark.length() > 0) return remark + "(" + uin + ")";
+        else if (nick != null && nick.length() > 0) return nick + "(" + uin + ")";
+        else return "" + uin;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("{uin=");
+        sb.append(uin);
+        sb.append(",nick=");
+        sb.append(en(nick));
+        sb.append(",remark=");
+        sb.append(en(remark));
+        sb.append(",friendStatus=");
+        sb.append(friendStatus);
+        sb.append(",serverTime=");
+        sb.append(serverTime);
 		/*if(events==null){
 			sb.append("null}");
 			return sb.toString();
@@ -81,21 +82,19 @@ public class FriendRecord implements Serializable,Cloneable{
 			sb.append(en(events[i].extra));
 			sb.append("},");
 		}*/
-		if(sb.charAt(sb.length()-1)==',')sb.deleteCharAt(sb.length()-1);
-		sb.append("}");
-		return sb.toString();
-	}
+        if (sb.charAt(sb.length() - 1) == ',') sb.deleteCharAt(sb.length() - 1);
+        sb.append("}");
+        return sb.toString();
+    }
 
-	@Override
-	public boolean equals(Object obj){
-		try{
-			return uin==((FriendRecord)obj).uin;
-		}catch(Exception e){
-			return false;
-		}
-	}
+    @Override
+    public boolean equals(Object obj) {
+        try {
+            return uin == ((FriendRecord) obj).uin;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
-	
 
-	
 }

@@ -1,60 +1,48 @@
 package nil.nadph.qnotified;
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.drawable.StateListDrawable;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 
-public class Initiator{
-	
-	private static Context mContext;
-	private static PopupWindow window;
-	private float progress;
-	
-	public static void init(ClassLoader classLoader){
-        qqClassLoader=classLoader;
-	}
+public class Initiator {
 
-	
-	
-	private static ClassLoader qqClassLoader;
+    private Context mContext;
+    private static PopupWindow window;
+    private float progress;
+
+    public static void init(ClassLoader classLoader) {
+        qqClassLoader = classLoader;
+    }
+
+
+    private static ClassLoader qqClassLoader;
 
 	/*public static void patchStub(Context ctx){
 		ClassLoader ld=ctx.getClassLoader();
 		DexClassLoader dcl=new DexClassLoader("/sdcard/AppProjects/QNotified/classes2.dex",ctx.getDir("dex",0).getAbsolutePath(),null,qqClassLoader);
 		qqClassLoader=dcl;
 	}*/
-	
-    public static Class<?> load(String className){
-        if(qqClassLoader==null||className.isEmpty()){
+
+    public static Class<?> load(String className) {
+        if (qqClassLoader == null || className.isEmpty()) {
             return null;
         }
-		className=className.replace('/','.');
-		if(className.endsWith(";"))className=className.substring(0,className.length()-1);
-		if(className.charAt(0)=='L'&&className.charAt(1)>='a')className=className.substring(1);
-        if(className.startsWith(".")){
-            className=Utils.PACKAGE_NAME_QQ+className;
+        className = className.replace('/', '.');
+        if (className.endsWith(";")) className = className.substring(0, className.length() - 1);
+        if (className.charAt(0) == 'L' && className.charAt(1) >= 'a') className = className.substring(1);
+        if (className.startsWith(".")) {
+            className = Utils.PACKAGE_NAME_QQ + className;
         }
-        try{
+        try {
             return qqClassLoader.loadClass(className);
-        }catch(Throwable e){
-            if(!className.contains("com.tencent.mobileqq.R$")){
-                Utils.log(String.format("Can't find the Class of name: %s!",className));
+        } catch (Throwable e) {
+            if (!className.contains("com.tencent.mobileqq.R$")) {
+                Utils.log(String.format("Can't find the Class of name: %s!", className));
             }
             return null;
         }
     }
-	
+	/*
 	public static void showPopup(View root){
 		if(mContext==null)
 			mContext=Utils.getContext(root);
@@ -108,14 +96,14 @@ public class Initiator{
 		vroot.addView(tv,llp_ww);
 		
 		LinearLayout _ll=new LinearLayout(mContext);
-		_ll.setBackground(new SimpleBgDrawable(0,0xFFFFFFFF,(int)(0.5f+Utils.dip2px(mContext,1.0f))));
+		_ll.setBackgroundDrawable(new SimpleBgDrawable(0,0xFFFFFFFF,(int)(0.5f+Utils.dip2px(mContext,1.0f))));
 		LinearLayout.LayoutParams _tmp_lllp=new LinearLayout.LayoutParams(MATCH_PARENT,WRAP_CONTENT);
 		_tmp_lllp.setMargins(20,20,20,0);
 		vroot.addView(_ll,_tmp_lllp);
 		
 		final View _v=new View(mContext);
 		final ProportionDrawable pd=new ProportionDrawable(0xFFFFFFFF,0,Gravity.LEFT,0f);
-		_v.setBackground(pd);
+		_v.setBackgroundDrawable(pd);
 		_tmp_lllp=new LinearLayout.LayoutParams(MATCH_PARENT,20);
 		_tmp_lllp.setMargins(10,10,10,10);
 		_ll.addView(_v,_tmp_lllp);
@@ -144,7 +132,7 @@ public class Initiator{
 		_rl.addView(tv_r,_rllp);
 		
 		tv=new TextView(mContext);
-		tv.setBackground(bg);
+		tv.setBackgroundDrawable(bg);
 		tv.setTextSize(20);
 		tv.setGravity(Gravity.CENTER);
 		tv.setText("隐藏");
@@ -186,6 +174,6 @@ public class Initiator{
 					}
 				}
 			}).start();
-	}
-	
+	}*/
+
 }
