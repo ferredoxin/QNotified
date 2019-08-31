@@ -80,12 +80,12 @@ public class QQViewBuilder{
 
 
 	public static RelativeLayout newListItemSwitchConfig(Context ctx,CharSequence title,CharSequence desc,final String key,boolean defVal) throws IOException{
-		boolean on=ConfigManager.get().getBooleanOrDefault(key,defVal);
+		boolean on=ConfigManager.getDefault().getBooleanOrDefault(key,defVal);
 		RelativeLayout root=newListItemSwitch(ctx,title,desc,on,new CompoundButton.OnCheckedChangeListener(){
 				@Override
 				public void onCheckedChanged(CompoundButton buttonView,boolean isChecked){
 					try{
-						ConfigManager mgr=ConfigManager.get();
+						ConfigManager mgr=ConfigManager.getDefault();
 						mgr.getAllConfig().put(key,isChecked);
 						mgr.save();
 					}catch(Exception e){
@@ -101,12 +101,12 @@ public class QQViewBuilder{
 
 	
 	public static RelativeLayout newListItemSwitchConfigNext(Context ctx,CharSequence title,CharSequence desc,final String key,boolean defVal) throws IOException{
-		boolean on=ConfigManager.get().getBooleanOrDefault(key,defVal);
+		boolean on=ConfigManager.getDefault().getBooleanOrDefault(key,defVal);
 		RelativeLayout root=newListItemSwitch(ctx,title,desc,on,new CompoundButton.OnCheckedChangeListener(){
 				@Override
 				public void onCheckedChanged(CompoundButton buttonView,boolean isChecked){
 					try{
-						ConfigManager mgr=ConfigManager.get();
+						ConfigManager mgr=ConfigManager.getDefault();
 						mgr.getAllConfig().put(key,isChecked);
 						mgr.save();
 						Utils.showToastShort(buttonView.getContext(),"重启QQ生效");

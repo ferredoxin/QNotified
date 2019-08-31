@@ -44,7 +44,7 @@ public class ExfriendManager{
 
 	public long lastUpdateTimeSec;
 
-	private HashMap<String,Object> fileData;//Back compatibility
+	private ConfigManager fileData;//Back compatibility
 
 	private ConcurrentHashMap mStdRemarks;
 	private ArrayList<FriendChunk> cachedFriendChunks=new ArrayList<>();
@@ -137,99 +137,28 @@ public class ExfriendManager{
 	}
 
 
-	/**  ?(0xFE)QNC I_version I_size I_RAW_reserved 16_md5 DATA */
 	public @Nullable void loadSavedPersonsInfo(){
 		synchronized(this){
-		if(fileData==null)fileData=new HashMap<>();
-		else fileData.clear();
-		if(persons==null){
-			persons=new HashMap<>();
-		}
-		if(events==null){
-			events=new HashMap<>();
-		}
-		dbg();
-		File f=new File(Utils.getApplication().getFilesDir().getAbsolutePath()+"/qnotified_"+mUin+".dat");
-		if(!f.exists())return;
-		try{
-			FileInputStream fin=new FileInputStream(f);
-			DataInputStream in=new DataInputStream(fin);
-			in.skip(4);//flag
-			int ver=in.readInt();
-			int file_size=in.readInt();
-			readIRaw(in);//ignore
-			byte[] md5=new byte[16];
-			if(in.read(md5,0,16)<16)throw new IOException("Failed to read md5");
-			String key;
-
-			a:while(in.available()>0){
-				int _type=in.read();
-				if(_type<=0||_type>255)throw new IOException("Unexpected type:"+_type+",version:"+ver);
-				key=readIStr(in);
-				switch((byte)_type){
-					case TYPE_NULL:
-						fileData.put(key,null);
-						break;
-					case TYPE_BYTE:
-						fileData.put(key,(byte)in.read());
-						break;
-					case TYPE_BOOL:
-						fileData.put(key,in.read()!=0);
-						break;
-					case TYPE_CODEPOINT:
-						fileData.put(key,in.readInt());
-						break;
-					case TYPE_INT:
-						fileData.put(key,in.readInt());
-						break;
-					case TYPE_SHORT:
-						fileData.put(key,in.readShort());
-						break;
-					case TYPE_LONG:
-						fileData.put(key,in.readLong());
-						break;
-					case TYPE_FLOAT:
-						fileData.put(key,in.readFloat());
-						break;
-					case TYPE_DOUBLE:
-						fileData.put(key,in.readDouble());
-						break;
-					case TYPE_ISTR:
-						fileData.put(key,readIStr(in));
-						break;
-					case TYPE_IRAW:
-						fileData.put(key,readIRaw(in));
-						break;
-					case TYPE_TABLE:
-						fileData.put(key,readTable(in));
-						break;
-					case TYPE_EOF:
-						break a;
-					default:
-						throw new IOException("Unexpected type:"+_type+",name:\""+key+"\",version:"+ver);
-				}
-			}
-			dbg();
-			updateFriendTableVersion();
-			initEventsTable();
-			dbg();
-			tableToFriend();
-			tableToEvents();
-			lastUpdateTimeSec=0l;
 			try{
-				lastUpdateTimeSec=fileData.get("lastUpdateFl");
-			}catch(Exception e){}
-			dbg();
-		}catch(IOException e){
-			log(e);
-		}
+				if(fileData==null){
+					File f=new File(Utils.getApplication().getFilesDir().getAbsolutePath()+"/qnotified_"+mUin+".dat");
+					fileData=new ConfigManager(f);
+				}
+				updateFriendTableVersion();
+				initEventsTable();
+				tableToFriend();
+				tableToEvents();
+				lastUpdateTimeSec=fileData.getAllConfig().get("lastUpdateFl");
+			}catch(IOException e){
+				log(e);
+			}
 		}
 	}
 
 
 	/* We try to add some columns */
 	private void updateFriendTableVersion(){
-		Table<Long> fr=(Table<Long>)fileData.get("friends");
+		Table<Long> fr=(Table<Long>)fileData.getAllConfig().get("friends");
 		if(fr==null){
 			log("damn! updateFriendTableVersion in null");
 		}
@@ -247,11 +176,11 @@ public class ExfriendManager{
 		Iterator<Map.Entry<Long,FriendRecord>> it=/*(Iterator<Map.Entry<Long, FriendRecord>>)*/persons.entrySet().iterator();
 		Map.Entry<Long,FriendRecord> ent;
 		String suin;
-		Table<Long> t=(Table<Long>)fileData.get("friends");
+		Table<Long> t=(Table<Long>)fileData.getAllConfig().get("friends");
 		if(t==null){
 			t=new Table<>();
 			t.init();
-			fileData.put("friends",t);
+			fileData.getAllConfig().put("friends",t);
 			updateFriendTableVersion();
 		}
 		long t_t;
@@ -275,7 +204,7 @@ public class ExfriendManager{
 	}
 
 	private void tableToFriend(){
-		Table<Long> t=(Table<Long>)fileData.get("friends");
+		Table<Long> t=(Table<Long>)fileData.getAllConfig().get("friends");
 		if(t==null){
 			log("t_fr==null,aborting!");
 			dbg();
@@ -316,7 +245,7 @@ public class ExfriendManager{
 
 	/** We try to add some columns */
 	private void initEventsTable(){
-		Table<Integer> ev=(Table<Integer>)fileData.get("events");
+		Table<Integer> ev=(Table<Integer>)fileData.getAllConfig().get("events");
 		if(ev==null){
 			log("damn! initEvT in null");
 			return;
@@ -340,11 +269,11 @@ public class ExfriendManager{
 		Iterator<Map.Entry<Integer,EventRecord>> it=/*(Iterator<Map.Entry<Long, FriendRecord>>)*/events.entrySet().iterator();
 		Map.Entry<Integer,EventRecord> ent;
 		String suin;
-		Table<Integer> t=(Table<Integer>)fileData.get("events");
+		Table<Integer> t=(Table<Integer>)fileData.getAllConfig().get("events");
 		if(t==null){
 			t=new Table<>();
 			t.init();
-			fileData.put("events",t);
+			fileData.getAllConfig().put("events",t);
 			initEventsTable();
 		}else{
 			t.records.clear();
@@ -375,7 +304,7 @@ public class ExfriendManager{
 	}
 
 	private void tableToEvents(){
-		Table<Integer> t=(Table<Integer>)fileData.get("events");
+		Table<Integer> t=(Table<Integer>)fileData.getAllConfig().get("events");
 		if(t==null){
 			log("t_ev==null,aborting!");
 			return;
@@ -414,60 +343,22 @@ public class ExfriendManager{
 		}
 	}
 
-
-
-
 	public void saveConfigure(){
-		dbg();
-		//log("save: persons.size()="+persons.size()+"event.size="+events.size());
-		if(persons==null)return;
-		File f=new File(Utils.getApplication().getFilesDir().getAbsolutePath()+"/qnotified_"+mUin+".dat");
-		friendToTable();
-		eventsToTable();
-		fileData.put("uin",mUin);
-		try{
-			if(!f.exists())f.createNewFile();
-			ByteArrayOutputStream baos=new ByteArrayOutputStream();
-			DataOutputStream out=new DataOutputStream(baos);
-			Iterator<Map.Entry<String,Object>> it=fileData.entrySet().iterator();
-			Map.Entry<String,Object> record;
-			String fn;
-			Object val;
-			while(it.hasNext()){
-				record=it.next();
-				fn=record.getKey();
-				val=record.getValue();
-				writeRecord(out,fn,val);
-			}
-			out.flush();
-			out.close();
-			baos.close();
-			byte[] dat=baos.toByteArray();
-			byte[] md5;
+		synchronized(this){
 			try{
-				MessageDigest md=MessageDigest.getInstance("MD5");
-				md.update(dat);
-				md5=md.digest();
-			}catch(NoSuchAlgorithmException e){
-				md5=new byte[16];
+				dbg();
+				//log("save: persons.size()="+persons.size()+"event.size="+events.size());
+				if(persons==null)return;
+				File f=new File(Utils.getApplication().getFilesDir().getAbsolutePath()+"/qnotified_"+mUin+".dat");
+				friendToTable();
+				eventsToTable();
+				fileData.getAllConfig().put("uin",mUin);
+				fileData.save();
+			}catch(IOException e){
+				log(e);
 			}
-			FileOutputStream fout=new FileOutputStream(f);
-			out=new DataOutputStream(fout);
-			out.write(new byte[]{(byte)0xFE,'Q','N','C'});
-			out.writeInt(_VERSION_CURRENT);//ver
-			out.writeInt(dat.length);
-			out.writeInt(0);//reserved
-			out.write(md5,0,16);
-			out.write(dat,0,dat.length);
-			out.flush();
-			fout.flush();
-			out.close();
-			fout.close();
-			dbg();
-		}catch(IOException e){
-			log(e);
+			dirtyFlag=false;
 		}
-		dirtyFlag=false;
 	}
 
 	public static ExfriendManager getCurrent(){
@@ -527,8 +418,6 @@ public class ExfriendManager{
 		get(fc.uin).recordFriendChunk(fc);
 	}
 
-
-
 	public synchronized void recordFriendChunk(FriendChunk fc){
 		//log("recordFriendChunk");
 		if(fc.getfriendCount==0){
@@ -560,7 +449,7 @@ public class ExfriendManager{
 		}
 		int m=0;
 		try{
-			m=fileData.get("unread");
+			m=fileData.getAllConfig().get("unread");
 		}catch(Exception e){}
 		final int n=m;
 		((Activity)Utils.getContext(rd)).runOnUiThread(new Runnable(){
@@ -585,11 +474,11 @@ public class ExfriendManager{
 		dirtyFlag=true;
 		if(out==null)return;
 		int unread=0;
-		if(fileData.containsKey("unread")){
-			unread=(Integer)fileData.get("unread");
+		if(fileData.getAllConfig().containsKey("unread")){
+			unread=(Integer)fileData.getAllConfig().get("unread");
 		}
 		unread++;
-		fileData.put("unread",unread);
+		fileData.getAllConfig().put("unread",unread);
 		String title,ticker,tag,c;
 		//Notification.Builder nb=Notification.Builder();
 		if(ev._remark!=null&&ev._remark.length()>0)tag=ev._remark+"("+ev.operator+")";
@@ -610,7 +499,7 @@ public class ExfriendManager{
 	}
 
 	public void clearUnreadFlag(){
-		fileData.put("unread",0);
+		fileData.getAllConfig().put("unread",0);
 		try{
 			NotificationManager nm=(NotificationManager) Utils.getApplication().getSystemService(Context.NOTIFICATION_SERVICE);
 			nm.cancel(ID_EX_NOTIFY);
@@ -688,7 +577,7 @@ public class ExfriendManager{
 
 	public void markActiveDelete(long uin){
 		try{
-			if(!ConfigManager.get().getBooleanOrDefault("qn_del_op_silence",true))return;
+			if(!ConfigManager.getDefault().getBooleanOrDefault("qn_del_op_silence",true))return;
 		}catch(IOException e){}
 		synchronized(this){
 			FriendRecord fr=persons.get(uin);
@@ -735,7 +624,7 @@ public class ExfriendManager{
 			}
 			dirtyFlag=true;
 		}
-		fileData.put("lastUpdateFl",lastUpdateTimeSec);
+		fileData.getAllConfig().put("lastUpdateFl",lastUpdateTimeSec);
 		log("Friendlist updated @"+lastUpdateTimeSec);
 		dbg();
 		saveConfigure();
@@ -756,7 +645,6 @@ public class ExfriendManager{
 		return (Notification)invoke_virtual(builder,"build");
 	}
 
-
 	/*public static int getResourceId(Context context,String name,String type,String packageName){
 	 Resources themeResources=null;
 	 PackageManager pm=context.getPackageManager();
@@ -766,7 +654,6 @@ public class ExfriendManager{
 	 }catch(PackageManager.NameNotFoundException e){}
 	 return 0;
 	 }*/
-
 
 	public void doRequestFlRefresh(){
 		boolean inLogin;

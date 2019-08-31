@@ -14,15 +14,15 @@ public class ConfigManager{
 	private File file;
 	private HashMap <String,Object>config;
 
-	private ConfigManager() throws IOException{
-		file=new File(Utils.getApplication().getFilesDir().getAbsolutePath()+"/qnotified_config.dat");
+	public ConfigManager(File f) throws IOException{
+		file=f;
 		if(!file.exists())file.createNewFile();
 		config=new HashMap<>();
 		reload();
 	}
 
-	public static ConfigManager get() throws IOException{
-		if(SELF==null)SELF=new ConfigManager();
+	public static ConfigManager getDefault() throws IOException{
+		if(SELF==null)SELF=new ConfigManager(new File(Utils.getApplication().getFilesDir().getAbsolutePath()+"/qnotified_config.dat"));
 		return SELF;
 	}
 
@@ -70,6 +70,7 @@ public class ConfigManager{
 		return config;
 	}
 
+	/**  ?(0xFE)QNC I_version I_size I_RAW_reserved 16_md5 DATA */
 	public void reload() throws IOException{
 		synchronized(this){
 			FileInputStream fin = null;
@@ -124,6 +125,9 @@ public class ConfigManager{
 						break;
 					case TYPE_TABLE:
 						config.put(key,readTable(in));
+						break;
+					case TYPE_ARRAY:
+						config.put(key,readArray(in));
 						break;
 					case TYPE_EOF:
 						break a;

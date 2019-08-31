@@ -36,6 +36,7 @@ import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static nil.nadph.qnotified.Initiator.load;
 import static nil.nadph.qnotified.QQViewBuilder.*;
 import static nil.nadph.qnotified.Utils.*;
+import java.lang.reflect.*;
 
 /*TitleKit:Lcom/tencent/mobileqq/widget/navbar/NavBarCommon*/
 
@@ -206,10 +207,16 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
 				@Override
 				protected void afterHookedMethod(MethodHookParam param)throws Throwable{
 					XposedHelpers.setObjectField(param.thisObject,"isread",true);
+					int istroop=(Integer)iget_object(param.thisObject,"istroop");
+					if(istroop!=1)return;
+					String frienduin=(String)iget_object(param.thisObject,"frienduin");
+					long troop=Long.parseLong(frienduin);
+					
 					Field[] fs = param.thisObject.getClass().getFields();
 					String ret="";
 					for (int i = 0; i < fs.length; i++) {
 						fs[i].setAccessible(true);
+						if(Modifier.isFinal(fs[i].getModifiers()))continue;
 						ret += (i < fs.length - 1 ? "├" : "↓") + fs[i].getName() + "=" + ClazzExplorer.en_toStr(fs[i].get(param.thisObject)) + "\n";
 					}
 					android.util.Log.i("QNdump",ret);
@@ -359,7 +366,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
         });
 
         try {
-            ConfigManager cfg = ConfigManager.get();
+            ConfigManager cfg = ConfigManager.getDefault();
             if (cfg.getBooleanOrFalse(qn_hide_msg_list_miniapp)) {
                 int lastVersion = cfg.getIntOrDefault("qn_hide_msg_list_miniapp_version_code", 0);
                 if (getQQVersionCode(getApplication()) == lastVersion) {
@@ -396,7 +403,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
                             }
                             if (methodName == null)
                                 throw new NullPointerException("Failed to get Conversation.?() to hide MiniApp!");
-                            ConfigManager cfg = ConfigManager.get();
+                            ConfigManager cfg = ConfigManager.getDefault();
                             cfg.putString("qn_hide_msg_list_miniapp_method_name", methodName);
                             cfg.getAllConfig().put("qn_hide_msg_list_miniapp_version_code", getQQVersionCode(getApplication()));
                             cfg.save();
@@ -459,7 +466,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
                 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                 @Override
                 public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-                    if (ConfigManager.get().getBooleanOrFalse(qn_send_card_msg)) {
+                    if (ConfigManager.getDefault().getBooleanOrFalse(qn_send_card_msg)) {
                         final Object msgObj = methodHookParam.args[0];
                         ViewGroup viewGroup = (ViewGroup) methodHookParam.args[2];
                         if (!load("com.tencent.mobileqq.data.MessageForStructing").isAssignableFrom(msgObj.getClass())
@@ -876,7 +883,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
                         //log("Title:"+invoke_virtual(self,"getTextTitle"));
 
                         //.addView(sdlv,lp);
-                        ConfigManager.get().save();
+                        ConfigManager.getDefault().save();
                     } catch (Throwable e) {
                         log(e);
                     }
@@ -1075,7 +1082,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
             try {
                 boolean hide = false;
                 try {
-                    hide = ConfigManager.get().getBooleanOrFalse("qn_hide_ex_entry_group");
+                    hide = ConfigManager.getDefault().getBooleanOrFalse("qn_hide_ex_entry_group");
                 } catch (Throwable e) {
                     log(e);
                 }

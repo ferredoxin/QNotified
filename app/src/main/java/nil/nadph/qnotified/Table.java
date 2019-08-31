@@ -13,6 +13,16 @@ import android.annotation.*;
 public class Table<K extends Object> implements Serializable,Cloneable{
 	
 	
+	/* New format!!
+	 * LE
+	 * byte   byte*3   int         byte[] byte[]
+	 * type   reserved length      data   padding
+	 *        keep 0   with header        eg.4-bytes alignment
+	 * eg for NULL
+	 * 00   000000   00000008
+	 * type reserved length
+	 */
+	
 	public static final byte TYPE_NULL=0;//should NOT have value
 	public static final byte TYPE_BYTE=1;
 	public static final byte TYPE_BOOL=2;
@@ -126,6 +136,13 @@ public class Table<K extends Object> implements Serializable,Cloneable{
 			if(keyName==null)keyName="id";
 			if(keyType==0)keyType=TYPE_INT;
 		}
+	}
+	
+	public static ArrayList readArray(DataInputStream in) throws IOException{
+		int len=in.readInt();
+		byte[] buf=new byte[len];
+		in.read(buf,0,len);
+		return buf;
 	}
 	
 	
@@ -247,6 +264,8 @@ public class Table<K extends Object> implements Serializable,Cloneable{
 				return readIRaw(in);
 			case TYPE_TABLE:
 				return readTable(in);
+			case TYPE_ARRAY:
+				return readArray(in);
 			case TYPE_EOF:
 				throw new IOException("Unexpected type: TYPE_EOF");
 			default:
