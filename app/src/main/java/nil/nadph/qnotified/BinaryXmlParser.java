@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
+import java.io.*;
 
 /**
  * @author cinit
@@ -15,7 +16,10 @@ import java.util.Stack;
 public class BinaryXmlParser {
 
     public static XmlNode parseXml(String filePath) {
-        try (FileInputStream fis = new FileInputStream(filePath); ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+		FileInputStream fis =null;
+        try {
+			fis= new FileInputStream(filePath);
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
             byte[] buffer = new byte[1024];
             int len = 0;
             while ((len = fis.read(buffer)) != -1) {
@@ -25,7 +29,11 @@ public class BinaryXmlParser {
 
         } catch (Exception e) {
             Utils.log("parse xml error:" + e.toString());
-        }
+        }finally{
+			try{
+				fis.close();
+			}catch(Exception e){}
+		}
         return null;
     }
 

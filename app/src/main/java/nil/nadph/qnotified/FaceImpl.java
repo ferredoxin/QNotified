@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.ImageView;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
@@ -14,6 +13,7 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 
 import static nil.nadph.qnotified.Initiator.load;
+import android.annotation.*;
 
 //import de.robv.android.xposed.*;
 

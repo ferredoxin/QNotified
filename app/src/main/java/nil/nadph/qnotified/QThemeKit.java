@@ -1,24 +1,16 @@
 package nil.nadph.qnotified;
 
-import android.content.Context;
-import android.content.res.ColorStateList;
-import android.content.res.Resources;
+import android.annotation.*;
+import android.content.*;
+import android.content.res.*;
 import android.graphics.*;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.StateListDrawable;
-import android.os.Environment;
-import android.util.DisplayMetrics;
-import android.view.WindowManager;
-import de.robv.android.xposed.XSharedPreferences;
-import de.robv.android.xposed.XposedHelpers;
-import org.jetbrains.annotations.Nullable;
-
+import android.graphics.drawable.*;
+import android.os.*;
+import android.util.*;
+import android.view.*;
+import de.robv.android.xposed.*;
 import java.io.*;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 import static nil.nadph.qnotified.Initiator.load;
 import static nil.nadph.qnotified.Utils.invoke_static;

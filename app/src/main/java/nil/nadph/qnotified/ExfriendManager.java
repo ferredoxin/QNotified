@@ -1,32 +1,21 @@
 package nil.nadph.qnotified;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Vibrator;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
-import nil.nadph.qnotified.pk.FriendChunk;
-import org.jetbrains.annotations.Nullable;
-
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
+import android.annotation.*;
+import android.app.*;
+import android.content.*;
+import android.content.pm.*;
+import android.os.*;
+import android.view.*;
+import android.widget.*;
+import java.io.*;
+import java.lang.reflect.*;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
+import nil.nadph.qnotified.pk.*;
 
-import static nil.nadph.qnotified.Initiator.load;
 import static nil.nadph.qnotified.Table.*;
 import static nil.nadph.qnotified.Utils.*;
+import static nil.nadph.qnotified.Initiator.load;
 
 public class ExfriendManager {
     static private final int ID_EX_NOTIFY = 65537;

@@ -1,12 +1,13 @@
 package nil.nadph.qnotified;
 
-import org.jetbrains.annotations.Nullable;
+
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
+import android.annotation.Nullable;
 
 public class Table<K> implements Serializable, Cloneable {
 
