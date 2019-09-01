@@ -27,11 +27,10 @@ public class QQViewBuilder {
     public static final int R_ID_VALUE = 0x300AFF14;
     public static final int R_ID_ARROW = 0x300AFF15;
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public static RelativeLayout newListItemSwitch(Context ctx, CharSequence title, CharSequence desc, boolean on, CompoundButton.OnCheckedChangeListener listener) {
         RelativeLayout root = new RelativeLayout(ctx);
         root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-        root.setBackground(QThemeKit.getListItemBackground());
+        root.setBackgroundDrawable(QThemeKit.getListItemBackground());
         TextView tv = new TextView(ctx);
         tv.setText(title);
         tv.setId(R_ID_TITLE);
@@ -123,12 +122,10 @@ public class QQViewBuilder {
         return root;
     }
 
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public static RelativeLayout newListItemDummy(Context ctx, CharSequence title, CharSequence desc, CharSequence value) {
         RelativeLayout root = new RelativeLayout(ctx);
         root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-        root.setBackground(QThemeKit.getListItemBackground());
+        root.setBackgroundDrawable(QThemeKit.getListItemBackground());
         TextView tv = new TextView(ctx);
         tv.setText(title);
         tv.setId(R_ID_TITLE);
@@ -176,11 +173,10 @@ public class QQViewBuilder {
         return root;
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public static RelativeLayout newListItemButton(Context ctx, CharSequence title, CharSequence desc, CharSequence value, View.OnClickListener listener) {
         RelativeLayout root = new RelativeLayout(ctx);
         root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-        root.setBackground(QThemeKit.getListItemBackground());
+        root.setBackgroundDrawable(QThemeKit.getListItemBackground());
         TextView tv = new TextView(ctx);
         tv.setText(title);
         tv.setId(R_ID_TITLE);

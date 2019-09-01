@@ -1,10 +1,9 @@
 package nil.nadph.qnotified;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -14,11 +13,11 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 
+import static android.view.View.GONE;
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.Initiator.load;
-import static nil.nadph.qnotified.Utils.invoke_virtual;
-import static nil.nadph.qnotified.Utils.log;
+import static nil.nadph.qnotified.Utils.*;
 
 
 public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListener, TextWatcher {
@@ -38,10 +37,6 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
         // TODO: Implement this method
     }
 
-    Button cancel;
-    EditText search;
-    TextView rightBtn;
-
     @Override
     public void onClick(View v) {
         if (v == cancel) {
@@ -52,6 +47,9 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
             if (null != v) {
                 imm.hideSoftInputFromWindow(v2.getWindowToken(), 0);
             }
+            cancel.setVisibility(GONE);
+            selectAll.setVisibility(View.VISIBLE);
+            reverse.setVisibility(View.VISIBLE);
         } else if (v == search) {
 			/*try{
 				Utils.showToastShort(mActivity,"setFocusable");
@@ -61,7 +59,9 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
             search.requestFocus();
             InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT);
-
+            cancel.setVisibility(View.VISIBLE);
+            selectAll.setVisibility(GONE);
+            reverse.setVisibility(GONE);
         }
     }
 
@@ -91,6 +91,7 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
     }
 
 
+
     private ViewGroup mListView;
     private Activity mActivity;
 
@@ -100,11 +101,15 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
     private static final int R_ID_TRP_CHECKBOX = 0x300AFF34;
     private static final int R_ID_TRP_CANCEL = 0x300AFF35;
     private static final int R_ID_TRP_SEARCH_EDIT = 0x300AFF36;
+    private static final int R_ID_TRP_REVERSE = 0x300AFF37;
+    private static final int R_ID_TRP_SELECT_ALL = 0x300AFF38;
 
 
     private int mActionInt;
     private FaceImpl face;
 
+    EditText search;
+    TextView rightBtn,cancel,reverse,selectAll;
 
     public TroopSelectAdapter(Activity act, int action) {
         mActivity = act;
@@ -116,33 +121,54 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
         }
     }
 
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void doOnPostCreate() throws Throwable {
+        int bar_hi=dip2px(mActivity,24);
+        ColorStateList cTitle=QThemeKit.skin_black;
         LinearLayout main = new LinearLayout(mActivity);
         main.setOrientation(LinearLayout.VERTICAL);
         main.setGravity(Gravity.CENTER_HORIZONTAL);
-        main.setBackground(QThemeKit.skin_background);
+        main.setBackgroundDrawable(QThemeKit.skin_background);
+        LinearLayout bar = new LinearLayout(mActivity);
+        bar.setOrientation(LinearLayout.HORIZONTAL);
         search = new EditText(mActivity);
-        search.setHint("搜索...名称或群号");
+        search.setHint("搜索...");
         search.setPadding(3, 3, 3, 3);
         search.setFocusable(false);
         search.setOnClickListener(this);
         search.setId(R_ID_TRP_SEARCH_EDIT);
         search.addTextChangedListener(this);
+        search.setTextColor(cTitle);
+        search.setBackgroundDrawable(null);
+        LinearLayout.LayoutParams btnlp=new LinearLayout.LayoutParams(WRAP_CONTENT,bar_hi);
+        LinearLayout.LayoutParams searchlp=new LinearLayout.LayoutParams(WRAP_CONTENT,bar_hi);
+        searchlp.weight=1;
+        reverse = new Button(mActivity);
+        reverse.setText("反选");
+        reverse.setId(R_ID_TRP_REVERSE);
+        reverse.setTextColor(cTitle);
+        reverse.setBackgroundDrawable(QThemeKit.getListItemBackground());
+        reverse.setOnClickListener(this);
+        selectAll = new Button(mActivity);
+        selectAll.setText("全选");
+        selectAll.setId(R_ID_TRP_SELECT_ALL);
+        selectAll.setTextColor(cTitle);
+        selectAll.setBackgroundDrawable(QThemeKit.getListItemBackground());
+        selectAll.setOnClickListener(this);
         cancel = new Button(mActivity);
         cancel.setText("取消");
+        cancel.setTextColor(cTitle);
+        cancel.setId(R_ID_TRP_CANCEL);
+        cancel.setBackgroundDrawable(QThemeKit.getListItemBackground());
         cancel.setOnClickListener(this);
-        LinearLayout ll = new LinearLayout(mActivity);
-        LinearLayout.LayoutParams lllp = new LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-        lllp.weight = 1f;
-        ll.addView(search, lllp);
-        lllp = new LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-        ll.addView(cancel, lllp);
-        main.addView(ll, new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
+        cancel.setVisibility(GONE);
+        bar.addView(search,searchlp);
+        bar.addView(reverse,btnlp);
+        bar.addView(selectAll,btnlp);
+        bar.addView(cancel,btnlp);
+        main.addView(bar, new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
         ViewGroup sdlv = (ViewGroup) load("com.tencent.widget.SwipListView").getConstructor(Context.class, AttributeSet.class).newInstance(mActivity, null);
         //sdlv.setFocusable(true);
-        sdlv.setBackground(QThemeKit.skin_background);
+        sdlv.setBackgroundDrawable(QThemeKit.skin_background);
         FrameLayout f = new FrameLayout(mActivity);
         TextView tv = new TextView(mActivity);
         tv.setGravity(Gravity.CENTER);
@@ -157,9 +183,9 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
         mActivity.setContentView(main);
         //sdlv.setBackgroundColor(0xFFAA0000)
         String title = "Fatal error!";
-        if (mActionInt == QQMainHook.ACTION_SHUTUP_AT_ALL)
+        if (mActionInt == QQMainHook.ACTION_MUTE_AT_ALL)
             title = "屏蔽@全体成员";
-        else if (mActionInt == QQMainHook.ACTION_SHUTUP_RED_PACKET)
+        else if (mActionInt == QQMainHook.ACTION_MUTE_RED_PACKET)
             title = "屏蔽群红包";
         invoke_virtual(mActivity, "setTitle", title, CharSequence.class);
         invoke_virtual(mActivity, "setImmersiveStatus");

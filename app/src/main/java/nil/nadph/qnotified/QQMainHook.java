@@ -44,8 +44,8 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
     public static final int ACTION_ADV_SETTINGS = 2;
     /*public static final int ACTION_ABOUT=3;*/
     public static final int ACTION_SHELL = 4;
-    public static final int ACTION_SHUTUP_AT_ALL = 5;
-    public static final int ACTION_SHUTUP_RED_PACKET = 6;
+    public static final int ACTION_MUTE_AT_ALL = 5;
+    public static final int ACTION_MUTE_RED_PACKET = 6;
 
     public static final String QN_FULL_TAG = "qn_full_tag";
     public HashSet addedListView = new HashSet();
@@ -837,8 +837,8 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
                         ll.addView(newListItemSwitchConfig(self, "主动删除好友时不通知", "仅在测试模块时才可能需要关闭", qn_del_op_silence, true));
                         ll.addView(newListItemButton(self, "重置模块", "会丢失所有历史好友信息", null, clickTheComing()));
                         ll.addView(subtitle(self, "消息通知设置(不影响接收消息)"));
-                        ll.addView(newListItemButton(self, "屏蔽指定群@全体成员通知", Html.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[@全体成员]</font>就这点破事"), "0个群", clickToProxyActAction(ACTION_SHUTUP_AT_ALL)));
-                        ll.addView(newListItemButton(self, "屏蔽指定群的红包通知", Html.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[QQ红包][有红包][有福袋]</font>恭喜发财"), "0个群", clickToProxyActAction(ACTION_SHUTUP_RED_PACKET)));
+                        ll.addView(newListItemButton(self, "屏蔽指定群@全体成员通知", Html.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[@全体成员]</font>就这点破事"), "0个群", clickToProxyActAction(ACTION_MUTE_AT_ALL)));
+                        ll.addView(newListItemButton(self, "屏蔽指定群的红包通知", Html.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[QQ红包][有红包][有福袋]</font>恭喜发财"), "0个群", clickToProxyActAction(ACTION_MUTE_RED_PACKET)));
                         ll.addView(subtitle(self, "实验性功能(不一定有效,使用者后果自负)"));
                         ll.addView(newListItemSwitchConfigNext(self, "上传透明头像", "开启后上传透明头像不会变黑", qn_enable_transparent, true));
                         ll.addView(newListItemSwitchConfig(self, "发送卡片消息", "xml,json等", qn_send_card_msg, false));
@@ -858,7 +858,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
                         ll.addView(newListItemButton(self, "打赏", "请选择扶贫方式", null, clickTheComing()));
                         ll.addView(newListItemButton(self, "QQ", "点击私信反馈", "1041703712", clickToChat()));
                         ll.addView(newListItemButton(self, "Mail", null, "xenonhydride@gmail.com", null));
-                        ll.addView(newListItemButton(self, "源代码", "Bug -> Issue", "https://github.com/cinit/QNotified", clickToUrl("https://github.com/cinit/QNotified")));
+                        ll.addView(newListItemButton(self, "Github", "Bug -> Issue", "cinit", clickToUrl("https://github.com/cinit/QNotified")));
                         ll.addView(newListItemButton(self, "Telegram", null, "Auride", clickToUrl("https://t.me/Auride")));
                         ll.addView(subtitle(self, "SystemClassLoader\n" + ClassLoader.getSystemClassLoader() + "\nContext.getClassLoader()\n" + self.getClassLoader() + "\nThread.getContextClassLoader()\n" + Thread.currentThread().getContextClassLoader()));
 
@@ -888,7 +888,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
                         log(e);
                         throw e;
                     }
-                else if (action == ACTION_SHUTUP_AT_ALL || action == ACTION_SHUTUP_RED_PACKET)
+                else if (action == ACTION_MUTE_AT_ALL || action == ACTION_MUTE_RED_PACKET)
                     try {
                         exlist_mFlingHandler = new_instance(load("com/tencent/mobileqq/activity/fling/FlingGestureHandler"), self, Activity.class);
                         iput_object(self, "mFlingHandler", exlist_mFlingHandler);

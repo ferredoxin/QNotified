@@ -71,6 +71,7 @@ public class FriendChunk implements Serializable, Cloneable {
         } catch (ClassCastException e) {
             log(e);
         }
+        if (serverTime == 0) serverTime = System.currentTimeMillis() / 1000L;
     }
 
     public static synchronized void initOnce() {
