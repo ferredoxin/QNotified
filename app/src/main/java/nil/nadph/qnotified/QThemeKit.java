@@ -86,24 +86,24 @@ public class QThemeKit {
                 path = findDrawableResource(dir, "skin_list_item_normal.9.png", mContext);
                 if (path == null)
                     path = findDrawableResource(dir, "skin_list_item_normal_theme_version2.9.png", mContext);
-                if (path != null) skin_list_normal = loadDrawable(path);
+                if (path != null) skin_list_normal = loadDrawable(path,mContext);
             }
             if (skin_list_pressed == null) {
                 path = findDrawableResource(dir, "skin_list_item_pressed.9.png", mContext);
                 if (path == null)
                     path = findDrawableResource(dir, "skin_list_item_pressed_theme_version2.9.png", mContext);
-                if (path != null) skin_list_pressed = loadDrawable(path);
+                if (path != null) skin_list_pressed = loadDrawable(path,mContext);
             }
             if (skin_icon_arrow_right_normal == null) {
                 path = findDrawableResource(dir, "skin_icon_arrow_right_normal.png", mContext);
                 if (path == null)
                     path = findDrawableResource(dir, "skin_icon_arrow_right_normal_theme_version2.png", mContext);
-                if (path != null) skin_icon_arrow_right_normal = loadDrawable(path);
+                if (path != null) skin_icon_arrow_right_normal = loadDrawable(path,mContext);
             }
             if (skin_background == null) {
                 path = findDrawableResource(dir, "skin_background.png", mContext);
                 if (path == null) path = findDrawableResource(dir, "skin_background_theme_version2.png", mContext);
-                if (path != null) skin_background = loadDrawable(path);
+                if (path != null) skin_background = loadDrawable(path,mContext);
             }
 
             //path=findDrawableResource(dir,"skin_tips_newmessage.9.png");
@@ -226,15 +226,9 @@ public class QThemeKit {
         else return loadDrawableFromAsset(name, null, null);
     }
 
-    public static Drawable loadDrawable(String path) {
-        return loadDrawable(path, null, null);
-    }
-
     public static Drawable loadDrawableFromStream(InputStream in, String name, @Nullable Resources res) {
         Drawable ret;
         try {
-
-
             Bitmap bitmap = BitmapFactory.decodeStream(in);
 			/*
 			 // 取得想要缩放的matrix参数
@@ -289,11 +283,11 @@ public class QThemeKit {
         return null;
     }
 
-    public static Drawable loadDrawable(String path, @Nullable Resources res, Context mContext) {
+    public static Drawable loadDrawable(String path, Context mContext) {
         Drawable ret;
         if ((ret = cachedDrawable.get(path)) != null) return ret;
         try {
-            if (res == null && mContext != null) res = mContext.getResources();
+            Resources res = mContext.getResources();
             FileInputStream fin = new FileInputStream(path);
             ret = loadDrawableFromStream(fin, path, res);
             cachedDrawable.put(path, ret);
