@@ -122,7 +122,7 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
     }
 
     public void doOnPostCreate() throws Throwable {
-        int bar_hi=dip2px(mActivity,24);
+        int bar_hi=WRAP_CONTENT;//dip2px(mActivity,30);
         ColorStateList cTitle=QThemeKit.skin_black;
         LinearLayout main = new LinearLayout(mActivity);
         main.setOrientation(LinearLayout.VERTICAL);
@@ -168,7 +168,7 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
         main.addView(bar, new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
         ViewGroup sdlv = (ViewGroup) load("com.tencent.widget.SwipListView").getConstructor(Context.class, AttributeSet.class).newInstance(mActivity, null);
         //sdlv.setFocusable(true);
-        sdlv.setBackgroundDrawable(QThemeKit.skin_background);
+        //sdlv.setBackgroundDrawable(QThemeKit.skin_background);
         FrameLayout f = new FrameLayout(mActivity);
         TextView tv = new TextView(mActivity);
         tv.setGravity(Gravity.CENTER);

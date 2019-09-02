@@ -140,7 +140,8 @@ public class Table<K> implements Serializable, Cloneable {
         int len = in.readInt();
         byte[] buf = new byte[len];
         in.read(buf, 0, len);
-        return buf;
+		throw new RuntimeException("Stub!");
+        //return buf;
     }
 
 
