@@ -16,10 +16,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
-import de.robv.android.xposed.XposedHelpers;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import static android.view.View.GONE;
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
@@ -61,7 +63,7 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
             return;
         }
         if (v == cancel) {
-            searchMode=false;
+            searchMode = false;
             search.setFocusable(false);
             search.setText("");
             InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -76,7 +78,7 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
 			/*try{
 				Utils.showToastShort(mActivity,"setFocusable");
 			}catch(Throwable e){}*/
-			searchMode=true;
+            searchMode = true;
             search.setFocusable(true);
             search.setFocusableInTouchMode(true);
             search.requestFocus();
@@ -115,8 +117,8 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if(convertView==null)convertView=createItemView();
-        TroopInfo info=mTroopInfoList.get(position);
+        if (convertView == null) convertView = createItemView();
+        TroopInfo info = mTroopInfoList.get(position);
         convertView.setTag(info.troopuin);
         TextView title = convertView.findViewById(R_ID_TRP_TITLE);
         title.setText(info._troopname);
@@ -157,7 +159,7 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
     public TroopSelectAdapter(Activity act, int action) {
         mActivity = act;
         mActionInt = action;
-        muted=new HashSet<>();
+        muted = new HashSet<>();
         try {
             face = FaceImpl.getInstance();
         } catch (Throwable e) {
@@ -337,7 +339,7 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
     }
 
     public static ArrayList<TroopInfo> getTroopInfoList() throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
-        Object mTroopManager = XposedHelpers.callMethod(getQQAppInterface(), "getManager", 51);
+        Object mTroopManager = invoke_virtual(getQQAppInterface(), "getManager", 51, int.class);
         ArrayList tx = (ArrayList) invoke_virtual(mTroopManager, "a", "ArrayList");
         ArrayList<TroopInfo> ret = new ArrayList<TroopInfo>();
         for (Object info : tx) {
@@ -390,7 +392,7 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
     }
 
 
-    public static class TroopInfo implements Comparable{
+    public static class TroopInfo implements Comparable {
         public TroopInfo(Object obj) {
             _troopname = troopname = (String) iget_object(obj, "troopname");
             _troopuin = troopuin = (String) iget_object(obj, "troopuin");
@@ -405,8 +407,8 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
 
         @Override
         public int compareTo(Object o) {
-            TroopInfo t= (TroopInfo) o;
-            return t.hit-hit;
+            TroopInfo t = (TroopInfo) o;
+            return t.hit - hit;
         }
     }
 
