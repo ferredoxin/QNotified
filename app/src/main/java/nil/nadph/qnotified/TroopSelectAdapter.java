@@ -28,7 +28,7 @@ import static nil.nadph.qnotified.Initiator.load;
 import static nil.nadph.qnotified.Utils.*;
 
 
-public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListener, TextWatcher, CompoundButton.OnCheckedChangeListener, Comparator<TroopSelectAdapter.TroopInfo> {
+public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
 
     public static int HIGHLIGHT_COLOR = 0xFF3030C0;
 
@@ -377,7 +377,7 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
             }
 
         }
-        Collections.sort(mTroopInfoList, this);
+        Collections.sort(mTroopInfoList);
     }
 
     private Set<String> muted;
@@ -389,12 +389,8 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
         if (guin != null) muted.add(guin);
     }
 
-    @Override
-    public int compare(TroopInfo t1, TroopInfo t2) {
-        return t2.hit - t1.hit;
-    }
 
-    public static class TroopInfo {
+    public static class TroopInfo implements Comparable{
         public TroopInfo(Object obj) {
             _troopname = troopname = (String) iget_object(obj, "troopname");
             _troopuin = troopuin = (String) iget_object(obj, "troopuin");
@@ -406,6 +402,12 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
         public CharSequence _troopuin;
         public CharSequence _troopname;
         public int hit;
+
+        @Override
+        public int compareTo(Object o) {
+            TroopInfo t= (TroopInfo) o;
+            return t.hit-hit;
+        }
     }
 
 }
