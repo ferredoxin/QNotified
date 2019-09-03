@@ -33,7 +33,7 @@ import static nil.nadph.qnotified.Utils.*;
 
 public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
 
-    public static int HIGHLIGHT_COLOR = 0xFF3030C0;
+    public static int HIGHLIGHT_COLOR = 0xFF_44_44_CC;
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -129,7 +129,7 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
         Bitmap bm = face.getBitmapFromCache(FaceImpl.TYPE_TROOP, info.troopuin);
         if (bm == null) {
             imgview.setImageDrawable(QThemeKit.loadDrawableFromAsset("face.png", mActivity));
-            face.registerView(FaceImpl.TYPE_USER, info.troopuin, imgview);
+            face.registerView(FaceImpl.TYPE_TROOP, info.troopuin, imgview);
         } else {
             imgview.setImageBitmap(bm);
         }
@@ -336,12 +336,11 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
         textlayout.addView(title, textlp);
         textlayout.addView(subtitle, textlp);
 
-        llayout.addView(textlayout, WRAP_CONTENT, WRAP_CONTENT);
         return llayout;
     }
 
     public static ArrayList<TroopInfo> getTroopInfoList() throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
-        Object mTroopManager = invoke_virtual(getQQAppInterface(), "getManager", 51, int.class);
+        Object mTroopManager = invoke_virtual(getQQAppInterface(), "getManager", 52, int.class);
         ArrayList tx = (ArrayList) invoke_virtual(mTroopManager, "a", ArrayList.class);
         ArrayList<TroopInfo> ret = new ArrayList<TroopInfo>();
         for (Object info : tx) {
