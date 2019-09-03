@@ -27,6 +27,7 @@ import static android.view.View.GONE;
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.Initiator.load;
+import static nil.nadph.qnotified.QThemeKit.cloneColor;
 import static nil.nadph.qnotified.Utils.*;
 
 
@@ -225,6 +226,7 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
             tv.setText("若此处群列表显示不完整,请返回后在QQ的联系人的群列表下拉刷新后再回到此处重试");
         } catch (Exception e) {
             tv.setText("" + e);
+            log(e);
         }
         FrameLayout.LayoutParams flp = new FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
         flp.gravity = Gravity.CENTER_HORIZONTAL;
@@ -319,7 +321,7 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
         title.setSingleLine();
         //title.setText(ev.getShowStr());
         title.setGravity(Gravity.CENTER_VERTICAL);
-        title.setTextColor(new ColorStateList(QThemeKit.skin_black.getStates(), QThemeKit.skin_black.getColors()));
+        title.setTextColor(QThemeKit.cloneColor(QThemeKit.skin_black));
         title.setTextSize(Utils.px2sp(mActivity, Utils.dip2px(mActivity, 16)));
         //title.setPadding(tmp=Utils.dip2px(ctx,8),tmp,0,tmp);
 
@@ -327,7 +329,7 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
         subtitle.setId(R_ID_TRP_SUBTITLE);
         subtitle.setSingleLine();
         subtitle.setGravity(Gravity.CENTER_VERTICAL);
-        subtitle.setTextColor(new ColorStateList(QThemeKit.skin_gray3.getStates(), QThemeKit.skin_gray3.getColors()));
+        subtitle.setTextColor(QThemeKit.cloneColor(QThemeKit.skin_gray3));
         subtitle.setTextSize(Utils.px2sp(mActivity, Utils.dip2px(mActivity, 14)));
         //subtitle.setPadding(tmp,0,0,tmp);
 
@@ -340,7 +342,7 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
 
     public static ArrayList<TroopInfo> getTroopInfoList() throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
         Object mTroopManager = invoke_virtual(getQQAppInterface(), "getManager", 51, int.class);
-        ArrayList tx = (ArrayList) invoke_virtual(mTroopManager, "a", "ArrayList");
+        ArrayList tx = (ArrayList) invoke_virtual(mTroopManager, "a", ArrayList.class);
         ArrayList<TroopInfo> ret = new ArrayList<TroopInfo>();
         for (Object info : tx) {
             ret.add(new TroopInfo(info));

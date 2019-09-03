@@ -116,10 +116,10 @@ public class ExfriendListAdapter extends BaseAdapter {
         }
 
         if (isfri) {
-            stat.setTextColor(new ColorStateList(QThemeKit.skin_gray3.getStates(), QThemeKit.skin_gray3.getColors()));
+            stat.setTextColor(QThemeKit.cloneColor(QThemeKit.skin_gray3));
             stat.setText("已恢复");
         } else {
-            stat.setTextColor(new ColorStateList(QThemeKit.skin_red.getStates(), QThemeKit.skin_red.getColors()));
+            stat.setTextColor(QThemeKit.cloneColor(QThemeKit.skin_red));
             stat.setText("已删除");
         }
         TextView subtitle = convertView.findViewById(R_ID_EXL_SUBTITLE);
@@ -171,7 +171,7 @@ public class ExfriendListAdapter extends BaseAdapter {
         title.setSingleLine();
         //title.setText(ev.getShowStr());
         title.setGravity(Gravity.CENTER_VERTICAL);
-        title.setTextColor(new ColorStateList(QThemeKit.skin_black.getStates(), QThemeKit.skin_black.getColors()));
+        title.setTextColor(QThemeKit.cloneColor(QThemeKit.skin_black));
         title.setTextSize(Utils.px2sp(ctx, Utils.dip2px(ctx, 16)));
         //title.setPadding(tmp=Utils.dip2px(ctx,8),tmp,0,tmp);
 
@@ -179,7 +179,7 @@ public class ExfriendListAdapter extends BaseAdapter {
         subtitle.setId(R_ID_EXL_SUBTITLE);
         subtitle.setSingleLine();
         subtitle.setGravity(Gravity.CENTER_VERTICAL);
-        subtitle.setTextColor(new ColorStateList(QThemeKit.skin_gray3.getStates(), QThemeKit.skin_gray3.getColors()));
+        subtitle.setTextColor(QThemeKit.cloneColor(QThemeKit.skin_gray3));
         subtitle.setTextSize(Utils.px2sp(ctx, Utils.dip2px(ctx, 14)));
         //subtitle.setPadding(tmp,0,0,tmp);
 

@@ -1,20 +1,26 @@
 package nil.nadph.qnotified;
 
-import android.annotation.*;
-import android.content.*;
-import android.content.res.*;
+import android.content.Context;
+import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.graphics.*;
-import android.graphics.drawable.*;
-import android.os.*;
-import android.util.*;
-import android.view.*;
-import de.robv.android.xposed.*;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.StateListDrawable;
+import android.os.Environment;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
+import de.robv.android.xposed.XSharedPreferences;
+import de.robv.android.xposed.XposedHelpers;
+
 import java.io.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import static nil.nadph.qnotified.Initiator.load;
-import static nil.nadph.qnotified.Utils.invoke_static;
-import static nil.nadph.qnotified.Utils.log;
+import static nil.nadph.qnotified.Utils.*;
 
 public class QThemeKit {
 
@@ -86,24 +92,24 @@ public class QThemeKit {
                 path = findDrawableResource(dir, "skin_list_item_normal.9.png", mContext);
                 if (path == null)
                     path = findDrawableResource(dir, "skin_list_item_normal_theme_version2.9.png", mContext);
-                if (path != null) skin_list_normal = loadDrawable(path,mContext);
+                if (path != null) skin_list_normal = loadDrawable(path, mContext);
             }
             if (skin_list_pressed == null) {
                 path = findDrawableResource(dir, "skin_list_item_pressed.9.png", mContext);
                 if (path == null)
                     path = findDrawableResource(dir, "skin_list_item_pressed_theme_version2.9.png", mContext);
-                if (path != null) skin_list_pressed = loadDrawable(path,mContext);
+                if (path != null) skin_list_pressed = loadDrawable(path, mContext);
             }
             if (skin_icon_arrow_right_normal == null) {
                 path = findDrawableResource(dir, "skin_icon_arrow_right_normal.png", mContext);
                 if (path == null)
                     path = findDrawableResource(dir, "skin_icon_arrow_right_normal_theme_version2.png", mContext);
-                if (path != null) skin_icon_arrow_right_normal = loadDrawable(path,mContext);
+                if (path != null) skin_icon_arrow_right_normal = loadDrawable(path, mContext);
             }
             if (skin_background == null) {
                 path = findDrawableResource(dir, "skin_background.png", mContext);
                 if (path == null) path = findDrawableResource(dir, "skin_background_theme_version2.png", mContext);
-                if (path != null) skin_background = loadDrawable(path,mContext);
+                if (path != null) skin_background = loadDrawable(path, mContext);
             }
 
             //path=findDrawableResource(dir,"skin_tips_newmessage.9.png");
@@ -368,6 +374,11 @@ public class QThemeKit {
         return b < 0 ? (b + 256) : b;
     }
 
+    public static ColorStateList cloneColor(ColorStateList color) {
+        int[] mColors = (int[]) iget_object(color, "mColors");
+        int[][] mStateSpecs = (int[][]) iget_object(color, "mStateSpecs");
+        return new ColorStateList(mStateSpecs, mColors);
+    }
 
 }
 
