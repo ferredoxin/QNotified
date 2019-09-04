@@ -5,12 +5,11 @@ import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.os.*;
-import android.text.Html;
-import android.util.AttributeSet;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Message;
+import android.os.Parcelable;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,6 @@ import de.robv.android.xposed.*;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import nil.nadph.qnotified.pk.FriendChunk;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.*;
@@ -28,8 +26,8 @@ import java.util.HashSet;
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
+import static nil.nadph.qnotified.ActProxyMgr.*;
 import static nil.nadph.qnotified.Initiator.load;
-import static nil.nadph.qnotified.QQViewBuilder.*;
 import static nil.nadph.qnotified.Utils.*;
 
 /*TitleKit:Lcom/tencent/mobileqq/widget/navbar/NavBarCommon*/
@@ -38,14 +36,7 @@ import static nil.nadph.qnotified.Utils.*;
 public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXposedHookLoadPackage {
 
     public static final int VIEW_ID_DELETED_FRIEND = 0x00EE77AA;
-    public static final String ACTIVITY_PROXY_ID_TAG = "qn_act_proxy_id";
-    public static final String ACTIVITY_PROXY_ACTION = "qn_act_proxy_action";
-    public static final int ACTION_EXFRIEND_LIST = 1;
-    public static final int ACTION_ADV_SETTINGS = 2;
-    /*public static final int ACTION_ABOUT=3;*/
-    public static final int ACTION_SHELL = 4;
-    public static final int ACTION_MUTE_AT_ALL = 5;
-    public static final int ACTION_MUTE_RED_PACKET = 6;
+
 
     public static final String QN_FULL_TAG = "qn_full_tag";
     public HashSet addedListView = new HashSet();
@@ -231,13 +222,14 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
         clazz = load(ActProxyMgr.STUB_ACTIVITY);
         //log(""+clazz);
         if (clazz != null) {
-            findAndHookMethod(clazz, "onCreate", Bundle.class, proxyActivity_onCreate);
+            ActProxyMgr mgr = ActProxyMgr.getInstance();
+            findAndHookMethod(clazz, "onCreate", Bundle.class, mgr);
             //findAndHookMethod(clazz,"doOnCreate",Bundle.class,proxyActivity_doOnCreate);
-            findAndHookMethodIfExists(clazz, "doOnDestroy", proxyActivity_doOnDestroy);
-            findAndHookMethodIfExists(clazz, "onActivityResult", int.class, int.class, Intent.class, proxyActivity_doOnActivityResult);
-            findAndHookMethodIfExists(clazz, "doOnPause", proxyActivity_doOnPause);
-            findAndHookMethodIfExists(clazz, "doOnResume", proxyActivity_doOnResume);
-            findAndHookMethodIfExists(clazz, "isWrapContent", proxyActivity_isWrapContent);
+            findAndHookMethodIfExists(clazz, "doOnDestroy", mgr);
+            findAndHookMethodIfExists(clazz, "onActivityResult", int.class, int.class, Intent.class, mgr);
+            findAndHookMethodIfExists(clazz, "doOnPause", mgr);
+            findAndHookMethodIfExists(clazz, "doOnResume", mgr);
+            findAndHookMethodIfExists(clazz, "isWrapContent", mgr);
         }
         XposedHelpers.findAndHookMethod(load("com/tencent/mobileqq/activity/SplashActivity"), "doOnResume", new XC_MethodHook(700) {
             @Override
@@ -701,211 +693,6 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
         }
     }
 
-
-    public Object exlist_mFlingHandler = null;
-    private XC_MethodHook proxyActivity_onCreate = new XC_MethodHook(200) {
-        @Override
-        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-            try {
-                if (ActProxyMgr.isInfiniteLoop()) return;
-                final Activity self = (Activity) param.thisObject;
-                int id = self.getIntent().getExtras().getInt(ACTIVITY_PROXY_ID_TAG, -1);
-                int action = self.getIntent().getExtras().getInt(ACTIVITY_PROXY_ACTION, -1);
-                if (id <= 0) return;
-                if (action <= 0) return;
-                param.setResult(null);
-                //ActProxyMgr.set(id,self);
-                Method m = load("mqq/app/AppActivity").getDeclaredMethod("onCreate", Bundle.class);
-                m.setAccessible(true);
-                try {
-                    ActProxyMgr.invokeSuper(self, m, param.args);
-                } catch (ActProxyMgr.BreakUnaughtException e) {
-                }
-
-
-                //log("***onCreate");
-                if (action == ACTION_EXFRIEND_LIST)
-                    try {
-                        exlist_mFlingHandler = new_instance(load("com/tencent/mobileqq/activity/fling/FlingGestureHandler"), self, Activity.class);
-                        iput_object(self, "mFlingHandler", exlist_mFlingHandler);
-                        QThemeKit.initTheme(self);
-
-                        SlideDetectListView sdlv = (SlideDetectListView) load("com.tencent.widget.SwipListView").getConstructor(Context.class, AttributeSet.class).newInstance(self, null);
-                        sdlv.setFocusable(true);
-                        ViewGroup.LayoutParams mmlp = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-                        RelativeLayout.LayoutParams mwllp = new RelativeLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
-                        RelativeLayout rl = new RelativeLayout(self);//)new_instance(load("com/tencent/mobileqq/activity/fling/TopGestureLayout"),self,Context.class);
-                        //invoke_virtual(rl,"setInterceptScrollLRFlag",true,boolean.class);
-                        //invoke_virtual(rl,"setInterceptTouchFlag",true,boolean.class);
-                        //iput_object(rl,"
-                        rl.setBackgroundColor(QThemeKit.qq_setting_item_bg_nor.getDefaultColor());
-                        mwllp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-                        mwllp.addRule(RelativeLayout.CENTER_VERTICAL);
-
-                        TextView tv = new TextView(self);
-                        tv.setGravity(Gravity.CENTER);
-                        tv.setTextColor(QThemeKit.skin_gray3);
-                        tv.setTextSize(Utils.dip2sp(self, 14));
-                        rl.addView(tv, mwllp);
-                        rl.addView(sdlv, mmlp);
-                        self.setContentView(rl);
-                        //sdlv.setBackgroundColor(0xFFAA0000)
-                        invoke_virtual(self, "setTitle", "历史好友", CharSequence.class);
-                        invoke_virtual(self, "setImmersiveStatus");
-                        invoke_virtual(self, "enableLeftBtn", true, boolean.class);
-                        TextView rightBtn = (TextView) invoke_virtual(self, "getRightTextView");
-                        //log("Title:"+invoke_virtual(self,"getTextTitle"));
-                        rightBtn.setVisibility(View.VISIBLE);
-                        rightBtn.setText("高级");
-                        rightBtn.setEnabled(true);
-                        rightBtn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                try {
-                                    //self.onBackPressed();
-                                    //ExfriendManager.getCurrent().doRequestFlRefresh();
-                                    //Utils.showToastShort(v.getContext(),"即将开放(没啥好设置的)...");
-                                    startProxyActivity(self, ACTION_ADV_SETTINGS);
-                                    //Intent intent=new Intent(v.getContext(),load(ActProxyMgr.DUMMY_ACTIVITY));
-                                    //int id=ActProxyMgr.next();
-                                    //intent.putExtra(ACTIVITY_PROXY_ID_TAG,id);
-                                    //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-										/*v.getContext().startActivity(intent);/*
-										 new Thread(new Runnable(){
-										 @Override
-										 public void run(){
-										 /*try{
-										 Thread.sleep(10000);
-										 }catch(InterruptedException e){}
-										 EventRecord ev=new EventRecord();
-										 ev.operator=10000;
-										 ev._remark=ev._nick="麻花藤";
-										 *
-										 ExfriendManager.getCurrent().doNotifyDelFl(new Object[]{1,"ticker","title","content"});
-										 }
-										 }).start();*/
-                                } catch (Throwable e) {
-                                    log(e);
-                                }
-                            }
-                        });
-                        //.addView(sdlv,lp);
-                        invoke_virtual(sdlv, "setDragEnable", true, boolean.class);
-                        invoke_virtual(sdlv, "setDivider", null, Drawable.class);
-                        long uin = Utils.getLongAccountUin();
-                        ExfriendManager exm = ExfriendManager.get(uin);
-                        exm.clearUnreadFlag();
-                        tv.setText("最后更新: " + Utils.getRelTimeStrSec(exm.lastUpdateTimeSec));
-                        QQViewBuilder.listView_setAdapter(sdlv, new ExfriendListAdapter(sdlv, exm));
-                        //invoke_virtual(sdlv,"setOnScrollGroupFloatingListener",true,load("com/tencent/widget/AbsListView$OnScrollListener"));
-                    } catch (Throwable e) {
-                        log(e);
-                    }
-                else if (action == ACTION_ADV_SETTINGS)
-                    try {
-                        exlist_mFlingHandler = new_instance(load("com/tencent/mobileqq/activity/fling/FlingGestureHandler"), self, Activity.class);
-                        iput_object(self, "mFlingHandler", exlist_mFlingHandler);
-                        QThemeKit.initTheme(self);
-                        LinearLayout ll = new LinearLayout(self);
-                        ll.setOrientation(LinearLayout.VERTICAL);
-                        ViewGroup.LayoutParams mmlp = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-                        LinearLayout __ll = new LinearLayout(self);
-                        __ll.setOrientation(LinearLayout.VERTICAL);
-                        ViewGroup bounceScrollView = (ViewGroup) new_instance(load("com/tencent/mobileqq/widget/BounceScrollView"), self, null, Context.class, AttributeSet.class);
-                        //invoke_virtual(bounceScrollView,"a",true,500,500,boolean.class,int.class,int.class);
-                        bounceScrollView.setLayoutParams(mmlp);
-                        bounceScrollView.addView(ll, new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-                        bounceScrollView.setBackgroundColor(QThemeKit.qq_setting_item_bg_nor.getDefaultColor());
-                        //invoke_virtual(bounceScrollView,"setNeedHorizontalGesture",true,boolean.class);
-                        LinearLayout.LayoutParams fixlp = new LinearLayout.LayoutParams(MATCH_PARENT, dip2px(self, 48));
-                        RelativeLayout.LayoutParams __lp_l = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-                        int mar = (int) (dip2px(self, 12) + 0.5f);
-                        __lp_l.setMargins(mar, 0, mar, 0);
-                        __lp_l.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                        __lp_l.addRule(RelativeLayout.CENTER_VERTICAL);
-                        RelativeLayout.LayoutParams __lp_r = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-                        __lp_r.setMargins(mar, 0, mar, 0);
-                        __lp_r.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                        __lp_r.addRule(RelativeLayout.CENTER_VERTICAL);
-                        ColorStateList hiColor = ColorStateList.valueOf(Color.argb(255, 242, 140, 72));
-                        ll.addView(subtitle(self, "列表"));
-                        ll.addView(newListItemButton(self, "历史好友", null, null, clickToProxyActAction(ACTION_EXFRIEND_LIST)));
-                        ll.addView(newListItemButton(self, "导出历史好友列表", "支持json/csv/yaml格式", null, clickTheComing()));
-                        ll.addView(subtitle(self, "设置"));
-                        ll.addView(newListItemSwitchConfigNext(self, "隐藏小程序入口", "隐藏消息列表下拉出现的小程序列表", qn_hide_msg_list_miniapp, false));
-                        ll.addView(newListItemSwitchConfigNext(self, "隐藏分组下方入口", "隐藏分组列表最下方的历史好友按钮", qn_hide_ex_entry_group, false));
-                        ll.addView(newListItemSwitchConfig(self, "主动删除好友时不通知", "仅在测试模块时才可能需要关闭", qn_del_op_silence, true));
-                        ll.addView(newListItemButton(self, "重置模块", "会丢失所有历史好友信息", null, clickTheComing()));
-                        ll.addView(subtitle(self, "消息通知设置(不影响接收消息)"));
-                        ll.addView(newListItemButton(self, "屏蔽指定群@全体成员通知", Html.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[@全体成员]</font>就这点破事"), "0个群", clickToProxyActAction(ACTION_MUTE_AT_ALL)));
-                        ll.addView(newListItemButton(self, "屏蔽指定群的红包通知", Html.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[QQ红包][有红包][有福袋]</font>恭喜发财"), "0个群", clickToProxyActAction(ACTION_MUTE_RED_PACKET)));
-                        ll.addView(subtitle(self, "实验性功能(不一定有效,使用者后果自负)"));
-                        ll.addView(newListItemSwitchConfigNext(self, "上传透明头像", "开启后上传透明头像不会变黑", qn_enable_transparent, true));
-                        ll.addView(newListItemSwitchConfig(self, "发送卡片消息", "xml,json等", qn_send_card_msg, false));
-                        ll.addView(newListItemSwitchConfig(self, "语音转发", null, qn_enable_voice_forward, false));
-                        ll.addView(newListItemSwitchConfig(self, "以图片方式打开表情", null, qn_sticker_as_pic, false));
-                        ll.addView(newListItemButton(self, "重定向文件下载目录", new File(Environment.getExternalStorageDirectory(), "Tencent/QQfile_recv").getAbsolutePath(), "禁用", clickTheComing()));
-                        ll.addView(subtitle(self, "参数设定"));
-                        ll.addView(newListItemButton(self, "DelFriendReq.delType", "只能为1或2", "[不改动]", clickTheComing()));
-                        ll.addView(newListItemButton(self, "AddFriendReq.sourceID", "改错可能导致无法添加好友", "[不改动]", clickTheComing()));
-                        ll.addView(subtitle(self, "关于"));
-                        ll.addView(newListItemDummy(self, "QQ版本", null, Utils.getQQVersionName(self)));
-                        ll.addView(newListItemDummy(self, "模块版本", null, Utils.QN_VERSION_NAME));
-                        ll.addView(newListItemButton(self, "检查更新", null, "暂不开放", clickTheComing()));
-                        ll.addView(subtitle(self, "调试"));
-                        ll.addView(newListItemButton(self, "Shell.exec", "正常情况下无需使用此功能", null, clickTheComing()));
-                        ll.addView(subtitle(self, "作者"));
-                        ll.addView(newListItemButton(self, "打赏", "请选择扶贫方式", null, clickTheComing()));
-                        ll.addView(newListItemButton(self, "QQ", "点击私信反馈", "1041703712", clickToChat()));
-                        ll.addView(newListItemButton(self, "Mail", null, "xenonhydride@gmail.com", null));
-                        ll.addView(newListItemButton(self, "Github", "Bug -> Issue", "cinit", clickToUrl("https://github.com/cinit/QNotified")));
-                        ll.addView(newListItemButton(self, "Telegram", null, "Auride", clickToUrl("https://t.me/Auride")));
-                        ll.addView(subtitle(self, "SystemClassLoader\n" + ClassLoader.getSystemClassLoader() + "\nContext.getClassLoader()\n" + self.getClassLoader() + "\nThread.getContextClassLoader()\n" + Thread.currentThread().getContextClassLoader()));
-
-                        bounceScrollView.setFocusable(true);
-                        bounceScrollView.setFocusableInTouchMode(true);
-                        __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-                        self.setContentView(bounceScrollView);
-                        LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);
-                        _lp_fat.weight = 1;
-                        //__ll.addView(bounceScrollView,_lp_fat);
-                        //sdlv.setBackgroundColor(0xFFAA0000)
-                        invoke_virtual(self, "setTitle", "高级与设置", CharSequence.class);
-                        invoke_virtual(self, "setImmersiveStatus");
-                        invoke_virtual(self, "enableLeftBtn", true, boolean.class);
-                        //TextView rightBtn=(TextView)invoke_virtual(self,"getRightTextView");
-                        //log("Title:"+invoke_virtual(self,"getTextTitle"));
-
-                        //.addView(sdlv,lp);
-                        ConfigManager.getDefault().save();
-                    } catch (Throwable e) {
-                        log(e);
-                    }
-                else if (action == ACTION_SHELL)
-                    try {
-
-                    } catch (Throwable e) {
-                        log(e);
-                        throw e;
-                    }
-                else if (action == ACTION_MUTE_AT_ALL || action == ACTION_MUTE_RED_PACKET)
-                    try {
-                        exlist_mFlingHandler = new_instance(load("com/tencent/mobileqq/activity/fling/FlingGestureHandler"), self, Activity.class);
-                        iput_object(self, "mFlingHandler", exlist_mFlingHandler);
-                        QThemeKit.initTheme(self);
-                        TroopSelectAdapter adapter = new TroopSelectAdapter(self, action);
-                        adapter.doOnPostCreate();
-                    } catch (Throwable e) {
-                        log(e);
-                    }
-
-            } catch (Throwable e) {
-                log(e);
-                throw e;
-            }
-        }
-    };
-
 	/*
 	 private XC_MethodHook proxyActivity_doOnCreate=new XC_MethodHook(200){
 	 @Override
@@ -952,116 +739,6 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
 	 }
 	 }
 	 };*/
-
-    private XC_MethodHook proxyActivity_doOnDestroy = new XC_MethodHook(200) {
-        @Override
-        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-            try {
-                if (ActProxyMgr.isInfiniteLoop()) return;
-                Activity self = (Activity) param.thisObject;
-                int id = self.getIntent().getExtras().getInt(ACTIVITY_PROXY_ID_TAG, -1);
-                if (id <= 0) return;
-                //ActProxyMgr.remove(id);
-                Method m = self.getClass().getSuperclass().getSuperclass().getDeclaredMethod("doOnDestroy");
-                m.setAccessible(true);
-                try {
-                    ActProxyMgr.invokeSuper(self, m);
-                } catch (ActProxyMgr.BreakUnaughtException e) {
-                }
-                param.setResult(null);
-                //log("***doOnDestroy");
-            } catch (Throwable e) {
-                log(e);
-                throw e;
-            }
-        }
-    };
-
-    private XC_MethodHook proxyActivity_doOnResume = new XC_MethodHook(200) {
-        @Override
-        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-            try {
-                if (ActProxyMgr.isInfiniteLoop()) return;
-                Activity self = (Activity) param.thisObject;
-                int id = self.getIntent().getExtras().getInt(ACTIVITY_PROXY_ID_TAG, -1);
-                if (id <= 0) return;
-                Method m = self.getClass().getSuperclass().getSuperclass().getDeclaredMethod("doOnResume");
-                m.setAccessible(true);
-                try {
-                    ActProxyMgr.invokeSuper(self, m);
-                } catch (ActProxyMgr.BreakUnaughtException e) {
-                }
-                param.setResult(null);
-                //log("***doOnResume");
-            } catch (Throwable e) {
-                log(e);
-                throw e;
-            }
-        }
-    };
-
-    private XC_MethodHook proxyActivity_isWrapContent = new XC_MethodHook(200) {
-        @Override
-        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-            try {
-                if (ActProxyMgr.isInfiniteLoop()) return;
-                Activity self = (Activity) param.thisObject;
-                int id = self.getIntent().getExtras().getInt(ACTIVITY_PROXY_ID_TAG, -1);
-                if (id <= 0) return;
-                param.setResult(true);
-                //log("***doOnResume");
-            } catch (Throwable e) {
-                log(e);
-                throw e;
-            }
-        }
-    };
-
-    private XC_MethodHook proxyActivity_doOnPause = new XC_MethodHook(200) {
-        @Override
-        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-            try {
-                if (ActProxyMgr.isInfiniteLoop()) return;
-                Activity self = (Activity) param.thisObject;
-                int id = self.getIntent().getExtras().getInt(ACTIVITY_PROXY_ID_TAG, -1);
-                if (id <= 0) return;
-                Method m = self.getClass().getSuperclass().getSuperclass().getDeclaredMethod("doOnPause");
-                m.setAccessible(true);
-                try {
-                    ActProxyMgr.invokeSuper(self, m);
-                } catch (ActProxyMgr.BreakUnaughtException e) {
-                }
-                param.setResult(null);
-                //log("***doOnPause");
-            } catch (Throwable e) {
-                log(e);
-                throw e;
-            }
-        }
-    };
-
-    private XC_MethodHook proxyActivity_doOnActivityResult = new XC_MethodHook(200) {
-        @Override
-        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-            try {
-                if (ActProxyMgr.isInfiniteLoop()) return;
-                Activity self = (Activity) param.thisObject;
-                int id = self.getIntent().getExtras().getInt(ACTIVITY_PROXY_ID_TAG, -1);
-                if (id <= 0) return;
-                Method m = self.getClass().getSuperclass().getSuperclass().getDeclaredMethod("doOnActivityResult", int.class, int.class, Intent.class);
-                m.setAccessible(true);
-                try {
-                    ActProxyMgr.invokeSuper(self, m, param.args);
-                } catch (ActProxyMgr.BreakUnaughtException e) {
-                }
-                param.setResult(null);
-                //log("***doOnActivityResult");
-            } catch (Throwable e) {
-                log(e);
-                throw e;
-            }
-        }
-    };
 
     /*private XC_MethodHook pastEntry=new XC_MethodHook(1200){
 

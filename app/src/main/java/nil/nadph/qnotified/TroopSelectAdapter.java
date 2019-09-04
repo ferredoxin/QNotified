@@ -2,9 +2,11 @@ package nil.nadph.qnotified;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -25,11 +27,13 @@ import java.util.HashSet;
 import static android.view.View.GONE;
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
+import static nil.nadph.qnotified.ActProxyMgr.ACTION_MUTE_AT_ALL;
+import static nil.nadph.qnotified.ActProxyMgr.ACTION_MUTE_RED_PACKET;
 import static nil.nadph.qnotified.Initiator.load;
 import static nil.nadph.qnotified.Utils.*;
 
 
-public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
+public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, View.OnClickListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
 
     public static int HIGHLIGHT_COLOR = 0xFF20B0FF;
 
@@ -99,11 +103,11 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
             } else ret = sb.substring(1);
             try {
                 ConfigManager cfg = ConfigManager.getDefault();
-                if (mActionInt == QQMainHook.ACTION_MUTE_AT_ALL) {
+                if (mActionInt == ACTION_MUTE_AT_ALL) {
                     cfg.putString(Utils.qn_muted_at_all, ret);
                     cfg.save();
                 }
-                if (mActionInt == QQMainHook.ACTION_MUTE_RED_PACKET) {
+                if (mActionInt == ACTION_MUTE_RED_PACKET) {
                     cfg.putString(Utils.qn_muted_red_packet, ret);
                     cfg.save();
                 }
@@ -219,7 +223,7 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
         }
     }
 
-    public void doOnPostCreate() throws Throwable {
+    public void doOnPostCreate(Bundle savedInstanceState) throws Throwable {
         int bar_hi = WRAP_CONTENT;//dip2px(mActivity,30);
         ColorStateList cTitle = QThemeKit.skin_black;
         LinearLayout main = new LinearLayout(mActivity);
@@ -287,9 +291,9 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
         mActivity.setContentView(main);
         //sdlv.setBackgroundColor(0xFFAA0000)
         String title = "Fatal error!";
-        if (mActionInt == QQMainHook.ACTION_MUTE_AT_ALL)
+        if (mActionInt == ACTION_MUTE_AT_ALL)
             title = "屏蔽@全体成员";
-        else if (mActionInt == QQMainHook.ACTION_MUTE_RED_PACKET)
+        else if (mActionInt == ACTION_MUTE_RED_PACKET)
             title = "屏蔽群红包";
         invoke_virtual(mActivity, "setTitle", title, CharSequence.class);
         invoke_virtual(mActivity, "setImmersiveStatus");
@@ -307,9 +311,9 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
         //invoke_virtual(sdlv,"setOnScrollGroupFloatingListener",true,load("com/tencent/widget/AbsListView$OnScrollListener"));
         muted = new HashSet<>();
         String list = null;
-        if (mActionInt == QQMainHook.ACTION_MUTE_AT_ALL)
+        if (mActionInt == ACTION_MUTE_AT_ALL)
             list = ConfigManager.getDefault().getString(Utils.qn_muted_at_all);
-        if (mActionInt == QQMainHook.ACTION_MUTE_RED_PACKET)
+        if (mActionInt == ACTION_MUTE_RED_PACKET)
             list = ConfigManager.getDefault().getString(Utils.qn_muted_red_packet);
         if (list != null) {
             for (String s : list.split(",")) {
@@ -462,4 +466,25 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
         }
     }
 
+    @Override
+    public void doOnPostDestory() throws Throwable {
+    }
+
+    @Override
+    public void doOnPostPause() throws Throwable {
+    }
+
+    @Override
+    public void doOnPostResume() throws Throwable {
+    }
+
+    @Override
+    public boolean isWrapContent() throws Throwable {
+        return true;
+    }
+
+    @Override
+    public void doOnPostActivityResult(int requestCode, int resultCode, Intent data) {
+
+    }
 }

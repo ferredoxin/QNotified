@@ -1,11 +1,15 @@
 package nil.nadph.qnotified;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.ColorStateList;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Bundle;
+import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,10 +26,10 @@ import static nil.nadph.qnotified.Utils.*;
 
 //import de.robv.android.xposed.*;
 
-public class ExfriendListAdapter extends BaseAdapter {
+public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter {
 
-    private Context ctx;
-    private View mListView;
+    private Activity self;
+    //private View mListView;
     private FaceImpl face;
     private ExfriendManager exm;
     private HashMap<Integer, EventRecord> eventsMap;
@@ -36,16 +40,88 @@ public class ExfriendListAdapter extends BaseAdapter {
     private static final int R_ID_EXL_FACE = 0x300AFF03;
     private static final int R_ID_EXL_STATUS = 0x300AFF04;
 
+    @Override
+    public void doOnPostCreate(Bundle savedInstanceState) throws Throwable {
+        ViewGroup sdlv = (ViewGroup) load("com.tencent.widget.SwipListView").getConstructor(Context.class, AttributeSet.class).newInstance(self, null);
+        sdlv.setFocusable(true);
+        ViewGroup.LayoutParams mmlp = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
+        RelativeLayout.LayoutParams mwllp = new RelativeLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
+        RelativeLayout rl = new RelativeLayout(self);//)new_instance(load("com/tencent/mobileqq/activity/fling/TopGestureLayout"),self,Context.class);
+        //invoke_virtual(rl,"setInterceptScrollLRFlag",true,boolean.class);
+        //invoke_virtual(rl,"setInterceptTouchFlag",true,boolean.class);
+        //iput_object(rl,"
+        rl.setBackgroundColor(QThemeKit.qq_setting_item_bg_nor.getDefaultColor());
+        mwllp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        mwllp.addRule(RelativeLayout.CENTER_VERTICAL);
 
-    public ExfriendListAdapter(ViewGroup listView, ExfriendManager m) {
-        mListView = listView;
-        exm = m;
-        ctx = mListView.getContext();
+        TextView tv = new TextView(self);
+        tv.setGravity(Gravity.CENTER);
+        tv.setTextColor(QThemeKit.skin_gray3);
+        tv.setTextSize(Utils.dip2sp(self, 14));
+        rl.addView(tv, mwllp);
+        rl.addView(sdlv, mmlp);
+        self.setContentView(rl);
+        //sdlv.setBackgroundColor(0xFFAA0000)
+        invoke_virtual(self, "setTitle", "历史好友", CharSequence.class);
+        invoke_virtual(self, "setImmersiveStatus");
+        invoke_virtual(self, "enableLeftBtn", true, boolean.class);
+        TextView rightBtn = (TextView) invoke_virtual(self, "getRightTextView");
+        //log("Title:"+invoke_virtual(self,"getTextTitle"));
+        rightBtn.setVisibility(View.VISIBLE);
+        rightBtn.setText("高级");
+        rightBtn.setEnabled(true);
+        rightBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    //self.onBackPressed();
+                    //ExfriendManager.getCurrent().doRequestFlRefresh();
+                    //Utils.showToastShort(v.getContext(),"即将开放(没啥好设置的)...");
+                    QQMainHook.startProxyActivity(self, ActProxyMgr.ACTION_ADV_SETTINGS);
+                    //Intent intent=new Intent(v.getContext(),load(ActProxyMgr.DUMMY_ACTIVITY));
+                    //int id=ActProxyMgr.next();
+                    //intent.putExtra(ACTIVITY_PROXY_ID_TAG,id);
+                    //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						/*v.getContext().startActivity(intent);/*
+						 new Thread(new Runnable(){
+						 @Override
+						 public void run(){
+						 /*try{
+						 Thread.sleep(10000);
+						 }catch(InterruptedException e){}
+						 EventRecord ev=new EventRecord();
+						 ev.operator=10000;
+						 ev._remark=ev._nick="麻花藤";
+						 *
+						 ExfriendManager.getCurrent().doNotifyDelFl(new Object[]{1,"ticker","title","content"});
+						 }
+						 }).start();*/
+                } catch (Throwable e) {
+                    log(e);
+                }
+            }
+        });
+        //.addView(sdlv,lp);
+        invoke_virtual(sdlv, "setDragEnable", true, boolean.class);
+        invoke_virtual(sdlv, "setDivider", null, Drawable.class);
+        long uin = Utils.getLongAccountUin();
+        ExfriendManager exm = ExfriendManager.get(uin);
+        exm.clearUnreadFlag();
+        tv.setText("最后更新: " + Utils.getRelTimeStrSec(exm.lastUpdateTimeSec));
+        QQViewBuilder.listView_setAdapter(sdlv, this);
+        //invoke_virtual(sdlv,"setOnScrollGroupFloatingListener",true,load("com/tencent/widget/AbsListView$OnScrollListener"));
+        self.getWindow().getDecorView().setTag(this);
+    }
+
+
+    public ExfriendListAdapter(Activity context) {
+        self = context;
         try {
             face = FaceImpl.getInstance();
         } catch (Throwable e) {
             log(e);
         }
+        exm=ExfriendManager.getCurrent();
         reload();
     }
 
@@ -81,7 +157,6 @@ public class ExfriendListAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        // TODO: Implement this method
         return 0;
     }
 
@@ -127,7 +202,7 @@ public class ExfriendListAdapter extends BaseAdapter {
         ImageView imgview = convertView.findViewById(R_ID_EXL_FACE);
         Bitmap bm = face.getBitmapFromCache(FaceImpl.TYPE_USER, "" + ev.operator);
         if (bm == null) {
-            imgview.setImageDrawable(QThemeKit.loadDrawableFromAsset("face.png", ctx));
+            imgview.setImageDrawable(QThemeKit.loadDrawableFromAsset("face.png", self));
             face.registerView(FaceImpl.TYPE_USER, "" + ev.operator, imgview);
         } else {
             imgview.setImageBitmap(bm);
@@ -140,18 +215,18 @@ public class ExfriendListAdapter extends BaseAdapter {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private View inflateItemView(EventRecord ev) {
         int tmp;
-        RelativeLayout rlayout = new RelativeLayout(ctx);
-        LinearLayout llayout = new LinearLayout(ctx);
+        RelativeLayout rlayout = new RelativeLayout(self);
+        LinearLayout llayout = new LinearLayout(self);
         llayout.setGravity(Gravity.CENTER_VERTICAL);
         llayout.setOrientation(LinearLayout.HORIZONTAL);
 
-        LinearLayout textlayout = new LinearLayout(ctx);
+        LinearLayout textlayout = new LinearLayout(self);
         textlayout.setOrientation(LinearLayout.VERTICAL);
         rlayout.setBackground(QThemeKit.getListItemBackground());
 
-        LinearLayout.LayoutParams imglp = new LinearLayout.LayoutParams(Utils.dip2px(ctx, 50), Utils.dip2px(ctx, 50));
-        imglp.setMargins(tmp = Utils.dip2px(ctx, 6), tmp, tmp, tmp);
-        ImageView imgview = new ImageView(ctx);
+        LinearLayout.LayoutParams imglp = new LinearLayout.LayoutParams(Utils.dip2px(self, 50), Utils.dip2px(self, 50));
+        imglp.setMargins(tmp = Utils.dip2px(self, 6), tmp, tmp, tmp);
+        ImageView imgview = new ImageView(self);
         imgview.setFocusable(false);
         imgview.setClickable(false);
         imgview.setId(R_ID_EXL_FACE);
@@ -161,26 +236,26 @@ public class ExfriendListAdapter extends BaseAdapter {
         llayout.addView(imgview, imglp);
         LinearLayout.LayoutParams ltxtlp = new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
         LinearLayout.LayoutParams textlp = new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
-        ltxtlp.setMargins(tmp = Utils.dip2px(ctx, 2), tmp, tmp, tmp);
-        textlp.setMargins(tmp = Utils.dip2px(ctx, 1), tmp, tmp, tmp);
+        ltxtlp.setMargins(tmp = Utils.dip2px(self, 2), tmp, tmp, tmp);
+        textlp.setMargins(tmp = Utils.dip2px(self, 1), tmp, tmp, tmp);
         llayout.addView(textlayout, ltxtlp);
 
 
-        TextView title = new TextView(ctx);
+        TextView title = new TextView(self);
         title.setId(R_ID_EXL_TITLE);
         title.setSingleLine();
         //title.setText(ev.getShowStr());
         title.setGravity(Gravity.CENTER_VERTICAL);
         title.setTextColor(QThemeKit.cloneColor(QThemeKit.skin_black));
-        title.setTextSize(Utils.px2sp(ctx, Utils.dip2px(ctx, 16)));
+        title.setTextSize(Utils.px2sp(self, Utils.dip2px(self, 16)));
         //title.setPadding(tmp=Utils.dip2px(ctx,8),tmp,0,tmp);
 
-        TextView subtitle = new TextView(ctx);
+        TextView subtitle = new TextView(self);
         subtitle.setId(R_ID_EXL_SUBTITLE);
         subtitle.setSingleLine();
         subtitle.setGravity(Gravity.CENTER_VERTICAL);
         subtitle.setTextColor(QThemeKit.cloneColor(QThemeKit.skin_gray3));
-        subtitle.setTextSize(Utils.px2sp(ctx, Utils.dip2px(ctx, 14)));
+        subtitle.setTextSize(Utils.px2sp(self, Utils.dip2px(self, 14)));
         //subtitle.setPadding(tmp,0,0,tmp);
 
         textlayout.addView(title, textlp);
@@ -188,14 +263,14 @@ public class ExfriendListAdapter extends BaseAdapter {
 
         RelativeLayout.LayoutParams statlp = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
 
-        TextView stat = new TextView(ctx);
+        TextView stat = new TextView(self);
         stat.setId(R_ID_EXL_STATUS);
         stat.setSingleLine();
         stat.setGravity(Gravity.CENTER);
-        stat.setTextSize(Utils.px2sp(ctx, Utils.dip2px(ctx, 16)));
+        stat.setTextSize(Utils.px2sp(self, Utils.dip2px(self, 16)));
         statlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         statlp.addRule(RelativeLayout.CENTER_VERTICAL);
-        statlp.rightMargin = Utils.dip2px(ctx, 16);
+        statlp.rightMargin = Utils.dip2px(self, 16);
 
 
         rlayout.addView(llayout);
@@ -211,7 +286,7 @@ public class ExfriendListAdapter extends BaseAdapter {
                 QQMainHook.openProfileCard(v.getContext(), uin);
             }
         });
-
+/*
         rlayout.setOnLongClickListener(new OnLongClickListener() {
             @Override
             public boolean onLongClick(final View v) {
@@ -241,7 +316,7 @@ public class ExfriendListAdapter extends BaseAdapter {
                 }
                 return true;
             }
-        });
+        });*/
 
 
         return rlayout;
@@ -249,4 +324,25 @@ public class ExfriendListAdapter extends BaseAdapter {
 
     }
 
+    @Override
+    public void doOnPostDestory() throws Throwable {
+    }
+
+    @Override
+    public void doOnPostPause() throws Throwable {
+    }
+
+    @Override
+    public void doOnPostResume() throws Throwable {
+    }
+
+    @Override
+    public boolean isWrapContent() throws Throwable {
+        return true;
+    }
+
+    @Override
+    public void doOnPostActivityResult(int requestCode, int resultCode, Intent data) {
+
+    }
 }

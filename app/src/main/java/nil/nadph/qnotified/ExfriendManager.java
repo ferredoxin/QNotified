@@ -1,21 +1,32 @@
 package nil.nadph.qnotified;
 
-import android.annotation.*;
-import android.app.*;
-import android.content.*;
-import android.content.pm.*;
-import android.os.*;
-import android.view.*;
-import android.widget.*;
-import java.io.*;
-import java.lang.reflect.*;
-import java.util.*;
-import java.util.concurrent.*;
-import nil.nadph.qnotified.pk.*;
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Vibrator;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
+import nil.nadph.qnotified.pk.FriendChunk;
 
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import static nil.nadph.qnotified.ActProxyMgr.*;
+import static nil.nadph.qnotified.Initiator.load;
 import static nil.nadph.qnotified.Table.*;
 import static nil.nadph.qnotified.Utils.*;
-import static nil.nadph.qnotified.Initiator.load;
 
 public class ExfriendManager {
     static private final int ID_EX_NOTIFY = 65537;
@@ -126,7 +137,8 @@ public class ExfriendManager {
     }
 
 
-    public @Nullable void loadSavedPersonsInfo() {
+    public @Nullable
+    void loadSavedPersonsInfo() {
         synchronized (this) {
             try {
                 if (fileData == null) {
@@ -606,8 +618,8 @@ public class ExfriendManager {
         if (((int) ptr[0]) > 0) {
             Intent intent = new Intent(getApplication(), load(ActProxyMgr.STUB_ACTIVITY));
             int id = ActProxyMgr.next();
-            intent.putExtra(QQMainHook.ACTIVITY_PROXY_ID_TAG, id);
-            intent.putExtra(QQMainHook.ACTIVITY_PROXY_ACTION, QQMainHook.ACTION_EXFRIEND_LIST);
+            intent.putExtra(ACTIVITY_PROXY_ID_TAG, id);
+            intent.putExtra(ACTIVITY_PROXY_ACTION, ACTION_EXFRIEND_LIST);
             PendingIntent pi = PendingIntent.getActivity(getApplication(), 0, intent, 0);
             try {
 				/*Bitmap bp;
