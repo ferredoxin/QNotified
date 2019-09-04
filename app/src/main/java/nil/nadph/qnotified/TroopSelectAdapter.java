@@ -21,19 +21,17 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Set;
 
 import static android.view.View.GONE;
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.Initiator.load;
-import static nil.nadph.qnotified.QThemeKit.cloneColor;
 import static nil.nadph.qnotified.Utils.*;
 
 
 public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
 
-    public static int HIGHLIGHT_COLOR = 0xFF_44_44_CC;
+    public static int HIGHLIGHT_COLOR = 0xFF20B0FF;
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -75,6 +73,7 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
             cancel.setVisibility(GONE);
             selectAll.setVisibility(View.VISIBLE);
             reverse.setVisibility(View.VISIBLE);
+            notifyDataSetChanged();
         } else if (v == search) {
 			/*try{
 				Utils.showToastShort(mActivity,"setFocusable");
@@ -88,6 +87,49 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
             cancel.setVisibility(View.VISIBLE);
             selectAll.setVisibility(GONE);
             reverse.setVisibility(GONE);
+        } else if (v == rightBtn) {
+            StringBuilder sb = new StringBuilder();
+            for (String s : muted) {
+                sb.append(',');
+                sb.append(s);
+            }
+            String ret;
+            if (sb.length() < 4) {
+                ret = "";
+            } else ret = sb.substring(1);
+            try {
+                ConfigManager cfg = ConfigManager.getDefault();
+                if (mActionInt == QQMainHook.ACTION_MUTE_AT_ALL) {
+                    cfg.putString(Utils.qn_muted_at_all, ret);
+                    cfg.save();
+                }
+                if (mActionInt == QQMainHook.ACTION_MUTE_RED_PACKET) {
+                    cfg.putString(Utils.qn_muted_red_packet, ret);
+                    cfg.save();
+                }
+                mActivity.finish();
+            } catch (Exception e) {
+                try {
+                    log(e);
+                    Utils.showToast(mActivity, Utils.TOAST_TYPE_ERROR, e.toString(), Toast.LENGTH_SHORT);
+                } catch (Throwable ignored) {
+                }
+            }
+        } else if (v == selectAll) {
+            for (TroopInfo info : mTroopInfoList) {
+                muted.add(info.troopuin);
+            }
+            notifyDataSetInvalidated();
+        } else if (v == reverse) {
+            for (TroopInfo info : mTroopInfoList) {
+                HashSet<String> ref = (HashSet<String>) muted.clone();
+                if (ref.contains(info.troopuin)) {
+                    muted.remove(info.troopuin);
+                } else {
+                    muted.add(info.troopuin);
+                }
+            }
+            notifyDataSetInvalidated();
         }
     }
 
@@ -121,10 +163,17 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
         if (convertView == null) convertView = createItemView();
         TroopInfo info = mTroopInfoList.get(position);
         convertView.setTag(info.troopuin);
-        TextView title = convertView.findViewById(R_ID_TRP_TITLE);
-        title.setText(info._troopname);
-        TextView subtitle = convertView.findViewById(R_ID_TRP_SUBTITLE);
-        subtitle.setText(info._troopuin);
+        if (searchMode) {
+            TextView title = convertView.findViewById(R_ID_TRP_TITLE);
+            title.setText(info._troopname);
+            TextView subtitle = convertView.findViewById(R_ID_TRP_SUBTITLE);
+            subtitle.setText(info._troopuin);
+        } else {
+            TextView title = convertView.findViewById(R_ID_TRP_TITLE);
+            title.setText(info.troopname);
+            TextView subtitle = convertView.findViewById(R_ID_TRP_SUBTITLE);
+            subtitle.setText(info.troopuin);
+        }
         ImageView imgview = convertView.findViewById(R_ID_TRP_FACE);
         Bitmap bm = face.getBitmapFromCache(FaceImpl.TYPE_TROOP, info.troopuin);
         if (bm == null) {
@@ -133,6 +182,9 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
         } else {
             imgview.setImageBitmap(bm);
         }
+        boolean selected = muted.contains(info.troopuin);
+        CheckBox check = convertView.findViewById(R_ID_TRP_CHECKBOX);
+        check.setChecked(selected);
         return convertView;
     }
 
@@ -160,7 +212,6 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
     public TroopSelectAdapter(Activity act, int action) {
         mActivity = act;
         mActionInt = action;
-        muted = new HashSet<>();
         try {
             face = FaceImpl.getInstance();
         } catch (Throwable e) {
@@ -178,7 +229,7 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
         LinearLayout bar = new LinearLayout(mActivity);
         bar.setOrientation(LinearLayout.HORIZONTAL);
         search = new EditText(mActivity);
-        search.setHint("搜索...");
+        search.setHint("搜索...群名或群号");
         search.setPadding(3, 3, 3, 3);
         search.setFocusable(false);
         search.setOnClickListener(this);
@@ -246,49 +297,35 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
         rightBtn = (TextView) invoke_virtual(mActivity, "getRightTextView");
         //log("Title:"+invoke_virtual(mActivity,"getTextTitle"));
         rightBtn.setVisibility(View.VISIBLE);
-        rightBtn.setText("完成(%d)");
+        rightBtn.setText("完成");
         rightBtn.setEnabled(true);
-        rightBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    //mActivity.onBackPressed();
-                    //ExfriendManager.getCurrent().doRequestFlRefresh();
-                    Utils.showToastShort(v.getContext(), "即将开放(没啥好完成的)...");
-                    //startProxyActivity(mActivity,ACTION_ADV_SETTINGS);
-                    //Intent intent=new Intent(v.getContext(),load(ActProxyMgr.DUMMY_ACTIVITY));
-                    //int id=ActProxyMgr.next();
-                    //intent.putExtra(ACTIVITY_PROXY_ID_TAG,id);
-                    //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-						/*v.getContext().startActivity(intent);/*
-						 new Thread(new Runnable(){
-						 @Override
-						 public void run(){
-						 /*try{
-						 Thread.sleep(10000);
-						 }catch(InterruptedException e){}
-						 EventRecord ev=new EventRecord();
-						 ev.operator=10000;
-						 ev._remark=ev._nick="麻花藤";
-						 *
-						 ExfriendManager.getCurrent().doNotifyDelFl(new Object[]{1,"ticker","title","content"});
-						 }
-						 }).start();*/
-                } catch (Throwable e) {
-                    log(e);
-                }
-            }
-        });
+        rightBtn.setOnClickListener(this);
         //.addView(sdlv,lp);
         invoke_virtual(sdlv, "setDragEnable", true, boolean.class);
         invoke_virtual(sdlv, "setDivider", null, Drawable.class);
         QQViewBuilder.listView_setAdapter(sdlv, this);
         //invoke_virtual(sdlv,"setOnScrollGroupFloatingListener",true,load("com/tencent/widget/AbsListView$OnScrollListener"));
-
+        muted = new HashSet<>();
+        String list = null;
+        if (mActionInt == QQMainHook.ACTION_MUTE_AT_ALL)
+            list = ConfigManager.getDefault().getString(Utils.qn_muted_at_all);
+        if (mActionInt == QQMainHook.ACTION_MUTE_RED_PACKET)
+            list = ConfigManager.getDefault().getString(Utils.qn_muted_red_packet);
+        if (list != null) {
+            for (String s : list.split(",")) {
+                if (s.length() > 4) {
+                    muted.add(s);
+                }
+            }
+        }
+        if (muted != null && muted.size() > 0) {
+            rightBtn.setText("完成(" + muted.size() + ")");
+        }
+        mActivity.getWindow().getDecorView().setTag(this);
     }
 
     private LinearLayout createItemView() {
-        int std_mg = dip2px(mActivity, 20), tmp;
+        int std_mg = dip2px(mActivity, 16), tmp;
         LinearLayout llayout = new LinearLayout(mActivity);
         //RelativeLayout rlayout = new RelativeLayout(mActivity);
         llayout.setGravity(Gravity.CENTER_VERTICAL);
@@ -296,17 +333,20 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
         llayout.setPadding(std_mg, std_mg / 2, 0, std_mg / 2);
         llayout.setBackgroundDrawable(QThemeKit.getListItemBackground());
         llayout.setOnClickListener(this);
+        llayout.setId(R_ID_TRP_LAYOUT);
         CheckBox checkBox = new CheckBox(mActivity);
         checkBox.setId(R_ID_TRP_CHECKBOX);
         checkBox.setOnCheckedChangeListener(this);
+        checkBox.setButtonDrawable(null);
+        checkBox.setBackgroundDrawable(QThemeKit.getCheckBoxBackground());
         LinearLayout.LayoutParams imglp = new LinearLayout.LayoutParams(Utils.dip2px(mActivity, 50), Utils.dip2px(mActivity, 50));
-        imglp.setMargins(tmp = Utils.dip2px(mActivity, 6), tmp, tmp, tmp);
+        imglp.setMargins(tmp = Utils.dip2px(mActivity, 12), tmp / 2, tmp / 2, tmp / 2);
         ImageView imgview = new ImageView(mActivity);
         imgview.setFocusable(false);
         imgview.setClickable(false);
         imgview.setId(R_ID_TRP_FACE);
         imgview.setScaleType(ImageView.ScaleType.FIT_XY);
-        llayout.addView(checkBox, WRAP_CONTENT, WRAP_CONTENT);
+        llayout.addView(checkBox, tmp = dip2px(mActivity, 20), tmp);
         llayout.addView(imgview, imglp);
         LinearLayout textlayout = new LinearLayout(mActivity);
         textlayout.setOrientation(LinearLayout.VERTICAL);
@@ -340,7 +380,9 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
     }
 
     public static ArrayList<TroopInfo> getTroopInfoList() throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
-        Object mTroopManager = invoke_virtual(getQQAppInterface(), "getManager", 52, int.class);
+        Object mTroopManager = invoke_virtual(getQQAppInterface(), "getManager", 51, int.class);
+        if (!mTroopManager.getClass().getName().contains("TroopManager"))
+            mTroopManager = invoke_virtual(getQQAppInterface(), "getManager", 52, int.class);
         ArrayList tx = (ArrayList) invoke_virtual(mTroopManager, "a", ArrayList.class);
         ArrayList<TroopInfo> ret = new ArrayList<TroopInfo>();
         for (Object info : tx) {
@@ -381,15 +423,22 @@ public class TroopSelectAdapter extends BaseAdapter implements View.OnClickListe
 
         }
         Collections.sort(mTroopInfoList);
+        notifyDataSetChanged();
     }
 
-    private Set<String> muted;
+    private HashSet<String> muted;
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         LinearLayout ll = (LinearLayout) buttonView.getParent();
         String guin = (String) ll.getTag();
-        if (guin != null) muted.add(guin);
+        if (guin == null) return;
+        if (isChecked) {
+            muted.add(guin);
+        } else {
+            muted.remove(guin);
+        }
+        rightBtn.setText("完成(" + muted.size() + ")");
     }
 
 

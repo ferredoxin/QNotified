@@ -30,7 +30,9 @@ public class Utils {
             qn_enable_transparent = "vqn_enable_transparent",
             qn_enable_voice_forward = "qn_enable_voice_forward",
             qn_sticker_as_pic = "qn_sticker_as_pic",
-            qn_send_card_msg = "qn_send_card_msg";
+            qn_send_card_msg = "qn_send_card_msg",
+            qn_muted_at_all = "qn_muted_at_all",
+            qn_muted_red_packet = "qn_muted_red_packet";
     public static boolean DEBUG = true;
     public static boolean V_TOAST = false;
     public static final String QN_VERSION_NAME = "0.2.0概念版";
@@ -324,7 +326,9 @@ public class Utils {
     }
 
     public static Object getQQAppInterface() {
-        return getAppRuntime();
+        Object o = getAppRuntime();
+        Log.i("QNdump", o.getClass().getCanonicalName());
+        return o;
     }
 
     public static Object getMobileQQService() {
@@ -516,7 +520,7 @@ public class Utils {
             if (m == null) return invoke_virtual(baseApplicationImpl, "a", load("mqq/app/AppRuntime"));
             else return m.invoke(baseApplicationImpl);
         } catch (Exception e) {
-            log("getRuntime:" + e.toString());
+            //log("getRuntime:" + e.toString());
             return null;
         }
     }

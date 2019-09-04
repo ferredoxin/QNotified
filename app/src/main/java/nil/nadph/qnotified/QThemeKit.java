@@ -33,7 +33,8 @@ public class QThemeKit {
     static public ColorStateList skin_text_white;
     static public ColorStateList qq_setting_item_bg_nor;
     static public ColorStateList qq_setting_item_bg_pre;
-    static public Drawable skin_list_normal = null, skin_list_item_unread = null, skin_list_pressed = null, skin_icon_arrow_right_normal = null, skin_background = null;
+    static public Drawable skin_list_normal = null, skin_list_item_unread = null, skin_list_pressed = null, skin_icon_arrow_right_normal = null, skin_background = null,
+            list_checkbox_selected_nopress, list_checkbox_selected, list_checkbox_multi, list_checkbox;
     /*skin_group_list_item_pressed_theme_version2*/
     //static public Drawable skin_tips_newmessage;
 
@@ -62,6 +63,7 @@ public class QThemeKit {
                 = qq_setting_item_bg_pre = null;
         skin_list_normal = skin_list_item_unread = skin_list_pressed
                 = skin_background = null;//=skin_tips_newmessage=null;
+        list_checkbox_selected_nopress = list_checkbox_selected = list_checkbox_multi = list_checkbox = null;
         if (isColorQQThemeActive()) {
             loadResInDir(Environment.getExternalStorageDirectory() + "/QQColor/theme", ctx);
         }
@@ -69,6 +71,12 @@ public class QThemeKit {
         //if(skin_tips_newmessage==null)skin_tips_newmessage= loadDrawableFromAsset("skin_tips_newmessage.9.png");
         if (skin_list_normal == null) skin_list_normal = loadDrawableFromAsset("skin_list_item_normal.9.png", ctx);
         if (skin_list_pressed == null) skin_list_pressed = loadDrawableFromAsset("skin_list_item_pressed.9.png", ctx);
+        if (list_checkbox_selected_nopress == null)
+            list_checkbox_selected_nopress = loadDrawableFromAsset("list_checkbox_selected_nopress.png", ctx);
+        if (list_checkbox_selected == null)
+            list_checkbox_selected = loadDrawableFromAsset("list_checkbox_selected.png", ctx);
+        if (list_checkbox_multi == null) list_checkbox_multi = loadDrawableFromAsset("list_checkbox_multi.png", ctx);
+        if (list_checkbox == null) list_checkbox = loadDrawableFromAsset("list_checkbox.png", ctx);
         if (skin_icon_arrow_right_normal == null)
             skin_icon_arrow_right_normal = loadDrawableFromAsset("skin_icon_arrow_right_normal.png", ctx);
         if (skin_black == null) skin_black = ColorStateList.valueOf(0xFF000000);
@@ -111,6 +119,25 @@ public class QThemeKit {
                 if (path == null) path = findDrawableResource(dir, "skin_background_theme_version2.png", mContext);
                 if (path != null) skin_background = loadDrawable(path, mContext);
             }
+
+            if (list_checkbox_selected_nopress == null) {
+                path = findDrawableResource(dir, "list_checkbox_selected_nopress.png", mContext);
+                if (path != null) list_checkbox_selected_nopress = loadDrawable(path, mContext);
+            }
+
+            if (list_checkbox_multi == null) {
+                path = findDrawableResource(dir, "list_checkbox_multi.png", mContext);
+                if (path != null) list_checkbox_multi = loadDrawable(path, mContext);
+            }
+            if (list_checkbox_selected == null) {
+                path = findDrawableResource(dir, "list_checkbox_selected.png", mContext);
+                if (path != null) list_checkbox_selected = loadDrawable(path, mContext);
+            }
+            if (list_checkbox == null) {
+                path = findDrawableResource(dir, "list_checkbox.png", mContext);
+                if (path != null) list_checkbox = loadDrawable(path, mContext);
+            }
+
 
             //path=findDrawableResource(dir,"skin_tips_newmessage.9.png");
             //if(path!=null)skin_tips_newmessage=loadDrawable(path);
@@ -187,6 +214,15 @@ public class QThemeKit {
         //sd.addState(new int[]{android.R.attr.state_focused},skin_list_pressed);  
         sd.addState(new int[]{android.R.attr.state_selected}, skin_list_pressed);
         sd.addState(new int[]{}, skin_list_normal);
+        return sd;
+    }
+
+    public static StateListDrawable getCheckBoxBackground() {
+        StateListDrawable sd = new StateListDrawable();
+        sd.addState(new int[]{android.R.attr.state_checked, -android.R.attr.state_enabled}, list_checkbox_selected_nopress);
+        sd.addState(new int[]{-android.R.attr.state_checked, -android.R.attr.state_enabled}, list_checkbox_multi);
+        sd.addState(new int[]{android.R.attr.state_checked}, list_checkbox_selected);
+        sd.addState(new int[]{}, list_checkbox);
         return sd;
     }
 
