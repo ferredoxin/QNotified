@@ -12,8 +12,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 
-import static nil.nadph.qnotified.Initiator.load;
-import android.annotation.*;
+import static nil.nadph.qnotified.util.Initiator.load;
+
+import nil.nadph.qnotified.util.Nullable;
+import nil.nadph.qnotified.util.Utils;
 
 //import de.robv.android.xposed.*;
 
@@ -100,7 +102,8 @@ public class FaceImpl implements InvocationHandler {
         }
     }
 
-    public @Nullable Bitmap getBitmapFromCache(int type, String uin) {
+    public @Nullable
+    Bitmap getBitmapFromCache(int type, String uin) {
         if (type == TYPE_TROOP) return cachedTroopFace.get(uin);
         if (type == TYPE_USER) return cachedUserFace.get(uin);
         return null;

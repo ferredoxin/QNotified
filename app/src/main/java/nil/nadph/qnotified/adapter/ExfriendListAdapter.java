@@ -1,9 +1,8 @@
-package nil.nadph.qnotified;
+package nil.nadph.qnotified.adapter;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -13,16 +12,21 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.*;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.record.EventRecord;
+import nil.nadph.qnotified.record.FriendRecord;
+import nil.nadph.qnotified.util.QQViewBuilder;
+import nil.nadph.qnotified.util.QThemeKit;
+import nil.nadph.qnotified.util.Utils;
 
 import java.util.*;
 
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.Initiator.load;
-import static nil.nadph.qnotified.Utils.*;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Utils.*;
 
 //import de.robv.android.xposed.*;
 

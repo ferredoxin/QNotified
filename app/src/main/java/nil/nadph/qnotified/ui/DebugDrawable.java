@@ -1,4 +1,4 @@
-package nil.nadph.qnotified;
+package nil.nadph.qnotified.ui;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import nil.nadph.qnotified.util.Utils;
 
 public class DebugDrawable extends Drawable {
     Paint paint = new Paint();

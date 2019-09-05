@@ -1,4 +1,4 @@
-package nil.nadph.qnotified;
+package nil.nadph.qnotified.util;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -19,8 +19,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import static nil.nadph.qnotified.Initiator.load;
-import static nil.nadph.qnotified.Utils.*;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Utils.*;
 
 public class QThemeKit {
 

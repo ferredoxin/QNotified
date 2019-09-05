@@ -12,7 +12,13 @@ import android.os.Vibrator;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.pk.FriendChunk;
+import nil.nadph.qnotified.record.EventRecord;
+import nil.nadph.qnotified.record.FriendRecord;
+import nil.nadph.qnotified.record.Table;
+import nil.nadph.qnotified.util.Nullable;
+import nil.nadph.qnotified.util.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,9 +30,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static nil.nadph.qnotified.ActProxyMgr.*;
-import static nil.nadph.qnotified.Initiator.load;
-import static nil.nadph.qnotified.Table.*;
-import static nil.nadph.qnotified.Utils.*;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.record.Table.*;
+import static nil.nadph.qnotified.util.Utils.*;
 
 public class ExfriendManager {
     static private final int ID_EX_NOTIFY = 65537;

@@ -1,4 +1,4 @@
-package nil.nadph.qnotified;
+package nil.nadph.qnotified.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
-import java.io.*;
 
 /**
  * @author cinit

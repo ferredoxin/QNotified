@@ -1,4 +1,4 @@
-package nil.nadph.qnotified;
+package nil.nadph.qnotified.adapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -18,6 +18,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
+import nil.nadph.qnotified.FaceImpl;
+import nil.nadph.qnotified.util.QThemeKit;
+import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.record.ConfigManager;
+import nil.nadph.qnotified.util.QQViewBuilder;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -29,8 +34,8 @@ import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.ActProxyMgr.ACTION_MUTE_AT_ALL;
 import static nil.nadph.qnotified.ActProxyMgr.ACTION_MUTE_RED_PACKET;
-import static nil.nadph.qnotified.Initiator.load;
-import static nil.nadph.qnotified.Utils.*;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Utils.*;
 
 
 public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, View.OnClickListener, TextWatcher, CompoundButton.OnCheckedChangeListener {

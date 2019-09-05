@@ -1,4 +1,4 @@
-package nil.nadph.qnotified;
+package nil.nadph.qnotified.util;
 
 import android.app.Application;
 import android.content.Context;
@@ -19,7 +19,7 @@ import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static nil.nadph.qnotified.Initiator.load;
+import static nil.nadph.qnotified.util.Initiator.load;
 
 @SuppressWarnings("unchecked")
 public class Utils {

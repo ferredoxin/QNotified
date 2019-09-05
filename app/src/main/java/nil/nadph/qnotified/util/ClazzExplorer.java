@@ -1,4 +1,4 @@
-package nil.nadph.qnotified;
+package nil.nadph.qnotified.util;
 
 import android.app.Activity;
 import android.app.Application;
@@ -20,7 +20,7 @@ import java.util.Stack;
 
 import static android.view.WindowManager.LayoutParams.*;
 import static android.widget.LinearLayout.*;
-import static nil.nadph.qnotified.Utils.log;
+import static nil.nadph.qnotified.util.Utils.log;
 
 public class ClazzExplorer {
     public Application app;

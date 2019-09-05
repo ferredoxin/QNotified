@@ -1,4 +1,6 @@
-package nil.nadph.qnotified;
+package nil.nadph.qnotified.record;
+
+import nil.nadph.qnotified.util.Nullable;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

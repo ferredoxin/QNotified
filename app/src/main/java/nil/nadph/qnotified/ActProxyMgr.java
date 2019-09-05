@@ -5,6 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import nil.nadph.qnotified.adapter.ActivityAdapter;
+import nil.nadph.qnotified.adapter.ExfriendListAdapter;
+import nil.nadph.qnotified.adapter.SettingsAdapter;
+import nil.nadph.qnotified.adapter.TroopSelectAdapter;
+import nil.nadph.qnotified.util.QThemeKit;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
@@ -12,8 +17,8 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Stack;
 
-import static nil.nadph.qnotified.Initiator.load;
-import static nil.nadph.qnotified.Utils.*;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Utils.*;
 
 /**
  * ActivityProxyManager

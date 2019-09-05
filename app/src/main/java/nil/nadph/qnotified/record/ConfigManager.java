@@ -1,4 +1,7 @@
-package nil.nadph.qnotified;
+package nil.nadph.qnotified.record;
+
+import nil.nadph.qnotified.ExfriendManager;
+import nil.nadph.qnotified.util.Utils;
 
 import java.io.*;
 import java.security.MessageDigest;
@@ -7,7 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import static nil.nadph.qnotified.Table.*;
+import static nil.nadph.qnotified.record.Table.*;
 
 public class ConfigManager {
     private static ConfigManager SELF;

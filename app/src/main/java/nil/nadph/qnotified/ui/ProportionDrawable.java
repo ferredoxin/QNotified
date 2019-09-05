@@ -1,4 +1,4 @@
-package nil.nadph.qnotified;
+package nil.nadph.qnotified.ui;
 
 import android.annotation.SuppressLint;
 import android.graphics.Canvas;

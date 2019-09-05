@@ -1,4 +1,4 @@
-package nil.nadph.qnotified;
+package nil.nadph.qnotified.util;
 
 import android.content.Context;
 import android.widget.PopupWindow;

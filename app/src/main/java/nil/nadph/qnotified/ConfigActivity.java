@@ -11,6 +11,7 @@ import android.text.Spanned;
 import android.text.style.URLSpan;
 import android.view.View;
 import android.widget.TextView;
+import nil.nadph.qnotified.util.Utils;
 
 import java.io.IOException;
 import java.io.InputStream;

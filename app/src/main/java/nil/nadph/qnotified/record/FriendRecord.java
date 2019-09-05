@@ -1,8 +1,8 @@
-package nil.nadph.qnotified;
+package nil.nadph.qnotified.record;
 
 import java.io.Serializable;
 
-import static nil.nadph.qnotified.Utils.en;
+import static nil.nadph.qnotified.util.Utils.en;
 
 
 public class FriendRecord implements Serializable, Cloneable {

@@ -1,4 +1,4 @@
-package nil.nadph.qnotified;
+package nil.nadph.qnotified.adapter;
 
 import android.content.Intent;
 import android.os.Bundle;

@@ -5,8 +5,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 
-import static nil.nadph.qnotified.Initiator.load;
-import static nil.nadph.qnotified.Utils.log;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Utils.log;
 
 
 public class FriendChunk implements Serializable, Cloneable {

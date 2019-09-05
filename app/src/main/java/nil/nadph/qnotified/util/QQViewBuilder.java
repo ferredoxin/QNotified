@@ -1,22 +1,22 @@
-package nil.nadph.qnotified;
+package nil.nadph.qnotified.util;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import nil.nadph.qnotified.record.ConfigManager;
+import nil.nadph.qnotified.QQMainHook;
 
 import java.io.IOException;
 
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.Initiator.load;
-import static nil.nadph.qnotified.Utils.dip2px;
-import static nil.nadph.qnotified.Utils.dip2sp;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Utils.dip2px;
+import static nil.nadph.qnotified.util.Utils.dip2sp;
 
 @SuppressWarnings("unchecked")
 public class QQViewBuilder {

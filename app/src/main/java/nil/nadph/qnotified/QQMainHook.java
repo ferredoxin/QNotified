@@ -16,7 +16,13 @@ import android.view.ViewGroup;
 import android.widget.*;
 import de.robv.android.xposed.*;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.pk.FriendChunk;
+import nil.nadph.qnotified.ui.DebugDrawable;
+import nil.nadph.qnotified.util.ClazzExplorer;
+import nil.nadph.qnotified.util.Initiator;
+import nil.nadph.qnotified.util.QThemeKit;
+import nil.nadph.qnotified.util.Utils;
 
 import java.io.FileInputStream;
 import java.lang.ref.WeakReference;
@@ -27,8 +33,8 @@ import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static nil.nadph.qnotified.ActProxyMgr.*;
-import static nil.nadph.qnotified.Initiator.load;
-import static nil.nadph.qnotified.Utils.*;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Utils.*;
 
 /*TitleKit:Lcom/tencent/mobileqq/widget/navbar/NavBarCommon*/
 
