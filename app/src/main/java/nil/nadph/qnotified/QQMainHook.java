@@ -16,8 +16,8 @@ import android.view.ViewGroup;
 import android.widget.*;
 import de.robv.android.xposed.*;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
-import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.pk.FriendChunk;
+import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.ui.DebugDrawable;
 import nil.nadph.qnotified.util.ClazzExplorer;
 import nil.nadph.qnotified.util.Initiator;
@@ -26,7 +26,10 @@ import nil.nadph.qnotified.util.Utils;
 
 import java.io.FileInputStream;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 import java.util.HashSet;
 
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
@@ -181,7 +184,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
         Initiator.init(classLoader);
         log("Clases init done");
         log("App:" + Utils.getApplication());
-        assert classLoader != null : "ERROR:classLoader==null";
+        if (classLoader == null) throw new AssertionError("ERROR:classLoader==null");
 		/*try{
 		 Thread.sleep(5000);
 		 }catch(InterruptedException e){}*
@@ -197,13 +200,14 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
         findAndHookMethod(load("com.tencent.mobileqq.data.MessageForQQWalletMsg"), "doParse", new XC_MethodHook(200) {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                XposedHelpers.setObjectField(param.thisObject, "isread", true);
+                boolean mute = false;
                 int istroop = (Integer) iget_object(param.thisObject, "istroop");
                 if (istroop != 1) return;
-                String frienduin = (String) iget_object(param.thisObject, "frienduin");
-                long troop = Long.parseLong(frienduin);
-
-                Field[] fs = param.thisObject.getClass().getFields();
+                String troopuin = (String) iget_object(param.thisObject, "frienduin");
+                String muted = "," + ConfigManager.getDefault().getString(qn_muted_red_packet) + ",";
+                if (muted.contains("," + troopuin + ",")) mute = true;
+                if (mute) XposedHelpers.setObjectField(param.thisObject, "isread", true);
+/*                Field[] fs = param.thisObject.getClass().getFields();
                 String ret = "";
                 for (int i = 0; i < fs.length; i++) {
                     fs[i].setAccessible(true);
@@ -211,7 +215,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
                     ret += (i < fs.length - 1 ? "├" : "↓") + fs[i].getName() + "=" + ClazzExplorer.en_toStr(fs[i].get(param.thisObject)) + "\n";
                 }
                 android.util.Log.i("QNdump", ret);
-                //dump(param.thisObect);
+                //dump(param.thisObect);*/
             }
         });
 
@@ -628,6 +632,8 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
 
 		 }
 		 });//*/
+        XposedBridge.hookAllConstructors(load("agve"),invokeRecord);
+        //XposedHelpers.findAndHookMethod(load("awpy"),"a", load("com.tencent.mobileqq.app.QQAppInterface"), boolean.class, String.class,invokeRecord);
     }
 
     public XC_MethodHook invokeRecord = new XC_MethodHook(200) {
