@@ -108,6 +108,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
             XposedBridge.hookMethod(m, startup);
             findAndHookMethodIfExists("com.tencent.common.app.QFixApplicationImpl", lpparam.classLoader, "isAndroidNPatchEnable", XC_MethodReplacement.returnConstant(500, false));
         } catch (Throwable e) {
+            if ((e + "").contains("com.bug.zqq")) return;
             log(e);
             throw e;
         }
@@ -219,7 +220,29 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
             }
         });
 
-
+        try {
+            Class cl_MessageInfo = load("com/tencent/mobileqq/troop/data/MessageInfo");
+            if (cl_MessageInfo == null) {
+                Class c = load("com/tencent/mobileqq/data/MessageRecord");
+                cl_MessageInfo = c.getDeclaredField("mMessageInfo").getType();
+            }
+            /* @author qiwu */
+            final int at_all_type = (Utils.getQQVersionName(getApplication()).compareTo("7.8.0") >= 0) ? 13 : 12;
+            findAndHookMethod(cl_MessageInfo, "a", load("com/tencent/mobileqq/app/QQAppInterface"), boolean.class, String.class, new XC_MethodHook(60) {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    int ret = (int) param.getResult();
+                    String troopuin = (String) param.args[2];
+                    if (ret != at_all_type) return;
+                    String muted = "," + ConfigManager.getDefault().getString(qn_muted_at_all) + ",";
+                    if (muted.contains("," + troopuin + ",")) {
+                        param.setResult(0);
+                    }
+                }
+            });
+        } catch (Exception e) {
+            log(e);
+        }
 
 		/*XposedBridge.hookAllMethods(load("com/tencent/mobileqq/util/FaceDecoder"),"a",
 		 });*/
@@ -632,7 +655,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
 
 		 }
 		 });//*/
-        XposedBridge.hookAllConstructors(load("agve"),invokeRecord);
+        XposedBridge.hookAllConstructors(load("agve"), invokeRecord);
         //XposedHelpers.findAndHookMethod(load("awpy"),"a", load("com.tencent.mobileqq.app.QQAppInterface"), boolean.class, String.class,invokeRecord);
     }
 

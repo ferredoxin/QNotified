@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.util.QThemeKit;
+import nil.nadph.qnotified.util.UpdateCheck;
 import nil.nadph.qnotified.util.Utils;
 
 import java.io.File;
@@ -90,7 +91,9 @@ public class SettingsAdapter implements ActivityAdapter {
         ll.addView(subtitle(self, "关于"));
         ll.addView(newListItemDummy(self, "QQ版本", null, Utils.getQQVersionName(self)));
         ll.addView(newListItemDummy(self, "模块版本", null, Utils.QN_VERSION_NAME));
-        ll.addView(newListItemButton(self, "检查更新", null, "暂不开放", clickTheComing()));
+        UpdateCheck uc = new UpdateCheck();
+        ll.addView(_t=newListItemButton(self, "检查更新", null, "点击检查", uc));
+        uc.setVersionTip(_t);
         ll.addView(subtitle(self, "调试"));
         ll.addView(newListItemButton(self, "Shell.exec", "正常情况下无需使用此功能", null, clickTheComing()));
         ll.addView(subtitle(self, "作者"));

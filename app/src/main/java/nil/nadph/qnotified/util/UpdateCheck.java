@@ -8,7 +8,6 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
-import android.text.style.TextAppearanceSpan;
 import android.text.util.Linkify;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +18,12 @@ import android.widget.Toast;
 import nil.nadph.qnotified.record.ConfigManager;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
-import java.util.Date;
 
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.util.Utils.findField;
 import static nil.nadph.qnotified.util.Utils.log;
 
 public class UpdateCheck implements View.OnClickListener, Runnable {
@@ -41,6 +40,8 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
     private final int RL_LOAD = 1;
     private final int RL_SHOW_RET = 2;
 
+    public UpdateCheck() {
+    }
 
     public String doRefreshInfo() {
         String content = null;
@@ -88,29 +89,37 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
 
     }
 
-    public void setVersionTip() {
-        TextView tv_v = viewGroup.findViewById(QQViewBuilder.R_ID_VALUE);
-        TextView tv_t = viewGroup.findViewById(QQViewBuilder.R_ID_TITLE);
-        String str = getCachedUpdateInfoOrNull();
-        if (str != null) {
-            PHPArray info = PHPArray.fromJson(str);
-            if (info.size() > 0) {
-                int v = ((Number) info.__(0).__("code")._$()).intValue();
-                if (v > currVerCode) {
+    public void setVersionTip(ViewGroup vg) {
+        viewGroup = vg;
+        try {
+            TextView tv_v = viewGroup.findViewById(QQViewBuilder.R_ID_VALUE);
+            TextView tv_t = viewGroup.findViewById(QQViewBuilder.R_ID_TITLE);
+            String str = getCachedUpdateInfoOrNull();
+            if (str != null) {
+                String highest = currVerName;
+                int hv = currVerCode;
+                for (Object obj : PHPArray.fromJson(str)._$_E()) {
+                    PHPArray info = (PHPArray) obj;
+                    int v = ((Number) info.__("code")._$()).intValue();
+                    if (v > hv) {
+                        hv = v;
+                        highest = info.__("name")._$().toString();
+                    }
+                }
+                if (hv > currVerCode) {
                     //has newer
-                    tv_v.setText(info.__(0).__("name")._$().toString());
+                    tv_v.setText(highest);
                     tv_v.setTextColor(Color.argb(255, 242, 140, 72));
                     tv_t.setText("有新版本可用");
+                    if (clicked) {
+                        doShowUPdateInfo();
+                    }
                 } else {
                     tv_v.setText("已是最新");
                 }
-            } else {
-                tv_v.setText("???");
             }
-        } else {
-            tv_v.setText("正在加载...");
-            runlevel = RL_LOAD;
-            new Thread(this).start();
+        } catch (Exception e) {
+            log(e);
         }
     }
 
@@ -127,70 +136,82 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
             case RL_SHOW_RET:
                 TextView tv_v = viewGroup.findViewById(QQViewBuilder.R_ID_VALUE);
                 TextView tv_t = viewGroup.findViewById(QQViewBuilder.R_ID_TITLE);
-                int v = ((Number) result.__(0).__("code")._$()).intValue();
-                if (v > currVerCode) {
+                String highest = currVerName;
+                int hv = currVerCode;
+                for (Object obj : result._$_E()) {
+                    PHPArray info = (PHPArray) obj;
+                    int v = ((Number) info.__("code")._$()).intValue();
+                    if (v > hv) {
+                        hv = v;
+                        highest = info.__("name")._$().toString();
+                    }
+                }
+                if (hv > currVerCode) {
                     //has newer
-                    tv_v.setText(result.__(0).__("name")._$().toString());
+                    tv_v.setText(highest);
                     tv_v.setTextColor(Color.argb(255, 242, 140, 72));
                     tv_t.setText("有新版本可用");
                     if (clicked) {
-                        Activity ctx = (Activity) viewGroup.getContext();
-                        AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-                        builder.setCancelable(true);
-                        builder.setNegativeButton("关闭", null);
-                        /*PopupWindow pop=new PopupWindow();
-                        pop.setWidth(WRAP_CONTENT);
-                        pop.setHeight(WRAP_CONTENT);*/
-                        LinearLayout main = new LinearLayout(ctx);
-                        //pop.setContentView(main);
-                        main.setOrientation(LinearLayout.VERTICAL);
-                        ScrollView scrollView = new ScrollView(ctx);
-                        builder.setView(scrollView);
-                        scrollView.addView(main, WRAP_CONTENT, WRAP_CONTENT);
-                        SpannableStringBuilder sb = new SpannableStringBuilder();
-                        //StringBuilder sb=new StringBuilder();
-                        TextView list=new TextView(ctx);
-                        list.setAutoLinkMask(Linkify.WEB_URLS);
-                        for (Object obj : result._$_E()) {
-                            PHPArray ver = (PHPArray) obj;
-                            String vn = (String) ver.__("name")._$();
-                            String vc = "" + ver.__("code")._$();
-                            String desc = "" + ver.__("desc")._$();
-                            String md5=(String)ver.__("md5")._$();
-                            long time=((Number)ver.__("time")._$()).longValue();
-                            String date=Utils.getRelTimeStrSec(time);
-                            boolean taichi=ver.__("taichi")._$b();
-                            boolean beta=ver.__("beta")._$b();
-                            SpannableString tmp=new SpannableString(vn+" ("+vc+")");
-                            tmp.setSpan(new RelativeSizeSpan(1.8f),0,tmp.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                            sb.append(tmp);
-                            tmp=new SpannableString(vn+" ("+vc+")");
-                            //tmp.setSpan(new RelativeSizeSpan(1.8f),0,tmp.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                            sb.append(tmp);
-                            sb.append("发布于"+date);
-                            sb.append(beta?" (测试版) ":"");
-                            sb.append('\n');
-                            if(taichi)sb.append("已适配太极\n");
-                            sb.append("md5"+md5);
-                            sb.append(desc);
-                            sb.append("\n下载地址:\n");
-                            for(Object obj2:ver.__("urls")._$_E()){
-                                sb.append(obj2+"\n");
-                            }
-                            sb.append("\n");
-                        }
-                        list.setText(sb);
-                        builder.create().show();
+                        doShowUPdateInfo();
                     }
                 } else {
                     tv_v.setText("已是最新");
                 }
+                runlevel = 0;
+                if (clicked) doShowUPdateInfo();
                 return;
         }
     }
 
-    public static View.OnClickListener clickToCheck() {
-        return new UpdateCheck();
+    private Class cl_QQCustomDialog;
+
+    private void doShowUPdateInfo() {
+        clicked = false;
+        Activity ctx = (Activity) viewGroup.getContext();
+        AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+        builder.setCancelable(true);
+        builder.setNegativeButton("关闭", null);
+        /*PopupWindow pop=new PopupWindow();
+        pop.setWidth(WRAP_CONTENT);
+        pop.setHeight(WRAP_CONTENT);*/
+        LinearLayout main = new LinearLayout(ctx);
+        //pop.setContentView(main);
+        main.setOrientation(LinearLayout.VERTICAL);
+        ScrollView scrollView = new ScrollView(ctx);
+        builder.setView(scrollView);
+        scrollView.addView(main, WRAP_CONTENT, WRAP_CONTENT);
+        SpannableStringBuilder sb = new SpannableStringBuilder();
+        //StringBuilder sb=new StringBuilder();
+        TextView list = new TextView(ctx);
+        main.addView(list, WRAP_CONTENT, WRAP_CONTENT);
+        list.setAutoLinkMask(Linkify.WEB_URLS);
+        for (Object obj : result._$_E()) {
+            PHPArray ver = (PHPArray) obj;
+            String vn = (String) ver.__("name")._$();
+            String vc = "" + ver.__("code")._$();
+            String desc = "" + ver.__("desc")._$();
+            String md5 = (String) ver.__("md5")._$();
+            long time = ((Number) ver.__("time")._$()).longValue();
+            String date = Utils.getRelTimeStrSec(time);
+            boolean taichi = ver.__("taichi")._$b();
+            boolean beta = ver.__("beta")._$b();
+            SpannableString tmp = new SpannableString(vn + " (" + vc + ")");
+            tmp.setSpan(new RelativeSizeSpan(1.8f), 0, tmp.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            sb.append(tmp);
+            sb.append("发布于" + date);
+            sb.append(beta ? " (测试版) " : "");
+            sb.append('\n');
+            if (taichi) sb.append("已适配太极\n");
+            sb.append("md5:" + md5 + "\n");
+            sb.append(desc);
+            sb.append("\n下载地址:\n");
+            for (Object obj2 : ver.__("urls")._$_E()) {
+                sb.append(obj2 + "\n");
+            }
+            sb.append("\n");
+        }
+        list.setText(sb);
+        builder.create().show();
     }
 
     @Override
@@ -198,7 +219,10 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
         viewGroup = (ViewGroup) v;
         clicked = true;
         if (result == null) {
+            runlevel = 1;
             new Thread(this).start();
+        } else {
+            doShowUPdateInfo();
         }
     }
 }
