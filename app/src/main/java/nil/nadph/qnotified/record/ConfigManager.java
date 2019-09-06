@@ -187,5 +187,12 @@ public class ConfigManager {
         }
     }
 
-
+    public long getLongOrDefault(String key, long i) {
+        if (!config.containsKey(key)) config.put(key, i);
+        try {
+            return ((Long) config.get(key)).longValue();
+        } catch (ClassCastException e) {
+            return i;
+        }
+    }
 }

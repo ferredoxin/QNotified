@@ -121,6 +121,26 @@ public class QQViewBuilder {
         });
         return root;
     }
+    public static RelativeLayout newListItemSwitchConfigStub(Context ctx, CharSequence title, CharSequence desc, final String key, boolean defVal) throws IOException {
+        RelativeLayout root = newListItemSwitch(ctx, title, desc, false, new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                try {
+                    buttonView.setChecked(false);
+                    Utils.showToastShort(buttonView.getContext(), "对不起,此功能尚在开发中");
+                } catch (Throwable e) {
+                    try {
+                        Utils.showToastShort(buttonView.getContext(), e.toString());
+                    } catch (Throwable e2) {
+                    }
+                    Utils.log(e);
+                }
+            }
+        });
+        return root;
+    }
+
+
 
     public static RelativeLayout newListItemDummy(Context ctx, CharSequence title, CharSequence desc, CharSequence value) {
         RelativeLayout root = new RelativeLayout(ctx);
@@ -244,6 +264,27 @@ public class QQViewBuilder {
         tv.setText(title);
         tv.setTextSize(dip2sp(ctx, 13));
         tv.setTextColor(QThemeKit.skin_gray3);
+        tv.setLayoutParams(new ViewGroup.LayoutParams(WRAP_CONTENT, WRAP_CONTENT));
+        ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
+        int m = dip2px(ctx, 14);
+        tv.setPadding(m, m / 5, m / 5, m / 5);
+        ll.addView(tv);
+		/*View v=new View(ctx);
+		int th=dip2px(ctx,3);
+		v.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT,th*2));
+		v.setBackground(new DivDrawable(DivDrawable.TYPE_HORIZONTAL,th));
+		ll.addView(v);*/
+        return ll;
+    }
+
+    public static LinearLayout subtitle(Context ctx, CharSequence title,int color) {
+        LinearLayout ll = new LinearLayout(ctx);
+        ll.setOrientation(LinearLayout.HORIZONTAL);
+        ll.setGravity(Gravity.CENTER_VERTICAL);
+        TextView tv = new TextView(ctx);
+        tv.setText(title);
+        tv.setTextSize(dip2sp(ctx, 13));
+        tv.setTextColor(color);
         tv.setLayoutParams(new ViewGroup.LayoutParams(WRAP_CONTENT, WRAP_CONTENT));
         ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
         int m = dip2px(ctx, 14);

@@ -68,21 +68,25 @@ public class SettingsAdapter implements ActivityAdapter {
         ll.addView(newListItemSwitchConfigNext(self, "隐藏小程序入口", "隐藏消息列表下拉出现的小程序列表", qn_hide_msg_list_miniapp, false));
         ll.addView(newListItemSwitchConfigNext(self, "隐藏分组下方入口", "隐藏分组列表最下方的历史好友按钮", qn_hide_ex_entry_group, false));
         ll.addView(newListItemSwitchConfig(self, "主动删除好友时不通知", "仅在测试模块时才可能需要关闭", qn_del_op_silence, true));
-        ll.addView(newListItemButton(self, "重置模块", "会丢失所有历史好友信息", null, clickTheComing()));
-        ll.addView(subtitle(self, "消息通知设置(不影响接收消息)"));
+        ll.addView(subtitle(self, "消息通知设置(不影响接收消息)屏蔽后可能仍有[橙字],但不会有通知)"));
+        ll.addView(subtitle(self, "    注:屏蔽后可能仍有[橙字],但不会有通知"));
         ll.addView(_t = newListItemButton(self, "屏蔽指定群@全体成员通知", Html.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[@全体成员]</font>就这点破事"), "0个群", clickToProxyActAction(ACTION_MUTE_AT_ALL)));
         __tv_muted_atall = _t.findViewById(R_ID_VALUE);
-        ll.addView(_t = newListItemButton(self, "屏蔽指定群的红包通知", Html.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[QQ红包][有红包][有福袋]</font>恭喜发财"), "0个群", clickToProxyActAction(ACTION_MUTE_RED_PACKET)));
+        ll.addView(_t = newListItemButton(self, "屏蔽指定群的红包通知", Html.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[QQ红包][有红包]</font>恭喜发财"), "0个群", clickToProxyActAction(ACTION_MUTE_RED_PACKET)));
         __tv_muted_redpacket = _t.findViewById(R_ID_VALUE);
-        ll.addView(subtitle(self, "实验性功能(不一定有效,使用者后果自负)"));
-        ll.addView(newListItemSwitchConfigNext(self, "上传透明头像", "开启后上传透明头像不会变黑", qn_enable_transparent, true));
-        ll.addView(newListItemSwitchConfig(self, "发送卡片消息", "xml,json等", qn_send_card_msg, false));
-        ll.addView(newListItemSwitchConfig(self, "语音转发", null, qn_enable_voice_forward, false));
-        ll.addView(newListItemSwitchConfig(self, "以图片方式打开表情", null, qn_sticker_as_pic, false));
+        ll.addView(subtitle(self, "还没完成的功能(咕咕咕)"));
+        ll.addView(newListItemSwitchConfigStub(self, "语音转发", null, qn_enable_voice_forward, false));
+        ll.addView(newListItemSwitchConfigStub(self, "以图片方式打开表情", null, qn_sticker_as_pic, false));
+        ll.addView(newListItemSwitchConfigStub(self, "上传透明头像", "开启后上传透明头像不会变黑", qn_enable_transparent, true));
+        ll.addView(newListItemSwitchConfigStub(self, "发送卡片消息", "xml,json等", qn_send_card_msg, false));
         ll.addView(newListItemButton(self, "重定向文件下载目录", new File(Environment.getExternalStorageDirectory(), "Tencent/QQfile_recv").getAbsolutePath(), "禁用", clickTheComing()));
         ll.addView(subtitle(self, "参数设定"));
         ll.addView(newListItemButton(self, "DelFriendReq.delType", "只能为1或2", "[不改动]", clickTheComing()));
         ll.addView(newListItemButton(self, "AddFriendReq.sourceID", "改错可能导致无法添加好友", "[不改动]", clickTheComing()));
+        ll.addView(subtitle(self, "故障排查(操作不可逆)"));
+        ll.addView(newListItemButton(self, "重置模块设置", "不影响历史好友信息", null, clickTheComing()));
+        ll.addView(newListItemButton(self, "清除[已恢复]的历史记录", "删除当前帐号下所有状态为[已恢复]的历史好友记录", null, clickTheComing()));
+        ll.addView(newListItemButton(self, "清除所有的历史记录", "删除当前帐号下所有的历史好友记录", null, clickTheComing()));
         ll.addView(subtitle(self, "关于"));
         ll.addView(newListItemDummy(self, "QQ版本", null, Utils.getQQVersionName(self)));
         ll.addView(newListItemDummy(self, "模块版本", null, Utils.QN_VERSION_NAME));
@@ -91,14 +95,16 @@ public class SettingsAdapter implements ActivityAdapter {
         ll.addView(newListItemButton(self, "Shell.exec", "正常情况下无需使用此功能", null, clickTheComing()));
         ll.addView(subtitle(self, "作者"));
         ll.addView(newListItemButton(self, "打赏", "请选择扶贫方式", null, clickTheComing()));
-        ll.addView(newListItemButton(self, "QQ", "点击私信反馈", "1041703712", clickToChat()));
+        ll.addView(newListItemButton(self, "QQ", "点击私信反馈(bug,建议,催更等等)", "1041703712", clickToChat()));
         ll.addView(newListItemButton(self, "Mail", null, "xenonhydride@gmail.com", null));
-        ll.addView(newListItemButton(self, "Github", "Bug -> Issue", "cinit", clickToUrl("https://github.com/cinit/QNotified")));
+        ll.addView(newListItemButton(self, "Github", "Bug -> Issue", "cinit/QNotified", clickToUrl("https://github.com/cinit/QNotified")));
         ll.addView(newListItemButton(self, "Telegram", null, "Auride", clickToUrl("https://t.me/Auride")));
+        ll.addView(subtitle(self, "This program is distributed in the hope that it will be useful, " +
+                "but WITHOUT ANY WARRANTY; without even the implied warranty of " +
+                "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.", QThemeKit.skin_red.getDefaultColor()));
         ll.addView(subtitle(self, "SystemClassLoader\n" + ClassLoader.getSystemClassLoader() + "\nContext.getClassLoader()\n" + self.getClassLoader() + "\nThread.getContextClassLoader()\n" + Thread.currentThread().getContextClassLoader()));
-
-        bounceScrollView.setFocusable(true);
-        bounceScrollView.setFocusableInTouchMode(true);
+        //bounceScrollView.setFocusable(true);
+        //bounceScrollView.setFocusableInTouchMode(true);
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         self.setContentView(bounceScrollView);
         LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);
