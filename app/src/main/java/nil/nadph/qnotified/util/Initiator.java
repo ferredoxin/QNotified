@@ -23,6 +23,10 @@ public class Initiator {
 		qqClassLoader=dcl;
 	}*/
 
+	public static ClassLoader getClassLoader(){
+		return qqClassLoader;
+	}
+	
     public static Class<?> load(String className) {
         if (qqClassLoader == null || className.isEmpty()) {
             return null;

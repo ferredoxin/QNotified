@@ -52,7 +52,7 @@ public class ExfriendManager {
     private ConfigManager fileData;//Back compatibility
 
     private ConcurrentHashMap mStdRemarks;
-    private ArrayList<FriendChunk> cachedFriendChunks = new ArrayList<>();
+    private ArrayList<FriendChunk> cachedFriendChunks;
 
 
     private boolean dirtyFlag;
@@ -88,60 +88,77 @@ public class ExfriendManager {
     };
 
     private ExfriendManager(long uin) {
-        mUin = uin;
+		persons = new HashMap<>();
+		events = new HashMap();
         if (tp == null) {
             tp = Executors.newCachedThreadPool();
             tp.execute(asyncUpdateAwaitingTask);
         }
-        //persons=loadSavedPersonsInfo();
-        try {
-            loadSavedPersonsInfo();
-            dbg();
-            try {
-                mStdRemarks = getFriendsConcurrentHashMap(getFriendsManager());
-            } catch (Throwable e) {
-            }
-            if (persons.size() == 0 && mStdRemarks != null) {
-                dbg();
-                log("WARNING:INIT FROM THE INTERNAL");
-                //Here we try to copy friendlist
-                Object fr;
-                Field fuin, fremark, fnick;
-                Class clz_fr = load("com/tencent/mobileqq/data/Friends");
-                fuin = clz_fr.getField("uin");//long!!!
-                fuin.setAccessible(true);
-                fremark = clz_fr.getField("remark");
-                fremark.setAccessible(true);
-                fnick = clz_fr.getField("name");
-                fnick.setAccessible(true);
-                persons = new HashMap<>();
-                Iterator<Map.Entry> it = mStdRemarks.entrySet().iterator();
-                while (it.hasNext()) {
-                    long t = System.currentTimeMillis() / 1000;
-                    fr = it.next().getValue();
-                    if (fr == null) continue;
-                    try {
-                    } catch (Exception e) {
-                        continue;
-                    }
-                    FriendRecord f = new FriendRecord();
-                    f.uin = Long.parseLong((String) fuin.get(fr));
-                    f.remark = (String) fremark.get(fr);
-                    f.nick = (String) fnick.get(fr);
-                    f.friendStatus = FriendRecord.STATUS_RESERVED;
-                    f.serverTime = t;
-                    if (!persons.containsKey(f.uin))
-                        persons.put(f.uin, f);
-                }
-                dbg();
-                saveConfigure();
-                dbg();
-            }
-        } catch (Exception e) {
-            log(e);
-        }
+        initForUin(uin);
     }
 
+	public void reinit() {
+		persons = new HashMap();
+		events = new HashMap();
+		initForUin(mUin);
+	}
+
+	public ConfigManager getConfig() {
+		return fileData;
+	}
+
+	private void initForUin(long uin) {
+		cachedFriendChunks = new ArrayList<>();
+		synchronized (this) {
+			mUin = uin;
+			try {
+				loadSavedPersonsInfo();
+				dbg();
+				try {
+					mStdRemarks = getFriendsConcurrentHashMap(getFriendsManager());
+				} catch (Throwable e) {
+				}
+				if (persons.size() == 0 && mStdRemarks != null) {
+					dbg();
+					log("WARNING:INIT FROM THE INTERNAL");
+					//Here we try to copy friendlist
+					Object fr;
+					Field fuin, fremark, fnick;
+					Class clz_fr = load("com/tencent/mobileqq/data/Friends");
+					fuin = clz_fr.getField("uin");//long!!!
+					fuin.setAccessible(true);
+					fremark = clz_fr.getField("remark");
+					fremark.setAccessible(true);
+					fnick = clz_fr.getField("name");
+					fnick.setAccessible(true);
+					persons = new HashMap<>();
+					Iterator<Map.Entry> it = mStdRemarks.entrySet().iterator();
+					while (it.hasNext()) {
+						long t = System.currentTimeMillis() / 1000;
+						fr = it.next().getValue();
+						if (fr == null) continue;
+						try {
+						} catch (Exception e) {
+							continue;
+						}
+						FriendRecord f = new FriendRecord();
+						f.uin = Long.parseLong((String) fuin.get(fr));
+						f.remark = (String) fremark.get(fr);
+						f.nick = (String) fnick.get(fr);
+						f.friendStatus = FriendRecord.STATUS_RESERVED;
+						f.serverTime = t;
+						if (!persons.containsKey(f.uin))
+							persons.put(f.uin, f);
+					}
+					dbg();
+					saveConfigure();
+					dbg();
+				}
+			} catch (Exception e) {
+				log(e);
+			}
+		}
+	}
 
     public @Nullable
     void loadSavedPersonsInfo() {
@@ -446,11 +463,11 @@ public class ExfriendManager {
                 cachedFriendChunks.toArray(update);
                 cachedFriendChunks.clear();
                 tp.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        asyncUpdateFriendListTask(update);
-                    }
-                });
+						@Override
+						public void run() {
+							asyncUpdateFriendListTask(update);
+						}
+					});
             }
         }
     }
@@ -469,15 +486,15 @@ public class ExfriendManager {
         }
         final int n = m;
         ((Activity) Utils.getContext(rd)).runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (n < 1) rd.setVisibility(View.INVISIBLE);
-                else {
-                    rd.setText("" + n);
-                    rd.setVisibility(View.VISIBLE);
-                }
-            }
-        });
+				@Override
+				public void run() {
+					if (n < 1) rd.setVisibility(View.INVISIBLE);
+					else {
+						rd.setText("" + n);
+						rd.setVisibility(View.VISIBLE);
+					}
+				}
+			});
     }
 
     public void reportEventWithoutSave(EventRecord ev, Object[] out) {
@@ -693,11 +710,11 @@ public class ExfriendManager {
         //log(t+"/"+lastUpdateTimeSec);
         if (t - lastUpdateTimeSec > FL_UPDATE_INT_MIN) {
             tp.execute(new Runnable() {
-                @Override
-                public void run() {
-                    doRequestFlRefresh();
-                }
-            });
+					@Override
+					public void run() {
+						doRequestFlRefresh();
+					}
+				});
         }
     }
 }

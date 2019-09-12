@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.view.View;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.util.QThemeKit;
 import nil.nadph.qnotified.util.UpdateCheck;
@@ -26,6 +27,13 @@ import static nil.nadph.qnotified.ActProxyMgr.*;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.QQViewBuilder.*;
 import static nil.nadph.qnotified.util.Utils.*;
+import nil.nadph.qnotified.util.*;
+import android.app.*;
+import android.content.*;
+import android.widget.*;
+import nil.nadph.qnotified.*;
+import java.util.*;
+import nil.nadph.qnotified.record.*;
 
 public class SettingsAdapter implements ActivityAdapter {
 
@@ -85,14 +93,14 @@ public class SettingsAdapter implements ActivityAdapter {
         ll.addView(newListItemButton(self, "DelFriendReq.delType", "只能为1或2", "[不改动]", clickTheComing()));
         ll.addView(newListItemButton(self, "AddFriendReq.sourceID", "改错可能导致无法添加好友", "[不改动]", clickTheComing()));
         ll.addView(subtitle(self, "故障排查(操作不可逆)"));
-        ll.addView(newListItemButton(self, "重置模块设置", "不影响历史好友信息", null, clickTheComing()));
-        ll.addView(newListItemButton(self, "清除[已恢复]的历史记录", "删除当前帐号下所有状态为[已恢复]的历史好友记录", null, clickTheComing()));
-        ll.addView(newListItemButton(self, "清除所有的历史记录", "删除当前帐号下所有的历史好友记录", null, clickTheComing()));
+        ll.addView(newListItemButton(self, "重置模块设置", "不影响历史好友信息", null, clickToReset()));
+        ll.addView(newListItemButton(self, "清除[已恢复]的历史记录", "删除当前帐号下所有状态为[已恢复]的历史好友记录", null, clickToWipeDeletedFriends()));
+        ll.addView(newListItemButton(self, "清除所有的历史记录", "删除当前帐号下所有的历史好友记录", null, clickToWipeAllFriends()));
         ll.addView(subtitle(self, "关于"));
         ll.addView(newListItemDummy(self, "QQ版本", null, Utils.getQQVersionName(self)));
         ll.addView(newListItemDummy(self, "模块版本", null, Utils.QN_VERSION_NAME));
         UpdateCheck uc = new UpdateCheck();
-        ll.addView(_t=newListItemButton(self, "检查更新", null, "点击检查", uc));
+        ll.addView(_t = newListItemButton(self, "检查更新", null, "点击检查", uc));
         uc.setVersionTip(_t);
         ll.addView(subtitle(self, "调试"));
         ll.addView(newListItemButton(self, "Shell.exec", "正常情况下无需使用此功能", null, clickTheComing()));
@@ -103,8 +111,8 @@ public class SettingsAdapter implements ActivityAdapter {
         ll.addView(newListItemButton(self, "Github", "Bug -> Issue", "cinit/QNotified", clickToUrl("https://github.com/cinit/QNotified")));
         ll.addView(newListItemButton(self, "Telegram", null, "Auride", clickToUrl("https://t.me/Auride")));
         ll.addView(subtitle(self, "This program is distributed in the hope that it will be useful, " +
-                "but WITHOUT ANY WARRANTY; without even the implied warranty of " +
-                "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.", QThemeKit.skin_red.getDefaultColor()));
+							"but WITHOUT ANY WARRANTY; without even the implied warranty of " +
+							"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.", QThemeKit.skin_red.getDefaultColor()));
         ll.addView(subtitle(self, "SystemClassLoader\n" + ClassLoader.getSystemClassLoader() + "\nContext.getClassLoader()\n" + self.getClassLoader() + "\nThread.getContextClassLoader()\n" + Thread.currentThread().getContextClassLoader()));
         //bounceScrollView.setFocusable(true);
         //bounceScrollView.setFocusableInTouchMode(true);
@@ -119,10 +127,97 @@ public class SettingsAdapter implements ActivityAdapter {
         invoke_virtual(self, "enableLeftBtn", true, boolean.class);
         //TextView rightBtn=(TextView)invoke_virtual(self,"getRightTextView");
         //log("Title:"+invoke_virtual(self,"getTextTitle"));
-
-        //.addView(sdlv,lp);
-        ConfigManager.getDefault().save();
     }
+
+
+
+	public View.OnClickListener clickToWipeDeletedFriends() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+				try {
+					Dialog dialog=createDialog(self);
+					invoke_virtual(dialog, "setPositiveButton", "确认", new DialogInterface.OnClickListener(){
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								try {
+									ExfriendManager exm=ExfriendManager.getCurrent();
+									Iterator it=exm.getEvents().entrySet().iterator();
+									while (it.hasNext()) {
+										EventRecord ev=(EventRecord) ((Map.Entry)it.next()).getValue();
+										if (exm.getPersons().get(ev.operator).friendStatus == FriendRecord.STATUS_FRIEND_MUTUAL)
+											it.remove();
+									}
+									exm.saveConfigure();
+									showToast(self, TOAST_TYPE_SUCCESS, "操作成功", Toast.LENGTH_SHORT);
+								} catch (Throwable e) {}
+							}
+						}, String.class, DialogInterface.OnClickListener.class);
+					invoke_virtual(dialog, "setNegativeButton", "取消", new Utils.DummyCallback(), String.class, DialogInterface.OnClickListener.class);
+					dialog.setCancelable(true);
+					invoke_virtual(dialog, "setMessage", "此操作将删除当前帐号(" + getLongAccountUin() + ")下的 已恢复 的历史好友记录(记录可单独删除).如果因bug大量好友被标记为已删除,请先刷新好友列表,然后再点击此按钮.\n此操作不可恢复", CharSequence.class);
+					invoke_virtual(dialog, "setTitle", "确认操作", String.class);
+					dialog.show();
+				} catch (Exception e) {}
+            }
+        };
+    }
+
+	public View.OnClickListener clickToWipeAllFriends() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+				try {
+					Dialog dialog=createDialog(self);
+					invoke_virtual(dialog, "setPositiveButton", "确认", new DialogInterface.OnClickListener(){
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								try {
+									ExfriendManager exm= ExfriendManager.getCurrent();
+									exm.getConfig().getFile().delete();
+									exm.getConfig().reinit();
+									exm.reinit();
+									showToast(self, TOAST_TYPE_SUCCESS, "操作成功", Toast.LENGTH_SHORT);
+								} catch (Throwable e) {}
+							}
+						}, String.class, DialogInterface.OnClickListener.class);
+					invoke_virtual(dialog, "setNegativeButton", "取消", new Utils.DummyCallback(), String.class, DialogInterface.OnClickListener.class);
+					dialog.setCancelable(true);
+					invoke_virtual(dialog, "setMessage", "此操作将删除当前帐号(" + getLongAccountUin() + ")下的 全部 的历史好友记录,通常您不需要进行此操作.如果您的历史好友列表中因bug出现大量好友,请在联系人列表下拉刷新后点击 删除标记为已恢复的好友 .\n此操作不可恢复", CharSequence.class);
+					invoke_virtual(dialog, "setTitle", "确认操作", String.class);
+					dialog.show();
+				} catch (Exception e) {}
+            }
+        };
+    }
+
+	public View.OnClickListener clickToReset() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+				try {
+					Dialog dialog=createDialog(self);
+					invoke_virtual(dialog, "setPositiveButton", "确认", new DialogInterface.OnClickListener(){
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								try {
+									ConfigManager cfg=ConfigManager.getDefault();
+									cfg.getAllConfig().clear();
+									cfg.getFile().delete();
+									System.exit(0);
+								} catch (Throwable e) {}
+							}
+						}, String.class, DialogInterface.OnClickListener.class);
+					invoke_virtual(dialog, "setNegativeButton", "取消", new Utils.DummyCallback(), String.class, DialogInterface.OnClickListener.class);
+					dialog.setCancelable(true);
+					invoke_virtual(dialog, "setMessage", "此操作将删除该模块的所有配置信息,包括屏蔽通知的群列表,但不包括历史好友列表.点击确认后请等待3秒后手动重启QQ.\n此操作不可恢复", CharSequence.class);
+					invoke_virtual(dialog, "setTitle", "确认操作", String.class);
+					dialog.show();
+				} catch (Exception e) {}
+            }
+        };
+    }
+	
 
     @Override
     public void doOnPostResume() throws Throwable {

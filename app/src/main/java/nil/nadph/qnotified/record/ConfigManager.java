@@ -19,10 +19,18 @@ public class ConfigManager {
 
     public ConfigManager(File f) throws IOException {
         file = f;
-        if (!file.exists()) file.createNewFile();
+        reinit();
+    }
+	
+	public void reinit() throws IOException{
+		if (!file.exists()) file.createNewFile();
         config = new HashMap<>();
         reload();
-    }
+	}
+	
+	public File getFile(){
+		return file;
+	}
 
     public static ConfigManager getDefault() throws IOException {
         if (SELF == null)

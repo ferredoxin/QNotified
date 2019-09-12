@@ -56,67 +56,69 @@ public class ActProxyMgr extends XC_MethodHook {
         //ActProxyMgr.set(id,self);
         ActivityAdapter aa;
         Method method = (Method) param.method;
-
-        if (method.getName().equals("onCreate") && param.args.length == 1) {
-            Method m = load("mqq/app/AppActivity").getDeclaredMethod("onCreate", Bundle.class);
-            m.setAccessible(true);
-            try {
-                ActProxyMgr.invokeSuper(self, m, param.args);
-            } catch (ActProxyMgr.BreakUnaughtException e) {
-            }
-            aa = createActivityAdapter(action, self);
-            Object exlist_mFlingHandler = new_instance(load("com/tencent/mobileqq/activity/fling/FlingGestureHandler"), self, Activity.class);
-            iput_object(self, "mFlingHandler", exlist_mFlingHandler);
-            QThemeKit.initTheme(self);
-            aa.doOnPostCreate((Bundle) param.args[0]);
-            self.getWindow().getDecorView().setTag(aa);
-        } else {
-            aa = (ActivityAdapter) self.getWindow().getDecorView().getTag();
-            switch (method.getName()) {
-                case "doOnDestroy":
-                    Method m = self.getClass().getSuperclass().getSuperclass().getDeclaredMethod("doOnDestroy");
-                    m.setAccessible(true);
-                    try {
-                        ActProxyMgr.invokeSuper(self, m);
-                    } catch (ActProxyMgr.BreakUnaughtException e) {
-                    }
-                    aa.doOnPostDestory();
-                    break;
-                case "doOnPause":
-                    m = self.getClass().getSuperclass().getSuperclass().getDeclaredMethod("doOnPause");
-                    m.setAccessible(true);
-                    try {
-                        ActProxyMgr.invokeSuper(self, m);
-                    } catch (ActProxyMgr.BreakUnaughtException e) {
-                    }
-                    aa.doOnPostPause();
-                    break;
-                case "doOnResume":
-                    m = self.getClass().getSuperclass().getSuperclass().getDeclaredMethod("doOnResume");
-                    m.setAccessible(true);
-                    try {
-                        ActProxyMgr.invokeSuper(self, m);
-                    } catch (ActProxyMgr.BreakUnaughtException e) {
-                    }
-                    aa.doOnPostResume();
-                    break;
-                case "doOnActivityResult":
-                    m = self.getClass().getSuperclass().getSuperclass().getDeclaredMethod("doOnActivityResult", int.class, int.class, Intent.class);
-                    m.setAccessible(true);
-                    try {
-                        ActProxyMgr.invokeSuper(self, m, param.args);
-                    } catch (ActProxyMgr.BreakUnaughtException e) {
-                    }
-                    aa.doOnPostActivityResult((int) param.args[0], (int) param.args[1], (Intent) param.args[2]);
-                    break;
-                case "isWrapContent":
-                    param.setResult(aa.isWrapContent());
-                    break;
-                default:
-                    throw new UnsupportedOperationException("Unexpected method: " + method.getName());
-            }
-        }
-
+		try {
+			if (method.getName().equals("onCreate") && param.args.length == 1) {
+				Method m = load("mqq/app/AppActivity").getDeclaredMethod("onCreate", Bundle.class);
+				m.setAccessible(true);
+				try {
+					ActProxyMgr.invokeSuper(self, m, param.args);
+				} catch (ActProxyMgr.BreakUnaughtException e) {
+				}
+				aa = createActivityAdapter(action, self);
+				Object exlist_mFlingHandler = new_instance(load("com/tencent/mobileqq/activity/fling/FlingGestureHandler"), self, Activity.class);
+				iput_object(self, "mFlingHandler", exlist_mFlingHandler);
+				QThemeKit.initTheme(self);
+				aa.doOnPostCreate((Bundle) param.args[0]);
+				self.getWindow().getDecorView().setTag(aa);
+			} else {
+				aa = (ActivityAdapter) self.getWindow().getDecorView().getTag();
+				switch (method.getName()) {
+					case "doOnDestroy":
+						Method m = self.getClass().getSuperclass().getSuperclass().getDeclaredMethod("doOnDestroy");
+						m.setAccessible(true);
+						try {
+							ActProxyMgr.invokeSuper(self, m);
+						} catch (ActProxyMgr.BreakUnaughtException e) {
+						}
+						aa.doOnPostDestory();
+						break;
+					case "doOnPause":
+						m = self.getClass().getSuperclass().getSuperclass().getDeclaredMethod("doOnPause");
+						m.setAccessible(true);
+						try {
+							ActProxyMgr.invokeSuper(self, m);
+						} catch (ActProxyMgr.BreakUnaughtException e) {
+						}
+						aa.doOnPostPause();
+						break;
+					case "doOnResume":
+						m = self.getClass().getSuperclass().getSuperclass().getDeclaredMethod("doOnResume");
+						m.setAccessible(true);
+						try {
+							ActProxyMgr.invokeSuper(self, m);
+						} catch (ActProxyMgr.BreakUnaughtException e) {
+						}
+						aa.doOnPostResume();
+						break;
+					case "doOnActivityResult":
+						m = self.getClass().getSuperclass().getSuperclass().getDeclaredMethod("doOnActivityResult", int.class, int.class, Intent.class);
+						m.setAccessible(true);
+						try {
+							ActProxyMgr.invokeSuper(self, m, param.args);
+						} catch (ActProxyMgr.BreakUnaughtException e) {
+						}
+						aa.doOnPostActivityResult((int) param.args[0], (int) param.args[1], (Intent) param.args[2]);
+						break;
+					case "isWrapContent":
+						param.setResult(aa.isWrapContent());
+						break;
+					default:
+						throw new UnsupportedOperationException("Unexpected method: " + method.getName());
+				}
+			}
+		} catch (Throwable th) {
+			param.setThrowable(th);
+		}
     }
 
     private ActivityAdapter createActivityAdapter(int action, Activity activity) {

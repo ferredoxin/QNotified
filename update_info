@@ -1,24 +1,12 @@
 [
   {
-    "code": 7,
-    "name": "0.1.6",
-    "taichi": true,
-    "beta": false,
-    "time": 1563584400,
-    "md5": "",
-    "desc": "老版本",
-    "urls": [
-      "https://github.com/cinit/QNotified/releases/download/v0.1.6/QNotified_016.apk"
-    ]
-  },
-  {
     "code": 10,
     "name": "0.2.0",
     "taichi": false,
     "beta": false,
     "time": 1567739532,
-    "md5": "",
-    "desc": "测 试\n 版 本",
+    "md5": "a02b2a99ff11c1051e17928cff9cfa5c",
+    "desc": "- 添加813支持\n- 添加@全体成员和群红包通知屏蔽功能\n- 修复长按删除记录,添加重置模块功能\n- 添加更新检测\n- 添加隐藏入口开关",
     "urls": [
       "https://github.com/cinit/QNotified/releases/download/v0.2.0/QNotified_020.apk"
     ]

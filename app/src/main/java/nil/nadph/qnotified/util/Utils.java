@@ -20,9 +20,17 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static nil.nadph.qnotified.util.Initiator.load;
+import android.app.*;
+import nil.nadph.qnotified.record.*;
+import java.lang.reflect.*;
+import android.content.*;
 
 @SuppressWarnings("unchecked")
 public class Utils {
+	
+	private Utils(){
+		throw new AssertionError("No instance for you!");
+	}
 
     public static final String qn_hide_msg_list_miniapp = "qn_hide_msg_list_miniapp",
             qn_hide_ex_entry_group = "qn_hide_ex_entry_group",
@@ -32,11 +40,14 @@ public class Utils {
             qn_sticker_as_pic = "qn_sticker_as_pic",
             qn_send_card_msg = "qn_send_card_msg",
             qn_muted_at_all = "qn_muted_at_all",
-            qn_muted_red_packet = "qn_muted_red_packet";
+            qn_muted_red_packet = "qn_muted_red_packet",
+			cache_dialog_util_class="cache_dialog_util_class",
+			cache_dialog_util_code="cache_dialog_util_code";
+			
     public static boolean DEBUG = true;
     public static boolean V_TOAST = false;
-    public static final String QN_VERSION_NAME = "0.2.0概念版";
-    public static final int QN_VERSION_CODE = 9;
+    public static final String QN_VERSION_NAME = "0.2.0";
+    public static final int QN_VERSION_CODE = 10;
 
     public static final String PACKAGE_NAME_QQ = "com.tencent.mobileqq";
     public static final String PACKAGE_NAME_QQ_INTERNATIONAL = "com.tencent.mobileqqi";
@@ -834,12 +845,76 @@ public class Utils {
         log("dump:" + obj);
         return obj;
     }
-
+	
+	private static Class clz_DialogUtil;
+	private static Class clz_CustomDialog;
+	public static Dialog createDialog(Context ctx) {
+		if (clz_DialogUtil == null) {
+			clz_DialogUtil = Initiator.load("com/tencent/mobileqq/utils/DialogUtil");
+			String cln=null;
+			if (clz_DialogUtil == null) {
+				try {
+					ConfigManager cfg=ConfigManager.getDefault();
+					cln = cfg.getString(cache_dialog_util_class);
+					int lastVersion = cfg.getIntOrDefault(cache_dialog_util_code, 0);
+					if ((getQQVersionCode(getApplication()) != lastVersion || cfg.getString(cache_dialog_util_class) == null) && Initiator.load("com/tencent/mobileqq/utils/DialogUtil") == null) {
+						cln = DexKit.findDialogUtil();
+						cfg.putString(cache_dialog_util_class, cln);
+						cfg.getAllConfig().put(cache_dialog_util_code, getQQVersionCode(getApplication()));
+						cfg.save();
+					}
+				} catch (IOException e) {
+					log(e);
+					return null;
+				}
+				clz_DialogUtil = load(cln);
+			}
+		}
+		if (clz_CustomDialog == null) {
+			clz_CustomDialog = load("com/tencent/mobileqq/utils/QQCustomDialog");
+			if (clz_CustomDialog == null) {
+				Class clz_Lite=load("com/dataline/activities/LiteActivity");
+				Field[] fs=clz_Lite.getDeclaredFields();
+				for (Field f:fs) {
+					if (Modifier.isPrivate(f.getModifiers()) && Dialog.class.equals(f.getType().getSuperclass())) {
+						clz_CustomDialog = f.getType();
+						break;
+					}
+				}
+			}
+		}
+		//log("------------DU:------------"+clz_DialogUtil.getName());
+		//log("------------CD:------------"+clz_CustomDialog.getName());
+		try {
+			Dialog qQCustomDialog = (Dialog) invoke_static(clz_DialogUtil, "a", ctx, 230, Context.class, int.class, clz_CustomDialog);
+			return qQCustomDialog;
+		} catch (Exception e) {
+			log(e);
+			return null;
+		}
+	}
+	
+	public static class DummyCallback implements DialogInterface.OnClickListener {
+		public DummyCallback(){}
+		
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+		}
+		
+	}
+	
+	public static int sign(double d) {
+		if (d == 0d)return 0;
+		if (d > 0d)return 1;
+		return -1;
+	}
+	
     /**
      * 根据手机的分辨率从 dip 的单位 转成为 px(像素)
      */
     public static int dip2px(Context context, float dpValue) {
-        final float scale = context.getResources().getDisplayMetrics().density;
+      
+		final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
 

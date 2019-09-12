@@ -38,6 +38,9 @@ import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static nil.nadph.qnotified.ActProxyMgr.*;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
+import nil.nadph.qnotified.util.*;
+import java.io.*;
+import java.lang.reflect.*;
 
 /*TitleKit:Lcom/tencent/mobileqq/widget/navbar/NavBarCommon*/
 
@@ -199,26 +202,26 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
 		 });
 		 }catch(Exception e){}*/
         findAndHookMethod(load("com.tencent.mobileqq.data.MessageForQQWalletMsg"), "doParse", new XC_MethodHook(200) {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                boolean mute = false;
-                int istroop = (Integer) iget_object(param.thisObject, "istroop");
-                if (istroop != 1) return;
-                String troopuin = (String) iget_object(param.thisObject, "frienduin");
-                String muted = "," + ConfigManager.getDefault().getString(qn_muted_red_packet) + ",";
-                if (muted.contains("," + troopuin + ",")) mute = true;
-                if (mute) XposedHelpers.setObjectField(param.thisObject, "isread", true);
-/*                Field[] fs = param.thisObject.getClass().getFields();
-                String ret = "";
-                for (int i = 0; i < fs.length; i++) {
-                    fs[i].setAccessible(true);
-                    if (Modifier.isFinal(fs[i].getModifiers())) continue;
-                    ret += (i < fs.length - 1 ? "├" : "↓") + fs[i].getName() + "=" + ClazzExplorer.en_toStr(fs[i].get(param.thisObject)) + "\n";
-                }
-                android.util.Log.i("QNdump", ret);
-                //dump(param.thisObect);*/
-            }
-        });
+				@Override
+				protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+					boolean mute = false;
+					int istroop = (Integer) iget_object(param.thisObject, "istroop");
+					if (istroop != 1) return;
+					String troopuin = (String) iget_object(param.thisObject, "frienduin");
+					String muted = "," + ConfigManager.getDefault().getString(qn_muted_red_packet) + ",";
+					if (muted.contains("," + troopuin + ",")) mute = true;
+					if (mute) XposedHelpers.setObjectField(param.thisObject, "isread", true);
+					/*                Field[] fs = param.thisObject.getClass().getFields();
+					 String ret = "";
+					 for (int i = 0; i < fs.length; i++) {
+					 fs[i].setAccessible(true);
+					 if (Modifier.isFinal(fs[i].getModifiers())) continue;
+					 ret += (i < fs.length - 1 ? "├" : "↓") + fs[i].getName() + "=" + ClazzExplorer.en_toStr(fs[i].get(param.thisObject)) + "\n";
+					 }
+					 android.util.Log.i("QNdump", ret);
+					 //dump(param.thisObect);*/
+				}
+			});
 
         try {
             Class cl_MessageInfo = load("com/tencent/mobileqq/troop/data/MessageInfo");
@@ -229,17 +232,17 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
             /* @author qiwu */
             final int at_all_type = (Utils.getQQVersionName(getApplication()).compareTo("7.8.0") >= 0) ? 13 : 12;
             findAndHookMethod(cl_MessageInfo, "a", load("com/tencent/mobileqq/app/QQAppInterface"), boolean.class, String.class, new XC_MethodHook(60) {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    int ret = (int) param.getResult();
-                    String troopuin = (String) param.args[2];
-                    if (ret != at_all_type) return;
-                    String muted = "," + ConfigManager.getDefault().getString(qn_muted_at_all) + ",";
-                    if (muted.contains("," + troopuin + ",")) {
-                        param.setResult(0);
-                    }
-                }
-            });
+					@Override
+					protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+						int ret = (int) param.getResult();
+						String troopuin = (String) param.args[2];
+						if (ret != at_all_type) return;
+						String muted = "," + ConfigManager.getDefault().getString(qn_muted_at_all) + ",";
+						if (muted.contains("," + troopuin + ",")) {
+							param.setResult(0);
+						}
+					}
+				});
         } catch (Exception e) {
             log(e);
         }
@@ -265,19 +268,19 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
             findAndHookMethodIfExists(clazz, "isWrapContent", mgr);
         }
         XposedHelpers.findAndHookMethod(load("com/tencent/mobileqq/activity/SplashActivity"), "doOnResume", new XC_MethodHook(700) {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                try {
-                    if (Utils.getLongAccountUin() > 10000) {
-                        ExfriendManager ex = ExfriendManager.getCurrent();
-                        ex.timeToUpdateFl();
-                    }
-                } catch (Throwable e) {
-                    log(e);
-                    throw e;
-                }
-            }
-        });
+				@Override
+				protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+					try {
+						if (Utils.getLongAccountUin() > 10000) {
+							ExfriendManager ex = ExfriendManager.getCurrent();
+							ex.timeToUpdateFl();
+						}
+					} catch (Throwable e) {
+						log(e);
+						throw e;
+					}
+				}
+			});
 
 		/*findAndHookMethod("com.tencent.mobileqq.activity.contact.newfriend.NewFriendActivity",classLoader,"doOnCreate",android.os.Bundle.class,new XC_MethodHook(200){
 		 @Override
@@ -342,11 +345,11 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
 
 
         findAndHookMethod(load("friendlist/GetFriendListResp"), "readFrom", load("com/qq/taf/jce/JceInputStream"), new XC_MethodHook(200) {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                try {
-                    FriendChunk fc = new FriendChunk(param.thisObject);
-                    ExfriendManager.onGetFriendListResp(fc);
+				@Override
+				protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+					try {
+						FriendChunk fc = new FriendChunk(param.thisObject);
+						ExfriendManager.onGetFriendListResp(fc);
 						/*String ret="dump object:"+param.thisObject.getClass().getCanonicalName()+"\n";
 						 Field[] fs=param.thisObject.getClass().getDeclaredFields();
 						 for(int i=0;i<fs.length;i++){
@@ -354,22 +357,22 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
 						 ret+=(i<fs.length-1?"├":"└")+fs[i].getName()+"="+ClazzExplorer.en_toStr(fs[i].get(param.thisObject))+"\n";
 						 }
 						 log(ret);*/
-                } catch (Throwable e) {
-                    log(e);
-                    throw e;
-                }
-            }
-        });
+					} catch (Throwable e) {
+						log(e);
+						throw e;
+					}
+				}
+			});
 
         findAndHookMethod(load("friendlist/DelFriendResp"), "readFrom", load("com/qq/taf/jce/JceInputStream"), new XC_MethodHook(200) {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                try {
-                    long uin = (Long) iget_object(param.thisObject, "uin");
-                    long deluin = (Long) iget_object(param.thisObject, "deluin");
-                    int result = (Integer) iget_object(param.thisObject, "result");
-                    short errorCode = (Short) iget_object(param.thisObject, "errorCode");
-                    if (result == 0 && errorCode == 0) ExfriendManager.get(uin).markActiveDelete(deluin);
+				@Override
+				protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+					try {
+						long uin = (Long) iget_object(param.thisObject, "uin");
+						long deluin = (Long) iget_object(param.thisObject, "deluin");
+						int result = (Integer) iget_object(param.thisObject, "result");
+						short errorCode = (Short) iget_object(param.thisObject, "errorCode");
+						if (result == 0 && errorCode == 0) ExfriendManager.get(uin).markActiveDelete(deluin);
 						/*String ret="dump object:"+param.thisObject.getClass().getCanonicalName()+"\n";
 						 Field[] fs=param.thisObject.getClass().getDeclaredFields();
 						 for(int i=0;i<fs.length;i++){
@@ -377,12 +380,12 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
 						 ret+=(i<fs.length-1?"├":"└")+fs[i].getName()+"="+ClazzExplorer.en_toStr(fs[i].get(param.thisObject))+"\n";
 						 }
 						 log(ret);*/
-                } catch (Throwable e) {
-                    log(e);
-                    throw e;
-                }
-            }
-        });
+					} catch (Throwable e) {
+						log(e);
+						throw e;
+					}
+				}
+			});
 
         try {
             ConfigManager cfg = ConfigManager.getDefault();
@@ -392,72 +395,99 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
                     String methodName = cfg.getString("qn_hide_msg_list_miniapp_method_name");
                     findAndHookMethod(load("com/tencent/mobileqq/activity/Conversation"), methodName, XC_MethodReplacement.returnConstant(null));
                 } else {
-                    findAndHookMethod(load("mqq/os/MqqHandler"), "dispatchMessage", Message.class, new XC_MethodReplacement(51) {
-                        @Override
-                        protected Object replaceHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
-                            try {
-                                Method m = (Method) param.method;
-                                m.setAccessible(true);
-                                XposedBridge.invokeOriginalMethod(m, param.thisObject, param.args);
-                            } catch (UnsupportedOperationException e) {
-                            } catch (Throwable t) {
-                                log(t);
-                            }
-                            return null;
-                        }
-                    });
+					Class con=load("com/tencent/mobileqq/activity/Conversation");
+					for (Method m:con.getDeclaredMethods()) {
+						Class[] ps = m.getParameterTypes();
+						if (ps != null && ps.length > 0)continue;
+						if (!m.getReturnType().equals(void.class))continue;
+						String name=m.getName();
+						if (!Modifier.isPrivate(m.getModifiers()))continue;
+						if (name.length() > 1)continue;
+						char c=name.charAt(0);
+						if ('F' <= c && c < 'a')
+							XposedBridge.hookMethod(m, new XC_MethodReplacement(30) {
+									@Override
+									protected Object replaceHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
+										try {
+											Method m = (Method) param.method;
+											m.setAccessible(true);
+											XposedBridge.invokeOriginalMethod(m, param.thisObject, param.args);
+										} catch (UnsupportedOperationException e) {
+										} catch (Throwable t) {
+											log(t);
+										}
+										return null;
+									}
+								});
+					}
+					/*try {
+					 findAndHookMethod(load("com.tencent.mobileqq.app.FrameFragment"), "createTabContent", String.class, new XC_MethodReplacement(39) {
+					 @Override
+					 protected Object replaceHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
+					 try {
+					 Method m = (Method) param.method;
+					 m.setAccessible(true);
+					 XposedBridge.invokeOriginalMethod(m, param.thisObject, param.args);
+					 } catch (UnsupportedOperationException e) {
+					 } catch (Throwable t) {
+					 log(t);
+					 }
+					 return null;
+					 }
+					 });
+					 } catch (Exception e) {}*/
                     Class miniapp = load("com/tencent/mobileqq/mini/entry/MiniAppEntryAdapter");
                     if (miniapp == null)
                         miniapp = load("com/tencent/mobileqq/mini/entry/MiniAppEntryAdapter$1").getDeclaredField("this$0").getType();
                     XposedBridge.hookAllConstructors(miniapp, new XC_MethodHook(60) {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            String methodName = null;
-                            StackTraceElement[] stacks = new Throwable().getStackTrace();
-                            for (int i = 0; i < stacks.length; i++) {
-                                if (stacks[i].getClassName().indexOf("Conversation") != -1) {
-                                    methodName = stacks[i].getMethodName();
-                                    break;
-                                }
-                            }
-                            if (methodName == null)
-                                throw new NullPointerException("Failed to get Conversation.?() to hide MiniApp!");
-                            ConfigManager cfg = ConfigManager.getDefault();
-                            cfg.putString("qn_hide_msg_list_miniapp_method_name", methodName);
-                            cfg.getAllConfig().put("qn_hide_msg_list_miniapp_version_code", getQQVersionCode(getApplication()));
-                            cfg.save();
-                            param.setThrowable(new UnsupportedOperationException("MiniAppEntry disabled"));
-                        }
-                    });
+							@Override
+							protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+								String methodName = null;
+								StackTraceElement[] stacks = new Throwable().getStackTrace();
+								for (int i = 0; i < stacks.length; i++) {
+									if (stacks[i].getClassName().indexOf("Conversation") != -1) {
+										methodName = stacks[i].getMethodName();
+										break;
+									}
+								}
+								if (methodName == null)
+									throw new NullPointerException("Failed to get Conversation.?() to hide MiniApp!");
+								ConfigManager cfg = ConfigManager.getDefault();
+								cfg.putString("qn_hide_msg_list_miniapp_method_name", methodName);
+								cfg.getAllConfig().put("qn_hide_msg_list_miniapp_version_code", getQQVersionCode(getApplication()));
+								cfg.save();
+								param.setThrowable(new UnsupportedOperationException("MiniAppEntry disabled"));
+							}
+						});
                 }
             }
         } catch (Exception e) {
             log(e);
         }
 
-        log("will fuck setting2");
+        //log("will fuck setting2");
         XposedHelpers.findAndHookMethod(load("com.tencent.mobileqq.activity.QQSettingSettingActivity"), "doOnCreate", Bundle.class, new XC_MethodHook(47) {
-            @Override
-            protected void afterHookedMethod(final MethodHookParam param) throws Throwable {
-                try {
-                    View itemRef = (View) iget_object(param.thisObject, "a", load("com/tencent/mobileqq/widget/FormSimpleItem"));
-                    View item = (View) new_instance(itemRef.getClass(), param.thisObject, Context.class);
-                    invoke_virtual(item, "setLeftText", "QNotified", CharSequence.class);
-                    invoke_virtual(item, "setRightText", Utils.QN_VERSION_NAME, CharSequence.class);
-                    LinearLayout list = (LinearLayout) itemRef.getParent();
-                    list.addView(item, 0, itemRef.getLayoutParams());
-                    item.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            startProxyActivity((Context) param.thisObject, ACTION_ADV_SETTINGS);
-                        }
-                    });
-                } catch (Throwable e) {
-                    log(e);
-                    throw e;
-                }
-            }
-        });
+				@Override
+				protected void afterHookedMethod(final MethodHookParam param) throws Throwable {
+					try {
+						View itemRef = (View) iget_object(param.thisObject, "a", load("com/tencent/mobileqq/widget/FormSimpleItem"));
+						View item = (View) new_instance(itemRef.getClass(), param.thisObject, Context.class);
+						invoke_virtual(item, "setLeftText", "QNotified", CharSequence.class);
+						invoke_virtual(item, "setRightText", Utils.QN_VERSION_NAME, CharSequence.class);
+						LinearLayout list = (LinearLayout) itemRef.getParent();
+						list.addView(item, 0, itemRef.getLayoutParams());
+						item.setOnClickListener(new View.OnClickListener() {
+								@Override
+								public void onClick(View v) {
+									startProxyActivity((Context) param.thisObject, ACTION_ADV_SETTINGS);
+								}
+							});
+					} catch (Throwable e) {
+						log(e);
+						throw e;
+					}
+				}
+			});
 
         try {
             Class cl_BaseBubbleBuilder = load("com.tencent.mobileqq.activity.aio.BaseBubbleBuilder");
@@ -473,133 +503,133 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
                 argt = ms[i].getParameterTypes();
                 if (argt.length != 6) continue;
                 if (argt[0].equals(cl_ChatMessage) && argt[1].equals(Context.class)
-                        && argt[2].equals(cl_BaseChatItemLayout) && argt[4].equals(int.class)
-                        && argt[5].equals(int.class)) {
+					&& argt[2].equals(cl_BaseChatItemLayout) && argt[4].equals(int.class)
+					&& argt[5].equals(int.class)) {
                     m = ms[i];
                 }
             }
             XposedBridge.hookMethod(m, new XC_MethodHook(51) {
-                private static final int R_ID_BB_LAYOUT = 0x300AFF41;
-                private static final int R_ID_BB_TEXTVIEW = 0x300AFF42;
+					private static final int R_ID_BB_LAYOUT = 0x300AFF41;
+					private static final int R_ID_BB_TEXTVIEW = 0x300AFF42;
 
-                @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-                @Override
-                public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-                    if (ConfigManager.getDefault().getBooleanOrFalse(qn_send_card_msg)) {
-                        final Object msgObj = methodHookParam.args[0];
-                        ViewGroup viewGroup = (ViewGroup) methodHookParam.args[2];
-                        if (!load("com.tencent.mobileqq.data.MessageForStructing").isAssignableFrom(msgObj.getClass())
+					@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+					@Override
+					public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+						if (ConfigManager.getDefault().getBooleanOrFalse(qn_send_card_msg)) {
+							final Object msgObj = methodHookParam.args[0];
+							ViewGroup viewGroup = (ViewGroup) methodHookParam.args[2];
+							if (!load("com.tencent.mobileqq.data.MessageForStructing").isAssignableFrom(msgObj.getClass())
                                 && !load("com.tencent.mobileqq.data.MessageForArkApp").isAssignableFrom(msgObj.getClass()))
-                            return;
-                        if (viewGroup.findViewById(R_ID_BB_LAYOUT) == null) {
-                            Context context = viewGroup.getContext();
-                            LinearLayout linearLayout = new LinearLayout(context);
-                            linearLayout.setId(R_ID_BB_LAYOUT);
-                            //linearLayout.setBackground(new DebugDrawable(context));//SimpleBgDrawable(0x00000000, Color.BLUE, dip2px(context, 1)));
-                            linearLayout.setOrientation(LinearLayout.VERTICAL);
-                            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-                            lp.gravity = Gravity.BOTTOM | Gravity.RIGHT;
-                            TextView textView = new TextView(context);
-                            textView.setId(R_ID_BB_TEXTVIEW);
-                            textView.setGravity(Gravity.CENTER);
-                            textView.setTextColor(Color.BLUE);
-                            textView.setText("长按复制");
-                            linearLayout.addView(textView, lp);
-                            RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-                            rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                            //rlp.addRule(RelativeLayout.ALIGN_PARENT_TO
-                            int i = dip2px(context, 2);
-                            rlp.setMargins(i, i, i, i);
-                            linearLayout.hashCode();
-                            viewGroup.addView(linearLayout, rlp);
-                            //iput_object(viewGroup,"DEBUG_DRAW",true);
-                        }
-                        ((TextView) viewGroup.findViewById(R_ID_BB_TEXTVIEW)).setOnLongClickListener(new View.OnLongClickListener() {
-                            @Override
-                            public boolean onLongClick(View view) {
-                                try {
-                                    ClipboardManager clipboardManager = (ClipboardManager) view.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-                                    if (load("com.tencent.mobileqq.data.MessageForStructing").isAssignableFrom(msgObj.getClass())) {
-                                        clipboardManager.setText((String) invoke_virtual(iget_object(msgObj, "structingMsg"), "getXml", new Object[0]));
-                                    } else if (load("com.tencent.mobileqq.data.MessageForArkApp").isAssignableFrom(msgObj.getClass())) {
-                                        clipboardManager.setText((String) invoke_virtual(iget_object(msgObj, "ark_app_message"), "toAppXml", new Object[0]));
-                                    }
-                                    showToast(view.getContext(), TOAST_TYPE_INFO, "复制成功", Toast.LENGTH_SHORT);
-                                } catch (Throwable th) {
-                                }
-                                return true;
-                            }
-                        });
-                        viewGroup.setBackgroundDrawable(new DebugDrawable(viewGroup.getContext()));
-                    }
-                }
-            });
+								return;
+							if (viewGroup.findViewById(R_ID_BB_LAYOUT) == null) {
+								Context context = viewGroup.getContext();
+								LinearLayout linearLayout = new LinearLayout(context);
+								linearLayout.setId(R_ID_BB_LAYOUT);
+								//linearLayout.setBackground(new DebugDrawable(context));//SimpleBgDrawable(0x00000000, Color.BLUE, dip2px(context, 1)));
+								linearLayout.setOrientation(LinearLayout.VERTICAL);
+								LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+								lp.gravity = Gravity.BOTTOM | Gravity.RIGHT;
+								TextView textView = new TextView(context);
+								textView.setId(R_ID_BB_TEXTVIEW);
+								textView.setGravity(Gravity.CENTER);
+								textView.setTextColor(Color.BLUE);
+								textView.setText("长按复制");
+								linearLayout.addView(textView, lp);
+								RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
+								rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+								//rlp.addRule(RelativeLayout.ALIGN_PARENT_TO
+								int i = dip2px(context, 2);
+								rlp.setMargins(i, i, i, i);
+								linearLayout.hashCode();
+								viewGroup.addView(linearLayout, rlp);
+								//iput_object(viewGroup,"DEBUG_DRAW",true);
+							}
+							((TextView) viewGroup.findViewById(R_ID_BB_TEXTVIEW)).setOnLongClickListener(new View.OnLongClickListener() {
+									@Override
+									public boolean onLongClick(View view) {
+										try {
+											ClipboardManager clipboardManager = (ClipboardManager) view.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+											if (load("com.tencent.mobileqq.data.MessageForStructing").isAssignableFrom(msgObj.getClass())) {
+												clipboardManager.setText((String) invoke_virtual(iget_object(msgObj, "structingMsg"), "getXml", new Object[0]));
+											} else if (load("com.tencent.mobileqq.data.MessageForArkApp").isAssignableFrom(msgObj.getClass())) {
+												clipboardManager.setText((String) invoke_virtual(iget_object(msgObj, "ark_app_message"), "toAppXml", new Object[0]));
+											}
+											showToast(view.getContext(), TOAST_TYPE_INFO, "复制成功", Toast.LENGTH_SHORT);
+										} catch (Throwable th) {
+										}
+										return true;
+									}
+								});
+							viewGroup.setBackgroundDrawable(new DebugDrawable(viewGroup.getContext()));
+						}
+					}
+				});
         } catch (Throwable e) {
             log(e);
         }
 		/*
-        try {
-            Method m = null;
-            Method[] methods = load("com.tencent.mobileqq.activity.BaseChatPie").getDeclaredMethods();
-            for (int i = 0; i < methods.length; i++) {
-                Method method = methods[i];
-                if (method.getName().equals("e") && method.getParameterTypes().length == 0 && method.getReturnType() == Void.TYPE) {
-                    m = methods[i];
-                    break;
-                }
-            }
-            assert m != null;
-            XposedBridge.hookMethod(m, new XC_MethodHook(51) {
-                @Override
-                public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-                    if (ConfigManager.get().getBooleanOrFalse(qn_send_card_msg)) {
-                        final Object qqi = iget_object(methodHookParam.thisObject, "a", load("com.tencent.mobileqq.app.QQAppInterface"));
-                        final Object session = iget_object(methodHookParam.thisObject, "a", load("com.tencent.mobileqq.activity.aio.SessionInfo"));
-                        final ViewGroup viewGroup = (ViewGroup) iget_object(methodHookParam.thisObject, "d", Class.forName("android.view.ViewGroup"));
-                        Resources res = viewGroup.getContext().getResources();
-                        int id_btn = res.getIdentifier("fun_btn", "id", null);
-                        final int id_et = res.getIdentifier("input", "id", null);
-                        if (viewGroup != null)
-                            ((Button) viewGroup.findViewById(id_btn).setOnLongClickListener(new View.OnLongClickListener() {
-                                @Override
-                                public boolean onLongClick(View view) {
-                                    EditText edit = (EditText) viewGroup.findViewById(id_et);
-                                    String input = edit.getText().toString();
-                                    boolean success = false;
-                                    Class cl_msgMgr = load((String) Hook.config.get("MessageManager"));
-                                    try {
-                                        Object msg = invoke_static(load((String) Hook.config.get("TestStructMsg")), "a", input, load("com.tencent.mobileqq.structmsg.AbsStructMsg"));
-                                        if (msg != null) {
-                                            invoke_static(cl_msgMgr, "a", qqi, session, msg);
-                                            success = true;
-                                        }
-                                    } catch (Throwable th) {
-                                        Toast.makeText(view.getContext(), th.toString(), Toast.LENGTH_SHORT).show();
-                                        XposedBridge.log(th);
-                                    }
-                                    try {
-                                        Object arkMsg = new_instance(load("com.tencent.mobileqq.data.ArkAppMessage"));
-                                        if ((Boolean) invoke_virtual(arkMsg, "fromAppXml", input)) {
-                                            invoke_static(cl_msgMgr, "a", qqi, session, arkMsg);
-                                            success = true;
-                                        }
-                                    } catch (Throwable th2) {
-                                        XposedBridge.log(th2);
-                                    }
-                                    if (success) edit.setText("");
-                                    return false;
-                                }
-                            }));
+		 try {
+		 Method m = null;
+		 Method[] methods = load("com.tencent.mobileqq.activity.BaseChatPie").getDeclaredMethods();
+		 for (int i = 0; i < methods.length; i++) {
+		 Method method = methods[i];
+		 if (method.getName().equals("e") && method.getParameterTypes().length == 0 && method.getReturnType() == Void.TYPE) {
+		 m = methods[i];
+		 break;
+		 }
+		 }
+		 assert m != null;
+		 XposedBridge.hookMethod(m, new XC_MethodHook(51) {
+		 @Override
+		 public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+		 if (ConfigManager.get().getBooleanOrFalse(qn_send_card_msg)) {
+		 final Object qqi = iget_object(methodHookParam.thisObject, "a", load("com.tencent.mobileqq.app.QQAppInterface"));
+		 final Object session = iget_object(methodHookParam.thisObject, "a", load("com.tencent.mobileqq.activity.aio.SessionInfo"));
+		 final ViewGroup viewGroup = (ViewGroup) iget_object(methodHookParam.thisObject, "d", Class.forName("android.view.ViewGroup"));
+		 Resources res = viewGroup.getContext().getResources();
+		 int id_btn = res.getIdentifier("fun_btn", "id", null);
+		 final int id_et = res.getIdentifier("input", "id", null);
+		 if (viewGroup != null)
+		 ((Button) viewGroup.findViewById(id_btn).setOnLongClickListener(new View.OnLongClickListener() {
+		 @Override
+		 public boolean onLongClick(View view) {
+		 EditText edit = (EditText) viewGroup.findViewById(id_et);
+		 String input = edit.getText().toString();
+		 boolean success = false;
+		 Class cl_msgMgr = load((String) Hook.config.get("MessageManager"));
+		 try {
+		 Object msg = invoke_static(load((String) Hook.config.get("TestStructMsg")), "a", input, load("com.tencent.mobileqq.structmsg.AbsStructMsg"));
+		 if (msg != null) {
+		 invoke_static(cl_msgMgr, "a", qqi, session, msg);
+		 success = true;
+		 }
+		 } catch (Throwable th) {
+		 Toast.makeText(view.getContext(), th.toString(), Toast.LENGTH_SHORT).show();
+		 XposedBridge.log(th);
+		 }
+		 try {
+		 Object arkMsg = new_instance(load("com.tencent.mobileqq.data.ArkAppMessage"));
+		 if ((Boolean) invoke_virtual(arkMsg, "fromAppXml", input)) {
+		 invoke_static(cl_msgMgr, "a", qqi, session, arkMsg);
+		 success = true;
+		 }
+		 } catch (Throwable th2) {
+		 XposedBridge.log(th2);
+		 }
+		 if (success) edit.setText("");
+		 return false;
+		 }
+		 }));
 
 
-                    }
-                }
-            });
-        } catch (Throwable e) {
-            log(e);
-        }
+		 }
+		 }
+		 });
+		 } catch (Throwable e) {
+		 log(e);
+		 }
 
-		/*XposedBridge.hookAllMethods(load("aydf"),"a",invokeRecord);
+		 /*XposedBridge.hookAllMethods(load("aydf"),"a",invokeRecord);
 		 XposedBridge.hookAllMethods(load("aydf"),"b",invokeRecord);
 		 XposedBridge.hookAllMethods(load("aydu"),"a",invokeRecord);/*new XC_MethodHook(60){
 		 *
@@ -655,8 +685,35 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
 
 		 }
 		 });//*/
-        XposedBridge.hookAllConstructors(load("agve"), invokeRecord);
+        //XposedBridge.hookAllConstructors(load("agve"), invokeRecord);
         //XposedHelpers.findAndHookMethod(load("awpy"),"a", load("com.tencent.mobileqq.app.QQAppInterface"), boolean.class, String.class,invokeRecord);
+
+		try {
+            ConfigManager cfg = ConfigManager.getDefault();
+			int lastVersion = cfg.getIntOrDefault(cache_dialog_util_code, 0);
+			if ((getQQVersionCode(getApplication()) != lastVersion || cfg.getString(cache_dialog_util_class) == null) && Initiator.load("com/tencent/mobileqq/utils/DialogUtil") == null) {
+				new Thread(new Runnable(){
+						@Override
+						public void run() {
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {}
+							String clz=DexKit.findDialogUtil();
+							if (clz == null)return;
+							try {
+								ConfigManager cfg=ConfigManager.getDefault();
+								cfg.putString(cache_dialog_util_class, clz);
+								cfg.getAllConfig().put(cache_dialog_util_code, getQQVersionCode(getApplication()));
+								cfg.save();
+							} catch (IOException e) {
+								log(e);
+							}
+						}
+					}).start();
+			}
+        } catch (Exception e) {
+            log(e);
+        }
     }
 
     public XC_MethodHook invokeRecord = new XC_MethodHook(200) {
@@ -688,7 +745,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
     };
 
     public static XC_MethodHook.Unhook findAndHookMethodIfExists(Class<?> clazz, String methodName, Object...
-            parameterTypesAndCallback) {
+																 parameterTypesAndCallback) {
         try {
             return findAndHookMethod(clazz, methodName, parameterTypesAndCallback);
         } catch (Throwable e) {
@@ -698,7 +755,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
     }
 
     public static XC_MethodHook.Unhook findAndHookMethodIfExists(String clazzName, ClassLoader cl, String
-            methodName, Object... parameterTypesAndCallback) {
+																 methodName, Object... parameterTypesAndCallback) {
         try {
             return findAndHookMethod(clazzName, cl, methodName, parameterTypesAndCallback);
         } catch (Throwable e) {
@@ -893,16 +950,16 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
 				 frameView.setClickable(false);
 				 //unusualContacts_old.setOnTouchListener(null);*/
                 exfriend.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(splashActivity, load(ActProxyMgr.STUB_ACTIVITY));
-                        int id = ActProxyMgr.next();
-                        intent.putExtra(ACTIVITY_PROXY_ID_TAG, id);
-                        intent.putExtra(ACTIVITY_PROXY_ACTION, ACTION_EXFRIEND_LIST);
-                        splashActivity.startActivity(intent);
-                        //Toast.makeText(splashActivity,"Test",0).show();
-                    }
-                });
+						@Override
+						public void onClick(View v) {
+							Intent intent = new Intent(splashActivity, load(ActProxyMgr.STUB_ACTIVITY));
+							int id = ActProxyMgr.next();
+							intent.putExtra(ACTIVITY_PROXY_ID_TAG, id);
+							intent.putExtra(ACTIVITY_PROXY_ACTION, ACTION_EXFRIEND_LIST);
+							splashActivity.startActivity(intent);
+							//Toast.makeText(splashActivity,"Test",0).show();
+						}
+					});
 				/*unusualContacts.setOnClickListener(new View.OnClickListener(){
 				 @Override
 				 public void onClick(View v){

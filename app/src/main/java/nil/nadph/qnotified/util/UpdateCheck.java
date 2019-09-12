@@ -1,7 +1,7 @@
 package nil.nadph.qnotified.util;
 
 import android.app.Activity;
-import android.app.AlertDialog;
+import android.app.Dialog;
 import android.graphics.Color;
 import android.os.Handler;
 import android.text.SpannableString;
@@ -25,6 +25,11 @@ import java.net.URL;
 
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.invoke_virtual;
+import static nil.nadph.qnotified.util.Utils.iget_object;
+
+import android.content.*;
+import android.text.style.*;
 
 public class UpdateCheck implements View.OnClickListener, Runnable {
 
@@ -63,14 +68,15 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
             cfg.getAllConfig().put(qn_update_time, System.currentTimeMillis() / 1000L);
             cfg.save();
         } catch (IOException e) {
+			final IOException e2 = e;
             runlevel = 0;
             if (content == null)
                 new Handler(viewGroup.getContext().getMainLooper()).post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(viewGroup.getContext(), "检查更新失败:" + e, Toast.LENGTH_SHORT).show();
-                    }
-                });
+						@Override
+						public void run() {
+							Toast.makeText(viewGroup.getContext(), "检查更新失败:" + e2, Toast.LENGTH_SHORT).show();
+						}
+					});
         }
         return content;
     }
@@ -163,55 +169,84 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
         }
     }
 
-    private Class cl_QQCustomDialog;
+
 
     private void doShowUPdateInfo() {
-        clicked = false;
-        Activity ctx = (Activity) viewGroup.getContext();
-        AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-        builder.setCancelable(true);
-        builder.setNegativeButton("关闭", null);
-        /*PopupWindow pop=new PopupWindow();
-        pop.setWidth(WRAP_CONTENT);
-        pop.setHeight(WRAP_CONTENT);*/
-        LinearLayout main = new LinearLayout(ctx);
-        //pop.setContentView(main);
-        main.setOrientation(LinearLayout.VERTICAL);
-        ScrollView scrollView = new ScrollView(ctx);
-        builder.setView(scrollView);
-        scrollView.addView(main, WRAP_CONTENT, WRAP_CONTENT);
-        SpannableStringBuilder sb = new SpannableStringBuilder();
-        //StringBuilder sb=new StringBuilder();
-        TextView list = new TextView(ctx);
-        main.addView(list, WRAP_CONTENT, WRAP_CONTENT);
-        list.setAutoLinkMask(Linkify.WEB_URLS);
-        for (Object obj : result._$_E()) {
-            PHPArray ver = (PHPArray) obj;
-            String vn = (String) ver.__("name")._$();
-            String vc = "" + ver.__("code")._$();
-            String desc = "" + ver.__("desc")._$();
-            String md5 = (String) ver.__("md5")._$();
-            long time = ((Number) ver.__("time")._$()).longValue();
-            String date = Utils.getRelTimeStrSec(time);
-            boolean taichi = ver.__("taichi")._$b();
-            boolean beta = ver.__("beta")._$b();
-            SpannableString tmp = new SpannableString(vn + " (" + vc + ")");
-            tmp.setSpan(new RelativeSizeSpan(1.8f), 0, tmp.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            sb.append(tmp);
-            sb.append("发布于" + date);
-            sb.append(beta ? " (测试版) " : "");
-            sb.append('\n');
-            if (taichi) sb.append("已适配太极\n");
-            sb.append("md5:" + md5 + "\n");
-            sb.append(desc);
-            sb.append("\n下载地址:\n");
-            for (Object obj2 : ver.__("urls")._$_E()) {
-                sb.append(obj2 + "\n");
-            }
-            sb.append("\n");
-        }
-        list.setText(sb);
-        builder.create().show();
+		try {
+			clicked = false;
+			Activity ctx = (Activity) viewGroup.getContext();
+			Dialog dialog=Utils.createDialog(ctx);
+			invoke_virtual(dialog, "setTitle", "当前" + currVerName + " (" + currVerCode + ")", String.class);
+			dialog.setCancelable(true);
+			//dialog.setNegativeButton("关闭", null);
+			invoke_virtual(dialog, "setNegativeButton", "关闭", new Utils.DummyCallback(), String.class, DialogInterface.OnClickListener.class);
+			/*PopupWindow pop=new PopupWindow();
+			 pop.setWidth(WRAP_CONTENT);
+			 pop.setHeight(WRAP_CONTENT);*/
+			//LinearLayout main = new LinearLayout(ctx);
+			//pop.setContentView(main);
+			//main.setOrientation(LinearLayout.VERTICAL);
+			//ScrollView scrollView = new ScrollView(ctx);
+			//.setView(scrollView);
+			//scrollView.addView(main, WRAP_CONTENT, WRAP_CONTENT);
+			SpannableStringBuilder sb = new SpannableStringBuilder();
+			//StringBuilder sb=new StringBuilder();
+			//TextView list = new TextView(ctx);
+			//main.addView(list, WRAP_CONTENT, WRAP_CONTENT);
+			//list.setAutoLinkMask(Linkify.WEB_URLS);
+			for (Object obj : result._$_E()) {
+				PHPArray ver = (PHPArray) obj;
+				String vn = (String) ver.__("name")._$();
+				int vc = ((Number)ver.__("code")._$()).intValue();
+				String desc = "" + ver.__("desc")._$();
+				String md5 = (String) ver.__("md5")._$();
+				long time = ((Number) ver.__("time")._$()).longValue();
+				String date = Utils.getRelTimeStrSec(time);
+				boolean taichi = ver.__("taichi")._$b();
+				boolean beta = ver.__("beta")._$b();
+				SpannableString tmp = new SpannableString(vn + " (" + vc + ")");
+				tmp.setSpan(new RelativeSizeSpan(1.8f), 0, tmp.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+				sb.append(tmp);
+				switch (Utils.sign(vc - currVerCode)) {
+					case 0:
+						sb.append("当前版本");
+						break;
+					case -1:
+						sb.append("旧版本");
+						break;
+					case 1:
+						sb.append("新版本");
+				}
+				sb.append("\n发布于" + date);
+				sb.append(beta ? " (测试版) " : "");
+				sb.append('\n');
+				if (taichi) sb.append("已适配太极\n");
+				sb.append("md5:" + md5 + "\n");
+				sb.append(desc);
+				sb.append("\n下载地址:\n");
+				for (Object obj2 : ver.__("urls")._$_E()) {
+					tmp = new SpannableString((String)obj2);
+					tmp.setSpan(new URLSpan((String)obj2), 0, tmp.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+					sb.append(tmp);
+					sb.append("\n");
+				}
+				sb.append("\n");
+			}
+			//list.setText(sb);
+			invoke_virtual(dialog, "setMessage", sb, CharSequence.class);
+			TextView tv=(TextView) iget_object(dialog, "text");
+			tv.setLinksClickable(true);
+			tv.setEnabled(true);
+			tv.setFocusable(true);
+			try {
+				tv.setFocusableInTouchMode(true);
+				tv.setTextIsSelectable(true);
+				tv.setAutoLinkMask(Linkify.WEB_URLS);
+			} catch (NoSuchMethodError e) {}
+			dialog.show();
+        } catch (Exception e) {
+			log(e);
+		}
     }
 
     @Override
