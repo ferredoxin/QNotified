@@ -2,7 +2,7 @@
   {
     "code": 10,
     "name": "0.2.0",
-    "taichi": false,
+    "taichi": true,
     "beta": false,
     "time": 1567739532,
     "md5": "a02b2a99ff11c1051e17928cff9cfa5c",
