@@ -74,7 +74,7 @@ public class ActProxyMgr extends XC_MethodHook {
 				aa = (ActivityAdapter) self.getWindow().getDecorView().getTag();
 				switch (method.getName()) {
 					case "doOnDestroy":
-						Method m = self.getClass().getSuperclass().getSuperclass().getDeclaredMethod("doOnDestroy");
+						Method m = getSuperMethod(self.getClass(), "doOnDestroy");
 						m.setAccessible(true);
 						try {
 							ActProxyMgr.invokeSuper(self, m);
@@ -83,7 +83,7 @@ public class ActProxyMgr extends XC_MethodHook {
 						aa.doOnPostDestory();
 						break;
 					case "doOnPause":
-						m = self.getClass().getSuperclass().getSuperclass().getDeclaredMethod("doOnPause");
+						m = getSuperMethod(self.getClass(), "doOnPause");
 						m.setAccessible(true);
 						try {
 							ActProxyMgr.invokeSuper(self, m);
@@ -92,7 +92,7 @@ public class ActProxyMgr extends XC_MethodHook {
 						aa.doOnPostPause();
 						break;
 					case "doOnResume":
-						m = self.getClass().getSuperclass().getSuperclass().getDeclaredMethod("doOnResume");
+						m = getSuperMethod(self.getClass(), "doOnResume");
 						m.setAccessible(true);
 						try {
 							ActProxyMgr.invokeSuper(self, m);
@@ -101,7 +101,7 @@ public class ActProxyMgr extends XC_MethodHook {
 						aa.doOnPostResume();
 						break;
 					case "doOnActivityResult":
-						m = self.getClass().getSuperclass().getSuperclass().getDeclaredMethod("doOnActivityResult", int.class, int.class, Intent.class);
+						m = getSuperMethod(self.getClass(), "doOnActivityResult", int.class, int.class, Intent.class);
 						m.setAccessible(true);
 						try {
 							ActProxyMgr.invokeSuper(self, m, param.args);
@@ -118,6 +118,7 @@ public class ActProxyMgr extends XC_MethodHook {
 			}
 		} catch (Throwable th) {
 			param.setThrowable(th);
+			log(th);
 		}
     }
 

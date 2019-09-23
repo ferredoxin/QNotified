@@ -195,6 +195,7 @@ public class QThemeKit {
 
     public static boolean isColorQQThemeActive() {
         try {
+			if(!getApplication().getApplicationInfo().packageName.equals(PACKAGE_NAME_QQ))return false;
             File f = new File(Environment.getExternalStorageDirectory().getAbsoluteFile() + "/QQColor/setting.xml");
             if (!f.exists())
                 f = new File(Environment.getDataDirectory() + "/data/me.qiwu.colorqq/shared_prefs/me.qiwu.colorqq.xml");
@@ -302,7 +303,7 @@ public class QThemeKit {
             }
 
             //log(name+"DrHiMin="+ret.getMinimumHeight());
-            return ret;
+            return ret.mutate();
         } catch (Exception e) {
             log(e);
         }

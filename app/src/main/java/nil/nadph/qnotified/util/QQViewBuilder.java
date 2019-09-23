@@ -27,9 +27,11 @@ public class QQViewBuilder {
     public static final int R_ID_VALUE = 0x300AFF14;
     public static final int R_ID_ARROW = 0x300AFF15;
 
+	private static final int CONSTANT_LIST_ITEM_HEIGHT_DP=48;
+	
     public static RelativeLayout newListItemSwitch(Context ctx, CharSequence title, CharSequence desc, boolean on, CompoundButton.OnCheckedChangeListener listener) {
         RelativeLayout root = new RelativeLayout(ctx);
-        root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
+        root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx,CONSTANT_LIST_ITEM_HEIGHT_DP)));
         root.setBackgroundDrawable(QThemeKit.getListItemBackground());
         TextView tv = new TextView(ctx);
         tv.setText(title);
@@ -42,13 +44,13 @@ public class QQViewBuilder {
         sw.setOnCheckedChangeListener(listener);
         RelativeLayout.LayoutParams lp_sw = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
         int m = (int) dip2px(ctx, 14);
-        lp_sw.setMargins(m, m, m, m);
+        lp_sw.setMargins(m, m, m, 0);
         lp_sw.addRule(RelativeLayout.CENTER_VERTICAL);
         lp_sw.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         if (desc == null) {
             RelativeLayout.LayoutParams lp_t = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
             m = (int) dip2px(ctx, 14);
-            lp_t.setMargins(m, m, 0, m);
+            lp_t.setMargins(m, m, 0, 0);
             lp_t.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
             lp_t.addRule(RelativeLayout.CENTER_VERTICAL);
             lp_t.addRule(RelativeLayout.LEFT_OF, R_ID_SWITCH);
@@ -66,7 +68,7 @@ public class QQViewBuilder {
             des.setTextSize(dip2sp(ctx, 13));
             RelativeLayout.LayoutParams lp_d = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
             //m=(int)dip2px(ctx,6);
-            lp_d.setMargins(m, 0, 0, m / 2);
+            lp_d.setMargins(m, 0, 0, 0);
             lp_d.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
             lp_d.addRule(RelativeLayout.BELOW, R_ID_TITLE);
             lp_d.addRule(RelativeLayout.LEFT_OF, R_ID_SWITCH);
@@ -144,7 +146,7 @@ public class QQViewBuilder {
 
     public static RelativeLayout newListItemDummy(Context ctx, CharSequence title, CharSequence desc, CharSequence value) {
         RelativeLayout root = new RelativeLayout(ctx);
-        root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
+        root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx,CONSTANT_LIST_ITEM_HEIGHT_DP)));
         root.setBackgroundDrawable(QThemeKit.getListItemBackground());
         TextView tv = new TextView(ctx);
         tv.setText(title);
@@ -164,7 +166,7 @@ public class QQViewBuilder {
         if (desc == null) {
             RelativeLayout.LayoutParams lp_t = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
             m = (int) dip2px(ctx, 14);
-            lp_t.setMargins(m, m, 0, m);
+            lp_t.setMargins(m, m, 0, 0);
             lp_t.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
             lp_t.addRule(RelativeLayout.CENTER_VERTICAL);
             lp_t.addRule(RelativeLayout.LEFT_OF, R_ID_VALUE);
@@ -182,7 +184,7 @@ public class QQViewBuilder {
             des.setTextSize(dip2sp(ctx, 13));
             RelativeLayout.LayoutParams lp_d = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
             //m=(int)dip2px(ctx,6);
-            lp_d.setMargins(m, 0, 0, m / 2);
+            lp_d.setMargins(m, 0, 0, 0);
             lp_d.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
             lp_d.addRule(RelativeLayout.BELOW, R_ID_TITLE);
             lp_d.addRule(RelativeLayout.LEFT_OF, R_ID_VALUE);
@@ -195,7 +197,7 @@ public class QQViewBuilder {
 
     public static RelativeLayout newListItemButton(Context ctx, CharSequence title, CharSequence desc, CharSequence value, View.OnClickListener listener) {
         RelativeLayout root = new RelativeLayout(ctx);
-        root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
+        root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx,CONSTANT_LIST_ITEM_HEIGHT_DP)));
         root.setBackgroundDrawable(QThemeKit.getListItemBackground());
         TextView tv = new TextView(ctx);
         tv.setText(title);
@@ -207,13 +209,13 @@ public class QQViewBuilder {
         img.setId(R_ID_ARROW);
         RelativeLayout.LayoutParams lp_im = new RelativeLayout.LayoutParams(dip2px(ctx, 9), dip2px(ctx, 15));
         int m = (int) dip2px(ctx, 14);
-        lp_im.setMargins(0, m, m, m);
+        lp_im.setMargins(0, m, m, 0);
         lp_im.addRule(RelativeLayout.CENTER_VERTICAL);
         lp_im.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         if (desc == null) {
             RelativeLayout.LayoutParams lp_t = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
             m = (int) dip2px(ctx, 14);
-            lp_t.setMargins(m, m, 0, m);
+            lp_t.setMargins(m, m, 0, 0);
             lp_t.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
             lp_t.addRule(RelativeLayout.CENTER_VERTICAL);
             lp_t.addRule(RelativeLayout.LEFT_OF, R_ID_VALUE);
@@ -231,7 +233,7 @@ public class QQViewBuilder {
             des.setTextSize(dip2sp(ctx, 13));
             RelativeLayout.LayoutParams lp_d = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
             //m=(int)dip2px(ctx,6);
-            lp_d.setMargins(m, 0, 0, m / 2);
+            lp_d.setMargins(m, 0, 0, 0);
             lp_d.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
             lp_d.addRule(RelativeLayout.BELOW, R_ID_TITLE);
             lp_d.addRule(RelativeLayout.LEFT_OF, R_ID_VALUE);
@@ -246,7 +248,7 @@ public class QQViewBuilder {
         st.setTextSize(dip2sp(ctx, 15));
         RelativeLayout.LayoutParams lp_st = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
         m = (int) dip2px(ctx, 14);
-        lp_st.setMargins(m / 4, m, m / 4, m);
+        lp_st.setMargins(m / 4, m, m / 4, 0);
         lp_st.addRule(RelativeLayout.CENTER_VERTICAL);
         lp_st.addRule(RelativeLayout.LEFT_OF, R_ID_ARROW);
         root.addView(st, lp_st);

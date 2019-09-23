@@ -34,10 +34,10 @@ public class HookEntry implements IXposedHookLoadPackage {
             //log("Handle QQ done.");
         } else if (lpparam.packageName.equals(PACKAGE_NAME_TIM)) {
             new QQMainHook().handleLoadPackage(lpparam);
-        } else if (lpparam.packageName.equals(PACKAGE_NAME_QQ_LITE)) {
+        }/* else if (lpparam.packageName.equals(PACKAGE_NAME_QQ_LITE)) {
             new QQMainHook().handleLoadPackage(lpparam);
         } else if (lpparam.packageName.equals(PACKAGE_NAME_QQ_INTERNATIONAL)) {
             new QQMainHook().handleLoadPackage(lpparam);
-        }
+        }*/
     }
 }

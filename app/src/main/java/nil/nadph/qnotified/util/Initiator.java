@@ -2,6 +2,7 @@ package nil.nadph.qnotified.util;
 
 import android.content.Context;
 import android.widget.PopupWindow;
+import dalvik.system.*;
 
 
 public class Initiator {
@@ -12,6 +13,8 @@ public class Initiator {
 
     public static void init(ClassLoader classLoader) {
         qqClassLoader = classLoader;
+		DexClassLoader dcl;
+		PathClassLoader pcl;
     }
 
 

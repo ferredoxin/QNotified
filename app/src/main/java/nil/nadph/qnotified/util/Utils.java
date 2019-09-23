@@ -24,29 +24,34 @@ import android.app.*;
 import nil.nadph.qnotified.record.*;
 import java.lang.reflect.*;
 import android.content.*;
+import android.content.pm.*;
 
 @SuppressWarnings("unchecked")
 public class Utils {
-	
-	private Utils(){
+
+	private Utils() {
 		throw new AssertionError("No instance for you!");
 	}
 
     public static final String qn_hide_msg_list_miniapp = "qn_hide_msg_list_miniapp",
-            qn_hide_ex_entry_group = "qn_hide_ex_entry_group",
-            qn_del_op_silence = "qn_del_op_silence",
-            qn_enable_transparent = "vqn_enable_transparent",
-            qn_enable_voice_forward = "qn_enable_voice_forward",
-            qn_sticker_as_pic = "qn_sticker_as_pic",
-            qn_send_card_msg = "qn_send_card_msg",
-            qn_muted_at_all = "qn_muted_at_all",
-            qn_muted_red_packet = "qn_muted_red_packet",
-			cache_dialog_util_class="cache_dialog_util_class",
-			cache_dialog_util_code="cache_dialog_util_code";
-			
+	qn_hide_ex_entry_group = "qn_hide_ex_entry_group",
+	qn_del_op_silence = "qn_del_op_silence",
+	qn_enable_transparent = "qn_enable_transparent",
+	qn_enable_voice_forward = "qn_enable_voice_forward",
+	qn_sticker_as_pic = "qn_sticker_as_pic",
+	qn_send_card_msg = "qn_send_card_msg",
+	qn_muted_at_all = "qn_muted_at_all",
+	qn_muted_red_packet = "qn_muted_red_packet",
+	cache_dialog_util_class = "cache_dialog_util_class",
+	cache_dialog_util_code = "cache_dialog_util_code",
+	qn_hide_gift_animation = "qn_hide_gift_animation",
+	qn_sign_in_as_text = "qn_sign_in_as_text",
+	qn_mute_talk_back = "qn_mute_talk_back";
+
+
     public static boolean DEBUG = true;
     public static boolean V_TOAST = false;
-    public static final String QN_VERSION_NAME = "0.2.0";
+    public static final String QN_VERSION_NAME = "0.2.1";
     public static final int QN_VERSION_CODE = 10;
 
     public static final String PACKAGE_NAME_QQ = "com.tencent.mobileqq";
@@ -90,13 +95,14 @@ public class Utils {
         return null;
     }
 
-    public static int getQQVersionCode(Context context) {
+	
+	
+    public static PackageInfo getHostInfo(Context context) {
         try {
-            return context.getPackageManager()
-                    .getPackageInfo(PACKAGE_NAME_QQ, 0).versionCode;
+            return context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
         } catch (Throwable e) {
-            Log.e("Utils", "Can not get QQ versionCode!");
-            return 0;
+            Log.e("Utils", "Can not get PackageInfo!");
+            return null;
         }
     }
 
@@ -107,16 +113,6 @@ public class Utils {
             log(e);
         }
         return -1;
-    }
-
-    public static String getQQVersionName(Context context) {
-        try {
-            return context.getPackageManager()
-                    .getPackageInfo(PACKAGE_NAME_QQ, 0).versionName;
-        } catch (Throwable e) {
-            Log.e("Utils", "Can not get QQ versionName!");
-            return "unknown";
-        }
     }
 
     public static void ref_setText(View obj, CharSequence str) {
@@ -605,7 +601,7 @@ public class Utils {
             do {
                 for (Field field : clz.getDeclaredFields()) {
                     if ((type == null || field.getType().equals(type)) && field.getName()
-                            .equals(name)) {
+						.equals(name)) {
                         field.setAccessible(true);
                         return field;
                     }
@@ -617,13 +613,14 @@ public class Utils {
     }
 
     public static void log(String str) {
+		Log.i("QNdump", str);
         if (DEBUG) try {
-            XposedBridge.log(str);
-        } catch (NoClassDefFoundError e) {
-            Log.i("Xposed", str);
-            Log.i("EdXposed-Bridge", str);
+				XposedBridge.log(str);
+			} catch (NoClassDefFoundError e) {
+				Log.i("Xposed", str);
+				Log.i("EdXposed-Bridge", str);
 
-        }
+			}
         if (V_TOAST) {
             String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/qn_log.txt";
             File f = new File(path);
@@ -677,7 +674,7 @@ public class Utils {
     public static String en(String str) {
         if (str == null) return "null";
         return "\"" + str.replace("\\", "\\\\").replace("\"", "\\\"")
-                .replace("\n", "\\\n").replace("\r", "\\\r") + "\"";
+			.replace("\n", "\\\n").replace("\r", "\\\r") + "\"";
     }
 
     public static String de(String str) {
@@ -686,7 +683,7 @@ public class Utils {
         if (str.startsWith("\"")) str = str.substring(1);
         if (str.endsWith("\"") && !str.endsWith("\\\"")) str = str.substring(0, str.length() - 1);
         return str.replace("\\\"", "\"").replace("\\\n", "\n")
-                .replace("\\\r", "\r").replace("\\\\", "\\");
+			.replace("\\\r", "\r").replace("\\\\", "\\");
     }
 
     private static Method method_Toast_show;
@@ -845,7 +842,7 @@ public class Utils {
         log("dump:" + obj);
         return obj;
     }
-	
+
 	private static Class clz_DialogUtil;
 	private static Class clz_CustomDialog;
 	public static Dialog createDialog(Context ctx) {
@@ -857,10 +854,10 @@ public class Utils {
 					ConfigManager cfg=ConfigManager.getDefault();
 					cln = cfg.getString(cache_dialog_util_class);
 					int lastVersion = cfg.getIntOrDefault(cache_dialog_util_code, 0);
-					if ((getQQVersionCode(getApplication()) != lastVersion || cfg.getString(cache_dialog_util_class) == null) && Initiator.load("com/tencent/mobileqq/utils/DialogUtil") == null) {
+					if ((getHostInfo(getApplication()).versionCode != lastVersion || cfg.getString(cache_dialog_util_class) == null) && Initiator.load("com/tencent/mobileqq/utils/DialogUtil") == null) {
 						cln = DexKit.findDialogUtil();
 						cfg.putString(cache_dialog_util_class, cln);
-						cfg.getAllConfig().put(cache_dialog_util_code, getQQVersionCode(getApplication()));
+						cfg.getAllConfig().put(cache_dialog_util_code, getHostInfo(getApplication()).versionCode);
 						cfg.save();
 					}
 				} catch (IOException e) {
@@ -893,34 +890,66 @@ public class Utils {
 			return null;
 		}
 	}
-	
+
 	public static class DummyCallback implements DialogInterface.OnClickListener {
-		public DummyCallback(){}
-		
+		public DummyCallback() {}
+
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
 		}
-		
+
 	}
-	
+
 	public static int sign(double d) {
 		if (d == 0d)return 0;
 		if (d > 0d)return 1;
 		return -1;
 	}
+
+	public static Method getSuperMethod(Class clazz, String name, Class... params) {
+		return getSuperMethod(clazz, null, name, params);
+	}
+
+	/** used for invokeSuper */
+	public static Method getSuperMethod(Class clazz, Class returnType, String name, Class... params) {
+		Method ret=null;
+		Method[] ms;
+		clazz = clazz.getSuperclass();
+		do{
+			ms = clazz.getDeclaredMethods();
+			a:for (Method m:ms) {
+				if (!m.getName().equals(name))continue;
+				if (Modifier.isPrivate(m.getModifiers()))continue;
+				//Private not overridden
+				if (returnType != null && !returnType.equals(m.getReturnType()))continue;
+				Class[]mp=m.getParameterTypes();
+				if (mp.length != params.length)continue;
+				for (int i=0;i < mp.length;i++) {
+					if (!mp[i].equals(params[i]))continue a;
+				}
+				ret = m;
+				return ret;
+			}
+		}while((clazz = clazz.getSuperclass()) != null && !Object.class.equals(clazz));
+		return ret;
+	}
+
+	public static boolean isTim(Context ctx){
+		return ctx.getPackageName().equals(PACKAGE_NAME_TIM);
+	}
+	
 	
     /**
      * 根据手机的分辨率从 dip 的单位 转成为 px(像素)
      */
     public static int dip2px(Context context, float dpValue) {
-      
 		final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
 
     public static int dip2sp(Context context, float dpValue) {
         final float scale = context.getResources().getDisplayMetrics().density /
-                context.getResources().getDisplayMetrics().scaledDensity;
+			context.getResources().getDisplayMetrics().scaledDensity;
         return (int) (dpValue * scale + 0.5f);
     }
 

@@ -41,6 +41,9 @@ import static nil.nadph.qnotified.util.Utils.*;
 import nil.nadph.qnotified.util.*;
 import java.io.*;
 import java.lang.reflect.*;
+import android.app.*;
+import android.content.*;
+import java.util.*;
 
 /*TitleKit:Lcom/tencent/mobileqq/widget/navbar/NavBarCommon*/
 
@@ -54,6 +57,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
     public HashSet addedListView = new HashSet();
     private boolean __state_mini_app_hidden = false;
 
+	public static final int R_ID_PTT_FORWARD=0x00EE77CB;
 
     XC_LoadPackage.LoadPackageParam lpparam;
 
@@ -75,7 +79,6 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
                         byte[] b = new byte[64];
                         int len = fin.read(b, 0, b.length);
                         fin.close();
-                        Activity a;
                         String procName = new String(b, 0, len).trim();
                         //XposedBridge.log(procName);
                         if (procName.endsWith(":peak")) return;
@@ -180,6 +183,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
         if (Utils.DEBUG) {
             if ("true".equals(System.getProperty(QN_FULL_TAG))) {
                 log("Err:QNotified reloaded??");
+				//return;
                 System.exit(-1);
                 //QNotified updated(in HookLoader mode),kill QQ to make user restart it.
             }
@@ -230,7 +234,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
                 cl_MessageInfo = c.getDeclaredField("mMessageInfo").getType();
             }
             /* @author qiwu */
-            final int at_all_type = (Utils.getQQVersionName(getApplication()).compareTo("7.8.0") >= 0) ? 13 : 12;
+            final int at_all_type = (Utils.getHostInfo(getApplication()).versionName.compareTo("7.8.0") >= 0) ? 13 : 12;
             findAndHookMethod(cl_MessageInfo, "a", load("com/tencent/mobileqq/app/QQAppInterface"), boolean.class, String.class, new XC_MethodHook(60) {
 					@Override
 					protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -391,7 +395,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
             ConfigManager cfg = ConfigManager.getDefault();
             if (cfg.getBooleanOrFalse(qn_hide_msg_list_miniapp)) {
                 int lastVersion = cfg.getIntOrDefault("qn_hide_msg_list_miniapp_version_code", 0);
-                if (getQQVersionCode(getApplication()) == lastVersion) {
+                if (getHostInfo(getApplication()).versionCode == lastVersion) {
                     String methodName = cfg.getString("qn_hide_msg_list_miniapp_method_name");
                     findAndHookMethod(load("com/tencent/mobileqq/activity/Conversation"), methodName, XC_MethodReplacement.returnConstant(null));
                 } else {
@@ -454,7 +458,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
 									throw new NullPointerException("Failed to get Conversation.?() to hide MiniApp!");
 								ConfigManager cfg = ConfigManager.getDefault();
 								cfg.putString("qn_hide_msg_list_miniapp_method_name", methodName);
-								cfg.getAllConfig().put("qn_hide_msg_list_miniapp_version_code", getQQVersionCode(getApplication()));
+								cfg.getAllConfig().put("qn_hide_msg_list_miniapp_version_code", getHostInfo(getApplication()).versionCode);
 								cfg.save();
 								param.setThrowable(new UnsupportedOperationException("MiniAppEntry disabled"));
 							}
@@ -471,6 +475,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
 				protected void afterHookedMethod(final MethodHookParam param) throws Throwable {
 					try {
 						View itemRef = (View) iget_object(param.thisObject, "a", load("com/tencent/mobileqq/widget/FormSimpleItem"));
+						if (itemRef == null)itemRef = (View) iget_object(param.thisObject, "a", load("com/tencent/mobileqq/widget/FormCommonSingleLineItem"));
 						View item = (View) new_instance(itemRef.getClass(), param.thisObject, Context.class);
 						invoke_virtual(item, "setLeftText", "QNotified", CharSequence.class);
 						invoke_virtual(item, "setRightText", Utils.QN_VERSION_NAME, CharSequence.class);
@@ -484,7 +489,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
 							});
 					} catch (Throwable e) {
 						log(e);
-						throw e;
+				 		throw e;
 					}
 				}
 			});
@@ -532,7 +537,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
 								TextView textView = new TextView(context);
 								textView.setId(R_ID_BB_TEXTVIEW);
 								textView.setGravity(Gravity.CENTER);
-								textView.setTextColor(Color.BLUE);
+								textView.setTextColor(Color.RED);
 								textView.setText("长按复制");
 								linearLayout.addView(textView, lp);
 								RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
@@ -691,7 +696,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
 		try {
             ConfigManager cfg = ConfigManager.getDefault();
 			int lastVersion = cfg.getIntOrDefault(cache_dialog_util_code, 0);
-			if ((getQQVersionCode(getApplication()) != lastVersion || cfg.getString(cache_dialog_util_class) == null) && Initiator.load("com/tencent/mobileqq/utils/DialogUtil") == null) {
+			if ((getHostInfo(getApplication()).versionCode != lastVersion || cfg.getString(cache_dialog_util_class) == null) && Initiator.load("com/tencent/mobileqq/utils/DialogUtil") == null) {
 				new Thread(new Runnable(){
 						@Override
 						public void run() {
@@ -703,7 +708,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
 							try {
 								ConfigManager cfg=ConfigManager.getDefault();
 								cfg.putString(cache_dialog_util_class, clz);
-								cfg.getAllConfig().put(cache_dialog_util_code, getQQVersionCode(getApplication()));
+								cfg.getAllConfig().put(cache_dialog_util_code, getHostInfo(getApplication()).versionCode);
 								cfg.save();
 							} catch (IOException e) {
 								log(e);
@@ -714,7 +719,125 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
         } catch (Exception e) {
             log(e);
         }
+		try {
+			Class cl_PttItemBuilder=load("com/tencent/mobileqq/activity/aio/item/PttItemBuilder");
+			if (cl_PttItemBuilder == null) {
+				Class cref=load("com/tencent/mobileqq/activity/aio/item/PttItemBuilder$2");
+				cl_PttItemBuilder = cref.getDeclaredField("this$0").getType();
+			}
+			for (Method m:cl_PttItemBuilder.getDeclaredMethods()) {
+				if (!m.getReturnType().isArray())continue;
+				Class[] ps=m.getParameterTypes();
+				if (ps.length == 1 && ps[0].equals(View.class))
+					XposedBridge.hookMethod(m, new XC_MethodHook(60){
+							@Override
+							protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+								Object arr= param.getResult();
+								Object QQCustomMenuItem=Array.get(arr, 0).getClass().newInstance();
+								iput_object(QQCustomMenuItem, "a", int.class, R_ID_PTT_FORWARD);
+								iput_object(QQCustomMenuItem, "a", String.class, "测试");
+								Object ret=Array.newInstance(QQCustomMenuItem.getClass(), Array.getLength(arr) + 1);
+								Array.set(ret, 0, Array.get(arr, 0));
+								System.arraycopy(arr, 1, ret, 2, Array.getLength(arr) - 1);
+								Array.set(ret, 1, QQCustomMenuItem);
+								param.setResult(ret);
+							}
+						});
+			}
+			findAndHookMethod(cl_PttItemBuilder, "a", int.class, Context.class, load("com/tencent/mobileqq/data/ChatMessage"), new XC_MethodHook(60){
+					@Override
+					protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+						int id=(int)param.args[0];
+						Activity context=(Activity)param.args[1];
+						Object chatMessage=param.args[2];
+						if (id == R_ID_PTT_FORWARD) {
+							param.setResult(null);
+							String url=(String)invoke_virtual(chatMessage, "getLocalFilePath");
+							File file=new File(url);
+							if (!file.exists()) {
+								Utils.showToast(context, TOAST_TYPE_ERROR, "未找到语音文件", Toast.LENGTH_SHORT);
+								return;
+							}
+							Intent intent=new Intent(context, load("com/tencent/mobileqq/activity/ForwardRecentActivity"));
+							intent.putExtra("selection_mode", 0);
+							intent.putExtra("direct_send_if_dataline_forward", false);
+							intent.putExtra("forward_text", "[语音]");
+							intent.putExtra("ptt_forward_path", file.getPath());
+							intent.putExtra("forward_type", -1);
+							intent.putExtra("caller_name", "ChatActivity");
+							context.startActivity(intent);
+						}
+					}
+				});
+		} catch (Exception e) {
+			log(e);
+		}
+		try {
+			Class clz_ForwardBaseOption=load("com/tencent/mobileqq/forward/ForwardBaseOption");
+			if (clz_ForwardBaseOption == null) {
+				Class clz_DirectForwardActivity=load("com/tencent/mobileqq/activity/DirectForwardActivity");
+				for (Field f:clz_DirectForwardActivity.getDeclaredFields()) {
+					if (Modifier.isStatic(f.getModifiers()))continue;
+					Class clz=f.getType();
+					if (Modifier.isAbstract(clz.getModifiers()) && !clz.getName().contains("android")) {
+						clz_ForwardBaseOption = clz;
+						break;
+					}
+				}
+			}
+			Method buildConfirmDialog=null;
+			for (Method m:clz_ForwardBaseOption.getDeclaredMethods()) {
+				if (!m.getReturnType().equals(void.class))continue;
+				if (!Modifier.isFinal(m.getModifiers()))continue;
+				if (m.getParameterTypes().length != 0)continue;
+				buildConfirmDialog = m;
+				break;
+			}
+			XposedBridge.hookMethod(buildConfirmDialog, new XC_MethodHook(51){
+					@Override
+					protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+						Bundle data=(Bundle) iget_object(param.thisObject, "a", Bundle.class);
+						if (!data.containsKey("ptt_forward_path"))return;
+						param.setResult(null);
+						String path=data.getString("ptt_forward_path");
+						final Activity ctx=(Activity) iget_object(param.thisObject, "a", Activity.class);
+						if (path == null || !new File(path).exists()) {
+							Utils.showToast(ctx, TOAST_TYPE_ERROR, "InternalError: Invalid ptt file!", Toast.LENGTH_SHORT);
+							return;
+						}
+						if (data.containsKey("forward_multi_target")) {
+							ArrayList targets=data.getParcelableArrayList("forward_multi_target");
+
+						}else{
+							
+						}
+						String ret="" +/*ctx.getIntent().getExtras();//*/iget_object(param.thisObject, "a", Bundle.class);
+						Dialog dialog=Utils.createDialog(ctx);
+						invoke_virtual(dialog, "setPositiveButton", "确认", new DialogInterface.OnClickListener(){
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									try {
+										Utils.showToastShort(ctx, "Test");
+									} catch (Throwable e) {}
+								}
+							}, String.class, DialogInterface.OnClickListener.class);
+						invoke_virtual(dialog, "setNegativeButton", "取消", new Utils.DummyCallback(), String.class, DialogInterface.OnClickListener.class);
+						dialog.setCancelable(true);
+						invoke_virtual(dialog, "setMessage", ret, CharSequence.class);
+						invoke_virtual(dialog, "setTitle", "" + ctx.getClass().getSimpleName(), String.class);
+						dialog.show();
+					}
+				});
+		} catch (Exception e) {
+			log(e);
+		}
+
+
     }
+
+
+//Bundle[{selection_mode=0, key_forward_ability_type=0, fling_action_key=2, direct_send_if_dataline_forward=false, forward_report_confirm_action_name=0X8005A13, preAct=ChatActivity, leftViewText=返回, fling_code_key=90484130, uinname=BUG软件群, uintype=1, forward_text=[语音], forward_type=-1, uin=418379796, forward_report_confirm_reverse2=5, forward_report_confirm=true, preAct_time=1569052078381, troop_uin=418379796, caller_name=ChatActivity, ptt_forward_path=/storage/emulated/0/Tencent/MobileQQ/1041703712/ptt/c2c_20190921142436094.slk, emoInputType=2, chooseFriendFrom=1, needShareCallBack=false}]
+//Bundle[{selection_mode=0, key_forward_ability_type=0, fling_action_key=2, direct_send_if_dataline_forward=false, forward_report_confirm_action_name=0X8005A13, preAct=ChatActivity, leftViewText=返回, from_dataline_aio=false, fling_code_key=90484130, uinname=BUG软件群, uintype=1, forward_text=[语音], forward_type=-1, uin=418379796, forward_report_confirm_reverse2=5, forward_report_confirm=true, preAct_time=1569052078381, troop_uin=418379796, caller_name=ChatActivity, from_outside_share=false, ptt_forward_path=/storage/emulated/0/Tencent/MobileQQ/1041703712/ptt/c2c_20190921142436094.slk, emoInputType=2, forward_multi_target=[[uin:418379796, name:BUG软件群, type:0, groupUin:418379796, uinType:1, phone:]], chooseFriendFrom=1, needShareCallBack=false}]
 
     public XC_MethodHook invokeRecord = new XC_MethodHook(200) {
         @Override
@@ -853,14 +976,14 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
                 if (!param.thisObject.getClass().getName().contains("ContactsFPSPinnedHeaderExpandableListView"))
                     return;
                 LinearLayout layout_entrance;
-                android.widget.FrameLayout frameView;
+                //android.widget.FrameLayout frameView;
                 View lv = (View) param.thisObject;
                 //frameView=Utils.getObject(,View.class,"b");
                 final Activity splashActivity = (Activity) Utils.getContext(lv);
                 QThemeKit.initTheme(splashActivity);
                 //lv=(ContactsFPSPinnedHeaderExpandableListView) iget_object(param.thisObject,"a",load("com/tencent/mobileqq/activity/contacts/view/ContactsFPSPinnedHeaderExpandableListView"));
                 //log("Fuckee:"+lv.getClass());
-                TextView unusualContacts;
+                //TextView unusualContacts;
 				/*if(frameView.getChildAt(0) instanceof LinearLayout){
 				 if(frameView.getVisibility()==View.GONE){
 				 /*兼容QQ净化->隐藏不常用联系人,上面的1200也是一样*
@@ -987,6 +1110,5 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
         }
 
     };
-
 
 }
