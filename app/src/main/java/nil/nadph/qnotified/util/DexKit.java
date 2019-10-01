@@ -9,6 +9,50 @@ import java.io.*;
 
 public class DexKit {
 
+	public static String findChatActivityFacade() {
+		ClassLoader loader=Initiator.getClassLoader();
+		Class clret=Initiator.load("com/tencent/mobileqq/activity/ChatActivityFacade");
+		if (clret != null)return clret.getName();
+		byte[]buf=new byte[4096];
+		byte[]content;
+		int i=1;
+		String name;
+		try {
+			while (true) {
+				if (i == 1)name = "classes.dex";
+				else name = "classes" + i + ".dex";
+				InputStream in=loader.getResourceAsStream(name);
+				if (in == null)return null;
+				ByteArrayOutputStream baos=new ByteArrayOutputStream();
+				int ii;
+				while((ii=in.read(buf))!=-1){
+					baos.write(buf,0,ii);
+				}
+				in.close();
+				content=baos.toByteArray();
+				/*
+				 if(content.length<1000000){
+				 FileOutputStream fout=new FileOutputStream("/tmp/dump");
+				 fout.write(content);
+				 fout.flush();
+				 fout.close();
+				 }
+				 Utils.log(i+":"+content.length);*/
+				int ret=a(content, new byte[]{0x20, 0x72 ,0x65, 0x53, 0x65, 0x6E ,0x64, 0x45, 0x6D, 0x6F});
+				if (ret != -1) {
+					name = a(content, ret);
+					break;
+				}
+				i++;
+			}
+			if (!name.startsWith("L"))return null;
+			return name.substring(1, name.length() - 1);
+		} catch (Exception e) {
+			Utils.log(e);
+			return null;
+		}
+	}
+	
 	public static String findDialogUtil() {
 		ClassLoader loader=Initiator.getClassLoader();
 		Class clret=Initiator.load("com/tencent/mobileqq/utils/DialogUtil");

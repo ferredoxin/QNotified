@@ -28,10 +28,10 @@ public class FaceImpl implements InvocationHandler {
     private HashMap<String, Bitmap> cachedUserFace;
     private HashMap<String, Bitmap> cachedTroopFace;
     private HashMap<String, WeakReference<ImageView>> registeredView;
-    private Object faceMgr;
+    //private Object faceMgr;
     private Object qqAppInterface;
     private Object mFaceDecoder;
-    static private FaceImpl self;
+    static private WeakReference<FaceImpl> self;
     private static Class class_FaceDecoder;
 
     private FaceImpl() throws Throwable {
@@ -54,8 +54,13 @@ public class FaceImpl implements InvocationHandler {
     }
 
     public static FaceImpl getInstance() throws Throwable {
-        if (self == null) self = new FaceImpl();
-        return self;
+		FaceImpl ret = null;
+		if (self != null)ret = self.get();
+        if (ret == null) {
+			ret = new FaceImpl();
+			self = new WeakReference(ret);
+		}
+        return ret;
     }
 
     private static Class clz_DecodeTaskCompletionListener;

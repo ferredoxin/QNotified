@@ -19,7 +19,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import nil.nadph.qnotified.pk.FriendChunk;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.ui.DebugDrawable;
-import nil.nadph.qnotified.util.ClazzExplorer;
+//import nil.nadph.qnotified.util.ClazzExplorer;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.QThemeKit;
 import nil.nadph.qnotified.util.Utils;
@@ -51,7 +51,6 @@ import java.util.*;
 public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXposedHookLoadPackage {
 
     public static final int VIEW_ID_DELETED_FRIEND = 0x00EE77AA;
-
 
     public static final String QN_FULL_TAG = "qn_full_tag";
     public HashSet addedListView = new HashSet();
@@ -183,8 +182,8 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
         if (Utils.DEBUG) {
             if ("true".equals(System.getProperty(QN_FULL_TAG))) {
                 log("Err:QNotified reloaded??");
-				//return;
-                System.exit(-1);
+				return;
+                //System.exit(-1);
                 //QNotified updated(in HookLoader mode),kill QQ to make user restart it.
             }
             System.setProperty(QN_FULL_TAG, "true");
@@ -556,10 +555,11 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
 											ClipboardManager clipboardManager = (ClipboardManager) view.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
 											if (load("com.tencent.mobileqq.data.MessageForStructing").isAssignableFrom(msgObj.getClass())) {
 												clipboardManager.setText((String) invoke_virtual(iget_object(msgObj, "structingMsg"), "getXml", new Object[0]));
+												showToast(view.getContext(), TOAST_TYPE_INFO, "复制成功", Toast.LENGTH_SHORT);
 											} else if (load("com.tencent.mobileqq.data.MessageForArkApp").isAssignableFrom(msgObj.getClass())) {
 												clipboardManager.setText((String) invoke_virtual(iget_object(msgObj, "ark_app_message"), "toAppXml", new Object[0]));
+												showToast(view.getContext(), TOAST_TYPE_INFO, "复制成功", Toast.LENGTH_SHORT);
 											}
-											showToast(view.getContext(), TOAST_TYPE_INFO, "复制成功", Toast.LENGTH_SHORT);
 										} catch (Throwable th) {
 										}
 										return true;
@@ -716,6 +716,29 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
 						}
 					}).start();
 			}
+			
+			lastVersion = cfg.getIntOrDefault(cache_facade_code, 0);
+			if ((getHostInfo(getApplication()).versionCode != lastVersion || cfg.getString(cache_facade_class) == null) && Initiator.load("com/tencent/mobileqq/activity/ChatActivityFacade") == null) {
+				new Thread(new Runnable(){
+						@Override
+						public void run() {
+							try {
+								Thread.sleep(6000);
+							} catch (InterruptedException e) {}
+							String clz=DexKit.findChatActivityFacade();
+							if (clz == null)return;
+							try {
+								ConfigManager cfg=ConfigManager.getDefault();
+								cfg.putString(cache_facade_class, clz);
+								cfg.getAllConfig().put(cache_facade_code, getHostInfo(getApplication()).versionCode);
+								cfg.save();
+							} catch (IOException e) {
+								log(e);
+							}
+						}
+					}).start();
+			}
+			
         } catch (Exception e) {
             log(e);
         }
@@ -761,10 +784,13 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
 							Intent intent=new Intent(context, load("com/tencent/mobileqq/activity/ForwardRecentActivity"));
 							intent.putExtra("selection_mode", 0);
 							intent.putExtra("direct_send_if_dataline_forward", false);
-							intent.putExtra("forward_text", "[语音]");
+							intent.putExtra("forward_text", "null");
 							intent.putExtra("ptt_forward_path", file.getPath());
 							intent.putExtra("forward_type", -1);
 							intent.putExtra("caller_name", "ChatActivity");
+							intent.putExtra("k_smartdevice", false);
+							intent.putExtra("k_dataline", false);
+							intent.putExtra("k_forward_title", "语音转发");
 							context.startActivity(intent);
 						}
 					}
@@ -797,19 +823,29 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
 					@Override
 					protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
 						Bundle data=(Bundle) iget_object(param.thisObject, "a", Bundle.class);
-						if (!data.containsKey("ptt_forward_path"))return;
+						//if (!data.containsKey("ptt_forward_path"))return;
 						param.setResult(null);
 						String path=data.getString("ptt_forward_path");
 						final Activity ctx=(Activity) iget_object(param.thisObject, "a", Activity.class);
 						if (path == null || !new File(path).exists()) {
 							Utils.showToast(ctx, TOAST_TYPE_ERROR, "InternalError: Invalid ptt file!", Toast.LENGTH_SHORT);
-							return;
+							//return;
 						}
+						boolean multi;
+						String sUin;
+						int sUinType;
+						String sNick;
+						
+						//String 
 						if (data.containsKey("forward_multi_target")) {
 							ArrayList targets=data.getParcelableArrayList("forward_multi_target");
-
-						}else{
+							multi = targets.size()>1;
 							
+						}else{
+							multi=false;
+							sUin=data.getString("uin");
+							sUinType=data.getInt("uintype",-1);
+							sNick=data.getString("uinname",sUin);
 						}
 						String ret="" +/*ctx.getIntent().getExtras();//*/iget_object(param.thisObject, "a", Bundle.class);
 						Dialog dialog=Utils.createDialog(ctx);
@@ -824,7 +860,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
 						invoke_virtual(dialog, "setNegativeButton", "取消", new Utils.DummyCallback(), String.class, DialogInterface.OnClickListener.class);
 						dialog.setCancelable(true);
 						invoke_virtual(dialog, "setMessage", ret, CharSequence.class);
-						invoke_virtual(dialog, "setTitle", "" + ctx.getClass().getSimpleName(), String.class);
+						invoke_virtual(dialog, "setTitle", "" + param.thisObject.getClass().getSimpleName(), String.class);
 						dialog.show();
 					}
 				});

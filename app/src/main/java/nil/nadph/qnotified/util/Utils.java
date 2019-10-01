@@ -46,8 +46,9 @@ public class Utils {
 	cache_dialog_util_code = "cache_dialog_util_code",
 	qn_hide_gift_animation = "qn_hide_gift_animation",
 	qn_sign_in_as_text = "qn_sign_in_as_text",
-	qn_mute_talk_back = "qn_mute_talk_back";
-
+	qn_mute_talk_back = "qn_mute_talk_back",
+	cache_facade_class = "cache_facade_class",
+	cache_facade_code = "cache_facade_code";
 
     public static boolean DEBUG = true;
     public static boolean V_TOAST = false;
@@ -341,6 +342,18 @@ public class Utils {
     public static Object getMobileQQService() {
         return iget_object(getQQAppInterface(), "a", load("com/tencent/mobileqq/service/MobileQQService"));
     }
+	
+	public static Object createSessionInfo(String uin,int uinType){
+		Class clz=load("com/tencent/mobileqq/activity/aio/SessionInfo");
+		if(clz==null)throw new NoClassDefFoundError("SessionInfo");
+		try {
+			Object obj=new_instance(clz);
+			iput_object(obj,"a",String.class,uin);
+			iput_object(obj,"a",int.class,uinType);
+			return obj;
+		} catch (InstantiationException e) {} catch (InvocationTargetException e) {} catch (SecurityException e) {} catch (IllegalAccessException e) {} catch (IllegalArgumentException e) {} catch (NoSuchMethodException e) {}
+		return null;
+	}
 
     public static String get_RGB(int color) {
         int r = 0xff & (color >> 16);
@@ -936,6 +949,20 @@ public class Utils {
 
 	public static boolean isTim(Context ctx){
 		return ctx.getPackageName().equals(PACKAGE_NAME_TIM);
+	}
+	
+	public static ContactDescriptor parseResultRec(Object a){
+		ContactDescriptor cd=new ContactDescriptor();
+		cd.uin=(String) iget_object(a,"a",String.class);
+		cd.nick=(String) iget_object(a,"b",String.class);
+		cd.type=(int) iget_object(a,"a",int.class);
+		return cd;
+	}
+	
+	public static class ContactDescriptor{
+		public String uin;
+		public int type;
+		@Nullable public String nick;
 	}
 	
 	
