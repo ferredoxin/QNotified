@@ -37,8 +37,6 @@ import static nil.nadph.qnotified.ActProxyMgr.*;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
-//import nil.nadph.qnotified.util.ClazzExplorer;
-
 /*TitleKit:Lcom/tencent/mobileqq/widget/navbar/NavBarCommon*/
 
 
@@ -58,8 +56,6 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
 
     TextView exfriend;
     public static WeakReference<TextView> redDotRef;
-
-    /*XC_MethodHook.Unhook[] unhook=new XC_MethodHook.Unhook[3];*/
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam _lpparam) throws Throwable {
@@ -279,31 +275,6 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
             }
         });
 
-		/*findAndHookMethod("com.tencent.mobileqq.activity.contact.newfriend.NewFriendActivity",classLoader,"doOnCreate",android.os.Bundle.class,new XC_MethodHook(200){
-		 @Override
-		 protected void afterHookedMethod(MethodHookParam param){
-		 log("NewFriendActivity->doOnCreate");
-		 ClazzExplorer ce=ClazzExplorer.get();
-		 ce.rootEle=ce.currEle=param.thisObject;
-		 ce.track.removeAllElements();
-		 ce.init((Activity)param.thisObject);
-		 }
-		 });
-		 XC_MethodHook.Unhook unh=findAndHookMethod(Classes.Contacts,"o",new XC_MethodHook(200) {
-		 @Override
-		 protected void afterHookedMethod(MethodHookParam param) throws Throwable{
-		 RelativeLayout newFriendEntry = getObject(param.thisObject,View.class,"a");
-		 //View createTroopEntry = getObject(param.thisObject,View.class,"b");
-		 //View searchBox = ((LinearLayout) (newFriendEntry.getParent())).getChildAt(0);
-		 // 搜索框
-		 View tag=newFriendEntry.getChildAt(0);
-		 Utils.ref_setText(tag,"故旧-新欢");
-		 //log("Setting secondary element...");
-
-		 }
-		 });*/
-
-
 		/*
 		 findAndHookMethod(load("friendlist/DelFriendReq"),"readFrom",load("com/qq/taf/jce/JceInputStream"),invokeRecord);
 		 *
@@ -330,17 +301,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
 		 findAndHookMethod(load("friendlist/GetFriendListReq"),"writeTo",load("com/qq/taf/jce/JceOutputStream"),invokeRecord);
 
 		 findAndHookMethod(load("com/tencent/mobileqq/service/friendlist/FriendListService"),"n",load("com/tencent/qphone/base/remote/ToServiceMsg"),load("com/qq/jce/wup/UniPacket"),invokeRecord);
-
-		 // XposedBridge.hookAllConstructors
-		 XposedHelpers.findAndHookConstructor(load("com/tencent/mobileqq/activity/fling/FlingGestureHandler"),Activity.class,invokeRecord);
-		 findAndHookMethod(load("com/tencent/mobileqq/activity/fling/FlingGestureHandler"),"a",invokeRecord);
-		 findAndHookMethod(load("com/tencent/mobileqq/activity/fling/FlingHandler"),"onStart",invokeRecord);
-		 */
-
-        /*findAndHookMethod(load("friendlist/GetFriendListResp"),"readFrom",load("com/qq/taf/jce/JceInputStream"),invokeRecord);
-         */
-
-
+		*/
         findAndHookMethod(load("friendlist/GetFriendListResp"), "readFrom", load("com/qq/taf/jce/JceInputStream"), new XC_MethodHook(200) {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -685,9 +646,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
 
 		 }
 		 });//*/
-        //XposedBridge.hookAllConstructors(load("agve"), invokeRecord);
-        //XposedHelpers.findAndHookMethod(load("awpy"),"a", load("com.tencent.mobileqq.app.QQAppInterface"), boolean.class, String.class,invokeRecord);
-
+		 
         try {
             ConfigManager cfg = ConfigManager.getDefault();
             int lastVersion = cfg.getIntOrDefault(cache_dialog_util_code, 0);
@@ -832,19 +791,40 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
                     String sUin;
                     int sUinType;
                     String sNick;
-
+					ArrayList mPersons=null;
+					ArrayList mTroops=null;
+					boolean unsupport=false;
                     //String
                     if (data.containsKey("forward_multi_target")) {
                         ArrayList targets = data.getParcelableArrayList("forward_multi_target");
-                        multi = targets.size() > 1;
-
+                        if(targets.size() > 1){
+							multi=true;
+							for(Object rr:targets){
+								Utils.ContactDescriptor c=Utils.parseResultRec(rr);
+								if(c.uinType==0){
+									if(mPersons==null)mPersons=new ArrayList();
+									mPersons.add(c.uin);
+								}else if(c.uinType==1){
+									if(mTroops==null)mTroops=new ArrayList();
+									mTroops.add(c.uin);
+								}
+							}
+						}else{
+							multi=false;
+							Utils.ContactDescriptor c=Utils.parseResultRec(targets.get(0));
+							sUin=c.uin;
+							sUinType=c.uinType;
+							sNick=c.nick==null?sUin:c.nick;
+						}
                     } else {
                         multi = false;
                         sUin = data.getString("uin");
                         sUinType = data.getInt("uintype", -1);
                         sNick = data.getString("uinname", sUin);
                     }
-                    String ret = "" +/*ctx.getIntent().getExtras();//*/iget_object(param.thisObject, "a", Bundle.class);
+					LinearLayout main=new LinearLayout(ctx);
+					main.setOrientation(LinearLa
+                    //String ret = "" +/*ctx.getIntent().getExtras();//*/iget_object(param.thisObject, "a", Bundle.class);
                     Dialog dialog = Utils.createDialog(ctx);
                     invoke_virtual(dialog, "setPositiveButton", "确认", new DialogInterface.OnClickListener() {
                         @Override
@@ -857,7 +837,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
                     }, String.class, DialogInterface.OnClickListener.class);
                     invoke_virtual(dialog, "setNegativeButton", "取消", new Utils.DummyCallback(), String.class, DialogInterface.OnClickListener.class);
                     dialog.setCancelable(true);
-                    invoke_virtual(dialog, "setMessage", ret, CharSequence.class);
+                    invoke_virtual(dialog, "setView", ret, View.class);
                     invoke_virtual(dialog, "setTitle", "" + param.thisObject.getClass().getSimpleName(), String.class);
                     dialog.show();
                 }

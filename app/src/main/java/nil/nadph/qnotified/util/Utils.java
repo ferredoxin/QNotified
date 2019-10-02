@@ -955,13 +955,13 @@ public class Utils {
 		ContactDescriptor cd=new ContactDescriptor();
 		cd.uin=(String) iget_object(a,"a",String.class);
 		cd.nick=(String) iget_object(a,"b",String.class);
-		cd.type=(int) iget_object(a,"a",int.class);
+		cd.uinType=(int) iget_object(a,"b",int.class);
 		return cd;
 	}
 	
 	public static class ContactDescriptor{
 		public String uin;
-		public int type;
+		public int uinType;
 		@Nullable public String nick;
 	}
 	
