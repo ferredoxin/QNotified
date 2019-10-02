@@ -412,8 +412,8 @@ public class QThemeKit {
     }
 
     public static ColorStateList cloneColor(ColorStateList color) {
-        int[] mColors = (int[]) iget_object(color, "mColors");
-        int[][] mStateSpecs = (int[][]) iget_object(color, "mStateSpecs");
+        int[] mColors = (int[]) iget_object_or_null(color, "mColors");
+        int[][] mStateSpecs = (int[][]) iget_object_or_null(color, "mStateSpecs");
         return new ColorStateList(mStateSpecs, mColors);
     }
 

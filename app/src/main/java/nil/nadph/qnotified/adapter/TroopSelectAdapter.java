@@ -453,8 +453,8 @@ public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, 
 
     public static class TroopInfo implements Comparable {
         public TroopInfo(Object obj) {
-            _troopname = troopname = (String) iget_object(obj, "troopname");
-            _troopuin = troopuin = (String) iget_object(obj, "troopuin");
+            _troopname = troopname = (String) iget_object_or_null(obj, "troopname");
+            _troopuin = troopuin = (String) iget_object_or_null(obj, "troopuin");
             hit = 0;
         }
 

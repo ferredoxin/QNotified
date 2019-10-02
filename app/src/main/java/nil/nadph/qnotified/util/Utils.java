@@ -1,54 +1,50 @@
 package nil.nadph.qnotified.util;
 
 import android.app.Application;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.pm.PackageInfo;
 import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 import de.robv.android.xposed.XposedBridge;
+import nil.nadph.qnotified.record.ConfigManager;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static nil.nadph.qnotified.util.Initiator.load;
-import android.app.*;
-import nil.nadph.qnotified.record.*;
-import java.lang.reflect.*;
-import android.content.*;
-import android.content.pm.*;
 
 @SuppressWarnings("unchecked")
 public class Utils {
 
-	private Utils() {
-		throw new AssertionError("No instance for you!");
-	}
+    private Utils() {
+        throw new AssertionError("No instance for you!");
+    }
 
     public static final String qn_hide_msg_list_miniapp = "qn_hide_msg_list_miniapp",
-	qn_hide_ex_entry_group = "qn_hide_ex_entry_group",
-	qn_del_op_silence = "qn_del_op_silence",
-	qn_enable_transparent = "qn_enable_transparent",
-	qn_enable_voice_forward = "qn_enable_voice_forward",
-	qn_sticker_as_pic = "qn_sticker_as_pic",
-	qn_send_card_msg = "qn_send_card_msg",
-	qn_muted_at_all = "qn_muted_at_all",
-	qn_muted_red_packet = "qn_muted_red_packet",
-	cache_dialog_util_class = "cache_dialog_util_class",
-	cache_dialog_util_code = "cache_dialog_util_code",
-	qn_hide_gift_animation = "qn_hide_gift_animation",
-	qn_sign_in_as_text = "qn_sign_in_as_text",
-	qn_mute_talk_back = "qn_mute_talk_back",
-	cache_facade_class = "cache_facade_class",
-	cache_facade_code = "cache_facade_code";
+            qn_hide_ex_entry_group = "qn_hide_ex_entry_group",
+            qn_del_op_silence = "qn_del_op_silence",
+            qn_enable_transparent = "qn_enable_transparent",
+            qn_enable_ptt_forward = "qn_enable_ptt_forward",
+            qn_sticker_as_pic = "qn_sticker_as_pic",
+            qn_send_card_msg = "qn_send_card_msg",
+            qn_muted_at_all = "qn_muted_at_all",
+            qn_muted_red_packet = "qn_muted_red_packet",
+            cache_dialog_util_class = "cache_dialog_util_class",
+            cache_dialog_util_code = "cache_dialog_util_code",
+            qn_hide_gift_animation = "qn_hide_gift_animation",
+            qn_sign_in_as_text = "qn_sign_in_as_text",
+            qn_mute_talk_back = "qn_mute_talk_back",
+            cache_facade_class = "cache_facade_class",
+            cache_facade_code = "cache_facade_code";
 
     public static boolean DEBUG = true;
     public static boolean V_TOAST = false;
@@ -96,8 +92,7 @@ public class Utils {
         return null;
     }
 
-	
-	
+
     public static PackageInfo getHostInfo(Context context) {
         try {
             return context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
@@ -340,20 +335,26 @@ public class Utils {
     }
 
     public static Object getMobileQQService() {
-        return iget_object(getQQAppInterface(), "a", load("com/tencent/mobileqq/service/MobileQQService"));
+        return iget_object_or_null(getQQAppInterface(), "a", load("com/tencent/mobileqq/service/MobileQQService"));
     }
-	
-	public static Object createSessionInfo(String uin,int uinType){
-		Class clz=load("com/tencent/mobileqq/activity/aio/SessionInfo");
-		if(clz==null)throw new NoClassDefFoundError("SessionInfo");
-		try {
-			Object obj=new_instance(clz);
-			iput_object(obj,"a",String.class,uin);
-			iput_object(obj,"a",int.class,uinType);
-			return obj;
-		} catch (InstantiationException e) {} catch (InvocationTargetException e) {} catch (SecurityException e) {} catch (IllegalAccessException e) {} catch (IllegalArgumentException e) {} catch (NoSuchMethodException e) {}
-		return null;
-	}
+
+    public static Object createSessionInfo(String uin, int uinType) {
+        Class clz = load("com/tencent/mobileqq/activity/aio/SessionInfo");
+        if (clz == null) throw new NoClassDefFoundError("SessionInfo");
+        try {
+            Object obj = new_instance(clz);
+            iput_object(obj, "a", String.class, uin);
+            iput_object(obj, "a", int.class, uinType);
+            return obj;
+        } catch (InstantiationException e) {
+        } catch (InvocationTargetException e) {
+        } catch (SecurityException e) {
+        } catch (IllegalAccessException e) {
+        } catch (IllegalArgumentException e) {
+        } catch (NoSuchMethodException e) {
+        }
+        return null;
+    }
 
     public static String get_RGB(int color) {
         int r = 0xff & (color >> 16);
@@ -501,18 +502,17 @@ public class Utils {
     }
 
 
-    public static Object iget_object(Object obj, String name) {
-        return iget_object(obj, name, null);
+    public static Object iget_object_or_null(Object obj, String name) {
+        return iget_object_or_null(obj, name, null);
     }
 
-    public static Object iget_object(Object obj, String name, Class type) {
+    public static Object iget_object_or_null(Object obj, String name, Class type) {
         Class clazz = obj.getClass();
         try {
             Field f = findField(clazz, type, name);
             f.setAccessible(true);
             return f.get(obj);
         } catch (Exception e) {
-            log(e);
         }
         return null;
     }
@@ -614,7 +614,7 @@ public class Utils {
             do {
                 for (Field field : clz.getDeclaredFields()) {
                     if ((type == null || field.getType().equals(type)) && field.getName()
-						.equals(name)) {
+                            .equals(name)) {
                         field.setAccessible(true);
                         return field;
                     }
@@ -626,14 +626,14 @@ public class Utils {
     }
 
     public static void log(String str) {
-		Log.i("QNdump", str);
+        Log.i("QNdump", str);
         if (DEBUG) try {
-				XposedBridge.log(str);
-			} catch (NoClassDefFoundError e) {
-				Log.i("Xposed", str);
-				Log.i("EdXposed-Bridge", str);
+            XposedBridge.log(str);
+        } catch (NoClassDefFoundError e) {
+            Log.i("Xposed", str);
+            Log.i("EdXposed-Bridge", str);
 
-			}
+        }
         if (V_TOAST) {
             String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/qn_log.txt";
             File f = new File(path);
@@ -687,7 +687,7 @@ public class Utils {
     public static String en(String str) {
         if (str == null) return "null";
         return "\"" + str.replace("\\", "\\\\").replace("\"", "\\\"")
-			.replace("\n", "\\\n").replace("\r", "\\\r") + "\"";
+                .replace("\n", "\\\n").replace("\r", "\\\r") + "\"";
     }
 
     public static String de(String str) {
@@ -696,7 +696,7 @@ public class Utils {
         if (str.startsWith("\"")) str = str.substring(1);
         if (str.endsWith("\"") && !str.endsWith("\\\"")) str = str.substring(0, str.length() - 1);
         return str.replace("\\\"", "\"").replace("\\\n", "\n")
-			.replace("\\\r", "\r").replace("\\\\", "\\");
+                .replace("\\\r", "\r").replace("\\\\", "\\");
     }
 
     private static Method method_Toast_show;
@@ -856,127 +856,156 @@ public class Utils {
         return obj;
     }
 
-	private static Class clz_DialogUtil;
-	private static Class clz_CustomDialog;
-	public static Dialog createDialog(Context ctx) {
-		if (clz_DialogUtil == null) {
-			clz_DialogUtil = Initiator.load("com/tencent/mobileqq/utils/DialogUtil");
-			String cln=null;
-			if (clz_DialogUtil == null) {
-				try {
-					ConfigManager cfg=ConfigManager.getDefault();
-					cln = cfg.getString(cache_dialog_util_class);
-					int lastVersion = cfg.getIntOrDefault(cache_dialog_util_code, 0);
-					if ((getHostInfo(getApplication()).versionCode != lastVersion || cfg.getString(cache_dialog_util_class) == null) && Initiator.load("com/tencent/mobileqq/utils/DialogUtil") == null) {
-						cln = DexKit.findDialogUtil();
-						cfg.putString(cache_dialog_util_class, cln);
-						cfg.getAllConfig().put(cache_dialog_util_code, getHostInfo(getApplication()).versionCode);
-						cfg.save();
-					}
-				} catch (IOException e) {
-					log(e);
-					return null;
-				}
-				clz_DialogUtil = load(cln);
-			}
-		}
-		if (clz_CustomDialog == null) {
-			clz_CustomDialog = load("com/tencent/mobileqq/utils/QQCustomDialog");
-			if (clz_CustomDialog == null) {
-				Class clz_Lite=load("com/dataline/activities/LiteActivity");
-				Field[] fs=clz_Lite.getDeclaredFields();
-				for (Field f:fs) {
-					if (Modifier.isPrivate(f.getModifiers()) && Dialog.class.equals(f.getType().getSuperclass())) {
-						clz_CustomDialog = f.getType();
-						break;
-					}
-				}
-			}
-		}
-		//log("------------DU:------------"+clz_DialogUtil.getName());
-		//log("------------CD:------------"+clz_CustomDialog.getName());
-		try {
-			Dialog qQCustomDialog = (Dialog) invoke_static(clz_DialogUtil, "a", ctx, 230, Context.class, int.class, clz_CustomDialog);
-			return qQCustomDialog;
-		} catch (Exception e) {
-			log(e);
-			return null;
-		}
-	}
+    private static Class clz_DialogUtil;
+    private static Class clz_CustomDialog;
 
-	public static class DummyCallback implements DialogInterface.OnClickListener {
-		public DummyCallback() {}
+    public static Dialog createDialog(Context ctx) {
+        if (clz_DialogUtil == null) {
+            clz_DialogUtil = Initiator.load("com/tencent/mobileqq/utils/DialogUtil");
+            String cln = null;
+            if (clz_DialogUtil == null) {
+                try {
+                    ConfigManager cfg = ConfigManager.getDefault();
+                    cln = cfg.getString(cache_dialog_util_class);
+                    int lastVersion = cfg.getIntOrDefault(cache_dialog_util_code, 0);
+                    if ((getHostInfo(getApplication()).versionCode != lastVersion || cfg.getString(cache_dialog_util_class) == null) && Initiator.load("com/tencent/mobileqq/utils/DialogUtil") == null) {
+                        cln = DexKit.findDialogUtil();
+                        cfg.putString(cache_dialog_util_class, cln);
+                        cfg.getAllConfig().put(cache_dialog_util_code, getHostInfo(getApplication()).versionCode);
+                        cfg.save();
+                    }
+                } catch (IOException e) {
+                    log(e);
+                    return null;
+                }
+                clz_DialogUtil = load(cln);
+            }
+        }
+        if (clz_CustomDialog == null) {
+            clz_CustomDialog = load("com/tencent/mobileqq/utils/QQCustomDialog");
+            if (clz_CustomDialog == null) {
+                Class clz_Lite = load("com/dataline/activities/LiteActivity");
+                Field[] fs = clz_Lite.getDeclaredFields();
+                for (Field f : fs) {
+                    if (Modifier.isPrivate(f.getModifiers()) && Dialog.class.equals(f.getType().getSuperclass())) {
+                        clz_CustomDialog = f.getType();
+                        break;
+                    }
+                }
+            }
+        }
+        //log("------------DU:------------"+clz_DialogUtil.getName());
+        //log("------------CD:------------"+clz_CustomDialog.getName());
+        try {
+            Dialog qQCustomDialog = (Dialog) invoke_static(clz_DialogUtil, "a", ctx, 230, Context.class, int.class, clz_CustomDialog);
+            return qQCustomDialog;
+        } catch (Exception e) {
+            log(e);
+            return null;
+        }
+    }
 
-		@Override
-		public void onClick(DialogInterface dialog, int which) {
-		}
+    public static Class loadChatActivityFacade() {
+        Class clz_Facade = Initiator.load("com.tencent.mobileqq.activity.ChatActivityFacade");
+        String cln = null;
+        if (clz_Facade == null) {
+            try {
+                ConfigManager cfg = ConfigManager.getDefault();
+                cln = cfg.getString(cache_facade_class);
+                int lastVersion = cfg.getIntOrDefault(cache_facade_code, 0);
+                if ((getHostInfo(getApplication()).versionCode != lastVersion || cfg.getString(cache_facade_class) == null) && Initiator.load("com.tencent.mobileqq.activity.ChatActivityFacade") == null) {
+                    cln = DexKit.findChatActivityFacade();
+                    cfg.putString(cache_facade_class, cln);
+                    cfg.getAllConfig().put(cache_facade_code, getHostInfo(getApplication()).versionCode);
+                    cfg.save();
+                }
+            } catch (IOException e) {
+                log(e);
+                return null;
+            }
+            clz_Facade = load(cln);
+        }
+        return clz_Facade;
+    }
 
-	}
+    public static class DummyCallback implements DialogInterface.OnClickListener {
+        public DummyCallback() {
+        }
 
-	public static int sign(double d) {
-		if (d == 0d)return 0;
-		if (d > 0d)return 1;
-		return -1;
-	}
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+        }
 
-	public static Method getSuperMethod(Class clazz, String name, Class... params) {
-		return getSuperMethod(clazz, null, name, params);
-	}
+    }
 
-	/** used for invokeSuper */
-	public static Method getSuperMethod(Class clazz, Class returnType, String name, Class... params) {
-		Method ret=null;
-		Method[] ms;
-		clazz = clazz.getSuperclass();
-		do{
-			ms = clazz.getDeclaredMethods();
-			a:for (Method m:ms) {
-				if (!m.getName().equals(name))continue;
-				if (Modifier.isPrivate(m.getModifiers()))continue;
-				//Private not overridden
-				if (returnType != null && !returnType.equals(m.getReturnType()))continue;
-				Class[]mp=m.getParameterTypes();
-				if (mp.length != params.length)continue;
-				for (int i=0;i < mp.length;i++) {
-					if (!mp[i].equals(params[i]))continue a;
-				}
-				ret = m;
-				return ret;
-			}
-		}while((clazz = clazz.getSuperclass()) != null && !Object.class.equals(clazz));
-		return ret;
-	}
+    public static int sign(double d) {
+        if (d == 0d) return 0;
+        if (d > 0d) return 1;
+        return -1;
+    }
 
-	public static boolean isTim(Context ctx){
-		return ctx.getPackageName().equals(PACKAGE_NAME_TIM);
-	}
-	
-	public static ContactDescriptor parseResultRec(Object a){
-		ContactDescriptor cd=new ContactDescriptor();
-		cd.uin=(String) iget_object(a,"a",String.class);
-		cd.nick=(String) iget_object(a,"b",String.class);
-		cd.uinType=(int) iget_object(a,"b",int.class);
-		return cd;
-	}
-	
-	public static class ContactDescriptor{
-		public String uin;
-		public int uinType;
-		@Nullable public String nick;
-	}
-	
-	
+    public static Method getSuperMethod(Class clazz, String name, Class... params) {
+        return getSuperMethod(clazz, null, name, params);
+    }
+
+    /**
+     * used for invokeSuper
+     */
+    public static Method getSuperMethod(Class clazz, Class returnType, String name, Class... params) {
+        Method ret = null;
+        Method[] ms;
+        clazz = clazz.getSuperclass();
+        do {
+            ms = clazz.getDeclaredMethods();
+            a:
+            for (Method m : ms) {
+                if (!m.getName().equals(name)) continue;
+                if (Modifier.isPrivate(m.getModifiers())) continue;
+                //Private not overridden
+                if (returnType != null && !returnType.equals(m.getReturnType())) continue;
+                Class[] mp = m.getParameterTypes();
+                if (mp.length != params.length) continue;
+                for (int i = 0; i < mp.length; i++) {
+                    if (!mp[i].equals(params[i])) continue a;
+                }
+                ret = m;
+                return ret;
+            }
+        } while ((clazz = clazz.getSuperclass()) != null && !Object.class.equals(clazz));
+        return ret;
+    }
+
+    public static boolean isTim(Context ctx) {
+        return ctx.getPackageName().equals(PACKAGE_NAME_TIM);
+    }
+
+    public static ContactDescriptor parseResultRec(Object a) {
+        ContactDescriptor cd = new ContactDescriptor();
+        cd.uin = (String) iget_object_or_null(a, "a", String.class);
+        cd.nick = (String) iget_object_or_null(a, "b", String.class);
+        cd.uinType = (int) iget_object_or_null(a, "b", int.class);
+        return cd;
+    }
+
+    public static class ContactDescriptor {
+        public String uin;
+        public int uinType;
+        @Nullable
+        public String nick;
+    }
+
+
     /**
      * 根据手机的分辨率从 dip 的单位 转成为 px(像素)
      */
     public static int dip2px(Context context, float dpValue) {
-		final float scale = context.getResources().getDisplayMetrics().density;
+        final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
 
     public static int dip2sp(Context context, float dpValue) {
         final float scale = context.getResources().getDisplayMetrics().density /
-			context.getResources().getDisplayMetrics().scaledDensity;
+                context.getResources().getDisplayMetrics().scaledDensity;
         return (int) (dpValue * scale + 0.5f);
     }
 

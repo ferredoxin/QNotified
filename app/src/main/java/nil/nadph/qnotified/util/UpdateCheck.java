@@ -11,8 +11,6 @@ import android.text.style.RelativeSizeSpan;
 import android.text.util.Linkify;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import nil.nadph.qnotified.record.ConfigManager;
@@ -23,10 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.util.Utils.log;
 import static nil.nadph.qnotified.util.Utils.invoke_virtual;
-import static nil.nadph.qnotified.util.Utils.iget_object;
 
 import android.content.*;
 import android.text.style.*;
@@ -234,7 +230,7 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
 			}
 			//list.setText(sb);
 			invoke_virtual(dialog, "setMessage", sb, CharSequence.class);
-			TextView tv=(TextView) iget_object(dialog, "text");
+			TextView tv=(TextView) Utils.iget_object_or_null(dialog, "text");
 			tv.setLinksClickable(true);
 			tv.setEnabled(true);
 			tv.setFocusable(true);
