@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 import de.robv.android.xposed.XposedBridge;
-import nil.nadph.qnotified.record.ConfigManager;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -35,16 +34,13 @@ public class Utils {
             qn_enable_transparent = "qn_enable_transparent",
             qn_enable_ptt_forward = "qn_enable_ptt_forward",
             qn_sticker_as_pic = "qn_sticker_as_pic",
+            qn_flash_as_pic = "qn_flash_as_pic",
             qn_send_card_msg = "qn_send_card_msg",
             qn_muted_at_all = "qn_muted_at_all",
             qn_muted_red_packet = "qn_muted_red_packet",
-            cache_dialog_util_class = "cache_dialog_util_class",
-            cache_dialog_util_code = "cache_dialog_util_code",
             qn_hide_gift_animation = "qn_hide_gift_animation",
             qn_sign_in_as_text = "qn_sign_in_as_text",
-            qn_mute_talk_back = "qn_mute_talk_back",
-            cache_facade_class = "cache_facade_class",
-            cache_facade_code = "cache_facade_code";
+            qn_mute_talk_back = "qn_mute_talk_back";
 
     public static boolean DEBUG = true;
     public static boolean V_TOAST = false;
@@ -92,6 +88,15 @@ public class Utils {
         return null;
     }
 
+    public static boolean isCallingFrom(String classname) {
+        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+        for (StackTraceElement element : stackTraceElements) {
+            if (element.toString().contains(classname)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public static PackageInfo getHostInfo(Context context) {
         try {
@@ -861,25 +866,7 @@ public class Utils {
 
     public static Dialog createDialog(Context ctx) {
         if (clz_DialogUtil == null) {
-            clz_DialogUtil = Initiator.load("com/tencent/mobileqq/utils/DialogUtil");
-            String cln = null;
-            if (clz_DialogUtil == null) {
-                try {
-                    ConfigManager cfg = ConfigManager.getDefault();
-                    cln = cfg.getString(cache_dialog_util_class);
-                    int lastVersion = cfg.getIntOrDefault(cache_dialog_util_code, 0);
-                    if ((getHostInfo(getApplication()).versionCode != lastVersion || cfg.getString(cache_dialog_util_class) == null) && Initiator.load("com/tencent/mobileqq/utils/DialogUtil") == null) {
-                        cln = DexKit.findDialogUtil();
-                        cfg.putString(cache_dialog_util_class, cln);
-                        cfg.getAllConfig().put(cache_dialog_util_code, getHostInfo(getApplication()).versionCode);
-                        cfg.save();
-                    }
-                } catch (IOException e) {
-                    log(e);
-                    return null;
-                }
-                clz_DialogUtil = load(cln);
-            }
+            clz_DialogUtil = DexKit.doFindClass(DexKit.C_DIALOG_UTIL);
         }
         if (clz_CustomDialog == null) {
             clz_CustomDialog = load("com/tencent/mobileqq/utils/QQCustomDialog");
@@ -894,8 +881,6 @@ public class Utils {
                 }
             }
         }
-        //log("------------DU:------------"+clz_DialogUtil.getName());
-        //log("------------CD:------------"+clz_CustomDialog.getName());
         try {
             Dialog qQCustomDialog = (Dialog) invoke_static(clz_DialogUtil, "a", ctx, 230, Context.class, int.class, clz_CustomDialog);
             return qQCustomDialog;
@@ -905,27 +890,19 @@ public class Utils {
         }
     }
 
-    public static Class loadChatActivityFacade() {
-        Class clz_Facade = Initiator.load("com.tencent.mobileqq.activity.ChatActivityFacade");
-        String cln = null;
-        if (clz_Facade == null) {
-            try {
-                ConfigManager cfg = ConfigManager.getDefault();
-                cln = cfg.getString(cache_facade_class);
-                int lastVersion = cfg.getIntOrDefault(cache_facade_code, 0);
-                if ((getHostInfo(getApplication()).versionCode != lastVersion || cfg.getString(cache_facade_class) == null) && Initiator.load("com.tencent.mobileqq.activity.ChatActivityFacade") == null) {
-                    cln = DexKit.findChatActivityFacade();
-                    cfg.putString(cache_facade_class, cln);
-                    cfg.getAllConfig().put(cache_facade_code, getHostInfo(getApplication()).versionCode);
-                    cfg.save();
-                }
-            } catch (IOException e) {
-                log(e);
-                return null;
-            }
-            clz_Facade = load(cln);
-        }
-        return clz_Facade;
+    public static String getShort$Name(Object obj) {
+        String name;
+        if (obj == null) return "null";
+        if (obj instanceof String) {
+            name = ((String) obj).replace("/", ".");
+        } else if (obj instanceof Class) {
+            name = ((Class) obj).getName();
+        } else if (obj instanceof Field) {
+            name = ((Field) obj).getType().getName();
+        } else name = obj.getClass().getName();
+        if (!name.contains(".")) return name;
+        int p = name.lastIndexOf('.');
+        return name.substring(p + 1);
     }
 
     public static class DummyCallback implements DialogInterface.OnClickListener {

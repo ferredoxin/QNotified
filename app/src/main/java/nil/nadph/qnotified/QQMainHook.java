@@ -26,7 +26,6 @@ import nil.nadph.qnotified.util.*;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.*;
 import java.util.ArrayList;
@@ -223,14 +222,91 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
 
 		 }
 		 });//*/
+
+        initSettingsEntry();
+        asyncStartFindClass();
         initMuteAtAllAndRedPacket();
         initDelDetector();
         hideMiniAppEntry();
-        initSettingsEntry();
         initCardMsg();
-        asyncStartFindClass();
         initPttForward();
+        initFlashAsPic();
+    }
 
+    private void initFlashAsPic() {
+        try {
+            ConfigManager cfg = ConfigManager.getDefault();
+            if (!cfg.getBooleanOrFalse(qn_flash_as_pic)) return;
+            Class clz = DexKit.tryLoadOrNull(DexKit.C_FLASH_PIC_HELPER);
+            if (clz == null) {
+                showToast(getApplication(), TOAST_TYPE_ERROR, "QNotified:闪照功能初始化错误", Toast.LENGTH_SHORT);
+                return;
+            }
+            Method isFlashPic = null;
+            for (Method mi : clz.getDeclaredMethods()) {
+                if (mi.getReturnType().equals(boolean.class) && mi.getParameterTypes().length == 1) isFlashPic = mi;
+            }
+            XposedBridge.hookMethod(isFlashPic, new XC_MethodHook(52) {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    try {
+                        if (!ConfigManager.getDefault().getBooleanOrFalse(qn_flash_as_pic)) return;
+                    } catch (Exception e) {
+                        log(e);
+                    }
+                    String sn_ItemBuilderFactory = getShort$Name(DexKit.doFindClass(DexKit.C_ITEM_BUILDER_FAC));
+                    String sn_BasePicDownloadProcessor = getShort$Name(DexKit.doFindClass(DexKit.C_BASE_PIC_DL_PROC));
+                    if (isCallingFrom(sn_ItemBuilderFactory) || isCallingFrom(sn_BasePicDownloadProcessor)) {
+                        param.setResult(false);
+                    }
+                }
+            });
+            Class tmp;
+            Class mPicItemBuilder = load("com.tencent.mobileqq.activity.aio.item.PicItemBuilder");
+            if (mPicItemBuilder == null) {
+                try {
+                    tmp = load("com.tencent.mobileqq.activity.aio.item.PicItemBuilder$6");
+                    mPicItemBuilder = tmp.getDeclaredField("this$0").getType();
+                } catch (Exception ignored) {
+                }
+            }
+            if (mPicItemBuilder == null) {
+                try {
+                    tmp = load("com.tencent.mobileqq.activity.aio.item.PicItemBuilder$7");
+                    mPicItemBuilder = tmp.getDeclaredField("this$0").getType();
+                } catch (Exception ignored) {
+                }
+            }
+            Class mBaseBubbleBuilder$ViewHolder = load("com.tencent.mobileqq.activity.aio.BaseBubbleBuilder$ViewHolder");
+            if (mBaseBubbleBuilder$ViewHolder == null) {
+                tmp = load("com.tencent.mobileqq.activity.aio.BaseBubbleBuilder");
+                for (Method mi : tmp.getDeclaredMethods()) {
+                    if (Modifier.isAbstract(mi.getModifiers()) && mi.getParameterTypes().length == 0) {
+                        mBaseBubbleBuilder$ViewHolder = mi.getReturnType();
+                    }
+                }
+            }
+            Method m = null;
+            for (Method mi : mPicItemBuilder.getDeclaredMethods()) {
+                if (mi.getReturnType().equals(View.class) && mi.getParameterTypes().length == 5) m = mi;
+            }
+            Method __tmnp_isF = isFlashPic;
+            final Class __tmp_mBaseBubbleBuilder$ViewHolder = mBaseBubbleBuilder$ViewHolder;
+            XposedBridge.hookMethod(m, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    super.afterHookedMethod(param);
+                    Object viewHolder = param.args[1];
+                    if (viewHolder == null) return;
+                    Object baseChatItemLayout = iget_object_or_null(viewHolder, "a", load("com.tencent.mobileqq.activity.aio.BaseChatItemLayout"));
+                    boolean isFlashPic = (boolean) XposedBridge.invokeOriginalMethod(__tmnp_isF, null, new Object[]{param.args[0]});
+                    XposedHelpers.callMethod(baseChatItemLayout, "setTailMessage", isFlashPic, "闪照", null);
+                }
+            });
+        } catch (
+                Throwable e) {
+            log(e);
+        }
     }
 
     private void initMuteAtAllAndRedPacket() {
@@ -530,56 +606,39 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
     }
 
     private void asyncStartFindClass() {
-        try {
-            ConfigManager cfg = ConfigManager.getDefault();
-            int lastVersion = cfg.getIntOrDefault(cache_dialog_util_code, 0);
-            if ((getHostInfo(getApplication()).versionCode != lastVersion || cfg.getString(cache_dialog_util_class) == null) && Initiator.load("com/tencent/mobileqq/utils/DialogUtil") == null) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Thread.sleep(5000);
-                        } catch (InterruptedException e) {
-                        }
-                        String clz = DexKit.findDialogUtil();
-                        if (clz == null) return;
-                        try {
-                            ConfigManager cfg = ConfigManager.getDefault();
-                            cfg.putString(cache_dialog_util_class, clz);
-                            cfg.getAllConfig().put(cache_dialog_util_code, getHostInfo(getApplication()).versionCode);
-                            cfg.save();
-                        } catch (IOException e) {
-                            log(e);
-                        }
+        if (DexKit.tryLoadOrNull(DexKit.C_DIALOG_UTIL) == null)
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException ignored) {
                     }
-                }).start();
-            }
-
-            lastVersion = cfg.getIntOrDefault(cache_facade_code, 0);
-            if ((getHostInfo(getApplication()).versionCode != lastVersion || cfg.getString(cache_facade_class) == null) && Initiator.load("com/tencent/mobileqq/activity/ChatActivityFacade") == null) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Thread.sleep(6000);
-                        } catch (InterruptedException ignored) {
-                        }
-                        String clz = DexKit.findChatActivityFacade();
-                        if (clz == null) return;
-                        try {
-                            ConfigManager cfg = ConfigManager.getDefault();
-                            cfg.putString(cache_facade_class, clz);
-                            cfg.getAllConfig().put(cache_facade_code, getHostInfo(getApplication()).versionCode);
-                            cfg.save();
-                        } catch (IOException e) {
-                            log(e);
-                        }
+                    DexKit.doFindClass(DexKit.C_DIALOG_UTIL);
+                }
+            }).start();
+        if (DexKit.tryLoadOrNull(DexKit.C_FACADE) == null)
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException ignored) {
                     }
-                }).start();
-            }
-        } catch (Exception e) {
-            log(e);
-        }
+                    DexKit.doFindClass(DexKit.C_FACADE);
+                }
+            }).start();
+        if (DexKit.tryLoadOrNull(DexKit.C_FLASH_PIC_HELPER) == null)
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(8000);
+                    } catch (InterruptedException ignored) {
+                    }
+                    DexKit.doFindClass(DexKit.C_FLASH_PIC_HELPER);
+                }
+            }).start();
     }
 
     private void initPttForward() {
@@ -702,7 +761,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
                             try {
                                 for (Utils.ContactDescriptor cd : mTargets) {
                                     Object sesssion = Utils.createSessionInfo(cd.uin, cd.uinType);
-                                    XposedHelpers.callStaticMethod(Utils.loadChatActivityFacade(), "a", Utils.getQQAppInterface(), sesssion, path);
+                                    XposedHelpers.callStaticMethod(DexKit.doFindClass(DexKit.C_FACADE), "a", Utils.getQQAppInterface(), sesssion, path);
                                 }
                                 Utils.showToast(ctx, TOAST_TYPE_SUCCESS, "已发送", Toast.LENGTH_SHORT);
                             } catch (Throwable e) {

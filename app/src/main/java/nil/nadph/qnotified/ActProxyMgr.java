@@ -53,7 +53,6 @@ public class ActProxyMgr extends XC_MethodHook {
         if (id <= 0) return;
         if (action <= 0) return;
         param.setResult(null);
-        //ActProxyMgr.set(id,self);
         ActivityAdapter aa;
         Method method = (Method) param.method;
 		try {
@@ -145,20 +144,7 @@ public class ActProxyMgr extends XC_MethodHook {
     public static ActProxyMgr getInstance() {
         return instance;
     }
-	
-	/*
-	 public static Activity get(int i){
-	 return instance.activities.get(i);
-	 }*
 
-	 public static void set(int i,Activity act){
-	 //instance.activities.put(i,act);
-	 }
-
-	 public static Activity remove(int i){
-	 //return instance.activities.remove(i);
-	 return null;
-	 }*/
 
     public static boolean isInfiniteLoop() {
         try {
@@ -222,11 +208,10 @@ public class ActProxyMgr extends XC_MethodHook {
         return ret;
     }
 
-
     private static final ActProxyMgr instance = new ActProxyMgr();
 
 
-    public static class StackBreak extends Throwable {/* This is NOT Exception,to be caught! */
+    public static class StackBreak extends Throwable {/* This is NOT Exception,NOT to be caught! */
 
         public StackBreak(Object ret) {
             returnValue = ret;

@@ -12,8 +12,8 @@ import android.os.Vibrator;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.pk.FriendChunk;
+import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.record.EventRecord;
 import nil.nadph.qnotified.record.FriendRecord;
 import nil.nadph.qnotified.record.Table;
@@ -30,8 +30,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static nil.nadph.qnotified.ActProxyMgr.*;
-import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.record.Table.*;
+import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class ExfriendManager {
@@ -88,8 +88,8 @@ public class ExfriendManager {
     };
 
     private ExfriendManager(long uin) {
-		persons = new HashMap<>();
-		events = new HashMap();
+        persons = new HashMap<>();
+        events = new HashMap();
         if (tp == null) {
             tp = Executors.newCachedThreadPool();
             tp.execute(asyncUpdateAwaitingTask);
@@ -97,68 +97,68 @@ public class ExfriendManager {
         initForUin(uin);
     }
 
-	public void reinit() {
-		persons = new HashMap();
-		events = new HashMap();
-		initForUin(mUin);
-	}
+    public void reinit() {
+        persons = new HashMap();
+        events = new HashMap();
+        initForUin(mUin);
+    }
 
-	public ConfigManager getConfig() {
-		return fileData;
-	}
+    public ConfigManager getConfig() {
+        return fileData;
+    }
 
-	private void initForUin(long uin) {
-		cachedFriendChunks = new ArrayList<>();
-		synchronized (this) {
-			mUin = uin;
-			try {
-				loadSavedPersonsInfo();
-				dbg();
-				try {
-					mStdRemarks = getFriendsConcurrentHashMap(getFriendsManager());
-				} catch (Throwable e) {
-				}
-				if (persons.size() == 0 && mStdRemarks != null) {
-					dbg();
-					log("WARNING:INIT FROM THE INTERNAL");
-					//Here we try to copy friendlist
-					Object fr;
-					Field fuin, fremark, fnick;
-					Class clz_fr = load("com/tencent/mobileqq/data/Friends");
-					fuin = clz_fr.getField("uin");//long!!!
-					fuin.setAccessible(true);
-					fremark = clz_fr.getField("remark");
-					fremark.setAccessible(true);
-					fnick = clz_fr.getField("name");
-					fnick.setAccessible(true);
-					persons = new HashMap<>();
-					Iterator<Map.Entry> it = mStdRemarks.entrySet().iterator();
-					while (it.hasNext()) {
-						long t = System.currentTimeMillis() / 1000;
-						fr = it.next().getValue();
-						if (fr == null) continue;
-						try {
-						} catch (Exception e) {
-							continue;
-						}
-						FriendRecord f = new FriendRecord();
-						f.uin = Long.parseLong((String) fuin.get(fr));
-						f.remark = (String) fremark.get(fr);
-						f.nick = (String) fnick.get(fr);
-						f.friendStatus = FriendRecord.STATUS_RESERVED;
-						f.serverTime = t;
-						if (!persons.containsKey(f.uin))
-							persons.put(f.uin, f);
-					}
-					dbg();
-					saveConfigure();
-					dbg();
-				}
-			} catch (Exception e) {
-				log(e);
-			}
-		}
-	}
+    private void initForUin(long uin) {
+        cachedFriendChunks = new ArrayList<>();
+        synchronized (this) {
+            mUin = uin;
+            try {
+                loadSavedPersonsInfo();
+                dbg();
+                try {
+                    mStdRemarks = getFriendsConcurrentHashMap(getFriendsManager());
+                } catch (Throwable e) {
+                }
+                if (persons.size() == 0 && mStdRemarks != null) {
+                    dbg();
+                    log("WARNING:INIT FROM THE INTERNAL");
+                    //Here we try to copy friendlist
+                    Object fr;
+                    Field fuin, fremark, fnick;
+                    Class clz_fr = load("com/tencent/mobileqq/data/Friends");
+                    fuin = clz_fr.getField("uin");//long!!!
+                    fuin.setAccessible(true);
+                    fremark = clz_fr.getField("remark");
+                    fremark.setAccessible(true);
+                    fnick = clz_fr.getField("name");
+                    fnick.setAccessible(true);
+                    persons = new HashMap<>();
+                    Iterator<Map.Entry> it = mStdRemarks.entrySet().iterator();
+                    while (it.hasNext()) {
+                        long t = System.currentTimeMillis() / 1000;
+                        fr = it.next().getValue();
+                        if (fr == null) continue;
+                        try {
+                        } catch (Exception e) {
+                            continue;
+                        }
+                        FriendRecord f = new FriendRecord();
+                        f.uin = Long.parseLong((String) fuin.get(fr));
+                        f.remark = (String) fremark.get(fr);
+                        f.nick = (String) fnick.get(fr);
+                        f.friendStatus = FriendRecord.STATUS_RESERVED;
+                        f.serverTime = t;
+                        if (!persons.containsKey(f.uin))
+                            persons.put(f.uin, f);
+                    }
+                    dbg();
+                    saveConfigure();
+                    dbg();
+                }
+            } catch (Exception e) {
+                log(e);
+            }
+        }
+    }
 
     public @Nullable
     void loadSavedPersonsInfo() {
@@ -463,11 +463,11 @@ public class ExfriendManager {
                 cachedFriendChunks.toArray(update);
                 cachedFriendChunks.clear();
                 tp.execute(new Runnable() {
-						@Override
-						public void run() {
-							asyncUpdateFriendListTask(update);
-						}
-					});
+                    @Override
+                    public void run() {
+                        asyncUpdateFriendListTask(update);
+                    }
+                });
             }
         }
     }
@@ -486,15 +486,15 @@ public class ExfriendManager {
         }
         final int n = m;
         ((Activity) Utils.getContext(rd)).runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-					if (n < 1) rd.setVisibility(View.INVISIBLE);
-					else {
-						rd.setText("" + n);
-						rd.setVisibility(View.VISIBLE);
-					}
-				}
-			});
+            @Override
+            public void run() {
+                if (n < 1) rd.setVisibility(View.INVISIBLE);
+                else {
+                    rd.setText("" + n);
+                    rd.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
     public void reportEventWithoutSave(EventRecord ev, Object[] out) {
@@ -645,14 +645,11 @@ public class ExfriendManager {
             intent.putExtra(ACTIVITY_PROXY_ACTION, ACTION_EXFRIEND_LIST);
             PendingIntent pi = PendingIntent.getActivity(getApplication(), 0, intent, 0);
             try {
-				/*Bitmap bp;
-				 InputStream in=QThemeKit.openAsset("ic_del_friend_top.png");
-				 bp=BitmapFactory.decodeStream(in);*/
                 NotificationManager nm = (NotificationManager) Utils.getApplication().getSystemService(Context.NOTIFICATION_SERVICE);
                 Notification n = createNotiComp((String) ptr[1], (String) ptr[2], (String) ptr[3], pi);
                 nm.notify(ID_EX_NOTIFY, n);
                 Vibrator vb = (Vibrator) getApplication().getSystemService(Context.VIBRATOR_SERVICE);
-                vb.vibrate(new long[]{100, 200, 200, 100}, -1);
+                if (vb != null) vb.vibrate(new long[]{100, 200, 200, 100}, -1);
                 setRedDot();
             } catch (Exception e) {
                 log(e);
@@ -710,11 +707,11 @@ public class ExfriendManager {
         //log(t+"/"+lastUpdateTimeSec);
         if (t - lastUpdateTimeSec > FL_UPDATE_INT_MIN) {
             tp.execute(new Runnable() {
-					@Override
-					public void run() {
-						doRequestFlRefresh();
-					}
-				});
+                @Override
+                public void run() {
+                    doRequestFlRefresh();
+                }
+            });
         }
     }
 }
