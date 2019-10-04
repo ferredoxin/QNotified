@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.*;
 import de.robv.android.xposed.*;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import nil.nadph.qnotified.hook.FlashPicHook;
 import nil.nadph.qnotified.pk.FriendChunk;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.ui.DebugDrawable;
@@ -230,83 +231,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
         hideMiniAppEntry();
         initCardMsg();
         initPttForward();
-        initFlashAsPic();
-    }
-
-    private void initFlashAsPic() {
-        try {
-            ConfigManager cfg = ConfigManager.getDefault();
-            if (!cfg.getBooleanOrFalse(qn_flash_as_pic)) return;
-            Class clz = DexKit.tryLoadOrNull(DexKit.C_FLASH_PIC_HELPER);
-            if (clz == null) {
-                showToast(getApplication(), TOAST_TYPE_ERROR, "QNotified:闪照功能初始化错误", Toast.LENGTH_SHORT);
-                return;
-            }
-            Method isFlashPic = null;
-            for (Method mi : clz.getDeclaredMethods()) {
-                if (mi.getReturnType().equals(boolean.class) && mi.getParameterTypes().length == 1) isFlashPic = mi;
-            }
-            XposedBridge.hookMethod(isFlashPic, new XC_MethodHook(52) {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    try {
-                        if (!ConfigManager.getDefault().getBooleanOrFalse(qn_flash_as_pic)) return;
-                    } catch (Exception e) {
-                        log(e);
-                    }
-                    String sn_ItemBuilderFactory = getShort$Name(DexKit.doFindClass(DexKit.C_ITEM_BUILDER_FAC));
-                    String sn_BasePicDownloadProcessor = getShort$Name(DexKit.doFindClass(DexKit.C_BASE_PIC_DL_PROC));
-                    if (isCallingFrom(sn_ItemBuilderFactory) || isCallingFrom(sn_BasePicDownloadProcessor)) {
-                        param.setResult(false);
-                    }
-                }
-            });
-            Class tmp;
-            Class mPicItemBuilder = load("com.tencent.mobileqq.activity.aio.item.PicItemBuilder");
-            if (mPicItemBuilder == null) {
-                try {
-                    tmp = load("com.tencent.mobileqq.activity.aio.item.PicItemBuilder$6");
-                    mPicItemBuilder = tmp.getDeclaredField("this$0").getType();
-                } catch (Exception ignored) {
-                }
-            }
-            if (mPicItemBuilder == null) {
-                try {
-                    tmp = load("com.tencent.mobileqq.activity.aio.item.PicItemBuilder$7");
-                    mPicItemBuilder = tmp.getDeclaredField("this$0").getType();
-                } catch (Exception ignored) {
-                }
-            }
-            Class mBaseBubbleBuilder$ViewHolder = load("com.tencent.mobileqq.activity.aio.BaseBubbleBuilder$ViewHolder");
-            if (mBaseBubbleBuilder$ViewHolder == null) {
-                tmp = load("com.tencent.mobileqq.activity.aio.BaseBubbleBuilder");
-                for (Method mi : tmp.getDeclaredMethods()) {
-                    if (Modifier.isAbstract(mi.getModifiers()) && mi.getParameterTypes().length == 0) {
-                        mBaseBubbleBuilder$ViewHolder = mi.getReturnType();
-                    }
-                }
-            }
-            Method m = null;
-            for (Method mi : mPicItemBuilder.getDeclaredMethods()) {
-                if (mi.getReturnType().equals(View.class) && mi.getParameterTypes().length == 5) m = mi;
-            }
-            Method __tmnp_isF = isFlashPic;
-            final Class __tmp_mBaseBubbleBuilder$ViewHolder = mBaseBubbleBuilder$ViewHolder;
-            XposedBridge.hookMethod(m, new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    super.afterHookedMethod(param);
-                    Object viewHolder = param.args[1];
-                    if (viewHolder == null) return;
-                    Object baseChatItemLayout = iget_object_or_null(viewHolder, "a", load("com.tencent.mobileqq.activity.aio.BaseChatItemLayout"));
-                    boolean isFlashPic = (boolean) XposedBridge.invokeOriginalMethod(__tmnp_isF, null, new Object[]{param.args[0]});
-                    XposedHelpers.callMethod(baseChatItemLayout, "setTailMessage", isFlashPic, "闪照", null);
-                }
-            });
-        } catch (
-                Throwable e) {
-            log(e);
-        }
+        FlashPicHook.get().init();
     }
 
     private void initMuteAtAllAndRedPacket() {

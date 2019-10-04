@@ -6,6 +6,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
@@ -114,6 +115,7 @@ public class DexKit {
         int i = 1;
         String name;
         try {
+            loop_a:
             while (true) {
                 if (i == 1) name = "classes.dex";
                 else name = "classes" + i + ".dex";
@@ -127,10 +129,12 @@ public class DexKit {
                 }
                 in.close();
                 content = baos.toByteArray();
-                int ret = a(content, key);
-                if (ret != -1) {
-                    name = a(content, ret);
-                    break;
+                ArrayList<Integer> opcodeOffsets = a(content, key);
+                if (opcodeOffsets.size() > 0) {
+                    for (int opoff : opcodeOffsets) {
+                        name = a(content, opoff);
+                        if (!name.contains("/")) break loop_a;
+                    }
                 }
                 i++;
             }
@@ -142,7 +146,8 @@ public class DexKit {
         }
     }
 
-    public static int a(byte[] buf, byte[] target) {
+    public static ArrayList<Integer> a(byte[] buf, byte[] target) {
+        ArrayList<Integer> rets = new ArrayList<>();
         int[] ret = new int[1];
         final float f[] = new float[1];
         ret[0] = arrayIndexOf(buf, target, 0, buf.length, f);
@@ -160,10 +165,10 @@ public class DexKit {
                     || buf[off - 2] == (byte) 27)/* Opcodes.OP_CONST_STRING_JUMBO*/ {
                 ret[0] = off - 2;
                 int opcodeOffset = ret[0];
-                return opcodeOffset;
+                rets.add(opcodeOffset);
             }
         }
-        return -1;
+        return rets;
     }
 
     public static String a(byte[] buf, int opcodeoff) {

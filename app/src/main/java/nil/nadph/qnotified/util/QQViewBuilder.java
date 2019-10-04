@@ -1,5 +1,6 @@
 package nil.nadph.qnotified.util;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -7,16 +8,16 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.QQMainHook;
+import nil.nadph.qnotified.hook.BaseDelayableHook;
+import nil.nadph.qnotified.record.ConfigManager;
 
 import java.io.IOException;
 
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.dip2px;
-import static nil.nadph.qnotified.util.Utils.dip2sp;
+import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressWarnings("unchecked")
 public class QQViewBuilder {
@@ -27,11 +28,11 @@ public class QQViewBuilder {
     public static final int R_ID_VALUE = 0x300AFF14;
     public static final int R_ID_ARROW = 0x300AFF15;
 
-	private static final int CONSTANT_LIST_ITEM_HEIGHT_DP=48;
-	
+    private static final int CONSTANT_LIST_ITEM_HEIGHT_DP = 48;
+
     public static RelativeLayout newListItemSwitch(Context ctx, CharSequence title, CharSequence desc, boolean on, CompoundButton.OnCheckedChangeListener listener) {
         RelativeLayout root = new RelativeLayout(ctx);
-        root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx,CONSTANT_LIST_ITEM_HEIGHT_DP)));
+        root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx, CONSTANT_LIST_ITEM_HEIGHT_DP)));
         root.setBackgroundDrawable(QThemeKit.getListItemBackground());
         TextView tv = new TextView(ctx);
         tv.setText(title);
@@ -123,7 +124,88 @@ public class QQViewBuilder {
         });
         return root;
     }
-    public static RelativeLayout newListItemSwitchConfigStub(Context ctx, CharSequence title, CharSequence desc, final String key, boolean defVal) throws IOException {
+
+
+    public static RelativeLayout newListItemSwitchConfigInit(final Context ctx, CharSequence title, CharSequence desc, final String key, boolean defVal, final BaseDelayableHook hook) throws IOException {
+        boolean on = ConfigManager.getDefault().getBooleanOrDefault(key, defVal);
+        RelativeLayout root = newListItemSwitch(ctx, title, desc, on, new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!hook.isInited() && !hook.checkPreconditions() && isChecked) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            doSetupAndInit(ctx, hook);
+                            try {
+                                ConfigManager mgr = ConfigManager.getDefault();
+                                mgr.getAllConfig().put(key, true);
+                                mgr.save();
+                            } catch (Throwable e) {
+                                try {
+                                    Utils.showToastShort(buttonView.getContext(), e.toString());
+                                } catch (Throwable ignored) {
+                                }
+                                Utils.log(e);
+                            }
+                        }
+                    }).start();
+                } else {
+                    try {
+                        ConfigManager mgr = ConfigManager.getDefault();
+                        mgr.getAllConfig().put(key, isChecked);
+                        mgr.save();
+                    } catch (Throwable e) {
+                        try {
+                            Utils.showToastShort(buttonView.getContext(), e.toString());
+                        } catch (Throwable ignored) {
+                        }
+                        Utils.log(e);
+                    }
+                }
+            }
+        });
+        return root;
+    }
+
+    private static void doSetupAndInit(Context ctx, BaseDelayableHook hook) {
+        final Dialog pDialog[] = new Dialog[1];
+        for (int i : hook.getPreconditions()) {
+            if (DexKit.tryLoadOrNull(i) != null) continue;
+            String name = DexKit.c(i).replace("/", ".");
+            Utils.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (pDialog[0] == null) {
+                        pDialog[0] = Utils.createDialog(ctx);
+                        pDialog[0].setCancelable(false);
+                        try {
+                            invoke_virtual(pDialog[0], "setTitle", "请稍候", String.class);
+                            invoke_virtual(pDialog[0], "setMessage", "QNotified正在定位被混淆类:\n" + name + "\n每个类一般不会超过一分钟", CharSequence.class);
+                        } catch (Throwable e) {
+                            log(e);
+                        }
+                        pDialog[0].show();
+                    }
+                    try {
+                        invoke_virtual(pDialog[0], "setMessage", "QNotified正在定位被混淆类:\n" + name + "\n每个类一般不会超过一分钟", CharSequence.class);
+                    } catch (Throwable e) {
+                        log(e);
+                    }
+                }
+            });
+            DexKit.doFindClass(i);
+        }
+        hook.init();
+        Utils.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                pDialog[0].dismiss();
+            }
+        });
+    }
+
+    public static RelativeLayout newListItemSwitchConfigStub(Context ctx, CharSequence title, CharSequence desc,
+                                                             final String key, boolean defVal) throws IOException {
         RelativeLayout root = newListItemSwitch(ctx, title, desc, false, new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -143,10 +225,10 @@ public class QQViewBuilder {
     }
 
 
-
-    public static RelativeLayout newListItemDummy(Context ctx, CharSequence title, CharSequence desc, CharSequence value) {
+    public static RelativeLayout newListItemDummy(Context ctx, CharSequence title, CharSequence desc, CharSequence
+            value) {
         RelativeLayout root = new RelativeLayout(ctx);
-        root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx,CONSTANT_LIST_ITEM_HEIGHT_DP)));
+        root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx, CONSTANT_LIST_ITEM_HEIGHT_DP)));
         root.setBackgroundDrawable(QThemeKit.getListItemBackground());
         TextView tv = new TextView(ctx);
         tv.setText(title);
@@ -195,9 +277,10 @@ public class QQViewBuilder {
         return root;
     }
 
-    public static RelativeLayout newListItemButton(Context ctx, CharSequence title, CharSequence desc, CharSequence value, View.OnClickListener listener) {
+    public static RelativeLayout newListItemButton(Context ctx, CharSequence title, CharSequence desc, CharSequence
+            value, View.OnClickListener listener) {
         RelativeLayout root = new RelativeLayout(ctx);
-        root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx,CONSTANT_LIST_ITEM_HEIGHT_DP)));
+        root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx, CONSTANT_LIST_ITEM_HEIGHT_DP)));
         root.setBackgroundDrawable(QThemeKit.getListItemBackground());
         TextView tv = new TextView(ctx);
         tv.setText(title);
@@ -279,7 +362,7 @@ public class QQViewBuilder {
         return ll;
     }
 
-    public static LinearLayout subtitle(Context ctx, CharSequence title,int color) {
+    public static LinearLayout subtitle(Context ctx, CharSequence title, int color) {
         LinearLayout ll = new LinearLayout(ctx);
         ll.setOrientation(LinearLayout.HORIZONTAL);
         ll.setGravity(Gravity.CENTER_VERTICAL);

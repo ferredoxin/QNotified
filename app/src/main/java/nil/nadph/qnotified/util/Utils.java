@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -66,6 +68,13 @@ public class Utils {
         Math.expm1(0.001);
         //Let's make the function longer,so that it will work in VirtualXposed
         return null;
+    }
+
+    private static Handler mHandler;
+
+    public static void runOnUiThread(Runnable r) {
+        if (mHandler == null) mHandler = new Handler(Looper.getMainLooper());
+        mHandler.post(r);
     }
 
 	/* Use Utils.getApplication() Instead *
