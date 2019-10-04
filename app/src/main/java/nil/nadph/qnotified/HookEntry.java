@@ -31,6 +31,14 @@ public class HookEntry implements IXposedHookLoadPackage {
 			 });
 			 */
             new QQMainHook().handleLoadPackage(lpparam);
+
+            /*findAndHookMethod(lpparam.classLoader.loadClass("com.tencent.mobileqq.startup.step.Step"), "c", new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    Log.i("QNtrace", (((boolean) param.getResult()) ? " +++" : " ---") + param.thisObject.getClass().getName(), new Throwable(param.thisObject.getClass().getName()));
+
+                }
+            });*/
             //log("Handle QQ done.");
         } else if (lpparam.packageName.equals(PACKAGE_NAME_TIM)) {
             new QQMainHook().handleLoadPackage(lpparam);

@@ -82,7 +82,31 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
                         Field f = hasField(clz, "sApplication");
                         if (f == null) ctx = (Context) sget_object(clz, "a", clz);
                         else ctx = (Context) f.get(null);
-                        performHook(ctx.getClassLoader());
+                        ClassLoader classLoader = ctx.getClassLoader();
+                        Initiator.init(classLoader);
+                        //log("Clases init done");
+                        if (classLoader == null) throw new AssertionError("ERROR:classLoader==null");
+                        injectStartupHook();
+                        Class director = load("com/tencent/mobileqq/startup/director/StartupDirector");
+                        if (director == null)
+                            director = load("com/tencent/mobileqq/startup/director/StartupDirector$1").getDeclaredField("this$0").getType();
+                        Class loadData = load("com/tencent/mobileqq/startup/step/LoadData");
+                        Method doStep = null;
+                        for (Method method : loadData.getDeclaredMethods()) {
+                            if (method.getReturnType().equals(boolean.class) && method.getParameterTypes().length == 0) {
+                                doStep = method;
+                                break;
+                            }
+                        }
+                        Class __director = director;
+                        XposedBridge.hookMethod(doStep, new XC_MethodHook(51) {
+                            @Override
+                            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                                Object dir = iget_object_or_null(param.thisObject, "mDirector", __director);
+                                if (dir == null) dir = iget_object_or_null(param.thisObject, "a", __director);
+                                InjectDelayableHooks.step(dir);
+                            }
+                        });
                     } catch (Throwable e) {
                         log(e);
                         throw e;
@@ -107,7 +131,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
         }
     }
 
-    private void performHook(ClassLoader classLoader) {
+    private void injectStartupHook() {
         if (Utils.DEBUG) {
             if ("true".equals(System.getProperty(QN_FULL_TAG))) {
                 log("Err:QNotified reloaded??");
@@ -117,10 +141,6 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
             }
             System.setProperty(QN_FULL_TAG, "true");
         }
-        Initiator.init(classLoader);
-        log("Clases init done");
-        //log("App:" + Utils.getApplication());
-        if (classLoader == null) throw new AssertionError("ERROR:classLoader==null");
 
         Class clazz = load(ActProxyMgr.STUB_ACTIVITY);
         if (clazz != null) {

@@ -8,4 +8,6 @@ public interface BaseDelayableHook {
     int[] getPreconditions();
 
     boolean checkPreconditions();
+
+    boolean isEnabled();
 }

@@ -128,4 +128,14 @@ public class FlashPicHook implements BaseDelayableHook {
     public boolean isInited() {
         return inited;
     }
+
+    @Override
+    public boolean isEnabled() {
+        try {
+            return ConfigManager.getDefault().getBooleanOrFalse(qn_flash_as_pic);
+        } catch (Exception e) {
+            log(e);
+            return false;
+        }
+    }
 }
