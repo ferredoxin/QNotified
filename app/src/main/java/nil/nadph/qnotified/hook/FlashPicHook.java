@@ -31,7 +31,7 @@ public class FlashPicHook implements BaseDelayableHook {
     public boolean init() {
         if (inited) return true;
         try {
-            ConfigManager cfg = ConfigManager.getDefault();
+            final ConfigManager cfg = ConfigManager.getDefault();
             boolean canInit = checkPreconditions();
             if (!canInit && ConfigManager.getDefault().getBooleanOrFalse(qn_flash_as_pic)) {
                 if (Looper.myLooper() != null) {

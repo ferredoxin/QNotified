@@ -130,7 +130,7 @@ public class QQViewBuilder {
         boolean on = ConfigManager.getDefault().getBooleanOrDefault(key, defVal);
         RelativeLayout root = newListItemSwitch(ctx, title, desc, on, new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public void onCheckedChanged(final CompoundButton buttonView, boolean isChecked) {
                 if (!hook.isInited() && !hook.checkPreconditions() && isChecked) {
                     new Thread(new Runnable() {
                         @Override
@@ -167,11 +167,11 @@ public class QQViewBuilder {
         return root;
     }
 
-    private static void doSetupAndInit(Context ctx, BaseDelayableHook hook) {
+    private static void doSetupAndInit(final Context ctx, BaseDelayableHook hook) {
         final Dialog pDialog[] = new Dialog[1];
         for (int i : hook.getPreconditions()) {
             if (DexKit.tryLoadOrNull(i) != null) continue;
-            String name = DexKit.c(i).replace("/", ".");
+            final String name = DexKit.c(i).replace("/", ".");
             Utils.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
