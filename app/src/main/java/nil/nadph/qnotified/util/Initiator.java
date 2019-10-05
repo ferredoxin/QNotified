@@ -2,7 +2,8 @@ package nil.nadph.qnotified.util;
 
 import android.content.Context;
 import android.widget.PopupWindow;
-import dalvik.system.*;
+import dalvik.system.DexClassLoader;
+import dalvik.system.PathClassLoader;
 
 
 public class Initiator {
@@ -13,23 +14,16 @@ public class Initiator {
 
     public static void init(ClassLoader classLoader) {
         qqClassLoader = classLoader;
-		DexClassLoader dcl;
-		PathClassLoader pcl;
+        DexClassLoader dcl;
+        PathClassLoader pcl;
     }
-
 
     private static ClassLoader qqClassLoader;
 
-	/*public static void patchStub(Context ctx){
-		ClassLoader ld=ctx.getClassLoader();
-		DexClassLoader dcl=new DexClassLoader("/sdcard/AppProjects/QNotified/classes2.dex",ctx.getDir("dex",0).getAbsolutePath(),null,qqClassLoader);
-		qqClassLoader=dcl;
-	}*/
+    public static ClassLoader getClassLoader() {
+        return qqClassLoader;
+    }
 
-	public static ClassLoader getClassLoader(){
-		return qqClassLoader;
-	}
-	
     public static Class<?> load(String className) {
         if (qqClassLoader == null || className.isEmpty()) {
             return null;
@@ -43,12 +37,50 @@ public class Initiator {
         try {
             return qqClassLoader.loadClass(className);
         } catch (Throwable e) {
-            if (!className.contains("com.tencent.mobileqq.R$")) {
-                Utils.log(String.format("Can't find the Class of name: %s!", className));
-            }
             return null;
         }
     }
+
+    public static Class _PicItemBuilder() {
+        Class tmp;
+        Class mPicItemBuilder = load("com.tencent.mobileqq.activity.aio.item.PicItemBuilder");
+        if (mPicItemBuilder == null) {
+            try {
+                tmp = load("com.tencent.mobileqq.activity.aio.item.PicItemBuilder$6");
+                mPicItemBuilder = tmp.getDeclaredField("this$0").getType();
+            } catch (Exception ignored) {
+            }
+        }
+        return mPicItemBuilder;
+    }
+
+    public static Class _TextItemBuilder() {
+        Class tmp;
+        Class mTextItemBuilder = load("com/tencent/mobileqq/activity/aio/item/TextItemBuilder");
+        if (mTextItemBuilder == null) {
+            try {
+                tmp = load("com/tencent/mobileqq/activity/aio/item/TextItemBuilder$10");
+                mTextItemBuilder = tmp.getDeclaredField("this$0").getType();
+            } catch (Exception ignored) {
+            }
+        }
+        return mTextItemBuilder;
+    }
+
+    public static Class _PttItemBuilder() {
+        Class cl_PttItemBuilder = load("com/tencent/mobileqq/activity/aio/item/PttItemBuilder");
+        if (cl_PttItemBuilder == null) {
+            Class cref = load("com/tencent/mobileqq/activity/aio/item/PttItemBuilder$2");
+            try {
+                cl_PttItemBuilder = cref.getDeclaredField("this$0").getType();
+            } catch (NoSuchFieldException ignored) {
+            }
+        }
+        return cl_PttItemBuilder;
+    }
+
+
+
 	/*
 	public static void showPopup(View root){
 		if(mContext==null)

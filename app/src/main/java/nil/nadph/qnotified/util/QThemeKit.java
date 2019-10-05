@@ -41,11 +41,9 @@ public class QThemeKit {
 
     private Context mContext;
 
-    static private Map<String, Drawable> cachedDrawable;
+    static private Map<String, Drawable> cachedDrawable = new HashMap<>();
 
     public static <SkinnableNinePatchDrawable extends Drawable> void initTheme(Context ctx) throws Throwable {
-
-        if (cachedDrawable == null) cachedDrawable = new HashMap<>();
         String themeId = (String) invoke_static(load("com/tencent/mobileqq/theme/ThemeUtil"), "getUserCurrentThemeId", null, load("mqq/app/AppRuntime"));
         //ThemeUtil$ThemeInfo themeInfo=(ThemeUtil$ThemeInfo)invoke_static(load("com/tencent/mobileqq/theme/ThemeUtil"),"getThemeInfo",ctx,themeId,Context.class,String.class);
         //load("com/tencent/mobileqq/theme/ThemeUtil$ThemeInfo").getField(
@@ -195,7 +193,7 @@ public class QThemeKit {
 
     public static boolean isColorQQThemeActive() {
         try {
-			if(!getApplication().getApplicationInfo().packageName.equals(PACKAGE_NAME_QQ))return false;
+            if (!getApplication().getApplicationInfo().packageName.equals(PACKAGE_NAME_QQ)) return false;
             File f = new File(Environment.getExternalStorageDirectory().getAbsoluteFile() + "/QQColor/setting.xml");
             if (!f.exists())
                 f = new File(Environment.getDataDirectory() + "/data/me.qiwu.colorqq/shared_prefs/me.qiwu.colorqq.xml");

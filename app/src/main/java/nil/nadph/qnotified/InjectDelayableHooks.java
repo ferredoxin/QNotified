@@ -7,6 +7,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import nil.nadph.qnotified.hook.FlashPicHook;
+import nil.nadph.qnotified.hook.RepeaterHook;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.QThemeKit;
 import nil.nadph.qnotified.util.Utils;
@@ -25,7 +26,10 @@ public class InjectDelayableHooks {
         if (inited) return true;
         inited = true;
         final Activity ctx = (Activity) iget_object_or_null(director, "a", load("mqq/app/AppActivity"));
+
         FlashPicHook flash = FlashPicHook.get();
+        RepeaterHook repeaterHook = RepeaterHook.get();
+
         boolean needDeobf = flash.isEnabled() && !flash.checkPreconditions();
         LinearLayout main[] = new LinearLayout[1];
         ProgressBar prog[] = new ProgressBar[1];
@@ -78,6 +82,7 @@ public class InjectDelayableHooks {
             }
         }
         if (flash.isEnabled()) flash.init();
+        if (repeaterHook.isEnabled()) repeaterHook.init();
         if (ctx != null && main[0] != null) ctx.runOnUiThread(new Runnable() {
             @Override
             public void run() {

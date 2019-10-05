@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.*;
 import de.robv.android.xposed.*;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
-import nil.nadph.qnotified.hook.FlashPicHook;
 import nil.nadph.qnotified.pk.FriendChunk;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.ui.DebugDrawable;
@@ -413,7 +412,10 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
                                         Method m = (Method) param.method;
                                         m.setAccessible(true);
                                         XposedBridge.invokeOriginalMethod(m, param.thisObject, param.args);
-                                    } catch (UnsupportedOperationException e) {
+                                    } catch (InvocationTargetException e) {
+                                        if (!(e.getCause() instanceof UnsupportedOperationException)) {
+                                            log(e);
+                                        }
                                     } catch (Throwable t) {
                                         log(t);
                                     }

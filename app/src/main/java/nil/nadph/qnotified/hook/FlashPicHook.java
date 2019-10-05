@@ -42,7 +42,10 @@ public class FlashPicHook implements BaseDelayableHook {
             Class clz = DexKit.tryLoadOrNull(DexKit.C_FLASH_PIC_HELPER);
             Method isFlashPic = null;
             for (Method mi : clz.getDeclaredMethods()) {
-                if (mi.getReturnType().equals(boolean.class) && mi.getParameterTypes().length == 1) isFlashPic = mi;
+                if (mi.getReturnType().equals(boolean.class) && mi.getParameterTypes().length == 1) {
+                    isFlashPic = mi;
+                    break;
+                }
             }
             XposedBridge.hookMethod(isFlashPic, new XC_MethodHook(52) {
                 @Override
