@@ -251,7 +251,6 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
         hideMiniAppEntry();
         initCardMsg();
         initPttForward();
-        FlashPicHook.get().init();
     }
 
     private void initMuteAtAllAndRedPacket() {

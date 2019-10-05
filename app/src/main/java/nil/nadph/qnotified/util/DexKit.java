@@ -3,6 +3,7 @@ package nil.nadph.qnotified.util;
 import nil.nadph.qnotified.record.ConfigManager;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -43,7 +44,7 @@ public class DexKit {
         try {
             String name;
             ConfigManager cfg = ConfigManager.getDefault();
-            name = a(c(i), b(i));
+            name = e(i);
             if (name == null) {
                 log("Unable to deobf: " + c(i));
                 return null;
@@ -106,47 +107,84 @@ public class DexKit {
         return null;
     }
 
-    private static String a(String clz, byte[] key) {
+    public static int[] d(int i) {
+        switch (i) {
+            case C_DIALOG_UTIL:
+                return new int[]{4, 3};
+            case C_FACADE:
+                return new int[]{6, 3};
+            case C_FLASH_PIC_HELPER:
+                return new int[]{1, 3};
+            case C_BASE_PIC_DL_PROC:
+                return new int[]{7, 2};
+            case C_ITEM_BUILDER_FAC:
+                return new int[]{6, 1};
+        }
+        return null;
+    }
+
+    private static String e(int i) {
         ClassLoader loader = Initiator.getClassLoader();
-        Class clret = load(clz);
+        Class clret = load(c(i));
         if (clret != null) return clret.getName();
-        byte[] buf = new byte[4096];
-        byte[] content;
-        int i = 1;
-        String name;
-        try {
-            loop_a:
-            while (true) {
-                if (i == 1) name = "classes.dex";
-                else name = "classes" + i + ".dex";
-                URL url = (URL) Utils.invoke_virtual(loader, "findResource", name, String.class);
-                if (url == null) return null;
-                InputStream in = url.openStream();
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                int ii;
-                while ((ii = in.read(buf)) != -1) {
-                    baos.write(buf, 0, ii);
-                }
-                in.close();
-                content = baos.toByteArray();
-                ArrayList<Integer> opcodeOffsets = a(content, key);
-                if (opcodeOffsets.size() > 0) {
-                    for (int opoff : opcodeOffsets) {
-                        name = a(content, opoff);
-                        if (!name.contains("/")) break loop_a;
-                    }
-                }
-                i++;
+        int record = 0;
+        int[] qf = d(i);
+        byte[] key = b(i);
+        if (qf != null) for (int dexi : qf) {
+            record |= 1 << dexi;
+            try {
+                String ret = a(key, dexi, loader);
+                if (ret != null) return ret.substring(1, ret.length() - 1);
+            } catch (FileNotFoundException ignored) {
             }
-            if (!name.startsWith("L")) return null;
-            return name.substring(1, name.length() - 1);
-        } catch (Exception e) {
-            Utils.log(e);
-            return null;
+        }
+        int dexi = 1;
+        while (true) {
+            if ((record & (1 << dexi)) != 0) continue;
+            try {
+                String ret = a(key, dexi, loader);
+                if (ret != null) return ret.substring(1, ret.length() - 1);
+            } catch (FileNotFoundException ignored) {
+                return null;
+            }
         }
     }
 
-    public static ArrayList<Integer> a(byte[] buf, byte[] target) {
+    public static String a(byte[] key, int i, ClassLoader loader) throws FileNotFoundException {
+        String name;
+        byte[] buf = new byte[4096];
+        byte[] content;
+        if (i == 1) name = "classes.dex";
+        else name = "classes" + i + ".dex";
+        URL url = null;
+        try {
+            url = (URL) Utils.invoke_virtual(loader, "findResource", name, String.class);
+        } catch (Throwable ignored) {
+        }
+        if (url == null) throw new FileNotFoundException(name);
+        InputStream in;
+        try {
+            in = url.openStream();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            int ii;
+            while ((ii = in.read(buf)) != -1) {
+                baos.write(buf, 0, ii);
+            }
+            in.close();
+            content = baos.toByteArray();
+            int opcodeOffset = a(content, key);
+            if (opcodeOffset != -1) {
+                name = a(content, opcodeOffset);
+                return name;
+            }
+        } catch (IOException e) {
+            log(e);
+            return null;
+        }
+        return null;
+    }
+
+    public static int a(byte[] buf, byte[] target) {
         ArrayList<Integer> rets = new ArrayList<>();
         int[] ret = new int[1];
         final float f[] = new float[1];
@@ -165,10 +203,10 @@ public class DexKit {
                     || buf[off - 2] == (byte) 27)/* Opcodes.OP_CONST_STRING_JUMBO*/ {
                 ret[0] = off - 2;
                 int opcodeOffset = ret[0];
-                rets.add(opcodeOffset);
+                return opcodeOffset;
             }
         }
-        return rets;
+        return -1;
     }
 
     public static String a(byte[] buf, int opcodeoff) {
@@ -186,11 +224,6 @@ public class DexKit {
                     instanceFieldsSize = readUleb128(buf, p),
                     directMethodsSize = readUleb128(buf, p),
                     virtualMethodsSize = readUleb128(buf, p);
-			/*pStaticFields=readUleb128(buf, p),
-			 pInstanceFields=readUleb128(buf, p),
-			 pDirectMethods=readUleb128(buf, p),
-			 pVirtualMethods=readUleb128(buf, p);*/
-            //p[0] = pDirectMethods;
             for (int fn = 0; fn < staticFieldsSize + instanceFieldsSize; fn++) {
                 int fieldIdx = readUleb128(buf, p);
                 int accessFlags = readUleb128(buf, p);
@@ -199,19 +232,22 @@ public class DexKit {
                 int methodIdx = readUleb128(buf, p);
                 int accessFlags = readUleb128(buf, p);
                 int codeOff = co[0] = readUleb128(buf, p);
+                if (codeOff == 0) continue;
                 int insnsSize = readLe32(buf, codeOff + 12);
                 if (codeOff + 16 <= opcodeoff && opcodeoff <= codeOff + 16 + insnsSize * 2) {
                     return readType(buf, classIdx);
                 }
             }
-			/*for (int mn=0;mn < directMethodsSize;mn++) {
-			 int codeOff=readLe32(buf, p[0] + 12 * mn);
-			 int insnsSize=readLe32(buf, codeOff + 12);
-			 if (codeOff + 16 < opcodeoff && opcodeoff < codeOff + 16 + insnsSize) {
-			 System.out.println(readType(buf, classIdx));
-			 return;
-			 }
-			 }*/
+            for (int mn = 0; mn < virtualMethodsSize; mn++) {
+                int methodIdx = readUleb128(buf, p);
+                int accessFlags = readUleb128(buf, p);
+                int codeOff = co[0] = readUleb128(buf, p);
+                if (codeOff == 0) continue;
+                int insnsSize = readLe32(buf, codeOff + 12);
+                if (codeOff + 16 <= opcodeoff && opcodeoff <= codeOff + 16 + insnsSize * 2) {
+                    return readType(buf, classIdx);
+                }
+            }
         }
         throw new InternalError();
     }
