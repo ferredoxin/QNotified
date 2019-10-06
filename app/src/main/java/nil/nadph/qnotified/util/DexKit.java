@@ -1,13 +1,17 @@
 package nil.nadph.qnotified.util;
 
+import android.view.View;
 import nil.nadph.qnotified.record.ConfigManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
@@ -44,15 +48,23 @@ public class DexKit {
         Class ret = tryLoadOrNull(i);
         if (ret != null) return ret;
         try {
-            String name;
+            String[] names;
             ConfigManager cfg = ConfigManager.getDefault();
-            name = e(i);
-            if (name == null) {
+            names = e(i);
+            if (names == null || names.length == 0) {
                 log("Unable to deobf: " + c(i));
                 return null;
             }
-            ret = load(name);
-            cfg.putString("cache_" + a(i) + "_class", name);
+            if (names.length == 1) {
+                ret = load(names[0]);
+            } else {
+                Class[] cas = new Class[names.length];
+                for (int j = 0; j < names.length; j++) {
+                    cas[j] = load(names[j]);
+                }
+                ret = a(i, cas);
+            }
+            cfg.putString("cache_" + a(i) + "_class", ret.getName());
             cfg.getAllConfig().put("cache_" + a(i) + "_code", getHostInfo(getApplication()).versionCode);
             cfg.save();
         } catch (IOException e) {
@@ -141,18 +153,58 @@ public class DexKit {
         return null;
     }
 
-    private static String e(int i) {
+    private static Class a(int i, Class[] classes) {
+        switch (i) {
+            case C_DIALOG_UTIL:
+            case C_FACADE:
+            case C_FLASH_PIC_HELPER:
+            case C_AIO_UTILS:
+                a:
+                for (Class clz : classes) {
+                    if (Modifier.isAbstract(clz.getModifiers())) continue;
+                    for (Field f : clz.getDeclaredFields()) {
+                        if (!Modifier.isStatic(f.getModifiers())) continue a;
+                    }
+                    return clz;
+                }
+                break;
+            case C_BASE_PIC_DL_PROC:
+                for (Class clz : classes) {
+                    for (Field f : clz.getDeclaredFields()) {
+                        int m = f.getModifiers();
+                        if (Modifier.isStatic(m) && Modifier.isFinal(m) && f.getType().equals(Pattern.class))
+                            return clz;
+                    }
+                }
+                break;
+            case C_ITEM_BUILDER_FAC:
+                for (Class clz : classes) {
+                    if (clz.getDeclaredFields().length > 30) return clz;
+                }
+                break;
+            case C_ABS_GAL_SCENE:
+                for (Class clz : classes) {
+                    if (!Modifier.isAbstract(clz.getModifiers())) continue;
+                    for (Field f : clz.getDeclaredFields()) {
+                        if (f.getType().equals(View.class))
+                            return clz;
+                    }
+                }
+                break;
+        }
+        return null;
+    }
+
+    private static String[] e(int i) {
         ClassLoader loader = Initiator.getClassLoader();
-        Class clret = load(c(i));
-        if (clret != null) return clret.getName();
         int record = 0;
         int[] qf = d(i);
         byte[] key = b(i);
         if (qf != null) for (int dexi : qf) {
             record |= 1 << dexi;
             try {
-                String ret = a(key, dexi, loader);
-                if (ret != null) return ret.substring(1, ret.length() - 1);
+                String[] ret = a(key, dexi, loader);
+                if (ret != null) return ret;
             } catch (FileNotFoundException ignored) {
             }
         }
@@ -163,8 +215,8 @@ public class DexKit {
                 continue;
             }
             try {
-                String ret = a(key, dexi, loader);
-                if (ret != null) return ret.substring(1, ret.length() - 1);
+                String ret[] = a(key, dexi, loader);
+                if (ret != null) return ret;
             } catch (FileNotFoundException ignored) {
                 return null;
             }
@@ -172,7 +224,16 @@ public class DexKit {
         }
     }
 
-    public static String a(byte[] key, int i, ClassLoader loader) throws FileNotFoundException {
+    /**
+     * get ALL the possible class names
+     *
+     * @param key    the pattern
+     * @param i      C_XXXX
+     * @param loader to get dex file
+     * @return ["abc","ab"]
+     * @throws FileNotFoundException apk has no classesN.dex
+     */
+    public static String[] a(byte[] key, int i, ClassLoader loader) throws FileNotFoundException {
         String name;
         byte[] buf = new byte[4096];
         byte[] content;
@@ -194,19 +255,20 @@ public class DexKit {
             }
             in.close();
             content = baos.toByteArray();
-            int opcodeOffset = a(content, key);
-            if (opcodeOffset != -1) {
-                name = a(content, opcodeOffset);
-                return name;
+            ArrayList<Integer> opcodeOffsets = a(content, key);
+            String[] rets = new String[opcodeOffsets.size()];
+            for (int j = 0; j < opcodeOffsets.size(); j++) {
+                String desc = a(content, opcodeOffsets.get(j));
+                rets[j] = desc.substring(1, desc.length() - 1);
             }
+            return rets;
         } catch (IOException e) {
             log(e);
             return null;
         }
-        return null;
     }
 
-    public static int a(byte[] buf, byte[] target) {
+    public static ArrayList<Integer> a(byte[] buf, byte[] target) {
         ArrayList<Integer> rets = new ArrayList<>();
         int[] ret = new int[1];
         final float f[] = new float[1];
@@ -225,10 +287,10 @@ public class DexKit {
                     || buf[off - 2] == (byte) 27)/* Opcodes.OP_CONST_STRING_JUMBO*/ {
                 ret[0] = off - 2;
                 int opcodeOffset = ret[0];
-                return opcodeOffset;
+                rets.add(opcodeOffset);
             }
         }
-        return -1;
+        return rets;
     }
 
     public static String a(byte[] buf, int opcodeoff) {
@@ -337,24 +399,4 @@ public class DexKit {
         int i = buf[index] & 0xFF | (buf[index + 1] << 8) & 0xff00 | (buf[index + 2] << 16) & 0xff0000 | (buf[index + 3] << 24) & 0xff000000;
         return i;
     }
-
-    public static final short
-            kDexTypeHeaderItem = 0x0000,
-            kDexTypeStringIdItem = 0x0001,
-            kDexTypeTypeIdItem = 0x0002,
-            kDexTypeProtoIdItem = 0x0003,
-            kDexTypeFieldIdItem = 0x0004,
-            kDexTypeMethodIdItem = 0x0005,
-            kDexTypeClassDefItem = 0x0006,
-            kDexTypeMapList = 0x1000,
-            kDexTypeTypeList = 0x1001,
-            kDexTypeAnnotationSetRefList = 0x1002,
-            kDexTypeAnnotationSetItem = 0x1003,
-            kDexTypeClassDataItem = 0x2000,
-            kDexTypeCodeItem = 0x2001,
-            kDexTypeStringDataItem = 0x2002,
-            kDexTypeDebugInfoItem = 0x2003,
-            kDexTypeAnnotationItem = 0x2004,
-            kDexTypeEncodedArrayItem = 0x2005,
-            kDexTypeAnnotationsDirectoryItem = 0x2006;
 }
