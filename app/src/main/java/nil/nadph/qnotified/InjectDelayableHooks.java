@@ -33,9 +33,9 @@ public class InjectDelayableHooks {
                 break;
             }
         }
-        LinearLayout main[] = new LinearLayout[1];
-        ProgressBar prog[] = new ProgressBar[1];
-        TextView text[] = new TextView[1];
+        final LinearLayout main[] = new LinearLayout[1];
+        final ProgressBar prog[] = new ProgressBar[1];
+        final TextView text[] = new TextView[1];
         if (needDeobf) {
             try {
                 if (ctx != null) QThemeKit.initTheme(ctx);

@@ -97,7 +97,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
                                 break;
                             }
                         }
-                        Class __director = director;
+                        final Class __director = director;
                         XposedBridge.hookMethod(doStep, new XC_MethodHook(51) {
                             @Override
                             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
