@@ -6,8 +6,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import nil.nadph.qnotified.hook.FlashPicHook;
-import nil.nadph.qnotified.hook.RepeaterHook;
+import nil.nadph.qnotified.hook.*;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.QThemeKit;
 import nil.nadph.qnotified.util.Utils;
@@ -26,11 +25,14 @@ public class InjectDelayableHooks {
         if (inited) return true;
         inited = true;
         final Activity ctx = (Activity) iget_object_or_null(director, "a", load("mqq/app/AppActivity"));
-
-        FlashPicHook flash = FlashPicHook.get();
-        RepeaterHook repeaterHook = RepeaterHook.get();
-
-        boolean needDeobf = flash.isEnabled() && !flash.checkPreconditions();
+        boolean needDeobf = false;
+        BaseDelayableHook[] hooks = queryDelayableHooks();
+        for (BaseDelayableHook h : hooks) {
+            if (h.isEnabled() && !h.checkPreconditions()) {
+                needDeobf = true;
+                break;
+            }
+        }
         LinearLayout main[] = new LinearLayout[1];
         ProgressBar prog[] = new ProgressBar[1];
         TextView text[] = new TextView[1];
@@ -41,8 +43,11 @@ public class InjectDelayableHooks {
                 Utils.log(e);
             }
             final ArrayList<Integer> todos = new ArrayList<>();
-            for (int i : flash.getPreconditions()) {
-                if (DexKit.tryLoadOrNull(i) == null) todos.add(i);
+            for (BaseDelayableHook h : hooks) {
+                if (!h.isEnabled()) continue;
+                for (int i : h.getPreconditions()) {
+                    if (DexKit.tryLoadOrNull(i) == null) todos.add(i);
+                }
             }
             for (int idx = 0; idx < todos.size(); idx++) {
                 final String name = DexKit.c(todos.get(idx)).replace("/", ".");
@@ -81,8 +86,9 @@ public class InjectDelayableHooks {
                 DexKit.doFindClass(todos.get(idx));
             }
         }
-        if (flash.isEnabled()) flash.init();
-        if (repeaterHook.isEnabled()) repeaterHook.init();
+        for (BaseDelayableHook h : hooks) {
+            if (h.isEnabled()) h.init();
+        }
         if (ctx != null && main[0] != null) ctx.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -91,4 +97,15 @@ public class InjectDelayableHooks {
         });
         return true;
     }
+
+    public static BaseDelayableHook[] queryDelayableHooks() {
+        return new BaseDelayableHook[]{
+                FlashPicHook.get(),
+                RepeaterHook.get(),
+                EmoPicHook.get(),
+                GalleryBgHook.get()
+        };
+    }
+
+
 }

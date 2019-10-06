@@ -19,7 +19,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import nil.nadph.qnotified.ExfriendManager;
+import nil.nadph.qnotified.hook.EmoPicHook;
 import nil.nadph.qnotified.hook.FlashPicHook;
+import nil.nadph.qnotified.hook.GalleryBgHook;
 import nil.nadph.qnotified.hook.RepeaterHook;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.record.EventRecord;
@@ -88,14 +90,18 @@ public class SettingsAdapter implements ActivityAdapter {
         ll.addView(_t = newListItemButton(self, "屏蔽指定群@全体成员通知", Html.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[@全体成员]</font>就这点破事"), "0个群", clickToProxyActAction(ACTION_MUTE_AT_ALL)));
         __tv_muted_atall = _t.findViewById(R_ID_VALUE);
         ll.addView(_t = newListItemButton(self, "屏蔽指定群的红包通知", Html.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[QQ红包][有红包]</font>恭喜发财"), "0个群", clickToProxyActAction(ACTION_MUTE_RED_PACKET)));
-        ll.addView(newListItemSwitchConfigStub(self, "屏蔽回执消息的通知", null, qn_mute_talk_back, false));
         __tv_muted_redpacket = _t.findViewById(R_ID_VALUE);
         ll.addView(subtitle(self, "标准功能"));
         ll.addView(newListItemSwitchConfig(self, "语音转发", null, qn_enable_ptt_forward, false));
+        ll.addView(subtitle(self, "图片相关"));
         ll.addView(newListItemSwitchConfigInit(self, "以图片方式打开闪照", null, qn_flash_as_pic, false, FlashPicHook.get()));
+        if (!Utils.isTim(self)) {
+            ll.addView(newListItemSwitchConfigInit(self, "以图片方式打开表情", null, qn_sticker_as_pic, false, EmoPicHook.get()));
+        }
+        ll.addView(newListItemSwitchConfigInit(self, "聊天图片背景透明", null, qn_gallery_bg, false, GalleryBgHook.get()));
         ll.addView(newListItemSwitchConfigInit(self, "复读机", null, bug_repeater, false, RepeaterHook.get()));
         ll.addView(subtitle(self, "还没完成的功能(咕咕咕)"));
-        ll.addView(newListItemSwitchConfigStub(self, "以图片方式打开表情", null, qn_sticker_as_pic, false));
+        ll.addView(newListItemSwitchConfigStub(self, "屏蔽回执消息的通知", null, qn_mute_talk_back, false));
         //ll.addView(newListItemSwitchConfigStub(self, "上传透明头像", "开启后上传透明头像不会变黑", qn_enable_transparent, false));
         ll.addView(newListItemSwitchConfigStub(self, "发送卡片消息", "xml,json等", qn_send_card_msg, false));
         ll.addView(newListItemSwitchConfigStub(self, "隐藏送礼动画", null, qn_hide_gift_animation, false));

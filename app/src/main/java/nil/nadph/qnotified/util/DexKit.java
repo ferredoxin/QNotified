@@ -19,6 +19,8 @@ public class DexKit {
     public static final int C_FLASH_PIC_HELPER = 3;
     public static final int C_BASE_PIC_DL_PROC = 4;
     public static final int C_ITEM_BUILDER_FAC = 5;
+    public static final int C_AIO_UTILS = 6;
+    public static final int C_ABS_GAL_SCENE = 7;
 
     @Nullable
     public static Class tryLoadOrNull(int i) {
@@ -71,6 +73,10 @@ public class DexKit {
                 return "base_pic_dl_proc";
             case C_ITEM_BUILDER_FAC:
                 return "item_builder_fac";
+            case C_AIO_UTILS:
+                return "aio_utils";
+            case C_ABS_GAL_SCENE:
+                return "abs_gal_sc";
         }
         return null;
     }
@@ -87,6 +93,10 @@ public class DexKit {
                 return "com/tencent/mobileqq/transfile/BasePicDownloadProcessor";
             case C_ITEM_BUILDER_FAC:
                 return "com/tencent/mobileqq/activity/aio/item/ItemBuilderFactory";
+            case C_AIO_UTILS:
+                return "com.tencent.mobileqq.activity.aio.AIOUtils";
+            case C_ABS_GAL_SCENE:
+                return "com/tencent/common/galleryactivity/AbstractGalleryScene";
         }
         return null;
     }
@@ -103,6 +113,10 @@ public class DexKit {
                 return new byte[]{0x2C, 0x42, 0x61, 0x73, 0x65, 0x50, 0x69, 0x63, 0x44, 0x6F, 0x77, 0x6E, 0x6C};
             case C_ITEM_BUILDER_FAC:
                 return new byte[]{0x24, 0x49, 0x74, 0x65, 0x6D, 0x42, 0x75, 0x69, 0x6C, 0x64, 0x65, 0x72, 0x20, 0x69, 0x73, 0x3A, 0x20, 0x44};
+            case C_AIO_UTILS:
+                return new byte[]{0x0D, 0x6F, 0x70, 0x65, 0x6E, 0x41, 0x49, 0x4F, 0x20, 0x62, 0x79, 0x20, 0x4D, 0x54};
+            case C_ABS_GAL_SCENE:
+                return new byte[]{0x16, 0x67, 0x61, 0x6C, 0x6C, 0x65, 0x72, 0x79, 0x20, 0x73, 0x65, 0x74, 0x43, 0x6F, 0x6C, 0x6F, 0x72, 0x20, 0x62, 0x6C};
         }
         return null;
     }
@@ -119,6 +133,10 @@ public class DexKit {
                 return new int[]{7, 2};
             case C_ITEM_BUILDER_FAC:
                 return new int[]{6, 1};
+            case C_AIO_UTILS:
+                return new int[]{6};
+            case C_ABS_GAL_SCENE:
+                return new int[]{1};
         }
         return null;
     }
@@ -140,13 +158,17 @@ public class DexKit {
         }
         int dexi = 1;
         while (true) {
-            if ((record & (1 << dexi)) != 0) continue;
+            if ((record & (1 << dexi)) != 0) {
+                dexi++;
+                continue;
+            }
             try {
                 String ret = a(key, dexi, loader);
                 if (ret != null) return ret.substring(1, ret.length() - 1);
             } catch (FileNotFoundException ignored) {
                 return null;
             }
+            dexi++;
         }
     }
 

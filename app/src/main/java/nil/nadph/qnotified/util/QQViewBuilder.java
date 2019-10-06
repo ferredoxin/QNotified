@@ -131,7 +131,7 @@ public class QQViewBuilder {
         RelativeLayout root = newListItemSwitch(ctx, title, desc, on, new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(final CompoundButton buttonView, boolean isChecked) {
-                if (!hook.isInited() && !hook.checkPreconditions() && isChecked) {
+                if (!hook.isInited() && isChecked) {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -196,12 +196,14 @@ public class QQViewBuilder {
             DexKit.doFindClass(i);
         }
         hook.init();
-        Utils.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                pDialog[0].dismiss();
-            }
-        });
+        if (pDialog[0] != null) {
+            Utils.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    pDialog[0].dismiss();
+                }
+            });
+        }
     }
 
     public static RelativeLayout newListItemSwitchConfigStub(Context ctx, CharSequence title, CharSequence desc,

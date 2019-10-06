@@ -43,7 +43,8 @@ public class Utils {
             qn_hide_gift_animation = "qn_hide_gift_animation",
             qn_sign_in_as_text = "qn_sign_in_as_text",
             qn_mute_talk_back = "qn_mute_talk_back",
-            bug_repeater = "bug_repeater";
+            bug_repeater = "bug_repeater",
+    qn_gallery_bg="qn_gallery_bg";
 
     public static boolean DEBUG = true;
     public static boolean V_TOAST = false;
