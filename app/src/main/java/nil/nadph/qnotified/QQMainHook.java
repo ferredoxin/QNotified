@@ -71,7 +71,7 @@ public class QQMainHook<SlideDetectListView extends ViewGroup> implements IXpose
                         fin.close();
                         String procName = new String(b, 0, len).trim();
                         //XposedBridge.log(procName);
-                        if (procName.endsWith(":peak")) return;
+                        //if (procName.endsWith(":peak")) return;
                         if (procName.endsWith(":qzone")) return;
                         if (procName.endsWith(":tool")) return;
                         if (procName.endsWith(":MSF")) return;

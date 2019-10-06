@@ -36,7 +36,7 @@ public class QQViewBuilder {
         root.setBackgroundDrawable(QThemeKit.getListItemBackground());
         TextView tv = new TextView(ctx);
         tv.setText(title);
-        tv.setId(R_ID_TITLE);
+        tv.setId(R_ID_TITLE);libcore.io.
         tv.setTextColor(QThemeKit.skin_black);
         tv.setTextSize(dip2sp(ctx, 18));
         CompoundButton sw = switch_new(ctx);
