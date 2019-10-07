@@ -12,8 +12,9 @@ import nil.nadph.qnotified.util.DexKit;
 import java.lang.reflect.Field;
 
 import static nil.nadph.qnotified.util.Utils.*;
+import nil.nadph.qnotified.ipc.*;
 
-public class GalleryBgHook implements BaseDelayableHook {
+public class GalleryBgHook extends BaseDelayableHook {
     private GalleryBgHook() {
     }
 
@@ -59,6 +60,11 @@ public class GalleryBgHook implements BaseDelayableHook {
         }
     }
 
+	@Override
+	public int getEffectiveProc() {
+		return SyncUtils.PROC_PEAK;
+	}
+	
     @Override
     public boolean checkPreconditions() {
         return DexKit.tryLoadOrNull(DexKit.C_ABS_GAL_SCENE) != null;
@@ -83,4 +89,5 @@ public class GalleryBgHook implements BaseDelayableHook {
             return false;
         }
     }
+	
 }

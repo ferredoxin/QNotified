@@ -18,6 +18,7 @@ import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
+import nil.nadph.qnotified.ipc.*;
 
 @SuppressWarnings("unchecked")
 public class QQViewBuilder {
@@ -36,7 +37,7 @@ public class QQViewBuilder {
         root.setBackgroundDrawable(QThemeKit.getListItemBackground());
         TextView tv = new TextView(ctx);
         tv.setText(title);
-        tv.setId(R_ID_TITLE);libcore.io.
+        tv.setId(R_ID_TITLE);
         tv.setTextColor(QThemeKit.skin_black);
         tv.setTextSize(dip2sp(ctx, 18));
         CompoundButton sw = switch_new(ctx);
@@ -195,7 +196,8 @@ public class QQViewBuilder {
             });
             DexKit.doFindClass(i);
         }
-        hook.init();
+        if(hook.isTargetProc())hook.init();
+		SyncUtils.requestInitHook(hook.getEffectiveProc(),hook.getId());
         if (pDialog[0] != null) {
             Utils.runOnUiThread(new Runnable() {
                 @Override

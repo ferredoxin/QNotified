@@ -12,8 +12,9 @@ import nil.nadph.qnotified.util.DexKit;
 import static nil.nadph.qnotified.util.Initiator._PicItemBuilder;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
+import nil.nadph.qnotified.ipc.*;
 
-public class EmoPicHook implements BaseDelayableHook {
+public class EmoPicHook extends BaseDelayableHook {
 
     private EmoPicHook() {
     }
@@ -69,6 +70,11 @@ public class EmoPicHook implements BaseDelayableHook {
         return new int[]{DexKit.C_AIO_UTILS};
     }
 
+	@Override
+	public int getEffectiveProc() {
+		return SyncUtils.PROC_MAIN;
+	}
+	
     @Override
     public boolean isInited() {
         return inited;

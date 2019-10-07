@@ -19,8 +19,9 @@ import java.lang.reflect.Method;
 
 import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
+import nil.nadph.qnotified.ipc.*;
 
-public class RepeaterHook implements BaseDelayableHook {
+public class RepeaterHook extends BaseDelayableHook {
     private RepeaterHook() {
     }
 
@@ -269,6 +270,11 @@ public class RepeaterHook implements BaseDelayableHook {
 
     private boolean inited = false;
 
+	@Override
+	public int getEffectiveProc() {
+		return SyncUtils.PROC_MAIN;
+	}
+	
     @Override
     public boolean checkPreconditions() {
         return true;
@@ -283,6 +289,11 @@ public class RepeaterHook implements BaseDelayableHook {
     public boolean isInited() {
         return inited;
     }
+
+	@Override
+	public int getId() {
+		return BaseDelayableHook.HOOK_REPEATER;
+	}
 
     @Override
     public boolean isEnabled() {

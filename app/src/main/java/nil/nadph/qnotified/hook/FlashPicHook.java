@@ -14,8 +14,9 @@ import java.lang.reflect.Modifier;
 
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
+import nil.nadph.qnotified.ipc.*;
 
-public class FlashPicHook implements BaseDelayableHook {
+public class FlashPicHook extends BaseDelayableHook {
     private FlashPicHook() {
     }
 
@@ -121,6 +122,11 @@ public class FlashPicHook implements BaseDelayableHook {
         return DexKit.tryLoadOrNull(DexKit.C_FLASH_PIC_HELPER) != null
                 && DexKit.tryLoadOrNull(DexKit.C_BASE_PIC_DL_PROC) != null && DexKit.tryLoadOrNull(DexKit.C_ITEM_BUILDER_FAC) != null;
     }
+	
+	@Override
+	public int getEffectiveProc() {
+		return SyncUtils.PROC_MAIN;
+	}
 
     @Override
     public int[] getPreconditions() {
@@ -141,4 +147,10 @@ public class FlashPicHook implements BaseDelayableHook {
             return false;
         }
     }
+
+	@Override
+	public int getId() {
+		return BaseDelayableHook.HOOK_FLASH_PIC;
+	}
+	
 }

@@ -16,11 +16,16 @@ public class ConfigManager {
     private static ConfigManager SELF;
     private File file;
     private HashMap<String, Object> config;
-
+	private boolean dirty;
+	
     public ConfigManager(File f) throws IOException {
         file = f;
         reinit();
     }
+	
+	public void setDirtyFlag(){
+		dirty=true;
+	}
 	
 	public void reinit() throws IOException{
 		if (!file.exists()) file.createNewFile();
@@ -39,11 +44,19 @@ public class ConfigManager {
     }
 
     public Object getOrDefault(String key, Object def) {
+		try {
+			if (dirty)reload();
+		} catch (Exception ignored) {
+		}
         if (!config.containsKey(key)) config.put(key, def);
         return config.get(key);
     }
 
     public boolean getBooleanOrFalse(String key) {
+		try {
+			if (dirty)reload();
+		} catch (Exception ignored) {
+		}
         if (!config.containsKey(key)) config.put(key, false);
         try {
             return ((Boolean) config.get(key)).booleanValue();
@@ -53,6 +66,10 @@ public class ConfigManager {
     }
 
     public boolean getBooleanOrDefault(String key, boolean def) {
+		try {
+			if (dirty)reload();
+		} catch (Exception ignored) {
+		}
         if (!config.containsKey(key)) config.put(key, def);
         try {
             return ((Boolean) config.get(key)).booleanValue();
@@ -62,6 +79,10 @@ public class ConfigManager {
     }
 
     public int getIntOrDefault(String key, int def) {
+		try {
+			if (dirty)reload();
+		} catch (Exception ignored) {
+		}
         if (!config.containsKey(key)) config.put(key, def);
         try {
             return ((Integer) config.get(key)).intValue();
@@ -71,6 +92,10 @@ public class ConfigManager {
     }
 
     public String getString(String key) {
+		try {
+			if (dirty)reload();
+		} catch (Exception ignored) {
+		}
         return (String) config.get(key);
     }
 
@@ -79,6 +104,10 @@ public class ConfigManager {
     }
 
     public HashMap<String, Object> getAllConfig() {
+		try {
+			if (dirty)reload();
+		} catch (Exception ignored) {
+		}
         return config;
     }
 
@@ -150,6 +179,7 @@ public class ConfigManager {
                         throw new IOException("Unexpected type:" + _type + ",name:\"" + key + "\",version:" + ver);
                 }
             }
+			dirty=false;
         }
     }
 
@@ -196,6 +226,10 @@ public class ConfigManager {
     }
 
     public long getLongOrDefault(String key, long i) {
+		try {
+			if (dirty)reload();
+		} catch (Exception ignored) {
+		}
         if (!config.containsKey(key)) config.put(key, i);
         try {
             return ((Long) config.get(key)).longValue();

@@ -26,7 +26,7 @@ public class InjectDelayableHooks {
         inited = true;
         final Activity ctx = (Activity) iget_object_or_null(director, "a", load("mqq/app/AppActivity"));
         boolean needDeobf = false;
-        BaseDelayableHook[] hooks = queryDelayableHooks();
+        BaseDelayableHook[] hooks = BaseDelayableHook.queryDelayableHooks();
         for (BaseDelayableHook h : hooks) {
             if (h.isEnabled() && !h.checkPreconditions()) {
                 needDeobf = true;
@@ -97,15 +97,5 @@ public class InjectDelayableHooks {
         });
         return true;
     }
-
-    public static BaseDelayableHook[] queryDelayableHooks() {
-        return new BaseDelayableHook[]{
-                FlashPicHook.get(),
-                RepeaterHook.get(),
-                EmoPicHook.get(),
-                GalleryBgHook.get()
-        };
-    }
-
 
 }
