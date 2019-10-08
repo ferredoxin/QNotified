@@ -35,6 +35,7 @@ public class RepeaterHook extends BaseDelayableHook {
     @SuppressLint({"WrongConstant", "ResourceType"})
     public boolean init() {
         if (inited) return true;
+		try{
         Method getView = null;
         Class listener2 = null;
         Class itemHolder = null;
@@ -264,8 +265,12 @@ public class RepeaterHook extends BaseDelayableHook {
                         }
                     }
                 });
-        inited = true;
-        return true;
+			inited = true;
+			return true;
+				}catch(Throwable e){
+					log(e);
+					return false;
+				}
     }
 
     private boolean inited = false;
@@ -282,18 +287,13 @@ public class RepeaterHook extends BaseDelayableHook {
 
     @Override
     public int[] getPreconditions() {
-        return new int[]{};
+        return new int[0];
     }
 
     @Override
     public boolean isInited() {
         return inited;
     }
-
-	@Override
-	public int getId() {
-		return BaseDelayableHook.HOOK_REPEATER;
-	}
 
     @Override
     public boolean isEnabled() {

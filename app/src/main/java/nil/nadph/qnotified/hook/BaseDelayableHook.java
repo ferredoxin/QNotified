@@ -1,4 +1,5 @@
 package nil.nadph.qnotified.hook;
+
 import nil.nadph.qnotified.util.*;
 import nil.nadph.qnotified.ipc.*;
 
@@ -14,6 +15,11 @@ public abstract class BaseDelayableHook {
 	
 	public static BaseDelayableHook[] queryDelayableHooks() {
         if (mAllHooks == null)mAllHooks = new BaseDelayableHook[]{
+				SettingEntryHook.get(),
+				DelDetectorHook.get(),
+				PttForwardHook.get(),
+				MuteAtAllAndRedPacket.get(),
+				CardMsgHook.get(),
 				FlashPicHook.get(),
 				RepeaterHook.get(),
 				EmoPicHook.get(),
@@ -34,19 +40,23 @@ public abstract class BaseDelayableHook {
 
     public abstract int[] getPreconditions();
 
-    public boolean checkPreconditions(){
-		for(int i:getPreconditions()){
-			if(DexKit.tryLoadOrNull(i)==null)return false;
+    public boolean checkPreconditions() {
+		for (int i:getPreconditions()) {
+			if (DexKit.tryLoadOrNull(i) == null)return false;
 		}
 		return true;
 	}
-	
-	public final int getId(){
-		if(myId!=-1)return myId;
+
+	public int getId() {
+		if (myId != -1)return myId;
 		BaseDelayableHook[] hooks=queryDelayableHooks();
-		for(int i=0;i<hooks.length;i++){
-			if(hook.getClass().equals(this.getClass())
+		for (int i=0;i < hooks.length;i++) {
+			if (hooks[i].getClass().equals(this.getClass())) {
+				myId = i;
+				return myId;
+			}
 		}
+		return -1;
 	}
 
     public abstract boolean isEnabled();

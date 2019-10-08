@@ -127,7 +127,7 @@ public class SettingsAdapter implements ActivityAdapter {
         ll.addView(newListItemButton(self, "打赏", "请选择扶贫方式", null, clickTheComing()));
         ll.addView(newListItemButton(self, "QQ", "点击私信反馈(bug,建议,催更等等)", "1041703712", clickToChat()));
         ll.addView(newListItemButton(self, "Mail", null, "xenonhydride@gmail.com", null));
-        ll.addView(newListItemButton(self, "Github", "Bug -> Issue", "cinit/QNotified", clickToUrl("https://github.com/cinit/QNotified")));
+        ll.addView(newListItemButton(self, "Github", "Bug -> Issue (star)", "cinit/QNotified", clickToUrl("https://github.com/cinit/QNotified")));
         ll.addView(newListItemButton(self, "Telegram", null, "Auride", clickToUrl("https://t.me/Auride")));
         ll.addView(subtitle(self, "This program is distributed in the hope that it will be useful, " +
                 "but WITHOUT ANY WARRANTY; without even the implied warranty of " +

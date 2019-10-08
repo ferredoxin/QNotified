@@ -33,6 +33,8 @@ import static nil.nadph.qnotified.ActProxyMgr.*;
 import static nil.nadph.qnotified.record.Table.*;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
+import java.lang.ref.*;
+import nil.nadph.qnotified.hook.*;
 
 public class ExfriendManager {
     static private final int ID_EX_NOTIFY = 65537;
@@ -473,8 +475,9 @@ public class ExfriendManager {
     }
 
     public void setRedDot() {
-        if (QQMainHook.redDotRef == null) return;
-        final TextView rd = QQMainHook.redDotRef.get();
+		WeakReference redDotRef=DelDetectorHook.get().redDotRef;
+        if (redDotRef == null) return;
+        final TextView rd = (TextView) redDotRef.get();
         if (rd == null) {
             log("Red dot missing!");
             return;
@@ -617,7 +620,7 @@ public class ExfriendManager {
             FriendRecord fr = persons.get(uin);
             if (fr == null) {
                 try {
-                    showToast(QQMainHook.splashActivityRef.get(), TOAST_TYPE_ERROR, "onActDelResp:get(" + uin + ")==null", Toast.LENGTH_SHORT);
+                    showToast(((Context)QQMainHook.splashActivityRef.get()), TOAST_TYPE_ERROR, "onActDelResp:get(" + uin + ")==null", Toast.LENGTH_SHORT);
                 } catch (Throwable e) {
                 }
                 return;

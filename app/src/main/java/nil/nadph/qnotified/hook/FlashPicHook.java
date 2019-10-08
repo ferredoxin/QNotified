@@ -147,10 +147,5 @@ public class FlashPicHook extends BaseDelayableHook {
             return false;
         }
     }
-
-	@Override
-	public int getId() {
-		return BaseDelayableHook.HOOK_FLASH_PIC;
-	}
 	
 }

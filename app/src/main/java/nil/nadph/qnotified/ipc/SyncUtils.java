@@ -46,6 +46,7 @@ public class SyncUtils {
 	public static boolean inited=false;
 
     public static void initBroadcast(Context ctx) {
+		if(inited=true)return;
 		BroadcastReceiver recv=new BroadcastReceiver(){
 			@Override
 			public void onReceive(Context context, Intent intent) {
@@ -75,6 +76,7 @@ public class SyncUtils {
 		filter.addAction(SYNC_FILE_CHANGED);
 		filter.addAction(HOOK_DO_INIT);
 		ctx.registerReceiver(recv,filter);
+		inited=true;
 	}
 	
 	public static void onFileChanged(int file){
@@ -151,6 +153,12 @@ public class SyncUtils {
 						}
 					}
 				}
+				/*FileInputStream fin = new FileInputStream("/proc/" + android.os.Process.myPid() + "/cmdline");
+				 byte[] b = new byte[64];
+				 int len = fin.read(b, 0, b.length);
+				 fin.close();
+				 String procName = new String(b, 0, len).trim();
+	 			//XposedBridge.log(procName);*/
 			} catch (Throwable e) {
 				log("getProcessName error " + e);
 			}
