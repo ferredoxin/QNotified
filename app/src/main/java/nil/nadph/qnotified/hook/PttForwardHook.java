@@ -1,5 +1,4 @@
 package nil.nadph.qnotified.hook;
-import nil.nadph.qnotified.ipc.*;
 import nil.nadph.qnotified.record.*;
 import de.robv.android.xposed.*;
 import java.lang.reflect.*;
@@ -14,7 +13,6 @@ import android.graphics.*;
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static nil.nadph.qnotified.ActProxyMgr.*;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 import android.view.*;

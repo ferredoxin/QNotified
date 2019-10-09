@@ -1,7 +1,7 @@
 package nil.nadph.qnotified.hook;
 
+import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.util.*;
-import nil.nadph.qnotified.ipc.*;
 
 public abstract class BaseDelayableHook {
 	
@@ -29,7 +29,7 @@ public abstract class BaseDelayableHook {
     }
 	
 	public boolean isTargetProc(){
-		return (getEffectiveProc()&SyncUtils.getProcessType())!=0;
+		return (getEffectiveProc()& SyncUtils.getProcessType())!=0;
 	}
 	
 	public abstract int getEffectiveProc();

@@ -6,13 +6,13 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
+import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.util.DexKit;
 
 import java.lang.reflect.Field;
 
 import static nil.nadph.qnotified.util.Utils.*;
-import nil.nadph.qnotified.ipc.*;
 
 public class GalleryBgHook extends BaseDelayableHook {
     private GalleryBgHook() {

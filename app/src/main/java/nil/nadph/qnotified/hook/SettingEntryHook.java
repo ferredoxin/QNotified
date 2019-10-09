@@ -6,7 +6,6 @@ import android.view.*;
 import android.widget.*;
 import de.robv.android.xposed.*;
 import nil.nadph.qnotified.*;
-import nil.nadph.qnotified.ipc.*;
 import nil.nadph.qnotified.util.*;
 
 import static nil.nadph.qnotified.util.Utils.*;

@@ -1,7 +1,6 @@
 package nil.nadph.qnotified.hook;
-import nil.nadph.qnotified.ipc.*;
+import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.util.*;
-import nil.nadph.qnotified.record.*;
 
 import static nil.nadph.qnotified.util.Utils.log;
 

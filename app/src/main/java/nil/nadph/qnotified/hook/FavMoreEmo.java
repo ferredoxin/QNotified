@@ -1,6 +1,5 @@
 package nil.nadph.qnotified.hook;
-import nil.nadph.qnotified.ipc.*;
-import nil.nadph.qnotified.util.*;
+import nil.nadph.qnotified.SyncUtils;
 
 public class FavMoreEmo extends BaseDelayableHook{
 	private static final FavMoreEmo self = new FavMoreEmo();

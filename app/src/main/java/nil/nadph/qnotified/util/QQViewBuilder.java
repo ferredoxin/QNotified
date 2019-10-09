@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import nil.nadph.qnotified.QQMainHook;
+import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.record.ConfigManager;
 
@@ -18,7 +19,6 @@ import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
-import nil.nadph.qnotified.ipc.*;
 
 @SuppressWarnings("unchecked")
 public class QQViewBuilder {

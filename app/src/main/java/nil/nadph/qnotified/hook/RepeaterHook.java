@@ -6,10 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
+import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.QThemeKit;
@@ -19,7 +19,6 @@ import java.lang.reflect.Method;
 
 import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
-import nil.nadph.qnotified.ipc.*;
 
 public class RepeaterHook extends BaseDelayableHook {
     private RepeaterHook() {

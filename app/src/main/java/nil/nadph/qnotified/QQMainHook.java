@@ -1,45 +1,22 @@
 package nil.nadph.qnotified;
 
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.Dialog;
-import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.*;
 import de.robv.android.xposed.*;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
-import nil.nadph.qnotified.pk.FriendChunk;
 import nil.nadph.qnotified.record.ConfigManager;
-import nil.nadph.qnotified.ui.DebugDrawable;
 import nil.nadph.qnotified.util.*;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.*;
-import java.util.ArrayList;
-import java.util.HashSet;
 
-import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
-import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static nil.nadph.qnotified.ActProxyMgr.*;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
-import nil.nadph.qnotified.ipc.*;
-import java.util.*;
-import java.io.*;
 
 /*TitleKit:Lcom/tencent/mobileqq/widget/navbar/NavBarCommon*/
 

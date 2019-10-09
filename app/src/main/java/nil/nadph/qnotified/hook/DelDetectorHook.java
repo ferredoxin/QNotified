@@ -11,7 +11,6 @@ import de.robv.android.xposed.*;
 import nil.nadph.qnotified.pk.*;
 import nil.nadph.qnotified.*;
 import nil.nadph.qnotified.util.*;
-import nil.nadph.qnotified.ipc.*;
 import nil.nadph.qnotified.record.*;
 import android.widget.*;
 import android.app.*;

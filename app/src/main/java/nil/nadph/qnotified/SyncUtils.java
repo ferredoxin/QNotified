@@ -1,4 +1,4 @@
-package nil.nadph.qnotified.ipc;
+package nil.nadph.qnotified;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
