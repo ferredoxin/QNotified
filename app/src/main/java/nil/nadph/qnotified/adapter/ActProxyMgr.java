@@ -1,14 +1,10 @@
-package nil.nadph.qnotified;
+package nil.nadph.qnotified.adapter;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
-import nil.nadph.qnotified.adapter.ActivityAdapter;
-import nil.nadph.qnotified.adapter.ExfriendListAdapter;
-import nil.nadph.qnotified.adapter.SettingsAdapter;
-import nil.nadph.qnotified.adapter.TroopSelectAdapter;
 import nil.nadph.qnotified.util.QThemeKit;
 
 import java.lang.reflect.InvocationTargetException;
@@ -30,7 +26,7 @@ public class ActProxyMgr extends XC_MethodHook {
     public static final String ACTIVITY_PROXY_ACTION = "qn_act_proxy_action";
     public static final int ACTION_EXFRIEND_LIST = 1;
     public static final int ACTION_ADV_SETTINGS = 2;
-    /*public static final int ACTION_ABOUT=3;*/
+    public static final int ACTION_ABOUT = 3;
     public static final int ACTION_SHELL = 4;
     public static final int ACTION_MUTE_AT_ALL = 5;
     public static final int ACTION_MUTE_RED_PACKET = 6;
@@ -55,70 +51,70 @@ public class ActProxyMgr extends XC_MethodHook {
         param.setResult(null);
         ActivityAdapter aa;
         Method method = (Method) param.method;
-		try {
-			if (method.getName().equals("onCreate") && param.args.length == 1) {
-				Method m = load("mqq/app/AppActivity").getDeclaredMethod("onCreate", Bundle.class);
-				m.setAccessible(true);
-				try {
-					ActProxyMgr.invokeSuper(self, m, param.args);
-				} catch (ActProxyMgr.BreakUnaughtException e) {
-				}
-				aa = createActivityAdapter(action, self);
-				Object exlist_mFlingHandler = new_instance(load("com/tencent/mobileqq/activity/fling/FlingGestureHandler"), self, Activity.class);
-				iput_object(self, "mFlingHandler", exlist_mFlingHandler);
-				QThemeKit.initTheme(self);
-				aa.doOnPostCreate((Bundle) param.args[0]);
-				self.getWindow().getDecorView().setTag(aa);
-			} else {
-				aa = (ActivityAdapter) self.getWindow().getDecorView().getTag();
-				switch (method.getName()) {
-					case "doOnDestroy":
-						Method m = getSuperMethod(self.getClass(), "doOnDestroy");
-						m.setAccessible(true);
-						try {
-							ActProxyMgr.invokeSuper(self, m);
-						} catch (ActProxyMgr.BreakUnaughtException e) {
-						}
-						aa.doOnPostDestory();
-						break;
-					case "doOnPause":
-						m = getSuperMethod(self.getClass(), "doOnPause");
-						m.setAccessible(true);
-						try {
-							ActProxyMgr.invokeSuper(self, m);
-						} catch (ActProxyMgr.BreakUnaughtException e) {
-						}
-						aa.doOnPostPause();
-						break;
-					case "doOnResume":
-						m = getSuperMethod(self.getClass(), "doOnResume");
-						m.setAccessible(true);
-						try {
-							ActProxyMgr.invokeSuper(self, m);
-						} catch (ActProxyMgr.BreakUnaughtException e) {
-						}
-						aa.doOnPostResume();
-						break;
-					case "doOnActivityResult":
-						m = getSuperMethod(self.getClass(), "doOnActivityResult", int.class, int.class, Intent.class);
-						m.setAccessible(true);
-						try {
-							ActProxyMgr.invokeSuper(self, m, param.args);
-						} catch (ActProxyMgr.BreakUnaughtException e) {
-						}
-						aa.doOnPostActivityResult((int) param.args[0], (int) param.args[1], (Intent) param.args[2]);
-						break;
-					case "isWrapContent":
-						param.setResult(aa.isWrapContent());
-						break;
-					default:
-						throw new UnsupportedOperationException("Unexpected method: " + method.getName());
-				}
-			}
-		} catch (Throwable th) {
-			param.setThrowable(th);
-			log(th);
-		}
+        try {
+            if (method.getName().equals("onCreate") && param.args.length == 1) {
+                Method m = load("mqq/app/AppActivity").getDeclaredMethod("onCreate", Bundle.class);
+                m.setAccessible(true);
+                try {
+                    ActProxyMgr.invokeSuper(self, m, param.args);
+                } catch (ActProxyMgr.BreakUnaughtException e) {
+                }
+                aa = createActivityAdapter(action, self);
+                Object exlist_mFlingHandler = new_instance(load("com/tencent/mobileqq/activity/fling/FlingGestureHandler"), self, Activity.class);
+                iput_object(self, "mFlingHandler", exlist_mFlingHandler);
+                QThemeKit.initTheme(self);
+                aa.doOnPostCreate((Bundle) param.args[0]);
+                self.getWindow().getDecorView().setTag(aa);
+            } else {
+                aa = (ActivityAdapter) self.getWindow().getDecorView().getTag();
+                switch (method.getName()) {
+                    case "doOnDestroy":
+                        Method m = getSuperMethod(self.getClass(), "doOnDestroy");
+                        m.setAccessible(true);
+                        try {
+                            ActProxyMgr.invokeSuper(self, m);
+                        } catch (ActProxyMgr.BreakUnaughtException e) {
+                        }
+                        aa.doOnPostDestory();
+                        break;
+                    case "doOnPause":
+                        m = getSuperMethod(self.getClass(), "doOnPause");
+                        m.setAccessible(true);
+                        try {
+                            ActProxyMgr.invokeSuper(self, m);
+                        } catch (ActProxyMgr.BreakUnaughtException e) {
+                        }
+                        aa.doOnPostPause();
+                        break;
+                    case "doOnResume":
+                        m = getSuperMethod(self.getClass(), "doOnResume");
+                        m.setAccessible(true);
+                        try {
+                            ActProxyMgr.invokeSuper(self, m);
+                        } catch (ActProxyMgr.BreakUnaughtException e) {
+                        }
+                        aa.doOnPostResume();
+                        break;
+                    case "doOnActivityResult":
+                        m = getSuperMethod(self.getClass(), "doOnActivityResult", int.class, int.class, Intent.class);
+                        m.setAccessible(true);
+                        try {
+                            ActProxyMgr.invokeSuper(self, m, param.args);
+                        } catch (ActProxyMgr.BreakUnaughtException e) {
+                        }
+                        aa.doOnPostActivityResult((int) param.args[0], (int) param.args[1], (Intent) param.args[2]);
+                        break;
+                    case "isWrapContent":
+                        param.setResult(aa.isWrapContent());
+                        break;
+                    default:
+                        throw new UnsupportedOperationException("Unexpected method: " + method.getName());
+                }
+            }
+        } catch (Throwable th) {
+            param.setThrowable(th);
+            log(th);
+        }
     }
 
     private ActivityAdapter createActivityAdapter(int action, Activity activity) {
@@ -130,6 +126,8 @@ public class ActProxyMgr extends XC_MethodHook {
             case ACTION_MUTE_AT_ALL:
             case ACTION_MUTE_RED_PACKET:
                 return new TroopSelectAdapter(activity, action);
+            case ACTION_ABOUT:
+                return new AboutActivity(activity);
             default:
                 throw new UnsupportedOperationException("Unknown action " + action);
         }

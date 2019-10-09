@@ -5,26 +5,34 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import de.robv.android.xposed.*;
+import de.robv.android.xposed.IXposedHookLoadPackage;
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XC_MethodReplacement;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import nil.nadph.qnotified.adapter.ActProxyMgr;
 import nil.nadph.qnotified.record.ConfigManager;
-import nil.nadph.qnotified.util.*;
+import nil.nadph.qnotified.util.ClazzExplorer;
+import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.Initiator;
+import nil.nadph.qnotified.util.Utils;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.*;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static nil.nadph.qnotified.ActProxyMgr.*;
+import static nil.nadph.qnotified.adapter.ActProxyMgr.ACTIVITY_PROXY_ACTION;
+import static nil.nadph.qnotified.adapter.ActProxyMgr.ACTIVITY_PROXY_ID_TAG;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
 /*TitleKit:Lcom/tencent/mobileqq/widget/navbar/NavBarCommon*/
 
 public class QQMainHook implements IXposedHookLoadPackage {
-	public static WeakReference<Activity> splashActivityRef;
+    public static WeakReference<Activity> splashActivityRef;
     public static final String QN_FULL_TAG = "qn_full_tag";
     XC_LoadPackage.LoadPackageParam lpparam;
-	
+
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam _lpparam) throws Throwable {
         try {
@@ -90,10 +98,10 @@ public class QQMainHook implements IXposedHookLoadPackage {
 							Object[] elem=(Object[]) iget_object_or_null(ent.getValue(),"elements");
 							for(Object cb:elem){
 								Class hook=cb.getClass();
-								if(hook.getName().contains("qqxposedhook")){
+								if(hook.getName().contains(_target_)){
 									ClassLoader cl=hook.getClassLoader();
 									try {
-										Class de=cl.loadClass("ˋﹳ.ˋﹳ.ˋﹳ.ˋﹳ".replace(" ", ""));
+										Class de=cl.loadClass(_decoder_.replace(" ", ""));
 										Method[] ms=de.getDeclaredMethods();
 										Method m=null;
 										for(Method mi:ms){
@@ -114,7 +122,7 @@ public class QQMainHook implements IXposedHookLoadPackage {
 											fout.append(ret);
 											fout.append('\n');
 										}
-										FileOutputStream f2out=new FileOutputStream("/tmp/qxstr");
+										FileOutputStream f2out=new FileOutputStream(_out_);
 										f2out.write(fout.toString().getBytes());
 										f2out.flush();
 										f2out.close();
@@ -132,7 +140,6 @@ public class QQMainHook implements IXposedHookLoadPackage {
             log(e);
             throw e;
         }
-		
     }
 
     private void injectStartupHook(Context ctx) {
@@ -249,11 +256,10 @@ public class QQMainHook implements IXposedHookLoadPackage {
 		 });//*/
         asyncStartFindClass();
         hideMiniAppEntry();
-		SyncUtils.initBroadcast(ctx);
+        SyncUtils.initBroadcast(ctx);
     }
 
-    
- 
+
     private void hideMiniAppEntry() {
         try {
             if (Utils.isTim(getApplication())) return;
@@ -341,7 +347,6 @@ public class QQMainHook implements IXposedHookLoadPackage {
         }
     }
 
-    
 
     private void asyncStartFindClass() {
         if (DexKit.tryLoadOrNull(DexKit.C_DIALOG_UTIL) == null)
@@ -379,7 +384,6 @@ public class QQMainHook implements IXposedHookLoadPackage {
             }).start();
     }
 
-    
 
     public XC_MethodHook invokeRecord = new XC_MethodHook(200) {
         @Override
@@ -450,6 +454,5 @@ public class QQMainHook implements IXposedHookLoadPackage {
         }
     }
 
-    
 
 }

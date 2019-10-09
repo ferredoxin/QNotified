@@ -196,8 +196,8 @@ public class QQViewBuilder {
             });
             DexKit.doFindClass(i);
         }
-        if(hook.isTargetProc())hook.init();
-		SyncUtils.requestInitHook(hook.getEffectiveProc(),hook.getId());
+        if (hook.isTargetProc()) hook.init();
+        SyncUtils.requestInitHook(hook.getEffectiveProc(), hook.getId());
         if (pDialog[0] != null) {
             Utils.runOnUiThread(new Runnable() {
                 @Override

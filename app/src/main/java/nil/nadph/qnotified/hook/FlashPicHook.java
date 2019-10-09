@@ -122,11 +122,11 @@ public class FlashPicHook extends BaseDelayableHook {
         return DexKit.tryLoadOrNull(DexKit.C_FLASH_PIC_HELPER) != null
                 && DexKit.tryLoadOrNull(DexKit.C_BASE_PIC_DL_PROC) != null && DexKit.tryLoadOrNull(DexKit.C_ITEM_BUILDER_FAC) != null;
     }
-	
-	@Override
-	public int getEffectiveProc() {
-		return SyncUtils.PROC_MAIN;
-	}
+
+    @Override
+    public int getEffectiveProc() {
+        return SyncUtils.PROC_MAIN;
+    }
 
     @Override
     public int[] getPreconditions() {
@@ -147,5 +147,5 @@ public class FlashPicHook extends BaseDelayableHook {
             return false;
         }
     }
-	
+
 }

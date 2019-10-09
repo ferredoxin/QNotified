@@ -19,10 +19,10 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import nil.nadph.qnotified.FaceImpl;
-import nil.nadph.qnotified.util.QThemeKit;
-import nil.nadph.qnotified.util.Utils;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.util.QQViewBuilder;
+import nil.nadph.qnotified.util.QThemeKit;
+import nil.nadph.qnotified.util.Utils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -32,8 +32,8 @@ import java.util.HashSet;
 import static android.view.View.GONE;
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.ActProxyMgr.ACTION_MUTE_AT_ALL;
-import static nil.nadph.qnotified.ActProxyMgr.ACTION_MUTE_RED_PACKET;
+import static nil.nadph.qnotified.adapter.ActProxyMgr.ACTION_MUTE_AT_ALL;
+import static nil.nadph.qnotified.adapter.ActProxyMgr.ACTION_MUTE_RED_PACKET;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 

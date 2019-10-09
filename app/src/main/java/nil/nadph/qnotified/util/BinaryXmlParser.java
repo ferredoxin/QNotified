@@ -15,10 +15,10 @@ import java.util.Stack;
 public class BinaryXmlParser {
 
     public static XmlNode parseXml(String filePath) {
-		FileInputStream fis =null;
+        FileInputStream fis = null;
         try {
-			fis= new FileInputStream(filePath);
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            fis = new FileInputStream(filePath);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
             byte[] buffer = new byte[1024];
             int len = 0;
             while ((len = fis.read(buffer)) != -1) {
@@ -28,11 +28,12 @@ public class BinaryXmlParser {
 
         } catch (Exception e) {
             Utils.log("parse xml error:" + e.toString());
-        }finally{
-			try{
-				fis.close();
-			}catch(Exception e){}
-		}
+        } finally {
+            try {
+                fis.close();
+            } catch (Exception e) {
+            }
+        }
         return null;
     }
 

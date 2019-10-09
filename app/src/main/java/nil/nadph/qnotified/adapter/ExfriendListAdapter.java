@@ -2,7 +2,9 @@ package nil.nadph.qnotified.adapter;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -14,7 +16,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.*;
-import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.ExfriendManager;
+import nil.nadph.qnotified.FaceImpl;
+import nil.nadph.qnotified.QQMainHook;
 import nil.nadph.qnotified.record.EventRecord;
 import nil.nadph.qnotified.record.FriendRecord;
 import nil.nadph.qnotified.util.QQViewBuilder;
@@ -27,8 +31,6 @@ import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
-import android.content.*;
-import android.app.*;
 
 //import de.robv.android.xposed.*;
 
@@ -77,17 +79,17 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
         rightBtn.setText("高级");
         rightBtn.setEnabled(true);
         rightBtn.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					try {
-						//self.onBackPressed();
-						//ExfriendManager.getCurrent().doRequestFlRefresh();
-						//Utils.showToastShort(v.getContext(),"即将开放(没啥好设置的)...");
-						QQMainHook.startProxyActivity(self, ActProxyMgr.ACTION_ADV_SETTINGS);
-						//Intent intent=new Intent(v.getContext(),load(ActProxyMgr.DUMMY_ACTIVITY));
-						//int id=ActProxyMgr.next();
-						//intent.putExtra(ACTIVITY_PROXY_ID_TAG,id);
-						//intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            @Override
+            public void onClick(View v) {
+                try {
+                    //self.onBackPressed();
+                    //ExfriendManager.getCurrent().doRequestFlRefresh();
+                    //Utils.showToastShort(v.getContext(),"即将开放(没啥好设置的)...");
+                    QQMainHook.startProxyActivity(self, ActProxyMgr.ACTION_ADV_SETTINGS);
+                    //Intent intent=new Intent(v.getContext(),load(ActProxyMgr.DUMMY_ACTIVITY));
+                    //int id=ActProxyMgr.next();
+                    //intent.putExtra(ACTIVITY_PROXY_ID_TAG,id);
+                    //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 						/*v.getContext().startActivity(intent);/*
 						 new Thread(new Runnable(){
 						 @Override
@@ -102,11 +104,11 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
 						 ExfriendManager.getCurrent().doNotifyDelFl(new Object[]{1,"ticker","title","content"});
 						 }
 						 }).start();*/
-					} catch (Throwable e) {
-						log(e);
-					}
-				}
-			});
+                } catch (Throwable e) {
+                    log(e);
+                }
+            }
+        });
         //.addView(sdlv,lp);
         invoke_virtual(sdlv, "setDragEnable", true, boolean.class);
         invoke_virtual(sdlv, "setDivider", null, Drawable.class);
@@ -135,7 +137,7 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
         eventsMap = exm.getEvents();
         if (evs == null) evs = new ArrayList<>();
         else evs.clear();
-		if (eventsMap == null)return;
+        if (eventsMap == null) return;
         Iterator<Map.Entry<Integer, EventRecord>> it = eventsMap.entrySet().iterator();
         EventRecord ev;
         while (it.hasNext()) {
@@ -286,43 +288,43 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
 
         rlayout.setClickable(true);
         rlayout.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
+            @Override
+            public void onClick(View v) {
 
-					long uin = ((EventRecord) v.getTag()).operator;
-					QQMainHook.openProfileCard(v.getContext(), uin);
-				}
-			});
+                long uin = ((EventRecord) v.getTag()).operator;
+                QQMainHook.openProfileCard(v.getContext(), uin);
+            }
+        });
         rlayout.setOnLongClickListener(new View.OnLongClickListener() {
-				@Override
-				public boolean onLongClick(final View v) {
-					try {
-						Dialog qQCustomDialog = createDialog(v.getContext());
-						invoke_virtual(qQCustomDialog, "setTitle", "删除记录", String.class);
-						invoke_virtual(qQCustomDialog, "setMessage", "确认删除历史记录(" + ((EventRecord) v.getTag())._remark + ")", CharSequence.class);
-						invoke_virtual(qQCustomDialog, "setPositiveButton", "确认", new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-									dialog.dismiss();
-									exm.getEvents().values().remove(((EventRecord) v.getTag()));
-									exm.saveConfigure();
-									reload();
-									notifyDataSetChanged();
-								}
-							}, String.class, DialogInterface.OnClickListener.class);
-						invoke_virtual(qQCustomDialog, "setNegativeButton", "取消", new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-									dialog.dismiss();
-								}
-							}, String.class, DialogInterface.OnClickListener.class);
-						invoke_virtual(qQCustomDialog, "show");
-					} catch (Exception e) {
-						log(e);
-					}
-					return true;
-				}
-			});
+            @Override
+            public boolean onLongClick(final View v) {
+                try {
+                    Dialog qQCustomDialog = createDialog(v.getContext());
+                    invoke_virtual(qQCustomDialog, "setTitle", "删除记录", String.class);
+                    invoke_virtual(qQCustomDialog, "setMessage", "确认删除历史记录(" + ((EventRecord) v.getTag())._remark + ")", CharSequence.class);
+                    invoke_virtual(qQCustomDialog, "setPositiveButton", "确认", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            exm.getEvents().values().remove(((EventRecord) v.getTag()));
+                            exm.saveConfigure();
+                            reload();
+                            notifyDataSetChanged();
+                        }
+                    }, String.class, DialogInterface.OnClickListener.class);
+                    invoke_virtual(qQCustomDialog, "setNegativeButton", "取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }, String.class, DialogInterface.OnClickListener.class);
+                    invoke_virtual(qQCustomDialog, "show");
+                } catch (Exception e) {
+                    log(e);
+                }
+                return true;
+            }
+        });
         return rlayout;
 
 

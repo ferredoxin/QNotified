@@ -34,81 +34,81 @@ public class RepeaterHook extends BaseDelayableHook {
     @SuppressLint({"WrongConstant", "ResourceType"})
     public boolean init() {
         if (inited) return true;
-		try{
-        Method getView = null;
-        Class listener2 = null;
-        Class itemHolder = null;
-        Class BaseChatItemLayout = null;
-        Class ChatMessage = null;
-        for (Method m : _PicItemBuilder().getDeclaredMethods()) {
-            if (!m.getReturnType().equals(View.class)) continue;
-            if (!m.getName().equals("a")) continue;
-            Class[] argt = m.getParameterTypes();
-            if (argt.length != 5) continue;
-            if (!argt[2].equals(View.class)) continue;
-            if (argt[4].getInterfaces().length != 2) continue;
-            getView = m;
-            listener2 = argt[4];
-            itemHolder = argt[1];
-            ChatMessage = argt[0];
-            BaseChatItemLayout = argt[3];
-        }
-        XposedBridge.hookMethod(getView, new XC_MethodHook(50) {
-            @Override
-            public void afterHookedMethod(final MethodHookParam param) throws Throwable {
-                if (!isEnabled()) return;
-                ViewGroup relativeLayout = (ViewGroup) param.getResult();
-                final Object app = iget_object_or_null(param.thisObject, "a", load("com.tencent.mobileqq.app.QQAppInterface"));
-                final Object session = iget_object_or_null(param.thisObject, "a", load("com.tencent.mobileqq.activity.aio.SessionInfo"));
-                String uin = "" + Utils.getLongAccountUin();
-                Context ctx = relativeLayout.getContext();
-                if (relativeLayout.findViewById(101) == null) {
-                    View childAt = relativeLayout.getChildAt(0);
-                    ViewGroup viewGroup = (ViewGroup) childAt.getParent();
-                    viewGroup.removeView(childAt);
-                    int __id = childAt.getId();
-                    LinearLayout linearLayout = new LinearLayout(ctx);
-                    //linearLayout.setId(Integer.parseInt((String) Hook.config.get("Item_id"), 16));
-                    if (__id != -1) linearLayout.setId(__id);
-                    linearLayout.setOrientation(0);
-                    linearLayout.setGravity(17);
-                    ImageView imageView = new ImageView(ctx);
-                    imageView.setId(101);
-                    imageView.setImageDrawable(QThemeKit.loadDrawableFromAsset("repeat.png", ctx));
-                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(-2, -2);
-                    layoutParams.rightMargin = (int) dip2px(ctx, (float) 10);
-                    linearLayout.addView(imageView, layoutParams);
-                    linearLayout.addView(childAt, childAt.getLayoutParams());
-                    ImageView imageView2 = new ImageView(ctx);
-                    imageView2.setId(102);
-                    //imageView2.setImageResource(Integer.parseInt((String) Hook.config.get("+1_icon"), 16));
-                    imageView2.setImageDrawable(QThemeKit.loadDrawableFromAsset("repeat.png", ctx));
-                    LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(-2, -2);
-                    layoutParams2.leftMargin = (int) dip2px(ctx, (float) 10);
-                    linearLayout.addView(imageView2, layoutParams2);
-                    viewGroup.addView(linearLayout, -2, -2);
-                }
-                ImageView imageView3 = (ImageView) relativeLayout.findViewById(101);
-                ImageView imageView4 = (ImageView) relativeLayout.findViewById(102);
-                if (iget_object_or_null(param.args[0], "senderuin").equals(uin)) {
-                    imageView3.setVisibility(0);
-                    imageView4.setVisibility(8);
-                } else {
-                    imageView3.setVisibility(8);
-                    imageView4.setVisibility(0);
-                }
-                View.OnClickListener r0 = new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        try {
-                            XposedHelpers.callStaticMethod(DexKit.doFindClass(DexKit.C_FACADE), "a", app, session, param.args[0]);
-                        } catch (Throwable e) {
-                            log(e);
-                        }
+        try {
+            Method getView = null;
+            Class listener2 = null;
+            Class itemHolder = null;
+            Class BaseChatItemLayout = null;
+            Class ChatMessage = null;
+            for (Method m : _PicItemBuilder().getDeclaredMethods()) {
+                if (!m.getReturnType().equals(View.class)) continue;
+                if (!m.getName().equals("a")) continue;
+                Class[] argt = m.getParameterTypes();
+                if (argt.length != 5) continue;
+                if (!argt[2].equals(View.class)) continue;
+                if (argt[4].getInterfaces().length != 2) continue;
+                getView = m;
+                listener2 = argt[4];
+                itemHolder = argt[1];
+                ChatMessage = argt[0];
+                BaseChatItemLayout = argt[3];
+            }
+            XposedBridge.hookMethod(getView, new XC_MethodHook(50) {
+                @Override
+                public void afterHookedMethod(final MethodHookParam param) throws Throwable {
+                    if (!isEnabled()) return;
+                    ViewGroup relativeLayout = (ViewGroup) param.getResult();
+                    final Object app = iget_object_or_null(param.thisObject, "a", load("com.tencent.mobileqq.app.QQAppInterface"));
+                    final Object session = iget_object_or_null(param.thisObject, "a", load("com.tencent.mobileqq.activity.aio.SessionInfo"));
+                    String uin = "" + Utils.getLongAccountUin();
+                    Context ctx = relativeLayout.getContext();
+                    if (relativeLayout.findViewById(101) == null) {
+                        View childAt = relativeLayout.getChildAt(0);
+                        ViewGroup viewGroup = (ViewGroup) childAt.getParent();
+                        viewGroup.removeView(childAt);
+                        int __id = childAt.getId();
+                        LinearLayout linearLayout = new LinearLayout(ctx);
+                        //linearLayout.setId(Integer.parseInt((String) Hook.config.get("Item_id"), 16));
+                        if (__id != -1) linearLayout.setId(__id);
+                        linearLayout.setOrientation(0);
+                        linearLayout.setGravity(17);
+                        ImageView imageView = new ImageView(ctx);
+                        imageView.setId(101);
+                        imageView.setImageDrawable(QThemeKit.loadDrawableFromAsset("repeat.png", ctx));
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(-2, -2);
+                        layoutParams.rightMargin = (int) dip2px(ctx, (float) 10);
+                        linearLayout.addView(imageView, layoutParams);
+                        linearLayout.addView(childAt, childAt.getLayoutParams());
+                        ImageView imageView2 = new ImageView(ctx);
+                        imageView2.setId(102);
+                        //imageView2.setImageResource(Integer.parseInt((String) Hook.config.get("+1_icon"), 16));
+                        imageView2.setImageDrawable(QThemeKit.loadDrawableFromAsset("repeat.png", ctx));
+                        LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(-2, -2);
+                        layoutParams2.leftMargin = (int) dip2px(ctx, (float) 10);
+                        linearLayout.addView(imageView2, layoutParams2);
+                        viewGroup.addView(linearLayout, -2, -2);
                     }
-                };
-                imageView3.setOnClickListener(r0);
-                imageView4.setOnClickListener(r0);
+                    ImageView imageView3 = (ImageView) relativeLayout.findViewById(101);
+                    ImageView imageView4 = (ImageView) relativeLayout.findViewById(102);
+                    if (iget_object_or_null(param.args[0], "senderuin").equals(uin)) {
+                        imageView3.setVisibility(0);
+                        imageView4.setVisibility(8);
+                    } else {
+                        imageView3.setVisibility(8);
+                        imageView4.setVisibility(0);
+                    }
+                    View.OnClickListener r0 = new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            try {
+                                XposedHelpers.callStaticMethod(DexKit.doFindClass(DexKit.C_FACADE), "a", app, session, param.args[0]);
+                            } catch (Throwable e) {
+                                log(e);
+                            }
+                        }
+                    };
+                    imageView3.setOnClickListener(r0);
+                    imageView4.setOnClickListener(r0);
 //                    View.OnLongClickListener r4 = new View.OnLongClickListener() {
 //                        @Override
 //                        public boolean onLongClick(View view) {
@@ -205,80 +205,80 @@ public class RepeaterHook extends BaseDelayableHook {
 //                    };
 //                    imageView3.setOnLongClickListener(r4);
 //                    imageView4.setOnLongClickListener(r4);
-            }
-        });
-
-        XposedHelpers.findAndHookMethod(_TextItemBuilder(), "a", ChatMessage, itemHolder, View.class, BaseChatItemLayout, listener2, new XC_MethodHook() {
-            @Override
-            public void beforeHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-                if (!isEnabled()) return;
-                iput_object(methodHookParam.args[0], "isFlowMessage", true);
-                if (((int) iget_object_or_null(methodHookParam.args[0], "extraflag")) == 32768) {
-                    iput_object(methodHookParam.args[0], "extraflag", 0);
                 }
-            }
-        });
+            });
 
-        XposedHelpers.findAndHookMethod(_PttItemBuilder(), "a", ChatMessage, itemHolder, View.class, BaseChatItemLayout, listener2,
-                new XC_MethodHook(51) {
-                    @Override
-                    public void afterHookedMethod(MethodHookParam param) throws Throwable {
-                        if (!isEnabled()) return;
-                        View view;
-                        ViewGroup relativeLayout = (ViewGroup) param.getResult();
-                        final Object app = iget_object_or_null(param.thisObject, "a", load("com.tencent.mobileqq.app.QQAppInterface"));
-                        final Object session = iget_object_or_null(param.thisObject, "a", load("com.tencent.mobileqq.activity.aio.SessionInfo"));
-                        String uin = "" + Utils.getLongAccountUin();
-                        Context ctx = relativeLayout.getContext();
-                        if (relativeLayout.findViewById(101) == null) {
-                            LinearLayout linearLayout = new LinearLayout(ctx);
-                            //linearLayout.setId(Integer.parseInt((String) Hook.config.get("PttItem_id"), 16));
-                            linearLayout.setOrientation(0);
-                            linearLayout.setGravity(17);
-                            ImageView imageView = new ImageView(ctx);
-                            imageView.setId(101);
-                            imageView.setImageDrawable(QThemeKit.loadDrawableFromAsset("repeat.png", ctx));
-                            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(-2, -2);
-                            layoutParams.rightMargin = (int) dip2px(ctx, (float) 10);
-                            linearLayout.addView(imageView, layoutParams);
-                            linearLayout.addView(relativeLayout, -2, -2);
-                            ImageView imageView2 = new ImageView(ctx);
-                            imageView2.setId(102);
-                            imageView2.setImageDrawable(QThemeKit.loadDrawableFromAsset("repeat.png", ctx));
-                            LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(-2, -2);
-                            layoutParams2.leftMargin = (int) dip2px(ctx, (float) 10);
-                            linearLayout.addView(imageView2, layoutParams2);
-                            param.setResult(linearLayout);
-                            view = linearLayout;
-                        } else {
-                            view = relativeLayout.findViewById(101);
-                        }
-                        ImageView imageView3 = (ImageView) view.findViewById(101);
-                        @SuppressLint("ResourceType") ImageView imageView4 = (ImageView) view.findViewById(102);
-                        if (iget_object_or_null(param.args[0], "senderuin").equals(uin)) {
-                            imageView3.setVisibility(0);
-                            imageView4.setVisibility(8);
-                        } else {
-                            imageView3.setVisibility(8);
-                            imageView4.setVisibility(0);
-                        }
+            XposedHelpers.findAndHookMethod(_TextItemBuilder(), "a", ChatMessage, itemHolder, View.class, BaseChatItemLayout, listener2, new XC_MethodHook() {
+                @Override
+                public void beforeHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                    if (!isEnabled()) return;
+                    iput_object(methodHookParam.args[0], "isFlowMessage", true);
+                    if (((int) iget_object_or_null(methodHookParam.args[0], "extraflag")) == 32768) {
+                        iput_object(methodHookParam.args[0], "extraflag", 0);
                     }
-                });
-			inited = true;
-			return true;
-				}catch(Throwable e){
-					log(e);
-					return false;
-				}
+                }
+            });
+
+            XposedHelpers.findAndHookMethod(_PttItemBuilder(), "a", ChatMessage, itemHolder, View.class, BaseChatItemLayout, listener2,
+                    new XC_MethodHook(51) {
+                        @Override
+                        public void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            if (!isEnabled()) return;
+                            View view;
+                            ViewGroup relativeLayout = (ViewGroup) param.getResult();
+                            final Object app = iget_object_or_null(param.thisObject, "a", load("com.tencent.mobileqq.app.QQAppInterface"));
+                            final Object session = iget_object_or_null(param.thisObject, "a", load("com.tencent.mobileqq.activity.aio.SessionInfo"));
+                            String uin = "" + Utils.getLongAccountUin();
+                            Context ctx = relativeLayout.getContext();
+                            if (relativeLayout.findViewById(101) == null) {
+                                LinearLayout linearLayout = new LinearLayout(ctx);
+                                //linearLayout.setId(Integer.parseInt((String) Hook.config.get("PttItem_id"), 16));
+                                linearLayout.setOrientation(0);
+                                linearLayout.setGravity(17);
+                                ImageView imageView = new ImageView(ctx);
+                                imageView.setId(101);
+                                imageView.setImageDrawable(QThemeKit.loadDrawableFromAsset("repeat.png", ctx));
+                                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(-2, -2);
+                                layoutParams.rightMargin = (int) dip2px(ctx, (float) 10);
+                                linearLayout.addView(imageView, layoutParams);
+                                linearLayout.addView(relativeLayout, -2, -2);
+                                ImageView imageView2 = new ImageView(ctx);
+                                imageView2.setId(102);
+                                imageView2.setImageDrawable(QThemeKit.loadDrawableFromAsset("repeat.png", ctx));
+                                LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(-2, -2);
+                                layoutParams2.leftMargin = (int) dip2px(ctx, (float) 10);
+                                linearLayout.addView(imageView2, layoutParams2);
+                                param.setResult(linearLayout);
+                                view = linearLayout;
+                            } else {
+                                view = relativeLayout.findViewById(101);
+                            }
+                            ImageView imageView3 = (ImageView) view.findViewById(101);
+                            @SuppressLint("ResourceType") ImageView imageView4 = (ImageView) view.findViewById(102);
+                            if (iget_object_or_null(param.args[0], "senderuin").equals(uin)) {
+                                imageView3.setVisibility(0);
+                                imageView4.setVisibility(8);
+                            } else {
+                                imageView3.setVisibility(8);
+                                imageView4.setVisibility(0);
+                            }
+                        }
+                    });
+            inited = true;
+            return true;
+        } catch (Throwable e) {
+            log(e);
+            return false;
+        }
     }
 
     private boolean inited = false;
 
-	@Override
-	public int getEffectiveProc() {
-		return SyncUtils.PROC_MAIN;
-	}
-	
+    @Override
+    public int getEffectiveProc() {
+        return SyncUtils.PROC_MAIN;
+    }
+
     @Override
     public boolean checkPreconditions() {
         return true;

@@ -60,11 +60,11 @@ public class GalleryBgHook extends BaseDelayableHook {
         }
     }
 
-	@Override
-	public int getEffectiveProc() {
-		return SyncUtils.PROC_PEAK;
-	}
-	
+    @Override
+    public int getEffectiveProc() {
+        return SyncUtils.PROC_PEAK;
+    }
+
     @Override
     public boolean checkPreconditions() {
         return DexKit.tryLoadOrNull(DexKit.C_ABS_GAL_SCENE) != null;
@@ -89,5 +89,5 @@ public class GalleryBgHook extends BaseDelayableHook {
             return false;
         }
     }
-	
+
 }

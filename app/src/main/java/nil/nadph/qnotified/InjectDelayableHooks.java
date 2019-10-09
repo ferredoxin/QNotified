@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import nil.nadph.qnotified.hook.*;
+import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.QThemeKit;
 import nil.nadph.qnotified.util.Utils;

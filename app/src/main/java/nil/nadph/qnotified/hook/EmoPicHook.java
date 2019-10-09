@@ -70,11 +70,11 @@ public class EmoPicHook extends BaseDelayableHook {
         return new int[]{DexKit.C_AIO_UTILS};
     }
 
-	@Override
-	public int getEffectiveProc() {
-		return SyncUtils.PROC_MAIN;
-	}
-	
+    @Override
+    public int getEffectiveProc() {
+        return SyncUtils.PROC_MAIN;
+    }
+
     @Override
     public boolean isInited() {
         return inited;

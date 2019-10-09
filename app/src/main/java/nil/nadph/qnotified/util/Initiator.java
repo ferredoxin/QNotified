@@ -79,7 +79,37 @@ public class Initiator {
         return cl_PttItemBuilder;
     }
 
+    public static Class _FavEmoRoamingHandler() {
+        Class clz = load("com/tencent/mobileqq/app/FavEmoRoamingHandler");
+        if (clz == null) {
+            Class cref = load("com/tencent/mobileqq/app/FavEmoRoamingHandler$1");
+            try {
+                clz = cref.getDeclaredField("this$0").getType();
+            } catch (NoSuchFieldException ignored) {
+            }
+        }
+        return clz;
+    }
 
+    @Nullable
+    public static Class _EmoAddedAuthCallback() {
+        Class clz = load("com/tencent/mobileqq/app/FavEmoRoamingHandler");
+        if (clz == null) {
+            Class cref = load("com/tencent/mobileqq/emosm/favroaming/EmoAddedAuthCallback$2");
+            try {
+                clz = cref.getDeclaredField("this$0").getType();
+            } catch (NoSuchFieldException ignored) {
+            }
+        }
+        if (clz == null) {
+            Class cref = load("com/tencent/mobileqq/emosm/favroaming/EmoAddedAuthCallback$1");
+            try {
+                clz = cref.getDeclaredField("this$0").getType();
+            } catch (NoSuchFieldException ignored) {
+            }
+        }
+        return clz;
+    }
 
 	/*
 	public static void showPopup(View root){

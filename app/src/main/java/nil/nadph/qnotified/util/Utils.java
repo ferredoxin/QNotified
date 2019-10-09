@@ -44,7 +44,8 @@ public class Utils {
             qn_sign_in_as_text = "qn_sign_in_as_text",
             qn_mute_talk_back = "qn_mute_talk_back",
             bug_repeater = "bug_repeater",
-    qn_gallery_bg="qn_gallery_bg";
+            qn_gallery_bg = "qn_gallery_bg",
+            qqhelper_fav_more_emo = "qqhelper_fav_more_emo";
 
     public static boolean DEBUG = true;
     public static boolean V_TOAST = false;
@@ -543,6 +544,20 @@ public class Utils {
             Field f = findField(clazz, type, name);
             f.setAccessible(true);
             f.set(obj, value);
+        } catch (Exception e) {
+            log(e);
+        }
+    }
+
+    public static void sput_object(Class clz, String name, Object value) {
+        sput_object(clz, name, null, value);
+    }
+
+    public static void sput_object(Class clazz, String name, Class type, Object value) {
+        try {
+            Field f = findField(clazz, type, name);
+            f.setAccessible(true);
+            f.set(null, value);
         } catch (Exception e) {
             log(e);
         }

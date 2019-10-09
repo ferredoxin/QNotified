@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.ImageView;
+import nil.nadph.qnotified.util.Nullable;
+import nil.nadph.qnotified.util.Utils;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
@@ -13,9 +15,6 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 
 import static nil.nadph.qnotified.util.Initiator.load;
-
-import nil.nadph.qnotified.util.Nullable;
-import nil.nadph.qnotified.util.Utils;
 
 //import de.robv.android.xposed.*;
 
@@ -54,12 +53,12 @@ public class FaceImpl implements InvocationHandler {
     }
 
     public static FaceImpl getInstance() throws Throwable {
-		FaceImpl ret = null;
-		if (self != null)ret = self.get();
+        FaceImpl ret = null;
+        if (self != null) ret = self.get();
         if (ret == null) {
-			ret = new FaceImpl();
-			self = new WeakReference(ret);
-		}
+            ret = new FaceImpl();
+            self = new WeakReference(ret);
+        }
         return ret;
     }
 

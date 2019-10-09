@@ -12,7 +12,7 @@ public interface ActivityAdapter {
 
     void doOnPostDestory() throws Throwable;
 
-    void doOnPostActivityResult(int requestCode, int resultCode, Intent data)throws Throwable;
+    void doOnPostActivityResult(int requestCode, int resultCode, Intent data) throws Throwable;
 
     boolean isWrapContent() throws Throwable;
 }

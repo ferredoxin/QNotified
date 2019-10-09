@@ -1,32 +1,49 @@
 package nil.nadph.qnotified.hook;
-import nil.nadph.qnotified.record.*;
-import de.robv.android.xposed.*;
-import java.lang.reflect.*;
-import android.os.*;
-import android.annotation.*;
-import android.app.*;
-import android.widget.*;
-import nil.nadph.qnotified.util.*;
-import java.util.*;
-import android.graphics.*;
+
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
+import nil.nadph.qnotified.FaceImpl;
+import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.record.ConfigManager;
+import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.QThemeKit;
+import nil.nadph.qnotified.util.Utils;
+
+import java.io.File;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
-import android.view.*;
-import nil.nadph.qnotified.*;
-import java.io.*;
-import android.content.*;
 
 
 public class PttForwardHook extends BaseDelayableHook {
 
-	public static final int R_ID_PTT_FORWARD = 0x00EE77CB;
-	
-	
-	private PttForwardHook() {
+    public static final int R_ID_PTT_FORWARD = 0x00EE77CB;
+
+
+    private PttForwardHook() {
     }
 
     private static final PttForwardHook self = new PttForwardHook();
@@ -40,28 +57,28 @@ public class PttForwardHook extends BaseDelayableHook {
     @Override
     public boolean init() {
         if (inited) return true;
-		try{
-		Class clz_ForwardBaseOption = load("com/tencent/mobileqq/forward/ForwardBaseOption");
-		if (clz_ForwardBaseOption == null) {
-			Class clz_DirectForwardActivity = load("com/tencent/mobileqq/activity/DirectForwardActivity");
-			for (Field f : clz_DirectForwardActivity.getDeclaredFields()) {
-				if (Modifier.isStatic(f.getModifiers())) continue;
-				Class clz = f.getType();
-				if (Modifier.isAbstract(clz.getModifiers()) && !clz.getName().contains("android")) {
-					clz_ForwardBaseOption = clz;
-					break;
-				}
-			}
-		}
-		Method buildConfirmDialog = null;
-		for (Method m : clz_ForwardBaseOption.getDeclaredMethods()) {
-			if (!m.getReturnType().equals(void.class)) continue;
-			if (!Modifier.isFinal(m.getModifiers())) continue;
-			if (m.getParameterTypes().length != 0) continue;
-			buildConfirmDialog = m;
-			break;
-		}
-		XposedBridge.hookMethod(buildConfirmDialog, new XC_MethodHook(51) {
+        try {
+            Class clz_ForwardBaseOption = load("com/tencent/mobileqq/forward/ForwardBaseOption");
+            if (clz_ForwardBaseOption == null) {
+                Class clz_DirectForwardActivity = load("com/tencent/mobileqq/activity/DirectForwardActivity");
+                for (Field f : clz_DirectForwardActivity.getDeclaredFields()) {
+                    if (Modifier.isStatic(f.getModifiers())) continue;
+                    Class clz = f.getType();
+                    if (Modifier.isAbstract(clz.getModifiers()) && !clz.getName().contains("android")) {
+                        clz_ForwardBaseOption = clz;
+                        break;
+                    }
+                }
+            }
+            Method buildConfirmDialog = null;
+            for (Method m : clz_ForwardBaseOption.getDeclaredMethods()) {
+                if (!m.getReturnType().equals(void.class)) continue;
+                if (!Modifier.isFinal(m.getModifiers())) continue;
+                if (m.getParameterTypes().length != 0) continue;
+                buildConfirmDialog = m;
+                break;
+            }
+            XposedBridge.hookMethod(buildConfirmDialog, new XC_MethodHook(51) {
                 @SuppressLint("SetTextI18n")
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -122,16 +139,16 @@ public class PttForwardHook extends BaseDelayableHook {
                     FaceImpl face = FaceImpl.getInstance();
                     if (multi) {
                         if (mTargets != null) for (Utils.ContactDescriptor cd : mTargets) {
-								ImageView imgview = new ImageView(ctx);
-								Bitmap bm = face.getBitmapFromCache(cd.uinType == 1 ? FaceImpl.TYPE_TROOP : FaceImpl.TYPE_USER, cd.uin);
-								if (bm == null) {
-									imgview.setImageDrawable(QThemeKit.loadDrawableFromAsset("face.png", ctx));
-									face.registerView(cd.uinType == 1 ? FaceImpl.TYPE_TROOP : FaceImpl.TYPE_USER, cd.uin, imgview);
-								} else {
-									imgview.setImageBitmap(bm);
-								}
-								heads.addView(imgview, imglp);
-							}
+                            ImageView imgview = new ImageView(ctx);
+                            Bitmap bm = face.getBitmapFromCache(cd.uinType == 1 ? FaceImpl.TYPE_TROOP : FaceImpl.TYPE_USER, cd.uin);
+                            if (bm == null) {
+                                imgview.setImageDrawable(QThemeKit.loadDrawableFromAsset("face.png", ctx));
+                                face.registerView(cd.uinType == 1 ? FaceImpl.TYPE_TROOP : FaceImpl.TYPE_USER, cd.uin, imgview);
+                            } else {
+                                imgview.setImageBitmap(bm);
+                            }
+                            heads.addView(imgview, imglp);
+                        }
                     } else {
                         Utils.ContactDescriptor cd = mTargets.get(0);
                         ImageView imgview = new ImageView(ctx);
@@ -154,25 +171,25 @@ public class PttForwardHook extends BaseDelayableHook {
                     //String ret = "" +/*ctx.getIntent().getExtras();//*/iget_object(param.thisObject, "a", Bundle.class);
                     Dialog dialog = Utils.createDialog(ctx);
                     invoke_virtual(dialog, "setPositiveButton", "确认", new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								try {
-									for (Utils.ContactDescriptor cd : mTargets) {
-										Object sesssion = Utils.createSessionInfo(cd.uin, cd.uinType);
-										XposedHelpers.callStaticMethod(DexKit.doFindClass(DexKit.C_FACADE), "a", Utils.getQQAppInterface(), sesssion, path);
-									}
-									Utils.showToast(ctx, TOAST_TYPE_SUCCESS, "已发送", Toast.LENGTH_SHORT);
-								} catch (Throwable e) {
-									log(e);
-									try {
-										Utils.showToast(ctx, TOAST_TYPE_ERROR, "失败: " + e, Toast.LENGTH_SHORT);
-									} catch (Throwable ignored) {
-										Toast.makeText(ctx, "失败: " + e, Toast.LENGTH_SHORT).show();
-									}
-								}
-								ctx.finish();
-							}
-						}, String.class, DialogInterface.OnClickListener.class);
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            try {
+                                for (Utils.ContactDescriptor cd : mTargets) {
+                                    Object sesssion = Utils.createSessionInfo(cd.uin, cd.uinType);
+                                    XposedHelpers.callStaticMethod(DexKit.doFindClass(DexKit.C_FACADE), "a", Utils.getQQAppInterface(), sesssion, path);
+                                }
+                                Utils.showToast(ctx, TOAST_TYPE_SUCCESS, "已发送", Toast.LENGTH_SHORT);
+                            } catch (Throwable e) {
+                                log(e);
+                                try {
+                                    Utils.showToast(ctx, TOAST_TYPE_ERROR, "失败: " + e, Toast.LENGTH_SHORT);
+                                } catch (Throwable ignored) {
+                                    Toast.makeText(ctx, "失败: " + e, Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                            ctx.finish();
+                        }
+                    }, String.class, DialogInterface.OnClickListener.class);
                     invoke_virtual(dialog, "setNegativeButton", "取消", new Utils.DummyCallback(), String.class, DialogInterface.OnClickListener.class);
                     dialog.setCancelable(true);
                     invoke_virtual(dialog, "setView", main, View.class);
@@ -180,14 +197,15 @@ public class PttForwardHook extends BaseDelayableHook {
                     dialog.show();
                 }
             });
-		Class cl_PttItemBuilder = load("com/tencent/mobileqq/activity/aio/item/PttItemBuilder");
-		if (cl_PttItemBuilder == null) {
-			Class cref = load("com/tencent/mobileqq/activity/aio/item/PttItemBuilder$2");
-			try {
-				cl_PttItemBuilder = cref.getDeclaredField("this$0").getType();
-			} catch (NoSuchFieldException e) {}
-		}
-		findAndHookMethod(cl_PttItemBuilder, "a", int.class, Context.class, load("com/tencent/mobileqq/data/ChatMessage"), new XC_MethodHook(60) {
+            Class cl_PttItemBuilder = load("com/tencent/mobileqq/activity/aio/item/PttItemBuilder");
+            if (cl_PttItemBuilder == null) {
+                Class cref = load("com/tencent/mobileqq/activity/aio/item/PttItemBuilder$2");
+                try {
+                    cl_PttItemBuilder = cref.getDeclaredField("this$0").getType();
+                } catch (NoSuchFieldException e) {
+                }
+            }
+            findAndHookMethod(cl_PttItemBuilder, "a", int.class, Context.class, load("com/tencent/mobileqq/data/ChatMessage"), new XC_MethodHook(60) {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     int id = (int) param.args[0];
@@ -215,11 +233,11 @@ public class PttForwardHook extends BaseDelayableHook {
                     }
                 }
             });
-		for (Method m : cl_PttItemBuilder.getDeclaredMethods()) {
-			if (!m.getReturnType().isArray()) continue;
-			Class[] ps = m.getParameterTypes();
-			if (ps.length == 1 && ps[0].equals(View.class))
-				XposedBridge.hookMethod(m, new XC_MethodHook(60) {
+            for (Method m : cl_PttItemBuilder.getDeclaredMethods()) {
+                if (!m.getReturnType().isArray()) continue;
+                Class[] ps = m.getParameterTypes();
+                if (ps.length == 1 && ps[0].equals(View.class))
+                    XposedBridge.hookMethod(m, new XC_MethodHook(60) {
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                             try {
@@ -238,19 +256,19 @@ public class PttForwardHook extends BaseDelayableHook {
                             param.setResult(ret);
                         }
                     });
-		}
-		inited = true;
-		return true;
-		}catch(Throwable e){
-			log(e);
-			return false;
-		}
+            }
+            inited = true;
+            return true;
+        } catch (Throwable e) {
+            log(e);
+            return false;
+        }
     }
 
-	@Override
-	public int getEffectiveProc() {
-		return SyncUtils.PROC_MAIN;
-	}
+    @Override
+    public int getEffectiveProc() {
+        return SyncUtils.PROC_MAIN;
+    }
 
     @Override
     public boolean checkPreconditions() {

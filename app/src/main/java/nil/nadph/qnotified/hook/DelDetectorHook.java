@@ -1,35 +1,46 @@
 package nil.nadph.qnotified.hook;
 
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Color;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ExpandableListAdapter;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedHelpers;
+import nil.nadph.qnotified.adapter.ActProxyMgr;
+import nil.nadph.qnotified.ExfriendManager;
+import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.pk.FriendChunk;
+import nil.nadph.qnotified.record.ConfigManager;
+import nil.nadph.qnotified.util.QThemeKit;
+import nil.nadph.qnotified.util.Utils;
+
+import java.lang.ref.WeakReference;
+import java.util.HashSet;
+
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static nil.nadph.qnotified.ActProxyMgr.*;
+import static nil.nadph.qnotified.adapter.ActProxyMgr.*;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
-import de.robv.android.xposed.*;
-import nil.nadph.qnotified.pk.*;
-import nil.nadph.qnotified.*;
-import nil.nadph.qnotified.util.*;
-import nil.nadph.qnotified.record.*;
-import android.widget.*;
-import android.app.*;
-import android.view.*;
-import java.lang.ref.*;
-import android.graphics.*;
-import java.util.*;
-import android.content.*;
 
-public class DelDetectorHook extends BaseDelayableHook{
-	
-	public HashSet addedListView = new HashSet();
-   
-	public static final int VIEW_ID_DELETED_FRIEND = 0x00EE77AA;
-	
+public class DelDetectorHook extends BaseDelayableHook {
+
+    public HashSet addedListView = new HashSet();
+
+    public static final int VIEW_ID_DELETED_FRIEND = 0x00EE77AA;
+
     TextView exfriend;
     public WeakReference<TextView> redDotRef;
 
-	private DelDetectorHook() {
+    private DelDetectorHook() {
     }
 
     private static final DelDetectorHook self = new DelDetectorHook();
@@ -43,21 +54,21 @@ public class DelDetectorHook extends BaseDelayableHook{
     @Override
     public boolean init() {
         if (inited) return true;
-		findAndHookMethod(load("com/tencent/widget/PinnedHeaderExpandableListView"), "setAdapter", ExpandableListAdapter.class, exfriendEntryHook);
+        findAndHookMethod(load("com/tencent/widget/PinnedHeaderExpandableListView"), "setAdapter", ExpandableListAdapter.class, exfriendEntryHook);
         XposedHelpers.findAndHookMethod(load("com/tencent/mobileqq/activity/SplashActivity"), "doOnResume", new XC_MethodHook(700) {
-				@Override
-				protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-					try {
-						if (Utils.getLongAccountUin() > 10000) {
-							ExfriendManager ex = ExfriendManager.getCurrent();
-							ex.timeToUpdateFl();
-						}
-					} catch (Throwable e) {
-						log(e);
-						throw e;
-					}
-				}
-			});
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                try {
+                    if (Utils.getLongAccountUin() > 10000) {
+                        ExfriendManager ex = ExfriendManager.getCurrent();
+                        ex.timeToUpdateFl();
+                    }
+                } catch (Throwable e) {
+                    log(e);
+                    throw e;
+                }
+            }
+        });
 
 		/*
 		 findAndHookMethod(load("friendlist/DelFriendReq"),"readFrom",load("com/qq/taf/jce/JceInputStream"),invokeRecord);
@@ -87,11 +98,11 @@ public class DelDetectorHook extends BaseDelayableHook{
 		 findAndHookMethod(load("com/tencent/mobileqq/service/friendlist/FriendListService"),"n",load("com/tencent/qphone/base/remote/ToServiceMsg"),load("com/qq/jce/wup/UniPacket"),invokeRecord);
 		 */
         findAndHookMethod(load("friendlist/GetFriendListResp"), "readFrom", load("com/qq/taf/jce/JceInputStream"), new XC_MethodHook(200) {
-				@Override
-				protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-					try {
-						FriendChunk fc = new FriendChunk(param.thisObject);
-						ExfriendManager.onGetFriendListResp(fc);
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                try {
+                    FriendChunk fc = new FriendChunk(param.thisObject);
+                    ExfriendManager.onGetFriendListResp(fc);
 						/*String ret="dump object:"+param.thisObject.getClass().getCanonicalName()+"\n";
 						 Field[] fs=param.thisObject.getClass().getDeclaredFields();
 						 for(int i=0;i<fs.length;i++){
@@ -99,22 +110,22 @@ public class DelDetectorHook extends BaseDelayableHook{
 						 ret+=(i<fs.length-1?"├":"└")+fs[i].getName()+"="+ClazzExplorer.en_toStr(fs[i].get(param.thisObject))+"\n";
 						 }
 						 log(ret);*/
-					} catch (Throwable e) {
-						log(e);
-						throw e;
-					}
-				}
-			});
+                } catch (Throwable e) {
+                    log(e);
+                    throw e;
+                }
+            }
+        });
 
         findAndHookMethod(load("friendlist/DelFriendResp"), "readFrom", load("com/qq/taf/jce/JceInputStream"), new XC_MethodHook(200) {
-				@Override
-				protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-					try {
-						long uin = (Long) iget_object_or_null(param.thisObject, "uin");
-						long deluin = (Long) iget_object_or_null(param.thisObject, "deluin");
-						int result = (Integer) iget_object_or_null(param.thisObject, "result");
-						short errorCode = (Short) iget_object_or_null(param.thisObject, "errorCode");
-						if (result == 0 && errorCode == 0) ExfriendManager.get(uin).markActiveDelete(deluin);
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                try {
+                    long uin = (Long) iget_object_or_null(param.thisObject, "uin");
+                    long deluin = (Long) iget_object_or_null(param.thisObject, "deluin");
+                    int result = (Integer) iget_object_or_null(param.thisObject, "result");
+                    short errorCode = (Short) iget_object_or_null(param.thisObject, "errorCode");
+                    if (result == 0 && errorCode == 0) ExfriendManager.get(uin).markActiveDelete(deluin);
 						/*String ret="dump object:"+param.thisObject.getClass().getCanonicalName()+"\n";
 						 Field[] fs=param.thisObject.getClass().getDeclaredFields();
 						 for(int i=0;i<fs.length;i++){
@@ -122,17 +133,17 @@ public class DelDetectorHook extends BaseDelayableHook{
 						 ret+=(i<fs.length-1?"├":"└")+fs[i].getName()+"="+ClazzExplorer.en_toStr(fs[i].get(param.thisObject))+"\n";
 						 }
 						 log(ret);*/
-					} catch (Throwable e) {
-						log(e);
-						throw e;
-					}
-				}
-			});
-		inited = true;
-		return true;
+                } catch (Throwable e) {
+                    log(e);
+                    throw e;
+                }
+            }
+        });
+        inited = true;
+        return true;
     }
-	
-	private XC_MethodHook exfriendEntryHook = new XC_MethodHook(1200) {
+
+    private XC_MethodHook exfriendEntryHook = new XC_MethodHook(1200) {
         @Override
         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
             try {
@@ -243,16 +254,16 @@ public class DelDetectorHook extends BaseDelayableHook{
 				 frameView.setClickable(false);
 				 //unusualContacts_old.setOnTouchListener(null);*/
                 exfriend.setOnClickListener(new View.OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							Intent intent = new Intent(splashActivity, load(ActProxyMgr.STUB_ACTIVITY));
-							int id = ActProxyMgr.next();
-							intent.putExtra(ACTIVITY_PROXY_ID_TAG, id);
-							intent.putExtra(ACTIVITY_PROXY_ACTION, ACTION_EXFRIEND_LIST);
-							splashActivity.startActivity(intent);
-							//Toast.makeText(splashActivity,"Test",0).show();
-						}
-					});
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(splashActivity, load(ActProxyMgr.STUB_ACTIVITY));
+                        int id = ActProxyMgr.next();
+                        intent.putExtra(ACTIVITY_PROXY_ID_TAG, id);
+                        intent.putExtra(ACTIVITY_PROXY_ACTION, ACTION_EXFRIEND_LIST);
+                        splashActivity.startActivity(intent);
+                        //Toast.makeText(splashActivity,"Test",0).show();
+                    }
+                });
 				/*unusualContacts.setOnClickListener(new View.OnClickListener(){
 				 @Override
 				 public void onClick(View v){
@@ -281,10 +292,10 @@ public class DelDetectorHook extends BaseDelayableHook{
 
     };
 
-	@Override
-	public int getEffectiveProc() {
-		return SyncUtils.PROC_MAIN;
-	}
+    @Override
+    public int getEffectiveProc() {
+        return SyncUtils.PROC_MAIN;
+    }
 
     @Override
     public boolean checkPreconditions() {

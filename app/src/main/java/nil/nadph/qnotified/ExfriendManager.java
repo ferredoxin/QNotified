@@ -12,6 +12,8 @@ import android.os.Vibrator;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+import nil.nadph.qnotified.adapter.ActProxyMgr;
+import nil.nadph.qnotified.hook.DelDetectorHook;
 import nil.nadph.qnotified.pk.FriendChunk;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.record.EventRecord;
@@ -22,6 +24,7 @@ import nil.nadph.qnotified.util.Utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -29,12 +32,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static nil.nadph.qnotified.ActProxyMgr.*;
+import static nil.nadph.qnotified.adapter.ActProxyMgr.*;
 import static nil.nadph.qnotified.record.Table.*;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
-import java.lang.ref.*;
-import nil.nadph.qnotified.hook.*;
 
 public class ExfriendManager {
     static private final int ID_EX_NOTIFY = 65537;
@@ -475,7 +476,7 @@ public class ExfriendManager {
     }
 
     public void setRedDot() {
-		WeakReference redDotRef=DelDetectorHook.get().redDotRef;
+        WeakReference redDotRef = DelDetectorHook.get().redDotRef;
         if (redDotRef == null) return;
         final TextView rd = (TextView) redDotRef.get();
         if (rd == null) {
@@ -620,7 +621,7 @@ public class ExfriendManager {
             FriendRecord fr = persons.get(uin);
             if (fr == null) {
                 try {
-                    showToast(((Context)QQMainHook.splashActivityRef.get()), TOAST_TYPE_ERROR, "onActDelResp:get(" + uin + ")==null", Toast.LENGTH_SHORT);
+                    showToast(((Context) QQMainHook.splashActivityRef.get()), TOAST_TYPE_ERROR, "onActDelResp:get(" + uin + ")==null", Toast.LENGTH_SHORT);
                 } catch (Throwable e) {
                 }
                 return;

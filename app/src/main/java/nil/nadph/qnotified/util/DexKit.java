@@ -25,11 +25,10 @@ public class DexKit {
     public static final int C_ITEM_BUILDER_FAC = 5;
     public static final int C_AIO_UTILS = 6;
     public static final int C_ABS_GAL_SCENE = 7;
-	
-	public static final int C_AIO_UTILS = 8;
+    //public static final int C_FAV_EMO_ROAM_HANDLER = 8;
     public static final int C_FAV_EMO_CONST = 9;
-	
-	
+
+
     @Nullable
     public static Class tryLoadOrNull(int i) {
         Class ret = load(c(i));
@@ -93,6 +92,8 @@ public class DexKit {
                 return "aio_utils";
             case C_ABS_GAL_SCENE:
                 return "abs_gal_sc";
+            case C_FAV_EMO_CONST:
+                return "fav_emo_const";
         }
         return null;
     }
@@ -113,6 +114,8 @@ public class DexKit {
                 return "com.tencent.mobileqq.activity.aio.AIOUtils";
             case C_ABS_GAL_SCENE:
                 return "com/tencent/common/galleryactivity/AbstractGalleryScene";
+            case C_FAV_EMO_CONST:
+                return "com/tencent/mobileqq/emosm/favroaming/FavEmoConstant";
         }
         return null;
     }
@@ -133,6 +136,8 @@ public class DexKit {
                 return new byte[]{0x0D, 0x6F, 0x70, 0x65, 0x6E, 0x41, 0x49, 0x4F, 0x20, 0x62, 0x79, 0x20, 0x4D, 0x54};
             case C_ABS_GAL_SCENE:
                 return new byte[]{0x16, 0x67, 0x61, 0x6C, 0x6C, 0x65, 0x72, 0x79, 0x20, 0x73, 0x65, 0x74, 0x43, 0x6F, 0x6C, 0x6F, 0x72, 0x20, 0x62, 0x6C};
+            case C_FAV_EMO_CONST:
+                return new byte[]{0x11, 0x68, 0x74, 0x74, 0x70, 0x3A, 0x2F, 0x2F, 0x70, 0x2E, 0x71, 0x70, 0x69, 0x63, 0x2E};
         }
         return null;
     }
@@ -153,6 +158,8 @@ public class DexKit {
                 return new int[]{6};
             case C_ABS_GAL_SCENE:
                 return new int[]{1};
+            case C_FAV_EMO_CONST:
+                return new int[]{4, 5};
         }
         return null;
     }
