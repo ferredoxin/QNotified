@@ -60,4 +60,10 @@ public abstract class BaseDelayableHook {
 	}
 
     public abstract boolean isEnabled();
+
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName()+"("+(isInited()?"inited":"")+","+(isEnabled()?"enabled":"")+","+SyncUtils.getProcessName()+")";
+	}
+	
 }

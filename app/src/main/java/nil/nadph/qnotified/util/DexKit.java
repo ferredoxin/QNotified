@@ -25,7 +25,11 @@ public class DexKit {
     public static final int C_ITEM_BUILDER_FAC = 5;
     public static final int C_AIO_UTILS = 6;
     public static final int C_ABS_GAL_SCENE = 7;
-
+	
+	public static final int C_AIO_UTILS = 8;
+    public static final int C_FAV_EMO_CONST = 9;
+	
+	
     @Nullable
     public static Class tryLoadOrNull(int i) {
         Class ret = load(c(i));

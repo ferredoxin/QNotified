@@ -38,6 +38,8 @@ import static nil.nadph.qnotified.ActProxyMgr.*;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 import nil.nadph.qnotified.ipc.*;
+import java.util.*;
+import java.io.*;
 
 /*TitleKit:Lcom/tencent/mobileqq/widget/navbar/NavBarCommon*/
 
@@ -99,12 +101,61 @@ public class QQMainHook implements IXposedHookLoadPackage {
                 }
             }
             XposedBridge.hookMethod(m, startup);
+			/*new Thread(new Runnable(){
+					@Override
+					public void run() {
+						try {
+							Thread.sleep(10_000);
+						} catch (InterruptedException e) {}
+						if(SyncUtils.getProcessType()!=1)return;
+						Map sHookedMethodCallbacks=(Map) sget_object(XposedBridge.class,"sHookedMethodCallbacks");
+						a:for(Map.Entry ent:sHookedMethodCallbacks.entrySet()){
+							Object[] elem=(Object[]) iget_object_or_null(ent.getValue(),"elements");
+							for(Object cb:elem){
+								Class hook=cb.getClass();
+								if(hook.getName().contains("qqxposedhook")){
+									ClassLoader cl=hook.getClassLoader();
+									try {
+										Class de=cl.loadClass("ˋﹳ.ˋﹳ.ˋﹳ.ˋﹳ".replace(" ", ""));
+										Method[] ms=de.getDeclaredMethods();
+										Method m=null;
+										for(Method mi:ms){
+											if(mi.getReturnType().equals(String.class)){
+												m=mi;
+												m.setAccessible(true);
+											}
+										}
+										StringBuilder fout=new StringBuilder();
+										for(int i=0;i<4000;i++){
+											String ret=null;
+											try{
+												ret=(String) m.invoke(null,i);
+											}catch(Exception e){
+												ret=null;
+											}
+											ret=Utils.en(ret);
+											fout.append(ret);
+											fout.append('\n');
+										}
+										FileOutputStream f2out=new FileOutputStream("/tmp/qxstr");
+										f2out.write(fout.toString().getBytes());
+										f2out.flush();
+										f2out.close();
+									} catch (Exception e) {
+										log(e);
+									}
+								}
+							}
+						}
+					}
+			}).start();*/
             //findAndHookMethodIfExists("com.tencent.common.app.QFixApplicationImpl", lpparam.classLoader, "isAndroidNPatchEnable", XC_MethodReplacement.returnConstant(500, false));
         } catch (Throwable e) {
             if ((e + "").contains("com.bug.zqq")) return;
             log(e);
             throw e;
         }
+		
     }
 
     private void injectStartupHook(Context ctx) {
