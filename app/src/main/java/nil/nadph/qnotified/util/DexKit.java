@@ -27,7 +27,8 @@ public class DexKit {
     public static final int C_ABS_GAL_SCENE = 7;
     //public static final int C_FAV_EMO_ROAM_HANDLER = 8;
     public static final int C_FAV_EMO_CONST = 9;
-	public static final int C_MSG_REC_FAC = 10;
+    public static final int C_MSG_REC_FAC = 10;
+    public static final int C_CONTACT_UTILS = 11;
 
     @Nullable
     public static Class tryLoadOrNull(int i) {
@@ -51,19 +52,19 @@ public class DexKit {
         Class ret = tryLoadOrNull(i);
         if (ret != null) return ret;
         try {
-            String[] names;
+            ArrayList<String> names;
             ConfigManager cfg = ConfigManager.getDefault();
             names = e(i);
-            if (names == null || names.length == 0) {
+            if (names == null || names.size() == 0) {
                 log("Unable to deobf: " + c(i));
                 return null;
             }
-            if (names.length == 1) {
-                ret = load(names[0]);
+            if (names.size() == 1) {
+                ret = load(names.get(0));
             } else {
-                Class[] cas = new Class[names.length];
-                for (int j = 0; j < names.length; j++) {
-                    cas[j] = load(names[j]);
+                Class[] cas = new Class[names.size()];
+                for (int j = 0; j < names.size(); j++) {
+                    cas[j] = load(names.get(j));
                 }
                 ret = a(i, cas);
             }
@@ -94,8 +95,10 @@ public class DexKit {
                 return "abs_gal_sc";
             case C_FAV_EMO_CONST:
                 return "fav_emo_const";
-			case C_MSG_REC_FAC:
-				return "msg_rec_fac";
+            case C_MSG_REC_FAC:
+                return "msg_rec_fac";
+            case C_CONTACT_UTILS:
+                return "contact_utils";
         }
         return null;
     }
@@ -118,8 +121,10 @@ public class DexKit {
                 return "com/tencent/common/galleryactivity/AbstractGalleryScene";
             case C_FAV_EMO_CONST:
                 return "com/tencent/mobileqq/emosm/favroaming/FavEmoConstant";
-			case C_MSG_REC_FAC:
-				return 
+            case C_MSG_REC_FAC:
+                return "com/tencent/mobileqq/service/message/MessageRecordFactory";
+            case C_CONTACT_UTILS:
+                return "com/tencent/mobileqq/utils/ContactUtils";
         }
         return null;
     }
@@ -142,6 +147,10 @@ public class DexKit {
                 return new byte[]{0x16, 0x67, 0x61, 0x6C, 0x6C, 0x65, 0x72, 0x79, 0x20, 0x73, 0x65, 0x74, 0x43, 0x6F, 0x6C, 0x6F, 0x72, 0x20, 0x62, 0x6C};
             case C_FAV_EMO_CONST:
                 return new byte[]{0x11, 0x68, 0x74, 0x74, 0x70, 0x3A, 0x2F, 0x2F, 0x70, 0x2E, 0x71, 0x70, 0x69, 0x63, 0x2E};
+            case C_MSG_REC_FAC:
+                return new byte[]{0x2C, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50, 0x69, 0x63, 0x4D, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65};
+            case C_CONTACT_UTILS:
+                return new byte[]{0x07, 0x20, 0x2D, 0x20, 0x57, 0x69, 0x46, 0x69};
         }
         return null;
     }
@@ -164,6 +173,10 @@ public class DexKit {
                 return new int[]{1};
             case C_FAV_EMO_CONST:
                 return new int[]{4, 5};
+            case C_MSG_REC_FAC:
+                return new int[]{4};
+            case C_CONTACT_UTILS:
+                return new int[]{4};
         }
         return null;
     }
@@ -174,6 +187,8 @@ public class DexKit {
             case C_FACADE:
             case C_FLASH_PIC_HELPER:
             case C_AIO_UTILS:
+            case C_CONTACT_UTILS:
+            case C_MSG_REC_FAC:
                 a:
                 for (Class clz : classes) {
                     if (Modifier.isAbstract(clz.getModifiers())) continue;
@@ -206,11 +221,22 @@ public class DexKit {
                     }
                 }
                 break;
+            case C_FAV_EMO_CONST:
+                a:
+                for (Class clz : classes) {
+                    if (Modifier.isAbstract(clz.getModifiers())) continue;
+                    for (Field f : clz.getDeclaredFields()) {
+                        if (!Modifier.isStatic(f.getModifiers())) continue a;
+                    }
+                    if (clz.getDeclaredMethods().length > 3) continue;
+                    return clz;
+                }
+                break;
         }
         return null;
     }
 
-    private static String[] e(int i) {
+    private static ArrayList<String> e(int i) {
         ClassLoader loader = Initiator.getClassLoader();
         int record = 0;
         int[] qf = d(i);
@@ -218,7 +244,7 @@ public class DexKit {
         if (qf != null) for (int dexi : qf) {
             record |= 1 << dexi;
             try {
-                String[] ret = a(key, dexi, loader);
+                ArrayList<String> ret = a(key, dexi, loader);
                 if (ret != null) return ret;
             } catch (FileNotFoundException ignored) {
             }
@@ -230,7 +256,7 @@ public class DexKit {
                 continue;
             }
             try {
-                String ret[] = a(key, dexi, loader);
+                ArrayList<String> ret = a(key, dexi, loader);
                 if (ret != null) return ret;
             } catch (FileNotFoundException ignored) {
                 return null;
@@ -248,7 +274,7 @@ public class DexKit {
      * @return ["abc","ab"]
      * @throws FileNotFoundException apk has no classesN.dex
      */
-    public static String[] a(byte[] key, int i, ClassLoader loader) throws FileNotFoundException {
+    public static ArrayList<String> a(byte[] key, int i, ClassLoader loader) throws FileNotFoundException {
         String name;
         byte[] buf = new byte[4096];
         byte[] content;
@@ -271,10 +297,13 @@ public class DexKit {
             in.close();
             content = baos.toByteArray();
             ArrayList<Integer> opcodeOffsets = a(content, key);
-            String[] rets = new String[opcodeOffsets.size()];
+            ArrayList<String> rets = new ArrayList<String>();
             for (int j = 0; j < opcodeOffsets.size(); j++) {
-                String desc = a(content, opcodeOffsets.get(j));
-                rets[j] = desc.substring(1, desc.length() - 1);
+                try {
+                    String desc = a(content, opcodeOffsets.get(j));
+                    rets.add(desc.substring(1, desc.length() - 1));
+                } catch (InternalError ignored) {
+                }
             }
             return rets;
         } catch (IOException e) {
