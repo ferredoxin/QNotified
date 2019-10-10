@@ -91,9 +91,15 @@ public class Initiator {
         return clz;
     }
 
+	public static Class _QQMessageFacade() {
+        Class clz = load("com/tencent/mobileqq/app/message/QQMessageFacade");
+        return clz;
+    }
+	
+	
     @Nullable
     public static Class _EmoAddedAuthCallback() {
-        Class clz = load("com/tencent/mobileqq/app/FavEmoRoamingHandler");
+        Class clz = load("com/tencent/mobileqq/emosm/favroaming/EmoAddedAuthCallback");
         if (clz == null) {
             Class cref = load("com/tencent/mobileqq/emosm/favroaming/EmoAddedAuthCallback$2");
             try {
@@ -110,6 +116,35 @@ public class Initiator {
         }
         return clz;
     }
+	
+	
+	@Nullable
+    public static Class _C2CMessageProcessor() {
+        Class clz = load("com/tencent/mobileqq/app/message/C2CMessageProcessor");
+        if (clz == null) {
+            Class cref = load("com/tencent/mobileqq/app/message/C2CMessageProcessor$1");
+            try {
+                clz = cref.getDeclaredField("this$0").getType();
+            } catch (NoSuchFieldException ignored) {
+            }
+        }
+        if (clz == null) {
+            Class cref = load("com/tencent/mobileqq/app/message/C2CMessageProcessor$5");
+            try {
+                clz = cref.getDeclaredField("this$0").getType();
+            } catch (NoSuchFieldException ignored) {
+            }
+        }
+		if (clz == null) {
+            Class cref = load("com/tencent/mobileqq/app/message/C2CMessageProcessor$7");
+            try {
+                clz = cref.getDeclaredField("this$0").getType();
+            } catch (NoSuchFieldException ignored) {
+            }
+        }
+        return clz;
+    }
+	
 
 	/*
 	public static void showPopup(View root){

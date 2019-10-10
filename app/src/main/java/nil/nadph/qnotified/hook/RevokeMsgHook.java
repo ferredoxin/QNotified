@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static nil.nadph.qnotified.util.Utils.log;
+import de.robv.android.xposed.*;
 
 public class RevokeMsgHook extends BaseDelayableHook {
     private static final RevokeMsgHook self = new RevokeMsgHook();
@@ -25,11 +26,11 @@ public class RevokeMsgHook extends BaseDelayableHook {
     public boolean init() {
         if (inited) return true;
         try {
-            XMethodHook.create($(QQMessageFacade)).params(ArrayList.class, boolean.class)
-                    .method("a").hook(new XC_MethodHook(-51) {
+            XposedHelpers.findAndHookMethod(_QQMessageFacade(),"a",ArrayList.class, boolean.class,
+                    new XC_MethodHook(-51) {
                 @Override
                 protected void onBeforeHooked(@NonNull XC_MemberHook.MemberHookParam param) {
-                    ArrayList list = param.args(0);
+                    ArrayList list = param.args[0];
                     if (isCallingFrom(QQConfigUtils.findClass(C2CMessageProcessor)) ||
                             list == null || list.isEmpty()) {
                         param.setResult(null);

@@ -45,7 +45,8 @@ public class Utils {
             qn_mute_talk_back = "qn_mute_talk_back",
             bug_repeater = "bug_repeater",
             qn_gallery_bg = "qn_gallery_bg",
-            qqhelper_fav_more_emo = "qqhelper_fav_more_emo";
+            qqhelper_fav_more_emo = "qqhelper_fav_more_emo",
+			qn_anti_revoke_msg="qn_anti_revoke_msg";
 
     public static boolean DEBUG = true;
     public static boolean V_TOAST = false;
@@ -600,7 +601,7 @@ public class Utils {
                 cl_bh = cl_flh.getSuperclass();
             }
             Object ret = invoke_virtual(getQQAppInterface(), "a", type, int.class, cl_bh);
-            log("bh(" + type + ")=" + ret);
+            //log("bh(" + type + ")=" + ret);
             return ret;
         } catch (Exception e) {
             log(e);

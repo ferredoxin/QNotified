@@ -27,7 +27,7 @@ public class DexKit {
     public static final int C_ABS_GAL_SCENE = 7;
     //public static final int C_FAV_EMO_ROAM_HANDLER = 8;
     public static final int C_FAV_EMO_CONST = 9;
-
+	public static final int C_MSG_REC_FAC = 10;
 
     @Nullable
     public static Class tryLoadOrNull(int i) {
@@ -94,6 +94,8 @@ public class DexKit {
                 return "abs_gal_sc";
             case C_FAV_EMO_CONST:
                 return "fav_emo_const";
+			case C_MSG_REC_FAC:
+				return "msg_rec_fac";
         }
         return null;
     }
@@ -116,6 +118,8 @@ public class DexKit {
                 return "com/tencent/common/galleryactivity/AbstractGalleryScene";
             case C_FAV_EMO_CONST:
                 return "com/tencent/mobileqq/emosm/favroaming/FavEmoConstant";
+			case C_MSG_REC_FAC:
+				return 
         }
         return null;
     }
