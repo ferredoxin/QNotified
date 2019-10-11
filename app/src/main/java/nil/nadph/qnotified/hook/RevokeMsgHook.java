@@ -12,6 +12,7 @@ import java.util.Random;
 
 import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
+import nil.nadph.qnotified.*;
 
 public class RevokeMsgHook extends BaseDelayableHook {
     private static final RevokeMsgHook self = new RevokeMsgHook();
@@ -29,6 +30,8 @@ public class RevokeMsgHook extends BaseDelayableHook {
     public boolean init() {
         if (inited) return true;
         try {
+			XposedHelpers.findAndHookMethod(_QQMessageFacade(), "a", ArrayList.class, boolean.class,QQMainHook.invokeRecord);
+											
             XposedHelpers.findAndHookMethod(_QQMessageFacade(), "a", ArrayList.class, boolean.class,
                     new XC_MethodHook(-51) {
                         @Override
@@ -80,11 +83,15 @@ public class RevokeMsgHook extends BaseDelayableHook {
         if (isTroop == 0) {
             name = "对方";
         } else {
-            name = (String) invoke_static(DexKit.doFindClass(DexKit.C_CONTACT_UTILS), "a", qqAppInterface, fromUin,
-                    friendUin, isTroop == 1 ? 1 : 2, 0, load("com/tencent/mobileqq/app/QQAppInterface"), String.class, String.class, int.class, int.class);
+			try {
+            	name = "\""+(String) invoke_static(DexKit.doFindClass(DexKit.C_CONTACT_UTILS), "a", qqAppInterface, fromUin,
+                	    friendUin, isTroop == 1 ? 1 : 2, 0, load("com/tencent/mobileqq/app/QQAppInterface"), String.class, String.class, int.class, int.class)+"\"";
+			}catch(Exception e){
+				name=fromUin;
+			}		
         }
         invoke_virtual(messageRecord, "init", selfUin, isTroop == 0 ? fromUin :
-                        friendUin, fromUin, name + "尝试撤回一条消息", time, msgType, isTroop, time,
+                        friendUin, fromUin,  name + "尝试撤回一条消息", time, msgType, isTroop, time,
                 String.class, String.class, String.class, String.class, long.class, int.class, int.class, long.class);
         iput_object(messageRecord, "msgUid", msgUid == 0 ? 0 : msgUid + new Random().nextInt());
         iput_object(messageRecord, "shmsgseq", shmsgseq);
@@ -96,7 +103,8 @@ public class RevokeMsgHook extends BaseDelayableHook {
 
     @Override
     public int getEffectiveProc() {
-        return SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF;
+        //return SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF;
+		return 0xFFFFFFFF;
     }
 
     @Override

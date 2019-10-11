@@ -385,7 +385,7 @@ public class QQMainHook implements IXposedHookLoadPackage {
     }
 
 
-    public XC_MethodHook invokeRecord = new XC_MethodHook(200) {
+    public static final XC_MethodHook invokeRecord = new XC_MethodHook(200) {
         @Override
         protected void afterHookedMethod(MethodHookParam param) throws IllegalAccessException, IllegalArgumentException {
             Member m = param.method;

@@ -313,7 +313,7 @@ public class QThemeKit {
         if ((ret = cachedDrawable.get(name)) != null) return ret;
         try {
             if (res == null && mContext != null) res = mContext.getResources();
-            log(res + "is not null");
+            //log(res + "is not null");
             InputStream fin = openAsset(name);
             ret = loadDrawableFromStream(fin, name, res);
             cachedDrawable.put(name, ret);
@@ -354,7 +354,7 @@ public class QThemeKit {
 
 
     public static ColorStateList getStateColorInXml(String file) {
-        log("load xml:" + file);
+        //log("load xml:" + file);
         byte[] byteSrc = null;
         FileInputStream fis = null;
         ByteArrayOutputStream bos = null;

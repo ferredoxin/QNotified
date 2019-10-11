@@ -50,10 +50,23 @@ public class AboutActivity implements ActivityAdapter {
         __lp_r.addRule(RelativeLayout.CENTER_VERTICAL);
         ColorStateList hiColor = ColorStateList.valueOf(Color.argb(255, 242, 140, 72));
         RelativeLayout _t;
+		
+		ll.addView(subtitle(self, "支持的(类)Xposed内核:"));
+        ll.addView(subtitle(self, "原生Xposed, Epic(太极), SandHook, BugHook(应用转生)"));
+		ll.addView(subtitle(self, " * YAHFA 可能存在一定兼容性问题(如卡Q,黑屏等等),遇到问题请反馈(说明发生的情况和其它必要信息,如QQ版本,模块版本,使用的框架环境,安卓版本等),谢谢"));
+		
+		ll.addView(subtitle(self, "声明:"));
+		ll.addView(subtitle(self, "此软件是捐赠软件 可以免费使用 如果喜欢我的作品请打赏支持我维护和开发! 任何形式或渠道包括预装手机售卖此软件​都是非法贩卖, 别上当受骗！欢迎举报贩卖者! "));
+		
+		ll.addView(subtitle(self, "特别声明:"));
+		ll.addView(subtitle(self, "QNotified模块属于个人作品! 没有售后! 没有客服! 您可以与我反馈和讨论问题, 但请文明交流尊重彼此!"));
+		
         ll.addView(subtitle(self, "免责声明"));
         ll.addView(subtitle(self, "This program is distributed in the hope that it will be useful, " +
                 "but WITHOUT ANY WARRANTY; without even the implied warranty of " +
-                "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.", QThemeKit.skin_red.getDefaultColor()));
+                "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."));
+		
+		ll.addView(subtitle(self, "请尊重我的的劳动成果 请勿用于商业用途 严禁盗版贩卖"));
         ll.addView(subtitle(self, "SystemClassLoader\n" + ClassLoader.getSystemClassLoader() + "\nContext.getClassLoader()\n" + self.getClassLoader() + "\nThread.getContextClassLoader()\n" + Thread.currentThread().getContextClassLoader()));
         //bounceScrollView.setFocusable(true);
         //bounceScrollView.setFocusableInTouchMode(true);

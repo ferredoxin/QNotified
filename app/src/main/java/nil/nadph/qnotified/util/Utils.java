@@ -773,7 +773,7 @@ public class Utils {
 
     public static void dumpTrace() {
         Throwable t = new Throwable("Trace dump");
-        XposedBridge.log(t);
+        log(t);
     }
 
     public static int getLineNo() {

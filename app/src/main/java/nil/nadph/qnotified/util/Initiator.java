@@ -99,22 +99,26 @@ public class Initiator {
 	
     @Nullable
     public static Class _EmoAddedAuthCallback() {
-        Class clz = load("com/tencent/mobileqq/emosm/favroaming/EmoAddedAuthCallback");
-        if (clz == null) {
-            Class cref = load("com/tencent/mobileqq/emosm/favroaming/EmoAddedAuthCallback$2");
-            try {
-                clz = cref.getDeclaredField("this$0").getType();
-            } catch (NoSuchFieldException ignored) {
-            }
-        }
-        if (clz == null) {
-            Class cref = load("com/tencent/mobileqq/emosm/favroaming/EmoAddedAuthCallback$1");
-            try {
-                clz = cref.getDeclaredField("this$0").getType();
-            } catch (NoSuchFieldException ignored) {
-            }
-        }
-        return clz;
+		try {
+			Class clz = load("com/tencent/mobileqq/emosm/favroaming/EmoAddedAuthCallback");
+			if (clz == null) {
+				Class cref = load("com/tencent/mobileqq/emosm/favroaming/EmoAddedAuthCallback$2");
+				try {
+					clz = cref.getDeclaredField("this$0").getType();
+				} catch (NoSuchFieldException ignored) {
+				}
+			}
+			if (clz == null) {
+				Class cref = load("com/tencent/mobileqq/emosm/favroaming/EmoAddedAuthCallback$1");
+				try {
+					clz = cref.getDeclaredField("this$0").getType();
+				} catch (NoSuchFieldException ignored) {
+				}
+			}
+			return clz;
+		} catch (NullPointerException e) {
+			return null;
+		}
     }
 	
 	
