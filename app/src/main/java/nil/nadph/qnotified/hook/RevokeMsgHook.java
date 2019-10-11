@@ -33,32 +33,36 @@ public class RevokeMsgHook extends BaseDelayableHook {
                     new XC_MethodHook(-51) {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            ArrayList list = (ArrayList) param.args[0];
-                            if (isCallingFrom(_C2CMessageProcessor().getName()) ||
-                                    list == null || list.isEmpty()) {
+                            try {
+                                ArrayList list = (ArrayList) param.args[0];
+                                if (isCallingFrom(_C2CMessageProcessor().getName()) ||
+                                        list == null || list.isEmpty()) {
+                                    param.setResult(null);
+                                    return;
+                                }
+                                Object revokeMsgInfo = list.get(0);
+                                String friendUin = (String) iget_object_or_null(revokeMsgInfo, "a", String.class);
+                                String fromUin = (String) iget_object_or_null(revokeMsgInfo, "b", String.class);
+                                int isTroop = (int) iget_object_or_null(revokeMsgInfo, "a", int.class);
+                                long msgUid = (long) iget_object_or_null(revokeMsgInfo, "b", long.class);
+                                long shmsgseq = (long) iget_object_or_null(revokeMsgInfo, "a", long.class);
+                                long time = (long) iget_object_or_null(revokeMsgInfo, "c", long.class);
+                                Object qqApp = getQQAppInterface();
+                                String selfUin = "" + getLongAccountUin();
+                                if (selfUin.equals(fromUin)) {
+                                    param.setResult(null);
+                                    return;
+                                }
+                                int msgType = -0x7ef; //sget_object(load("com/tencent/mobileqq/data/MessageRecord"),("MSG_TYPE_REVOKE_GRAY_TIPS");
+                                List tip = getRevokeTip(qqApp, selfUin, friendUin, fromUin, msgUid, shmsgseq,
+                                        time + 1, msgType, isTroop);
+                                if (tip != null && !tip.isEmpty()) {
+                                    invoke_virtual(param.thisObject, "a", tip, selfUin, List.class, String.class);
+                                }
                                 param.setResult(null);
-                                return;
+                            } catch (Throwable e) {
+                                log(e);
                             }
-                            Object revokeMsgInfo = list.get(0);
-                            String friendUin = (String) iget_object_or_null(revokeMsgInfo, "a", String.class);
-                            String fromUin = (String) iget_object_or_null(revokeMsgInfo, "b", String.class);
-                            int isTroop = (int) iget_object_or_null(revokeMsgInfo, "a", int.class);
-                            long msgUid = (long) iget_object_or_null(revokeMsgInfo, "b", long.class);
-                            long shmsgseq = (long) iget_object_or_null(revokeMsgInfo, "a", long.class);
-                            long time = (long) iget_object_or_null(revokeMsgInfo, "c", long.class);
-                            Object qqApp = getQQAppInterface();
-                            String selfUin = "" + getLongAccountUin();
-                            if (selfUin.equals(fromUin)) {
-                                param.setResult(null);
-                                return;
-                            }
-                            int msgType = -0x7ef; //sget_object(load("com/tencent/mobileqq/data/MessageRecord"),("MSG_TYPE_REVOKE_GRAY_TIPS");
-                            List tip = getRevokeTip(qqApp, selfUin, friendUin, fromUin, msgUid, shmsgseq,
-                                    time + 1, msgType, isTroop);
-                            if (tip != null && !tip.isEmpty()) {
-                                invoke_virtual(param.thisObject, "a", tip, selfUin, load("com/tencent/mobileqq/data/MessageRecord"), String.class);
-                            }
-                            param.setResult(null);
                         }
                     });
             inited = true;
