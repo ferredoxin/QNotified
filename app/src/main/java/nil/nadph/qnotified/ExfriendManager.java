@@ -621,7 +621,7 @@ public class ExfriendManager {
             FriendRecord fr = persons.get(uin);
             if (fr == null) {
                 try {
-                    showToast(((Context) QQMainHook.splashActivityRef.get()), TOAST_TYPE_ERROR, "onActDelResp:get(" + uin + ")==null", Toast.LENGTH_SHORT);
+                    showToast(((Context) StartupHook.splashActivityRef.get()), TOAST_TYPE_ERROR, "onActDelResp:get(" + uin + ")==null", Toast.LENGTH_SHORT);
                 } catch (Throwable e) {
                 }
                 return;

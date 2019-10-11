@@ -8,7 +8,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-import nil.nadph.qnotified.QQMainHook;
+import nil.nadph.qnotified.StartupHook;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.record.ConfigManager;
@@ -391,7 +391,7 @@ public class QQViewBuilder {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                QQMainHook.startProxyActivity(v.getContext(), action);
+                StartupHook.startProxyActivity(v.getContext(), action);
             }
         };
     }

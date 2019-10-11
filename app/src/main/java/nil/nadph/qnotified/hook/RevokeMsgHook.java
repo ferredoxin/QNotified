@@ -2,9 +2,10 @@ package nil.nadph.qnotified.hook;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
-import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.StartupHook;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,6 @@ import java.util.Random;
 
 import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
-import nil.nadph.qnotified.*;
 
 public class RevokeMsgHook extends BaseDelayableHook {
     private static final RevokeMsgHook self = new RevokeMsgHook();
@@ -30,8 +30,8 @@ public class RevokeMsgHook extends BaseDelayableHook {
     public boolean init() {
         if (inited) return true;
         try {
-			XposedHelpers.findAndHookMethod(_QQMessageFacade(), "a", ArrayList.class, boolean.class,QQMainHook.invokeRecord);
-											
+            XposedHelpers.findAndHookMethod(_QQMessageFacade(), "a", ArrayList.class, boolean.class, StartupHook.invokeRecord);
+
             XposedHelpers.findAndHookMethod(_QQMessageFacade(), "a", ArrayList.class, boolean.class,
                     new XC_MethodHook(-51) {
                         @Override
@@ -46,7 +46,7 @@ public class RevokeMsgHook extends BaseDelayableHook {
                                 Object revokeMsgInfo = list.get(0);
                                 String friendUin = (String) iget_object_or_null(revokeMsgInfo, "a", String.class);
                                 String fromUin = (String) iget_object_or_null(revokeMsgInfo, "b", String.class);
-                                int isTroop = (int) iget_object_or_null(revokeMsgInfo, "a", int.class);
+                                int isTroop = (int) Utils.getFirstNSFByType(revokeMsgInfo, int.class);
                                 long msgUid = (long) iget_object_or_null(revokeMsgInfo, "b", long.class);
                                 long shmsgseq = (long) iget_object_or_null(revokeMsgInfo, "a", long.class);
                                 long time = (long) iget_object_or_null(revokeMsgInfo, "c", long.class);
@@ -83,15 +83,15 @@ public class RevokeMsgHook extends BaseDelayableHook {
         if (isTroop == 0) {
             name = "对方";
         } else {
-			try {
-            	name = "\""+(String) invoke_static(DexKit.doFindClass(DexKit.C_CONTACT_UTILS), "a", qqAppInterface, fromUin,
-                	    friendUin, isTroop == 1 ? 1 : 2, 0, load("com/tencent/mobileqq/app/QQAppInterface"), String.class, String.class, int.class, int.class)+"\"";
-			}catch(Exception e){
-				name=fromUin;
-			}		
+            try {
+                name = "\"" + (String) invoke_static(DexKit.doFindClass(DexKit.C_CONTACT_UTILS), "a", qqAppInterface, fromUin,
+                        friendUin, isTroop == 1 ? 1 : 2, 0, load("com/tencent/mobileqq/app/QQAppInterface"), String.class, String.class, int.class, int.class) + "\"";
+            } catch (Exception e) {
+                name = fromUin;
+            }
         }
         invoke_virtual(messageRecord, "init", selfUin, isTroop == 0 ? fromUin :
-                        friendUin, fromUin,  name + "尝试撤回一条消息", time, msgType, isTroop, time,
+                        friendUin, fromUin, name + "尝试撤回一条消息", time, msgType, isTroop, time,
                 String.class, String.class, String.class, String.class, long.class, int.class, int.class, long.class);
         iput_object(messageRecord, "msgUid", msgUid == 0 ? 0 : msgUid + new Random().nextInt());
         iput_object(messageRecord, "shmsgseq", shmsgseq);
@@ -104,7 +104,7 @@ public class RevokeMsgHook extends BaseDelayableHook {
     @Override
     public int getEffectiveProc() {
         //return SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF;
-		return 0xFFFFFFFF;
+        return 0xFFFFFFFF;
     }
 
     @Override

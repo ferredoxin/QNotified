@@ -87,7 +87,7 @@ public class InjectDelayableHooks {
             }
         }
         for (BaseDelayableHook h : hooks) {
-            if (h.isEnabled()) h.init();
+            if (h.isEnabled() && h.isTargetProc()) h.init();
         }
         if (ctx != null && main[0] != null) ctx.runOnUiThread(new Runnable() {
             @Override

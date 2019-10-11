@@ -7,7 +7,6 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import nil.nadph.qnotified.util.Utils;
 
 public class HookEntry implements IXposedHookLoadPackage {
-
     public static final String PACKAGE_NAME_QQ = "com.tencent.mobileqq";
     public static final String PACKAGE_NAME_QQ_INTERNATIONAL = "com.tencent.mobileqqi";
     public static final String PACKAGE_NAME_QQ_LITE = "com.tencent.qqlite";
@@ -15,37 +14,19 @@ public class HookEntry implements IXposedHookLoadPackage {
     public static final String PACKAGE_NAME_SELF = "nil.nadph.qnotified";
     public static final String PACKAGE_NAME_XPOSED_INSTALLER = "de.robv.android.xposed.installer";
 
-
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
-        if (lpparam.packageName.equals(PACKAGE_NAME_SELF)) {
-            XposedHelpers.findAndHookMethod("nil.nadph.qnotified.util.Utils", lpparam.classLoader, "getActiveModuleVersion", XC_MethodReplacement.returnConstant(Utils.QN_VERSION_NAME));
-        } else if (lpparam.packageName.equals(PACKAGE_NAME_QQ)) {
-            //log("Found QQ!");
-			/*XposedHelpers.findAndHookMethod(Activity.class.getName(),lpparam.classLoader,"onCreate","android.os.Bundle",new XC_MethodHook(0){
-			 protected void afterHookedMethod(MethodHookParam param) throws Throwable{
-			 log("QQ/Initing ClzExp...");
-			 ClazzExplorer.get().init((Activity)param.thisObject);
-			 log("QQ/Init clzExp done.");
-			 }
-			 });
-			 */
-            new QQMainHook().handleLoadPackage(lpparam);
-
-            /*findAndHookMethod(lpparam.classLoader.loadClass("com.tencent.mobileqq.startup.step.Step"), "c", new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    Log.i("QNtrace", (((boolean) param.getResult()) ? " +++" : " ---") + param.thisObject.getClass().getName(), new Throwable(param.thisObject.getClass().getName()));
-
-                }
-            });*/
-            //log("Handle QQ done.");
-        } else if (lpparam.packageName.equals(PACKAGE_NAME_TIM)) {
-            new QQMainHook().handleLoadPackage(lpparam);
-        }/* else if (lpparam.packageName.equals(PACKAGE_NAME_QQ_LITE)) {
-            new QQMainHook().handleLoadPackage(lpparam);
-        } else if (lpparam.packageName.equals(PACKAGE_NAME_QQ_INTERNATIONAL)) {
-            new QQMainHook().handleLoadPackage(lpparam);
-        }*/
+        switch (lpparam.packageName) {
+            case PACKAGE_NAME_SELF:
+                XposedHelpers.findAndHookMethod("nil.nadph.qnotified.util.Utils", lpparam.classLoader, "getActiveModuleVersion", XC_MethodReplacement.returnConstant(Utils.QN_VERSION_NAME));
+                break;
+            case PACKAGE_NAME_QQ:
+            case PACKAGE_NAME_TIM:
+                StartupHook.getInstance().doInit(lpparam.classLoader);
+                break;
+            case PACKAGE_NAME_QQ_INTERNATIONAL:
+            case PACKAGE_NAME_QQ_LITE:
+                //coming...
+        }
     }
 }

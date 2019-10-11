@@ -5,11 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import nil.nadph.qnotified.adapter.ActProxyMgr;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.util.ClazzExplorer;
@@ -28,15 +26,25 @@ import static nil.nadph.qnotified.util.Utils.*;
 
 /*TitleKit:Lcom/tencent/mobileqq/widget/navbar/NavBarCommon*/
 
-public class QQMainHook implements IXposedHookLoadPackage {
+public class StartupHook {
     public static WeakReference<Activity> splashActivityRef;
     public static final String QN_FULL_TAG = "qn_full_tag";
-    XC_LoadPackage.LoadPackageParam lpparam;
+    public static StartupHook SELF;
 
-    @Override
-    public void handleLoadPackage(XC_LoadPackage.LoadPackageParam _lpparam) throws Throwable {
+    private boolean first_stage_inited = false;
+    //private boolean sec_stage_inited = false;
+
+    private StartupHook() {
+    }
+
+    public static StartupHook getInstance() {
+        if (SELF == null) SELF = new StartupHook();
+        return SELF;
+    }
+
+    public void doInit(ClassLoader rtloader) throws Throwable {
+        if (first_stage_inited) return;
         try {
-            this.lpparam = _lpparam;
             XC_MethodHook startup = new XC_MethodHook(51) {
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     try {
@@ -76,7 +84,7 @@ public class QQMainHook implements IXposedHookLoadPackage {
                     }
                 }
             };
-            Class loadDex = lpparam.classLoader.loadClass("com.tencent.mobileqq.startup.step.LoadDex");
+            Class loadDex = rtloader.loadClass("com.tencent.mobileqq.startup.step.LoadDex");
             Method[] ms = loadDex.getDeclaredMethods();
             Method m = null;
             for (Method method : ms) {
@@ -135,6 +143,7 @@ public class QQMainHook implements IXposedHookLoadPackage {
 					}
 			}).start();*/
             //findAndHookMethodIfExists("com.tencent.common.app.QFixApplicationImpl", lpparam.classLoader, "isAndroidNPatchEnable", XC_MethodReplacement.returnConstant(500, false));
+            first_stage_inited = true;
         } catch (Throwable e) {
             if ((e + "").contains("com.bug.zqq")) return;
             log(e);

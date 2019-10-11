@@ -46,7 +46,7 @@ public class Utils {
             bug_repeater = "bug_repeater",
             qn_gallery_bg = "qn_gallery_bg",
             qqhelper_fav_more_emo = "qqhelper_fav_more_emo",
-			qn_anti_revoke_msg="qn_anti_revoke_msg";
+            qn_anti_revoke_msg = "qn_anti_revoke_msg";
 
     public static boolean DEBUG = true;
     public static boolean V_TOAST = false;
@@ -610,14 +610,34 @@ public class Utils {
 
     }
 
-    public static <T> T getObject(Object obj, Class<?> type, String name) {
-        return getObject(obj.getClass(), type, name, obj);
+    /**
+     * NSF: Neither Static nor Final
+     *
+     * @param obj  thisObj
+     * @param type Field type
+     * @return the FIRST(as declared seq in dex) field value meeting the type
+     */
+    @Deprecated
+    public static Object getFirstNSFByType(Object obj, Class type) {
+        if (obj == null) throw new NullPointerException("obj == null");
+        if (type == null) throw new NullPointerException("type == null");
+        Class clz = obj.getClass();
+        while (clz != null && !clz.equals(Object.class)) {
+            for (Field f : clz.getDeclaredFields()) {
+                if (!f.getType().equals(type)) continue;
+                int m = f.getModifiers();
+                if (Modifier.isStatic(m) || Modifier.isFinal(m)) continue;
+                f.setAccessible(true);
+                try {
+                    return f.get(obj);
+                } catch (IllegalAccessException ignored) {
+                    //should not happen
+                }
+            }
+            clz = clz.getSuperclass();
+        }
+        return null;
     }
-
-    public static <T> T getObject(Class clazz, Class<?> type, String name) {
-        return getObject(clazz, type, name, null);
-    }
-
 
     public static <T> T getObject(Class clazz, Class<?> type, String name, Object obj) {
         try {
