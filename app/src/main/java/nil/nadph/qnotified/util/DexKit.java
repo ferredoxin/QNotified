@@ -285,6 +285,9 @@ public class DexKit {
             url = (URL) Utils.invoke_virtual(loader, "findResource", name, String.class);
         } catch (Throwable ignored) {
         }
+        if (i == 1) {
+            log("dex1:" + url);
+        }
         if (url == null) throw new FileNotFoundException(name);
         InputStream in;
         try {
@@ -296,6 +299,9 @@ public class DexKit {
             }
             in.close();
             content = baos.toByteArray();
+            if (i == 1) {
+                log("dex1.len: " + content.length);
+            }
             ArrayList<Integer> opcodeOffsets = a(content, key);
             ArrayList<String> rets = new ArrayList<String>();
             for (int j = 0; j < opcodeOffsets.size(); j++) {
