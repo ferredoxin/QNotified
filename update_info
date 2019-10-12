@@ -1,5 +1,17 @@
 [
   {
+    "code": 13,
+    "name": "0.3.1",
+    "taichi": false,
+    "beta": false,
+    "time": 1570885064,
+    "md5": "31d6d65f38da5b629d5011252b3b3483",
+    "desc": "- 添加TIM支持\n- 添加图片方式打开闪照和表情包功能\n- 添加复读机功能\n- 添加收藏更多表情\n- 添加语音转发功能",
+    "urls": [
+      "https://github.com/cinit/QNotified/releases/download/v0.3.1/QNotified_031.apk"
+    ]
+  },
+  {
     "code": 10,
     "name": "0.2.0",
     "taichi": true,

@@ -98,7 +98,7 @@ public class SyncUtils {
         initId();
         changed.putExtra("process", process);
         changed.putExtra("hook", hookId);
-		log("Tx: ");
+        log("Tx: ");
         ctx.sendBroadcast(changed);
     }
 
