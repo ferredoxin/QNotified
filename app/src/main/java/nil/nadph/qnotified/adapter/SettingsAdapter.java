@@ -89,14 +89,14 @@ public class SettingsAdapter implements ActivityAdapter {
         ll.addView(_t = newListItemButton(self, "屏蔽指定群的红包通知", Html.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[QQ红包][有红包]</font>恭喜发财"), "0个群", clickToProxyActAction(ACTION_MUTE_RED_PACKET)));
         __tv_muted_redpacket = _t.findViewById(R_ID_VALUE);
         ll.addView(subtitle(self, "标准功能"));
-        ll.addView(newListItemSwitchConfigInit(self, "防撤回", null, qn_anti_revoke_msg, false, RevokeMsgHook.get()));
+        //ll.addView(newListItemSwitchConfigInit(self, "防撤回", null, qn_anti_revoke_msg, false, RevokeMsgHook.get()));
         ll.addView(newListItemSwitchConfigInit(self, "语音转发", null, qn_enable_ptt_forward, false, PttForwardHook.get()));
         ll.addView(subtitle(self, "图片相关"));
         ll.addView(newListItemSwitchConfigInit(self, "以图片方式打开闪照", null, qn_flash_as_pic, false, FlashPicHook.get()));
         if (!Utils.isTim(self)) {
             ll.addView(newListItemSwitchConfigInit(self, "以图片方式打开表情", null, qn_sticker_as_pic, false, EmoPicHook.get()));
         }
-        ll.addView(newListItemSwitchConfigInit(self, "聊天图片背景透明", null, qn_gallery_bg, false, GalleryBgHook.get()));
+        //ll.addView(newListItemSwitchConfigInit(self, "聊天图片背景透明", null, qn_gallery_bg, false, GalleryBgHook.get()));
         ll.addView(newListItemSwitchConfigInit(self, "复读机", null, bug_repeater, false, RepeaterHook.get()));
         ll.addView(newListItemSwitchConfigInit(self, "收藏更多表情", "保存在本地", qqhelper_fav_more_emo, false, FavMoreEmo.get()));
         ll.addView(subtitle(self, "还没完成的功能(咕咕咕)"));
@@ -119,7 +119,7 @@ public class SettingsAdapter implements ActivityAdapter {
         ll.addView(newListItemDummy(self, "模块版本", null, Utils.QN_VERSION_NAME));
         UpdateCheck uc = new UpdateCheck();
         ll.addView(_t = newListItemButton(self, "检查更新", null, "点击检查", uc));
-        ll.addView(newListItemButton(self, "用户协议", null, null, clickToProxyActAction(ACTION_ABOUT)));
+        ll.addView(newListItemButton(self, "关于模块", null, null, clickToProxyActAction(ACTION_ABOUT)));
         uc.setVersionTip(_t);
         ll.addView(subtitle(self, "调试"));
         ll.addView(newListItemButton(self, "Shell.exec", "正常情况下无需使用此功能", null, clickTheComing()));

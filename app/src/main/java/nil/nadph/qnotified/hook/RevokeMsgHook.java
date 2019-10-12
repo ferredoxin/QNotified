@@ -13,6 +13,9 @@ import java.util.Random;
 
 import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
+import de.robv.android.xposed.*;
+import java.lang.reflect.*;
+import nil.nadph.qnotified.util.*;
 
 public class RevokeMsgHook extends BaseDelayableHook {
     private static final RevokeMsgHook self = new RevokeMsgHook();
@@ -31,8 +34,8 @@ public class RevokeMsgHook extends BaseDelayableHook {
         if (inited) return true;
         try {
             XposedHelpers.findAndHookMethod(_QQMessageFacade(), "a", ArrayList.class, boolean.class, StartupHook.invokeRecord);
-
-            XposedHelpers.findAndHookMethod(_QQMessageFacade(), "a", ArrayList.class, boolean.class,
+			XposedHelpers.findAndHookMethod(_QQMessageFacade(), "a", String.class, int.class, long.class, long.class, StartupHook.invokeRecord);
+            /*XposedHelpers.findAndHookMethod(_QQMessageFacade(), "a", ArrayList.class, boolean.class,
                     new XC_MethodHook(-51) {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -67,7 +70,49 @@ public class RevokeMsgHook extends BaseDelayableHook {
                                 log(e);
                             }
                         }
-                    });
+                    });*/
+					
+					
+					
+					
+			XposedBridge.hookAllConstructors(load("com/tencent/mobileqq/graytip/UniteGrayTipParam"), new XC_MethodHook() {
+					@Override
+					protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+						/*String selfuin=getmyselfuin();*/
+						String fromuin=(String)param.args[1];
+						String message=(String)param.args[2];
+						if (/*selfuin!=null&&!selfuin.isEmpty()&&*/message.contains("撤回")){
+							Member m = param.method;
+							String ret = m.getDeclaringClass().getSimpleName() + "->" + ((m instanceof Method) ? m.getName() : "<init>") + "(";
+							Class[] argt;
+							if (m instanceof Method)
+								argt = ((Method) m).getParameterTypes();
+							else if (m instanceof Constructor)
+								argt = ((Constructor) m).getParameterTypes();
+							else argt = new Class[0];
+							for (int i = 0; i < argt.length; i++) {
+								if (i != 0) ret += ",\n";
+								ret += param.args[i];
+							}
+							ret += ")=" + param.getResult();
+							Utils.log(ret);
+							ret = "↑dump object:" + m.getDeclaringClass().getCanonicalName() + "\n";
+							Field[] fs = m.getDeclaringClass().getDeclaredFields();
+							for (int i = 0; i < fs.length; i++) {
+								fs[i].setAccessible(true);
+								ret += (i < fs.length - 1 ? "├" : "↓") + fs[i].getName() + "=" + ClazzExplorer.en_toStr(fs[i].get(param.thisObject)) + "\n";
+							}
+							log(ret);
+							Utils.dumpTrace();
+							/*if (!selfuin.equals(fromuin)){
+								param.args[2]=getShowMsg(message);
+							}*/
+						}
+					}
+				});
+					
+					
+					
             inited = true;
             return true;
         } catch (Throwable e) {

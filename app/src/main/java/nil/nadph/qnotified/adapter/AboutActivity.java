@@ -51,12 +51,17 @@ public class AboutActivity implements ActivityAdapter {
         ColorStateList hiColor = ColorStateList.valueOf(Color.argb(255, 242, 140, 72));
         RelativeLayout _t;
 		
+		ll.addView(subtitle(self, "QNotified"));
+		ll.addView(subtitle(self, "本模块无毒无害, 免费开源, 旨在\n 1.接手部分停更模块的部分功能\n 2.提供被删好友通知\n 3.移除部分臃肿功能, 增加部分实用功能"));
+		
+		ll.addView(subtitle(self, "此模块目前承认的APP发布渠道为 Github 上本项目的 Releases 和 Xposed Installer 里的模块下载 ,也可从https://github.com/cinit/QNotified 获取源码自行编译, 如果您是在其他渠道下载的话请自己注意安全.\n Copyright (C) 2019 cinit@github"));
+		
 		ll.addView(subtitle(self, "支持的(类)Xposed内核:"));
         ll.addView(subtitle(self, "原生Xposed, Epic(太极), SandHook, BugHook(应用转生)"));
 		ll.addView(subtitle(self, " * YAHFA 可能存在一定兼容性问题(如卡Q,黑屏等等),遇到问题请反馈(说明发生的情况和其它必要信息,如QQ版本,模块版本,使用的框架环境,安卓版本等),谢谢"));
 		
 		ll.addView(subtitle(self, "声明:"));
-		ll.addView(subtitle(self, "此软件是捐赠软件 可以免费使用 如果喜欢我的作品请打赏支持我维护和开发! 任何形式或渠道包括预装手机售卖此软件​都是非法贩卖, 别上当受骗！欢迎举报贩卖者! "));
+		ll.addView(subtitle(self, "此软件是捐赠软件 个人可以免费使用 请勿以任何方式商用本软件 如果喜欢我的作品请打赏支持我维护和开发! 任何形式或渠道包括预装手机售卖此软件​都是非法贩卖, 别上当受骗！欢迎举报贩卖者! "));
 		
 		ll.addView(subtitle(self, "特别声明:"));
 		ll.addView(subtitle(self, "QNotified模块属于个人作品! 没有售后! 没有客服! 您可以与我反馈和讨论问题, 但请文明交流尊重彼此!"));

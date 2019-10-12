@@ -32,8 +32,9 @@ public class StartupHook {
     public static StartupHook SELF;
 
     private boolean first_stage_inited = false;
-    //private boolean sec_stage_inited = false;
-
+    private boolean sec_stage_inited = false;
+	private boolean third_stage_inited = false;
+	
     private StartupHook() {
     }
 
@@ -48,6 +49,7 @@ public class StartupHook {
             XC_MethodHook startup = new XC_MethodHook(51) {
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     try {
+						if(sec_stage_inited) return;
                         Utils.checkLogFlag();
                         Context ctx = null;
                         Class clz = param.thisObject.getClass().getClassLoader().loadClass("com.tencent.common.app.BaseApplicationImpl");
@@ -73,11 +75,14 @@ public class StartupHook {
                         XposedBridge.hookMethod(doStep, new XC_MethodHook(51) {
                             @Override
                             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+								if (third_stage_inited) return;
                                 Object dir = iget_object_or_null(param.thisObject, "mDirector", __director);
                                 if (dir == null) dir = iget_object_or_null(param.thisObject, "a", __director);
                                 InjectDelayableHooks.step(dir);
+								third_stage_inited = true;
                             }
                         });
+						sec_stage_inited = true;
                     } catch (Throwable e) {
                         log(e);
                         throw e;
@@ -156,7 +161,7 @@ public class StartupHook {
             if ("true".equals(System.getProperty(QN_FULL_TAG))) {
                 log("Err:QNotified reloaded??");
                 //return;
-                System.exit(-1);
+                //System.exit(-1);
                 //QNotified updated(in HookLoader mode),kill QQ to make user restart it.
             }
             System.setProperty(QN_FULL_TAG, "true");
