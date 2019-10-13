@@ -41,9 +41,11 @@ public class DexKit {
                 return null;
             }
             String clzn = cfg.getString("cache_" + a(i) + "_class");
+			if (clzn == null) return null;
             ret = load(clzn);
             return ret;
-        } catch (IOException e) {
+        } catch (Exception e) {
+			log(e);
             return null;
         }
     }
@@ -71,7 +73,7 @@ public class DexKit {
             cfg.putString("cache_" + a(i) + "_class", ret.getName());
             cfg.getAllConfig().put("cache_" + a(i) + "_code", getHostInfo(getApplication()).versionCode);
             cfg.save();
-        } catch (IOException e) {
+        } catch (Exception e) {
             log(e);
         }
         return ret;
@@ -242,13 +244,13 @@ public class DexKit {
         int[] qf = d(i);
         byte[] key = b(i);
         if (qf != null) for (int dexi : qf) {
-            record |= 1 << dexi;
-            try {
-                ArrayList<String> ret = a(key, dexi, loader);
-                if (ret != null) return ret;
-            } catch (FileNotFoundException ignored) {
-            }
-        }
+				record |= 1 << dexi;
+				try {
+					ArrayList<String> ret = a(key, dexi, loader);
+					if (ret != null) return ret;
+				} catch (FileNotFoundException ignored) {
+				}
+			}
         int dexi = 1;
         while (true) {
             if ((record & (1 << dexi)) != 0) {
@@ -285,9 +287,7 @@ public class DexKit {
             url = (URL) Utils.invoke_virtual(loader, "findResource", name, String.class);
         } catch (Throwable ignored) {
         }
-        if (i == 1) {
-            log("dex1:" + url);
-        }
+        log("dex" + i + ":" + url);
         if (url == null) throw new FileNotFoundException(name);
         InputStream in;
         try {
@@ -300,7 +300,7 @@ public class DexKit {
             in.close();
             content = baos.toByteArray();
             if (i == 1) {
-                log("dex1.len: " + content.length);
+                log("dex" + i + ".len :" + content.length);
             }
             ArrayList<Integer> opcodeOffsets = a(content, key);
             ArrayList<String> rets = new ArrayList<String>();
@@ -334,7 +334,7 @@ public class DexKit {
             off = arrayIndexOf(buf, target, off + 1, buf.length, f);
             if (off == -1) break;
             if (buf[off - 2] == (byte) 26/*Opcodes.OP_CONST_STRING*/
-                    || buf[off - 2] == (byte) 27)/* Opcodes.OP_CONST_STRING_JUMBO*/ {
+				|| buf[off - 2] == (byte) 27)/* Opcodes.OP_CONST_STRING_JUMBO*/ {
                 ret[0] = off - 2;
                 int opcodeOffset = ret[0];
                 rets.add(opcodeOffset);
@@ -355,9 +355,9 @@ public class DexKit {
             p[0] = classDataOff;
             if (classDataOff == 0) continue;
             int staticFieldsSize = readUleb128(buf, p),
-                    instanceFieldsSize = readUleb128(buf, p),
-                    directMethodsSize = readUleb128(buf, p),
-                    virtualMethodsSize = readUleb128(buf, p);
+				instanceFieldsSize = readUleb128(buf, p),
+				directMethodsSize = readUleb128(buf, p),
+				virtualMethodsSize = readUleb128(buf, p);
             for (int fn = 0; fn < staticFieldsSize + instanceFieldsSize; fn++) {
                 int fieldIdx = readUleb128(buf, p);
                 int accessFlags = readUleb128(buf, p);

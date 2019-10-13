@@ -49,8 +49,8 @@ public class Utils {
             qn_anti_revoke_msg = "qn_anti_revoke_msg";
 
     public static boolean DEBUG = true;
-    public static boolean V_TOAST = false;
-    public static final String QN_VERSION_NAME = "0.3.1";
+    public static boolean V_TOAST = true;
+    public static final String QN_VERSION_NAME = "0.3.1test";
     public static final int QN_VERSION_CODE = 13;
 
     public static final String PACKAGE_NAME_QQ = "com.tencent.mobileqq";

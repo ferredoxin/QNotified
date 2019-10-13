@@ -25,7 +25,7 @@ public class Initiator {
     }
 
     public static Class<?> load(String className) {
-        if (qqClassLoader == null || className.isEmpty()) {
+        if (qqClassLoader == null || className == null ||  className.isEmpty()) {
             return null;
         }
         className = className.replace('/', '.');
