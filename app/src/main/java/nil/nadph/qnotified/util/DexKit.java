@@ -1,20 +1,15 @@
 package nil.nadph.qnotified.util;
 
-import android.view.View;
-import nil.nadph.qnotified.record.ConfigManager;
+import android.view.*;
+import java.io.*;
+import java.lang.reflect.*;
+import java.net.*;
+import java.util.*;
+import java.util.regex.*;
+import nil.nadph.qnotified.record.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.regex.Pattern;
-
-import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Initiator.load;
 
 public class DexKit {
 
@@ -282,35 +277,38 @@ public class DexKit {
         byte[] content;
         if (i == 1) name = "classes.dex";
         else name = "classes" + i + ".dex";
-        URL url = null;
+        Enumeration<URL> urls = null;
         try {
-            url = (URL) Utils.invoke_virtual(loader, "findResource", name, String.class);
-        } catch (Throwable ignored) {
+            urls = (Enumeration<URL>) Utils.invoke_virtual(loader, "findResources", name, String.class);
+        } catch (Throwable e) {
+			log(e);
         }
-        log("dex" + i + ":" + url);
-        if (url == null) throw new FileNotFoundException(name);
+        //log("dex" + i + ":" + url);
+        if (urls == null || !urls.hasMoreElements()) throw new FileNotFoundException(name);
         InputStream in;
         try {
-            in = url.openStream();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            int ii;
-            while ((ii = in.read(buf)) != -1) {
-                baos.write(buf, 0, ii);
-            }
-            in.close();
-            content = baos.toByteArray();
-            if (i == 1) {
-                log("dex" + i + ".len :" + content.length);
-            }
-            ArrayList<Integer> opcodeOffsets = a(content, key);
-            ArrayList<String> rets = new ArrayList<String>();
-            for (int j = 0; j < opcodeOffsets.size(); j++) {
-                try {
-                    String desc = a(content, opcodeOffsets.get(j));
-                    rets.add(desc.substring(1, desc.length() - 1));
-                } catch (InternalError ignored) {
-                }
-            }
+			ArrayList<String> rets = new ArrayList<String>();
+			while (urls.hasMoreElements()) {
+				in = urls.nextElement().openStream();
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				int ii;
+				while ((ii = in.read(buf)) != -1) {
+					baos.write(buf, 0, ii);
+				}
+				in.close();
+				content = baos.toByteArray();
+				/*if (i == 1) {
+					log("dex" + i + ".len :" + content.length);
+				}*/
+				ArrayList<Integer> opcodeOffsets = a(content, key);
+				for (int j = 0; j < opcodeOffsets.size(); j++) {
+					try {
+						String desc = a(content, opcodeOffsets.get(j));
+						rets.add(desc.substring(1, desc.length() - 1));
+					} catch (InternalError ignored) {
+					}
+				}
+			}
             return rets;
         } catch (IOException e) {
             log(e);
