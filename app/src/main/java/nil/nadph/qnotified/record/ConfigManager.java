@@ -134,7 +134,7 @@ public class ConfigManager {
                 if (_type < 0 || _type > 255) throw new IOException("Unexpected type:" + _type + ",version:" + ver);
                 key = readIStr(in);
                 switch ((byte) _type) {
-                    case TYPE_NULL:
+                    case TYPE_VOID:
                         config.put(key, null);
                         break;
                     case TYPE_BYTE:

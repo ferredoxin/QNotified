@@ -21,7 +21,7 @@ public class Table<K> implements Serializable, Cloneable {
      * type reserved length
      */
 
-    public static final byte TYPE_NULL = 0;//should NOT have value
+    public static final byte TYPE_VOID = 0;//should NOT have value
     public static final byte TYPE_BYTE = 1;
     public static final byte TYPE_BOOL = 2;
     public static final byte TYPE_CODEPOINT = 3;
@@ -192,7 +192,7 @@ public class Table<K> implements Serializable, Cloneable {
             for (i = 0; i < _f; i++) {
                 rtype = (byte) in.read();
                 switch (rtype) {
-                    case TYPE_NULL:
+                    case TYPE_VOID:
                         recval[i] = null;
                         break;
                     case TYPE_BYTE:
@@ -242,7 +242,7 @@ public class Table<K> implements Serializable, Cloneable {
     public static Object readTypeAndObj(DataInputStream in) throws IOException {
         byte rtype = in.readByte();
         switch (rtype) {
-            case TYPE_NULL:
+            case TYPE_VOID:
                 return null;
             case TYPE_BYTE:
                 return (byte) in.read();
@@ -278,7 +278,7 @@ public class Table<K> implements Serializable, Cloneable {
     public static void writeTypeAndObj(DataOutputStream out, byte rtype, Object obj) throws IOException {
         out.write(rtype);
         switch (rtype) {
-            case TYPE_NULL:
+            case TYPE_VOID:
                 break;
             case TYPE_BYTE:
                 out.writeByte((Byte) obj);
@@ -404,7 +404,7 @@ public class Table<K> implements Serializable, Cloneable {
                 throw new IOException("Unsupported type:" + clz.getName());
             }
         } catch (NullPointerException e) {
-            type = TYPE_NULL;
+            type = TYPE_VOID;
             out.write(type);
             if (key != null) {
                 writeIStr(out, key);

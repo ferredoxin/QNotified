@@ -59,6 +59,15 @@ public class StartupHook {
                         ClassLoader classLoader = ctx.getClassLoader();
                         Initiator.init(classLoader);
                         if (classLoader == null) throw new AssertionError("ERROR:classLoader==null");
+						
+						if ("true".equals(System.getProperty(QN_FULL_TAG))) {
+							log("Err:QNotified reloaded??");
+							return;
+							//System.exit(-1);
+							//QNotified updated(in HookLoader mode),kill QQ to make user restart it.
+						}
+						System.setProperty(QN_FULL_TAG, "true");
+						
                         injectStartupHook(ctx);
                         Class director = load("com/tencent/mobileqq/startup/director/StartupDirector");
                         if (director == null)
@@ -157,16 +166,6 @@ public class StartupHook {
     }
 
     private void injectStartupHook(Context ctx) {
-        if (Utils.DEBUG) {
-            if ("true".equals(System.getProperty(QN_FULL_TAG))) {
-                log("Err:QNotified reloaded??");
-                //return;
-                //System.exit(-1);
-                //QNotified updated(in HookLoader mode),kill QQ to make user restart it.
-            }
-            System.setProperty(QN_FULL_TAG, "true");
-        }
-
         Class clazz = load(ActProxyMgr.STUB_ACTIVITY);
         if (clazz != null) {
             ActProxyMgr mgr = ActProxyMgr.getInstance();
