@@ -111,6 +111,13 @@ public class Utils {
         return false;
     }
 
+    public static Object getTroopManager() throws Exception {
+        Object mTroopManager = invoke_virtual(getQQAppInterface(), "getManager", 51, int.class);
+        if (!mTroopManager.getClass().getName().contains("TroopManager"))
+            mTroopManager = invoke_virtual(getQQAppInterface(), "getManager", 52, int.class);
+        return mTroopManager;
+    }
+
     public static PackageInfo getHostInfo(Context context) {
         try {
             return context.getPackageManager().getPackageInfo(context.getPackageName(), 0);

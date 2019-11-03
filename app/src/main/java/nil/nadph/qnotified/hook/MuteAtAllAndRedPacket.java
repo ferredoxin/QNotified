@@ -6,6 +6,7 @@ import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.util.Utils;
 
+import static nil.nadph.qnotified.util.Initiator._MessageRecord;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
@@ -27,7 +28,7 @@ public class MuteAtAllAndRedPacket extends BaseDelayableHook {
         try {
             Class cl_MessageInfo = load("com/tencent/mobileqq/troop/data/MessageInfo");
             if (cl_MessageInfo == null) {
-                Class c = load("com/tencent/mobileqq/data/MessageRecord");
+                Class c = _MessageRecord();
                 cl_MessageInfo = c.getDeclaredField("mMessageInfo").getType();
             }
             /* @author qiwu */

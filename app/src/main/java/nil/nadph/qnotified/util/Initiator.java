@@ -25,7 +25,7 @@ public class Initiator {
     }
 
     public static Class<?> load(String className) {
-        if (qqClassLoader == null || className == null ||  className.isEmpty()) {
+        if (qqClassLoader == null || className == null || className.isEmpty()) {
             return null;
         }
         className = className.replace('/', '.');
@@ -91,38 +91,40 @@ public class Initiator {
         return clz;
     }
 
-	public static Class _QQMessageFacade() {
-        Class clz = load("com/tencent/mobileqq/app/message/QQMessageFacade");
-        return clz;
+    public static Class _QQMessageFacade() {
+        return load("com/tencent/mobileqq/app/message/QQMessageFacade");
     }
-	
-	
+
+    public static Class _MessageRecord() {
+        return load("com/tencent/mobileqq/data/MessageRecord");
+    }
+
     @Nullable
     public static Class _EmoAddedAuthCallback() {
-		try {
-			Class clz = load("com/tencent/mobileqq/emosm/favroaming/EmoAddedAuthCallback");
-			if (clz == null) {
-				Class cref = load("com/tencent/mobileqq/emosm/favroaming/EmoAddedAuthCallback$2");
-				try {
-					clz = cref.getDeclaredField("this$0").getType();
-				} catch (NoSuchFieldException ignored) {
-				}
-			}
-			if (clz == null) {
-				Class cref = load("com/tencent/mobileqq/emosm/favroaming/EmoAddedAuthCallback$1");
-				try {
-					clz = cref.getDeclaredField("this$0").getType();
-				} catch (NoSuchFieldException ignored) {
-				}
-			}
-			return clz;
-		} catch (NullPointerException e) {
-			return null;
-		}
+        try {
+            Class clz = load("com/tencent/mobileqq/emosm/favroaming/EmoAddedAuthCallback");
+            if (clz == null) {
+                Class cref = load("com/tencent/mobileqq/emosm/favroaming/EmoAddedAuthCallback$2");
+                try {
+                    clz = cref.getDeclaredField("this$0").getType();
+                } catch (NoSuchFieldException ignored) {
+                }
+            }
+            if (clz == null) {
+                Class cref = load("com/tencent/mobileqq/emosm/favroaming/EmoAddedAuthCallback$1");
+                try {
+                    clz = cref.getDeclaredField("this$0").getType();
+                } catch (NoSuchFieldException ignored) {
+                }
+            }
+            return clz;
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
-	
-	
-	@Nullable
+
+
+    @Nullable
     public static Class _C2CMessageProcessor() {
         Class clz = load("com/tencent/mobileqq/app/message/C2CMessageProcessor");
         if (clz == null) {
@@ -139,7 +141,7 @@ public class Initiator {
             } catch (NoSuchFieldException ignored) {
             }
         }
-		if (clz == null) {
+        if (clz == null) {
             Class cref = load("com/tencent/mobileqq/app/message/C2CMessageProcessor$7");
             try {
                 clz = cref.getDeclaredField("this$0").getType();

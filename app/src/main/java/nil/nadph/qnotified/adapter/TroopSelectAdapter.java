@@ -24,7 +24,6 @@ import nil.nadph.qnotified.util.QQViewBuilder;
 import nil.nadph.qnotified.util.QThemeKit;
 import nil.nadph.qnotified.util.Utils;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -66,7 +65,7 @@ public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, 
     @Override
     public void onClick(View v) {
         if (v.getId() == R_ID_TRP_LAYOUT) {
-            CheckBox c = v.findViewById(R_ID_TRP_CHECKBOX);
+            CheckBox c = (CheckBox) v.findViewById(R_ID_TRP_CHECKBOX);
             c.toggle();
             return;
         }
@@ -173,17 +172,17 @@ public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, 
         TroopInfo info = mTroopInfoList.get(position);
         convertView.setTag(info.troopuin);
         if (searchMode) {
-            TextView title = convertView.findViewById(R_ID_TRP_TITLE);
+            TextView title = (TextView) convertView.findViewById(R_ID_TRP_TITLE);
             title.setText(info._troopname);
-            TextView subtitle = convertView.findViewById(R_ID_TRP_SUBTITLE);
+            TextView subtitle = (TextView) convertView.findViewById(R_ID_TRP_SUBTITLE);
             subtitle.setText(info._troopuin);
         } else {
-            TextView title = convertView.findViewById(R_ID_TRP_TITLE);
+            TextView title = (TextView) convertView.findViewById(R_ID_TRP_TITLE);
             title.setText(info.troopname);
-            TextView subtitle = convertView.findViewById(R_ID_TRP_SUBTITLE);
+            TextView subtitle = (TextView) convertView.findViewById(R_ID_TRP_SUBTITLE);
             subtitle.setText(info.troopuin);
         }
-        ImageView imgview = convertView.findViewById(R_ID_TRP_FACE);
+        ImageView imgview = (ImageView) convertView.findViewById(R_ID_TRP_FACE);
         Bitmap bm = face.getBitmapFromCache(FaceImpl.TYPE_TROOP, info.troopuin);
         if (bm == null) {
             imgview.setImageDrawable(QThemeKit.loadDrawableFromAsset("face.png", mActivity));
@@ -192,7 +191,7 @@ public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, 
             imgview.setImageBitmap(bm);
         }
         boolean selected = muted.contains(info.troopuin);
-        CheckBox check = convertView.findViewById(R_ID_TRP_CHECKBOX);
+        CheckBox check = (CheckBox) convertView.findViewById(R_ID_TRP_CHECKBOX);
         check.setChecked(selected);
         return convertView;
     }
@@ -388,10 +387,8 @@ public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, 
         return llayout;
     }
 
-    public static ArrayList<TroopInfo> getTroopInfoList() throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
-        Object mTroopManager = invoke_virtual(getQQAppInterface(), "getManager", 51, int.class);
-        if (!mTroopManager.getClass().getName().contains("TroopManager"))
-            mTroopManager = invoke_virtual(getQQAppInterface(), "getManager", 52, int.class);
+    public static ArrayList<TroopInfo> getTroopInfoList() throws Exception {
+        Object mTroopManager = getTroopManager();
         ArrayList tx = (ArrayList) invoke_virtual(mTroopManager, "a", ArrayList.class);
         ArrayList<TroopInfo> ret = new ArrayList<TroopInfo>();
         for (Object info : tx) {

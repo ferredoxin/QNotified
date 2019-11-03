@@ -1,8 +1,9 @@
 package nil.nadph.qnotified.hook;
 
-import de.robv.android.xposed.XC_MethodHook;
+import android.text.TextUtils;
+import de.robv.android.xposed.XC_MethodReplacement;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
-import nil.nadph.qnotified.StartupHook;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Utils;
@@ -11,16 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static nil.nadph.qnotified.util.Initiator.*;
+import static de.robv.android.xposed.XposedHelpers.*;
+import static nil.nadph.qnotified.util.Initiator._C2CMessageProcessor;
+import static nil.nadph.qnotified.util.Initiator._QQMessageFacade;
 import static nil.nadph.qnotified.util.Utils.*;
-import de.robv.android.xposed.*;
-import java.lang.reflect.*;
-import nil.nadph.qnotified.util.*;
 
 public class RevokeMsgHook extends BaseDelayableHook {
     private static final RevokeMsgHook self = new RevokeMsgHook();
 
-    RevokeMsgHook() {
+    private RevokeMsgHook() {
     }
 
     public static RevokeMsgHook get() {
@@ -33,86 +33,21 @@ public class RevokeMsgHook extends BaseDelayableHook {
     public boolean init() {
         if (inited) return true;
         try {
-            XposedHelpers.findAndHookMethod(_QQMessageFacade(), "a", ArrayList.class, boolean.class, StartupHook.invokeRecord);
-			XposedHelpers.findAndHookMethod(_QQMessageFacade(), "a", String.class, int.class, long.class, long.class, StartupHook.invokeRecord);
-            /*XposedHelpers.findAndHookMethod(_QQMessageFacade(), "a", ArrayList.class, boolean.class,
-                    new XC_MethodHook(-51) {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            try {
-                                ArrayList list = (ArrayList) param.args[0];
-                                if (isCallingFrom(_C2CMessageProcessor().getName()) ||
-                                        list == null || list.isEmpty()) {
-                                    param.setResult(null);
-                                    return;
-                                }
-                                Object revokeMsgInfo = list.get(0);
-                                String friendUin = (String) iget_object_or_null(revokeMsgInfo, "a", String.class);
-                                String fromUin = (String) iget_object_or_null(revokeMsgInfo, "b", String.class);
-                                int isTroop = (int) Utils.getFirstNSFByType(revokeMsgInfo, int.class);
-                                long msgUid = (long) iget_object_or_null(revokeMsgInfo, "b", long.class);
-                                long shmsgseq = (long) iget_object_or_null(revokeMsgInfo, "a", long.class);
-                                long time = (long) iget_object_or_null(revokeMsgInfo, "c", long.class);
-                                Object qqApp = getQQAppInterface();
-                                String selfUin = "" + getLongAccountUin();
-                                if (selfUin.equals(fromUin)) {
-                                    param.setResult(null);
-                                    return;
-                                }
-                                int msgType = -0x7ef; //sget_object(load("com/tencent/mobileqq/data/MessageRecord"),("MSG_TYPE_REVOKE_GRAY_TIPS");
-                                List tip = getRevokeTip(qqApp, selfUin, friendUin, fromUin, msgUid, shmsgseq,
-                                        time + 1, msgType, isTroop);
-                                if (tip != null && !tip.isEmpty()) {
-                                    invoke_virtual(param.thisObject, "a", tip, selfUin, List.class, String.class);
-                                }
-                                param.setResult(null);
-                            } catch (Throwable e) {
-                                log(e);
-                            }
-                        }
-                    });*/
-					
-					
-					
-					
-			XposedBridge.hookAllConstructors(load("com/tencent/mobileqq/graytip/UniteGrayTipParam"), new XC_MethodHook() {
-					@Override
-					protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-						/*String selfuin=getmyselfuin();*/
-						String fromuin=(String)param.args[1];
-						String message=(String)param.args[2];
-						if (/*selfuin!=null&&!selfuin.isEmpty()&&*/message.contains("撤回")){
-							Member m = param.method;
-							String ret = m.getDeclaringClass().getSimpleName() + "->" + ((m instanceof Method) ? m.getName() : "<init>") + "(";
-							Class[] argt;
-							if (m instanceof Method)
-								argt = ((Method) m).getParameterTypes();
-							else if (m instanceof Constructor)
-								argt = ((Constructor) m).getParameterTypes();
-							else argt = new Class[0];
-							for (int i = 0; i < argt.length; i++) {
-								if (i != 0) ret += ",\n";
-								ret += param.args[i];
-							}
-							ret += ")=" + param.getResult();
-							Utils.log(ret);
-							ret = "↑dump object:" + m.getDeclaringClass().getCanonicalName() + "\n";
-							Field[] fs = m.getDeclaringClass().getDeclaredFields();
-							for (int i = 0; i < fs.length; i++) {
-								fs[i].setAccessible(true);
-								ret += (i < fs.length - 1 ? "├" : "↓") + fs[i].getName() + "=" + ClazzExplorer.en_toStr(fs[i].get(param.thisObject)) + "\n";
-							}
-							log(ret);
-							Utils.dumpTrace();
-							/*if (!selfuin.equals(fromuin)){
-								param.args[2]=getShowMsg(message);
-							}*/
-						}
-					}
-				});
-					
-					
-					
+            XposedHelpers.findAndHookMethod(_QQMessageFacade(), "a", ArrayList.class, boolean.class, new XC_MethodReplacement(-10086) {
+                @Override
+                protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
+                    ArrayList list = (ArrayList) param.args[0];
+                    if (list == null || list.isEmpty())
+                        return null;
+                    Object obj = list.get(0);
+                    try {
+                        setMessageTip(obj);
+                    } catch (Throwable t) {
+                        log(t);
+                    }
+                    return null;
+                }
+            });
             inited = true;
             return true;
         } catch (Throwable e) {
@@ -121,29 +56,133 @@ public class RevokeMsgHook extends BaseDelayableHook {
         }
     }
 
-    private List getRevokeTip(Object qqAppInterface, String selfUin, String friendUin, String fromUin,
-                              long msgUid, long shmsgseq, long time, int msgType, int isTroop) throws Exception {
-        Object messageRecord = invoke_static(DexKit.doFindClass(DexKit.C_MSG_REC_FAC), "a", msgType, int.class);
-        String name;
-        if (isTroop == 0) {
-            name = "对方";
-        } else {
-            try {
-                name = "\"" + (String) invoke_static(DexKit.doFindClass(DexKit.C_CONTACT_UTILS), "a", qqAppInterface, fromUin,
-                        friendUin, isTroop == 1 ? 1 : 2, 0, load("com/tencent/mobileqq/app/QQAppInterface"), String.class, String.class, int.class, int.class) + "\"";
-            } catch (Exception e) {
-                name = fromUin;
+    private void setMessageTip(Object revokeMsgInfo) {
+        String friendUin = (String) iget_object_or_null(revokeMsgInfo, "a", String.class);
+        String senderUin = (String) iget_object_or_null(revokeMsgInfo, "b", String.class);
+        int istroop = (int) getFirstNSFByType(revokeMsgInfo, int.class);
+        long msgUid = (long) iget_object_or_null(revokeMsgInfo, "b", long.class);
+        long shmsgseq = (long) iget_object_or_null(revokeMsgInfo, "a", long.class);
+        long time = (long) iget_object_or_null(revokeMsgInfo, "c", long.class);
+        Object qqApp = getQQAppInterface();
+        String selfUin = "" + getLongAccountUin();
+        if (selfUin.equals(senderUin))
+            return;
+        String uin = istroop == 0 ? senderUin : friendUin;
+        Object msgObject = getMessage(uin, istroop, shmsgseq, msgUid);
+        long id = getMessageId(msgObject);
+        String msg = istroop == 0 ? getFriendName(null, senderUin) : getTroopName(friendUin, senderUin);
+        if (id != 0) {
+            if (isCallingFrom(_C2CMessageProcessor().getName()))
+                return;
+            msg = "\"" + msg + "\"" + "尝试撤回一条消息";
+            String message = getMessageContent(msgObject);
+            int msgtype = getMessageType(msgObject);
+            if (msgtype == -1000 /*text msg*/) {
+                if (!TextUtils.isEmpty(message)) {
+                    msg += ": " + message;
+                }
             }
+            showMessageTip(friendUin, senderUin, msgUid, shmsgseq, time, msg, istroop);
+        } else {
+            msg = "\"" + msg + "\"" + "撤回了一条消息(没收到)";
+            showMessageTip(friendUin, senderUin, msgUid, shmsgseq, time, msg, istroop);
         }
-        invoke_virtual(messageRecord, "init", selfUin, isTroop == 0 ? fromUin :
-                        friendUin, fromUin, name + "尝试撤回一条消息", time, msgType, isTroop, time,
-                String.class, String.class, String.class, String.class, long.class, int.class, int.class, long.class);
-        iput_object(messageRecord, "msgUid", msgUid == 0 ? 0 : msgUid + new Random().nextInt());
-        iput_object(messageRecord, "shmsgseq", shmsgseq);
-        iput_object(messageRecord, "isread", true);
+    }
+
+    private void showMessageTip(String friendUin, String senderUin, long msgUid, long shmsgseq,
+                                long time, String msg, int istroop) {
+        if (msgUid != 0) {
+            msgUid += new Random().nextInt();
+        }
+        try {
+            List tips = createMessageTip(friendUin, senderUin, msgUid, shmsgseq, time + 1, msg, istroop);
+            if (tips.isEmpty()) return;
+            callMethod(_QQMessageFacade(), "a", tips, Utils.getAccount());
+        } catch (Throwable t) {
+            XposedBridge.log(t);
+        }
+    }
+
+    private List createMessageTip(String friendUin, String senderUin, long msgUid,
+                                  long shmsgseq, long time, String msg, int istroop) {
+        int msgtype = -2031; // MessageRecord.MSG_TYPE_REVOKE_GRAY_TIPS
+        Object messageRecord = callStaticMethod(DexKit.doFindClass(DexKit.C_MSG_REC_FAC), "a", msgtype);
+        if (istroop == 0) { // private chat revoke
+            callMethod(messageRecord, "init", Utils.getAccount(), senderUin, senderUin, msg, time, msgtype,
+                    istroop, time);
+        } else { // group chat revoke
+            callMethod(messageRecord, "init", Utils.getAccount(), friendUin, senderUin, msg, time, msgtype,
+                    istroop, time);
+        }
+        setObjectField(messageRecord, "msgUid", msgUid);
+        setObjectField(messageRecord, "shmsgseq", shmsgseq);
+        setObjectField(messageRecord, "isread", true);
         List<Object> list = new ArrayList<>();
         list.add(messageRecord);
         return list;
+    }
+
+    private String getFriendName(String friendUin, String senderUin) {
+        String nickname = null;
+        if (friendUin != null) {
+            nickname = (String) callStaticMethod(DexKit.doFindClass(DexKit.C_CONTACT_UTILS), "c", getQQAppInterface(), friendUin, senderUin);
+        }
+        if (TextUtils.isEmpty(nickname)) {
+            nickname = (String) callStaticMethod(DexKit.doFindClass(DexKit.C_CONTACT_UTILS), "b", getQQAppInterface(), senderUin, true);
+        }
+        if (TextUtils.isEmpty(nickname)) {
+            nickname = senderUin;
+        }
+        return nickname.replaceAll("\\u202E", "").trim();
+    }
+
+    private String getTroopName(String friendUin, String senderUin) {
+        Object mTroopManager = null;
+        try {
+            mTroopManager = getTroopManager();
+        } catch (Exception e) {
+            log(e);
+        }
+        if (mTroopManager == null || friendUin == null)
+            return getFriendName(friendUin, senderUin);
+        Object troopMemberInfo = invokeMethod(mGetTroopInfo, mTroopManager, friendUin, senderUin);
+        if (troopMemberInfo == null) {
+            return getFriendName(friendUin, senderUin);
+        }
+        String nickname = (String) XposedHelpers.getObjectField(troopMemberInfo, "troopnick");
+        if (TextUtils.isEmpty(nickname)) {
+            nickname = (String) XposedHelpers.getObjectField(troopMemberInfo, "friendnick");
+        }
+        if (TextUtils.isEmpty(nickname)) {
+            nickname = getFriendName(friendUin, senderUin);
+        }
+        return nickname.replaceAll("\\u202E", "").trim();
+    }
+
+    private Object getMessage(String uin, int istroop, long shmsgseq, long msgUid) {
+        List list = (List) invokeMethod(mMessageGetter, _QQMessageFacade(), uin, istroop,
+                shmsgseq, msgUid);
+        if (list == null || list.isEmpty())
+            return null;
+        return list.get(0);
+    }
+
+    private String getMessageContent(Object msgObject) {
+        return (String) iget_object_or_null(msgObject, "msg");
+    }
+
+    private long getMessageId(Object msgObject) {
+        if (msgObject == null)
+            return 0;
+
+        return (long) iget_object_or_null(msgObject, "msgUid");
+    }
+
+    private int getMessageType(Object msgObject) {
+        if (msgObject == null)
+            return -1;
+
+        return (int) iget_object_or_null(msgObject, "msgtype");
     }
 
     @Override

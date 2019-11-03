@@ -122,7 +122,7 @@ public class ConfigActivity extends Activity implements Runnable {
         } catch (IOException e) {
             start = e.toString();
         }
-        TextView vtv = findViewById(R.id.mainTextViewVersion);
+        TextView vtv = (TextView) findViewById(R.id.mainTextViewVersion);
         if (start.equals("nil.nadph.qnotified.HookLoader")) {
             vtv.setText("动态加载");
             vtv.setTextColor(Color.BLUE);
@@ -188,8 +188,6 @@ public class ConfigActivity extends Activity implements Runnable {
         super.onResume();
     }
 
-
-    @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
     }
 

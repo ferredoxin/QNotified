@@ -59,15 +59,15 @@ public class StartupHook {
                         ClassLoader classLoader = ctx.getClassLoader();
                         Initiator.init(classLoader);
                         if (classLoader == null) throw new AssertionError("ERROR:classLoader==null");
-						
-						if ("true".equals(System.getProperty(QN_FULL_TAG))) {
-							log("Err:QNotified reloaded??");
-							return;
-							//System.exit(-1);
-							//QNotified updated(in HookLoader mode),kill QQ to make user restart it.
-						}
-						System.setProperty(QN_FULL_TAG, "true");
-						
+
+                        if ("true".equals(System.getProperty(QN_FULL_TAG))) {
+                            log("Err:QNotified reloaded??");
+                            return;
+                            //System.exit(-1);
+                            //QNotified updated(in HookLoader mode),kill QQ to make user restart it.
+                        }
+                        System.setProperty(QN_FULL_TAG, "true");
+
                         injectStartupHook(ctx);
                         Class director = load("com/tencent/mobileqq/startup/director/StartupDirector");
                         if (director == null)
@@ -330,7 +330,24 @@ public class StartupHook {
 					 }
 					 });
 					 } catch (Exception e) {}*/
-                    Class miniapp = load("com/tencent/mobileqq/mini/entry/MiniAppEntryAdapter");
+                    //818 or newer
+                    Class tmp;
+                    Class miniapp = null;
+                    try {
+                        miniapp = load("com.tencent.mobileqq.mini.entry.desktop.MiniAppDesktopLayout");
+                        if (miniapp == null) {
+                            tmp = load("com.tencent.mobileqq.mini.entry.desktop.MiniAppDesktopLayout$1");
+                            if (tmp != null) miniapp = tmp.getDeclaredField("this$0").getType();
+                        }
+                        if (miniapp == null) {
+                            tmp = load("com.tencent.mobileqq.mini.entry.desktop.MiniAppDesktopLayout$2");
+                            if (tmp != null) miniapp = tmp.getDeclaredField("this$0").getType();
+                        }
+                    } catch (Exception ignored) {
+                    }
+                    //for older
+                    if (miniapp == null)
+                        miniapp = load("com/tencent/mobileqq/mini/entry/MiniAppEntryAdapter");
                     if (miniapp == null)
                         miniapp = load("com/tencent/mobileqq/mini/entry/MiniAppEntryAdapter$1").getDeclaredField("this$0").getType();
                     XposedBridge.hookAllConstructors(miniapp, new XC_MethodHook(60) {
@@ -339,7 +356,7 @@ public class StartupHook {
                             String methodName = null;
                             StackTraceElement[] stacks = new Throwable().getStackTrace();
                             for (int i = 0; i < stacks.length; i++) {
-                                if (stacks[i].getClassName().indexOf("Conversation") != -1) {
+                                if (stacks[i].getClassName().contains("Conversation")) {
                                     methodName = stacks[i].getMethodName();
                                     break;
                                 }

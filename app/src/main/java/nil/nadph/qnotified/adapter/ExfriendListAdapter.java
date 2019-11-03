@@ -188,11 +188,11 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
         }
         //log(position+"/"+getCount());
         convertView.setTag(ev);
-        TextView title = convertView.findViewById(R_ID_EXL_TITLE);
+        TextView title = (TextView) convertView.findViewById(R_ID_EXL_TITLE);
         title.setText(ev.getShowStr());
         boolean isfri = false;
 
-        TextView stat = convertView.findViewById(R_ID_EXL_STATUS);
+        TextView stat = (TextView) convertView.findViewById(R_ID_EXL_STATUS);
         try {
             if (exm.getPersons().get(ev.operator).friendStatus == FriendRecord.STATUS_FRIEND_MUTUAL)
                 isfri = true;
@@ -206,9 +206,9 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
             stat.setTextColor(QThemeKit.cloneColor(QThemeKit.skin_red));
             stat.setText("已删除");
         }
-        TextView subtitle = convertView.findViewById(R_ID_EXL_SUBTITLE);
+        TextView subtitle = (TextView) convertView.findViewById(R_ID_EXL_SUBTITLE);
         subtitle.setText(Utils.getIntervalDspMs(ev.timeRangeBegin * 1000, ev.timeRangeEnd * 1000));
-        ImageView imgview = convertView.findViewById(R_ID_EXL_FACE);
+        ImageView imgview = (ImageView) convertView.findViewById(R_ID_EXL_FACE);
         Bitmap bm = face.getBitmapFromCache(FaceImpl.TYPE_USER, "" + ev.operator);
         if (bm == null) {
             imgview.setImageDrawable(QThemeKit.loadDrawableFromAsset("face.png", self));
