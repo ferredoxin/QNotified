@@ -1,7 +1,7 @@
 package nil.nadph.qnotified.hook;
 
 import android.text.TextUtils;
-import de.robv.android.xposed.XC_MethodReplacement;
+import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.record.ConfigManager;
@@ -13,12 +13,17 @@ import java.util.List;
 import java.util.Random;
 
 import static de.robv.android.xposed.XposedHelpers.*;
-import static nil.nadph.qnotified.util.Initiator._C2CMessageProcessor;
-import static nil.nadph.qnotified.util.Initiator._QQMessageFacade;
+import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
+/**
+ * @author fkzhang
+ * Created by fkzhang on 1/20/2016.
+ * minor changes
+ */
 public class RevokeMsgHook extends BaseDelayableHook {
     private static final RevokeMsgHook self = new RevokeMsgHook();
+    private Object mQQMsgFacade = null;
 
     private RevokeMsgHook() {
     }
@@ -33,19 +38,20 @@ public class RevokeMsgHook extends BaseDelayableHook {
     public boolean init() {
         if (inited) return true;
         try {
-            XposedHelpers.findAndHookMethod(_QQMessageFacade(), "a", ArrayList.class, boolean.class, new XC_MethodReplacement(-10086) {
+            XposedHelpers.findAndHookMethod(_QQMessageFacade(), "a", ArrayList.class, boolean.class, new XC_MethodHook(-10086) {
                 @Override
-                protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    mQQMsgFacade = param.thisObject;
+                    if (!isEnabled()) return;
                     ArrayList list = (ArrayList) param.args[0];
-                    if (list == null || list.isEmpty())
-                        return null;
+                    if (list == null || list.isEmpty()) return;
+                    param.setResult(null);
                     Object obj = list.get(0);
                     try {
                         setMessageTip(obj);
                     } catch (Throwable t) {
                         log(t);
                     }
-                    return null;
                 }
             });
             inited = true;
@@ -97,7 +103,7 @@ public class RevokeMsgHook extends BaseDelayableHook {
         try {
             List tips = createMessageTip(friendUin, senderUin, msgUid, shmsgseq, time + 1, msg, istroop);
             if (tips.isEmpty()) return;
-            callMethod(_QQMessageFacade(), "a", tips, Utils.getAccount());
+            callMethod(mQQMsgFacade, "a", tips, Utils.getAccount());
         } catch (Throwable t) {
             XposedBridge.log(t);
         }
@@ -145,7 +151,13 @@ public class RevokeMsgHook extends BaseDelayableHook {
         }
         if (mTroopManager == null || friendUin == null)
             return getFriendName(friendUin, senderUin);
-        Object troopMemberInfo = invokeMethod(mGetTroopInfo, mTroopManager, friendUin, senderUin);
+        Object troopMemberInfo = null;
+        try {
+            troopMemberInfo = invoke_virtual(mTroopManager, "a", friendUin, senderUin,
+                    String.class, String.class, load("com.tencent.mobileqq.data.TroopMemberInfo"));
+        } catch (Exception e) {
+            log(e);
+        }
         if (troopMemberInfo == null) {
             return getFriendName(friendUin, senderUin);
         }
@@ -160,8 +172,13 @@ public class RevokeMsgHook extends BaseDelayableHook {
     }
 
     private Object getMessage(String uin, int istroop, long shmsgseq, long msgUid) {
-        List list = (List) invokeMethod(mMessageGetter, _QQMessageFacade(), uin, istroop,
-                shmsgseq, msgUid);
+        List list = null;
+        try {
+            list = (List) invoke_virtual(mQQMsgFacade, "a", uin, istroop, shmsgseq, msgUid, String.class, int.class,
+                    long.class, long.class, List.class);
+        } catch (Exception e) {
+            log(e);
+        }
         if (list == null || list.isEmpty())
             return null;
         return list.get(0);

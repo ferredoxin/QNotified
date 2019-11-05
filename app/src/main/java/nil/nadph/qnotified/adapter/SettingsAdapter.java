@@ -73,15 +73,13 @@ public class SettingsAdapter implements ActivityAdapter {
         __lp_r.addRule(RelativeLayout.CENTER_VERTICAL);
         ColorStateList hiColor = ColorStateList.valueOf(Color.argb(255, 242, 140, 72));
         RelativeLayout _t;
-        ll.addView(subtitle(self, "列表"));
-        ll.addView(newListItemButton(self, "历史好友", null, null, clickToProxyActAction(ACTION_EXFRIEND_LIST)));
-        ll.addView(newListItemButton(self, "导出历史好友列表", "支持json/csv/yaml格式", null, clickTheComing()));
-        ll.addView(subtitle(self, "设置"));
-        if (!Utils.isTim(self))
+
+
+        ll.addView(subtitle(self, "净化设置"));
+        if (!Utils.isTim(self)) {
             ll.addView(newListItemSwitchConfigNext(self, "隐藏小程序入口", "隐藏消息列表下拉出现的小程序列表", qn_hide_msg_list_miniapp, false));
-        if (!Utils.isTim(self))
-            ll.addView(newListItemSwitchConfigNext(self, "隐藏分组下方入口", "隐藏分组列表最下方的历史好友按钮", qn_hide_ex_entry_group, false));
-        ll.addView(newListItemSwitchConfig(self, "主动删除好友时不通知", "仅在测试模块时才可能需要关闭", qn_del_op_silence, true));
+        }
+
         ll.addView(subtitle(self, "消息通知设置(不影响接收消息)屏蔽后可能仍有[橙字],但不会有通知)"));
         ll.addView(subtitle(self, "    注:屏蔽后可能仍有[橙字],但不会有通知"));
         ll.addView(_t = newListItemButton(self, "屏蔽指定群@全体成员通知", Html.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[@全体成员]</font>就这点破事"), "0个群", clickToProxyActAction(ACTION_MUTE_AT_ALL)));
@@ -89,7 +87,7 @@ public class SettingsAdapter implements ActivityAdapter {
         ll.addView(_t = newListItemButton(self, "屏蔽指定群的红包通知", Html.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[QQ红包][有红包]</font>恭喜发财"), "0个群", clickToProxyActAction(ACTION_MUTE_RED_PACKET)));
         __tv_muted_redpacket = (TextView) _t.findViewById(R_ID_VALUE);
         ll.addView(subtitle(self, "标准功能"));
-        ll.addView(newListItemSwitchConfigInit(self, "防撤回", null, qn_anti_revoke_msg, false, RevokeMsgHook.get()));
+        ll.addView(newListItemButton(self, "群发文本消息", "Use with caution!", null, clickToBatchMsg()));
         ll.addView(newListItemSwitchConfigInit(self, "语音转发", null, qn_enable_ptt_forward, false, PttForwardHook.get()));
         ll.addView(subtitle(self, "图片相关"));
         ll.addView(newListItemSwitchConfigInit(self, "以图片方式打开闪照", null, qn_flash_as_pic, false, FlashPicHook.get()));
@@ -97,8 +95,17 @@ public class SettingsAdapter implements ActivityAdapter {
             ll.addView(newListItemSwitchConfigInit(self, "以图片方式打开表情", null, qn_sticker_as_pic, false, EmoPicHook.get()));
         }
         //ll.addView(newListItemSwitchConfigInit(self, "聊天图片背景透明", null, qn_gallery_bg, false, GalleryBgHook.get()));
-        ll.addView(newListItemSwitchConfigInit(self, "复读机", null, bug_repeater, false, RepeaterHook.get()));
         ll.addView(newListItemSwitchConfigInit(self, "收藏更多表情", "保存在本地", qqhelper_fav_more_emo, false, FavMoreEmo.get()));
+        ll.addView(subtitle(self, "实验性功能"));
+        ll.addView(newListItemSwitchConfigInit(self, "防撤回", null, qn_anti_revoke_msg, false, RevokeMsgHook.get()));
+        ll.addView(newListItemSwitchConfigInit(self, "复读机", null, bug_repeater, false, RepeaterHook.get()));
+        ll.addView(subtitle(self, "好友列表"));
+        if (!Utils.isTim(self)) {
+            ll.addView(newListItemSwitchConfigNext(self, "隐藏分组下方入口", "隐藏分组列表最下方的历史好友按钮", qn_hide_ex_entry_group, false));
+        }
+        ll.addView(newListItemSwitchConfig(self, "主动删除好友时不通知", "仅在测试模块时才可能需要关闭", qn_del_op_silence, true));
+        ll.addView(newListItemButton(self, "历史好友", null, null, clickToProxyActAction(ACTION_EXFRIEND_LIST)));
+        ll.addView(newListItemButton(self, "导出历史好友列表", "支持json/csv/yaml格式", null, clickTheComing()));
         ll.addView(subtitle(self, "还没完成的功能(咕咕咕)"));
         ll.addView(newListItemSwitchConfigStub(self, "屏蔽回执消息的通知", null, qn_mute_talk_back, false));
         //ll.addView(newListItemSwitchConfigStub(self, "上传透明头像", "开启后上传透明头像不会变黑", qn_enable_transparent, false));
