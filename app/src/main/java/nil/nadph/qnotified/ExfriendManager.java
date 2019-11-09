@@ -43,7 +43,7 @@ public class ExfriendManager {
     static private final int FL_UPDATE_INT_MIN = 10 * 60;//sec
     static private final int FL_UPDATE_INT_MAX = 1 * 60 * 60;//sec
 
-    static private HashMap<Long, ExfriendManager> instances = new HashMap<>();
+    static private final HashMap<Long, ExfriendManager> instances = new HashMap<>();
     static private ExecutorService tp;
     private long mUin;
     private int mTotalFriendCount;
@@ -189,7 +189,7 @@ public class ExfriendManager {
         if (fr == null) {
             log("damn! updateFriendTableVersion in null");
         }
-        /** uin+"" is key */
+        /* uin+"" is key */
         fr.keyName = "uin";
         fr.keyType = TYPE_LONG;
         fr.addField("nick", TYPE_ISTR);
@@ -423,6 +423,19 @@ public class ExfriendManager {
             }
         }
         throw new NoSuchFieldException();
+    }
+
+    public ArrayList<ContactDescriptor> getFriends() {
+        ArrayList<ContactDescriptor> ret = new ArrayList<>();
+        if (persons != null)
+            for (Map.Entry<Long, FriendRecord> f : persons.entrySet()) {
+                ContactDescriptor cd = new ContactDescriptor();
+                cd.uinType = 0;
+                cd.uin = f.getKey() + "";
+                cd.nick = f.getValue().nick;
+                ret.add(cd);
+            }
+        return ret;
     }
 
     /**

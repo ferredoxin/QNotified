@@ -95,6 +95,10 @@ public class Initiator {
         return load("com/tencent/mobileqq/app/message/QQMessageFacade");
     }
 
+    public static Class _SessionInfo() {
+        return load("com/tencent/mobileqq/activity/aio/SessionInfo");
+    }
+
     public static Class _MessageRecord() {
         return load("com/tencent/mobileqq/data/MessageRecord");
     }

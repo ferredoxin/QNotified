@@ -36,6 +36,7 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.adapter.ActProxyMgr.*;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.QQViewBuilder.*;
+import static nil.nadph.qnotified.util.SendBatchMsg.clickToBatchMsg;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class SettingsAdapter implements ActivityAdapter {
@@ -97,7 +98,7 @@ public class SettingsAdapter implements ActivityAdapter {
         //ll.addView(newListItemSwitchConfigInit(self, "聊天图片背景透明", null, qn_gallery_bg, false, GalleryBgHook.get()));
         ll.addView(newListItemSwitchConfigInit(self, "收藏更多表情", "保存在本地", qqhelper_fav_more_emo, false, FavMoreEmo.get()));
         ll.addView(subtitle(self, "实验性功能"));
-        ll.addView(newListItemSwitchConfigInit(self, "防撤回", null, qn_anti_revoke_msg, false, RevokeMsgHook.get()));
+        ll.addView(newListItemSwitchConfigInit(self, "防撤回", "来自旧版QX,稳定性不如最新版QX", qn_anti_revoke_msg, false, RevokeMsgHook.get()));
         ll.addView(newListItemSwitchConfigInit(self, "复读机", null, bug_repeater, false, RepeaterHook.get()));
         ll.addView(subtitle(self, "好友列表"));
         if (!Utils.isTim(self)) {

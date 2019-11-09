@@ -59,7 +59,7 @@ public class RepeaterHook extends BaseDelayableHook {
                     if (!isEnabled()) return;
                     ViewGroup relativeLayout = (ViewGroup) param.getResult();
                     final Object app = iget_object_or_null(param.thisObject, "a", load("com.tencent.mobileqq.app.QQAppInterface"));
-                    final Object session = iget_object_or_null(param.thisObject, "a", load("com.tencent.mobileqq.activity.aio.SessionInfo"));
+                    final Object session = iget_object_or_null(param.thisObject, "a", _SessionInfo());
                     String uin = "" + Utils.getLongAccountUin();
                     Context ctx = relativeLayout.getContext();
                     if (relativeLayout.findViewById(101) == null) {
@@ -227,7 +227,7 @@ public class RepeaterHook extends BaseDelayableHook {
                             View view;
                             ViewGroup relativeLayout = (ViewGroup) param.getResult();
                             final Object app = iget_object_or_null(param.thisObject, "a", load("com.tencent.mobileqq.app.QQAppInterface"));
-                            final Object session = iget_object_or_null(param.thisObject, "a", load("com.tencent.mobileqq.activity.aio.SessionInfo"));
+                            final Object session = iget_object_or_null(param.thisObject, "a", _SessionInfo());
                             String uin = "" + Utils.getLongAccountUin();
                             Context ctx = relativeLayout.getContext();
                             if (relativeLayout.findViewById(101) == null) {

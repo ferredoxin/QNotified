@@ -142,7 +142,6 @@ public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, 
     }
 
     private ArrayList<TroopInfo> mTroopInfoList;
-    //private ArrayList<TroopInfo> hits = null;
     private int hits;
     private boolean searchMode = false;
 
@@ -196,8 +195,6 @@ public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, 
         return convertView;
     }
 
-
-    private ViewGroup mListView;
     private Activity mActivity;
 
     private static final int R_ID_TRP_LAYOUT = 0x300AFF30;
@@ -214,8 +211,8 @@ public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, 
     private int mActionInt;
     private FaceImpl face;
 
-    EditText search;
-    TextView rightBtn, cancel, reverse, selectAll;
+    private EditText search;
+    private TextView rightBtn, cancel, reverse, selectAll;
 
     public TroopSelectAdapter(Activity act, int action) {
         mActivity = act;

@@ -1,10 +1,13 @@
 package nil.nadph.qnotified.util;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
@@ -13,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 import de.robv.android.xposed.XposedBridge;
+import nil.nadph.qnotified.FaceImpl;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -21,9 +25,11 @@ import java.lang.reflect.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static nil.nadph.qnotified.util.Initiator._SessionInfo;
 import static nil.nadph.qnotified.util.Initiator.load;
 
 @SuppressWarnings("unchecked")
+@SuppressLint("SimpleDateFormat")
 public class Utils {
 
     private Utils() {
@@ -364,19 +370,15 @@ public class Utils {
     }
 
     public static Object createSessionInfo(String uin, int uinType) {
-        Class clz = load("com/tencent/mobileqq/activity/aio/SessionInfo");
+        Class clz =_SessionInfo();
         if (clz == null) throw new NoClassDefFoundError("SessionInfo");
         try {
             Object obj = new_instance(clz);
             iput_object(obj, "a", String.class, uin);
             iput_object(obj, "a", int.class, uinType);
             return obj;
-        } catch (InstantiationException e) {
-        } catch (InvocationTargetException e) {
-        } catch (SecurityException e) {
-        } catch (IllegalAccessException e) {
-        } catch (IllegalArgumentException e) {
-        } catch (NoSuchMethodException e) {
+        } catch (Exception e) {
+            log(e);
         }
         return null;
     }
@@ -1023,6 +1025,17 @@ public class Utils {
         public int uinType;
         @Nullable
         public String nick;
+
+        public String getId() {
+            String msg = "";
+            if (uin.length() < 10) {
+                for (int i = 0; i < 10 - uin.length(); i++) {
+                    msg = msg + "0";
+                }
+            }
+            return msg + uin + uinType;
+        }
+
     }
 
 

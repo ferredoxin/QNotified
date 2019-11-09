@@ -2,25 +2,33 @@ package nil.nadph.qnotified.util;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import nil.nadph.qnotified.ExfriendManager;
+import nil.nadph.qnotified.FaceImpl;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
 
+import static nil.nadph.qnotified.util.Initiator._SessionInfo;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class SendBatchMsg {
+
+    public static final int R_ID_SELECT_FRIEND = 0x300AFF51;
+    public static final int R_ID_SELECT_GROUP = 0x300AFF52;
+
 
     private static LinearLayout getEditView(Context context) {
         int padding = dip2px(context, 20.0f);
@@ -88,7 +96,7 @@ public class SendBatchMsg {
                             } else {
                                 try {
                                     showSelectDialog(ctx, msg);
-                                } catch (Exception e) {
+                                } catch (Throwable e) {
                                     log(e);
                                 }
                             }
@@ -100,7 +108,74 @@ public class SendBatchMsg {
         };
     }
 
-    private static View getView(Context context,String sendMsg) throws InvocationTargetException, IllegalAccessException {
+
+    private static void showSelectDialog(final Context context, final String msg) throws Throwable {
+        final TroopAndFriendSelectAdpter troopAndFriendSelectAdpter = new TroopAndFriendSelectAdpter(context);
+        final AlertDialog alertDialog = new AlertDialog.Builder(context, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT)
+                .setTitle("发送到")
+                .setView(getListView(context, msg, troopAndFriendSelectAdpter))
+                .setPositiveButton("发送", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ArrayList arrayList = troopAndFriendSelectAdpter.getSelectInfo();
+                        if (!arrayList.isEmpty()) {
+                            boolean isSuccess = true;
+                            Class facade = DexKit.doFindClass(DexKit.C_FACADE);
+                            Class SendMsgParams = null;
+                            Method m = null;
+                            for (Method mi : facade.getDeclaredMethods()) {
+                                if (!mi.getReturnType().equals(long[].class)) continue;
+                                Class[] argt = mi.getParameterTypes();
+                                if (argt.length != 6) continue;
+                                if (argt[1].equals(Context.class) && argt[2].equals(_SessionInfo())
+                                        && argt[3].equals(String.class) && argt[4].equals(ArrayList.class)) {
+                                    m = mi;
+                                    m.setAccessible(true);
+                                    SendMsgParams = argt[5];
+                                    break;
+                                }
+                            }
+                            for (int i = 0; i < arrayList.size(); i++) {
+                                ContactDescriptor contactInfo = (ContactDescriptor) arrayList.get(i);
+                                try {
+                                    if (null == m.invoke(null, getQQAppInterface(), context, Utils.createSessionInfo(contactInfo.uin, contactInfo.uinType), msg, new ArrayList<>(), SendMsgParams.newInstance())) {
+                                        isSuccess = false;
+                                    }
+                                } catch (Exception e) {
+                                    isSuccess = false;
+                                    log(e);
+                                }
+                            }
+                            Toast.makeText(context, "发送" + (isSuccess ? "成功" : "失败"), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .setNegativeButton("取消", null)
+                .setNeutralButton("全选", null)
+                .create();
+        //alertdialog延迟一毫秒显示，防止头像不显示
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                alertDialog.show();
+                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextSize(16.0f);
+                alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextSize(16.0f);
+                alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextSize(16.0f);
+                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(0xff4284f3);
+                alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(0xff4284f3);
+                alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(0xff4284f3);
+
+                alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        troopAndFriendSelectAdpter.setAllSelect();
+                    }
+                });
+            }
+        }, 100);
+    }
+
+    private static View getListView(Context context, String sendMsg, final TroopAndFriendSelectAdpter troopAndFriendSelectAdpter) throws InvocationTargetException, IllegalAccessException {
         final EditText editText = new EditText(context);
         editText.setBackgroundColor(0x00000000);
         editText.setHint("搜索");
@@ -109,7 +184,6 @@ public class SendBatchMsg {
         layoutParams.setMargins(dip2px(context, 30.0f), 0, dip2px(context, 30.0f), 10);
         editText.setLayoutParams(layoutParams);
         final ListView listView = new ListView(context);
-        troopAndFriendSelectAdpter = new TroopAndFriendSelectAdpter(context);
         listView.setAdapter(troopAndFriendSelectAdpter);
         listView.setDivider(new ColorDrawable(0x00000000));
         listView.setSelector(new ColorDrawable(0x00000000));
@@ -120,25 +194,25 @@ public class SendBatchMsg {
         friend.setChecked(true);
         friend.setText("好友");
         friend.setTextColor(Color.BLACK);
-        friend.setId(R.id.select_friend);
+        friend.setId(R_ID_SELECT_FRIEND);
         RadioButton group = new RadioButton(context);
         group.setText("群聊");
         group.setTextColor(Color.BLACK);
-        group.setId(R.id.select_group);
+        group.setId(R_ID_SELECT_FRIEND);
         radioGroup.addView(friend);
         radioGroup.addView(group);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (checkedId == R.id.select_friend) {
+                if (checkedId == R_ID_SELECT_FRIEND) {
                     ((RadioButton) group.getChildAt(0)).setChecked(true);
                     ((RadioButton) group.getChildAt(1)).setChecked(false);
-                    troopAndFriendSelectAdpter.setmFriendInfo();
+                    troopAndFriendSelectAdpter.toggleFriends();
 
-                } else if (checkedId == R.id.select_group) {
+                } else if (checkedId == R_ID_SELECT_GROUP) {
                     ((RadioButton) group.getChildAt(1)).setChecked(true);
                     ((RadioButton) group.getChildAt(0)).setChecked(false);
-                    troopAndFriendSelectAdpter.setmGroupInfo();
+                    troopAndFriendSelectAdpter.toggleGroups();
                 }
                 editText.setText("");
             }
@@ -146,7 +220,6 @@ public class SendBatchMsg {
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
@@ -156,7 +229,6 @@ public class SendBatchMsg {
 
             @Override
             public void afterTextChanged(Editable s) {
-
             }
         });
 
@@ -180,54 +252,30 @@ public class SendBatchMsg {
      * Created by Deng on 2018/8/1.
      */
 
-    public class TroopAndFriendSelectAdpter extends BaseAdapter {
-        private ArrayList<ContactInfo> mFriendInfo=new ArrayList<>();
-        private ArrayList<ContactInfo>mGroupInfo=new ArrayList<>();
-        private ArrayList<ContactInfo>mCurrentInfo=new ArrayList<>();
-        private Map<String,Boolean> mIsSelect=new HashMap<>();
-        private int mCurrentNum=0;//0为好友，1为群聊
-        private String searchMsg="";
+    public static class TroopAndFriendSelectAdpter extends BaseAdapter {
+        private ArrayList<ContactDescriptor> mAllContacts = new ArrayList<>();
+        private ArrayList<ContactDescriptor> mHits = new ArrayList<>();
+        private HashSet<ContactDescriptor> mTargets = new HashSet<>();
+        private String searchMsg = "";
         private Context context;
+        private FaceImpl face = FaceImpl.getInstance();
 
-        public TroopAndFriendSelectAdpter(Context context) throws InvocationTargetException, IllegalAccessException {
-            this.context=context;
+        public TroopAndFriendSelectAdpter(Context context) throws Throwable {
+            this.context = context;
             init();
         }
 
         private void init() throws InvocationTargetException, IllegalAccessException {
-            ArrayList mFriendName = QQHelper.getFriendNick();
-            ArrayList mFriendUin = QQHelper.getFriendUin();
-            ArrayList mFriendDrawable = QQHelper.getFriendDawable();
-            ArrayList mTroopName = QQHelper.getTroopName();
-            ArrayList mTroopUin = QQHelper.getTroopUin();
-            ArrayList mTroopDrawable = QQHelper.getTroopDrawable();
-            if (mFriendName!=null){
-                for (int i=0;i<mFriendName.size();i++){
-                    ContactInfo contactInfo=new ContactInfo();
-                    contactInfo.setHead((Drawable) mFriendDrawable.get(i));
-                    contactInfo.setUin((String) mFriendUin.get(i));
-                    contactInfo.setName((String)mFriendName.get(i));
-                    contactInfo.setIstroop(0);
-                    mFriendInfo.add(contactInfo);
-                    mIsSelect.put(contactInfo.getId(),false);
-                }
-            }
-            if (mTroopName!=null){
-                for (int i=0;i<mTroopName.size();i++){
-                    ContactInfo contactInfo=new ContactInfo();
-                    contactInfo.setHead((Drawable) mTroopDrawable.get(i));
-                    contactInfo.setUin((String) mTroopUin.get(i));
-                    contactInfo.setName((String)mTroopName.get(i));
-                    contactInfo.setIstroop(1);
-                    mGroupInfo.add(contactInfo);
-                    mIsSelect.put(contactInfo.getId(),false);
-                }
-            }
-            mCurrentInfo.addAll(mFriendInfo);
+            ArrayList<ContactDescriptor> friends = ExfriendManager.getCurrent().getFriends();
+            ArrayList<ContactDescriptor> groups = null;
+            mAllContacts.addAll(friends);
+            mAllContacts.addAll(groups);
+            mHits.addAll(mAllContacts);
         }
+
         @Override
         public int getCount() {
-            return mCurrentInfo.size();
+            return mHits.size();
         }
 
         @Override
@@ -242,97 +290,75 @@ public class SendBatchMsg {
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
-            ViewHolder viewHolder=null;
-            if (convertView==null){
-                viewHolder=new ViewHolder();
-                LinearLayout linearLayout=getListItem(context);
-                convertView=linearLayout;
-                viewHolder.cBox=(CheckBox) linearLayout.getChildAt(0);
-                viewHolder.img=(ImageView)linearLayout.getChildAt(1);
-                viewHolder.title=(TextView)linearLayout.getChildAt(2);
+            ViewHolder viewHolder = null;
+            if (convertView == null) {
+                viewHolder = new ViewHolder();
+                LinearLayout linearLayout = getListItem(context);
+                convertView = linearLayout;
+                viewHolder.cBox = (CheckBox) linearLayout.getChildAt(0);
+                viewHolder.img = (ImageView) linearLayout.getChildAt(1);
+                viewHolder.title = (TextView) linearLayout.getChildAt(2);
                 convertView.setTag(viewHolder);
-            }else {
-                viewHolder=(ViewHolder)convertView.getTag();
+                viewHolder.cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if (isChecked) mTargets.add((ContactDescriptor) ((View) buttonView.getParent()).getTag(2));
+                        else mTargets.remove((ContactDescriptor) ((View) buttonView.getParent()).getTag(2));
+                    }
+                });
+            } else {
+                viewHolder = (ViewHolder) convertView.getTag();
             }
-            viewHolder.title.setText(mCurrentInfo.get(position).getName());
-            viewHolder.img.setBackground(mCurrentInfo.get(position).getHead());
-            viewHolder.cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    mIsSelect.put(mCurrentInfo.get(position).getId(),isChecked);
-                }
-            });
-            viewHolder.cBox.setChecked(mIsSelect.get(mCurrentInfo.get(position).getId()));
+            ContactDescriptor cd = mHits.get(position);
+            viewHolder.title.setText(cd.nick);
+            face.setImageOrRegister(mHits.get(position), viewHolder.img);
+            viewHolder.cBox.setChecked(mTargets.contains(mHits.get(position)));
             return convertView;
         }
 
-        private LinearLayout getListItem(Context context){
-            int padding= dip2px(context,20.0f);
-            int imgPadding= dip2px(context,10.0f);
-            int imgHeight= dip2px(context,40.0f);
-            LinearLayout linearLayout=new LinearLayout(context);
-            LinearLayout.LayoutParams layoutParams=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        private LinearLayout getListItem(Context context) {
+            int padding = dip2px(context, 20.0f);
+            int imgPadding = dip2px(context, 10.0f);
+            int imgHeight = dip2px(context, 40.0f);
+            LinearLayout linearLayout = new LinearLayout(context);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             linearLayout.setLayoutParams(layoutParams);
             linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-            linearLayout.setPadding(padding,15,padding,25);
-            LinearLayout.LayoutParams layoutParams1=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            layoutParams1.gravity= Gravity.CENTER_VERTICAL;
-            CheckBox check=new CheckBox(context);
+            linearLayout.setPadding(padding, 15, padding, 25);
+            LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams1.gravity = Gravity.CENTER_VERTICAL;
+            CheckBox check = new CheckBox(context);
             check.setFocusable(false);
             check.setClickable(false);
-            ImageView imageView=new ImageView(context);
-            LinearLayout.LayoutParams layoutParams2=new LinearLayout.LayoutParams(imgHeight,imgHeight);
-            layoutParams2.gravity=Gravity.CENTER_VERTICAL;
-            layoutParams2.setMargins(imgPadding,0,imgPadding,0);
+            ImageView imageView = new ImageView(context);
+            LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(imgHeight, imgHeight);
+            layoutParams2.gravity = Gravity.CENTER_VERTICAL;
+            layoutParams2.setMargins(imgPadding, 0, imgPadding, 0);
             imageView.setLayoutParams(layoutParams2);
-            TextView textView=new TextView(context);
+            TextView textView = new TextView(context);
             textView.setTextColor(Color.BLACK);
             textView.setTextSize(18.0f);
-            linearLayout.addView(check,layoutParams1);
+            linearLayout.addView(check, layoutParams1);
             linearLayout.addView(imageView);
-            linearLayout.addView(textView,layoutParams1);
+            linearLayout.addView(textView, layoutParams1);
             return linearLayout;
-
         }
 
-        public void setmFriendInfo(){
-            if (mCurrentNum==1){
-                mCurrentNum=0;
-                mCurrentInfo.clear();
-                mCurrentInfo.addAll(mFriendInfo);
-                notifyDataSetChanged();
-            }
-
-        }
-
-        public void setmGroupInfo(){
-            if (mCurrentNum==0){
-                mCurrentNum=1;
-                mCurrentInfo.clear();
-                mCurrentInfo.addAll(mGroupInfo);
-                notifyDataSetChanged();
-            }
-        }
-
-        public void setData(String searchMsg){
-            this.searchMsg=searchMsg;
-            mCurrentInfo.clear();
-            if (searchMsg.equals("")||searchMsg.isEmpty()){
-                if (mCurrentNum==0){
-                    mCurrentInfo.addAll(mFriendInfo);
-                }else if (mCurrentNum==1){
-                    mCurrentInfo.addAll(mGroupInfo);
-                }
-            }else {
-                if (mCurrentNum==0){
-                    for (int i=0;i<mFriendInfo.size();i++){
-                        if (mFriendInfo.get(i).getName().contains(searchMsg)){
+        public void setData(String searchMsg) {
+            this.searchMsg = searchMsg;
+            if (searchMsg.equals("") || searchMsg.isEmpty()) {
+                mHits.clear();
+                mHits.addAll(mAllContacts);
+            } else {
+                if (mCurrentNum == 0) {
+                    for (int i = 0; i < mFriendInfo.size(); i++) {
+                        if (mFriendInfo.get(i).nick.contains(searchMsg)) {
                             mCurrentInfo.add(mFriendInfo.get(i));
                         }
                     }
-                }else if (mCurrentNum==1){
-                    for (int i=0;i<mGroupInfo.size();i++){
-                        if (mGroupInfo.get(i).getName().contains(searchMsg)){
+                } else if (mCurrentNum == 1) {
+                    for (int i = 0; i < mGroupInfo.size(); i++) {
+                        if (mGroupInfo.get(i).nick.contains(searchMsg)) {
                             mCurrentInfo.add(mGroupInfo.get(i));
                         }
                     }
@@ -341,51 +367,9 @@ public class SendBatchMsg {
             notifyDataSetChanged();
         }
 
-        public void setAllSelect(){
-            for (int i=0;i<mCurrentInfo.size();i++){
-                mIsSelect.put(mCurrentInfo.get(i).getId(),true);
-            }
-            if (mCurrentNum==0){
-                if (searchMsg.equals("")){
-                    for (int i=0;i<mFriendInfo.size();i++){
-                        mIsSelect.put(mFriendInfo.get(i).getId(),true);
-                    }
-                }else {
-                    for (int i=0;i<mFriendInfo.size();i++){
-                        if (mFriendInfo.get(i).getName().contains(searchMsg)) {
-                            mIsSelect.put(mFriendInfo.get(i).getId(),true);
-                        }
-                    }
-                }
-            }else if (mCurrentNum==1){
-                if (searchMsg.equals("")){
-                    for (int i=0;i<mGroupInfo.size();i++){
-                        mIsSelect.put(mGroupInfo.get(i).getId(),true);
-                    }
-                }else {
-                    for (int i=0;i<mGroupInfo.size();i++){
-                        if (mGroupInfo.get(i).getName().contains(searchMsg)) {
-                            mIsSelect.put(mGroupInfo.get(i).getId(),true);
-                        }
-                    }
-                }
-            }
+        public void setAllSelect() {
+            mTargets.addAll(mHits);
             notifyDataSetChanged();
-        }
-
-        public ArrayList getSelectInfo(){
-            ArrayList arrayList=new ArrayList();
-            for (int i=0;i<mFriendInfo.size();i++){
-                if (mIsSelect.get(mFriendInfo.get(i).getId())){
-                    arrayList.add(mFriendInfo.get(i));
-                }
-            }
-            for (int i=0;i<mGroupInfo.size();i++){
-                if (mIsSelect.get(mGroupInfo.get(i).getId())){
-                    arrayList.add(mGroupInfo.get(i));
-                }
-            }
-            return arrayList;
         }
 
         public class ViewHolder {
@@ -393,4 +377,5 @@ public class SendBatchMsg {
             public TextView title;
             public CheckBox cBox;
         }
+    }
 }

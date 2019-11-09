@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.ImageView;
 import nil.nadph.qnotified.util.Nullable;
+import nil.nadph.qnotified.util.QThemeKit;
 import nil.nadph.qnotified.util.Utils;
 
 import java.lang.ref.WeakReference;
@@ -128,5 +129,18 @@ public class FaceImpl implements InvocationHandler {
         return ret;
     }
 
+    public boolean setImageOrRegister(Utils.ContactDescriptor cd, ImageView imgview) {
+        return setImageOrRegister(cd.uinType == 1 ? TYPE_TROOP : TYPE_USER, cd.uin, imgview);
+    }
 
+    public boolean setImageOrRegister(int type, String uin, ImageView imgview) {
+        Bitmap bm = getBitmapFromCache(type, uin);
+        if (bm == null) {
+            imgview.setImageDrawable(QThemeKit.loadDrawableFromAsset("face.png", imgview.getContext()));
+            return registerView(type, uin, imgview);
+        } else {
+            imgview.setImageBitmap(bm);
+            return true;
+        }
+    }
 }
