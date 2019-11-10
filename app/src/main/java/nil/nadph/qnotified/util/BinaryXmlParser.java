@@ -30,7 +30,9 @@ public class BinaryXmlParser {
             Utils.log("parse xml error:" + e.toString());
         } finally {
             try {
-                fis.close();
+                if (fis != null) {
+                    fis.close();
+                }
             } catch (Exception e) {
             }
         }

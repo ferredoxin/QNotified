@@ -77,7 +77,7 @@ public class ExfriendManager {
             long cuin;
             try {
                 while (true) {
-                    Thread.sleep(1000l * FL_UPDATE_INT_MAX);
+                    Thread.sleep(1000L * FL_UPDATE_INT_MAX);
                     cuin = Utils.getLongAccountUin();
                     if (cuin > 1000) {
                         log("try post task for " + cuin);

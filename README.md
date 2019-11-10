@@ -37,7 +37,6 @@ QNotified is a Xposed module for mobile QQ that aims to
 8. 修复偶发性的莫名其妙好友全部被标记为删除的bug
 
 **考虑中功能**
-
 1. 去你大爷的TX地图
 2. _用户建议_ 打开网页请用户选择使用内置浏览器或外部浏览器(可设置)
 3. _用户建议_ (可详细设置)在某些情景模式下禁用QQ提醒功能

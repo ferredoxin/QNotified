@@ -13,9 +13,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
-import nil.nadph.qnotified.adapter.ActProxyMgr;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.adapter.ActProxyMgr;
 import nil.nadph.qnotified.pk.FriendChunk;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.util.QThemeKit;
@@ -37,7 +37,7 @@ public class DelDetectorHook extends BaseDelayableHook {
 
     public static final int VIEW_ID_DELETED_FRIEND = 0x00EE77AA;
 
-    TextView exfriend;
+    public WeakReference<TextView> exfriendRef;
     public WeakReference<TextView> redDotRef;
 
     private DelDetectorHook() {
@@ -198,8 +198,11 @@ public class DelDetectorHook extends BaseDelayableHook {
                 layout_entrance.setOrientation(LinearLayout.VERTICAL);
 
                 //StateListDrawable background=(StateListDrawable)unusualContacts.getBackground();
-
-                exfriend = new TextView(splashActivity);
+                TextView exfriend = null;
+                if (exfriendRef == null || (exfriend = exfriendRef.get()) == null) {
+                    exfriend = new TextView(splashActivity);
+                    exfriendRef = new WeakReference<>(exfriend);
+                }
                 exfriend.setTextColor(QThemeKit.skin_blue);//unusualContacts.getTextColors());//QThemeKit.skin_red);
                 //exfriend.setBackground(Utils._obj_clone(background.mutate()));//damn! mutate() not working!
                 exfriend.setTextSize(dip2sp(splashActivity, 17));//TypedValue.COMPLEX_UNIT_PX,unusualContacts.getTextSize());

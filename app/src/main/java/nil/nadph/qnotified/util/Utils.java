@@ -438,22 +438,20 @@ public class Utils {
     }
 
     //Used for new ListenerInfo class structure used beginning with API 14 (ICS)
+    @SuppressWarnings("JavaReflectionMemberAccess")
+    @SuppressLint("PrivateApi")
     private static View.OnClickListener getOnClickListenerV14(View view) {
         View.OnClickListener retrievedListener = null;
         String viewStr = "android.view.View";
         String lInfoStr = "android.view.View$ListenerInfo";
-
         try {
             Field listenerField = Class.forName(viewStr).getDeclaredField("mListenerInfo");
             Object listenerInfo = null;
-
             if (listenerField != null) {
                 listenerField.setAccessible(true);
                 listenerInfo = listenerField.get(view);
             }
-
             Field clickListenerField = Class.forName(lInfoStr).getDeclaredField("mOnClickListener");
-
             if (clickListenerField != null && listenerInfo != null) {
                 retrievedListener = (View.OnClickListener) clickListenerField.get(listenerInfo);
             }
@@ -464,7 +462,6 @@ public class Utils {
         } catch (ClassNotFoundException ex) {
             log("Reflection: Class Not Found.");
         }
-
         return retrievedListener;
     }
 

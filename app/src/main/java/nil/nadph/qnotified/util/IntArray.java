@@ -1,7 +1,11 @@
 package nil.nadph.qnotified.util;
 
+import android.annotation.SuppressLint;
+
 import java.util.Arrays;
 
+@SuppressWarnings("all")
+@SuppressLint("all")
 public class IntArray implements Cloneable {
     private static final int MIN_CAPACITY_INCREMENT = 12;
     public static final int[] EmptyArray_INT = new int[0];

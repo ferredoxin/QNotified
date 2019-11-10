@@ -20,11 +20,9 @@ public class ConfigActivity extends Activity implements Runnable {
 
     private boolean isVisible = false;
     private boolean needRun = false;
-    ;
     private TextView statusTv;
     private TextView statusTvB;
     private Looper mainLooper;
-
 
     int color;
     int step;//(0-255)
