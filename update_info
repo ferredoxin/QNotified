@@ -1,14 +1,16 @@
 [
   {
-    "code": 14,
-    "name": "0.3.4",
+    "code": 15,
+    "name": "0.4.0",
     "taichi": false,
     "beta": false,
-    "time": 1571028428,
-    "md5": "271cadcdd7cbab587c9b46a6d7e26453",
-    "desc": "0.3.4:修复上个版本的无法使用和闪照bug\n上个版本0.3.1:\n- 添加TIM支持\n- 添加图片方式打开闪照和表情包功能\n- 添加复读机功能\n- 添加收藏更多表情\n- 添加语音转发功能",
+    "time": 1573376192,
+    "md5": "b7073a7114f946c4cee3e38582a6352d",
+    "desc": "- 修复818无法隐藏小程序的bug\n- 群发文本消息\n- 添加防撤回(实验性,不稳定)",
     "urls": [
-      "https://github.com/cinit/QNotified/releases/download/v0.3.4/QNotified_034.apk"
+      "https://github.com/cinit/QNotified/releases/download/v0.4.0/QNotified_040.apk",
+      "https://pan.baidu.com/s/13tKyQsnHHfb3LQSISzgCOg",
+      "https://gitee.com/kernelex/QNotified/attach_files/295346/download"
     ]
   }
 ]
