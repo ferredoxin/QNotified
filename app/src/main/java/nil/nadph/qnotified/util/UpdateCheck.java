@@ -31,7 +31,8 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
     private ViewGroup viewGroup;
     private boolean clicked = false;
     private PHPArray result;
-    public static final String UPDATE_INFO = "https://raw.githubusercontent.com/cinit/QNotified/master/update_info";
+    public static final String UPDATE_INFO_GET1 = "https://raw.githubusercontent.com/cinit/QNotified/master/update_info";
+    public static final String UPDATE_INFO_GET2 = "https://gitee.com/kernelex/QNotified/raw/master/update_info";
     private int runlevel;
     public static final String qn_update_info = "qn_update_info";
     public static final String qn_update_time = "qn_update_time";
@@ -45,8 +46,9 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
 
     public String doRefreshInfo() {
         String content = null;
+        int failed = 0;
         try {
-            URL reqURL = new URL(UPDATE_INFO);
+            URL reqURL = new URL(UPDATE_INFO_GET2);
             HttpsURLConnection httpsConn = (HttpsURLConnection) reqURL.openConnection();
             InputStream in = httpsConn.getInputStream();
             ByteArrayOutputStream bais = new ByteArrayOutputStream();
@@ -62,6 +64,28 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
             cfg.putString(qn_update_info, content);
             cfg.getAllConfig().put(qn_update_time, System.currentTimeMillis() / 1000L);
             cfg.save();
+            return content;
+        } catch (IOException e) {
+            //fuck,try another
+        }
+        try {
+            URL reqURL = new URL(UPDATE_INFO_GET1);
+            HttpsURLConnection httpsConn = (HttpsURLConnection) reqURL.openConnection();
+            InputStream in = httpsConn.getInputStream();
+            ByteArrayOutputStream bais = new ByteArrayOutputStream();
+            byte[] buf = new byte[256];
+            int len;
+            while ((len = in.read(buf)) != -1) {
+                bais.write(buf, 0, len);
+            }
+            in.close();
+            content = bais.toString("UTF-8");
+            httpsConn.disconnect();
+            ConfigManager cfg = ConfigManager.getDefault();
+            cfg.putString(qn_update_info, content);
+            cfg.getAllConfig().put(qn_update_time, System.currentTimeMillis() / 1000L);
+            cfg.save();
+            return content;
         } catch (IOException e) {
             final IOException e2 = e;
             runlevel = 0;
@@ -73,7 +97,7 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
                     }
                 });
         }
-        return content;
+        return null;
     }
 
     private String getCachedUpdateInfoOrNull() {

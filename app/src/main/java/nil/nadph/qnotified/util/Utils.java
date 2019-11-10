@@ -6,8 +6,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
@@ -16,7 +14,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 import de.robv.android.xposed.XposedBridge;
-import nil.nadph.qnotified.FaceImpl;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -56,8 +53,8 @@ public class Utils {
 
     public static boolean DEBUG = true;
     public static boolean V_TOAST = false;
-    public static final String QN_VERSION_NAME = "0.3.4";
-    public static final int QN_VERSION_CODE = 14;
+    public static final String QN_VERSION_NAME = "0.4.0";
+    public static final int QN_VERSION_CODE = 15;
 
     public static final String PACKAGE_NAME_QQ = "com.tencent.mobileqq";
     public static final String PACKAGE_NAME_QQ_INTERNATIONAL = "com.tencent.mobileqqi";
@@ -370,7 +367,7 @@ public class Utils {
     }
 
     public static Object createSessionInfo(String uin, int uinType) {
-        Class clz =_SessionInfo();
+        Class clz = _SessionInfo();
         if (clz == null) throw new NoClassDefFoundError("SessionInfo");
         try {
             Object obj = new_instance(clz);

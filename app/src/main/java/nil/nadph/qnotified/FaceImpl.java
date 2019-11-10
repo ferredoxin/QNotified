@@ -83,7 +83,9 @@ public class FaceImpl implements InvocationHandler {
 
     @Override
     public Object invoke(Object obj, Method method, Object[] args) throws Throwable {
-        if (method.getName().equals("onDecodeTaskCompleted")) {
+        Class[] argt = method.getParameterTypes();
+        if (argt.length != 4) return null;
+        if (argt[0].equals(int.class) && argt[1].equals(int.class) && argt[2].equals(String.class) && argt[3].equals(Bitmap.class)) {
             onDecodeTaskCompleted((int) args[0], (int) args[1], (String) args[2], (Bitmap) args[3]);
         }
         return null;

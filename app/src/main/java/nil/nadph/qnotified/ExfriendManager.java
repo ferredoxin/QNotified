@@ -425,14 +425,15 @@ public class ExfriendManager {
         throw new NoSuchFieldException();
     }
 
-    public ArrayList<ContactDescriptor> getFriends() {
+    public ArrayList<ContactDescriptor> getFriendsRemark() {
         ArrayList<ContactDescriptor> ret = new ArrayList<>();
         if (persons != null)
             for (Map.Entry<Long, FriendRecord> f : persons.entrySet()) {
                 ContactDescriptor cd = new ContactDescriptor();
                 cd.uinType = 0;
                 cd.uin = f.getKey() + "";
-                cd.nick = f.getValue().nick;
+                cd.nick = f.getValue().remark;
+                if (cd.nick == null) cd.nick = f.getValue().remark;
                 ret.add(cd);
             }
         return ret;

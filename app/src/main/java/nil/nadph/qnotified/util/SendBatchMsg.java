@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
@@ -117,7 +116,7 @@ public class SendBatchMsg {
                 .setPositiveButton("发送", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        ArrayList arrayList = troopAndFriendSelectAdpter.getSelectInfo();
+                        HashSet<ContactDescriptor> arrayList = troopAndFriendSelectAdpter.mTargets;
                         if (!arrayList.isEmpty()) {
                             boolean isSuccess = true;
                             Class facade = DexKit.doFindClass(DexKit.C_FACADE);
@@ -135,8 +134,7 @@ public class SendBatchMsg {
                                     break;
                                 }
                             }
-                            for (int i = 0; i < arrayList.size(); i++) {
-                                ContactDescriptor contactInfo = (ContactDescriptor) arrayList.get(i);
+                            for (ContactDescriptor contactInfo : arrayList) {
                                 try {
                                     if (null == m.invoke(null, getQQAppInterface(), context, Utils.createSessionInfo(contactInfo.uin, contactInfo.uinType), msg, new ArrayList<>(), SendMsgParams.newInstance())) {
                                         isSuccess = false;
@@ -146,36 +144,42 @@ public class SendBatchMsg {
                                     log(e);
                                 }
                             }
-                            Toast.makeText(context, "发送" + (isSuccess ? "成功" : "失败"), Toast.LENGTH_SHORT).show();
+                            try {
+                                Utils.showToast(context, TOAST_TYPE_INFO, "发送" + (isSuccess ? "成功" : "失败"), Toast.LENGTH_SHORT);
+                            } catch (Throwable throwable) {
+                                Toast.makeText(context, "发送" + (isSuccess ? "成功" : "失败"), Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
                 })
                 .setNegativeButton("取消", null)
                 .setNeutralButton("全选", null)
                 .create();
-        //alertdialog延迟一毫秒显示，防止头像不显示
-        new Handler().postDelayed(new Runnable() {
+        alertDialog.show();
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextSize(16.0f);
+        alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextSize(16.0f);
+        alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextSize(16.0f);
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(0xff4284f3);
+        alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(0xff4284f3);
+        alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(0xff4284f3);
+        alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                troopAndFriendSelectAdpter.setAllSelect();
+            }
+        });
+        troopAndFriendSelectAdpter.sendBtn = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        new android.os.Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                alertDialog.show();
-                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextSize(16.0f);
-                alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextSize(16.0f);
-                alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextSize(16.0f);
-                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(0xff4284f3);
-                alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(0xff4284f3);
-                alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(0xff4284f3);
-
-                alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        troopAndFriendSelectAdpter.setAllSelect();
-                    }
-                });
+                troopAndFriendSelectAdpter.notifyDataSetChanged();
             }
-        }, 100);
+        }, 1000);
     }
 
-    private static View getListView(Context context, String sendMsg, final TroopAndFriendSelectAdpter troopAndFriendSelectAdpter) throws InvocationTargetException, IllegalAccessException {
+    private static View getListView(Context context, String sendMsg,
+                                    final TroopAndFriendSelectAdpter troopAndFriendSelectAdpter) throws
+            InvocationTargetException, IllegalAccessException {
         final EditText editText = new EditText(context);
         editText.setBackgroundColor(0x00000000);
         editText.setHint("搜索");
@@ -198,7 +202,7 @@ public class SendBatchMsg {
         RadioButton group = new RadioButton(context);
         group.setText("群聊");
         group.setTextColor(Color.BLACK);
-        group.setId(R_ID_SELECT_FRIEND);
+        group.setId(R_ID_SELECT_GROUP);
         radioGroup.addView(friend);
         radioGroup.addView(group);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -208,10 +212,9 @@ public class SendBatchMsg {
                     ((RadioButton) group.getChildAt(0)).setChecked(true);
                     ((RadioButton) group.getChildAt(1)).setChecked(false);
                     troopAndFriendSelectAdpter.toggleFriends();
-
                 } else if (checkedId == R_ID_SELECT_GROUP) {
-                    ((RadioButton) group.getChildAt(1)).setChecked(true);
                     ((RadioButton) group.getChildAt(0)).setChecked(false);
+                    ((RadioButton) group.getChildAt(1)).setChecked(true);
                     troopAndFriendSelectAdpter.toggleGroups();
                 }
                 editText.setText("");
@@ -247,30 +250,39 @@ public class SendBatchMsg {
         return linearLayout;
     }
 
-
     /**
      * Created by Deng on 2018/8/1.
      */
 
     public static class TroopAndFriendSelectAdpter extends BaseAdapter {
-        private ArrayList<ContactDescriptor> mAllContacts = new ArrayList<>();
+        private ArrayList<ContactDescriptor> mFriends;
+        private ArrayList<ContactDescriptor> mGroups;
         private ArrayList<ContactDescriptor> mHits = new ArrayList<>();
         private HashSet<ContactDescriptor> mTargets = new HashSet<>();
+        private boolean showFriends = true, showGtoups = false;
         private String searchMsg = "";
         private Context context;
         private FaceImpl face = FaceImpl.getInstance();
+        public Button sendBtn = null;
 
         public TroopAndFriendSelectAdpter(Context context) throws Throwable {
             this.context = context;
             init();
         }
 
-        private void init() throws InvocationTargetException, IllegalAccessException {
-            ArrayList<ContactDescriptor> friends = ExfriendManager.getCurrent().getFriends();
-            ArrayList<ContactDescriptor> groups = null;
-            mAllContacts.addAll(friends);
-            mAllContacts.addAll(groups);
-            mHits.addAll(mAllContacts);
+        private void init() throws Exception {
+            mFriends = ExfriendManager.getCurrent().getFriendsRemark();
+            Object mTroopManager = getTroopManager();
+            ArrayList tx = (ArrayList) invoke_virtual(mTroopManager, "a", ArrayList.class);
+            mGroups = new ArrayList<>();
+            for (Object info : tx) {
+                ContactDescriptor cd = new ContactDescriptor();
+                cd.nick = (String) iget_object_or_null(info, "troopname");
+                cd.uin = (String) iget_object_or_null(info, "troopuin");
+                cd.uinType = 1;
+                mGroups.add(cd);
+            }
+            mHits.addAll(mFriends);
         }
 
         @Override
@@ -302,14 +314,21 @@ public class SendBatchMsg {
                 viewHolder.cBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        if (isChecked) mTargets.add((ContactDescriptor) ((View) buttonView.getParent()).getTag(2));
-                        else mTargets.remove((ContactDescriptor) ((View) buttonView.getParent()).getTag(2));
+                        ContactDescriptor cd = ((ViewHolder) ((View) buttonView.getParent()).getTag()).mUin;
+                        if (isChecked) mTargets.add(cd);
+                        else mTargets.remove(cd);
+                        if (sendBtn != null) {
+                            int size = mTargets.size();
+                            if (size != 0) sendBtn.setText("发送(" + size + ")");
+                            else sendBtn.setText("发送");
+                        }
                     }
                 });
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
             ContactDescriptor cd = mHits.get(position);
+            viewHolder.mUin = cd;
             viewHolder.title.setText(cd.nick);
             face.setImageOrRegister(mHits.get(position), viewHolder.img);
             viewHolder.cBox.setChecked(mTargets.contains(mHits.get(position)));
@@ -346,21 +365,19 @@ public class SendBatchMsg {
 
         public void setData(String searchMsg) {
             this.searchMsg = searchMsg;
+            mHits.clear();
             if (searchMsg.equals("") || searchMsg.isEmpty()) {
-                mHits.clear();
-                mHits.addAll(mAllContacts);
+                if (showGtoups) mHits.addAll(mGroups);
+                if (showFriends) mHits.addAll(mFriends);
             } else {
-                if (mCurrentNum == 0) {
-                    for (int i = 0; i < mFriendInfo.size(); i++) {
-                        if (mFriendInfo.get(i).nick.contains(searchMsg)) {
-                            mCurrentInfo.add(mFriendInfo.get(i));
-                        }
+                if (showFriends) {
+                    for (ContactDescriptor cd : mFriends) {
+                        if (cd.nick.contains(searchMsg) || cd.uin.contains(searchMsg)) mHits.add(cd);
                     }
-                } else if (mCurrentNum == 1) {
-                    for (int i = 0; i < mGroupInfo.size(); i++) {
-                        if (mGroupInfo.get(i).nick.contains(searchMsg)) {
-                            mCurrentInfo.add(mGroupInfo.get(i));
-                        }
+                }
+                if (showGtoups) {
+                    for (ContactDescriptor cd : mGroups) {
+                        if (cd.nick.contains(searchMsg) || cd.uin.contains(searchMsg)) mHits.add(cd);
                     }
                 }
             }
@@ -372,10 +389,25 @@ public class SendBatchMsg {
             notifyDataSetChanged();
         }
 
+        public void toggleFriends() {
+            showFriends = true;
+            showGtoups = false;
+            setData("");
+            notifyDataSetChanged();
+        }
+
+        public void toggleGroups() {
+            showGtoups = true;
+            showFriends = false;
+            setData("");
+            notifyDataSetChanged();
+        }
+
         public class ViewHolder {
             public ImageView img;
             public TextView title;
             public CheckBox cBox;
+            public ContactDescriptor mUin;
         }
     }
 }
