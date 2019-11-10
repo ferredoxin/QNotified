@@ -235,7 +235,7 @@ public class RepeaterHook extends BaseDelayableHook {
             XposedHelpers.findAndHookMethod(_PttItemBuilder(), "a", ChatMessage, itemHolder, View.class, BaseChatItemLayout, listener2,
                     new XC_MethodHook(51) {
                         @Override
-                        public void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        public void afterHookedMethod(final MethodHookParam param) throws Throwable {
                             if (!isEnabled()) return;
                             View view;
                             ViewGroup relativeLayout = (ViewGroup) param.getResult();
@@ -275,6 +275,31 @@ public class RepeaterHook extends BaseDelayableHook {
                                 imageView3.setVisibility(8);
                                 imageView4.setVisibility(0);
                             }
+                            View.OnClickListener r0 = new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    try {
+                                        Class[] argt = null;
+                                        Method m = null;
+                                        for (Method mi : DexKit.doFindClass(DexKit.C_FACADE).getMethods()) {
+                                            if (!mi.getName().equals("a")) continue;
+                                            argt = mi.getParameterTypes();
+                                            if (argt.length < 3) continue;
+                                            if (argt[0].equals(load("com/tencent/mobileqq/app/QQAppInterface")) && argt[1].equals(_SessionInfo())
+                                                    && argt[2].isAssignableFrom(param.args[0].getClass())) {
+                                                m = mi;
+                                                break;
+                                            }
+                                        }
+                                        if (argt.length == 3) m.invoke(null, app, session, param.args[0]);
+                                        else m.invoke(null, app, session, param.args[0], 0);
+                                    } catch (Throwable e) {
+                                        log(e);
+                                    }
+                                }
+                            };
+                            imageView3.setOnClickListener(r0);
+                            imageView4.setOnClickListener(r0);
                         }
                     });
             inited = true;

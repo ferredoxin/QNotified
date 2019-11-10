@@ -1,16 +1,16 @@
 [
   {
-    "code": 15,
-    "name": "0.4.0",
+    "code": 16,
+    "name": "0.4.1",
     "taichi": false,
     "beta": false,
-    "time": 1573376192,
-    "md5": "b7073a7114f946c4cee3e38582a6352d",
-    "desc": "- 修复818无法隐藏小程序的bug\n- 群发文本消息\n- 添加防撤回(实验性,不稳定)",
+    "time": 1573400112,
+    "md5": "3d260aef65d8a55798662e32b5dbe451",
+    "desc": "0.4.1:\n- 修复图片无法复读的bug\n0.4.0:\n- 修复818无法隐藏小程序的bug\n- 群发文本消息\n- 添加防撤回(实验性,不稳定)",
     "urls": [
-      "https://github.com/cinit/QNotified/releases/download/v0.4.0/QNotified_040.apk",
-      "https://pan.baidu.com/s/13tKyQsnHHfb3LQSISzgCOg",
-      "https://gitee.com/kernelex/QNotified/attach_files/295346/download"
+      "https://github.com/cinit/QNotified/releases/download/v0.4.1/QNotified_041.apk",
+      "https://pan.baidu.com/s/1-tnQY0kA4lBAjJHYXTRLXQ",
+      "https://gitee.com/kernelex/QNotified/attach_files/295506/download"
     ]
   }
 ]
