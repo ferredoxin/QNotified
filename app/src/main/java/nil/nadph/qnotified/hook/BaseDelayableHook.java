@@ -25,7 +25,8 @@ public abstract class BaseDelayableHook {
                 EmoPicHook.get(),
                 //GalleryBgHook.get(),
                 FavMoreEmo.get(),
-                RevokeMsgHook.get()
+                RevokeMsgHook.get(),
+                FakeVipHook.get()
         };
         return mAllHooks;
     }

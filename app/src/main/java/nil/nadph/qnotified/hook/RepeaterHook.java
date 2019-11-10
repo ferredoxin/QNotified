@@ -101,7 +101,20 @@ public class RepeaterHook extends BaseDelayableHook {
                         @Override
                         public void onClick(View view) {
                             try {
-                                XposedHelpers.callStaticMethod(DexKit.doFindClass(DexKit.C_FACADE), "a", app, session, param.args[0]);
+                                Class[] argt = null;
+                                Method m = null;
+                                for (Method mi : DexKit.doFindClass(DexKit.C_FACADE).getMethods()) {
+                                    if (!mi.getName().equals("a")) continue;
+                                    argt = mi.getParameterTypes();
+                                    if (argt.length < 3) continue;
+                                    if (argt[0].equals(load("com/tencent/mobileqq/app/QQAppInterface")) && argt[1].equals(_SessionInfo())
+                                            && argt[2].isAssignableFrom(param.args[0].getClass())) {
+                                        m = mi;
+                                        break;
+                                    }
+                                }
+                                if (argt.length == 3) m.invoke(null, app, session, param.args[0]);
+                                else m.invoke(null, app, session, param.args[0], 0);
                             } catch (Throwable e) {
                                 log(e);
                             }

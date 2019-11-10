@@ -1,15 +1,21 @@
 package nil.nadph.qnotified.util;
 
-import android.view.*;
-import java.io.*;
-import java.lang.reflect.*;
-import java.net.*;
-import java.util.*;
-import java.util.regex.*;
-import nil.nadph.qnotified.record.*;
+import android.view.View;
+import nil.nadph.qnotified.record.ConfigManager;
 
-import static nil.nadph.qnotified.util.Utils.*;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.regex.Pattern;
+
 import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Utils.*;
 
 public class DexKit {
 
@@ -24,6 +30,7 @@ public class DexKit {
     public static final int C_FAV_EMO_CONST = 9;
     public static final int C_MSG_REC_FAC = 10;
     public static final int C_CONTACT_UTILS = 11;
+    public static final int C_VIP_UTILS = 12;
 
     @Nullable
     public static Class tryLoadOrNull(int i) {
@@ -36,11 +43,11 @@ public class DexKit {
                 return null;
             }
             String clzn = cfg.getString("cache_" + a(i) + "_class");
-			if (clzn == null) return null;
+            if (clzn == null) return null;
             ret = load(clzn);
             return ret;
         } catch (Exception e) {
-			log(e);
+            log(e);
             return null;
         }
     }
@@ -96,6 +103,8 @@ public class DexKit {
                 return "msg_rec_fac";
             case C_CONTACT_UTILS:
                 return "contact_utils";
+            case C_VIP_UTILS:
+                return "vip_utils";
         }
         return null;
     }
@@ -122,6 +131,8 @@ public class DexKit {
                 return "com/tencent/mobileqq/service/message/MessageRecordFactory";
             case C_CONTACT_UTILS:
                 return "com/tencent/mobileqq/utils/ContactUtils";
+            case C_VIP_UTILS:
+                return "com/tencent/mobileqq/utils/VipUtils";
         }
         return null;
     }
@@ -148,6 +159,8 @@ public class DexKit {
                 return new byte[]{0x2C, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50, 0x69, 0x63, 0x4D, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65};
             case C_CONTACT_UTILS:
                 return new byte[]{0x07, 0x20, 0x2D, 0x20, 0x57, 0x69, 0x46, 0x69};
+            case C_VIP_UTILS:
+                return new byte[]{0x05, 0x6A, 0x68, 0x61, 0x6E, 0x5F};
         }
         return null;
     }
@@ -174,6 +187,8 @@ public class DexKit {
                 return new int[]{4};
             case C_CONTACT_UTILS:
                 return new int[]{4};
+            case C_VIP_UTILS:
+                return new int[]{4, 2, 3};
         }
         return null;
     }
@@ -186,6 +201,7 @@ public class DexKit {
             case C_AIO_UTILS:
             case C_CONTACT_UTILS:
             case C_MSG_REC_FAC:
+            case C_VIP_UTILS:
                 a:
                 for (Class clz : classes) {
                     if (Modifier.isAbstract(clz.getModifiers())) continue;
@@ -239,13 +255,13 @@ public class DexKit {
         int[] qf = d(i);
         byte[] key = b(i);
         if (qf != null) for (int dexi : qf) {
-				record |= 1 << dexi;
-				try {
-					ArrayList<String> ret = a(key, dexi, loader);
-					if (ret != null) return ret;
-				} catch (FileNotFoundException ignored) {
-				}
-			}
+            record |= 1 << dexi;
+            try {
+                ArrayList<String> ret = a(key, dexi, loader);
+                if (ret != null) return ret;
+            } catch (FileNotFoundException ignored) {
+            }
+        }
         int dexi = 1;
         while (true) {
             if ((record & (1 << dexi)) != 0) {
@@ -281,34 +297,34 @@ public class DexKit {
         try {
             urls = (Enumeration<URL>) Utils.invoke_virtual(loader, "findResources", name, String.class);
         } catch (Throwable e) {
-			log(e);
+            log(e);
         }
         //log("dex" + i + ":" + url);
         if (urls == null || !urls.hasMoreElements()) throw new FileNotFoundException(name);
         InputStream in;
         try {
-			ArrayList<String> rets = new ArrayList<String>();
-			while (urls.hasMoreElements()) {
-				in = urls.nextElement().openStream();
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				int ii;
-				while ((ii = in.read(buf)) != -1) {
-					baos.write(buf, 0, ii);
-				}
-				in.close();
-				content = baos.toByteArray();
+            ArrayList<String> rets = new ArrayList<String>();
+            while (urls.hasMoreElements()) {
+                in = urls.nextElement().openStream();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                int ii;
+                while ((ii = in.read(buf)) != -1) {
+                    baos.write(buf, 0, ii);
+                }
+                in.close();
+                content = baos.toByteArray();
 				/*if (i == 1) {
 					log("dex" + i + ".len :" + content.length);
 				}*/
-				ArrayList<Integer> opcodeOffsets = a(content, key);
-				for (int j = 0; j < opcodeOffsets.size(); j++) {
-					try {
-						String desc = a(content, opcodeOffsets.get(j));
-						rets.add(desc.substring(1, desc.length() - 1));
-					} catch (InternalError ignored) {
-					}
-				}
-			}
+                ArrayList<Integer> opcodeOffsets = a(content, key);
+                for (int j = 0; j < opcodeOffsets.size(); j++) {
+                    try {
+                        String desc = a(content, opcodeOffsets.get(j));
+                        rets.add(desc.substring(1, desc.length() - 1));
+                    } catch (InternalError ignored) {
+                    }
+                }
+            }
             return rets;
         } catch (IOException e) {
             log(e);
@@ -332,7 +348,7 @@ public class DexKit {
             off = arrayIndexOf(buf, target, off + 1, buf.length, f);
             if (off == -1) break;
             if (buf[off - 2] == (byte) 26/*Opcodes.OP_CONST_STRING*/
-				|| buf[off - 2] == (byte) 27)/* Opcodes.OP_CONST_STRING_JUMBO*/ {
+                    || buf[off - 2] == (byte) 27)/* Opcodes.OP_CONST_STRING_JUMBO*/ {
                 ret[0] = off - 2;
                 int opcodeOffset = ret[0];
                 rets.add(opcodeOffset);
@@ -353,9 +369,9 @@ public class DexKit {
             p[0] = classDataOff;
             if (classDataOff == 0) continue;
             int staticFieldsSize = readUleb128(buf, p),
-				instanceFieldsSize = readUleb128(buf, p),
-				directMethodsSize = readUleb128(buf, p),
-				virtualMethodsSize = readUleb128(buf, p);
+                    instanceFieldsSize = readUleb128(buf, p),
+                    directMethodsSize = readUleb128(buf, p),
+                    virtualMethodsSize = readUleb128(buf, p);
             for (int fn = 0; fn < staticFieldsSize + instanceFieldsSize; fn++) {
                 int fieldIdx = readUleb128(buf, p);
                 int accessFlags = readUleb128(buf, p);

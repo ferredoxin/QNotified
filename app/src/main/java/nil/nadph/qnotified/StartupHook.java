@@ -414,6 +414,17 @@ public class StartupHook {
             }).start();
     }
 
+    public static final XC_MethodHook dummyHook = new XC_MethodHook(200) {
+        @Override
+        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+            super.beforeHookedMethod(param);
+        }
+
+        @Override
+        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+            super.afterHookedMethod(param);
+        }
+    };
 
     public static final XC_MethodHook invokeRecord = new XC_MethodHook(200) {
         @Override
