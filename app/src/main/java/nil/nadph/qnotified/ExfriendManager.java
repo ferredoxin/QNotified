@@ -94,8 +94,11 @@ public class ExfriendManager {
         persons = new HashMap<>();
         events = new HashMap();
         if (tp == null) {
-            tp = Executors.newCachedThreadPool();
-            tp.execute(asyncUpdateAwaitingTask);
+            int pt = SyncUtils.getProcessType();
+            if (pt != 0 && (pt & (SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF)) != 0) {
+                tp = Executors.newCachedThreadPool();
+                tp.execute(asyncUpdateAwaitingTask);
+            }
         }
         initForUin(uin);
     }
@@ -429,6 +432,7 @@ public class ExfriendManager {
         ArrayList<ContactDescriptor> ret = new ArrayList<>();
         if (persons != null)
             for (Map.Entry<Long, FriendRecord> f : persons.entrySet()) {
+                if (f.getValue().friendStatus == FriendRecord.STATUS_EXFRIEND) continue;
                 ContactDescriptor cd = new ContactDescriptor();
                 cd.uinType = 0;
                 cd.uin = f.getKey() + "";
