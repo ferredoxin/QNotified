@@ -18,10 +18,10 @@ import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.QQViewBuilder.subtitle;
 import static nil.nadph.qnotified.util.Utils.*;
 
-public class AboutActivity implements ActivityAdapter {
+public class DonateActivity implements ActivityAdapter {
     private Activity self;
 
-    public AboutActivity(Activity activity) {
+    public DonateActivity(Activity activity) {
         self = activity;
     }
 
@@ -51,28 +51,22 @@ public class AboutActivity implements ActivityAdapter {
         ColorStateList hiColor = ColorStateList.valueOf(Color.argb(255, 242, 140, 72));
         RelativeLayout _t;
 
-        ll.addView(subtitle(self, "QNotified"));
-        ll.addView(subtitle(self, "本模块无毒无害, 免费开源, 旨在\n 1.接手部分停更模块的部分功能\n 2.提供被删好友通知\n 3.移除部分臃肿功能, 增加部分实用功能"));
+        ll.addView(subtitle(self, ""));
+        ll.addView(subtitle(self, "首先我想说一句,谢谢,心意收到"));
+        ll.addView(subtitle(self, ""));
+        ll.addView(subtitle(self, "但是目前还存在一个较为严重的问题:"));
+        ll.addView(subtitle(self, "  虽然QNotified是一个完全免费的插件,但仍因有不少人对本软件进行二次贩卖(如:以群发器的名义贩卖),不少人上当受骗"));
+        ll.addView(subtitle(self, "从用户反馈来看,这种贩卖情况并非个例"));
+        ll.addView(subtitle(self, "这违背了我的本意: **我希望任何个人都能免费的使用本软件**"));
+        ll.addView(subtitle(self, "从根本上说,如果任何需要本软件的人都能免费地获取本软件,那么倒卖这种的情况就不会发生"));
+        ll.addView(subtitle(self, "所以"));
+        ll.addView(subtitle(self, "每多一个人免费地分发本软件,可能因贩卖上当的人就少一个"));
+        ll.addView(subtitle(self, "譬如说,可以在各大玩机论坛社区以资源分享的方式分发免费软件(包括但不限于本模块,尽量别设置回复可见)"));
+        ll.addView(subtitle(self, "当然以上只是其中一种方法"));
+        ll.addView(subtitle(self, "本软件首发地为 https://github.com/cinit/QNotified (求star/issue/pull request)"));
+        ll.addView(subtitle(self, "最后,谢谢你的支持"));
+        ll.addView(subtitle(self, "by 千古华亭鸽自飞 (咕咕咕)"));
 
-        ll.addView(subtitle(self, "此模块目前承认的APP发布渠道为 Github 上本项目的 Releases 和 Xposed Installer 里的模块下载 ,也可从https://github.com/cinit/QNotified 获取源码自行编译, 如果您是在其他渠道下载的话请自己注意安全.\n Copyright (C) 2019 cinit@github"));
-
-        ll.addView(subtitle(self, "支持的(类)Xposed内核:"));
-        ll.addView(subtitle(self, "原生Xposed, Epic(太极), SandHook, BugHook(应用转生)"));
-        ll.addView(subtitle(self, " * YAHFA 可能存在一定兼容性问题(如卡Q,黑屏等等),遇到问题请反馈(说明发生的情况和其它必要信息,如QQ版本,模块版本,使用的框架环境,安卓版本等),谢谢"));
-
-        ll.addView(subtitle(self, "声明:"));
-        ll.addView(subtitle(self, "此软件是捐赠软件 个人可以免费使用 请勿以任何方式商用本软件 如果喜欢我的作品请打赏支持我维护和开发! 任何形式或渠道包括预装手机售卖此软件​都是非法贩卖, 别上当受骗！欢迎举报贩卖者! ", Color.RED));
-
-        ll.addView(subtitle(self, "特别声明:"));
-        ll.addView(subtitle(self, "QNotified模块属于个人作品! 没有售后! 没有客服! 您可以与我反馈和讨论问题, 但请文明交流尊重彼此!"));
-
-        ll.addView(subtitle(self, "免责声明"));
-        ll.addView(subtitle(self, "This program is distributed in the hope that it will be useful, " +
-                "but WITHOUT ANY WARRANTY; without even the implied warranty of " +
-                "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."));
-
-        ll.addView(subtitle(self, "请尊重我的的劳动成果 请勿用于商业用途 严禁盗版贩卖", Color.RED));
-        ll.addView(subtitle(self, "SystemClassLoader\n" + ClassLoader.getSystemClassLoader() + "\nContext.getClassLoader()\n" + self.getClassLoader() + "\nThread.getContextClassLoader()\n" + Thread.currentThread().getContextClassLoader()));
         //bounceScrollView.setFocusable(true);
         //bounceScrollView.setFocusableInTouchMode(true);
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
@@ -81,7 +75,7 @@ public class AboutActivity implements ActivityAdapter {
         _lp_fat.weight = 1;
         //__ll.addView(bounceScrollView,_lp_fat);
         //sdlv.setBackgroundColor(0xFFAA0000)
-        invoke_virtual(self, "setTitle", "关于", CharSequence.class);
+        invoke_virtual(self, "setTitle", "打赏", CharSequence.class);
         invoke_virtual(self, "setImmersiveStatus");
         invoke_virtual(self, "enableLeftBtn", true, boolean.class);
         //TextView rightBtn=(TextView)invoke_virtual(self,"getRightTextView");

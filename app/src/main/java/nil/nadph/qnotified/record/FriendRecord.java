@@ -72,8 +72,8 @@ public class FriendRecord implements Serializable, Cloneable {
 			sb.append(events[i].timeRangeEnd);
 			sb.append(",event=");
 			sb.append(events[i].event);
-			sb.append(",operator=");
-			sb.append(events[i].operator);
+			sb.append(",operand=");
+			sb.append(events[i].operand);
 			sb.append(",before=");
 			sb.append(en(events[i].before));
 			sb.append(",after=");

@@ -19,7 +19,8 @@ public class EventRecord implements Serializable, Cloneable, Comparable {
     public long timeRangeBegin;
     public long timeRangeEnd;
     public int event;
-    public long operator;//uin
+    public long operand;//uin
+    public long executor;
     public String before;
     public String after;
     public String extra;
@@ -31,13 +32,13 @@ public class EventRecord implements Serializable, Cloneable, Comparable {
     public String getShowStr() {
         if (_remark != null && _remark.length() > 0) return _remark;
         else if (_nick != null && _nick.length() > 0) return _nick;
-        else return "" + operator;
+        else return "" + operand;
     }
 
     public String getShowStrWithUin() {
-        if (_remark != null && _remark.length() > 0) return _remark + "(" + operator + ")";
-        else if (_nick != null && _nick.length() > 0) return _nick + "(" + operator + ")";
-        else return "" + operator;
+        if (_remark != null && _remark.length() > 0) return _remark + "(" + operand + ")";
+        else if (_nick != null && _nick.length() > 0) return _nick + "(" + operand + ")";
+        else return "" + operand;
     }
 
     @Override

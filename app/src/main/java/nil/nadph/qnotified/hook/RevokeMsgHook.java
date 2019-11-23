@@ -130,13 +130,18 @@ public class RevokeMsgHook extends BaseDelayableHook {
 
     private String getFriendName(String friendUin, String senderUin) {
         String nickname = null;
-        if (friendUin != null) {
-            nickname = (String) callStaticMethod(DexKit.doFindClass(DexKit.C_CONTACT_UTILS), "c", getQQAppInterface(), friendUin, senderUin);
-        }
-        if (TextUtils.isEmpty(nickname)) {
-            nickname = (String) callStaticMethod(DexKit.doFindClass(DexKit.C_CONTACT_UTILS), "b", getQQAppInterface(), senderUin, true);
-        }
-        if (TextUtils.isEmpty(nickname)) {
+        try {
+            if (friendUin != null) {
+                nickname = (String) callStaticMethod(DexKit.doFindClass(DexKit.C_CONTACT_UTILS), "c", getQQAppInterface(), friendUin, senderUin);
+            }
+            if (TextUtils.isEmpty(nickname)) {
+                nickname = (String) callStaticMethod(DexKit.doFindClass(DexKit.C_CONTACT_UTILS), "b", getQQAppInterface(), senderUin, true);
+            }
+            //TODO: Fix ContactUtils class
+            if (TextUtils.isEmpty(nickname)) {
+                nickname = senderUin;
+            }
+        } catch (Exception e) {
             nickname = senderUin;
         }
         return nickname.replaceAll("\\u202E", "").trim();

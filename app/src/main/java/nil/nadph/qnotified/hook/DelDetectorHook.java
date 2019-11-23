@@ -21,6 +21,7 @@ import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.util.QThemeKit;
 import nil.nadph.qnotified.util.Utils;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
 
@@ -133,6 +134,7 @@ public class DelDetectorHook extends BaseDelayableHook {
 						 ret+=(i<fs.length-1?"├":"└")+fs[i].getName()+"="+ClazzExplorer.en_toStr(fs[i].get(param.thisObject))+"\n";
 						 }
 						 log(ret);*/
+                    param.setThrowable(new IOException("Connection closed"));
                 } catch (Throwable e) {
                     log(e);
                     throw e;

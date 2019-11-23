@@ -130,11 +130,12 @@ public class SettingsAdapter implements ActivityAdapter {
         ll.addView(subtitle(self, "调试"));
         ll.addView(newListItemButton(self, "Shell.exec", "正常情况下无需使用此功能", null, clickTheComing()));
         ll.addView(subtitle(self, "作者"));
-        ll.addView(newListItemButton(self, "打赏", "请选择扶贫方式", null, clickTheComing()));
+        ll.addView(newListItemButton(self, "打赏", "请选择扶贫方式", null, clickToProxyActAction(ACTION_DONATE_ACTIVITY)));
         ll.addView(newListItemButton(self, "QQ", "点击私信反馈(bug,建议,催更等等)", "1041703712", clickToChat()));
         ll.addView(newListItemButton(self, "Mail", null, "xenonhydride@gmail.com", null));
         ll.addView(newListItemButton(self, "Github", "Bug -> Issue (star)", "cinit/QNotified", clickToUrl("https://github.com/cinit/QNotified")));
         ll.addView(newListItemButton(self, "Telegram", null, "Auride", clickToUrl("https://t.me/Auride")));
+        ll.addView(subtitle(self, "本软件为免费软件,请尊重个人劳动成果,严禁倒卖"));
         //bounceScrollView.setFocusable(true);
         //bounceScrollView.setFocusableInTouchMode(true);
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
@@ -165,7 +166,7 @@ public class SettingsAdapter implements ActivityAdapter {
                                 Iterator it = exm.getEvents().entrySet().iterator();
                                 while (it.hasNext()) {
                                     EventRecord ev = (EventRecord) ((Map.Entry) it.next()).getValue();
-                                    if (exm.getPersons().get(ev.operator).friendStatus == FriendRecord.STATUS_FRIEND_MUTUAL)
+                                    if (exm.getPersons().get(ev.operand).friendStatus == FriendRecord.STATUS_FRIEND_MUTUAL)
                                         it.remove();
                                 }
                                 exm.saveConfigure();

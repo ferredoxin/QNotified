@@ -185,7 +185,6 @@ public class ExfriendManager {
         }
     }
 
-
     /* We try to add some columns */
     private void updateFriendTableVersion() {
         Table<Long> fr = (Table<Long>) fileData.getAllConfig().get("friends");
@@ -288,7 +287,8 @@ public class ExfriendManager {
         ev.addField("timeRangeEnd", TYPE_LONG);
         ev.addField("timeRangeBegin", TYPE_LONG);
         ev.addField("event", TYPE_INT);
-        ev.addField("operator", TYPE_INT);
+        ev.addField("operand", TYPE_INT);
+        ev.addField("executor", TYPE_INT);
         ev.addField("before", TYPE_ISTR);
         ev.addField("after", TYPE_ISTR);
         ev.addField("extra", TYPE_ISTR);
@@ -321,7 +321,10 @@ public class ExfriendManager {
                 t.set(k, "timeRangeEnd", ev.timeRangeEnd);
                 t.set(k, "timeRangeBegin", ev.timeRangeBegin);
                 t.set(k, "event", ev.event);
-                t.set(k, "operator", ev.operator);
+                t.set(k, "operand", ev.operand);
+                //fallback
+                t.set(k, "operator", ev.operand);
+                t.set(k, "executor", ev.executor);
                 t.set(k, "before", ev.before);
                 t.set(k, "after", ev.after);
                 t.set(k, "extra", ev.extra);
@@ -331,7 +334,7 @@ public class ExfriendManager {
             } catch (NoSuchFieldException e) {
                 //shouldn't happen
             }
-            //log("addEx,"+ev.operator);
+            //log("addEx,"+ev.operand);
         }
     }
 
@@ -344,18 +347,21 @@ public class ExfriendManager {
         if (events == null) events = new HashMap<>();
         Iterator<Map.Entry<Integer, Object[]>> it = t.records.entrySet().iterator();
         Map.Entry<Integer, Object[]> entry;
-        int __nick, __remark, __fs, _te, _tb, _ev, _op, _b, _a, _extra;
+        int __nick, __remark, __fs, _te, _tb, _ev, _op, _b, _a, _extra, _op_old, _exec;
         __nick = t.getFieldId("_nick");
         __remark = t.getFieldId("_remark");
         __fs = t.getFieldId("_friendStatus");
         _te = t.getFieldId("timeRangeEnd");
         _tb = t.getFieldId("timeRangeBegin");
         _ev = t.getFieldId("event");
-        _op = t.getFieldId("operator");
+        _op = t.getFieldId("operand");
+        _exec = t.getFieldId("executor");
+        _op_old = t.getFieldId("operator");
         _b = t.getFieldId("before");
         _a = t.getFieldId("after");
         _extra = t.getFieldId("extra");
         Object rec[];
+        long tmp;
         while (it.hasNext()) {
             entry = it.next();
             EventRecord ev = new EventRecord();
@@ -367,7 +373,27 @@ public class ExfriendManager {
             ev.timeRangeBegin = (Long) rec[_tb];
             ev.timeRangeEnd = (Long) rec[_te];
             ev.event = (Integer) rec[_ev];
-            ev.operator = (Long) rec[_op];
+            if (_op == -1) {
+                // all don't have
+                ev.operand = (Long) rec[_op_old];
+            } else {
+                try {
+                    tmp = (Long) rec[_op];
+                } catch (NullPointerException e) {
+                    tmp = -1;
+                }
+                if (tmp > 9999) ev.operand = tmp;
+                else ev.operand = (Long) rec[_op_old];
+            }
+            if (_exec != -1) {
+                try {
+                    ev.executor = (Long) rec[_exec];
+                } catch (NullPointerException e) {
+                    ev.executor = -1;
+                }
+            } else {
+                ev.executor = -1;
+            }
             ev.before = (String) rec[_b];
             ev.after = (String) rec[_a];
             ev.extra = (String) rec[_extra];
@@ -520,7 +546,7 @@ public class ExfriendManager {
     }
 
     public void reportEventWithoutSave(EventRecord ev, Object[] out) {
-        //log("Report event,uin="+ev.operator);
+        //log("Report event,uin="+ev.operand);
         int k = events.size();
         while (events.containsKey(k)) {
             k++;
@@ -536,9 +562,9 @@ public class ExfriendManager {
         fileData.getAllConfig().put("unread", unread);
         String title, ticker, tag, c;
         //Notification.Builder nb=Notification.Builder();
-        if (ev._remark != null && ev._remark.length() > 0) tag = ev._remark + "(" + ev.operator + ")";
-        else if (ev._nick != null && ev._nick.length() > 0) tag = ev._nick + "(" + ev.operator + ")";
-        else tag = "" + ev.operator;
+        if (ev._remark != null && ev._remark.length() > 0) tag = ev._remark + "(" + ev.operand + ")";
+        else if (ev._nick != null && ev._nick.length() > 0) tag = ev._nick + "(" + ev.operand + ")";
+        else tag = "" + ev.operand;
         out[0] = unread;
         ticker = unread + "位好友已删除";
         if (unread > 1) {
@@ -617,7 +643,8 @@ public class ExfriendManager {
                     ev._nick = fr.nick;
                     ev._remark = fr.remark;
                     ev.event = EventRecord.EVENT_FRIEND_DELETE;
-                    ev.operator = fr.uin;
+                    ev.operand = fr.uin;
+                    ev.executor = -1;
                     ev.timeRangeBegin = fr.serverTime;
                     ev.timeRangeEnd = fcs[fcs.length - 1].serverTime;
                     reportEventWithoutSave(ev, ptr);
@@ -651,7 +678,8 @@ public class ExfriendManager {
             ev.timeRangeBegin = fr.serverTime;
             ev.timeRangeEnd = fr.serverTime = System.currentTimeMillis() / 1000;
             fr.friendStatus = FriendRecord.STATUS_EXFRIEND;
-            ev.operator = this.getUin();
+            ev.executor = this.getUin();
+            ev.operand = uin;
             ev.event = EventRecord.EVENT_FRIEND_DELETE;
             reportEventWithoutSave(ev, null);
             saveConfigure();

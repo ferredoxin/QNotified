@@ -98,7 +98,7 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
 						 Thread.sleep(10000);
 						 }catch(InterruptedException e){}
 						 EventRecord ev=new EventRecord();
-						 ev.operator=10000;
+						 ev.operand=10000;
 						 ev._remark=ev._nick="麻花藤";
 						 *
 						 ExfriendManager.getCurrent().doNotifyDelFl(new Object[]{1,"ticker","title","content"});
@@ -194,7 +194,7 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
 
         TextView stat = (TextView) convertView.findViewById(R_ID_EXL_STATUS);
         try {
-            if (exm.getPersons().get(ev.operator).friendStatus == FriendRecord.STATUS_FRIEND_MUTUAL)
+            if (exm.getPersons().get(ev.operand).friendStatus == FriendRecord.STATUS_FRIEND_MUTUAL)
                 isfri = true;
         } catch (Exception e) {
         }
@@ -209,10 +209,10 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
         TextView subtitle = (TextView) convertView.findViewById(R_ID_EXL_SUBTITLE);
         subtitle.setText(Utils.getIntervalDspMs(ev.timeRangeBegin * 1000, ev.timeRangeEnd * 1000));
         ImageView imgview = (ImageView) convertView.findViewById(R_ID_EXL_FACE);
-        Bitmap bm = face.getBitmapFromCache(FaceImpl.TYPE_USER, "" + ev.operator);
+        Bitmap bm = face.getBitmapFromCache(FaceImpl.TYPE_USER, "" + ev.operand);
         if (bm == null) {
             imgview.setImageDrawable(QThemeKit.loadDrawableFromAsset("face.png", self));
-            face.registerView(FaceImpl.TYPE_USER, "" + ev.operator, imgview);
+            face.registerView(FaceImpl.TYPE_USER, "" + ev.operand, imgview);
         } else {
             imgview.setImageBitmap(bm);
         }
@@ -291,7 +291,7 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
             @Override
             public void onClick(View v) {
 
-                long uin = ((EventRecord) v.getTag()).operator;
+                long uin = ((EventRecord) v.getTag()).operand;
                 StartupHook.openProfileCard(v.getContext(), uin);
             }
         });
