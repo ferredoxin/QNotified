@@ -43,4 +43,4 @@ QNotified is a Xposed module for mobile QQ that aims to
 
 **如发现bug或好的建议请在Issue区留言**
 
-# 高考惨败,继续更新
+<font color=#ee1111 size=24> [FATAL] CET4 failed,update halted.</font>

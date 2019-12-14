@@ -701,6 +701,7 @@ public class Utils {
     }
 
     public static void log(Throwable th) {
+        BugCollector.onThrowable(th);
         log(Log.getStackTraceString(th));
     }
 

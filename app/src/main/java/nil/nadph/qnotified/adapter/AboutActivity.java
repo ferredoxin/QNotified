@@ -54,7 +54,7 @@ public class AboutActivity implements ActivityAdapter {
         ll.addView(subtitle(self, "QNotified"));
         ll.addView(subtitle(self, "本模块无毒无害, 免费开源, 旨在\n 1.接手部分停更模块的部分功能\n 2.提供被删好友通知\n 3.移除部分臃肿功能, 增加部分实用功能"));
 
-        ll.addView(subtitle(self, "此模块目前承认的APP发布渠道为 Github 上本项目的 Releases 和 Xposed Installer 里的模块下载 ,也可从https://github.com/cinit/QNotified 获取源码自行编译, 如果您是在其他渠道下载的话请自己注意安全.\n Copyright (C) 2019 cinit@github"));
+        ll.addView(subtitle(self, "此模块目前承认的APP发布渠道为 Github 上本项目的 Releases 和 Xposed Installer 里的模块下载 ,也可从https://github.com/cinit/QNotified 获取源码自行编译, 如果您是在其他渠道下载的话请自己注意安全.\n Copyright (C) 2019-2010 cinit@github"));
 
         ll.addView(subtitle(self, "支持的(类)Xposed内核:"));
         ll.addView(subtitle(self, "原生Xposed, Epic(太极), SandHook, BugHook(应用转生)"));
@@ -66,7 +66,8 @@ public class AboutActivity implements ActivityAdapter {
         ll.addView(subtitle(self, "特别声明:"));
         ll.addView(subtitle(self, "QNotified模块属于个人作品! 没有售后! 没有客服! 您可以与我反馈和讨论问题, 但请文明交流尊重彼此!"));
 
-        ll.addView(subtitle(self, "免责声明"));
+        ll.addView(subtitle(self, "免责声明: 一切后果自负(包括但不限于群发导致的冻结封号)", Color.RED));
+        ll.addView(subtitle(self, "用户协议: The GNU General Public License v3.0"));
         ll.addView(subtitle(self, "This program is distributed in the hope that it will be useful, " +
                 "but WITHOUT ANY WARRANTY; without even the implied warranty of " +
                 "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."));

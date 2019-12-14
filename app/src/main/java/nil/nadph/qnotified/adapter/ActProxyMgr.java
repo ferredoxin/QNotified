@@ -31,6 +31,7 @@ public class ActProxyMgr extends XC_MethodHook {
     public static final int ACTION_MUTE_AT_ALL = 5;
     public static final int ACTION_MUTE_RED_PACKET = 6;
     public static final int ACTION_DONATE_ACTIVITY = 7;
+    public static final int ACTION_TROUBLESHOOT_ACTIVITY = 8;
     /**
      * HashSet mThreads<Long threadId> :Ids of threads which is calling invokeSuper
      * You may wonder what this field is for,
@@ -131,6 +132,8 @@ public class ActProxyMgr extends XC_MethodHook {
                 return new AboutActivity(activity);
             case ACTION_DONATE_ACTIVITY:
                 return new DonateActivity(activity);
+            case ACTION_TROUBLESHOOT_ACTIVITY:
+                return new TroubleshootActivity(activity);
             default:
                 throw new UnsupportedOperationException("Unknown action " + action);
         }

@@ -137,7 +137,7 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
                     tv_v.setTextColor(Color.argb(255, 242, 140, 72));
                     tv_t.setText("有新版本可用");
                     if (clicked) {
-                        doShowUPdateInfo();
+                        doShowUpdateInfo();
                     }
                 } else {
                     tv_v.setText("已是最新");
@@ -177,19 +177,19 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
                     tv_v.setTextColor(Color.argb(255, 242, 140, 72));
                     tv_t.setText("有新版本可用");
                     if (clicked) {
-                        doShowUPdateInfo();
+                        doShowUpdateInfo();
                     }
                 } else {
                     tv_v.setText("已是最新");
                 }
                 runlevel = 0;
-                if (clicked) doShowUPdateInfo();
+                if (clicked) doShowUpdateInfo();
                 return;
         }
     }
 
 
-    private void doShowUPdateInfo() {
+    private void doShowUpdateInfo() {
         try {
             clicked = false;
             Activity ctx = (Activity) viewGroup.getContext();
@@ -276,7 +276,7 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
             runlevel = 1;
             new Thread(this).start();
         } else {
-            doShowUPdateInfo();
+            doShowUpdateInfo();
         }
     }
 }

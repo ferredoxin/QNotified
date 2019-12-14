@@ -52,9 +52,9 @@ public class DonateActivity implements ActivityAdapter {
         RelativeLayout _t;
 
         ll.addView(subtitle(self, ""));
-        ll.addView(subtitle(self, "首先我想说一句,谢谢,心意收到"));
+        ll.addView(subtitle(self, "感谢您的支持!"));
         ll.addView(subtitle(self, ""));
-        ll.addView(subtitle(self, "但是目前还存在一个较为严重的问题:"));
+        ll.addView(subtitle(self, "目前还存在一个较为严重的问题:"));
         ll.addView(subtitle(self, "  虽然QNotified是一个完全免费的插件,但仍因有不少人对本软件进行二次贩卖(如:以群发器的名义贩卖),不少人上当受骗"));
         ll.addView(subtitle(self, "从用户反馈来看,这种贩卖情况并非个例"));
         ll.addView(subtitle(self, "这违背了我的本意: **我希望任何个人都能免费的使用本软件**"));

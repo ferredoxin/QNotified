@@ -16,6 +16,8 @@ import java.util.List;
 import static nil.nadph.qnotified.util.Utils.getApplication;
 import static nil.nadph.qnotified.util.Utils.log;
 
+//import libcore.io.Libcore;
+
 @SuppressLint("PrivateApi")
 public class SyncUtils {
 
@@ -78,7 +80,7 @@ public class SyncUtils {
         filter.addAction(HOOK_DO_INIT);
         ctx.registerReceiver(recv, filter);
         inited = true;
-        log("Proc:  " + Libcore.os.getpid() + "/" + getProcessType() + "/" + getProcessName());
+        log("Proc:  " + android.os.Process.myPid() + "/" + getProcessType() + "/" + getProcessName());
     }
 
     public static void onFileChanged(int file) {
@@ -200,8 +202,13 @@ public class SyncUtils {
      }
      }
      */
+
     public static int getUid() {
-        return Libcore.os.getuid();
+        try {
+            return Libcore.os.getuid();
+        } catch (Throwable e) {
+            return android.os.Process.myUid();
+        }
     }
 
     public static void initId() {
@@ -209,5 +216,4 @@ public class SyncUtils {
             myId = (int) ((Math.random()) * (Integer.MAX_VALUE / 4));
         }
     }
-
 }
