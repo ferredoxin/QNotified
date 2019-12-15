@@ -73,7 +73,6 @@ public class AboutActivity implements ActivityAdapter {
                 "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."));
 
         ll.addView(subtitle(self, "请尊重我的的劳动成果 请勿用于商业用途 严禁盗版贩卖", Color.RED));
-        ll.addView(subtitle(self, "SystemClassLoader\n" + ClassLoader.getSystemClassLoader() + "\nContext.getClassLoader()\n" + self.getClassLoader() + "\nThread.getContextClassLoader()\n" + Thread.currentThread().getContextClassLoader()));
         //bounceScrollView.setFocusable(true);
         //bounceScrollView.setFocusableInTouchMode(true);
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));

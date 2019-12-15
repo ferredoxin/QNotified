@@ -16,7 +16,6 @@ import java.util.List;
 import static nil.nadph.qnotified.util.Utils.getApplication;
 import static nil.nadph.qnotified.util.Utils.log;
 
-//import libcore.io.Libcore;
 
 @SuppressLint("PrivateApi")
 public class SyncUtils {

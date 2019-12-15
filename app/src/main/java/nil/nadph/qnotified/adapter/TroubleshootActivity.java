@@ -18,6 +18,7 @@ import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.record.EventRecord;
 import nil.nadph.qnotified.record.FriendRecord;
+import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.QThemeKit;
 import nil.nadph.qnotified.util.Utils;
 
@@ -72,6 +73,26 @@ public class TroubleshootActivity implements ActivityAdapter {
         ll.addView(subtitle(self, ""));
         ll.addView(subtitle(self, "DexKit"));
 
+        for (int i = 1; i <= DexKit.DEOBF_NUM; i++) {
+            try {
+                String tag = DexKit.a(i);
+                String orig = DexKit.c(i);
+                if (orig == null) continue;
+                orig = orig.replace("/", ".");
+                String shortName = Utils.getShort$Name(orig);
+                Class ccurr = DexKit.tryLoadOrNull(i);
+                String currName = "null";
+                if (ccurr != null) {
+                    currName = ccurr.getName();
+                }
+                ll.addView(subtitle(self, "  [" + i + "]" + shortName + "\n" + orig + "\n->" + currName));
+            } catch (Throwable e) {
+                ll.addView(subtitle(self, "  [" + i + "]" + e.toString()));
+            }
+        }
+
+
+        ll.addView(subtitle(self, "SystemClassLoader\n" + ClassLoader.getSystemClassLoader() + "\nContext.getClassLoader()\n" + self.getClassLoader() + "\nThread.getContextClassLoader()\n" + Thread.currentThread().getContextClassLoader()));
 
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         self.setContentView(bounceScrollView);
@@ -82,7 +103,6 @@ public class TroubleshootActivity implements ActivityAdapter {
         invoke_virtual(self, "enableLeftBtn", true, boolean.class);
 
     }
-
 
 
     public View.OnClickListener clickToWipeDeletedFriends() {
@@ -177,8 +197,6 @@ public class TroubleshootActivity implements ActivityAdapter {
             }
         };
     }
-
-
 
 
     @Override

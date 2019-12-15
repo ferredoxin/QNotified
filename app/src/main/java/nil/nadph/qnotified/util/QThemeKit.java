@@ -288,7 +288,7 @@ public class QThemeKit {
 			 //log("den="+res.getDisplayMetrics());*/
 
 
-            bitmap.setDensity(res.getDisplayMetrics().densityDpi);
+            bitmap.setDensity(320);
             //log(name+"BiHeight:"+bitmap.getHeight());
             byte[] chunk = bitmap.getNinePatchChunk();
             //log("Res == "+res);
