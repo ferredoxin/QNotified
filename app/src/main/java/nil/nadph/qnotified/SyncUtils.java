@@ -50,7 +50,9 @@ public class SyncUtils {
         BroadcastReceiver recv = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                switch (intent.getAction()) {
+                String action = intent.getAction();
+                if (action == null) return;
+                switch (action) {
                     case SYNC_FILE_CHANGED:
                         int id = intent.getIntExtra("id", -1);
                         int file = intent.getIntExtra("file", -1);

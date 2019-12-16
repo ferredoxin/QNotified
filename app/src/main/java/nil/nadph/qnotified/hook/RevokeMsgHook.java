@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
+import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Utils;
@@ -143,6 +144,7 @@ public class RevokeMsgHook extends BaseDelayableHook {
             }
         } catch (Exception e) {
             nickname = senderUin;
+            log(e);
         }
         return nickname.replaceAll("\\u202E", "").trim();
     }
@@ -209,8 +211,8 @@ public class RevokeMsgHook extends BaseDelayableHook {
 
     @Override
     public int getEffectiveProc() {
-        //return SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF;
-        return 0xFFFFFFFF;
+        return SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF;
+        //return 0xFFFFFFFF;
     }
 
     @Override

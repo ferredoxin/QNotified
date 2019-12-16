@@ -101,7 +101,7 @@ public class Utils {
         } catch (Exception e) {
             log(e);
         }
-        return null;
+        throw new AssertionError("FATAL: Utils.Application() failure!");
     }
 
     public static boolean isCallingFrom(String classname) {
