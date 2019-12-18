@@ -86,9 +86,9 @@ public class SettingsAdapter implements ActivityAdapter {
         }
         ll.addView(subtitle(self, "消息通知设置(不影响接收消息)屏蔽后可能仍有[橙字],但不会有通知)"));
         ll.addView(subtitle(self, "    注:屏蔽后可能仍有[橙字],但不会有通知"));
-        ll.addView(_t = newListItemButton(self, "屏蔽指定群@全体成员通知", Html.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[@全体成员]</font>就这点破事"), "0个群", clickToProxyActAction(ACTION_MUTE_AT_ALL)));
+        ll.addView(_t = newListItemButton(self, "屏蔽指定群@全体成员通知", Html.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[@全体成员]</font>就这点破事"), "%d个群", clickToProxyActAction(ACTION_MUTE_AT_ALL)));
         __tv_muted_atall = (TextView) _t.findViewById(R_ID_VALUE);
-        ll.addView(_t = newListItemButton(self, "屏蔽指定群的红包通知", Html.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[QQ红包][有红包]</font>恭喜发财"), "0个群", clickToProxyActAction(ACTION_MUTE_RED_PACKET)));
+        ll.addView(_t = newListItemButton(self, "屏蔽指定群的红包通知", Html.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[QQ红包][有红包]</font>恭喜发财"), "%d个群", clickToProxyActAction(ACTION_MUTE_RED_PACKET)));
         __tv_muted_redpacket = (TextView) _t.findViewById(R_ID_VALUE);
         ll.addView(subtitle(self, "图片相关"));
         ll.addView(newListItemSwitchConfigInit(self, "以图片方式打开闪照", null, qn_flash_as_pic, false, FlashPicHook.get()));

@@ -58,9 +58,15 @@ public class DexKit {
     public static Class doFindClass(int i) {
         Class ret = tryLoadOrNull(i);
         if (ret != null) return ret;
+		int ver=-1;
+		try{
+			ver=getHostInfo(getApplication()).versionCode;
+		}catch(Throwable ignored){}
         try {
             ArrayList<String> names;
-            ConfigManager cfg = ConfigManager.getDefault();
+		    ConfigManager cfg = ConfigManager.getDefault();
+			DexDeobfReport report=new DexDeobfReport();
+			report.version=ver;.
             names = e(i);
             if (names == null || names.size() == 0) {
                 log("Unable to deobf: " + c(i));
@@ -269,7 +275,7 @@ public class DexKit {
         return null;
     }
 
-    private static ArrayList<String> e(int i) {
+    private static ArrayList<String> e(int i,DexDeobfReport rep) {
         ClassLoader loader = Initiator.getClassLoader();
         int record = 0;
         int[] qf = d(i);
@@ -483,4 +489,17 @@ public class DexKit {
         int i = buf[index] & 0xFF | (buf[index + 1] << 8) & 0xff00 | (buf[index + 2] << 16) & 0xff0000 | (buf[index + 3] << 24) & 0xff000000;
         return i;
     }
+	
+	public static class DexDeobfReport{
+		int version;
+		String result;
+		String log;
+		
+		public void v(String str){
+			if(log==null)log=str+"\n";
+			else log=log+str+"\n";
+		}
+	}
+	
+	
 }
