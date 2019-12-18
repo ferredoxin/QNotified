@@ -58,19 +58,26 @@ public class DexKit {
     public static Class doFindClass(int i) {
         Class ret = tryLoadOrNull(i);
         if (ret != null) return ret;
-		int ver=-1;
-		try{
-			ver=getHostInfo(getApplication()).versionCode;
-		}catch(Throwable ignored){}
+        int ver = -1;
+        try {
+            ver = getHostInfo(getApplication()).versionCode;
+        } catch (Throwable ignored) {
+        }
         try {
             ArrayList<String> names;
-		    ConfigManager cfg = ConfigManager.getDefault();
-			DexDeobfReport report=new DexDeobfReport();
-			report.version=ver;.
-            names = e(i);
+            ConfigManager cfg = ConfigManager.getDefault();
+            DexDeobfReport report = new DexDeobfReport();
+            report.target = i;
+            report.version = ver;
+            names = e(i, report);
             if (names == null || names.size() == 0) {
+                report.v("No class candidate found.");
                 log("Unable to deobf: " + c(i));
                 return null;
+            }
+            report.v(names.size() + "class(es) found:" + names);
+            for (int j = 0; j < names.size(); j++) {
+                report.v(names.get(j));
             }
             if (names.size() == 1) {
                 ret = load(names.get(0));
@@ -79,7 +86,13 @@ public class DexKit {
                 for (int j = 0; j < names.size(); j++) {
                     cas[j] = load(names.get(j));
                 }
-                ret = a(i, cas);
+                ret = a(i, cas, report);
+            }
+            report.v("Final decision:" + (ret == null ? null : ret.getName()));
+            cfg.putString("debof_log_" + a(i), report.toString());
+            if (ret == null) {
+                log("Multiple classes candidates found, none satisfactory.");
+                return null;
             }
             cfg.putString("cache_" + a(i) + "_class", ret.getName());
             cfg.getAllConfig().put("cache_" + a(i) + "_code", getHostInfo(getApplication()).versionCode);
@@ -119,48 +132,48 @@ public class DexKit {
     }
 
     public static String c(int i) {
-		String ret;
+        String ret;
         switch (i) {
             case C_DIALOG_UTIL:
-                ret="com/tencent/mobileqq/utils/DialogUtil";
-				break;
+                ret = "com/tencent/mobileqq/utils/DialogUtil";
+                break;
             case C_FACADE:
-                ret="com/tencent/mobileqq/activity/ChatActivityFacade";
-				break;
+                ret = "com/tencent/mobileqq/activity/ChatActivityFacade";
+                break;
             case C_FLASH_PIC_HELPER:
-                ret="com.tencent.mobileqq.app.FlashPicHelper";
-				break;
+                ret = "com.tencent.mobileqq.app.FlashPicHelper";
+                break;
             case C_BASE_PIC_DL_PROC:
-                ret="com/tencent/mobileqq/transfile/BasePicDownloadProcessor";
-				break;
+                ret = "com/tencent/mobileqq/transfile/BasePicDownloadProcessor";
+                break;
             case C_ITEM_BUILDER_FAC:
-                ret= "com/tencent/mobileqq/activity/aio/item/ItemBuilderFactory";
-				break;
+                ret = "com/tencent/mobileqq/activity/aio/item/ItemBuilderFactory";
+                break;
             case C_AIO_UTILS:
-                ret= "com.tencent.mobileqq.activity.aio.AIOUtils";
-				break;
+                ret = "com.tencent.mobileqq.activity.aio.AIOUtils";
+                break;
             case C_ABS_GAL_SCENE:
-                ret= "com/tencent/common/galleryactivity/AbstractGalleryScene";
-				break;
+                ret = "com/tencent/common/galleryactivity/AbstractGalleryScene";
+                break;
             case C_FAV_EMO_CONST:
-                ret="com/tencent/mobileqq/emosm/favroaming/FavEmoConstant";
-				break;
+                ret = "com/tencent/mobileqq/emosm/favroaming/FavEmoConstant";
+                break;
             case C_MSG_REC_FAC:
-                ret= "com/tencent/mobileqq/service/message/MessageRecordFactory";
-				break;
+                ret = "com/tencent/mobileqq/service/message/MessageRecordFactory";
+                break;
             case C_CONTACT_UTILS:
-                ret= "com/tencent/mobileqq/utils/ContactUtils";
-				break;
+                ret = "com/tencent/mobileqq/utils/ContactUtils";
+                break;
             case C_VIP_UTILS:
-                ret="com/tencent/mobileqq/utils/VipUtils";
-				break;
-			default:
-				ret=null;
+                ret = "com/tencent/mobileqq/utils/VipUtils";
+                break;
+            default:
+                ret = null;
         }
-        if(ret!=null){
-			return ret.replace("/",".");
-		}
-		return null;
+        if (ret != null) {
+            return ret.replace("/", ".");
+        }
+        return null;
     }
 
     public static byte[] b(int i) {
@@ -219,7 +232,7 @@ public class DexKit {
         return null;
     }
 
-    private static Class a(int i, Class[] classes) {
+    private static Class a(int i, Class[] classes, DexDeobfReport report) {
         switch (i) {
             case C_DIALOG_UTIL:
             case C_FACADE:
@@ -275,7 +288,7 @@ public class DexKit {
         return null;
     }
 
-    private static ArrayList<String> e(int i,DexDeobfReport rep) {
+    private static ArrayList<String> e(int i, DexDeobfReport rep) {
         ClassLoader loader = Initiator.getClassLoader();
         int record = 0;
         int[] qf = d(i);
@@ -489,17 +502,32 @@ public class DexKit {
         int i = buf[index] & 0xFF | (buf[index + 1] << 8) & 0xff00 | (buf[index + 2] << 16) & 0xff0000 | (buf[index + 3] << 24) & 0xff000000;
         return i;
     }
-	
-	public static class DexDeobfReport{
-		int version;
-		String result;
-		String log;
-		
-		public void v(String str){
-			if(log==null)log=str+"\n";
-			else log=log+str+"\n";
-		}
-	}
-	
-	
+
+    public static class DexDeobfReport {
+        int target;
+        int version;
+        String result;
+        String log;
+        long time;
+
+        public DexDeobfReport() {
+            time = System.currentTimeMillis();
+        }
+
+        public void v(String str) {
+            if (log == null) log = str + "\n";
+            else log = log + str + "\n";
+        }
+
+        @Override
+        public String toString() {
+            return "Deobf target: " + target + '\n' +
+                    "Time: " + time + '\n' +
+                    "QQ version code: " + version + '\n' +
+                    "Result: " + result + '\n' +
+                    log;
+        }
+    }
+
+
 }

@@ -126,7 +126,7 @@ public class Utils {
             return context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
         } catch (Throwable e) {
             Log.e("Utils", "Can not get PackageInfo!");
-            return null;
+            throw new AssertionError("Can not get PackageInfo!");
         }
     }
 
