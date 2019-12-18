@@ -71,7 +71,7 @@ public class TroubleshootActivity implements ActivityAdapter {
         ll.addView(newListItemButton(self, "清除所有的历史记录", "删除当前帐号下所有的历史好友记录", null, clickToWipeAllFriends()));
 
         ll.addView(subtitle(self, ""));
-        ll.addView(subtitle(self, "DexKit"));
+        ll.addView(subtitle(self, "以下内容基本上都没用，它们为了修复故障才留在这里。"));
 
         for (int i = 1; i <= DexKit.DEOBF_NUM; i++) {
             try {

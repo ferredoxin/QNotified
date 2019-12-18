@@ -113,31 +113,48 @@ public class DexKit {
     }
 
     public static String c(int i) {
+		String ret;
         switch (i) {
             case C_DIALOG_UTIL:
-                return "com/tencent/mobileqq/utils/DialogUtil";
+                ret="com/tencent/mobileqq/utils/DialogUtil";
+				break;
             case C_FACADE:
-                return "com/tencent/mobileqq/activity/ChatActivityFacade";
+                ret="com/tencent/mobileqq/activity/ChatActivityFacade";
+				break;
             case C_FLASH_PIC_HELPER:
-                return "com.tencent.mobileqq.app.FlashPicHelper";
+                ret="com.tencent.mobileqq.app.FlashPicHelper";
+				break;
             case C_BASE_PIC_DL_PROC:
-                return "com/tencent/mobileqq/transfile/BasePicDownloadProcessor";
+                ret="com/tencent/mobileqq/transfile/BasePicDownloadProcessor";
+				break;
             case C_ITEM_BUILDER_FAC:
-                return "com/tencent/mobileqq/activity/aio/item/ItemBuilderFactory";
+                ret= "com/tencent/mobileqq/activity/aio/item/ItemBuilderFactory";
+				break;
             case C_AIO_UTILS:
-                return "com.tencent.mobileqq.activity.aio.AIOUtils";
+                ret= "com.tencent.mobileqq.activity.aio.AIOUtils";
+				break;
             case C_ABS_GAL_SCENE:
-                return "com/tencent/common/galleryactivity/AbstractGalleryScene";
+                ret= "com/tencent/common/galleryactivity/AbstractGalleryScene";
+				break;
             case C_FAV_EMO_CONST:
-                return "com/tencent/mobileqq/emosm/favroaming/FavEmoConstant";
+                ret="com/tencent/mobileqq/emosm/favroaming/FavEmoConstant";
+				break;
             case C_MSG_REC_FAC:
-                return "com/tencent/mobileqq/service/message/MessageRecordFactory";
+                ret= "com/tencent/mobileqq/service/message/MessageRecordFactory";
+				break;
             case C_CONTACT_UTILS:
-                return "com/tencent/mobileqq/utils/ContactUtils";
+                ret= "com/tencent/mobileqq/utils/ContactUtils";
+				break;
             case C_VIP_UTILS:
-                return "com/tencent/mobileqq/utils/VipUtils";
+                ret="com/tencent/mobileqq/utils/VipUtils";
+				break;
+			default:
+				ret=null;
         }
-        return null;
+        if(ret!=null){
+			return ret.replace("/",".");
+		}
+		return null;
     }
 
     public static byte[] b(int i) {

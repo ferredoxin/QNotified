@@ -38,6 +38,8 @@ import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.QQViewBuilder.*;
 import static nil.nadph.qnotified.util.SendBatchMsg.clickToBatchMsg;
 import static nil.nadph.qnotified.util.Utils.*;
+import dalvik.system.*;
+import java.util.*;
 
 public class SettingsAdapter implements ActivityAdapter {
 
@@ -130,7 +132,7 @@ public class SettingsAdapter implements ActivityAdapter {
         ll.addView(newListItemButton(self, "Shell.exec", "正常情况下无需使用此功能", null, clickTheComing()));
         ll.addView(subtitle(self, "作者"));
         ll.addView(newListItemButton(self, "打赏", "请选择扶贫方式", null, clickToProxyActAction(ACTION_DONATE_ACTIVITY)));
-        ll.addView(newListItemButton(self, "QQ", "点击私信反馈(bug,建议,催更等等)", "1041703712", clickToChat()));
+        if(!test())ll.addView(newListItemButton(self, "QQ", "点击私信反馈(bug,建议,催更等等)", "1041703712", clickToChat()));
         ll.addView(newListItemButton(self, "Mail", null, "xenonhydride@gmail.com", null));
         ll.addView(newListItemButton(self, "Github", "Bug -> Issue (star)", "cinit/QNotified", clickToUrl("https://github.com/cinit/QNotified")));
         ll.addView(newListItemButton(self, "Telegram", null, "Auride", clickToUrl("https://t.me/Auride")));
@@ -150,6 +152,32 @@ public class SettingsAdapter implements ActivityAdapter {
         //log("Title:"+invoke_virtual(self,"getTextTitle"));
     }
 
+	
+	private boolean test() {
+		try {
+			Class clazz=Class.forName("de.robv.android.xposed.XposedBridge");
+			Object pathList=iget_object_or_null(clazz.getClassLoader(), "pathList");
+			Object[] dexElements=(Object[])iget_object_or_null(pathList, "dexElements");
+			for (Object entry:dexElements) {
+				DexFile dexFile=(DexFile) iget_object_or_null(entry, "dexFile");
+				Enumeration<String> entries = dexFile.entries();
+				while (entries.hasMoreElements()) {
+					String className=entries.nextElement();
+					if (className.matches(".+?(epic|weishu).+")) {
+						return true;
+					}
+				}
+			}
+		} catch (Throwable e) {
+			if (!(e instanceof NullPointerException) &&
+				!(e instanceof ClassNotFoundException)) {
+				log(e);
+			}
+		}
+		return false;
+	}
+	
+	
     @Override
     public void doOnPostResume() throws Throwable {
         ConfigManager cfg = ConfigManager.getDefault();
