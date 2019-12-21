@@ -2,11 +2,11 @@ package nil.nadph.qnotified.hook;
 
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import de.robv.android.xposed.XC_MethodHook;
@@ -14,11 +14,13 @@ import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.Utils;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
+import static nil.nadph.qnotified.util.Initiator._SessionInfo;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
@@ -41,51 +43,73 @@ public class CardMsgHook extends BaseDelayableHook {
     public boolean init() {
         if (inited) return true;
 
-        Method[] methods = load("com.tencent.mobileqq.activity.BaseChatPie").getMethods();
-        for (Method method : methods) {
-            if (method.getName().equals("e") && ((method.getParameterTypes().length == 0) && method.getReturnType().equals(void.class))) {
-                XposedBridge.hookMethod(method, new XC_MethodHook() {
+        String _____ = "e";
+        try {
+            Application ctx = Utils.getApplication();
+            if (getHostInfo(ctx).versionName.indexOf(0) == '7') {
+                _____ = "d";
+            }
+        } catch (Throwable e) {
+            //Should not happen
+            log(e);
+        }
+        final Class cl_BaseChatPie = load("com.tencent.mobileqq.activity.BaseChatPie");
+        for (Method method : cl_BaseChatPie.getDeclaredMethods()) {
+            if (method.getParameterTypes().length != 0
+                    || !method.getReturnType().equals(void.class)) continue;
+            if (method.getName().equals(_____)) {
+                XposedBridge.hookMethod(method, new XC_MethodHook(40) {
                     @Override
-                    public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-                        Object field = FieldUtils.getField(methodHookParam.thisObject, "a", load("com.tencent.mobileqq.app.QQAppInterface"));
-                        Object field2 = FieldUtils.getField(methodHookParam.thisObject, "a", load("com.tencent.mobileqq.activity.aio.SessionInfo"));
-                        ViewGroup viewGroup = (ViewGroup) FieldUtils.getField(methodHookParam.thisObject, "d", Class.forName("android.view.ViewGroup"));
-                        if (viewGroup != null) {
-                            ((Button) viewGroup.findViewById(Hook.getResId(viewGroup.getContext(), "id", "fun_btn"))).setOnLongClickListener(new View.OnLongClickListener(this, (EditText) viewGroup.findViewById(Hook.getResId(viewGroup.getContext(), "id", "input")), this.val$loader, field, field2) {
+                    public void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        try {
+                            Object chatPie = param.thisObject;
+                            //Class cl_PatchedButton = load("com/tencent/widget/PatchedButton");
+                            final ViewGroup viewGroup = (ViewGroup) invoke_virtual(chatPie, "a", ViewGroup.class);
+                            if (viewGroup == null) return;
+                            Context ctx = viewGroup.getContext();
+                            int fun_btn = ctx.getResources().getIdentifier("fun_btn", "id", ctx.getPackageName());
+                            View sendBtn = viewGroup.findViewById(fun_btn);
+                            final Object qqApp = iget_object_or_null(param.thisObject, "a", load("com.tencent.mobileqq.app.QQAppInterface"));
+                            final Object session = iget_object_or_null(param.thisObject, "a", _SessionInfo());
+                            sendBtn.setOnLongClickListener(new View.OnLongClickListener() {
                                 @Override
-                                public boolean onLongClick(View view) {
+                                public boolean onLongClick(View v) {
+                                    Context ctx = v.getContext();
+                                    EditText input = (EditText) viewGroup.findViewById(ctx.getResources().getIdentifier("input", "id", ctx.getPackageName()));
+                                    String text = input.getText().toString();
                                     try {
-                                        String editable = this.val$edit.getText().toString();
-                                        Object callStaticMethod = MethodUtils.callStaticMethod(this.val$loader.loadClass((String) Hook.config.get("TestStructMsg")), this.val$loader.loadClass("com.tencent.mobileqq.structmsg.AbsStructMsg"), "a", editable);
-                                        if (callStaticMethod != null) {
-                                            MethodUtils.callStaticMethod(this.val$loader.loadClass((String) Hook.config.get("MessageManager")), "a", this.val$qqAppInterface, this.val$session, callStaticMethod);
+                                        Object arkMsg = load("com.tencent.mobileqq.data.ArkAppMessage").newInstance();
+                                        if ((boolean) invoke_virtual(arkMsg, "fromAppXml", text, String.class)) {
+                                            invoke_static(DexKit.doFindClass(DexKit.C_FACADE), "a", qqApp, session, arkMsg, load("com.tencent.mobileqq.app.QQAppInterface"), _SessionInfo(), arkMsg.getClass());
+                                            input.setText("");
+                                            return true;
                                         }
-                                    } catch (Throwable th) {
-                                        XposedBridge.log(th);
-                                    }
-                                    try {
-                                        String editable2 = this.val$edit.getText().toString();
-                                        Object callConstructor = ConstructorUtils.callConstructor(this.val$loader.loadClass("com.tencent.mobileqq.data.ArkAppMessage"), new Object[0]);
-                                        if (((Boolean) MethodUtils.callMethod(callConstructor, "fromAppXml", editable2)).booleanValue()) {
-                                            MethodUtils.callStaticMethod(this.val$loader.loadClass((String) Hook.config.get("MessageManager")), "a", this.val$qqAppInterface, this.val$session, callConstructor);
+                                    } catch (Throwable e) {
+                                        try {
+                                            Utils.showToast(ctx, TOAST_TYPE_ERROR, e.toString(), Toast.LENGTH_SHORT);
+                                        } catch (Throwable ignored) {
                                         }
-                                    } catch (Throwable th2) {
-                                        XposedBridge.log(th2);
+                                        log(e);
                                     }
-                                    this.val$edit.setText("");
-                                    return false;
+
+//                                Object callStaticMethod = MethodUtils.callStaticMethod(this.val$loader.loadClass((String) Hook.config.get("TestStructMsg")), this.val$loader.loadClass("com.tencent.mobileqq.structmsg.AbsStructMsg"), "a", editable);
+//                                if (callStaticMethod != null) {
+//                                    MethodUtils.callStaticMethod(this.val$loader.loadClass((String) Hook.config.get("MessageManager")), "a", this.val$qqAppInterface, this.val$session, callStaticMethod);
+//                                }
+
+                                    return true;
                                 }
                             });
+                        } catch (Throwable e) {
+                            log(e);
                         }
-
                     }
                 });
                 break;
             }
         }
 
-
-        Class cl_ArkAppItemBuilder = DexKit.doFindClass(DexKit.C_ARK_APP_ITEM_BUILDER);
+        Class cl_ArkAppItemBuilder = DexKit.doFindClass(DexKit.C_ARK_APP_ITEM_BUBBLE_BUILDER);
         findAndHookMethod(cl_ArkAppItemBuilder, "a", int.class, Context.class, load("com/tencent/mobileqq/data/ChatMessage"), new XC_MethodHook(60) {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -112,7 +136,7 @@ public class CardMsgHook extends BaseDelayableHook {
         for (Method m : cl_ArkAppItemBuilder.getDeclaredMethods()) {
             if (!m.getReturnType().isArray()) continue;
             Class[] ps = m.getParameterTypes();
-            if (ps.length == 1 && ps[0].equals(View.class))
+            if (ps.length == 1 && ps[0].equals(View.class)) {
                 XposedBridge.hookMethod(m, new XC_MethodHook(60) {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -132,6 +156,8 @@ public class CardMsgHook extends BaseDelayableHook {
                         param.setResult(ret);
                     }
                 });
+                break;
+            }
         }
         inited = true;
         return true;
@@ -149,7 +175,7 @@ public class CardMsgHook extends BaseDelayableHook {
 
     @Override
     public int[] getPreconditions() {
-        return new int[]{DexKit.C_ARK_APP_ITEM_BUILDER};
+        return new int[]{DexKit.C_ARK_APP_ITEM_BUBBLE_BUILDER};
     }
 
     @Override

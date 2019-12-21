@@ -49,7 +49,8 @@ public class Utils {
             bug_repeater = "bug_repeater",
             qn_gallery_bg = "qn_gallery_bg",
             qqhelper_fav_more_emo = "qqhelper_fav_more_emo",
-            qn_anti_revoke_msg = "qn_anti_revoke_msg";
+            qn_anti_revoke_msg = "qn_anti_revoke_msg",
+            qn_round_avatar = "qn_round_avatar";
 
     public static boolean DEBUG = true;
     public static boolean V_TOAST = false;

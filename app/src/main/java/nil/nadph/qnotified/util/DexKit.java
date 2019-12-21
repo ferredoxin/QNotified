@@ -32,7 +32,7 @@ public class DexKit {
     public static final int C_MSG_REC_FAC = 10;
     public static final int C_CONTACT_UTILS = 11;
     public static final int C_VIP_UTILS = 12;
-    public static final int C_ARK_APP_ITEM_BUILDER = 13;
+    public static final int C_ARK_APP_ITEM_BUBBLE_BUILDER = 13;
 
     //the last index
     public static final int DEOBF_NUM = 13;
@@ -129,8 +129,8 @@ public class DexKit {
                 return "contact_utils";
             case C_VIP_UTILS:
                 return "vip_utils";
-            case C_ARK_APP_ITEM_BUILDER:
-                return "ark_app_item_builder";
+            case C_ARK_APP_ITEM_BUBBLE_BUILDER:
+                return "ark_app_item_bubble_builder";
         }
         return null;
     }
@@ -171,8 +171,8 @@ public class DexKit {
             case C_VIP_UTILS:
                 ret = "com/tencent/mobileqq/utils/VipUtils";
                 break;
-            case C_ARK_APP_ITEM_BUILDER:
-                ret = "com/tencent/mobileqq/activity/aio/item/ArkAppItemBuilder";
+            case C_ARK_APP_ITEM_BUBBLE_BUILDER:
+                ret = "com/tencent/mobileqq/activity/aio/item/ArkAppItemBubbleBuilder";
                 break;
             default:
                 ret = null;
@@ -207,8 +207,8 @@ public class DexKit {
                 return new byte[]{0x07, 0x20, 0x2D, 0x20, 0x57, 0x69, 0x46, 0x69};
             case C_VIP_UTILS:
                 return new byte[]{0x05, 0x6A, 0x68, 0x61, 0x6E, 0x5F};
-            case C_ARK_APP_ITEM_BUILDER:
-                return new byte[]{0x0D, 0x2C, 0x61, 0x72, 0x6B, 0x41, 0x70, 0x70, 0x57, 0x69, 0x64, 0x74, 0x68, 0x3D};
+            case C_ARK_APP_ITEM_BUBBLE_BUILDER:
+                return new byte[]{0x0F, 0x64, 0x65, 0x62, 0x75, 0x67, 0x41, 0x72, 0x6B, 0x4D, 0x65, 0x74, 0x61, 0x20, 0x3D, 0x20};
         }
         return null;
     }
@@ -237,7 +237,7 @@ public class DexKit {
                 return new int[]{4};
             case C_VIP_UTILS:
                 return new int[]{4, 2, 3};
-            case C_ARK_APP_ITEM_BUILDER:
+            case C_ARK_APP_ITEM_BUBBLE_BUILDER:
                 return new int[]{6};
         }
         return null;
@@ -295,13 +295,13 @@ public class DexKit {
                     return clz;
                 }
                 break;
-            case C_ARK_APP_ITEM_BUILDER:
+            case C_ARK_APP_ITEM_BUBBLE_BUILDER:
                 for (Class clz : classes) {
                     if (Modifier.isAbstract(clz.getModifiers())) continue;
                     Class sp = clz.getSuperclass();
                     if (Object.class.equals(sp)) continue;
                     if (!Modifier.isAbstract(sp.getModifiers())) continue;
-                    if (sp.getName().contains("ItemBuilder")) return clz;
+                    if (sp.getName().contains("Builder")) return clz;
                     return clz;
                 }
                 break;

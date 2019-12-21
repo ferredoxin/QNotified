@@ -103,6 +103,7 @@ public class SettingsAdapter implements ActivityAdapter {
         ll.addView(newListItemSwitchConfigStub(self, "屏蔽回执消息的通知", null, qn_mute_talk_back, false));
         //ll.addView(newListItemSwitchConfigStub(self, "上传透明头像", "开启后上传透明头像不会变黑", qn_enable_transparent, false));
         ll.addView(newListItemSwitchConfigStub(self, "隐藏送礼动画", null, qn_hide_gift_animation, false));
+        ll.addView(newListItemSwitchConfigStub(self, "简洁模式圆头像", null, qn_round_avatar, false));
         ll.addView(newListItemSwitchConfigStub(self, "签到文本化", null, qn_sign_in_as_text, false));
         ll.addView(newListItemButton(self, "重定向文件下载目录", new File(Environment.getExternalStorageDirectory(), "Tencent/QQfile_recv").getAbsolutePath(), "禁用", clickTheComing()));
         ll.addView(subtitle(self, "参数设定"));
@@ -123,7 +124,8 @@ public class SettingsAdapter implements ActivityAdapter {
         ll.addView(newListItemButton(self, "Shell.exec", "正常情况下无需使用此功能", null, clickTheComing()));
         ll.addView(subtitle(self, "作者"));
         ll.addView(newListItemButton(self, "打赏", "请选择扶贫方式", null, clickToProxyActAction(ACTION_DONATE_ACTIVITY)));
-        if (!test()) ll.addView(newListItemButton(self, "QQ", "点击私信反馈(bug,建议,催更等等)", "1041703712", clickToChat()));
+        /*if (!test()) */
+        ll.addView(newListItemButton(self, "QQ", "点击私信反馈(bug,建议等等)", "1041703712", clickToChat()));
         ll.addView(newListItemButton(self, "Mail", null, "xenonhydride@gmail.com", null));
         ll.addView(newListItemButton(self, "Github", "Bug -> Issue (star)", "cinit/QNotified", clickToUrl("https://github.com/cinit/QNotified")));
         ll.addView(newListItemButton(self, "Telegram", null, "Auride", clickToUrl("https://t.me/Auride")));

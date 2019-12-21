@@ -3,6 +3,13 @@ package nil.nadph.qnotified.util;
 import java.math.BigDecimal;
 import java.util.*;
 
+/**
+ * A simple class to use json and vector like php array
+ * When I wrote this class, both God and me could understand,
+ * But now, only the God.
+ *
+ * @author cinit@github
+ */
 public class PHPArray implements Iterable<HashMap.Entry> {
     public HashMap map;
 
