@@ -19,6 +19,7 @@ import static nil.nadph.qnotified.util.Utils.*;
 
 public class DexKit {
 
+    //WARN: NEVER change the index!
     public static final int C_DIALOG_UTIL = 1;
     public static final int C_FACADE = 2;
     public static final int C_FLASH_PIC_HELPER = 3;
@@ -31,9 +32,10 @@ public class DexKit {
     public static final int C_MSG_REC_FAC = 10;
     public static final int C_CONTACT_UTILS = 11;
     public static final int C_VIP_UTILS = 12;
+    public static final int C_ARK_APP_ITEM_BUILDER = 13;
 
-
-    public static final int DEOBF_NUM = 12;
+    //the last index
+    public static final int DEOBF_NUM = 13;
 
     @Nullable
     public static Class tryLoadOrNull(int i) {
@@ -127,6 +129,8 @@ public class DexKit {
                 return "contact_utils";
             case C_VIP_UTILS:
                 return "vip_utils";
+            case C_ARK_APP_ITEM_BUILDER:
+                return "ark_app_item_builder";
         }
         return null;
     }
@@ -167,6 +171,9 @@ public class DexKit {
             case C_VIP_UTILS:
                 ret = "com/tencent/mobileqq/utils/VipUtils";
                 break;
+            case C_ARK_APP_ITEM_BUILDER:
+                ret = "com/tencent/mobileqq/activity/aio/item/ArkAppItemBuilder";
+                break;
             default:
                 ret = null;
         }
@@ -200,6 +207,8 @@ public class DexKit {
                 return new byte[]{0x07, 0x20, 0x2D, 0x20, 0x57, 0x69, 0x46, 0x69};
             case C_VIP_UTILS:
                 return new byte[]{0x05, 0x6A, 0x68, 0x61, 0x6E, 0x5F};
+            case C_ARK_APP_ITEM_BUILDER:
+                return new byte[]{0x0D, 0x2C, 0x61, 0x72, 0x6B, 0x41, 0x70, 0x70, 0x57, 0x69, 0x64, 0x74, 0x68, 0x3D};
         }
         return null;
     }
@@ -228,6 +237,8 @@ public class DexKit {
                 return new int[]{4};
             case C_VIP_UTILS:
                 return new int[]{4, 2, 3};
+            case C_ARK_APP_ITEM_BUILDER:
+                return new int[]{6};
         }
         return null;
     }
@@ -281,6 +292,16 @@ public class DexKit {
                         if (!Modifier.isStatic(f.getModifiers())) continue a;
                     }
                     if (clz.getDeclaredMethods().length > 3) continue;
+                    return clz;
+                }
+                break;
+            case C_ARK_APP_ITEM_BUILDER:
+                for (Class clz : classes) {
+                    if (Modifier.isAbstract(clz.getModifiers())) continue;
+                    Class sp = clz.getSuperclass();
+                    if (Object.class.equals(sp)) continue;
+                    if (!Modifier.isAbstract(sp.getModifiers())) continue;
+                    if (sp.getName().contains("ItemBuilder")) return clz;
                     return clz;
                 }
                 break;

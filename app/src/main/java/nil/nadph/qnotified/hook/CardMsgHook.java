@@ -1,28 +1,24 @@
 package nil.nadph.qnotified.hook;
 
 
-import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.graphics.Color;
-import android.os.Build;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.record.ConfigManager;
-import nil.nadph.qnotified.ui.DebugDrawable;
+import nil.nadph.qnotified.util.DexKit;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 
-import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
-import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
+import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
@@ -30,6 +26,8 @@ import static nil.nadph.qnotified.util.Utils.*;
 public class CardMsgHook extends BaseDelayableHook {
     private CardMsgHook() {
     }
+
+    public static final int R_ID_COPY_CODE = 0x00EE77CC;
 
     private static final CardMsgHook self = new CardMsgHook();
 
@@ -42,81 +40,99 @@ public class CardMsgHook extends BaseDelayableHook {
     @Override
     public boolean init() {
         if (inited) return true;
-        Class cl_BaseBubbleBuilder = load("com.tencent.mobileqq.activity.aio.BaseBubbleBuilder");
-        Class cl_ChatMessage = load("com.tencent.mobileqq.data.ChatMessage");
-        Class cl_BaseChatItemLayout = load("com.tencent.mobileqq.activity.aio.BaseChatItemLayout");
-        assert cl_BaseBubbleBuilder != null;
-        assert cl_ChatMessage != null;
-        assert cl_BaseChatItemLayout != null;
-        Method[] ms = cl_BaseBubbleBuilder.getDeclaredMethods();
-        Method m = null;
-        Class[] argt;
-        for (int i = 0; i < ms.length; i++) {
-            argt = ms[i].getParameterTypes();
-            if (argt.length != 6) continue;
-            if (argt[0].equals(cl_ChatMessage) && argt[1].equals(Context.class)
-                    && argt[2].equals(cl_BaseChatItemLayout) && argt[4].equals(int.class)
-                    && argt[5].equals(int.class)) {
-                m = ms[i];
+
+        Method[] methods = load("com.tencent.mobileqq.activity.BaseChatPie").getMethods();
+        for (Method method : methods) {
+            if (method.getName().equals("e") && ((method.getParameterTypes().length == 0) && method.getReturnType().equals(void.class))) {
+                XposedBridge.hookMethod(method, new XC_MethodHook() {
+                    @Override
+                    public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                        Object field = FieldUtils.getField(methodHookParam.thisObject, "a", load("com.tencent.mobileqq.app.QQAppInterface"));
+                        Object field2 = FieldUtils.getField(methodHookParam.thisObject, "a", load("com.tencent.mobileqq.activity.aio.SessionInfo"));
+                        ViewGroup viewGroup = (ViewGroup) FieldUtils.getField(methodHookParam.thisObject, "d", Class.forName("android.view.ViewGroup"));
+                        if (viewGroup != null) {
+                            ((Button) viewGroup.findViewById(Hook.getResId(viewGroup.getContext(), "id", "fun_btn"))).setOnLongClickListener(new View.OnLongClickListener(this, (EditText) viewGroup.findViewById(Hook.getResId(viewGroup.getContext(), "id", "input")), this.val$loader, field, field2) {
+                                @Override
+                                public boolean onLongClick(View view) {
+                                    try {
+                                        String editable = this.val$edit.getText().toString();
+                                        Object callStaticMethod = MethodUtils.callStaticMethod(this.val$loader.loadClass((String) Hook.config.get("TestStructMsg")), this.val$loader.loadClass("com.tencent.mobileqq.structmsg.AbsStructMsg"), "a", editable);
+                                        if (callStaticMethod != null) {
+                                            MethodUtils.callStaticMethod(this.val$loader.loadClass((String) Hook.config.get("MessageManager")), "a", this.val$qqAppInterface, this.val$session, callStaticMethod);
+                                        }
+                                    } catch (Throwable th) {
+                                        XposedBridge.log(th);
+                                    }
+                                    try {
+                                        String editable2 = this.val$edit.getText().toString();
+                                        Object callConstructor = ConstructorUtils.callConstructor(this.val$loader.loadClass("com.tencent.mobileqq.data.ArkAppMessage"), new Object[0]);
+                                        if (((Boolean) MethodUtils.callMethod(callConstructor, "fromAppXml", editable2)).booleanValue()) {
+                                            MethodUtils.callStaticMethod(this.val$loader.loadClass((String) Hook.config.get("MessageManager")), "a", this.val$qqAppInterface, this.val$session, callConstructor);
+                                        }
+                                    } catch (Throwable th2) {
+                                        XposedBridge.log(th2);
+                                    }
+                                    this.val$edit.setText("");
+                                    return false;
+                                }
+                            });
+                        }
+
+                    }
+                });
+                break;
             }
         }
-        XposedBridge.hookMethod(m, new XC_MethodHook(51) {
-            private static final int R_ID_BB_LAYOUT = 0x300AFF41;
-            private static final int R_ID_BB_TEXTVIEW = 0x300AFF42;
 
-            @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+
+        Class cl_ArkAppItemBuilder = DexKit.doFindClass(DexKit.C_ARK_APP_ITEM_BUILDER);
+        findAndHookMethod(cl_ArkAppItemBuilder, "a", int.class, Context.class, load("com/tencent/mobileqq/data/ChatMessage"), new XC_MethodHook(60) {
             @Override
-            public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-                if (ConfigManager.getDefault().getBooleanOrFalse(qn_send_card_msg)) {
-                    final Object msgObj = methodHookParam.args[0];
-                    ViewGroup viewGroup = (ViewGroup) methodHookParam.args[2];
-                    if (!load("com.tencent.mobileqq.data.MessageForStructing").isAssignableFrom(msgObj.getClass())
-                            && !load("com.tencent.mobileqq.data.MessageForArkApp").isAssignableFrom(msgObj.getClass()))
-                        return;
-                    if (viewGroup.findViewById(R_ID_BB_LAYOUT) == null) {
-                        Context context = viewGroup.getContext();
-                        LinearLayout linearLayout = new LinearLayout(context);
-                        linearLayout.setId(R_ID_BB_LAYOUT);
-                        //linearLayout.setBackground(new DebugDrawable(context));//SimpleBgDrawable(0x00000000, Color.BLUE, dip2px(context, 1)));
-                        linearLayout.setOrientation(LinearLayout.VERTICAL);
-                        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-                        lp.gravity = Gravity.BOTTOM | Gravity.RIGHT;
-                        TextView textView = new TextView(context);
-                        textView.setId(R_ID_BB_TEXTVIEW);
-                        textView.setGravity(Gravity.CENTER);
-                        textView.setTextColor(Color.RED);
-                        textView.setText("长按复制");
-                        linearLayout.addView(textView, lp);
-                        RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-                        rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                        //rlp.addRule(RelativeLayout.ALIGN_PARENT_TO
-                        int i = dip2px(context, 2);
-                        rlp.setMargins(i, i, i, i);
-                        //linearLayout.hashCode();
-                        viewGroup.addView(linearLayout, rlp);
-                        //iput_object(viewGroup,"DEBUG_DRAW",true);
-                    }
-                    ((TextView) viewGroup.findViewById(R_ID_BB_TEXTVIEW)).setOnLongClickListener(new View.OnLongClickListener() {
-                        @Override
-                        public boolean onLongClick(View view) {
-                            try {
-                                ClipboardManager clipboardManager = (ClipboardManager) view.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-                                if (load("com.tencent.mobileqq.data.MessageForStructing").isAssignableFrom(msgObj.getClass())) {
-                                    clipboardManager.setText((String) invoke_virtual(iget_object_or_null(msgObj, "structingMsg"), "getXml", new Object[0]));
-                                    showToast(view.getContext(), TOAST_TYPE_INFO, "复制成功", Toast.LENGTH_SHORT);
-                                } else if (load("com.tencent.mobileqq.data.MessageForArkApp").isAssignableFrom(msgObj.getClass())) {
-                                    clipboardManager.setText((String) invoke_virtual(iget_object_or_null(msgObj, "ark_app_message"), "toAppXml", new Object[0]));
-                                    showToast(view.getContext(), TOAST_TYPE_INFO, "复制成功", Toast.LENGTH_SHORT);
-                                }
-                            } catch (Throwable ignored) {
-                            }
-                            return true;
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                int id = (int) param.args[0];
+                Activity ctx = (Activity) param.args[1];
+                Object chatMessage = param.args[2];
+                if (id == R_ID_COPY_CODE) {
+                    param.setResult(null);
+                    try {
+                        ClipboardManager clipboardManager = (ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);
+                        if (load("com.tencent.mobileqq.data.MessageForStructing").isAssignableFrom(chatMessage.getClass())) {
+                            clipboardManager.setText((String) invoke_virtual(iget_object_or_null(chatMessage, "structingMsg"), "getXml", new Object[0]));
+                            showToast(ctx, TOAST_TYPE_INFO, "复制成功", Toast.LENGTH_SHORT);
+                        } else if (load("com.tencent.mobileqq.data.MessageForArkApp").isAssignableFrom(chatMessage.getClass())) {
+                            clipboardManager.setText((String) invoke_virtual(iget_object_or_null(chatMessage, "ark_app_message"), "toAppXml", new Object[0]));
+                            showToast(ctx, TOAST_TYPE_INFO, "复制成功", Toast.LENGTH_SHORT);
                         }
-                    });
-                    viewGroup.setBackgroundDrawable(new DebugDrawable(viewGroup.getContext()));
+                    } catch (Throwable e) {
+                        log(e);
+                    }
                 }
             }
         });
+        for (Method m : cl_ArkAppItemBuilder.getDeclaredMethods()) {
+            if (!m.getReturnType().isArray()) continue;
+            Class[] ps = m.getParameterTypes();
+            if (ps.length == 1 && ps[0].equals(View.class))
+                XposedBridge.hookMethod(m, new XC_MethodHook(60) {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        try {
+                            ConfigManager cfg = ConfigManager.getDefault();
+                            if (!cfg.getBooleanOrFalse(qn_send_card_msg)) return;
+                        } catch (Exception ignored) {
+                        }
+                        Object arr = param.getResult();
+                        Object QQCustomMenuItem = Array.get(arr, 0).getClass().newInstance();
+                        iput_object(QQCustomMenuItem, "a", int.class, R_ID_COPY_CODE);
+                        iput_object(QQCustomMenuItem, "a", String.class, "复制代码");
+                        Object ret = Array.newInstance(QQCustomMenuItem.getClass(), Array.getLength(arr) + 1);
+                        Array.set(ret, 0, Array.get(arr, 0));
+                        System.arraycopy(arr, 1, ret, 2, Array.getLength(arr) - 1);
+                        Array.set(ret, 1, QQCustomMenuItem);
+                        param.setResult(ret);
+                    }
+                });
+        }
         inited = true;
         return true;
     }
@@ -133,7 +149,7 @@ public class CardMsgHook extends BaseDelayableHook {
 
     @Override
     public int[] getPreconditions() {
-        return new int[]{};
+        return new int[]{DexKit.C_ARK_APP_ITEM_BUILDER};
     }
 
     @Override

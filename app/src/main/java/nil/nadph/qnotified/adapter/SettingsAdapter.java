@@ -1,9 +1,7 @@
 package nil.nadph.qnotified.adapter;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.res.ColorStateList;
@@ -12,24 +10,19 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.text.Html;
 import android.util.AttributeSet;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-import nil.nadph.qnotified.ExfriendManager;
+import dalvik.system.DexFile;
 import nil.nadph.qnotified.hook.*;
 import nil.nadph.qnotified.record.ConfigManager;
-import nil.nadph.qnotified.record.EventRecord;
-import nil.nadph.qnotified.record.FriendRecord;
 import nil.nadph.qnotified.util.QThemeKit;
 import nil.nadph.qnotified.util.UpdateCheck;
 import nil.nadph.qnotified.util.Utils;
 
 import java.io.File;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.Enumeration;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -38,8 +31,6 @@ import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.QQViewBuilder.*;
 import static nil.nadph.qnotified.util.SendBatchMsg.clickToBatchMsg;
 import static nil.nadph.qnotified.util.Utils.*;
-import dalvik.system.*;
-import java.util.*;
 
 public class SettingsAdapter implements ActivityAdapter {
 
@@ -80,6 +71,7 @@ public class SettingsAdapter implements ActivityAdapter {
         ll.addView(subtitle(self, "标准功能"));
         ll.addView(newListItemButton(self, "群发文本消息", "适度使用以免永冻", null, clickToBatchMsg()));
         ll.addView(newListItemSwitchConfigInit(self, "语音转发", "长按语音消息", qn_enable_ptt_forward, false, PttForwardHook.get()));
+        ll.addView(newListItemSwitchConfigInit(self, "发送卡片消息", "xml,json等", qn_send_card_msg, false, CardMsgHook.get()));
         ll.addView(subtitle(self, "净化设置"));
         if (!Utils.isTim(self)) {
             ll.addView(newListItemSwitchConfigNext(self, "隐藏小程序入口", "隐藏消息列表下拉出现的小程序列表", qn_hide_msg_list_miniapp, false));
@@ -110,7 +102,6 @@ public class SettingsAdapter implements ActivityAdapter {
         ll.addView(subtitle(self, "还没完成的功能(咕咕咕)"));
         ll.addView(newListItemSwitchConfigStub(self, "屏蔽回执消息的通知", null, qn_mute_talk_back, false));
         //ll.addView(newListItemSwitchConfigStub(self, "上传透明头像", "开启后上传透明头像不会变黑", qn_enable_transparent, false));
-        ll.addView(newListItemSwitchConfigStub(self, "发送卡片消息", "xml,json等", qn_send_card_msg, false));
         ll.addView(newListItemSwitchConfigStub(self, "隐藏送礼动画", null, qn_hide_gift_animation, false));
         ll.addView(newListItemSwitchConfigStub(self, "签到文本化", null, qn_sign_in_as_text, false));
         ll.addView(newListItemButton(self, "重定向文件下载目录", new File(Environment.getExternalStorageDirectory(), "Tencent/QQfile_recv").getAbsolutePath(), "禁用", clickTheComing()));
@@ -132,7 +123,7 @@ public class SettingsAdapter implements ActivityAdapter {
         ll.addView(newListItemButton(self, "Shell.exec", "正常情况下无需使用此功能", null, clickTheComing()));
         ll.addView(subtitle(self, "作者"));
         ll.addView(newListItemButton(self, "打赏", "请选择扶贫方式", null, clickToProxyActAction(ACTION_DONATE_ACTIVITY)));
-        if(!test())ll.addView(newListItemButton(self, "QQ", "点击私信反馈(bug,建议,催更等等)", "1041703712", clickToChat()));
+        if (!test()) ll.addView(newListItemButton(self, "QQ", "点击私信反馈(bug,建议,催更等等)", "1041703712", clickToChat()));
         ll.addView(newListItemButton(self, "Mail", null, "xenonhydride@gmail.com", null));
         ll.addView(newListItemButton(self, "Github", "Bug -> Issue (star)", "cinit/QNotified", clickToUrl("https://github.com/cinit/QNotified")));
         ll.addView(newListItemButton(self, "Telegram", null, "Auride", clickToUrl("https://t.me/Auride")));
@@ -152,32 +143,32 @@ public class SettingsAdapter implements ActivityAdapter {
         //log("Title:"+invoke_virtual(self,"getTextTitle"));
     }
 
-	
-	private boolean test() {
-		try {
-			Class clazz=Class.forName("de.robv.android.xposed.XposedBridge");
-			Object pathList=iget_object_or_null(clazz.getClassLoader(), "pathList");
-			Object[] dexElements=(Object[])iget_object_or_null(pathList, "dexElements");
-			for (Object entry:dexElements) {
-				DexFile dexFile=(DexFile) iget_object_or_null(entry, "dexFile");
-				Enumeration<String> entries = dexFile.entries();
-				while (entries.hasMoreElements()) {
-					String className=entries.nextElement();
-					if (className.matches(".+?(epic|weishu).+")) {
-						return true;
-					}
-				}
-			}
-		} catch (Throwable e) {
-			if (!(e instanceof NullPointerException) &&
-				!(e instanceof ClassNotFoundException)) {
-				log(e);
-			}
-		}
-		return false;
-	}
-	
-	
+
+    private boolean test() {
+        try {
+            Class clazz = Class.forName("de.robv.android.xposed.XposedBridge");
+            Object pathList = iget_object_or_null(clazz.getClassLoader(), "pathList");
+            Object[] dexElements = (Object[]) iget_object_or_null(pathList, "dexElements");
+            for (Object entry : dexElements) {
+                DexFile dexFile = (DexFile) iget_object_or_null(entry, "dexFile");
+                Enumeration<String> entries = dexFile.entries();
+                while (entries.hasMoreElements()) {
+                    String className = entries.nextElement();
+                    if (className.matches(".+?(epic|weishu).+")) {
+                        return true;
+                    }
+                }
+            }
+        } catch (Throwable e) {
+            if (!(e instanceof NullPointerException) &&
+                    !(e instanceof ClassNotFoundException)) {
+                log(e);
+            }
+        }
+        return false;
+    }
+
+
     @Override
     public void doOnPostResume() throws Throwable {
         ConfigManager cfg = ConfigManager.getDefault();
