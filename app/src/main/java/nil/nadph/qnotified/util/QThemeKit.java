@@ -278,17 +278,12 @@ public class QThemeKit {
 			 // 得到新的图片
 			 Bitmap bitmap = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix,
 			 true);
-
 			 *
-
-
 			 log("den="+res.getDisplayMetrics().density);
 			 log("sden="+res.getDisplayMetrics().scaledDensity);
 			 log("denDpi="+res.getDisplayMetrics().densityDpi);
 			 //log("den="+res.getDisplayMetrics());*/
-
-
-            bitmap.setDensity(320);
+            bitmap.setDensity(320);// qq has xhdpi
             //log(name+"BiHeight:"+bitmap.getHeight());
             byte[] chunk = bitmap.getNinePatchChunk();
             //log("Res == "+res);
@@ -299,7 +294,6 @@ public class QThemeKit {
             } else {
                 ret = new BitmapDrawable(res, bitmap);
             }
-
             //log(name+"DrHiMin="+ret.getMinimumHeight());
             return ret.mutate();
         } catch (Exception e) {
