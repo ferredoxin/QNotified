@@ -399,7 +399,7 @@ public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, 
         hits = 0;
         if (false && keyword.contains(" ")) {
             String[] words = keyword.split(" ");
-
+            //FIXME: temporary workaround for multi-keyword search
         } else {
             int start, len = keyword.length();
             for (TroopInfo info : mTroopInfoList) {

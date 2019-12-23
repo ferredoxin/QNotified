@@ -32,8 +32,8 @@ public class ActProxyMgr extends XC_MethodHook {
     public static final int ACTION_MUTE_RED_PACKET = 6;
     public static final int ACTION_DONATE_ACTIVITY = 7;
     public static final int ACTION_TROUBLESHOOT_ACTIVITY = 8;
-	public static final int ACTION_FRIENDLIST_EXPORT_ACTIVITY = 9;
-	
+    public static final int ACTION_FRIENDLIST_EXPORT_ACTIVITY = 9;
+
     /**
      * HashSet mThreads<Long threadId> :Ids of threads which is calling invokeSuper
      * You may wonder what this field is for,
@@ -61,7 +61,7 @@ public class ActProxyMgr extends XC_MethodHook {
                 m.setAccessible(true);
                 try {
                     ActProxyMgr.invokeSuper(self, m, param.args);
-                } catch (ActProxyMgr.BreakUnaughtException e) {
+                } catch (ActProxyMgr.BreakUnaughtException ignored) {
                 }
                 aa = createActivityAdapter(action, self);
                 Object exlist_mFlingHandler = new_instance(load("com/tencent/mobileqq/activity/fling/FlingGestureHandler"), self, Activity.class);
@@ -136,8 +136,8 @@ public class ActProxyMgr extends XC_MethodHook {
                 return new DonateActivity(activity);
             case ACTION_TROUBLESHOOT_ACTIVITY:
                 return new TroubleshootActivity(activity);
-			case ACTION_FRIENDLIST_EXPORT_ACTIVITY:
-				return new FriendlistExportActivity(activity);
+            case ACTION_FRIENDLIST_EXPORT_ACTIVITY:
+                return new FriendlistExportActivity(activity);
             default:
                 throw new UnsupportedOperationException("Unknown action " + action);
         }

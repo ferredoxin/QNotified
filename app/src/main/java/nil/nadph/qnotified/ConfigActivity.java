@@ -69,7 +69,6 @@ public class ConfigActivity extends Activity implements Runnable {
         }
     }
 
-
     //ClazzExplorer ce;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,8 +89,8 @@ public class ConfigActivity extends Activity implements Runnable {
         statusTvB = (TextView) findViewById(R.id.mainTextViewStatusB);
 
         if (Utils.getActiveModuleVersion() == null) {
-            statusTv.setText("!!! 错误:本模块没有激活 !!!");
-            statusTvB.setText("请在正确安装Xposed框架后,在Xposed Installer中(重新)勾选QNotified以激活本模块");
+            statusTv.setText("!!! 本模块没有激活 !!!");
+            statusTvB.setText("请在正确安装Xposed框架后,在Xposed Installer中(重新)勾选QNotified以激活本模块(太极/无极请无视提示)");
             needRun = true;
         } else {
             statusTv.setText("模块已激活");

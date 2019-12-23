@@ -144,6 +144,8 @@ public class ExfriendManager {
                         fr = it.next().getValue();
                         if (fr == null) continue;
                         try {
+
+
                         } catch (Exception e) {
                             continue;
                         }

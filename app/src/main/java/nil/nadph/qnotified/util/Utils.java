@@ -756,13 +756,13 @@ public class Utils {
                 .replace("\\\r", "\r").replace("\\\\", "\\");
     }
 
-	public static String csvenc(String s){
-		if(!s.contains("\"")&&!s.contains(" ")&&!s.contains(",")&&!s.contains("\r")&&!s.contains("\n")&&!s.contains("\t")){
-			return s;
-		}
-		return "\""+s.replace("\"","\"\"")+"\"";
-	}
-	
+    public static String csvenc(String s) {
+        if (!s.contains("\"") && !s.contains(" ") && !s.contains(",") && !s.contains("\r") && !s.contains("\n") && !s.contains("\t")) {
+            return s;
+        }
+        return "\"" + s.replace("\"", "\"\"") + "\"";
+    }
+
     private static Method method_Toast_show;
     private static Method method_Toast_makeText;
     private static Class clazz_QQToast;

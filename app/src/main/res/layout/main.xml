@@ -25,21 +25,21 @@
 			android:id="@+id/mainTextViewVersion"/>
 
 		<TextView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:textAppearance="?android:attr/textAppearanceLarge"
-			android:text="请在QQ内查看"/>
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:text="请在QQ/TIM内查看"/>
 
 		<TextView
-			android:layout_height="wrap_content"
-			android:layout_width="wrap_content"
-			android:text="暂不支持TIM 暂不支持轻聊版/国际版"/>
+				android:layout_height="wrap_content"
+				android:layout_width="wrap_content"
+				android:text="暂不支持轻聊版/国际版"/>
 
 		<TextView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:textAppearance="?android:attr/textAppearanceMedium"
-			android:text="QQ-&gt;联系人-&gt;好友(分组最下方)-&gt;历史好友"/>
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textAppearance="?android:attr/textAppearanceMedium"
+				android:text="QQ侧滑-&gt;设置-&gt;QNotified 即可进入功能列表"/>
 
 		<TextView
 			android:layout_width="wrap_content"

@@ -21,7 +21,7 @@ import static nil.nadph.qnotified.util.Utils.log;
 public class SyncUtils {
 
     public static final int PROC_ERROR = 0;
-    public static final int PROC_MAIN = 1 << 0;
+    public static final int PROC_MAIN = 1;
     public static final int PROC_MSF = 1 << 1;
     public static final int PROC_PEAK = 1 << 2;
     public static final int PROC_TOOL = 1 << 3;

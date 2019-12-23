@@ -6,9 +6,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
-import nil.nadph.qnotified.adapter.ActProxyMgr;
 import nil.nadph.qnotified.StartupHook;
 import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.adapter.ActProxyMgr;
 import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.util.Initiator.load;

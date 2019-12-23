@@ -403,7 +403,7 @@ public class SendBatchMsg {
             notifyDataSetChanged();
         }
 
-        public class ViewHolder {
+        public static class ViewHolder {
             public ImageView img;
             public TextView title;
             public CheckBox cBox;

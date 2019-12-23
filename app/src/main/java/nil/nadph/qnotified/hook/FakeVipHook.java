@@ -1,9 +1,7 @@
 package nil.nadph.qnotified.hook;
 
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
-import nil.nadph.qnotified.StartupHook;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.util.DexKit;
 

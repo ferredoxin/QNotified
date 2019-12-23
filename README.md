@@ -35,6 +35,7 @@ QNotified is a Xposed module for mobile QQ that aims to
 6. 屏蔽回执消息通知
 7. 自定义复读次数
 8. 修复偶发性的莫名其妙好友全部被标记为删除的bug
+9. 屏蔽更新提示
 
 **考虑中功能**
 1. 去你大爷的TX地图
