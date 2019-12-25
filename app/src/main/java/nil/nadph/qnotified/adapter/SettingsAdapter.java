@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import dalvik.system.DexFile;
+import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.hook.*;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.util.QThemeKit;
@@ -124,8 +125,8 @@ public class SettingsAdapter implements ActivityAdapter {
         ll.addView(newListItemButton(self, "Shell.exec", "正常情况下无需使用此功能", null, clickTheComing()));
         ll.addView(subtitle(self, "作者"));
         ll.addView(newListItemButton(self, "打赏", "请选择扶贫方式", null, clickToProxyActAction(ACTION_DONATE_ACTIVITY)));
-        /*if (!test()) */
-        ll.addView(newListItemButton(self, "QQ", "点击私信反馈(bug,建议等等)", "1041703712", clickToChat()));
+        if (!test())
+            ll.addView(newListItemButton(self, "QQ", "点击私信反馈(bug,建议等等)", "1041703712", clickToChat()));
         ll.addView(newListItemButton(self, "Mail", null, "xenonhydride@gmail.com", null));
         ll.addView(newListItemButton(self, "Github", "Bug -> Issue (star)", "cinit/QNotified", clickToUrl("https://github.com/cinit/QNotified")));
         ll.addView(newListItemButton(self, "Telegram", null, "Auride", clickToUrl("https://t.me/Auride")));
@@ -148,8 +149,7 @@ public class SettingsAdapter implements ActivityAdapter {
 
     private boolean test() {
         try {
-            Class clazz = Class.forName("de.robv.android.xposed.XposedBridge");
-            Object pathList = iget_object_or_null(clazz.getClassLoader(), "pathList");
+            Object pathList = iget_object_or_null(XposedBridge.class.getClassLoader(), "pathList");
             Object[] dexElements = (Object[]) iget_object_or_null(pathList, "dexElements");
             for (Object entry : dexElements) {
                 DexFile dexFile = (DexFile) iget_object_or_null(entry, "dexFile");
@@ -163,7 +163,7 @@ public class SettingsAdapter implements ActivityAdapter {
             }
         } catch (Throwable e) {
             if (!(e instanceof NullPointerException) &&
-                    !(e instanceof ClassNotFoundException)) {
+                    !(e instanceof NoClassDefFoundError)) {
                 log(e);
             }
         }
