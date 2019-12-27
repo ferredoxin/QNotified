@@ -106,7 +106,8 @@ public class SettingsAdapter implements ActivityAdapter {
         ll.addView(newListItemSwitchConfigStub(self, "隐藏送礼动画", null, qn_hide_gift_animation, false));
         ll.addView(newListItemSwitchConfigStub(self, "简洁模式圆头像", null, qn_round_avatar, false));
         ll.addView(newListItemSwitchConfigStub(self, "签到文本化", null, qn_sign_in_as_text, false));
-        ll.addView(newListItemButton(self, "重定向文件下载目录", new File(Environment.getExternalStorageDirectory(), "Tencent/QQfile_recv").getAbsolutePath(), "禁用", clickTheComing()));
+		ll.addView(newListItemSwitchConfigStub(self, "赞说说不提醒", "不影响评论或击掌的通知", qn_mute_thumb_up, false));
+		ll.addView(newListItemButton(self, "重定向文件下载目录", new File(Environment.getExternalStorageDirectory(), "Tencent/QQfile_recv").getAbsolutePath(), "禁用", clickTheComing()));
         ll.addView(subtitle(self, "参数设定"));
         ll.addView(newListItemButton(self, "DelFriendReq.delType", "只能为1或2", "[不改动]", clickTheComing()));
         ll.addView(newListItemButton(self, "AddFriendReq.sourceID", "改错可能导致无法添加好友", "[不改动]", clickTheComing()));
