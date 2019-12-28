@@ -660,10 +660,6 @@ public class ExfriendManager {
     }
 
     public void markActiveDelete(long uin) {
-        try {
-            if (!ConfigManager.getDefault().getBooleanOrDefault("qn_del_op_silence", true)) return;
-        } catch (IOException e) {
-        }
         synchronized (this) {
             FriendRecord fr = persons.get(uin);
             if (fr == null) {

@@ -79,6 +79,18 @@ public class Initiator {
         return cl_PttItemBuilder;
     }
 
+    public static Class _TroopGiftAnimationController() {
+        Class cl_TroopGiftAnimationController = load("com.tencent.mobileqq.troopgift.TroopGiftAnimationController");
+        if (cl_TroopGiftAnimationController == null) {
+            Class cref = load("com.tencent.mobileqq.troopgift.TroopGiftAnimationController$1");
+            try {
+                cl_TroopGiftAnimationController = cref.getDeclaredField("this$0").getType();
+            } catch (NoSuchFieldException ignored) {
+            }
+        }
+        return cl_TroopGiftAnimationController;
+    }
+
     public static Class _FavEmoRoamingHandler() {
         Class clz = load("com/tencent/mobileqq/app/FavEmoRoamingHandler");
         if (clz == null) {

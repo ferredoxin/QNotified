@@ -14,8 +14,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import dalvik.system.DexFile;
-import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.hook.*;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.util.QThemeKit;
@@ -23,7 +21,6 @@ import nil.nadph.qnotified.util.UpdateCheck;
 import nil.nadph.qnotified.util.Utils;
 
 import java.io.File;
-import java.util.Enumeration;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -89,25 +86,24 @@ public class SettingsAdapter implements ActivityAdapter {
             ll.addView(newListItemSwitchConfigInit(self, "以图片方式打开表情", null, qn_sticker_as_pic, false, EmoPicHook.get()));
         }
         //ll.addView(newListItemSwitchConfigInit(self, "聊天图片背景透明", null, qn_gallery_bg, false, GalleryBgHook.get()));
-        ll.addView(newListItemSwitchConfigInit(self, "收藏更多表情", "保存在本地", qqhelper_fav_more_emo, false, FavMoreEmo.get()));
         ll.addView(subtitle(self, "实验性功能"));
-        ll.addView(newListItemSwitchConfigInit(self, "防撤回", "来自旧版QX,稳定性不如最新版QX", qn_anti_revoke_msg, false, RevokeMsgHook.get()));
         ll.addView(newListItemSwitchConfigInit(self, "复读机", null, bug_repeater, false, RepeaterHook.get()));
+        ll.addView(newListItemSwitchConfigInit(self, "收藏更多表情", "保存在本地", qqhelper_fav_more_emo, false, FavMoreEmo.get()));
+        ll.addView(newListItemSwitchConfigInit(self, "防撤回", "来自旧版QX,稳定性不如最新版QX", qn_anti_revoke_msg, false, RevokeMsgHook.get()));
         ll.addView(subtitle(self, "好友列表"));
         ll.addView(newListItemButton(self, "历史好友", null, null, clickToProxyActAction(ACTION_EXFRIEND_LIST)));
         ll.addView(newListItemButton(self, "导出历史好友列表", "支持csv/json格式", null, clickToProxyActAction(ACTION_FRIENDLIST_EXPORT_ACTIVITY)));
         if (!Utils.isTim(self)) {
             ll.addView(newListItemSwitchConfigNext(self, "隐藏分组下方入口", "隐藏分组列表最下方的历史好友按钮", qn_hide_ex_entry_group, false));
         }
-        ll.addView(newListItemSwitchConfig(self, "主动删除好友时不通知", "仅在测试模块时才可能需要关闭", qn_del_op_silence, true));
+        ll.addView(newListItemSwitchConfigInit(self, "隐藏送礼动画", null, qn_hide_gift_animation, false, HideGiftAnim.get()));
+        ll.addView(newListItemSwitchConfigInit(self, "签到文本化", null, qn_sign_in_as_text, false, SimpleCheckInHook.get()));
         ll.addView(subtitle(self, "还没完成的功能(咕咕咕)"));
         ll.addView(newListItemSwitchConfigStub(self, "屏蔽回执消息的通知", null, qn_mute_talk_back, false));
         //ll.addView(newListItemSwitchConfigStub(self, "上传透明头像", "开启后上传透明头像不会变黑", qn_enable_transparent, false));
-        ll.addView(newListItemSwitchConfigStub(self, "隐藏送礼动画", null, qn_hide_gift_animation, false));
         ll.addView(newListItemSwitchConfigStub(self, "简洁模式圆头像", null, qn_round_avatar, false));
-        ll.addView(newListItemSwitchConfigStub(self, "签到文本化", null, qn_sign_in_as_text, false));
-		ll.addView(newListItemSwitchConfigStub(self, "赞说说不提醒", "不影响评论或击掌的通知", qn_mute_thumb_up, false));
-		ll.addView(newListItemButton(self, "重定向文件下载目录", new File(Environment.getExternalStorageDirectory(), "Tencent/QQfile_recv").getAbsolutePath(), "禁用", clickTheComing()));
+        ll.addView(newListItemSwitchConfigStub(self, "赞说说不提醒", "不影响评论或击掌的通知", qn_mute_thumb_up, false));
+        ll.addView(newListItemButton(self, "重定向文件下载目录", new File(Environment.getExternalStorageDirectory(), "Tencent/QQfile_recv").getAbsolutePath(), "禁用", clickTheComing()));
         ll.addView(subtitle(self, "参数设定"));
         ll.addView(newListItemButton(self, "DelFriendReq.delType", "只能为1或2", "[不改动]", clickTheComing()));
         ll.addView(newListItemButton(self, "AddFriendReq.sourceID", "改错可能导致无法添加好友", "[不改动]", clickTheComing()));
@@ -126,8 +122,8 @@ public class SettingsAdapter implements ActivityAdapter {
         ll.addView(newListItemButton(self, "Shell.exec", "正常情况下无需使用此功能", null, clickTheComing()));
         ll.addView(subtitle(self, "作者"));
         ll.addView(newListItemButton(self, "打赏", "请选择扶贫方式", null, clickToProxyActAction(ACTION_DONATE_ACTIVITY)));
-        if (!test())
-            ll.addView(newListItemButton(self, "QQ", "点击私信反馈(bug,建议等等)", "1041703712", clickToChat()));
+        /*if (isNiceUser())*/
+        ll.addView(newListItemButton(self, "QQ", "点击私信反馈(bug,建议等等)", "1041703712", clickToChat()));
         ll.addView(newListItemButton(self, "Mail", null, "xenonhydride@gmail.com", null));
         ll.addView(newListItemButton(self, "Github", "Bug -> Issue (star)", "cinit/QNotified", clickToUrl("https://github.com/cinit/QNotified")));
         ll.addView(newListItemButton(self, "Telegram", null, "Auride", clickToUrl("https://t.me/Auride")));
@@ -145,30 +141,6 @@ public class SettingsAdapter implements ActivityAdapter {
         invoke_virtual(self, "enableLeftBtn", true, boolean.class);
         //TextView rightBtn=(TextView)invoke_virtual(self,"getRightTextView");
         //log("Title:"+invoke_virtual(self,"getTextTitle"));
-    }
-
-
-    private boolean test() {
-        try {
-            Object pathList = iget_object_or_null(XposedBridge.class.getClassLoader(), "pathList");
-            Object[] dexElements = (Object[]) iget_object_or_null(pathList, "dexElements");
-            for (Object entry : dexElements) {
-                DexFile dexFile = (DexFile) iget_object_or_null(entry, "dexFile");
-                Enumeration<String> entries = dexFile.entries();
-                while (entries.hasMoreElements()) {
-                    String className = entries.nextElement();
-                    if (className.matches(".+?(epic|weishu).+")) {
-                        return true;
-                    }
-                }
-            }
-        } catch (Throwable e) {
-            if (!(e instanceof NullPointerException) &&
-                    !(e instanceof NoClassDefFoundError)) {
-                log(e);
-            }
-        }
-        return false;
     }
 
 

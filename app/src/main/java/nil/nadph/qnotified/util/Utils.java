@@ -13,7 +13,10 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+import dalvik.system.DexFile;
 import de.robv.android.xposed.XposedBridge;
+import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.record.ConfigManager;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -21,6 +24,9 @@ import java.io.IOException;
 import java.lang.reflect.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static nil.nadph.qnotified.util.Initiator._SessionInfo;
 import static nil.nadph.qnotified.util.Initiator.load;
@@ -35,7 +41,6 @@ public class Utils {
 
     public static final String qn_hide_msg_list_miniapp = "qn_hide_msg_list_miniapp",
             qn_hide_ex_entry_group = "qn_hide_ex_entry_group",
-            qn_del_op_silence = "qn_del_op_silence",
             qn_enable_transparent = "qn_enable_transparent",
             qn_enable_ptt_forward = "qn_enable_ptt_forward",
             qn_sticker_as_pic = "qn_sticker_as_pic",
@@ -51,7 +56,7 @@ public class Utils {
             qqhelper_fav_more_emo = "qqhelper_fav_more_emo",
             qn_anti_revoke_msg = "qn_anti_revoke_msg",
             qn_round_avatar = "qn_round_avatar",
-			qn_mute_thumb_up="qn_mute_thumb_up";
+            qn_mute_thumb_up = "qn_mute_thumb_up";
 
     public static boolean DEBUG = true;
     public static boolean V_TOAST = false;
@@ -569,6 +574,15 @@ public class Utils {
         }
     }
 
+    public static String getCurrentNickname() {
+        try {
+            return (String) invoke_virtual(getQQAppInterface(), "getCurrentNickname");
+        } catch (Throwable e) {
+            log(e);
+        }
+        return null;
+    }
+
     public static Object getAppRuntime() {
         Object baseApplicationImpl = getApplication();
         try {
@@ -881,6 +895,19 @@ public class Utils {
         return ret;
     }
 
+    public static String filterEmoji(String source) {
+        if (source != null) {
+            Pattern emoji = Pattern.compile("[\ud83c\udc00-\ud83c\udfff]|[\ud83d\udc00-\ud83d\udfff]|[\u2600-\u27ff]", Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE);
+            Matcher emojiMatcher = emoji.matcher(source);
+            if (emojiMatcher.find()) {
+                source = emojiMatcher.replaceAll("\u3000");
+                return source;
+            }
+            return source;
+        }
+        return source;
+    }
+
     /**
      * same: t0 d1 w2 m3 y4
      */
@@ -890,6 +917,119 @@ public class Utils {
         if (t1.getDate() != t2.getDate()) return 3;
         if (t1.equals(t2)) return 0;
         return 1;
+    }
+
+    public static final String cfg_nice_user = "cfg_nice_user";
+
+    public static boolean isNiceUser() {
+        try {
+            ConfigManager cfg = ConfigManager.getDefault();
+            if (cfg.getBooleanOrDefault(cfg_nice_user, false)) {
+                return true;
+            }
+            if (doEvalNiceUser()) {
+                try {
+                    if (SyncUtils.isMainProcess()) {
+                        cfg.getAllConfig().put(cfg_nice_user, true);
+                        cfg.save();
+                    }
+                } catch (Throwable e1) {
+                    log(e1);
+                }
+                return true;
+            }
+            return false;
+        } catch (Throwable e2) {
+            log(e2);
+            return true;
+        }
+    }
+
+    private static boolean doEvalNiceUser() {
+        if (!isExp()) return true;
+        long uin = getLongAccountUin();
+        String nick = getCurrentNickname();
+        if (nick != null && nick.length() > 0 && isBadNick(nick)) return false;
+        if (Utils.isTim(getApplication())) return true;
+        if (uin > 2_0000_0000L && uin < 30_0000_0000L) {
+            return true;
+        }
+        Class vip = DexKit.tryLoadOrNull(DexKit.C_VIP_UTILS);
+        try {
+            if (vip != null) {
+                return "0".equals(invoke_static(vip, "a", getQQAppInterface(), uin + "", load("com/tencent/common/app/AppInterface"), String.class, String.class));
+            }
+        } catch (Exception e) {
+            log(e);
+        }
+        return true;
+    }
+
+    private static boolean isSymbol(char c) {
+        if (c == '\u3000') return true;
+        if (c < '0') return true;
+        if (c > '9' && c < 'A') return true;
+        if (c > 'Z' && c < 'a') return true;
+        return (c <= 0xD7FF);
+    }
+
+    /**
+     * 特征
+     * A/a+sp/'/^   && lenth>2
+     * 丶ゞ
+     * 中文.len()<3 && endsWith '.'
+     * char[1]  'emoji'
+     * char[1] 全半角单符号
+     * IDSP/3000"　"
+     */
+    private static boolean isBadNick(String nick) {
+        if (nick == null) throw new NullPointerException("nick == null");
+        if (nick.length() == 0) throw new IllegalArgumentException("nick length == 0");
+        nick = filterEmoji(nick);
+        if (nick.contains("\u4e36") || nick.contains("\u309e")) return true;
+        if (nick.equalsIgnoreCase("A")) return true;
+        if (nick.length() < 2) {
+            return isSymbol(nick.charAt(0));
+        }
+        if (nick.matches(".*[Aa]['`. ,^_\u309e].*")) {
+            return true;
+        }
+        if (nick.endsWith(".")) {
+            char c = nick.charAt(nick.length() - 2);
+            return c > 0xff;
+        }
+        return false;
+    }
+
+    /**
+     * 仅仅使用群发器而使用本模块的用户往往有两个鲜明的特征
+     * 1.使用某个虚拟框架
+     * 2.显而易见的昵称,见 #isBadNick() 方法
+     * 仍然提供本模块的全部功能
+     * 只是隐藏我的联系方式
+     * 这虽然不是完全正确的方法, but just do it.
+     **/
+    private static boolean isExp() {
+        try {
+            Object pathList = iget_object_or_null(XposedBridge.class.getClassLoader(), "pathList");
+            Object[] dexElements = (Object[]) iget_object_or_null(pathList, "dexElements");
+            for (Object entry : dexElements) {
+                DexFile dexFile = (DexFile) iget_object_or_null(entry, "dexFile");
+                Enumeration<String> entries = dexFile.entries();
+                while (entries.hasMoreElements()) {
+                    String className = entries.nextElement();
+                    if (className.matches(".+?(epic|weishu).+")) {
+                        return true;
+                    }
+                }
+            }
+        } catch (Throwable e) {
+            if (!(e instanceof NullPointerException) &&
+                    !(e instanceof NoClassDefFoundError)) {
+                log(e);
+            }
+        }
+        return false;
     }
 
     /**

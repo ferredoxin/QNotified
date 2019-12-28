@@ -30,7 +30,7 @@ public class FakeVipHook extends BaseDelayableHook {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     int ret;
-                    //self
+                    //null is self
                     if (param.args[1] == null) {
                         ret = (int) param.getResult();
                         param.setResult(4 | ret);//svip

@@ -6,9 +6,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.URLSpan;
 import android.view.View;
 import android.widget.TextView;
 import nil.nadph.qnotified.util.Utils;
@@ -96,17 +93,6 @@ public class ConfigActivity extends Activity implements Runnable {
             statusTv.setText("模块已激活");
             statusTv.setTextColor(0xB000FF00);
             statusTvB.setText("更新模块后需要重启手机方可生效\n当前生效版本号见下方ActiveModuleVersion");
-        }
-        TextView tv = (TextView) findViewById(R.id.mainTextViewQqNum);
-        try {
-            //tv.setMovementMethod(LinkMovementMethod.getInstance());
-            SpannableString ss = new SpannableString("QQ: 1041703712");
-            ss.setSpan(new URLSpan("http://wpa.qq.com/msgrd?v=3&uin=1041703712&site=qq&menu=yes"), 4, 14,
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            tv.setText(ss);
-            tv.setClickable(true);
-        } catch (Throwable e) {
-            tv.setText("" + e);
         }
 
         InputStream in = ConfigActivity.class.getClassLoader().getResourceAsStream("assets/xposed_init");

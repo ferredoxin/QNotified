@@ -146,6 +146,10 @@ public class SyncUtils {
         return mProcType;
     }
 
+    public static boolean isMainProcess() {
+        return getProcessType() == PROC_MAIN;
+    }
+
     public static String getProcessName() {
         String name = "unknown";
         int retry = 0;

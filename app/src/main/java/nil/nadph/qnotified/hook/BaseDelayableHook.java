@@ -26,7 +26,9 @@ public abstract class BaseDelayableHook {
                 //GalleryBgHook.get(),
                 FavMoreEmo.get(),
                 RevokeMsgHook.get(),
-                FakeVipHook.get()
+                FakeVipHook.get(),
+                HideGiftAnim.get(),
+                SimpleCheckInHook.get()
         };
         return mAllHooks;
     }
