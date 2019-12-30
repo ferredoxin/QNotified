@@ -41,7 +41,6 @@ public class Utils {
 
     public static final String qn_hide_msg_list_miniapp = "qn_hide_msg_list_miniapp",
             qn_hide_ex_entry_group = "qn_hide_ex_entry_group",
-            qn_enable_transparent = "qn_enable_transparent",
             qn_enable_ptt_forward = "qn_enable_ptt_forward",
             qn_sticker_as_pic = "qn_sticker_as_pic",
             qn_flash_as_pic = "qn_flash_as_pic",
@@ -56,12 +55,13 @@ public class Utils {
             qqhelper_fav_more_emo = "qqhelper_fav_more_emo",
             qn_anti_revoke_msg = "qn_anti_revoke_msg",
             qn_round_avatar = "qn_round_avatar",
-            qn_mute_thumb_up = "qn_mute_thumb_up";
+            qn_mute_thumb_up = "qn_mute_thumb_up",
+            qn_disable_auto_at = "qn_disable_auto_at";
 
     public static boolean DEBUG = true;
     public static boolean V_TOAST = false;
-    public static final String QN_VERSION_NAME = "0.4.1";
-    public static final int QN_VERSION_CODE = 16;
+    public static final String QN_VERSION_NAME = "0.5.0";
+    public static final int QN_VERSION_CODE = 18;
 
     public static final String PACKAGE_NAME_QQ = "com.tencent.mobileqq";
     public static final String PACKAGE_NAME_QQ_INTERNATIONAL = "com.tencent.mobileqqi";
@@ -135,6 +135,11 @@ public class Utils {
             Log.e("Utils", "Can not get PackageInfo!");
             throw new AssertionError("Can not get PackageInfo!");
         }
+    }
+
+    public static int getHostVersionCode() {
+        PackageInfo pi = getHostInfo(getApplication());
+        return pi.versionCode;
     }
 
     public static long getLongAccountUin() {

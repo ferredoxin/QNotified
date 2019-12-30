@@ -292,7 +292,6 @@ public class StartupHook {
                         if (ps != null && ps.length > 0) continue;
                         if (!m.getReturnType().equals(void.class)) continue;
                         String name = m.getName();
-                        if (!Modifier.isPrivate(m.getModifiers())) continue;
                         if (name.length() > 1) continue;
                         char c = name.charAt(0);
                         if ('F' <= c && c < 'a')
@@ -330,26 +329,36 @@ public class StartupHook {
 					 }
 					 });
 					 } catch (Exception e) {}*/
-                    //818 or newer
+
                     Class tmp;
                     Class miniapp = null;
-                    try {
-                        miniapp = load("com.tencent.mobileqq.mini.entry.desktop.MiniAppDesktopLayout");
+                    if (Utils.getHostVersionCode() >= 1312) {
+                        //for 8.2.6beta
+                        miniapp = load("com/tencent/mobileqq/mini/entry/MiniAppDesktop");
                         if (miniapp == null) {
-                            tmp = load("com.tencent.mobileqq.mini.entry.desktop.MiniAppDesktopLayout$1");
+                            tmp = load("com/tencent/mobileqq/mini/entry/MiniAppDesktop$1");
                             if (tmp != null) miniapp = tmp.getDeclaredField("this$0").getType();
                         }
-                        if (miniapp == null) {
-                            tmp = load("com.tencent.mobileqq.mini.entry.desktop.MiniAppDesktopLayout$2");
-                            if (tmp != null) miniapp = tmp.getDeclaredField("this$0").getType();
+                    } else {
+                        //for 818
+                        try {
+                            miniapp = load("com.tencent.mobileqq.mini.entry.desktop.MiniAppDesktopLayout");
+                            if (miniapp == null) {
+                                tmp = load("com.tencent.mobileqq.mini.entry.desktop.MiniAppDesktopLayout$1");
+                                if (tmp != null) miniapp = tmp.getDeclaredField("this$0").getType();
+                            }
+                            if (miniapp == null) {
+                                tmp = load("com.tencent.mobileqq.mini.entry.desktop.MiniAppDesktopLayout$2");
+                                if (tmp != null) miniapp = tmp.getDeclaredField("this$0").getType();
+                            }
+                        } catch (Exception ignored) {
                         }
-                    } catch (Exception ignored) {
+                        //for older
+                        if (miniapp == null)
+                            miniapp = load("com/tencent/mobileqq/mini/entry/MiniAppEntryAdapter");
+                        if (miniapp == null)
+                            miniapp = load("com/tencent/mobileqq/mini/entry/MiniAppEntryAdapter$1").getDeclaredField("this$0").getType();
                     }
-                    //for older
-                    if (miniapp == null)
-                        miniapp = load("com/tencent/mobileqq/mini/entry/MiniAppEntryAdapter");
-                    if (miniapp == null)
-                        miniapp = load("com/tencent/mobileqq/mini/entry/MiniAppEntryAdapter$1").getDeclaredField("this$0").getType();
                     XposedBridge.hookAllConstructors(miniapp, new XC_MethodHook(60) {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
