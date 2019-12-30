@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 import static nil.nadph.qnotified.util.Initiator._SessionInfo;
 import static nil.nadph.qnotified.util.Initiator.load;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "rawtypes"})
 @SuppressLint("SimpleDateFormat")
 public class Utils {
 
@@ -310,7 +310,8 @@ public class Utils {
             }
             if (!needPatch) throw e;
         }
-        if (needPatch) ret = method.invoke(obj, argv);
+        //here needPatch is always true
+        ret = method.invoke(obj, argv);
         return ret;
     }
 
@@ -596,8 +597,7 @@ public class Utils {
             if (m == null) return invoke_virtual(baseApplicationImpl, "a", load("mqq/app/AppRuntime"));
             else return m.invoke(baseApplicationImpl);
         } catch (Exception e) {
-            //log("getRuntime:" + e.toString());
-            return null;
+            throw new AssertionError(e);
         }
     }
 
