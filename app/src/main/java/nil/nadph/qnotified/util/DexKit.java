@@ -57,6 +57,7 @@ public class DexKit {
         }
     }
 
+    @Nullable
     public static Class doFindClass(int i) {
         Class ret = tryLoadOrNull(i);
         if (ret != null) return ret;
@@ -132,7 +133,7 @@ public class DexKit {
             case C_ARK_APP_ITEM_BUBBLE_BUILDER:
                 return "ark_app_item_bubble_builder";
         }
-        return null;
+        throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM);
     }
 
     public static String c(int i) {
@@ -180,7 +181,7 @@ public class DexKit {
         if (ret != null) {
             return ret.replace("/", ".");
         }
-        return null;
+        throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM);
     }
 
     public static byte[] b(int i) {
@@ -210,7 +211,7 @@ public class DexKit {
             case C_ARK_APP_ITEM_BUBBLE_BUILDER:
                 return new byte[]{0x0F, 0x64, 0x65, 0x62, 0x75, 0x67, 0x41, 0x72, 0x6B, 0x4D, 0x65, 0x74, 0x61, 0x20, 0x3D, 0x20};
         }
-        return null;
+        throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM);
     }
 
     public static int[] d(int i) {
@@ -240,7 +241,7 @@ public class DexKit {
             case C_ARK_APP_ITEM_BUBBLE_BUILDER:
                 return new int[]{6};
         }
-        return null;
+        throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM);
     }
 
     private static Class a(int i, Class[] classes, DexDeobfReport report) {

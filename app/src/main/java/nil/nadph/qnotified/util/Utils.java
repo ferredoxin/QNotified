@@ -157,7 +157,7 @@ public class Utils {
             m.setAccessible(true);
             m.invoke(obj, str);
         } catch (Exception e) {
-            log(e.toString());
+            log(e);
         }
     }
 
@@ -371,7 +371,6 @@ public class Utils {
 
     public static Object getQQAppInterface() {
         Object o = getAppRuntime();
-        Log.i("QNdump", o.getClass().getCanonicalName());
         return o;
     }
 
@@ -708,7 +707,6 @@ public class Utils {
         } catch (NoClassDefFoundError e) {
             Log.i("Xposed", str);
             Log.i("EdXposed-Bridge", str);
-
         }
         if (V_TOAST) {
             String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/qn_log.txt";

@@ -69,7 +69,7 @@ public class ConfigActivity extends Activity implements Runnable {
     //ClazzExplorer ce;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Utils.log("OnCreate");
+        //Utils.log("OnCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         String str = "";

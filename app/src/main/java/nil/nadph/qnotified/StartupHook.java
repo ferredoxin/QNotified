@@ -176,7 +176,6 @@ public class StartupHook {
             findAndHookMethodIfExists(clazz, "doOnResume", mgr);
             findAndHookMethodIfExists(clazz, "isWrapContent", mgr);
         }
-
 		/*
 		 try {
 		 Method m = null;
@@ -333,7 +332,7 @@ public class StartupHook {
                     Class tmp;
                     Class miniapp = null;
                     if (Utils.getHostVersionCode() >= 1312) {
-                        //for 8.2.6beta
+                        //for 8.2.6
                         miniapp = load("com/tencent/mobileqq/mini/entry/MiniAppDesktop");
                         if (miniapp == null) {
                             tmp = load("com/tencent/mobileqq/mini/entry/MiniAppDesktop$1");
@@ -410,7 +409,7 @@ public class StartupHook {
                     DexKit.doFindClass(DexKit.C_FACADE);
                 }
             }).start();
-        if (DexKit.tryLoadOrNull(DexKit.C_FLASH_PIC_HELPER) == null)
+/*        if (DexKit.tryLoadOrNull(DexKit.C_FLASH_PIC_HELPER) == null)
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -420,7 +419,7 @@ public class StartupHook {
                     }
                     DexKit.doFindClass(DexKit.C_FLASH_PIC_HELPER);
                 }
-            }).start();
+            }).start();*/
     }
 
     public static final XC_MethodHook dummyHook = new XC_MethodHook(200) {

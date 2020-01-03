@@ -1,5 +1,7 @@
 package nil.nadph.qnotified.util;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -8,13 +10,18 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
+import android.os.Build;
 import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedHelpers;
+import org.xmlpull.v1.XmlPullParser;
 
 import java.io.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -30,16 +37,12 @@ public class QThemeKit {
     static public ColorStateList skin_black;
     static public ColorStateList skin_red;
     static public ColorStateList skin_blue;
-    static public ColorStateList skin_text_white;
-    static public ColorStateList qq_setting_item_bg_nor;
-    static public ColorStateList qq_setting_item_bg_pre;
-    static public Drawable skin_list_normal = null, skin_list_item_unread = null, skin_list_pressed = null, skin_icon_arrow_right_normal = null, skin_background = null,
+    static public Drawable qq_setting_item_bg_nor;
+    static public Drawable qq_setting_item_bg_pre;
+    static public Drawable skin_list_item_normal = null, skin_list_item_unread = null, skin_list_item_pressed = null, skin_icon_arrow_right_normal = null, skin_background = null,
             list_checkbox_selected_nopress, list_checkbox_selected, list_checkbox_multi, list_checkbox;
     /*skin_group_list_item_pressed_theme_version2*/
     //static public Drawable skin_tips_newmessage;
-
-
-    private Context mContext;
 
     static private Map<String, Drawable> cachedDrawable = new HashMap<>();
 
@@ -55,20 +58,22 @@ public class QThemeKit {
         skin_gray3
                 = skin_black
                 = skin_red
-                = skin_blue
-                = skin_text_white
-                = qq_setting_item_bg_nor
+                = skin_blue = null;
+        qq_setting_item_bg_nor
                 = qq_setting_item_bg_pre = null;
-        skin_list_normal = skin_list_item_unread = skin_list_pressed
+        skin_list_item_normal = skin_list_item_unread = skin_list_item_pressed
                 = skin_background = null;//=skin_tips_newmessage=null;
         list_checkbox_selected_nopress = list_checkbox_selected = list_checkbox_multi = list_checkbox = null;
+        initThemeByArsc(ctx);
         if (isColorQQThemeActive()) {
             loadResInDir(Environment.getExternalStorageDirectory() + "/QQColor/theme", ctx);
         }
         loadResInDir(locateThemeDir(themeId, ctx), ctx);
         //if(skin_tips_newmessage==null)skin_tips_newmessage= loadDrawableFromAsset("skin_tips_newmessage.9.png");
-        if (skin_list_normal == null) skin_list_normal = loadDrawableFromAsset("skin_list_item_normal.9.png", ctx);
-        if (skin_list_pressed == null) skin_list_pressed = loadDrawableFromAsset("skin_list_item_pressed.9.png", ctx);
+        if (skin_list_item_normal == null)
+            skin_list_item_normal = loadDrawableFromAsset("skin_list_item_normal.9.png", ctx);
+        if (skin_list_item_pressed == null)
+            skin_list_item_pressed = loadDrawableFromAsset("skin_list_item_pressed.9.png", ctx);
         if (list_checkbox_selected_nopress == null)
             list_checkbox_selected_nopress = loadDrawableFromAsset("list_checkbox_selected_nopress.png", ctx);
         if (list_checkbox_selected == null)
@@ -82,10 +87,10 @@ public class QThemeKit {
         if (skin_gray3 == null) skin_gray3 = ColorStateList.valueOf(Color.argb(255, 128, 128, 128));
         if (skin_blue == null) skin_blue = ColorStateList.valueOf(Color.argb(255, 0, 182, 249));
         if (qq_setting_item_bg_nor == null)
-            qq_setting_item_bg_nor = ColorStateList.valueOf(Color.argb(255, 249, 249, 251));
-        if (qq_setting_item_bg_pre == null)
-            qq_setting_item_bg_pre = ColorStateList.valueOf(Color.argb(255, 192, 192, 192));
-        if (skin_background == null) skin_background = new ColorDrawable(qq_setting_item_bg_nor.getDefaultColor());
+            qq_setting_item_bg_nor = new ColorDrawable(Color.argb(255, 249, 249, 251));
+        if (qq_setting_item_bg_pre == null)//
+            qq_setting_item_bg_pre = new ColorDrawable(Color.argb(255, 192, 192, 192));
+        if (skin_background == null) skin_background = new ColorDrawable(Color.argb(255, 240, 240, 240));
     }
 
     public static void loadResInDir(String dir, Context mContext) {
@@ -94,17 +99,17 @@ public class QThemeKit {
             //damn!
         } else {
             String path = null;
-            if (skin_list_normal == null) {
+            if (skin_list_item_normal == null) {
                 path = findDrawableResource(dir, "skin_list_item_normal.9.png", mContext);
                 if (path == null)
                     path = findDrawableResource(dir, "skin_list_item_normal_theme_version2.9.png", mContext);
-                if (path != null) skin_list_normal = loadDrawable(path, mContext);
+                if (path != null) skin_list_item_normal = loadDrawable(path, mContext);
             }
-            if (skin_list_pressed == null) {
+            if (skin_list_item_pressed == null) {
                 path = findDrawableResource(dir, "skin_list_item_pressed.9.png", mContext);
                 if (path == null)
                     path = findDrawableResource(dir, "skin_list_item_pressed_theme_version2.9.png", mContext);
-                if (path != null) skin_list_pressed = loadDrawable(path, mContext);
+                if (path != null) skin_list_item_pressed = loadDrawable(path, mContext);
             }
             if (skin_icon_arrow_right_normal == null) {
                 path = findDrawableResource(dir, "skin_icon_arrow_right_normal.png", mContext);
@@ -136,19 +141,32 @@ public class QThemeKit {
                 if (path != null) list_checkbox = loadDrawable(path, mContext);
             }
 
-
             //path=findDrawableResource(dir,"skin_tips_newmessage.9.png");
             //if(path!=null)skin_tips_newmessage=loadDrawable(path);
-
             path = dir + "/color/";
             if (skin_black == null) skin_black = getStateColorInXml(path + "skin_black.xml");
             if (skin_red == null) skin_red = getStateColorInXml(path + "skin_red.xml");
             if (skin_gray3 == null) skin_gray3 = getStateColorInXml(path + "skin_gray3.xml");
-            if (skin_text_white == null) skin_text_white = getStateColorInXml(path + "skin_black_item.xml");
-            if (qq_setting_item_bg_nor == null)
-                qq_setting_item_bg_nor = getStateColorInXml(path + "qq_setting_item_bg_nor.xml");
-            if (qq_setting_item_bg_pre == null)
-                qq_setting_item_bg_pre = getStateColorInXml(path + "qq_setting_item_bg_pre.xml");
+            if (qq_setting_item_bg_nor == null) {
+                try {
+                    byte[] buf = readAllOrNull(path + "qq_setting_item_bg_nor.xml");
+                    if (buf != null) {
+                        qq_setting_item_bg_nor = axml2Drawable(buf);
+                    }
+                } catch (Exception e) {
+                    log(e);
+                }
+            }
+            if (qq_setting_item_bg_pre == null) {
+                try {
+                    byte[] buf = readAllOrNull(path + "qq_setting_item_bg_pre.xml");
+                    if (buf != null) {
+                        qq_setting_item_bg_pre = axml2Drawable(buf);
+                    }
+                } catch (Exception e) {
+                    log(e);
+                }
+            }
         }
 
 		/*Resources res=ctx.getResources();
@@ -191,7 +209,54 @@ public class QThemeKit {
 		 //*/
     }
 
+    @SuppressLint({"PrivateApi", "DiscouragedPrivateApi"})
+    private static XmlPullParser getParser(byte[] data) {
+        try {
+            Class clazz = Class.forName("android.content.res.XmlBlock");
+            Constructor constructor = clazz.getDeclaredConstructor(byte[].class);
+            constructor.setAccessible(true);
+            Object block = constructor.newInstance(data);
+            Method m = clazz.getDeclaredMethod("newParser");
+            m.setAccessible(true);
+            return (XmlPullParser) m.invoke(block);
+        } catch (Throwable e) {
+            log(e);
+            return null;
+        }
+    }
+
+    public static byte[] readAllOrNull(String s) {
+        try {
+            return readAll(s);
+        } catch (IOException e) {
+            if (!(e instanceof FileNotFoundException)) log(e);
+            return null;
+        }
+    }
+
+    public static byte[] readAll(String path) throws IOException {
+        byte[] buf = new byte[1024];
+        File f = new File(path);
+        FileInputStream fin = new FileInputStream(f);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        int i;
+        while ((i = fin.read(buf)) > 0) {
+            baos.write(buf, 0, i);
+        }
+        fin.close();
+        return baos.toByteArray();
+    }
+
+    @Nullable
+    private static Drawable axml2Drawable(byte[] file) {
+        XmlPullParser parser = getParser(file);
+        if (parser == null) return null;
+        log(new RuntimeException("Stub!"));
+        return null;
+    }
+
     public static boolean isColorQQThemeActive() {
+        //if (true) return false;
         try {
             if (!getApplication().getApplicationInfo().packageName.equals(PACKAGE_NAME_QQ)) return false;
             File f = new File(Environment.getExternalStorageDirectory().getAbsoluteFile() + "/QQColor/setting.xml");
@@ -207,12 +272,51 @@ public class QThemeKit {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
+    private static void initThemeByArsc(Context ctx) {
+        if (ctx == null) return;
+        Field[] fields = QThemeKit.class.getDeclaredFields();
+        Resources arsc = ctx.getResources();
+        String name;
+        boolean success;
+        for (Field f : fields) {
+            name = f.getName();
+            if (!f.getName().contains("_")) continue;
+            success = false;
+            int id = arsc.getIdentifier(name, "color", ctx.getPackageName());
+            if (id != 0) {
+                try {
+                    ColorStateList ret = arsc.getColorStateList(id);
+                    f.set(null, ret);
+                    success = true;
+                } catch (Exception e) {
+                    log(e);
+                }
+            }
+            if (!success) {
+                id = arsc.getIdentifier(name, "drawable", ctx.getPackageName());
+                if (id != 0) {
+                    try {
+                        Drawable ret = arsc.getDrawable(id);
+                        f.set(null, ret);
+                        success = true;
+                    } catch (Exception e) {
+                        log(e);
+                    }
+                }
+            }
+            if (!success) {
+                if (DEBUG) log("Missing res: " + name);
+            }
+        }
+    }
+
     public static StateListDrawable getListItemBackground() {
         StateListDrawable sd = new StateListDrawable();
-        sd.addState(new int[]{android.R.attr.state_pressed}, skin_list_pressed);
+        sd.addState(new int[]{android.R.attr.state_pressed}, skin_list_item_pressed);
         //sd.addState(new int[]{android.R.attr.state_focused},skin_list_pressed);  
-        sd.addState(new int[]{android.R.attr.state_selected}, skin_list_pressed);
-        sd.addState(new int[]{}, skin_list_normal);
+        sd.addState(new int[]{android.R.attr.state_selected}, skin_list_item_pressed);
+        sd.addState(new int[]{}, skin_list_item_normal);
         return sd;
     }
 
@@ -346,7 +450,7 @@ public class QThemeKit {
         return null;
     }
 
-
+    @Deprecated
     public static ColorStateList getStateColorInXml(String file) {
         //log("load xml:" + file);
         byte[] byteSrc = null;
@@ -404,6 +508,7 @@ public class QThemeKit {
     }
 
     public static ColorStateList cloneColor(ColorStateList color) {
+        if (!color.getClass().equals(ColorStateList.class)) return color;
         int[] mColors = (int[]) iget_object_or_null(color, "mColors");
         int[][] mStateSpecs = (int[][]) iget_object_or_null(color, "mStateSpecs");
         return new ColorStateList(mStateSpecs, mColors);

@@ -58,7 +58,7 @@ public class FriendlistExportActivity implements ActivityAdapter {
         final ViewGroup bounceScrollView = (ViewGroup) new_instance(load("com/tencent/mobileqq/widget/BounceScrollView"), self, null, Context.class, AttributeSet.class);
         bounceScrollView.setLayoutParams(mmlp);
         bounceScrollView.addView(ll, new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-        bounceScrollView.setBackgroundColor(QThemeKit.qq_setting_item_bg_nor.getDefaultColor());
+        bounceScrollView.setBackgroundDrawable(QThemeKit.qq_setting_item_bg_nor);
         LinearLayout.LayoutParams fixlp = new LinearLayout.LayoutParams(MATCH_PARENT, dip2px(self, 48));
         RelativeLayout.LayoutParams __lp_l = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
         int mar = (int) (dip2px(self, 12) + 0.5f);

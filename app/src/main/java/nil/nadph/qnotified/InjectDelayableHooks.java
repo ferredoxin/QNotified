@@ -9,13 +9,11 @@ import android.widget.TextView;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.QThemeKit;
-import nil.nadph.qnotified.util.Utils;
 
 import java.util.ArrayList;
 
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.dip2px;
-import static nil.nadph.qnotified.util.Utils.iget_object_or_null;
+import static nil.nadph.qnotified.util.Utils.*;
 
 public class InjectDelayableHooks {
 
@@ -40,7 +38,7 @@ public class InjectDelayableHooks {
             try {
                 if (ctx != null) QThemeKit.initTheme(ctx);
             } catch (Throwable e) {
-                Utils.log(e);
+                log(e);
             }
             final ArrayList<Integer> todos = new ArrayList<>();
             for (BaseDelayableHook h : hooks) {
@@ -87,7 +85,11 @@ public class InjectDelayableHooks {
             }
         }
         for (BaseDelayableHook h : hooks) {
-            if (h.isEnabled() && h.isTargetProc()) h.init();
+            try {
+                if (h.isEnabled() && h.isTargetProc() && h.checkPreconditions()) h.init();
+            } catch (Throwable e) {
+                log(e);
+            }
         }
         if (ctx != null && main[0] != null) ctx.runOnUiThread(new Runnable() {
             @Override

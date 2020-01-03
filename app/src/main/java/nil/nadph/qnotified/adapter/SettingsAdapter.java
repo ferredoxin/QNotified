@@ -51,7 +51,7 @@ public class SettingsAdapter implements ActivityAdapter {
         //invoke_virtual(bounceScrollView,"a",true,500,500,boolean.class,int.class,int.class);
         bounceScrollView.setLayoutParams(mmlp);
         bounceScrollView.addView(ll, new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-        bounceScrollView.setBackgroundColor(QThemeKit.qq_setting_item_bg_nor.getDefaultColor());
+        bounceScrollView.setBackgroundDrawable(QThemeKit.qq_setting_item_bg_nor);
         //invoke_virtual(bounceScrollView,"setNeedHorizontalGesture",true,boolean.class);
         LinearLayout.LayoutParams fixlp = new LinearLayout.LayoutParams(MATCH_PARENT, dip2px(self, 48));
         RelativeLayout.LayoutParams __lp_l = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
@@ -66,14 +66,18 @@ public class SettingsAdapter implements ActivityAdapter {
         ColorStateList hiColor = ColorStateList.valueOf(Color.argb(255, 242, 140, 72));
         RelativeLayout _t;
 
-        ll.addView(subtitle(self, "标准功能"));
+        ll.addView(subtitle(self, "遗留功能"));
         ll.addView(newListItemButton(self, "群发文本消息", "适度使用以免永冻", null, clickToBatchMsg()));
+        ll.addView(subtitle(self, "基本功能"));
         ll.addView(newListItemSwitchConfigInit(self, "语音转发", "长按语音消息", qn_enable_ptt_forward, false, PttForwardHook.get()));
-        ll.addView(newListItemSwitchConfigInit(self, "发送卡片消息", "xml,json等", qn_send_card_msg, false, CardMsgHook.get()));
+        ll.addView(newListItemSwitchConfigInit(self, "发送卡片消息", "仅支持AppArkMsg(json)", qn_send_card_msg, false, CardMsgHook.get()));
+        ll.addView(newListItemSwitchConfigInit(self, "复读机(+1)", null, bug_repeater, false, RepeaterHook.get()));
         ll.addView(subtitle(self, "净化设置"));
         if (!Utils.isTim(self)) {
             ll.addView(newListItemSwitchConfigNext(self, "隐藏小程序入口", "隐藏消息列表下拉出现的小程序列表", qn_hide_msg_list_miniapp, false));
+            ll.addView(newListItemSwitchConfigInit(self, "隐藏送礼动画", null, qn_hide_gift_animation, false, HideGiftAnim.get()));
         }
+        ll.addView(newListItemSwitchConfigInit(self, "签到文本化", null, qn_sign_in_as_text, false, SimpleCheckInHook.get()));
         ll.addView(subtitle(self, "消息通知设置(不影响接收消息)屏蔽后可能仍有[橙字],但不会有通知)"));
         ll.addView(subtitle(self, "    注:屏蔽后可能仍有[橙字],但不会有通知"));
         ll.addView(_t = newListItemButton(self, "屏蔽指定群@全体成员通知", Html.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[@全体成员]</font>就这点破事"), "%d个群", clickToProxyActAction(ACTION_MUTE_AT_ALL)));
@@ -87,17 +91,12 @@ public class SettingsAdapter implements ActivityAdapter {
         }
         //ll.addView(newListItemSwitchConfigInit(self, "聊天图片背景透明", null, qn_gallery_bg, false, GalleryBgHook.get()));
         ll.addView(subtitle(self, "实验性功能"));
-        ll.addView(newListItemSwitchConfigInit(self, "复读机", null, bug_repeater, false, RepeaterHook.get()));
         ll.addView(newListItemSwitchConfigInit(self, "收藏更多表情", "保存在本地", qqhelper_fav_more_emo, false, FavMoreEmo.get()));
         ll.addView(newListItemSwitchConfigInit(self, "防撤回", "来自旧版QX,稳定性不如最新版QX", qn_anti_revoke_msg, false, RevokeMsgHook.get()));
         ll.addView(subtitle(self, "好友列表"));
         ll.addView(newListItemButton(self, "历史好友", null, null, clickToProxyActAction(ACTION_EXFRIEND_LIST)));
         ll.addView(newListItemButton(self, "导出历史好友列表", "支持csv/json格式", null, clickToProxyActAction(ACTION_FRIENDLIST_EXPORT_ACTIVITY)));
-        if (!Utils.isTim(self)) {
-            ll.addView(newListItemSwitchConfigNext(self, "隐藏分组下方入口", "隐藏分组列表最下方的历史好友按钮", qn_hide_ex_entry_group, false));
-            ll.addView(newListItemSwitchConfigInit(self, "隐藏送礼动画", null, qn_hide_gift_animation, false, HideGiftAnim.get()));
-        }
-        ll.addView(newListItemSwitchConfigInit(self, "签到文本化", null, qn_sign_in_as_text, false, SimpleCheckInHook.get()));
+        ll.addView(newListItemSwitchConfigNext(self, "隐藏分组下方入口", "隐藏分组列表最下方的历史好友按钮", qn_hide_ex_entry_group, false));
         ll.addView(subtitle(self, "还没完成的功能(咕咕咕)"));
         ll.addView(newListItemSwitchConfigStub(self, "屏蔽回执消息的通知", null, qn_mute_talk_back, false));
         ll.addView(newListItemSwitchConfigStub(self, "禁止自动@", "[>=8.1.3]去除回复消息时自动@特性", qn_disable_auto_at, false));
@@ -120,8 +119,8 @@ public class SettingsAdapter implements ActivityAdapter {
         ll.addView(newListItemButton(self, "Shell.exec", "正常情况下无需使用此功能", null, clickTheComing()));
         ll.addView(subtitle(self, "作者"));
         ll.addView(newListItemButton(self, "打赏", "请选择扶贫方式", null, clickToProxyActAction(ACTION_DONATE_ACTIVITY)));
-        /*if (isNiceUser())*/
-        ll.addView(newListItemButton(self, "QQ", "点击私信反馈(bug,建议等等)", "1041703712", clickToChat()));
+        if (isNiceUser())
+            ll.addView(newListItemButton(self, "QQ", "点击私信反馈(bug,建议等等)", "1041703712", clickToChat()));
         ll.addView(newListItemButton(self, "Mail", null, "xenonhydride@gmail.com", null));
         ll.addView(newListItemButton(self, "Github", "Bug -> Issue (star)", "cinit/QNotified", clickToUrl("https://github.com/cinit/QNotified")));
         ll.addView(newListItemButton(self, "Telegram", null, "Auride", clickToUrl("https://t.me/Auride")));

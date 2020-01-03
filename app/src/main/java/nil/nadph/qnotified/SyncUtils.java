@@ -81,7 +81,7 @@ public class SyncUtils {
         filter.addAction(HOOK_DO_INIT);
         ctx.registerReceiver(recv, filter);
         inited = true;
-        log("Proc:  " + android.os.Process.myPid() + "/" + getProcessType() + "/" + getProcessName());
+        //log("Proc:  " + android.os.Process.myPid() + "/" + getProcessType() + "/" + getProcessName());
     }
 
     public static void onFileChanged(int file) {
