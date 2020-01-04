@@ -65,15 +65,14 @@ public class ActProxyMgr extends XC_MethodHook {
                     ActProxyMgr.invokeSuper(self, m, param.args);
                 } catch (ActProxyMgr.BreakUnaughtException ignored) {
                 }
-                try {
-                    self.getWindow().getDecorView().setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+                aa = createActivityAdapter(action, self);
+				try {
+					QThemeKit.initTheme(self);
+                	Object exlist_mFlingHandler = new_instance(load("com/tencent/mobileqq/activity/fling/FlingGestureHandler"), self, Activity.class);
+                	iput_object(self, "mFlingHandler", exlist_mFlingHandler);
                 } catch (Throwable e) {
                     log(e);
                 }
-                aa = createActivityAdapter(action, self);
-                Object exlist_mFlingHandler = new_instance(load("com/tencent/mobileqq/activity/fling/FlingGestureHandler"), self, Activity.class);
-                iput_object(self, "mFlingHandler", exlist_mFlingHandler);
-                QThemeKit.initTheme(self);
                 aa.doOnPostCreate((Bundle) param.args[0]);
                 self.getWindow().getDecorView().setTag(aa);
             } else {
