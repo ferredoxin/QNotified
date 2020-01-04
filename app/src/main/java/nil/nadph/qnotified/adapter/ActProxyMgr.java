@@ -3,6 +3,7 @@ package nil.nadph.qnotified.adapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.util.QThemeKit;
@@ -48,10 +49,11 @@ public class ActProxyMgr extends XC_MethodHook {
     protected void beforeHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
         if (ActProxyMgr.isInfiniteLoop()) return;
         final Activity self = (Activity) param.thisObject;
-        int id = self.getIntent().getExtras().getInt(ACTIVITY_PROXY_ID_TAG, -1);
-        int action = self.getIntent().getExtras().getInt(ACTIVITY_PROXY_ACTION, -1);
-        if (id <= 0) return;
-        if (action <= 0) return;
+        Bundle b = self.getIntent().getExtras();
+        if (b == null) return;
+        int id = b.getInt(ACTIVITY_PROXY_ID_TAG, -1);
+        int action = b.getInt(ACTIVITY_PROXY_ACTION, -1);
+        if (id <= 0 || action <= 0) return;
         param.setResult(null);
         ActivityAdapter aa;
         Method method = (Method) param.method;
@@ -62,6 +64,11 @@ public class ActProxyMgr extends XC_MethodHook {
                 try {
                     ActProxyMgr.invokeSuper(self, m, param.args);
                 } catch (ActProxyMgr.BreakUnaughtException ignored) {
+                }
+                try {
+                    self.getWindow().getDecorView().setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+                } catch (Throwable e) {
+                    log(e);
                 }
                 aa = createActivityAdapter(action, self);
                 Object exlist_mFlingHandler = new_instance(load("com/tencent/mobileqq/activity/fling/FlingGestureHandler"), self, Activity.class);
@@ -77,7 +84,7 @@ public class ActProxyMgr extends XC_MethodHook {
                         m.setAccessible(true);
                         try {
                             ActProxyMgr.invokeSuper(self, m);
-                        } catch (ActProxyMgr.BreakUnaughtException e) {
+                        } catch (ActProxyMgr.BreakUnaughtException ignored) {
                         }
                         aa.doOnPostDestory();
                         break;
@@ -86,7 +93,7 @@ public class ActProxyMgr extends XC_MethodHook {
                         m.setAccessible(true);
                         try {
                             ActProxyMgr.invokeSuper(self, m);
-                        } catch (ActProxyMgr.BreakUnaughtException e) {
+                        } catch (ActProxyMgr.BreakUnaughtException ignored) {
                         }
                         aa.doOnPostPause();
                         break;
@@ -95,7 +102,7 @@ public class ActProxyMgr extends XC_MethodHook {
                         m.setAccessible(true);
                         try {
                             ActProxyMgr.invokeSuper(self, m);
-                        } catch (ActProxyMgr.BreakUnaughtException e) {
+                        } catch (ActProxyMgr.BreakUnaughtException ignored) {
                         }
                         aa.doOnPostResume();
                         break;
@@ -104,7 +111,7 @@ public class ActProxyMgr extends XC_MethodHook {
                         m.setAccessible(true);
                         try {
                             ActProxyMgr.invokeSuper(self, m, param.args);
-                        } catch (ActProxyMgr.BreakUnaughtException e) {
+                        } catch (ActProxyMgr.BreakUnaughtException ignored) {
                         }
                         aa.doOnPostActivityResult((int) param.args[0], (int) param.args[1], (Intent) param.args[2]);
                         break;
@@ -174,7 +181,6 @@ public class ActProxyMgr extends XC_MethodHook {
      * @param args:
      * @return the return value(if it has,or null)
      * @throws InvocationTargetException TODO: Replace this fragile method with JNI
-     * @hidden
      * @deprecated
      */
     @Deprecated

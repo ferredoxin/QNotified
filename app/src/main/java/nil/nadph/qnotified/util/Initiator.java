@@ -6,6 +6,7 @@ import dalvik.system.DexClassLoader;
 import dalvik.system.PathClassLoader;
 
 
+@SuppressWarnings("rawtypes")
 public class Initiator {
 
     private Context mContext;
@@ -24,6 +25,7 @@ public class Initiator {
         return qqClassLoader;
     }
 
+    @Nullable
     public static Class<?> load(String className) {
         if (qqClassLoader == null || className == null || className.isEmpty()) {
             return null;
@@ -46,7 +48,21 @@ public class Initiator {
         Class mPicItemBuilder = load("com.tencent.mobileqq.activity.aio.item.PicItemBuilder");
         if (mPicItemBuilder == null) {
             try {
+                tmp = load("com.tencent.mobileqq.activity.aio.item.PicItemBuilder$7");
+                mPicItemBuilder = tmp.getDeclaredField("this$0").getType();
+            } catch (Exception ignored) {
+            }
+        }
+        if (mPicItemBuilder == null) {
+            try {
                 tmp = load("com.tencent.mobileqq.activity.aio.item.PicItemBuilder$6");
+                mPicItemBuilder = tmp.getDeclaredField("this$0").getType();
+            } catch (Exception ignored) {
+            }
+        }
+        if (mPicItemBuilder == null) {
+            try {
+                tmp = load("com.tencent.mobileqq.activity.aio.item.PicItemBuilder$8");
                 mPicItemBuilder = tmp.getDeclaredField("this$0").getType();
             } catch (Exception ignored) {
             }
@@ -64,7 +80,47 @@ public class Initiator {
             } catch (Exception ignored) {
             }
         }
+        if (mTextItemBuilder == null) {
+            try {
+                tmp = load("com/tencent/mobileqq/activity/aio/item/TextItemBuilder$6");
+                mTextItemBuilder = tmp.getDeclaredField("this$0").getType();
+            } catch (Exception ignored) {
+            }
+        }
         return mTextItemBuilder;
+    }
+
+    public static Class _UpgradeController() {
+        Class tmp;
+        Class clazz = load("com.tencent.mobileqq.app.upgrade.UpgradeController");
+        if (clazz == null) {
+            try {
+                tmp = load("com.tencent.mobileqq.app.upgrade.UpgradeController$1");
+                clazz = tmp.getDeclaredField("this$0").getType();
+            } catch (Exception ignored) {
+            }
+        }
+        if (clazz == null) {
+            try {
+                tmp = load("com.tencent.mobileqq.app.upgrade.UpgradeController$2");
+                clazz = tmp.getDeclaredField("this$0").getType();
+            } catch (Exception ignored) {
+            }
+        }
+        return clazz;
+    }
+
+    public static Class _BannerManager() {
+        Class tmp;
+        Class clazz = load("com.tencent.mobileqq.activity.recent.BannerManager");
+        for (int i = 38; clazz == null && i < 42; i++) {
+            try {
+                tmp = load("com.tencent.mobileqq.activity.recent.BannerManager$" + i);
+                clazz = tmp.getDeclaredField("this$0").getType();
+            } catch (Exception ignored) {
+            }
+        }
+        return clazz;
     }
 
     public static Class _PttItemBuilder() {

@@ -17,9 +17,7 @@ import java.util.HashMap;
 
 import static nil.nadph.qnotified.util.Initiator.load;
 
-//import de.robv.android.xposed.*;
-
-
+@SuppressWarnings("rawtypes")
 public class FaceImpl implements InvocationHandler {
 
     public static final int TYPE_USER = 1;

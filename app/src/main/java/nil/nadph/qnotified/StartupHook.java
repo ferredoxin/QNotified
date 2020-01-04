@@ -26,6 +26,7 @@ import static nil.nadph.qnotified.util.Utils.*;
 
 /*TitleKit:Lcom/tencent/mobileqq/widget/navbar/NavBarCommon*/
 
+@SuppressWarnings("rawtypes")
 public class StartupHook {
     public static WeakReference<Activity> splashActivityRef;
     public static final String QN_FULL_TAG = "qn_full_tag";
@@ -160,6 +161,7 @@ public class StartupHook {
             first_stage_inited = true;
         } catch (Throwable e) {
             if ((e + "").contains("com.bug.zqq")) return;
+            if ((e + "").contains("com.google.android.webview")) return;
             log(e);
             throw e;
         }
@@ -438,7 +440,7 @@ public class StartupHook {
         @Override
         protected void afterHookedMethod(MethodHookParam param) throws IllegalAccessException, IllegalArgumentException {
             Member m = param.method;
-            String ret = m.getDeclaringClass().getSimpleName() + "->" + ((m instanceof Method) ? m.getName() : "<init>") + "(";
+            StringBuilder ret = new StringBuilder(m.getDeclaringClass().getSimpleName() + "->" + ((m instanceof Method) ? m.getName() : "<init>") + "(");
             Class[] argt;
             if (m instanceof Method)
                 argt = ((Method) m).getParameterTypes();
@@ -446,18 +448,18 @@ public class StartupHook {
                 argt = ((Constructor) m).getParameterTypes();
             else argt = new Class[0];
             for (int i = 0; i < argt.length; i++) {
-                if (i != 0) ret += ",\n";
-                ret += param.args[i];
+                if (i != 0) ret.append(",\n");
+                ret.append(param.args[i]);
             }
-            ret += ")=" + param.getResult();
-            Utils.log(ret);
-            ret = "↑dump object:" + m.getDeclaringClass().getCanonicalName() + "\n";
+            ret.append(")=").append(param.getResult());
+            Utils.log(ret.toString());
+            ret = new StringBuilder("↑dump object:" + m.getDeclaringClass().getCanonicalName() + "\n");
             Field[] fs = m.getDeclaringClass().getDeclaredFields();
             for (int i = 0; i < fs.length; i++) {
                 fs[i].setAccessible(true);
-                ret += (i < fs.length - 1 ? "├" : "↓") + fs[i].getName() + "=" + ClazzExplorer.en_toStr(fs[i].get(param.thisObject)) + "\n";
+                ret.append(i < fs.length - 1 ? "├" : "↓").append(fs[i].getName()).append("=").append(ClazzExplorer.en_toStr(fs[i].get(param.thisObject))).append("\n");
             }
-            log(ret);
+            log(ret.toString());
             Utils.dumpTrace();
         }
     };

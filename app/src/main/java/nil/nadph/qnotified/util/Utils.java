@@ -56,7 +56,8 @@ public class Utils {
             qn_anti_revoke_msg = "qn_anti_revoke_msg",
             qn_round_avatar = "qn_round_avatar",
             qn_mute_thumb_up = "qn_mute_thumb_up",
-            qn_disable_auto_at = "qn_disable_auto_at";
+            qn_disable_auto_at = "qn_disable_auto_at",
+            qh_pre_upgrade = "qh_pre_upgrade";
 
     public static boolean DEBUG = true;
     public static boolean V_TOAST = false;
@@ -437,6 +438,7 @@ public class Utils {
         String viewStr = "android.view.View";
         Field field;
         try {
+            //noinspection JavaReflectionMemberAccess
             field = Class.forName(viewStr).getDeclaredField("mOnClickListener");
             retrievedListener = (View.OnClickListener) field.get(view);
         } catch (NoSuchFieldException ex) {
@@ -623,9 +625,8 @@ public class Utils {
                 assert cl_flh != null;
                 cl_bh = cl_flh.getSuperclass();
             }
-            Object ret = invoke_virtual(getQQAppInterface(), "a", type, int.class, cl_bh);
             //log("bh(" + type + ")=" + ret);
-            return ret;
+            return invoke_virtual(getQQAppInterface(), "a", type, int.class, cl_bh);
         } catch (Exception e) {
             log(e);
             return null;
@@ -1174,10 +1175,10 @@ public class Utils {
         public String nick;
 
         public String getId() {
-            String msg = "";
+            StringBuilder msg = new StringBuilder();
             if (uin.length() < 10) {
                 for (int i = 0; i < 10 - uin.length(); i++) {
-                    msg = msg + "0";
+                    msg.append("0");
                 }
             }
             return msg + uin + uinType;

@@ -4,9 +4,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import static java.lang.annotation.ElementType.*;
-import static java.lang.annotation.RetentionPolicy.SOURCE;
+import static java.lang.annotation.RetentionPolicy.CLASS;
 
-@Retention(SOURCE)
+@Retention(CLASS)
 @Target({METHOD, PARAMETER, FIELD})
 public @interface Nullable {
 }

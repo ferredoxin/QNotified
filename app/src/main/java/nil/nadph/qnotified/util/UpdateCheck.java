@@ -235,11 +235,11 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
                     case 1:
                         sb.append("新版本");
                 }
-                sb.append("\n发布于" + date);
+                sb.append("\n发布于").append(date);
                 sb.append(beta ? " (测试版) " : "");
                 sb.append('\n');
                 if (taichi) sb.append("已适配太极\n");
-                sb.append("md5:" + md5 + "\n");
+                sb.append("md5:").append(md5).append("\n");
                 sb.append(desc);
                 sb.append("\n下载地址:\n");
                 for (Object obj2 : ver.__("urls")._$_E()) {
