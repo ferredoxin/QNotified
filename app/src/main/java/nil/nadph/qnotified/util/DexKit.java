@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
+@SuppressWarnings("rawtypes")
 public class DexKit {
 
     //WARN: NEVER change the index!

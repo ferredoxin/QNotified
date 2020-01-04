@@ -130,6 +130,7 @@ public class RevokeMsgHook extends BaseDelayableHook {
     }
 
     private String getFriendName(String friendUin, String senderUin) {
+        //TODO: 群名片>备注>昵称>uin
         String nickname = null;
         try {
             if (friendUin != null) {
@@ -138,7 +139,6 @@ public class RevokeMsgHook extends BaseDelayableHook {
             if (TextUtils.isEmpty(nickname)) {
                 nickname = (String) callStaticMethod(DexKit.doFindClass(DexKit.C_CONTACT_UTILS), "b", getQQAppInterface(), senderUin, true);
             }
-            //TODO: Fix ContactUtils class
             if (TextUtils.isEmpty(nickname)) {
                 nickname = senderUin;
             }

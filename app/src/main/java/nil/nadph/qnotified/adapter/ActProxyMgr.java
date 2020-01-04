@@ -174,13 +174,13 @@ public class ActProxyMgr extends XC_MethodHook {
 
 
     /**
-     * method invokeSuper
+     * invoke the super method, for Context life-cycle only
      *
      * @param obj:     thisObject,should be null if it's a static method
      * @param smethod: the SUPER method(you must get it from its super class) you want to invoke
      * @param args:
      * @return the return value(if it has,or null)
-     * @throws InvocationTargetException TODO: Replace this fragile method with JNI
+     * @throws InvocationTargetException TODO: Replace this fragile method with JNI or other method
      * @deprecated
      */
     @Deprecated
