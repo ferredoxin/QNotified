@@ -657,6 +657,9 @@ public class ExfriendManager {
         }
         doNotifyDelFlAndSave(ptr);
         lastUpdateTimeSec = fcs[0].serverTime;
+        if (lastUpdateTimeSec == 0) {
+            lastUpdateTimeSec = System.currentTimeMillis() / 1000L;
+        }
     }
 
     public void markActiveDelete(long uin) {
@@ -705,7 +708,7 @@ public class ExfriendManager {
             dirtyFlag = true;
         }
         fileData.getAllConfig().put("lastUpdateFl", lastUpdateTimeSec);
-        log("Friendlist updated @" + lastUpdateTimeSec);
+        //log("Friendlist updated @" + lastUpdateTimeSec);
         dbg();
         saveConfigure();
         dbg();
@@ -743,7 +746,7 @@ public class ExfriendManager {
             return;
         }
         try {
-            log("Request friendlist update for " + mUin + " ...");
+            //log("Request friendlist update for " + mUin + " ...");
             invoke_virtual(Utils.getFriendListHandler(), "a", true, true, boolean.class, boolean.class, void.class);
         } catch (Exception e) {
             log(e);

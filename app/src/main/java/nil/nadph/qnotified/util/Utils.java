@@ -57,7 +57,8 @@ public class Utils {
             qn_round_avatar = "qn_round_avatar",
             qn_mute_thumb_up = "qn_mute_thumb_up",
             qn_disable_auto_at = "qn_disable_auto_at",
-            qh_pre_upgrade = "qh_pre_upgrade";
+            qh_pre_upgrade = "qh_pre_upgrade",
+            qh_random_cheat = "qh_random_cheat";
 
     public static boolean DEBUG = true;
     public static boolean V_TOAST = false;

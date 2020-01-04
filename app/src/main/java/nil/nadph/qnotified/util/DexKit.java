@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
@@ -33,9 +34,11 @@ public class DexKit {
     public static final int C_CONTACT_UTILS = 11;
     public static final int C_VIP_UTILS = 12;
     public static final int C_ARK_APP_ITEM_BUBBLE_BUILDER = 13;
+    public static final int C_PNG_FRAME_UTIL = 14;
+    public static final int C_PIC_EMOTICON_INFO = 15;
 
     //the last index
-    public static final int DEOBF_NUM = 13;
+    public static final int DEOBF_NUM = 15;
 
     @Nullable
     public static Class tryLoadOrNull(int i) {
@@ -132,6 +135,10 @@ public class DexKit {
                 return "vip_utils";
             case C_ARK_APP_ITEM_BUBBLE_BUILDER:
                 return "ark_app_item_bubble_builder";
+            case C_PNG_FRAME_UTIL:
+                return "png_frame_util";
+            case C_PIC_EMOTICON_INFO:
+                return "pic_emoticon_info";
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM);
     }
@@ -175,6 +182,12 @@ public class DexKit {
             case C_ARK_APP_ITEM_BUBBLE_BUILDER:
                 ret = "com/tencent/mobileqq/activity/aio/item/ArkAppItemBubbleBuilder";
                 break;
+            case C_PNG_FRAME_UTIL:
+                ret = "com.tencent.mobileqq.magicface.drawable.PngFrameUtil";
+                break;
+            case C_PIC_EMOTICON_INFO:
+                ret = "com.tencent.mobileqq.emoticonview.PicEmoticonInfo";
+                break;
             default:
                 ret = null;
         }
@@ -213,11 +226,14 @@ public class DexKit {
                 return new byte[][]{new byte[]{0x05, 0x6A, 0x68, 0x61, 0x6E, 0x5F}};
             case C_ARK_APP_ITEM_BUBBLE_BUILDER:
                 return new byte[][]{new byte[]{0x0F, 0x64, 0x65, 0x62, 0x75, 0x67, 0x41, 0x72, 0x6B, 0x4D, 0x65, 0x74, 0x61, 0x20, 0x3D, 0x20}};
+            case C_PNG_FRAME_UTIL:
+                return new byte[][]{new byte[]{0x2A, 0x66, 0x75, 0x6E, 0x63, 0x20, 0x63, 0x68, 0x65, 0x63, 0x6B, 0x52, 0x61, 0x6E, 0x64, 0x6F, 0x6D, 0x50, 0x6E, 0x67, 0x45, 0x78}};
+            case C_PIC_EMOTICON_INFO:
+                return new byte[][]{new byte[]{0x20, 0x73, 0x65, 0x6E, 0x64, 0x20, 0x65, 0x6D, 0x6F, 0x74, 0x69, 0x6F, 0x6E, 0x20, 0x2B, 0x20, 0x31, 0x3A}};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM);
     }
 
-    //9
     public static int[] d(int i) {
         switch (i) {
             case C_DIALOG_UTIL:
@@ -244,6 +260,10 @@ public class DexKit {
                 return new int[]{4, 2, 3};
             case C_ARK_APP_ITEM_BUBBLE_BUILDER:
                 return new int[]{11, 6};
+            case C_PNG_FRAME_UTIL:
+                return new int[]{2};
+            case C_PIC_EMOTICON_INFO:
+                return new int[]{4};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM);
     }
@@ -308,6 +328,29 @@ public class DexKit {
                     if (!Modifier.isAbstract(sp.getModifiers())) continue;
                     if (sp.getName().contains("Builder")) return clz;
                     return clz;
+                }
+                break;
+            case C_PNG_FRAME_UTIL:
+                for (Class clz : classes) {
+                    for (Method m : clz.getMethods()) {
+                        if (m.getName().equals("b")) continue;
+                        if (!m.getReturnType().equals(int.class)) continue;
+                        if (!Modifier.isStatic(m.getModifiers())) continue;
+                        Class[] argt = m.getParameterTypes();
+                        if (argt.length == 1 && int.class.equals(argt[0])) return clz;
+                    }
+                    return clz;
+                }
+                break;
+            case C_PIC_EMOTICON_INFO:
+                for (Class clz : classes) {
+                    if (Modifier.isAbstract(clz.getModifiers())) continue;
+                    Class s = clz.getSuperclass();
+                    if (Object.class.equals(s)) continue;
+                    s = s.getSuperclass();
+                    if (Object.class.equals(s)) continue;
+                    s = s.getSuperclass();
+                    if (Object.class.equals(s)) return clz;
                 }
                 break;
         }

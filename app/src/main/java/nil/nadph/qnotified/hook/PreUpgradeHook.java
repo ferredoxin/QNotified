@@ -1,6 +1,5 @@
 package nil.nadph.qnotified.hook;
 
-import android.view.View;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
@@ -13,13 +12,13 @@ import static nil.nadph.qnotified.util.Initiator._UpgradeController;
 import static nil.nadph.qnotified.util.Utils.log;
 import static nil.nadph.qnotified.util.Utils.qh_pre_upgrade;
 
-public class PreUpdateHook extends BaseDelayableHook {
-    private PreUpdateHook() {
+public class PreUpgradeHook extends BaseDelayableHook {
+    private PreUpgradeHook() {
     }
 
-    private static final PreUpdateHook self = new PreUpdateHook();
+    private static final PreUpgradeHook self = new PreUpgradeHook();
 
-    public static PreUpdateHook get() {
+    public static PreUpgradeHook get() {
         return self;
     }
 
@@ -43,9 +42,7 @@ public class PreUpdateHook extends BaseDelayableHook {
                     break;
                 }
             }
-
-            
-            Method method1 = getMethod(mBannerManager, "n", View.class);
+            /*Method method1 = getMethod(_BannerManager(), "n", View.class);
             if (method1 != null) {
                 XposedBridge.hookMethod(method1, new XC_MethodHook() {
                     @Override
@@ -53,7 +50,7 @@ public class PreUpdateHook extends BaseDelayableHook {
                         param.setResult(null);
                     }
                 });
-            }
+            }*/
             inited = true;
             return true;
         } catch (Throwable e) {

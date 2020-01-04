@@ -78,7 +78,7 @@ public class SettingsAdapter implements ActivityAdapter {
             ll.addView(newListItemSwitchConfigInit(self, "隐藏送礼动画", null, qn_hide_gift_animation, false, HideGiftAnim.get()));
         }
         ll.addView(newListItemSwitchConfigInit(self, "签到文本化", null, qn_sign_in_as_text, false, SimpleCheckInHook.get()));
-        ll.addView(newListItemSwitchConfigInit(self, "屏蔽更新提醒", null, qh_pre_upgrade, false, PreUpdateHook.get()));
+        ll.addView(newListItemSwitchConfigInit(self, "屏蔽更新提醒", null, qh_pre_upgrade, false, PreUpgradeHook.get()));
         ll.addView(subtitle(self, "消息通知设置(不影响接收消息)屏蔽后可能仍有[橙字],但不会有通知)"));
         ll.addView(subtitle(self, "    注:屏蔽后可能仍有[橙字],但不会有通知"));
         ll.addView(_t = newListItemButton(self, "屏蔽指定群@全体成员通知", Html.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[@全体成员]</font>就这点破事"), "%d个群", clickToProxyActAction(ACTION_MUTE_AT_ALL)));
@@ -93,6 +93,7 @@ public class SettingsAdapter implements ActivityAdapter {
         //ll.addView(newListItemSwitchConfigInit(self, "聊天图片背景透明", null, qn_gallery_bg, false, GalleryBgHook.get()));
         ll.addView(subtitle(self, "实验性功能"));
         ll.addView(newListItemSwitchConfigInit(self, "收藏更多表情", "保存在本地", qqhelper_fav_more_emo, false, FavMoreEmo.get()));
+        ll.addView(newListItemSwitchConfigInit(self, "自定义猜拳骰子", null, qh_random_cheat, false, CheatHook.get()));
         ll.addView(newListItemSwitchConfigInit(self, "防撤回", "来自旧版QX,稳定性不如最新版QX", qn_anti_revoke_msg, false, RevokeMsgHook.get()));
         ll.addView(subtitle(self, "好友列表"));
         ll.addView(newListItemButton(self, "历史好友", null, null, clickToProxyActAction(ACTION_EXFRIEND_LIST)));
