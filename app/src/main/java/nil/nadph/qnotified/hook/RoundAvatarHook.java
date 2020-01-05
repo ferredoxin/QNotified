@@ -41,6 +41,11 @@ public class RoundAvatarHook extends BaseDelayableHook {
             XC_MethodHook hook = new XC_MethodHook(43) {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    try {
+                        if (!ConfigManager.getDefault().getBooleanOrFalse(qn_round_avatar)) return;
+                    } catch (Throwable e) {
+                        log(e);
+                    }
                     param.setResult(false);
                 }
             };

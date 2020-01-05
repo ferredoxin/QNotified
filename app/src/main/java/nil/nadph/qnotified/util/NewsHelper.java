@@ -99,7 +99,7 @@ public class NewsHelper implements Runnable {
             if (old != null) {
                 try {
                     news = News.formJson(old);
-                    needUpdate = news.time + news.ttl < System.currentTimeMillis() / 1000L;
+                    needUpdate = news.time + INTERVAL_SEC < System.currentTimeMillis() / 1000L;
                 } catch (Exception ignored) {
                 }
             }
@@ -141,6 +141,7 @@ public class NewsHelper implements Runnable {
                 } catch (Exception ignored) {
                 }
             }
+            tv.setVisibility(View.VISIBLE);
         } else {
             tv.setVisibility(View.GONE);
         }
