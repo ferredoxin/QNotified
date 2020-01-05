@@ -67,10 +67,6 @@ public class ExfriendManager {
         return mUin;
     }
 
-    private void dbg() {
-        //log(Utils.getLineNo(2)+"=>"+(persons!=null?(persons.get(3211711411l)+""):"<null>"));
-    }
-
     private static Runnable asyncUpdateAwaitingTask = new Runnable() {
         @Override
         public void run() {
@@ -119,13 +115,11 @@ public class ExfriendManager {
             mUin = uin;
             try {
                 loadSavedPersonsInfo();
-                dbg();
                 try {
                     mStdRemarks = getFriendsConcurrentHashMap(getFriendsManager());
                 } catch (Throwable e) {
                 }
                 if (persons.size() == 0 && mStdRemarks != null) {
-                    dbg();
                     log("WARNING:INIT FROM THE INTERNAL");
                     //Here we try to copy friendlist
                     Object fr;
@@ -158,9 +152,7 @@ public class ExfriendManager {
                         if (!persons.containsKey(f.uin))
                             persons.put(f.uin, f);
                     }
-                    dbg();
                     saveConfigure();
-                    dbg();
                 }
             } catch (Exception e) {
                 log(e);
@@ -203,7 +195,6 @@ public class ExfriendManager {
     }
 
     private void friendToTable() {
-        dbg();
         Iterator<Map.Entry<Long, FriendRecord>> it =/*(Iterator<Map.Entry<Long, FriendRecord>>)*/persons.entrySet().iterator();
         Map.Entry<Long, FriendRecord> ent;
         String suin;
@@ -231,17 +222,14 @@ public class ExfriendManager {
                 //shouldn't happen
             }
         }
-        dbg();
     }
 
     private void tableToFriend() {
         Table<Long> t = (Table<Long>) fileData.getAllConfig().get("friends");
         if (t == null) {
             log("t_fr==null,aborting!");
-            dbg();
             return;
         }
-        dbg();
         if (persons == null) persons = new HashMap<>();
         Iterator<Map.Entry<Long, Object[]>> it = t.records.entrySet().iterator();
         Map.Entry<Long, Object[]> entry;
@@ -262,15 +250,6 @@ public class ExfriendManager {
             f.serverTime = (Long) rec[_time];
             persons.put(f.uin, f);
         }
-        dbg();
-		/*FriendRecord f=new FriendRecord();
-		 f.uin=1084515740;
-		 f.remark="李王凯";
-		 f.nick="三尺竹剑泣血歌";
-		 f.friendStatus=FriendRecord.STATUS_FRIEND_MUTUAL;
-		 f.serverTime=1543202800;
-		 persons.put(f.uin,f);
-		 log("Faking lwk");*/
     }
 
 
@@ -406,7 +385,6 @@ public class ExfriendManager {
     public void saveConfigure() {
         synchronized (this) {
             try {
-                dbg();
                 //log("save: persons.size()="+persons.size()+"event.size="+events.size());
                 if (persons == null) return;
                 File f = new File(Utils.getApplication().getFilesDir().getAbsolutePath() + "/qnotified_" + mUin + ".dat");
@@ -598,10 +576,10 @@ public class ExfriendManager {
         Object[] ptr = new Object[4];
         synchronized (this) {
             //check integrity
-            dbg();
             boolean totality = true;
             int tmp = fcs[fcs.length - 1].totoal_friend_count;
             int len = fcs.length;
+            if (tmp < 2) return;
             for (int i = 0; i < fcs.length; i++) {
                 tmp -= fcs[len - i - 1].friend_count;
             }
@@ -631,7 +609,6 @@ public class ExfriendManager {
                     }
                 }
             }
-            dbg();
             Iterator<Map.Entry<Long, FriendRecord>> it = del.entrySet().iterator();
             Map.Entry<Long, FriendRecord> ent;
             EventRecord ev;
@@ -709,9 +686,7 @@ public class ExfriendManager {
         }
         fileData.getAllConfig().put("lastUpdateFl", lastUpdateTimeSec);
         //log("Friendlist updated @" + lastUpdateTimeSec);
-        dbg();
         saveConfigure();
-        dbg();
     }
 
     private Context remotePackageContext;

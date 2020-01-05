@@ -2,6 +2,7 @@ package nil.nadph.qnotified.adapter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -148,6 +149,14 @@ public class ActProxyMgr extends XC_MethodHook {
         }
     }
 
+    public static void setContentBackgroundDrawable(Activity activity, Drawable d) {
+        try {
+            activity.findViewById(16908290).setBackgroundDrawable(d);
+        } catch (NullPointerException e) {
+            log(e);
+        }
+    }
+
     private int next_uuid = 1;
 
     public static int next() {
@@ -157,7 +166,6 @@ public class ActProxyMgr extends XC_MethodHook {
     public static ActProxyMgr getInstance() {
         return instance;
     }
-
 
     public static boolean isInfiniteLoop() {
         try {
@@ -169,7 +177,6 @@ public class ActProxyMgr extends XC_MethodHook {
             return false;
         }
     }
-
 
     /**
      * invoke the super method, for Context life-cycle only

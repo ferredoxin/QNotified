@@ -17,7 +17,6 @@ import android.widget.TextView;
 import nil.nadph.qnotified.hook.*;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.util.NewsHelper;
-import nil.nadph.qnotified.util.QThemeKit;
 import nil.nadph.qnotified.util.UpdateCheck;
 import nil.nadph.qnotified.util.Utils;
 
@@ -36,7 +35,6 @@ public class SettingsAdapter implements ActivityAdapter {
     private Activity self;
     private TextView __tv_muted_atall, __tv_muted_redpacket;
 
-
     public SettingsAdapter(Activity activity) {
         self = activity;
     }
@@ -52,7 +50,7 @@ public class SettingsAdapter implements ActivityAdapter {
         //invoke_virtual(bounceScrollView,"a",true,500,500,boolean.class,int.class,int.class);
         bounceScrollView.setLayoutParams(mmlp);
         bounceScrollView.addView(ll, new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-        bounceScrollView.setBackgroundDrawable(QThemeKit.qq_setting_item_bg_nor);
+        //bounceScrollView.setBackgroundDrawable(QThemeKit.qq_setting_item_bg_nor);
         //invoke_virtual(bounceScrollView,"setNeedHorizontalGesture",true,boolean.class);
         LinearLayout.LayoutParams fixlp = new LinearLayout.LayoutParams(MATCH_PARENT, dip2px(self, 48));
         RelativeLayout.LayoutParams __lp_l = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);

@@ -76,7 +76,6 @@ public class Utils {
     public static final int TOAST_TYPE_ERROR = 1;
     public static final int TOAST_TYPE_SUCCESS = 2;
 
-
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static String getActiveModuleVersion() {
         Math.sqrt(1);

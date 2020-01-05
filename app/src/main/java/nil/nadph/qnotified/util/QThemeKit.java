@@ -39,6 +39,7 @@ public class QThemeKit {
     static public ColorStateList skin_blue;
     static public Drawable qq_setting_item_bg_nor;
     static public Drawable qq_setting_item_bg_pre;
+    static public Drawable bg_texture;
     static public Drawable skin_list_item_normal = null, skin_list_item_unread = null, skin_list_item_pressed = null, skin_icon_arrow_right_normal = null, skin_background = null,
             list_checkbox_selected_nopress, list_checkbox_selected, list_checkbox_multi, list_checkbox;
     /*skin_group_list_item_pressed_theme_version2*/
@@ -46,14 +47,10 @@ public class QThemeKit {
 
     static private Map<String, Drawable> cachedDrawable = new HashMap<>();
 
-    public static <SkinnableNinePatchDrawable extends Drawable> void initTheme(Context ctx) throws Throwable {
+    public static void initTheme(Context ctx) throws Throwable {
         String themeId = (String) invoke_static(load("com/tencent/mobileqq/theme/ThemeUtil"), "getUserCurrentThemeId", null, load("mqq/app/AppRuntime"));
         //ThemeUtil$ThemeInfo themeInfo=(ThemeUtil$ThemeInfo)invoke_static(load("com/tencent/mobileqq/theme/ThemeUtil"),"getThemeInfo",ctx,themeId,Context.class,String.class);
         //load("com/tencent/mobileqq/theme/ThemeUtil$ThemeInfo").getField(
-		/*ClazzExplorer ce=ClazzExplorer.get();
-		 ce.rootEle=ce.currEle=themeInfo;
-		 ce.track.removeAllElements();
-		 ce.init(ctx);//(Activity)ce.getCurrentActivity());//*/
         if (themeId.equals(cachedThemeId)) return;
         skin_gray3
                 = skin_black
@@ -168,7 +165,6 @@ public class QThemeKit {
                 }
             }
         }
-
 		/*Resources res=ctx.getResources();
 		 String pkg="com.tencent.mobileqq";
 		 //skin_tips_newmessage.se
@@ -256,7 +252,7 @@ public class QThemeKit {
     }
 
     public static boolean isColorQQThemeActive() {
-        //if (true) return false;
+        if (true) return false;
         try {
             if (!getApplication().getApplicationInfo().packageName.equals(PACKAGE_NAME_QQ)) return false;
             File f = new File(Environment.getExternalStorageDirectory().getAbsoluteFile() + "/QQColor/setting.xml");
