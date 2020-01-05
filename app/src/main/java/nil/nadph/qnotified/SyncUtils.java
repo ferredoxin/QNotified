@@ -10,7 +10,6 @@ import libcore.io.Libcore;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.record.ConfigManager;
 
-import java.io.IOException;
 import java.util.List;
 
 import static nil.nadph.qnotified.util.Utils.getApplication;
@@ -57,10 +56,7 @@ public class SyncUtils {
                         int id = intent.getIntExtra("id", -1);
                         int file = intent.getIntExtra("file", -1);
                         if (id != -1 && id != myId && file == 1) {
-                            try {
-                                ConfigManager.getDefault().setDirtyFlag();
-                            } catch (IOException e) {
-                            }
+                            ConfigManager.getDefault().setDirtyFlag();
                         }
                         break;
                     case HOOK_DO_INIT:

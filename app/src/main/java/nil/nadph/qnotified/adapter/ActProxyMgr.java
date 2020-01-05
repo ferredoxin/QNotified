@@ -3,7 +3,6 @@ package nil.nadph.qnotified.adapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.util.QThemeKit;
@@ -66,10 +65,10 @@ public class ActProxyMgr extends XC_MethodHook {
                 } catch (ActProxyMgr.BreakUnaughtException ignored) {
                 }
                 aa = createActivityAdapter(action, self);
-				try {
-					QThemeKit.initTheme(self);
-                	Object exlist_mFlingHandler = new_instance(load("com/tencent/mobileqq/activity/fling/FlingGestureHandler"), self, Activity.class);
-                	iput_object(self, "mFlingHandler", exlist_mFlingHandler);
+                try {
+                    QThemeKit.initTheme(self);
+                    Object exlist_mFlingHandler = new_instance(load("com/tencent/mobileqq/activity/fling/FlingGestureHandler"), self, Activity.class);
+                    iput_object(self, "mFlingHandler", exlist_mFlingHandler);
                 } catch (Throwable e) {
                     log(e);
                 }

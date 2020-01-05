@@ -26,6 +26,12 @@ import static nil.nadph.qnotified.util.Utils.*;
 
 /*TitleKit:Lcom/tencent/mobileqq/widget/navbar/NavBarCommon*/
 
+/**
+ * Startup hook for QQ/TIM
+ * They should act differently according to the process they belong to.
+ * I don't want to cope with them any more, enjoy it as long as possible.
+ */
+
 @SuppressWarnings("rawtypes")
 public class StartupHook {
     public static WeakReference<Activity> splashActivityRef;
@@ -58,18 +64,20 @@ public class StartupHook {
                         if (f == null) ctx = (Context) sget_object(clz, "a", clz);
                         else ctx = (Context) f.get(null);
                         ClassLoader classLoader = ctx.getClassLoader();
+                        if (classLoader == null) throw new AssertionError("ERROR: classLoader == null");
                         Initiator.init(classLoader);
-                        if (classLoader == null) throw new AssertionError("ERROR:classLoader==null");
-
                         if ("true".equals(System.getProperty(QN_FULL_TAG))) {
                             log("Err:QNotified reloaded??");
+                            //I don't know... What happened?
                             return;
                             //System.exit(-1);
                             //QNotified updated(in HookLoader mode),kill QQ to make user restart it.
                         }
                         System.setProperty(QN_FULL_TAG, "true");
-
-                        injectStartupHook(ctx);
+                        SyncUtils.initBroadcast(ctx);
+                        if (SyncUtils.isMainProcess()) {
+                            injectStartupHook(ctx);
+                        }
                         Class director = load("com/tencent/mobileqq/startup/director/StartupDirector");
                         if (director == null)
                             director = load("com/tencent/mobileqq/startup/director/StartupDirector$1").getDeclaredField("this$0").getType();
@@ -270,7 +278,6 @@ public class StartupHook {
 		 });//*/
         asyncStartFindClass();
         hideMiniAppEntry();
-        SyncUtils.initBroadcast(ctx);
     }
 
 

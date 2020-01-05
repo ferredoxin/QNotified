@@ -1,22 +1,14 @@
 package nil.nadph.qnotified.util;
 
-import android.content.Context;
-import android.widget.PopupWindow;
-import dalvik.system.DexClassLoader;
-import dalvik.system.PathClassLoader;
-
-
 @SuppressWarnings("rawtypes")
 public class Initiator {
 
-    private Context mContext;
+/*    private Context mContext;
     private static PopupWindow window;
-    private float progress;
+    private float progress;*/
 
     public static void init(ClassLoader classLoader) {
         qqClassLoader = classLoader;
-        DexClassLoader dcl;
-        PathClassLoader pcl;
     }
 
     private static ClassLoader qqClassLoader;

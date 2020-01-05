@@ -30,7 +30,8 @@ public abstract class BaseDelayableHook {
                 HideGiftAnim.get(),
                 SimpleCheckInHook.get(),
                 PreUpgradeHook.get(),
-                CheatHook.get()
+                CheatHook.get(),
+                RoundAvatarHook.get()
         };
         return mAllHooks;
     }

@@ -50,7 +50,7 @@ public class InjectDelayableHooks {
             for (int idx = 0; idx < todos.size(); idx++) {
                 final String name = DexKit.c(todos.get(idx)).replace("/", ".");
                 final int j = idx;
-                if (ctx != null)
+                if (SyncUtils.isMainProcess() && ctx != null)
                     ctx.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

@@ -37,10 +37,14 @@ public class ConfigManager {
         return file;
     }
 
-    public static ConfigManager getDefault() throws IOException {
-        if (SELF == null)
-            SELF = new ConfigManager(new File(Utils.getApplication().getFilesDir().getAbsolutePath() + "/qnotified_config.dat"));
-        return SELF;
+    public static ConfigManager getDefault() {
+        try {
+            if (SELF == null)
+                SELF = new ConfigManager(new File(Utils.getApplication().getFilesDir().getAbsolutePath() + "/qnotified_config.dat"));
+            return SELF;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Object getOrDefault(String key, Object def) {

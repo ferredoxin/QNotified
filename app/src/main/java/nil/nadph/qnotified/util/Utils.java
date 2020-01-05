@@ -62,8 +62,8 @@ public class Utils {
 
     public static boolean DEBUG = true;
     public static boolean V_TOAST = false;
-    public static final String QN_VERSION_NAME = "0.5.0";
-    public static final int QN_VERSION_CODE = 18;
+    public static final String QN_VERSION_NAME = "0.5.1";
+    public static final int QN_VERSION_CODE = 19;
 
     public static final String PACKAGE_NAME_QQ = "com.tencent.mobileqq";
     public static final String PACKAGE_NAME_QQ_INTERNATIONAL = "com.tencent.mobileqqi";
@@ -700,6 +700,10 @@ public class Utils {
             //log(String.format("Can't find the field of type: %s and name: %s in class: %s!",type==null?"[any]":type.getName(),name,clazz.getName()));
         }
         return null;
+    }
+
+    public static boolean isEmpty(String str) {
+        return str == null || str.length() == 0;
     }
 
     public static void log(String str) {
