@@ -16,6 +16,7 @@ import java.util.Stack;
 
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
+import android.view.*;
 
 /**
  * ActivityProxyManager
@@ -151,7 +152,7 @@ public class ActProxyMgr extends XC_MethodHook {
 
     public static void setContentBackgroundDrawable(Activity activity, Drawable d) {
         try {
-            activity.findViewById(16908290).setBackgroundDrawable(d);
+            ((View)activity.findViewById(16908290)).setBackgroundDrawable(d);
         } catch (NullPointerException e) {
             log(e);
         }
