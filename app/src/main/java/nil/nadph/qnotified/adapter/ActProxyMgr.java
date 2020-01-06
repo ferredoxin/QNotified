@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.View;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.util.QThemeKit;
@@ -16,7 +17,6 @@ import java.util.Stack;
 
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
-import android.view.*;
 
 /**
  * ActivityProxyManager
@@ -152,7 +152,7 @@ public class ActProxyMgr extends XC_MethodHook {
 
     public static void setContentBackgroundDrawable(Activity activity, Drawable d) {
         try {
-            ((View)activity.findViewById(16908290)).setBackgroundDrawable(d);
+            ((View) activity.findViewById(16908290)).setBackgroundDrawable(d);
         } catch (NullPointerException e) {
             log(e);
         }

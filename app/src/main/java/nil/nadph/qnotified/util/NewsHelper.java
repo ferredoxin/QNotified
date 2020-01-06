@@ -2,6 +2,7 @@ package nil.nadph.qnotified.util;
 
 import android.app.Activity;
 import android.content.res.ColorStateList;
+import android.text.util.Linkify;
 import android.view.View;
 import android.widget.TextView;
 import nil.nadph.qnotified.record.ConfigManager;
@@ -141,6 +142,8 @@ public class NewsHelper implements Runnable {
                 } catch (Exception ignored) {
                 }
             }
+            tv.setTextIsSelectable(news.select);
+            tv.setAutoLinkMask(news.link ? Linkify.WEB_URLS : 0);
             tv.setVisibility(View.VISIBLE);
         } else {
             tv.setVisibility(View.GONE);
