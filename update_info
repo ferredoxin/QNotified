@@ -1,16 +1,15 @@
 [
   {
-    "code": 16,
-    "name": "0.4.1",
+    "code": 20,
+    "name": "0.5.2",
     "taichi": false,
     "beta": false,
-    "time": 1573400112,
-    "md5": "3d260aef65d8a55798662e32b5dbe451",
-    "desc": "0.4.1:\n- 修复图片无法复读的bug\n0.4.0:\n- 修复818无法隐藏小程序的bug\n- 群发文本消息\n- 添加防撤回(实验性,不稳定)",
+    "time": 1578381829,
+    "md5": "e56478f96bf642e9016563894d6960e2",
+    "desc": "- 适配新版本\n- 添加隐藏礼物动画\n- 添加签到文本化\n- 调大复读图标\n- 添加ArkApp卡片消息\n- 添加简洁模式圆头像\n- 导出好友列表\n- bugs fixed",
     "urls": [
-      "https://github.com/cinit/QNotified/releases/download/v0.4.1/QNotified_041.apk",
-      "https://pan.baidu.com/s/1-tnQY0kA4lBAjJHYXTRLXQ",
-      "https://gitee.com/kernelex/QNotified/attach_files/295506/download"
+      "https://pan.baidu.com/s/1JMIA_5yd013lBlDZvpdbwQ",
+      "https://github.com/cinit/QNotified/releases/download/v0.5.2/QNotified_052.apk"
     ]
   }
 ]
