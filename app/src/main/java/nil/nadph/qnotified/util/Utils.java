@@ -999,7 +999,7 @@ public class Utils {
         if (nick.length() < 2) {
             return isSymbol(nick.charAt(0));
         }
-        if (nick.matches(".*[Aa]['`. ,^_\u309e].*")) {
+        if (nick.matches(".*[Aa]['`. ,\u2018\u2019\u201a\u201b^_\u309e].*")) {
             return true;
         }
         if (nick.endsWith(".")) {
