@@ -78,6 +78,7 @@ public class DonateActivity implements ActivityAdapter {
         invoke_virtual(self, "setTitle", "打赏", CharSequence.class);
         invoke_virtual(self, "setImmersiveStatus");
         invoke_virtual(self, "enableLeftBtn", true, boolean.class);
+        ActProxyMgr.setContentBackgroundDrawable(self, QThemeKit.skin_background);
         //TextView rightBtn=(TextView)invoke_virtual(self,"getRightTextView");
         //log("Title:"+invoke_virtual(self,"getTextTitle"));
     }

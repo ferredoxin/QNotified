@@ -86,31 +86,31 @@ public class BinaryXmlParser {
                     pos[0] += headerSize;
                     break s;
                 case RES_STRING_POOL_TYPE:
-                    int str_num = readLe32(xml, pos[0] + 8);
+                    int stringCount = readLe32(xml, pos[0] + 8);
                     int style_num = readLe32(xml, pos[0] + 12);
                     int flag = readLe32(xml, pos[0] + 16);
-                    int str_start = readLe32(xml, pos[0] + 20);
+                    int stringStart = readLe32(xml, pos[0] + 20);
                     int style_start = readLe32(xml, pos[0] + 24);
                     boolean uft8 = (flag & (1 << 8)) != 0;
                     int strpos;
                     String str;
                     int len;
                     stringPool = new ArrayList<>();
-                    for (int i = 0; i < str_num; i++) {
+                    for (int i = 0; i < stringCount; i++) {
                         strpos = readLe32(xml, pos[0] + 28 + i * 4);
                         if (uft8) {
-                            len = xml[pos[0] + str_start + strpos];
+                            len = xml[pos[0] + stringStart + strpos];
                             try {
-                                str = new String(xml, pos[0] + str_start + strpos + 2, len, "utf-8");
+                                str = new String(xml, pos[0] + stringStart + strpos + 2, len, "utf-8");
                             } catch (UnsupportedEncodingException e) {
-                                str = new String(xml, pos[0] + str_start + strpos + 2, len);
+                                str = new String(xml, pos[0] + stringStart + strpos + 2, len);
                             }
                         } else {
-                            len = readLe16(xml, pos[0] + str_start + strpos);
+                            len = readLe16(xml, pos[0] + stringStart + strpos);
                             try {
-                                str = new String(xml, pos[0] + str_start + strpos + 2, len, "utf-16");
+                                str = new String(xml, pos[0] + stringStart + strpos + 2, len, "utf-16");
                             } catch (UnsupportedEncodingException e) {
-                                str = new String(xml, pos[0] + str_start + strpos + 2, len);
+                                str = new String(xml, pos[0] + stringStart + strpos + 2, len);
                             }
                         }
                         stringPool.add(i, str);

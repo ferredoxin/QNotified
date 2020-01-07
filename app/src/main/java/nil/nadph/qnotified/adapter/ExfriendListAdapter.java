@@ -69,7 +69,6 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
         rl.addView(tv, mwllp);
         rl.addView(sdlv, mmlp);
         self.setContentView(rl);
-        //sdlv.setBackgroundColor(0xFFAA0000)
         invoke_virtual(self, "setTitle", "历史好友", CharSequence.class);
         invoke_virtual(self, "setImmersiveStatus");
         invoke_virtual(self, "enableLeftBtn", true, boolean.class);
@@ -117,6 +116,7 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
         exm.clearUnreadFlag();
         tv.setText("最后更新: " + Utils.getRelTimeStrSec(exm.lastUpdateTimeSec) + "\n长按列表可删除");
         QQViewBuilder.listView_setAdapter(sdlv, this);
+        ActProxyMgr.setContentBackgroundDrawable(self, QThemeKit.skin_background);
         //invoke_virtual(sdlv,"setOnScrollGroupFloatingListener",true,load("com/tencent/widget/AbsListView$OnScrollListener"));
         self.getWindow().getDecorView().setTag(this);
     }

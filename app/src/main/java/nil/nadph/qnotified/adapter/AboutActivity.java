@@ -80,7 +80,7 @@ public class AboutActivity implements ActivityAdapter {
         LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);
         _lp_fat.weight = 1;
         //__ll.addView(bounceScrollView,_lp_fat);
-        //sdlv.setBackgroundColor(0xFFAA0000)
+        ActProxyMgr.setContentBackgroundDrawable(self, QThemeKit.skin_background);
         invoke_virtual(self, "setTitle", "关于", CharSequence.class);
         invoke_virtual(self, "setImmersiveStatus");
         invoke_virtual(self, "enableLeftBtn", true, boolean.class);

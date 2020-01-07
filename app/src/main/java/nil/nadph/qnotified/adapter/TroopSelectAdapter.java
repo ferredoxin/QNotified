@@ -230,7 +230,6 @@ public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, 
         LinearLayout main = new LinearLayout(mActivity);
         main.setOrientation(LinearLayout.VERTICAL);
         main.setGravity(Gravity.CENTER_HORIZONTAL);
-        main.setBackgroundDrawable(QThemeKit.skin_background);
         LinearLayout bar = new LinearLayout(mActivity);
         bar.setOrientation(LinearLayout.HORIZONTAL);
         search = new EditText(mActivity);
@@ -249,19 +248,19 @@ public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, 
         reverse.setText("反选");
         reverse.setId(R_ID_TRP_REVERSE);
         reverse.setTextColor(cTitle);
-        reverse.setBackgroundDrawable(QThemeKit.getListItemBackground());
+        reverse.setBackgroundDrawable(null);
         reverse.setOnClickListener(this);
         selectAll = new Button(mActivity);
         selectAll.setText("全选");
         selectAll.setId(R_ID_TRP_SELECT_ALL);
         selectAll.setTextColor(cTitle);
-        selectAll.setBackgroundDrawable(QThemeKit.getListItemBackground());
+        selectAll.setBackgroundDrawable(null);
         selectAll.setOnClickListener(this);
         cancel = new Button(mActivity);
         cancel.setText("取消");
         cancel.setTextColor(cTitle);
         cancel.setId(R_ID_TRP_CANCEL);
-        cancel.setBackgroundDrawable(QThemeKit.getListItemBackground());
+        cancel.setBackgroundDrawable(null);
         cancel.setOnClickListener(this);
         cancel.setVisibility(GONE);
         bar.addView(search, searchlp);
@@ -290,7 +289,6 @@ public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, 
         f.addView(sdlv, new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         main.addView(f, new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         mActivity.setContentView(main);
-        //sdlv.setBackgroundColor(0xFFAA0000)
         String title = "Fatal error!";
         if (mActionInt == ACTION_MUTE_AT_ALL)
             title = "屏蔽@全体成员";
@@ -326,6 +324,7 @@ public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, 
         if (muted != null && muted.size() > 0) {
             rightBtn.setText("完成(" + muted.size() + ")");
         }
+        ActProxyMgr.setContentBackgroundDrawable(mActivity, QThemeKit.skin_background);
         mActivity.getWindow().getDecorView().setTag(this);
     }
 

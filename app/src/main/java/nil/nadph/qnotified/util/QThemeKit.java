@@ -39,9 +39,11 @@ public class QThemeKit {
     static public ColorStateList skin_blue;
     static public Drawable qq_setting_item_bg_nor;
     static public Drawable qq_setting_item_bg_pre;
-    static public Drawable bg_texture;
-    static public Drawable skin_list_item_normal = null, skin_list_item_unread = null, skin_list_item_pressed = null, skin_icon_arrow_right_normal = null, skin_background = null,
-            list_checkbox_selected_nopress, list_checkbox_selected, list_checkbox_multi, list_checkbox;
+    //static public Drawable bg_texture;
+    static public Drawable skin_list_item_normal = null, skin_list_item_unread = null, skin_list_item_pressed = null;
+    static public Drawable skin_icon_arrow_right_normal = null, skin_background = null;
+    static public Drawable list_checkbox_selected_nopress, list_checkbox_selected, list_checkbox_multi, list_checkbox;
+
     /*skin_group_list_item_pressed_theme_version2*/
     //static public Drawable skin_tips_newmessage;
 
@@ -137,7 +139,6 @@ public class QThemeKit {
                 path = findDrawableResource(dir, "list_checkbox.png", mContext);
                 if (path != null) list_checkbox = loadDrawable(path, mContext);
             }
-
             //path=findDrawableResource(dir,"skin_tips_newmessage.9.png");
             //if(path!=null)skin_tips_newmessage=loadDrawable(path);
             path = dir + "/color/";
@@ -165,44 +166,6 @@ public class QThemeKit {
                 }
             }
         }
-		/*Resources res=ctx.getResources();
-		 String pkg="com.tencent.mobileqq";
-		 //skin_tips_newmessage.se
-		 log("inner:"+skin_tips_newmessage.getIntrinsicHeight());
-		 skin_tips_newmessage=res.getDrawable(0x7F0220E7);
-		 byte[] bt=(byte[])iget_object(iget_object(iget_object(skin_tips_newmessage,"b"),"r"),"mBuffer");
-		 /*try{
-		 log("blen="+bt.length);
-		 FileOutputStream fout=new FileOutputStream("/sdcard/qq_dump_buffer.o");
-		 fout.write(bt,0,bt.length);
-		 fout.flush();
-		 fout.close();
-		 fout=new FileOutputStream("/sdcard/qq_dump_ninebuffer.o");
-		 bt=(byte[])iget_object(iget_object(iget_object(skin_tips_newmessage,"b"),"r"),"mNinePatchChunk");
-
-		 fout.write(bt,0,bt.length);
-		 fout.flush();
-		 fout.close();
-		 //log("wtf="+BitmapFactory.decodeByteArray(bt,0,bt.length).getHeight());
-		 //log("Den="+bt.getDensity());
-		 }catch(Exception e){
-		 log(e.toString());
-		 }
-		 log("official:"+skin_tips_newmessage.getIntrinsicHeight());
-		 //ClazzExplorer ce=ClazzExplorer.get();
-		 //ce.init((Activity)ctx);
-		 //ce.currEle=ce.rootEle=skin_tips_newmessage;
-
-		 skin_list_normal=res.getDrawable(res.getIdentifier("skin_list_item_normal","drawable",pkg));
-		 skin_list_pressed=res.getDrawable(res.getIdentifier("skin_list_item_pressed","drawable",pkg));
-		 skin_tips_newmessage=res.getDrawable(res.getIdentifier("skin_tips_newmessage","drawable",pkg));
-		 skin_black=res.getColorStateList(res.getIdentifier("skin_black","color",pkg));
-		 skin_red=res.getColorStateList(res.getIdentifier("skin_red","color",pkg));
-		 skin_gray3=res.getColorStateList(res.getIdentifier("skin_gray3","color",pkg));
-		 skin_text_white=res.getColorStateList(res.getIdentifier("skin_black_item","color",pkg));
-		 qq_setting_item_bg_nor=res.getColorStateList(res.getIdentifier("qq_setting_item_bg_nor","color",pkg));
-		 qq_setting_item_bg_pre=res.getColorStateList(res.getIdentifier("qq_setting_item_bg_pre","color",pkg));
-		 //*/
     }
 
     @SuppressLint({"PrivateApi", "DiscouragedPrivateApi"})
@@ -252,7 +215,7 @@ public class QThemeKit {
     }
 
     public static boolean isColorQQThemeActive() {
-        if (true) return false;
+        //if (true) return false;
         try {
             if (!getApplication().getApplicationInfo().packageName.equals(PACKAGE_NAME_QQ)) return false;
             File f = new File(Environment.getExternalStorageDirectory().getAbsoluteFile() + "/QQColor/setting.xml");
@@ -509,6 +472,5 @@ public class QThemeKit {
         int[][] mStateSpecs = (int[][]) iget_object_or_null(color, "mStateSpecs");
         return new ColorStateList(mStateSpecs, mColors);
     }
-
 }
 
