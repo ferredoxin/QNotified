@@ -173,13 +173,8 @@ public class CardMsgHook extends BaseDelayableHook {
     }
 
     @Override
-    public boolean checkPreconditions() {
-        return true;
-    }
-
-    @Override
     public int[] getPreconditions() {
-        return new int[]{DexKit.C_ARK_APP_ITEM_BUBBLE_BUILDER};
+        return new int[]{DexKit.C_ARK_APP_ITEM_BUBBLE_BUILDER,DexKit.C_FACADE};
     }
 
     @Override
