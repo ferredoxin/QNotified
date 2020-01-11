@@ -26,6 +26,8 @@ public class SettingEntryHook extends BaseDelayableHook {
 
     private boolean inited = false;
 
+    public static final int R_ID_SETTING_ENTRY = 0x300AFF71;
+
     @Override
     public boolean init() {
         if (inited) return true;
@@ -41,7 +43,12 @@ public class SettingEntryHook extends BaseDelayableHook {
                         invoke_virtual(item, "setLeftText", "QNotified", CharSequence.class);
                         invoke_virtual(item, "setRightText", Utils.QN_VERSION_NAME, CharSequence.class);
                         LinearLayout list = (LinearLayout) itemRef.getParent();
-                        list.addView(item, 0, itemRef.getLayoutParams());
+                        LinearLayout.LayoutParams reflp = (LinearLayout.LayoutParams) itemRef.getLayoutParams();
+                        LinearLayout.LayoutParams lp = null;
+                        if (reflp != null) {
+                            lp = new LinearLayout.LayoutParams(reflp.width, reflp.height);
+                        }
+                        list.addView(item, 0, lp);
                         item.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
