@@ -64,46 +64,48 @@ public class DonateActivity implements ActivityAdapter {
         ((CompoundButton) playout.findViewById(R_ID_SWITCH)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(final CompoundButton buttonView, boolean isChecked) {
-                if(isRecursion())return;
+                if (isRecursion()) return;
                 if (isChecked) {
-                    try {
-                        Dialog dialog = createDialog(self);
-                        invoke_virtual(dialog, "setPositiveButton", "Confirm", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                if (isRecursion()) return;
-                                try {
-                                    ConfigManager cfg = ConfigManager.getDefault();
-                                    cfg.putBoolean(qn_donated_choice, true);
-                                    cfg.save();
-                                    buttonView.setChecked(true);
-                                    showToast(self, TOAST_TYPE_SUCCESS, "感谢您的支持", Toast.LENGTH_SHORT);
-                                } catch (Throwable e) {
-                                    log(e);
-                                    showToast(self, TOAST_TYPE_ERROR, "出了点问题", Toast.LENGTH_SHORT);
-                                }
-                            }
-                        }, String.class, DialogInterface.OnClickListener.class);
-                        invoke_virtual(dialog, "setNegativeButton", "Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                if (isRecursion()) return;
-                                buttonView.setChecked(false);
-                            }
-                        }, String.class, DialogInterface.OnClickListener.class);
-                        dialog.setCancelable(true);
-                        invoke_virtual(dialog, "setMessage", "Are you sure that you have donated?", CharSequence.class);
-                        invoke_virtual(dialog, "setTitle", "THINK TWICE", String.class);
-                        dialog.show();
-                        buttonView.setChecked(ConfigManager.getDefault().getBooleanOrFalse(qn_donated_choice));
-                    } catch (Exception e) {
-                        ConfigManager cfg = ConfigManager.getDefault();
-                        cfg.putBoolean(qn_donated_choice, true);
+                    if (!ConfigManager.getDefault().getBooleanOrFalse(qn_donated_choice)) {
                         try {
-                            cfg.save();
-                            showToast(self, TOAST_TYPE_SUCCESS, "感谢您的支持", Toast.LENGTH_SHORT);
-                        } catch (IOException ex) {
-                            log(ex);
+                            Dialog dialog = createDialog(self);
+                            invoke_virtual(dialog, "setPositiveButton", "Confirm", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if (isRecursion()) return;
+                                    try {
+                                        ConfigManager cfg = ConfigManager.getDefault();
+                                        cfg.putBoolean(qn_donated_choice, true);
+                                        cfg.save();
+                                        buttonView.setChecked(true);
+                                        showToast(self, TOAST_TYPE_SUCCESS, "感谢您的支持", Toast.LENGTH_SHORT);
+                                    } catch (Throwable e) {
+                                        log(e);
+                                        showToast(self, TOAST_TYPE_ERROR, "出了点问题", Toast.LENGTH_SHORT);
+                                    }
+                                }
+                            }, String.class, DialogInterface.OnClickListener.class);
+                            invoke_virtual(dialog, "setNegativeButton", "Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if (isRecursion()) return;
+                                    buttonView.setChecked(false);
+                                }
+                            }, String.class, DialogInterface.OnClickListener.class);
+                            dialog.setCancelable(true);
+                            invoke_virtual(dialog, "setMessage", "Are you sure that you have donated?", CharSequence.class);
+                            invoke_virtual(dialog, "setTitle", "THINK TWICE", String.class);
+                            dialog.show();
+                            buttonView.setChecked(ConfigManager.getDefault().getBooleanOrFalse(qn_donated_choice));
+                        } catch (Exception e) {
+                            ConfigManager cfg = ConfigManager.getDefault();
+                            cfg.putBoolean(qn_donated_choice, true);
+                            try {
+                                cfg.save();
+                                showToast(self, TOAST_TYPE_SUCCESS, "感谢您的支持", Toast.LENGTH_SHORT);
+                            } catch (IOException ex) {
+                                log(ex);
+                            }
                         }
                     }
                 } else {
@@ -144,7 +146,7 @@ public class DonateActivity implements ActivityAdapter {
         _lp_fat.weight = 1;
         //__ll.addView(bounceScrollView,_lp_fat);
         //sdlv.setBackgroundColor(0xFFAA0000)
-        invoke_virtual(self, "setTitle", "打赏", CharSequence.class);
+        invoke_virtual(self, "setTitle", "捐赠", CharSequence.class);
         invoke_virtual(self, "setImmersiveStatus");
         invoke_virtual(self, "enableLeftBtn", true, boolean.class);
         ActProxyMgr.setContentBackgroundDrawable(self, QThemeKit.skin_background);

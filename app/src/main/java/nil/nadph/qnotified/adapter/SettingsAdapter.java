@@ -132,7 +132,7 @@ public class SettingsAdapter implements ActivityAdapter {
         ll.addView(subtitle(self, "调试"));
         ll.addView(newListItemButton(self, "Shell.exec", "正常情况下无需使用此功能", null, clickTheComing()));
         ll.addView(subtitle(self, "作者"));
-        ll.addView(newListItemButton(self, "打赏", "请选择扶贫方式", null, clickToProxyActAction(ACTION_DONATE_ACTIVITY)));
+        ll.addView(newListItemButton(self, "捐赠", "请选择扶贫方式", null, clickToProxyActAction(ACTION_DONATE_ACTIVITY)));
         if (isNiceUser())
             ll.addView(newListItemButton(self, "QQ", "点击私信反馈(bug,建议等等)", "1041703712", clickToChat()));
         ll.addView(newListItemButton(self, "Mail", null, "xenonhydride@gmail.com", null));

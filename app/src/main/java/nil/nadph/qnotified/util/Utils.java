@@ -851,6 +851,7 @@ public class Utils {
         return getRelTimeStrMs(time_sec * 1000);
     }
 
+    @SuppressWarnings("deprecation")
     public static String getRelTimeStrMs(long time_ms) {
         SimpleDateFormat format;
         long curr = System.currentTimeMillis();
