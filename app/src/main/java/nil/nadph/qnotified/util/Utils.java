@@ -58,7 +58,8 @@ public class Utils {
             qn_mute_thumb_up = "qn_mute_thumb_up",
             qn_disable_auto_at = "qn_disable_auto_at",
             qh_pre_upgrade = "qh_pre_upgrade",
-            qh_random_cheat = "qh_random_cheat";
+            qh_random_cheat = "qh_random_cheat",
+            qn_donated_choice = "qn_donated_choice";
 
     public static boolean DEBUG = true;
     public static boolean V_TOAST = false;
@@ -791,38 +792,45 @@ public class Utils {
     private static Class clazz_QQToast;
 
 
-    public static Toast showToast(Context ctx, int type, CharSequence str, int length) throws Throwable {
-        if (clazz_QQToast == null) {
-            clazz_QQToast = load("com/tencent/mobileqq/widget/QQToast");
-        }
-        if (clazz_QQToast == null) {
-            Class clz = load("com/tencent/mobileqq/activity/aio/doodle/DoodleLayout");
-            assert clz != null;
-            Field[] fs = clz.getDeclaredFields();
-            for (int i = 0; i < fs.length; i++) {
-                if (View.class.isAssignableFrom(fs[i].getType())) continue;
-                if (fs[i].getType().isPrimitive()) continue;
-                if (fs[i].getType().isInterface()) continue;
-                clazz_QQToast = fs[i].getType();
+    public static Toast showToast(Context ctx, int type, CharSequence str, int length) {
+        try {
+            if (clazz_QQToast == null) {
+                clazz_QQToast = load("com/tencent/mobileqq/widget/QQToast");
             }
-        }
-        if (method_Toast_show == null) {
-            Method[] ms = clazz_QQToast.getMethods();
-            for (int i = 0; i < ms.length; i++) {
-                if (Toast.class.equals(ms[i].getReturnType()) && ms[i].getParameterTypes().length == 0) {
-                    method_Toast_show = ms[i];
-                    break;
+            if (clazz_QQToast == null) {
+                Class clz = load("com/tencent/mobileqq/activity/aio/doodle/DoodleLayout");
+                assert clz != null;
+                Field[] fs = clz.getDeclaredFields();
+                for (Field f : fs) {
+                    if (View.class.isAssignableFrom(f.getType())) continue;
+                    if (f.getType().isPrimitive()) continue;
+                    if (f.getType().isInterface()) continue;
+                    clazz_QQToast = f.getType();
                 }
             }
+            if (method_Toast_show == null) {
+                Method[] ms = clazz_QQToast.getMethods();
+                for (Method m : ms) {
+                    if (Toast.class.equals(m.getReturnType()) && m.getParameterTypes().length == 0) {
+                        method_Toast_show = m;
+                        break;
+                    }
+                }
+            }
+            if (method_Toast_makeText == null) {
+                method_Toast_makeText = clazz_QQToast.getMethod("a", Context.class, int.class, CharSequence.class, int.class);
+            }
+            Object qqToast = method_Toast_makeText.invoke(null, ctx, type, str, length);
+            return (Toast) method_Toast_show.invoke(qqToast);
+        } catch (Exception e) {
+            log(e);
+            Toast t = Toast.makeText(ctx, str, length);
+            t.show();
+            return t;
         }
-        if (method_Toast_makeText == null) {
-            method_Toast_makeText = clazz_QQToast.getMethod("a", Context.class, int.class, CharSequence.class, int.class);
-        }
-        Object qqToast = method_Toast_makeText.invoke(null, ctx, type, str, length);
-        return (Toast) method_Toast_show.invoke(qqToast);
     }
 
-    public static Toast showToastShort(Context ctx, CharSequence str) throws Throwable {
+    public static Toast showToastShort(Context ctx, CharSequence str) {
         return showToast(ctx, 0, str, 0);
     }
 
@@ -1190,6 +1198,19 @@ public class Utils {
 
     }
 
+    //FIXME: this may not work properly after obfuscation
+    public static boolean isRecursion() {
+        StackTraceElement[] stacks = new Exception().getStackTrace();
+        int count = 0;
+        String cname = stacks[1].getClassName();
+        String mname = stacks[1].getMethodName();
+        for (int i = 2; i < stacks.length; i++) {
+            if (stacks[i].getClassName().equals(cname) && stacks[i].getMethodName().equals(mname)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * 根据手机的分辨率从 dip 的单位 转成为 px(像素)

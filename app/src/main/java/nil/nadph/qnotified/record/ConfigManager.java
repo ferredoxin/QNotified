@@ -241,4 +241,8 @@ public class ConfigManager {
             return i;
         }
     }
+
+    public void putBoolean(String key, boolean v) {
+        config.put(key, v);
+    }
 }

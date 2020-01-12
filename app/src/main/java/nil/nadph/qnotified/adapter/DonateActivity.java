@@ -1,21 +1,28 @@
 package nil.nadph.qnotified.adapter;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
+import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.util.QThemeKit;
+
+import java.io.IOException;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.QQViewBuilder.subtitle;
+import static nil.nadph.qnotified.util.QQViewBuilder.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class DonateActivity implements ActivityAdapter {
@@ -51,7 +58,69 @@ public class DonateActivity implements ActivityAdapter {
         ColorStateList hiColor = ColorStateList.valueOf(Color.argb(255, 242, 140, 72));
         RelativeLayout _t;
 
-        ll.addView(subtitle(self, ""));
+        ll.addView(subtitle(self, "如果你希望支持作者, 保持更新的动力, 可请使用以下并不存在的方式捐赠, 完成后打开 [我已捐赠] 即可"));
+        ll.addView(subtitle(self, "免费开发不易, 需要花费很多个人精力, 且回报甚微, 甚至有人盗卖, 感谢理解"));
+        RelativeLayout playout = newListItemSwitchConfig(self, "我已捐赠", null, qn_donated_choice, false);
+        ((CompoundButton) playout.findViewById(R_ID_SWITCH)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(final CompoundButton buttonView, boolean isChecked) {
+                if(isRecursion())return;
+                if (isChecked) {
+                    try {
+                        Dialog dialog = createDialog(self);
+                        invoke_virtual(dialog, "setPositiveButton", "Confirm", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (isRecursion()) return;
+                                try {
+                                    ConfigManager cfg = ConfigManager.getDefault();
+                                    cfg.putBoolean(qn_donated_choice, true);
+                                    cfg.save();
+                                    buttonView.setChecked(true);
+                                    showToast(self, TOAST_TYPE_SUCCESS, "感谢您的支持", Toast.LENGTH_SHORT);
+                                } catch (Throwable e) {
+                                    log(e);
+                                    showToast(self, TOAST_TYPE_ERROR, "出了点问题", Toast.LENGTH_SHORT);
+                                }
+                            }
+                        }, String.class, DialogInterface.OnClickListener.class);
+                        invoke_virtual(dialog, "setNegativeButton", "Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (isRecursion()) return;
+                                buttonView.setChecked(false);
+                            }
+                        }, String.class, DialogInterface.OnClickListener.class);
+                        dialog.setCancelable(true);
+                        invoke_virtual(dialog, "setMessage", "Are you sure that you have donated?", CharSequence.class);
+                        invoke_virtual(dialog, "setTitle", "THINK TWICE", String.class);
+                        dialog.show();
+                        buttonView.setChecked(ConfigManager.getDefault().getBooleanOrFalse(qn_donated_choice));
+                    } catch (Exception e) {
+                        ConfigManager cfg = ConfigManager.getDefault();
+                        cfg.putBoolean(qn_donated_choice, true);
+                        try {
+                            cfg.save();
+                            showToast(self, TOAST_TYPE_SUCCESS, "感谢您的支持", Toast.LENGTH_SHORT);
+                        } catch (IOException ex) {
+                            log(ex);
+                        }
+                    }
+                } else {
+                    ConfigManager cfg = ConfigManager.getDefault();
+                    if (cfg.getBooleanOrFalse(qn_donated_choice)) {
+                        try {
+                            showToast(self, TOAST_TYPE_ERROR, "YOU CANNOT UNDO THAT!", Toast.LENGTH_LONG);
+                        } catch (Throwable e) {
+                            log(e);
+                        }
+                        buttonView.setChecked(true);
+                    }
+                }
+            }
+        });
+        ll.addView(playout);
+
         ll.addView(subtitle(self, "感谢您的支持!"));
         ll.addView(subtitle(self, ""));
         ll.addView(subtitle(self, "目前还存在一个较为严重的问题:"));
