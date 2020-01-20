@@ -57,8 +57,10 @@ public class Utils {
             qn_round_avatar = "qn_round_avatar",
             qn_mute_thumb_up = "qn_mute_thumb_up",
             qn_disable_auto_at = "qn_disable_auto_at",
+            qn_disable_$end_gift = "qn_disable_$end_gift",
             qh_pre_upgrade = "qh_pre_upgrade",
             qh_random_cheat = "qh_random_cheat",
+            qn_disable_qq_hot_patch = "qn_disable_qq_hot_patch",
             qn_donated_choice = "qn_donated_choice";
 
     public static boolean DEBUG = true;

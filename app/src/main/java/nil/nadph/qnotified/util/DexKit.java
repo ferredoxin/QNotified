@@ -38,9 +38,10 @@ public class DexKit {
     public static final int C_PNG_FRAME_UTIL = 14;
     public static final int C_PIC_EMOTICON_INFO = 15;
     public static final int C_SIMPLE_UI_UTIL = 16;
+    public static final int C_TROOP_GIFT_UTIL = 17;
 
     //the last index
-    public static final int DEOBF_NUM = 16;
+    public static final int DEOBF_NUM = 17;
 
     @Nullable
     public static Class tryLoadOrNull(int i) {
@@ -143,6 +144,8 @@ public class DexKit {
                 return "pic_emoticon_info";
             case C_SIMPLE_UI_UTIL:
                 return "simple_ui_util";
+            case C_TROOP_GIFT_UTIL:
+                return "troop_gift_util";
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM);
     }
@@ -196,6 +199,9 @@ public class DexKit {
                 //dummy, placeholder, just a guess
                 ret = "com.tencent.mobileqq.theme.SimpleUIUtil";
                 break;
+            case C_TROOP_GIFT_UTIL:
+                ret = "com/tencent/mobileqq/troop/utils/TroopGiftUtil";
+                break;
             default:
                 ret = null;
         }
@@ -240,6 +246,8 @@ public class DexKit {
                 return new byte[][]{new byte[]{0x20, 0x73, 0x65, 0x6E, 0x64, 0x20, 0x65, 0x6D, 0x6F, 0x74, 0x69, 0x6F, 0x6E, 0x20, 0x2B, 0x20, 0x31, 0x3A}};
             case C_SIMPLE_UI_UTIL:
                 return new byte[][]{new byte[]{0x15, 0x6B, 0x65, 0x79, 0x5F, 0x73, 0x69, 0x6D, 0x70, 0x6C, 0x65, 0x5F, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x5F, 0x73}};
+            case C_TROOP_GIFT_UTIL:
+                return new byte[][]{new byte[]{0x1A, 0x2E, 0x74, 0x72, 0x6F, 0x6F, 0x70, 0x2E, 0x73, 0x65, 0x6E, 0x64, 0x5F, 0x67, 0x69, 0x66, 0x74, 0x54}};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM);
     }
@@ -276,6 +284,8 @@ public class DexKit {
                 return new int[]{4};
             case C_SIMPLE_UI_UTIL:
                 return new int[]{2};
+            case C_TROOP_GIFT_UTIL:
+                return new int[]{9, 2};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM);
     }
@@ -290,6 +300,7 @@ public class DexKit {
             case C_MSG_REC_FAC:
             case C_VIP_UTILS:
             case C_SIMPLE_UI_UTIL:
+            case C_TROOP_GIFT_UTIL:
                 a:
                 for (Class clz : classes) {
                     if (Modifier.isAbstract(clz.getModifiers())) continue;

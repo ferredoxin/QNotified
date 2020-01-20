@@ -32,7 +32,7 @@ public class SettingEntryHook extends BaseDelayableHook {
     public boolean init() {
         if (inited) return true;
         try {
-            XposedHelpers.findAndHookMethod(load("com.tencent.mobileqq.activity.QQSettingSettingActivity"), "doOnCreate", Bundle.class, new XC_MethodHook(47) {
+            XposedHelpers.findAndHookMethod(load("com.tencent.mobileqq.activity.QQSettingSettingActivity"), "doOnCreate", Bundle.class, new XC_MethodHook(52) {
                 @Override
                 protected void afterHookedMethod(final MethodHookParam param) throws Throwable {
                     try {
@@ -40,15 +40,32 @@ public class SettingEntryHook extends BaseDelayableHook {
                         if (itemRef == null)
                             itemRef = (View) Utils.iget_object_or_null(param.thisObject, "a", load("com/tencent/mobileqq/widget/FormCommonSingleLineItem"));
                         View item = (View) new_instance(itemRef.getClass(), param.thisObject, Context.class);
+                        item.setId(R_ID_SETTING_ENTRY);
                         invoke_virtual(item, "setLeftText", "QNotified", CharSequence.class);
                         invoke_virtual(item, "setRightText", Utils.QN_VERSION_NAME, CharSequence.class);
+                        invoke_virtual(item, "setBgType", 2, int.class);
                         LinearLayout list = (LinearLayout) itemRef.getParent();
                         LinearLayout.LayoutParams reflp = (LinearLayout.LayoutParams) itemRef.getLayoutParams();
                         LinearLayout.LayoutParams lp = null;
                         if (reflp != null) {
                             lp = new LinearLayout.LayoutParams(reflp.width, reflp.height);
                         }
-                        list.addView(item, 0, lp);
+                        int index = 0;
+                        int account_switch = list.getContext().getResources().getIdentifier("account_switch", "id", list.getContext().getPackageName());
+                        try {
+                            if (account_switch > 0) {
+                                View accountItem = (View) list.findViewById(account_switch).getParent();
+                                for (int i = 0; i < list.getChildCount(); i++) {
+                                    if (list.getChildAt(i) == accountItem) {
+                                        index = i + 1;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (index > list.getChildCount()) index = 0;
+                        } catch (NullPointerException ignored) {
+                        }
+                        list.addView(item, index, lp);
                         item.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {

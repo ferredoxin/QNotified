@@ -84,6 +84,7 @@ public class SettingsAdapter implements ActivityAdapter {
         if (!Utils.isTim(self)) {
             ll.addView(newListItemSwitchConfigNext(self, "隐藏小程序入口", "隐藏消息列表下拉出现的小程序列表", qn_hide_msg_list_miniapp, false));
             ll.addView(newListItemSwitchConfigInit(self, "隐藏送礼动画", null, qn_hide_gift_animation, false, HideGiftAnim.get()));
+            ll.addView(newListItemSwitchConfigInit(self, "禁用$打开送礼界面", "禁止聊天时输入$自动弹出[选择赠送对象]窗口", qn_disable_$end_gift, false, $endGiftHook.get()));
         }
         ll.addView(newListItemSwitchConfigInit(self, "签到文本化", null, qn_sign_in_as_text, false, SimpleCheckInHook.get()));
         ll.addView(subtitle(self, "消息通知设置(不影响接收消息)屏蔽后可能仍有[橙字],但不会有通知)"));
@@ -98,7 +99,7 @@ public class SettingsAdapter implements ActivityAdapter {
             ll.addView(newListItemSwitchConfigInit(self, "以图片方式打开表情", null, qn_sticker_as_pic, false, EmoPicHook.get()));
         }
         //ll.addView(newListItemSwitchConfigInit(self, "聊天图片背景透明", null, qn_gallery_bg, false, GalleryBgHook.get()));
-        ll.addView(subtitle(self, "实验性功能"));
+        ll.addView(subtitle(self, "实验性功能(未必有效)"));
         ll.addView(newListItemSwitchConfigInit(self, "收藏更多表情", "保存在本地", qqhelper_fav_more_emo, false, FavMoreEmo.get()));
         ll.addView(newListItemSwitchConfigInit(self, "防撤回", "来自旧版QX,稳定性不如最新版QX", qn_anti_revoke_msg, false, RevokeMsgHook.get()));
         ll.addView(newListItemSwitchConfigInit(self, "屏蔽更新提醒", null, qh_pre_upgrade, false, PreUpgradeHook.get()));
@@ -116,8 +117,10 @@ public class SettingsAdapter implements ActivityAdapter {
         ll.addView(newListItemSwitchConfigStub(self, "屏蔽回执消息的通知", null, qn_mute_talk_back, false));
         ll.addView(newListItemSwitchConfigStub(self, "禁止自动@", "[>=8.1.3]去除回复消息时自动@特性", qn_disable_auto_at, false));
         ll.addView(newListItemSwitchConfigStub(self, "赞说说不提醒", "不影响评论或击掌的通知", qn_mute_thumb_up, false));
+        ll.addView(newListItemSwitchConfigStub(self, "禁用QQ热补丁", "一般无需开启", qn_disable_qq_hot_patch, false));
         ll.addView(newListItemButton(self, "重定向文件下载目录", new File(Environment.getExternalStorageDirectory(), "Tencent/QQfile_recv").getAbsolutePath(), "禁用", clickTheComing()));
         ll.addView(subtitle(self, "参数设定"));
+        ll.addView(newListItemButton(self, "自定义电量", "[>=8.2.6]在线模式为我的电量时生效", "[系统电量]", clickTheComing()));
         ll.addView(newListItemButton(self, "DelFriendReq.delType", "只能为1或2", "[不改动]", clickTheComing()));
         ll.addView(newListItemButton(self, "AddFriendReq.sourceID", "改错可能导致无法添加好友", "[不改动]", clickTheComing()));
         ll.addView(subtitle(self, "关于"));

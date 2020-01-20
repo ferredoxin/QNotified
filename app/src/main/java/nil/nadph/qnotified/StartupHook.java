@@ -101,6 +101,7 @@ public class StartupHook {
                             }
                         });
                         sec_stage_inited = true;
+                        onAppStartup();
                     } catch (Throwable e) {
                         log(e);
                         throw e;
@@ -512,5 +513,12 @@ public class StartupHook {
         }
     }
 
+    public static void onAppStartup() {
+        try {
+            XposedBridge.hookMethod(load("azkd").getDeclaredMethod("a",Activity.class,String.class, String.class), dummyHook);
+        } catch (Exception e) {
+            log(e);
+        }
+    }          
 
 }
