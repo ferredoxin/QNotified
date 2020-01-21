@@ -3,7 +3,7 @@ package nil.nadph.qnotified.hook;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.view.ViewGroup;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.StartupHook;
@@ -11,6 +11,8 @@ import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.adapter.ActProxyMgr;
 import nil.nadph.qnotified.util.Utils;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
@@ -44,17 +46,30 @@ public class SettingEntryHook extends BaseDelayableHook {
                         invoke_virtual(item, "setLeftText", "QNotified", CharSequence.class);
                         invoke_virtual(item, "setRightText", Utils.QN_VERSION_NAME, CharSequence.class);
                         invoke_virtual(item, "setBgType", 2, int.class);
-                        LinearLayout list = (LinearLayout) itemRef.getParent();
-                        LinearLayout.LayoutParams reflp = (LinearLayout.LayoutParams) itemRef.getLayoutParams();
-                        LinearLayout.LayoutParams lp = null;
+                        item.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                StartupHook.startProxyActivity((Context) param.thisObject, ActProxyMgr.ACTION_ADV_SETTINGS);
+                            }
+                        });
+                        ViewGroup list = (ViewGroup) itemRef.getParent();
+                        ViewGroup.LayoutParams reflp;
+                        if (list.getChildCount() == 1) {
+                            //junk!
+                            list = (ViewGroup) list.getParent();
+                            reflp = ((View) itemRef.getParent()).getLayoutParams();
+                        } else {
+                            reflp = itemRef.getLayoutParams();
+                        }
+                        ViewGroup.LayoutParams lp = null;
                         if (reflp != null) {
-                            lp = new LinearLayout.LayoutParams(reflp.width, reflp.height);
+                            lp = new ViewGroup.LayoutParams(MATCH_PARENT, /*reflp.height*/WRAP_CONTENT);
                         }
                         int index = 0;
                         int account_switch = list.getContext().getResources().getIdentifier("account_switch", "id", list.getContext().getPackageName());
                         try {
                             if (account_switch > 0) {
-                                View accountItem = (View) list.findViewById(account_switch).getParent();
+                                View accountItem = (View) ((View) list.findViewById(account_switch)).getParent();
                                 for (int i = 0; i < list.getChildCount(); i++) {
                                     if (list.getChildAt(i) == accountItem) {
                                         index = i + 1;
@@ -66,12 +81,6 @@ public class SettingEntryHook extends BaseDelayableHook {
                         } catch (NullPointerException ignored) {
                         }
                         list.addView(item, index, lp);
-                        item.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                StartupHook.startProxyActivity((Context) param.thisObject, ActProxyMgr.ACTION_ADV_SETTINGS);
-                            }
-                        });
                     } catch (Throwable e) {
                         log(e);
                         throw e;

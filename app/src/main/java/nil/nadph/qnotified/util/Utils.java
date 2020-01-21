@@ -65,8 +65,8 @@ public class Utils {
 
     public static boolean DEBUG = true;
     public static boolean V_TOAST = false;
-    public static final String QN_VERSION_NAME = "0.5.2";
-    public static final int QN_VERSION_CODE = 20;
+    public static final String QN_VERSION_NAME = "0.6.0-rc1";
+    public static final int QN_VERSION_CODE = 21;
 
     public static final String PACKAGE_NAME_QQ = "com.tencent.mobileqq";
     public static final String PACKAGE_NAME_QQ_INTERNATIONAL = "com.tencent.mobileqqi";

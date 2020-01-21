@@ -515,7 +515,6 @@ public class StartupHook {
 
     public static void onAppStartup() {
         try {
-            XposedBridge.hookMethod(load("azkd").getDeclaredMethod("a",Activity.class,String.class, String.class), dummyHook);
         } catch (Exception e) {
             log(e);
         }

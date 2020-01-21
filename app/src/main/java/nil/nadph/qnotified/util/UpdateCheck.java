@@ -105,7 +105,6 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
             ConfigManager cfg = ConfigManager.getDefault();
             String str = cfg.getString(qn_update_info);
             long time = cfg.getLongOrDefault(qn_update_time, 0);
-            if (System.currentTimeMillis() / 1000L - time > 3 * 24 * 3600) return null;
             return str;
         } catch (Exception e) {
             log(e);
@@ -123,12 +122,14 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
             if (str != null) {
                 String highest = currVerName;
                 int hv = currVerCode;
+                long time = 0;
                 for (Object obj : PHPArray.fromJson(str)._$_E()) {
                     PHPArray info = (PHPArray) obj;
                     int v = ((Number) info.__("code")._$()).intValue();
                     if (v > hv) {
                         hv = v;
                         highest = info.__("name")._$().toString();
+                        time = ((Number) info.__("code")._$()).longValue();
                     }
                 }
                 if (hv > currVerCode) {
@@ -140,7 +141,8 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
                         doShowUpdateInfo();
                     }
                 } else {
-                    tv_v.setText("已是最新");
+                    if (System.currentTimeMillis() / 1000L - time < 3 * 24 * 3600)
+                        tv_v.setText("已是最新");
                 }
             }
         } catch (Exception e) {

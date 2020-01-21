@@ -5,7 +5,7 @@ import nil.nadph.qnotified.util.DexKit;
 
 public abstract class BaseDelayableHook {
 
-    private static BaseDelayableHook[] mAllHooks;
+    private static BaseDelayableHook[] sAllHooks;
 
     private int myId = -1;
 
@@ -14,7 +14,7 @@ public abstract class BaseDelayableHook {
     }
 
     public static BaseDelayableHook[] queryDelayableHooks() {
-        if (mAllHooks == null) mAllHooks = new BaseDelayableHook[]{
+        if (sAllHooks == null) sAllHooks = new BaseDelayableHook[]{
                 SettingEntryHook.get(),
                 DelDetectorHook.get(),
                 PttForwardHook.get(),
@@ -34,7 +34,7 @@ public abstract class BaseDelayableHook {
                 RoundAvatarHook.get(),
                 $endGiftHook.get()
         };
-        return mAllHooks;
+        return sAllHooks;
     }
 
     public boolean isTargetProc() {

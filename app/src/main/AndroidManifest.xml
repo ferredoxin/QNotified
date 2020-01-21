@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           package="nil.nadph.qnotified"
-          android:versionName="0.5.2"
-          android:versionCode="20">
+          android:versionName="0.6.0-rc1"
+          android:versionCode="21">
 
     <uses-sdk
             android:targetSdkVersion="27"
