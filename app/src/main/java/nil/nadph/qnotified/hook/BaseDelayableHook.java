@@ -32,7 +32,8 @@ public abstract class BaseDelayableHook {
                 PreUpgradeHook.get(),
                 CheatHook.get(),
                 RoundAvatarHook.get(),
-                $endGiftHook.get()
+                $endGiftHook.get(),
+                MultiForwardAvatarHook.get()
         };
         return sAllHooks;
     }

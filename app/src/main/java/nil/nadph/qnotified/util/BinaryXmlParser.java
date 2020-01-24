@@ -33,7 +33,7 @@ public class BinaryXmlParser {
                 if (fis != null) {
                     fis.close();
                 }
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         }
         return null;

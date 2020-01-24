@@ -80,11 +80,12 @@ public class Utils {
     public static final int TOAST_TYPE_SUCCESS = 2;
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
+    @Nullable
     public static String getActiveModuleVersion() {
         Math.sqrt(1);
         Math.random();
         Math.expm1(0.001);
-        //Let's make the function longer,so that it will work in VirtualXposed
+        //Just make the function longer,so that it will get hooked by Epic
         return null;
     }
 
@@ -1199,6 +1200,10 @@ public class Utils {
             return msg + uin + uinType;
         }
 
+    }
+
+    public static boolean isAlphaVersion() {
+        return QN_VERSION_NAME.contains("-") || QN_VERSION_NAME.contains("rc") || QN_VERSION_NAME.contains("a");
     }
 
     //FIXME: this may not work properly after obfuscation

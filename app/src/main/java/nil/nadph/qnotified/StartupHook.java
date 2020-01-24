@@ -5,6 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
@@ -513,11 +516,94 @@ public class StartupHook {
         }
     }
 
-    public static void onAppStartup() {
+    public static void deepDarkTheme() {
         try {
+            Class clz = load("com/tencent/mobileqq/activity/FriendProfileCardActivity");
+            findAndHookMethod(clz, "doOnCreate", Bundle.class, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    final Activity ctx = (Activity) param.thisObject;
+                    FrameLayout frame = (FrameLayout) ctx.findViewById(android.R.id.content);
+                    frame.getChildAt(0).setBackgroundColor(0xFF000000);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException ignored) {
+                            }
+                            ctx.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        View frame = ctx.findViewById(android.R.id.content);
+                                        frame.setBackgroundColor(0xFF000000);
+                                        View dk0 = ctx.findViewById(ctx.getResources().getIdentifier("dk0", "id", ctx.getPackageName()));
+                                        if (dk0 != null) dk0.setBackgroundColor(0x00000000);
+                                    } catch (Exception e) {
+                                        log(e);
+                                    }
+                                }
+                            });
+                        }
+                    }).start();
+                }
+            });
+            clz = load("com.tencent.mobileqq.activity.ChatSettingForTroop");
+            findAndHookMethod(clz, "doOnCreate", Bundle.class, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    final Activity ctx = (Activity) param.thisObject;
+                    FrameLayout frame = (FrameLayout) ctx.findViewById(android.R.id.content);
+                    frame.getChildAt(0).setBackgroundColor(0xFF000000);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException ignored) {
+                            }
+                            ctx.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        FrameLayout frame = (FrameLayout) ctx.findViewById(android.R.id.content);
+                                        frame.getChildAt(0).setBackgroundColor(0xFF000000);
+                                        ViewGroup list = (ViewGroup) ctx.findViewById(ctx.getResources().getIdentifier("common_xlistview", "id", ctx.getPackageName()));
+                                        list.getChildAt(0).setBackgroundColor(0x00000000);
+                                    } catch (Exception e) {
+                                        log(e);
+                                    }
+                                }
+                            });
+                        }
+                    }).start();
+                }
+            });
+
+
+            clz = load("com.tencent.mobileqq.activity.TroopMemberListActivity");
+            findAndHookMethod(clz, "doOnCreate", Bundle.class, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    final Activity ctx = (Activity) param.thisObject;
+                    FrameLayout frame = (FrameLayout) ctx.findViewById(android.R.id.content);
+                    ((ViewGroup) frame.getChildAt(0))/*.getChildAt(0)*/.setBackgroundColor(0xFF000000);
+                }
+            });
         } catch (Exception e) {
             log(e);
         }
-    }          
+    }
+
+    /**
+     * dummy method, for development and test only
+     */
+    public static void onAppStartup() {
+        if (!isAlphaVersion()) return;
+        deepDarkTheme();
+
+    }
+
 
 }
