@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
-import nil.nadph.qnotified.util.QThemeKit;
+import nil.nadph.qnotified.util.ResUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
@@ -68,7 +68,7 @@ public class ActProxyMgr extends XC_MethodHook {
                 }
                 aa = createActivityAdapter(action, self);
                 try {
-                    QThemeKit.initTheme(self);
+                    ResUtils.initTheme(self);
                     Object exlist_mFlingHandler = new_instance(load("com/tencent/mobileqq/activity/fling/FlingGestureHandler"), self, Activity.class);
                     iput_object(self, "mFlingHandler", exlist_mFlingHandler);
                 } catch (Throwable e) {

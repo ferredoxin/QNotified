@@ -21,7 +21,7 @@ import nil.nadph.qnotified.FaceImpl;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.QThemeKit;
+import nil.nadph.qnotified.util.ResUtils;
 import nil.nadph.qnotified.util.Utils;
 
 import java.io.File;
@@ -91,7 +91,7 @@ public class PttForwardHook extends BaseDelayableHook {
                         Utils.showToast(ctx, TOAST_TYPE_ERROR, "InternalError: Invalid ptt file!", Toast.LENGTH_SHORT);
                         return;
                     }
-                    QThemeKit.initTheme(ctx);
+                    ResUtils.initTheme(ctx);
                     boolean multi;
                     final ArrayList<Utils.ContactDescriptor> mTargets = new ArrayList<>();
                     boolean unsupport = false;
@@ -123,10 +123,10 @@ public class PttForwardHook extends BaseDelayableHook {
                     heads.setGravity(Gravity.CENTER_VERTICAL);
                     heads.setOrientation(LinearLayout.HORIZONTAL);
                     View div = new View(ctx);
-                    div.setBackgroundColor(QThemeKit.skin_gray3.getDefaultColor());
+                    div.setBackgroundColor(ResUtils.skin_gray3.getDefaultColor());
                     TextView tv = new TextView(ctx);
                     tv.setText("[语音转发]" + path);
-                    tv.setTextColor(QThemeKit.skin_gray3);
+                    tv.setTextColor(ResUtils.skin_gray3);
                     tv.setTextSize(dip2sp(ctx, 16));
                     int pd = dip2px(ctx, 8);
                     tv.setPadding(pd, pd, pd, pd);
@@ -142,7 +142,7 @@ public class PttForwardHook extends BaseDelayableHook {
                             ImageView imgview = new ImageView(ctx);
                             Bitmap bm = face.getBitmapFromCache(cd.uinType == 1 ? FaceImpl.TYPE_TROOP : FaceImpl.TYPE_USER, cd.uin);
                             if (bm == null) {
-                                imgview.setImageDrawable(QThemeKit.loadDrawableFromAsset("face.png", ctx));
+                                imgview.setImageDrawable(ResUtils.loadDrawableFromAsset("face.png", ctx));
                                 face.registerView(cd.uinType == 1 ? FaceImpl.TYPE_TROOP : FaceImpl.TYPE_USER, cd.uin, imgview);
                             } else {
                                 imgview.setImageBitmap(bm);
@@ -154,7 +154,7 @@ public class PttForwardHook extends BaseDelayableHook {
                         ImageView imgview = new ImageView(ctx);
                         Bitmap bm = face.getBitmapFromCache(cd.uinType == 1 ? FaceImpl.TYPE_TROOP : FaceImpl.TYPE_USER, cd.uin);
                         if (bm == null) {
-                            imgview.setImageDrawable(QThemeKit.loadDrawableFromAsset("face.png", ctx));
+                            imgview.setImageDrawable(ResUtils.loadDrawableFromAsset("face.png", ctx));
                             face.registerView(cd.uinType == 1 ? FaceImpl.TYPE_TROOP : FaceImpl.TYPE_USER, cd.uin, imgview);
                         } else {
                             imgview.setImageBitmap(bm);

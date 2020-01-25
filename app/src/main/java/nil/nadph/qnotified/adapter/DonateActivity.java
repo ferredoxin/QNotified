@@ -15,14 +15,14 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import nil.nadph.qnotified.record.ConfigManager;
-import nil.nadph.qnotified.util.QThemeKit;
+import nil.nadph.qnotified.util.ResUtils;
 
 import java.io.IOException;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.QQViewBuilder.*;
+import static nil.nadph.qnotified.util.ViewBuilder.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class DonateActivity implements ActivityAdapter {
@@ -43,7 +43,7 @@ public class DonateActivity implements ActivityAdapter {
         //invoke_virtual(bounceScrollView,"a",true,500,500,boolean.class,int.class,int.class);
         bounceScrollView.setLayoutParams(mmlp);
         bounceScrollView.addView(ll, new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-        bounceScrollView.setBackgroundDrawable(QThemeKit.qq_setting_item_bg_nor);
+        bounceScrollView.setBackgroundDrawable(ResUtils.qq_setting_item_bg_nor);
         //invoke_virtual(bounceScrollView,"setNeedHorizontalGesture",true,boolean.class);
         LinearLayout.LayoutParams fixlp = new LinearLayout.LayoutParams(MATCH_PARENT, dip2px(self, 48));
         RelativeLayout.LayoutParams __lp_l = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
@@ -149,7 +149,7 @@ public class DonateActivity implements ActivityAdapter {
         invoke_virtual(self, "setTitle", "捐赠", CharSequence.class);
         invoke_virtual(self, "setImmersiveStatus");
         invoke_virtual(self, "enableLeftBtn", true, boolean.class);
-        ActProxyMgr.setContentBackgroundDrawable(self, QThemeKit.skin_background);
+        ActProxyMgr.setContentBackgroundDrawable(self, ResUtils.skin_background);
         //TextView rightBtn=(TextView)invoke_virtual(self,"getRightTextView");
         //log("Title:"+invoke_virtual(self,"getTextTitle"));
     }

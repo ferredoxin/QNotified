@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 import android.widget.*;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.record.FriendRecord;
-import nil.nadph.qnotified.util.QQViewBuilder;
-import nil.nadph.qnotified.util.QThemeKit;
+import nil.nadph.qnotified.util.ResUtils;
+import nil.nadph.qnotified.util.ViewBuilder;
 import nil.nadph.qnotified.util.Utils;
 
 import java.io.File;
@@ -25,7 +25,7 @@ import java.util.HashMap;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.QQViewBuilder.subtitle;
+import static nil.nadph.qnotified.util.ViewBuilder.subtitle;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class FriendlistExportActivity implements ActivityAdapter {
@@ -58,7 +58,7 @@ public class FriendlistExportActivity implements ActivityAdapter {
         final ViewGroup bounceScrollView = (ViewGroup) new_instance(load("com/tencent/mobileqq/widget/BounceScrollView"), self, null, Context.class, AttributeSet.class);
         bounceScrollView.setLayoutParams(mmlp);
         bounceScrollView.addView(ll, new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-        bounceScrollView.setBackgroundDrawable(QThemeKit.qq_setting_item_bg_nor);
+        bounceScrollView.setBackgroundDrawable(ResUtils.qq_setting_item_bg_nor);
         LinearLayout.LayoutParams fixlp = new LinearLayout.LayoutParams(MATCH_PARENT, dip2px(self, 48));
         RelativeLayout.LayoutParams __lp_l = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
         int mar = (int) (dip2px(self, 12) + 0.5f);
@@ -77,14 +77,14 @@ public class FriendlistExportActivity implements ActivityAdapter {
 
         final CheckBox exfonly = new CheckBox(self);
         exfonly.setText("历史好友");
-        exfonly.setTextColor(QThemeKit.skin_black);
-        exfonly.setButtonDrawable(QThemeKit.getCheckBoxBackground());
+        exfonly.setTextColor(ResUtils.skin_black);
+        exfonly.setButtonDrawable(ResUtils.getCheckBoxBackground());
         exfonly.setId(R_ID_CB_EXFRIENDS);
         ll.addView(exfonly, stdlp);
         final CheckBox frionly = new CheckBox(self);
         frionly.setText("当前好友");
-        frionly.setTextColor(QThemeKit.skin_black);
-        frionly.setButtonDrawable(QThemeKit.getCheckBoxBackground());
+        frionly.setTextColor(ResUtils.skin_black);
+        frionly.setButtonDrawable(ResUtils.getCheckBoxBackground());
         frionly.setId(R_ID_CB_FRIENDS);
         ll.addView(frionly, stdlp);
 
@@ -93,21 +93,21 @@ public class FriendlistExportActivity implements ActivityAdapter {
         ll.addView(subtitle(self, "导出格式"));
 
         final CheckBox cbCsv = new CheckBox(self);
-        cbCsv.setButtonDrawable(QThemeKit.getCheckBoxBackground());
+        cbCsv.setButtonDrawable(ResUtils.getCheckBoxBackground());
         cbCsv.setText("CSV");
-        cbCsv.setTextColor(QThemeKit.skin_black);
+        cbCsv.setTextColor(ResUtils.skin_black);
         cbCsv.setId(R_ID_CHECKBOX_CSV);
         ll.addView(cbCsv, stdlp);
         final CheckBox cbJson = new CheckBox(self);
-        cbJson.setButtonDrawable(QThemeKit.getCheckBoxBackground());
+        cbJson.setButtonDrawable(ResUtils.getCheckBoxBackground());
         cbJson.setText("Json");
-        cbCsv.setTextColor(QThemeKit.skin_black);
+        cbCsv.setTextColor(ResUtils.skin_black);
         cbJson.setId(R_ID_CHECKBOX_JSON);
         ll.addView(cbJson, stdlp);
 
         LinearLayout llcsvopt = new LinearLayout(self);
         llcsvopt.setOrientation(LinearLayout.VERTICAL);
-        llcsvopt.addView(QQViewBuilder.subtitle(self, "CSV设定"));
+        llcsvopt.addView(ViewBuilder.subtitle(self, "CSV设定"));
 
         final RadioGroup gcsvcrlf = new RadioGroup(self);
         gcsvcrlf.setOrientation(RadioGroup.VERTICAL);
@@ -115,20 +115,20 @@ public class FriendlistExportActivity implements ActivityAdapter {
         gcsvcrlf.addView(subtitle(self, "换行符"));
         RadioButton crlf = new RadioButton(self);
         crlf.setText("CRLF - \\r\\n");
-        crlf.setTextColor(QThemeKit.skin_black);
-        crlf.setButtonDrawable(QThemeKit.getCheckBoxBackground());
+        crlf.setTextColor(ResUtils.skin_black);
+        crlf.setButtonDrawable(ResUtils.getCheckBoxBackground());
         crlf.setId(R_ID_RB_CRLF);
         gcsvcrlf.addView(crlf, stdlp);
         RadioButton cr = new RadioButton(self);
         cr.setText("CR - \\r");
-        cr.setTextColor(QThemeKit.skin_black);
-        cr.setButtonDrawable(QThemeKit.getCheckBoxBackground());
+        cr.setTextColor(ResUtils.skin_black);
+        cr.setButtonDrawable(ResUtils.getCheckBoxBackground());
         cr.setId(R_ID_RB_CR);
         gcsvcrlf.addView(cr, stdlp);
         RadioButton lf = new RadioButton(self);
         lf.setText("LF - \\n");
-        lf.setTextColor(QThemeKit.skin_black);
-        lf.setButtonDrawable(QThemeKit.getCheckBoxBackground());
+        lf.setTextColor(ResUtils.skin_black);
+        lf.setButtonDrawable(ResUtils.getCheckBoxBackground());
         lf.setId(R_ID_RB_LF);
         gcsvcrlf.addView(lf, stdlp);
 
@@ -159,7 +159,7 @@ public class FriendlistExportActivity implements ActivityAdapter {
         final EditText etuin = new EditText(self);
         etuin.setBackgroundDrawable(null);
         etuin.setTextSize(Utils.dip2sp(self, 18));
-        etuin.setTextColor(QThemeKit.skin_black);
+        etuin.setTextColor(ResUtils.skin_black);
         ll.addView(etuin, stdlp);
         long currentUin = -1;
         try {
@@ -173,7 +173,7 @@ public class FriendlistExportActivity implements ActivityAdapter {
         final EditText expath = new EditText(self);
         expath.setBackgroundDrawable(null);
         expath.setTextSize(Utils.dip2sp(self, 18));
-        expath.setTextColor(QThemeKit.skin_black);
+        expath.setTextColor(ResUtils.skin_black);
         String refpath = new File(Environment.getExternalStorageDirectory(), new Date().toString().replace(" ", "") + ".txt").getAbsolutePath();
         expath.setHint(refpath);
         ll.addView(expath, stdlp);
@@ -206,7 +206,7 @@ public class FriendlistExportActivity implements ActivityAdapter {
         LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);
         _lp_fat.weight = 1;
         //__ll.addView(bounceScrollView,_lp_fat);
-        ActProxyMgr.setContentBackgroundDrawable(self, QThemeKit.skin_background);
+        ActProxyMgr.setContentBackgroundDrawable(self, ResUtils.skin_background);
         invoke_virtual(self, "setTitle", "导出好友列表", CharSequence.class);
         invoke_virtual(self, "setImmersiveStatus");
         invoke_virtual(self, "enableLeftBtn", true, boolean.class);

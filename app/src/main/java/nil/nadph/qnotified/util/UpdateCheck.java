@@ -116,8 +116,8 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
     public void setVersionTip(ViewGroup vg) {
         viewGroup = vg;
         try {
-            TextView tv_v = (TextView) viewGroup.findViewById(QQViewBuilder.R_ID_VALUE);
-            TextView tv_t = (TextView) viewGroup.findViewById(QQViewBuilder.R_ID_TITLE);
+            TextView tv_v = (TextView) viewGroup.findViewById(ViewBuilder.R_ID_VALUE);
+            TextView tv_t = (TextView) viewGroup.findViewById(ViewBuilder.R_ID_TITLE);
             String str = getCachedUpdateInfoOrNull();
             if (str != null) {
                 String highest = currVerName;
@@ -161,8 +161,8 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
                 new Handler(viewGroup.getContext().getMainLooper()).post(this);
                 return;
             case RL_SHOW_RET:
-                TextView tv_v = (TextView) viewGroup.findViewById(QQViewBuilder.R_ID_VALUE);
-                TextView tv_t = (TextView) viewGroup.findViewById(QQViewBuilder.R_ID_TITLE);
+                TextView tv_v = (TextView) viewGroup.findViewById(ViewBuilder.R_ID_VALUE);
+                TextView tv_t = (TextView) viewGroup.findViewById(ViewBuilder.R_ID_TITLE);
                 String highest = currVerName;
                 int hv = currVerCode;
                 for (Object obj : result._$_E()) {

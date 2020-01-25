@@ -603,7 +603,7 @@ public class StartupHook {
         if (!isAlphaVersion()) return;
         deepDarkTheme();
 
-    }
 
+    }
 
 }

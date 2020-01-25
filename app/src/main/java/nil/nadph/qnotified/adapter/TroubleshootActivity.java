@@ -19,7 +19,7 @@ import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.record.EventRecord;
 import nil.nadph.qnotified.record.FriendRecord;
 import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.QThemeKit;
+import nil.nadph.qnotified.util.ResUtils;
 import nil.nadph.qnotified.util.Utils;
 
 import java.util.Iterator;
@@ -28,8 +28,8 @@ import java.util.Map;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.QQViewBuilder.newListItemButton;
-import static nil.nadph.qnotified.util.QQViewBuilder.subtitle;
+import static nil.nadph.qnotified.util.ViewBuilder.newListItemButton;
+import static nil.nadph.qnotified.util.ViewBuilder.subtitle;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class TroubleshootActivity implements ActivityAdapter {
@@ -100,7 +100,7 @@ public class TroubleshootActivity implements ActivityAdapter {
         invoke_virtual(self, "setTitle", "故障排除", CharSequence.class);
         invoke_virtual(self, "setImmersiveStatus");
         invoke_virtual(self, "enableLeftBtn", true, boolean.class);
-        ActProxyMgr.setContentBackgroundDrawable(self, QThemeKit.skin_background);
+        ActProxyMgr.setContentBackgroundDrawable(self, ResUtils.skin_background);
 
     }
 

@@ -120,7 +120,7 @@ public class ConfigActivity extends Activity implements Runnable {
 		new Thread(new Runnable(){
 				@Override
 				public void run(){
-					final ColorStateList color_=QThemeKit.getStateColorInXml("/tmp/hyc.xml");
+					final ColorStateList color_=ResUtils.getStateColorInXml("/tmp/hyc.xml");
 					/*try{
 					 FileInputStream is = new FileInputStream("/tmp/skin_black.xml");
 					 /*byte[] buf = new byte[is.available()];

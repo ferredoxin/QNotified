@@ -39,9 +39,10 @@ public class DexKit {
     public static final int C_PIC_EMOTICON_INFO = 15;
     public static final int C_SIMPLE_UI_UTIL = 16;
     public static final int C_TROOP_GIFT_UTIL = 17;
+    public static final int C_TEST_STRUCT_MSG = 18;
 
     //the last index
-    public static final int DEOBF_NUM = 17;
+    public static final int DEOBF_NUM = 18;
 
     @Nullable
     public static Class tryLoadOrNull(int i) {
@@ -85,8 +86,8 @@ public class DexKit {
                 return null;
             }
             report.v(names.size() + "class(es) found:" + names);
-            for (int j = 0; j < names.size(); j++) {
-                report.v(names.get(j));
+            for (String name : names) {
+                report.v(name);
             }
             if (names.size() == 1) {
                 ret = load(names.get(0));
@@ -146,6 +147,8 @@ public class DexKit {
                 return "simple_ui_util";
             case C_TROOP_GIFT_UTIL:
                 return "troop_gift_util";
+            case C_TEST_STRUCT_MSG:
+                return "test_struct_msg";
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM);
     }
@@ -202,6 +205,9 @@ public class DexKit {
             case C_TROOP_GIFT_UTIL:
                 ret = "com/tencent/mobileqq/troop/utils/TroopGiftUtil";
                 break;
+            case C_TEST_STRUCT_MSG:
+                ret = "com/tencent/mobileqq/structmsg/TestStructMsg";
+                break;
             default:
                 ret = null;
         }
@@ -248,6 +254,8 @@ public class DexKit {
                 return new byte[][]{new byte[]{0x15, 0x6B, 0x65, 0x79, 0x5F, 0x73, 0x69, 0x6D, 0x70, 0x6C, 0x65, 0x5F, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x5F, 0x73}};
             case C_TROOP_GIFT_UTIL:
                 return new byte[][]{new byte[]{0x1A, 0x2E, 0x74, 0x72, 0x6F, 0x6F, 0x70, 0x2E, 0x73, 0x65, 0x6E, 0x64, 0x5F, 0x67, 0x69, 0x66, 0x74, 0x54}};
+            case C_TEST_STRUCT_MSG:
+                return new byte[][]{new byte[]{0x0D, 0x54, 0x65, 0x73, 0x74, 0x53, 0x74, 0x72, 0x75, 0x63, 0x74, 0x4D, 0x73, 0x67}};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM);
     }
@@ -286,6 +294,8 @@ public class DexKit {
                 return new int[]{2};
             case C_TROOP_GIFT_UTIL:
                 return new int[]{9, 2};
+            case C_TEST_STRUCT_MSG:
+                return new int[]{7, 2};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM);
     }
@@ -301,6 +311,7 @@ public class DexKit {
             case C_VIP_UTILS:
             case C_SIMPLE_UI_UTIL:
             case C_TROOP_GIFT_UTIL:
+            case C_TEST_STRUCT_MSG:
                 a:
                 for (Class clz : classes) {
                     if (Modifier.isAbstract(clz.getModifiers())) continue;

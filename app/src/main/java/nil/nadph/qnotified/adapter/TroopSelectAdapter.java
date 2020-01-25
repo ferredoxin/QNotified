@@ -20,8 +20,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import nil.nadph.qnotified.FaceImpl;
 import nil.nadph.qnotified.record.ConfigManager;
-import nil.nadph.qnotified.util.QQViewBuilder;
-import nil.nadph.qnotified.util.QThemeKit;
+import nil.nadph.qnotified.util.ResUtils;
+import nil.nadph.qnotified.util.ViewBuilder;
 import nil.nadph.qnotified.util.Utils;
 
 import java.util.ArrayList;
@@ -184,7 +184,7 @@ public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, 
         ImageView imgview = (ImageView) convertView.findViewById(R_ID_TRP_FACE);
         Bitmap bm = face.getBitmapFromCache(FaceImpl.TYPE_TROOP, info.troopuin);
         if (bm == null) {
-            imgview.setImageDrawable(QThemeKit.loadDrawableFromAsset("face.png", mActivity));
+            imgview.setImageDrawable(ResUtils.loadDrawableFromAsset("face.png", mActivity));
             face.registerView(FaceImpl.TYPE_TROOP, info.troopuin, imgview);
         } else {
             imgview.setImageBitmap(bm);
@@ -226,7 +226,7 @@ public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, 
 
     public void doOnPostCreate(Bundle savedInstanceState) throws Throwable {
         int bar_hi = WRAP_CONTENT;//dip2px(mActivity,30);
-        ColorStateList cTitle = QThemeKit.skin_black;
+        ColorStateList cTitle = ResUtils.skin_black;
         LinearLayout main = new LinearLayout(mActivity);
         main.setOrientation(LinearLayout.VERTICAL);
         main.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -270,11 +270,11 @@ public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, 
         main.addView(bar, new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
         ViewGroup sdlv = (ViewGroup) load("com.tencent.widget.SwipListView").getConstructor(Context.class, AttributeSet.class).newInstance(mActivity, null);
         //sdlv.setFocusable(true);
-        //sdlv.setBackgroundDrawable(QThemeKit.skin_background);
+        //sdlv.setBackgroundDrawable(ResUtils.skin_background);
         FrameLayout f = new FrameLayout(mActivity);
         TextView tv = new TextView(mActivity);
         tv.setGravity(Gravity.CENTER);
-        tv.setTextColor(QThemeKit.skin_gray3);
+        tv.setTextColor(ResUtils.skin_gray3);
         tv.setTextSize(Utils.dip2sp(mActivity, 14));
         try {
             mTroopInfoList = getTroopInfoList();
@@ -306,7 +306,7 @@ public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, 
         //.addView(sdlv,lp);
         invoke_virtual(sdlv, "setDragEnable", true, boolean.class);
         invoke_virtual(sdlv, "setDivider", null, Drawable.class);
-        QQViewBuilder.listView_setAdapter(sdlv, this);
+        ViewBuilder.listView_setAdapter(sdlv, this);
         //invoke_virtual(sdlv,"setOnScrollGroupFloatingListener",true,load("com/tencent/widget/AbsListView$OnScrollListener"));
         muted = new HashSet<>();
         String list = null;
@@ -324,7 +324,7 @@ public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, 
         if (muted != null && muted.size() > 0) {
             rightBtn.setText("完成(" + muted.size() + ")");
         }
-        ActProxyMgr.setContentBackgroundDrawable(mActivity, QThemeKit.skin_background);
+        ActProxyMgr.setContentBackgroundDrawable(mActivity, ResUtils.skin_background);
         mActivity.getWindow().getDecorView().setTag(this);
     }
 
@@ -335,14 +335,14 @@ public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, 
         llayout.setGravity(Gravity.CENTER_VERTICAL);
         llayout.setOrientation(LinearLayout.HORIZONTAL);
         llayout.setPadding(std_mg, std_mg / 2, 0, std_mg / 2);
-        llayout.setBackgroundDrawable(QThemeKit.getListItemBackground());
+        llayout.setBackgroundDrawable(ResUtils.getListItemBackground());
         llayout.setOnClickListener(this);
         llayout.setId(R_ID_TRP_LAYOUT);
         CheckBox checkBox = new CheckBox(mActivity);
         checkBox.setId(R_ID_TRP_CHECKBOX);
         checkBox.setOnCheckedChangeListener(this);
         checkBox.setButtonDrawable(null);
-        checkBox.setBackgroundDrawable(QThemeKit.getCheckBoxBackground());
+        checkBox.setBackgroundDrawable(ResUtils.getCheckBoxBackground());
         LinearLayout.LayoutParams imglp = new LinearLayout.LayoutParams(Utils.dip2px(mActivity, 50), Utils.dip2px(mActivity, 50));
         imglp.setMargins(tmp = Utils.dip2px(mActivity, 12), tmp / 2, tmp / 2, tmp / 2);
         ImageView imgview = new ImageView(mActivity);
@@ -365,7 +365,7 @@ public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, 
         title.setSingleLine();
         //title.setText(ev.getShowStr());
         title.setGravity(Gravity.CENTER_VERTICAL);
-        title.setTextColor(QThemeKit.cloneColor(QThemeKit.skin_black));
+        title.setTextColor(ResUtils.cloneColor(ResUtils.skin_black));
         title.setTextSize(Utils.px2sp(mActivity, Utils.dip2px(mActivity, 16)));
         //title.setPadding(tmp=Utils.dip2px(ctx,8),tmp,0,tmp);
 
@@ -373,7 +373,7 @@ public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, 
         subtitle.setId(R_ID_TRP_SUBTITLE);
         subtitle.setSingleLine();
         subtitle.setGravity(Gravity.CENTER_VERTICAL);
-        subtitle.setTextColor(QThemeKit.cloneColor(QThemeKit.skin_gray3));
+        subtitle.setTextColor(ResUtils.cloneColor(ResUtils.skin_gray3));
         subtitle.setTextSize(Utils.px2sp(mActivity, Utils.dip2px(mActivity, 14)));
         //subtitle.setPadding(tmp,0,0,tmp);
 

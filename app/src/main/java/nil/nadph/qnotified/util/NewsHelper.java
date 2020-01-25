@@ -137,7 +137,7 @@ public class NewsHelper implements Runnable {
                 } catch (NumberFormatException ignored) {
                 }
                 try {
-                    ColorStateList color = (ColorStateList) QThemeKit.class.getField(news.color).get(null);
+                    ColorStateList color = (ColorStateList) ResUtils.class.getField(news.color).get(null);
                     tv.setTextColor(color);
                 } catch (Exception ignored) {
                 }

@@ -10,12 +10,12 @@ import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import nil.nadph.qnotified.util.QThemeKit;
+import nil.nadph.qnotified.util.ResUtils;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.QQViewBuilder.subtitle;
+import static nil.nadph.qnotified.util.ViewBuilder.subtitle;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class AboutActivity implements ActivityAdapter {
@@ -36,7 +36,7 @@ public class AboutActivity implements ActivityAdapter {
         //invoke_virtual(bounceScrollView,"a",true,500,500,boolean.class,int.class,int.class);
         bounceScrollView.setLayoutParams(mmlp);
         bounceScrollView.addView(ll, new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-        bounceScrollView.setBackgroundDrawable(QThemeKit.qq_setting_item_bg_nor);
+        bounceScrollView.setBackgroundDrawable(ResUtils.qq_setting_item_bg_nor);
         //invoke_virtual(bounceScrollView,"setNeedHorizontalGesture",true,boolean.class);
         LinearLayout.LayoutParams fixlp = new LinearLayout.LayoutParams(MATCH_PARENT, dip2px(self, 48));
         RelativeLayout.LayoutParams __lp_l = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
@@ -80,7 +80,7 @@ public class AboutActivity implements ActivityAdapter {
         LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);
         _lp_fat.weight = 1;
         //__ll.addView(bounceScrollView,_lp_fat);
-        ActProxyMgr.setContentBackgroundDrawable(self, QThemeKit.skin_background);
+        ActProxyMgr.setContentBackgroundDrawable(self, ResUtils.skin_background);
         invoke_virtual(self, "setTitle", "关于", CharSequence.class);
         invoke_virtual(self, "setImmersiveStatus");
         invoke_virtual(self, "enableLeftBtn", true, boolean.class);

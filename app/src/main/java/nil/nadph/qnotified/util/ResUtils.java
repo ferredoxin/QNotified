@@ -29,7 +29,7 @@ import java.util.Map;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
-public class QThemeKit {
+public class ResUtils {
 
     static private String cachedThemeId;
 
@@ -234,7 +234,7 @@ public class QThemeKit {
     @TargetApi(Build.VERSION_CODES.M)
     private static void initThemeByArsc(Context ctx) {
         if (ctx == null) return;
-        Field[] fields = QThemeKit.class.getDeclaredFields();
+        Field[] fields = ResUtils.class.getDeclaredFields();
         Resources arsc = ctx.getResources();
         String name;
         boolean success;
@@ -289,7 +289,7 @@ public class QThemeKit {
     }
 
     public static InputStream openAsset(String name) {
-        return QThemeKit.class.getClassLoader().getResourceAsStream("assets/" + name);
+        return ResUtils.class.getClassLoader().getResourceAsStream("assets/" + name);
     }
 
     public static String findDrawableResource(String dir, String name, Context mContext) {

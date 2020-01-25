@@ -21,7 +21,7 @@ import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressWarnings("unchecked")
-public class QQViewBuilder {
+public class ViewBuilder {
 
     public static final int R_ID_TITLE = 0x300AFF11;
     public static final int R_ID_DESCRIPTION = 0x300AFF12;
@@ -34,11 +34,11 @@ public class QQViewBuilder {
     public static RelativeLayout newListItemSwitch(Context ctx, CharSequence title, CharSequence desc, boolean on, CompoundButton.OnCheckedChangeListener listener) {
         RelativeLayout root = new RelativeLayout(ctx);
         root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx, CONSTANT_LIST_ITEM_HEIGHT_DP)));
-        root.setBackgroundDrawable(QThemeKit.getListItemBackground());
+        root.setBackgroundDrawable(ResUtils.getListItemBackground());
         TextView tv = new TextView(ctx);
         tv.setText(title);
         tv.setId(R_ID_TITLE);
-        tv.setTextColor(QThemeKit.skin_black);
+        tv.setTextColor(ResUtils.skin_black);
         tv.setTextSize(dip2sp(ctx, 18));
         CompoundButton sw = switch_new(ctx);
         switch_setChecked(sw, on);
@@ -66,7 +66,7 @@ public class QQViewBuilder {
             TextView des = new TextView(ctx);
             des.setText(desc);
             des.setId(R_ID_DESCRIPTION);
-            des.setTextColor(QThemeKit.skin_gray3);
+            des.setTextColor(ResUtils.skin_gray3);
             des.setTextSize(dip2sp(ctx, 13));
             RelativeLayout.LayoutParams lp_d = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
             //m=(int)dip2px(ctx,6);
@@ -233,16 +233,16 @@ public class QQViewBuilder {
             value) {
         RelativeLayout root = new RelativeLayout(ctx);
         root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx, CONSTANT_LIST_ITEM_HEIGHT_DP)));
-        root.setBackgroundDrawable(QThemeKit.getListItemBackground());
+        root.setBackgroundDrawable(ResUtils.getListItemBackground());
         TextView tv = new TextView(ctx);
         tv.setText(title);
         tv.setId(R_ID_TITLE);
-        tv.setTextColor(QThemeKit.skin_black);
+        tv.setTextColor(ResUtils.skin_black);
         tv.setTextSize(dip2sp(ctx, 18));
         TextView st = new TextView(ctx);
         st.setId(R_ID_VALUE);
         st.setText(value);
-        st.setTextColor(QThemeKit.skin_gray3);
+        st.setTextColor(ResUtils.skin_gray3);
         st.setTextSize(dip2sp(ctx, 15));
         RelativeLayout.LayoutParams lp_sw = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
         int m = (int) dip2px(ctx, 14);
@@ -266,7 +266,7 @@ public class QQViewBuilder {
             TextView des = new TextView(ctx);
             des.setText(desc);
             des.setId(R_ID_DESCRIPTION);
-            des.setTextColor(QThemeKit.skin_gray3);
+            des.setTextColor(ResUtils.skin_gray3);
             des.setTextSize(dip2sp(ctx, 13));
             RelativeLayout.LayoutParams lp_d = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
             //m=(int)dip2px(ctx,6);
@@ -285,14 +285,14 @@ public class QQViewBuilder {
             value, View.OnClickListener listener) {
         RelativeLayout root = new RelativeLayout(ctx);
         root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx, CONSTANT_LIST_ITEM_HEIGHT_DP)));
-        root.setBackgroundDrawable(QThemeKit.getListItemBackground());
+        root.setBackgroundDrawable(ResUtils.getListItemBackground());
         TextView tv = new TextView(ctx);
         tv.setText(title);
         tv.setId(R_ID_TITLE);
-        tv.setTextColor(QThemeKit.skin_black);
+        tv.setTextColor(ResUtils.skin_black);
         tv.setTextSize(dip2sp(ctx, 18));
         ImageView img = new ImageView(ctx);
-        img.setImageDrawable(QThemeKit.skin_icon_arrow_right_normal);
+        img.setImageDrawable(ResUtils.skin_icon_arrow_right_normal);
         img.setId(R_ID_ARROW);
         RelativeLayout.LayoutParams lp_im = new RelativeLayout.LayoutParams(dip2px(ctx, 9), dip2px(ctx, 15));
         int m = (int) dip2px(ctx, 14);
@@ -316,7 +316,7 @@ public class QQViewBuilder {
             TextView des = new TextView(ctx);
             des.setText(desc);
             des.setId(R_ID_DESCRIPTION);
-            des.setTextColor(QThemeKit.skin_gray3);
+            des.setTextColor(ResUtils.skin_gray3);
             des.setTextSize(dip2sp(ctx, 13));
             RelativeLayout.LayoutParams lp_d = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
             //m=(int)dip2px(ctx,6);
@@ -331,7 +331,7 @@ public class QQViewBuilder {
         TextView st = new TextView(ctx);
         st.setId(R_ID_VALUE);
         if (value != null) st.setText(value);
-        st.setTextColor(QThemeKit.skin_gray3);
+        st.setTextColor(ResUtils.skin_gray3);
         st.setTextSize(dip2sp(ctx, 15));
         RelativeLayout.LayoutParams lp_st = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
         m = (int) dip2px(ctx, 14);
@@ -352,7 +352,7 @@ public class QQViewBuilder {
         TextView tv = new TextView(ctx);
         tv.setText(title);
         tv.setTextSize(dip2sp(ctx, 13));
-        tv.setTextColor(QThemeKit.skin_gray3);
+        tv.setTextColor(ResUtils.skin_gray3);
         tv.setLayoutParams(new ViewGroup.LayoutParams(WRAP_CONTENT, WRAP_CONTENT));
         ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
         int m = dip2px(ctx, 14);

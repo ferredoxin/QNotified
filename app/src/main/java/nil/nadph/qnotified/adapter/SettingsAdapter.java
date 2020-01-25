@@ -17,7 +17,7 @@ import android.widget.TextView;
 import nil.nadph.qnotified.hook.*;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.util.NewsHelper;
-import nil.nadph.qnotified.util.QThemeKit;
+import nil.nadph.qnotified.util.ResUtils;
 import nil.nadph.qnotified.util.UpdateCheck;
 import nil.nadph.qnotified.util.Utils;
 
@@ -27,9 +27,9 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.adapter.ActProxyMgr.*;
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.QQViewBuilder.*;
 import static nil.nadph.qnotified.util.SendBatchMsg.clickToBatchMsg;
 import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.ViewBuilder.*;
 
 public class SettingsAdapter implements ActivityAdapter {
 
@@ -51,7 +51,7 @@ public class SettingsAdapter implements ActivityAdapter {
         //invoke_virtual(bounceScrollView,"a",true,500,500,boolean.class,int.class,int.class);
         bounceScrollView.setLayoutParams(mmlp);
         bounceScrollView.addView(ll, new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-        //bounceScrollView.setBackgroundDrawable(QThemeKit.qq_setting_item_bg_nor);
+        //bounceScrollView.setBackgroundDrawable(ResUtils.qq_setting_item_bg_nor);
         //invoke_virtual(bounceScrollView,"setNeedHorizontalGesture",true,boolean.class);
         LinearLayout.LayoutParams fixlp = new LinearLayout.LayoutParams(MATCH_PARENT, dip2px(self, 48));
         RelativeLayout.LayoutParams __lp_l = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
@@ -74,16 +74,17 @@ public class SettingsAdapter implements ActivityAdapter {
         } catch (Throwable e) {
             log(e);
         }
-        ll.addView(subtitle(self, "遗留功能"));
+        ll.addView(subtitle(self, "遗留功能 - 群发已不再维护"));
         ll.addView(newListItemButton(self, "群发文本消息", "适度使用以免永冻", null, clickToBatchMsg()));
         ll.addView(subtitle(self, "基本功能"));
         ll.addView(newListItemSwitchConfigInit(self, "语音转发", "长按语音消息", qn_enable_ptt_forward, false, PttForwardHook.get()));
-        ll.addView(newListItemSwitchConfigInit(self, "发送卡片消息", "长按发送ArkAppMsg(json)", qn_send_card_msg, false, CardMsgHook.get()));
+        ll.addView(newListItemSwitchConfigInit(self, "发送卡片消息", "长按发送ArkAppMsg(json)+StructMsg(xml)", qn_send_card_msg, false, CardMsgHook.get()));
         ll.addView(newListItemSwitchConfigInit(self, "复读机", "+1", bug_repeater, false, RepeaterHook.get()));
         ll.addView(subtitle(self, "净化设置"));
         if (!Utils.isTim(self)) {
             ll.addView(newListItemSwitchConfigNext(self, "隐藏小程序入口", "隐藏消息列表下拉出现的小程序列表", qn_hide_msg_list_miniapp, false));
             ll.addView(newListItemSwitchConfigInit(self, "隐藏送礼动画", null, qn_hide_gift_animation, false, HideGiftAnim.get()));
+            ll.addView(newListItemSwitchConfigInit(self, "禁止自动@", "[>=8.1.3]去除回复消息时自动@特性", qn_disable_auto_at, false, ReplyNoAtHook.get()));
             ll.addView(newListItemSwitchConfigInit(self, "禁用$打开送礼界面", "禁止聊天时输入$自动弹出[选择赠送对象]窗口", qn_disable_$end_gift, false, $endGiftHook.get()));
         }
         ll.addView(newListItemSwitchConfigInit(self, "签到文本化", null, qn_sign_in_as_text, false, SimpleCheckInHook.get()));
@@ -115,7 +116,6 @@ public class SettingsAdapter implements ActivityAdapter {
         }
         ll.addView(subtitle(self, "还没完成的功能(咕咕咕)"));
         ll.addView(newListItemSwitchConfigStub(self, "屏蔽回执消息的通知", null, qn_mute_talk_back, false));
-        ll.addView(newListItemSwitchConfigStub(self, "禁止自动@", "[>=8.1.3]去除回复消息时自动@特性", qn_disable_auto_at, false));
         ll.addView(newListItemSwitchConfigStub(self, "赞说说不提醒", "不影响评论或击掌的通知", qn_mute_thumb_up, false));
         ll.addView(newListItemSwitchConfigStub(self, "禁用QQ热补丁", "一般无需开启", qn_disable_qq_hot_patch, false));
         ll.addView(newListItemButton(self, "重定向文件下载目录", new File(Environment.getExternalStorageDirectory(), "Tencent/QQfile_recv").getAbsolutePath(), "禁用", clickTheComing()));
@@ -149,7 +149,7 @@ public class SettingsAdapter implements ActivityAdapter {
         LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);
         _lp_fat.weight = 1;
         //__ll.addView(bounceScrollView,_lp_fat);
-        ActProxyMgr.setContentBackgroundDrawable(self, QThemeKit.skin_background);
+        ActProxyMgr.setContentBackgroundDrawable(self, ResUtils.skin_background);
         invoke_virtual(self, "setTitle", "高级", CharSequence.class);
         invoke_virtual(self, "setImmersiveStatus");
         invoke_virtual(self, "enableLeftBtn", true, boolean.class);
@@ -169,7 +169,6 @@ public class SettingsAdapter implements ActivityAdapter {
         n = 0;
         if (str != null && str.length() > 4) n = str.split(",").length;
         __tv_muted_redpacket.setText(n + "个群");
-
     }
 
     @Override

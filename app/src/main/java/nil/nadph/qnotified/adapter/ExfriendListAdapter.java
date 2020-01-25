@@ -21,8 +21,8 @@ import nil.nadph.qnotified.FaceImpl;
 import nil.nadph.qnotified.StartupHook;
 import nil.nadph.qnotified.record.EventRecord;
 import nil.nadph.qnotified.record.FriendRecord;
-import nil.nadph.qnotified.util.QQViewBuilder;
-import nil.nadph.qnotified.util.QThemeKit;
+import nil.nadph.qnotified.util.ResUtils;
+import nil.nadph.qnotified.util.ViewBuilder;
 import nil.nadph.qnotified.util.Utils;
 
 import java.util.*;
@@ -58,13 +58,13 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
         //invoke_virtual(rl,"setInterceptScrollLRFlag",true,boolean.class);
         //invoke_virtual(rl,"setInterceptTouchFlag",true,boolean.class);
         //iput_object(rl,"
-        rl.setBackgroundDrawable(QThemeKit.qq_setting_item_bg_nor);
+        rl.setBackgroundDrawable(ResUtils.qq_setting_item_bg_nor);
         mwllp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         mwllp.addRule(RelativeLayout.CENTER_VERTICAL);
 
         TextView tv = new TextView(self);
         tv.setGravity(Gravity.CENTER);
-        tv.setTextColor(QThemeKit.skin_gray3);
+        tv.setTextColor(ResUtils.skin_gray3);
         tv.setTextSize(Utils.dip2sp(self, 14));
         rl.addView(tv, mwllp);
         rl.addView(sdlv, mmlp);
@@ -115,8 +115,8 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
         ExfriendManager exm = ExfriendManager.get(uin);
         exm.clearUnreadFlag();
         tv.setText("最后更新: " + Utils.getRelTimeStrSec(exm.lastUpdateTimeSec) + "\n长按列表可删除");
-        QQViewBuilder.listView_setAdapter(sdlv, this);
-        ActProxyMgr.setContentBackgroundDrawable(self, QThemeKit.skin_background);
+        ViewBuilder.listView_setAdapter(sdlv, this);
+        ActProxyMgr.setContentBackgroundDrawable(self, ResUtils.skin_background);
         //invoke_virtual(sdlv,"setOnScrollGroupFloatingListener",true,load("com/tencent/widget/AbsListView$OnScrollListener"));
         self.getWindow().getDecorView().setTag(this);
     }
@@ -147,9 +147,9 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
         Collections.sort(evs);
         //log("ev size="+evs.size());
 		/*try{
-		 theme=QThemeKit.getCurrentTheme((Activity)ctx);
+		 theme=ResUtils.getCurrentTheme((Activity)ctx);
 		 }catch(Throwable e){
-		 theme=QThemeKit.getDefaultTheme();
+		 theme=ResUtils.getDefaultTheme();
 		 log(e);
 		 }*/
     }
@@ -178,11 +178,11 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
 			 tv.setText("这是第"+position+"个");
 			 tv.setPadding(32,32,32,32);
 			 tv.setGravity(Gravity.CENTER_VERTICAL);
-			 tv.setBackground(QThemeKit.getListItemBackground());
+			 tv.setBackground(ResUtils.getListItemBackground());
 			 //tv.setBackgroundResource(0x7f020435);
 			 //Utils.log("Decoded:"+Integer.toHexString(theme.skin_text_black.getDefaultColor()));
 			 //tv.setBackgroundTintList(theme.qq_setting_item_bg_nor);
-			 tv.setTextColor((position%2==1)?QThemeKit.skin_black:QThemeKit.skin_gray3);
+			 tv.setTextColor((position%2==1)?ResUtils.skin_black:ResUtils.skin_gray3);
 			 */
             convertView = inflateItemView(ev);//tv;
         }
@@ -200,10 +200,10 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
         }
 
         if (isfri) {
-            stat.setTextColor(QThemeKit.cloneColor(QThemeKit.skin_gray3));
+            stat.setTextColor(ResUtils.cloneColor(ResUtils.skin_gray3));
             stat.setText("已恢复");
         } else {
-            stat.setTextColor(QThemeKit.cloneColor(QThemeKit.skin_red));
+            stat.setTextColor(ResUtils.cloneColor(ResUtils.skin_red));
             stat.setText("已删除");
         }
         TextView subtitle = (TextView) convertView.findViewById(R_ID_EXL_SUBTITLE);
@@ -211,7 +211,7 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
         ImageView imgview = (ImageView) convertView.findViewById(R_ID_EXL_FACE);
         Bitmap bm = face.getBitmapFromCache(FaceImpl.TYPE_USER, "" + ev.operand);
         if (bm == null) {
-            imgview.setImageDrawable(QThemeKit.loadDrawableFromAsset("face.png", self));
+            imgview.setImageDrawable(ResUtils.loadDrawableFromAsset("face.png", self));
             face.registerView(FaceImpl.TYPE_USER, "" + ev.operand, imgview);
         } else {
             imgview.setImageBitmap(bm);
@@ -231,7 +231,7 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
 
         LinearLayout textlayout = new LinearLayout(self);
         textlayout.setOrientation(LinearLayout.VERTICAL);
-        rlayout.setBackground(QThemeKit.getListItemBackground());
+        rlayout.setBackground(ResUtils.getListItemBackground());
 
         LinearLayout.LayoutParams imglp = new LinearLayout.LayoutParams(Utils.dip2px(self, 50), Utils.dip2px(self, 50));
         imglp.setMargins(tmp = Utils.dip2px(self, 6), tmp, tmp, tmp);
@@ -255,7 +255,7 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
         title.setSingleLine();
         //title.setText(ev.getShowStr());
         title.setGravity(Gravity.CENTER_VERTICAL);
-        title.setTextColor(QThemeKit.cloneColor(QThemeKit.skin_black));
+        title.setTextColor(ResUtils.cloneColor(ResUtils.skin_black));
         title.setTextSize(Utils.px2sp(self, Utils.dip2px(self, 16)));
         //title.setPadding(tmp=Utils.dip2px(ctx,8),tmp,0,tmp);
 
@@ -263,7 +263,7 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
         subtitle.setId(R_ID_EXL_SUBTITLE);
         subtitle.setSingleLine();
         subtitle.setGravity(Gravity.CENTER_VERTICAL);
-        subtitle.setTextColor(QThemeKit.cloneColor(QThemeKit.skin_gray3));
+        subtitle.setTextColor(ResUtils.cloneColor(ResUtils.skin_gray3));
         subtitle.setTextSize(Utils.px2sp(self, Utils.dip2px(self, 14)));
         //subtitle.setPadding(tmp,0,0,tmp);
 

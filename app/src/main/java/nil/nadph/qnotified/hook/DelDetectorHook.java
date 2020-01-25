@@ -18,7 +18,7 @@ import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.adapter.ActProxyMgr;
 import nil.nadph.qnotified.pk.FriendChunk;
 import nil.nadph.qnotified.record.ConfigManager;
-import nil.nadph.qnotified.util.QThemeKit;
+import nil.nadph.qnotified.util.ResUtils;
 import nil.nadph.qnotified.util.Utils;
 
 import java.lang.ref.WeakReference;
@@ -162,7 +162,7 @@ public class DelDetectorHook extends BaseDelayableHook {
                 View lv = (View) param.thisObject;
                 //frameView=Utils.getObject(,View.class,"b");
                 final Activity splashActivity = (Activity) Utils.getContext(lv);
-                QThemeKit.initTheme(splashActivity);
+                ResUtils.initTheme(splashActivity);
                 //lv=(ContactsFPSPinnedHeaderExpandableListView) iget_object(param.thisObject,"a",load("com/tencent/mobileqq/activity/contacts/view/ContactsFPSPinnedHeaderExpandableListView"));
                 //log("Fuckee:"+lv.getClass());
                 //TextView unusualContacts;
@@ -204,7 +204,7 @@ public class DelDetectorHook extends BaseDelayableHook {
                     exfriend = new TextView(splashActivity);
                     exfriendRef = new WeakReference<>(exfriend);
                 }
-                exfriend.setTextColor(QThemeKit.skin_blue);//unusualContacts.getTextColors());//QThemeKit.skin_red);
+                exfriend.setTextColor(ResUtils.skin_blue);//unusualContacts.getTextColors());//ResUtils.skin_red);
                 //exfriend.setBackground(Utils._obj_clone(background.mutate()));//damn! mutate() not working!
                 exfriend.setTextSize(dip2sp(splashActivity, 17));//TypedValue.COMPLEX_UNIT_PX,unusualContacts.getTextSize());
                 exfriend.setId(VIEW_ID_DELETED_FRIEND);
@@ -220,7 +220,7 @@ public class DelDetectorHook extends BaseDelayableHook {
                 redDot.setTextColor(0xFFFF0000);
 
                 redDot.setGravity(Gravity.CENTER);
-                //redDot.setBackground(QThemeKit.skin_tips_newmessage);
+                //redDot.setBackground(ResUtils.skin_tips_newmessage);
                 redDot.getPaint().setFakeBoldText(true);
                 //redDot.setTextAppearance(android.R.style.TextAppearance_Small);
                 redDot.setTextSize(Utils.dip2sp(splashActivity, 10));

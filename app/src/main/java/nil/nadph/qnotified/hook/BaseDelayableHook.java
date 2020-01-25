@@ -33,7 +33,8 @@ public abstract class BaseDelayableHook {
                 CheatHook.get(),
                 RoundAvatarHook.get(),
                 $endGiftHook.get(),
-                MultiForwardAvatarHook.get()
+                MultiForwardAvatarHook.get(),
+                ReplyNoAtHook.get()
         };
         return sAllHooks;
     }
