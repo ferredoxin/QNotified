@@ -173,7 +173,7 @@ public class ResUtils {
             Class clazz = Class.forName("android.content.res.XmlBlock");
             Constructor constructor = clazz.getDeclaredConstructor(byte[].class);
             constructor.setAccessible(true);
-            Object block = constructor.newInstance(data);
+            Object block = constructor.newInstance((Object) data);
             Method m = clazz.getDeclaredMethod("newParser");
             m.setAccessible(true);
             return (XmlPullParser) m.invoke(block);

@@ -165,6 +165,7 @@ public class CardMsgHook extends BaseDelayableHook {
                             iput_object(QQCustomMenuItem, "a", String.class, "复制代码");
                             Object ret = Array.newInstance(QQCustomMenuItem.getClass(), Array.getLength(arr) + 1);
                             Array.set(ret, 0, Array.get(arr, 0));
+                            //noinspection SuspiciousSystemArraycopy
                             System.arraycopy(arr, 1, ret, 2, Array.getLength(arr) - 1);
                             Array.set(ret, 1, QQCustomMenuItem);
                             param.setResult(ret);
@@ -217,6 +218,7 @@ public class CardMsgHook extends BaseDelayableHook {
                             iput_object(QQCustomMenuItem, "a", String.class, "复制代码");
                             Object ret = Array.newInstance(QQCustomMenuItem.getClass(), Array.getLength(arr) + 1);
                             Array.set(ret, 0, Array.get(arr, 0));
+                            //noinspection SuspiciousSystemArraycopy
                             System.arraycopy(arr, 1, ret, 2, Array.getLength(arr) - 1);
                             Array.set(ret, 1, QQCustomMenuItem);
                             param.setResult(ret);

@@ -12,6 +12,7 @@ import java.util.Stack;
  * @author cinit
  * A simple tool parses Android binary XML
  */
+@SuppressWarnings("CharsetObjectCanBeUsed")
 public class BinaryXmlParser {
 
     public static final short

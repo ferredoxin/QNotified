@@ -28,12 +28,11 @@ public class FaceImpl implements InvocationHandler {
     private HashMap<String, Bitmap> cachedUserFace;
     private HashMap<String, Bitmap> cachedTroopFace;
     private HashMap<String, WeakReference<ImageView>> registeredView;
-    //private Object faceMgr;
-    private Object qqAppInterface;
     private Object mFaceDecoder;
 
     private FaceImpl() throws Throwable {
-        qqAppInterface = Utils.getAppRuntime();
+        //private Object faceMgr;
+        Object qqAppInterface = Utils.getAppRuntime();
         class_FaceDecoder = load("com/tencent/mobileqq/util/FaceDecoder");
         if (class_FaceDecoder == null) {
             Class cl_rxMsg = load("com/tencent/mobileqq/receipt/ReceiptMessageReadMemberListFragment");

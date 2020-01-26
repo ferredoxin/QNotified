@@ -58,6 +58,7 @@ public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, 
     private EditText search;
     private TextView rightBtn, cancel, reverse, selectAll;
     private HashSet<String> muted;
+
     public TroopSelectAdapter(Activity act, int action) {
         mActivity = act;
         mActionInt = action;
@@ -463,6 +464,7 @@ public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, 
         public CharSequence _troopuin;
         public CharSequence _troopname;
         public int hit;
+
         public TroopInfo(Object obj) {
             _troopname = troopname = (String) iget_object_or_null(obj, "troopname");
             _troopuin = troopuin = (String) iget_object_or_null(obj, "troopuin");

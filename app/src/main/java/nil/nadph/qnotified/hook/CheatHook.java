@@ -26,6 +26,7 @@ public class CheatHook extends BaseDelayableHook {
 
     private int diceNum = -1;
     private int morraNum = -1;
+
     private CheatHook() {
     }
 

@@ -352,7 +352,7 @@ public class SendBatchMsg {
             check.setFocusable(false);
             check.setClickable(false);
             ImageView imageView = new ImageView(context);
-            LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(imgHeight, imgHeight);
+            @SuppressWarnings("SuspiciousNameCombination") LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(imgHeight, imgHeight);
             layoutParams2.gravity = Gravity.CENTER_VERTICAL;
             layoutParams2.setMargins(imgPadding, 0, imgPadding, 0);
             imageView.setLayoutParams(layoutParams2);

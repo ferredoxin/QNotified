@@ -259,6 +259,7 @@ public class PHPArray implements Iterable<HashMap.Entry> {
         for (Map.Entry entry : arr) {
             Object a = val, b = entry.getValue();
             // Objcets.equals requires API19,current14
+            //noinspection EqualsReplaceableByObjectsCall
             if ((a == b) || a != null && a.equals(b)) return entry.getKey();
         }
         return false;

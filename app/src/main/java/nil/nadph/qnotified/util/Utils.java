@@ -75,12 +75,12 @@ public class Utils {
     private static Method method_Toast_show;
     private static Method method_Toast_makeText;
 
-	/* Use Utils.getApplication() Instead *
-	 @Deprecated()
-	 @SuppressWarnings ("all")
-	 public static Context getSystemContext() {
-	 return (Context) XposedHelpers.callMethod(XposedHelpers.callStaticMethod(XposedHelpers.findClass("android.app.ActivityThread", null), "currentActivityThread", new Object[0]), "getSystemContext", new Object[0]);
-	 }*/
+    /* Use Utils.getApplication() Instead *
+     @Deprecated()
+     @SuppressWarnings ("all")
+     public static Context getSystemContext() {
+     return (Context) XposedHelpers.callMethod(XposedHelpers.callStaticMethod(XposedHelpers.findClass("android.app.ActivityThread", null), "currentActivityThread", new Object[0]), "getSystemContext", new Object[0]);
+     }*/
     private static Class clazz_QQToast;
 
     private Utils() {
@@ -103,7 +103,7 @@ public class Utils {
     }
 
     public static Application getApplication() {
-        Field f = null;
+        Field f;
         try {
             Class clz = load("com/tencent/common/app/BaseApplicationImpl");
             f = hasField(clz, "sApplication");
@@ -189,7 +189,7 @@ public class Utils {
         if (argc * 2 + 1 == argsTypesAndReturnType.length)
             returnType = (Class) argsTypesAndReturnType[argsTypesAndReturnType.length - 1];
         int i, ii;
-        Method[] m = null;
+        Method[] m;
         Method method = null;
         Class[] _argt;
         for (i = 0; i < argc; i++) {
@@ -231,7 +231,7 @@ public class Utils {
         if (argc * 2 + 1 == argsTypesAndReturnType.length)
             returnType = (Class) argsTypesAndReturnType[argsTypesAndReturnType.length - 1];
         int i, ii;
-        Method[] m = null;
+        Method[] m;
         Method method = null;
         Class[] _argt;
         for (i = 0; i < argc; i++) {
@@ -269,7 +269,7 @@ public class Utils {
         if (argc * 2 + 1 == argsTypesAndReturnType.length)
             returnType = (Class) argsTypesAndReturnType[argsTypesAndReturnType.length - 1];
         int i, ii;
-        Method[] m = null;
+        Method[] m;
         Method method = null;
         Class[] _argt;
         for (i = 0; i < argc; i++) {
@@ -296,10 +296,11 @@ public class Utils {
         } while (!Object.class.equals(clazz = clazz.getSuperclass()));
         if (method == null) throw new NoSuchMethodException(name + " in " + obj.getClass().getName());
         method.setAccessible(true);
-        Object ret = null;
+        Object ret;
         boolean needPatch = false;
         try {
             ret = XposedBridge.invokeOriginalMethod(method, obj, argv);
+            return ret;
         } catch (IllegalStateException e) {
             //For S-EdXp: Method not hooked.
             needPatch = true;
@@ -327,7 +328,7 @@ public class Utils {
         if (argc * 2 + 1 == argsTypesAndReturnType.length)
             returnType = (Class) argsTypesAndReturnType[argsTypesAndReturnType.length - 1];
         int i, ii;
-        Method[] m = null;
+        Method[] m;
         Method method = null;
         Class[] _argt;
         for (i = 0; i < argc; i++) {
@@ -362,7 +363,7 @@ public class Utils {
         Class[] argt = new Class[argc];
         Object[] argv = new Object[argc];
         int i;
-        Constructor m = null;
+        Constructor m;
         for (i = 0; i < argc; i++) {
             argt[i] = (Class) argsAndTypes[argc + i];
             argv[i] = argsAndTypes[i];
