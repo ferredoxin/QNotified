@@ -2,7 +2,6 @@ package nil.nadph.qnotified.adapter;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,8 +20,9 @@ import nil.nadph.qnotified.FaceImpl;
 import nil.nadph.qnotified.StartupHook;
 import nil.nadph.qnotified.record.EventRecord;
 import nil.nadph.qnotified.record.FriendRecord;
-import nil.nadph.qnotified.util.ResUtils;
-import nil.nadph.qnotified.util.ViewBuilder;
+import nil.nadph.qnotified.ui.CustomDialog;
+import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.ui.ViewBuilder;
 import nil.nadph.qnotified.util.Utils;
 
 import java.util.*;
@@ -30,12 +30,17 @@ import java.util.*;
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.invoke_virtual;
+import static nil.nadph.qnotified.util.Utils.log;
 
 //import de.robv.android.xposed.*;
 
 public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter {
 
+    private static final int R_ID_EXL_TITLE = 0x300AFF01;
+    private static final int R_ID_EXL_SUBTITLE = 0x300AFF02;
+    private static final int R_ID_EXL_FACE = 0x300AFF03;
+    private static final int R_ID_EXL_STATUS = 0x300AFF04;
     private Activity self;
     //private View mListView;
     private FaceImpl face;
@@ -43,10 +48,16 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
     private HashMap<Integer, EventRecord> eventsMap;
     private ArrayList<EventRecord> evs;
 
-    private static final int R_ID_EXL_TITLE = 0x300AFF01;
-    private static final int R_ID_EXL_SUBTITLE = 0x300AFF02;
-    private static final int R_ID_EXL_FACE = 0x300AFF03;
-    private static final int R_ID_EXL_STATUS = 0x300AFF04;
+    public ExfriendListAdapter(Activity context) {
+        self = context;
+        try {
+            face = FaceImpl.getInstance();
+        } catch (Throwable e) {
+            log(e);
+        }
+        exm = ExfriendManager.getCurrent();
+        reload();
+    }
 
     @Override
     public void doOnPostCreate(Bundle savedInstanceState) throws Throwable {
@@ -121,18 +132,6 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
         self.getWindow().getDecorView().setTag(this);
     }
 
-
-    public ExfriendListAdapter(Activity context) {
-        self = context;
-        try {
-            face = FaceImpl.getInstance();
-        } catch (Throwable e) {
-            log(e);
-        }
-        exm = ExfriendManager.getCurrent();
-        reload();
-    }
-
     public void reload() {
         eventsMap = exm.getEvents();
         if (evs == null) evs = new ArrayList<>();
@@ -141,7 +140,7 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
         Iterator<Map.Entry<Integer, EventRecord>> it = eventsMap.entrySet().iterator();
         EventRecord ev;
         while (it.hasNext()) {
-            ev = (EventRecord) it.next().getValue();
+            ev = it.next().getValue();
             evs.add(ev);
         }
         Collections.sort(evs);
@@ -299,26 +298,26 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
             @Override
             public boolean onLongClick(final View v) {
                 try {
-                    Dialog qQCustomDialog = createDialog(v.getContext());
-                    invoke_virtual(qQCustomDialog, "setTitle", "删除记录", String.class);
-                    invoke_virtual(qQCustomDialog, "setMessage", "确认删除历史记录(" + ((EventRecord) v.getTag())._remark + ")", CharSequence.class);
-                    invoke_virtual(qQCustomDialog, "setPositiveButton", "确认", new DialogInterface.OnClickListener() {
+                    CustomDialog dialog = CustomDialog.create(self);
+                    dialog.setTitle("删除记录");
+                    dialog.setMessage("确认删除历史记录(" + ((EventRecord) v.getTag())._remark + ")");
+                    dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
-                            exm.getEvents().values().remove(((EventRecord) v.getTag()));
+                            exm.getEvents().values().remove(v.getTag());
                             exm.saveConfigure();
                             reload();
                             notifyDataSetChanged();
                         }
-                    }, String.class, DialogInterface.OnClickListener.class);
-                    invoke_virtual(qQCustomDialog, "setNegativeButton", "取消", new DialogInterface.OnClickListener() {
+                    });
+                    dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                         }
-                    }, String.class, DialogInterface.OnClickListener.class);
-                    invoke_virtual(qQCustomDialog, "show");
+                    });
+                    dialog.show();
                 } catch (Exception e) {
                     log(e);
                 }

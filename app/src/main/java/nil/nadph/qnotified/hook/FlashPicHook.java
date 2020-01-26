@@ -17,16 +17,15 @@ import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class FlashPicHook extends BaseDelayableHook {
+    private static final FlashPicHook self = new FlashPicHook();
+    private boolean inited = false;
+
     private FlashPicHook() {
     }
-
-    private static final FlashPicHook self = new FlashPicHook();
 
     public static FlashPicHook get() {
         return self;
     }
-
-    private boolean inited = false;
 
     @Override
     public boolean init() {

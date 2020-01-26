@@ -13,6 +13,7 @@ import static nil.nadph.qnotified.util.Utils.*;
 
 public class RoundAvatarHook extends BaseDelayableHook {
     private static final RoundAvatarHook self = new RoundAvatarHook();
+    private boolean inited = false;
 
     RoundAvatarHook() {
     }
@@ -20,8 +21,6 @@ public class RoundAvatarHook extends BaseDelayableHook {
     public static RoundAvatarHook get() {
         return self;
     }
-
-    private boolean inited = false;
 
     @Override
     public boolean init() {

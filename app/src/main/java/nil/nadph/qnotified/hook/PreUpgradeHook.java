@@ -13,16 +13,15 @@ import static nil.nadph.qnotified.util.Utils.log;
 import static nil.nadph.qnotified.util.Utils.qh_pre_upgrade;
 
 public class PreUpgradeHook extends BaseDelayableHook {
+    private static final PreUpgradeHook self = new PreUpgradeHook();
+    private boolean inited = false;
+
     private PreUpgradeHook() {
     }
-
-    private static final PreUpgradeHook self = new PreUpgradeHook();
 
     public static PreUpgradeHook get() {
         return self;
     }
-
-    private boolean inited = false;
 
     @Override
     public boolean init() {

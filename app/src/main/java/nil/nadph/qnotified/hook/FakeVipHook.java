@@ -10,16 +10,15 @@ import static nil.nadph.qnotified.util.Utils.log;
 
 public class FakeVipHook extends BaseDelayableHook {
 
+    private static final FakeVipHook self = new FakeVipHook();
+    private boolean inited = false;
+
     private FakeVipHook() {
     }
-
-    private static final FakeVipHook self = new FakeVipHook();
 
     public static FakeVipHook get() {
         return self;
     }
-
-    private boolean inited = false;
 
     @Override
     public boolean init() {

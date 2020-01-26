@@ -37,10 +37,47 @@ import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressWarnings("rawtypes")
 public class StartupHook {
-    public static WeakReference<Activity> splashActivityRef;
     public static final String QN_FULL_TAG = "qn_full_tag";
-    public static StartupHook SELF;
+    public static final XC_MethodHook dummyHook = new XC_MethodHook(200) {
+        @Override
+        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+            super.beforeHookedMethod(param);
+        }
 
+        @Override
+        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+            super.afterHookedMethod(param);
+        }
+    };
+    public static final XC_MethodHook invokeRecord = new XC_MethodHook(200) {
+        @Override
+        protected void afterHookedMethod(MethodHookParam param) throws IllegalAccessException, IllegalArgumentException {
+            Member m = param.method;
+            StringBuilder ret = new StringBuilder(m.getDeclaringClass().getSimpleName() + "->" + ((m instanceof Method) ? m.getName() : "<init>") + "(");
+            Class[] argt;
+            if (m instanceof Method)
+                argt = ((Method) m).getParameterTypes();
+            else if (m instanceof Constructor)
+                argt = ((Constructor) m).getParameterTypes();
+            else argt = new Class[0];
+            for (int i = 0; i < argt.length; i++) {
+                if (i != 0) ret.append(",\n");
+                ret.append(param.args[i]);
+            }
+            ret.append(")=").append(param.getResult());
+            Utils.log(ret.toString());
+            ret = new StringBuilder("↑dump object:" + m.getDeclaringClass().getCanonicalName() + "\n");
+            Field[] fs = m.getDeclaringClass().getDeclaredFields();
+            for (int i = 0; i < fs.length; i++) {
+                fs[i].setAccessible(true);
+                ret.append(i < fs.length - 1 ? "├" : "↓").append(fs[i].getName()).append("=").append(ClazzExplorer.en_toStr(fs[i].get(param.thisObject))).append("\n");
+            }
+            log(ret.toString());
+            Utils.dumpTrace();
+        }
+    };
+    public static WeakReference<Activity> splashActivityRef;
+    public static StartupHook SELF;
     private boolean first_stage_inited = false;
     private boolean sec_stage_inited = false;
     private boolean third_stage_inited = false;
@@ -51,6 +88,137 @@ public class StartupHook {
     public static StartupHook getInstance() {
         if (SELF == null) SELF = new StartupHook();
         return SELF;
+    }
+
+    public static XC_MethodHook.Unhook findAndHookMethodIfExists(Class<?> clazz, String methodName, Object...
+            parameterTypesAndCallback) {
+        try {
+            return findAndHookMethod(clazz, methodName, parameterTypesAndCallback);
+        } catch (Throwable e) {
+            log(e.toString());
+            return null;
+        }
+    }
+
+    public static XC_MethodHook.Unhook findAndHookMethodIfExists(String clazzName, ClassLoader cl, String
+            methodName, Object... parameterTypesAndCallback) {
+        try {
+            return findAndHookMethod(clazzName, cl, methodName, parameterTypesAndCallback);
+        } catch (Throwable e) {
+            log(e.toString());
+            return null;
+        }
+    }
+
+    public static void startProxyActivity(Context ctx, int action) {
+        Intent intent = new Intent(ctx, load(ActProxyMgr.STUB_ACTIVITY));
+        int id = ActProxyMgr.next();
+        intent.putExtra(ACTIVITY_PROXY_ID_TAG, id);
+        intent.putExtra(ACTIVITY_PROXY_ACTION, action);
+        intent.putExtra("fling_action_key", 2);
+        intent.putExtra("fling_code_key", ctx.hashCode());
+        ctx.startActivity(intent);
+    }
+
+    public static void openProfileCard(Context ctx, long uin) {
+        try {
+            Parcelable allInOne = (Parcelable) new_instance(load("com/tencent/mobileqq/activity/ProfileActivity$AllInOne"), "" + uin, 35, String.class, int.class);
+            Intent intent = new Intent(ctx, load("com/tencent/mobileqq/activity/FriendProfileCardActivity"));
+            intent.putExtra("AllInOne", allInOne);
+            ctx.startActivity(intent);
+        } catch (Exception e) {
+            log(e);
+        }
+    }
+
+    public static void deepDarkTheme() {
+        try {
+            Class clz = load("com/tencent/mobileqq/activity/FriendProfileCardActivity");
+            findAndHookMethod(clz, "doOnCreate", Bundle.class, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    final Activity ctx = (Activity) param.thisObject;
+                    FrameLayout frame = (FrameLayout) ctx.findViewById(android.R.id.content);
+                    frame.getChildAt(0).setBackgroundColor(0xFF000000);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException ignored) {
+                            }
+                            ctx.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        View frame = ctx.findViewById(android.R.id.content);
+                                        frame.setBackgroundColor(0xFF000000);
+                                        View dk0 = ctx.findViewById(ctx.getResources().getIdentifier("dk0", "id", ctx.getPackageName()));
+                                        if (dk0 != null) dk0.setBackgroundColor(0x00000000);
+                                    } catch (Exception e) {
+                                        log(e);
+                                    }
+                                }
+                            });
+                        }
+                    }).start();
+                }
+            });
+            clz = load("com.tencent.mobileqq.activity.ChatSettingForTroop");
+            findAndHookMethod(clz, "doOnCreate", Bundle.class, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    final Activity ctx = (Activity) param.thisObject;
+                    FrameLayout frame = (FrameLayout) ctx.findViewById(android.R.id.content);
+                    frame.getChildAt(0).setBackgroundColor(0xFF000000);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException ignored) {
+                            }
+                            ctx.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        FrameLayout frame = (FrameLayout) ctx.findViewById(android.R.id.content);
+                                        frame.getChildAt(0).setBackgroundColor(0xFF000000);
+                                        ViewGroup list = (ViewGroup) ctx.findViewById(ctx.getResources().getIdentifier("common_xlistview", "id", ctx.getPackageName()));
+                                        list.getChildAt(0).setBackgroundColor(0x00000000);
+                                    } catch (Exception e) {
+                                        log(e);
+                                    }
+                                }
+                            });
+                        }
+                    }).start();
+                }
+            });
+
+
+            clz = load("com.tencent.mobileqq.activity.TroopMemberListActivity");
+            findAndHookMethod(clz, "doOnCreate", Bundle.class, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    final Activity ctx = (Activity) param.thisObject;
+                    FrameLayout frame = (FrameLayout) ctx.findViewById(android.R.id.content);
+                    frame.getChildAt(0)/*.getChildAt(0)*/.setBackgroundColor(0xFF000000);
+                }
+            });
+        } catch (Exception e) {
+            log(e);
+        }
+    }
+
+    /**
+     * dummy method, for development and test only
+     */
+    public static void onAppStartup() {
+        if (!isAlphaVersion()) return;
+        deepDarkTheme();
+
+
     }
 
     public void doInit(ClassLoader rtloader) throws Throwable {
@@ -284,7 +452,6 @@ public class StartupHook {
         hideMiniAppEntry();
     }
 
-
     private void hideMiniAppEntry() {
         try {
             if (Utils.isTim(getApplication())) return;
@@ -398,7 +565,6 @@ public class StartupHook {
         }
     }
 
-
     private void asyncStartFindClass() {
         if (DexKit.tryLoadOrNull(DexKit.C_DIALOG_UTIL) == null)
             new Thread(new Runnable() {
@@ -433,177 +599,6 @@ public class StartupHook {
                     DexKit.doFindClass(DexKit.C_FLASH_PIC_HELPER);
                 }
             }).start();*/
-    }
-
-    public static final XC_MethodHook dummyHook = new XC_MethodHook(200) {
-        @Override
-        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-            super.beforeHookedMethod(param);
-        }
-
-        @Override
-        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-            super.afterHookedMethod(param);
-        }
-    };
-
-    public static final XC_MethodHook invokeRecord = new XC_MethodHook(200) {
-        @Override
-        protected void afterHookedMethod(MethodHookParam param) throws IllegalAccessException, IllegalArgumentException {
-            Member m = param.method;
-            StringBuilder ret = new StringBuilder(m.getDeclaringClass().getSimpleName() + "->" + ((m instanceof Method) ? m.getName() : "<init>") + "(");
-            Class[] argt;
-            if (m instanceof Method)
-                argt = ((Method) m).getParameterTypes();
-            else if (m instanceof Constructor)
-                argt = ((Constructor) m).getParameterTypes();
-            else argt = new Class[0];
-            for (int i = 0; i < argt.length; i++) {
-                if (i != 0) ret.append(",\n");
-                ret.append(param.args[i]);
-            }
-            ret.append(")=").append(param.getResult());
-            Utils.log(ret.toString());
-            ret = new StringBuilder("↑dump object:" + m.getDeclaringClass().getCanonicalName() + "\n");
-            Field[] fs = m.getDeclaringClass().getDeclaredFields();
-            for (int i = 0; i < fs.length; i++) {
-                fs[i].setAccessible(true);
-                ret.append(i < fs.length - 1 ? "├" : "↓").append(fs[i].getName()).append("=").append(ClazzExplorer.en_toStr(fs[i].get(param.thisObject))).append("\n");
-            }
-            log(ret.toString());
-            Utils.dumpTrace();
-        }
-    };
-
-    public static XC_MethodHook.Unhook findAndHookMethodIfExists(Class<?> clazz, String methodName, Object...
-            parameterTypesAndCallback) {
-        try {
-            return findAndHookMethod(clazz, methodName, parameterTypesAndCallback);
-        } catch (Throwable e) {
-            log(e.toString());
-            return null;
-        }
-    }
-
-    public static XC_MethodHook.Unhook findAndHookMethodIfExists(String clazzName, ClassLoader cl, String
-            methodName, Object... parameterTypesAndCallback) {
-        try {
-            return findAndHookMethod(clazzName, cl, methodName, parameterTypesAndCallback);
-        } catch (Throwable e) {
-            log(e.toString());
-            return null;
-        }
-    }
-
-    public static void startProxyActivity(Context ctx, int action) {
-        Intent intent = new Intent(ctx, load(ActProxyMgr.STUB_ACTIVITY));
-        int id = ActProxyMgr.next();
-        intent.putExtra(ACTIVITY_PROXY_ID_TAG, id);
-        intent.putExtra(ACTIVITY_PROXY_ACTION, action);
-        intent.putExtra("fling_action_key", 2);
-        intent.putExtra("fling_code_key", ctx.hashCode());
-        ctx.startActivity(intent);
-    }
-
-    public static void openProfileCard(Context ctx, long uin) {
-        try {
-            Parcelable allInOne = (Parcelable) new_instance(load("com/tencent/mobileqq/activity/ProfileActivity$AllInOne"), "" + uin, 35, String.class, int.class);
-            Intent intent = new Intent(ctx, load("com/tencent/mobileqq/activity/FriendProfileCardActivity"));
-            intent.putExtra("AllInOne", allInOne);
-            ctx.startActivity(intent);
-        } catch (Exception e) {
-            log(e);
-        }
-    }
-
-    public static void deepDarkTheme() {
-        try {
-            Class clz = load("com/tencent/mobileqq/activity/FriendProfileCardActivity");
-            findAndHookMethod(clz, "doOnCreate", Bundle.class, new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    final Activity ctx = (Activity) param.thisObject;
-                    FrameLayout frame = (FrameLayout) ctx.findViewById(android.R.id.content);
-                    frame.getChildAt(0).setBackgroundColor(0xFF000000);
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ignored) {
-                            }
-                            ctx.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        View frame = ctx.findViewById(android.R.id.content);
-                                        frame.setBackgroundColor(0xFF000000);
-                                        View dk0 = ctx.findViewById(ctx.getResources().getIdentifier("dk0", "id", ctx.getPackageName()));
-                                        if (dk0 != null) dk0.setBackgroundColor(0x00000000);
-                                    } catch (Exception e) {
-                                        log(e);
-                                    }
-                                }
-                            });
-                        }
-                    }).start();
-                }
-            });
-            clz = load("com.tencent.mobileqq.activity.ChatSettingForTroop");
-            findAndHookMethod(clz, "doOnCreate", Bundle.class, new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    final Activity ctx = (Activity) param.thisObject;
-                    FrameLayout frame = (FrameLayout) ctx.findViewById(android.R.id.content);
-                    frame.getChildAt(0).setBackgroundColor(0xFF000000);
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ignored) {
-                            }
-                            ctx.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        FrameLayout frame = (FrameLayout) ctx.findViewById(android.R.id.content);
-                                        frame.getChildAt(0).setBackgroundColor(0xFF000000);
-                                        ViewGroup list = (ViewGroup) ctx.findViewById(ctx.getResources().getIdentifier("common_xlistview", "id", ctx.getPackageName()));
-                                        list.getChildAt(0).setBackgroundColor(0x00000000);
-                                    } catch (Exception e) {
-                                        log(e);
-                                    }
-                                }
-                            });
-                        }
-                    }).start();
-                }
-            });
-
-
-            clz = load("com.tencent.mobileqq.activity.TroopMemberListActivity");
-            findAndHookMethod(clz, "doOnCreate", Bundle.class, new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    final Activity ctx = (Activity) param.thisObject;
-                    FrameLayout frame = (FrameLayout) ctx.findViewById(android.R.id.content);
-                    ((ViewGroup) frame.getChildAt(0))/*.getChildAt(0)*/.setBackgroundColor(0xFF000000);
-                }
-            });
-        } catch (Exception e) {
-            log(e);
-        }
-    }
-
-    /**
-     * dummy method, for development and test only
-     */
-    public static void onAppStartup() {
-        if (!isAlphaVersion()) return;
-        deepDarkTheme();
-
-
     }
 
 }

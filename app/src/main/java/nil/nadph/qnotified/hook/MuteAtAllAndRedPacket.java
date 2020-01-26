@@ -11,16 +11,15 @@ import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class MuteAtAllAndRedPacket extends BaseDelayableHook {
+    private static final MuteAtAllAndRedPacket self = new MuteAtAllAndRedPacket();
+    private boolean inited = false;
+
     private MuteAtAllAndRedPacket() {
     }
-
-    private static final MuteAtAllAndRedPacket self = new MuteAtAllAndRedPacket();
 
     public static MuteAtAllAndRedPacket get() {
         return self;
     }
-
-    private boolean inited = false;
 
     @Override
     public boolean init() {

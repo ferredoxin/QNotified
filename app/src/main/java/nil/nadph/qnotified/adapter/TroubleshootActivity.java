@@ -1,7 +1,6 @@
 package nil.nadph.qnotified.adapter;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,8 +17,9 @@ import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.record.EventRecord;
 import nil.nadph.qnotified.record.FriendRecord;
+import nil.nadph.qnotified.ui.CustomDialog;
+import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.ResUtils;
 import nil.nadph.qnotified.util.Utils;
 
 import java.util.Iterator;
@@ -27,9 +27,9 @@ import java.util.Map;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemButton;
+import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.ViewBuilder.newListItemButton;
-import static nil.nadph.qnotified.util.ViewBuilder.subtitle;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class TroubleshootActivity implements ActivityAdapter {
@@ -109,32 +109,29 @@ public class TroubleshootActivity implements ActivityAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    Dialog dialog = createDialog(self);
-                    invoke_virtual(dialog, "setPositiveButton", "确认", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            try {
-                                ExfriendManager exm = ExfriendManager.getCurrent();
-                                Iterator it = exm.getEvents().entrySet().iterator();
-                                while (it.hasNext()) {
-                                    EventRecord ev = (EventRecord) ((Map.Entry) it.next()).getValue();
-                                    if (exm.getPersons().get(ev.operand).friendStatus == FriendRecord.STATUS_FRIEND_MUTUAL)
-                                        it.remove();
-                                }
-                                exm.saveConfigure();
-                                showToast(self, TOAST_TYPE_SUCCESS, "操作成功", Toast.LENGTH_SHORT);
-                            } catch (Throwable e) {
+                CustomDialog dialog = CustomDialog.create(self);
+                dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            ExfriendManager exm = ExfriendManager.getCurrent();
+                            Iterator it = exm.getEvents().entrySet().iterator();
+                            while (it.hasNext()) {
+                                EventRecord ev = (EventRecord) ((Map.Entry) it.next()).getValue();
+                                if (exm.getPersons().get(ev.operand).friendStatus == FriendRecord.STATUS_FRIEND_MUTUAL)
+                                    it.remove();
                             }
+                            exm.saveConfigure();
+                            showToast(self, TOAST_TYPE_SUCCESS, "操作成功", Toast.LENGTH_SHORT);
+                        } catch (Throwable e) {
                         }
-                    }, String.class, DialogInterface.OnClickListener.class);
-                    invoke_virtual(dialog, "setNegativeButton", "取消", new Utils.DummyCallback(), String.class, DialogInterface.OnClickListener.class);
-                    dialog.setCancelable(true);
-                    invoke_virtual(dialog, "setMessage", "此操作将删除当前帐号(" + getLongAccountUin() + ")下的 已恢复 的历史好友记录(记录可单独删除).如果因bug大量好友被标记为已删除,请先刷新好友列表,然后再点击此按钮.\n此操作不可恢复", CharSequence.class);
-                    invoke_virtual(dialog, "setTitle", "确认操作", String.class);
-                    dialog.show();
-                } catch (Exception e) {
-                }
+                    }
+                });
+                dialog.setNegativeButton("取消", new Utils.DummyCallback());
+                dialog.setCancelable(true);
+                dialog.setMessage("此操作将删除当前帐号(" + getLongAccountUin() + ")下的 已恢复 的历史好友记录(记录可单独删除).如果因bug大量好友被标记为已删除,请先刷新好友列表,然后再点击此按钮.\n此操作不可恢复");
+                dialog.setTitle("确认操作");
+                dialog.show();
             }
         };
     }
@@ -143,28 +140,25 @@ public class TroubleshootActivity implements ActivityAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    Dialog dialog = createDialog(self);
-                    invoke_virtual(dialog, "setPositiveButton", "确认", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            try {
-                                ExfriendManager exm = ExfriendManager.getCurrent();
-                                exm.getConfig().getFile().delete();
-                                exm.getConfig().reinit();
-                                exm.reinit();
-                                showToast(self, TOAST_TYPE_SUCCESS, "操作成功", Toast.LENGTH_SHORT);
-                            } catch (Throwable e) {
-                            }
+                CustomDialog dialog = CustomDialog.create(self);
+                dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            ExfriendManager exm = ExfriendManager.getCurrent();
+                            exm.getConfig().getFile().delete();
+                            exm.getConfig().reinit();
+                            exm.reinit();
+                            showToast(self, TOAST_TYPE_SUCCESS, "操作成功", Toast.LENGTH_SHORT);
+                        } catch (Throwable e) {
                         }
-                    }, String.class, DialogInterface.OnClickListener.class);
-                    invoke_virtual(dialog, "setNegativeButton", "取消", new Utils.DummyCallback(), String.class, DialogInterface.OnClickListener.class);
-                    dialog.setCancelable(true);
-                    invoke_virtual(dialog, "setMessage", "此操作将删除当前帐号(" + getLongAccountUin() + ")下的 全部 的历史好友记录,通常您不需要进行此操作.如果您的历史好友列表中因bug出现大量好友,请在联系人列表下拉刷新后点击 删除标记为已恢复的好友 .\n此操作不可恢复", CharSequence.class);
-                    invoke_virtual(dialog, "setTitle", "确认操作", String.class);
-                    dialog.show();
-                } catch (Exception e) {
-                }
+                    }
+                });
+                dialog.setNegativeButton("取消", new Utils.DummyCallback());
+                dialog.setCancelable(true);
+                dialog.setMessage("此操作将删除当前帐号(" + getLongAccountUin() + ")下的 全部 的历史好友记录,通常您不需要进行此操作.如果您的历史好友列表中因bug出现大量好友,请在联系人列表下拉刷新后点击 删除标记为已恢复的好友 .\n此操作不可恢复");
+                dialog.setTitle("确认操作");
+                dialog.show();
             }
         };
     }
@@ -173,27 +167,24 @@ public class TroubleshootActivity implements ActivityAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    Dialog dialog = createDialog(self);
-                    invoke_virtual(dialog, "setPositiveButton", "确认", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            try {
-                                ConfigManager cfg = ConfigManager.getDefault();
-                                cfg.getAllConfig().clear();
-                                cfg.getFile().delete();
-                                System.exit(0);
-                            } catch (Throwable e) {
-                            }
+                CustomDialog dialog = CustomDialog.create(self);
+                dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            ConfigManager cfg = ConfigManager.getDefault();
+                            cfg.getAllConfig().clear();
+                            cfg.getFile().delete();
+                            System.exit(0);
+                        } catch (Throwable e) {
                         }
-                    }, String.class, DialogInterface.OnClickListener.class);
-                    invoke_virtual(dialog, "setNegativeButton", "取消", new Utils.DummyCallback(), String.class, DialogInterface.OnClickListener.class);
-                    dialog.setCancelable(true);
-                    invoke_virtual(dialog, "setMessage", "此操作将删除该模块的所有配置信息,包括屏蔽通知的群列表,但不包括历史好友列表.点击确认后请等待3秒后手动重启QQ.\n此操作不可恢复", CharSequence.class);
-                    invoke_virtual(dialog, "setTitle", "确认操作", String.class);
-                    dialog.show();
-                } catch (Exception e) {
-                }
+                    }
+                });
+                dialog.setNegativeButton("取消", new Utils.DummyCallback());
+                dialog.setCancelable(true);
+                dialog.setMessage("此操作将删除该模块的所有配置信息,包括屏蔽通知的群列表,但不包括历史好友列表.点击确认后请等待3秒后手动重启QQ.\n此操作不可恢复");
+                dialog.setTitle("确认操作");
+                dialog.show();
             }
         };
     }

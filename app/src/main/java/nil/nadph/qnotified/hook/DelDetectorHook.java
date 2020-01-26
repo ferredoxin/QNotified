@@ -18,7 +18,7 @@ import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.adapter.ActProxyMgr;
 import nil.nadph.qnotified.pk.FriendChunk;
 import nil.nadph.qnotified.record.ConfigManager;
-import nil.nadph.qnotified.util.ResUtils;
+import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.Utils;
 
 import java.lang.ref.WeakReference;
@@ -33,117 +33,12 @@ import static nil.nadph.qnotified.util.Utils.*;
 
 public class DelDetectorHook extends BaseDelayableHook {
 
-    public HashSet addedListView = new HashSet();
-
     public static final int VIEW_ID_DELETED_FRIEND = 0x00EE77AA;
-
+    private static final DelDetectorHook self = new DelDetectorHook();
+    public HashSet addedListView = new HashSet();
     public WeakReference<TextView> exfriendRef;
     public WeakReference<TextView> redDotRef;
-
-    private DelDetectorHook() {
-    }
-
-    private static final DelDetectorHook self = new DelDetectorHook();
-
-    public static DelDetectorHook get() {
-        return self;
-    }
-
     private boolean inited = false;
-
-    @Override
-    public boolean init() {
-        if (inited) return true;
-        findAndHookMethod(load("com/tencent/widget/PinnedHeaderExpandableListView"), "setAdapter", ExpandableListAdapter.class, exfriendEntryHook);
-        XposedHelpers.findAndHookMethod(load("com/tencent/mobileqq/activity/SplashActivity"), "doOnResume", new XC_MethodHook(700) {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                try {
-                    if (Utils.getLongAccountUin() > 10000) {
-                        ExfriendManager ex = ExfriendManager.getCurrent();
-                        ex.timeToUpdateFl();
-                    }
-                } catch (Throwable e) {
-                    log(e);
-                    throw e;
-                }
-            }
-        });
-
-		/*
-		 findAndHookMethod(load("friendlist/DelFriendReq"),"readFrom",load("com/qq/taf/jce/JceInputStream"),invokeRecord);
-		 *
-		 findAndHookMethod(load("friendlist/DelFriendReq"),"writeTo",load("com/qq/taf/jce/JceOutputStream"),new XC_MethodHook(200){
-		 @Override
-		 protected void beforeHookedMethod(MethodHookParam param) throws Throwable{
-		 splashActivity.runOnUiThread(new Runnable(){
-		 @Override
-		 public void run(){
-		 try{
-		 Utils.showToast(Utils.getApplication(),Utils.TOAST_TYPE_ERROR,"拒绝访问: 非法操作",0);
-		 }catch(Throwable e){
-		 log(e);
-		 }
-		 }
-		 });
-		 param.setThrowable(new IOException("Permission denied"));
-		 }
-		 });
-
-		 /*findAndHookMethod(load("friendlist/DelFriendResp"),"readFrom",load("com/qq/taf/jce/JceInputStream"),invokeRecord);
-		 findAndHookMethod(load("friendlist/DelFriendResp"),"writeTo",load("com/qq/taf/jce/JceOutputStream"),invokeRecord);
-		 *
-		 findAndHookMethod(load("friendlist/GetFriendListReq"),"writeTo",load("com/qq/taf/jce/JceOutputStream"),invokeRecord);
-
-		 findAndHookMethod(load("com/tencent/mobileqq/service/friendlist/FriendListService"),"n",load("com/tencent/qphone/base/remote/ToServiceMsg"),load("com/qq/jce/wup/UniPacket"),invokeRecord);
-		 */
-        findAndHookMethod(load("friendlist/GetFriendListResp"), "readFrom", load("com/qq/taf/jce/JceInputStream"), new XC_MethodHook(200) {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                try {
-                    FriendChunk fc = new FriendChunk(param.thisObject);
-                    ExfriendManager.onGetFriendListResp(fc);
-						/*String ret="dump object:"+param.thisObject.getClass().getCanonicalName()+"\n";
-						 Field[] fs=param.thisObject.getClass().getDeclaredFields();
-						 for(int i=0;i<fs.length;i++){
-						 fs[i].setAccessible(true);
-						 ret+=(i<fs.length-1?"├":"└")+fs[i].getName()+"="+ClazzExplorer.en_toStr(fs[i].get(param.thisObject))+"\n";
-						 }
-						 log(ret);*/
-                } catch (Throwable e) {
-                    log(e);
-                    throw e;
-                }
-            }
-        });
-
-        findAndHookMethod(load("friendlist/DelFriendResp"), "readFrom", load("com/qq/taf/jce/JceInputStream"), new XC_MethodHook(200) {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                try {
-                    long uin = (Long) iget_object_or_null(param.thisObject, "uin");
-                    long deluin = (Long) iget_object_or_null(param.thisObject, "deluin");
-                    int result = (Integer) iget_object_or_null(param.thisObject, "result");
-                    short errorCode = (Short) iget_object_or_null(param.thisObject, "errorCode");
-                    if (result == 0 && errorCode == 0) ExfriendManager.get(uin).markActiveDelete(deluin);
-						/*String ret="dump object:"+param.thisObject.getClass().getCanonicalName()+"\n";
-						 Field[] fs=param.thisObject.getClass().getDeclaredFields();
-						 for(int i=0;i<fs.length;i++){
-						 fs[i].setAccessible(true);
-						 ret+=(i<fs.length-1?"├":"└")+fs[i].getName()+"="+ClazzExplorer.en_toStr(fs[i].get(param.thisObject))+"\n";
-						 }
-						 log(ret);*/
-                    //param.setThrowable(new IOException("Connection closed"));
-                } catch (Throwable e) {
-                    log(e);
-                    throw e;
-                }
-            }
-        });
-        inited = true;
-        return true;
-    }
-
     private XC_MethodHook exfriendEntryHook = new XC_MethodHook(1200) {
         @Override
         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -295,6 +190,106 @@ public class DelDetectorHook extends BaseDelayableHook {
         }
 
     };
+
+    private DelDetectorHook() {
+    }
+
+    public static DelDetectorHook get() {
+        return self;
+    }
+
+    @Override
+    public boolean init() {
+        if (inited) return true;
+        findAndHookMethod(load("com/tencent/widget/PinnedHeaderExpandableListView"), "setAdapter", ExpandableListAdapter.class, exfriendEntryHook);
+        XposedHelpers.findAndHookMethod(load("com/tencent/mobileqq/activity/SplashActivity"), "doOnResume", new XC_MethodHook(700) {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                try {
+                    if (Utils.getLongAccountUin() > 10000) {
+                        ExfriendManager ex = ExfriendManager.getCurrent();
+                        ex.timeToUpdateFl();
+                    }
+                } catch (Throwable e) {
+                    log(e);
+                    throw e;
+                }
+            }
+        });
+
+		/*
+		 findAndHookMethod(load("friendlist/DelFriendReq"),"readFrom",load("com/qq/taf/jce/JceInputStream"),invokeRecord);
+		 *
+		 findAndHookMethod(load("friendlist/DelFriendReq"),"writeTo",load("com/qq/taf/jce/JceOutputStream"),new XC_MethodHook(200){
+		 @Override
+		 protected void beforeHookedMethod(MethodHookParam param) throws Throwable{
+		 splashActivity.runOnUiThread(new Runnable(){
+		 @Override
+		 public void run(){
+		 try{
+		 Utils.showToast(Utils.getApplication(),Utils.TOAST_TYPE_ERROR,"拒绝访问: 非法操作",0);
+		 }catch(Throwable e){
+		 log(e);
+		 }
+		 }
+		 });
+		 param.setThrowable(new IOException("Permission denied"));
+		 }
+		 });
+
+		 /*findAndHookMethod(load("friendlist/DelFriendResp"),"readFrom",load("com/qq/taf/jce/JceInputStream"),invokeRecord);
+		 findAndHookMethod(load("friendlist/DelFriendResp"),"writeTo",load("com/qq/taf/jce/JceOutputStream"),invokeRecord);
+		 *
+		 findAndHookMethod(load("friendlist/GetFriendListReq"),"writeTo",load("com/qq/taf/jce/JceOutputStream"),invokeRecord);
+
+		 findAndHookMethod(load("com/tencent/mobileqq/service/friendlist/FriendListService"),"n",load("com/tencent/qphone/base/remote/ToServiceMsg"),load("com/qq/jce/wup/UniPacket"),invokeRecord);
+		 */
+        findAndHookMethod(load("friendlist/GetFriendListResp"), "readFrom", load("com/qq/taf/jce/JceInputStream"), new XC_MethodHook(200) {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                try {
+                    FriendChunk fc = new FriendChunk(param.thisObject);
+                    ExfriendManager.onGetFriendListResp(fc);
+						/*String ret="dump object:"+param.thisObject.getClass().getCanonicalName()+"\n";
+						 Field[] fs=param.thisObject.getClass().getDeclaredFields();
+						 for(int i=0;i<fs.length;i++){
+						 fs[i].setAccessible(true);
+						 ret+=(i<fs.length-1?"├":"└")+fs[i].getName()+"="+ClazzExplorer.en_toStr(fs[i].get(param.thisObject))+"\n";
+						 }
+						 log(ret);*/
+                } catch (Throwable e) {
+                    log(e);
+                    throw e;
+                }
+            }
+        });
+
+        findAndHookMethod(load("friendlist/DelFriendResp"), "readFrom", load("com/qq/taf/jce/JceInputStream"), new XC_MethodHook(200) {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                try {
+                    long uin = (Long) iget_object_or_null(param.thisObject, "uin");
+                    long deluin = (Long) iget_object_or_null(param.thisObject, "deluin");
+                    int result = (Integer) iget_object_or_null(param.thisObject, "result");
+                    short errorCode = (Short) iget_object_or_null(param.thisObject, "errorCode");
+                    if (result == 0 && errorCode == 0) ExfriendManager.get(uin).markActiveDelete(deluin);
+						/*String ret="dump object:"+param.thisObject.getClass().getCanonicalName()+"\n";
+						 Field[] fs=param.thisObject.getClass().getDeclaredFields();
+						 for(int i=0;i<fs.length;i++){
+						 fs[i].setAccessible(true);
+						 ret+=(i<fs.length-1?"├":"└")+fs[i].getName()+"="+ClazzExplorer.en_toStr(fs[i].get(param.thisObject))+"\n";
+						 }
+						 log(ret);*/
+                    //param.setThrowable(new IOException("Connection closed"));
+                } catch (Throwable e) {
+                    log(e);
+                    throw e;
+                }
+            }
+        });
+        inited = true;
+        return true;
+    }
 
     @Override
     public int getEffectiveProc() {

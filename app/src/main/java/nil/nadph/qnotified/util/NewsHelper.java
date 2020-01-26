@@ -6,6 +6,7 @@ import android.text.util.Linkify;
 import android.view.View;
 import android.widget.TextView;
 import nil.nadph.qnotified.record.ConfigManager;
+import nil.nadph.qnotified.ui.ResUtils;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.ByteArrayOutputStream;
@@ -21,18 +22,77 @@ import static nil.nadph.qnotified.util.Utils.log;
 @MainProcess
 public class NewsHelper implements Runnable {
 
-    private static final String QN_CACHED_NEWS = "qn_cached_news";
-
-    private static final int INTERVAL_SEC = 3600;
     public static final String NEWS_INFO_GET2 = "https://raw.githubusercontent.com/cinit/QNotified/master/news.json";
     public static final String NEWS_INFO_GET1 = "https://gitee.com/kernelex/QNotified/raw/master/news.json";
+    private static final String QN_CACHED_NEWS = "qn_cached_news";
+    private static final int INTERVAL_SEC = 3600;
 
     //-------------------------------------------
-
     private WeakReference<TextView> ptv;
 
     private NewsHelper(@Nullable WeakReference<TextView> p) {
         ptv = p;
+    }
+
+    public static void asyncFetchNewsIfNeeded(@Nullable TextView tv) {
+        boolean needUpdate = true;
+        ConfigManager cfg = ConfigManager.getDefault();
+        try {
+            String old = cfg.getString(QN_CACHED_NEWS);
+            News news = null;
+            if (old != null) {
+                try {
+                    news = News.formJson(old);
+                    needUpdate = news.time + INTERVAL_SEC < System.currentTimeMillis() / 1000L;
+                } catch (Exception ignored) {
+                }
+            }
+        } catch (Exception ignored) {
+        }
+        if (needUpdate) {
+            if (tv != null) new Thread(new NewsHelper(new WeakReference<>(tv))).start();
+            else new Thread(new NewsHelper(null)).start();
+        }
+    }
+
+    //-------------------------------------------
+
+    @Nullable
+    public static void getCachedNews(TextView tv) {
+        ConfigManager cfg = ConfigManager.getDefault();
+        String ret = cfg.getString(QN_CACHED_NEWS);
+        boolean show;
+        News news = null;
+        if (ret != null) {
+            try {
+                news = News.formJson(ret);
+            } catch (Exception ignored) {
+            }
+        }
+        show = null != news;
+        if (show) {
+            show = (news.persist || (news.time + news.ttl > System.currentTimeMillis() / 1000L)) && !isEmpty(news.text);
+        }
+        if (show) {
+            tv.setText(news.text);
+            if (news.color != null && news.color.length() > 0) {
+                try {
+                    int color = Integer.parseInt(news.color);
+                    tv.setTextColor(color);
+                } catch (NumberFormatException ignored) {
+                }
+                try {
+                    ColorStateList color = (ColorStateList) ResUtils.class.getField(news.color).get(null);
+                    tv.setTextColor(color);
+                } catch (Exception ignored) {
+                }
+            }
+            tv.setTextIsSelectable(news.select);
+            tv.setAutoLinkMask(news.link ? Linkify.WEB_URLS : 0);
+            tv.setVisibility(View.VISIBLE);
+        } else {
+            tv.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -86,67 +146,6 @@ public class NewsHelper implements Runnable {
                     getCachedNews(textView);
                 }
             });
-        }
-    }
-
-    //-------------------------------------------
-
-    public static void asyncFetchNewsIfNeeded(@Nullable TextView tv) {
-        boolean needUpdate = true;
-        ConfigManager cfg = ConfigManager.getDefault();
-        try {
-            String old = cfg.getString(QN_CACHED_NEWS);
-            News news = null;
-            if (old != null) {
-                try {
-                    news = News.formJson(old);
-                    needUpdate = news.time + INTERVAL_SEC < System.currentTimeMillis() / 1000L;
-                } catch (Exception ignored) {
-                }
-            }
-        } catch (Exception ignored) {
-        }
-        if (needUpdate) {
-            if (tv != null) new Thread(new NewsHelper(new WeakReference<>(tv))).start();
-            else new Thread(new NewsHelper(null)).start();
-        }
-    }
-
-    @Nullable
-    public static void getCachedNews(TextView tv) {
-        ConfigManager cfg = ConfigManager.getDefault();
-        String ret = cfg.getString(QN_CACHED_NEWS);
-        boolean show;
-        News news = null;
-        if (ret != null) {
-            try {
-                news = News.formJson(ret);
-            } catch (Exception ignored) {
-            }
-        }
-        show = null != news;
-        if (show) {
-            show = (news.persist || (news.time + news.ttl > System.currentTimeMillis() / 1000L)) && !isEmpty(news.text);
-        }
-        if (show) {
-            tv.setText(news.text);
-            if (news.color != null && news.color.length() > 0) {
-                try {
-                    int color = Integer.parseInt(news.color);
-                    tv.setTextColor(color);
-                } catch (NumberFormatException ignored) {
-                }
-                try {
-                    ColorStateList color = (ColorStateList) ResUtils.class.getField(news.color).get(null);
-                    tv.setTextColor(color);
-                } catch (Exception ignored) {
-                }
-            }
-            tv.setTextIsSelectable(news.select);
-            tv.setAutoLinkMask(news.link ? Linkify.WEB_URLS : 0);
-            tv.setVisibility(View.VISIBLE);
-        } else {
-            tv.setVisibility(View.GONE);
         }
     }
 

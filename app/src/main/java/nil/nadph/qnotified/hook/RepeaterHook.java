@@ -11,8 +11,8 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.record.ConfigManager;
+import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.ResUtils;
 import nil.nadph.qnotified.util.Utils;
 
 import java.lang.reflect.Method;
@@ -21,10 +21,11 @@ import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class RepeaterHook extends BaseDelayableHook {
+    private static final RepeaterHook self = new RepeaterHook();
+    private boolean inited = false;
+
     private RepeaterHook() {
     }
-
-    private static final RepeaterHook self = new RepeaterHook();
 
     public static RepeaterHook get() {
         return self;
@@ -76,7 +77,7 @@ public class RepeaterHook extends BaseDelayableHook {
                         imageView.setId(101);
                         imageView.setImageDrawable(ResUtils.loadDrawableFromAsset("repeat.png", ctx));
                         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(-2, -2);
-                        layoutParams.rightMargin = (int) dip2px(ctx, (float) 10);
+                        layoutParams.rightMargin = dip2px(ctx, (float) 10);
                         linearLayout.addView(imageView, layoutParams);
                         linearLayout.addView(childAt, childAt.getLayoutParams());
                         ImageView imageView2 = new ImageView(ctx);
@@ -84,7 +85,7 @@ public class RepeaterHook extends BaseDelayableHook {
                         //imageView2.setImageResource(Integer.parseInt((String) Hook.config.get("+1_icon"), 16));
                         imageView2.setImageDrawable(ResUtils.loadDrawableFromAsset("repeat.png", ctx));
                         LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(-2, -2);
-                        layoutParams2.leftMargin = (int) dip2px(ctx, (float) 10);
+                        layoutParams2.leftMargin = dip2px(ctx, (float) 10);
                         linearLayout.addView(imageView2, layoutParams2);
                         viewGroup.addView(linearLayout, -2, -2);
                     }
@@ -252,14 +253,14 @@ public class RepeaterHook extends BaseDelayableHook {
                                 imageView.setId(101);
                                 imageView.setImageDrawable(ResUtils.loadDrawableFromAsset("repeat.png", ctx));
                                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(-2, -2);
-                                layoutParams.rightMargin = (int) dip2px(ctx, (float) 10);
+                                layoutParams.rightMargin = dip2px(ctx, (float) 10);
                                 linearLayout.addView(imageView, layoutParams);
                                 linearLayout.addView(relativeLayout, -2, -2);
                                 ImageView imageView2 = new ImageView(ctx);
                                 imageView2.setId(102);
                                 imageView2.setImageDrawable(ResUtils.loadDrawableFromAsset("repeat.png", ctx));
                                 LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(-2, -2);
-                                layoutParams2.leftMargin = (int) dip2px(ctx, (float) 10);
+                                layoutParams2.leftMargin = dip2px(ctx, (float) 10);
                                 linearLayout.addView(imageView2, layoutParams2);
                                 param.setResult(linearLayout);
                                 view = linearLayout;
@@ -309,8 +310,6 @@ public class RepeaterHook extends BaseDelayableHook {
             return false;
         }
     }
-
-    private boolean inited = false;
 
     @Override
     public int getEffectiveProc() {

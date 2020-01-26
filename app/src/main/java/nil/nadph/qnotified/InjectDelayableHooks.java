@@ -7,8 +7,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
+import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.ResUtils;
 
 import java.util.ArrayList;
 
@@ -31,9 +31,9 @@ public class InjectDelayableHooks {
                 break;
             }
         }
-        final LinearLayout main[] = new LinearLayout[1];
-        final ProgressBar prog[] = new ProgressBar[1];
-        final TextView text[] = new TextView[1];
+        final LinearLayout[] main = new LinearLayout[1];
+        final ProgressBar[] prog = new ProgressBar[1];
+        final TextView[] text = new TextView[1];
         if (needDeobf) {
             try {
                 if (ctx != null) ResUtils.initTheme(ctx);

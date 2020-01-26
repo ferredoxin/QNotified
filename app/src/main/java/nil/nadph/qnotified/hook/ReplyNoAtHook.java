@@ -11,17 +11,15 @@ import static nil.nadph.qnotified.util.Utils.*;
 
 public class ReplyNoAtHook extends BaseDelayableHook {
 
+    private static final ReplyNoAtHook self = new ReplyNoAtHook();
+    private boolean inited = false;
+
     private ReplyNoAtHook() {
     }
-
-    private static final ReplyNoAtHook self = new ReplyNoAtHook();
 
     public static ReplyNoAtHook get() {
         return self;
     }
-
-    private boolean inited = false;
-
 
     /**
      * 813 1246 k

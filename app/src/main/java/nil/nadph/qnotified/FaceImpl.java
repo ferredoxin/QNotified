@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.ImageView;
+import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.Nullable;
-import nil.nadph.qnotified.util.ResUtils;
 import nil.nadph.qnotified.util.Utils;
 
 import java.lang.ref.WeakReference;
@@ -22,22 +22,22 @@ public class FaceImpl implements InvocationHandler {
 
     public static final int TYPE_USER = 1;
     public static final int TYPE_TROOP = 4;
-
+    static private WeakReference<FaceImpl> self;
+    private static Class class_FaceDecoder;
+    private static Class clz_DecodeTaskCompletionListener;
     private HashMap<String, Bitmap> cachedUserFace;
     private HashMap<String, Bitmap> cachedTroopFace;
     private HashMap<String, WeakReference<ImageView>> registeredView;
     //private Object faceMgr;
     private Object qqAppInterface;
     private Object mFaceDecoder;
-    static private WeakReference<FaceImpl> self;
-    private static Class class_FaceDecoder;
 
     private FaceImpl() throws Throwable {
         qqAppInterface = Utils.getAppRuntime();
         class_FaceDecoder = load("com/tencent/mobileqq/util/FaceDecoder");
         if (class_FaceDecoder == null) {
             Class cl_rxMsg = load("com/tencent/mobileqq/receipt/ReceiptMessageReadMemberListFragment");
-            Field fs[] = cl_rxMsg.getDeclaredFields();
+            Field[] fs = cl_rxMsg.getDeclaredFields();
             for (Field f : fs) {
                 if (f.getType().equals(View.class)) continue;
                 if (f.getType().equals(load("com/tencent/mobileqq/app/QQAppInterface"))) continue;
@@ -60,8 +60,6 @@ public class FaceImpl implements InvocationHandler {
         }
         return ret;
     }
-
-    private static Class clz_DecodeTaskCompletionListener;
 
     private Object createListener() {
         clz_DecodeTaskCompletionListener = load("com/tencent/mobileqq/util/FaceDecoder$DecodeTaskCompletionListener");

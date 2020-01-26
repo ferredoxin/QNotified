@@ -23,6 +23,16 @@ public class ConfigManager {
         reinit();
     }
 
+    public static ConfigManager getDefault() {
+        try {
+            if (SELF == null)
+                SELF = new ConfigManager(new File(Utils.getApplication().getFilesDir().getAbsolutePath() + "/qnotified_config.dat"));
+            return SELF;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void setDirtyFlag() {
         dirty = true;
     }
@@ -35,16 +45,6 @@ public class ConfigManager {
 
     public File getFile() {
         return file;
-    }
-
-    public static ConfigManager getDefault() {
-        try {
-            if (SELF == null)
-                SELF = new ConfigManager(new File(Utils.getApplication().getFilesDir().getAbsolutePath() + "/qnotified_config.dat"));
-            return SELF;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public Object getOrDefault(String key, Object def) {

@@ -255,6 +255,7 @@ public class SendBatchMsg {
      */
 
     public static class TroopAndFriendSelectAdpter extends BaseAdapter {
+        public Button sendBtn = null;
         private ArrayList<ContactDescriptor> mFriends;
         private ArrayList<ContactDescriptor> mGroups;
         private ArrayList<ContactDescriptor> mHits = new ArrayList<>();
@@ -263,7 +264,6 @@ public class SendBatchMsg {
         private String searchMsg = "";
         private Context context;
         private FaceImpl face = FaceImpl.getInstance();
-        public Button sendBtn = null;
 
         public TroopAndFriendSelectAdpter(Context context) throws Throwable {
             this.context = context;

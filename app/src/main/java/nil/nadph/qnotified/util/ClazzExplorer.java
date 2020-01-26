@@ -23,6 +23,9 @@ import static android.widget.LinearLayout.*;
 import static nil.nadph.qnotified.util.Utils.log;
 
 public class ClazzExplorer {
+    public static final int magic = 65530;
+    public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
+    private static ClazzExplorer self;
     public Application app;
     public WindowManager winMgr;
     public Activity act;
@@ -32,19 +35,25 @@ public class ClazzExplorer {
     public Object currEle;
     public Stack track;
     public ArrayList<TextView> tvs;
-    public static final int magic = 65530;
     public TextView tvclazz, tvupper;
     public ScrollView scrv;
     public LinearLayout lists;
     public LinearLayout.LayoutParams lpmm;
     public LinearLayout.LayoutParams lpmw;
-
     public int endx, endy;
-
     public boolean smallMode = false;
-
-    public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
-    private static ClazzExplorer self;
+    public OnClickListener tv_onclick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int id = v.getId() - magic;
+            if (id < 0) {
+                track.pop();
+            } else {
+                track.push(v.getTag());
+            }
+            refresh();
+        }
+    };
 
     private ClazzExplorer() {
         track = new Stack<>();
@@ -55,6 +64,55 @@ public class ClazzExplorer {
         if (self == null)
             self = new ClazzExplorer();
         return self;
+    }
+
+    public static String en_toStr(Object obj) {
+        if (obj == null) return null;
+        String str;
+        if (obj instanceof CharSequence) str = Utils.en(obj.toString());
+        else str = "" + obj;
+        return str;
+    }
+
+    public static String nomorethan100(Object obj) {
+        if (obj == null) return null;
+        String str;
+        if (obj instanceof CharSequence) str = "\"" + obj + "\"";
+        else str = "" + obj;
+        if (str.length() > 110) return str.substring(0, 100);
+        return str;
+    }
+
+    public static Activity getCurrentActivity() {
+        try {
+            Class activityThreadClass = Class.forName("android.app.ActivityThread");
+            Object activityThread = activityThreadClass.getMethod("currentActivityThread").invoke(null);
+            Field activitiesField = activityThreadClass.getDeclaredField("mActivities");
+            activitiesField.setAccessible(true);
+            Map activities = (Map) activitiesField.get(activityThread);
+            for (Object activityRecord : activities.values()) {
+                Class activityRecordClass = activityRecord.getClass();
+                Field pausedField = activityRecordClass.getDeclaredField("paused");
+                pausedField.setAccessible(true);
+                if (!pausedField.getBoolean(activityRecord)) {
+                    Field activityField = activityRecordClass.getDeclaredField("activity");
+                    activityField.setAccessible(true);
+                    Activity activity = (Activity) activityField.get(activityRecord);
+                    return activity;
+                }
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void postRemoveView() {
@@ -71,6 +129,26 @@ public class ClazzExplorer {
             });
     }
 
+	/*public static Object getTheField(Object obj,String name){
+	 Class clazz=obj.getClass();
+	 Field f=null;
+	 do{
+	 try{
+	 f=clazz.getDeclaredField(name);
+	 if(f!=null)break;
+	 }catch(NoSuchFieldException e){
+	 f=null;
+	 }
+	 if(clazz==Object.class)break;
+	 clazz=clazz.getSuperclass();
+	 }while(clazz!=null);
+	 if(f==null)return null;
+	 f.setAccessible(true);
+	 try{
+	 return f.get(obj);
+	 }catch(IllegalAccessException e){}catch(IllegalArgumentException e){}
+	 return null;
+	 }*/
 
     public void init(Activity curract) {
         if (curract == null) return;
@@ -177,19 +255,6 @@ public class ClazzExplorer {
         else tv.setBackgroundColor(0x10FFFFFF);
         return tv;
     }
-
-    public OnClickListener tv_onclick = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            int id = v.getId() - magic;
-            if (id < 0) {
-                track.pop();
-            } else {
-                track.push(v.getTag());
-            }
-            refresh();
-        }
-    };
 
     public void refresh() {
         try {
@@ -319,75 +384,5 @@ public class ClazzExplorer {
             } while (clazz != null);
         } catch (Throwable e) {
         }
-    }
-
-	/*public static Object getTheField(Object obj,String name){
-	 Class clazz=obj.getClass();
-	 Field f=null;
-	 do{
-	 try{
-	 f=clazz.getDeclaredField(name);
-	 if(f!=null)break;
-	 }catch(NoSuchFieldException e){
-	 f=null;
-	 }
-	 if(clazz==Object.class)break;
-	 clazz=clazz.getSuperclass();
-	 }while(clazz!=null);
-	 if(f==null)return null;
-	 f.setAccessible(true);
-	 try{
-	 return f.get(obj);
-	 }catch(IllegalAccessException e){}catch(IllegalArgumentException e){}
-	 return null;
-	 }*/
-
-    public static String en_toStr(Object obj) {
-        if (obj == null) return null;
-        String str;
-        if (obj instanceof CharSequence) str = Utils.en(obj.toString());
-        else str = "" + obj;
-        return str;
-    }
-
-    public static String nomorethan100(Object obj) {
-        if (obj == null) return null;
-        String str;
-        if (obj instanceof CharSequence) str = "\"" + obj + "\"";
-        else str = "" + obj;
-        if (str.length() > 110) return str.substring(0, 100);
-        return str;
-    }
-
-    public static Activity getCurrentActivity() {
-        try {
-            Class activityThreadClass = Class.forName("android.app.ActivityThread");
-            Object activityThread = activityThreadClass.getMethod("currentActivityThread").invoke(null);
-            Field activitiesField = activityThreadClass.getDeclaredField("mActivities");
-            activitiesField.setAccessible(true);
-            Map activities = (Map) activitiesField.get(activityThread);
-            for (Object activityRecord : activities.values()) {
-                Class activityRecordClass = activityRecord.getClass();
-                Field pausedField = activityRecordClass.getDeclaredField("paused");
-                pausedField.setAccessible(true);
-                if (!pausedField.getBoolean(activityRecord)) {
-                    Field activityField = activityRecordClass.getDeclaredField("activity");
-                    activityField.setAccessible(true);
-                    Activity activity = (Activity) activityField.get(activityRecord);
-                    return activity;
-                }
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }

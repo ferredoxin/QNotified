@@ -2,7 +2,6 @@ package nil.nadph.qnotified.util;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
@@ -35,10 +34,6 @@ import static nil.nadph.qnotified.util.Initiator.load;
 @SuppressLint("SimpleDateFormat")
 public class Utils {
 
-    private Utils() {
-        throw new AssertionError("No instance for you!");
-    }
-
     public static final String qn_hide_msg_list_miniapp = "qn_hide_msg_list_miniapp",
             qn_hide_ex_entry_group = "qn_hide_ex_entry_group",
             qn_enable_ptt_forward = "qn_enable_ptt_forward",
@@ -62,22 +57,35 @@ public class Utils {
             qh_random_cheat = "qh_random_cheat",
             qn_disable_qq_hot_patch = "qn_disable_qq_hot_patch",
             qn_donated_choice = "qn_donated_choice";
-
-    public static boolean DEBUG = true;
-    public static boolean V_TOAST = false;
     public static final String QN_VERSION_NAME = "0.6.0-rc1";
     public static final int QN_VERSION_CODE = 21;
-
     public static final String PACKAGE_NAME_QQ = "com.tencent.mobileqq";
     public static final String PACKAGE_NAME_QQ_INTERNATIONAL = "com.tencent.mobileqqi";
     public static final String PACKAGE_NAME_QQ_LITE = "com.tencent.qqlite";
     public static final String PACKAGE_NAME_TIM = "com.tencent.tim";
     public static final String PACKAGE_NAME_SELF = "nil.nadph.qnotified";
     public static final String PACKAGE_NAME_XPOSED_INSTALLER = "de.robv.android.xposed.installer";
-
     public static final int TOAST_TYPE_INFO = 0;
     public static final int TOAST_TYPE_ERROR = 1;
     public static final int TOAST_TYPE_SUCCESS = 2;
+    public static final String cfg_nice_user = "cfg_nice_user";
+    public static boolean DEBUG = true;
+    public static boolean V_TOAST = false;
+    private static Handler mHandler;
+    private static Method method_Toast_show;
+    private static Method method_Toast_makeText;
+
+	/* Use Utils.getApplication() Instead *
+	 @Deprecated()
+	 @SuppressWarnings ("all")
+	 public static Context getSystemContext() {
+	 return (Context) XposedHelpers.callMethod(XposedHelpers.callStaticMethod(XposedHelpers.findClass("android.app.ActivityThread", null), "currentActivityThread", new Object[0]), "getSystemContext", new Object[0]);
+	 }*/
+    private static Class clazz_QQToast;
+
+    private Utils() {
+        throw new AssertionError("No instance for you!");
+    }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Nullable
@@ -89,19 +97,10 @@ public class Utils {
         return null;
     }
 
-    private static Handler mHandler;
-
     public static void runOnUiThread(Runnable r) {
         if (mHandler == null) mHandler = new Handler(Looper.getMainLooper());
         mHandler.post(r);
     }
-
-	/* Use Utils.getApplication() Instead *
-	 @Deprecated()
-	 @SuppressWarnings ("all")
-	 public static Context getSystemContext() {
-	 return (Context) XposedHelpers.callMethod(XposedHelpers.callStaticMethod(XposedHelpers.findClass("android.app.ActivityThread", null), "currentActivityThread", new Object[0]), "getSystemContext", new Object[0]);
-	 }*/
 
     public static Application getApplication() {
         Field f = null;
@@ -142,6 +141,13 @@ public class Utils {
         }
     }
 
+	/*public static Object invoke_virtual(Object obj,String method,Object...args) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException{
+	 Class clazz=obj.getClass();
+	 Method m=findMethodByArgs(clazz,method,args);
+	 m.setAccessible(true);
+	 return m.invoke(obj,args);
+	 }*/
+
     public static int getHostVersionCode() {
         PackageInfo pi = getHostInfo(getApplication());
         return pi.versionCode;
@@ -174,13 +180,6 @@ public class Utils {
         }
     }
 
-	/*public static Object invoke_virtual(Object obj,String method,Object...args) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException{
-	 Class clazz=obj.getClass();
-	 Method m=findMethodByArgs(clazz,method,args);
-	 m.setAccessible(true);
-	 return m.invoke(obj,args);
-	 }*/
-
     public static Object invoke_virtual(Object obj, String name, Object... argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException {
         Class clazz = obj.getClass();
         int argc = argsTypesAndReturnType.length / 2;
@@ -190,7 +189,7 @@ public class Utils {
         if (argc * 2 + 1 == argsTypesAndReturnType.length)
             returnType = (Class) argsTypesAndReturnType[argsTypesAndReturnType.length - 1];
         int i, ii;
-        Method m[] = null;
+        Method[] m = null;
         Method method = null;
         Class[] _argt;
         for (i = 0; i < argc; i++) {
@@ -232,7 +231,7 @@ public class Utils {
         if (argc * 2 + 1 == argsTypesAndReturnType.length)
             returnType = (Class) argsTypesAndReturnType[argsTypesAndReturnType.length - 1];
         int i, ii;
-        Method m[] = null;
+        Method[] m = null;
         Method method = null;
         Class[] _argt;
         for (i = 0; i < argc; i++) {
@@ -261,7 +260,6 @@ public class Utils {
         return method;
     }
 
-
     public static Object invoke_virtual_original(Object obj, String name, Object... argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException {
         Class clazz = obj.getClass();
         int argc = argsTypesAndReturnType.length / 2;
@@ -271,7 +269,7 @@ public class Utils {
         if (argc * 2 + 1 == argsTypesAndReturnType.length)
             returnType = (Class) argsTypesAndReturnType[argsTypesAndReturnType.length - 1];
         int i, ii;
-        Method m[] = null;
+        Method[] m = null;
         Method method = null;
         Class[] _argt;
         for (i = 0; i < argc; i++) {
@@ -329,7 +327,7 @@ public class Utils {
         if (argc * 2 + 1 == argsTypesAndReturnType.length)
             returnType = (Class) argsTypesAndReturnType[argsTypesAndReturnType.length - 1];
         int i, ii;
-        Method m[] = null;
+        Method[] m = null;
         Method method = null;
         Class[] _argt;
         for (i = 0; i < argc; i++) {
@@ -379,6 +377,32 @@ public class Utils {
         return o;
     }
 
+	/*
+	 public static Method findMethodByArgs(Class mclazz,String name,Object...argv)throws NoSuchMethodException{
+	 Method ret=null;
+	 Method[] m;?
+
+	 int i=0,ii=0;
+	 Class clazz=mclazz;
+	 Class argt[];
+	 do{
+	 m=clazz.getDeclaredMethods();
+	 loop:for(i=0;i<m.length;i++){
+	 if(m[i].getName().equals(name)){
+	 argt=m[i].getParameterTypes();
+	 if(argt.length==argv.length){
+	 for(ii=0;ii<argt.length;ii++){
+	 if(
+	 argv[ii]==null&&argt[ii].isPrimitive())continue loop;
+	 if(
+	 }
+	 }
+	 }
+	 }
+	 }while(!Object.class.equals(clazz=clazz.getSuperclass()));
+	 throw new NoSuchMethodException(name+"@"+mclazz);
+	 }*/
+
     public static Object getMobileQQService() {
         return iget_object_or_null(getQQAppInterface(), "a", load("com/tencent/mobileqq/service/MobileQQService"));
     }
@@ -409,32 +433,6 @@ public class Utils {
         if (ret.length() == 1) return "0" + ret;
         else return ret;
     }
-
-	/*
-	 public static Method findMethodByArgs(Class mclazz,String name,Object...argv)throws NoSuchMethodException{
-	 Method ret=null;
-	 Method[] m;?
-
-	 int i=0,ii=0;
-	 Class clazz=mclazz;
-	 Class argt[];
-	 do{
-	 m=clazz.getDeclaredMethods();
-	 loop:for(i=0;i<m.length;i++){
-	 if(m[i].getName().equals(name)){
-	 argt=m[i].getParameterTypes();
-	 if(argt.length==argv.length){
-	 for(ii=0;ii<argt.length;ii++){
-	 if(
-	 argv[ii]==null&&argt[ii].isPrimitive())continue loop;
-	 if(
-	 }
-	 }
-	 }
-	 }
-	 }while(!Object.class.equals(clazz=clazz.getSuperclass()));
-	 throw new NoSuchMethodException(name+"@"+mclazz);
-	 }*/
 
     //Used for APIs lower than ICS (API 14)
     private static View.OnClickListener getOnClickListenerV(View view) {
@@ -540,7 +538,6 @@ public class Utils {
         return null;
     }
 
-
     public static Object iget_object_or_null(Object obj, String name) {
         return iget_object_or_null(obj, name, null);
     }
@@ -619,7 +616,6 @@ public class Utils {
     public static Object getFriendListHandler() {
         return getBusinessHandler(1);
     }
-
 
     public static Object getBusinessHandler(int type) {
         try {
@@ -733,7 +729,6 @@ public class Utils {
         log(Log.getStackTraceString(th));
     }
 
-
     public static void checkLogFlag() {
         try {
             File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.qn_log_flag");
@@ -751,7 +746,7 @@ public class Utils {
     public static void method2(String fileName, String content) {
         FileWriter writer = null;
         try {
-            // 打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件     
+            // 打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
             writer = new FileWriter(fileName, true);
             writer.write(content);
         } catch (IOException e) {
@@ -766,7 +761,6 @@ public class Utils {
             }
         }
     }
-
 
     public static String en(String str) {
         if (str == null) return "null";
@@ -789,11 +783,6 @@ public class Utils {
         }
         return "\"" + s.replace("\"", "\"\"") + "\"";
     }
-
-    private static Method method_Toast_show;
-    private static Method method_Toast_makeText;
-    private static Class clazz_QQToast;
-
 
     public static Toast showToast(Context ctx, int type, CharSequence str, int length) {
         try {
@@ -939,8 +928,6 @@ public class Utils {
         return 1;
     }
 
-    public static final String cfg_nice_user = "cfg_nice_user";
-
     public static boolean isNiceUser() {
         try {
             ConfigManager cfg = ConfigManager.getDefault();
@@ -1081,34 +1068,6 @@ public class Utils {
         return obj;
     }
 
-    private static Class clz_DialogUtil;
-    private static Class clz_CustomDialog;
-
-    public static Dialog createDialog(Context ctx) {
-        if (clz_DialogUtil == null) {
-            clz_DialogUtil = DexKit.doFindClass(DexKit.C_DIALOG_UTIL);
-        }
-        if (clz_CustomDialog == null) {
-            clz_CustomDialog = load("com/tencent/mobileqq/utils/QQCustomDialog");
-            if (clz_CustomDialog == null) {
-                Class clz_Lite = load("com/dataline/activities/LiteActivity");
-                Field[] fs = clz_Lite.getDeclaredFields();
-                for (Field f : fs) {
-                    if (Modifier.isPrivate(f.getModifiers()) && Dialog.class.equals(f.getType().getSuperclass())) {
-                        clz_CustomDialog = f.getType();
-                        break;
-                    }
-                }
-            }
-        }
-        try {
-            Dialog qQCustomDialog = (Dialog) invoke_static(clz_DialogUtil, "a", ctx, 230, Context.class, int.class, clz_CustomDialog);
-            return qQCustomDialog;
-        } catch (Exception e) {
-            log(e);
-            return null;
-        }
-    }
 
     public static String getShort$Name(Object obj) {
         String name;
@@ -1123,16 +1082,6 @@ public class Utils {
         if (!name.contains(".")) return name;
         int p = name.lastIndexOf('.');
         return name.substring(p + 1);
-    }
-
-    public static class DummyCallback implements DialogInterface.OnClickListener {
-        public DummyCallback() {
-        }
-
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-        }
-
     }
 
     public static int sign(double d) {
@@ -1184,24 +1133,6 @@ public class Utils {
         return cd;
     }
 
-    public static class ContactDescriptor {
-        public String uin;
-        public int uinType;
-        @Nullable
-        public String nick;
-
-        public String getId() {
-            StringBuilder msg = new StringBuilder();
-            if (uin.length() < 10) {
-                for (int i = 0; i < 10 - uin.length(); i++) {
-                    msg.append("0");
-                }
-            }
-            return msg + uin + uinType;
-        }
-
-    }
-
     public static boolean isAlphaVersion() {
         return QN_VERSION_NAME.contains("-") || QN_VERSION_NAME.contains("rc") || QN_VERSION_NAME.contains("a");
     }
@@ -1234,7 +1165,6 @@ public class Utils {
         return (int) (dpValue * scale + 0.5f);
     }
 
-
     /**
      * 根据手机的分辨率从 px(像素) 的单位 转成为 dp
      */
@@ -1257,6 +1187,34 @@ public class Utils {
     public static int sp2px(Context context, float spValue) {
         final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
         return (int) (spValue * fontScale + 0.5f);
+    }
+
+    public static class DummyCallback implements DialogInterface.OnClickListener {
+        public DummyCallback() {
+        }
+
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+        }
+
+    }
+
+    public static class ContactDescriptor {
+        public String uin;
+        public int uinType;
+        @Nullable
+        public String nick;
+
+        public String getId() {
+            StringBuilder msg = new StringBuilder();
+            if (uin.length() < 10) {
+                for (int i = 0; i < 10 - uin.length(); i++) {
+                    msg.append("0");
+                }
+            }
+            return msg + uin + uinType;
+        }
+
     }
 
 

@@ -11,6 +11,7 @@ import static nil.nadph.qnotified.util.Utils.*;
 
 public class SimpleCheckInHook extends BaseDelayableHook {
     private static final SimpleCheckInHook self = new SimpleCheckInHook();
+    private boolean inited = false;
 
     SimpleCheckInHook() {
     }
@@ -18,8 +19,6 @@ public class SimpleCheckInHook extends BaseDelayableHook {
     public static SimpleCheckInHook get() {
         return self;
     }
-
-    private boolean inited = false;
 
     @Override
     public boolean init() {

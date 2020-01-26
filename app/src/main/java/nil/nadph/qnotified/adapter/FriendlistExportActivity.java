@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 import android.widget.*;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.record.FriendRecord;
-import nil.nadph.qnotified.util.ResUtils;
-import nil.nadph.qnotified.util.ViewBuilder;
+import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.ui.ViewBuilder;
 import nil.nadph.qnotified.util.Utils;
 
 import java.io.File;
@@ -24,23 +24,20 @@ import java.util.HashMap;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.ViewBuilder.subtitle;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class FriendlistExportActivity implements ActivityAdapter {
 
-    private Activity self;
-
     private static final int R_ID_CHECKBOX_CSV = 0x300AFF61;
     private static final int R_ID_CHECKBOX_JSON = 0x300AFF62;
-
     private static final int R_ID_RB_CRLF = 0x300AFF63;
     private static final int R_ID_RB_CR = 0x300AFF65;
     private static final int R_ID_RB_LF = 0x300AFF64;
-
     private static final int R_ID_CB_FRIENDS = 0x300AFF66;
     private static final int R_ID_CB_EXFRIENDS = 0x300AFF67;
+    private Activity self;
 
 
     public FriendlistExportActivity(Activity activity) {

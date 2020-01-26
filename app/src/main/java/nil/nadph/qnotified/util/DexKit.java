@@ -482,7 +482,7 @@ public class DexKit {
     public static ArrayList<Integer> a(byte[] buf, byte[] target) {
         ArrayList<Integer> rets = new ArrayList<>();
         int[] ret = new int[1];
-        final float f[] = new float[1];
+        final float[] f = new float[1];
         ret[0] = arrayIndexOf(buf, target, 0, buf.length, f);
         ret[0] = arrayIndexOf(buf, int2u4le(ret[0]), 0, buf.length, f);
         //System.out.println(ret[0]);
@@ -507,7 +507,7 @@ public class DexKit {
     public static String a(byte[] buf, int opcodeoff) {
         int classDefsSize = readLe32(buf, 0x60);
         int classDefsOff = readLe32(buf, 0x64);
-        int p[] = new int[1];
+        int[] p = new int[1];
         int[] ret = new int[1];
         int[] co = new int[1];
         for (int cn = 0; cn < classDefsSize; cn++) {
@@ -564,7 +564,7 @@ public class DexKit {
     public static String readString(byte[] buf, int idx) {
         int stringIdsOff = readLe32(buf, 0x3c);
         int strOff = readLe32(buf, stringIdsOff + 4 * idx);
-        int len = (byte) buf[strOff];//hack,just assume it no longer than 127
+        int len = buf[strOff];//hack,just assume it no longer than 127
         return new String(buf, strOff + 1, len);
     }
 

@@ -15,16 +15,15 @@ import java.lang.reflect.Field;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class GalleryBgHook extends BaseDelayableHook {
+    private static final GalleryBgHook self = new GalleryBgHook();
+    private boolean inited = false;
+
     private GalleryBgHook() {
     }
-
-    private static final GalleryBgHook self = new GalleryBgHook();
 
     public static GalleryBgHook get() {
         return self;
     }
-
-    private boolean inited = false;
 
     @Override
     public boolean init() {

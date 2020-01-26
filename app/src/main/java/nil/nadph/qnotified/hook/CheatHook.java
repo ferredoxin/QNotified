@@ -19,21 +19,19 @@ import static nil.nadph.qnotified.util.Utils.*;
 
 public class CheatHook extends BaseDelayableHook {
 
-    private CheatHook() {
-    }
-
     private static final CheatHook self = new CheatHook();
-
-    public static CheatHook get() {
-        return self;
-    }
-
+    private final String[] diceItem = {"1", "2", "3", "4", "5", "6"};
+    private final String[] morraItem = {"石头", "剪刀", "布"};
     private boolean inited = false;
 
     private int diceNum = -1;
     private int morraNum = -1;
-    private final String[] diceItem = {"1", "2", "3", "4", "5", "6"};
-    private final String[] morraItem = {"石头", "剪刀", "布"};
+    private CheatHook() {
+    }
+
+    public static CheatHook get() {
+        return self;
+    }
 
     @Override
     public boolean init() {

@@ -9,6 +9,20 @@ import android.view.Gravity;
 
 public class ProportionDrawable extends Drawable {
 
+    private int iGravity;
+    private int iDoneColor;
+    private int iUndoneColor;
+    private float fProportion;
+    private Paint p;
+
+    public ProportionDrawable(int doneColor, int undoneColor, int gravity, float prop) {
+        iGravity = gravity;
+        iDoneColor = doneColor;
+        iUndoneColor = undoneColor;
+        fProportion = prop;
+        p = new Paint();
+    }
+
     @SuppressLint("RtlHardcoded")
     @Override
     public void draw(Canvas canvas) {
@@ -25,14 +39,14 @@ public class ProportionDrawable extends Drawable {
         }
     }
 
+    public float getProportion() {
+        return fProportion;
+    }
+
     public void setProportion(float p) {
         if (p < 0f) p = 0f;
         if (p > 1.0f) p = 1.0f;
         fProportion = p;
-    }
-
-    public float getProportion() {
-        return fProportion;
     }
 
     @Override
@@ -48,20 +62,6 @@ public class ProportionDrawable extends Drawable {
     @Override
     public int getOpacity() {
         return android.graphics.PixelFormat.TRANSLUCENT;
-    }
-
-    private int iGravity;
-    private int iDoneColor;
-    private int iUndoneColor;
-    private float fProportion;
-    private Paint p;
-
-    public ProportionDrawable(int doneColor, int undoneColor, int gravity, float prop) {
-        iGravity = gravity;
-        iDoneColor = doneColor;
-        iUndoneColor = undoneColor;
-        fProportion = prop;
-        p = new Paint();
     }
 
 

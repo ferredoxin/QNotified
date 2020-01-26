@@ -17,18 +17,16 @@ import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class SettingEntryHook extends BaseDelayableHook {
+    public static final int R_ID_SETTING_ENTRY = 0x300AFF71;
+    private static final SettingEntryHook self = new SettingEntryHook();
+    private boolean inited = false;
+
     private SettingEntryHook() {
     }
-
-    private static final SettingEntryHook self = new SettingEntryHook();
 
     public static SettingEntryHook get() {
         return self;
     }
-
-    private boolean inited = false;
-
-    public static final int R_ID_SETTING_ENTRY = 0x300AFF71;
 
     @Override
     public boolean init() {
@@ -69,7 +67,7 @@ public class SettingEntryHook extends BaseDelayableHook {
                         int account_switch = list.getContext().getResources().getIdentifier("account_switch", "id", list.getContext().getPackageName());
                         try {
                             if (account_switch > 0) {
-                                View accountItem = (View) ((View) list.findViewById(account_switch)).getParent();
+                                View accountItem = (View) list.findViewById(account_switch).getParent();
                                 for (int i = 0; i < list.getChildCount(); i++) {
                                     if (list.getChildAt(i) == accountItem) {
                                         index = i + 1;

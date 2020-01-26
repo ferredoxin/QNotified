@@ -1,4 +1,4 @@
-package nil.nadph.qnotified.util;
+package nil.nadph.qnotified.ui;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -16,6 +16,10 @@ import android.util.DisplayMetrics;
 import android.view.WindowManager;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedHelpers;
+import nil.nadph.qnotified.util.BinaryXmlParser;
+import nil.nadph.qnotified.util.IntArray;
+import nil.nadph.qnotified.util.Nullable;
+import nil.nadph.qnotified.util.Utils;
 import org.xmlpull.v1.XmlPullParser;
 
 import java.io.*;
@@ -31,8 +35,6 @@ import static nil.nadph.qnotified.util.Utils.*;
 
 public class ResUtils {
 
-    static private String cachedThemeId;
-
     static public ColorStateList skin_gray3;
     static public ColorStateList skin_black;
     static public ColorStateList skin_red;
@@ -43,10 +45,10 @@ public class ResUtils {
     static public Drawable skin_list_item_normal = null, skin_list_item_unread = null, skin_list_item_pressed = null;
     static public Drawable skin_icon_arrow_right_normal = null, skin_background = null;
     static public Drawable list_checkbox_selected_nopress, list_checkbox_selected, list_checkbox_multi, list_checkbox;
+    static private String cachedThemeId;
 
     /*skin_group_list_item_pressed_theme_version2*/
     //static public Drawable skin_tips_newmessage;
-
     static private Map<String, Drawable> cachedDrawable = new HashMap<>();
 
     public static void initTheme(Context ctx) throws Throwable {
@@ -93,10 +95,7 @@ public class ResUtils {
     }
 
     public static void loadResInDir(String dir, Context mContext) {
-        if (dir == null) {
-            //log("Unable to locate theme dir!");
-            //damn!
-        } else {
+        if (dir != null) {
             String path = null;
             if (skin_list_item_normal == null) {
                 path = findDrawableResource(dir, "skin_list_item_normal.9.png", mContext);
@@ -174,7 +173,7 @@ public class ResUtils {
             Class clazz = Class.forName("android.content.res.XmlBlock");
             Constructor constructor = clazz.getDeclaredConstructor(byte[].class);
             constructor.setAccessible(true);
-            Object block = constructor.newInstance((Object) data);
+            Object block = constructor.newInstance(data);
             Method m = clazz.getDeclaredMethod("newParser");
             m.setAccessible(true);
             return (XmlPullParser) m.invoke(block);
@@ -435,7 +434,7 @@ public class ResUtils {
             BinaryXmlParser.XmlNode item;
             for (int i = 0; i < selector.elements.size(); i++) {
                 item = selector.elements.get(i);
-                colors[i] = (Integer) item.attributes.get("color").data;
+                colors[i] = item.attributes.get("color").data;
                 int si = item.attributes.size() - 1;
                 IntArray ss = new IntArray();
                 Map.Entry<String, BinaryXmlParser.XmlNode.Res> entry;

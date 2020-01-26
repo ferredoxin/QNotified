@@ -58,86 +58,6 @@ public class Table<K> implements Serializable, Cloneable {
         init();
     }
 
-    public int getFieldId(String name) {
-        for (int i = 0; i < fields.length; i++) {
-            if (name.equals(fields[i]))
-                return i;
-        }
-        return -1;
-    }
-
-    public boolean hasRecord(K key) {
-        return records.containsKey(key);
-    }
-
-    public Object get(K key, String field) throws NoSuchFieldException {
-        int i = getFieldId(field);
-        if (i < 0) throw new NoSuchFieldException(field);
-        if (!hasRecord(key)) throw new NoSuchElementException("key:" + key);
-        return records.get(key)[i];
-    }
-
-    public void set(K key, String field, Serializable val) throws NoSuchFieldException {
-        synchronized (this) {
-            int i = getFieldId(field);
-            if (i < 0) throw new NoSuchFieldException(field);
-            if (!hasRecord(key)) throw new NoSuchElementException("key:" + key);
-
-            records.get(key)[i] = val;
-        }
-    }
-
-    public void insert(K key) {
-        synchronized (this) {
-            if (hasRecord(key)) return;
-            Object[] rec = new Object[fields.length];
-            records.put(key, rec);
-        }
-    }
-
-    public Object[] delete(K key) {
-        synchronized (this) {
-            return records.remove(key);
-        }
-    }
-
-    public boolean addField(String field, byte type) {
-        synchronized (this) {
-            if (getFieldId(field) >= 0) return true;
-            if (field == null) return false;
-            String[] _f = new String[fields.length + 1];
-            byte[] _t = new byte[fields.length + 1];
-            System.arraycopy(fields, 0, _f, 0, fields.length);
-            System.arraycopy(types, 0, _t, 0, fields.length);
-            _f[fields.length] = field;
-            _t[fields.length] = type;
-            types = _t;
-            fields = _f;
-            Iterator<Map.Entry<K, Object[]>> it = records.entrySet().iterator();
-            Map.Entry<K, Object[]> entry;
-            Object[] old, ne;
-            while (it.hasNext()) {
-                entry = it.next();
-                old = entry.getValue();
-                ne = new Object[fields.length];
-                System.arraycopy(old, 0, ne, 0, fields.length - 1);
-                entry.setValue(ne);
-            }
-            return true;
-        }
-    }
-
-
-    public void init() {
-        synchronized (this) {
-            if (records == null) records = new HashMap<>();
-            if (fields == null) fields = new String[0];
-            if (types == null) types = new byte[0];
-            if (keyName == null) keyName = "id";
-            if (keyType == 0) keyType = TYPE_INT;
-        }
-    }
-
     public static ArrayList readArray(DataInputStream in) throws IOException {
         int len = in.readInt();
         byte[] buf = new byte[len];
@@ -145,7 +65,6 @@ public class Table<K> implements Serializable, Cloneable {
         throw new RuntimeException("Stub!");
         //return buf;
     }
-
 
     public static byte[] readIRaw(DataInputStream in) throws IOException {
         int len = in.readInt();
@@ -167,7 +86,6 @@ public class Table<K> implements Serializable, Cloneable {
     public static void writeIStr(DataOutputStream out, String str) throws IOException {
         writeIRaw(out, str.getBytes());
     }
-
 
     public static Table readTable(DataInputStream in) throws IOException {
         Table table = new Table();
@@ -339,7 +257,7 @@ public class Table<K> implements Serializable, Cloneable {
                 out.writeByte(((boolean) val) ? 1 : 0);
             } else if (Character.class.equals(clz)) {
                 type = TYPE_CODEPOINT;
-                out.writeInt((int) type);
+                out.writeInt(type);
                 if (key != null) {
                     writeIStr(out, key);
                 }
@@ -432,6 +350,85 @@ public class Table<K> implements Serializable, Cloneable {
             for (i = 0; i < table.fields.length; i++) {
                 writeRecord(out, null, val[i]);
             }
+        }
+    }
+
+    public int getFieldId(String name) {
+        for (int i = 0; i < fields.length; i++) {
+            if (name.equals(fields[i]))
+                return i;
+        }
+        return -1;
+    }
+
+    public boolean hasRecord(K key) {
+        return records.containsKey(key);
+    }
+
+    public Object get(K key, String field) throws NoSuchFieldException {
+        int i = getFieldId(field);
+        if (i < 0) throw new NoSuchFieldException(field);
+        if (!hasRecord(key)) throw new NoSuchElementException("key:" + key);
+        return records.get(key)[i];
+    }
+
+    public void set(K key, String field, Serializable val) throws NoSuchFieldException {
+        synchronized (this) {
+            int i = getFieldId(field);
+            if (i < 0) throw new NoSuchFieldException(field);
+            if (!hasRecord(key)) throw new NoSuchElementException("key:" + key);
+
+            records.get(key)[i] = val;
+        }
+    }
+
+    public void insert(K key) {
+        synchronized (this) {
+            if (hasRecord(key)) return;
+            Object[] rec = new Object[fields.length];
+            records.put(key, rec);
+        }
+    }
+
+    public Object[] delete(K key) {
+        synchronized (this) {
+            return records.remove(key);
+        }
+    }
+
+    public boolean addField(String field, byte type) {
+        synchronized (this) {
+            if (getFieldId(field) >= 0) return true;
+            if (field == null) return false;
+            String[] _f = new String[fields.length + 1];
+            byte[] _t = new byte[fields.length + 1];
+            System.arraycopy(fields, 0, _f, 0, fields.length);
+            System.arraycopy(types, 0, _t, 0, fields.length);
+            _f[fields.length] = field;
+            _t[fields.length] = type;
+            types = _t;
+            fields = _f;
+            Iterator<Map.Entry<K, Object[]>> it = records.entrySet().iterator();
+            Map.Entry<K, Object[]> entry;
+            Object[] old, ne;
+            while (it.hasNext()) {
+                entry = it.next();
+                old = entry.getValue();
+                ne = new Object[fields.length];
+                System.arraycopy(old, 0, ne, 0, fields.length - 1);
+                entry.setValue(ne);
+            }
+            return true;
+        }
+    }
+
+    public void init() {
+        synchronized (this) {
+            if (records == null) records = new HashMap<>();
+            if (fields == null) fields = new String[0];
+            if (types == null) types = new byte[0];
+            if (keyName == null) keyName = "id";
+            if (keyType == 0) keyType = TYPE_INT;
         }
     }
 }

@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 
 public class EventRecord implements Serializable, Cloneable, Comparable {
-    private static final long serialVersionUID = 1L;
     public static final long TIME_UNKNOWN = -1L;
     public static final int EVENT_ERROR = 0;
     public static final int EVENT_RESERVED = 1;
@@ -15,7 +14,7 @@ public class EventRecord implements Serializable, Cloneable, Comparable {
     public static final int EVENT_REMARK_CHANGE = 6;
     public static final int EVENT_LOCAL_REMARK_CHANGE = 7;
     public static final int EVENT_ACCOUNT_DESTRUCTION = 8;
-
+    private static final long serialVersionUID = 1L;
     public long timeRangeBegin;
     public long timeRangeEnd;
     public int event;

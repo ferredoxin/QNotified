@@ -9,7 +9,7 @@ public class SimpleBgDrawable extends Drawable {
     private int iColor;
     private int iEdgeColor;
     private int iEdgeWidth;
-
+    private Paint mPaint;
 
     public SimpleBgDrawable(int color, int edgeColor, int edgeWidth) {
         iColor = color;
@@ -17,9 +17,6 @@ public class SimpleBgDrawable extends Drawable {
         iEdgeWidth = edgeWidth;
         mPaint = new Paint();
     }
-
-    private Paint mPaint;
-
 
     public Paint getPaint() {
         return mPaint;

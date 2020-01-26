@@ -7,17 +7,15 @@ import static nil.nadph.qnotified.util.Utils.en;
 
 public class FriendRecord implements Serializable, Cloneable {
 
-    private static final long serialVersionUID = 1L;
     public static final int STATUS_ERROR = 0;
     public static final int STATUS_RESERVED = 1;
     public static final int STATUS_STRANGER = 2;
     public static final int STATUS_EXFRIEND = 3;
-
     public static final int STATUS_FRIEND_MUTUAL = 4;
     public static final int STATUS_FRIEND_SIDE_0 = 5;
     public static final int STATUS_FRIEND_SIDE_1 = 6;
     public static final int STATUS_BLACKLIST = 7;
-
+    private static final long serialVersionUID = 1L;
     public long uin;
 
     public String nick;

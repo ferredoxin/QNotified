@@ -1,7 +1,6 @@
 package nil.nadph.qnotified.adapter;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,14 +14,15 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import nil.nadph.qnotified.record.ConfigManager;
-import nil.nadph.qnotified.util.ResUtils;
+import nil.nadph.qnotified.ui.CustomDialog;
+import nil.nadph.qnotified.ui.ResUtils;
 
 import java.io.IOException;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static nil.nadph.qnotified.ui.ViewBuilder.*;
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.ViewBuilder.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class DonateActivity implements ActivityAdapter {
@@ -68,8 +68,8 @@ public class DonateActivity implements ActivityAdapter {
                 if (isChecked) {
                     if (!ConfigManager.getDefault().getBooleanOrFalse(qn_donated_choice)) {
                         try {
-                            Dialog dialog = createDialog(self);
-                            invoke_virtual(dialog, "setPositiveButton", "Confirm", new DialogInterface.OnClickListener() {
+                            CustomDialog dialog = CustomDialog.create(self);
+                            dialog.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     if (isRecursion()) return;
@@ -84,17 +84,17 @@ public class DonateActivity implements ActivityAdapter {
                                         showToast(self, TOAST_TYPE_ERROR, "出了点问题", Toast.LENGTH_SHORT);
                                     }
                                 }
-                            }, String.class, DialogInterface.OnClickListener.class);
-                            invoke_virtual(dialog, "setNegativeButton", "Cancel", new DialogInterface.OnClickListener() {
+                            });
+                            dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     if (isRecursion()) return;
                                     buttonView.setChecked(false);
                                 }
-                            }, String.class, DialogInterface.OnClickListener.class);
+                            });
                             dialog.setCancelable(true);
-                            invoke_virtual(dialog, "setMessage", "Are you sure that you have donated?", CharSequence.class);
-                            invoke_virtual(dialog, "setTitle", "THINK TWICE", String.class);
+                            dialog.setMessage("Are you sure that you have donated?");
+                            dialog.setTitle("THINK TWICE");
                             dialog.show();
                             buttonView.setChecked(ConfigManager.getDefault().getBooleanOrFalse(qn_donated_choice));
                         } catch (Exception e) {

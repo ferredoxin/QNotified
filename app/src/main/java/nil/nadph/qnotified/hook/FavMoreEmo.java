@@ -15,6 +15,7 @@ import static nil.nadph.qnotified.util.Utils.*;
 
 public class FavMoreEmo extends BaseDelayableHook {
     private static final FavMoreEmo self = new FavMoreEmo();
+    private boolean inited = false;
 
     FavMoreEmo() {
     }
@@ -22,8 +23,6 @@ public class FavMoreEmo extends BaseDelayableHook {
     public static FavMoreEmo get() {
         return self;
     }
-
-    private boolean inited = false;
 
     @Override
     public boolean init() {

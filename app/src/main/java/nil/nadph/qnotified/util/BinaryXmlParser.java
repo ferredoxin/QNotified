@@ -14,31 +14,6 @@ import java.util.Stack;
  */
 public class BinaryXmlParser {
 
-    public static XmlNode parseXml(String filePath) {
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(filePath);
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            byte[] buffer = new byte[1024];
-            int len = 0;
-            while ((len = fis.read(buffer)) != -1) {
-                bos.write(buffer, 0, len);
-            }
-            return parseXml(bos.toByteArray());
-
-        } catch (Exception e) {
-            Utils.log("parse xml error:" + e.toString());
-        } finally {
-            try {
-                if (fis != null) {
-                    fis.close();
-                }
-            } catch (Exception ignored) {
-            }
-        }
-        return null;
-    }
-
     public static final short
             RES_NULL_TYPE = 0x0000,
             RES_STRING_POOL_TYPE = 0x0001,
@@ -63,6 +38,31 @@ public class BinaryXmlParser {
             RES_TABLE_TYPE_TYPE = 0x0201,
             RES_TABLE_TYPE_SPEC_TYPE = 0x0202;
     public static final int NULL = 0xFFFFFFFF;
+
+    public static XmlNode parseXml(String filePath) {
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(filePath);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int len = 0;
+            while ((len = fis.read(buffer)) != -1) {
+                bos.write(buffer, 0, len);
+            }
+            return parseXml(bos.toByteArray());
+
+        } catch (Exception e) {
+            Utils.log("parse xml error:" + e.toString());
+        } finally {
+            try {
+                if (fis != null) {
+                    fis.close();
+                }
+            } catch (Exception ignored) {
+            }
+        }
+        return null;
+    }
 
     public static XmlNode parseXml(byte[] xml) {
         XmlNode root = new XmlNode();
@@ -212,9 +212,6 @@ public class BinaryXmlParser {
         public Res cdata;
 
         public static class Res {
-            public byte dataType;
-            public int data;
-            public String str;
             public static final byte
                     TYPE_NULL = 0x00,
             // The 'data' holds a ResTable_ref, a reference to another resource
@@ -291,6 +288,9 @@ public class BinaryXmlParser {
             // precision.  The top bit is the sign.
             COMPLEX_MANTISSA_SHIFT = 8,
                     COMPLEX_MANTISSA_MASK = 0xffffff;
+            public byte dataType;
+            public int data;
+            public String str;
         }
     }
 }

@@ -14,16 +14,15 @@ import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class $endGiftHook extends BaseDelayableHook {
+    private static final $endGiftHook self = new $endGiftHook();
+    private boolean inited = false;
+
     private $endGiftHook() {
     }
-
-    private static final $endGiftHook self = new $endGiftHook();
 
     public static $endGiftHook get() {
         return self;
     }
-
-    private boolean inited = false;
 
     @Override
     public boolean init() {

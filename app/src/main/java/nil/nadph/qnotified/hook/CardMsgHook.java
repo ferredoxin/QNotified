@@ -27,18 +27,16 @@ import static nil.nadph.qnotified.util.Utils.*;
 
 
 public class CardMsgHook extends BaseDelayableHook {
+    public static final int R_ID_COPY_CODE = 0x00EE77CC;
+    private static final CardMsgHook self = new CardMsgHook();
+    private boolean inited = false;
+
     private CardMsgHook() {
     }
-
-    public static final int R_ID_COPY_CODE = 0x00EE77CC;
-
-    private static final CardMsgHook self = new CardMsgHook();
 
     public static CardMsgHook get() {
         return self;
     }
-
-    private boolean inited = false;
 
     @Override
     public boolean init() {

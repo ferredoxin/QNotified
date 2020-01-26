@@ -38,35 +38,12 @@ import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class ExfriendManager {
+    public static final int _VERSION_CURRENT = 1;
     static private final int ID_EX_NOTIFY = 65537;
-
     static private final int FL_UPDATE_INT_MIN = 10 * 60;//sec
     static private final int FL_UPDATE_INT_MAX = 1 * 60 * 60;//sec
-
     static private final HashMap<Long, ExfriendManager> instances = new HashMap<>();
     static private ExecutorService tp;
-    private long mUin;
-    private int mTotalFriendCount;
-    private HashMap<Long, FriendRecord> persons;
-    private HashMap<Integer, EventRecord> events;
-
-    public long lastUpdateTimeSec;
-
-    private ConfigManager fileData;//Back compatibility
-
-    private ConcurrentHashMap mStdRemarks;
-    private ArrayList<FriendChunk> cachedFriendChunks;
-
-
-    private boolean dirtyFlag;
-
-    public static final int _VERSION_CURRENT = 1;
-
-
-    public long getUin() {
-        return mUin;
-    }
-
     private static Runnable asyncUpdateAwaitingTask = new Runnable() {
         @Override
         public void run() {
@@ -85,6 +62,16 @@ public class ExfriendManager {
             }
         }
     };
+    public long lastUpdateTimeSec;
+    private long mUin;
+    private int mTotalFriendCount;
+    private HashMap<Long, FriendRecord> persons;
+    private HashMap<Integer, EventRecord> events;
+    private ConfigManager fileData;//Back compatibility
+    private ConcurrentHashMap mStdRemarks;
+    private ArrayList<FriendChunk> cachedFriendChunks;
+    private boolean dirtyFlag;
+    private Context remotePackageContext;
 
     private ExfriendManager(long uin) {
         persons = new HashMap<>();
@@ -97,6 +84,50 @@ public class ExfriendManager {
             }
         }
         initForUin(uin);
+    }
+
+    public static ExfriendManager getCurrent() {
+        return get(Utils.getLongAccountUin());
+    }
+
+    public static ExfriendManager get(long uin) {
+        if (uin < 10000) throw new IllegalArgumentException("uin must >= 10000 ");
+        synchronized (instances) {
+            ExfriendManager ret = instances.get(uin);
+            if (ret != null) return ret;
+            ret = new ExfriendManager(uin);
+            instances.put(uin, ret);
+            return ret;
+        }
+    }
+
+    public static Object getFriendsManager() throws Exception {
+        Object qqAppInterface = Utils.getAppRuntime();
+        return invoke_virtual(qqAppInterface, "getManager", 50, int.class);
+    }
+
+    public static ConcurrentHashMap getFriendsConcurrentHashMap(Object friendsManager) throws IllegalAccessException, NoSuchFieldException {
+        for (Field field : load("com.tencent.mobileqq.app.FriendsManager").getDeclaredFields()) {
+            if (ConcurrentHashMap.class == field.getType()) {
+                field.setAccessible(true);
+                ConcurrentHashMap concurrentHashMap = (ConcurrentHashMap) field.get(friendsManager);
+                if (concurrentHashMap != null && concurrentHashMap.size() > 0) {
+                    if (concurrentHashMap.get(concurrentHashMap.keySet().toArray()[0]).getClass() == load("com.tencent.mobileqq.data.Friends")) {
+                        return concurrentHashMap;
+                    }
+                }
+            }
+        }
+        throw new NoSuchFieldException();
+    }
+
+    public static void onGetFriendListResp(FriendChunk fc) {
+        //log("onGetFriendListResp");
+        get(fc.uin).recordFriendChunk(fc);
+    }
+
+    public long getUin() {
+        return mUin;
     }
 
     public void reinit() {
@@ -238,7 +269,7 @@ public class ExfriendManager {
         _remark = t.getFieldId("remark");
         _fs = t.getFieldId("friendStatus");
         _time = t.getFieldId("serverTime");
-        Object rec[];
+        Object[] rec;
         while (it.hasNext()) {
             entry = it.next();
             FriendRecord f = new FriendRecord();
@@ -251,7 +282,6 @@ public class ExfriendManager {
             persons.put(f.uin, f);
         }
     }
-
 
     /**
      * We try to add some columns
@@ -341,7 +371,7 @@ public class ExfriendManager {
         _b = t.getFieldId("before");
         _a = t.getFieldId("after");
         _extra = t.getFieldId("extra");
-        Object rec[];
+        Object[] rec;
         long tmp;
         while (it.hasNext()) {
             entry = it.next();
@@ -399,41 +429,6 @@ public class ExfriendManager {
         }
     }
 
-    public static ExfriendManager getCurrent() {
-        return get(Utils.getLongAccountUin());
-    }
-
-    public static ExfriendManager get(long uin) {
-        if (uin < 10000) throw new IllegalArgumentException("uin must >= 10000 ");
-        synchronized (instances) {
-            ExfriendManager ret = instances.get(uin);
-            if (ret != null) return ret;
-            ret = new ExfriendManager(uin);
-            instances.put(uin, ret);
-            return ret;
-        }
-    }
-
-    public static Object getFriendsManager() throws Exception {
-        Object qqAppInterface = Utils.getAppRuntime();
-        return invoke_virtual(qqAppInterface, "getManager", 50, int.class);
-    }
-
-    public static ConcurrentHashMap getFriendsConcurrentHashMap(Object friendsManager) throws IllegalAccessException, NoSuchFieldException {
-        for (Field field : load("com.tencent.mobileqq.app.FriendsManager").getDeclaredFields()) {
-            if (ConcurrentHashMap.class == field.getType()) {
-                field.setAccessible(true);
-                ConcurrentHashMap concurrentHashMap = (ConcurrentHashMap) field.get(friendsManager);
-                if (concurrentHashMap != null && concurrentHashMap.size() > 0) {
-                    if (concurrentHashMap.get(concurrentHashMap.keySet().toArray()[0]).getClass() == load("com.tencent.mobileqq.data.Friends")) {
-                        return concurrentHashMap;
-                    }
-                }
-            }
-        }
-        throw new NoSuchFieldException();
-    }
-
     public ArrayList<ContactDescriptor> getFriendsRemark() {
         ArrayList<ContactDescriptor> ret = new ArrayList<>();
         if (persons != null)
@@ -470,11 +465,6 @@ public class ExfriendManager {
      */
     public String getRemark(long uin) {
         return (String) mStdRemarks.get("" + uin);
-    }
-
-    public static void onGetFriendListResp(FriendChunk fc) {
-        //log("onGetFriendListResp");
-        get(fc.uin).recordFriendChunk(fc);
     }
 
     public synchronized void recordFriendChunk(FriendChunk fc) {
@@ -644,7 +634,7 @@ public class ExfriendManager {
             FriendRecord fr = persons.get(uin);
             if (fr == null) {
                 try {
-                    showToast(((Context) StartupHook.splashActivityRef.get()), TOAST_TYPE_ERROR, "onActDelResp:get(" + uin + ")==null", Toast.LENGTH_SHORT);
+                    showToast(StartupHook.splashActivityRef.get(), TOAST_TYPE_ERROR, "onActDelResp:get(" + uin + ")==null", Toast.LENGTH_SHORT);
                 } catch (Throwable e) {
                 }
                 return;
@@ -688,8 +678,6 @@ public class ExfriendManager {
         //log("Friendlist updated @" + lastUpdateTimeSec);
         saveConfigure();
     }
-
-    private Context remotePackageContext;
 
     public Notification createNotiComp(String ticker, String title, String content, PendingIntent pi) throws PackageManager.NameNotFoundException, InvocationTargetException, SecurityException, IllegalAccessException, IllegalArgumentException, NoSuchMethodException, InstantiationException {
         if (remotePackageContext == null)

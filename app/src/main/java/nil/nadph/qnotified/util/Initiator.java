@@ -7,11 +7,11 @@ public class Initiator {
     private static PopupWindow window;
     private float progress;*/
 
+    private static ClassLoader qqClassLoader;
+
     public static void init(ClassLoader classLoader) {
         qqClassLoader = classLoader;
     }
-
-    private static ClassLoader qqClassLoader;
 
     public static ClassLoader getClassLoader() {
         return qqClassLoader;

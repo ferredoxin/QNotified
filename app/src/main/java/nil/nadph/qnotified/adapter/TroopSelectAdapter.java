@@ -20,8 +20,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import nil.nadph.qnotified.FaceImpl;
 import nil.nadph.qnotified.record.ConfigManager;
-import nil.nadph.qnotified.util.ResUtils;
-import nil.nadph.qnotified.util.ViewBuilder;
+import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.ui.ViewBuilder;
 import nil.nadph.qnotified.util.Utils;
 
 import java.util.ArrayList;
@@ -39,7 +39,44 @@ import static nil.nadph.qnotified.util.Utils.*;
 
 public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, View.OnClickListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
 
+    private static final int R_ID_TRP_LAYOUT = 0x300AFF30;
+    private static final int R_ID_TRP_TITLE = 0x300AFF31;
+    private static final int R_ID_TRP_SUBTITLE = 0x300AFF32;
+    private static final int R_ID_TRP_FACE = 0x300AFF33;
+    private static final int R_ID_TRP_CHECKBOX = 0x300AFF34;
+    private static final int R_ID_TRP_CANCEL = 0x300AFF35;
+    private static final int R_ID_TRP_SEARCH_EDIT = 0x300AFF36;
+    private static final int R_ID_TRP_REVERSE = 0x300AFF37;
+    private static final int R_ID_TRP_SELECT_ALL = 0x300AFF38;
     public static int HIGHLIGHT_COLOR = 0xFF20B0FF;
+    private ArrayList<TroopInfo> mTroopInfoList;
+    private int hits;
+    private boolean searchMode = false;
+    private Activity mActivity;
+    private int mActionInt;
+    private FaceImpl face;
+    private EditText search;
+    private TextView rightBtn, cancel, reverse, selectAll;
+    private HashSet<String> muted;
+    public TroopSelectAdapter(Activity act, int action) {
+        mActivity = act;
+        mActionInt = action;
+        try {
+            face = FaceImpl.getInstance();
+        } catch (Throwable e) {
+            log(e);
+        }
+    }
+
+    public static ArrayList<TroopInfo> getTroopInfoList() throws Exception {
+        Object mTroopManager = getTroopManager();
+        ArrayList tx = (ArrayList) invoke_virtual(mTroopManager, "a", ArrayList.class);
+        ArrayList<TroopInfo> ret = new ArrayList<TroopInfo>();
+        for (Object info : tx) {
+            ret.add(new TroopInfo(info));
+        }
+        return ret;
+    }
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -141,10 +178,6 @@ public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, 
         }
     }
 
-    private ArrayList<TroopInfo> mTroopInfoList;
-    private int hits;
-    private boolean searchMode = false;
-
     @Override
     public int getCount() {
         if (searchMode && hits > 0) {
@@ -193,35 +226,6 @@ public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, 
         CheckBox check = (CheckBox) convertView.findViewById(R_ID_TRP_CHECKBOX);
         check.setChecked(selected);
         return convertView;
-    }
-
-    private Activity mActivity;
-
-    private static final int R_ID_TRP_LAYOUT = 0x300AFF30;
-    private static final int R_ID_TRP_TITLE = 0x300AFF31;
-    private static final int R_ID_TRP_SUBTITLE = 0x300AFF32;
-    private static final int R_ID_TRP_FACE = 0x300AFF33;
-    private static final int R_ID_TRP_CHECKBOX = 0x300AFF34;
-    private static final int R_ID_TRP_CANCEL = 0x300AFF35;
-    private static final int R_ID_TRP_SEARCH_EDIT = 0x300AFF36;
-    private static final int R_ID_TRP_REVERSE = 0x300AFF37;
-    private static final int R_ID_TRP_SELECT_ALL = 0x300AFF38;
-
-
-    private int mActionInt;
-    private FaceImpl face;
-
-    private EditText search;
-    private TextView rightBtn, cancel, reverse, selectAll;
-
-    public TroopSelectAdapter(Activity act, int action) {
-        mActivity = act;
-        mActionInt = action;
-        try {
-            face = FaceImpl.getInstance();
-        } catch (Throwable e) {
-            log(e);
-        }
     }
 
     public void doOnPostCreate(Bundle savedInstanceState) throws Throwable {
@@ -383,16 +387,6 @@ public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, 
         return llayout;
     }
 
-    public static ArrayList<TroopInfo> getTroopInfoList() throws Exception {
-        Object mTroopManager = getTroopManager();
-        ArrayList tx = (ArrayList) invoke_virtual(mTroopManager, "a", ArrayList.class);
-        ArrayList<TroopInfo> ret = new ArrayList<TroopInfo>();
-        for (Object info : tx) {
-            ret.add(new TroopInfo(info));
-        }
-        return ret;
-    }
-
     public void parseKeyword(String keyword) {
         //if(hits == null)hits=new ArrayList<>();
         hits = 0;
@@ -428,8 +422,6 @@ public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, 
         notifyDataSetChanged();
     }
 
-    private HashSet<String> muted;
-
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         LinearLayout ll = (LinearLayout) buttonView.getParent();
@@ -441,27 +433,6 @@ public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, 
             muted.remove(guin);
         }
         rightBtn.setText("完成(" + muted.size() + ")");
-    }
-
-
-    public static class TroopInfo implements Comparable {
-        public TroopInfo(Object obj) {
-            _troopname = troopname = (String) iget_object_or_null(obj, "troopname");
-            _troopuin = troopuin = (String) iget_object_or_null(obj, "troopuin");
-            hit = 0;
-        }
-
-        public String troopuin;
-        public String troopname;
-        public CharSequence _troopuin;
-        public CharSequence _troopname;
-        public int hit;
-
-        @Override
-        public int compareTo(Object o) {
-            TroopInfo t = (TroopInfo) o;
-            return t.hit - hit;
-        }
     }
 
     @Override
@@ -484,5 +455,24 @@ public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, 
     @Override
     public void doOnPostActivityResult(int requestCode, int resultCode, Intent data) {
 
+    }
+
+    public static class TroopInfo implements Comparable {
+        public String troopuin;
+        public String troopname;
+        public CharSequence _troopuin;
+        public CharSequence _troopname;
+        public int hit;
+        public TroopInfo(Object obj) {
+            _troopname = troopname = (String) iget_object_or_null(obj, "troopname");
+            _troopuin = troopuin = (String) iget_object_or_null(obj, "troopuin");
+            hit = 0;
+        }
+
+        @Override
+        public int compareTo(Object o) {
+            TroopInfo t = (TroopInfo) o;
+            return t.hit - hit;
+        }
     }
 }

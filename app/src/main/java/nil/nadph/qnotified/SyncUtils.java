@@ -30,19 +30,14 @@ public class SyncUtils {
     public static final int PROC_LOLA = 1 << 7;
 
     public static final int PROC_OTHERS = 1 << 31;
-
-    public static int myId = 0;
-    private static int mProcType = 0;
-
     //file=0
     public static final String SYNC_FILE_CHANGED = "nil.nadph.qnotified.SYNC_FILE_CHANGED";
-
     //process=010001 hook=0011000
     public static final String HOOK_DO_INIT = "nil.nadph.qnotified.HOOK_DO_INIT";
-
+    public static int myId = 0;
     public static int seq = 0;
-
     public static boolean inited = false;
+    private static int mProcType = 0;
 
     public static void initBroadcast(Context ctx) {
         if (inited) return;

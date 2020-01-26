@@ -17,16 +17,38 @@ import static nil.nadph.qnotified.util.Utils.*;
 
 public class MultiForwardAvatarHook extends BaseDelayableHook {
 
+    private static final MultiForwardAvatarHook self = new MultiForwardAvatarHook();
+    private boolean inited = false;
+    private Field mLeftCheckBoxVisible = null;
+
     private MultiForwardAvatarHook() {
     }
-
-    private static final MultiForwardAvatarHook self = new MultiForwardAvatarHook();
 
     public static MultiForwardAvatarHook get() {
         return self;
     }
 
-    private boolean inited = false;
+    /**
+     * Target TIM or QQ<=7.6.0
+     * Here we use a simple workaround, not use DexKit
+     *
+     * @param v the view in bubble
+     * @return message or null
+     */
+    @Nullable
+    @Deprecated
+    public static Object getChatMessageByView(View v) {
+        Class cl_AIOUtils = load("com/tencent/mobileqq/activity/aio/AIOUtils");
+        if (cl_AIOUtils == null) return null;
+        try {
+            return invoke_static(cl_AIOUtils, "a", v, View.class, load("com.tencent.mobileqq.data.ChatMessage"));
+        } catch (NoSuchMethodException e) {
+            return null;
+        } catch (Exception e) {
+            log(e);
+            return null;
+        }
+    }
 
     @Override
     public boolean init() {
@@ -93,8 +115,6 @@ public class MultiForwardAvatarHook extends BaseDelayableHook {
         return true;
     }
 
-    private Field mLeftCheckBoxVisible = null;
-
     public boolean isLeftCheckBoxVisible() {
         Field a = null, b = null;
         try {
@@ -120,28 +140,6 @@ public class MultiForwardAvatarHook extends BaseDelayableHook {
         } catch (Exception e) {
             log(e);
             return false;
-        }
-    }
-
-    /**
-     * Target TIM or QQ<=7.6.0
-     * Here we use a simple workaround, not use DexKit
-     *
-     * @param v the view in bubble
-     * @return message or null
-     */
-    @Nullable
-    @Deprecated
-    public static Object getChatMessageByView(View v) {
-        Class cl_AIOUtils = load("com/tencent/mobileqq/activity/aio/AIOUtils");
-        if (cl_AIOUtils == null) return null;
-        try {
-            return invoke_static(cl_AIOUtils, "a", v, View.class, load("com.tencent.mobileqq.data.ChatMessage"));
-        } catch (NoSuchMethodException e) {
-            return null;
-        } catch (Exception e) {
-            log(e);
-            return null;
         }
     }
 }

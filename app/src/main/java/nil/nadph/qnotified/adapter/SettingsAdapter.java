@@ -16,8 +16,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import nil.nadph.qnotified.hook.*;
 import nil.nadph.qnotified.record.ConfigManager;
+import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.NewsHelper;
-import nil.nadph.qnotified.util.ResUtils;
 import nil.nadph.qnotified.util.UpdateCheck;
 import nil.nadph.qnotified.util.Utils;
 
@@ -26,10 +26,10 @@ import java.io.File;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.adapter.ActProxyMgr.*;
+import static nil.nadph.qnotified.ui.ViewBuilder.*;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.SendBatchMsg.clickToBatchMsg;
 import static nil.nadph.qnotified.util.Utils.*;
-import static nil.nadph.qnotified.util.ViewBuilder.*;
 
 public class SettingsAdapter implements ActivityAdapter {
 

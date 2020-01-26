@@ -1,8 +1,6 @@
 package nil.nadph.qnotified.util;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Handler;
 import android.text.SpannableString;
@@ -16,6 +14,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import nil.nadph.qnotified.record.ConfigManager;
+import nil.nadph.qnotified.ui.CustomDialog;
+import nil.nadph.qnotified.ui.ViewBuilder;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.ByteArrayOutputStream;
@@ -23,23 +23,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import static nil.nadph.qnotified.util.Utils.invoke_virtual;
 import static nil.nadph.qnotified.util.Utils.log;
 
 public class UpdateCheck implements View.OnClickListener, Runnable {
 
+    public static final String UPDATE_INFO_GET1 = "https://raw.githubusercontent.com/cinit/QNotified/master/update_info";
+    public static final String UPDATE_INFO_GET2 = "https://gitee.com/kernelex/QNotified/raw/master/update_info";
+    public static final String qn_update_info = "qn_update_info";
+    public static final String qn_update_time = "qn_update_time";
+    private final int RL_LOAD = 1;
+    private final int RL_SHOW_RET = 2;
+    int currVerCode = Utils.QN_VERSION_CODE;
+    String currVerName = Utils.QN_VERSION_NAME;
     private ViewGroup viewGroup;
     private boolean clicked = false;
     private PHPArray result;
-    public static final String UPDATE_INFO_GET1 = "https://raw.githubusercontent.com/cinit/QNotified/master/update_info";
-    public static final String UPDATE_INFO_GET2 = "https://gitee.com/kernelex/QNotified/raw/master/update_info";
     private int runlevel;
-    public static final String qn_update_info = "qn_update_info";
-    public static final String qn_update_time = "qn_update_time";
-    int currVerCode = Utils.QN_VERSION_CODE;
-    String currVerName = Utils.QN_VERSION_NAME;
-    private final int RL_LOAD = 1;
-    private final int RL_SHOW_RET = 2;
 
     public UpdateCheck() {
     }
@@ -195,11 +194,11 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
         try {
             clicked = false;
             Activity ctx = (Activity) viewGroup.getContext();
-            Dialog dialog = Utils.createDialog(ctx);
-            invoke_virtual(dialog, "setTitle", "当前" + currVerName + " (" + currVerCode + ")", String.class);
+            CustomDialog dialog = CustomDialog.create(ctx);
+            dialog.setTitle("当前" + currVerName + " (" + currVerCode + ")");
             dialog.setCancelable(true);
             //dialog.setNegativeButton("关闭", null);
-            invoke_virtual(dialog, "setNegativeButton", "关闭", new Utils.DummyCallback(), String.class, DialogInterface.OnClickListener.class);
+            dialog.setNegativeButton("关闭", new Utils.DummyCallback());
 			/*PopupWindow pop=new PopupWindow();
 			 pop.setWidth(WRAP_CONTENT);
 			 pop.setHeight(WRAP_CONTENT);*/
@@ -253,16 +252,18 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
                 sb.append("\n");
             }
             //list.setText(sb);
-            invoke_virtual(dialog, "setMessage", sb, CharSequence.class);
-            TextView tv = (TextView) Utils.iget_object_or_null(dialog, "text");
-            tv.setLinksClickable(true);
-            tv.setEnabled(true);
-            tv.setFocusable(true);
-            try {
-                tv.setFocusableInTouchMode(true);
-                tv.setTextIsSelectable(true);
-                tv.setAutoLinkMask(Linkify.WEB_URLS);
-            } catch (NoSuchMethodError e) {
+            dialog.setMessage(sb);
+            TextView tv = dialog.getMessageTextView();
+            if (tv != null) {
+                tv.setLinksClickable(true);
+                tv.setEnabled(true);
+                tv.setFocusable(true);
+                try {
+                    tv.setFocusableInTouchMode(true);
+                    tv.setTextIsSelectable(true);
+                    tv.setAutoLinkMask(Linkify.WEB_URLS);
+                } catch (NoSuchMethodError ignored) {
+                }
             }
             dialog.show();
         } catch (Exception e) {

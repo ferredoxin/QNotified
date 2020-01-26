@@ -2,7 +2,6 @@ package nil.nadph.qnotified.hook;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,8 +19,9 @@ import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.FaceImpl;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.record.ConfigManager;
+import nil.nadph.qnotified.ui.CustomDialog;
+import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.ResUtils;
 import nil.nadph.qnotified.util.Utils;
 
 import java.io.File;
@@ -41,18 +41,15 @@ import static nil.nadph.qnotified.util.Utils.*;
 public class PttForwardHook extends BaseDelayableHook {
 
     public static final int R_ID_PTT_FORWARD = 0x00EE77CB;
-
+    private static final PttForwardHook self = new PttForwardHook();
+    private boolean inited = false;
 
     private PttForwardHook() {
     }
 
-    private static final PttForwardHook self = new PttForwardHook();
-
     public static PttForwardHook get() {
         return self;
     }
-
-    private boolean inited = false;
 
     @Override
     public boolean init() {
@@ -169,8 +166,8 @@ public class PttForwardHook extends BaseDelayableHook {
                         heads.addView(ni);
                     }
                     //String ret = "" +/*ctx.getIntent().getExtras();//*/iget_object(param.thisObject, "a", Bundle.class);
-                    Dialog dialog = Utils.createDialog(ctx);
-                    invoke_virtual(dialog, "setPositiveButton", "确认", new DialogInterface.OnClickListener() {
+                    CustomDialog dialog = CustomDialog.create(ctx);
+                    dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             try {
@@ -189,11 +186,11 @@ public class PttForwardHook extends BaseDelayableHook {
                             }
                             ctx.finish();
                         }
-                    }, String.class, DialogInterface.OnClickListener.class);
-                    invoke_virtual(dialog, "setNegativeButton", "取消", new Utils.DummyCallback(), String.class, DialogInterface.OnClickListener.class);
+                    });
+                    dialog.setNegativeButton("取消", new Utils.DummyCallback());
                     dialog.setCancelable(true);
-                    invoke_virtual(dialog, "setView", main, View.class);
-                    invoke_virtual(dialog, "setTitle", "发送给", String.class);
+                    dialog.setView(main);
+                    dialog.setTitle("发送给");
                     dialog.show();
                 }
             });

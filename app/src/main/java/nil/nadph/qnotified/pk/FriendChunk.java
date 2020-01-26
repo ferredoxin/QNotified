@@ -10,6 +10,11 @@ import static nil.nadph.qnotified.util.Utils.log;
 
 
 public class FriendChunk implements Serializable, Cloneable {
+    private static Field[] from;
+    private static Field[] to;
+    private static int validLength = -1;
+    private static int maxLength = 14;
+    private static Field f_uin, f_remark, f_nick, f_cSpecialFlag, f_status, f_stSelfInfo;
     public byte cHasOtherRespFlag;
     public byte cRespType;
     public short errorCode;
@@ -24,54 +29,17 @@ public class FriendChunk implements Serializable, Cloneable {
     public short startIndex;
     public short totoal_friend_count;
     public long uin;
-
     public long[] arrUin;
     public String[] arrRemark;
     public String[] arrNick;
     public byte[] arrcSpecialFlag;
     public byte[] arrStatus;
 
-    private static Field[] from;
-    private static Field[] to;
-
-    private static int validLength = -1;
-    private static int maxLength = 14;
-
-    private static Field f_uin, f_remark, f_nick, f_cSpecialFlag, f_status, f_stSelfInfo;
-
     public FriendChunk(Object resp) {
         fromGetFriendListResp(resp);
     }
 
     public FriendChunk() {
-    }
-
-    public void fromGetFriendListResp(Object resp) {
-        if (validLength < 0) initOnce();
-        try {
-            for (int i = 0; i < validLength; i++) {
-                to[i].set(this, from[i].get(resp));
-                //log(from[i].getName()+"=>"+to[i].getName());
-            }
-            int len = friend_count;
-            arrStatus = new byte[len];
-            arrUin = new long[len];
-            arrRemark = new String[len];
-            arrNick = new String[len];
-            arrcSpecialFlag = new byte[len];
-            ArrayList fs = (ArrayList) f_stSelfInfo.get(resp);
-            for (int i = 0; i < len; i++) {
-                arrStatus[i] = (byte) f_status.get(fs.get(i));
-                arrUin[i] = (long) f_uin.get(fs.get(i));
-                arrRemark[i] = (String) f_remark.get(fs.get(i));
-                arrNick[i] = (String) f_nick.get(fs.get(i));
-                arrcSpecialFlag[i] = (byte) f_cSpecialFlag.get(fs.get(i));
-            }
-        } catch (IllegalAccessException e) {
-        } catch (ClassCastException e) {
-            log(e);
-        }
-        if (serverTime == 0) serverTime = System.currentTimeMillis() / 1000L;
     }
 
     public static synchronized void initOnce() {
@@ -127,6 +95,34 @@ public class FriendChunk implements Serializable, Cloneable {
         } catch (NoSuchFieldException e) {
         }
 
+    }
+
+    public void fromGetFriendListResp(Object resp) {
+        if (validLength < 0) initOnce();
+        try {
+            for (int i = 0; i < validLength; i++) {
+                to[i].set(this, from[i].get(resp));
+                //log(from[i].getName()+"=>"+to[i].getName());
+            }
+            int len = friend_count;
+            arrStatus = new byte[len];
+            arrUin = new long[len];
+            arrRemark = new String[len];
+            arrNick = new String[len];
+            arrcSpecialFlag = new byte[len];
+            ArrayList fs = (ArrayList) f_stSelfInfo.get(resp);
+            for (int i = 0; i < len; i++) {
+                arrStatus[i] = (byte) f_status.get(fs.get(i));
+                arrUin[i] = (long) f_uin.get(fs.get(i));
+                arrRemark[i] = (String) f_remark.get(fs.get(i));
+                arrNick[i] = (String) f_nick.get(fs.get(i));
+                arrcSpecialFlag[i] = (byte) f_cSpecialFlag.get(fs.get(i));
+            }
+        } catch (IllegalAccessException e) {
+        } catch (ClassCastException e) {
+            log(e);
+        }
+        if (serverTime == 0) serverTime = System.currentTimeMillis() / 1000L;
     }
 
     @Override

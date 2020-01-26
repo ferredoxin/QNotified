@@ -25,6 +25,7 @@ import static nil.nadph.qnotified.util.Utils.*;
 public class RevokeMsgHook extends BaseDelayableHook {
     private static final RevokeMsgHook self = new RevokeMsgHook();
     private Object mQQMsgFacade = null;
+    private boolean inited = false;
 
     private RevokeMsgHook() {
     }
@@ -32,8 +33,6 @@ public class RevokeMsgHook extends BaseDelayableHook {
     public static RevokeMsgHook get() {
         return self;
     }
-
-    private boolean inited = false;
 
     @Override
     public boolean init() {

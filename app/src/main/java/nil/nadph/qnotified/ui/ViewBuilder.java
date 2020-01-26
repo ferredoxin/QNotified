@@ -1,6 +1,5 @@
-package nil.nadph.qnotified.util;
+package nil.nadph.qnotified.ui;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -12,6 +11,8 @@ import nil.nadph.qnotified.StartupHook;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.record.ConfigManager;
+import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.Utils;
 
 import java.io.IOException;
 
@@ -45,13 +46,13 @@ public class ViewBuilder {
         sw.setId(R_ID_SWITCH);
         sw.setOnCheckedChangeListener(listener);
         RelativeLayout.LayoutParams lp_sw = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-        int m = (int) dip2px(ctx, 14);
+        int m = dip2px(ctx, 14);
         lp_sw.setMargins(m, m, m, 0);
         lp_sw.addRule(RelativeLayout.CENTER_VERTICAL);
         lp_sw.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         if (desc == null) {
             RelativeLayout.LayoutParams lp_t = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-            m = (int) dip2px(ctx, 14);
+            m = dip2px(ctx, 14);
             lp_t.setMargins(m, m, 0, 0);
             lp_t.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
             lp_t.addRule(RelativeLayout.CENTER_VERTICAL);
@@ -59,7 +60,7 @@ public class ViewBuilder {
             root.addView(tv, lp_t);
         } else {
             RelativeLayout.LayoutParams lp_t = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-            m = (int) dip2px(ctx, 14);
+            m = dip2px(ctx, 14);
             lp_t.setMargins(m, m / 2, 0, 0);
             lp_t.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
             lp_t.addRule(RelativeLayout.LEFT_OF, R_ID_SWITCH);
@@ -169,7 +170,7 @@ public class ViewBuilder {
     }
 
     private static void doSetupAndInit(final Context ctx, BaseDelayableHook hook) {
-        final Dialog pDialog[] = new Dialog[1];
+        final CustomDialog[] pDialog = new CustomDialog[1];
         for (int i : hook.getPreconditions()) {
             if (DexKit.tryLoadOrNull(i) != null) continue;
             final String name = DexKit.c(i).replace("/", ".");
@@ -177,18 +178,18 @@ public class ViewBuilder {
                 @Override
                 public void run() {
                     if (pDialog[0] == null) {
-                        pDialog[0] = Utils.createDialog(ctx);
+                        pDialog[0] = CustomDialog.create(ctx);
                         pDialog[0].setCancelable(false);
                         try {
-                            invoke_virtual(pDialog[0], "setTitle", "请稍候", String.class);
-                            invoke_virtual(pDialog[0], "setMessage", "QNotified正在定位被混淆类:\n" + name + "\n每个类一般不会超过一分钟", CharSequence.class);
+                            pDialog[0].setTitle("请稍候");
+                            pDialog[0].setMessage("QNotified正在定位被混淆类:\n" + name + "\n每个类一般不会超过一分钟");
                         } catch (Throwable e) {
                             log(e);
                         }
                         pDialog[0].show();
                     }
                     try {
-                        invoke_virtual(pDialog[0], "setMessage", "QNotified正在定位被混淆类:\n" + name + "\n每个类一般不会超过一分钟", CharSequence.class);
+                        pDialog[0].setMessage("QNotified正在定位被混淆类:\n" + name + "\n每个类一般不会超过一分钟");
                     } catch (Throwable e) {
                         log(e);
                     }
@@ -245,13 +246,13 @@ public class ViewBuilder {
         st.setTextColor(ResUtils.skin_gray3);
         st.setTextSize(dip2sp(ctx, 15));
         RelativeLayout.LayoutParams lp_sw = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-        int m = (int) dip2px(ctx, 14);
+        int m = dip2px(ctx, 14);
         lp_sw.setMargins(m, m, m, m);
         lp_sw.addRule(RelativeLayout.CENTER_VERTICAL);
         lp_sw.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         if (desc == null) {
             RelativeLayout.LayoutParams lp_t = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-            m = (int) dip2px(ctx, 14);
+            m = dip2px(ctx, 14);
             lp_t.setMargins(m, m, 0, 0);
             lp_t.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
             lp_t.addRule(RelativeLayout.CENTER_VERTICAL);
@@ -259,7 +260,7 @@ public class ViewBuilder {
             root.addView(tv, lp_t);
         } else {
             RelativeLayout.LayoutParams lp_t = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-            m = (int) dip2px(ctx, 14);
+            m = dip2px(ctx, 14);
             lp_t.setMargins(m, m / 2, 0, 0);
             lp_t.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
             lp_t.addRule(RelativeLayout.LEFT_OF, R_ID_VALUE);
@@ -295,13 +296,13 @@ public class ViewBuilder {
         img.setImageDrawable(ResUtils.skin_icon_arrow_right_normal);
         img.setId(R_ID_ARROW);
         RelativeLayout.LayoutParams lp_im = new RelativeLayout.LayoutParams(dip2px(ctx, 9), dip2px(ctx, 15));
-        int m = (int) dip2px(ctx, 14);
+        int m = dip2px(ctx, 14);
         lp_im.setMargins(0, m, m, 0);
         lp_im.addRule(RelativeLayout.CENTER_VERTICAL);
         lp_im.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         if (desc == null) {
             RelativeLayout.LayoutParams lp_t = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-            m = (int) dip2px(ctx, 14);
+            m = dip2px(ctx, 14);
             lp_t.setMargins(m, m, 0, 0);
             lp_t.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
             lp_t.addRule(RelativeLayout.CENTER_VERTICAL);
@@ -309,7 +310,7 @@ public class ViewBuilder {
             root.addView(tv, lp_t);
         } else {
             RelativeLayout.LayoutParams lp_t = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-            m = (int) dip2px(ctx, 14);
+            m = dip2px(ctx, 14);
             lp_t.setMargins(m, m / 2, 0, 0);
             lp_t.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
             lp_t.addRule(RelativeLayout.LEFT_OF, R_ID_VALUE);
@@ -334,7 +335,7 @@ public class ViewBuilder {
         st.setTextColor(ResUtils.skin_gray3);
         st.setTextSize(dip2sp(ctx, 15));
         RelativeLayout.LayoutParams lp_st = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-        m = (int) dip2px(ctx, 14);
+        m = dip2px(ctx, 14);
         lp_st.setMargins(m / 4, m, m / 4, 0);
         lp_st.addRule(RelativeLayout.CENTER_VERTICAL);
         lp_st.addRule(RelativeLayout.LEFT_OF, R_ID_ARROW);

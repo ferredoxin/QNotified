@@ -15,15 +15,14 @@ import java.io.InputStream;
 
 public class ConfigActivity extends Activity implements Runnable {
 
+    int color;
+    int step;//(0-255)
+    int stage;//0-5
     private boolean isVisible = false;
     private boolean needRun = false;
     private TextView statusTv;
     private TextView statusTvB;
     private Looper mainLooper;
-
-    int color;
-    int step;//(0-255)
-    int stage;//0-5
 
     /**
      * 没良心的method
@@ -96,7 +95,7 @@ public class ConfigActivity extends Activity implements Runnable {
         }
 
         InputStream in = ConfigActivity.class.getClassLoader().getResourceAsStream("assets/xposed_init");
-        byte buf[] = new byte[64];
+        byte[] buf = new byte[64];
         String start = "";
         try {
             int len = in.read(buf);

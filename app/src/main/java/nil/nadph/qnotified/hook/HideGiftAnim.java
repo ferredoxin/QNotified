@@ -12,6 +12,7 @@ import static nil.nadph.qnotified.util.Utils.qn_hide_gift_animation;
 
 public class HideGiftAnim extends BaseDelayableHook {
     private static final HideGiftAnim self = new HideGiftAnim();
+    private boolean inited = false;
 
     HideGiftAnim() {
     }
@@ -19,8 +20,6 @@ public class HideGiftAnim extends BaseDelayableHook {
     public static HideGiftAnim get() {
         return self;
     }
-
-    private boolean inited = false;
 
     @Override
     public boolean init() {

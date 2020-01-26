@@ -16,16 +16,15 @@ import static nil.nadph.qnotified.util.Utils.*;
 
 public class EmoPicHook extends BaseDelayableHook {
 
+    private static final EmoPicHook self = new EmoPicHook();
+    private boolean inited = false;
+
     private EmoPicHook() {
     }
-
-    private static final EmoPicHook self = new EmoPicHook();
 
     public static EmoPicHook get() {
         return self;
     }
-
-    private boolean inited = false;
 
     @Override
     public boolean init() {
