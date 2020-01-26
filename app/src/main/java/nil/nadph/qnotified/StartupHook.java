@@ -211,16 +211,6 @@ public class StartupHook {
         }
     }
 
-    /**
-     * dummy method, for development and test only
-     */
-    public static void onAppStartup() {
-        if (!isAlphaVersion()) return;
-        deepDarkTheme();
-
-
-    }
-
     public void doInit(ClassLoader rtloader) throws Throwable {
         if (first_stage_inited) return;
         try {
@@ -588,17 +578,14 @@ public class StartupHook {
                     DexKit.doFindClass(DexKit.C_FACADE);
                 }
             }).start();
-/*        if (DexKit.tryLoadOrNull(DexKit.C_FLASH_PIC_HELPER) == null)
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Thread.sleep(8000);
-                    } catch (InterruptedException ignored) {
-                    }
-                    DexKit.doFindClass(DexKit.C_FLASH_PIC_HELPER);
-                }
-            }).start();*/
+    }
+
+    /**
+     * dummy method, for development and test only
+     */
+    public static void onAppStartup() {
+        if (!isAlphaVersion()) return;
+        deepDarkTheme();
     }
 
 }

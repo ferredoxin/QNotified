@@ -13,8 +13,10 @@ import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.regex.Pattern;
 
+import static nil.nadph.qnotified.util.Initiator._QQAppInterface;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
@@ -40,9 +42,10 @@ public class DexKit {
     public static final int C_SIMPLE_UI_UTIL = 16;
     public static final int C_TROOP_GIFT_UTIL = 17;
     public static final int C_TEST_STRUCT_MSG = 18;
+    public static final int C_QZONE_MSG_NOTIFY = 19;
 
     //the last index
-    public static final int DEOBF_NUM = 18;
+    public static final int DEOBF_NUM = 19;
 
     @Nullable
     public static Class tryLoadOrNull(int i) {
@@ -74,7 +77,7 @@ public class DexKit {
         } catch (Throwable ignored) {
         }
         try {
-            ArrayList<String> names;
+            HashSet<String> names;
             ConfigManager cfg = ConfigManager.getDefault();
             DexDeobfReport report = new DexDeobfReport();
             report.target = i;
@@ -90,11 +93,11 @@ public class DexKit {
                 report.v(name);
             }
             if (names.size() == 1) {
-                ret = load(names.get(0));
+                ret = load(names.iterator().next());
             } else {
-                Class[] cas = new Class[names.size()];
-                for (int j = 0; j < names.size(); j++) {
-                    cas[j] = load(names.get(j));
+                HashSet<Class> cas = new HashSet<>();
+                for (String name : names) {
+                    cas.add(load(name));
                 }
                 ret = a(i, cas, report);
             }
@@ -149,6 +152,8 @@ public class DexKit {
                 return "troop_gift_util";
             case C_TEST_STRUCT_MSG:
                 return "test_struct_msg";
+            case C_QZONE_MSG_NOTIFY:
+                return "qzone_msg_notify";
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM);
     }
@@ -208,6 +213,9 @@ public class DexKit {
             case C_TEST_STRUCT_MSG:
                 ret = "com/tencent/mobileqq/structmsg/TestStructMsg";
                 break;
+            case C_QZONE_MSG_NOTIFY:
+                ret = "cooperation/qzone/push/MsgNotification";
+                break;
             default:
                 ret = null;
         }
@@ -256,6 +264,8 @@ public class DexKit {
                 return new byte[][]{new byte[]{0x1A, 0x2E, 0x74, 0x72, 0x6F, 0x6F, 0x70, 0x2E, 0x73, 0x65, 0x6E, 0x64, 0x5F, 0x67, 0x69, 0x66, 0x74, 0x54}};
             case C_TEST_STRUCT_MSG:
                 return new byte[][]{new byte[]{0x0D, 0x54, 0x65, 0x73, 0x74, 0x53, 0x74, 0x72, 0x75, 0x63, 0x74, 0x4D, 0x73, 0x67}};
+            case C_QZONE_MSG_NOTIFY:
+                return new byte[][]{new byte[]{0x14, 0x75, 0x73, 0x65, 0x20, 0x73, 0x6D, 0x61, 0x6C, 0x6C, 0x20, 0x69, 0x63, 0x6F, 0x6E, 0x20, 0x2C, 0x65, 0x78, 0x70, 0x3A}};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM);
     }
@@ -296,11 +306,13 @@ public class DexKit {
                 return new int[]{9, 2};
             case C_TEST_STRUCT_MSG:
                 return new int[]{7, 2};
+            case C_QZONE_MSG_NOTIFY:
+                return new int[]{3};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM);
     }
 
-    private static Class a(int i, Class[] classes, DexDeobfReport report) {
+    private static Class a(int i, HashSet<Class> classes, DexDeobfReport report) {
         switch (i) {
             case C_DIALOG_UTIL:
             case C_FACADE:
@@ -388,11 +400,24 @@ public class DexKit {
                     if (Object.class.equals(s)) return clz;
                 }
                 break;
+            case C_QZONE_MSG_NOTIFY:
+                for (Class clz : classes) {
+                    if (Modifier.isAbstract(clz.getModifiers())) continue;
+                    Class s = clz.getSuperclass();
+                    if (!Object.class.equals(s)) continue;
+                    for (Method m : clz.getDeclaredMethods()) {
+                        if (!m.getReturnType().equals(void.class)) continue;
+                        Class<?>[] argt = m.getParameterTypes();
+                        if (argt.length > 7 && argt[0].equals(_QQAppInterface())) {
+                            return clz;
+                        }
+                    }
+                }
         }
         return null;
     }
 
-    private static ArrayList<String> e(int i, DexDeobfReport rep) {
+    private static HashSet<String> e(int i, DexDeobfReport rep) {
         ClassLoader loader = Initiator.getClassLoader();
         int record = 0;
         int[] qf = d(i);
@@ -401,7 +426,7 @@ public class DexKit {
             record |= 1 << dexi;
             try {
                 for (byte[] k : keys) {
-                    ArrayList<String> ret = a(k, dexi, loader);
+                    HashSet<String> ret = a(k, dexi, loader);
                     if (ret != null && ret.size() > 0) return ret;
                 }
             } catch (FileNotFoundException ignored) {
@@ -415,7 +440,7 @@ public class DexKit {
             }
             try {
                 for (byte[] k : keys) {
-                    ArrayList<String> ret = a(k, dexi, loader);
+                    HashSet<String> ret = a(k, dexi, loader);
                     if (ret != null && ret.size() > 0) return ret;
                 }
             } catch (FileNotFoundException ignored) {
@@ -434,7 +459,7 @@ public class DexKit {
      * @return ["abc","ab"]
      * @throws FileNotFoundException apk has no classesN.dex
      */
-    public static ArrayList<String> a(byte[] key, int i, ClassLoader loader) throws FileNotFoundException {
+    public static HashSet<String> a(byte[] key, int i, ClassLoader loader) throws FileNotFoundException {
         String name;
         byte[] buf = new byte[4096];
         byte[] content;
@@ -450,7 +475,7 @@ public class DexKit {
         if (urls == null || !urls.hasMoreElements()) throw new FileNotFoundException(name);
         InputStream in;
         try {
-            ArrayList<String> rets = new ArrayList<String>();
+            HashSet<String> rets = new HashSet<>();
             while (urls.hasMoreElements()) {
                 in = urls.nextElement().openStream();
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();

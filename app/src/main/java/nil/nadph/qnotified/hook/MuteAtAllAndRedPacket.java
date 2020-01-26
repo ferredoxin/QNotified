@@ -6,8 +6,7 @@ import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.util.Utils;
 
-import static nil.nadph.qnotified.util.Initiator._MessageRecord;
-import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class MuteAtAllAndRedPacket extends BaseDelayableHook {
@@ -32,7 +31,7 @@ public class MuteAtAllAndRedPacket extends BaseDelayableHook {
             }
             /* @author qiwu */
             final int at_all_type = (Utils.getHostInfo(getApplication()).versionName.compareTo("7.8.0") >= 0) ? 13 : 12;
-            XposedHelpers.findAndHookMethod(cl_MessageInfo, "a", load("com/tencent/mobileqq/app/QQAppInterface"), boolean.class, String.class, new XC_MethodHook(60) {
+            XposedHelpers.findAndHookMethod(cl_MessageInfo, "a", _QQAppInterface(), boolean.class, String.class, new XC_MethodHook(60) {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     int ret = (int) param.getResult();

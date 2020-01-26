@@ -59,7 +59,7 @@ public class RepeaterHook extends BaseDelayableHook {
                 public void afterHookedMethod(final MethodHookParam param) throws Throwable {
                     if (!isEnabled()) return;
                     ViewGroup relativeLayout = (ViewGroup) param.getResult();
-                    final Object app = iget_object_or_null(param.thisObject, "a", load("com.tencent.mobileqq.app.QQAppInterface"));
+                    final Object app = iget_object_or_null(param.thisObject, "a", _QQAppInterface());
                     final Object session = iget_object_or_null(param.thisObject, "a", _SessionInfo());
                     String uin = "" + Utils.getLongAccountUin();
                     Context ctx = relativeLayout.getContext();

@@ -21,8 +21,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static nil.nadph.qnotified.util.Initiator._SessionInfo;
-import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 
@@ -69,7 +68,7 @@ public class CardMsgHook extends BaseDelayableHook {
                                 Context ctx = viewGroup.getContext();
                                 int fun_btn = ctx.getResources().getIdentifier("fun_btn", "id", ctx.getPackageName());
                                 View sendBtn = viewGroup.findViewById(fun_btn);
-                                final Object qqApp = iget_object_or_null(param.thisObject, "a", load("com.tencent.mobileqq.app.QQAppInterface"));
+                                final Object qqApp = iget_object_or_null(param.thisObject, "a", _QQAppInterface());
                                 final Object session = iget_object_or_null(param.thisObject, "a", _SessionInfo());
                                 sendBtn.setOnLongClickListener(new View.OnLongClickListener() {
                                     @Override
