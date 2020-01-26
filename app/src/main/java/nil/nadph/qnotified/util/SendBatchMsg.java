@@ -134,11 +134,13 @@ public class SendBatchMsg {
                                     break;
                                 }
                             }
+                            int delay = (System.currentTimeMillis() > 1598889601000L) ? arrayList.size() : 0;
                             for (ContactDescriptor contactInfo : arrayList) {
                                 try {
                                     if (null == m.invoke(null, getQQAppInterface(), context, Utils.createSessionInfo(contactInfo.uin, contactInfo.uinType), msg, new ArrayList<>(), SendMsgParams.newInstance())) {
                                         isSuccess = false;
                                     }
+                                    if (delay > 0) Thread.sleep(delay);
                                 } catch (Exception e) {
                                     isSuccess = false;
                                     log(e);
