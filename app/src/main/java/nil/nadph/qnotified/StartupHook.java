@@ -13,6 +13,7 @@ import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.adapter.ActProxyMgr;
 import nil.nadph.qnotified.record.ConfigManager;
+import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.ClazzExplorer;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Initiator;
@@ -223,7 +224,7 @@ public class StartupHook {
                         Utils.checkLogFlag();
                         Context ctx = null;
                         Class clz = param.thisObject.getClass().getClassLoader().loadClass("com.tencent.common.app.BaseApplicationImpl");
-                        Field f = hasField(clz, "sApplication");
+                        final Field f = hasField(clz, "sApplication");
                         if (f == null) ctx = (Context) sget_object(clz, "a", clz);
                         else ctx = (Context) f.get(null);
                         ClassLoader classLoader = ctx.getClassLoader();
@@ -259,6 +260,7 @@ public class StartupHook {
                                 if (third_stage_inited) return;
                                 Object dir = iget_object_or_null(param.thisObject, "mDirector", __director);
                                 if (dir == null) dir = iget_object_or_null(param.thisObject, "a", __director);
+                                ResUtils.loadThemeByArsc(getApplication(), false);
                                 InjectDelayableHooks.step(dir);
                                 third_stage_inited = true;
                             }
