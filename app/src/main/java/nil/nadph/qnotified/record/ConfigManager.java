@@ -107,6 +107,10 @@ public class ConfigManager {
         config.put(key, val);
     }
 
+    public void putInt(String key, int val) {
+        config.put(key, val);
+    }
+
     public HashMap<String, Object> getAllConfig() {
         try {
             if (dirty) reload();

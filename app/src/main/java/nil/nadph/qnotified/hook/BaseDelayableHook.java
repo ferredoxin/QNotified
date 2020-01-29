@@ -35,7 +35,8 @@ public abstract class BaseDelayableHook {
                 $endGiftHook.get(),
                 MultiForwardAvatarHook.get(),
                 ReplyNoAtHook.get(),
-                MuteQZoneThumbsUp.get()
+                MuteQZoneThumbsUp.get(),
+                FakeBatteryHook.get()
         };
         return sAllHooks;
     }

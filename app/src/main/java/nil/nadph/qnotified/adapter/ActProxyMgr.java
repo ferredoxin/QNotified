@@ -34,6 +34,7 @@ public class ActProxyMgr extends XC_MethodHook {
     public static final int ACTION_DONATE_ACTIVITY = 7;
     public static final int ACTION_TROUBLESHOOT_ACTIVITY = 8;
     public static final int ACTION_FRIENDLIST_EXPORT_ACTIVITY = 9;
+    public static final int ACTION_FAKE_BAT_CONFIG_ACTIVITY = 10;
     private static final ActProxyMgr instance = new ActProxyMgr();
     /**
      * HashSet mThreads<Long threadId> :Ids of threads which is calling invokeSuper
@@ -221,6 +222,8 @@ public class ActProxyMgr extends XC_MethodHook {
                 return new TroubleshootActivity(activity);
             case ACTION_FRIENDLIST_EXPORT_ACTIVITY:
                 return new FriendlistExportActivity(activity);
+            case ACTION_FAKE_BAT_CONFIG_ACTIVITY:
+                return new FakeBatCfgActivity(activity);
             default:
                 throw new UnsupportedOperationException("Unknown action " + action);
         }

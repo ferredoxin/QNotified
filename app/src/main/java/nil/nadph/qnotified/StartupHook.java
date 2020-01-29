@@ -132,6 +132,8 @@ public class StartupHook {
     }
 
     public static void deepDarkTheme() {
+        if (!SyncUtils.isMainProcess()) return;
+        if (getLongAccountUin() != 1041703712) return;
         try {
             Class clz = load("com/tencent/mobileqq/activity/FriendProfileCardActivity");
             findAndHookMethod(clz, "doOnCreate", Bundle.class, new XC_MethodHook() {

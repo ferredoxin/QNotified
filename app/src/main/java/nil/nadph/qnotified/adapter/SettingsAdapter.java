@@ -1,5 +1,6 @@
 package nil.nadph.qnotified.adapter;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -34,7 +35,7 @@ import static nil.nadph.qnotified.util.Utils.*;
 public class SettingsAdapter implements ActivityAdapter {
 
     private Activity self;
-    private TextView __tv_muted_atall, __tv_muted_redpacket;
+    private TextView __tv_muted_atall, __tv_muted_redpacket, __tv_fake_bat_status;
 
     public SettingsAdapter(Activity activity) {
         self = activity;
@@ -77,6 +78,8 @@ public class SettingsAdapter implements ActivityAdapter {
         ll.addView(subtitle(self, "遗留功能 - 群发已不再维护"));
         ll.addView(newListItemButton(self, "群发文本消息", "适度使用以免永冻", null, clickToBatchMsg()));
         ll.addView(subtitle(self, "基本功能"));
+        ll.addView(_t = newListItemButton(self, "自定义电量", "[>=8.2.6]在线模式为我的电量时生效", "N/A", clickToProxyActAction(ACTION_FAKE_BAT_CONFIG_ACTIVITY)));
+        __tv_fake_bat_status = (TextView) _t.findViewById(R_ID_VALUE);
         ll.addView(newListItemSwitchConfigInit(self, "语音转发", "长按语音消息", qn_enable_ptt_forward, false, PttForwardHook.get()));
         ll.addView(newListItemSwitchConfigInit(self, "发送卡片消息", "长按发送ArkAppMsg(json)+StructMsg(xml)", qn_send_card_msg, false, CardMsgHook.get()));
         ll.addView(newListItemSwitchConfigInit(self, "复读机", "+1", bug_repeater, false, RepeaterHook.get()));
@@ -120,7 +123,6 @@ public class SettingsAdapter implements ActivityAdapter {
         ll.addView(newListItemSwitchConfigStub(self, "禁用QQ热补丁", "一般无需开启", qn_disable_qq_hot_patch, false));
         ll.addView(newListItemButton(self, "重定向文件下载目录", new File(Environment.getExternalStorageDirectory(), "Tencent/QQfile_recv").getAbsolutePath(), "禁用", clickTheComing()));
         ll.addView(subtitle(self, "参数设定"));
-        ll.addView(newListItemButton(self, "自定义电量", "[>=8.2.6]在线模式为我的电量时生效", "[系统电量]", clickTheComing()));
         ll.addView(newListItemButton(self, "DelFriendReq.delType", "只能为1或2", "[不改动]", clickTheComing()));
         ll.addView(newListItemButton(self, "AddFriendReq.sourceID", "改错可能导致无法添加好友", "[不改动]", clickTheComing()));
         ll.addView(subtitle(self, "关于"));
@@ -158,6 +160,7 @@ public class SettingsAdapter implements ActivityAdapter {
     }
 
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void doOnPostResume() throws Throwable {
         ConfigManager cfg = ConfigManager.getDefault();
@@ -169,6 +172,16 @@ public class SettingsAdapter implements ActivityAdapter {
         n = 0;
         if (str != null && str.length() > 4) n = str.split(",").length;
         __tv_muted_redpacket.setText(n + "个群");
+        if (__tv_fake_bat_status != null) {
+            FakeBatteryHook bat = FakeBatteryHook.get();
+            if (bat.isEnabled()) {
+                int cap = bat.getFakeBatteryCapacity();
+                boolean c = bat.isFakeBatteryCharging();
+                __tv_fake_bat_status.setText(cap + (c ? "+" : ""));
+            } else {
+                __tv_fake_bat_status.setText("[系统电量]");
+            }
+        }
     }
 
     @Override

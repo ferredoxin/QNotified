@@ -56,7 +56,11 @@ public class Utils {
             qh_pre_upgrade = "qh_pre_upgrade",
             qh_random_cheat = "qh_random_cheat",
             qn_disable_qq_hot_patch = "qn_disable_qq_hot_patch",
+            qn_fake_bat_enable = "qn_fake_bat_enable",
+            qn_fake_bat_expr = "qn_fake_bat_expr",
             qn_donated_choice = "qn_donated_choice";
+
+
     public static final String QN_VERSION_NAME = "0.6.0-rc1";
     public static final int QN_VERSION_CODE = 21;
     public static final String PACKAGE_NAME_QQ = "com.tencent.mobileqq";
