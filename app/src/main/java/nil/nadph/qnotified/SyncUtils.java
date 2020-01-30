@@ -39,9 +39,9 @@ public class SyncUtils {
     public static boolean inited = false;
     private static int mProcType = 0;
 
-    public static int FILE_DEFAULT_CONFIG = 1;
-    public static int FILE_CACHE = 2;
-    public static int FILE_PROFILE_UIN = 3;
+    public static final int FILE_DEFAULT_CONFIG = 1;
+    public static final int FILE_CACHE = 2;
+    public static final int FILE_PROFILE_UIN = 3;
 
     public static void initBroadcast(Context ctx) {
         if (inited) return;
@@ -54,9 +54,9 @@ public class SyncUtils {
                     case SYNC_FILE_CHANGED:
                         int id = intent.getIntExtra("id", -1);
                         int file = intent.getIntExtra("file", -1);
-                        if (id != -1 && id != myId && file == FILE_DEFAULT_CONFIG) {
+                        if (id != -1 && id != myId) {
                             //log("Rx: FILE_DEFAULT_CONFIG changed, setDirtyFlag");
-                            ConfigManager.getDefaultConfig().setDirtyFlag();
+                            ConfigManager.onRecvFileChanged(file);
                         }
                         break;
                     case HOOK_DO_INIT:

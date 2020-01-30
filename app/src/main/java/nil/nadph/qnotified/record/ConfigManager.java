@@ -14,7 +14,8 @@ import java.util.Map;
 import static nil.nadph.qnotified.record.Table.*;
 
 public class ConfigManager {
-    private static ConfigManager SELF;
+    private static ConfigManager sDefConfig;
+    private static ConfigManager sCache;
     private File file;
     private HashMap<String, Object> config;
     private boolean dirty;
@@ -28,9 +29,9 @@ public class ConfigManager {
 
     public static ConfigManager getDefaultConfig() {
         try {
-            if (SELF == null)
-                SELF = new ConfigManager(new File(Utils.getApplication().getFilesDir().getAbsolutePath() + "/qnotified_config.dat"), SyncUtils.FILE_DEFAULT_CONFIG);
-            return SELF;
+            if (sDefConfig == null)
+                sDefConfig = new ConfigManager(new File(Utils.getApplication().getFilesDir().getAbsolutePath() + "/qnotified_config.dat"), SyncUtils.FILE_DEFAULT_CONFIG);
+            return sDefConfig;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -38,16 +39,12 @@ public class ConfigManager {
 
     public static ConfigManager getCache() {
         try {
-            if (SELF == null)
-                SELF = new ConfigManager(new File(Utils.getApplication().getFilesDir().getAbsolutePath() + "/qnotified_cache.dat"), SyncUtils.FILE_CACHE);
-            return SELF;
+            if (sCache == null)
+                sCache = new ConfigManager(new File(Utils.getApplication().getFilesDir().getAbsolutePath() + "/qnotified_cache.dat"), SyncUtils.FILE_CACHE);
+            return sCache;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void setDirtyFlag() {
-        dirty = true;
     }
 
     public void reinit() throws IOException {
@@ -244,6 +241,17 @@ public class ConfigManager {
             out.close();
             fout.close();
             SyncUtils.onFileChanged(mFileTypeId);
+        }
+    }
+
+    public static void onRecvFileChanged(int type) {
+        switch (type) {
+            case SyncUtils.FILE_DEFAULT_CONFIG:
+                if (sDefConfig != null) sDefConfig.dirty = true;
+                break;
+            case SyncUtils.FILE_CACHE:
+                if (sCache != null) sCache.dirty = true;
+                break;
         }
     }
 
