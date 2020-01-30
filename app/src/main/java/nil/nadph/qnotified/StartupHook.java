@@ -260,7 +260,9 @@ public class StartupHook {
                                 if (third_stage_inited) return;
                                 Object dir = iget_object_or_null(param.thisObject, "mDirector", __director);
                                 if (dir == null) dir = iget_object_or_null(param.thisObject, "a", __director);
-                                ResUtils.loadThemeByArsc(getApplication(), false);
+                                if (SyncUtils.isMainProcess()) {
+                                    ResUtils.loadThemeByArsc(getApplication(), false);
+                                }
                                 InjectDelayableHooks.step(dir);
                                 third_stage_inited = true;
                             }
