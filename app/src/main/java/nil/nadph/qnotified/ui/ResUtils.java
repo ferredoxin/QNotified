@@ -8,8 +8,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
-import android.util.DisplayMetrics;
-import android.view.WindowManager;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.util.ArscKit;
 import nil.nadph.qnotified.util.Nullable;
@@ -28,22 +26,19 @@ public class ResUtils {
     static public ColorStateList skin_black;
     static public ColorStateList skin_red;
     static public ColorStateList skin_blue;
-    static public Drawable qq_setting_item_bg_nor;
-    static public Drawable qq_setting_item_bg_pre;
     static public Drawable bg_texture;
     static public Drawable skin_list_item_normal = null, skin_list_item_unread = null, skin_list_item_pressed = null;
     static public Drawable list_checkbox_selected_nopress, list_checkbox_selected, list_checkbox_multi, list_checkbox;
     static public Drawable skin_icon_arrow_right_normal = null, skin_background = null;
-    static private String cachedThemeId;
 
-    /*skin_group_list_item_pressed_theme_version2*/
-    //static public Drawable skin_tips_newmessage;
+    static private String cachedThemeId;
     static private Map<String, Drawable> cachedDrawable = new HashMap<>();
 
     public static void initTheme(Context ctx) throws Throwable {
         try {
             String themeId = (String) invoke_static(load("com/tencent/mobileqq/theme/ThemeUtil"), "getUserCurrentThemeId", null, load("mqq/app/AppRuntime"));
             if (themeId.equals(cachedThemeId)) return;
+            cachedThemeId = themeId;
         } catch (Exception e) {
             log(e);
         }
@@ -51,17 +46,14 @@ public class ResUtils {
                 = skin_black
                 = skin_red
                 = skin_blue = null;
-        qq_setting_item_bg_nor
-                = qq_setting_item_bg_pre = null;
         skin_list_item_normal = skin_list_item_unread = skin_list_item_pressed
-                = skin_background = null;//=skin_tips_newmessage=null;
+                = skin_background = null;
         list_checkbox_selected_nopress = list_checkbox_selected = list_checkbox_multi = list_checkbox = null;
         loadThemeByArsc(ctx, true);
         initByFallback(ctx);
     }
 
     private static void initByFallback(Context ctx) {
-        //if(skin_tips_newmessage==null)skin_tips_newmessage= loadDrawableFromAsset("skin_tips_newmessage.9.png");
         if (skin_list_item_normal == null)
             skin_list_item_normal = loadDrawableFromAsset("skin_list_item_normal.9.png", ctx);
         if (skin_list_item_pressed == null)
@@ -78,10 +70,6 @@ public class ResUtils {
         if (skin_red == null) skin_red = ColorStateList.valueOf(Color.argb(255, 255, 70, 41));
         if (skin_gray3 == null) skin_gray3 = ColorStateList.valueOf(Color.argb(255, 128, 128, 128));
         if (skin_blue == null) skin_blue = ColorStateList.valueOf(Color.argb(255, 0, 182, 249));
-        if (qq_setting_item_bg_nor == null)
-            qq_setting_item_bg_nor = new ColorDrawable(Color.argb(255, 249, 249, 251));
-        if (qq_setting_item_bg_pre == null)//
-            qq_setting_item_bg_pre = new ColorDrawable(Color.argb(255, 192, 192, 192));
         if (skin_background == null) skin_background = new ColorDrawable(Color.argb(255, 240, 240, 240));
     }
 
@@ -117,7 +105,7 @@ public class ResUtils {
             name = f.getName();
             if (!f.getName().contains("_")) continue;
             success = false;
-            Class clz = f.getType();
+            Class<?> clz = f.getType();
             int id;
             if (clz.equals(Drawable.class)) {
                 id = ArscKit.getIdentifier(ctx, "drawable", name, true);
@@ -159,7 +147,7 @@ public class ResUtils {
     public static StateListDrawable getListItemBackground() {
         StateListDrawable sd = new StateListDrawable();
         sd.addState(new int[]{android.R.attr.state_pressed}, skin_list_item_pressed);
-        //sd.addState(new int[]{android.R.attr.state_focused},skin_list_pressed);  
+        //sd.addState(new int[]{android.R.attr.state_focused}, skin_list_item_unread);
         sd.addState(new int[]{android.R.attr.state_selected}, skin_list_item_pressed);
         sd.addState(new int[]{}, skin_list_item_normal);
         return sd;
@@ -178,38 +166,6 @@ public class ResUtils {
         return ResUtils.class.getClassLoader().getResourceAsStream("assets/" + name);
     }
 
-    public static String findDrawableResource(String dir, String name, Context mContext) {
-        DisplayMetrics metric = new DisplayMetrics();
-        ((WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metric);
-        int width = metric.widthPixels; // 屏幕宽度（像素）
-        int height = metric.heightPixels; // 屏幕高度（像素）
-        float density = metric.density; // 屏幕密度（0.75 / 1.0 / 1.5）
-        int densityDpi = metric.densityDpi; // 屏幕密度DPI（120 / 160 / 240）
-        String dpistr = "nodpi";//wtf
-        if (densityDpi < 140) dpistr = "ldpi";//120
-        else if (densityDpi < 200) dpistr = "mdpi";//160
-        else if (densityDpi < 260) dpistr = "hdpi";//240
-        else if (densityDpi < 300) dpistr = "xhdpi";//320
-        else dpistr = "xxhdpi";//480
-        String path = dir + "/drawable-" + dpistr + "/" + name;
-        if (new File(path).exists()) return path;
-        path = dir + "/drawable/" + name;
-        if (new File(path).exists()) return path;
-        path = dir + "/drawable-xhdpi/" + name;
-        if (new File(path).exists()) return path;
-        path = dir + "/drawable-xxhdpi/" + name;
-        if (new File(path).exists()) return path;
-        path = dir + "/drawable-hdpi/" + name;
-        if (new File(path).exists()) return path;
-        path = dir + "/drawable-mdpi/" + name;
-        if (new File(path).exists()) return path;
-        path = dir + "/drawable-ldpi/" + name;
-        if (new File(path).exists()) return path;
-        path = dir + "/drawable-nodpi/" + name;
-        if (new File(path).exists()) return path;
-        return null;
-    }
-
     public static Drawable loadDrawableFromAsset(String name, Context mContext) {
         if (mContext != null)
             return loadDrawableFromAsset(name, mContext.getResources(), mContext);
@@ -220,18 +176,6 @@ public class ResUtils {
         Drawable ret;
         try {
             Bitmap bitmap = BitmapFactory.decodeStream(in);
-			/*
-			 // 取得想要缩放的matrix参数
-			 Matrix matrix = new Matrix();
-			 matrix.postScale(1.32f, 1.32f);
-			 // 得到新的图片
-			 Bitmap bitmap = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix,
-			 true);
-			 *
-			 log("den="+res.getDisplayMetrics().density);
-			 log("sden="+res.getDisplayMetrics().scaledDensity);
-			 log("denDpi="+res.getDisplayMetrics().densityDpi);
-			 //log("den="+res.getDisplayMetrics());*/
             bitmap.setDensity(320);// qq has xhdpi
             //log(name+"BiHeight:"+bitmap.getHeight());
             byte[] chunk = bitmap.getNinePatchChunk();
@@ -276,7 +220,7 @@ public class ResUtils {
             ret = loadDrawableFromStream(fin, path, res);
             cachedDrawable.put(path, ret);
             return ret;
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException ignored) {
         }
         return null;
     }

@@ -69,7 +69,6 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
         //invoke_virtual(rl,"setInterceptScrollLRFlag",true,boolean.class);
         //invoke_virtual(rl,"setInterceptTouchFlag",true,boolean.class);
         //iput_object(rl,"
-        rl.setBackgroundDrawable(ResUtils.qq_setting_item_bg_nor);
         mwllp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         mwllp.addRule(RelativeLayout.CENTER_VERTICAL);
 
