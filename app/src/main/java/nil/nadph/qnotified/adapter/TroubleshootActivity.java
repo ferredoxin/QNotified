@@ -172,7 +172,7 @@ public class TroubleshootActivity implements ActivityAdapter {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         try {
-                            ConfigManager cfg = ConfigManager.getDefault();
+                            ConfigManager cfg = ConfigManager.getDefaultConfig();
                             cfg.getAllConfig().clear();
                             cfg.getFile().delete();
                             System.exit(0);

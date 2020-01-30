@@ -30,9 +30,9 @@ public class EmoPicHook extends BaseDelayableHook {
     public boolean init() {
         if (inited) return true;
         try {
-            final ConfigManager cfg = ConfigManager.getDefault();
+            final ConfigManager cfg = ConfigManager.getDefaultConfig();
             boolean canInit = checkPreconditions();
-            if (!canInit && ConfigManager.getDefault().getBooleanOrFalse(qn_sticker_as_pic)) {
+            if (!canInit && ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_sticker_as_pic)) {
                 if (Looper.myLooper() != null) {
                     showToast(getApplication(), TOAST_TYPE_ERROR, "QNotified:表情转图片功能初始化错误", Toast.LENGTH_LONG);
                 }
@@ -84,7 +84,7 @@ public class EmoPicHook extends BaseDelayableHook {
         try {
             Application app = getApplication();
             if (app != null && isTim(app)) return false;
-            return ConfigManager.getDefault().getBooleanOrFalse(qn_sticker_as_pic);
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_sticker_as_pic);
         } catch (Exception e) {
             log(e);
             return false;

@@ -42,7 +42,7 @@ public class ArscKit {
         int ret = ctx.getResources().getIdentifier(name, type, pkg);
         if (ret != 0) return ret;
         //ResId is obfuscated, try to get it from cache.
-        ConfigManager cfg = ConfigManager.getDefault();
+        ConfigManager cfg = ConfigManager.getDefaultConfig();
         ret = cfg.getIntOrDefault(CACHED_RES_ID_NAME_PREFIX + type + "/" + name, 0);
         int oldcode = cfg.getIntOrDefault(CACHED_RES_ID_CODE_PREFIX + type + "/" + name, -1);
         int currcode = Utils.getHostVersionCode();

@@ -334,7 +334,7 @@ public class RepeaterHook extends BaseDelayableHook {
     @Override
     public boolean isEnabled() {
         try {
-            return ConfigManager.getDefault().getBooleanOrFalse(bug_repeater);
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(bug_repeater);
         } catch (Exception e) {
             log(e);
             return false;

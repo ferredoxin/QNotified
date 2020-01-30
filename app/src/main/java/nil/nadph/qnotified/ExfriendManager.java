@@ -197,7 +197,7 @@ public class ExfriendManager {
             try {
                 if (fileData == null) {
                     File f = new File(Utils.getApplication().getFilesDir().getAbsolutePath() + "/qnotified_" + mUin + ".dat");
-                    fileData = new ConfigManager(f);
+                    fileData = new ConfigManager(f, SyncUtils.FILE_PROFILE_UIN);
                 }
                 updateFriendTableVersion();
                 initEventsTable();

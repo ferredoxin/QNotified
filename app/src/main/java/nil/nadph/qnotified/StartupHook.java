@@ -452,7 +452,7 @@ public class StartupHook {
         } catch (Exception ignored) {
         }
         try {
-            ConfigManager cfg = ConfigManager.getDefault();
+            ConfigManager cfg = ConfigManager.getDefaultConfig();
             if (cfg.getBooleanOrFalse(qn_hide_msg_list_miniapp)) {
                 int lastVersion = cfg.getIntOrDefault("qn_hide_msg_list_miniapp_version_code", 0);
                 if (getHostInfo(getApplication()).versionCode == lastVersion) {
@@ -545,7 +545,7 @@ public class StartupHook {
                             }
                             if (methodName == null)
                                 throw new NullPointerException("Failed to get Conversation.?() to hide MiniApp!");
-                            ConfigManager cfg = ConfigManager.getDefault();
+                            ConfigManager cfg = ConfigManager.getDefaultConfig();
                             cfg.putString("qn_hide_msg_list_miniapp_method_name", methodName);
                             cfg.getAllConfig().put("qn_hide_msg_list_miniapp_version_code", getHostInfo(getApplication()).versionCode);
                             cfg.save();

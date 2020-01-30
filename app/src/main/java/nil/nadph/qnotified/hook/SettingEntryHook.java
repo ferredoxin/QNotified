@@ -67,7 +67,7 @@ public class SettingEntryHook extends BaseDelayableHook {
                         int account_switch = list.getContext().getResources().getIdentifier("account_switch", "id", list.getContext().getPackageName());
                         try {
                             if (account_switch > 0) {
-                                View accountItem = (View) list.findViewById(account_switch).getParent();
+                                View accountItem = (View) ((View) list.findViewById(account_switch)).getParent();
                                 for (int i = 0; i < list.getChildCount(); i++) {
                                     if (list.getChildAt(i) == accountItem) {
                                         index = i + 1;

@@ -37,7 +37,7 @@ public class MuteAtAllAndRedPacket extends BaseDelayableHook {
                     int ret = (int) param.getResult();
                     String troopuin = (String) param.args[2];
                     if (ret != at_all_type) return;
-                    String muted = "," + ConfigManager.getDefault().getString(qn_muted_at_all) + ",";
+                    String muted = "," + ConfigManager.getDefaultConfig().getString(qn_muted_at_all) + ",";
                     if (muted.contains("," + troopuin + ",")) {
                         param.setResult(0);
                     }
@@ -54,7 +54,7 @@ public class MuteAtAllAndRedPacket extends BaseDelayableHook {
                     int istroop = (Integer) iget_object_or_null(param.thisObject, "istroop");
                     if (istroop != 1) return;
                     String troopuin = (String) iget_object_or_null(param.thisObject, "frienduin");
-                    String muted = "," + ConfigManager.getDefault().getString(qn_muted_red_packet) + ",";
+                    String muted = "," + ConfigManager.getDefaultConfig().getString(qn_muted_red_packet) + ",";
                     if (muted.contains("," + troopuin + ",")) mute = true;
                     if (mute) XposedHelpers.setObjectField(param.thisObject, "isread", true);
                 }

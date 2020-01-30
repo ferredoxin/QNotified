@@ -76,7 +76,7 @@ public class PreUpgradeHook extends BaseDelayableHook {
     @Override
     public boolean isEnabled() {
         try {
-            return ConfigManager.getDefault().getBooleanOrFalse(qh_pre_upgrade);
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qh_pre_upgrade);
         } catch (Exception e) {
             log(e);
             return false;

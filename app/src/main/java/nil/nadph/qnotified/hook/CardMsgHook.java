@@ -154,7 +154,7 @@ public class CardMsgHook extends BaseDelayableHook {
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                             try {
-                                ConfigManager cfg = ConfigManager.getDefault();
+                                ConfigManager cfg = ConfigManager.getDefaultConfig();
                                 if (!cfg.getBooleanOrFalse(qn_send_card_msg)) return;
                             } catch (Exception ignored) {
                             }
@@ -207,7 +207,7 @@ public class CardMsgHook extends BaseDelayableHook {
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                             try {
-                                ConfigManager cfg = ConfigManager.getDefault();
+                                ConfigManager cfg = ConfigManager.getDefaultConfig();
                                 if (!cfg.getBooleanOrFalse(qn_send_card_msg)) return;
                             } catch (Exception ignored) {
                             }
@@ -253,7 +253,7 @@ public class CardMsgHook extends BaseDelayableHook {
     @Override
     public boolean isEnabled() {
         try {
-            return ConfigManager.getDefault().getBooleanOrFalse(qn_send_card_msg);
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_send_card_msg);
         } catch (Exception e) {
             log(e);
             return false;

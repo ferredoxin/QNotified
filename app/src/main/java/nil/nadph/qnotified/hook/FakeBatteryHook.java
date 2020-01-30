@@ -29,6 +29,7 @@ public class FakeBatteryHook extends BaseDelayableHook {
             findAndHookMethod(clz, "getSendBatteryStatus", new XC_MethodHook(49) {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    //log("--->getSendBatteryStatus isEnabled=" + isEnabled() + ", getFakeBatteryStatus=" + getFakeBatteryStatus());
                     if (!isEnabled()) return;
                     param.setResult(getFakeBatteryStatus());
                 }
@@ -50,7 +51,7 @@ public class FakeBatteryHook extends BaseDelayableHook {
 
     public void setFakeBatteryStatus(int val) {
         try {
-            ConfigManager cfg = ConfigManager.getDefault();
+            ConfigManager cfg = ConfigManager.getDefaultConfig();
             cfg.putInt(qn_fake_bat_expr, val);
             cfg.save();
         } catch (IOException e) {
@@ -59,7 +60,7 @@ public class FakeBatteryHook extends BaseDelayableHook {
     }
 
     public int getFakeBatteryStatus() {
-        int val = ConfigManager.getDefault().getIntOrDefault(qn_fake_bat_expr, -1);
+        int val = ConfigManager.getDefaultConfig().getIntOrDefault(qn_fake_bat_expr, -1);
         if (val < 0) {
             log("getFakeBatteryStatus: qn_fake_bat_expr = " + val);
             return 0;//safe value
@@ -93,7 +94,7 @@ public class FakeBatteryHook extends BaseDelayableHook {
     @Override
     public boolean isEnabled() {
         try {
-            return ConfigManager.getDefault().getBooleanOrFalse(qn_fake_bat_enable);
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_fake_bat_enable);
         } catch (Exception e) {
             log(e);
             return false;

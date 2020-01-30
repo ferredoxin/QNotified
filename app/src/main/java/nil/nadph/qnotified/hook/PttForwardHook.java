@@ -238,7 +238,7 @@ public class PttForwardHook extends BaseDelayableHook {
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                             try {
-                                ConfigManager cfg = ConfigManager.getDefault();
+                                ConfigManager cfg = ConfigManager.getDefaultConfig();
                                 if (!cfg.getBooleanOrFalse(qn_enable_ptt_forward)) return;
                             } catch (Exception ignored) {
                             }
@@ -286,7 +286,7 @@ public class PttForwardHook extends BaseDelayableHook {
     @Override
     public boolean isEnabled() {
         try {
-            return ConfigManager.getDefault().getBooleanOrFalse(qn_enable_ptt_forward);
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_enable_ptt_forward);
         } catch (Exception e) {
             log(e);
             return false;

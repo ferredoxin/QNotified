@@ -39,6 +39,10 @@ public class SyncUtils {
     public static boolean inited = false;
     private static int mProcType = 0;
 
+    public static int FILE_DEFAULT_CONFIG = 1;
+    public static int FILE_CACHE = 2;
+    public static int FILE_PROFILE_UIN = 3;
+
     public static void initBroadcast(Context ctx) {
         if (inited) return;
         BroadcastReceiver recv = new BroadcastReceiver() {
@@ -50,8 +54,9 @@ public class SyncUtils {
                     case SYNC_FILE_CHANGED:
                         int id = intent.getIntExtra("id", -1);
                         int file = intent.getIntExtra("file", -1);
-                        if (id != -1 && id != myId && file == 1) {
-                            ConfigManager.getDefault().setDirtyFlag();
+                        if (id != -1 && id != myId && file == FILE_DEFAULT_CONFIG) {
+                            //log("Rx: FILE_DEFAULT_CONFIG changed, setDirtyFlag");
+                            ConfigManager.getDefaultConfig().setDirtyFlag();
                         }
                         break;
                     case HOOK_DO_INIT:
@@ -60,7 +65,7 @@ public class SyncUtils {
                         int hookId = intent.getIntExtra("hook", -1);
                         if (hookId != -1 && (myType & targetType) != 0) {
                             BaseDelayableHook hook = BaseDelayableHook.getHookByType(hookId);
-                            log("Remote: recv init " + hook);
+                            //log("Remote: recv init " + hook);
                             if (hook != null) hook.init();
                         }
                         break;
@@ -83,9 +88,10 @@ public class SyncUtils {
         changed.putExtra("id", myId);
         changed.putExtra("file", file);
         ctx.sendBroadcast(changed);
+        //log("Tx: file changed " + file);
     }
 
-    public static void requestInitHook(int process, int hookId) {
+    public static void requestInitHook(int hookId, int process) {
         Context ctx = getApplication();
         Intent changed = new Intent(HOOK_DO_INIT);
         changed.setPackage(ctx.getPackageName());

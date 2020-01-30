@@ -95,7 +95,7 @@ public class FavMoreEmo extends BaseDelayableHook {
     @Override
     public boolean isEnabled() {
         try {
-            return ConfigManager.getDefault().getBooleanOrFalse(qqhelper_fav_more_emo);
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qqhelper_fav_more_emo);
         } catch (Exception e) {
             log(e);
             return false;

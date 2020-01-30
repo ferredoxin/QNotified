@@ -45,7 +45,7 @@ public class DelDetectorHook extends BaseDelayableHook {
             try {
                 boolean hide = false;
                 try {
-                    hide = ConfigManager.getDefault().getBooleanOrFalse("qn_hide_ex_entry_group");
+                    hide = ConfigManager.getDefaultConfig().getBooleanOrFalse("qn_hide_ex_entry_group");
                 } catch (Throwable e) {
                     log(e);
                 }

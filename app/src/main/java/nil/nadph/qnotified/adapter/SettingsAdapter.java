@@ -153,8 +153,8 @@ public class SettingsAdapter implements ActivityAdapter {
         //__ll.addView(bounceScrollView,_lp_fat);
         ActProxyMgr.setContentBackgroundDrawable(self, ResUtils.skin_background);
         invoke_virtual(self, "setTitle", "高级", CharSequence.class);
-        invoke_virtual(self, "setImmersiveStatus");
         invoke_virtual(self, "enableLeftBtn", true, boolean.class);
+        invoke_virtual(self, "setImmersiveStatus");
         //TextView rightBtn=(TextView)invoke_virtual(self,"getRightTextView");
         //log("Title:"+invoke_virtual(self,"getTextTitle"));
     }
@@ -163,7 +163,7 @@ public class SettingsAdapter implements ActivityAdapter {
     @SuppressLint("SetTextI18n")
     @Override
     public void doOnPostResume() throws Throwable {
-        ConfigManager cfg = ConfigManager.getDefault();
+        ConfigManager cfg = ConfigManager.getDefaultConfig();
         String str = cfg.getString(qn_muted_at_all);
         int n = 0;
         if (str != null && str.length() > 4) n = str.split(",").length;
@@ -177,7 +177,7 @@ public class SettingsAdapter implements ActivityAdapter {
             if (bat.isEnabled()) {
                 int cap = bat.getFakeBatteryCapacity();
                 boolean c = bat.isFakeBatteryCharging();
-                __tv_fake_bat_status.setText(cap + (c ? "+" : ""));
+                __tv_fake_bat_status.setText(cap + (c ? "%+ " : "% "));
             } else {
                 __tv_fake_bat_status.setText("[系统电量]");
             }

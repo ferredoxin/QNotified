@@ -89,7 +89,7 @@ public class MuteQZoneThumbsUp extends BaseDelayableHook {
     @Override
     public boolean isEnabled() {
         try {
-            return ConfigManager.getDefault().getBooleanOrFalse(qn_mute_thumb_up);
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_mute_thumb_up);
         } catch (Exception e) {
             log(e);
             return false;

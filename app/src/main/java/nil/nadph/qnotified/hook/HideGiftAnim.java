@@ -30,7 +30,7 @@ public class HideGiftAnim extends BaseDelayableHook {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     try {
-                        ConfigManager cfg = ConfigManager.getDefault();
+                        ConfigManager cfg = ConfigManager.getDefaultConfig();
                         if (!cfg.getBooleanOrFalse(qn_hide_gift_animation)) return;
                     } catch (Exception ignored) {
                     }
@@ -63,7 +63,7 @@ public class HideGiftAnim extends BaseDelayableHook {
     @Override
     public boolean isEnabled() {
         try {
-            return ConfigManager.getDefault().getBooleanOrFalse(qn_hide_gift_animation);
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_hide_gift_animation);
         } catch (Exception e) {
             log(e);
             return false;

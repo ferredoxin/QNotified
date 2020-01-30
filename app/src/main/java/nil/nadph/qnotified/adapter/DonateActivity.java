@@ -65,7 +65,7 @@ public class DonateActivity implements ActivityAdapter {
             public void onCheckedChanged(final CompoundButton buttonView, boolean isChecked) {
                 if (isRecursion()) return;
                 if (isChecked) {
-                    if (!ConfigManager.getDefault().getBooleanOrFalse(qn_donated_choice)) {
+                    if (!ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_donated_choice)) {
                         try {
                             CustomDialog dialog = CustomDialog.create(self);
                             dialog.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
@@ -73,7 +73,7 @@ public class DonateActivity implements ActivityAdapter {
                                 public void onClick(DialogInterface dialog, int which) {
                                     if (isRecursion()) return;
                                     try {
-                                        ConfigManager cfg = ConfigManager.getDefault();
+                                        ConfigManager cfg = ConfigManager.getDefaultConfig();
                                         cfg.putBoolean(qn_donated_choice, true);
                                         cfg.save();
                                         buttonView.setChecked(true);
@@ -95,9 +95,9 @@ public class DonateActivity implements ActivityAdapter {
                             dialog.setMessage("Are you sure that you have donated?");
                             dialog.setTitle("THINK TWICE");
                             dialog.show();
-                            buttonView.setChecked(ConfigManager.getDefault().getBooleanOrFalse(qn_donated_choice));
+                            buttonView.setChecked(ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_donated_choice));
                         } catch (Exception e) {
-                            ConfigManager cfg = ConfigManager.getDefault();
+                            ConfigManager cfg = ConfigManager.getDefaultConfig();
                             cfg.putBoolean(qn_donated_choice, true);
                             try {
                                 cfg.save();
@@ -108,7 +108,7 @@ public class DonateActivity implements ActivityAdapter {
                         }
                     }
                 } else {
-                    ConfigManager cfg = ConfigManager.getDefault();
+                    ConfigManager cfg = ConfigManager.getDefaultConfig();
                     if (cfg.getBooleanOrFalse(qn_donated_choice)) {
                         try {
                             showToast(self, TOAST_TYPE_ERROR, "YOU CANNOT UNDO THAT!", Toast.LENGTH_LONG);

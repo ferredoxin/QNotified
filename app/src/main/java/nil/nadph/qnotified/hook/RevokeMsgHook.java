@@ -227,7 +227,7 @@ public class RevokeMsgHook extends BaseDelayableHook {
     @Override
     public boolean isEnabled() {
         try {
-            return ConfigManager.getDefault().getBooleanOrFalse(qn_anti_revoke_msg);
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_anti_revoke_msg);
         } catch (Exception e) {
             log(e);
             return false;

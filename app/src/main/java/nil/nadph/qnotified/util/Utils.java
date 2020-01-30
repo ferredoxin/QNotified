@@ -919,7 +919,7 @@ public class Utils {
             }
             return source;
         }
-        return source;
+        return null;
     }
 
     /**
@@ -935,7 +935,7 @@ public class Utils {
 
     public static boolean isNiceUser() {
         try {
-            ConfigManager cfg = ConfigManager.getDefault();
+            ConfigManager cfg = ConfigManager.getDefaultConfig();
             if (cfg.getBooleanOrDefault(cfg_nice_user, false)) {
                 return true;
             }

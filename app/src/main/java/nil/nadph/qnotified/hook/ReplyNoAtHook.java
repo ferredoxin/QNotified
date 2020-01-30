@@ -78,7 +78,7 @@ public class ReplyNoAtHook extends BaseDelayableHook {
         try {
             Application app = getApplication();
             if (app != null && isTim(app)) return false;
-            return ConfigManager.getDefault().getBooleanOrFalse(qn_disable_auto_at);
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_disable_auto_at);
         } catch (Exception e) {
             log(e);
             return false;

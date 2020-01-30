@@ -191,7 +191,7 @@ public class CheatHook extends BaseDelayableHook {
         try {
             Application app = getApplication();
             if (app != null && isTim(app)) return false;
-            return ConfigManager.getDefault().getBooleanOrFalse(qh_random_cheat);
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qh_random_cheat);
         } catch (Exception e) {
             log(e);
             return false;

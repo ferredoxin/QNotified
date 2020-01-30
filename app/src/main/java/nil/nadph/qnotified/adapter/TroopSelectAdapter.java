@@ -144,7 +144,7 @@ public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, 
                 ret = "";
             } else ret = sb.substring(1);
             try {
-                ConfigManager cfg = ConfigManager.getDefault();
+                ConfigManager cfg = ConfigManager.getDefaultConfig();
                 if (mActionInt == ACTION_MUTE_AT_ALL) {
                     cfg.putString(Utils.qn_muted_at_all, ret);
                     cfg.save();
@@ -316,9 +316,9 @@ public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, 
         muted = new HashSet<>();
         String list = null;
         if (mActionInt == ACTION_MUTE_AT_ALL)
-            list = ConfigManager.getDefault().getString(Utils.qn_muted_at_all);
+            list = ConfigManager.getDefaultConfig().getString(Utils.qn_muted_at_all);
         if (mActionInt == ACTION_MUTE_RED_PACKET)
-            list = ConfigManager.getDefault().getString(Utils.qn_muted_red_packet);
+            list = ConfigManager.getDefaultConfig().getString(Utils.qn_muted_red_packet);
         if (list != null) {
             for (String s : list.split(",")) {
                 if (s.length() > 4) {

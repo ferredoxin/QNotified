@@ -59,7 +59,7 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
             in.close();
             content = bais.toString("UTF-8");
             httpsConn.disconnect();
-            ConfigManager cfg = ConfigManager.getDefault();
+            ConfigManager cfg = ConfigManager.getDefaultConfig();
             cfg.putString(qn_update_info, content);
             cfg.getAllConfig().put(qn_update_time, System.currentTimeMillis() / 1000L);
             cfg.save();
@@ -80,7 +80,7 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
             in.close();
             content = bais.toString("UTF-8");
             httpsConn.disconnect();
-            ConfigManager cfg = ConfigManager.getDefault();
+            ConfigManager cfg = ConfigManager.getDefaultConfig();
             cfg.putString(qn_update_info, content);
             cfg.getAllConfig().put(qn_update_time, System.currentTimeMillis() / 1000L);
             cfg.save();
@@ -101,7 +101,7 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
 
     private String getCachedUpdateInfoOrNull() {
         try {
-            ConfigManager cfg = ConfigManager.getDefault();
+            ConfigManager cfg = ConfigManager.getDefaultConfig();
             String str = cfg.getString(qn_update_info);
             long time = cfg.getLongOrDefault(qn_update_time, 0);
             return str;

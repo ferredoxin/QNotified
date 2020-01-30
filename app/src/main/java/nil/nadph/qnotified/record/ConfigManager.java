@@ -1,6 +1,7 @@
 package nil.nadph.qnotified.record;
 
 import nil.nadph.qnotified.ExfriendManager;
+import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.util.Utils;
 
 import java.io.*;
@@ -17,16 +18,28 @@ public class ConfigManager {
     private File file;
     private HashMap<String, Object> config;
     private boolean dirty;
+    private int mFileTypeId;
 
-    public ConfigManager(File f) throws IOException {
+    public ConfigManager(File f, int fileTypeId) throws IOException {
         file = f;
+        mFileTypeId = fileTypeId;
         reinit();
     }
 
-    public static ConfigManager getDefault() {
+    public static ConfigManager getDefaultConfig() {
         try {
             if (SELF == null)
-                SELF = new ConfigManager(new File(Utils.getApplication().getFilesDir().getAbsolutePath() + "/qnotified_config.dat"));
+                SELF = new ConfigManager(new File(Utils.getApplication().getFilesDir().getAbsolutePath() + "/qnotified_config.dat"), SyncUtils.FILE_DEFAULT_CONFIG);
+            return SELF;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static ConfigManager getCache() {
+        try {
+            if (SELF == null)
+                SELF = new ConfigManager(new File(Utils.getApplication().getFilesDir().getAbsolutePath() + "/qnotified_cache.dat"), SyncUtils.FILE_CACHE);
             return SELF;
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -230,6 +243,7 @@ public class ConfigManager {
             fout.flush();
             out.close();
             fout.close();
+            SyncUtils.onFileChanged(mFileTypeId);
         }
     }
 

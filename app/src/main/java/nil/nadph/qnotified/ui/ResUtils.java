@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
+import android.widget.Button;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.util.ArscKit;
 import nil.nadph.qnotified.util.Nullable;
@@ -30,6 +31,8 @@ public class ResUtils {
     static public Drawable skin_list_item_normal = null, skin_list_item_unread = null, skin_list_item_pressed = null;
     static public Drawable list_checkbox_selected_nopress, list_checkbox_selected, list_checkbox_multi, list_checkbox;
     static public Drawable skin_icon_arrow_right_normal = null, skin_background = null;
+    static public ColorStateList skin_color_button_blue;
+    static public Drawable skin_common_btn_blue_pressed, skin_common_btn_blue_unpressed;
 
     static private String cachedThemeId;
     static private Map<String, Drawable> cachedDrawable = new HashMap<>();
@@ -142,6 +145,20 @@ public class ResUtils {
                 if (DEBUG) log("Missing res: " + name);
             }
         }
+    }
+
+    public static StateListDrawable getCommonBtnBlueBackground() {
+        StateListDrawable sd = new StateListDrawable();
+        sd.addState(new int[]{android.R.attr.state_pressed}, skin_common_btn_blue_pressed);
+        sd.addState(new int[]{}, skin_common_btn_blue_unpressed);
+        return sd;
+    }
+
+    public static void applyStyleCommonBtnBlue(Button btn) {
+        btn.setBackgroundDrawable(getCommonBtnBlueBackground());
+        btn.setTextColor(skin_color_button_blue);
+        btn.setTextSize(17);
+        btn.setMinHeight(dip2px(btn.getContext(), 42));
     }
 
     public static StateListDrawable getListItemBackground() {

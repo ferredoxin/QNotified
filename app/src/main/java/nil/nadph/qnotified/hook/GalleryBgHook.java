@@ -29,9 +29,9 @@ public class GalleryBgHook extends BaseDelayableHook {
     public boolean init() {
         if (inited) return true;
         try {
-            final ConfigManager cfg = ConfigManager.getDefault();
+            final ConfigManager cfg = ConfigManager.getDefaultConfig();
             boolean canInit = checkPreconditions();
-            if (!canInit && ConfigManager.getDefault().getBooleanOrFalse(qn_gallery_bg)) {
+            if (!canInit && ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_gallery_bg)) {
                 if (Looper.myLooper() != null) {
                     showToast(getApplication(), TOAST_TYPE_ERROR, "QNotified:聊天图片背景功能初始化错误", Toast.LENGTH_LONG);
                 }
@@ -82,7 +82,7 @@ public class GalleryBgHook extends BaseDelayableHook {
     @Override
     public boolean isEnabled() {
         try {
-            return ConfigManager.getDefault().getBooleanOrFalse(qn_gallery_bg);
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_gallery_bg);
         } catch (Exception e) {
             log(e);
             return false;

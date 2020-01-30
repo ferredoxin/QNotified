@@ -31,9 +31,9 @@ public class FlashPicHook extends BaseDelayableHook {
     public boolean init() {
         if (inited) return true;
         try {
-            final ConfigManager cfg = ConfigManager.getDefault();
+            final ConfigManager cfg = ConfigManager.getDefaultConfig();
             boolean canInit = checkPreconditions();
-            if (!canInit && ConfigManager.getDefault().getBooleanOrFalse(qn_flash_as_pic)) {
+            if (!canInit && ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_flash_as_pic)) {
                 if (Looper.myLooper() != null) {
                     showToast(getApplication(), TOAST_TYPE_ERROR, "QNotified:闪照功能初始化错误", Toast.LENGTH_LONG);
                 }
@@ -51,7 +51,7 @@ public class FlashPicHook extends BaseDelayableHook {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     try {
-                        if (!ConfigManager.getDefault().getBooleanOrFalse(qn_flash_as_pic)) return;
+                        if (!ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_flash_as_pic)) return;
                     } catch (Exception e) {
                         log(e);
                     }
@@ -140,7 +140,7 @@ public class FlashPicHook extends BaseDelayableHook {
     @Override
     public boolean isEnabled() {
         try {
-            return ConfigManager.getDefault().getBooleanOrFalse(qn_flash_as_pic);
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_flash_as_pic);
         } catch (Exception e) {
             log(e);
             return false;

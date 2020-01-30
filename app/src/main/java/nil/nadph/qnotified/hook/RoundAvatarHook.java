@@ -41,7 +41,7 @@ public class RoundAvatarHook extends BaseDelayableHook {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     try {
-                        if (!ConfigManager.getDefault().getBooleanOrFalse(qn_round_avatar)) return;
+                        if (!ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_round_avatar)) return;
                     } catch (Throwable e) {
                         log(e);
                     }
@@ -81,7 +81,7 @@ public class RoundAvatarHook extends BaseDelayableHook {
         try {
             Application app = getApplication();
             if (app != null && isTim(app)) return false;
-            return ConfigManager.getDefault().getBooleanOrFalse(qn_round_avatar);
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_round_avatar);
         } catch (Exception e) {
             log(e);
             return false;

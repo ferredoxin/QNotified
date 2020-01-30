@@ -84,12 +84,12 @@ public class ViewBuilder {
 
 
     public static RelativeLayout newListItemSwitchConfig(Context ctx, CharSequence title, CharSequence desc, final String key, boolean defVal) throws IOException {
-        boolean on = ConfigManager.getDefault().getBooleanOrDefault(key, defVal);
+        boolean on = ConfigManager.getDefaultConfig().getBooleanOrDefault(key, defVal);
         RelativeLayout root = newListItemSwitch(ctx, title, desc, on, new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 try {
-                    ConfigManager mgr = ConfigManager.getDefault();
+                    ConfigManager mgr = ConfigManager.getDefaultConfig();
                     mgr.getAllConfig().put(key, isChecked);
                     mgr.save();
                 } catch (Exception e) {
@@ -106,12 +106,12 @@ public class ViewBuilder {
 
 
     public static RelativeLayout newListItemSwitchConfigNext(Context ctx, CharSequence title, CharSequence desc, final String key, boolean defVal) throws IOException {
-        boolean on = ConfigManager.getDefault().getBooleanOrDefault(key, defVal);
+        boolean on = ConfigManager.getDefaultConfig().getBooleanOrDefault(key, defVal);
         RelativeLayout root = newListItemSwitch(ctx, title, desc, on, new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 try {
-                    ConfigManager mgr = ConfigManager.getDefault();
+                    ConfigManager mgr = ConfigManager.getDefaultConfig();
                     mgr.getAllConfig().put(key, isChecked);
                     mgr.save();
                     Utils.showToastShort(buttonView.getContext(), "重启QQ生效");
@@ -129,7 +129,7 @@ public class ViewBuilder {
 
 
     public static RelativeLayout newListItemSwitchConfigInit(final Context ctx, CharSequence title, CharSequence desc, final String key, boolean defVal, final BaseDelayableHook hook) throws IOException {
-        boolean on = ConfigManager.getDefault().getBooleanOrDefault(key, defVal);
+        boolean on = ConfigManager.getDefaultConfig().getBooleanOrDefault(key, defVal);
         RelativeLayout root = newListItemSwitch(ctx, title, desc, on, new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(final CompoundButton buttonView, boolean isChecked) {
@@ -139,7 +139,7 @@ public class ViewBuilder {
                         public void run() {
                             doSetupAndInit(ctx, hook);
                             try {
-                                ConfigManager mgr = ConfigManager.getDefault();
+                                ConfigManager mgr = ConfigManager.getDefaultConfig();
                                 mgr.getAllConfig().put(key, true);
                                 mgr.save();
                             } catch (Throwable e) {
@@ -153,7 +153,7 @@ public class ViewBuilder {
                     }).start();
                 } else {
                     try {
-                        ConfigManager mgr = ConfigManager.getDefault();
+                        ConfigManager mgr = ConfigManager.getDefaultConfig();
                         mgr.getAllConfig().put(key, isChecked);
                         mgr.save();
                     } catch (Throwable e) {
@@ -198,7 +198,7 @@ public class ViewBuilder {
             DexKit.doFindClass(i);
         }
         if (hook.isTargetProc()) hook.init();
-        SyncUtils.requestInitHook(hook.getEffectiveProc(), hook.getId());
+        SyncUtils.requestInitHook(hook.getId(), hook.getEffectiveProc());
         if (pDialog[0] != null) {
             Utils.runOnUiThread(new Runnable() {
                 @Override
@@ -431,6 +431,16 @@ public class ViewBuilder {
                 }
             }
         };
+    }
+
+    public static LinearLayout.LayoutParams newLinearLayoutParams(int width, int height, int left, int top, int right, int bottom) {
+        LinearLayout.LayoutParams ret = new LinearLayout.LayoutParams(width, height);
+        ret.setMargins(left, top, right, bottom);
+        return ret;
+    }
+
+    public static LinearLayout.LayoutParams newLinearLayoutParams(int width, int height, int margins) {
+        return newLinearLayoutParams(width, height, margins, margins, margins, margins);
     }
 
     public static void listView_setAdapter(View v, ListAdapter adapter) {

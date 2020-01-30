@@ -33,7 +33,7 @@ public class $endGiftHook extends BaseDelayableHook {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     try {
-                        ConfigManager cfg = ConfigManager.getDefault();
+                        ConfigManager cfg = ConfigManager.getDefaultConfig();
                         if (!cfg.getBooleanOrFalse(qn_disable_$end_gift)) return;
                     } catch (Exception ignored) {
                     }
@@ -68,7 +68,7 @@ public class $endGiftHook extends BaseDelayableHook {
         try {
             Application app = getApplication();
             if (app != null && isTim(app)) return false;
-            return ConfigManager.getDefault().getBooleanOrFalse(qn_disable_$end_gift);
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_disable_$end_gift);
         } catch (Exception e) {
             log(e);
             return false;

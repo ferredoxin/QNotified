@@ -29,7 +29,7 @@ public class SimpleCheckInHook extends BaseDelayableHook {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     try {
-                        ConfigManager cfg = ConfigManager.getDefault();
+                        ConfigManager cfg = ConfigManager.getDefaultConfig();
                         if (!cfg.getBooleanOrFalse(qn_sign_in_as_text)) return;
                     } catch (Exception ignored) {
                     }
@@ -70,7 +70,7 @@ public class SimpleCheckInHook extends BaseDelayableHook {
     @Override
     public boolean isEnabled() {
         try {
-            return ConfigManager.getDefault().getBooleanOrFalse(qn_sign_in_as_text);
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_sign_in_as_text);
         } catch (Exception e) {
             log(e);
             return false;

@@ -52,7 +52,7 @@ public class DexKit {
         Class ret = load(c(i));
         if (ret != null) return ret;
         try {
-            ConfigManager cfg = ConfigManager.getDefault();
+            ConfigManager cfg = ConfigManager.getDefaultConfig();
             int lastVersion = cfg.getIntOrDefault("cache_" + a(i) + "_code", 0);
             if (getHostInfo(getApplication()).versionCode != lastVersion) {
                 return null;
@@ -78,7 +78,7 @@ public class DexKit {
         }
         try {
             HashSet<String> names;
-            ConfigManager cfg = ConfigManager.getDefault();
+            ConfigManager cfg = ConfigManager.getDefaultConfig();
             DexDeobfReport report = new DexDeobfReport();
             report.target = i;
             report.version = ver;
