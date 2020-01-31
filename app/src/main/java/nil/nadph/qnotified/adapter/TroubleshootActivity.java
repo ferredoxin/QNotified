@@ -63,7 +63,8 @@ public class TroubleshootActivity implements ActivityAdapter {
         __lp_r.addRule(RelativeLayout.CENTER_VERTICAL);
         ColorStateList hiColor = ColorStateList.valueOf(Color.argb(255, 242, 140, 72));
         RelativeLayout _t;
-
+        ll.addView(subtitle(self, "若模块更新后仍有问题或bug请点击[清除缓存]可尝试修复问题"));
+        ll.addView(newListItemButton(self, "清除缓存", "清除模块缓存并重新计算适配数据", null, clickToCleanCache()));
         ll.addView(subtitle(self, "清除与重置(不可逆)"));
         ll.addView(newListItemButton(self, "重置模块设置", "不影响历史好友信息", null, clickToReset()));
         ll.addView(newListItemButton(self, "清除[已恢复]的历史记录", "删除当前帐号下所有状态为[已恢复]的历史好友记录", null, clickToWipeDeletedFriends()));
@@ -163,6 +164,33 @@ public class TroubleshootActivity implements ActivityAdapter {
         };
     }
 
+    public View.OnClickListener clickToCleanCache() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CustomDialog dialog = CustomDialog.create(self);
+                dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            ConfigManager cfg = ConfigManager.getCache();
+                            cfg.getAllConfig().clear();
+                            cfg.getFile().delete();
+                            System.exit(0);
+                        } catch (Throwable e) {
+                            log(e);
+                        }
+                    }
+                });
+                dialog.setNegativeButton("取消", new Utils.DummyCallback());
+                dialog.setCancelable(true);
+                dialog.setMessage("确认清除缓存,并重新计算适配数据?\n点击确认后请等待3秒后手动重启QQ.");
+                dialog.setTitle("确认操作");
+                dialog.show();
+            }
+        };
+    }
+
     public View.OnClickListener clickToReset() {
         return new View.OnClickListener() {
             @Override
@@ -177,6 +205,7 @@ public class TroubleshootActivity implements ActivityAdapter {
                             cfg.getFile().delete();
                             System.exit(0);
                         } catch (Throwable e) {
+                            log(e);
                         }
                     }
                 });

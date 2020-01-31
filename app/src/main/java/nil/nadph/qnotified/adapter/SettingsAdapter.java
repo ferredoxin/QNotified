@@ -75,10 +75,10 @@ public class SettingsAdapter implements ActivityAdapter {
         } catch (Throwable e) {
             log(e);
         }
-        ll.addView(subtitle(self, "遗留功能 - 群发已不再维护"));
-        ll.addView(newListItemButton(self, "群发文本消息", "适度使用以免永冻", null, clickToBatchMsg()));
+        ll.addView(subtitle(self, "遗留功能"));//群发已不再维护
+        ll.addView(newListItemButton(self, "群发文本消息", "年少不知号贵-理性使用以免永冻", null, clickToBatchMsg()));
         ll.addView(subtitle(self, "基本功能"));
-        ll.addView(_t = newListItemButton(self, "自定义电量", "[>=8.2.6]在线模式为我的电量时生效", "N/A", clickToProxyActAction(ACTION_FAKE_BAT_CONFIG_ACTIVITY)));
+        ll.addView(_t = newListItemButton(self, "自定义电量", "[QQ>=8.2.6]在线模式为我的电量时生效", "N/A", clickToProxyActAction(ACTION_FAKE_BAT_CONFIG_ACTIVITY)));
         __tv_fake_bat_status = (TextView) _t.findViewById(R_ID_VALUE);
         ll.addView(newListItemSwitchConfigInit(self, "语音转发", "长按语音消息", qn_enable_ptt_forward, false, PttForwardHook.get()));
         ll.addView(newListItemSwitchConfigInit(self, "发送卡片消息", "长按发送ArkAppMsg(json)+StructMsg(xml)", qn_send_card_msg, false, CardMsgHook.get()));
@@ -123,6 +123,7 @@ public class SettingsAdapter implements ActivityAdapter {
         ll.addView(newListItemSwitchConfigStub(self, "禁用QQ热补丁", "一般无需开启", qn_disable_qq_hot_patch, false));
         ll.addView(newListItemButton(self, "重定向文件下载目录", new File(Environment.getExternalStorageDirectory(), "Tencent/QQfile_recv").getAbsolutePath(), "禁用", clickTheComing()));
         ll.addView(subtitle(self, "参数设定"));
+        ll.addView(newListItemButton(self, "小尾巴", "请勿在多个模块同时开启小尾巴", "[无]", clickTheComing()));
         ll.addView(newListItemButton(self, "DelFriendReq.delType", "只能为1或2", "[不改动]", clickTheComing()));
         ll.addView(newListItemButton(self, "AddFriendReq.sourceID", "改错可能导致无法添加好友", "[不改动]", clickTheComing()));
         ll.addView(subtitle(self, "关于"));

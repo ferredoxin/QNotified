@@ -52,12 +52,12 @@ public class DexKit {
         Class ret = load(c(i));
         if (ret != null) return ret;
         try {
-            ConfigManager cfg = ConfigManager.getDefaultConfig();
-            int lastVersion = cfg.getIntOrDefault("cache_" + a(i) + "_code", 0);
+            ConfigManager cache = ConfigManager.getCache();
+            int lastVersion = cache.getIntOrDefault("cache_" + a(i) + "_code", 0);
             if (getHostInfo(getApplication()).versionCode != lastVersion) {
                 return null;
             }
-            String clzn = cfg.getString("cache_" + a(i) + "_class");
+            String clzn = cache.getString("cache_" + a(i) + "_class");
             if (clzn == null) return null;
             ret = load(clzn);
             return ret;
@@ -78,7 +78,7 @@ public class DexKit {
         }
         try {
             HashSet<String> names;
-            ConfigManager cfg = ConfigManager.getDefaultConfig();
+            ConfigManager cache = ConfigManager.getCache();
             DexDeobfReport report = new DexDeobfReport();
             report.target = i;
             report.version = ver;
@@ -102,14 +102,14 @@ public class DexKit {
                 ret = a(i, cas, report);
             }
             report.v("Final decision:" + (ret == null ? null : ret.getName()));
-            cfg.putString("debof_log_" + a(i), report.toString());
+            cache.putString("debof_log_" + a(i), report.toString());
             if (ret == null) {
                 log("Multiple classes candidates found, none satisfactory.");
                 return null;
             }
-            cfg.putString("cache_" + a(i) + "_class", ret.getName());
-            cfg.getAllConfig().put("cache_" + a(i) + "_code", getHostInfo(getApplication()).versionCode);
-            cfg.save();
+            cache.putString("cache_" + a(i) + "_class", ret.getName());
+            cache.getAllConfig().put("cache_" + a(i) + "_code", getHostInfo(getApplication()).versionCode);
+            cache.save();
         } catch (Exception e) {
             log(e);
         }

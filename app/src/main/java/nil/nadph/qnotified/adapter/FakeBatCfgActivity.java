@@ -167,8 +167,10 @@ public class FakeBatCfgActivity implements ActivityAdapter, View.OnClickListener
                     cfg.putBoolean(qn_fake_bat_enable, true);
                     try {
                         cfg.save();
-                        if (!bat.isInited()) bat.init();
+                        boolean success = true;
+                        if (!bat.isInited()) success = bat.init();
                         SyncUtils.requestInitHook(bat.getId(), bat.getEffectiveProc());
+                        if (!success) Utils.showToast(self, TOAST_TYPE_ERROR, "初始化错误: 可能是版本不支持", Toast.LENGTH_SHORT);
                     } catch (Exception e) {
                         Utils.showToast(self, TOAST_TYPE_ERROR, "错误:" + e.toString(), Toast.LENGTH_LONG);
                         log(e);

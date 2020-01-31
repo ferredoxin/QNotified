@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Debug;
 import android.os.Parcelable;
 import android.view.View;
 import android.view.ViewGroup;
@@ -369,11 +368,11 @@ public class StartupHook {
         } catch (Exception ignored) {
         }
         try {
-            ConfigManager cfg = ConfigManager.getDefaultConfig();
-            if (cfg.getBooleanOrFalse(qn_hide_msg_list_miniapp)) {
-                int lastVersion = cfg.getIntOrDefault("qn_hide_msg_list_miniapp_version_code", 0);
+            ConfigManager cache = ConfigManager.getCache();
+            if (ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_hide_msg_list_miniapp)) {
+                int lastVersion = cache.getIntOrDefault("qn_hide_msg_list_miniapp_version_code", 0);
                 if (getHostInfo(getApplication()).versionCode == lastVersion) {
-                    String methodName = cfg.getString("qn_hide_msg_list_miniapp_method_name");
+                    String methodName = cache.getString("qn_hide_msg_list_miniapp_method_name");
                     findAndHookMethod(load("com/tencent/mobileqq/activity/Conversation"), methodName, XC_MethodReplacement.returnConstant(null));
                 } else {
                     Class con = load("com/tencent/mobileqq/activity/Conversation");
@@ -462,10 +461,10 @@ public class StartupHook {
                             }
                             if (methodName == null)
                                 throw new NullPointerException("Failed to get Conversation.?() to hide MiniApp!");
-                            ConfigManager cfg = ConfigManager.getDefaultConfig();
-                            cfg.putString("qn_hide_msg_list_miniapp_method_name", methodName);
-                            cfg.getAllConfig().put("qn_hide_msg_list_miniapp_version_code", getHostInfo(getApplication()).versionCode);
-                            cfg.save();
+                            ConfigManager cache = ConfigManager.getCache();
+                            cache.putString("qn_hide_msg_list_miniapp_method_name", methodName);
+                            cache.getAllConfig().put("qn_hide_msg_list_miniapp_version_code", getHostInfo(getApplication()).versionCode);
+                            cache.save();
                             param.setThrowable(new UnsupportedOperationException("MiniAppEntry disabled"));
                         }
                     });

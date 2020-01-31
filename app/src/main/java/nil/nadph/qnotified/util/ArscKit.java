@@ -42,9 +42,9 @@ public class ArscKit {
         int ret = ctx.getResources().getIdentifier(name, type, pkg);
         if (ret != 0) return ret;
         //ResId is obfuscated, try to get it from cache.
-        ConfigManager cfg = ConfigManager.getDefaultConfig();
-        ret = cfg.getIntOrDefault(CACHED_RES_ID_NAME_PREFIX + type + "/" + name, 0);
-        int oldcode = cfg.getIntOrDefault(CACHED_RES_ID_CODE_PREFIX + type + "/" + name, -1);
+        ConfigManager cache = ConfigManager.getCache();
+        ret = cache.getIntOrDefault(CACHED_RES_ID_NAME_PREFIX + type + "/" + name, 0);
+        int oldcode = cache.getIntOrDefault(CACHED_RES_ID_CODE_PREFIX + type + "/" + name, -1);
         int currcode = Utils.getHostVersionCode();
         if (ret != 0 && (oldcode == currcode)) {
             return ret;
@@ -53,10 +53,10 @@ public class ArscKit {
         if (!allowSearch) return 0;
         ret = enumArsc(pkg, type, name);
         if (ret != 0) {
-            cfg.getAllConfig().put(CACHED_RES_ID_NAME_PREFIX + type + "/" + name, ret);
-            cfg.getAllConfig().put(CACHED_RES_ID_CODE_PREFIX + type + "/" + name, currcode);
+            cache.getAllConfig().put(CACHED_RES_ID_NAME_PREFIX + type + "/" + name, ret);
+            cache.getAllConfig().put(CACHED_RES_ID_CODE_PREFIX + type + "/" + name, currcode);
             try {
-                cfg.save();
+                cache.save();
             } catch (IOException e) {
                 log(e);
             }
