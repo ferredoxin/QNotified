@@ -210,8 +210,8 @@ public class RevokeMsgHook extends BaseDelayableHook {
 
     @Override
     public int getEffectiveProc() {
+        //FIXME: is MSF really necessary?
         return SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF;
-        //return 0xFFFFFFFF;
     }
 
     @Override

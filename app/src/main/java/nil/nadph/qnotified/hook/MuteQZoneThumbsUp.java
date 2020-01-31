@@ -73,7 +73,7 @@ public class MuteQZoneThumbsUp extends BaseDelayableHook {
 
     @Override
     public int getEffectiveProc() {
-        return SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF;
+        return SyncUtils.PROC_MAIN;
     }
 
     @Override

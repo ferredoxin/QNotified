@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Parcelable;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +15,7 @@ import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.adapter.ActProxyMgr;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.util.ClazzExplorer;
-import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.Initiator;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.util.*;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.*;
@@ -25,6 +23,7 @@ import java.lang.reflect.*;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static nil.nadph.qnotified.adapter.ActProxyMgr.ACTIVITY_PROXY_ACTION;
 import static nil.nadph.qnotified.adapter.ActProxyMgr.ACTIVITY_PROXY_ID_TAG;
+import static nil.nadph.qnotified.util.Initiator._StartupDirector;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
@@ -239,36 +238,41 @@ public class StartupHook {
                         }
                         System.setProperty(QN_FULL_TAG, "true");
                         SyncUtils.initBroadcast(ctx);
+//                        if (SyncUtils.getProcessType() == SyncUtils.PROC_MSF) {
+//                            Debug.waitForDebugger();
+//                        }
                         if (SyncUtils.isMainProcess()) {
-                            injectStartupHook(ctx);
-                        }
-                        Class director = load("com/tencent/mobileqq/startup/director/StartupDirector");
-                        if (director == null)
-                            director = load("com/tencent/mobileqq/startup/director/StartupDirector$1").getDeclaredField("this$0").getType();
-                        Class loadData = load("com/tencent/mobileqq/startup/step/LoadData");
-                        Method doStep = null;
-                        for (Method method : loadData.getDeclaredMethods()) {
-                            if (method.getReturnType().equals(boolean.class) && method.getParameterTypes().length == 0) {
-                                doStep = method;
-                                break;
-                            }
-                        }
-                        final Class __director = director;
-                        XposedBridge.hookMethod(doStep, new XC_MethodHook(51) {
-                            @Override
-                            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                                if (third_stage_inited) return;
-                                Object dir = iget_object_or_null(param.thisObject, "mDirector", __director);
-                                if (dir == null) dir = iget_object_or_null(param.thisObject, "a", __director);
-                                if (SyncUtils.isMainProcess()) {
-                                    ResUtils.loadThemeByArsc(getApplication(), false);
+                            injectStartupHookForMain(ctx);
+                            Class loadData = load("com/tencent/mobileqq/startup/step/LoadData");
+                            Method doStep = null;
+                            for (Method method : loadData.getDeclaredMethods()) {
+                                if (method.getReturnType().equals(boolean.class) && method.getParameterTypes().length == 0) {
+                                    doStep = method;
+                                    break;
                                 }
-                                InjectDelayableHooks.step(dir);
-                                third_stage_inited = true;
                             }
-                        });
+                            XposedBridge.hookMethod(doStep, new XC_MethodHook(51) {
+                                @Override
+                                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                                    if (third_stage_inited) return;
+                                    Class director = _StartupDirector();
+                                    Object dir = iget_object_or_null(param.thisObject, "mDirector", director);
+                                    if (dir == null) dir = iget_object_or_null(param.thisObject, "a", director);
+                                    if (SyncUtils.isMainProcess()) {
+                                        ResUtils.loadThemeByArsc(getApplication(), false);
+                                    }
+                                    InjectDelayableHooks.step(dir);
+                                    onAppStartupForMain();
+                                    third_stage_inited = true;
+                                }
+                            });
+                        } else {
+                            Class director = _StartupDirector();
+                            Object dir = iget_object_or_null(param.thisObject, "mDirector", director);
+                            if (dir == null) dir = iget_object_or_null(param.thisObject, "a", director);
+                            InjectDelayableHooks.step(dir);
+                        }
                         sec_stage_inited = true;
-                        onAppStartup();
                     } catch (Throwable e) {
                         log(e);
                         throw e;
@@ -343,7 +347,8 @@ public class StartupHook {
         }
     }
 
-    private void injectStartupHook(Context ctx) {
+    @MainProcess
+    private void injectStartupHookForMain(Context ctx) {
         Class clazz = load(ActProxyMgr.STUB_ACTIVITY);
         if (clazz != null) {
             ActProxyMgr mgr = ActProxyMgr.getInstance();
@@ -354,96 +359,6 @@ public class StartupHook {
             findAndHookMethodIfExists(clazz, "doOnResume", mgr);
             findAndHookMethodIfExists(clazz, "isWrapContent", mgr);
         }
-		/*
-		 try {
-		 Method m = null;
-		 Method[] methods = load("com.tencent.mobileqq.activity.BaseChatPie").getDeclaredMethods();
-		 for (int i = 0; i < methods.length; i++) {
-		 Method method = methods[i];
-		 if (method.getName().equals("e") && method.getParameterTypes().length == 0 && method.getReturnType() == Void.TYPE) {
-		 m = methods[i];
-		 break;
-		 }
-		 }
-		 assert m != null;
-		 XposedBridge.hookMethod(m, new XC_MethodHook(51) {
-		 @Override
-		 public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-		 if (ConfigManager.get().getBooleanOrFalse(qn_send_card_msg)) {
-		 final Object qqi = iget_object(methodHookParam.thisObject, "a", load("com.tencent.mobileqq.app.QQAppInterface"));
-		 final Object session = iget_object(methodHookParam.thisObject, "a", load("com.tencent.mobileqq.activity.aio.SessionInfo"));
-		 final ViewGroup viewGroup = (ViewGroup) iget_object(methodHookParam.thisObject, "d", Class.forName("android.view.ViewGroup"));
-		 Resources res = viewGroup.getContext().getResources();
-		 int id_btn = res.getIdentifier("fun_btn", "id", null);
-		 final int id_et = res.getIdentifier("input", "id", null);
-		 if (viewGroup != null)
-		 ((Button) viewGroup.findViewById(id_btn).setOnLongClickListener(new View.OnLongClickListener() {
-		 @Override
-		 public boolean onLongClick(View view) {
-		 EditText edit = (EditText) viewGroup.findViewById(id_et);
-		 String input = edit.getText().toString();
-		 boolean success = false;
-		 Class cl_msgMgr = load((String) Hook.config.get("MessageManager"));
-		 try {
-		 Object msg = invoke_static(load((String) Hook.config.get("TestStructMsg")), "a", input, load("com.tencent.mobileqq.structmsg.AbsStructMsg"));
-		 if (msg != null) {
-		 invoke_static(cl_msgMgr, "a", qqi, session, msg);
-		 success = true;
-		 }
-		 } catch (Throwable th) {
-		 Toast.makeText(view.getContext(), th.toString(), Toast.LENGTH_SHORT).show();
-		 XposedBridge.log(th);
-		 }
-		 try {
-		 Object arkMsg = new_instance(load("com.tencent.mobileqq.data.ArkAppMessage"));
-		 if ((Boolean) invoke_virtual(arkMsg, "fromAppXml", input)) {
-		 invoke_static(cl_msgMgr, "a", qqi, session, arkMsg);
-		 success = true;
-		 }
-		 } catch (Throwable th2) {
-		 XposedBridge.log(th2);
-		 }
-		 if (success) edit.setText("");
-		 return false;
-		 }
-		 }));
-
-		 }
-		 }
-		 });
-		 } catch (Throwable e) {
-		 log(e);
-		 }
-
-		 /*
-		 findAndHookMethod(load("friendlist/DelFriendReq"),"writeTo",load("com/qq/taf/jce/JceOutputStream"),new XC_MethodHook(70){
-		 @Override
-		 protected void beforeHookedMethod(MethodHookParam param) throws Throwable{
-		 Field f=param.thisObject.getClass().getDeclaredField("delType");
-		 f.setAccessible(true);
-		 f.set(param.thisObject,(byte)2);
-		 }
-		 });
-
-		 //findAndHookMethod(load("friendlist/AddFriendReq"),"writeTo",load("com/qq/taf/jce/JceOutputStream"),invokeRecord);
-		 /*findAndHookMethod(load("friendlist/AddFriendReq"),"writeTo",load("com/qq/taf/jce/JceOutputStream"),new XC_MethodHook(10){
-		 @Override
-		 protected void beforeHookedMethod(MethodHookParam param) throws Throwable{
-		 Field f=param.thisObject.getClass().getDeclaredField("sourceSubID");
-		 f.setAccessible(true);
-		 f.set(param.thisObject,1);
-		 f=param.thisObject.getClass().getDeclaredField("sourceID");
-		 f.setAccessible(true);
-		 f.set(param.thisObject,3071);
-		 f=param.thisObject.getClass().getDeclaredField("myfriendgroupid");
-		 f.setAccessible(true);
-		 f.set(param.thisObject,(byte)0);
-		 /*f=param.thisObject.getClass().getDeclaredField("adduinsetting");
-		 f.setAccessible(true);
-		 f.set(param.thisObject,4);*
-
-		 }
-		 });//*/
         asyncStartFindClass();
         hideMiniAppEntry();
     }
@@ -589,7 +504,7 @@ public class StartupHook {
     /**
      * dummy method, for development and test only
      */
-    public static void onAppStartup() {
+    public static void onAppStartupForMain() {
         if (!isAlphaVersion()) return;
         deepDarkTheme();
     }

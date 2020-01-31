@@ -291,6 +291,36 @@ public class DelDetectorHook extends BaseDelayableHook {
         return true;
     }
 
+    		 /*
+		 findAndHookMethod(load("friendlist/DelFriendReq"),"writeTo",load("com/qq/taf/jce/JceOutputStream"),new XC_MethodHook(70){
+		 @Override
+		 protected void beforeHookedMethod(MethodHookParam param) throws Throwable{
+		 Field f=param.thisObject.getClass().getDeclaredField("delType");
+		 f.setAccessible(true);
+		 f.set(param.thisObject,(byte)2);
+		 }
+		 });
+
+		 //findAndHookMethod(load("friendlist/AddFriendReq"),"writeTo",load("com/qq/taf/jce/JceOutputStream"),invokeRecord);
+		 /*findAndHookMethod(load("friendlist/AddFriendReq"),"writeTo",load("com/qq/taf/jce/JceOutputStream"),new XC_MethodHook(10){
+		 @Override
+		 protected void beforeHookedMethod(MethodHookParam param) throws Throwable{
+		 Field f=param.thisObject.getClass().getDeclaredField("sourceSubID");
+		 f.setAccessible(true);
+		 f.set(param.thisObject,1);
+		 f=param.thisObject.getClass().getDeclaredField("sourceID");
+		 f.setAccessible(true);
+		 f.set(param.thisObject,3071);
+		 f=param.thisObject.getClass().getDeclaredField("myfriendgroupid");
+		 f.setAccessible(true);
+		 f.set(param.thisObject,(byte)0);
+		 /*f=param.thisObject.getClass().getDeclaredField("adduinsetting");
+		 f.setAccessible(true);
+		 f.set(param.thisObject,4);*
+
+		 }
+		 });//*/
+
     @Override
     public int getEffectiveProc() {
         return SyncUtils.PROC_MAIN;

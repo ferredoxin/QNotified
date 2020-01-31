@@ -147,6 +147,17 @@ public class Initiator {
         return clz;
     }
 
+    public static Class _StartupDirector() {
+        Class director = load("com/tencent/mobileqq/startup/director/StartupDirector");
+        if (director == null) {
+            try {
+                director = load("com/tencent/mobileqq/startup/director/StartupDirector$1").getDeclaredField("this$0").getType();
+            } catch (NoSuchFieldException ignored) {
+            }
+        }
+        return director;
+    }
+
     public static Class _QQMessageFacade() {
         return load("com/tencent/mobileqq/app/message/QQMessageFacade");
     }

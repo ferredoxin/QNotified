@@ -34,9 +34,9 @@ public class SyncUtils {
     public static final String SYNC_FILE_CHANGED = "nil.nadph.qnotified.SYNC_FILE_CHANGED";
     //process=010001 hook=0011000
     public static final String HOOK_DO_INIT = "nil.nadph.qnotified.HOOK_DO_INIT";
-    public static int myId = 0;
-    public static int seq = 0;
-    public static boolean inited = false;
+    private static int myId = 0;
+    private static int seq = 0;
+    private static boolean inited = false;
     private static int mProcType = 0;
 
     public static final int FILE_DEFAULT_CONFIG = 1;

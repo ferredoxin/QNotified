@@ -29,7 +29,7 @@ public class FakeBatteryHook extends BaseDelayableHook {
             findAndHookMethod(clz, "getSendBatteryStatus", new XC_MethodHook(49) {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    log("--->getSendBatteryStatus isEnabled=" + isEnabled() + ", getFakeBatteryStatus=" + getFakeBatteryStatus());
+                    //log("--->getSendBatteryStatus isEnabled=" + isEnabled() + ", getFakeBatteryStatus=" + getFakeBatteryStatus());
                     if (!isEnabled()) return;
                     param.setResult(getFakeBatteryStatus());
                 }
@@ -62,7 +62,7 @@ public class FakeBatteryHook extends BaseDelayableHook {
     public int getFakeBatteryStatus() {
         int val = ConfigManager.getDefaultConfig().getIntOrDefault(qn_fake_bat_expr, -1);
         if (val < 0) {
-            log("getFakeBatteryStatus: qn_fake_bat_expr = " + val);
+            //log("getFakeBatteryStatus: qn_fake_bat_expr = " + val);
             return 0;//safe value
         }
         return val;
