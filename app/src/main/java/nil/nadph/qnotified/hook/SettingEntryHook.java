@@ -9,6 +9,7 @@ import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.StartupHook;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.adapter.ActProxyMgr;
+import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Utils;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -105,7 +106,7 @@ public class SettingEntryHook extends BaseDelayableHook {
 
     @Override
     public int[] getPreconditions() {
-        return new int[0];
+        return new int[]{DexKit.C_DIALOG_UTIL};
     }
 
     @Override

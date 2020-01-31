@@ -43,9 +43,10 @@ public class DexKit {
     public static final int C_TROOP_GIFT_UTIL = 17;
     public static final int C_TEST_STRUCT_MSG = 18;
     public static final int C_QZONE_MSG_NOTIFY = 19;
+    public static final int C_APP_CONSTANTS = 20;
 
     //the last index
-    public static final int DEOBF_NUM = 19;
+    public static final int DEOBF_NUM = 20;
 
     @Nullable
     public static Class tryLoadOrNull(int i) {
@@ -88,7 +89,7 @@ public class DexKit {
                 log("Unable to deobf: " + c(i));
                 return null;
             }
-            report.v(names.size() + "class(es) found:" + names);
+            report.v(names.size() + " class(es) found:" + names);
             for (String name : names) {
                 report.v(name);
             }
@@ -154,6 +155,8 @@ public class DexKit {
                 return "test_struct_msg";
             case C_QZONE_MSG_NOTIFY:
                 return "qzone_msg_notify";
+            case C_APP_CONSTANTS:
+                return "app_constants";
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM);
     }
@@ -216,6 +219,9 @@ public class DexKit {
             case C_QZONE_MSG_NOTIFY:
                 ret = "cooperation/qzone/push/MsgNotification";
                 break;
+            case C_APP_CONSTANTS:
+                ret = "com.tencent.mobileqq.app.AppConstants";
+                break;
             default:
                 ret = null;
         }
@@ -266,6 +272,8 @@ public class DexKit {
                 return new byte[][]{new byte[]{0x0D, 0x54, 0x65, 0x73, 0x74, 0x53, 0x74, 0x72, 0x75, 0x63, 0x74, 0x4D, 0x73, 0x67}};
             case C_QZONE_MSG_NOTIFY:
                 return new byte[][]{new byte[]{0x14, 0x75, 0x73, 0x65, 0x20, 0x73, 0x6D, 0x61, 0x6C, 0x6C, 0x20, 0x69, 0x63, 0x6F, 0x6E, 0x20, 0x2C, 0x65, 0x78, 0x70, 0x3A}};
+            case C_APP_CONSTANTS:
+                return new byte[][]{new byte[]{0x0B, 0x2E, 0x69, 0x6E, 0x64, 0x69, 0x76, 0x41, 0x6E, 0x69, 0x6D, 0x2F}};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM);
     }
@@ -308,6 +316,8 @@ public class DexKit {
                 return new int[]{7, 2};
             case C_QZONE_MSG_NOTIFY:
                 return new int[]{3};
+            case C_APP_CONSTANTS:
+                return new int[]{1};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM);
     }
@@ -413,6 +423,14 @@ public class DexKit {
                         }
                     }
                 }
+                break;
+            case C_APP_CONSTANTS:
+                for (Class clz : classes) {
+                    if (!Modifier.isInterface(clz.getModifiers())) continue;
+                    if (clz.getDeclaredFields().length < 50) continue;
+                    return clz;
+                }
+                break;
         }
         return null;
     }

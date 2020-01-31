@@ -144,7 +144,6 @@ public class CustomDialog {
         return this;
     }
 
-
     public Dialog create() {
         if (!failsafe) {
             return mDialog;

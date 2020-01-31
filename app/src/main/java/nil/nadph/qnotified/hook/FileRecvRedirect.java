@@ -1,0 +1,136 @@
+package nil.nadph.qnotified.hook;
+
+import android.os.Environment;
+import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.record.ConfigManager;
+import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.Nullable;
+
+import java.lang.reflect.Field;
+
+import static nil.nadph.qnotified.util.Utils.*;
+
+public class FileRecvRedirect extends BaseDelayableHook {
+    private static final FileRecvRedirect self = new FileRecvRedirect();
+    private boolean inited = false;
+
+    private Field TARGET_FIELD = null;
+
+    FileRecvRedirect() {
+    }
+
+    public static FileRecvRedirect get() {
+        return self;
+    }
+
+    @Override
+    public boolean init() {
+        if (inited) return true;
+        try {
+            if (!isEnabled()) return false;
+            String redirectPath = getRedirectPath();
+            if (redirectPath != null) {
+                inited = doSetPath(redirectPath);
+                return inited;
+            } else {
+                return false;
+            }
+        } catch (Throwable e) {
+            log(e);
+            return false;
+        }
+    }
+
+    private boolean doSetPath(String str) {
+        Field[] fields = DexKit.doFindClass(DexKit.C_APP_CONSTANTS).getFields();
+        try {
+            if (TARGET_FIELD == null) {
+                for (Field field : fields) {
+                    field.setAccessible(true);
+                    Object value = field.get(null);
+                    String path = String.valueOf(value);
+                    if (path.toLowerCase().endsWith("file_recv/")) {
+                        TARGET_FIELD = field;
+                        break;
+                    }
+                }
+            }
+            TARGET_FIELD.setAccessible(true);
+            TARGET_FIELD.set(null, str);
+            return true;
+        } catch (Exception e) {
+            log(e);
+            return false;
+        }
+    }
+
+    public String getDefaultPath() {
+        if (isTim(getApplication())) {
+            return Environment.getExternalStorageDirectory().getAbsolutePath() + "/Tencent/TIMfile_recv/";
+        } else {
+            return Environment.getExternalStorageDirectory().getAbsolutePath() + "/Tencent/QQfile_recv/";
+        }
+    }
+
+    @Nullable
+    public String getRedirectPath() {
+        return ConfigManager.getDefaultConfig().getString(qn_file_recv_redirect_path);
+    }
+
+    public void setEnabled(boolean enabled) {
+        try {
+            ConfigManager cfg = ConfigManager.getDefaultConfig();
+            cfg.putBoolean(qn_file_recv_redirect_enable, enabled);
+            cfg.save();
+            if (inited) {
+                if (enabled) {
+                    String path = getRedirectPath();
+                    if (path != null) {
+                        inited = doSetPath(path);
+                    }
+                } else {
+                    doSetPath(getDefaultPath());
+                }
+            }
+        } catch (Exception e) {
+            log(e);
+        }
+    }
+
+    public void setRedirectPathAndEnable(String path) {
+        try {
+            ConfigManager cfg = ConfigManager.getDefaultConfig();
+            cfg.putString(qn_file_recv_redirect_path, path);
+            cfg.putBoolean(qn_file_recv_redirect_enable, true);
+            cfg.save();
+            inited = doSetPath(path);
+        } catch (Exception e) {
+            log(e);
+        }
+    }
+
+    @Override
+    public int getEffectiveProc() {
+        return SyncUtils.PROC_MAIN;
+    }
+
+    @Override
+    public int[] getPreconditions() {
+        return new int[]{DexKit.C_APP_CONSTANTS};
+    }
+
+    @Override
+    public boolean isInited() {
+        return inited;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        try {
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_file_recv_redirect_enable);
+        } catch (Exception e) {
+            log(e);
+            return false;
+        }
+    }
+}

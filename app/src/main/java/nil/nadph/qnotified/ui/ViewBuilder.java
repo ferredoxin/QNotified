@@ -12,6 +12,7 @@ import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.NonUiThread;
 import nil.nadph.qnotified.util.Utils;
 
 import java.io.IOException;
@@ -19,9 +20,9 @@ import java.io.IOException;
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.dip2px;
+import static nil.nadph.qnotified.util.Utils.dip2sp;
 
-@SuppressWarnings("unchecked")
 public class ViewBuilder {
 
     public static final int R_ID_TITLE = 0x300AFF11;
@@ -42,7 +43,7 @@ public class ViewBuilder {
         tv.setTextColor(ResUtils.skin_black);
         tv.setTextSize(dip2sp(ctx, 18));
         CompoundButton sw = switch_new(ctx);
-        switch_setChecked(sw, on);
+        sw.setChecked(on);
         sw.setId(R_ID_SWITCH);
         sw.setOnCheckedChangeListener(listener);
         RelativeLayout.LayoutParams lp_sw = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
@@ -82,8 +83,7 @@ public class ViewBuilder {
         return root;
     }
 
-
-    public static RelativeLayout newListItemSwitchConfig(Context ctx, CharSequence title, CharSequence desc, final String key, boolean defVal) throws IOException {
+    public static RelativeLayout newListItemSwitchConfig(Context ctx, CharSequence title, CharSequence desc, final String key, boolean defVal) {
         boolean on = ConfigManager.getDefaultConfig().getBooleanOrDefault(key, defVal);
         RelativeLayout root = newListItemSwitch(ctx, title, desc, on, new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -93,11 +93,8 @@ public class ViewBuilder {
                     mgr.getAllConfig().put(key, isChecked);
                     mgr.save();
                 } catch (Exception e) {
-                    try {
-                        Utils.showToastShort(buttonView.getContext(), e.toString());
-                    } catch (Throwable e2) {
-                    }
                     Utils.log(e);
+                    Utils.showToastShort(buttonView.getContext(), e.toString());
                 }
             }
         });
@@ -116,11 +113,8 @@ public class ViewBuilder {
                     mgr.save();
                     Utils.showToastShort(buttonView.getContext(), "重启QQ生效");
                 } catch (Throwable e) {
-                    try {
-                        Utils.showToastShort(buttonView.getContext(), e.toString());
-                    } catch (Throwable e2) {
-                    }
                     Utils.log(e);
+                    Utils.showToastShort(buttonView.getContext(), e.toString());
                 }
             }
         });
@@ -143,11 +137,8 @@ public class ViewBuilder {
                                 mgr.getAllConfig().put(key, true);
                                 mgr.save();
                             } catch (Throwable e) {
-                                try {
-                                    Utils.showToastShort(buttonView.getContext(), e.toString());
-                                } catch (Throwable ignored) {
-                                }
                                 Utils.log(e);
+                                Utils.showToastShort(buttonView.getContext(), e.toString());
                             }
                         }
                     }).start();
@@ -180,19 +171,11 @@ public class ViewBuilder {
                     if (pDialog[0] == null) {
                         pDialog[0] = CustomDialog.create(ctx);
                         pDialog[0].setCancelable(false);
-                        try {
-                            pDialog[0].setTitle("请稍候");
-                            pDialog[0].setMessage("QNotified正在定位被混淆类:\n" + name + "\n每个类一般不会超过一分钟");
-                        } catch (Throwable e) {
-                            log(e);
-                        }
+                        pDialog[0].setTitle("请稍候");
                         pDialog[0].show();
                     }
-                    try {
-                        pDialog[0].setMessage("QNotified正在定位被混淆类:\n" + name + "\n每个类一般不会超过一分钟");
-                    } catch (Throwable e) {
-                        log(e);
-                    }
+                    pDialog[0].setMessage("QNotified正在定位被混淆类:\n" + name + "\n每个类一般不会超过一分钟");
+
                 }
             });
             DexKit.doFindClass(i);
@@ -209,21 +192,43 @@ public class ViewBuilder {
         }
     }
 
+    @NonUiThread
+    public static void doSetupForPrecondition(final Context ctx, BaseDelayableHook hook) {
+        final CustomDialog[] pDialog = new CustomDialog[1];
+        for (int i : hook.getPreconditions()) {
+            if (DexKit.tryLoadOrNull(i) != null) continue;
+            final String name = DexKit.c(i).replace("/", ".");
+            Utils.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (pDialog[0] == null) {
+                        pDialog[0] = CustomDialog.create(ctx);
+                        pDialog[0].setCancelable(false);
+                        pDialog[0].setTitle("请稍候");
+                        pDialog[0].show();
+                    }
+                    pDialog[0].setMessage("QNotified正在定位被混淆类:\n" + name + "\n每个类一般不会超过一分钟");
+                }
+            });
+            DexKit.doFindClass(i);
+        }
+        if (pDialog[0] != null) {
+            Utils.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    pDialog[0].dismiss();
+                }
+            });
+        }
+    }
+
     public static RelativeLayout newListItemSwitchConfigStub(Context ctx, CharSequence title, CharSequence desc,
-                                                             final String key, boolean defVal) throws IOException {
+                                                             final String key, boolean defVal) {
         RelativeLayout root = newListItemSwitch(ctx, title, desc, false, new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                try {
-                    buttonView.setChecked(false);
-                    Utils.showToastShort(buttonView.getContext(), "对不起,此功能尚在开发中");
-                } catch (Throwable e) {
-                    try {
-                        Utils.showToastShort(buttonView.getContext(), e.toString());
-                    } catch (Throwable e2) {
-                    }
-                    Utils.log(e);
-                }
+                buttonView.setChecked(false);
+                Utils.showToastShort(buttonView.getContext(), "对不起,此功能尚在开发中");
             }
         });
         return root;
@@ -420,15 +425,11 @@ public class ViewBuilder {
         };
     }
 
-
     public static View.OnClickListener clickTheComing() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    Utils.showToastShort(v.getContext(), "对不起,此功能尚在开发中");
-                } catch (Throwable e) {
-                }
+                Utils.showToastShort(v.getContext(), "对不起,此功能尚在开发中");
             }
         };
     }
@@ -445,7 +446,7 @@ public class ViewBuilder {
 
     public static void listView_setAdapter(View v, ListAdapter adapter) {
         try {
-            Class clazz = v.getClass();
+            Class<?> clazz = v.getClass();
             clazz.getMethod("setAdapter", ListAdapter.class).invoke(v, adapter);
         } catch (Exception e) {
             Utils.log("tencent_ListView->setAdapter: " + e.toString());
@@ -454,31 +455,11 @@ public class ViewBuilder {
 
     public static CompoundButton switch_new(Context ctx) {
         try {
-            Class clazz = load("com/tencent/widget/Switch");
+            Class<?> clazz = load("com/tencent/widget/Switch");
             return (CompoundButton) clazz.getConstructor(Context.class).newInstance(ctx);
         } catch (Exception e) {
             Utils.log("Switch->new: " + e.toString());
         }
         return null;
-    }
-
-    public static boolean switch_isChecked(View v) {
-        try {
-            Class clazz = load("com/tencent/widget/Switch");
-            return (boolean) clazz.getMethod("isChecked").invoke(v);
-        } catch (Exception e) {
-            Utils.log("Switch->isChecked: " + e.toString());
-        }
-        return false;
-    }
-
-    @SuppressWarnings("unchecked")
-    public static void switch_setChecked(View v, boolean checked) {
-        try {
-            Class clazz = load("com/tencent/widget/Switch");
-            clazz.getMethod("setChecked", boolean.class).invoke(v, checked);
-        } catch (Exception e) {
-            Utils.log("Switch->setChecked: " + e.toString());
-        }
     }
 }

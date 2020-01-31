@@ -20,6 +20,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.util.Initiator._SessionInfo;
 import static nil.nadph.qnotified.util.Utils.*;
 
@@ -27,7 +29,6 @@ public class SendBatchMsg {
 
     public static final int R_ID_SELECT_FRIEND = 0x300AFF51;
     public static final int R_ID_SELECT_GROUP = 0x300AFF52;
-
 
     private static LinearLayout getEditView(Context context) {
         int padding = dip2px(context, 20.0f);
@@ -40,7 +41,7 @@ public class SendBatchMsg {
         editText.setSingleLine(false);
         editText.setMinLines(4);
         editText.setGravity(Gravity.TOP);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
         layoutParams.setMargins(padding, dip2px(context, 10.0f), padding, 10);
         editText.setLayoutParams(layoutParams);
         linearLayout.addView(editText);
@@ -87,11 +88,7 @@ public class SendBatchMsg {
                         public void onClick(View v) {
                             String msg = editText.getText().toString();
                             if (msg.isEmpty() || msg.equals("")) {
-                                try {
-                                    showToast(ctx, TOAST_TYPE_ERROR, "请输入文本消息", Toast.LENGTH_SHORT);
-                                } catch (Throwable e) {
-                                    log(e);
-                                }
+                                showToast(ctx, TOAST_TYPE_ERROR, "请输入文本消息", Toast.LENGTH_SHORT);
                             } else {
                                 try {
                                     showSelectDialog(ctx, msg);
@@ -102,6 +99,7 @@ public class SendBatchMsg {
                         }
                     });
                 } catch (Throwable e) {
+                    log(e);
                 }
             }
         };
@@ -186,7 +184,7 @@ public class SendBatchMsg {
         editText.setBackgroundColor(0x00000000);
         editText.setHint("搜索");
         editText.setTextSize(18.0f);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dip2px(context, 30.0f));
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(MATCH_PARENT, dip2px(context, 30.0f));
         layoutParams.setMargins(dip2px(context, 30.0f), 0, dip2px(context, 30.0f), 10);
         editText.setLayoutParams(layoutParams);
         final ListView listView = new ListView(context);
@@ -342,11 +340,11 @@ public class SendBatchMsg {
             int imgPadding = dip2px(context, 10.0f);
             int imgHeight = dip2px(context, 40.0f);
             LinearLayout linearLayout = new LinearLayout(context);
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
             linearLayout.setLayoutParams(layoutParams);
             linearLayout.setOrientation(LinearLayout.HORIZONTAL);
             linearLayout.setPadding(padding, 15, padding, 25);
-            LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
             layoutParams1.gravity = Gravity.CENTER_VERTICAL;
             CheckBox check = new CheckBox(context);
             check.setFocusable(false);

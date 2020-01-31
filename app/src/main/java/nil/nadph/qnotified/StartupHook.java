@@ -196,8 +196,6 @@ public class StartupHook {
                     }).start();
                 }
             });
-
-
             clz = load("com.tencent.mobileqq.activity.TroopMemberListActivity");
             findAndHookMethod(clz, "doOnCreate", Bundle.class, new XC_MethodHook() {
                 @Override

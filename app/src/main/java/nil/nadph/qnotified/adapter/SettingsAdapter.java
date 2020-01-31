@@ -2,22 +2,23 @@ package nil.nadph.qnotified.adapter;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.Html;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.*;
 import nil.nadph.qnotified.hook.*;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.ui.SimpleBgDrawable;
 import nil.nadph.qnotified.util.NewsHelper;
 import nil.nadph.qnotified.util.UpdateCheck;
 import nil.nadph.qnotified.util.Utils;
@@ -32,10 +33,12 @@ import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.SendBatchMsg.clickToBatchMsg;
 import static nil.nadph.qnotified.util.Utils.*;
 
-public class SettingsAdapter implements ActivityAdapter {
+public class SettingsAdapter implements ActivityAdapter, View.OnClickListener {
+
+    private static final int R_ID_BTN_FILE_RECV = 0x300AFF91;
 
     private Activity self;
-    private TextView __tv_muted_atall, __tv_muted_redpacket, __tv_fake_bat_status;
+    private TextView __tv_muted_atall, __tv_muted_redpacket, __tv_fake_bat_status, __recv_status, __recv_desc;
 
     public SettingsAdapter(Activity activity) {
         self = activity;
@@ -118,10 +121,13 @@ public class SettingsAdapter implements ActivityAdapter {
         if (!Utils.isTim(self)) {
             ll.addView(newListItemSwitchConfigNext(self, "隐藏分组下方入口", "隐藏分组列表最下方的历史好友按钮", qn_hide_ex_entry_group, false));
         }
+        ll.addView(_t = newListItemButton(self, "重定向文件下载目录", "N/A", "N/A", this));
+        _t.setId(R_ID_BTN_FILE_RECV);
+        __recv_desc = (TextView) _t.findViewById(R_ID_DESCRIPTION);
+        __recv_status = (TextView) _t.findViewById(R_ID_VALUE);
         ll.addView(subtitle(self, "还没完成的功能(咕咕咕)"));
         ll.addView(newListItemSwitchConfigStub(self, "屏蔽回执消息的通知", null, qn_mute_talk_back, false));
         ll.addView(newListItemSwitchConfigStub(self, "禁用QQ热补丁", "一般无需开启", qn_disable_qq_hot_patch, false));
-        ll.addView(newListItemButton(self, "重定向文件下载目录", new File(Environment.getExternalStorageDirectory(), "Tencent/QQfile_recv").getAbsolutePath(), "禁用", clickTheComing()));
         ll.addView(subtitle(self, "参数设定"));
         ll.addView(newListItemButton(self, "小尾巴", "请勿在多个模块同时开启小尾巴", "[无]", clickTheComing()));
         ll.addView(newListItemButton(self, "DelFriendReq.delType", "只能为1或2", "[不改动]", clickTheComing()));
@@ -182,6 +188,97 @@ public class SettingsAdapter implements ActivityAdapter {
             } else {
                 __tv_fake_bat_status.setText("[系统电量]");
             }
+        }
+        updateRecvRedirectStatus();
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R_ID_BTN_FILE_RECV) {
+            if (FileRecvRedirect.get().checkPreconditions()) {
+                showChangeRecvPathDialog();
+            } else {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        doSetupForPrecondition(self, FileRecvRedirect.get());
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                showChangeRecvPathDialog();
+                            }
+                        });
+                    }
+                }).start();
+            }
+
+        }
+    }
+
+    private void showChangeRecvPathDialog() {
+        final FileRecvRedirect recv = FileRecvRedirect.get();
+        String currPath = recv.getRedirectPath();
+        if (currPath == null) currPath = recv.getDefaultPath();
+        final EditText editText = new EditText(self);
+        editText.setText(currPath);
+        editText.setTextColor(Color.BLACK);
+        editText.setTextSize(16);
+        int _5 = dip2px(self, 5);
+        editText.setPadding(_5, _5, _5, _5);
+        editText.setBackgroundDrawable(new SimpleBgDrawable(0, 0x80000000, 1));
+        LinearLayout linearLayout = new LinearLayout(self);
+        linearLayout.addView(editText, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, _5 * 2));
+        final AlertDialog alertDialog = new AlertDialog.Builder(self, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT)
+                .setTitle("输入重定向文件夹路径")
+                .setView(linearLayout)
+                .setPositiveButton("确认并激活", null)
+                .setNegativeButton("取消", null)
+                .setNeutralButton("使用默认值", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        recv.setEnabled(false);
+                        updateRecvRedirectStatus();
+                    }
+                })
+                .create();
+        alertDialog.show();
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String path = editText.getText().toString();
+                if (path.equals("")) {
+                    showToast(self, TOAST_TYPE_ERROR, "请输入路径", Toast.LENGTH_SHORT);
+                    return;
+                }
+                if (!path.startsWith("/")) {
+                    showToast(self, TOAST_TYPE_ERROR, "请输入完整路径(以\"/\"开头)", Toast.LENGTH_SHORT);
+                    return;
+                }
+                File f = new File(path);
+                if (!f.exists() || !f.isDirectory()) {
+                    showToast(self, TOAST_TYPE_ERROR, "文件夹不存在", Toast.LENGTH_SHORT);
+                    return;
+                }
+                if (!f.canWrite()) {
+                    showToast(self, TOAST_TYPE_ERROR, "文件夹无访问权限", Toast.LENGTH_SHORT);
+                    return;
+                }
+                if (!path.endsWith("/")) path += "/";
+                recv.setRedirectPathAndEnable(path);
+                updateRecvRedirectStatus();
+                alertDialog.dismiss();
+            }
+        });
+    }
+
+    private void updateRecvRedirectStatus() {
+        FileRecvRedirect recv = FileRecvRedirect.get();
+        if (recv.isEnabled()) {
+            __recv_status.setText("[已启用]");
+            __recv_desc.setText(recv.getRedirectPath());
+        } else {
+            __recv_status.setText("[禁用]");
+            __recv_desc.setText(recv.getDefaultPath());
         }
     }
 

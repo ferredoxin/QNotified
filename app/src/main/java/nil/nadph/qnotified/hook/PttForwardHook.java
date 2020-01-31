@@ -40,7 +40,7 @@ import static nil.nadph.qnotified.util.Utils.*;
 
 public class PttForwardHook extends BaseDelayableHook {
 
-    public static final int R_ID_PTT_FORWARD = 0x00EE77CB;
+    public static final int R_ID_PTT_FORWARD = 0x30EE77CB;
     private static final PttForwardHook self = new PttForwardHook();
     private boolean inited = false;
 
@@ -275,7 +275,7 @@ public class PttForwardHook extends BaseDelayableHook {
 
     @Override
     public int[] getPreconditions() {
-        return new int[]{};
+        return new int[]{DexKit.C_FACADE};
     }
 
     @Override

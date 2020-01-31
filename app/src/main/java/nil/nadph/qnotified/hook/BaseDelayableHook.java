@@ -36,7 +36,8 @@ public abstract class BaseDelayableHook {
                 MultiForwardAvatarHook.get(),
                 ReplyNoAtHook.get(),
                 MuteQZoneThumbsUp.get(),
-                FakeBatteryHook.get()
+                FakeBatteryHook.get(),
+                FileRecvRedirect.get()
         };
         return sAllHooks;
     }
