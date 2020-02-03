@@ -1,15 +1,15 @@
 [
   {
-    "code": 20,
-    "name": "0.5.2",
-    "taichi": false,
+    "code": 22,
+    "name": "0.6.0-rc2",
+    "taichi": true,
     "beta": false,
-    "time": 1578381829,
-    "md5": "e56478f96bf642e9016563894d6960e2",
-    "desc": "- 适配新版本\n- 添加隐藏礼物动画\n- 添加签到文本化\n- 调大复读图标\n- 添加ArkApp卡片消息\n- 添加简洁模式圆头像\n- 导出好友列表\n- bugs fixed",
+    "time": 1580705990,
+    "md5": "f7da08c4acb8aafad6888cd8a8a0ab44",
+    "desc": "- 去除回复自动@\n- 添加StructMsg(XML)卡片消息\n- 转发消息点击头像打开资料卡\n- 下载重定向(原QQ净化)\n- 禁止聊天界面输入$弹出 选择赠送对象 窗口\n- 屏蔽QQ空间点赞通知\n- bugs fixed",
     "urls": [
-      "https://pan.baidu.com/s/1JMIA_5yd013lBlDZvpdbwQ",
-      "https://github.com/cinit/QNotified/releases/download/v0.5.2/QNotified_052.apk"
+      "https://github.com/cinit/QNotified/releases/download/v0.6.0/QNotified_0.6.0-rc2.apk",
+      "https://pan.baidu.com/s/1bwBB9UkP07quJxffHMMlMQ"
     ]
   }
 ]
