@@ -1,6 +1,7 @@
 package nil.nadph.qnotified.util;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -24,6 +25,7 @@ import java.lang.reflect.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -63,7 +65,7 @@ public class Utils {
             qn_donated_choice = "qn_donated_choice";
 
 
-    public static final String QN_VERSION_NAME = "0.6.0-rc2";
+    public static final String QN_VERSION_NAME = "0.7.0-rc1";
     public static final int QN_VERSION_CODE = 22;
     public static final String PACKAGE_NAME_QQ = "com.tencent.mobileqq";
     public static final String PACKAGE_NAME_QQ_INTERNATIONAL = "com.tencent.mobileqqi";
@@ -364,7 +366,7 @@ public class Utils {
         return method.invoke(null, argv);
     }
 
-    public static Object new_instance(Class clazz, Object... argsAndTypes) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+    public static Object new_instance(Class clazz, Object... argsAndTypes) throws InvocationTargetException, InstantiationException, NoSuchMethodException {
         int argc = argsAndTypes.length / 2;
         Class[] argt = new Class[argc];
         Object[] argv = new Object[argc];
@@ -376,7 +378,13 @@ public class Utils {
         }
         m = clazz.getDeclaredConstructor(argt);
         m.setAccessible(true);
-        return m.newInstance(argv);
+        try {
+            return m.newInstance(argv);
+        } catch (IllegalAccessException e) {
+            log(e);
+            //should NOT happen
+            throw new RuntimeException(e);
+        }
     }
 
     public static Object getQQAppInterface() {
@@ -692,7 +700,7 @@ public class Utils {
     }
 
     public static Field findField(Class<?> clazz, Class<?> type, String name) {
-        if (clazz != null && !name.isEmpty()) {
+        if (clazz != null && name.length() > 0) {
             Class<?> clz = clazz;
             do {
                 for (Field field : clz.getDeclaredFields()) {
@@ -732,6 +740,7 @@ public class Utils {
     }
 
     public static void log(Throwable th) {
+        if (th == null) return;
         BugCollector.onThrowable(th);
         log(Log.getStackTraceString(th));
     }
@@ -1206,6 +1215,46 @@ public class Utils {
 
     }
 
+    public static String en_toStr(Object obj) {
+        if (obj == null) return null;
+        String str;
+        if (obj instanceof CharSequence) str = Utils.en(obj.toString());
+        else str = "" + obj;
+        return str;
+    }
+
+    public static String nomorethan100(Object obj) {
+        if (obj == null) return null;
+        String str;
+        if (obj instanceof CharSequence) str = "\"" + obj + "\"";
+        else str = "" + obj;
+        if (str.length() > 110) return str.substring(0, 100);
+        return str;
+    }
+
+    public static Activity getCurrentActivity() {
+        try {
+            Class activityThreadClass = Class.forName("android.app.ActivityThread");
+            Object activityThread = activityThreadClass.getMethod("currentActivityThread").invoke(null);
+            Field activitiesField = activityThreadClass.getDeclaredField("mActivities");
+            activitiesField.setAccessible(true);
+            Map activities = (Map) activitiesField.get(activityThread);
+            for (Object activityRecord : activities.values()) {
+                Class activityRecordClass = activityRecord.getClass();
+                Field pausedField = activityRecordClass.getDeclaredField("paused");
+                pausedField.setAccessible(true);
+                if (!pausedField.getBoolean(activityRecord)) {
+                    Field activityField = activityRecordClass.getDeclaredField("activity");
+                    activityField.setAccessible(true);
+                    return (Activity) activityField.get(activityRecord);
+                }
+            }
+        } catch (Exception e) {
+            log(e);
+        }
+        return null;
+    }
+
     public static class ContactDescriptor {
         public String uin;
         public int uinType;
@@ -1224,5 +1273,9 @@ public class Utils {
 
     }
 
+    public static void onStubClassInitialize() {
+        Throwable th = new Throwable("WTF: stub class was initialized!!!");
+        log(th);
+    }
 
 }

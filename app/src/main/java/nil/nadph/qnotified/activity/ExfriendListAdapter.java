@@ -1,4 +1,4 @@
-package nil.nadph.qnotified.adapter;
+package nil.nadph.qnotified.activity;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 import android.widget.*;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.FaceImpl;
-import nil.nadph.qnotified.StartupHook;
+import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.record.EventRecord;
 import nil.nadph.qnotified.record.FriendRecord;
 import nil.nadph.qnotified.ui.CustomDialog;
@@ -94,7 +94,7 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
                     //self.onBackPressed();
                     //ExfriendManager.getCurrent().doRequestFlRefresh();
                     //Utils.showToastShort(v.getContext(),"即将开放(没啥好设置的)...");
-                    StartupHook.startProxyActivity(self, ActProxyMgr.ACTION_ADV_SETTINGS);
+                    MainHook.startProxyActivity(self, ActProxyMgr.ACTION_ADV_SETTINGS);
                     //Intent intent=new Intent(v.getContext(),load(ActProxyMgr.DUMMY_ACTIVITY));
                     //int id=ActProxyMgr.next();
                     //intent.putExtra(ACTIVITY_PROXY_ID_TAG,id);
@@ -290,7 +290,7 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
             public void onClick(View v) {
 
                 long uin = ((EventRecord) v.getTag()).operand;
-                StartupHook.openProfileCard(v.getContext(), uin);
+                MainHook.openProfileCard(v.getContext(), uin);
             }
         });
         rlayout.setOnLongClickListener(new View.OnLongClickListener() {

@@ -6,9 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
-import nil.nadph.qnotified.StartupHook;
+import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.adapter.ActProxyMgr;
+import nil.nadph.qnotified.activity.ActProxyMgr;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Utils;
 
@@ -48,7 +48,7 @@ public class SettingEntryHook extends BaseDelayableHook {
                         item.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                StartupHook.startProxyActivity((Context) param.thisObject, ActProxyMgr.ACTION_ADV_SETTINGS);
+                                MainHook.startProxyActivity((Context) param.thisObject, ActProxyMgr.ACTION_ADV_SETTINGS);
                             }
                         });
                         ViewGroup list = (ViewGroup) itemRef.getParent();

@@ -15,7 +15,7 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.adapter.ActProxyMgr;
+import nil.nadph.qnotified.activity.ActProxyMgr;
 import nil.nadph.qnotified.pk.FriendChunk;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.ui.ResUtils;
@@ -27,7 +27,7 @@ import java.util.HashSet;
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static nil.nadph.qnotified.adapter.ActProxyMgr.*;
+import static nil.nadph.qnotified.activity.ActProxyMgr.*;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
@@ -134,7 +134,13 @@ public class DelDetectorHook extends BaseDelayableHook {
                 RelativeLayout.LayoutParams exlp = new RelativeLayout.LayoutParams(MATCH_PARENT, height);
                 exlp.topMargin = 0;
                 exlp.leftMargin = 0;
-
+                try {
+                    if (exfriend.getParent() != null) {
+                        ((ViewGroup) exfriend.getParent()).removeView(exfriend);
+                    }
+                } catch (Exception e) {
+                    log(e);
+                }
                 rell.addView(exfriend, exlp);
                 RelativeLayout.LayoutParams dotlp = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
                 dotlp.topMargin = 0;

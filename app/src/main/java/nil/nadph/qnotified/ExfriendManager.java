@@ -12,7 +12,7 @@ import android.os.Vibrator;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-import nil.nadph.qnotified.adapter.ActProxyMgr;
+import nil.nadph.qnotified.activity.ActProxyMgr;
 import nil.nadph.qnotified.hook.DelDetectorHook;
 import nil.nadph.qnotified.pk.FriendChunk;
 import nil.nadph.qnotified.record.ConfigManager;
@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static nil.nadph.qnotified.adapter.ActProxyMgr.*;
+import static nil.nadph.qnotified.activity.ActProxyMgr.*;
 import static nil.nadph.qnotified.record.Table.*;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
@@ -191,6 +191,7 @@ public class ExfriendManager {
         }
     }
 
+    //TODO: Rename it
     public @Nullable
     void loadSavedPersonsInfo() {
         synchronized (this) {
@@ -342,7 +343,8 @@ public class ExfriendManager {
                 t.set(k, "_nick", ev._nick);
                 t.set(k, "_remark", ev._remark);
                 t.set(k, "_friendStatus", ev._friendStatus);
-            } catch (NoSuchFieldException e) {
+            } catch (Exception e) {
+                log(e);
                 //shouldn't happen
             }
             //log("addEx,"+ev.operand);
@@ -374,41 +376,45 @@ public class ExfriendManager {
         Object[] rec;
         long tmp;
         while (it.hasNext()) {
-            entry = it.next();
-            EventRecord ev = new EventRecord();
-            //e=entry.getKey();
-            rec = entry.getValue();
-            ev._nick = (String) rec[__nick];
-            ev._remark = (String) rec[__remark];
-            ev._friendStatus = (Integer) rec[__fs];
-            ev.timeRangeBegin = (Long) rec[_tb];
-            ev.timeRangeEnd = (Long) rec[_te];
-            ev.event = (Integer) rec[_ev];
-            if (_op == -1) {
-                // all don't have
-                ev.operand = (Long) rec[_op_old];
-            } else {
-                try {
-                    tmp = (Long) rec[_op];
-                } catch (NullPointerException e) {
-                    tmp = -1;
+            try {
+                entry = it.next();
+                EventRecord ev = new EventRecord();
+                //e=entry.getKey();
+                rec = entry.getValue();
+                ev._nick = (String) rec[__nick];
+                ev._remark = (String) rec[__remark];
+                ev._friendStatus = (Integer) rec[__fs];
+                ev.timeRangeBegin = (Long) rec[_tb];
+                ev.timeRangeEnd = (Long) rec[_te];
+                ev.event = (Integer) rec[_ev];
+                if (_op == -1) {
+                    // all don't have
+                    ev.operand = (Long) rec[_op_old];
+                } else {
+                    try {
+                        tmp = (Long) rec[_op];
+                    } catch (NullPointerException e) {
+                        tmp = -1;
+                    }
+                    if (tmp > 9999) ev.operand = tmp;
+                    else ev.operand = (Long) rec[_op_old];
                 }
-                if (tmp > 9999) ev.operand = tmp;
-                else ev.operand = (Long) rec[_op_old];
-            }
-            if (_exec != -1) {
-                try {
-                    ev.executor = (Long) rec[_exec];
-                } catch (NullPointerException e) {
+                if (_exec != -1) {
+                    try {
+                        ev.executor = (Long) rec[_exec];
+                    } catch (NullPointerException e) {
+                        ev.executor = -1;
+                    }
+                } else {
                     ev.executor = -1;
                 }
-            } else {
-                ev.executor = -1;
+                ev.before = (String) rec[_b];
+                ev.after = (String) rec[_a];
+                ev.extra = (String) rec[_extra];
+                events.put(entry.getKey(), ev);
+            } catch (Exception e) {
+                log(e);
             }
-            ev.before = (String) rec[_b];
-            ev.after = (String) rec[_a];
-            ev.extra = (String) rec[_extra];
-            events.put(entry.getKey(), ev);
         }
     }
 
@@ -633,10 +639,10 @@ public class ExfriendManager {
         synchronized (this) {
             FriendRecord fr = persons.get(uin);
             if (fr == null) {
-                try {
-                    showToast(StartupHook.splashActivityRef.get(), TOAST_TYPE_ERROR, "onActDelResp:get(" + uin + ")==null", Toast.LENGTH_SHORT);
-                } catch (Throwable e) {
-                }
+
+                showToast(MainHook.splashActivityRef.get(), TOAST_TYPE_ERROR, "onActDelResp:get(" + uin + ")==null", Toast.LENGTH_SHORT);
+
+
                 return;
             }
             EventRecord ev = new EventRecord();

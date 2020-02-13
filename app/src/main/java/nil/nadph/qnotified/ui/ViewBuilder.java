@@ -7,7 +7,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-import nil.nadph.qnotified.StartupHook;
+import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.record.ConfigManager;
@@ -397,7 +397,7 @@ public class ViewBuilder {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StartupHook.startProxyActivity(v.getContext(), action);
+                MainHook.startProxyActivity(v.getContext(), action);
             }
         };
     }

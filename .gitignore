@@ -2,14 +2,11 @@
 *.gradle
 *.pro
 
-
-app/lib/
-
 # Built application files
 *.apk
 *.ap_
 app/build/
-app/libs/
+app/lib/
 app/src/main/gen/
 app/src/main/bin/
 

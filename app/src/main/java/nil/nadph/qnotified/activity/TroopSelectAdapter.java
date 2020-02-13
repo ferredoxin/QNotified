@@ -1,4 +1,4 @@
-package nil.nadph.qnotified.adapter;
+package nil.nadph.qnotified.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -31,13 +31,13 @@ import java.util.HashSet;
 import static android.view.View.GONE;
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.adapter.ActProxyMgr.ACTION_MUTE_AT_ALL;
-import static nil.nadph.qnotified.adapter.ActProxyMgr.ACTION_MUTE_RED_PACKET;
+import static nil.nadph.qnotified.activity.ActProxyMgr.ACTION_MUTE_AT_ALL;
+import static nil.nadph.qnotified.activity.ActProxyMgr.ACTION_MUTE_RED_PACKET;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
 
-public class TroopSelectAdapter extends BaseAdapter implements ActivityAdapter, View.OnClickListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
+public class TroopSelectAdapter extends BaseAdapter, IphoneTitleBarActivityCompat implements View.OnClickListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
 
     private static final int R_ID_TRP_LAYOUT = 0x300AFF30;
     private static final int R_ID_TRP_TITLE = 0x300AFF31;

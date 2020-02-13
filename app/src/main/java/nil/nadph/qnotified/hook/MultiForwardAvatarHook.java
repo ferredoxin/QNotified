@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
 import de.robv.android.xposed.XC_MethodHook;
-import nil.nadph.qnotified.StartupHook;
+import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.util.Nullable;
 
@@ -66,7 +66,7 @@ public class MultiForwardAvatarHook extends BaseDelayableHook {
                             try {
                                 long uin = Long.parseLong(uinstr);
                                 if (uin > 10000) {
-                                    StartupHook.openProfileCard(ctx, uin);
+                                    MainHook.openProfileCard(ctx, uin);
                                 }
                             } catch (Exception e) {
                                 log(e);
@@ -78,7 +78,7 @@ public class MultiForwardAvatarHook extends BaseDelayableHook {
                             try {
                                 long uin = Long.parseLong(senderuin);
                                 if (uin > 10000) {
-                                    StartupHook.openProfileCard(ctx, uin);
+                                    MainHook.openProfileCard(ctx, uin);
                                 }
                             } catch (Exception e) {
                                 log(e);

@@ -2,6 +2,7 @@ package nil.nadph.qnotified.util;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Handler;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -260,7 +261,9 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
                 tv.setFocusable(true);
                 try {
                     tv.setFocusableInTouchMode(true);
-                    tv.setTextIsSelectable(true);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                        tv.setTextIsSelectable(true);
+                    }
                     tv.setAutoLinkMask(Linkify.WEB_URLS);
                 } catch (NoSuchMethodError ignored) {
                 }

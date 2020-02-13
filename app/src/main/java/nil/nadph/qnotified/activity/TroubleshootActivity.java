@@ -1,4 +1,4 @@
-package nil.nadph.qnotified.adapter;
+package nil.nadph.qnotified.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -32,28 +32,22 @@ import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
-public class TroubleshootActivity implements ActivityAdapter {
-    private Activity self;
-
-    public TroubleshootActivity(Activity activity) {
-        self = activity;
-    }
-
+public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
     @Override
-    public void doOnPostCreate(Bundle savedInstanceState) throws Throwable {
-        LinearLayout ll = new LinearLayout(self);
+    public boolean doOnCreate(Bundle savedInstanceState) {
+        LinearLayout ll = new LinearLayout(this);
         ll.setOrientation(LinearLayout.VERTICAL);
         ViewGroup.LayoutParams mmlp = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-        LinearLayout __ll = new LinearLayout(self);
+        LinearLayout __ll = new LinearLayout(this);
         __ll.setOrientation(LinearLayout.VERTICAL);
-        ViewGroup bounceScrollView = (ViewGroup) new_instance(load("com/tencent/mobileqq/widget/BounceScrollView"), self, null, Context.class, AttributeSet.class);
+        ViewGroup bounceScrollView = (ViewGroup) new_instance(load("com/tencent/mobileqq/widget/BounceScrollView"), this, null, Context.class, AttributeSet.class);
         //invoke_virtual(bounceScrollView,"a",true,500,500,boolean.class,int.class,int.class);
         bounceScrollView.setLayoutParams(mmlp);
         bounceScrollView.addView(ll, new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
         //invoke_virtual(bounceScrollView,"setNeedHorizontalGesture",true,boolean.class);
-        LinearLayout.LayoutParams fixlp = new LinearLayout.LayoutParams(MATCH_PARENT, dip2px(self, 48));
+        LinearLayout.LayoutParams fixlp = new LinearLayout.LayoutParams(MATCH_PARENT, dip2px(this, 48));
         RelativeLayout.LayoutParams __lp_l = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-        int mar = (int) (dip2px(self, 12) + 0.5f);
+        int mar = (int) (dip2px(this, 12) + 0.5f);
         __lp_l.setMargins(mar, 0, mar, 0);
         __lp_l.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         __lp_l.addRule(RelativeLayout.CENTER_VERTICAL);
@@ -63,15 +57,15 @@ public class TroubleshootActivity implements ActivityAdapter {
         __lp_r.addRule(RelativeLayout.CENTER_VERTICAL);
         ColorStateList hiColor = ColorStateList.valueOf(Color.argb(255, 242, 140, 72));
         RelativeLayout _t;
-        ll.addView(subtitle(self, "若模块更新后仍有问题或bug请点击[清除缓存]可尝试修复问题"));
-        ll.addView(newListItemButton(self, "清除缓存", "清除模块缓存并重新计算适配数据", null, clickToCleanCache()));
-        ll.addView(subtitle(self, "清除与重置(不可逆)"));
-        ll.addView(newListItemButton(self, "重置模块设置", "不影响历史好友信息", null, clickToReset()));
-        ll.addView(newListItemButton(self, "清除[已恢复]的历史记录", "删除当前帐号下所有状态为[已恢复]的历史好友记录", null, clickToWipeDeletedFriends()));
-        ll.addView(newListItemButton(self, "清除所有的历史记录", "删除当前帐号下所有的历史好友记录", null, clickToWipeAllFriends()));
+        ll.addView(subtitle(this, "若模块更新后仍有问题或bug请点击[清除缓存]可尝试修复问题"));
+        ll.addView(newListItemButton(this, "清除缓存", "清除模块缓存并重新计算适配数据", null, clickToCleanCache()));
+        ll.addView(subtitle(this, "清除与重置(不可逆)"));
+        ll.addView(newListItemButton(this, "重置模块设置", "不影响历史好友信息", null, clickToReset()));
+        ll.addView(newListItemButton(this, "清除[已恢复]的历史记录", "删除当前帐号下所有状态为[已恢复]的历史好友记录", null, clickToWipeDeletedFriends()));
+        ll.addView(newListItemButton(this, "清除所有的历史记录", "删除当前帐号下所有的历史好友记录", null, clickToWipeAllFriends()));
 
-        ll.addView(subtitle(self, ""));
-        ll.addView(subtitle(self, "以下内容基本上都没用，它们为了修复故障才留在这里。"));
+        ll.addView(subtitle(this, ""));
+        ll.addView(subtitle(this, "以下内容基本上都没用，它们为了修复故障才留在这里。"));
 
         for (int i = 1; i <= DexKit.DEOBF_NUM; i++) {
             try {
@@ -85,23 +79,23 @@ public class TroubleshootActivity implements ActivityAdapter {
                 if (ccurr != null) {
                     currName = ccurr.getName();
                 }
-                ll.addView(subtitle(self, "  [" + i + "]" + shortName + "\n" + orig + "\n->" + currName));
+                ll.addView(subtitle(this, "  [" + i + "]" + shortName + "\n" + orig + "\n->" + currName));
             } catch (Throwable e) {
-                ll.addView(subtitle(self, "  [" + i + "]" + e.toString()));
+                ll.addView(subtitle(this, "  [" + i + "]" + e.toString()));
             }
         }
 
 
-        ll.addView(subtitle(self, "SystemClassLoader\n" + ClassLoader.getSystemClassLoader() + "\nContext.getClassLoader()\n" + self.getClassLoader() + "\nThread.getContextClassLoader()\n" + Thread.currentThread().getContextClassLoader()));
+        ll.addView(subtitle(this, "SystemClassLoader\n" + ClassLoader.getSystemClassLoader() + "\nContext.getClassLoader()\n" + this.getClassLoader() + "\nThread.getContextClassLoader()\n" + Thread.currentThread().getContextClassLoader()));
 
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-        self.setContentView(bounceScrollView);
+        this.setContentView(bounceScrollView);
         LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);
         _lp_fat.weight = 1;
-        invoke_virtual(self, "setTitle", "故障排除", CharSequence.class);
-        invoke_virtual(self, "setImmersiveStatus");
-        invoke_virtual(self, "enableLeftBtn", true, boolean.class);
-        ActProxyMgr.setContentBackgroundDrawable(self, ResUtils.skin_background);
+        invoke_virtual(this, "setTitle", "故障排除", CharSequence.class);
+        invoke_virtual(this, "setImmersiveStatus");
+        invoke_virtual(this, "enableLeftBtn", true, boolean.class);
+        ActProxyMgr.setContentBackgroundDrawable(this, ResUtils.skin_background);
 
     }
 
@@ -110,7 +104,7 @@ public class TroubleshootActivity implements ActivityAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CustomDialog dialog = CustomDialog.create(self);
+                CustomDialog dialog = CustomDialog.create(this);
                 dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -123,7 +117,7 @@ public class TroubleshootActivity implements ActivityAdapter {
                                     it.remove();
                             }
                             exm.saveConfigure();
-                            showToast(self, TOAST_TYPE_SUCCESS, "操作成功", Toast.LENGTH_SHORT);
+                            showToast(this, TOAST_TYPE_SUCCESS, "操作成功", Toast.LENGTH_SHORT);
                         } catch (Throwable e) {
                         }
                     }
@@ -141,7 +135,7 @@ public class TroubleshootActivity implements ActivityAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CustomDialog dialog = CustomDialog.create(self);
+                CustomDialog dialog = CustomDialog.create(TroubleshootActivity.this);
                 dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -150,7 +144,7 @@ public class TroubleshootActivity implements ActivityAdapter {
                             exm.getConfig().getFile().delete();
                             exm.getConfig().reinit();
                             exm.reinit();
-                            showToast(self, TOAST_TYPE_SUCCESS, "操作成功", Toast.LENGTH_SHORT);
+                            showToast(this, TOAST_TYPE_SUCCESS, "操作成功", Toast.LENGTH_SHORT);
                         } catch (Throwable e) {
                         }
                     }
@@ -168,7 +162,7 @@ public class TroubleshootActivity implements ActivityAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CustomDialog dialog = CustomDialog.create(self);
+                CustomDialog dialog = CustomDialog.create(this);
                 dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -195,7 +189,7 @@ public class TroubleshootActivity implements ActivityAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CustomDialog dialog = CustomDialog.create(self);
+                CustomDialog dialog = CustomDialog.create(this);
                 dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -218,25 +212,4 @@ public class TroubleshootActivity implements ActivityAdapter {
         };
     }
 
-
-    @Override
-    public void doOnPostResume() throws Throwable {
-    }
-
-    @Override
-    public void doOnPostPause() throws Throwable {
-    }
-
-    @Override
-    public void doOnPostDestory() throws Throwable {
-    }
-
-    @Override
-    public void doOnPostActivityResult(int requestCode, int resultCode, Intent data) throws Throwable {
-    }
-
-    @Override
-    public boolean isWrapContent() throws Throwable {
-        return true;
-    }
 }

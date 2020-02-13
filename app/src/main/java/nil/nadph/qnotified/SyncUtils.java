@@ -6,7 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import libcore.io.Libcore;
+//import libcore.io.Libcore;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.record.ConfigManager;
 
@@ -205,13 +205,13 @@ public class SyncUtils {
      }
      */
 
-    public static int getUid() {
-        try {
-            return Libcore.os.getuid();
-        } catch (Throwable e) {
-            return android.os.Process.myUid();
-        }
-    }
+//    public static int getUid() {
+//        try {
+//            return Libcore.os.getuid();
+//        } catch (Throwable e) {
+//            return android.os.Process.myUid();
+//        }
+//    }
 
     public static void initId() {
         if (myId == 0) {

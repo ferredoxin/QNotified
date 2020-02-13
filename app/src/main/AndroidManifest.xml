@@ -2,12 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           package="nil.nadph.qnotified"
-          android:versionName="0.6.0-rc2"
+          android:versionName="0.7.0-rc1"
           android:versionCode="22">
 
     <uses-sdk
             android:targetSdkVersion="27"
-            android:minSdkVersion="14"/>
+            android:minSdkVersion="11" tools:ignore="OldTargetApi"/>
 
     <application
             android:icon="@drawable/ic_del_friend_top"

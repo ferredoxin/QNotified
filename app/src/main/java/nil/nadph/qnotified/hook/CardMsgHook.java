@@ -18,6 +18,7 @@ import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Utils;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
@@ -76,37 +77,36 @@ public class CardMsgHook extends BaseDelayableHook {
                                         Context ctx = v.getContext();
                                         EditText input = (EditText) viewGroup.findViewById(ctx.getResources().getIdentifier("input", "id", ctx.getPackageName()));
                                         String text = input.getText().toString();
-                                        if (text.contains("{")) {
-                                            try {
-                                                Object arkMsg = load("com.tencent.mobileqq.data.ArkAppMessage").newInstance();
-                                                if ((boolean) invoke_virtual(arkMsg, "fromAppXml", text, String.class)) {
-                                                    XposedHelpers.callStaticMethod(DexKit.doFindClass(DexKit.C_FACADE), "a", qqApp, session, arkMsg);
-                                                    //invoke_static(DexKit.doFindClass(DexKit.C_FACADE), "a", qqApp, session, arkMsg, load("com.tencent.mobileqq.app.QQAppInterface"), _SessionInfo(), arkMsg.getClass());
-                                                    input.setText("");
-                                                    return true;
-                                                }
-                                            } catch (Throwable e) {
+                                        if (text.length() == 0) {
+                                            showToast(ctx, TOAST_TYPE_ERROR, "请先输入卡片代码", Toast.LENGTH_SHORT);
+                                        } else {
+                                            if (text.contains("{")) {
                                                 try {
-                                                    Utils.showToast(ctx, TOAST_TYPE_ERROR, e.toString(), Toast.LENGTH_SHORT);
-                                                } catch (Throwable ignored) {
+                                                    Object arkMsg = load("com.tencent.mobileqq.data.ArkAppMessage").newInstance();
+                                                    if ((boolean) invoke_virtual(arkMsg, "fromAppXml", text, String.class)) {
+                                                        XposedHelpers.callStaticMethod(DexKit.doFindClass(DexKit.C_FACADE), "a", qqApp, session, arkMsg);
+                                                        //invoke_static(DexKit.doFindClass(DexKit.C_FACADE), "a", qqApp, session, arkMsg, load("com.tencent.mobileqq.app.QQAppInterface"), _SessionInfo(), arkMsg.getClass());
+                                                        input.setText("");
+                                                        return true;
+                                                    }
+                                                } catch (Throwable e) {
+                                                    if (e instanceof InvocationTargetException) e = e.getCause();
+                                                    log(e);
+                                                    Utils.showToast(ctx, TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), Toast.LENGTH_SHORT);
                                                 }
-                                                log(e);
-                                            }
-                                        }
-                                        if (text.contains("<")) {
-                                            try {
-                                                Object structMsg = invoke_static(DexKit.doFindClass(DexKit.C_TEST_STRUCT_MSG), "a", text, String.class, load("com.tencent.mobileqq.structmsg.AbsStructMsg"));
-                                                if (structMsg != null) {
-                                                    XposedHelpers.callStaticMethod(DexKit.doFindClass(DexKit.C_FACADE), "a", qqApp, session, structMsg);
-                                                    input.setText("");
-                                                    return true;
-                                                }
-                                            } catch (Throwable e) {
+                                            } else if (text.contains("<")) {
                                                 try {
-                                                    Utils.showToast(ctx, TOAST_TYPE_ERROR, e.toString(), Toast.LENGTH_SHORT);
-                                                } catch (Throwable ignored) {
+                                                    Object structMsg = invoke_static(DexKit.doFindClass(DexKit.C_TEST_STRUCT_MSG), "a", text, String.class, load("com.tencent.mobileqq.structmsg.AbsStructMsg"));
+                                                    if (structMsg != null) {
+                                                        XposedHelpers.callStaticMethod(DexKit.doFindClass(DexKit.C_FACADE), "a", qqApp, session, structMsg);
+                                                        input.setText("");
+                                                        return true;
+                                                    }
+                                                } catch (Throwable e) {
+                                                    if (e instanceof InvocationTargetException) e = e.getCause();
+                                                    log(e);
+                                                    Utils.showToast(ctx, TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), Toast.LENGTH_SHORT);
                                                 }
-                                                log(e);
                                             }
                                         }
                                         return true;

@@ -1,5 +1,6 @@
-package nil.nadph.qnotified.adapter;
+package nil.nadph.qnotified.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -20,6 +21,7 @@ import static nil.nadph.qnotified.util.Utils.*;
 
 /**
  * ActivityProxyManager
+ * TODO: replace it with fucking Activities without these fucking hooks
  */
 public class ActProxyMgr extends XC_MethodHook {
 
@@ -48,13 +50,7 @@ public class ActProxyMgr extends XC_MethodHook {
     private HashMap<Member, StackBreakHook> hooks = new HashMap<>();
     private int next_uuid = 1;
 
-    public static void setContentBackgroundDrawable(Activity activity, Drawable d) {
-        try {
-            ((View) activity.findViewById(16908290)).setBackgroundDrawable(d);
-        } catch (NullPointerException e) {
-            log(e);
-        }
-    }
+
 
     public static int next() {
         return instance.next_uuid++;
@@ -184,8 +180,9 @@ public class ActProxyMgr extends XC_MethodHook {
                         }
                         aa.doOnPostResume();
                         break;
+                    case "onActivityResult":
                     case "doOnActivityResult":
-                        m = getSuperMethod(self.getClass(), "doOnActivityResult", int.class, int.class, Intent.class);
+                        m = getSuperMethod(self.getClass(), method.getName(), int.class, int.class, Intent.class);
                         m.setAccessible(true);
                         try {
                             ActProxyMgr.invokeSuper(self, m, param.args);

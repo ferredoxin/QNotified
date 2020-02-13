@@ -1,4 +1,4 @@
-package nil.nadph.qnotified.adapter;
+package nil.nadph.qnotified.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -27,7 +27,7 @@ import java.io.File;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.adapter.ActProxyMgr.*;
+import static nil.nadph.qnotified.activity.ActProxyMgr.*;
 import static nil.nadph.qnotified.ui.ViewBuilder.*;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.SendBatchMsg.clickToBatchMsg;

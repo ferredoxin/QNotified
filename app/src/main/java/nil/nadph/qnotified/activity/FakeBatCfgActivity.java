@@ -1,4 +1,4 @@
-package nil.nadph.qnotified.adapter;
+package nil.nadph.qnotified.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;

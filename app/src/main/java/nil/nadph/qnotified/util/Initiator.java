@@ -1,5 +1,9 @@
 package nil.nadph.qnotified.util;
 
+import java.lang.reflect.Field;
+
+import static nil.nadph.qnotified.util.Utils.log;
+
 @SuppressWarnings("rawtypes")
 public class Initiator {
 
@@ -7,6 +11,17 @@ public class Initiator {
 
     public static void init(ClassLoader classLoader) {
         qqClassLoader = classLoader;
+        try {
+            Field fParent = ClassLoader.class.getDeclaredField("parent");
+            fParent.setAccessible(true);
+            ClassLoader mine = Initiator.class.getClassLoader();
+            ClassLoader curr = (ClassLoader) fParent.get(mine);
+            if (!curr.getClass().getName().equals(HybridClassLoader.class.getName())) {
+                fParent.set(mine, new HybridClassLoader(curr, qqClassLoader));
+            }
+        } catch (Exception e) {
+            log(e);
+        }
     }
 
     public static ClassLoader getClassLoader() {

@@ -110,7 +110,8 @@ public class PttForwardHook extends BaseDelayableHook {
                         Utils.ContactDescriptor cd = new Utils.ContactDescriptor();
                         cd.uin = data.getString("uin");
                         cd.uinType = data.getInt("uintype", -1);
-                        cd.nick = data.getString("uinname", data.getString("uin"));
+                        cd.nick = data.getString("uinname");
+                        if (cd.nick == null) cd.nick = data.getString("uin");
                         mTargets.add(cd);
                     }
                     if (unsupport) Utils.showToastShort(ctx, "暂不支持我的设备/临时聊天/讨论组");
