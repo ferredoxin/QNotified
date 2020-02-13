@@ -22,7 +22,7 @@ public class ActProxyMgr {
             case ACTION_EXFRIEND_LIST:
                 return ExfriendListActivity.class;
             case ACTION_ADV_SETTINGS:
-                return SettingsAdapter.class;
+                return SettingsActivity.class;
             case ACTION_MUTE_AT_ALL:
             case ACTION_MUTE_RED_PACKET:
                 return TroopSelectActivity.class;

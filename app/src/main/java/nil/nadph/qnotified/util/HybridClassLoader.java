@@ -4,29 +4,29 @@ import java.net.URL;
 
 public class HybridClassLoader extends ClassLoader {
 
-    private ClassLoader clXposed;
-    private ClassLoader clContext;
+    private ClassLoader clPreload;
+    private ClassLoader clBase;
 
     public HybridClassLoader(ClassLoader x, ClassLoader ctx) {
-        clXposed = x;
-        clContext = ctx;
+        clPreload = x;
+        clBase = ctx;
     }
 
     @Override
-    public Class<?> loadClass(String name) throws ClassNotFoundException {
+    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
         try {
             return ClassLoader.getSystemClassLoader().loadClass(name);
         } catch (ClassNotFoundException ignored) {
         }
-        if (clXposed != null) {
+        if (clPreload != null) {
             try {
-                return clXposed.loadClass(name);
+                return clPreload.loadClass(name);
             } catch (ClassNotFoundException ignored) {
             }
         }
-        if (clContext != null) {
+        if (clBase != null) {
             try {
-                return clContext.loadClass(name);
+                return clBase.loadClass(name);
             } catch (ClassNotFoundException ignored) {
             }
         }
@@ -35,8 +35,8 @@ public class HybridClassLoader extends ClassLoader {
 
     @Override
     public URL getResource(String name) {
-        URL ret = clXposed.getResource(name);
+        URL ret = clPreload.getResource(name);
         if (ret != null) return ret;
-        return clContext.getResource(name);
+        return clBase.getResource(name);
     }
 }

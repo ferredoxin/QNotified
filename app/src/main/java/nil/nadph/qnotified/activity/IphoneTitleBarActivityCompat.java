@@ -1,19 +1,36 @@
 package nil.nadph.qnotified.activity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import com.tencent.mobileqq.app.IphoneTitleBarActivity;
+import nil.nadph.qnotified.ui.ResUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressWarnings("deprecation")
 @SuppressLint("Registered")
 public class IphoneTitleBarActivityCompat extends IphoneTitleBarActivity {
+
+    @Override
+    public boolean doOnCreate(Bundle bundle) {
+        boolean ret = super.doOnCreate(bundle);
+        try {
+            ResUtils.initTheme(this);
+            Object exlist_mFlingHandler = new_instance(load("com/tencent/mobileqq/activity/fling/FlingGestureHandler"), this, Activity.class);
+            iput_object(this, "mFlingHandler", exlist_mFlingHandler);
+        } catch (Throwable e) {
+            log(e);
+        }
+        return ret;
+    }
 
     public boolean isWrapContent() {
         return true;

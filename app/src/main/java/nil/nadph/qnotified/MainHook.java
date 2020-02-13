@@ -18,10 +18,7 @@ import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.util.ActProxyMgr;
-import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.MainProcess;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.util.*;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.*;
@@ -315,12 +312,15 @@ public class MainHook {
     private void initForStubActivity(Context ctx) {
         if (__stub_hooked) return;
         try {
-            Instrumentation a;
-            //End of Instrumentation
             Class<?> clazz_ActivityThread = Class.forName("android.app.ActivityThread");
-            Field field_sCurrentActivityThread = clazz_ActivityThread.getDeclaredField("sCurrentActivityThread");
-            field_sCurrentActivityThread.setAccessible(true);
-            Object sCurrentActivityThread = field_sCurrentActivityThread.get(null);
+            Method currentActivityThread = clazz_ActivityThread.getDeclaredMethod("currentActivityThread");
+            currentActivityThread.setAccessible(true);
+            Object sCurrentActivityThread = currentActivityThread.invoke(null);
+            Field mInstrumentation = clazz_ActivityThread.getDeclaredField("mInstrumentation");
+            mInstrumentation.setAccessible(true);
+            Instrumentation instrumentation = (Instrumentation) mInstrumentation.get(sCurrentActivityThread);
+            mInstrumentation.set(sCurrentActivityThread, new MyInstrumentation(instrumentation));
+            //End of Instrumentation
             Field field_mH = clazz_ActivityThread.getDeclaredField("mH");
             field_mH.setAccessible(true);
             Handler oriHandler = (Handler) field_mH.get(sCurrentActivityThread);
@@ -384,10 +384,38 @@ public class MainHook {
         }
     }
 
+    public static class MyInstrumentation extends Instrumentation {
+        private Instrumentation base;
+
+        public MyInstrumentation(Instrumentation base) {
+            this.base = base;
+            try {
+                for (Field f : Instrumentation.class.getDeclaredFields()) {
+                    f.setAccessible(true);
+                    f.set(this, f.get(base));
+                }
+            } catch (Exception e) {
+                log(e);
+            }
+        }
+
+        @Override
+        public Activity newActivity(ClassLoader cl, String className, Intent intent) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+            try {
+                return base.newActivity(cl, className, intent);
+            } catch (Exception e) {
+                if (className.startsWith("nil.nadph.qnotified.")) {
+                    return (Activity) Initiator.class.getClassLoader().loadClass(className).newInstance();
+                }
+                throw e;
+            }
+        }
+    }
 
     public static class MyH implements Handler.Callback {
         private Handler.Callback mDefault;
-//        private WeakReference refLoadedApk = null;
+
+        //        private WeakReference refLoadedApk = null;
 //
         public MyH(Handler.Callback def) {
             mDefault = def;
