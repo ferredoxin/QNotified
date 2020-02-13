@@ -2,7 +2,6 @@ package mqq.app;
 
 import android.app.Activity;
 import android.os.Bundle;
-import mqq.app.Constants;
 
 public class BaseActivity extends Activity {
     protected static int sResumeCount = 0;

@@ -1,20 +1,17 @@
 package nil.nadph.qnotified.activity;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.*;
+import com.tencent.widget.XListView;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.FaceImpl;
 import nil.nadph.qnotified.MainHook;
@@ -23,33 +20,53 @@ import nil.nadph.qnotified.record.FriendRecord;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.ViewBuilder;
+import nil.nadph.qnotified.util.ActProxyMgr;
 import nil.nadph.qnotified.util.Utils;
 
 import java.util.*;
 
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.invoke_virtual;
 import static nil.nadph.qnotified.util.Utils.log;
 
-//import de.robv.android.xposed.*;
-
-public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter {
+@SuppressLint("Registered")
+public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
 
     private static final int R_ID_EXL_TITLE = 0x300AFF01;
     private static final int R_ID_EXL_SUBTITLE = 0x300AFF02;
     private static final int R_ID_EXL_FACE = 0x300AFF03;
     private static final int R_ID_EXL_STATUS = 0x300AFF04;
-    private Activity self;
+
     //private View mListView;
     private FaceImpl face;
     private ExfriendManager exm;
     private HashMap<Integer, EventRecord> eventsMap;
     private ArrayList<EventRecord> evs;
+    private BaseAdapter adapter = new BaseAdapter() {
+        @Override
+        public int getCount() {
+            return ExfriendListActivity.this.getCount();
+        }
 
-    public ExfriendListAdapter(Activity context) {
-        self = context;
+        @Override
+        public Object getItem(int position) {
+            return ExfriendListActivity.this.getItem(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return ExfriendListActivity.this.getItemId(position);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            return ExfriendListActivity.this.getView(position, convertView, parent);
+        }
+    };
+
+    @Override
+    public boolean doOnCreate(Bundle bundle) {
+        super.doOnCreate(bundle);
         try {
             face = FaceImpl.getInstance();
         } catch (Throwable e) {
@@ -57,33 +74,29 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
         }
         exm = ExfriendManager.getCurrent();
         reload();
-    }
 
-    @Override
-    public void doOnPostCreate(Bundle savedInstanceState) throws Throwable {
-        ViewGroup sdlv = (ViewGroup) load("com.tencent.widget.SwipListView").getConstructor(Context.class, AttributeSet.class).newInstance(self, null);
+        XListView sdlv = new XListView(this, null);
         sdlv.setFocusable(true);
         ViewGroup.LayoutParams mmlp = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
         RelativeLayout.LayoutParams mwllp = new RelativeLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
-        RelativeLayout rl = new RelativeLayout(self);//)new_instance(load("com/tencent/mobileqq/activity/fling/TopGestureLayout"),self,Context.class);
+        RelativeLayout rl = new RelativeLayout(ExfriendListActivity.this);//)new_instance(load("com/tencent/mobileqq/activity/fling/TopGestureLayout"),ExfriendListActivity.this,Context.class);
         //invoke_virtual(rl,"setInterceptScrollLRFlag",true,boolean.class);
         //invoke_virtual(rl,"setInterceptTouchFlag",true,boolean.class);
         //iput_object(rl,"
         mwllp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         mwllp.addRule(RelativeLayout.CENTER_VERTICAL);
 
-        TextView tv = new TextView(self);
+        TextView tv = new TextView(ExfriendListActivity.this);
         tv.setGravity(Gravity.CENTER);
         tv.setTextColor(ResUtils.skin_gray3);
-        tv.setTextSize(Utils.dip2sp(self, 14));
+        tv.setTextSize(Utils.dip2sp(ExfriendListActivity.this, 14));
         rl.addView(tv, mwllp);
         rl.addView(sdlv, mmlp);
-        self.setContentView(rl);
-        invoke_virtual(self, "setTitle", "历史好友", CharSequence.class);
-        invoke_virtual(self, "setImmersiveStatus");
-        invoke_virtual(self, "enableLeftBtn", true, boolean.class);
-        TextView rightBtn = (TextView) invoke_virtual(self, "getRightTextView");
-        //log("Title:"+invoke_virtual(self,"getTextTitle"));
+        setContentView(rl);
+        setTitle("历史好友");
+
+        TextView rightBtn = (TextView) getRightTextView();
+        //log("Title:"+invoke_virtual(ExfriendListActivity.this,"getTextTitle"));
         rightBtn.setVisibility(View.VISIBLE);
         rightBtn.setText("高级");
         rightBtn.setEnabled(true);
@@ -91,10 +104,10 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
             @Override
             public void onClick(View v) {
                 try {
-                    //self.onBackPressed();
+                    //ExfriendListActivity.this.onBackPressed();
                     //ExfriendManager.getCurrent().doRequestFlRefresh();
                     //Utils.showToastShort(v.getContext(),"即将开放(没啥好设置的)...");
-                    MainHook.startProxyActivity(self, ActProxyMgr.ACTION_ADV_SETTINGS);
+                    MainHook.startProxyActivity(ExfriendListActivity.this, ActProxyMgr.ACTION_ADV_SETTINGS);
                     //Intent intent=new Intent(v.getContext(),load(ActProxyMgr.DUMMY_ACTIVITY));
                     //int id=ActProxyMgr.next();
                     //intent.putExtra(ACTIVITY_PROXY_ID_TAG,id);
@@ -119,16 +132,16 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
             }
         });
         //.addView(sdlv,lp);
-        invoke_virtual(sdlv, "setDragEnable", true, boolean.class);
-        invoke_virtual(sdlv, "setDivider", null, Drawable.class);
+        sdlv.setDivider(null);
         long uin = Utils.getLongAccountUin();
         ExfriendManager exm = ExfriendManager.get(uin);
         exm.clearUnreadFlag();
         tv.setText("最后更新: " + Utils.getRelTimeStrSec(exm.lastUpdateTimeSec) + "\n长按列表可删除");
-        ViewBuilder.listView_setAdapter(sdlv, this);
-        ActProxyMgr.setContentBackgroundDrawable(self, ResUtils.skin_background);
+        ViewBuilder.listView_setAdapter(sdlv, adapter);
+        setContentBackgroundDrawable(ResUtils.skin_background);
         //invoke_virtual(sdlv,"setOnScrollGroupFloatingListener",true,load("com/tencent/widget/AbsListView$OnScrollListener"));
-        self.getWindow().getDecorView().setTag(this);
+        ExfriendListActivity.this.getWindow().getDecorView().setTag(this);
+        return true;
     }
 
     public void reload() {
@@ -152,22 +165,18 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
 		 }*/
     }
 
-    @Override
     public int getCount() {
         return evs.size();
     }
 
-    @Override
     public Object getItem(int position) {
         return null;
     }
 
-    @Override
     public long getItemId(int position) {
         return 0;
     }
 
-    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         EventRecord ev = evs.get(position);
         if (convertView == null) {
@@ -209,7 +218,7 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
         ImageView imgview = (ImageView) convertView.findViewById(R_ID_EXL_FACE);
         Bitmap bm = face.getBitmapFromCache(FaceImpl.TYPE_USER, "" + ev.operand);
         if (bm == null) {
-            imgview.setImageDrawable(ResUtils.loadDrawableFromAsset("face.png", self));
+            imgview.setImageDrawable(ResUtils.loadDrawableFromAsset("face.png", ExfriendListActivity.this));
             face.registerView(FaceImpl.TYPE_USER, "" + ev.operand, imgview);
         } else {
             imgview.setImageBitmap(bm);
@@ -222,18 +231,18 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private View inflateItemView(EventRecord ev) {
         int tmp;
-        RelativeLayout rlayout = new RelativeLayout(self);
-        LinearLayout llayout = new LinearLayout(self);
+        RelativeLayout rlayout = new RelativeLayout(ExfriendListActivity.this);
+        LinearLayout llayout = new LinearLayout(ExfriendListActivity.this);
         llayout.setGravity(Gravity.CENTER_VERTICAL);
         llayout.setOrientation(LinearLayout.HORIZONTAL);
 
-        LinearLayout textlayout = new LinearLayout(self);
+        LinearLayout textlayout = new LinearLayout(ExfriendListActivity.this);
         textlayout.setOrientation(LinearLayout.VERTICAL);
         rlayout.setBackground(ResUtils.getListItemBackground());
 
-        LinearLayout.LayoutParams imglp = new LinearLayout.LayoutParams(Utils.dip2px(self, 50), Utils.dip2px(self, 50));
-        imglp.setMargins(tmp = Utils.dip2px(self, 6), tmp, tmp, tmp);
-        ImageView imgview = new ImageView(self);
+        LinearLayout.LayoutParams imglp = new LinearLayout.LayoutParams(Utils.dip2px(ExfriendListActivity.this, 50), Utils.dip2px(ExfriendListActivity.this, 50));
+        imglp.setMargins(tmp = Utils.dip2px(ExfriendListActivity.this, 6), tmp, tmp, tmp);
+        ImageView imgview = new ImageView(ExfriendListActivity.this);
         imgview.setFocusable(false);
         imgview.setClickable(false);
         imgview.setId(R_ID_EXL_FACE);
@@ -243,26 +252,26 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
         llayout.addView(imgview, imglp);
         LinearLayout.LayoutParams ltxtlp = new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
         LinearLayout.LayoutParams textlp = new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
-        ltxtlp.setMargins(tmp = Utils.dip2px(self, 2), tmp, tmp, tmp);
-        textlp.setMargins(tmp = Utils.dip2px(self, 1), tmp, tmp, tmp);
+        ltxtlp.setMargins(tmp = Utils.dip2px(ExfriendListActivity.this, 2), tmp, tmp, tmp);
+        textlp.setMargins(tmp = Utils.dip2px(ExfriendListActivity.this, 1), tmp, tmp, tmp);
         llayout.addView(textlayout, ltxtlp);
 
 
-        TextView title = new TextView(self);
+        TextView title = new TextView(ExfriendListActivity.this);
         title.setId(R_ID_EXL_TITLE);
         title.setSingleLine();
         //title.setText(ev.getShowStr());
         title.setGravity(Gravity.CENTER_VERTICAL);
         title.setTextColor(ResUtils.cloneColor(ResUtils.skin_black));
-        title.setTextSize(Utils.px2sp(self, Utils.dip2px(self, 16)));
+        title.setTextSize(Utils.px2sp(ExfriendListActivity.this, Utils.dip2px(ExfriendListActivity.this, 16)));
         //title.setPadding(tmp=Utils.dip2px(ctx,8),tmp,0,tmp);
 
-        TextView subtitle = new TextView(self);
+        TextView subtitle = new TextView(ExfriendListActivity.this);
         subtitle.setId(R_ID_EXL_SUBTITLE);
         subtitle.setSingleLine();
         subtitle.setGravity(Gravity.CENTER_VERTICAL);
         subtitle.setTextColor(ResUtils.cloneColor(ResUtils.skin_gray3));
-        subtitle.setTextSize(Utils.px2sp(self, Utils.dip2px(self, 14)));
+        subtitle.setTextSize(Utils.px2sp(ExfriendListActivity.this, Utils.dip2px(ExfriendListActivity.this, 14)));
         //subtitle.setPadding(tmp,0,0,tmp);
 
         textlayout.addView(title, textlp);
@@ -270,14 +279,14 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
 
         RelativeLayout.LayoutParams statlp = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
 
-        TextView stat = new TextView(self);
+        TextView stat = new TextView(ExfriendListActivity.this);
         stat.setId(R_ID_EXL_STATUS);
         stat.setSingleLine();
         stat.setGravity(Gravity.CENTER);
-        stat.setTextSize(Utils.px2sp(self, Utils.dip2px(self, 16)));
+        stat.setTextSize(Utils.px2sp(ExfriendListActivity.this, Utils.dip2px(ExfriendListActivity.this, 16)));
         statlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         statlp.addRule(RelativeLayout.CENTER_VERTICAL);
-        statlp.rightMargin = Utils.dip2px(self, 16);
+        statlp.rightMargin = Utils.dip2px(ExfriendListActivity.this, 16);
 
 
         rlayout.addView(llayout);
@@ -297,7 +306,7 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
             @Override
             public boolean onLongClick(final View v) {
                 try {
-                    CustomDialog dialog = CustomDialog.create(self);
+                    CustomDialog dialog = CustomDialog.create(ExfriendListActivity.this);
                     dialog.setTitle("删除记录");
                     dialog.setMessage("确认删除历史记录(" + ((EventRecord) v.getTag())._remark + ")");
                     dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
@@ -307,7 +316,7 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
                             exm.getEvents().values().remove(v.getTag());
                             exm.saveConfigure();
                             reload();
-                            notifyDataSetChanged();
+                            adapter.notifyDataSetChanged();
                         }
                     });
                     dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -324,29 +333,6 @@ public class ExfriendListAdapter extends BaseAdapter implements ActivityAdapter 
             }
         });
         return rlayout;
-
-
     }
 
-    @Override
-    public void doOnPostDestory() throws Throwable {
-    }
-
-    @Override
-    public void doOnPostPause() throws Throwable {
-    }
-
-    @Override
-    public void doOnPostResume() throws Throwable {
-    }
-
-    @Override
-    public boolean isWrapContent() throws Throwable {
-        return true;
-    }
-
-    @Override
-    public void doOnPostActivityResult(int requestCode, int resultCode, Intent data) {
-
-    }
 }

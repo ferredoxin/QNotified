@@ -1,9 +1,14 @@
 package nil.nadph.qnotified;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Instrumentation;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.Parcelable;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,17 +16,18 @@ import android.widget.FrameLayout;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
-import nil.nadph.qnotified.activity.ActProxyMgr;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.util.*;
+import nil.nadph.qnotified.util.ActProxyMgr;
+import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.MainProcess;
+import nil.nadph.qnotified.util.Utils;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.*;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static nil.nadph.qnotified.activity.ActProxyMgr.ACTIVITY_PROXY_ACTION;
-import static nil.nadph.qnotified.activity.ActProxyMgr.ACTIVITY_PROXY_ID_TAG;
+import static nil.nadph.qnotified.util.ActProxyMgr.ACTIVITY_PROXY_ACTION;
 import static nil.nadph.qnotified.util.Initiator._StartupDirector;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
@@ -105,9 +111,7 @@ public class MainHook {
     }
 
     public static void startProxyActivity(Context ctx, int action) {
-        Intent intent = new Intent(ctx, load(ActProxyMgr.STUB_ACTIVITY));
-        int id = ActProxyMgr.next();
-        intent.putExtra(ACTIVITY_PROXY_ID_TAG, id);
+        Intent intent = new Intent(ctx, ActProxyMgr.getActivityByAction(action));
         intent.putExtra(ACTIVITY_PROXY_ACTION, action);
         intent.putExtra("fling_action_key", 2);
         intent.putExtra("fling_code_key", ctx.hashCode());
@@ -205,7 +209,7 @@ public class MainHook {
         }
     }
 
-    public void performHook(Context ctx) {
+    public void performHook(Context ctx, Object step) {
         SyncUtils.initBroadcast(ctx);
 //        if (SyncUtils.getProcessType() == SyncUtils.PROC_MSF) {
 //            Debug.waitForDebugger();
@@ -237,8 +241,8 @@ public class MainHook {
             });
         } else {
             Class director = _StartupDirector();
-            Object dir = iget_object_or_null(param.thisObject, "mDirector", director);
-            if (dir == null) dir = iget_object_or_null(param.thisObject, "a", director);
+            Object dir = iget_object_or_null(step, "mDirector", director);
+            if (dir == null) dir = iget_object_or_null(step, "a", director);
             InjectDelayableHooks.step(dir);
         }
 
@@ -299,18 +303,130 @@ public class MainHook {
 
     @MainProcess
     private void injectStartupHookForMain(Context ctx) {
-        Class clazz = load(ActProxyMgr.STUB_ACTIVITY);
-        if (clazz != null) {
-            ActProxyMgr mgr = ActProxyMgr.getInstance();
-            findAndHookMethod(clazz, "onCreate", Bundle.class, mgr);
-            findAndHookMethodIfExists(clazz, "doOnDestroy", mgr);
-            findAndHookMethodIfExists(clazz, "onActivityResult", int.class, int.class, Intent.class, mgr);
-            findAndHookMethodIfExists(clazz, "doOnPause", mgr);
-            findAndHookMethodIfExists(clazz, "doOnResume", mgr);
-            findAndHookMethodIfExists(clazz, "isWrapContent", mgr);
-        }
+        initForStubActivity(ctx);
         asyncStartFindClass();
         hideMiniAppEntry();
+    }
+
+    public boolean __stub_hooked = false;
+
+    @MainProcess
+    @SuppressLint("PrivateApi")
+    private void initForStubActivity(Context ctx) {
+        if (__stub_hooked) return;
+        try {
+            Instrumentation a;
+            //End of Instrumentation
+            Class<?> clazz_ActivityThread = Class.forName("android.app.ActivityThread");
+            Field field_sCurrentActivityThread = clazz_ActivityThread.getDeclaredField("sCurrentActivityThread");
+            field_sCurrentActivityThread.setAccessible(true);
+            Object sCurrentActivityThread = field_sCurrentActivityThread.get(null);
+            Field field_mH = clazz_ActivityThread.getDeclaredField("mH");
+            field_mH.setAccessible(true);
+            Handler oriHandler = (Handler) field_mH.get(sCurrentActivityThread);
+            Field field_mCallback = Handler.class.getDeclaredField("mCallback");
+            field_mCallback.setAccessible(true);
+            Handler.Callback current = (Handler.Callback) field_mCallback.get(oriHandler);
+            if (current == null || !current.getClass().getName().equals(MyH.class.getName())) {
+                field_mCallback.set(oriHandler, new MyH(current));
+            }
+            //End of Handler
+            Class activityManagerClass = Class.forName("android.app.ActivityManagerNative");
+            Field gDefaultField = activityManagerClass.getDeclaredField("gDefault");
+            gDefaultField.setAccessible(true);
+            Object gDefault = gDefaultField.get(null);
+            Class singletonClass = Class.forName("android.util.Singleton");
+            Field mInstanceField = singletonClass.getDeclaredField("mInstance");
+            mInstanceField.setAccessible(true);
+            Object mInstance = mInstanceField.get(gDefault);
+            Object proxy = Proxy.newProxyInstance(
+                    mInstance.getClass().getClassLoader(),
+                    new Class[]{Class.forName("android.app.IActivityManager")},
+                    new IActivityManagerHandler(mInstance));
+            mInstanceField.set(gDefault, proxy);
+            //End of IActivityManager
+            __stub_hooked = true;
+        } catch (Exception e) {
+            log(e);
+        }
+    }
+
+    public static class IActivityManagerHandler implements InvocationHandler {
+        private Object mOrigin;
+
+        IActivityManagerHandler(Object origin) {
+            mOrigin = origin;
+        }
+
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            if ("startActivity".equals(method.getName())) {
+                int index = -1;
+                for (int i = 0; i < args.length; i++) {
+                    if (args[i] instanceof Intent) {
+                        index = i;
+                        break;
+                    }
+                }
+                if (index != -1) {
+                    Intent raw = (Intent) args[index];
+                    ComponentName component = raw.getComponent();
+                    if (component != null &&
+                            component.getClassName().startsWith("nil.nadph.qnotified.")) {
+                        Intent wrapper = new Intent();
+                        wrapper.setClassName(component.getPackageName(), ActProxyMgr.STUB_ACTIVITY);
+                        wrapper.putExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT, raw);
+                        args[index] = wrapper;
+                    }
+                }
+            }
+            return method.invoke(mOrigin, args);
+        }
+    }
+
+
+    public static class MyH implements Handler.Callback {
+        private Handler.Callback mDefault;
+//        private WeakReference refLoadedApk = null;
+//
+        public MyH(Handler.Callback def) {
+            mDefault = def;
+        }
+
+//        private Object makePackageInfo(Object record) {
+//            Object loadedApk = null;
+//            if (refLoadedApk != null && (loadedApk = refLoadedApk.get()) != null) {
+//                return loadedApk;
+//            }
+//            xxx;
+//            refLoadedApk = new WeakReference(loadedApk);
+//            return loadedApk;
+//        }
+
+        @Override
+        public boolean handleMessage(Message msg) {
+            if (msg.what == 100) { // LAUNCH_ACTIVITY
+                try {
+                    Object record = msg.obj;
+                    Field field_intent = record.getClass().getDeclaredField("intent");
+                    field_intent.setAccessible(true);
+                    Intent intent = (Intent) field_intent.get(record);
+                    if (intent.hasExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT)) {
+                        Intent realIntent = intent.getParcelableExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT);
+                        field_intent.set(record, realIntent);
+//                        Field field_packageInfo = record.getClass().getDeclaredField("packageInfo");
+//                        field_packageInfo.setAccessible(true);
+//                        field_packageInfo.set(realIntent, makePackageInfo(record));
+                    }
+                } catch (Exception e) {
+                    log(e);
+                }
+            }
+            if (mDefault != null) {
+                return mDefault.handleMessage(msg);
+            }
+            return false;
+        }
     }
 
     private void hideMiniAppEntry() {

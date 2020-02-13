@@ -1,14 +1,10 @@
 package com.tencent.mobileqq.app;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
 import android.view.View;
 
 import static android.view.Window.FEATURE_CUSTOM_TITLE;
-import static nil.nadph.qnotified.util.Utils.log;
 import static nil.nadph.qnotified.util.Utils.onStubClassInitialize;
 
 @Deprecated

@@ -1278,4 +1278,26 @@ public class Utils {
         log(th);
     }
 
+    @Nullable
+    public static Object defaultShadowClone(Object orig) {
+        if (orig == null) return null;
+        Class cl = orig.getClass();
+        Object clone;
+        try {
+            clone = cl.newInstance();
+            while (cl != null && !cl.equals(Object.class)) {
+                for (Field f : cl.getDeclaredFields()) {
+                    f.setAccessible(true);
+                    f.set(clone, f.get(orig));
+                }
+                cl = cl.getSuperclass();
+            }
+            return clone;
+        } catch (Exception e) {
+            log(e);
+            return null;
+        }
+    }
+}
+
 }

@@ -1,21 +1,18 @@
 package mqq.app;
 
-import android.app.Activity;
-import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Process;
-import android.os.*;
+import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import com.tencent.qphone.base.remote.SimpleAccount;
 import com.tencent.qphone.base.util.BaseApplication;
 
-import mqq.app.Constants;
-
-
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class MobileQQ extends BaseApplication {

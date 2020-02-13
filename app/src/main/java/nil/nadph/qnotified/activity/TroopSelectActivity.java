@@ -1,27 +1,24 @@
 package nil.nadph.qnotified.activity;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
-import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
+import com.tencent.widget.XListView;
 import nil.nadph.qnotified.FaceImpl;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.ui.ViewBuilder;
 import nil.nadph.qnotified.util.Utils;
 
 import java.util.ArrayList;
@@ -31,13 +28,12 @@ import java.util.HashSet;
 import static android.view.View.GONE;
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.activity.ActProxyMgr.ACTION_MUTE_AT_ALL;
-import static nil.nadph.qnotified.activity.ActProxyMgr.ACTION_MUTE_RED_PACKET;
-import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.ActProxyMgr.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 
-public class TroopSelectAdapter extends BaseAdapter, IphoneTitleBarActivityCompat implements View.OnClickListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
+@SuppressLint("Registered")
+public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
 
     private static final int R_ID_TRP_LAYOUT = 0x300AFF30;
     private static final int R_ID_TRP_TITLE = 0x300AFF31;
@@ -52,22 +48,32 @@ public class TroopSelectAdapter extends BaseAdapter, IphoneTitleBarActivityCompa
     private ArrayList<TroopInfo> mTroopInfoList;
     private int hits;
     private boolean searchMode = false;
-    private Activity mActivity;
+    private BaseAdapter mAdapter = new BaseAdapter() {
+        @Override
+        public int getCount() {
+            return TroopSelectActivity.this.getCount();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return TroopSelectActivity.this.getItem(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return TroopSelectActivity.this.getItemId(position);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            return TroopSelectActivity.this.getView(position, convertView, parent);
+        }
+    };
     private int mActionInt;
     private FaceImpl face;
     private EditText search;
     private TextView rightBtn, cancel, reverse, selectAll;
     private HashSet<String> muted;
-
-    public TroopSelectAdapter(Activity act, int action) {
-        mActivity = act;
-        mActionInt = action;
-        try {
-            face = FaceImpl.getInstance();
-        } catch (Throwable e) {
-            log(e);
-        }
-    }
 
     public static ArrayList<TroopInfo> getTroopInfoList() throws Exception {
         Object mTroopManager = getTroopManager();
@@ -111,24 +117,24 @@ public class TroopSelectAdapter extends BaseAdapter, IphoneTitleBarActivityCompa
             searchMode = false;
             search.setFocusable(false);
             search.setText("");
-            InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
-            View v2 = mActivity.getWindow().peekDecorView();
+            InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            View v2 = this.getWindow().peekDecorView();
             if (null != v) {
                 imm.hideSoftInputFromWindow(v2.getWindowToken(), 0);
             }
             cancel.setVisibility(GONE);
             selectAll.setVisibility(View.VISIBLE);
             reverse.setVisibility(View.VISIBLE);
-            notifyDataSetChanged();
+            mAdapter.notifyDataSetChanged();
         } else if (v == search) {
 			/*try{
-				Utils.showToastShort(mActivity,"setFocusable");
+				Utils.showToastShort(this,"setFocusable");
 			}catch(Throwable e){}*/
             searchMode = true;
             search.setFocusable(true);
             search.setFocusableInTouchMode(true);
             search.requestFocus();
-            InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT);
             cancel.setVisibility(View.VISIBLE);
             selectAll.setVisibility(GONE);
@@ -153,11 +159,11 @@ public class TroopSelectAdapter extends BaseAdapter, IphoneTitleBarActivityCompa
                     cfg.putString(Utils.qn_muted_red_packet, ret);
                     cfg.save();
                 }
-                mActivity.finish();
+                this.finish();
             } catch (Exception e) {
                 try {
                     log(e);
-                    Utils.showToast(mActivity, Utils.TOAST_TYPE_ERROR, e.toString(), Toast.LENGTH_SHORT);
+                    Utils.showToast(this, Utils.TOAST_TYPE_ERROR, e.toString(), Toast.LENGTH_SHORT);
                 } catch (Throwable ignored) {
                 }
             }
@@ -165,7 +171,7 @@ public class TroopSelectAdapter extends BaseAdapter, IphoneTitleBarActivityCompa
             for (TroopInfo info : mTroopInfoList) {
                 muted.add(info.troopuin);
             }
-            notifyDataSetInvalidated();
+            mAdapter.notifyDataSetInvalidated();
         } else if (v == reverse) {
             for (TroopInfo info : mTroopInfoList) {
                 HashSet<String> ref = (HashSet<String>) muted.clone();
@@ -175,31 +181,27 @@ public class TroopSelectAdapter extends BaseAdapter, IphoneTitleBarActivityCompa
                     muted.add(info.troopuin);
                 }
             }
-            notifyDataSetInvalidated();
+            mAdapter.notifyDataSetInvalidated();
         }
     }
 
-    @Override
     public int getCount() {
         if (searchMode && hits > 0) {
             return hits;
         } else return mTroopInfoList == null ? 0 : mTroopInfoList.size();
     }
 
-    @Override
     public Object getItem(int position) {
         if (searchMode && hits > 0) {
             return mTroopInfoList.get(position);
         } else return mTroopInfoList == null ? null : mTroopInfoList.get(position);
     }
 
-    @Override
     public long getItemId(int position) {
         TroopInfo info = (TroopInfo) getItem(position);
         return info == null ? -1 : Long.parseLong(info.troopuin);
     }
 
-    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) convertView = createItemView();
         TroopInfo info = mTroopInfoList.get(position);
@@ -218,7 +220,7 @@ public class TroopSelectAdapter extends BaseAdapter, IphoneTitleBarActivityCompa
         ImageView imgview = (ImageView) convertView.findViewById(R_ID_TRP_FACE);
         Bitmap bm = face.getBitmapFromCache(FaceImpl.TYPE_TROOP, info.troopuin);
         if (bm == null) {
-            imgview.setImageDrawable(ResUtils.loadDrawableFromAsset("face.png", mActivity));
+            imgview.setImageDrawable(ResUtils.loadDrawableFromAsset("face.png", this));
             face.registerView(FaceImpl.TYPE_TROOP, info.troopuin, imgview);
         } else {
             imgview.setImageBitmap(bm);
@@ -229,15 +231,27 @@ public class TroopSelectAdapter extends BaseAdapter, IphoneTitleBarActivityCompa
         return convertView;
     }
 
-    public void doOnPostCreate(Bundle savedInstanceState) throws Throwable {
-        int bar_hi = WRAP_CONTENT;//dip2px(mActivity,30);
+    @Override
+    public boolean doOnCreate(Bundle savedInstanceState) {
+        super.doOnCreate(savedInstanceState);
+        mActionInt = getIntent().getIntExtra(ACTIVITY_PROXY_ACTION, -1);
+        if (mActionInt == -1) {
+            finish();
+            return true;
+        }
+        try {
+            face = FaceImpl.getInstance();
+        } catch (Throwable e) {
+            log(e);
+        }
+        int bar_hi = WRAP_CONTENT;//dip2px(this,30);
         ColorStateList cTitle = ResUtils.skin_black;
-        LinearLayout main = new LinearLayout(mActivity);
+        LinearLayout main = new LinearLayout(this);
         main.setOrientation(LinearLayout.VERTICAL);
         main.setGravity(Gravity.CENTER_HORIZONTAL);
-        LinearLayout bar = new LinearLayout(mActivity);
+        LinearLayout bar = new LinearLayout(this);
         bar.setOrientation(LinearLayout.HORIZONTAL);
-        search = new EditText(mActivity);
+        search = new EditText(this);
         search.setHint("搜索...群名或群号");
         search.setPadding(3, 3, 3, 3);
         search.setFocusable(false);
@@ -249,19 +263,19 @@ public class TroopSelectAdapter extends BaseAdapter, IphoneTitleBarActivityCompa
         LinearLayout.LayoutParams btnlp = new LinearLayout.LayoutParams(WRAP_CONTENT, bar_hi);
         LinearLayout.LayoutParams searchlp = new LinearLayout.LayoutParams(WRAP_CONTENT, bar_hi);
         searchlp.weight = 1;
-        reverse = new Button(mActivity);
+        reverse = new Button(this);
         reverse.setText("反选");
         reverse.setId(R_ID_TRP_REVERSE);
         reverse.setTextColor(cTitle);
         reverse.setBackgroundDrawable(null);
         reverse.setOnClickListener(this);
-        selectAll = new Button(mActivity);
+        selectAll = new Button(this);
         selectAll.setText("全选");
         selectAll.setId(R_ID_TRP_SELECT_ALL);
         selectAll.setTextColor(cTitle);
         selectAll.setBackgroundDrawable(null);
         selectAll.setOnClickListener(this);
-        cancel = new Button(mActivity);
+        cancel = new Button(this);
         cancel.setText("取消");
         cancel.setTextColor(cTitle);
         cancel.setId(R_ID_TRP_CANCEL);
@@ -273,14 +287,14 @@ public class TroopSelectAdapter extends BaseAdapter, IphoneTitleBarActivityCompa
         bar.addView(selectAll, btnlp);
         bar.addView(cancel, btnlp);
         main.addView(bar, new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-        ViewGroup sdlv = (ViewGroup) load("com.tencent.widget.SwipListView").getConstructor(Context.class, AttributeSet.class).newInstance(mActivity, null);
+        XListView sdlv = new XListView(this, null);
         //sdlv.setFocusable(true);
         //sdlv.setBackgroundDrawable(ResUtils.skin_background);
-        FrameLayout f = new FrameLayout(mActivity);
-        TextView tv = new TextView(mActivity);
+        FrameLayout f = new FrameLayout(this);
+        TextView tv = new TextView(this);
         tv.setGravity(Gravity.CENTER);
         tv.setTextColor(ResUtils.skin_gray3);
-        tv.setTextSize(Utils.dip2sp(mActivity, 14));
+        tv.setTextSize(Utils.dip2sp(this, 14));
         try {
             mTroopInfoList = getTroopInfoList();
             tv.setText("若此处群列表显示不完整,请返回后在QQ的联系人的群列表下拉刷新后再回到此处重试");
@@ -293,25 +307,22 @@ public class TroopSelectAdapter extends BaseAdapter, IphoneTitleBarActivityCompa
         f.addView(tv, flp);
         f.addView(sdlv, new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         main.addView(f, new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-        mActivity.setContentView(main);
+        this.setContentView(main);
         String title = "Fatal error!";
         if (mActionInt == ACTION_MUTE_AT_ALL)
             title = "屏蔽@全体成员";
         else if (mActionInt == ACTION_MUTE_RED_PACKET)
             title = "屏蔽群红包";
-        invoke_virtual(mActivity, "setTitle", title, CharSequence.class);
-        invoke_virtual(mActivity, "setImmersiveStatus");
-        invoke_virtual(mActivity, "enableLeftBtn", true, boolean.class);
-        rightBtn = (TextView) invoke_virtual(mActivity, "getRightTextView");
-        //log("Title:"+invoke_virtual(mActivity,"getTextTitle"));
+        setTitle(title);
+        rightBtn = (TextView) getRightTextView();
+        //log("Title:"+invoke_virtual(this,"getTextTitle"));
         rightBtn.setVisibility(View.VISIBLE);
         rightBtn.setText("完成");
         rightBtn.setEnabled(true);
         rightBtn.setOnClickListener(this);
         //.addView(sdlv,lp);
-        invoke_virtual(sdlv, "setDragEnable", true, boolean.class);
-        invoke_virtual(sdlv, "setDivider", null, Drawable.class);
-        ViewBuilder.listView_setAdapter(sdlv, this);
+        sdlv.setDivider(null);
+        sdlv.setAdapter(mAdapter);
         //invoke_virtual(sdlv,"setOnScrollGroupFloatingListener",true,load("com/tencent/widget/AbsListView$OnScrollListener"));
         muted = new HashSet<>();
         String list = null;
@@ -329,57 +340,58 @@ public class TroopSelectAdapter extends BaseAdapter, IphoneTitleBarActivityCompa
         if (muted != null && muted.size() > 0) {
             rightBtn.setText("完成(" + muted.size() + ")");
         }
-        ActProxyMgr.setContentBackgroundDrawable(mActivity, ResUtils.skin_background);
-        mActivity.getWindow().getDecorView().setTag(this);
+        setContentBackgroundDrawable(ResUtils.skin_background);
+        this.getWindow().getDecorView().setTag(this);
+        return true;
     }
 
     private LinearLayout createItemView() {
-        int std_mg = dip2px(mActivity, 16), tmp;
-        LinearLayout llayout = new LinearLayout(mActivity);
-        //RelativeLayout rlayout = new RelativeLayout(mActivity);
+        int std_mg = dip2px(this, 16), tmp;
+        LinearLayout llayout = new LinearLayout(this);
+        //RelativeLayout rlayout = new RelativeLayout(this);
         llayout.setGravity(Gravity.CENTER_VERTICAL);
         llayout.setOrientation(LinearLayout.HORIZONTAL);
         llayout.setPadding(std_mg, std_mg / 2, 0, std_mg / 2);
         llayout.setBackgroundDrawable(ResUtils.getListItemBackground());
         llayout.setOnClickListener(this);
         llayout.setId(R_ID_TRP_LAYOUT);
-        CheckBox checkBox = new CheckBox(mActivity);
+        CheckBox checkBox = new CheckBox(this);
         checkBox.setId(R_ID_TRP_CHECKBOX);
         checkBox.setOnCheckedChangeListener(this);
         checkBox.setButtonDrawable(null);
         checkBox.setBackgroundDrawable(ResUtils.getCheckBoxBackground());
-        LinearLayout.LayoutParams imglp = new LinearLayout.LayoutParams(Utils.dip2px(mActivity, 50), Utils.dip2px(mActivity, 50));
-        imglp.setMargins(tmp = Utils.dip2px(mActivity, 12), tmp / 2, tmp / 2, tmp / 2);
-        ImageView imgview = new ImageView(mActivity);
+        LinearLayout.LayoutParams imglp = new LinearLayout.LayoutParams(Utils.dip2px(this, 50), Utils.dip2px(this, 50));
+        imglp.setMargins(tmp = Utils.dip2px(this, 12), tmp / 2, tmp / 2, tmp / 2);
+        ImageView imgview = new ImageView(this);
         imgview.setFocusable(false);
         imgview.setClickable(false);
         imgview.setId(R_ID_TRP_FACE);
         imgview.setScaleType(ImageView.ScaleType.FIT_XY);
-        llayout.addView(checkBox, tmp = dip2px(mActivity, 20), tmp);
+        llayout.addView(checkBox, tmp = dip2px(this, 20), tmp);
         llayout.addView(imgview, imglp);
-        LinearLayout textlayout = new LinearLayout(mActivity);
+        LinearLayout textlayout = new LinearLayout(this);
         textlayout.setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams ltxtlp = new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
         LinearLayout.LayoutParams textlp = new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
-        ltxtlp.setMargins(tmp = Utils.dip2px(mActivity, 2), tmp, tmp, tmp);
-        textlp.setMargins(tmp = Utils.dip2px(mActivity, 1), tmp, tmp, tmp);
+        ltxtlp.setMargins(tmp = Utils.dip2px(this, 2), tmp, tmp, tmp);
+        textlp.setMargins(tmp = Utils.dip2px(this, 1), tmp, tmp, tmp);
         llayout.addView(textlayout, ltxtlp);
 
-        TextView title = new TextView(mActivity);
+        TextView title = new TextView(this);
         title.setId(R_ID_TRP_TITLE);
         title.setSingleLine();
         //title.setText(ev.getShowStr());
         title.setGravity(Gravity.CENTER_VERTICAL);
         title.setTextColor(ResUtils.cloneColor(ResUtils.skin_black));
-        title.setTextSize(Utils.px2sp(mActivity, Utils.dip2px(mActivity, 16)));
+        title.setTextSize(Utils.px2sp(this, Utils.dip2px(this, 16)));
         //title.setPadding(tmp=Utils.dip2px(ctx,8),tmp,0,tmp);
 
-        TextView subtitle = new TextView(mActivity);
+        TextView subtitle = new TextView(this);
         subtitle.setId(R_ID_TRP_SUBTITLE);
         subtitle.setSingleLine();
         subtitle.setGravity(Gravity.CENTER_VERTICAL);
         subtitle.setTextColor(ResUtils.cloneColor(ResUtils.skin_gray3));
-        subtitle.setTextSize(Utils.px2sp(mActivity, Utils.dip2px(mActivity, 14)));
+        subtitle.setTextSize(Utils.px2sp(this, Utils.dip2px(this, 14)));
         //subtitle.setPadding(tmp,0,0,tmp);
 
         textlayout.addView(title, textlp);
@@ -420,7 +432,7 @@ public class TroopSelectAdapter extends BaseAdapter, IphoneTitleBarActivityCompa
 
         }
         Collections.sort(mTroopInfoList);
-        notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -436,27 +448,6 @@ public class TroopSelectAdapter extends BaseAdapter, IphoneTitleBarActivityCompa
         rightBtn.setText("完成(" + muted.size() + ")");
     }
 
-    @Override
-    public void doOnPostDestory() throws Throwable {
-    }
-
-    @Override
-    public void doOnPostPause() throws Throwable {
-    }
-
-    @Override
-    public void doOnPostResume() throws Throwable {
-    }
-
-    @Override
-    public boolean isWrapContent() throws Throwable {
-        return true;
-    }
-
-    @Override
-    public void doOnPostActivityResult(int requestCode, int resultCode, Intent data) {
-
-    }
 
     public static class TroopInfo implements Comparable {
         public String troopuin;

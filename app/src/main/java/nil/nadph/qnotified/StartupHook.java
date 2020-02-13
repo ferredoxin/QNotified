@@ -49,7 +49,7 @@ public class StartupHook {
                             //System.exit(-1);
                             //QNotified updated(in HookLoader mode),kill QQ to make user restart it.
                         }
-                        MainHook.getInstance().performHook(ctx);
+                        MainHook.getInstance().performHook(ctx, param.thisObject);
                         System.setProperty(QN_FULL_TAG, "true");
                         sec_stage_inited = true;
                     } catch (Throwable e) {

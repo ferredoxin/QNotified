@@ -8,7 +8,7 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.activity.ActProxyMgr;
+import nil.nadph.qnotified.util.ActProxyMgr;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Utils;
 

@@ -1,26 +1,19 @@
 package nil.nadph.qnotified.activity;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
+import com.tencent.mobileqq.widget.BounceScrollView;
 import nil.nadph.qnotified.ui.ResUtils;
-
-import java.lang.reflect.InvocationTargetException;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.dip2px;
 
 @SuppressLint("Registered")
 public class AboutActivity extends IphoneTitleBarActivityCompat {
@@ -34,12 +27,7 @@ public class AboutActivity extends IphoneTitleBarActivityCompat {
         LinearLayout __ll = new LinearLayout(this);
         __ll.setOrientation(LinearLayout.VERTICAL);
         ViewGroup bounceScrollView = null;
-        try {
-            bounceScrollView = (ViewGroup) new_instance(load("com/tencent/mobileqq/widget/BounceScrollView"), this, null, Context.class, AttributeSet.class);
-        } catch (Exception e) {
-            log(e);
-            bounceScrollView = new ScrollView(this);
-        }
+        bounceScrollView = new BounceScrollView(this, null);
         //invoke_virtual(bounceScrollView,"a",true,500,500,boolean.class,int.class,int.class);
         bounceScrollView.setLayoutParams(mmlp);
         bounceScrollView.addView(ll, new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));

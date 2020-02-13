@@ -1,15 +1,12 @@
 package nil.nadph.qnotified.activity;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import com.tencent.mobileqq.widget.BounceScrollView;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.record.FriendRecord;
 import nil.nadph.qnotified.ui.ResUtils;
@@ -25,10 +22,10 @@ import java.util.HashMap;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
-import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
-public class FriendlistExportActivity implements ActivityAdapter {
+@SuppressLint("Registered")
+public class FriendlistExportActivity extends IphoneTitleBarActivityCompat {
 
     private static final int R_ID_CHECKBOX_CSV = 0x300AFF61;
     private static final int R_ID_CHECKBOX_JSON = 0x300AFF62;
@@ -37,27 +34,21 @@ public class FriendlistExportActivity implements ActivityAdapter {
     private static final int R_ID_RB_LF = 0x300AFF64;
     private static final int R_ID_CB_FRIENDS = 0x300AFF66;
     private static final int R_ID_CB_EXFRIENDS = 0x300AFF67;
-    private Activity self;
 
-
-    public FriendlistExportActivity(Activity activity) {
-        self = activity;
-    }
-
-    @SuppressLint("SetTextI18n")
     @Override
-    public void doOnPostCreate(Bundle savedInstanceState) throws Throwable {
-        LinearLayout ll = new LinearLayout(self);
+    public boolean doOnCreate(Bundle bundle) {
+        super.doOnCreate(bundle);
+        LinearLayout ll = new LinearLayout(FriendlistExportActivity.this);
         ll.setOrientation(LinearLayout.VERTICAL);
         ViewGroup.LayoutParams mmlp = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-        LinearLayout __ll = new LinearLayout(self);
+        LinearLayout __ll = new LinearLayout(FriendlistExportActivity.this);
         __ll.setOrientation(LinearLayout.VERTICAL);
-        final ViewGroup bounceScrollView = (ViewGroup) new_instance(load("com/tencent/mobileqq/widget/BounceScrollView"), self, null, Context.class, AttributeSet.class);
+        final ViewGroup bounceScrollView = new BounceScrollView(this, null);
         bounceScrollView.setLayoutParams(mmlp);
         bounceScrollView.addView(ll, new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-        LinearLayout.LayoutParams fixlp = new LinearLayout.LayoutParams(MATCH_PARENT, dip2px(self, 48));
+        LinearLayout.LayoutParams fixlp = new LinearLayout.LayoutParams(MATCH_PARENT, dip2px(FriendlistExportActivity.this, 48));
         RelativeLayout.LayoutParams __lp_l = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-        int mar = (int) (dip2px(self, 12) + 0.5f);
+        int mar = (int) (dip2px(FriendlistExportActivity.this, 12) + 0.5f);
         __lp_l.setMargins(mar, 0, mar, 0);
         __lp_l.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         __lp_l.addRule(RelativeLayout.CENTER_VERTICAL);
@@ -69,15 +60,15 @@ public class FriendlistExportActivity implements ActivityAdapter {
         LinearLayout.LayoutParams stdlp = new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
         stdlp.setMargins(mar, mar / 4, mar, mar / 4);
 
-        ll.addView(subtitle(self, "导出范围"));
+        ll.addView(subtitle(FriendlistExportActivity.this, "导出范围"));
 
-        final CheckBox exfonly = new CheckBox(self);
+        final CheckBox exfonly = new CheckBox(FriendlistExportActivity.this);
         exfonly.setText("历史好友");
         exfonly.setTextColor(ResUtils.skin_black);
         exfonly.setButtonDrawable(ResUtils.getCheckBoxBackground());
         exfonly.setId(R_ID_CB_EXFRIENDS);
         ll.addView(exfonly, stdlp);
-        final CheckBox frionly = new CheckBox(self);
+        final CheckBox frionly = new CheckBox(FriendlistExportActivity.this);
         frionly.setText("当前好友");
         frionly.setTextColor(ResUtils.skin_black);
         frionly.setButtonDrawable(ResUtils.getCheckBoxBackground());
@@ -86,42 +77,42 @@ public class FriendlistExportActivity implements ActivityAdapter {
 
         frionly.setChecked(true);
 
-        ll.addView(subtitle(self, "导出格式"));
+        ll.addView(subtitle(FriendlistExportActivity.this, "导出格式"));
 
-        final CheckBox cbCsv = new CheckBox(self);
+        final CheckBox cbCsv = new CheckBox(FriendlistExportActivity.this);
         cbCsv.setButtonDrawable(ResUtils.getCheckBoxBackground());
         cbCsv.setText("CSV");
         cbCsv.setTextColor(ResUtils.skin_black);
         cbCsv.setId(R_ID_CHECKBOX_CSV);
         ll.addView(cbCsv, stdlp);
-        final CheckBox cbJson = new CheckBox(self);
+        final CheckBox cbJson = new CheckBox(FriendlistExportActivity.this);
         cbJson.setButtonDrawable(ResUtils.getCheckBoxBackground());
         cbJson.setText("Json");
         cbCsv.setTextColor(ResUtils.skin_black);
         cbJson.setId(R_ID_CHECKBOX_JSON);
         ll.addView(cbJson, stdlp);
 
-        LinearLayout llcsvopt = new LinearLayout(self);
+        LinearLayout llcsvopt = new LinearLayout(FriendlistExportActivity.this);
         llcsvopt.setOrientation(LinearLayout.VERTICAL);
-        llcsvopt.addView(ViewBuilder.subtitle(self, "CSV设定"));
+        llcsvopt.addView(ViewBuilder.subtitle(FriendlistExportActivity.this, "CSV设定"));
 
-        final RadioGroup gcsvcrlf = new RadioGroup(self);
+        final RadioGroup gcsvcrlf = new RadioGroup(FriendlistExportActivity.this);
         gcsvcrlf.setOrientation(RadioGroup.VERTICAL);
         ll.addView(gcsvcrlf, stdlp);
-        gcsvcrlf.addView(subtitle(self, "换行符"));
-        RadioButton crlf = new RadioButton(self);
+        gcsvcrlf.addView(subtitle(FriendlistExportActivity.this, "换行符"));
+        RadioButton crlf = new RadioButton(FriendlistExportActivity.this);
         crlf.setText("CRLF - \\r\\n");
         crlf.setTextColor(ResUtils.skin_black);
         crlf.setButtonDrawable(ResUtils.getCheckBoxBackground());
         crlf.setId(R_ID_RB_CRLF);
         gcsvcrlf.addView(crlf, stdlp);
-        RadioButton cr = new RadioButton(self);
+        RadioButton cr = new RadioButton(FriendlistExportActivity.this);
         cr.setText("CR - \\r");
         cr.setTextColor(ResUtils.skin_black);
         cr.setButtonDrawable(ResUtils.getCheckBoxBackground());
         cr.setId(R_ID_RB_CR);
         gcsvcrlf.addView(cr, stdlp);
-        RadioButton lf = new RadioButton(self);
+        RadioButton lf = new RadioButton(FriendlistExportActivity.this);
         lf.setText("LF - \\n");
         lf.setTextColor(ResUtils.skin_black);
         lf.setButtonDrawable(ResUtils.getCheckBoxBackground());
@@ -151,10 +142,10 @@ public class FriendlistExportActivity implements ActivityAdapter {
         lf.setChecked(true);
         formatListener.onClick(cbCsv);
 
-        ll.addView(subtitle(self, "请输入要导出列表的QQ号(默认为当前登录的QQ号):"));
-        final EditText etuin = new EditText(self);
+        ll.addView(subtitle(FriendlistExportActivity.this, "请输入要导出列表的QQ号(默认为当前登录的QQ号):"));
+        final EditText etuin = new EditText(FriendlistExportActivity.this);
         etuin.setBackgroundDrawable(null);
-        etuin.setTextSize(Utils.dip2sp(self, 18));
+        etuin.setTextSize(Utils.dip2sp(FriendlistExportActivity.this, 18));
         etuin.setTextColor(ResUtils.skin_black);
         ll.addView(etuin, stdlp);
         long currentUin = -1;
@@ -165,16 +156,16 @@ public class FriendlistExportActivity implements ActivityAdapter {
             etuin.setHint("输入QQ号");
         }
 
-        ll.addView(subtitle(self, "导出文件保存路径(默认在内置存储根目录下):"));
-        final EditText expath = new EditText(self);
+        ll.addView(subtitle(FriendlistExportActivity.this, "导出文件保存路径(默认在内置存储根目录下):"));
+        final EditText expath = new EditText(FriendlistExportActivity.this);
         expath.setBackgroundDrawable(null);
-        expath.setTextSize(Utils.dip2sp(self, 18));
+        expath.setTextSize(Utils.dip2sp(FriendlistExportActivity.this, 18));
         expath.setTextColor(ResUtils.skin_black);
         String refpath = new File(Environment.getExternalStorageDirectory(), new Date().toString().replace(" ", "") + ".txt").getAbsolutePath();
         expath.setHint(refpath);
         ll.addView(expath, stdlp);
 
-        Button exportbtn = new Button(self);
+        Button exportbtn = new Button(FriendlistExportActivity.this);
         exportbtn.setText("导出");
 
         final long refuin = currentUin;
@@ -198,16 +189,15 @@ public class FriendlistExportActivity implements ActivityAdapter {
         ll.addView(exportbtn, stdlp);
 
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-        self.setContentView(bounceScrollView);
+        FriendlistExportActivity.this.setContentView(bounceScrollView);
         LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);
         _lp_fat.weight = 1;
         //__ll.addView(bounceScrollView,_lp_fat);
-        ActProxyMgr.setContentBackgroundDrawable(self, ResUtils.skin_background);
-        invoke_virtual(self, "setTitle", "导出好友列表", CharSequence.class);
-        invoke_virtual(self, "setImmersiveStatus");
-        invoke_virtual(self, "enableLeftBtn", true, boolean.class);
-        //TextView rightBtn=(TextView)invoke_virtual(self,"getRightTextView");
-        //log("Title:"+invoke_virtual(self,"getTextTitle"));
+        setContentBackgroundDrawable(ResUtils.skin_background);
+        setTitle("导出好友列表");
+        //TextView rightBtn=(TextView)invoke_virtual(FriendlistExportActivity.this,"getRightTextView");
+        //log("Title:"+invoke_virtual(FriendlistExportActivity.this,"getTextTitle"));
+        return true;
     }
 
 
@@ -216,24 +206,16 @@ public class FriendlistExportActivity implements ActivityAdapter {
         try {
             luin = Long.parseLong(suin);
         } catch (NumberFormatException ignored) {
-            try {
-                Utils.showToast(self, Utils.TOAST_TYPE_ERROR, "请输入有效QQ号", Toast.LENGTH_LONG);
-            } catch (Throwable e2) {
-            }
+            Utils.showToast(FriendlistExportActivity.this, Utils.TOAST_TYPE_ERROR, "请输入有效QQ号", Toast.LENGTH_LONG);
             return;
         }
         if (!new File(Utils.getApplication().getFilesDir().getAbsolutePath() + "/qnotified_" + luin + ".dat").exists()) {
-            try {
-                Utils.showToast(self, Utils.TOAST_TYPE_ERROR, "此QQ在本机没有记录", Toast.LENGTH_LONG);
-            } catch (Throwable e2) {
-            }
+
+            Utils.showToast(FriendlistExportActivity.this, Utils.TOAST_TYPE_ERROR, "此QQ在本机没有记录", Toast.LENGTH_LONG);
             return;
         }
         if (!exf && !fri) {
-            try {
-                Utils.showToast(self, Utils.TOAST_TYPE_ERROR, "请至少选择一个进行导出", Toast.LENGTH_LONG);
-            } catch (Throwable e2) {
-            }
+            Utils.showToast(FriendlistExportActivity.this, Utils.TOAST_TYPE_ERROR, "请至少选择一个进行导出", Toast.LENGTH_LONG);
             return;
         }
         String rn;
@@ -252,10 +234,7 @@ public class FriendlistExportActivity implements ActivityAdapter {
                         rn = "\n";
                         break;
                     default:
-                        try {
-                            Utils.showToast(self, Utils.TOAST_TYPE_ERROR, "无效换行符", Toast.LENGTH_LONG);
-                        } catch (Throwable e2) {
-                        }
+                        Utils.showToast(FriendlistExportActivity.this, Utils.TOAST_TYPE_ERROR, "无效换行符", Toast.LENGTH_LONG);
                         return;
                 }
                 if (fri) {
@@ -326,17 +305,11 @@ public class FriendlistExportActivity implements ActivityAdapter {
                 sb.append(']');
                 break;
             default:
-                try {
-                    Utils.showToast(self, Utils.TOAST_TYPE_ERROR, "格式转换错误", Toast.LENGTH_LONG);
-                } catch (Throwable e2) {
-                }
+                Utils.showToast(FriendlistExportActivity.this, Utils.TOAST_TYPE_ERROR, "格式转换错误", Toast.LENGTH_LONG);
                 return;
         }
         if (sb.length() == 0) {
-            try {
-                Utils.showToast(self, Utils.TOAST_TYPE_ERROR, "格式转换错误", Toast.LENGTH_LONG);
-            } catch (Throwable e2) {
-            }
+            Utils.showToast(FriendlistExportActivity.this, Utils.TOAST_TYPE_ERROR, "格式转换错误", Toast.LENGTH_LONG);
             return;
         }
         File f = new File(output);
@@ -347,40 +320,14 @@ public class FriendlistExportActivity implements ActivityAdapter {
                 fout.write(sb.toString().getBytes());
                 fout.flush();
                 fout.close();
-                try {
-                    Utils.showToast(self, Utils.TOAST_TYPE_SUCCESS, "操作完成", Toast.LENGTH_SHORT);
-                } catch (Throwable e2) {
-                }
+                Utils.showToast(FriendlistExportActivity.this, Utils.TOAST_TYPE_SUCCESS, "操作完成", Toast.LENGTH_SHORT);
                 return;
             } catch (IOException e) {
-                try {
-                    Toast.makeText(self, "创建输出文件失败\n" + e.toString(), Toast.LENGTH_LONG).show();
-                } catch (Throwable e2) {
-                }
+                Toast.makeText(FriendlistExportActivity.this, "创建输出文件失败\n" + e.toString(), Toast.LENGTH_LONG).show();
                 return;
             }
         }
 
     }
 
-    @Override
-    public void doOnPostResume() throws Throwable {
-    }
-
-    @Override
-    public void doOnPostPause() throws Throwable {
-    }
-
-    @Override
-    public void doOnPostDestory() throws Throwable {
-    }
-
-    @Override
-    public void doOnPostActivityResult(int requestCode, int resultCode, Intent data) throws Throwable {
-    }
-
-    @Override
-    public boolean isWrapContent() throws Throwable {
-        return true;
-    }
 }

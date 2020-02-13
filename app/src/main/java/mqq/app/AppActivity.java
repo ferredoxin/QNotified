@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.KeyEvent;
-import mqq.app.Constants;
 
 
 public class AppActivity extends Activity {

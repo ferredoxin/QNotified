@@ -15,8 +15,6 @@ import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.NonUiThread;
 import nil.nadph.qnotified.util.Utils;
 
-import java.io.IOException;
-
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.util.Initiator.load;
@@ -102,7 +100,7 @@ public class ViewBuilder {
     }
 
 
-    public static RelativeLayout newListItemSwitchConfigNext(Context ctx, CharSequence title, CharSequence desc, final String key, boolean defVal) throws IOException {
+    public static RelativeLayout newListItemSwitchConfigNext(Context ctx, CharSequence title, CharSequence desc, final String key, boolean defVal) {
         boolean on = ConfigManager.getDefaultConfig().getBooleanOrDefault(key, defVal);
         RelativeLayout root = newListItemSwitch(ctx, title, desc, on, new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -122,7 +120,7 @@ public class ViewBuilder {
     }
 
 
-    public static RelativeLayout newListItemSwitchConfigInit(final Context ctx, CharSequence title, CharSequence desc, final String key, boolean defVal, final BaseDelayableHook hook) throws IOException {
+    public static RelativeLayout newListItemSwitchConfigInit(final Context ctx, CharSequence title, CharSequence desc, final String key, boolean defVal, final BaseDelayableHook hook) {
         boolean on = ConfigManager.getDefaultConfig().getBooleanOrDefault(key, defVal);
         RelativeLayout root = newListItemSwitch(ctx, title, desc, on, new CompoundButton.OnCheckedChangeListener() {
             @Override

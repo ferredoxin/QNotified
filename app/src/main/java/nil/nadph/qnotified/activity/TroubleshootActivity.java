@@ -1,18 +1,16 @@
 package nil.nadph.qnotified.activity;
 
-import android.app.Activity;
-import android.content.Context;
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+import com.tencent.mobileqq.widget.BounceScrollView;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.record.EventRecord;
@@ -29,18 +27,19 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.ui.ViewBuilder.newListItemButton;
 import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
-import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
+@SuppressLint("Registered")
 public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
     @Override
     public boolean doOnCreate(Bundle savedInstanceState) {
+        super.doOnCreate(savedInstanceState);
         LinearLayout ll = new LinearLayout(this);
         ll.setOrientation(LinearLayout.VERTICAL);
         ViewGroup.LayoutParams mmlp = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
         LinearLayout __ll = new LinearLayout(this);
         __ll.setOrientation(LinearLayout.VERTICAL);
-        ViewGroup bounceScrollView = (ViewGroup) new_instance(load("com/tencent/mobileqq/widget/BounceScrollView"), this, null, Context.class, AttributeSet.class);
+        ViewGroup bounceScrollView = new BounceScrollView(this, null);
         //invoke_virtual(bounceScrollView,"a",true,500,500,boolean.class,int.class,int.class);
         bounceScrollView.setLayoutParams(mmlp);
         bounceScrollView.addView(ll, new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
@@ -84,19 +83,14 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                 ll.addView(subtitle(this, "  [" + i + "]" + e.toString()));
             }
         }
-
-
         ll.addView(subtitle(this, "SystemClassLoader\n" + ClassLoader.getSystemClassLoader() + "\nContext.getClassLoader()\n" + this.getClassLoader() + "\nThread.getContextClassLoader()\n" + Thread.currentThread().getContextClassLoader()));
-
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         this.setContentView(bounceScrollView);
         LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);
         _lp_fat.weight = 1;
-        invoke_virtual(this, "setTitle", "故障排除", CharSequence.class);
-        invoke_virtual(this, "setImmersiveStatus");
-        invoke_virtual(this, "enableLeftBtn", true, boolean.class);
-        ActProxyMgr.setContentBackgroundDrawable(this, ResUtils.skin_background);
-
+        setTitle("故障排除");
+        setContentBackgroundDrawable(ResUtils.skin_background);
+        return true;
     }
 
 
@@ -104,7 +98,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CustomDialog dialog = CustomDialog.create(this);
+                CustomDialog dialog = CustomDialog.create(TroubleshootActivity.this);
                 dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -117,7 +111,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                                     it.remove();
                             }
                             exm.saveConfigure();
-                            showToast(this, TOAST_TYPE_SUCCESS, "操作成功", Toast.LENGTH_SHORT);
+                            showToast(TroubleshootActivity.this, TOAST_TYPE_SUCCESS, "操作成功", Toast.LENGTH_SHORT);
                         } catch (Throwable e) {
                         }
                     }
@@ -144,7 +138,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                             exm.getConfig().getFile().delete();
                             exm.getConfig().reinit();
                             exm.reinit();
-                            showToast(this, TOAST_TYPE_SUCCESS, "操作成功", Toast.LENGTH_SHORT);
+                            showToast(TroubleshootActivity.this, TOAST_TYPE_SUCCESS, "操作成功", Toast.LENGTH_SHORT);
                         } catch (Throwable e) {
                         }
                     }
@@ -162,7 +156,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CustomDialog dialog = CustomDialog.create(this);
+                CustomDialog dialog = CustomDialog.create(TroubleshootActivity.this);
                 dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -189,7 +183,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CustomDialog dialog = CustomDialog.create(this);
+                CustomDialog dialog = CustomDialog.create(TroubleshootActivity.this);
                 dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

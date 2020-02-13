@@ -12,7 +12,7 @@ import android.os.Vibrator;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-import nil.nadph.qnotified.activity.ActProxyMgr;
+import nil.nadph.qnotified.activity.ExfriendListActivity;
 import nil.nadph.qnotified.hook.DelDetectorHook;
 import nil.nadph.qnotified.pk.FriendChunk;
 import nil.nadph.qnotified.record.ConfigManager;
@@ -32,7 +32,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static nil.nadph.qnotified.activity.ActProxyMgr.*;
+import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_EXFRIEND_LIST;
+import static nil.nadph.qnotified.util.ActProxyMgr.ACTIVITY_PROXY_ACTION;
 import static nil.nadph.qnotified.record.Table.*;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
@@ -663,9 +664,7 @@ public class ExfriendManager {
     @SuppressLint("MissingPermission")
     public void doNotifyDelFlAndSave(Object[] ptr) {
         if (((int) ptr[0]) > 0) {
-            Intent intent = new Intent(getApplication(), load(ActProxyMgr.STUB_ACTIVITY));
-            int id = ActProxyMgr.next();
-            intent.putExtra(ACTIVITY_PROXY_ID_TAG, id);
+            Intent intent = new Intent(getApplication(), ExfriendListActivity.class);
             intent.putExtra(ACTIVITY_PROXY_ACTION, ACTION_EXFRIEND_LIST);
             PendingIntent pi = PendingIntent.getActivity(getApplication(), 0, intent, 0);
             try {

@@ -15,7 +15,7 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.activity.ActProxyMgr;
+import nil.nadph.qnotified.activity.ExfriendListActivity;
 import nil.nadph.qnotified.pk.FriendChunk;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.ui.ResUtils;
@@ -27,7 +27,8 @@ import java.util.HashSet;
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static nil.nadph.qnotified.activity.ActProxyMgr.*;
+import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_EXFRIEND_LIST;
+import static nil.nadph.qnotified.util.ActProxyMgr.ACTIVITY_PROXY_ACTION;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
@@ -161,9 +162,7 @@ public class DelDetectorHook extends BaseDelayableHook {
                 exfriend.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(splashActivity, load(ActProxyMgr.STUB_ACTIVITY));
-                        int id = ActProxyMgr.next();
-                        intent.putExtra(ACTIVITY_PROXY_ID_TAG, id);
+                        Intent intent = new Intent(splashActivity, ExfriendListActivity.class);
                         intent.putExtra(ACTIVITY_PROXY_ACTION, ACTION_EXFRIEND_LIST);
                         splashActivity.startActivity(intent);
                         //Toast.makeText(splashActivity,"Test",0).show();
