@@ -3,7 +3,7 @@
           xmlns:tools="http://schemas.android.com/tools"
           package="nil.nadph.qnotified"
           android:versionName="0.7.0-rc1"
-          android:versionCode="22">
+          android:versionCode="23">
 
     <uses-sdk
             android:targetSdkVersion="27"

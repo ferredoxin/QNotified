@@ -59,10 +59,11 @@ public class RepeaterHook extends BaseDelayableHook {
                 public void afterHookedMethod(final MethodHookParam param) throws Throwable {
                     if (!isEnabled()) return;
                     ViewGroup relativeLayout = (ViewGroup) param.getResult();
+                    Context ctx = relativeLayout.getContext();
+                    if (ctx.getClass().getName().contains("ChatHistoryActivity")) return;
                     final Object app = iget_object_or_null(param.thisObject, "a", _QQAppInterface());
                     final Object session = iget_object_or_null(param.thisObject, "a", _SessionInfo());
                     String uin = "" + Utils.getLongAccountUin();
-                    Context ctx = relativeLayout.getContext();
                     if (relativeLayout.findViewById(101) == null) {
                         View childAt = relativeLayout.getChildAt(0);
                         ViewGroup viewGroup = (ViewGroup) childAt.getParent();
@@ -226,6 +227,8 @@ public class RepeaterHook extends BaseDelayableHook {
                 @Override
                 public void beforeHookedMethod(MethodHookParam methodHookParam) throws Throwable {
                     if (!isEnabled()) return;
+                    View v = (View) methodHookParam.args[2];
+                    if (v != null && v.getContext().getClass().getName().contains("ChatHistoryActivity")) return;
                     iput_object(methodHookParam.args[0], "isFlowMessage", true);
                     if (((int) iget_object_or_null(methodHookParam.args[0], "extraflag")) == 32768) {
                         iput_object(methodHookParam.args[0], "extraflag", 0);
@@ -240,10 +243,11 @@ public class RepeaterHook extends BaseDelayableHook {
                             if (!isEnabled()) return;
                             View view;
                             ViewGroup relativeLayout = (ViewGroup) param.getResult();
+                            Context ctx = relativeLayout.getContext();
+                            if (ctx.getClass().getName().contains("ChatHistoryActivity")) return;
                             final Object app = iget_object_or_null(param.thisObject, "a", load("com.tencent.mobileqq.app.QQAppInterface"));
                             final Object session = iget_object_or_null(param.thisObject, "a", _SessionInfo());
                             String uin = "" + Utils.getLongAccountUin();
-                            Context ctx = relativeLayout.getContext();
                             if (relativeLayout.findViewById(101) == null) {
                                 LinearLayout linearLayout = new LinearLayout(ctx);
                                 //linearLayout.setId(Integer.parseInt((String) Hook.config.get("PttItem_id"), 16));

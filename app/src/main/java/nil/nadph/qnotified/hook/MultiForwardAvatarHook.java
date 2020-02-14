@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import de.robv.android.xposed.XC_MethodHook;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.util.Nullable;
 
 import java.lang.reflect.Field;
@@ -57,6 +58,7 @@ public class MultiForwardAvatarHook extends BaseDelayableHook {
             findAndHookMethod(load("com/tencent/mobileqq/activity/aio/BaseBubbleBuilder"), "onClick", View.class, new XC_MethodHook(49) {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    if (!isEnabled()) return;
                     Context ctx = (Context) iget_object_or_null(param.thisObject, "a", Context.class);
                     View view = (View) param.args[0];
                     if (ctx == null || isLeftCheckBoxVisible()) return;
@@ -112,7 +114,12 @@ public class MultiForwardAvatarHook extends BaseDelayableHook {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        try {
+            return ConfigManager.getDefaultConfig().getBooleanOrDefault(qn_multi_forward_avatar_profile, true);
+        } catch (Exception e) {
+            log(e);
+            return true;
+        }
     }
 
     public boolean isLeftCheckBoxVisible() {
