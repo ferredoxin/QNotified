@@ -331,8 +331,22 @@ public class MainHook {
                 field_mCallback.set(oriHandler, new MyH(current));
             }
             //End of Handler
-            Class activityManagerClass = Class.forName("android.app.ActivityManagerNative");
-            Field gDefaultField = activityManagerClass.getDeclaredField("gDefault");
+            Class activityManagerClass;
+            Field gDefaultField;
+            try {
+                activityManagerClass = Class.forName("android.app.ActivityManagerNative");
+                gDefaultField = activityManagerClass.getDeclaredField("gDefault");
+            } catch (Exception err1) {
+                try {
+                    activityManagerClass = Class.forName("android.app.ActivityManager");
+                    gDefaultField = activityManagerClass.getDeclaredField("IActivityManagerSingleton");
+                } catch (Exception err2) {
+                    log("WTF: Unable to get IActivityManagerSingleton");
+                    log(err1);
+                    log(err2);
+                    return;
+                }
+            }
             gDefaultField.setAccessible(true);
             Object gDefault = gDefaultField.get(null);
             Class singletonClass = Class.forName("android.util.Singleton");
@@ -415,21 +429,9 @@ public class MainHook {
     public static class MyH implements Handler.Callback {
         private Handler.Callback mDefault;
 
-        //        private WeakReference refLoadedApk = null;
-//
         public MyH(Handler.Callback def) {
             mDefault = def;
         }
-
-//        private Object makePackageInfo(Object record) {
-//            Object loadedApk = null;
-//            if (refLoadedApk != null && (loadedApk = refLoadedApk.get()) != null) {
-//                return loadedApk;
-//            }
-//            xxx;
-//            refLoadedApk = new WeakReference(loadedApk);
-//            return loadedApk;
-//        }
 
         @Override
         public boolean handleMessage(Message msg) {
@@ -439,12 +441,20 @@ public class MainHook {
                     Field field_intent = record.getClass().getDeclaredField("intent");
                     field_intent.setAccessible(true);
                     Intent intent = (Intent) field_intent.get(record);
-                    if (intent.hasExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT)) {
-                        Intent realIntent = intent.getParcelableExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT);
-                        field_intent.set(record, realIntent);
-//                        Field field_packageInfo = record.getClass().getDeclaredField("packageInfo");
-//                        field_packageInfo.setAccessible(true);
-//                        field_packageInfo.set(realIntent, makePackageInfo(record));
+                    Bundle bundle = null;
+                    try {
+                        Field fExtras = Intent.class.getDeclaredField("mExtras");
+                        fExtras.setAccessible(true);
+                        bundle = (Bundle) fExtras.get(intent);
+                    } catch (Exception e) {
+                        log(e);
+                    }
+                    if (bundle != null) {
+                        bundle.setClassLoader(Initiator.getClassLoader());
+                        if (intent.hasExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT)) {
+                            Intent realIntent = intent.getParcelableExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT);
+                            field_intent.set(record, realIntent);
+                        }
                     }
                 } catch (Exception e) {
                     log(e);
