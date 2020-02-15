@@ -1,54 +1,46 @@
 package nil.nadph.qnotified.hook;
 
 import android.app.Application;
+import android.graphics.Bitmap;
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.record.ConfigManager;
 
-import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static nil.nadph.qnotified.util.Initiator.load;
+import java.lang.reflect.Method;
+
+import static nil.nadph.qnotified.util.Initiator._TroopPicEffectsController;
 import static nil.nadph.qnotified.util.Utils.*;
 
-public class ReplyNoAtHook extends BaseDelayableHook {
+public class ShowPicGagHook extends BaseDelayableHook {
 
-    private static final ReplyNoAtHook self = new ReplyNoAtHook();
+    private static final ShowPicGagHook self = new ShowPicGagHook();
     private boolean inited = false;
 
-    private ReplyNoAtHook() {
+    private ShowPicGagHook() {
     }
 
-    public static ReplyNoAtHook get() {
+    public static ShowPicGagHook get() {
         return self;
     }
 
-    /**
-     * 813 1246 k
-     * 815 1258 l
-     * 818 1276 l
-     * 820 1296 l
-     * 826 1320 m
-     * 827 1328 m
-     */
     @Override
     public boolean init() {
         if (inited) return true;
         try {
-            String method = null;
-            int ver = getHostVersionCode();
-            if (ver > 1296) {
-                method = "m";
-            } else if (ver > 1246) {
-                method = "l";
-            } else if (ver >= 1246) {
-                method = "k";
+            Method showPicEffect = null;
+            for (Method m : _TroopPicEffectsController().getDeclaredMethods()) {
+                Class[] argt = m.getParameterTypes();
+                if (argt.length > 2 && argt[1].equals(Bitmap.class)) {
+                    showPicEffect = m;
+                    break;
+                }
             }
-            if (method == null) return false;
-            findAndHookMethod(load("com/tencent/mobileqq/activity/BaseChatPie"), method, boolean.class, new XC_MethodHook(49) {
+            XposedBridge.hookMethod(showPicEffect, new XC_MethodHook(49) {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     if (!isEnabled()) return;
-                    boolean p0 = (boolean) param.args[0];
-                    if (!p0) param.setResult(null);
+                    param.setResult(null);
                 }
             });
             inited = true;
@@ -79,7 +71,7 @@ public class ReplyNoAtHook extends BaseDelayableHook {
         try {
             Application app = getApplication();
             if (app != null && isTim(app)) return false;
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_disable_auto_at);
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_gag_show_pic);
         } catch (Exception e) {
             log(e);
             return false;

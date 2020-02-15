@@ -37,7 +37,8 @@ public abstract class BaseDelayableHook {
                 ReplyNoAtHook.get(),
                 MuteQZoneThumbsUp.get(),
                 FakeBatteryHook.get(),
-                FileRecvRedirect.get()
+                FileRecvRedirect.get(),
+                ShowPicGagHook.get()
         };
         return sAllHooks;
     }

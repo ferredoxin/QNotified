@@ -113,6 +113,19 @@ public class Initiator {
         return clazz;
     }
 
+    public static Class _TroopPicEffectsController() {
+        Class tmp;
+        Class clazz = load("com/tencent/mobileqq/trooppiceffects/TroopPicEffectsController");
+        if (clazz == null) {
+            try {
+                tmp = load("com/tencent/mobileqq/trooppiceffects/TroopPicEffectsController$2");
+                clazz = tmp.getDeclaredField("this$0").getType();
+            } catch (Exception ignored) {
+            }
+        }
+        return clazz;
+    }
+
     public static Class _BannerManager() {
         Class tmp;
         Class clazz = load("com.tencent.mobileqq.activity.recent.BannerManager");

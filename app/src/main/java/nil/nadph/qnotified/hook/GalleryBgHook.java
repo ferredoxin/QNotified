@@ -29,7 +29,6 @@ public class GalleryBgHook extends BaseDelayableHook {
     public boolean init() {
         if (inited) return true;
         try {
-            final ConfigManager cfg = ConfigManager.getDefaultConfig();
             boolean canInit = checkPreconditions();
             if (!canInit && ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_gallery_bg)) {
                 if (Looper.myLooper() != null) {

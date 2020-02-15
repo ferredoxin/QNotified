@@ -41,6 +41,7 @@ import static nil.nadph.qnotified.util.Utils.*;
 public class PttForwardHook extends BaseDelayableHook {
 
     public static final int R_ID_PTT_FORWARD = 0x30EE77CB;
+    public static final int R_ID_PTT_SAVE = 0x30EE77CC;
     private static final PttForwardHook self = new PttForwardHook();
     private boolean inited = false;
 
@@ -85,7 +86,7 @@ public class PttForwardHook extends BaseDelayableHook {
                     final String path = data.getString("ptt_forward_path");
                     final Activity ctx = (Activity) Utils.iget_object_or_null(param.thisObject, "a", Activity.class);
                     if (path == null || !new File(path).exists()) {
-                        Utils.showToast(ctx, TOAST_TYPE_ERROR, "InternalError: Invalid ptt file!", Toast.LENGTH_SHORT);
+                        Utils.showToast(ctx, TOAST_TYPE_ERROR, "Error: Invalid ptt file!", Toast.LENGTH_SHORT);
                         return;
                     }
                     ResUtils.initTheme(ctx);
@@ -228,6 +229,15 @@ public class PttForwardHook extends BaseDelayableHook {
                         intent.putExtra("k_dataline", false);
                         intent.putExtra("k_forward_title", "语音转发");
                         context.startActivity(intent);
+                    } else if (id == R_ID_PTT_SAVE) {
+                        param.setResult(null);
+                        String url = (String) invoke_virtual(chatMessage, "getLocalFilePath");
+                        File file = new File(url);
+                        if (!file.exists()) {
+                            Utils.showToast(context, TOAST_TYPE_ERROR, "未找到语音文件", Toast.LENGTH_SHORT);
+                            return;
+                        }
+                        Utils.showToast(context, TOAST_TYPE_INFO, "作者懒得写这个功能", Toast.LENGTH_SHORT);
                     }
                 }
             });
@@ -244,14 +254,19 @@ public class PttForwardHook extends BaseDelayableHook {
                             } catch (Exception ignored) {
                             }
                             Object arr = param.getResult();
-                            Object QQCustomMenuItem = Array.get(arr, 0).getClass().newInstance();
-                            iput_object(QQCustomMenuItem, "a", int.class, R_ID_PTT_FORWARD);
-                            iput_object(QQCustomMenuItem, "a", String.class, "转发");
-                            Object ret = Array.newInstance(QQCustomMenuItem.getClass(), Array.getLength(arr) + 1);
+                            Class clQQCustomMenuItem = Array.get(arr, 0).getClass();
+                            Object item_forward = clQQCustomMenuItem.newInstance();
+                            iput_object(item_forward, "a", int.class, R_ID_PTT_FORWARD);
+                            iput_object(item_forward, "a", String.class, "转发");
+                            Object item_save = clQQCustomMenuItem.newInstance();
+                            iput_object(item_save, "a", int.class, R_ID_PTT_SAVE);
+                            iput_object(item_save, "a", String.class, "保存");
+                            Object ret = Array.newInstance(clQQCustomMenuItem, Array.getLength(arr) + 2);
                             Array.set(ret, 0, Array.get(arr, 0));
                             //noinspection SuspiciousSystemArraycopy
                             System.arraycopy(arr, 1, ret, 2, Array.getLength(arr) - 1);
-                            Array.set(ret, 1, QQCustomMenuItem);
+                            Array.set(ret, 1, item_forward);
+                            Array.set(ret, Array.getLength(ret) - 1, item_save);
                             param.setResult(ret);
                         }
                     });

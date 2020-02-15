@@ -76,8 +76,8 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(subtitle(SettingsActivity.this, "基本功能"));
         ll.addView(_t = newListItemButton(SettingsActivity.this, "自定义电量", "[QQ>=8.2.6]在线模式为我的电量时生效", "N/A", clickToProxyActAction(ACTION_FAKE_BAT_CONFIG_ACTIVITY)));
         __tv_fake_bat_status = (TextView) _t.findViewById(R_ID_VALUE);
-        ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "语音转发", "长按语音消息", qn_enable_ptt_forward, false, PttForwardHook.get()));
-        ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "发送卡片消息", "长按发送ArkAppMsg(json)+StructMsg(xml)", qn_send_card_msg, false, CardMsgHook.get()));
+        ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "语音保存转发", "长按语音消息", qn_enable_ptt_forward, false, PttForwardHook.get()));
+        ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "发送卡片消息", "先输入卡片代码(聊天界面),后长按发送按钮", qn_send_card_msg, false, CardMsgHook.get()));
         ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "复读机", "+1", bug_repeater, false, RepeaterHook.get()));
         ll.addView(subtitle(SettingsActivity.this, "净化设置"));
         if (!Utils.isTim(SettingsActivity.this)) {
@@ -96,6 +96,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "赞说说不提醒", "不影响评论,转发或击掌的通知", qn_mute_thumb_up, false, MuteQZoneThumbsUp.get()));
         ll.addView(subtitle(SettingsActivity.this, "图片相关"));
         ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "以图片方式打开闪照", null, qn_flash_as_pic, false, FlashPicHook.get()));
+        ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "禁止秀图自动展示", null, qn_gag_show_pic, false, ShowPicGagHook.get()));
         ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "转发消息点击头像查看资料卡", null, qn_multi_forward_avatar_profile, true, MultiForwardAvatarHook.get()));
         if (!Utils.isTim(SettingsActivity.this)) {
             ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "以图片方式打开表情", null, qn_sticker_as_pic, false, EmoPicHook.get()));

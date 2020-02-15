@@ -123,106 +123,24 @@ public class CardMsgHook extends BaseDelayableHook {
             //End: send btn
             //Begin: ArkApp
             Class cl_ArkAppItemBuilder = DexKit.doFindClass(DexKit.C_ARK_APP_ITEM_BUBBLE_BUILDER);
-            findAndHookMethod(cl_ArkAppItemBuilder, "a", int.class, Context.class, load("com/tencent/mobileqq/data/ChatMessage"), new XC_MethodHook(60) {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    int id = (int) param.args[0];
-                    Activity ctx = (Activity) param.args[1];
-                    Object chatMessage = param.args[2];
-                    if (id == R_ID_COPY_CODE) {
-                        param.setResult(null);
-                        try {
-                            ClipboardManager clipboardManager = (ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);
-                            if (load("com.tencent.mobileqq.data.MessageForStructing").isAssignableFrom(chatMessage.getClass())) {
-                                clipboardManager.setText((String) invoke_virtual(iget_object_or_null(chatMessage, "structingMsg"), "getXml", new Object[0]));
-                                showToast(ctx, TOAST_TYPE_INFO, "复制成功", Toast.LENGTH_SHORT);
-                            } else if (load("com.tencent.mobileqq.data.MessageForArkApp").isAssignableFrom(chatMessage.getClass())) {
-                                clipboardManager.setText((String) invoke_virtual(iget_object_or_null(chatMessage, "ark_app_message"), "toAppXml", new Object[0]));
-                                showToast(ctx, TOAST_TYPE_INFO, "复制成功", Toast.LENGTH_SHORT);
-                            }
-                        } catch (Throwable e) {
-                            log(e);
-                        }
-                    }
-                }
-            });
+            findAndHookMethod(cl_ArkAppItemBuilder, "a", int.class, Context.class, load("com/tencent/mobileqq/data/ChatMessage"), new MenuItemClickCallback());
             for (Method m : cl_ArkAppItemBuilder.getDeclaredMethods()) {
                 if (!m.getReturnType().isArray()) continue;
                 Class[] ps = m.getParameterTypes();
                 if (ps.length == 1 && ps[0].equals(View.class)) {
-                    XposedBridge.hookMethod(m, new XC_MethodHook(60) {
-                        @Override
-                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                            try {
-                                ConfigManager cfg = ConfigManager.getDefaultConfig();
-                                if (!cfg.getBooleanOrFalse(qn_send_card_msg)) return;
-                            } catch (Exception ignored) {
-                            }
-                            Object arr = param.getResult();
-                            Object QQCustomMenuItem = Array.get(arr, 0).getClass().newInstance();
-                            iput_object(QQCustomMenuItem, "a", int.class, R_ID_COPY_CODE);
-                            iput_object(QQCustomMenuItem, "a", String.class, "复制代码");
-                            Object ret = Array.newInstance(QQCustomMenuItem.getClass(), Array.getLength(arr) + 1);
-                            Array.set(ret, 0, Array.get(arr, 0));
-                            //noinspection SuspiciousSystemArraycopy
-                            System.arraycopy(arr, 1, ret, 2, Array.getLength(arr) - 1);
-                            Array.set(ret, 1, QQCustomMenuItem);
-                            param.setResult(ret);
-                        }
-                    });
+                    XposedBridge.hookMethod(m, new GetMenuItemCallBack());
                     break;
                 }
             }
             //End: ArkApp
             //Begin: StructMsg
             Class cl_StructingMsgItemBuilder = load("com/tencent/mobileqq/activity/aio/item/StructingMsgItemBuilder");
-            findAndHookMethod(cl_StructingMsgItemBuilder, "a", int.class, Context.class, load("com/tencent/mobileqq/data/ChatMessage"), new XC_MethodHook(60) {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    int id = (int) param.args[0];
-                    Activity ctx = (Activity) param.args[1];
-                    Object chatMessage = param.args[2];
-                    if (id == R_ID_COPY_CODE) {
-                        param.setResult(null);
-                        try {
-                            ClipboardManager clipboardManager = (ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);
-                            if (load("com.tencent.mobileqq.data.MessageForStructing").isAssignableFrom(chatMessage.getClass())) {
-                                clipboardManager.setText((String) invoke_virtual(iget_object_or_null(chatMessage, "structingMsg"), "getXml", new Object[0]));
-                                showToast(ctx, TOAST_TYPE_INFO, "复制成功", Toast.LENGTH_SHORT);
-                            } else if (load("com.tencent.mobileqq.data.MessageForArkApp").isAssignableFrom(chatMessage.getClass())) {
-                                clipboardManager.setText((String) invoke_virtual(iget_object_or_null(chatMessage, "ark_app_message"), "toAppXml", new Object[0]));
-                                showToast(ctx, TOAST_TYPE_INFO, "复制成功", Toast.LENGTH_SHORT);
-                            }
-                        } catch (Throwable e) {
-                            log(e);
-                        }
-                    }
-                }
-            });
+            findAndHookMethod(cl_StructingMsgItemBuilder, "a", int.class, Context.class, load("com/tencent/mobileqq/data/ChatMessage"), new MenuItemClickCallback());
             for (Method m : cl_StructingMsgItemBuilder.getDeclaredMethods()) {
                 if (!m.getReturnType().isArray()) continue;
                 Class[] ps = m.getParameterTypes();
                 if (ps.length == 1 && ps[0].equals(View.class)) {
-                    XposedBridge.hookMethod(m, new XC_MethodHook(60) {
-                        @Override
-                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                            try {
-                                ConfigManager cfg = ConfigManager.getDefaultConfig();
-                                if (!cfg.getBooleanOrFalse(qn_send_card_msg)) return;
-                            } catch (Exception ignored) {
-                            }
-                            Object arr = param.getResult();
-                            Object QQCustomMenuItem = Array.get(arr, 0).getClass().newInstance();
-                            iput_object(QQCustomMenuItem, "a", int.class, R_ID_COPY_CODE);
-                            iput_object(QQCustomMenuItem, "a", String.class, "复制代码");
-                            Object ret = Array.newInstance(QQCustomMenuItem.getClass(), Array.getLength(arr) + 1);
-                            Array.set(ret, 0, Array.get(arr, 0));
-                            //noinspection SuspiciousSystemArraycopy
-                            System.arraycopy(arr, 1, ret, 2, Array.getLength(arr) - 1);
-                            Array.set(ret, 1, QQCustomMenuItem);
-                            param.setResult(ret);
-                        }
-                    });
+                    XposedBridge.hookMethod(m, new GetMenuItemCallBack());
                     break;
                 }
             }
@@ -232,6 +150,59 @@ public class CardMsgHook extends BaseDelayableHook {
         } catch (Throwable throwable) {
             log(throwable);
             return false;
+        }
+    }
+
+    public static class GetMenuItemCallBack extends XC_MethodHook {
+        public GetMenuItemCallBack() {
+            super(60);
+        }
+
+        @Override
+        protected void afterHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
+            try {
+                ConfigManager cfg = ConfigManager.getDefaultConfig();
+                if (!cfg.getBooleanOrFalse(qn_send_card_msg)) return;
+            } catch (Exception ignored) {
+            }
+            Object arr = param.getResult();
+            Object QQCustomMenuItem = Array.get(arr, 0).getClass().newInstance();
+            iput_object(QQCustomMenuItem, "a", int.class, R_ID_COPY_CODE);
+            iput_object(QQCustomMenuItem, "a", String.class, "复制代码");
+            Object ret = Array.newInstance(QQCustomMenuItem.getClass(), Array.getLength(arr) + 1);
+            Array.set(ret, 0, Array.get(arr, 0));
+            //noinspection SuspiciousSystemArraycopy
+            System.arraycopy(arr, 1, ret, 2, Array.getLength(arr) - 1);
+            Array.set(ret, 1, QQCustomMenuItem);
+            param.setResult(ret);
+        }
+    }
+
+    public static class MenuItemClickCallback extends XC_MethodHook {
+        public MenuItemClickCallback() {
+            super(60);
+        }
+
+        @Override
+        protected void beforeHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
+            int id = (int) param.args[0];
+            Activity ctx = (Activity) param.args[1];
+            Object chatMessage = param.args[2];
+            if (id == R_ID_COPY_CODE) {
+                param.setResult(null);
+                try {
+                    ClipboardManager clipboardManager = (ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);
+                    if (load("com.tencent.mobileqq.data.MessageForStructing").isAssignableFrom(chatMessage.getClass())) {
+                        clipboardManager.setText((String) invoke_virtual(iget_object_or_null(chatMessage, "structingMsg"), "getXml", new Object[0]));
+                        showToast(ctx, TOAST_TYPE_INFO, "复制成功", Toast.LENGTH_SHORT);
+                    } else if (load("com.tencent.mobileqq.data.MessageForArkApp").isAssignableFrom(chatMessage.getClass())) {
+                        clipboardManager.setText((String) invoke_virtual(iget_object_or_null(chatMessage, "ark_app_message"), "toAppXml", new Object[0]));
+                        showToast(ctx, TOAST_TYPE_INFO, "复制成功", Toast.LENGTH_SHORT);
+                    }
+                } catch (Throwable e) {
+                    log(e);
+                }
+            }
         }
     }
 

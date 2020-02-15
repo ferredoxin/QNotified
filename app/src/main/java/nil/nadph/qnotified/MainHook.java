@@ -16,6 +16,7 @@ import android.widget.FrameLayout;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.*;
@@ -611,6 +612,22 @@ public class MainHook {
     public static void onAppStartupForMain() {
         if (!isAlphaVersion()) return;
         deepDarkTheme();
+        XposedHelpers.findAndHookMethod(load("awwp"), "a", Context.class, View.class, boolean.class, Bundle.class, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                Activity ctx = (Activity) param.args[0];
+                Object fmgr = invoke_virtual(ctx, "getSupportFragmentManager");
+                Object fragment = invoke_virtual(fmgr, "findFragmentByTag", "com.tencent.mobileqq.activity.ChatFragment", String.class);
+                Object chatpie = invoke_virtual(fragment, "a", load("com.tencent.mobileqq.activity.BaseChatPie"));
+                Object ackb = iget_object_or_null(chatpie, "a", load("ackb"));
+                Object ackc = iget_object_or_null(ackb, "a", load("ackc"));
+                View v = (View) param.getResult();
+                if (v != null) {
+                    v.setOnLongClickListener((View.OnLongClickListener) ackc);
+                }
+            }
+
+        });
     }
 
 }

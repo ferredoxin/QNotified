@@ -60,6 +60,7 @@ public class Utils {
             qn_disable_qq_hot_patch = "qn_disable_qq_hot_patch",
             qn_fake_bat_enable = "qn_fake_bat_enable",
             qn_multi_forward_avatar_profile = "qn_multi_forward_avatar_profile",
+            qn_gag_show_pic = "qn_gag_show_pic",
             qn_file_recv_redirect_enable = "qn_file_recv_redirect_enable",
             qn_file_recv_redirect_path = "qn_file_recv_redirect_path",
             qn_fake_bat_expr = "qn_fake_bat_expr",

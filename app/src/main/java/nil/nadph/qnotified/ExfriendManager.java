@@ -400,7 +400,7 @@ public class ExfriendManager {
                     if (tmp > 9999) ev.operand = tmp;
                     else ev.operand = (Long) rec[_op_old];
                 }
-                if (_exec != -1) {
+                if (_exec != -1 ) {
                     try {
                         ev.executor = (Long) rec[_exec];
                     } catch (NullPointerException e) {
