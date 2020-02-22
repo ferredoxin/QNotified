@@ -17,7 +17,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.Map;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -238,8 +238,8 @@ public class FriendlistExportActivity extends IphoneTitleBarActivityCompat {
                         return;
                 }
                 if (fri) {
-                    HashMap<Long, FriendRecord> friends = exm.getPersons();
-                    for (HashMap.Entry<Long, FriendRecord> ent : friends.entrySet()) {
+                    Map<Long, FriendRecord> friends = exm.getPersons();
+                    for (Map.Entry<Long, FriendRecord> ent : friends.entrySet()) {
                         long uin = ent.getKey();
                         FriendRecord rec = ent.getValue();
                         if (rec.friendStatus != FriendRecord.STATUS_EXFRIEND) {
@@ -251,8 +251,8 @@ public class FriendlistExportActivity extends IphoneTitleBarActivityCompat {
                     }
                 }
                 if (exf) {
-                    HashMap<Long, FriendRecord> friends = exm.getPersons();
-                    for (HashMap.Entry<Long, FriendRecord> ent : friends.entrySet()) {
+                    Map<Long, FriendRecord> friends = exm.getPersons();
+                    for (Map.Entry<Long, FriendRecord> ent : friends.entrySet()) {
                         long uin = ent.getKey();
                         FriendRecord rec = ent.getValue();
                         if (!fri || rec.friendStatus != FriendRecord.STATUS_FRIEND_MUTUAL) {
@@ -270,8 +270,8 @@ public class FriendlistExportActivity extends IphoneTitleBarActivityCompat {
             case 2://json
                 sb.append('[');
                 if (fri) {
-                    HashMap<Long, FriendRecord> friends = exm.getPersons();
-                    for (HashMap.Entry<Long, FriendRecord> ent : friends.entrySet()) {
+                    Map<Long, FriendRecord> friends = exm.getPersons();
+                    for (Map.Entry<Long, FriendRecord> ent : friends.entrySet()) {
                         long uin = ent.getKey();
                         FriendRecord rec = ent.getValue();
                         if (rec.friendStatus != FriendRecord.STATUS_EXFRIEND) {
@@ -285,8 +285,8 @@ public class FriendlistExportActivity extends IphoneTitleBarActivityCompat {
                     }
                 }
                 if (exf) {
-                    HashMap<Long, FriendRecord> friends = exm.getPersons();
-                    for (HashMap.Entry<Long, FriendRecord> ent : friends.entrySet()) {
+                    Map<Long, FriendRecord> friends = exm.getPersons();
+                    for (Map.Entry<Long, FriendRecord> ent : friends.entrySet()) {
                         long uin = ent.getKey();
                         FriendRecord rec = ent.getValue();
                         if (!fri || rec.friendStatus != FriendRecord.STATUS_FRIEND_MUTUAL) {

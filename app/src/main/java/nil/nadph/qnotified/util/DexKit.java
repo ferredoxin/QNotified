@@ -326,7 +326,6 @@ public class DexKit {
         switch (i) {
             case C_DIALOG_UTIL:
             case C_FACADE:
-            case C_FLASH_PIC_HELPER:
             case C_AIO_UTILS:
             case C_CONTACT_UTILS:
             case C_MSG_REC_FAC:
@@ -340,6 +339,17 @@ public class DexKit {
                     for (Field f : clz.getDeclaredFields()) {
                         if (!Modifier.isStatic(f.getModifiers())) continue a;
                     }
+                    return clz;
+                }
+                break;
+            case C_FLASH_PIC_HELPER:
+                a:
+                for (Class clz : classes) {
+                    if (Modifier.isAbstract(clz.getModifiers())) continue;
+                    for (Field f : clz.getDeclaredFields()) {
+                        if (!Modifier.isStatic(f.getModifiers())) continue a;
+                    }
+                    if (clz.getDeclaredMethods().length > 8) continue;
                     return clz;
                 }
                 break;

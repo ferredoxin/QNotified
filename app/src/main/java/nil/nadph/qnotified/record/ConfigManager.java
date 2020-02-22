@@ -10,6 +10,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static nil.nadph.qnotified.record.Table.*;
 
@@ -17,7 +18,7 @@ public class ConfigManager {
     private static ConfigManager sDefConfig;
     private static ConfigManager sCache;
     private File file;
-    private HashMap<String, Object> config;
+    private ConcurrentHashMap<String, Object> config;
     private boolean dirty;
     private int mFileTypeId;
 
@@ -49,7 +50,7 @@ public class ConfigManager {
 
     public void reinit() throws IOException {
         if (!file.exists()) file.createNewFile();
-        config = new HashMap<>();
+        config = new ConcurrentHashMap<String, Object>();
         reload();
     }
 
@@ -121,7 +122,7 @@ public class ConfigManager {
         config.put(key, val);
     }
 
-    public HashMap<String, Object> getAllConfig() {
+    public ConcurrentHashMap<String, Object> getAllConfig() {
         try {
             if (dirty) reload();
         } catch (Exception ignored) {

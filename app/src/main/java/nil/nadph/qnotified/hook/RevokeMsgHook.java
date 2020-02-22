@@ -129,7 +129,7 @@ public class RevokeMsgHook extends BaseDelayableHook {
     }
 
     private String getFriendName(String friendUin, String senderUin) {
-        //TODO: 群名片>备注>昵称>uin
+        //TODO: 群里群名片>备注>昵称>uin,单人对方
         String nickname = null;
         try {
             if (friendUin != null) {

@@ -24,6 +24,7 @@ import nil.nadph.qnotified.util.ActProxyMgr;
 import nil.nadph.qnotified.util.Utils;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
@@ -40,7 +41,6 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
     //private View mListView;
     private FaceImpl face;
     private ExfriendManager exm;
-    private HashMap<Integer, EventRecord> eventsMap;
     private ArrayList<EventRecord> evs;
     private BaseAdapter adapter = new BaseAdapter() {
         @Override
@@ -145,7 +145,7 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
     }
 
     public void reload() {
-        eventsMap = exm.getEvents();
+        ConcurrentHashMap<Integer, EventRecord> eventsMap = exm.getEvents();
         if (evs == null) evs = new ArrayList<>();
         else evs.clear();
         if (eventsMap == null) return;

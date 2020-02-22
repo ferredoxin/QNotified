@@ -32,9 +32,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static nil.nadph.qnotified.record.Table.*;
 import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_EXFRIEND_LIST;
 import static nil.nadph.qnotified.util.ActProxyMgr.ACTIVITY_PROXY_ACTION;
-import static nil.nadph.qnotified.record.Table.*;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
@@ -66,8 +66,8 @@ public class ExfriendManager {
     public long lastUpdateTimeSec;
     private long mUin;
     private int mTotalFriendCount;
-    private HashMap<Long, FriendRecord> persons;
-    private HashMap<Integer, EventRecord> events;
+    private ConcurrentHashMap<Long, FriendRecord> persons;
+    private ConcurrentHashMap<Integer, EventRecord> events;
     private ConfigManager fileData;//Back compatibility
     private ConcurrentHashMap mStdRemarks;
     private ArrayList<FriendChunk> cachedFriendChunks;
@@ -75,8 +75,8 @@ public class ExfriendManager {
     private Context remotePackageContext;
 
     private ExfriendManager(long uin) {
-        persons = new HashMap<>();
-        events = new HashMap();
+        persons = new ConcurrentHashMap<Long, FriendRecord>();
+        events = new ConcurrentHashMap<Integer, EventRecord>();
         if (tp == null) {
             int pt = SyncUtils.getProcessType();
             if (pt != 0 && (pt & (SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF)) != 0) {
@@ -132,8 +132,8 @@ public class ExfriendManager {
     }
 
     public void reinit() {
-        persons = new HashMap();
-        events = new HashMap();
+        persons = new ConcurrentHashMap<Long, FriendRecord>();
+        events = new ConcurrentHashMap<Integer, EventRecord>();
         initForUin(mUin);
     }
 
@@ -163,7 +163,7 @@ public class ExfriendManager {
                     fremark.setAccessible(true);
                     fnick = clz_fr.getField("name");
                     fnick.setAccessible(true);
-                    persons = new HashMap<>();
+                    persons = new ConcurrentHashMap<Long, FriendRecord>();
                     Iterator<Map.Entry> it = mStdRemarks.entrySet().iterator();
                     while (it.hasNext()) {
                         long t = System.currentTimeMillis() / 1000;
@@ -193,7 +193,7 @@ public class ExfriendManager {
     }
 
     //TODO: Rename it
-    public @Nullable
+    private @Nullable
     void loadSavedPersonsInfo() {
         synchronized (this) {
             try {
@@ -263,7 +263,7 @@ public class ExfriendManager {
             log("t_fr==null,aborting!");
             return;
         }
-        if (persons == null) persons = new HashMap<>();
+        if (persons == null) persons = new ConcurrentHashMap<Long, FriendRecord>();
         Iterator<Map.Entry<Long, Object[]>> it = t.records.entrySet().iterator();
         Map.Entry<Long, Object[]> entry;
         int _nick, _remark, _fs, _time;
@@ -358,7 +358,7 @@ public class ExfriendManager {
             log("t_ev==null,aborting!");
             return;
         }
-        if (events == null) events = new HashMap<>();
+        if (events == null) events = new ConcurrentHashMap<Integer, EventRecord>();
         Iterator<Map.Entry<Integer, Object[]>> it = t.records.entrySet().iterator();
         Map.Entry<Integer, Object[]> entry;
         int __nick, __remark, __fs, _te, _tb, _ev, _op, _b, _a, _extra, _op_old, _exec;
@@ -400,7 +400,7 @@ public class ExfriendManager {
                     if (tmp > 9999) ev.operand = tmp;
                     else ev.operand = (Long) rec[_op_old];
                 }
-                if (_exec != -1 ) {
+                if (_exec != -1) {
                     try {
                         ev.executor = (Long) rec[_exec];
                     } catch (NullPointerException e) {
@@ -455,7 +455,7 @@ public class ExfriendManager {
      * @hide
      */
     @Deprecated
-    public HashMap<Long, FriendRecord> getPersons() {
+    public ConcurrentHashMap<Long, FriendRecord> getPersons() {
         return persons;
     }
 
@@ -463,7 +463,7 @@ public class ExfriendManager {
      * @hide
      */
     @Deprecated
-    public HashMap<Integer, EventRecord> getEvents() {
+    public ConcurrentHashMap<Integer, EventRecord> getEvents() {
         return events;
     }
 
@@ -585,7 +585,7 @@ public class ExfriendManager {
                 log("Inconsistent friendlist chunk data!Aborting!total=" + tmp);
                 return;
             }
-            HashMap<Long, FriendRecord> del = (HashMap<Long, FriendRecord>) persons.clone();
+            HashMap<Long, FriendRecord> del = new HashMap<>(persons);
             FriendRecord fr;
             for (FriendChunk fc : fcs) {
                 for (int ii = 0; ii < fc.friend_count; ii++) {
@@ -629,11 +629,11 @@ public class ExfriendManager {
                 //requestIndividual(fr.uin);
             }
         }
-        doNotifyDelFlAndSave(ptr);
         lastUpdateTimeSec = fcs[0].serverTime;
         if (lastUpdateTimeSec == 0) {
             lastUpdateTimeSec = System.currentTimeMillis() / 1000L;
         }
+        doNotifyDelFlAndSave(ptr);
     }
 
     public void markActiveDelete(long uin) {

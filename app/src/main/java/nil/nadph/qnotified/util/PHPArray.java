@@ -321,7 +321,7 @@ public class PHPArray implements Iterable<HashMap.Entry> {
         } else {
             sb.append('{');
             for (Object o : map.entrySet()) {
-                en = (HashMap.Entry) o;
+                en = (Map.Entry) o;
                 v = en.getKey();
                 sb.append(quote("" + v));
                 sb.append(':');
