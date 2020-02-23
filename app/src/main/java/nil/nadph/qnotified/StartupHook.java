@@ -34,7 +34,7 @@ public class StartupHook {
                     try {
                         if (sec_stage_inited) return;
                         Utils.checkLogFlag();
-                        Context ctx = null;
+                        Context ctx;
                         Class clz = param.thisObject.getClass().getClassLoader().loadClass("com.tencent.common.app.BaseApplicationImpl");
                         final Field f = hasField(clz, "sApplication");
                         if (f == null) ctx = (Context) sget_object(clz, "a", clz);

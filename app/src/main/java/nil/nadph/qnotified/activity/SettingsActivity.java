@@ -77,8 +77,9 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(_t = newListItemButton(SettingsActivity.this, "自定义电量", "[QQ>=8.2.6]在线模式为我的电量时生效", "N/A", clickToProxyActAction(ACTION_FAKE_BAT_CONFIG_ACTIVITY)));
         __tv_fake_bat_status = (TextView) _t.findViewById(R_ID_VALUE);
         ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "语音保存转发", "长按语音消息", qn_enable_ptt_forward, false, PttForwardHook.get()));
-        ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "发送卡片消息", "先输入卡片代码(聊天界面),后长按发送按钮", qn_send_card_msg, false, CardMsgHook.get()));
-        ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "复读机", "+1", bug_repeater, false, RepeaterHook.get()));
+        ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "发送卡片消息", "ArkAppMsg(json)+StructMsg(xml)", qn_send_card_msg, false, CardMsgHook.get()));
+        ll.addView(subtitle(SettingsActivity.this, "卡片消息使用说明:先输入卡片代码(聊天界面),后长按发送按钮\n勿滥用此功能! 频繁使用此功能被举报可能封号"));
+        ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, " +1", "不是复读机", bug_repeater, false, RepeaterHook.get()));
         ll.addView(subtitle(SettingsActivity.this, "净化设置"));
         if (!Utils.isTim(SettingsActivity.this)) {
             ll.addView(newListItemSwitchConfigNext(SettingsActivity.this, "隐藏小程序入口", "隐藏消息列表下拉出现的小程序列表", qn_hide_msg_list_miniapp, false));
@@ -125,27 +126,22 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(newListItemSwitchConfigStub(SettingsActivity.this, "禁用QQ热补丁", "一般无需开启", qn_disable_qq_hot_patch, false));
         ll.addView(subtitle(SettingsActivity.this, "参数设定"));
         ll.addView(newListItemButton(SettingsActivity.this, "小尾巴", "请勿在多个模块同时开启小尾巴", "[无]", clickTheComing()));
+        ll.addView(newListItemButton(SettingsActivity.this, "AddFriendReq.sourceID", "自定义加好友来源", "[不改动]", clickTheComing()));
         ll.addView(newListItemButton(SettingsActivity.this, "DelFriendReq.delType", "只能为1或2", "[不改动]", clickTheComing()));
-        ll.addView(newListItemButton(SettingsActivity.this, "AddFriendReq.sourceID", "改错可能导致无法添加好友", "[不改动]", clickTheComing()));
         ll.addView(subtitle(SettingsActivity.this, "关于"));
         PackageInfo pi = Utils.getHostInfo(SettingsActivity.this);
         ll.addView(newListItemDummy(SettingsActivity.this, pi.applicationInfo.loadLabel(SettingsActivity.this.getPackageManager()), null, pi.versionName));
         ll.addView(newListItemDummy(SettingsActivity.this, "模块版本", null, Utils.QN_VERSION_NAME));
         UpdateCheck uc = new UpdateCheck();
         ll.addView(_t = newListItemButton(SettingsActivity.this, "检查更新", null, "点击检查", uc));
-        ll.addView(newListItemButton(SettingsActivity.this, "关于模块", null, null, clickToProxyActAction(ACTION_ABOUT)));
-        ll.addView(newListItemButton(SettingsActivity.this, "故障排查", null, null, clickToProxyActAction(ACTION_TROUBLESHOOT_ACTIVITY)));
         uc.setVersionTip(_t);
+        ll.addView(newListItemButton(SettingsActivity.this, "关于模块", null, null, clickToProxyActAction(ACTION_ABOUT)));
         ll.addView(subtitle(SettingsActivity.this, "调试"));
+        ll.addView(newListItemButton(SettingsActivity.this, "故障排查", null, null, clickToProxyActAction(ACTION_TROUBLESHOOT_ACTIVITY)));
         ll.addView(newListItemButton(SettingsActivity.this, "Shell.exec", "正常情况下无需使用此功能", null, clickTheComing()));
-        ll.addView(subtitle(SettingsActivity.this, "作者"));
         ll.addView(newListItemButton(SettingsActivity.this, "捐赠", "请选择扶贫方式", null, clickToProxyActAction(ACTION_DONATE_ACTIVITY)));
-        if (isNiceUser())
-            ll.addView(newListItemButton(SettingsActivity.this, "QQ", "点击私信反馈(bug,建议等等)", "1041703712", clickToChat()));
-        ll.addView(newListItemButton(SettingsActivity.this, "Mail", null, "xenonhydride@gmail.com", null));
-        ll.addView(newListItemButton(SettingsActivity.this, "Github", "Bug -> Issue (star)", "cinit/QNotified", clickToUrl("https://github.com/cinit/QNotified")));
-        ll.addView(newListItemButton(SettingsActivity.this, "Telegram", null, "Auride", clickToUrl("https://t.me/Auride")));
-        ll.addView(subtitle(SettingsActivity.this, "本软件为免费软件,请尊重个人劳动成果,严禁倒卖"));
+        ll.addView(newListItemButton(SettingsActivity.this, "Github", "获取源代码 Bug -> Issue (star)", "cinit/QNotified", clickToUrl("https://github.com/cinit/QNotified")));
+        ll.addView(subtitle(SettingsActivity.this, "本软件为免费软件,请尊重个人劳动成果,严禁倒卖\nLife feeds on negative entropy."));
         //bounceScrollView.setFocusable(true);
         //bounceScrollView.setFocusableInTouchMode(true);
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));

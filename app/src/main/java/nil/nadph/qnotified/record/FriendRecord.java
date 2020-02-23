@@ -25,7 +25,7 @@ public class FriendRecord implements Serializable, Cloneable {
     public int friendStatus;
 
     /**
-     * 10dec-lenth,sec
+     * 10dec-length,sec
      */
     public long serverTime;
 

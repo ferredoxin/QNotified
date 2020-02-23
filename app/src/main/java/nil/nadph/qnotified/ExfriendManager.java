@@ -221,8 +221,8 @@ public class ExfriendManager {
         /* uin+"" is key */
         fr.keyName = "uin";
         fr.keyType = TYPE_LONG;
-        fr.addField("nick", TYPE_ISTR);
-        fr.addField("remark", TYPE_ISTR);
+        fr.addField("nick", TYPE_IUTF8);
+        fr.addField("remark", TYPE_IUTF8);
         fr.addField("friendStatus", TYPE_INT);
         fr.addField("serverTime", TYPE_LONG);
     }
@@ -300,13 +300,14 @@ public class ExfriendManager {
         ev.addField("timeRangeEnd", TYPE_LONG);
         ev.addField("timeRangeBegin", TYPE_LONG);
         ev.addField("event", TYPE_INT);
-        ev.addField("operand", TYPE_INT);
-        ev.addField("executor", TYPE_INT);
-        ev.addField("before", TYPE_ISTR);
-        ev.addField("after", TYPE_ISTR);
-        ev.addField("extra", TYPE_ISTR);
-        ev.addField("_nick", TYPE_ISTR);
-        ev.addField("_remark", TYPE_ISTR);
+        ev.addField("operand", TYPE_LONG);
+        ev.addField("operator", TYPE_LONG);
+        ev.addField("executor", TYPE_LONG);
+        ev.addField("before", TYPE_IUTF8);
+        ev.addField("after", TYPE_IUTF8);
+        ev.addField("extra", TYPE_IUTF8);
+        ev.addField("_nick", TYPE_IUTF8);
+        ev.addField("_remark", TYPE_IUTF8);
         ev.addField("_friendStatus", TYPE_INT);
     }
 

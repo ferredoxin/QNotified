@@ -7,7 +7,6 @@ import nil.nadph.qnotified.util.Utils;
 import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -162,7 +161,7 @@ public class ConfigManager {
                     case TYPE_BOOL:
                         config.put(key, in.read() != 0);
                         break;
-                    case TYPE_CODEPOINT:
+                    case TYPE_WCHAR32:
                         config.put(key, in.readInt());
                         break;
                     case TYPE_INT:
@@ -180,7 +179,7 @@ public class ConfigManager {
                     case TYPE_DOUBLE:
                         config.put(key, in.readDouble());
                         break;
-                    case TYPE_ISTR:
+                    case TYPE_IUTF8:
                         config.put(key, readIStr(in));
                         break;
                     case TYPE_IRAW:

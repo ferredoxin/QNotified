@@ -24,7 +24,7 @@ public class Table<K> implements Serializable, Cloneable {
     public static final byte TYPE_VOID = 0;//should NOT have value
     public static final byte TYPE_BYTE = 1;
     public static final byte TYPE_BOOL = 2;
-    public static final byte TYPE_CODEPOINT = 3;
+    public static final byte TYPE_WCHAR32 = 3;
     public static final byte TYPE_INT = 4;
     public static final byte TYPE_SHORT = 5;
     public static final byte TYPE_LONG = 6;
@@ -32,15 +32,15 @@ public class Table<K> implements Serializable, Cloneable {
     public static final byte TYPE_DOUBLE = 8;
 
     public static final byte TYPE_IRAW = 9;
-    public static final byte TYPE_ISTR = 10;
-    public static final byte TYPE_ICODEPOINTS = 11;
-    /** B_TABLE ISTR_table_name [ I_len_types(fields.len) I_len_data(records.len) B_key_type ISTR_key_name (B_field_type I_STR_name)... (B_type_K(THIS-IS-IMPORTANTA!) index (B_type val)...)... ] */
+    public static final byte TYPE_IUTF8 = 10;
+    public static final byte TYPE_IUTF32 = 11;
     /**
+     * B_TABLE ISTR_table_name [ I_len_types(fields.len) I_len_data(records.len) B_key_type ISTR_key_name (B_field_type I_STR_name)... (B_type_K(THIS-IS-IMPORTANTA!) index (B_type val)...)... ]
      * B_type  ISTR_name       val
      */
     public static final byte TYPE_TABLE = 16;
     /**
-     * B_ARRAY ISTR_array_name [ I_max_len I_item_count () ]
+     * B_ARRAY ISTR_array_name [ B_type I_reserved I_array_size (B_type val)... ]
      **/
     public static final byte TYPE_ARRAY = 17;
     public static final byte TYPE_MAP = 18;
@@ -119,7 +119,7 @@ public class Table<K> implements Serializable, Cloneable {
                     case TYPE_BOOL:
                         recval[i] = in.read() != 0;
                         break;
-                    case TYPE_CODEPOINT:
+                    case TYPE_WCHAR32:
                         recval[i] = in.readInt();
                         break;
                     case TYPE_INT:
@@ -137,7 +137,7 @@ public class Table<K> implements Serializable, Cloneable {
                     case TYPE_DOUBLE:
                         recval[i] = in.readDouble();
                         break;
-                    case TYPE_ISTR:
+                    case TYPE_IUTF8:
                         recval[i] = readIStr(in);
                         break;
                     case TYPE_IRAW:
@@ -166,7 +166,7 @@ public class Table<K> implements Serializable, Cloneable {
                 return (byte) in.read();
             case TYPE_BOOL:
                 return in.read() != 0;
-            case TYPE_CODEPOINT:
+            case TYPE_WCHAR32:
                 return in.readInt();
             case TYPE_INT:
                 return in.readInt();
@@ -178,7 +178,7 @@ public class Table<K> implements Serializable, Cloneable {
                 return in.readFloat();
             case TYPE_DOUBLE:
                 return in.readDouble();
-            case TYPE_ISTR:
+            case TYPE_IUTF8:
                 return readIStr(in);
             case TYPE_IRAW:
                 return readIRaw(in);
@@ -204,7 +204,7 @@ public class Table<K> implements Serializable, Cloneable {
             case TYPE_BOOL:
                 out.writeByte(((Boolean) obj) ? 1 : 0);
                 break;
-            case TYPE_CODEPOINT:
+            case TYPE_WCHAR32:
                 out.writeInt((Integer) obj);
                 break;
             case TYPE_INT:
@@ -222,7 +222,7 @@ public class Table<K> implements Serializable, Cloneable {
             case TYPE_DOUBLE:
                 out.writeDouble((Double) obj);
                 break;
-            case TYPE_ISTR:
+            case TYPE_IUTF8:
                 writeIStr(out, (String) obj);
                 break;
             case TYPE_IRAW:
@@ -256,7 +256,7 @@ public class Table<K> implements Serializable, Cloneable {
                 }
                 out.writeByte(((boolean) val) ? 1 : 0);
             } else if (Character.class.equals(clz)) {
-                type = TYPE_CODEPOINT;
+                type = TYPE_WCHAR32;
                 out.writeInt(type);
                 if (key != null) {
                     writeIStr(out, key);
@@ -298,7 +298,7 @@ public class Table<K> implements Serializable, Cloneable {
                 }
                 out.writeDouble((Double) val);
             } else if (String.class.equals(clz)) {
-                type = TYPE_ISTR;
+                type = TYPE_IUTF8;
                 out.write(type);
                 if (key != null) {
                     writeIStr(out, key);

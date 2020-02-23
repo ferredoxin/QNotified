@@ -67,8 +67,8 @@ public class Utils {
             qn_donated_choice = "qn_donated_choice";
 
 
-    public static final String QN_VERSION_NAME = "0.7.0-rc1";
-    public static final int QN_VERSION_CODE = 23;
+    public static final String QN_VERSION_NAME = "0.7.0-es2";
+    public static final int QN_VERSION_CODE = 24;
     public static final String PACKAGE_NAME_QQ = "com.tencent.mobileqq";
     public static final String PACKAGE_NAME_QQ_INTERNATIONAL = "com.tencent.mobileqqi";
     public static final String PACKAGE_NAME_QQ_LITE = "com.tencent.qqlite";
@@ -80,7 +80,7 @@ public class Utils {
     public static final int TOAST_TYPE_SUCCESS = 2;
     public static final String cfg_nice_user = "cfg_nice_user";
     public static boolean DEBUG = true;
-    public static boolean V_TOAST = false;
+    public static boolean ENABLE_DUMP_LOG = false;
     private static Handler mHandler;
     private static Method method_Toast_show;
     private static Method method_Toast_makeText;
@@ -730,7 +730,7 @@ public class Utils {
             Log.i("Xposed", str);
             Log.i("EdXposed-Bridge", str);
         }
-        if (V_TOAST) {
+        if (ENABLE_DUMP_LOG) {
             String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/qn_log.txt";
             File f = new File(path);
             try {
@@ -750,7 +750,7 @@ public class Utils {
     public static void checkLogFlag() {
         try {
             File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.qn_log_flag");
-            if (f.exists()) V_TOAST = true;
+            if (f.exists()) ENABLE_DUMP_LOG = true;
         } catch (Exception ignored) {
         }
     }
@@ -1002,7 +1002,7 @@ public class Utils {
      * 特征
      * A/a+sp/'/^   && lenth>2
      * 丶ゞ
-     * 中文.len()<3 && endsWith '.'
+     * 中文.len()<5 && endsWith '.'
      * char[1]  'emoji'
      * char[1] 全半角单符号
      * IDSP/3000"　"

@@ -129,7 +129,10 @@ public class DonateActivity extends IphoneTitleBarActivityCompat {
         ll.addView(subtitle(this, "当然以上只是其中一种方法"));
         ll.addView(subtitle(this, "本软件首发地为 https://github.com/cinit/QNotified (求star/issue/pull request)"));
         ll.addView(subtitle(this, "最后,谢谢你的支持"));
-        ll.addView(subtitle(this, "by 千古华亭鸽自飞 (咕咕咕)"));
+        ll.addView(subtitle(this, "by"));
+        if (isNiceUser()) ll.addView(newListItemButton(this, "QQ", "点击私信", "1041703712", clickToChat()));
+        ll.addView(newListItemButton(this, "Mail", null, "xenonhydride@gmail.com", null));
+        ll.addView(newListItemButton(this, "Telegram", null, "Auride", clickToUrl("https://t.me/Auride")));
 
         //bounceScrollView.setFocusable(true);
         //bounceScrollView.setFocusableInTouchMode(true);

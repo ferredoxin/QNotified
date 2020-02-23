@@ -5,7 +5,9 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -14,6 +16,7 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.record.ConfigManager;
+import nil.nadph.qnotified.ui.InterceptLayout;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Utils;
 
@@ -71,6 +74,70 @@ public class CardMsgHook extends BaseDelayableHook {
                                 View sendBtn = viewGroup.findViewById(fun_btn);
                                 final Object qqApp = iget_object_or_null(param.thisObject, "a", _QQAppInterface());
                                 final Object session = iget_object_or_null(param.thisObject, "a", _SessionInfo());
+                                if (!sendBtn.getParent().getClass().getName().equals(InterceptLayout.class.getName())) {
+                                    InterceptLayout layout = InterceptLayout.setupRudely(sendBtn);
+                                    layout.setTouchInterceptor(new View.OnTouchListener() {
+                                        long downmTime = -1;
+                                        float mX, mY;
+                                        int THRESHOLD = 500;
+
+                                        {
+                                            try {
+                                                THRESHOLD = ViewConfiguration.getLongPressTimeout();
+                                            } catch (Throwable e) {
+                                                log(e);
+                                            }
+                                        }
+
+                                        @Override
+                                        public boolean onTouch(View v, MotionEvent event) {
+                                            float x, y;
+                                            switch (event.getAction()) {
+                                                case MotionEvent.ACTION_DOWN:
+                                                    downmTime = System.currentTimeMillis();
+                                                    mX = event.getX();
+                                                    mY = event.getY();
+                                                    break;
+                                                case MotionEvent.ACTION_MOVE:
+                                                    x = event.getX();
+                                                    y = event.getY();
+                                                    if (x < 0 || y < 0 || x > v.getWidth() || y > v.getHeight()) {
+                                                        downmTime = -1;
+                                                    }
+                                                    break;
+                                                case MotionEvent.ACTION_CANCEL:
+                                                    downmTime = -1;
+                                                    break;
+                                                case MotionEvent.ACTION_UP:
+                                                    if (downmTime < 0) break;
+                                                    long curr = System.currentTimeMillis();
+                                                    if (curr - downmTime > THRESHOLD) {
+                                                        downmTime = -1;
+                                                        doOnLongClick(v);
+                                                        break;
+                                                    }
+                                            }
+                                            return false;
+                                        }
+
+                                        private void doOnLongClick(View v) {
+                                            try {
+                                                ViewGroup vg = (ViewGroup) v;
+                                                Context ctx = v.getContext();
+                                                if (vg.getChildCount() != 0 && !vg.getChildAt(0).isEnabled()) {
+                                                    EditText input = (EditText) viewGroup.findViewById(ctx.getResources().getIdentifier("input", "id", ctx.getPackageName()));
+                                                    String text = input.getText().toString();
+                                                    if (text.length() == 0) {
+                                                        showToast(ctx, TOAST_TYPE_ERROR, "请先输入卡片代码", Toast.LENGTH_SHORT);
+                                                    }
+                                                }
+                                            } catch (Exception e) {
+                                                log(e);
+                                            }
+                                        }
+
+                                    });
+                                }
                                 sendBtn.setOnLongClickListener(new View.OnLongClickListener() {
                                     @Override
                                     public boolean onLongClick(View v) {
@@ -80,13 +147,15 @@ public class CardMsgHook extends BaseDelayableHook {
                                         if (text.length() == 0) {
                                             showToast(ctx, TOAST_TYPE_ERROR, "请先输入卡片代码", Toast.LENGTH_SHORT);
                                         } else {
-                                            if (text.contains("{")) {
+                                            if (text.contains("<?xml")) {
                                                 try {
-                                                    Object arkMsg = load("com.tencent.mobileqq.data.ArkAppMessage").newInstance();
-                                                    if ((boolean) invoke_virtual(arkMsg, "fromAppXml", text, String.class)) {
-                                                        XposedHelpers.callStaticMethod(DexKit.doFindClass(DexKit.C_FACADE), "a", qqApp, session, arkMsg);
-                                                        //invoke_static(DexKit.doFindClass(DexKit.C_FACADE), "a", qqApp, session, arkMsg, load("com.tencent.mobileqq.app.QQAppInterface"), _SessionInfo(), arkMsg.getClass());
+                                                    Object structMsg = invoke_static(DexKit.doFindClass(DexKit.C_TEST_STRUCT_MSG), "a", text, String.class, load("com.tencent.mobileqq.structmsg.AbsStructMsg"));
+                                                    if (structMsg != null) {
+                                                        XposedHelpers.callStaticMethod(DexKit.doFindClass(DexKit.C_FACADE), "a", qqApp, session, structMsg);
                                                         input.setText("");
+                                                        return true;
+                                                    } else {
+                                                        Utils.showToast(ctx, TOAST_TYPE_ERROR, "XML语法错误(代码有误)", Toast.LENGTH_SHORT);
                                                         return true;
                                                     }
                                                 } catch (Throwable e) {
@@ -94,12 +163,16 @@ public class CardMsgHook extends BaseDelayableHook {
                                                     log(e);
                                                     Utils.showToast(ctx, TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), Toast.LENGTH_SHORT);
                                                 }
-                                            } else if (text.contains("<")) {
+                                            } else if (text.contains("{\"")) {
                                                 try {
-                                                    Object structMsg = invoke_static(DexKit.doFindClass(DexKit.C_TEST_STRUCT_MSG), "a", text, String.class, load("com.tencent.mobileqq.structmsg.AbsStructMsg"));
-                                                    if (structMsg != null) {
-                                                        XposedHelpers.callStaticMethod(DexKit.doFindClass(DexKit.C_FACADE), "a", qqApp, session, structMsg);
+                                                    Object arkMsg = load("com.tencent.mobileqq.data.ArkAppMessage").newInstance();
+                                                    if ((boolean) invoke_virtual(arkMsg, "fromAppXml", text, String.class)) {
+                                                        XposedHelpers.callStaticMethod(DexKit.doFindClass(DexKit.C_FACADE), "a", qqApp, session, arkMsg);
+                                                        //invoke_static(DexKit.doFindClass(DexKit.C_FACADE), "a", qqApp, session, arkMsg, load("com.tencent.mobileqq.app.QQAppInterface"), _SessionInfo(), arkMsg.getClass());
                                                         input.setText("");
+                                                        return true;
+                                                    } else {
+                                                        Utils.showToast(ctx, TOAST_TYPE_ERROR, "JSON语法错误(代码有误)", Toast.LENGTH_SHORT);
                                                         return true;
                                                     }
                                                 } catch (Throwable e) {
