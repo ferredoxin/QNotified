@@ -322,7 +322,13 @@ public class DexKit {
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM);
     }
 
-    private static Class a(int i, HashSet<Class> classes, DexDeobfReport report) {
+    private static Class a(int i, HashSet<Class> __classes, DexDeobfReport report) {
+        HashSet<Class> classes = new HashSet<>(__classes);
+        for (Class c : __classes) {
+            if (c == null || c.getName().contains(".")) {
+                classes.remove(c);
+            }
+        }
         switch (i) {
             case C_DIALOG_UTIL:
             case C_FACADE:

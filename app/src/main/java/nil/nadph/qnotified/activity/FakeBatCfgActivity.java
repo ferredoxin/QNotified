@@ -24,7 +24,6 @@ import static nil.nadph.qnotified.util.Utils.*;
 @SuppressLint("Registered")
 public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener {
 
-
     private static final int R_ID_APPLY = 0x300AFF81;
     private static final int R_ID_DISABLE = 0x300AFF82;
     private static final int R_ID_PERCENT_VALUE = 0x300AFF83;

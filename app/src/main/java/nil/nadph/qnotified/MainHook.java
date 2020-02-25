@@ -386,12 +386,14 @@ public class MainHook {
                 if (index != -1) {
                     Intent raw = (Intent) args[index];
                     ComponentName component = raw.getComponent();
+                    log("startActivity, rawIntent=" + raw);
                     if (component != null &&
                             component.getClassName().startsWith("nil.nadph.qnotified.")) {
                         Intent wrapper = new Intent();
                         wrapper.setClassName(component.getPackageName(), ActProxyMgr.STUB_ACTIVITY);
                         wrapper.putExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT, raw);
                         args[index] = wrapper;
+                        log("startActivity, wrap intent with " + wrapper);
                     }
                 }
             }
@@ -417,6 +419,7 @@ public class MainHook {
         @Override
         public Activity newActivity(ClassLoader cl, String className, Intent intent) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
             try {
+                log("newActivity: " + className);
                 return base.newActivity(cl, className, intent);
             } catch (Exception e) {
                 if (className.startsWith("nil.nadph.qnotified.")) {
@@ -442,6 +445,7 @@ public class MainHook {
                     Field field_intent = record.getClass().getDeclaredField("intent");
                     field_intent.setAccessible(true);
                     Intent intent = (Intent) field_intent.get(record);
+                    log("handleMessage/100: " + intent);
                     Bundle bundle = null;
                     try {
                         Field fExtras = Intent.class.getDeclaredField("mExtras");
@@ -455,6 +459,7 @@ public class MainHook {
                         if (intent.hasExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT)) {
                             Intent realIntent = intent.getParcelableExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT);
                             field_intent.set(record, realIntent);
+                            log("unwrap, real=" + realIntent);
                         }
                     }
                 } catch (Exception e) {
