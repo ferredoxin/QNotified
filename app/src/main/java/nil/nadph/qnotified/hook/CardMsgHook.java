@@ -7,7 +7,6 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -17,6 +16,7 @@ import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.ui.InterceptLayout;
+import nil.nadph.qnotified.ui.TouchEventToLongClickAdapter;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Utils;
 
@@ -76,51 +76,20 @@ public class CardMsgHook extends BaseDelayableHook {
                                 final Object session = iget_object_or_null(param.thisObject, "a", _SessionInfo());
                                 if (!sendBtn.getParent().getClass().getName().equals(InterceptLayout.class.getName())) {
                                     InterceptLayout layout = InterceptLayout.setupRudely(sendBtn);
-                                    layout.setTouchInterceptor(new View.OnTouchListener() {
-                                        long downmTime = -1;
-                                        float mX, mY;
-                                        int THRESHOLD = 500;
-
-                                        {
-                                            try {
-                                                THRESHOLD = ViewConfiguration.getLongPressTimeout();
-                                            } catch (Throwable e) {
-                                                log(e);
+                                    layout.setTouchInterceptor(new TouchEventToLongClickAdapter() {
+                                        @Override
+                                        public boolean onTouch(View v, MotionEvent event) {
+                                            ViewGroup vg = (ViewGroup) v;
+                                            Context ctx = v.getContext();
+                                            if (event.getAction() == MotionEvent.ACTION_DOWN &&
+                                                    vg.getChildCount() != 0 && vg.getChildAt(0).isEnabled()) {
+                                                return false;
                                             }
+                                            return super.onTouch(v, event);
                                         }
 
                                         @Override
-                                        public boolean onTouch(View v, MotionEvent event) {
-                                            float x, y;
-                                            switch (event.getAction()) {
-                                                case MotionEvent.ACTION_DOWN:
-                                                    downmTime = System.currentTimeMillis();
-                                                    mX = event.getX();
-                                                    mY = event.getY();
-                                                    break;
-                                                case MotionEvent.ACTION_MOVE:
-                                                    x = event.getX();
-                                                    y = event.getY();
-                                                    if (x < 0 || y < 0 || x > v.getWidth() || y > v.getHeight()) {
-                                                        downmTime = -1;
-                                                    }
-                                                    break;
-                                                case MotionEvent.ACTION_CANCEL:
-                                                    downmTime = -1;
-                                                    break;
-                                                case MotionEvent.ACTION_UP:
-                                                    if (downmTime < 0) break;
-                                                    long curr = System.currentTimeMillis();
-                                                    if (curr - downmTime > THRESHOLD) {
-                                                        downmTime = -1;
-                                                        doOnLongClick(v);
-                                                        break;
-                                                    }
-                                            }
-                                            return false;
-                                        }
-
-                                        private void doOnLongClick(View v) {
+                                        public boolean onLongClick(View v) {
                                             try {
                                                 ViewGroup vg = (ViewGroup) v;
                                                 Context ctx = v.getContext();
@@ -130,13 +99,14 @@ public class CardMsgHook extends BaseDelayableHook {
                                                     if (text.length() == 0) {
                                                         showToast(ctx, TOAST_TYPE_ERROR, "请先输入卡片代码", Toast.LENGTH_SHORT);
                                                     }
+                                                    return true;
                                                 }
                                             } catch (Exception e) {
                                                 log(e);
                                             }
+                                            return false;
                                         }
-
-                                    });
+                                    }.setLongPressTimeoutFactor(1.5f));
                                 }
                                 sendBtn.setOnLongClickListener(new View.OnLongClickListener() {
                                     @Override

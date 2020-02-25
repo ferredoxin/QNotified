@@ -23,15 +23,18 @@ public class FakeBatteryHook extends BaseDelayableHook {
 
     @Override
     public boolean init() {
+        //log("---> FakeBatteryHook called init!");
         if (inited) return true;
         try {
             Class clz = load("com/tencent/mobileqq/msf/sdk/MsfSdkUtils");
             findAndHookMethod(clz, "getSendBatteryStatus", new XC_MethodHook(49) {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    //log("--->getSendBatteryStatus isEnabled=" + isEnabled() + ", getFakeBatteryStatus=" + getFakeBatteryStatus());
+                    int fake = getFakeBatteryStatus();
+                    //log("<---getSendBatteryStatus beforeHookedMethod isEnabled = " + isEnabled() + ", getFakeBatteryStatus = " + fake);
                     if (!isEnabled()) return;
-                    param.setResult(getFakeBatteryStatus());
+                    param.setResult(fake);
+                    //log("<---getSendBatteryStatus getResult = " + param.getResult());
                 }
             });
             findAndHookMethod(clz, "getBatteryStatus", new XC_MethodHook(49) {
@@ -41,6 +44,7 @@ public class FakeBatteryHook extends BaseDelayableHook {
                     param.setResult(getFakeBatteryCapacity());
                 }
             });
+            //log("---> FakeBatteryHook init done!");
             inited = true;
             return true;
         } catch (Throwable e) {

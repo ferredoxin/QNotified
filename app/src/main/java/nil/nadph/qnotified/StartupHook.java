@@ -6,6 +6,10 @@ import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Utils;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
@@ -41,7 +45,6 @@ public class StartupHook {
                         else ctx = (Context) f.get(null);
                         ClassLoader classLoader = ctx.getClassLoader();
                         if (classLoader == null) throw new AssertionError("ERROR: classLoader == null");
-                        Initiator.init(classLoader);
                         if ("true".equals(System.getProperty(QN_FULL_TAG))) {
                             log("Err:QNotified reloaded??");
                             //I don't know... What happened?
@@ -49,8 +52,9 @@ public class StartupHook {
                             //System.exit(-1);
                             //QNotified updated(in HookLoader mode),kill QQ to make user restart it.
                         }
-                        MainHook.getInstance().performHook(ctx, param.thisObject);
                         System.setProperty(QN_FULL_TAG, "true");
+                        Initiator.init(classLoader);
+                        MainHook.getInstance().performHook(ctx, param.thisObject);
                         sec_stage_inited = true;
                     } catch (Throwable e) {
                         log(e);
@@ -68,7 +72,6 @@ public class StartupHook {
                 }
             }
             XposedBridge.hookMethod(m, startup);
-            //findAndHookMethodIfExists("com.tencent.common.app.QFixApplicationImpl", lpparam.classLoader, "isAndroidNPatchEnable", XC_MethodReplacement.returnConstant(500, false));
             first_stage_inited = true;
         } catch (Throwable e) {
             if ((e + "").contains("com.bug.zqq")) return;

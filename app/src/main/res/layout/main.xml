@@ -58,7 +58,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="请在QQ/TIM/TMore内进行操作"/>
+                android:text="请在QQ/TIM内进行操作"/>
 
         <TextView
                 android:layout_height="wrap_content"

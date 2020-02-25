@@ -97,7 +97,9 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "赞说说不提醒", "不影响评论,转发或击掌的通知", qn_mute_thumb_up, false, MuteQZoneThumbsUp.get()));
         ll.addView(subtitle(SettingsActivity.this, "图片相关"));
         ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "以图片方式打开闪照", null, qn_flash_as_pic, false, FlashPicHook.get()));
-        ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "禁止秀图自动展示", null, qn_gag_show_pic, false, ShowPicGagHook.get()));
+        if (!Utils.isTim(SettingsActivity.this)) {
+            ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "禁止秀图自动展示", null, qn_gag_show_pic, false, ShowPicGagHook.get()));
+        }
         ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "转发消息点击头像查看资料卡", null, qn_multi_forward_avatar_profile, true, MultiForwardAvatarHook.get()));
         if (!Utils.isTim(SettingsActivity.this)) {
             ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "以图片方式打开表情", null, qn_sticker_as_pic, false, EmoPicHook.get()));

@@ -94,7 +94,7 @@ public class ConfigActivity extends Activity implements Runnable {
 
         InputStream in = ConfigActivity.class.getClassLoader().getResourceAsStream("assets/xposed_init");
         byte[] buf = new byte[64];
-        String start = "";
+        String start;
         try {
             int len = in.read(buf);
             in.close();
