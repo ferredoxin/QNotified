@@ -67,8 +67,8 @@ public class Utils {
             qn_donated_choice = "qn_donated_choice";
 
 
-    public static final String QN_VERSION_NAME = "0.7.0-es2";
-    public static final int QN_VERSION_CODE = 24;
+    public static final String QN_VERSION_NAME = "0.7.0-es3";
+    public static final int QN_VERSION_CODE = 25;
     public static final String PACKAGE_NAME_QQ = "com.tencent.mobileqq";
     public static final String PACKAGE_NAME_QQ_INTERNATIONAL = "com.tencent.mobileqqi";
     public static final String PACKAGE_NAME_QQ_LITE = "com.tencent.qqlite";

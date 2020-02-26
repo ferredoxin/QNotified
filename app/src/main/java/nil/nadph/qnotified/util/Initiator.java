@@ -194,6 +194,10 @@ public class Initiator {
         return load("com/tencent/mobileqq/activity/aio/SessionInfo");
     }
 
+    public static Class _BaseChatPie() {
+        return load("com.tencent.mobileqq.activity.BaseChatPie");
+    }
+
     public static Class _MessageRecord() {
         return load("com/tencent/mobileqq/data/MessageRecord");
     }

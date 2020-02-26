@@ -2,11 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           package="nil.nadph.qnotified"
-          android:versionName="0.7.0-es2"
-          android:versionCode="24">
+          android:versionName="0.7.0-es3"
+          android:versionCode="25">
 
     <uses-sdk
-            android:targetSdkVersion="27"
+            android:targetSdkVersion="29"
             android:minSdkVersion="11" tools:ignore="OldTargetApi"/>
 
     <application

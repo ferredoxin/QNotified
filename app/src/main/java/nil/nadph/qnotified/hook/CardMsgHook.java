@@ -8,7 +8,9 @@ import android.content.Context;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -20,9 +22,7 @@ import nil.nadph.qnotified.ui.TouchEventToLongClickAdapter;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Utils;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static nil.nadph.qnotified.util.Initiator.*;
@@ -114,8 +114,8 @@ public class CardMsgHook extends BaseDelayableHook {
                                         Context ctx = v.getContext();
                                         EditText input = (EditText) viewGroup.findViewById(ctx.getResources().getIdentifier("input", "id", ctx.getPackageName()));
                                         String text = input.getText().toString();
-                                        if (text.length() == 0) {
-                                            showToast(ctx, TOAST_TYPE_ERROR, "请先输入卡片代码", Toast.LENGTH_SHORT);
+                                        if (((TextView) v).length() == 0) {
+                                            return false;
                                         } else {
                                             if (text.contains("<?xml")) {
                                                 try {
@@ -188,6 +188,21 @@ public class CardMsgHook extends BaseDelayableHook {
                 }
             }
             //End: StructMsg
+            for (Method m : load("com.tencent.mobileqq.structmsg.StructMsgForGeneralShare").getMethods()) {
+                if (m.getName().equals("getView")) {
+                    XposedBridge.hookMethod(m, new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            View v = (View) param.getResult();
+                            View.OnLongClickListener l = getBubbleLongClickListener((Activity) param.args[0]);
+                            if (v != null && l != null) {
+                                v.setOnLongClickListener(l);
+                            }
+                        }
+                    });
+                    break;
+                }
+            }
             inited = true;
             return true;
         } catch (Throwable throwable) {
@@ -246,6 +261,42 @@ public class CardMsgHook extends BaseDelayableHook {
                     log(e);
                 }
             }
+        }
+    }
+
+    private Field fChatAdapter = null;
+    private Field fBubbleOnLongClickListener = null;
+
+    public View.OnLongClickListener getBubbleLongClickListener(Activity activity) {
+        Object fmgr;
+        try {
+            fmgr = invoke_virtual(activity, "getSupportFragmentManager");
+            Object fragment = invoke_virtual(fmgr, "findFragmentByTag", "com.tencent.mobileqq.activity.ChatFragment", String.class);
+            Object chatpie = invoke_virtual(fragment, "a", load("com.tencent.mobileqq.activity.BaseChatPie"));
+            if (fChatAdapter == null) {
+                for (Field f : _BaseChatPie().getDeclaredFields()) {
+                    if (f.getName().equals("a") && Modifier.isPublic(f.getModifiers())) {
+                        Class type = f.getType();
+                        if (BaseAdapter.class.isAssignableFrom(type)) {
+                            fChatAdapter = f;
+                            fChatAdapter.setAccessible(true);
+                        }
+                    }
+                }
+            }
+            BaseAdapter chatAdapter1 = (BaseAdapter) fChatAdapter.get(chatpie);
+            if (fBubbleOnLongClickListener == null) {
+                for (Field f : fChatAdapter.getType().getDeclaredFields()) {
+                    if (View.OnLongClickListener.class.isAssignableFrom(f.getType())) {
+                        fBubbleOnLongClickListener = f;
+                        fBubbleOnLongClickListener.setAccessible(true);
+                    }
+                }
+            }
+            return (View.OnLongClickListener) fBubbleOnLongClickListener.get(chatAdapter1);
+        } catch (Exception e) {
+            log(e);
+            return null;
         }
     }
 

@@ -45,7 +45,7 @@ public class InterceptLayout extends LinearLayout {
             layout.addView(v, new LinearLayout.LayoutParams(currlp.width, currlp.height));
         else
             layout.addView(v, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        parent.addView(layout, index, currlp);
+        parent.addView(layout, index, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         return layout;
     }
 
