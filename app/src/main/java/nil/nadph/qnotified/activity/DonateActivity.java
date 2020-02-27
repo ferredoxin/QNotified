@@ -2,9 +2,13 @@ package nil.nadph.qnotified.activity;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -15,7 +19,7 @@ import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ResUtils;
 
-import java.io.IOException;
+import java.net.URLEncoder;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -51,71 +55,27 @@ public class DonateActivity extends IphoneTitleBarActivityCompat {
         ColorStateList hiColor = ColorStateList.valueOf(Color.argb(255, 242, 140, 72));
         RelativeLayout _t;
 
-        ll.addView(subtitle(this, "如果你希望支持作者, 保持更新的动力, 可请使用以下并不存在的方式捐赠, 完成后打开 [我已捐赠] 即可"));
+        ll.addView(subtitle(this, "QNotified是开源软件,完全免费,无需任何授权/验证即可使用全部功能,没有卡密这类的东西,请勿上当受骗!!!"));
+        ll.addView(subtitle(this, "如果你希望支持作者, 保持更新的动力, 可请使用以下方式捐赠, 完成后手动打开 [我已捐赠] 即可"));
         ll.addView(subtitle(this, "免费开发不易, 需要花费很多个人精力, 且回报甚微, 甚至有人盗卖, 感谢理解"));
-        RelativeLayout playout = newListItemSwitchConfig(this, "我已捐赠", null, qn_donated_choice, false);
-        ((CompoundButton) playout.findViewById(R_ID_SWITCH)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        RelativeLayout iHaveDonated = newListItemSwitchConfig(this, "我已捐赠", null, qn_donated_choice, false);
+        ((CompoundButton) iHaveDonated.findViewById(R_ID_SWITCH)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(final CompoundButton buttonView, boolean isChecked) {
-                if (isRecursion()) return;
-                if (isChecked) {
-                    if (!ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_donated_choice)) {
-                        try {
-                            CustomDialog dialog = CustomDialog.create(DonateActivity.this);
-                            dialog.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    if (isRecursion()) return;
-                                    try {
-                                        ConfigManager cfg = ConfigManager.getDefaultConfig();
-                                        cfg.putBoolean(qn_donated_choice, true);
-                                        cfg.save();
-                                        buttonView.setChecked(true);
-                                        showToast(DonateActivity.this, TOAST_TYPE_SUCCESS, "感谢您的支持", Toast.LENGTH_SHORT);
-                                    } catch (Throwable e) {
-                                        log(e);
-                                        showToast(DonateActivity.this, TOAST_TYPE_ERROR, "出了点问题", Toast.LENGTH_SHORT);
-                                    }
-                                }
-                            });
-                            dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    if (isRecursion()) return;
-                                    buttonView.setChecked(false);
-                                }
-                            });
-                            dialog.setCancelable(true);
-                            dialog.setMessage("Are you sure that you have donated?");
-                            dialog.setTitle("THINK TWICE");
-                            dialog.show();
-                            buttonView.setChecked(ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_donated_choice));
-                        } catch (Exception e) {
-                            ConfigManager cfg = ConfigManager.getDefaultConfig();
-                            cfg.putBoolean(qn_donated_choice, true);
-                            try {
-                                cfg.save();
-                                showToast(DonateActivity.this, TOAST_TYPE_SUCCESS, "感谢您的支持", Toast.LENGTH_SHORT);
-                            } catch (IOException ex) {
-                                log(ex);
-                            }
-                        }
-                    }
-                } else {
+                try {
                     ConfigManager cfg = ConfigManager.getDefaultConfig();
-                    if (cfg.getBooleanOrFalse(qn_donated_choice)) {
-                        try {
-                            showToast(DonateActivity.this, TOAST_TYPE_ERROR, "YOU CANNOT UNDO THAT!", Toast.LENGTH_LONG);
-                        } catch (Throwable e) {
-                            log(e);
-                        }
-                        buttonView.setChecked(true);
+                    cfg.putBoolean(qn_donated_choice, isChecked);
+                    cfg.save();
+                    if (isChecked) {
+                        showToast(DonateActivity.this, TOAST_TYPE_SUCCESS, "感谢您的支持", Toast.LENGTH_SHORT);
                     }
+                } catch (Throwable e) {
+                    log(e);
+                    showToast(DonateActivity.this, TOAST_TYPE_ERROR, "出了点问题:" + e, Toast.LENGTH_SHORT);
                 }
             }
         });
-        ll.addView(playout);
-
+        ll.addView(iHaveDonated);
         ll.addView(subtitle(this, "感谢您的支持!"));
         ll.addView(subtitle(this, ""));
         ll.addView(subtitle(this, "目前还存在一个较为严重的问题:"));
@@ -133,6 +93,21 @@ public class DonateActivity extends IphoneTitleBarActivityCompat {
         if (isNiceUser()) ll.addView(newListItemButton(this, "QQ", "点击私信", "1041703712", clickToChat()));
         ll.addView(newListItemButton(this, "Mail", null, "xenonhydride@gmail.com", null));
         ll.addView(newListItemButton(this, "Telegram", null, "Auride", clickToUrl("https://t.me/Auride")));
+        ll.addView(subtitle(this, "扶贫方式"));
+        ll.addView(newListItemButton(this, "支付宝", null, null, clickToAlipay()));
+
+        ll.addView(subtitle(this, "FAQ1:"));
+        ll.addView(subtitle(this, "Q: 捐赠后能解锁隐藏功能吗?"));
+        ll.addView(subtitle(this, "A: 不能. 所有功能全部都是可以白嫖的"));
+        ll.addView(subtitle(this, "FAQ2:"));
+        ll.addView(subtitle(this, "Q: 我捐赠过,但是QQ数据被清除后没了怎么办"));
+        ll.addView(subtitle(this, "A: 直接打开 我已捐赠 即可"));
+        ll.addView(subtitle(this, "FAQ3:"));
+        ll.addView(subtitle(this, "Q: 已知 我已捐赠 这个Switch开和关没有任何区别,那这个开关意义何在"));
+        ll.addView(subtitle(this, "A: 和B站上up主的明示投币一个道理"));
+        ll.addView(subtitle(this, "FAQ4:"));
+        ll.addView(subtitle(this, "Q: 为什么不加个授权验证,然后收费?"));
+        ll.addView(subtitle(this, "A: 开源软件搞什么授权验证"));
 
         //bounceScrollView.setFocusable(true);
         //bounceScrollView.setFocusableInTouchMode(true);
@@ -149,4 +124,52 @@ public class DonateActivity extends IphoneTitleBarActivityCompat {
         return true;
     }
 
+
+    private View.OnClickListener clickToAlipay() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CustomDialog.create(DonateActivity.this).setTitle("提示")
+                        .setMessage("QNotified将打开支付宝\n捐赠完成后请手动打开上方 我已捐赠 开关.").setNegativeButton("取消", null)
+                        .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (!hasAlipay()) {
+                                    showToastShort(DonateActivity.this, "未安装支付宝");
+                                } else {
+                                    jumpToAlipay();
+                                }
+                            }
+                        }).setCancelable(true).create().show();
+            }
+        };
+    }
+
+    private void jumpToAlipay() {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(payUrl()));
+        startActivity(intent);
+    }
+
+    private boolean hasAlipay() {
+        PackageManager pm = getPackageManager();
+        try {
+            pm.getPackageInfo("com.eg.android.AlipayGphone", 0);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
+
+    private static String payUrl() {
+        String urlCode;
+        try {
+            urlCode = URLEncoder.encode("https://qr.alipay.com/fkx06007ngjbx8qoonajyff", "utf-8");
+            final String alipayqr = "alipayqr://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=" + urlCode;
+            return alipayqr + "%3F_s%3Dweb-other&_t=" + System.currentTimeMillis();
+        } catch (Exception e) {
+            log(e);
+            //should not happen
+            return null;
+        }
+    }
 }

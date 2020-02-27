@@ -376,7 +376,7 @@ public class MainHook {
                         new IActivityManagerHandler(mDefaultTaskMgr));
                 mInstanceField.set(singleton, proxy2);
             } catch (Exception err3) {
-                log(err3);
+                //log(err3);
                 //ignore
             }
             //End of IActivityTaskManager

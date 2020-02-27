@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+
 public class InterceptLayout extends LinearLayout {
 
     private OnTouchListener mTouchInterceptor = null;
@@ -41,11 +43,27 @@ public class InterceptLayout extends LinearLayout {
         }
         parent.removeView(v);
         InterceptLayout layout = new InterceptLayout(v.getContext());
-        if (currlp != null)
-            layout.addView(v, new LinearLayout.LayoutParams(currlp.width, currlp.height));
-        else
-            layout.addView(v, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        parent.addView(layout, index, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        ViewGroup.LayoutParams lpOuter;
+        LinearLayout.LayoutParams lpInner;
+        if (currlp == null) {
+            lpOuter = new ViewGroup.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+            lpInner = new LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+        } else if (currlp instanceof ViewGroup.MarginLayoutParams) {
+            lpOuter = currlp;
+            lpInner = new LayoutParams(currlp.width, currlp.height);
+            lpInner.bottomMargin = ((MarginLayoutParams) currlp).bottomMargin;
+            lpInner.topMargin = ((MarginLayoutParams) currlp).topMargin;
+            lpInner.leftMargin = ((MarginLayoutParams) currlp).leftMargin;
+            lpInner.rightMargin = ((MarginLayoutParams) currlp).rightMargin;
+            ((MarginLayoutParams) currlp).bottomMargin = ((MarginLayoutParams) currlp).topMargin
+                    = ((MarginLayoutParams) currlp).leftMargin = ((MarginLayoutParams) currlp).rightMargin = 0;
+            lpOuter.height = lpOuter.width = WRAP_CONTENT;
+        } else {
+            lpOuter = new ViewGroup.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+            lpInner = new LinearLayout.LayoutParams(currlp.width, currlp.height);
+        }
+        layout.addView(v, lpInner);
+        parent.addView(layout, index, lpOuter);
         return layout;
     }
 

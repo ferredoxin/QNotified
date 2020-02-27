@@ -59,6 +59,7 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
         ll.addView(subtitle(FakeBatCfgActivity.this, "!!! 此功能仅在 QQ>=6.2.8 且在线状态为 我的电量 时生效"));
         ll.addView(subtitle(FakeBatCfgActivity.this, "特别提醒: 太极(含无极)用户请确认您使用的太极版本大于或等于 湛泸-6.0.2(1907) ,否则自定义电量将不会生效"));
         ll.addView(subtitle(FakeBatCfgActivity.this, "服务器的电量数据有6分钟的延迟属于正常情况"));
+        ll.addView(subtitle(FakeBatCfgActivity.this, "请不要把电量设置为 0 ,因为 0 会被TX和谐掉"));
         FakeBatteryHook bat = FakeBatteryHook.get();
         boolean enabled = bat.isEnabled();
         LinearLayout _t;
@@ -75,7 +76,7 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
         pct.setGravity(Gravity.CENTER);
         pct.setPadding(_5dp, _5dp / 2, _5dp, _5dp / 2);
         pct.setBackgroundDrawable(new DebugDrawable(FakeBatCfgActivity.this));
-        pct.setHint("电量百分比, 取值范围 [0,100]");
+        pct.setHint("电量百分比, 取值范围 [1,100]");
         pct.setText(bat.getFakeBatteryCapacity() + "");
         ll.addView(pct, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 2 * _5dp, _5dp, 2 * _5dp, _5dp));
         CheckBox charging = new CheckBox(FakeBatCfgActivity.this);

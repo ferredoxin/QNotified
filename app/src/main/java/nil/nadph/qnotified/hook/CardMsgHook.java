@@ -188,21 +188,21 @@ public class CardMsgHook extends BaseDelayableHook {
                 }
             }
             //End: StructMsg
-            for (Method m : load("com.tencent.mobileqq.structmsg.StructMsgForGeneralShare").getMethods()) {
-                if (m.getName().equals("getView")) {
-                    XposedBridge.hookMethod(m, new XC_MethodHook() {
-                        @Override
-                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                            View v = (View) param.getResult();
-                            View.OnLongClickListener l = getBubbleLongClickListener((Activity) param.args[0]);
-                            if (v != null && l != null) {
-                                v.setOnLongClickListener(l);
-                            }
-                        }
-                    });
-                    break;
-                }
-            }
+//            for (Method m : load("com.tencent.mobileqq.structmsg.StructMsgForGeneralShare").getMethods()) {
+//                if (m.getName().equals("getView")) {
+//                    XposedBridge.hookMethod(m, new XC_MethodHook() {
+//                        @Override
+//                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+//                            View v = (View) param.getResult();
+//                            View.OnLongClickListener l = getBubbleLongClickListener((Activity) param.args[0]);
+//                            if (v != null && l != null) {
+//                                //v.setOnLongClickListener(l);
+//                            }
+//                        }
+//                    });
+//                    break;
+//                }
+//            }
             inited = true;
             return true;
         } catch (Throwable throwable) {
