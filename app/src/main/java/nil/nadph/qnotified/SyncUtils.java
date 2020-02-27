@@ -2,7 +2,10 @@ package nil.nadph.qnotified;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Looper;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
@@ -84,7 +87,6 @@ public class SyncUtils {
                     if ((mask & myType) != 0) {
                         Intent resp = new Intent(ENUM_PROC_RESP);
                         resp.setPackage(ctx.getPackageName());
-                        resp.setComponent(new ComponentName(ctx.getPackageName(), IpcReceiver.class.getName()));
                         initId();
                         resp.putExtra("seq", seq);
                         resp.putExtra("pid", android.os.Process.myPid());
@@ -120,6 +122,8 @@ public class SyncUtils {
         IntentFilter filter = new IntentFilter();
         filter.addAction(SYNC_FILE_CHANGED);
         filter.addAction(HOOK_DO_INIT);
+        filter.addAction(ENUM_PROC_REQ);
+        filter.addAction(ENUM_PROC_RESP);
         ctx.registerReceiver(recv, filter);
         inited = true;
         //log("Proc:  " + android.os.Process.myPid() + "/" + getProcessType() + "/" + getProcessName());
@@ -130,7 +134,6 @@ public class SyncUtils {
         Context ctx = getApplication();
         Intent changed = new Intent(SYNC_FILE_CHANGED);
         changed.setPackage(ctx.getPackageName());
-        changed.setComponent(new ComponentName(ctx.getPackageName(), IpcReceiver.class.getName()));
         initId();
         changed.putExtra("id", myId);
         changed.putExtra("file", file);
@@ -142,7 +145,6 @@ public class SyncUtils {
         Context ctx = getApplication();
         Intent changed = new Intent(HOOK_DO_INIT);
         changed.setPackage(ctx.getPackageName());
-        changed.setComponent(new ComponentName(ctx.getPackageName(), IpcReceiver.class.getName()));
         initId();
         changed.putExtra("process", process);
         changed.putExtra("hook", hookId);
@@ -232,7 +234,6 @@ public class SyncUtils {
         if (ctx == null) throw new NullPointerException("ctx == null");
         Intent changed = new Intent(ENUM_PROC_REQ);
         changed.setPackage(ctx.getPackageName());
-        changed.setComponent(new ComponentName(ctx.getPackageName(), IpcReceiver.class.getName()));
         initId();
         changed.putExtra("mask", procMask);
         changed.putExtra("seq", requestSeq);
