@@ -19,6 +19,7 @@ import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.record.EventRecord;
 import nil.nadph.qnotified.record.FriendRecord;
 import nil.nadph.qnotified.record.Table;
+import nil.nadph.qnotified.util.ActProxyMgr;
 import nil.nadph.qnotified.util.Nullable;
 import nil.nadph.qnotified.util.Utils;
 
@@ -27,7 +28,10 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -544,13 +548,13 @@ public class ExfriendManager {
         else if (ev._nick != null && ev._nick.length() > 0) tag = ev._nick + "(" + ev.operand + ")";
         else tag = "" + ev.operand;
         out[0] = unread;
-        ticker = unread + "位好友已删除";
+        ticker = "检测到" + unread + "位好友删除了你";
         if (unread > 1) {
-            title = unread + "位好友已删除";
+            title = "你被" + unread + "位好友删除";
             c = tag + "等" + unread + "位好友";
         } else {
             title = tag;
-            c = "删除于" + new Date(ev.timeRangeBegin * 1000) + "后";
+            c = "在约 " + Utils.getRelTimeStrSec(ev.timeRangeBegin) + " 删除了你";
         }
         out[1] = ticker;
         out[2] = title;
@@ -641,10 +645,7 @@ public class ExfriendManager {
         synchronized (this) {
             FriendRecord fr = persons.get(uin);
             if (fr == null) {
-
                 showToast(MainHook.splashActivityRef.get(), TOAST_TYPE_ERROR, "onActDelResp:get(" + uin + ")==null", Toast.LENGTH_SHORT);
-
-
                 return;
             }
             EventRecord ev = new EventRecord();
@@ -665,9 +666,12 @@ public class ExfriendManager {
     @SuppressLint("MissingPermission")
     public void doNotifyDelFlAndSave(Object[] ptr) {
         if (((int) ptr[0]) > 0) {
-            Intent intent = new Intent(getApplication(), ExfriendListActivity.class);
-            intent.putExtra(ACTIVITY_PROXY_ACTION, ACTION_EXFRIEND_LIST);
-            PendingIntent pi = PendingIntent.getActivity(getApplication(), 0, intent, 0);
+            Intent inner = new Intent(getApplication(), ExfriendListActivity.class);
+            inner.putExtra(ACTIVITY_PROXY_ACTION, ACTION_EXFRIEND_LIST);
+            Intent wrapper = new Intent();
+            wrapper.setClassName(getApplication().getPackageName(), ActProxyMgr.STUB_ACTIVITY);
+            wrapper.putExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT, inner);
+            PendingIntent pi = PendingIntent.getActivity(getApplication(), 0, wrapper, 0);
             try {
                 NotificationManager nm = (NotificationManager) Utils.getApplication().getSystemService(Context.NOTIFICATION_SERVICE);
                 Notification n = createNotiComp((String) ptr[1], (String) ptr[2], (String) ptr[3], pi);

@@ -82,6 +82,7 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
         pct.setBackgroundDrawable(new DebugDrawable(FakeBatCfgActivity.this));
         pct.setHint("电量百分比, 取值范围 [1,100]");
         pct.setText(bat.getFakeBatteryCapacity() + "");
+        pct.setSelection(pct.getText().length());
         ll.addView(pct, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 2 * _5dp, _5dp, 2 * _5dp, _5dp));
         CheckBox charging = new CheckBox(FakeBatCfgActivity.this);
         charging.setId(R_ID_CHARGING);
