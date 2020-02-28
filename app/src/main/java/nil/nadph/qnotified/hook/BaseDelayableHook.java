@@ -1,9 +1,10 @@
 package nil.nadph.qnotified.hook;
 
 import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.config.SwitchConfigItem;
 import nil.nadph.qnotified.util.DexKit;
 
-public abstract class BaseDelayableHook {
+public abstract class BaseDelayableHook implements SwitchConfigItem {
 
     private static BaseDelayableHook[] sAllHooks;
 
@@ -55,6 +56,11 @@ public abstract class BaseDelayableHook {
 
     public abstract int[] getPreconditions();
 
+    @Override
+    public boolean isValid() {
+        return true;
+    }
+
     public boolean checkPreconditions() {
         for (int i : getPreconditions()) {
             if (DexKit.tryLoadOrNull(i) == null) return false;
@@ -75,6 +81,14 @@ public abstract class BaseDelayableHook {
     }
 
     public abstract boolean isEnabled();
+
+    /**
+     * This method must be safe to call even it is NOT inited
+     *
+     * @param enabled has no effect if isValid() returns false
+     */
+    @Override
+    public abstract void setEnabled(boolean enabled);
 
     @Override
     public String toString() {

@@ -16,8 +16,8 @@ import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.activity.ExfriendListActivity;
+import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.pk.FriendChunk;
-import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.Utils;
 
@@ -344,6 +344,11 @@ public class DelDetectorHook extends BaseDelayableHook {
     @Override
     public boolean isInited() {
         return inited;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        //do nothing
     }
 
     @Override

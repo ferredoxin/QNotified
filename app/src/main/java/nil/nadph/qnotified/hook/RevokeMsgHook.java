@@ -1,11 +1,13 @@
 package nil.nadph.qnotified.hook;
 
+import android.os.Looper;
 import android.text.TextUtils;
+import android.widget.Toast;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.record.ConfigManager;
+import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Utils;
 
@@ -23,6 +25,7 @@ import static nil.nadph.qnotified.util.Utils.*;
  * minor changes
  */
 public class RevokeMsgHook extends BaseDelayableHook {
+    public static final String qn_anti_revoke_msg = "qn_anti_revoke_msg";
     private static final RevokeMsgHook self = new RevokeMsgHook();
     private Object mQQMsgFacade = null;
     private boolean inited = false;
@@ -222,6 +225,27 @@ public class RevokeMsgHook extends BaseDelayableHook {
     @Override
     public boolean isInited() {
         return inited;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        try {
+            ConfigManager mgr = ConfigManager.getDefaultConfig();
+            mgr.getAllConfig().put(qn_anti_revoke_msg, enabled);
+            mgr.save();
+        } catch (final Exception e) {
+            Utils.log(e);
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+            } else {
+                SyncUtils.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+                    }
+                });
+            }
+        }
     }
 
     @Override

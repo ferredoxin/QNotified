@@ -60,6 +60,11 @@ public class FakeVipHook extends BaseDelayableHook {
     }
 
     @Override
+    public void setEnabled(boolean enabled) {
+        //do nothing
+    }
+
+    @Override
     public boolean isEnabled() {
         return true;
     }

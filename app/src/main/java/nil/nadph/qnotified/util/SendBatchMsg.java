@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import nil.nadph.qnotified.ExfriendManager;
-import nil.nadph.qnotified.FaceImpl;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

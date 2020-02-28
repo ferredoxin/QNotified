@@ -9,8 +9,9 @@ import android.view.ViewGroup;
 import android.widget.*;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.config.SwitchConfigItem;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
-import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.NonUiThread;
 import nil.nadph.qnotified.util.Utils;
@@ -119,8 +120,41 @@ public class ViewBuilder {
         return root;
     }
 
+    public static RelativeLayout newListItemHookSwitchInit(final Context ctx, CharSequence title, CharSequence desc, final BaseDelayableHook hook) {
+        boolean on = hook.isEnabled();
+        RelativeLayout root = newListItemSwitch(ctx, title, desc, on, new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(final CompoundButton buttonView, boolean isChecked) {
+                if (!hook.isInited() && isChecked) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            hook.setEnabled(true);
+                            doSetupAndInit(ctx, hook);
+                        }
+                    }).start();
+                } else {
+                    hook.setEnabled(isChecked);
+                }
+            }
+        });
+        return root;
+    }
 
-    public static RelativeLayout newListItemSwitchConfigInit(final Context ctx, CharSequence title, CharSequence desc, final String key, boolean defVal, final BaseDelayableHook hook) {
+    public static RelativeLayout newListItemConfigSwitchIfValid(final Context ctx, CharSequence title, CharSequence desc, final SwitchConfigItem item) {
+        boolean on = item.isEnabled();
+        RelativeLayout root = newListItemSwitch(ctx, title, desc, on, new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(final CompoundButton buttonView, boolean isChecked) {
+                item.setEnabled(isChecked);
+            }
+        });
+        root.findViewById(R_ID_SWITCH).setEnabled(!item.isValid());
+        return root;
+    }
+
+    @Deprecated
+    public static RelativeLayout newListItemSwitchConfigInitByKey(final Context ctx, CharSequence title, CharSequence desc, final String key, boolean defVal, final BaseDelayableHook hook) {
         boolean on = ConfigManager.getDefaultConfig().getBooleanOrDefault(key, defVal);
         RelativeLayout root = newListItemSwitch(ctx, title, desc, on, new CompoundButton.OnCheckedChangeListener() {
             @Override

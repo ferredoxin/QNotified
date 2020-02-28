@@ -1,4 +1,4 @@
-package nil.nadph.qnotified;
+package nil.nadph.qnotified.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.view.View;
 import android.widget.TextView;
+import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.util.Utils;
 
 import java.io.IOException;

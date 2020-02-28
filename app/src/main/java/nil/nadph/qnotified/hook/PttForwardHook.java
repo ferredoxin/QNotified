@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Looper;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,12 +17,12 @@ import android.widget.Toast;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
-import nil.nadph.qnotified.FaceImpl;
 import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.record.ConfigManager;
+import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.FaceImpl;
 import nil.nadph.qnotified.util.Utils;
 
 import java.io.File;
@@ -42,6 +43,7 @@ public class PttForwardHook extends BaseDelayableHook {
 
     public static final int R_ID_PTT_FORWARD = 0x30EE77CB;
     public static final int R_ID_PTT_SAVE = 0x30EE77CC;
+    public static final String qn_enable_ptt_forward = "qn_enable_ptt_forward";
     private static final PttForwardHook self = new PttForwardHook();
     private boolean inited = false;
 
@@ -297,6 +299,27 @@ public class PttForwardHook extends BaseDelayableHook {
     @Override
     public boolean isInited() {
         return inited;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        try {
+            ConfigManager mgr = ConfigManager.getDefaultConfig();
+            mgr.getAllConfig().put(qn_enable_ptt_forward, enabled);
+            mgr.save();
+        } catch (final Exception e) {
+            Utils.log(e);
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+            } else {
+                SyncUtils.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+                    }
+                });
+            }
+        }
     }
 
     @Override

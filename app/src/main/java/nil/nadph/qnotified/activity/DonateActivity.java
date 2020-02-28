@@ -15,7 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import com.tencent.mobileqq.widget.BounceScrollView;
-import nil.nadph.qnotified.record.ConfigManager;
+import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ResUtils;
 
@@ -28,6 +28,8 @@ import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressLint("Registered")
 public class DonateActivity extends IphoneTitleBarActivityCompat {
+
+    public static final String qn_donated_choice = "qn_donated_choice";
 
     @Override
     public boolean doOnCreate(Bundle bundle) {

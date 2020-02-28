@@ -2,15 +2,17 @@ package nil.nadph.qnotified.hook;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.record.ConfigManager;
+import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Utils;
@@ -21,6 +23,7 @@ import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class RepeaterHook extends BaseDelayableHook {
+    public static final String bug_repeater = "bug_repeater";
     private static final RepeaterHook self = new RepeaterHook();
     private boolean inited = false;
 
@@ -333,6 +336,27 @@ public class RepeaterHook extends BaseDelayableHook {
     @Override
     public boolean isInited() {
         return inited;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        try {
+            ConfigManager mgr = ConfigManager.getDefaultConfig();
+            mgr.getAllConfig().put(bug_repeater, enabled);
+            mgr.save();
+        } catch (final Exception e) {
+            Utils.log(e);
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+            } else {
+                SyncUtils.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+                    }
+                });
+            }
+        }
     }
 
     @Override

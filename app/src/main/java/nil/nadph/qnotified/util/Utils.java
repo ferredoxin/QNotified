@@ -16,7 +16,7 @@ import android.widget.Toast;
 import dalvik.system.DexFile;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.record.ConfigManager;
+import nil.nadph.qnotified.config.ConfigManager;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -35,37 +35,6 @@ import static nil.nadph.qnotified.util.Initiator.load;
 @SuppressWarnings({"unchecked", "rawtypes"})
 @SuppressLint("SimpleDateFormat")
 public class Utils {
-
-    public static final String qn_hide_msg_list_miniapp = "qn_hide_msg_list_miniapp",
-            qn_hide_ex_entry_group = "qn_hide_ex_entry_group",
-            qn_enable_ptt_forward = "qn_enable_ptt_forward",
-            qn_sticker_as_pic = "qn_sticker_as_pic",
-            qn_flash_as_pic = "qn_flash_as_pic",
-            qn_send_card_msg = "qn_send_card_msg",
-            qn_muted_at_all = "qn_muted_at_all",
-            qn_muted_red_packet = "qn_muted_red_packet",
-            qn_hide_gift_animation = "qn_hide_gift_animation",
-            qn_sign_in_as_text = "qn_sign_in_as_text",
-            qn_mute_talk_back = "qn_mute_talk_back",
-            bug_repeater = "bug_repeater",
-            qn_gallery_bg = "qn_gallery_bg",
-            qqhelper_fav_more_emo = "qqhelper_fav_more_emo",
-            qn_anti_revoke_msg = "qn_anti_revoke_msg",
-            qn_round_avatar = "qn_round_avatar",
-            qn_mute_thumb_up = "qn_mute_thumb_up",
-            qn_disable_auto_at = "qn_disable_auto_at",
-            qn_disable_$end_gift = "qn_disable_$end_gift",
-            qh_pre_upgrade = "qh_pre_upgrade",
-            qh_random_cheat = "qh_random_cheat",
-            qn_disable_qq_hot_patch = "qn_disable_qq_hot_patch",
-            qn_fake_bat_enable = "qn_fake_bat_enable",
-            qn_multi_forward_avatar_profile = "qn_multi_forward_avatar_profile",
-            qn_gag_show_pic = "qn_gag_show_pic",
-            qn_file_recv_redirect_enable = "qn_file_recv_redirect_enable",
-            qn_file_recv_redirect_path = "qn_file_recv_redirect_path",
-            qn_fake_bat_expr = "qn_fake_bat_expr",
-            qn_donated_choice = "qn_donated_choice";
-
 
     public static final String QN_VERSION_NAME = "0.7.0-es4";
     public static final int QN_VERSION_CODE = 26;
@@ -842,6 +811,19 @@ public class Utils {
 
     public static Toast showToastShort(Context ctx, CharSequence str) {
         return showToast(ctx, 0, str, 0);
+    }
+
+    public static void showErrorToastAnywhere(final String text) {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            Utils.showToast(getApplication(), TOAST_TYPE_ERROR, text, Toast.LENGTH_SHORT);
+        } else {
+            SyncUtils.post(new Runnable() {
+                @Override
+                public void run() {
+                    Utils.showToast(getApplication(), TOAST_TYPE_ERROR, text, Toast.LENGTH_SHORT);
+                }
+            });
+        }
     }
 
     public static void dumpTrace() {

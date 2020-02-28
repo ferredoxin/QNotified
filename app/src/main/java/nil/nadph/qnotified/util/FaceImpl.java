@@ -1,12 +1,10 @@
-package nil.nadph.qnotified;
+package nil.nadph.qnotified.util;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.ImageView;
 import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.util.Nullable;
-import nil.nadph.qnotified.util.Utils;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;

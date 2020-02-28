@@ -16,9 +16,10 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import com.tencent.widget.XListView;
-import nil.nadph.qnotified.FaceImpl;
-import nil.nadph.qnotified.record.ConfigManager;
+import nil.nadph.qnotified.config.ConfigItems;
+import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.util.FaceImpl;
 import nil.nadph.qnotified.util.Utils;
 
 import java.util.ArrayList;
@@ -152,11 +153,11 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
             try {
                 ConfigManager cfg = ConfigManager.getDefaultConfig();
                 if (mActionInt == ACTION_MUTE_AT_ALL) {
-                    cfg.putString(Utils.qn_muted_at_all, ret);
+                    cfg.putString(ConfigItems.qn_muted_at_all, ret);
                     cfg.save();
                 }
                 if (mActionInt == ACTION_MUTE_RED_PACKET) {
-                    cfg.putString(Utils.qn_muted_red_packet, ret);
+                    cfg.putString(ConfigItems.qn_muted_red_packet, ret);
                     cfg.save();
                 }
                 this.finish();
@@ -327,9 +328,9 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
         muted = new HashSet<>();
         String list = null;
         if (mActionInt == ACTION_MUTE_AT_ALL)
-            list = ConfigManager.getDefaultConfig().getString(Utils.qn_muted_at_all);
+            list = ConfigManager.getDefaultConfig().getString(ConfigItems.qn_muted_at_all);
         if (mActionInt == ACTION_MUTE_RED_PACKET)
-            list = ConfigManager.getDefaultConfig().getString(Utils.qn_muted_red_packet);
+            list = ConfigManager.getDefaultConfig().getString(ConfigItems.qn_muted_red_packet);
         if (list != null) {
             for (String s : list.split(",")) {
                 if (s.length() > 4) {

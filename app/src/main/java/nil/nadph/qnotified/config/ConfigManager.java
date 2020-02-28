@@ -1,4 +1,4 @@
-package nil.nadph.qnotified.record;
+package nil.nadph.qnotified.config;
 
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.SyncUtils;
@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static nil.nadph.qnotified.record.Table.*;
+import static nil.nadph.qnotified.config.Table.*;
 
 public class ConfigManager {
     private static ConfigManager sDefConfig;

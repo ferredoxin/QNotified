@@ -7,8 +7,9 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.record.ConfigManager;
+import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.Utils;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -17,6 +18,7 @@ import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class FlashPicHook extends BaseDelayableHook {
+    public static final String qn_flash_as_pic = "qn_flash_as_pic";
     private static final FlashPicHook self = new FlashPicHook();
     private boolean inited = false;
 
@@ -135,6 +137,27 @@ public class FlashPicHook extends BaseDelayableHook {
     @Override
     public boolean isInited() {
         return inited;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        try {
+            ConfigManager mgr = ConfigManager.getDefaultConfig();
+            mgr.getAllConfig().put(qn_flash_as_pic, enabled);
+            mgr.save();
+        } catch (final Exception e) {
+            Utils.log(e);
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+            } else {
+                SyncUtils.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+                    }
+                });
+            }
+        }
     }
 
     @Override

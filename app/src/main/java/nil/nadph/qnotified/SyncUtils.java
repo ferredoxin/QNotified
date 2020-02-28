@@ -8,8 +8,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Looper;
+import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
-import nil.nadph.qnotified.record.ConfigManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -262,6 +262,13 @@ public class SyncUtils {
             }
         }, timeout);
         return holder;
+    }
+
+    public static void post(Runnable r) {
+        if (sHandler == null) {
+            sHandler = new Handler(Looper.getMainLooper());
+        }
+        sHandler.post(r);
     }
 
     public static class EnumRequestHolder {

@@ -16,7 +16,7 @@
             android:resizeableActivity="true"
             tools:ignore="AllowBackup,GoogleAppIndexingWarning,UnusedAttribute">
         <activity
-                android:name=".ConfigActivity"
+                android:name=".activity.ConfigActivity"
                 android:label="@string/app_name">
             <intent-filter>
                 <action

@@ -2,11 +2,14 @@ package nil.nadph.qnotified.hook;
 
 import android.app.Activity;
 import android.app.Application;
+import android.os.Looper;
+import android.widget.Toast;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.record.ConfigManager;
+import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.Utils;
 
 import java.lang.reflect.Method;
 
@@ -14,6 +17,7 @@ import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class $endGiftHook extends BaseDelayableHook {
+    public static final String qn_disable_$end_gift = "qn_disable_$end_gift";
     private static final $endGiftHook self = new $endGiftHook();
     private boolean inited = false;
 
@@ -64,6 +68,33 @@ public class $endGiftHook extends BaseDelayableHook {
     }
 
     @Override
+    public boolean isValid() {
+        Application app = getApplication();
+        return app == null || !isTim(app);
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        try {
+            ConfigManager mgr = ConfigManager.getDefaultConfig();
+            mgr.getAllConfig().put(qn_disable_$end_gift, enabled);
+            mgr.save();
+        } catch (final Exception e) {
+            Utils.log(e);
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+            } else {
+                SyncUtils.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+                    }
+                });
+            }
+        }
+    }
+
+    @Override
     public boolean isEnabled() {
         try {
             Application app = getApplication();
@@ -74,5 +105,7 @@ public class $endGiftHook extends BaseDelayableHook {
             return false;
         }
     }
+
+
 }
 

@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import android.widget.*;
 import com.tencent.mobileqq.widget.BounceScrollView;
 import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.FakeBatteryHook;
-import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.DebugDrawable;
 import nil.nadph.qnotified.ui.ResUtils;
@@ -180,7 +180,7 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
                 }
                 break;
             case R_ID_DISABLE:
-                cfg.putBoolean(qn_fake_bat_enable, false);
+                cfg.putBoolean(FakeBatteryHook.qn_fake_bat_enable, false);
                 try {
                     cfg.save();
                 } catch (Exception e) {
@@ -212,7 +212,7 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
         if (charging.isChecked()) val |= 128;
         bat.setFakeBatteryStatus(val);
         if (!bat.isEnabled()) {
-            cfg.putBoolean(qn_fake_bat_enable, true);
+            cfg.putBoolean(FakeBatteryHook.qn_fake_bat_enable, true);
             try {
                 cfg.save();
                 boolean success = true;

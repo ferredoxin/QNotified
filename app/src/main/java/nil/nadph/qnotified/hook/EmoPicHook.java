@@ -7,8 +7,9 @@ import android.widget.Toast;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.record.ConfigManager;
+import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.util.Initiator._PicItemBuilder;
 import static nil.nadph.qnotified.util.Initiator.load;
@@ -16,6 +17,7 @@ import static nil.nadph.qnotified.util.Utils.*;
 
 public class EmoPicHook extends BaseDelayableHook {
 
+    public static final String qn_sticker_as_pic = "qn_sticker_as_pic";
     private static final EmoPicHook self = new EmoPicHook();
     private boolean inited = false;
 
@@ -77,6 +79,27 @@ public class EmoPicHook extends BaseDelayableHook {
     @Override
     public boolean isInited() {
         return inited;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        try {
+            ConfigManager mgr = ConfigManager.getDefaultConfig();
+            mgr.getAllConfig().put(qn_sticker_as_pic, enabled);
+            mgr.save();
+        } catch (final Exception e) {
+            Utils.log(e);
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+            } else {
+                SyncUtils.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+                    }
+                });
+            }
+        }
     }
 
     @Override

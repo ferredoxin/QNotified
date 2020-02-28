@@ -2,7 +2,7 @@ package nil.nadph.qnotified.util;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import nil.nadph.qnotified.record.ConfigManager;
+import nil.nadph.qnotified.config.ConfigManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

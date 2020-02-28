@@ -1,8 +1,12 @@
 package nil.nadph.qnotified.hook;
 
+import android.os.Looper;
+import android.widget.Toast;
 import de.robv.android.xposed.XC_MethodHook;
 import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.record.ConfigManager;
+import nil.nadph.qnotified.config.ConfigItems;
+import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.util.Utils;
 
 import java.io.IOException;
 
@@ -11,6 +15,7 @@ import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class FakeBatteryHook extends BaseDelayableHook {
+    public static final String qn_fake_bat_enable = "qn_fake_bat_enable";
     private static final FakeBatteryHook self = new FakeBatteryHook();
     private boolean inited = false;
 
@@ -56,7 +61,7 @@ public class FakeBatteryHook extends BaseDelayableHook {
     public void setFakeBatteryStatus(int val) {
         try {
             ConfigManager cfg = ConfigManager.getDefaultConfig();
-            cfg.putInt(qn_fake_bat_expr, val);
+            cfg.putInt(ConfigItems.qn_fake_bat_expr, val);
             cfg.save();
         } catch (IOException e) {
             log(e);
@@ -64,7 +69,7 @@ public class FakeBatteryHook extends BaseDelayableHook {
     }
 
     public int getFakeBatteryStatus() {
-        int val = ConfigManager.getDefaultConfig().getIntOrDefault(qn_fake_bat_expr, -1);
+        int val = ConfigManager.getDefaultConfig().getIntOrDefault(ConfigItems.qn_fake_bat_expr, -1);
         if (val < 0) {
             //log("getFakeBatteryStatus: qn_fake_bat_expr = " + val);
             return 0;//safe value
@@ -93,6 +98,27 @@ public class FakeBatteryHook extends BaseDelayableHook {
     @Override
     public boolean isInited() {
         return inited;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        try {
+            ConfigManager mgr = ConfigManager.getDefaultConfig();
+            mgr.getAllConfig().put(qn_fake_bat_enable, enabled);
+            mgr.save();
+        } catch (final Exception e) {
+            Utils.log(e);
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+            } else {
+                SyncUtils.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+                    }
+                });
+            }
+        }
     }
 
     @Override

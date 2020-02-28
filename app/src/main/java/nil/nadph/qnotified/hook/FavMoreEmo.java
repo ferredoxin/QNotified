@@ -1,10 +1,13 @@
 package nil.nadph.qnotified.hook;
 
+import android.os.Looper;
+import android.widget.Toast;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.record.ConfigManager;
+import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.Utils;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -14,6 +17,7 @@ import static nil.nadph.qnotified.util.Initiator._FavEmoRoamingHandler;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class FavMoreEmo extends BaseDelayableHook {
+    public static final String qqhelper_fav_more_emo = "qqhelper_fav_more_emo";
     private static final FavMoreEmo self = new FavMoreEmo();
     private boolean inited = false;
 
@@ -90,6 +94,27 @@ public class FavMoreEmo extends BaseDelayableHook {
     @Override
     public boolean isInited() {
         return inited;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        try {
+            ConfigManager mgr = ConfigManager.getDefaultConfig();
+            mgr.getAllConfig().put(qqhelper_fav_more_emo, enabled);
+            mgr.save();
+        } catch (final Exception e) {
+            Utils.log(e);
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+            } else {
+                SyncUtils.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+                    }
+                });
+            }
+        }
     }
 
     @Override

@@ -2,7 +2,8 @@ package nil.nadph.qnotified.hook;
 
 import android.os.Environment;
 import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.record.ConfigManager;
+import nil.nadph.qnotified.config.ConfigItems;
+import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Nullable;
 
@@ -74,13 +75,20 @@ public class FileRecvRedirect extends BaseDelayableHook {
 
     @Nullable
     public String getRedirectPath() {
-        return ConfigManager.getDefaultConfig().getString(qn_file_recv_redirect_path);
+        return ConfigManager.getDefaultConfig().getString(ConfigItems.qn_file_recv_redirect_path);
     }
 
+    /**
+     * Still follow the rule
+     * only apply if it is already inited.
+     *
+     * @param enabled if true set to config value, otherwise restore to default value
+     */
+    @Override
     public void setEnabled(boolean enabled) {
         try {
             ConfigManager cfg = ConfigManager.getDefaultConfig();
-            cfg.putBoolean(qn_file_recv_redirect_enable, enabled);
+            cfg.putBoolean(ConfigItems.qn_file_recv_redirect_enable, enabled);
             cfg.save();
             if (inited) {
                 if (enabled) {
@@ -100,8 +108,8 @@ public class FileRecvRedirect extends BaseDelayableHook {
     public void setRedirectPathAndEnable(String path) {
         try {
             ConfigManager cfg = ConfigManager.getDefaultConfig();
-            cfg.putString(qn_file_recv_redirect_path, path);
-            cfg.putBoolean(qn_file_recv_redirect_enable, true);
+            cfg.putString(ConfigItems.qn_file_recv_redirect_path, path);
+            cfg.putBoolean(ConfigItems.qn_file_recv_redirect_enable, true);
             cfg.save();
             inited = doSetPath(path);
         } catch (Exception e) {
@@ -127,7 +135,7 @@ public class FileRecvRedirect extends BaseDelayableHook {
     @Override
     public boolean isEnabled() {
         try {
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_file_recv_redirect_enable);
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(ConfigItems.qn_file_recv_redirect_enable);
         } catch (Exception e) {
             log(e);
             return false;

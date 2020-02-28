@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.os.Looper;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,7 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.record.ConfigManager;
+import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.InterceptLayout;
 import nil.nadph.qnotified.ui.TouchEventToLongClickAdapter;
 import nil.nadph.qnotified.util.DexKit;
@@ -31,6 +32,7 @@ import static nil.nadph.qnotified.util.Utils.*;
 
 public class CardMsgHook extends BaseDelayableHook {
     public static final int R_ID_COPY_CODE = 0x00EE77CC;
+    public static final String qn_send_card_msg = "qn_send_card_msg";
     private static final CardMsgHook self = new CardMsgHook();
     private boolean inited = false;
 
@@ -313,6 +315,27 @@ public class CardMsgHook extends BaseDelayableHook {
     @Override
     public boolean isInited() {
         return inited;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        try {
+            ConfigManager mgr = ConfigManager.getDefaultConfig();
+            mgr.getAllConfig().put(qn_send_card_msg, enabled);
+            mgr.save();
+        } catch (final Exception e) {
+            Utils.log(e);
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+            } else {
+                SyncUtils.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+                    }
+                });
+            }
+        }
     }
 
     @Override

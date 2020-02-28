@@ -12,8 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import com.tencent.mobileqq.widget.BounceScrollView;
+import nil.nadph.qnotified.config.ConfigItems;
+import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.*;
-import nil.nadph.qnotified.record.ConfigManager;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.SimpleBgDrawable;
 import nil.nadph.qnotified.util.NewsHelper;
@@ -76,56 +77,57 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(subtitle(SettingsActivity.this, "基本功能"));
         ll.addView(_t = newListItemButton(SettingsActivity.this, "自定义电量", "[QQ>=8.2.6]在线模式为我的电量时生效", "N/A", clickToProxyActAction(ACTION_FAKE_BAT_CONFIG_ACTIVITY)));
         __tv_fake_bat_status = (TextView) _t.findViewById(R_ID_VALUE);
-        ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "语音转发", "长按语音消息", qn_enable_ptt_forward, false, PttForwardHook.get()));
-        ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "发送卡片消息", "ArkAppMsg(json)+StructMsg(xml)", qn_send_card_msg, false, CardMsgHook.get()));
+        ll.addView(newListItemHookSwitchInit(this, "语音转发", "长按语音消息", PttForwardHook.get()));
+        ll.addView(newListItemHookSwitchInit(this, "发送卡片消息", "ArkAppMsg(json)+StructMsg(xml)", CardMsgHook.get()));
         ll.addView(subtitle(SettingsActivity.this, "卡片消息使用说明:先输入卡片代码(聊天界面),后长按发送按钮\n勿滥用此功能! 频繁使用此功能被举报可能封号"));
-        ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, " +1", "不是复读机", bug_repeater, false, RepeaterHook.get()));
+        ll.addView(newListItemHookSwitchInit(this, " +1", "不是复读机", RepeaterHook.get()));
         ll.addView(subtitle(SettingsActivity.this, "净化设置"));
         if (!Utils.isTim(SettingsActivity.this)) {
-            ll.addView(newListItemSwitchConfigNext(SettingsActivity.this, "隐藏小程序入口", "隐藏消息列表下拉出现的小程序列表", qn_hide_msg_list_miniapp, false));
-            ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "隐藏送礼动画", null, qn_hide_gift_animation, false, HideGiftAnim.get()));
-            ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "禁止自动@", "[>=8.1.3]去除回复消息时自动@特性", qn_disable_auto_at, false, ReplyNoAtHook.get()));
-            ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "禁用$打开送礼界面", "禁止聊天时输入$自动弹出[选择赠送对象]窗口", qn_disable_$end_gift, false, $endGiftHook.get()));
+            ll.addView(newListItemSwitchConfigNext(SettingsActivity.this, "隐藏小程序入口", "隐藏消息列表下拉出现的小程序列表", ConfigItems.qn_hide_msg_list_miniapp, false));
+            ll.addView(newListItemHookSwitchInit(this, "隐藏送礼动画", null, HideGiftAnim.get()));
+            ll.addView(newListItemHookSwitchInit(this, "禁止自动@", "[>=8.1.3]去除回复消息时自动@特性", ReplyNoAtHook.get()));
+            ll.addView(newListItemHookSwitchInit(this, "禁用$打开送礼界面", "禁止聊天时输入$自动弹出[选择赠送对象]窗口", $endGiftHook.get()));
         }
-        ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "签到文本化", null, qn_sign_in_as_text, false, SimpleCheckInHook.get()));
+        ll.addView(newListItemHookSwitchInit(this, "签到文本化", null, SimpleCheckInHook.get()));
         ll.addView(subtitle(SettingsActivity.this, "消息通知设置(不影响接收消息)屏蔽后可能仍有[橙字],但通知栏不会有通知,赞说说不提醒仅屏蔽通知栏的通知"));
         ll.addView(subtitle(SettingsActivity.this, "    注:屏蔽后可能仍有[橙字],但不会有通知"));
         ll.addView(_t = newListItemButton(SettingsActivity.this, "屏蔽指定群@全体成员通知", Html.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[@全体成员]</font>就这点破事"), "%d个群", clickToProxyActAction(ACTION_MUTE_AT_ALL)));
         __tv_muted_atall = (TextView) _t.findViewById(R_ID_VALUE);
         ll.addView(_t = newListItemButton(SettingsActivity.this, "屏蔽指定群的红包通知", Html.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[QQ红包][有红包]</font>恭喜发财"), "%d个群", clickToProxyActAction(ACTION_MUTE_RED_PACKET)));
         __tv_muted_redpacket = (TextView) _t.findViewById(R_ID_VALUE);
-        ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "赞说说不提醒", "不影响评论,转发或击掌的通知", qn_mute_thumb_up, false, MuteQZoneThumbsUp.get()));
+        ll.addView(newListItemHookSwitchInit(this, "赞说说不提醒", "不影响评论,转发或击掌的通知", MuteQZoneThumbsUp.get()));
         ll.addView(subtitle(SettingsActivity.this, "图片相关"));
-        ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "以图片方式打开闪照", null, qn_flash_as_pic, false, FlashPicHook.get()));
+        ll.addView(newListItemHookSwitchInit(this, "以图片方式打开闪照", null, FlashPicHook.get()));
         if (!Utils.isTim(SettingsActivity.this)) {
-            ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "禁止秀图自动展示", null, qn_gag_show_pic, false, ShowPicGagHook.get()));
+            ll.addView(newListItemHookSwitchInit(this, "禁止秀图自动展示", null, ShowPicGagHook.get()));
         }
-        ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "转发消息点击头像查看资料卡", null, qn_multi_forward_avatar_profile, true, MultiForwardAvatarHook.get()));
+        ll.addView(newListItemHookSwitchInit(this, "转发消息点击头像查看资料卡", null, MultiForwardAvatarHook.get()));
         if (!Utils.isTim(SettingsActivity.this)) {
-            ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "以图片方式打开表情", null, qn_sticker_as_pic, false, EmoPicHook.get()));
+            ll.addView(newListItemHookSwitchInit(this, "以图片方式打开表情", null, EmoPicHook.get()));
         }
-        //ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "聊天图片背景透明", null, qn_gallery_bg, false, GalleryBgHook.get()));
+        //ll.addView(newListItemSwitchConfigInit(this, "聊天图片背景透明", null, qn_gallery_bg, false, GalleryBgHook.get()));
         ll.addView(subtitle(SettingsActivity.this, "实验性功能(未必有效)"));
-        ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "收藏更多表情", "保存在本地", qqhelper_fav_more_emo, false, FavMoreEmo.get()));
-        ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "防撤回", "来自旧版QX,稳定性不如最新版QX", qn_anti_revoke_msg, false, RevokeMsgHook.get()));
-        ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "屏蔽更新提醒", null, qh_pre_upgrade, false, PreUpgradeHook.get()));
+        ll.addView(newListItemHookSwitchInit(this, "收藏更多表情", "保存在本地", FavMoreEmo.get()));
+        ll.addView(newListItemHookSwitchInit(this, "防撤回", "来自旧版QX,稳定性不如最新版QX", RevokeMsgHook.get()));
+        ll.addView(newListItemHookSwitchInit(this, "屏蔽更新提醒", null, PreUpgradeHook.get()));
         if (!Utils.isTim(SettingsActivity.this)) {
-            ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "自定义猜拳骰子", null, qh_random_cheat, false, CheatHook.get()));
-            ll.addView(newListItemSwitchConfigInit(SettingsActivity.this, "简洁模式圆头像", "From Rikka", qn_round_avatar, false, RoundAvatarHook.get()));
+            ll.addView(newListItemHookSwitchInit(this, "自定义猜拳骰子", null, CheatHook.get()));
+            ll.addView(newListItemHookSwitchInit(this, "简洁模式圆头像", "From Rikka", RoundAvatarHook.get()));
         }
         ll.addView(subtitle(SettingsActivity.this, "好友列表"));
         ll.addView(newListItemButton(SettingsActivity.this, "历史好友", null, null, clickToProxyActAction(ACTION_EXFRIEND_LIST)));
         ll.addView(newListItemButton(SettingsActivity.this, "导出历史好友列表", "支持csv/json格式", null, clickToProxyActAction(ACTION_FRIENDLIST_EXPORT_ACTIVITY)));
+        ll.addView(newListItemConfigSwitchIfValid(this, "被删好友通知", "检测到你被好友删除后发出通知", ConfigItems.qn_notify_when_del));
         if (!Utils.isTim(SettingsActivity.this)) {
-            ll.addView(newListItemSwitchConfigNext(SettingsActivity.this, "隐藏分组下方入口", "隐藏分组列表最下方的历史好友按钮", qn_hide_ex_entry_group, false));
+            ll.addView(newListItemSwitchConfigNext(SettingsActivity.this, "隐藏分组下方入口", "隐藏分组列表最下方的历史好友按钮", ConfigItems.qn_hide_ex_entry_group, false));
         }
         ll.addView(_t = newListItemButton(SettingsActivity.this, "重定向文件下载目录", "N/A", "N/A", this));
         _t.setId(R_ID_BTN_FILE_RECV);
         __recv_desc = (TextView) _t.findViewById(R_ID_DESCRIPTION);
         __recv_status = (TextView) _t.findViewById(R_ID_VALUE);
         ll.addView(subtitle(SettingsActivity.this, "还没完成的功能(咕咕咕)"));
-        ll.addView(newListItemSwitchConfigStub(SettingsActivity.this, "屏蔽回执消息的通知", null, qn_mute_talk_back, false));
-        ll.addView(newListItemSwitchConfigStub(SettingsActivity.this, "禁用QQ热补丁", "一般无需开启", qn_disable_qq_hot_patch, false));
+        ll.addView(newListItemSwitchConfigStub(SettingsActivity.this, "屏蔽回执消息的通知", null, ConfigItems.qn_mute_talk_back, false));
+        ll.addView(newListItemSwitchConfigStub(SettingsActivity.this, "禁用QQ热补丁", "一般无需开启", ConfigItems.qn_disable_qq_hot_patch, false));
         ll.addView(subtitle(SettingsActivity.this, "参数设定"));
         ll.addView(newListItemButton(SettingsActivity.this, "小尾巴", "请勿在多个模块同时开启小尾巴", "[无]", clickTheComing()));
         ll.addView(newListItemButton(SettingsActivity.this, "AddFriendReq.sourceID", "自定义加好友来源", "[不改动]", clickTheComing()));
@@ -163,11 +165,11 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
     public void doOnResume() {
         super.doOnResume();
         ConfigManager cfg = ConfigManager.getDefaultConfig();
-        String str = cfg.getString(qn_muted_at_all);
+        String str = cfg.getString(ConfigItems.qn_muted_at_all);
         int n = 0;
         if (str != null && str.length() > 4) n = str.split(",").length;
         __tv_muted_atall.setText(n + "个群");
-        str = cfg.getString(qn_muted_red_packet);
+        str = cfg.getString(ConfigItems.qn_muted_red_packet);
         n = 0;
         if (str != null && str.length() > 4) n = str.split(",").length;
         __tv_muted_redpacket.setText(n + "个群");
@@ -203,7 +205,6 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
                     }
                 }).start();
             }
-
         }
     }
 

@@ -1,4 +1,4 @@
-package nil.nadph.qnotified.record;
+package nil.nadph.qnotified.config;
 
 import nil.nadph.qnotified.util.Nullable;
 

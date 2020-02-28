@@ -19,7 +19,8 @@ import android.widget.FrameLayout;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
-import nil.nadph.qnotified.record.ConfigManager;
+import nil.nadph.qnotified.config.ConfigItems;
+import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.*;
 
@@ -859,7 +860,7 @@ public class MainHook {
         }
         try {
             ConfigManager cache = ConfigManager.getCache();
-            if (ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_hide_msg_list_miniapp)) {
+            if (ConfigManager.getDefaultConfig().getBooleanOrFalse(ConfigItems.qn_hide_msg_list_miniapp)) {
                 int lastVersion = cache.getIntOrDefault("qn_hide_msg_list_miniapp_version_code", 0);
                 if (getHostInfo(getApplication()).versionCode == lastVersion) {
                     String methodName = cache.getString("qn_hide_msg_list_miniapp_method_name");

@@ -1,18 +1,21 @@
 package nil.nadph.qnotified.hook;
 
+import android.os.Looper;
+import android.widget.Toast;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.record.ConfigManager;
+import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.Utils;
 
 import java.lang.reflect.Method;
 
-import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.qn_mute_thumb_up;
+import static nil.nadph.qnotified.util.Utils.*;
 
 public class MuteQZoneThumbsUp extends BaseDelayableHook {
 
+    public static final String qn_mute_thumb_up = "qn_mute_thumb_up";
     private static final MuteQZoneThumbsUp self = new MuteQZoneThumbsUp();
     private boolean inited = false;
 
@@ -84,6 +87,27 @@ public class MuteQZoneThumbsUp extends BaseDelayableHook {
     @Override
     public int[] getPreconditions() {
         return new int[]{DexKit.C_QZONE_MSG_NOTIFY};
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        try {
+            ConfigManager mgr = ConfigManager.getDefaultConfig();
+            mgr.getAllConfig().put(qn_mute_thumb_up, enabled);
+            mgr.save();
+        } catch (final Exception e) {
+            Utils.log(e);
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+            } else {
+                SyncUtils.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+                    }
+                });
+            }
+        }
     }
 
     @Override

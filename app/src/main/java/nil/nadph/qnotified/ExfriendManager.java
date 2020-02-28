@@ -13,12 +13,12 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import nil.nadph.qnotified.activity.ExfriendListActivity;
+import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.config.EventRecord;
+import nil.nadph.qnotified.config.FriendRecord;
+import nil.nadph.qnotified.config.Table;
 import nil.nadph.qnotified.hook.DelDetectorHook;
 import nil.nadph.qnotified.pk.FriendChunk;
-import nil.nadph.qnotified.record.ConfigManager;
-import nil.nadph.qnotified.record.EventRecord;
-import nil.nadph.qnotified.record.FriendRecord;
-import nil.nadph.qnotified.record.Table;
 import nil.nadph.qnotified.util.ActProxyMgr;
 import nil.nadph.qnotified.util.Nullable;
 import nil.nadph.qnotified.util.Utils;
@@ -36,7 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static nil.nadph.qnotified.record.Table.*;
+import static nil.nadph.qnotified.config.Table.*;
 import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_EXFRIEND_LIST;
 import static nil.nadph.qnotified.util.ActProxyMgr.ACTIVITY_PROXY_ACTION;
 import static nil.nadph.qnotified.util.Initiator.load;
@@ -578,15 +578,15 @@ public class ExfriendManager {
         Object[] ptr = new Object[4];
         synchronized (this) {
             //check integrity
-            boolean totality = true;
+            boolean integrity;
             int tmp = fcs[fcs.length - 1].totoal_friend_count;
             int len = fcs.length;
             if (tmp < 2) return;
             for (int i = 0; i < fcs.length; i++) {
                 tmp -= fcs[len - i - 1].friend_count;
             }
-            totality = tmp == 0;
-            if (!totality) {
+            integrity = tmp == 0;
+            if (!integrity) {
                 log("Inconsistent friendlist chunk data!Aborting!total=" + tmp);
                 return;
             }
@@ -665,7 +665,7 @@ public class ExfriendManager {
 
     @SuppressLint("MissingPermission")
     public void doNotifyDelFlAndSave(Object[] ptr) {
-        if (((int) ptr[0]) > 0) {
+        if (isNotifyWhenDeleted() && ((int) ptr[0]) > 0) {
             Intent inner = new Intent(getApplication(), ExfriendListActivity.class);
             inner.putExtra(ACTIVITY_PROXY_ACTION, ACTION_EXFRIEND_LIST);
             Intent wrapper = new Intent();
@@ -682,11 +682,19 @@ public class ExfriendManager {
             } catch (Exception e) {
                 log(e);
             }
-            dirtyFlag = true;
         }
+        dirtyFlag = true;
         fileData.getAllConfig().put("lastUpdateFl", lastUpdateTimeSec);
         //log("Friendlist updated @" + lastUpdateTimeSec);
         saveConfigure();
+    }
+
+    public boolean isNotifyWhenDeleted() {
+
+    }
+
+    public void setNotifyWhenDeleted(boolean z) {
+
     }
 
     public Notification createNotiComp(String ticker, String title, String content, PendingIntent pi) throws PackageManager.NameNotFoundException, InvocationTargetException, SecurityException, IllegalAccessException, IllegalArgumentException, NoSuchMethodException, InstantiationException {
@@ -715,7 +723,7 @@ public class ExfriendManager {
         boolean inLogin;
         inLogin = (Utils.getLongAccountUin() == mUin);
         if (!inLogin) {
-            log("Uin(" + mUin + ") isn't logined in.");
+            log("doRequestFlRefresh but uin(" + mUin + ") isn't logined in.");
             return;
         }
         try {

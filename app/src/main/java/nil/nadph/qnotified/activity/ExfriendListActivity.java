@@ -13,17 +13,20 @@ import android.view.ViewGroup;
 import android.widget.*;
 import com.tencent.widget.XListView;
 import nil.nadph.qnotified.ExfriendManager;
-import nil.nadph.qnotified.FaceImpl;
 import nil.nadph.qnotified.MainHook;
-import nil.nadph.qnotified.record.EventRecord;
-import nil.nadph.qnotified.record.FriendRecord;
+import nil.nadph.qnotified.config.EventRecord;
+import nil.nadph.qnotified.config.FriendRecord;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.ViewBuilder;
 import nil.nadph.qnotified.util.ActProxyMgr;
+import nil.nadph.qnotified.util.FaceImpl;
 import nil.nadph.qnotified.util.Utils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
