@@ -176,6 +176,12 @@ public class CustomDialog {
         }
     }
 
+    public boolean isShowing() {
+        if (mDialog != null) return mDialog.isShowing();
+        if (mFailsafeDialog != null) return mFailsafeDialog.isShowing();
+        return false;
+    }
+
     @Nullable
     public TextView getMessageTextView() {
         if (!failsafe) {

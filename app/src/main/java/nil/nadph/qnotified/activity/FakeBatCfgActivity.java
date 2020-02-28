@@ -1,6 +1,7 @@
 package nil.nadph.qnotified.activity;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -10,6 +11,7 @@ import com.tencent.mobileqq.widget.BounceScrollView;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.hook.FakeBatteryHook;
 import nil.nadph.qnotified.record.ConfigManager;
+import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.DebugDrawable;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.Utils;
@@ -31,6 +33,8 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
     private static final int R_ID_FAK_BAT_STATUS = 0x300AFF85;
 
     TextView tvStatus;
+
+    private boolean mMsfResponsive = false;
 
     @Override
     public boolean doOnCreate(Bundle bundle) {
@@ -135,42 +139,44 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
 
     @Override
     public void onClick(View v) {
-        FakeBatteryHook bat = FakeBatteryHook.get();
-        EditText pct;
-        CheckBox charging;
         ConfigManager cfg = ConfigManager.getDefaultConfig();
-        int val;
         switch (v.getId()) {
             case R_ID_APPLY:
-                pct = (EditText) FakeBatCfgActivity.this.findViewById(R_ID_PERCENT_VALUE);
-                charging = (CheckBox) FakeBatCfgActivity.this.findViewById(R_ID_CHARGING);
-                try {
-                    val = Integer.parseInt(pct.getText().toString());
-                } catch (NumberFormatException e) {
-                    Utils.showToast(FakeBatCfgActivity.this, TOAST_TYPE_ERROR, "请输入电量", Toast.LENGTH_SHORT);
-                    return;
+                if (mMsfResponsive) {
+                    doUpdateBatCfg();
+                } else {
+                    final Dialog waitDialog = CustomDialog.create(this).setCancelable(true).setTitle("请稍候")
+                            .setMessage("等待 :MSF 进程响应").show();
+                    SyncUtils.enumerateProc(this, SyncUtils.PROC_MSF, 3000, new SyncUtils.EnumCallback() {
+                        private boolean mFinished = false;
+
+                        @Override
+                        public void onResponse(SyncUtils.EnumRequestHolder holder, SyncUtils.ProcessInfo process) {
+                            if (mFinished) return;
+                            mFinished = true;
+                            mMsfResponsive = true;
+                            waitDialog.dismiss();
+                            doUpdateBatCfg();
+                        }
+
+                        @Override
+                        public void onEnumResult(SyncUtils.EnumRequestHolder holder) {
+                            if (mFinished) return;
+                            mFinished = true;
+                            mMsfResponsive = holder.result.size() > 0;
+                            waitDialog.dismiss();
+                            if (mMsfResponsive) {
+                                doUpdateBatCfg();
+                            } else {
+                                CustomDialog.create(FakeBatCfgActivity.this).setTitle("操作失败")
+                                        .setCancelable(true).setPositiveButton("确认", null)
+                                        .setMessage("发生错误:\n" + getApplication().getPackageName() + ":MSF 进程响应超时\n" +
+                                                "如果您的QQ刚刚启动,您可以在十几秒后再试一次\n" +
+                                                "如果您是太极(含无极)用户,请确认您的太极版本至少为 湛泸-6.0.2(1907) ,如低于此版本,请尽快升级").show();
+                            }
+                        }
+                    });
                 }
-                if (val < 0 || val > 100) {
-                    Utils.showToast(FakeBatCfgActivity.this, TOAST_TYPE_ERROR, "电量取值范围: [0,100]", Toast.LENGTH_SHORT);
-                    return;
-                }
-                if (charging.isChecked()) val |= 128;
-                bat.setFakeBatteryStatus(val);
-                if (!bat.isEnabled()) {
-                    cfg.putBoolean(qn_fake_bat_enable, true);
-                    try {
-                        cfg.save();
-                        boolean success = true;
-                        if (!bat.isInited()) success = bat.init();
-                        SyncUtils.requestInitHook(bat.getId(), bat.getEffectiveProc());
-                        if (!success)
-                            Utils.showToast(FakeBatCfgActivity.this, TOAST_TYPE_ERROR, "初始化错误: 可能是版本不支持", Toast.LENGTH_SHORT);
-                    } catch (Exception e) {
-                        Utils.showToast(FakeBatCfgActivity.this, TOAST_TYPE_ERROR, "错误:" + e.toString(), Toast.LENGTH_LONG);
-                        log(e);
-                    }
-                }
-                showStatus();
                 break;
             case R_ID_DISABLE:
                 cfg.putBoolean(qn_fake_bat_enable, false);
@@ -182,6 +188,43 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
                 }
                 showStatus();
         }
+    }
+
+    private void doUpdateBatCfg() {
+        FakeBatteryHook bat = FakeBatteryHook.get();
+        ConfigManager cfg = ConfigManager.getDefaultConfig();
+        EditText pct;
+        CheckBox charging;
+        int val;
+        pct = (EditText) FakeBatCfgActivity.this.findViewById(R_ID_PERCENT_VALUE);
+        charging = (CheckBox) FakeBatCfgActivity.this.findViewById(R_ID_CHARGING);
+        try {
+            val = Integer.parseInt(pct.getText().toString());
+        } catch (NumberFormatException e) {
+            Utils.showToast(FakeBatCfgActivity.this, TOAST_TYPE_ERROR, "请输入电量", Toast.LENGTH_SHORT);
+            return;
+        }
+        if (val < 0 || val > 100) {
+            Utils.showToast(FakeBatCfgActivity.this, TOAST_TYPE_ERROR, "电量取值范围: [1,100]", Toast.LENGTH_SHORT);
+            return;
+        }
+        if (charging.isChecked()) val |= 128;
+        bat.setFakeBatteryStatus(val);
+        if (!bat.isEnabled()) {
+            cfg.putBoolean(qn_fake_bat_enable, true);
+            try {
+                cfg.save();
+                boolean success = true;
+                if (!bat.isInited()) success = bat.init();
+                SyncUtils.requestInitHook(bat.getId(), bat.getEffectiveProc());
+                if (!success)
+                    Utils.showToast(FakeBatCfgActivity.this, TOAST_TYPE_ERROR, "初始化错误: 可能是版本不支持", Toast.LENGTH_SHORT);
+            } catch (Exception e) {
+                Utils.showToast(FakeBatCfgActivity.this, TOAST_TYPE_ERROR, "错误:" + e.toString(), Toast.LENGTH_LONG);
+                log(e);
+            }
+        }
+        showStatus();
     }
 
 }

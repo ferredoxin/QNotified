@@ -13,6 +13,7 @@ import nil.nadph.qnotified.record.ConfigManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static nil.nadph.qnotified.util.Utils.getApplication;
@@ -111,6 +112,7 @@ public class SyncUtils {
                     pi.time = time;
                     pi.type = type;
                     holder.result.add(pi);
+                    holder.callback.onResponse(holder, pi);
                     break;
             }
         }
@@ -229,7 +231,11 @@ public class SyncUtils {
         return name;
     }
 
-    public static void enumerateProc(Context ctx, final int requestSeq, final int procMask, int timeout, EnumCallback callback) {
+    public static EnumRequestHolder enumerateProc(Context ctx, final int procMask, int timeout, EnumCallback callback) {
+        return enumerateProc(ctx, randomInt32Bits(), procMask, timeout, callback);
+    }
+
+    public static EnumRequestHolder enumerateProc(Context ctx, final int requestSeq, final int procMask, int timeout, EnumCallback callback) {
         if (callback == null) throw new NullPointerException("callback == null");
         if (ctx == null) throw new NullPointerException("ctx == null");
         Intent changed = new Intent(ENUM_PROC_REQ);
@@ -239,7 +245,9 @@ public class SyncUtils {
         changed.putExtra("seq", requestSeq);
         EnumRequestHolder holder = new EnumRequestHolder();
         holder.callback = callback;
+        holder.seq = requestSeq;
         holder.deadline = System.currentTimeMillis() + timeout;
+        holder.mask = procMask;
         sEnumProcCallbacks.put(requestSeq, holder);
         ctx.sendBroadcast(changed);
         if (sHandler == null) {
@@ -250,19 +258,24 @@ public class SyncUtils {
             public void run() {
                 EnumRequestHolder holder = sEnumProcCallbacks.remove(requestSeq);
                 if (holder == null) return;
-                holder.callback.onEnumResult(requestSeq, procMask, holder.result);
+                holder.callback.onEnumResult(holder);
             }
         }, timeout);
+        return holder;
     }
 
     public static class EnumRequestHolder {
         public EnumCallback callback;
         public ArrayList<ProcessInfo> result = new ArrayList<>();
         public long deadline;
+        public int seq;
+        public int mask;
     }
 
     public interface EnumCallback {
-        void onEnumResult(int requestSeq, int procMask, ArrayList<ProcessInfo> processes);
+        void onResponse(EnumRequestHolder holder, ProcessInfo process);
+
+        void onEnumResult(EnumRequestHolder holder);
     }
 
     public static class ProcessInfo {
@@ -272,6 +285,9 @@ public class SyncUtils {
         public long time;
     }
 
+    public static int randomInt32Bits() {
+        return new Random().nextInt();
+    }
     /*
      public static synchronized String getSocketUuid() {
      Context ctx = getApplication();
