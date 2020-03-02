@@ -20,8 +20,8 @@ QNotified is a Xposed/TaiChi module for mobile QQ that aims to:
 3. 语音消息转发
 4. 文本消息群发(原QQHelper)
 5. 以图片方式打开闪照(原辅助模块)
-6. 以图片方式打开表情包(原QQ净化)
-~~7. Ark(json)/StructMsg(xml)卡片消息(原BUG复读机)---新版本QQ已修复~~
+6. 以图片方式打开表情包(原QQ净化)  
+7. ~~Ark(json)/StructMsg(xml)卡片消息(原BUG复读机)---新版本QQ已修复~~
 8. 复读机(+1,原BUG复读机)
 9. 被删好友通知
 10. 防撤回(实验性,不稳定)
