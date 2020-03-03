@@ -6,10 +6,29 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.*;
 
 public class Table<K> implements Serializable, Cloneable {
 
+    public static final Object VOID_INSTANCE;
+
+    static {
+        Object tmp = null;
+        try {
+            Method m = Class.class.getMethod("getDeclaredConstructor", Class[].class);
+            Constructor<Void> c = (Constructor<Void>) m.invoke(Void.class, new Object[]{new Class[0]});
+            c.setAccessible(true);
+            tmp = (Void) c.newInstance();
+        } catch (Exception e) {
+            //**sigh**
+            e.printStackTrace();
+            tmp = new Object();
+        }
+        VOID_INSTANCE = tmp;
+        //assert VOID_INSTANCE != null;
+    }
 
     /* New format!!
      * LE

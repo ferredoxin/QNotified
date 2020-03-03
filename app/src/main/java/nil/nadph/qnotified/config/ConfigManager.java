@@ -1,6 +1,5 @@
 package nil.nadph.qnotified.config;
 
-import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.util.Utils;
 
@@ -12,25 +11,32 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static nil.nadph.qnotified.config.Table.*;
+import static nil.nadph.qnotified.util.Utils.log;
 
-public class ConfigManager {
+public class ConfigManager implements SyncUtils.OnFileChangedListener {
+    //DataOutputStream should be BIG_ENDIAN, as is.
+    public static final int BYTE_ORDER_STUB = 0x12345678;
     private static ConfigManager sDefConfig;
     private static ConfigManager sCache;
     private File file;
     private ConcurrentHashMap<String, Object> config;
     private boolean dirty;
     private int mFileTypeId;
+    private long mTargetUin;
 
-    public ConfigManager(File f, int fileTypeId) throws IOException {
+    public ConfigManager(File f, int fileTypeId, long uin) throws IOException {
         file = f;
         mFileTypeId = fileTypeId;
+        mTargetUin = uin;
         reinit();
     }
 
     public static ConfigManager getDefaultConfig() {
         try {
-            if (sDefConfig == null)
-                sDefConfig = new ConfigManager(new File(Utils.getApplication().getFilesDir().getAbsolutePath() + "/qnotified_config.dat"), SyncUtils.FILE_DEFAULT_CONFIG);
+            if (sDefConfig == null) {
+                sDefConfig = new ConfigManager(new File(Utils.getApplication().getFilesDir().getAbsolutePath() + "/qnotified_config.dat"), SyncUtils.FILE_DEFAULT_CONFIG, 0);
+                SyncUtils.addOnFileChangedListener(sDefConfig);
+            }
             return sDefConfig;
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -40,11 +46,21 @@ public class ConfigManager {
     public static ConfigManager getCache() {
         try {
             if (sCache == null)
-                sCache = new ConfigManager(new File(Utils.getApplication().getFilesDir().getAbsolutePath() + "/qnotified_cache.dat"), SyncUtils.FILE_CACHE);
+                sCache = new ConfigManager(new File(Utils.getApplication().getFilesDir().getAbsolutePath() + "/qnotified_cache.dat"), SyncUtils.FILE_CACHE, 0);
+            SyncUtils.addOnFileChangedListener(sCache);
             return sCache;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    //default
+    @Override
+    public boolean onFileChanged(int type, long uin, int what) {
+        if (type == mFileTypeId) {
+            dirty = true;
+        }
+        return false;
     }
 
     public void reinit() throws IOException {
@@ -114,13 +130,22 @@ public class ConfigManager {
     }
 
     public void putString(String key, String val) {
+        try {
+            if (dirty) reload();
+        } catch (Exception ignored) {
+        }
         config.put(key, val);
     }
 
     public void putInt(String key, int val) {
+        try {
+            if (dirty) reload();
+        } catch (Exception ignored) {
+        }
         config.put(key, val);
     }
 
+    @Deprecated
     public ConcurrentHashMap<String, Object> getAllConfig() {
         try {
             if (dirty) reload();
@@ -134,13 +159,13 @@ public class ConfigManager {
      */
     public void reload() throws IOException {
         synchronized (this) {
-            FileInputStream fin = null;
+            FileInputStream fin;
             fin = new FileInputStream(file);
             if (fin.available() == 0) return;
             config.clear();
             DataInputStream in = new DataInputStream(fin);
             in.skip(4);//flag
-            int ver = in.readInt();
+            int endian = in.readInt();
             int file_size = in.readInt();
             readIRaw(in);//ignore
             byte[] md5 = new byte[16];
@@ -149,11 +174,12 @@ public class ConfigManager {
             a:
             while (in.available() > 0) {
                 int _type = in.read();
-                if (_type < 0 || _type > 255) throw new IOException("Unexpected type:" + _type + ",version:" + ver);
+                if (_type < 0 || _type > 255) throw new IOException("Unexpected type:" + _type + ",version:" + endian);
                 key = readIStr(in);
                 switch ((byte) _type) {
                     case TYPE_VOID:
-                        config.put(key, null);
+                        log(new RuntimeException("ConcurrentHashMap/reload: replace null with " + VOID_INSTANCE + " in [key=\"" + key + "\",type=TYPE_VOID] at " + file.getAbsolutePath()));
+                        config.put(key, VOID_INSTANCE);
                         break;
                     case TYPE_BYTE:
                         config.put(key, (byte) in.read());
@@ -194,15 +220,24 @@ public class ConfigManager {
                     case TYPE_EOF:
                         break a;
                     default:
-                        throw new IOException("Unexpected type:" + _type + ",name:\"" + key + "\",version:" + ver);
+                        throw new IOException("Unexpected type:" + _type + ",name:\"" + key + "\",version:" + endian);
                 }
             }
             dirty = false;
         }
     }
 
-
+    @Deprecated
     public void save() throws IOException {
+        saveAndNotify(0);
+    }
+
+    public void saveAndNotify(int what) throws IOException {
+        saveWithoutNotify();
+        SyncUtils.onFileChanged(mFileTypeId, mTargetUin, what);
+    }
+
+    public void saveWithoutNotify() throws IOException {
         synchronized (this) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             DataOutputStream out = new DataOutputStream(baos);
@@ -231,7 +266,7 @@ public class ConfigManager {
             FileOutputStream fout = new FileOutputStream(file);
             out = new DataOutputStream(fout);
             out.write(new byte[]{(byte) 0xFE, 'Q', 'N', 'C'});
-            out.writeInt(ExfriendManager._VERSION_CURRENT);//ver
+            out.writeInt(BYTE_ORDER_STUB);
             out.writeInt(dat.length);
             out.writeInt(0);//reserved
             out.write(md5, 0, 16);
@@ -240,18 +275,7 @@ public class ConfigManager {
             fout.flush();
             out.close();
             fout.close();
-            SyncUtils.onFileChanged(mFileTypeId);
-        }
-    }
-
-    public static void onRecvFileChanged(int type) {
-        switch (type) {
-            case SyncUtils.FILE_DEFAULT_CONFIG:
-                if (sDefConfig != null) sDefConfig.dirty = true;
-                break;
-            case SyncUtils.FILE_CACHE:
-                if (sCache != null) sCache.dirty = true;
-                break;
+            dirty = false;
         }
     }
 
@@ -269,6 +293,18 @@ public class ConfigManager {
     }
 
     public void putBoolean(String key, boolean v) {
+        try {
+            if (dirty) reload();
+        } catch (Exception ignored) {
+        }
+        config.put(key, v);
+    }
+
+    public void putLong(String key, long v) {
+        try {
+            if (dirty) reload();
+        } catch (Exception ignored) {
+        }
         config.put(key, v);
     }
 }

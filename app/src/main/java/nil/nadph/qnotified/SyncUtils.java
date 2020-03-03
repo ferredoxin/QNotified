@@ -8,12 +8,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Looper;
-import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static nil.nadph.qnotified.util.Utils.getApplication;
@@ -24,7 +21,6 @@ import static nil.nadph.qnotified.util.Utils.log;
 
 @SuppressLint("PrivateApi")
 public class SyncUtils {
-
     public static final int PROC_ERROR = 0;
     public static final int PROC_MAIN = 1;
     public static final int PROC_MSF = 1 << 1;
@@ -34,7 +30,6 @@ public class SyncUtils {
     public static final int PROC_VIDEO = 1 << 5;
     public static final int PROC_MINI = 1 << 6;
     public static final int PROC_LOLA = 1 << 7;
-
     public static final int PROC_OTHERS = 1 << 31;
     public static final int PROC_ANY = 0xFFFFFFFF;
     //file=0
@@ -45,16 +40,19 @@ public class SyncUtils {
     public static final String ENUM_PROC_RESP = "nil.nadph.qnotified.ENUM_PROC_RESP";
 
     private static int myId = 0;
-    private static int seq = 0;
     private static boolean inited = false;
     private static int mProcType = 0;
     private static String mProcName = null;
     private static Handler sHandler;
     private static final ConcurrentHashMap<Integer, EnumRequestHolder> sEnumProcCallbacks = new ConcurrentHashMap<>();
-
+    private static final Collection<OnFileChangedListener> sFileChangedListeners = Collections.synchronizedCollection(new ArrayList<OnFileChangedListener>());
     public static final int FILE_DEFAULT_CONFIG = 1;
     public static final int FILE_CACHE = 2;
-    public static final int FILE_PROFILE_UIN = 3;
+    public static final int FILE_UIN_DATA = 3;
+
+    private SyncUtils() {
+        throw new AssertionError("No instance for you!");
+    }
 
     private static class IpcReceiver extends BroadcastReceiver {
         @Override
@@ -64,10 +62,12 @@ public class SyncUtils {
             switch (action) {
                 case SYNC_FILE_CHANGED:
                     int id = intent.getIntExtra("id", -1);
-                    int file = intent.getIntExtra("file", -1);
+                    int file = intent.getIntExtra("file", 0);
+                    long uin = intent.getLongExtra("uin", 0);
+                    int what = intent.getIntExtra("file", 0);
                     if (id != -1 && id != myId) {
                         //log("Rx: FILE_DEFAULT_CONFIG changed, setDirtyFlag");
-                        ConfigManager.onRecvFileChanged(file);
+                        onRecvFileChanged(file, uin, what);
                     }
                     break;
                 case HOOK_DO_INIT:
@@ -131,14 +131,22 @@ public class SyncUtils {
         //log("Proc:  " + android.os.Process.myPid() + "/" + getProcessType() + "/" + getProcessName());
     }
 
-
-    public static void onFileChanged(int file) {
+    /**
+     * Send a broadcast meaning a file was changed
+     *
+     * @param file FILE_*
+     * @param uin  0 for a common file
+     * @param what 0 for unspecified
+     */
+    public static void onFileChanged(int file, long uin, int what) {
         Context ctx = getApplication();
         Intent changed = new Intent(SYNC_FILE_CHANGED);
         changed.setPackage(ctx.getPackageName());
         initId();
         changed.putExtra("id", myId);
         changed.putExtra("file", file);
+        changed.putExtra("uin", uin);
+        changed.putExtra("what", what);
         ctx.sendBroadcast(changed);
         //log("Tx: file changed " + file);
     }
@@ -283,6 +291,24 @@ public class SyncUtils {
         void onResponse(EnumRequestHolder holder, ProcessInfo process);
 
         void onEnumResult(EnumRequestHolder holder);
+    }
+
+    public interface OnFileChangedListener {
+        boolean onFileChanged(int type, long uin, int what);
+    }
+
+    public static void addOnFileChangedListener(OnFileChangedListener l) {
+        sFileChangedListeners.add(l);
+    }
+
+    public static boolean removeOnFileChangedListener(OnFileChangedListener l) {
+        return sFileChangedListeners.remove(l);
+    }
+
+    public static void onRecvFileChanged(int file, long uin, int what) {
+        for (SyncUtils.OnFileChangedListener l : sFileChangedListeners) {
+            l.onFileChanged(file, uin, what);
+        }
     }
 
     public static class ProcessInfo {

@@ -36,8 +36,8 @@ import static nil.nadph.qnotified.util.Initiator.load;
 @SuppressLint("SimpleDateFormat")
 public class Utils {
 
-    public static final String QN_VERSION_NAME = "0.7.0-es4";
-    public static final int QN_VERSION_CODE = 26;
+    public static final String QN_VERSION_NAME = "0.7.0-es5";
+    public static final int QN_VERSION_CODE = 27;
     public static final String PACKAGE_NAME_QQ = "com.tencent.mobileqq";
     public static final String PACKAGE_NAME_QQ_INTERNATIONAL = "com.tencent.mobileqqi";
     public static final String PACKAGE_NAME_QQ_LITE = "com.tencent.qqlite";
@@ -51,16 +51,6 @@ public class Utils {
     public static boolean DEBUG = true;
     public static boolean ENABLE_DUMP_LOG = false;
     private static Handler mHandler;
-    private static Method method_Toast_show;
-    private static Method method_Toast_makeText;
-
-    /* Use Utils.getApplication() Instead *
-     @Deprecated()
-     @SuppressWarnings ("all")
-     public static Context getSystemContext() {
-     return (Context) XposedHelpers.callMethod(XposedHelpers.callStaticMethod(XposedHelpers.findClass("android.app.ActivityThread", null), "currentActivityThread", new Object[0]), "getSystemContext", new Object[0]);
-     }*/
-    private static Class clazz_QQToast;
 
     private Utils() {
         throw new AssertionError("No instance for you!");
@@ -771,6 +761,10 @@ public class Utils {
         return "\"" + s.replace("\"", "\"\"") + "\"";
     }
 
+    private static Method method_Toast_show;
+    private static Method method_Toast_makeText;
+    private static Class clazz_QQToast;
+
     public static Toast showToast(Context ctx, int type, CharSequence str, int length) {
         try {
             if (clazz_QQToast == null) {
@@ -993,7 +987,9 @@ public class Utils {
         if (nick == null) throw new NullPointerException("nick == null");
         if (nick.length() == 0) throw new IllegalArgumentException("nick length == 0");
         nick = filterEmoji(nick);
-        if (nick.contains("\u4e36") || nick.contains("\u309e")) return true;
+        if (nick.contains("\u4e36") || nick.contains("\u309e") || nick.contains("双封") || nick.contains("群发")
+                || nick.contains("代发") || nick.contains("赚"))
+            return true;
         if (nick.equalsIgnoreCase("A")) return true;
         if (nick.length() < 2) {
             return isSymbol(nick.charAt(0));

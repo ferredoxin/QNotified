@@ -42,11 +42,17 @@ import static nil.nadph.qnotified.util.ActProxyMgr.ACTIVITY_PROXY_ACTION;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
-public class ExfriendManager {
-    public static final int _VERSION_CURRENT = 1;
+public class ExfriendManager implements SyncUtils.OnFileChangedListener {
     static private final int ID_EX_NOTIFY = 65537;
     static private final int FL_UPDATE_INT_MIN = 10 * 60;//sec
     static private final int FL_UPDATE_INT_MAX = 1 * 60 * 60;//sec
+
+    public static final int CHANGED_UNSPECIFIED = 0;
+    public static final int CHANGED_GENERAL_SETTING = 16;
+    public static final int CHANGED_PERSONS = 17;
+    public static final int CHANGED_EX_EVENTS = 18;
+    public static final int CHANGED_EVERYTHING = 64;
+
     static private final HashMap<Long, ExfriendManager> instances = new HashMap<>();
     static private ExecutorService tp;
     private static Runnable asyncUpdateAwaitingTask = new Runnable() {
@@ -69,7 +75,6 @@ public class ExfriendManager {
     };
     public long lastUpdateTimeSec;
     private long mUin;
-    private int mTotalFriendCount;
     private ConcurrentHashMap<Long, FriendRecord> persons;
     private ConcurrentHashMap<Integer, EventRecord> events;
     private ConfigManager fileData;//Back compatibility
@@ -103,6 +108,13 @@ public class ExfriendManager {
             ret = new ExfriendManager(uin);
             instances.put(uin, ret);
             return ret;
+        }
+    }
+
+    public static ExfriendManager getOrNull(long uin) {
+        if (uin < 10000) throw new IllegalArgumentException("uin must >= 10000 ");
+        synchronized (instances) {
+            return instances.get(uin);
         }
     }
 
@@ -141,6 +153,11 @@ public class ExfriendManager {
         initForUin(mUin);
     }
 
+    /**
+     * @return f**k! Do NOT edit the cfg!!!
+     * @hide
+     */
+    @Deprecated
     public ConfigManager getConfig() {
         return fileData;
     }
@@ -150,45 +167,42 @@ public class ExfriendManager {
         synchronized (this) {
             mUin = uin;
             try {
-                loadSavedPersonsInfo();
+                loadAndParseConfigData();
                 try {
                     mStdRemarks = getFriendsConcurrentHashMap(getFriendsManager());
                 } catch (Throwable e) {
                 }
                 if (persons.size() == 0 && mStdRemarks != null) {
                     log("WARNING:INIT FROM THE INTERNAL");
-                    //Here we try to copy friendlist
-                    Object fr;
-                    Field fuin, fremark, fnick;
-                    Class clz_fr = load("com/tencent/mobileqq/data/Friends");
-                    fuin = clz_fr.getField("uin");//long!!!
-                    fuin.setAccessible(true);
-                    fremark = clz_fr.getField("remark");
-                    fremark.setAccessible(true);
-                    fnick = clz_fr.getField("name");
-                    fnick.setAccessible(true);
-                    persons = new ConcurrentHashMap<Long, FriendRecord>();
-                    Iterator<Map.Entry> it = mStdRemarks.entrySet().iterator();
-                    while (it.hasNext()) {
-                        long t = System.currentTimeMillis() / 1000;
-                        fr = it.next().getValue();
-                        if (fr == null) continue;
-                        try {
-
-
-                        } catch (Exception e) {
-                            continue;
+                    try {
+                        //Here we try to copy friendlist
+                        Object fr;
+                        Field fuin, fremark, fnick;
+                        Class clz_fr = load("com/tencent/mobileqq/data/Friends");
+                        fuin = clz_fr.getField("uin");//long!!!
+                        fuin.setAccessible(true);
+                        fremark = clz_fr.getField("remark");
+                        fremark.setAccessible(true);
+                        fnick = clz_fr.getField("name");
+                        fnick.setAccessible(true);
+                        Iterator<Map.Entry> it = mStdRemarks.entrySet().iterator();
+                        while (it.hasNext()) {
+                            long t = System.currentTimeMillis() / 1000;
+                            fr = it.next().getValue();
+                            if (fr == null) continue;
+                            FriendRecord f = new FriendRecord();
+                            f.uin = Long.parseLong((String) fuin.get(fr));
+                            f.remark = (String) fremark.get(fr);
+                            f.nick = (String) fnick.get(fr);
+                            f.friendStatus = FriendRecord.STATUS_RESERVED;
+                            f.serverTime = t;
+                            if (!persons.containsKey(f.uin))
+                                persons.put(f.uin, f);
                         }
-                        FriendRecord f = new FriendRecord();
-                        f.uin = Long.parseLong((String) fuin.get(fr));
-                        f.remark = (String) fremark.get(fr);
-                        f.nick = (String) fnick.get(fr);
-                        f.friendStatus = FriendRecord.STATUS_RESERVED;
-                        f.serverTime = t;
-                        if (!persons.containsKey(f.uin))
-                            persons.put(f.uin, f);
+                        saveConfigure();
+                    } catch (Exception e) {
+                        log(e);
                     }
-                    saveConfigure();
                 }
             } catch (Exception e) {
                 log(e);
@@ -197,13 +211,14 @@ public class ExfriendManager {
     }
 
     //TODO: Rename it
-    private @Nullable
-    void loadSavedPersonsInfo() {
+    @Nullable
+    private void loadAndParseConfigData() {
         synchronized (this) {
             try {
                 if (fileData == null) {
                     File f = new File(Utils.getApplication().getFilesDir().getAbsolutePath() + "/qnotified_" + mUin + ".dat");
-                    fileData = new ConfigManager(f, SyncUtils.FILE_PROFILE_UIN);
+                    fileData = new ConfigManager(f, SyncUtils.FILE_UIN_DATA, mUin);
+                    SyncUtils.addOnFileChangedListener(this);
                 }
                 updateFriendTableVersion();
                 initEventsTable();
@@ -318,7 +333,6 @@ public class ExfriendManager {
     private void eventsToTable() {
         Iterator<Map.Entry<Integer, EventRecord>> it =/*(Iterator<Map.Entry<Long, FriendRecord>>)*/events.entrySet().iterator();
         Map.Entry<Integer, EventRecord> ent;
-        String suin;
         Table<Integer> t = (Table<Integer>) fileData.getAllConfig().get("events");
         if (t == null) {
             t = new Table<>();
@@ -684,13 +698,19 @@ public class ExfriendManager {
             }
         }
         dirtyFlag = true;
-        fileData.getAllConfig().put("lastUpdateFl", lastUpdateTimeSec);
+        fileData.putLong("lastUpdateFl", lastUpdateTimeSec);
         //log("Friendlist updated @" + lastUpdateTimeSec);
         saveConfigure();
     }
 
-    public boolean isNotifyWhenDeleted() {
+    @Override
+    public boolean onFileChanged(int type, long uin, int what) {
+        return false;
+    }
 
+    //TODO: f**k with IPC notify
+    public boolean isNotifyWhenDeleted() {
+        return true;
     }
 
     public void setNotifyWhenDeleted(boolean z) {
