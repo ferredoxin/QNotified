@@ -1,12 +1,12 @@
 # QNotified
-QNotified（以下简称本模块）是一款依赖 Xposed 框架运行的辅助性QQ功能增强模块, 本模块无毒无害, 免费开源, 旨在
+QNotified（以下简称本模块）是一款依赖 Xposed/太极框架运行的辅助性QQ功能增强模块, 本模块无毒无害, 免费开源, 旨在:
 1. **接手部分停更模块的部分功能**
 2. 提供被删好友通知功能
 3. **移除部分臃肿功能, 增加部分实用功能**
 
-QNotified is a Xposed module for mobile QQ that aims to
+QNotified is a Xposed/TaiChi module for mobile QQ that aims to:
 1. bring some nice functions in some modules back to life
-2.  automatically refreshes friend list and tell(notify) user which friend had deleted him/her
+2. automatically refreshes friend list and tell(notify) user which friend had deleted him/her
 3. remove some unnecessary functions and add to facility
 
 -  **适配QQ版本** : 普通版QQ,TIM (全版本)
@@ -20,8 +20,8 @@ QNotified is a Xposed module for mobile QQ that aims to
 3. 语音消息转发
 4. 文本消息群发(原QQHelper)
 5. 以图片方式打开闪照(原辅助模块)
-6. 以图片方式打开表情包(原QQ净化)
-7. Ark(json)/StructMsg(xml)卡片消息(原BUG复读机)
+6. 以图片方式打开表情包(原QQ净化)  
+7. Ark(json)/StructMsg(xml)卡片消息(原BUG复读机)---新版本QQ已修复
 8. 复读机(+1,原BUG复读机)
 9. 被删好友通知
 10. 防撤回(实验性,不稳定)
@@ -52,4 +52,3 @@ QNotified is a Xposed module for mobile QQ that aims to
 本模块完全免费开源,近期发现模块倒卖现象严重,请勿上当
 
 (EE) CET4 failed,update halted.
-
