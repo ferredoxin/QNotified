@@ -52,8 +52,3 @@ QNotified is a Xposed/TaiChi module for mobile QQ that aims to:
 本模块完全免费开源,近期发现模块倒卖现象严重,请勿上当
 
 (EE) CET4 failed,update halted.
-
-**感谢以下开源项目**
-1. 太极: https://github.com/taichi-framework/TaiChi
-2. QQ净化: https://github.com/zpp0196/QQPurify
-3. 
