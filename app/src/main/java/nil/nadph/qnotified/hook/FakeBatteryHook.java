@@ -1,23 +1,31 @@
 package nil.nadph.qnotified.hook;
 
+import android.content.Context;
+import android.os.BatteryManager;
+import android.os.Build;
 import android.os.Looper;
 import android.widget.Toast;
-import de.robv.android.xposed.XC_MethodHook;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Utils;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
-import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
-public class FakeBatteryHook extends BaseDelayableHook {
+public class FakeBatteryHook extends BaseDelayableHook implements InvocationHandler {
     public static final String qn_fake_bat_enable = "qn_fake_bat_enable";
     private static final FakeBatteryHook self = new FakeBatteryHook();
     private boolean inited = false;
+
+    private Object origRegistrar = null;
+    private Object origStatus = null;
 
     FakeBatteryHook() {
     }
@@ -31,30 +39,76 @@ public class FakeBatteryHook extends BaseDelayableHook {
         //log("---> FakeBatteryHook called init!");
         if (inited) return true;
         try {
-            Class clz = load("com/tencent/mobileqq/msf/sdk/MsfSdkUtils");
-            findAndHookMethod(clz, "getSendBatteryStatus", new XC_MethodHook(49) {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    int fake = getFakeBatteryStatus();
-                    //log("<---getSendBatteryStatus beforeHookedMethod isEnabled = " + isEnabled() + ", getFakeBatteryStatus = " + fake);
-                    if (!isEnabled()) return;
-                    param.setResult(fake);
-                    //log("<---getSendBatteryStatus getResult = " + param.getResult());
+            if (Build.VERSION.SDK_INT >= 21) {
+                BatteryManager batmgr = (BatteryManager) getApplication().getSystemService(Context.BATTERY_SERVICE);
+                if (batmgr == null) {
+                    log("Wtf, init FakeBatteryHook but BatteryManager is null!");
+                    return false;
                 }
-            });
-            findAndHookMethod(clz, "getBatteryStatus", new XC_MethodHook(49) {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    if (!isEnabled()) return;
-                    param.setResult(getFakeBatteryCapacity());
+                if (Build.VERSION.SDK_INT < 23) {
+                    //make a call to init mBatteryStats, so we don't care about the result
+                    batmgr.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
                 }
-            });
-            //log("---> FakeBatteryHook init done!");
-            inited = true;
-            return true;
-        } catch (Throwable e) {
+                Field fBatteryPropertiesRegistrar = BatteryManager.class.getDeclaredField("mBatteryPropertiesRegistrar");
+                fBatteryPropertiesRegistrar.setAccessible(true);
+                origRegistrar = fBatteryPropertiesRegistrar.get(batmgr);
+                Class<?> cIBatteryPropertiesRegistrar = fBatteryPropertiesRegistrar.getType();
+                if (origRegistrar == null) {
+                    log("Error! mBatteryPropertiesRegistrar(original) got null");
+                    return false;
+                }
+                Class<?> cIBatteryStatus = null;
+                Field fBatteryStatus = null;
+                try {
+                    fBatteryStatus = BatteryManager.class.getDeclaredField("mBatteryStats");
+                    fBatteryStatus.setAccessible(true);
+                    origStatus = fBatteryStatus.get(batmgr);
+                    cIBatteryStatus = fBatteryStatus.getType();
+                    if (origStatus == null) {
+                        log("FakeBatteryHook/W Field mBatteryStats found, but instance got null");
+                    }
+                } catch (NoSuchFieldException e) {
+                    if (Build.VERSION.SDK_INT >= 23) {
+                        log("FakeBatteryHook/W Field mBatteryStats not found, but SDK_INT is " + Build.VERSION.SDK_INT);
+                    }
+                }
+                Object proxy;
+                if (origStatus != null && cIBatteryStatus != null) {
+                    proxy = Proxy.newProxyInstance(Initiator.getClassLoader(), new Class[]{cIBatteryPropertiesRegistrar, cIBatteryStatus}, this);
+                    fBatteryPropertiesRegistrar.set(batmgr, proxy);
+                    fBatteryStatus.set(batmgr, proxy);
+                } else {
+                    proxy = Proxy.newProxyInstance(Initiator.getClassLoader(), new Class[]{cIBatteryPropertiesRegistrar}, this);
+                    fBatteryPropertiesRegistrar.set(batmgr, proxy);
+                }
+                inited = true;
+                return true;
+            } else {
+                //Device too old, not supported
+                return false;
+            }
+        } catch (Exception e) {
             log(e);
             return false;
+        }
+    }
+
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        try {
+            if(method.getName().equals(" "))
+        } catch (Exception e) {
+            log(e);
+        }
+        String className = method.getDeclaringClass().getName();
+        if (className.endsWith("IBatteryPropertiesRegistrar")) {
+            return method.invoke(origRegistrar, args);
+        } else if (className.endsWith("IBatteryStats")) {
+            return method.invoke(origStatus, args);
+        } else {
+            //WTF QAQ
+            log("Panic, unexpected method " + method);
+            throw new NoSuchMethodError(method.toString());
         }
     }
 

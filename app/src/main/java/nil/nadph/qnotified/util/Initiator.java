@@ -1,5 +1,7 @@
 package nil.nadph.qnotified.util;
 
+import de.robv.android.xposed.XposedBridge;
+
 import java.lang.reflect.Field;
 
 import static nil.nadph.qnotified.util.Utils.log;
@@ -7,17 +9,19 @@ import static nil.nadph.qnotified.util.Utils.log;
 @SuppressWarnings("rawtypes")
 public class Initiator {
 
-    private static ClassLoader qqClassLoader;
+    private static ClassLoader sClassLoader;
 
     public static void init(ClassLoader classLoader) {
-        qqClassLoader = classLoader;
         try {
             Field fParent = ClassLoader.class.getDeclaredField("parent");
             fParent.setAccessible(true);
             ClassLoader mine = Initiator.class.getClassLoader();
             ClassLoader curr = (ClassLoader) fParent.get(mine);
+            if (curr == null) {
+                curr = XposedBridge.class.getClassLoader();
+            }
             if (!curr.getClass().getName().equals(HybridClassLoader.class.getName())) {
-                fParent.set(mine, new HybridClassLoader(curr, qqClassLoader));
+                fParent.set(mine, sClassLoader = new HybridClassLoader(curr, classLoader));
             }
         } catch (Exception e) {
             log(e);
@@ -25,12 +29,12 @@ public class Initiator {
     }
 
     public static ClassLoader getClassLoader() {
-        return qqClassLoader;
+        return sClassLoader;
     }
 
     @Nullable
     public static Class<?> load(String className) {
-        if (qqClassLoader == null || className == null || className.isEmpty()) {
+        if (sClassLoader == null || className == null || className.isEmpty()) {
             return null;
         }
         className = className.replace('/', '.');
@@ -40,7 +44,7 @@ public class Initiator {
             className = Utils.PACKAGE_NAME_QQ + className;
         }
         try {
-            return qqClassLoader.loadClass(className);
+            return sClassLoader.loadClass(className);
         } catch (Throwable e) {
             return null;
         }

@@ -359,7 +359,7 @@ public class MainHook {
             mInstanceField.setAccessible(true);
             Object mInstance = mInstanceField.get(gDefault);
             Object proxy = Proxy.newProxyInstance(
-                    mInstance.getClass().getClassLoader(),
+                    Initiator.getClassLoader(),
                     new Class[]{Class.forName("android.app.IActivityManager")},
                     new IActivityManagerHandler(mInstance));
             mInstanceField.set(gDefault, proxy);
@@ -372,7 +372,7 @@ public class MainHook {
                 singletonClass.getMethod("get").invoke(singleton);
                 Object mDefaultTaskMgr = mInstanceField.get(singleton);
                 Object proxy2 = Proxy.newProxyInstance(
-                        mDefaultTaskMgr.getClass().getClassLoader(),
+                        Initiator.getClassLoader(),
                         new Class[]{Class.forName("android.app.IActivityTaskManager")},
                         new IActivityManagerHandler(mDefaultTaskMgr));
                 mInstanceField.set(singleton, proxy2);

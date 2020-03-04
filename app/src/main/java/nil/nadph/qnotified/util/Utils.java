@@ -1007,7 +1007,7 @@ public class Utils {
     /**
      * 仅仅使用群发器而使用本模块的用户往往有两个鲜明的特征
      * 1.使用某个虚拟框架
-     * 2.显而易见的昵称,见 #isBadNick() 方法
+     * 2.显而易见的昵称,见{@link #isBadNick(String)}
      * 仍然提供本模块的全部功能
      * 只是隐藏我的联系方式
      * 这虽然不是完全正确的方法, but just do it.
@@ -1081,9 +1081,7 @@ public class Utils {
     }
 
     public static int sign(double d) {
-        if (d == 0d) return 0;
-        if (d > 0d) return 1;
-        return -1;
+        return Double.compare(d, 0d);
     }
 
     public static Method getSuperMethod(Class clazz, String name, Class... params) {
