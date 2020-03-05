@@ -75,11 +75,11 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
                 }
                 Object proxy;
                 if (origStatus != null && cIBatteryStatus != null) {
-                    proxy = Proxy.newProxyInstance(Initiator.getClassLoader(), new Class[]{cIBatteryPropertiesRegistrar, cIBatteryStatus}, this);
+                    proxy = Proxy.newProxyInstance(Initiator.getPluginClassLoader(), new Class[]{cIBatteryPropertiesRegistrar, cIBatteryStatus}, this);
                     fBatteryPropertiesRegistrar.set(batmgr, proxy);
                     fBatteryStatus.set(batmgr, proxy);
                 } else {
-                    proxy = Proxy.newProxyInstance(Initiator.getClassLoader(), new Class[]{cIBatteryPropertiesRegistrar}, this);
+                    proxy = Proxy.newProxyInstance(Initiator.getPluginClassLoader(), new Class[]{cIBatteryPropertiesRegistrar}, this);
                     fBatteryPropertiesRegistrar.set(batmgr, proxy);
                 }
                 inited = true;
@@ -124,6 +124,15 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
             return method.invoke(origRegistrar, args);
         } else if (className.endsWith("IBatteryStats")) {
             return method.invoke(origStatus, args);
+        } else if (className.endsWith("Object")) {
+            if (method.getName().equals("toString")) {
+                return "a.a.a.a$Stub$Proxy@" + Integer.toHexString(hashCode());
+            } else if (method.getName().equals("equals")) {
+                return args[0] == proxy;
+            } else if (method.getName().equals("hashCode")) {
+                return hashCode();
+            }
+            return null;
         } else {
             //WTF QAQ
             log("Panic, unexpected method " + method);
@@ -134,10 +143,10 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
     private static void BatteryProperty_setLong(Parcelable prop, long val) {
         if (prop == null) return;
         try {
-            Method m;
-            m = prop.getClass().getDeclaredMethod("setLong", long.class);
-            m.setAccessible(true);
-            m.invoke(prop, val);
+            Field field;
+            field = prop.getClass().getDeclaredField("mValueLong");
+            field.setAccessible(true);
+            field.set(prop, val);
         } catch (Throwable e) {
             log(e);
         }

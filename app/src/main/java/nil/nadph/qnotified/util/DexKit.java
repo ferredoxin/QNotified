@@ -452,7 +452,7 @@ public class DexKit {
     }
 
     private static HashSet<String> e(int i, DexDeobfReport rep) {
-        ClassLoader loader = Initiator.getClassLoader();
+        ClassLoader loader = Initiator.getHostClassLoader();
         int record = 0;
         int[] qf = d(i);
         byte[][] keys = b(i);

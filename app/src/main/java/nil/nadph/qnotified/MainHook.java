@@ -359,7 +359,7 @@ public class MainHook {
             mInstanceField.setAccessible(true);
             Object mInstance = mInstanceField.get(gDefault);
             Object proxy = Proxy.newProxyInstance(
-                    Initiator.getClassLoader(),
+                    Initiator.getPluginClassLoader(),
                     new Class[]{Class.forName("android.app.IActivityManager")},
                     new IActivityManagerHandler(mInstance));
             mInstanceField.set(gDefault, proxy);
@@ -372,7 +372,7 @@ public class MainHook {
                 singletonClass.getMethod("get").invoke(singleton);
                 Object mDefaultTaskMgr = mInstanceField.get(singleton);
                 Object proxy2 = Proxy.newProxyInstance(
-                        Initiator.getClassLoader(),
+                        Initiator.getPluginClassLoader(),
                         new Class[]{Class.forName("android.app.IActivityTaskManager")},
                         new IActivityManagerHandler(mDefaultTaskMgr));
                 mInstanceField.set(singleton, proxy2);
@@ -797,7 +797,7 @@ public class MainHook {
                         log(e);
                     }
                     if (bundle != null) {
-                        bundle.setClassLoader(Initiator.getClassLoader());
+                        bundle.setClassLoader(Initiator.getPluginClassLoader());
                         if (intent.hasExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT)) {
                             Intent realIntent = intent.getParcelableExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT);
                             field_intent.set(record, realIntent);
@@ -831,7 +831,7 @@ public class MainHook {
                                         log(e);
                                     }
                                     if (bundle != null) {
-                                        bundle.setClassLoader(Initiator.getClassLoader());
+                                        bundle.setClassLoader(Initiator.getPluginClassLoader());
                                         if (wrapper.hasExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT)) {
                                             Intent realIntent = wrapper.getParcelableExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT);
                                             fmIntent.set(item, realIntent);

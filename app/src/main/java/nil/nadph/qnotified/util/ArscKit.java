@@ -67,12 +67,12 @@ public class ArscKit {
     private static int enumArsc(String pkgname, String type, String name) {
         Enumeration<URL> urls = null;
         try {
-            urls = (Enumeration<URL>) Utils.invoke_virtual(Initiator.getClassLoader(), "findResources", "resources.arsc", String.class);
+            urls = (Enumeration<URL>) Utils.invoke_virtual(Initiator.getHostClassLoader(), "findResources", "resources.arsc", String.class);
         } catch (Throwable e) {
             log(e);
         }
         if (urls == null) {
-            log(new RuntimeException("Error! Enum<URL<resources.arsc>> == null, loader = " + Initiator.getClassLoader()));
+            log(new RuntimeException("Error! Enum<URL<resources.arsc>> == null, loader = " + Initiator.getHostClassLoader()));
             return 0;
         }
         InputStream in;

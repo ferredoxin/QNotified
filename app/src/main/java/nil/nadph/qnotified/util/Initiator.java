@@ -9,10 +9,13 @@ import static nil.nadph.qnotified.util.Utils.log;
 @SuppressWarnings("rawtypes")
 public class Initiator {
 
-    private static ClassLoader sClassLoader;
+    private static ClassLoader sHostClassLoader;
+    private static ClassLoader sPluginClassLoader;
 
     public static void init(ClassLoader classLoader) {
+        if (classLoader == null) throw new NullPointerException("classLoader == null");
         try {
+            sHostClassLoader = classLoader;
             Field fParent = ClassLoader.class.getDeclaredField("parent");
             fParent.setAccessible(true);
             ClassLoader mine = Initiator.class.getClassLoader();
@@ -21,20 +24,24 @@ public class Initiator {
                 curr = XposedBridge.class.getClassLoader();
             }
             if (!curr.getClass().getName().equals(HybridClassLoader.class.getName())) {
-                fParent.set(mine, sClassLoader = new HybridClassLoader(curr, classLoader));
+                fParent.set(mine, sPluginClassLoader = new HybridClassLoader(curr, classLoader));
             }
         } catch (Exception e) {
             log(e);
         }
     }
 
-    public static ClassLoader getClassLoader() {
-        return sClassLoader;
+    public static ClassLoader getPluginClassLoader() {
+        return sPluginClassLoader;
+    }
+
+    public static ClassLoader getHostClassLoader() {
+        return sHostClassLoader;
     }
 
     @Nullable
     public static Class<?> load(String className) {
-        if (sClassLoader == null || className == null || className.isEmpty()) {
+        if (sPluginClassLoader == null || className == null || className.isEmpty()) {
             return null;
         }
         className = className.replace('/', '.');
@@ -44,7 +51,7 @@ public class Initiator {
             className = Utils.PACKAGE_NAME_QQ + className;
         }
         try {
-            return sClassLoader.loadClass(className);
+            return sPluginClassLoader.loadClass(className);
         } catch (Throwable e) {
             return null;
         }
