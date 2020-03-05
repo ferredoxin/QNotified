@@ -218,14 +218,14 @@ public class Initiator {
                 Class cref = load("com/tencent/mobileqq/emosm/favroaming/EmoAddedAuthCallback$2");
                 try {
                     clz = cref.getDeclaredField("this$0").getType();
-                } catch (NoSuchFieldException ignored) {
+                } catch (Exception ignored) {
                 }
             }
             if (clz == null) {
                 Class cref = load("com/tencent/mobileqq/emosm/favroaming/EmoAddedAuthCallback$1");
                 try {
                     clz = cref.getDeclaredField("this$0").getType();
-                } catch (NoSuchFieldException ignored) {
+                } catch (Exception ignored) {
                 }
             }
             return clz;
@@ -241,21 +241,21 @@ public class Initiator {
             Class cref = load("com/tencent/mobileqq/app/message/C2CMessageProcessor$1");
             try {
                 clz = cref.getDeclaredField("this$0").getType();
-            } catch (NoSuchFieldException ignored) {
+            } catch (Exception ignored) {
             }
         }
         if (clz == null) {
             Class cref = load("com/tencent/mobileqq/app/message/C2CMessageProcessor$5");
             try {
                 clz = cref.getDeclaredField("this$0").getType();
-            } catch (NoSuchFieldException ignored) {
+            } catch (Exception ignored) {
             }
         }
         if (clz == null) {
             Class cref = load("com/tencent/mobileqq/app/message/C2CMessageProcessor$7");
             try {
                 clz = cref.getDeclaredField("this$0").getType();
-            } catch (NoSuchFieldException ignored) {
+            } catch (Exception ignored) {
             }
         }
         return clz;

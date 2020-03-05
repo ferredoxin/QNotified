@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Looper;
+import android.os.Parcelable;
 import android.widget.Toast;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigItems;
@@ -96,7 +97,25 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         try {
-            if(method.getName().equals(" "))
+            if (isEnabled()) {
+                if (args.length == 2 && method.getName().equals("getProperty")) {
+                    int id = (int) args[0];
+                    Parcelable prop = (Parcelable) args[1];
+                    if (id == BatteryManager.BATTERY_PROPERTY_STATUS) {
+                        if (isFakeBatteryCharging()) {
+                            BatteryProperty_setLong(prop, BatteryManager.BATTERY_PLUGGED_AC);
+                        } else {
+                            BatteryProperty_setLong(prop, 0);
+                        }
+                        return 0;
+                    } else if (id == BatteryManager.BATTERY_PROPERTY_CAPACITY) {
+                        BatteryProperty_setLong(prop, getFakeBatteryCapacity());
+                        return 0;
+                    }
+                } else if (args.length == 0 && method.getName().equals("isCharging")) {
+                    return isFakeBatteryCharging();
+                }
+            }
         } catch (Exception e) {
             log(e);
         }
@@ -108,7 +127,19 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
         } else {
             //WTF QAQ
             log("Panic, unexpected method " + method);
-            throw new NoSuchMethodError(method.toString());
+            return null;
+        }
+    }
+
+    private static void BatteryProperty_setLong(Parcelable prop, long val) {
+        if (prop == null) return;
+        try {
+            Method m;
+            m = prop.getClass().getDeclaredMethod("setLong", long.class);
+            m.setAccessible(true);
+            m.invoke(prop, val);
+        } catch (Throwable e) {
+            log(e);
         }
     }
 
