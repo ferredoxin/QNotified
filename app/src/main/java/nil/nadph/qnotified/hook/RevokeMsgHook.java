@@ -66,20 +66,20 @@ public class RevokeMsgHook extends BaseDelayableHook {
     }
 
     private void setMessageTip(Object revokeMsgInfo) {
-        String friendUin = (String) iget_object_or_null(revokeMsgInfo, "a", String.class);
+        String entityUin = (String) iget_object_or_null(revokeMsgInfo, "a", String.class);
         String senderUin = (String) iget_object_or_null(revokeMsgInfo, "b", String.class);
         int istroop = (int) getFirstNSFByType(revokeMsgInfo, int.class);
         long msgUid = (long) iget_object_or_null(revokeMsgInfo, "b", long.class);
         long shmsgseq = (long) iget_object_or_null(revokeMsgInfo, "a", long.class);
         long time = (long) iget_object_or_null(revokeMsgInfo, "c", long.class);
-        Object qqApp = getQQAppInterface();
         String selfUin = "" + getLongAccountUin();
-        if (selfUin.equals(senderUin))
+        if (selfUin.equals(senderUin)) {
             return;
-        String uin = istroop == 0 ? senderUin : friendUin;
+        }
+        String uin = istroop == 0 ? senderUin : entityUin;
         Object msgObject = getMessage(uin, istroop, shmsgseq, msgUid);
         long id = getMessageId(msgObject);
-        String msg = istroop == 0 ? getFriendName(null, senderUin) : getTroopName(friendUin, senderUin);
+        String msg = istroop == 0 ? getFriendName(null, senderUin) : getTroopName(entityUin, senderUin);
         if (id != 0) {
             if (isCallingFrom(_C2CMessageProcessor().getName()))
                 return;
@@ -91,10 +91,10 @@ public class RevokeMsgHook extends BaseDelayableHook {
                     msg += ": " + message;
                 }
             }
-            showMessageTip(friendUin, senderUin, msgUid, shmsgseq, time, msg, istroop);
+            showMessageTip(entityUin, senderUin, msgUid, shmsgseq, time, msg, istroop);
         } else {
             msg = "\"" + msg + "\"" + "撤回了一条消息(没收到)";
-            showMessageTip(friendUin, senderUin, msgUid, shmsgseq, time, msg, istroop);
+            showMessageTip(entityUin, senderUin, msgUid, shmsgseq, time, msg, istroop);
         }
     }
 
@@ -207,7 +207,6 @@ public class RevokeMsgHook extends BaseDelayableHook {
     private int getMessageType(Object msgObject) {
         if (msgObject == null)
             return -1;
-
         return (int) iget_object_or_null(msgObject, "msgtype");
     }
 

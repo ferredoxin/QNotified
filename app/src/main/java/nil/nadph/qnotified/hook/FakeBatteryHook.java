@@ -1,11 +1,16 @@
 package nil.nadph.qnotified.hook;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Looper;
 import android.os.Parcelable;
 import android.widget.Toast;
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
@@ -13,20 +18,25 @@ import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Utils;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
+import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
-public class FakeBatteryHook extends BaseDelayableHook implements InvocationHandler {
+public class FakeBatteryHook extends BaseDelayableHook implements InvocationHandler, SyncUtils.BroadcastListener {
     public static final String qn_fake_bat_enable = "qn_fake_bat_enable";
+    private static final String ACTION_UPDATE_BATTERY_STATUS = "nil.nadph.qnotified.ACTION_UPDATE_BATTERY_STATUS";
     private static final FakeBatteryHook self = new FakeBatteryHook();
+    private WeakReference<BroadcastReceiver> mBatteryRecvRef = null;
     private boolean inited = false;
-
     private Object origRegistrar = null;
     private Object origStatus = null;
+    private int lastFakeLevel = -1;
+    private int lastFakeStatus = -1;
 
     FakeBatteryHook() {
     }
@@ -40,6 +50,50 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
         //log("---> FakeBatteryHook called init!");
         if (inited) return true;
         try {
+            //for :MSF
+            Method mGetSendBatteryStatus = null;
+            for (Method m : load("com/tencent/mobileqq/msf/sdk/MsfSdkUtils").getMethods()) {
+                if (m.getName().equals("getSendBatteryStatus") && m.getReturnType().equals(int.class)) {
+                    mGetSendBatteryStatus = m;
+                    break;
+                }
+            }
+            XposedBridge.hookMethod(mGetSendBatteryStatus, new XC_MethodHook(49) {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    //log("--->getSendBatteryStatus isEnabled=" + isEnabled() + ", getFakeBatteryStatus=" + getFakeBatteryStatus());
+                    if (!isEnabled()) return;
+                    param.setResult(getFakeBatteryStatus());
+                }
+            });
+            Class<?> cBatteryBroadcastReceiver = load("com.tencent.mobileqq.app.BatteryBroadcastReceiver");
+            if (cBatteryBroadcastReceiver != null) {
+                XposedHelpers.findAndHookMethod(cBatteryBroadcastReceiver, "onReceive", Context.class, Intent.class, new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        if (mBatteryRecvRef == null || mBatteryRecvRef.get() != param.thisObject) {
+                            mBatteryRecvRef = new WeakReference<>((BroadcastReceiver) param.thisObject);
+                        }
+                        if (!isEnabled()) return;
+                        Intent intent = (Intent) param.args[1];
+                        String action = intent.getAction();
+                        if (action.equals("android.intent.action.ACTION_POWER_CONNECTED")
+                                || action.equals("android.intent.action.ACTION_POWER_DISCONNECTED")) {
+                            if (isFakeBatteryCharging()) {
+                                intent.setAction("android.intent.action.ACTION_POWER_CONNECTED");
+                            } else {
+                                intent.setAction("android.intent.action.ACTION_POWER_DISCONNECTED");
+                            }
+                        } else if (action.equals("android.intent.action.BATTERY_CHANGED")) {
+                            intent.putExtra(BatteryManager.EXTRA_LEVEL, getFakeBatteryCapacity());
+                            intent.putExtra(BatteryManager.EXTRA_SCALE, 100);
+                        }
+                    }
+                });
+            }
+            //@MainProcess
+            //接下去是UI stuff, 给自己看的
+            //本来还想用反射魔改Binder/ActivityThread$ApplicationThread实现Xposed-less拦截广播onReceive的,太肝了,就不搞了
             if (Build.VERSION.SDK_INT >= 21) {
                 BatteryManager batmgr = (BatteryManager) getApplication().getSystemService(Context.BATTERY_SERVICE);
                 if (batmgr == null) {
@@ -82,16 +136,38 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
                     proxy = Proxy.newProxyInstance(Initiator.getPluginClassLoader(), new Class[]{cIBatteryPropertiesRegistrar}, this);
                     fBatteryPropertiesRegistrar.set(batmgr, proxy);
                 }
-                inited = true;
-                return true;
-            } else {
-                //Device too old, not supported
-                return false;
             }
+            inited = true;
+            return true;
         } catch (Exception e) {
             log(e);
             return false;
         }
+    }
+
+    private void scheduleReceiveBatteryLevel() {
+    }
+
+    private void scheduleReceiveBatteryStatus() {
+    }
+
+    private static void doPostReceiveEvent(BroadcastReceiver recv, Context ctx, Intent intent) {
+    }
+
+    @Override
+    public boolean onReceive(Context context, Intent intent) {
+        if (ACTION_UPDATE_BATTERY_STATUS.equals(intent.getAction())) {
+            if (inited && isEnabled()) {
+                if (lastFakeLevel != getFakeBatteryCapacity()) {
+                    scheduleReceiveBatteryLevel();
+                }
+                if (lastFakeStatus == 0 == isFakeBatteryCharging()) {
+                    scheduleReceiveBatteryStatus();
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -157,6 +233,8 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
             ConfigManager cfg = ConfigManager.getDefaultConfig();
             cfg.putInt(ConfigItems.qn_fake_bat_expr, val);
             cfg.save();
+            Intent intent = new Intent(ACTION_UPDATE_BATTERY_STATUS);
+            SyncUtils.sendGenericBroadcast(intent);
         } catch (IOException e) {
             log(e);
         }

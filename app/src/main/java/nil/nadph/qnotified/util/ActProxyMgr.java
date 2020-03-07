@@ -17,6 +17,7 @@ public class ActProxyMgr {
     public static final int ACTION_FRIENDLIST_EXPORT_ACTIVITY = 9;
     public static final int ACTION_FAKE_BAT_CONFIG_ACTIVITY = 10;
 
+    @Deprecated
     public static Class<?> getActivityByAction(int action) {
         switch (action) {
             case ACTION_EXFRIEND_LIST:

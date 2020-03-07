@@ -57,7 +57,7 @@ public class DonateActivity extends IphoneTitleBarActivityCompat {
         ColorStateList hiColor = ColorStateList.valueOf(Color.argb(255, 242, 140, 72));
         RelativeLayout _t;
 
-        ll.addView(subtitle(this, "QNotified是开源软件,完全免费,无需任何授权/验证即可使用全部功能,没有卡密这类的东西,请勿上当受骗!!!"));
+        ll.addView(subtitle(this, "QNotified是开源软件,完全免费,无需任何授权/卡密/加群即可使用全部功能,没有卡密或者授权这类的东西,请勿上当受骗!!!"));
         ll.addView(subtitle(this, "如果你希望支持作者, 保持更新的动力, 可请使用以下方式捐赠, 完成后手动打开 [我已捐赠] 即可"));
         ll.addView(subtitle(this, "免费开发不易, 需要花费很多个人精力, 且回报甚微, 甚至有人盗卖, 感谢理解"));
         RelativeLayout iHaveDonated = newListItemSwitchConfig(this, "我已捐赠", null, qn_donated_choice, false);
@@ -96,7 +96,7 @@ public class DonateActivity extends IphoneTitleBarActivityCompat {
         ll.addView(newListItemButton(this, "Mail", null, "xenonhydride@gmail.com", null));
         ll.addView(newListItemButton(this, "Telegram", null, "Auride", clickToUrl("https://t.me/Auride")));
         ll.addView(subtitle(this, "扶贫方式"));
-        ll.addView(newListItemButton(this, "支付宝", null, null, clickToAlipay()));
+        if (isNiceUser()) ll.addView(newListItemButton(this, "支付宝", null, null, clickToAlipay()));
 
         ll.addView(subtitle(this, "FAQ1:"));
         ll.addView(subtitle(this, "Q: 捐赠后能解锁隐藏功能吗?"));
@@ -132,7 +132,7 @@ public class DonateActivity extends IphoneTitleBarActivityCompat {
             @Override
             public void onClick(View v) {
                 CustomDialog.create(DonateActivity.this).setTitle("提示")
-                        .setMessage("QNotified将打开支付宝\n捐赠完成后请手动打开上方 我已捐赠 开关.").setNegativeButton("取消", null)
+                        .setMessage("\"QNotified\"请求打开支付宝\n捐赠完成后请手动打开上方 我已捐赠 开关.").setNegativeButton("取消", null)
                         .setPositiveButton("确认", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

@@ -14,6 +14,7 @@ public class ConfigItems {
     public static final String qn_file_recv_redirect_enable = "qn_file_recv_redirect_enable";
     public static final String qn_file_recv_redirect_path = "qn_file_recv_redirect_path";
     public static final String qn_fake_bat_expr = "qn_fake_bat_expr";
+    public static final String cfg_nice_user = "cfg_nice_user";
 
     public static final SwitchConfigItem qn_notify_when_del = new SwitchConfigItem() {
         @Override

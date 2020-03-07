@@ -16,6 +16,7 @@ import android.widget.Toast;
 import dalvik.system.DexFile;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 
 import java.io.File;
@@ -47,7 +48,6 @@ public class Utils {
     public static final int TOAST_TYPE_INFO = 0;
     public static final int TOAST_TYPE_ERROR = 1;
     public static final int TOAST_TYPE_SUCCESS = 2;
-    public static final String cfg_nice_user = "cfg_nice_user";
     public static boolean DEBUG = true;
     public static boolean ENABLE_DUMP_LOG = false;
     private static Handler mHandler;
@@ -271,7 +271,7 @@ public class Utils {
             ret = XposedBridge.invokeOriginalMethod(method, obj, argv);
             return ret;
         } catch (IllegalStateException e) {
-            //For S-EdXp: Method not hooked.
+            //For SandHook-EdXp: Method not hooked.
             needPatch = true;
         } catch (InvocationTargetException e) {
             //For TaiChi
@@ -349,8 +349,7 @@ public class Utils {
     }
 
     public static Object getQQAppInterface() {
-        Object o = getAppRuntime();
-        return o;
+        return getAppRuntime();
     }
 
 	/*
@@ -694,7 +693,7 @@ public class Utils {
             File f = new File(path);
             try {
                 if (!f.exists()) f.createNewFile();
-                method2(path, "[" + System.currentTimeMillis() + "-" + android.os.Process.myPid() + "] " + str + "\n");
+                appendToFile(path, "[" + System.currentTimeMillis() + "-" + android.os.Process.myPid() + "] " + str + "\n");
             } catch (IOException e) {
             }
         }
@@ -716,14 +715,14 @@ public class Utils {
 
     /**
      * 追加文件：使用FileWriter
+     * 不能{@link #log(Throwable)},防止死递归
      *
      * @param fileName
      * @param content
      */
-    public static void method2(String fileName, String content) {
+    public static void appendToFile(String fileName, String content) {
         FileWriter writer = null;
         try {
-            // 打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
             writer = new FileWriter(fileName, true);
             writer.write(content);
         } catch (IOException e) {
@@ -807,6 +806,7 @@ public class Utils {
         return showToast(ctx, 0, str, 0);
     }
 
+    @Deprecated
     public static void showErrorToastAnywhere(final String text) {
         if (Looper.myLooper() == Looper.getMainLooper()) {
             Utils.showToast(getApplication(), TOAST_TYPE_ERROR, text, Toast.LENGTH_SHORT);
@@ -925,13 +925,13 @@ public class Utils {
     public static boolean isNiceUser() {
         try {
             ConfigManager cfg = ConfigManager.getDefaultConfig();
-            if (cfg.getBooleanOrDefault(cfg_nice_user, false)) {
+            if (cfg.getBooleanOrDefault(ConfigItems.cfg_nice_user, false)) {
                 return true;
             }
             if (doEvalNiceUser()) {
                 try {
                     if (SyncUtils.isMainProcess()) {
-                        cfg.getAllConfig().put(cfg_nice_user, true);
+                        cfg.getAllConfig().put(ConfigItems.cfg_nice_user, true);
                         cfg.save();
                     }
                 } catch (Throwable e1) {
@@ -990,6 +990,7 @@ public class Utils {
         if (nick.contains("\u4e36") || nick.contains("\u309e") || nick.contains("双封") || nick.contains("群发")
                 || nick.contains("代发") || nick.contains("赚") || nick.contains("换群") || nick.contains("加我")
                 || nick.contains("加盟") || nick.contains("中介") || nick.contains("兼职") || nick.contains("客服")
+                || nick.contains("招聘")
                 || nick.matches(".*[\u53f8\u6b7b][\u9a6c\u5417\u5988\u3000].*"))
             return true;
         if (nick.equalsIgnoreCase("A")) return true;
@@ -1007,12 +1008,12 @@ public class Utils {
     }
 
     /**
-     * 仅仅使用群发器而使用本模块的用户往往有两个鲜明的特征
+     * 仅仅为群发器而使用本模块的用户往往有两个鲜明的特征
      * 1.使用某个虚拟框架
      * 2.显而易见的昵称,见{@link #isBadNick(String)}
      * 仍然提供本模块的全部功能
      * 只是隐藏我的联系方式
-     * 这虽然不是完全正确的方法, but just do it.
+     * 未必是完全正确的方法, but just do it.
      **/
     private static boolean isExp() {
         try {
@@ -1086,37 +1087,6 @@ public class Utils {
         return Double.compare(d, 0d);
     }
 
-    public static Method getSuperMethod(Class clazz, String name, Class... params) {
-        return getSuperMethod(clazz, null, name, params);
-    }
-
-    /**
-     * used for invokeSuper
-     */
-    public static Method getSuperMethod(Class clazz, Class returnType, String name, Class... params) {
-        Method ret = null;
-        Method[] ms;
-        clazz = clazz.getSuperclass();
-        do {
-            ms = clazz.getDeclaredMethods();
-            a:
-            for (Method m : ms) {
-                if (!m.getName().equals(name)) continue;
-                if (Modifier.isPrivate(m.getModifiers())) continue;
-                //Private not overridden
-                if (returnType != null && !returnType.equals(m.getReturnType())) continue;
-                Class[] mp = m.getParameterTypes();
-                if (mp.length != params.length) continue;
-                for (int i = 0; i < mp.length; i++) {
-                    if (!mp[i].equals(params[i])) continue a;
-                }
-                ret = m;
-                return ret;
-            }
-        } while ((clazz = clazz.getSuperclass()) != null && !Object.class.equals(clazz));
-        return ret;
-    }
-
     public static boolean isTim(Context ctx) {
         return ctx.getPackageName().equals(PACKAGE_NAME_TIM);
     }
@@ -1130,7 +1100,7 @@ public class Utils {
     }
 
     public static boolean isAlphaVersion() {
-        return QN_VERSION_NAME.contains("-") || QN_VERSION_NAME.contains("rc") || QN_VERSION_NAME.contains("a");
+        return QN_VERSION_NAME.contains("-") || QN_VERSION_NAME.contains("es") || QN_VERSION_NAME.contains("a");
     }
 
     //FIXME: this may not work properly after obfuscation

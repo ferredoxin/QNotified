@@ -38,6 +38,8 @@ public class SyncUtils {
     public static final String HOOK_DO_INIT = "nil.nadph.qnotified.HOOK_DO_INIT";
     public static final String ENUM_PROC_REQ = "nil.nadph.qnotified.ENUM_PROC_REQ";
     public static final String ENUM_PROC_RESP = "nil.nadph.qnotified.ENUM_PROC_RESP";
+    public static final String GENERIC_WRAPPER = "nil.nadph.qnotified.GENERIC_WRAPPER";
+    public static final String _REAL_INTENT = "__real_intent";
 
     private static int myId = 0;
     private static boolean inited = false;
@@ -45,7 +47,8 @@ public class SyncUtils {
     private static String mProcName = null;
     private static Handler sHandler;
     private static final ConcurrentHashMap<Integer, EnumRequestHolder> sEnumProcCallbacks = new ConcurrentHashMap<>();
-    private static final Collection<OnFileChangedListener> sFileChangedListeners = Collections.synchronizedCollection(new ArrayList<OnFileChangedListener>());
+    private static final Collection<OnFileChangedListener> sFileChangedListeners = Collections.synchronizedCollection(new HashSet<OnFileChangedListener>());
+    private static final Collection<BroadcastListener> sBroadcastListeners = Collections.synchronizedCollection(new HashSet<BroadcastListener>());
     public static final int FILE_DEFAULT_CONFIG = 1;
     public static final int FILE_CACHE = 2;
     public static final int FILE_UIN_DATA = 3;
@@ -59,6 +62,14 @@ public class SyncUtils {
         public void onReceive(Context ctx, Intent intent) {
             String action = intent.getAction();
             if (action == null) return;
+            if (action.equals(GENERIC_WRAPPER) && intent.hasExtra(_REAL_INTENT)) {
+                intent.setAction(intent.getStringExtra(_REAL_INTENT));
+            }
+            boolean done = false;
+            for (BroadcastListener bl : sBroadcastListeners) {
+                done = done || bl.onReceive(ctx, intent);
+            }
+            if (done) return;
             switch (action) {
                 case SYNC_FILE_CHANGED:
                     int id = intent.getIntExtra("id", -1);
@@ -126,9 +137,25 @@ public class SyncUtils {
         filter.addAction(HOOK_DO_INIT);
         filter.addAction(ENUM_PROC_REQ);
         filter.addAction(ENUM_PROC_RESP);
+        filter.addAction(GENERIC_WRAPPER);
         ctx.registerReceiver(recv, filter);
         inited = true;
         //log("Proc:  " + android.os.Process.myPid() + "/" + getProcessType() + "/" + getProcessName());
+    }
+
+    @Deprecated
+    public static void sendGenericBroadcast(Intent intent) {
+        sendGenericBroadcast(null, intent);
+    }
+
+    public static void sendGenericBroadcast(Context ctx, Intent intent) {
+        if (ctx == null) ctx = getApplication();
+        intent.putExtra(_REAL_INTENT, intent.getAction());
+        intent.setAction(GENERIC_WRAPPER);
+        intent.setPackage(ctx.getPackageName());
+        initId();
+        intent.putExtra("id", myId);
+        ctx.sendBroadcast(intent);
     }
 
     /**
@@ -297,8 +324,20 @@ public class SyncUtils {
         boolean onFileChanged(int type, long uin, int what);
     }
 
+    public interface BroadcastListener {
+        boolean onReceive(Context context, Intent intent);
+    }
+
     public static void addOnFileChangedListener(OnFileChangedListener l) {
-        sFileChangedListeners.add(l);
+        if (l != null) sFileChangedListeners.add(l);
+    }
+
+    public static boolean removeBroadcastListener(BroadcastListener l) {
+        return sBroadcastListeners.remove(l);
+    }
+
+    public static void addBroadcastListener(BroadcastListener l) {
+        if (l != null) sBroadcastListeners.add(l);
     }
 
     public static boolean removeOnFileChangedListener(OnFileChangedListener l) {
