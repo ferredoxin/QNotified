@@ -39,7 +39,8 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 MuteQZoneThumbsUp.get(),
                 FakeBatteryHook.get(),
                 FileRecvRedirect.get(),
-                ShowPicGagHook.get()
+                ShowPicGagHook.get(),
+                DefaultBubbleHook.get()
         };
         return sAllHooks;
     }

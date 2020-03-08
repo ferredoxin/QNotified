@@ -87,6 +87,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             ll.addView(newListItemHookSwitchInit(this, "隐藏送礼动画", null, HideGiftAnim.get()));
             ll.addView(newListItemHookSwitchInit(this, "禁止自动@", "[>=8.1.3]去除回复消息时自动@特性", ReplyNoAtHook.get()));
             ll.addView(newListItemHookSwitchInit(this, "禁用$打开送礼界面", "禁止聊天时输入$自动弹出[选择赠送对象]窗口", $endGiftHook.get()));
+            ll.addView(newListItemHookSwitchInit(this, "强制使用默认气泡", "无视个性聊天气泡", DefaultBubbleHook.get()));
         }
         ll.addView(newListItemHookSwitchInit(this, "签到文本化", null, SimpleCheckInHook.get()));
         ll.addView(subtitle(SettingsActivity.this, "消息通知设置(不影响接收消息)屏蔽后可能仍有[橙字],但通知栏不会有通知,赞说说不提醒仅屏蔽通知栏的通知"));
@@ -108,7 +109,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         //ll.addView(newListItemSwitchConfigInit(this, "聊天图片背景透明", null, qn_gallery_bg, false, GalleryBgHook.get()));
         ll.addView(subtitle(SettingsActivity.this, "实验性功能(未必有效)"));
         ll.addView(newListItemHookSwitchInit(this, "收藏更多表情", "保存在本地", FavMoreEmo.get()));
-        ll.addView(newListItemHookSwitchInit(this, "防撤回", "来自旧版QX,稳定性不如最新版QX", RevokeMsgHook.get()));
+        ll.addView(newListItemHookSwitchInit(this, "防撤回", "自带撤回提示", RevokeMsgHook.get()));
         ll.addView(newListItemHookSwitchInit(this, "屏蔽更新提醒", null, PreUpgradeHook.get()));
         if (!Utils.isTim(SettingsActivity.this)) {
             ll.addView(newListItemHookSwitchInit(this, "自定义猜拳骰子", null, CheatHook.get()));
