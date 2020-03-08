@@ -3,11 +3,13 @@ package nil.nadph.qnotified.hook;
 import android.os.Looper;
 import android.widget.Toast;
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedHelpers;
+import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Utils;
+
+import java.lang.reflect.Method;
 
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
@@ -28,8 +30,17 @@ public class SimpleCheckInHook extends BaseDelayableHook {
     public boolean init() {
         if (inited) return true;
         try {
-            Class clz = DexKit.doFindClass(DexKit.C_ITEM_BUILDER_FAC);
-            XposedHelpers.findAndHookMethod(clz, "a", load("com.tencent.mobileqq.data.ChatMessage"), new XC_MethodHook(39) {
+            Method getMsgType = null;
+            for (Method m : DexKit.doFindClass(DexKit.C_ITEM_BUILDER_FAC).getMethods()) {
+                if (m.getReturnType().equals(int.class) && m.getName().equals("a")) {
+                    Class[] argt = m.getParameterTypes();
+                    if (argt.length > 0 && argt[argt.length - 1].equals(load("com.tencent.mobileqq.data.ChatMessage"))) {
+                        getMsgType = m;
+                        break;
+                    }
+                }
+            }
+            XposedBridge.hookMethod(getMsgType, new XC_MethodHook(39) {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     try {
@@ -41,7 +52,7 @@ public class SimpleCheckInHook extends BaseDelayableHook {
                     if (result == 71 || result == 84) {
                         param.setResult(-1);
                     } else if (result == 47) {
-                        String json = (String) invoke_virtual(iget_object_or_null(param.args[0], "ark_app_message"), "toAppXml", new Object[0]);
+                        String json = (String) invoke_virtual(iget_object_or_null(param.args[param.args.length - 1], "ark_app_message"), "toAppXml", new Object[0]);
                         if (json.contains("com.tencent.qq.checkin")) {
                             param.setResult(-1);
                         }

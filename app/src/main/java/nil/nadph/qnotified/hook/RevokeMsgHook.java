@@ -51,7 +51,7 @@ public class RevokeMsgHook extends BaseDelayableHook {
                     param.setResult(null);
                     Object obj = list.get(0);
                     try {
-                        setMessageTip(obj);
+                        onRevokeMsg(obj);
                     } catch (Throwable t) {
                         log(t);
                     }
@@ -65,7 +65,7 @@ public class RevokeMsgHook extends BaseDelayableHook {
         }
     }
 
-    private void setMessageTip(Object revokeMsgInfo) {
+    private void onRevokeMsg(Object revokeMsgInfo) {
         String entityUin = (String) iget_object_or_null(revokeMsgInfo, "a", String.class);
         String senderUin = (String) iget_object_or_null(revokeMsgInfo, "b", String.class);
         int istroop = (int) getFirstNSFByType(revokeMsgInfo, int.class);
@@ -200,7 +200,6 @@ public class RevokeMsgHook extends BaseDelayableHook {
     private long getMessageId(Object msgObject) {
         if (msgObject == null)
             return 0;
-
         return (long) iget_object_or_null(msgObject, "msgUid");
     }
 

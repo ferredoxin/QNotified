@@ -177,7 +177,7 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
             }
         }
         final Intent intent = new Intent("android.intent.action.BATTERY_CHANGED");
-        intent.putExtra(BatteryManager.EXTRA_LEVEL, getFakeBatteryCapacity());
+        intent.putExtra(BatteryManager.EXTRA_LEVEL, lastFakeLevel = getFakeBatteryCapacity());
         intent.putExtra(BatteryManager.EXTRA_SCALE, 100);
         intent.putExtra(BatteryManager.EXTRA_PRESENT, true);
         intent.putExtra(BatteryManager.EXTRA_TECHNOLOGY, "Li-ion");
@@ -206,7 +206,7 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
         intent.putExtra(BatteryManager.EXTRA_PRESENT, true);
         intent.putExtra(BatteryManager.EXTRA_TECHNOLOGY, "Li-ion");
         if (isFakeBatteryCharging()) {
-            intent.putExtra(BatteryManager.EXTRA_STATUS, BatteryManager.BATTERY_STATUS_CHARGING);
+            intent.putExtra(BatteryManager.EXTRA_STATUS, lastFakeStatus = BatteryManager.BATTERY_STATUS_CHARGING);
             intent.putExtra(BatteryManager.EXTRA_PLUGGED, BatteryManager.BATTERY_PLUGGED_AC);
         } else {
             intent.putExtra(BatteryManager.EXTRA_STATUS, BatteryManager.BATTERY_STATUS_DISCHARGING);
