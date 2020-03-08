@@ -49,6 +49,8 @@ public class SyncUtils {
     private static final ConcurrentHashMap<Integer, EnumRequestHolder> sEnumProcCallbacks = new ConcurrentHashMap<>();
     private static final Collection<OnFileChangedListener> sFileChangedListeners = Collections.synchronizedCollection(new HashSet<OnFileChangedListener>());
     private static final Collection<BroadcastListener> sBroadcastListeners = Collections.synchronizedCollection(new HashSet<BroadcastListener>());
+    private static final Map<Long, Collection<String>> sTlsFlags = new HashMap<Long, Collection<String>>();
+    private static final Object sTlsLock = new Object();
     public static final int FILE_DEFAULT_CONFIG = 1;
     public static final int FILE_CACHE = 2;
     public static final int FILE_UIN_DATA = 3;
@@ -399,5 +401,42 @@ public class SyncUtils {
         if (myId == 0) {
             myId = (int) ((Math.random()) * (Integer.MAX_VALUE / 4));
         }
+    }
+
+    public static void setTlsFlag(String name) {
+        long tid = Thread.currentThread().getId();
+        Collection<String> tls;
+        synchronized (sTlsLock) {
+            tls = sTlsFlags.get(tid);
+            if (tls == null) {
+                tls = Collections.synchronizedCollection(new HashSet<String>());
+                sTlsFlags.put(tid, tls);
+            }
+        }
+        tls.add(name);
+    }
+
+    public static boolean clearTlsFlag(String name) {
+        long tid = Thread.currentThread().getId();
+        Collection<String> tls;
+        synchronized (sTlsLock) {
+            tls = sTlsFlags.get(tid);
+            if (tls == null) {
+                return false;
+            }
+        }
+        return tls.remove(name);
+    }
+
+    public static boolean hasTlsFlag(String name) {
+        long tid = Thread.currentThread().getId();
+        Collection<String> tls;
+        synchronized (sTlsLock) {
+            tls = sTlsFlags.get(tid);
+            if (tls == null) {
+                return false;
+            }
+        }
+        return tls.contains(name);
     }
 }

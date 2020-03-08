@@ -209,7 +209,7 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
             return;
         }
         if (charging.isChecked()) val |= 128;
-        bat.setFakeBatteryStatus(val);
+        bat.setFakeSendBatteryStatus(val);
         if (!bat.isEnabled()) {
             cfg.putBoolean(FakeBatteryHook.qn_fake_bat_enable, true);
             try {
