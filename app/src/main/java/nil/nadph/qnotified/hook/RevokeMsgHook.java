@@ -1,10 +1,10 @@
 package nil.nadph.qnotified.hook;
 
+import android.os.Bundle;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.widget.Toast;
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
@@ -22,7 +22,7 @@ import static nil.nadph.qnotified.util.Utils.*;
 /**
  * @author fkzhang
  * Created by fkzhang on 1/20/2016.
- * minor changes
+ * Modified by cinit: minor changes at GreyTip on 2020/3/8 Sun.20:33
  */
 public class RevokeMsgHook extends BaseDelayableHook {
     public static final String qn_anti_revoke_msg = "qn_anti_revoke_msg";
@@ -66,118 +66,167 @@ public class RevokeMsgHook extends BaseDelayableHook {
     }
 
     private void onRevokeMsg(Object revokeMsgInfo) {
-        String entityUin = (String) iget_object_or_null(revokeMsgInfo, "a", String.class);
-        String senderUin = (String) iget_object_or_null(revokeMsgInfo, "b", String.class);
+        String entityUin = (String) iget_object_or_null(revokeMsgInfo, "a", String.class);//frienduin
+        String revokerUin = (String) iget_object_or_null(revokeMsgInfo, "b", String.class);//senduin
+        String authorUin = (String) iget_object_or_null(revokeMsgInfo, "d", String.class);
         int istroop = (int) getFirstNSFByType(revokeMsgInfo, int.class);
         long msgUid = (long) iget_object_or_null(revokeMsgInfo, "b", long.class);
         long shmsgseq = (long) iget_object_or_null(revokeMsgInfo, "a", long.class);
         long time = (long) iget_object_or_null(revokeMsgInfo, "c", long.class);
         String selfUin = "" + getLongAccountUin();
-        if (selfUin.equals(senderUin)) {
+        if (selfUin.equals(revokerUin)) {
             return;
         }
-        String uin = istroop == 0 ? senderUin : entityUin;
+        String uin = istroop == 0 ? revokerUin : entityUin;
         Object msgObject = getMessage(uin, istroop, shmsgseq, msgUid);
-        long id = getMessageId(msgObject);
-        String msg = istroop == 0 ? getFriendName(null, senderUin) : getTroopName(entityUin, senderUin);
-        if (id != 0) {
-            if (isCallingFrom(_C2CMessageProcessor().getName()))
-                return;
-            msg = "\"" + msg + "\"" + "尝试撤回一条消息";
-            String message = getMessageContent(msgObject);
-            int msgtype = getMessageType(msgObject);
-            if (msgtype == -1000 /*text msg*/) {
-                if (!TextUtils.isEmpty(message)) {
-                    msg += ": " + message;
+        long id = getMessageUid(msgObject);
+        if (isCallingFrom(_C2CMessageProcessor().getName())) return;
+        boolean isGroupChat = istroop != 0;
+        long newMsgUid;
+        if (msgUid != 0) {
+            newMsgUid = msgUid + new Random().nextInt();
+        } else {
+            newMsgUid = 0;
+        }
+        Object revokeGreyTip;
+        if (isGroupChat) {
+            if (revokerUin.equals(authorUin)) {
+                //自己撤回
+                String revokerNick = getTroopMemberNick(entityUin, revokerUin);
+                String greyMsg = "\"" + revokerNick + "\"";
+                if (msgObject != null) {
+                    greyMsg += "尝试撤回一条消息";
+                    String message = getMessageContent(msgObject);
+                    int msgtype = getMessageType(msgObject);
+                    if (msgtype == -1000 /*text msg*/) {
+                        if (!TextUtils.isEmpty(message)) {
+                            greyMsg += ": " + message;
+                        }
+                    }
+                } else {
+                    greyMsg += "撤回了一条消息(没收到)";
+                }
+                revokeGreyTip = createBareHighlightGreyTip(entityUin, istroop, revokerUin, time + 1, greyMsg, newMsgUid, shmsgseq);
+                addHightlightItem(revokeGreyTip, 1, 1 + revokerNick.length(), createTroopMemberHighlightItem(revokerUin));
+            } else {
+                //被权限狗撤回(含管理,群主)
+                String revokerNick = getTroopMemberNick(entityUin, revokerUin);
+                String authorNick = getTroopMemberNick(entityUin, authorUin);
+                if (msgObject == null) {
+                    String greyMsg = "\"" + revokerNick + "\"撤回了\"" + authorNick + "\"的消息(没收到)";
+                    revokeGreyTip = createBareHighlightGreyTip(entityUin, istroop, revokerUin, time + 1, greyMsg, newMsgUid, shmsgseq);
+                    addHightlightItem(revokeGreyTip, 1, 1 + revokerNick.length(), createTroopMemberHighlightItem(revokerUin));
+                    addHightlightItem(revokeGreyTip, 1 + revokerNick.length() + 5, 1 + revokerNick.length() + 5 + authorNick.length(), createTroopMemberHighlightItem(authorUin));
+                } else {
+                    String greyMsg = "\"" + revokerNick + "\"尝试撤回\"" + authorNick + "\"的消息";
+                    String message = getMessageContent(msgObject);
+                    int msgtype = getMessageType(msgObject);
+                    if (msgtype == -1000 /*text msg*/) {
+                        if (!TextUtils.isEmpty(message)) {
+                            greyMsg += ": " + message;
+                        }
+                    }
+                    revokeGreyTip = createBareHighlightGreyTip(entityUin, istroop, revokerUin, time + 1, greyMsg, newMsgUid, shmsgseq);
+                    addHightlightItem(revokeGreyTip, 1, 1 + revokerNick.length(), createTroopMemberHighlightItem(revokerUin));
+                    addHightlightItem(revokeGreyTip, 1 + revokerNick.length() + 6, 1 + revokerNick.length() + 6 + authorNick.length(), createTroopMemberHighlightItem(authorUin));
                 }
             }
-            showMessageTip(entityUin, senderUin, msgUid, shmsgseq, time, msg, istroop);
         } else {
-            msg = "\"" + msg + "\"" + "撤回了一条消息(没收到)";
-            showMessageTip(entityUin, senderUin, msgUid, shmsgseq, time, msg, istroop);
+            String greyMsg;
+            if (msgObject == null) {
+                greyMsg = "对方撤回了一条消息(没收到)";
+            } else {
+                String message = getMessageContent(msgObject);
+                int msgtype = getMessageType(msgObject);
+                greyMsg = "对方尝试撤回一条消息";
+                if (msgtype == -1000 /*text msg*/) {
+                    if (!TextUtils.isEmpty(message)) {
+                        greyMsg += ": " + message;
+                    }
+                }
+            }
+            revokeGreyTip = createBarePlainGreyTip(revokerUin, istroop, revokerUin, time + 1, greyMsg, newMsgUid, shmsgseq);
         }
+        List<Object> list = new ArrayList<>();
+        list.add(revokeGreyTip);
+        callMethod(mQQMsgFacade, "a", list, Utils.getAccount());
     }
 
-    private void showMessageTip(String friendUin, String senderUin, long msgUid, long shmsgseq,
-                                long time, String msg, int istroop) {
-        if (msgUid != 0) {
-            msgUid += new Random().nextInt();
-        }
-        try {
-            List tips = createMessageTip(friendUin, senderUin, msgUid, shmsgseq, time + 1, msg, istroop);
-            if (tips.isEmpty()) return;
-            callMethod(mQQMsgFacade, "a", tips, Utils.getAccount());
-        } catch (Throwable t) {
-            XposedBridge.log(t);
-        }
+    private Bundle createTroopMemberHighlightItem(String memberUin) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("key_action", 5);
+        bundle.putString("troop_mem_uin", memberUin);
+        bundle.putBoolean("need_update_nick", true);
+        return bundle;
     }
 
-    private List createMessageTip(String friendUin, String senderUin, long msgUid,
-                                  long shmsgseq, long time, String msg, int istroop) {
-        int msgtype = -2031; // MessageRecord.MSG_TYPE_REVOKE_GRAY_TIPS
+    private Object createBareHighlightGreyTip(String entityUin, int istroop, String fromUin, long time, String msg, long msgUid, long shmsgseq) {
+        int msgtype = -2031 + 1;// MessageRecord.MSG_TYPE_REVOKE_GRAY_TIPS
         Object messageRecord = callStaticMethod(DexKit.doFindClass(DexKit.C_MSG_REC_FAC), "a", msgtype);
-        if (istroop == 0) { // private chat revoke
-            callMethod(messageRecord, "init", Utils.getAccount(), senderUin, senderUin, msg, time, msgtype,
-                    istroop, time);
-        } else { // group chat revoke
-            callMethod(messageRecord, "init", Utils.getAccount(), friendUin, senderUin, msg, time, msgtype,
-                    istroop, time);
-        }
+        callMethod(messageRecord, "init", Utils.getAccount(), entityUin, fromUin, msg, time, msgtype, istroop, time);
         setObjectField(messageRecord, "msgUid", msgUid);
         setObjectField(messageRecord, "shmsgseq", shmsgseq);
         setObjectField(messageRecord, "isread", true);
-        List<Object> list = new ArrayList<>();
-        list.add(messageRecord);
-        return list;
+        return messageRecord;
     }
 
-    private String getFriendName(String friendUin, String senderUin) {
-        //TODO: 群里群名片>备注>昵称>uin,单人对方
-        String nickname = null;
-        try {
-            if (friendUin != null) {
-                nickname = (String) callStaticMethod(DexKit.doFindClass(DexKit.C_CONTACT_UTILS), "c", getQQAppInterface(), friendUin, senderUin);
-            }
-            if (TextUtils.isEmpty(nickname)) {
-                nickname = (String) callStaticMethod(DexKit.doFindClass(DexKit.C_CONTACT_UTILS), "b", getQQAppInterface(), senderUin, true);
-            }
-            if (TextUtils.isEmpty(nickname)) {
-                nickname = senderUin;
-            }
-        } catch (Exception e) {
-            nickname = senderUin;
-            log(e);
-        }
-        return nickname.replaceAll("\\u202E", "").trim();
+    private Object createBarePlainGreyTip(String entityUin, int istroop, String fromUin, long time, String msg, long msgUid, long shmsgseq) {
+        int msgtype = -2031;// MessageRecord.MSG_TYPE_REVOKE_GRAY_TIPS
+        Object messageRecord = callStaticMethod(DexKit.doFindClass(DexKit.C_MSG_REC_FAC), "a", msgtype);
+        callMethod(messageRecord, "init", Utils.getAccount(), entityUin, fromUin, msg, time, msgtype, istroop, time);
+        setObjectField(messageRecord, "msgUid", msgUid);
+        setObjectField(messageRecord, "shmsgseq", shmsgseq);
+        setObjectField(messageRecord, "isread", true);
+        return messageRecord;
     }
 
-    private String getTroopName(String friendUin, String senderUin) {
-        Object mTroopManager = null;
+    private void addHightlightItem(Object msgForGreyTip, int start, int end, Bundle bundle) {
         try {
-            mTroopManager = getTroopManager();
+            invoke_virtual(msgForGreyTip, "addHightlightItem", start, end, bundle, int.class, int.class, Bundle.class);
         } catch (Exception e) {
             log(e);
         }
-        if (mTroopManager == null || friendUin == null)
-            return getFriendName(friendUin, senderUin);
-        Object troopMemberInfo = null;
+    }
+
+    public String getTroopMemberNick(String troopUin, String memberUin) {
+        if (troopUin != null && troopUin.length() > 0) {
+            try {
+                Object mTroopManager = getTroopManager();
+                Object troopMemberInfo = invoke_virtual(mTroopManager, "a", troopUin, memberUin,
+                        String.class, String.class, load("com.tencent.mobileqq.data.TroopMemberInfo"));
+                if (troopMemberInfo != null) {
+                    String troopnick = (String) XposedHelpers.getObjectField(troopMemberInfo, "troopnick");
+                    if (troopnick != null) {
+                        String ret = troopnick.replaceAll("\\u202E", "");
+                        if (ret.trim().length() > 0) {
+                            return ret;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                log(e);
+            }
+            try {
+                String ret;
+                String nickname = (String) callStaticMethod(DexKit.doFindClass(DexKit.C_CONTACT_UTILS), "c", getQQAppInterface(), troopUin, memberUin);
+                if (nickname != null && (ret = nickname.replaceAll("\\u202E", "")).trim().length() > 0) {
+                    return ret;
+                }
+            } catch (Exception e) {
+                log(e);
+            }
+        }
         try {
-            troopMemberInfo = invoke_virtual(mTroopManager, "a", friendUin, senderUin,
-                    String.class, String.class, load("com.tencent.mobileqq.data.TroopMemberInfo"));
+            String ret;
+            String nickname = (String) callStaticMethod(DexKit.doFindClass(DexKit.C_CONTACT_UTILS), "b", getQQAppInterface(), memberUin, true);
+            if (nickname != null && (ret = nickname.replaceAll("\\u202E", "")).trim().length() > 0) {
+                return ret;
+            }
         } catch (Exception e) {
             log(e);
         }
-        if (troopMemberInfo == null) {
-            return getFriendName(friendUin, senderUin);
-        }
-        String nickname = (String) XposedHelpers.getObjectField(troopMemberInfo, "troopnick");
-        if (TextUtils.isEmpty(nickname)) {
-            nickname = (String) XposedHelpers.getObjectField(troopMemberInfo, "friendnick");
-        }
-        if (TextUtils.isEmpty(nickname)) {
-            nickname = getFriendName(friendUin, senderUin);
-        }
-        return nickname.replaceAll("\\u202E", "").trim();
+        //**sigh**
+        return memberUin;
     }
 
     private Object getMessage(String uin, int istroop, long shmsgseq, long msgUid) {
@@ -197,7 +246,7 @@ public class RevokeMsgHook extends BaseDelayableHook {
         return (String) iget_object_or_null(msgObject, "msg");
     }
 
-    private long getMessageId(Object msgObject) {
+    private long getMessageUid(Object msgObject) {
         if (msgObject == null)
             return 0;
         return (long) iget_object_or_null(msgObject, "msgUid");
