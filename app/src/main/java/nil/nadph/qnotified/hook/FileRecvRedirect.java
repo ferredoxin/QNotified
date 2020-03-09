@@ -69,7 +69,11 @@ public class FileRecvRedirect extends BaseDelayableHook {
         if (isTim(getApplication())) {
             return Environment.getExternalStorageDirectory().getAbsolutePath() + "/Tencent/TIMfile_recv/";
         } else {
-            return Environment.getExternalStorageDirectory().getAbsolutePath() + "/Tencent/QQfile_recv/";
+            if (getHostVersionCode() > 1334) {
+                return getApplication().getExternalFilesDir(null) + "/Tencent/QQfile_recv/";
+            } else {
+                return Environment.getExternalStorageDirectory().getAbsolutePath() + "/Tencent/QQfile_recv/";
+            }
         }
     }
 

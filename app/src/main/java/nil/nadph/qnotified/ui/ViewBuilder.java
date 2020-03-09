@@ -3,6 +3,7 @@ package nil.nadph.qnotified.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,6 +70,8 @@ public class ViewBuilder {
             des.setId(R_ID_DESCRIPTION);
             des.setTextColor(ResUtils.skin_gray3);
             des.setTextSize(dip2sp(ctx, 13));
+            des.setSingleLine();
+            des.setEllipsize(TextUtils.TruncateAt.END);
             RelativeLayout.LayoutParams lp_d = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
             //m=(int)dip2px(ctx,6);
             lp_d.setMargins(m, 0, 0, 0);
@@ -266,6 +269,16 @@ public class ViewBuilder {
         return root;
     }
 
+    public static RelativeLayout newListItemSwitchStub(Context ctx, CharSequence title, CharSequence desc, final boolean constVal) {
+        RelativeLayout root = newListItemSwitch(ctx, title, desc, constVal, new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                buttonView.setChecked(constVal);
+                Utils.showToastShort(buttonView.getContext(), "对不起,此功能尚在开发中");
+            }
+        });
+        return root;
+    }
 
     public static RelativeLayout newListItemDummy(Context ctx, CharSequence title, CharSequence desc, CharSequence
             value) {
@@ -306,6 +319,8 @@ public class ViewBuilder {
             des.setId(R_ID_DESCRIPTION);
             des.setTextColor(ResUtils.skin_gray3);
             des.setTextSize(dip2sp(ctx, 13));
+            des.setSingleLine();
+            des.setEllipsize(TextUtils.TruncateAt.END);
             RelativeLayout.LayoutParams lp_d = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
             //m=(int)dip2px(ctx,6);
             lp_d.setMargins(m, 0, 0, 0);
@@ -356,6 +371,8 @@ public class ViewBuilder {
             des.setId(R_ID_DESCRIPTION);
             des.setTextColor(ResUtils.skin_gray3);
             des.setTextSize(dip2sp(ctx, 13));
+            des.setSingleLine();
+            des.setEllipsize(TextUtils.TruncateAt.END);
             RelativeLayout.LayoutParams lp_d = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
             //m=(int)dip2px(ctx,6);
             lp_d.setMargins(m, 0, 0, 0);

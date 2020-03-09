@@ -93,7 +93,7 @@ public class RevokeMsgHook extends BaseDelayableHook {
             if (revokerUin.equals(authorUin)) {
                 //自己撤回
                 String revokerNick = getTroopMemberNick(entityUin, revokerUin);
-                String greyMsg = "\"" + revokerNick + "\"";
+                String greyMsg = "\"" + revokerNick + "\u202d\"";
                 if (msgObject != null) {
                     greyMsg += "尝试撤回一条消息";
                     String message = getMessageContent(msgObject);
@@ -113,12 +113,12 @@ public class RevokeMsgHook extends BaseDelayableHook {
                 String revokerNick = getTroopMemberNick(entityUin, revokerUin);
                 String authorNick = getTroopMemberNick(entityUin, authorUin);
                 if (msgObject == null) {
-                    String greyMsg = "\"" + revokerNick + "\"撤回了\"" + authorNick + "\"的消息(没收到)";
+                    String greyMsg = "\"" + revokerNick + "\u202d\"撤回了\"" + authorNick + "\u202d\"的消息(没收到)";
                     revokeGreyTip = createBareHighlightGreyTip(entityUin, istroop, revokerUin, time + 1, greyMsg, newMsgUid, shmsgseq);
                     addHightlightItem(revokeGreyTip, 1, 1 + revokerNick.length(), createTroopMemberHighlightItem(revokerUin));
-                    addHightlightItem(revokeGreyTip, 1 + revokerNick.length() + 5, 1 + revokerNick.length() + 5 + authorNick.length(), createTroopMemberHighlightItem(authorUin));
+                    addHightlightItem(revokeGreyTip, 1 + revokerNick.length() + 1 + 5, 1 + revokerNick.length() + 1 + 5 + authorNick.length(), createTroopMemberHighlightItem(authorUin));
                 } else {
-                    String greyMsg = "\"" + revokerNick + "\"尝试撤回\"" + authorNick + "\"的消息";
+                    String greyMsg = "\"" + revokerNick + "\u202d\"尝试撤回\"" + authorNick + "\u202d\"的消息";
                     String message = getMessageContent(msgObject);
                     int msgtype = getMessageType(msgObject);
                     if (msgtype == -1000 /*text msg*/) {
@@ -128,7 +128,7 @@ public class RevokeMsgHook extends BaseDelayableHook {
                     }
                     revokeGreyTip = createBareHighlightGreyTip(entityUin, istroop, revokerUin, time + 1, greyMsg, newMsgUid, shmsgseq);
                     addHightlightItem(revokeGreyTip, 1, 1 + revokerNick.length(), createTroopMemberHighlightItem(revokerUin));
-                    addHightlightItem(revokeGreyTip, 1 + revokerNick.length() + 6, 1 + revokerNick.length() + 6 + authorNick.length(), createTroopMemberHighlightItem(authorUin));
+                    addHightlightItem(revokeGreyTip, 1 + revokerNick.length() + 1 + 6, 1 + revokerNick.length() + 1 + 6 + authorNick.length(), createTroopMemberHighlightItem(authorUin));
                 }
             }
         } else {
@@ -161,7 +161,7 @@ public class RevokeMsgHook extends BaseDelayableHook {
     }
 
     private Object createBareHighlightGreyTip(String entityUin, int istroop, String fromUin, long time, String msg, long msgUid, long shmsgseq) {
-        int msgtype = -2031 + 1;// MessageRecord.MSG_TYPE_REVOKE_GRAY_TIPS
+        int msgtype = -2030;// MessageRecord.MSG_TYPE_TROOP_GAP_GRAY_TIPS
         Object messageRecord = callStaticMethod(DexKit.doFindClass(DexKit.C_MSG_REC_FAC), "a", msgtype);
         callMethod(messageRecord, "init", Utils.getAccount(), entityUin, fromUin, msg, time, msgtype, istroop, time);
         setObjectField(messageRecord, "msgUid", msgUid);
