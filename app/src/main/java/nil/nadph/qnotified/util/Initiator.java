@@ -198,7 +198,11 @@ public class Initiator {
     }
 
     public static Class _QQMessageFacade() {
-        return load("com/tencent/mobileqq/app/message/QQMessageFacade");
+        Class<?> cFacade = load("com/tencent/mobileqq/app/message/QQMessageFacade");
+        if (cFacade != null) {
+            return cFacade;
+        }
+        return load("com/tencent/imcore/message/QQMessageFacade");
     }
 
     public static Class _SessionInfo() {
@@ -243,29 +247,22 @@ public class Initiator {
 
     @Nullable
     public static Class _C2CMessageProcessor() {
-        Class clz = load("com/tencent/mobileqq/app/message/C2CMessageProcessor");
-        if (clz == null) {
-            Class cref = load("com/tencent/mobileqq/app/message/C2CMessageProcessor$1");
-            try {
-                clz = cref.getDeclaredField("this$0").getType();
-            } catch (Exception ignored) {
+        Class<?> ret, cref;
+        for (String clzName : new String[]{"com/tencent/mobileqq/app/message/C2CMessageProcessor",
+                "com/tencent/imcore/message/C2CMessageProcessor"}) {
+            ret = load(clzName);
+            if (ret != null) return ret;
+            for (int i : new int[]{1, 5, 7}) {
+                cref = load(clzName + "$" + i);
+                if (cref != null) {
+                    try {
+                        return cref.getDeclaredField("this$0").getType();
+                    } catch (Exception ignored) {
+                    }
+                }
             }
         }
-        if (clz == null) {
-            Class cref = load("com/tencent/mobileqq/app/message/C2CMessageProcessor$5");
-            try {
-                clz = cref.getDeclaredField("this$0").getType();
-            } catch (Exception ignored) {
-            }
-        }
-        if (clz == null) {
-            Class cref = load("com/tencent/mobileqq/app/message/C2CMessageProcessor$7");
-            try {
-                clz = cref.getDeclaredField("this$0").getType();
-            } catch (Exception ignored) {
-            }
-        }
-        return clz;
+        log("Initiator/E class C2CMessageProcessor not found");
+        return null;
     }
-
 }

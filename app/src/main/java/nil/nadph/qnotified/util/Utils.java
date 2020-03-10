@@ -80,8 +80,9 @@ public class Utils {
             else return (Application) f.get(null);
         } catch (Exception e) {
             log(e);
+            //noinspection UnnecessaryInitCause
+            throw (AssertionError) new AssertionError("FATAL: Utils.getApplication() failure!").initCause(e);
         }
-        throw new AssertionError("FATAL: Utils.Application() failure!");
     }
 
     public static boolean isCallingFrom(String classname) {

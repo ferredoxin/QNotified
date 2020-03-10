@@ -212,7 +212,7 @@ public class RevokeMsgHook extends BaseDelayableHook {
                 if (nickname != null && (ret = nickname.replaceAll("\\u202E", "")).trim().length() > 0) {
                     return ret;
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 log(e);
             }
         }
@@ -222,7 +222,7 @@ public class RevokeMsgHook extends BaseDelayableHook {
             if (nickname != null && (ret = nickname.replaceAll("\\u202E", "")).trim().length() > 0) {
                 return ret;
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             log(e);
         }
         //**sigh**
