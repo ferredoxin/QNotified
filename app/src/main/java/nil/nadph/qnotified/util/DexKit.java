@@ -78,28 +78,26 @@ public class DexKit {
         } catch (Throwable ignored) {
         }
         try {
-            HashSet<String> names;
+            HashSet<DexMethodDescriptor> methods;
             ConfigManager cache = ConfigManager.getCache();
             DexDeobfReport report = new DexDeobfReport();
             report.target = i;
             report.version = ver;
-            names = e(i, report);
-            if (names == null || names.size() == 0) {
-                report.v("No class candidate found.");
+            methods = e(i, report);
+            if (methods == null || methods.size() == 0) {
+                report.v("No method candidate found.");
                 log("Unable to deobf: " + c(i));
                 return null;
             }
-            report.v(names.size() + " class(es) found:" + names);
-            for (String name : names) {
-                report.v(name);
+            report.v(methods.size() + " methods(es) found: " + methods);
+            HashSet<Class> cas = new HashSet<>();
+            for (DexMethodDescriptor m : methods) {
+                cas.add(load(m.getDeclaringClassName()));
             }
-            if (names.size() == 1) {
-                ret = load(names.iterator().next());
+            report.v("belonging to " + cas.size() + " class(es): " + cas);
+            if (cas.size() == 1) {
+                ret = cas.iterator().next();
             } else {
-                HashSet<Class> cas = new HashSet<>();
-                for (String name : names) {
-                    cas.add(load(name));
-                }
                 ret = a(i, cas, report);
             }
             report.v("Final decision:" + (ret == null ? null : ret.getName()));
@@ -451,7 +449,8 @@ public class DexKit {
         return null;
     }
 
-    private static HashSet<String> e(int i, DexDeobfReport rep) {
+    @Nullable
+    private static HashSet<DexMethodDescriptor> e(int i, DexDeobfReport rep) {
         ClassLoader loader = Initiator.getHostClassLoader();
         int record = 0;
         int[] qf = d(i);
@@ -460,7 +459,7 @@ public class DexKit {
             record |= 1 << dexi;
             try {
                 for (byte[] k : keys) {
-                    HashSet<String> ret = a(k, dexi, loader);
+                    HashSet<DexMethodDescriptor> ret = findMethodsByConstString(k, dexi, loader);
                     if (ret != null && ret.size() > 0) return ret;
                 }
             } catch (FileNotFoundException ignored) {
@@ -474,7 +473,7 @@ public class DexKit {
             }
             try {
                 for (byte[] k : keys) {
-                    HashSet<String> ret = a(k, dexi, loader);
+                    HashSet<DexMethodDescriptor> ret = findMethodsByConstString(k, dexi, loader);
                     if (ret != null && ret.size() > 0) return ret;
                 }
             } catch (FileNotFoundException ignored) {
@@ -493,7 +492,7 @@ public class DexKit {
      * @return ["abc","ab"]
      * @throws FileNotFoundException apk has no classesN.dex
      */
-    public static HashSet<String> a(byte[] key, int i, ClassLoader loader) throws FileNotFoundException {
+    public static HashSet<DexMethodDescriptor> findMethodsByConstString(byte[] key, int i, ClassLoader loader) throws FileNotFoundException {
         String name;
         byte[] buf = new byte[4096];
         byte[] content;
@@ -509,7 +508,7 @@ public class DexKit {
         if (urls == null || !urls.hasMoreElements()) throw new FileNotFoundException(name);
         InputStream in;
         try {
-            HashSet<String> rets = new HashSet<>();
+            HashSet<DexMethodDescriptor> rets = new HashSet<>();
             while (urls.hasMoreElements()) {
                 in = urls.nextElement().openStream();
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -525,8 +524,8 @@ public class DexKit {
                 ArrayList<Integer> opcodeOffsets = a(content, key);
                 for (int j = 0; j < opcodeOffsets.size(); j++) {
                     try {
-                        String desc = a(content, opcodeOffsets.get(j));
-                        rets.add(desc.substring(1, desc.length() - 1));
+                        DexMethodDescriptor desc = getDexMethodByOpOffset(content, opcodeOffsets.get(j), true);
+                        if (desc != null) rets.add(desc);
                     } catch (InternalError ignored) {
                     }
                 }
@@ -545,11 +544,11 @@ public class DexKit {
         ret[0] = arrayIndexOf(buf, target, 0, buf.length, f);
         ret[0] = arrayIndexOf(buf, int2u4le(ret[0]), 0, buf.length, f);
         //System.out.println(ret[0]);
-        int off = (ret[0] - readLe32(buf, 0x3c)) / 4;
-        if (off > 0xFFFF) {
-            target = int2u4le(off);
-        } else target = int2u2le(off);
-        off = 0;
+        int strIdx = (ret[0] - readLe32(buf, 0x3c)) / 4;
+        if (strIdx > 0xFFFF) {
+            target = int2u4le(strIdx);
+        } else target = int2u2le(strIdx);
+        int off = 0;
         while (true) {
             off = arrayIndexOf(buf, target, off + 1, buf.length, f);
             if (off == -1) break;
@@ -557,13 +556,69 @@ public class DexKit {
                     || buf[off - 2] == (byte) 27)/* Opcodes.OP_CONST_STRING_JUMBO*/ {
                 ret[0] = off - 2;
                 int opcodeOffset = ret[0];
+                if (buf[off - 2] == (byte) 27 && strIdx < 0x10000) {
+                    if (readLe32(buf, opcodeOffset + 2) != strIdx) continue;
+                }
                 rets.add(opcodeOffset);
             }
         }
         return rets;
     }
 
-    public static String a(byte[] buf, int opcodeoff) {
+    public static class DexMethodDescriptor {
+        /**
+         * Ljava/lang/Object;
+         */
+        public String declaringClass;
+        /**
+         * toString
+         */
+        public String methodName;
+        /**
+         * ()Ljava/lang/String;
+         */
+        public String signature;
+
+        public DexMethodDescriptor(String clz, String n, String s) {
+            if (clz == null || n == null || s == null) throw new NullPointerException();
+            declaringClass = clz;
+            methodName = n;
+            signature = s;
+        }
+
+        public String getDeclaringClassName() {
+            return declaringClass.substring(1, declaringClass.length() - 1).replace('/', '.');
+        }
+
+        @Override
+        public String toString() {
+            return declaringClass + "->" + methodName + signature;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            return toString().equals(o.toString());
+        }
+
+        @Override
+        public int hashCode() {
+            return toString().hashCode();
+        }
+    }
+
+    /**
+     * @param buf       the byte array containing the whole dex file
+     * @param opcodeOff offset relative to {@code buf}
+     * @param verify    whether to verify if the {@code opcodeOff} is aligned to opcode,
+     *                  return {@code null} if the offset failed the verification
+     * @return
+     */
+    @Nullable
+    public static DexMethodDescriptor getDexMethodByOpOffset(byte[] buf, int opcodeOff, boolean verify) {
+        int methodIdsSize = readLe32(buf, 0x58);
+        int methodIdsOff = readLe32(buf, 0x5c);
         int classDefsSize = readLe32(buf, 0x60);
         int classDefsOff = readLe32(buf, 0x64);
         int[] p = new int[1];
@@ -574,36 +629,53 @@ public class DexKit {
             int classDataOff = readLe32(buf, classDefsOff + cn * 32 + 24);
             p[0] = classDataOff;
             if (classDataOff == 0) continue;
+            int fieldIdx = 0;
             int staticFieldsSize = readUleb128(buf, p),
                     instanceFieldsSize = readUleb128(buf, p),
                     directMethodsSize = readUleb128(buf, p),
                     virtualMethodsSize = readUleb128(buf, p);
             for (int fn = 0; fn < staticFieldsSize + instanceFieldsSize; fn++) {
-                int fieldIdx = readUleb128(buf, p);
+                fieldIdx += readUleb128(buf, p);
                 int accessFlags = readUleb128(buf, p);
             }
+            int methodIdx = 0;
             for (int mn = 0; mn < directMethodsSize; mn++) {
-                int methodIdx = readUleb128(buf, p);
+                methodIdx += readUleb128(buf, p);
                 int accessFlags = readUleb128(buf, p);
                 int codeOff = co[0] = readUleb128(buf, p);
                 if (codeOff == 0) continue;
                 int insnsSize = readLe32(buf, codeOff + 12);
-                if (codeOff + 16 <= opcodeoff && opcodeoff <= codeOff + 16 + insnsSize * 2) {
-                    return readType(buf, classIdx);
+                if (codeOff + 16 <= opcodeOff && opcodeOff <= codeOff + 16 + insnsSize * 2) {
+                    if (verify && !verifyOpcodeOffset(buf, codeOff + 16, insnsSize * 2, opcodeOff)) {
+                        return null;
+                    }
+                    String clz = readType(buf, classIdx);
+                    int pMethodId = methodIdsOff + 8 * methodIdx;
+                    String name = readString(buf, readLe32(buf, pMethodId + 4));
+                    String sig = readProto(buf, readLe16(buf, pMethodId + 2));
+                    return new DexMethodDescriptor(clz, name, sig);
                 }
             }
+            methodIdx = 0;
             for (int mn = 0; mn < virtualMethodsSize; mn++) {
-                int methodIdx = readUleb128(buf, p);
+                methodIdx += readUleb128(buf, p);
                 int accessFlags = readUleb128(buf, p);
                 int codeOff = co[0] = readUleb128(buf, p);
                 if (codeOff == 0) continue;
                 int insnsSize = readLe32(buf, codeOff + 12);
-                if (codeOff + 16 <= opcodeoff && opcodeoff <= codeOff + 16 + insnsSize * 2) {
-                    return readType(buf, classIdx);
+                if (codeOff + 16 <= opcodeOff && opcodeOff <= codeOff + 16 + insnsSize * 2) {
+                    if (verify && !verifyOpcodeOffset(buf, codeOff + 16, insnsSize * 2, opcodeOff)) {
+                        return null;
+                    }
+                    String clz = readType(buf, classIdx);
+                    int pMethodId = methodIdsOff + 8 * methodIdx;
+                    String name = readString(buf, readLe32(buf, pMethodId + 4));
+                    String sig = readProto(buf, readLe16(buf, pMethodId + 2));
+                    return new DexMethodDescriptor(clz, name, sig);
                 }
             }
         }
-        throw new InternalError();
+        return null;
     }
 
     public static int readUleb128(byte[] src, int[] offset) {
@@ -631,6 +703,24 @@ public class DexKit {
         int typeIdsOff = readLe32(buf, 0x44);
         int strIdx = readLe32(buf, typeIdsOff + 4 * idx);
         return readString(buf, strIdx);
+    }
+
+    public static String readProto(byte[] buf, int idx) {
+        int protoIdsOff = readLe32(buf, 0x4c);
+        //int shortyStrIdx = readLe32(buf, protoIdsOff + 12 * idx);
+        int returnTypeIdx = readLe32(buf, protoIdsOff + 12 * idx + 4);
+        int parametersOff = readLe32(buf, protoIdsOff + 12 * idx + 8);
+        StringBuilder sb = new StringBuilder("(");
+        if (parametersOff != 0) {
+            int size = readLe32(buf, parametersOff);
+            for (int i = 0; i < size; i++) {
+                int typeIdx = readLe16(buf, parametersOff + 4 + 2 * i);
+                sb.append(readType(buf, typeIdx));
+            }
+        }
+        sb.append(")");
+        sb.append(readType(buf, returnTypeIdx));
+        return sb.toString();
     }
 
     public static int arrayIndexOf(byte[] arr, byte[] subarr, int startindex, int endindex, float[] progress) {
@@ -670,6 +760,11 @@ public class DexKit {
         return i;
     }
 
+    public static int readLe16(byte[] buf, int off) {
+        int i = (buf[off] & 0xFF) | ((buf[off + 1] << 8) & 0xff00);
+        return i;
+    }
+
     public static class DexDeobfReport {
         int target;
         int version;
@@ -696,5 +791,35 @@ public class DexKit {
         }
     }
 
+    public static boolean verifyOpcodeOffset(byte[] buf, int insStart, int bLen, int opcodeOffset) {
+        for (int i = 0; i < bLen; ) {
+            if (insStart + i == opcodeOffset) return true;
+            int opv = buf[insStart + i] & 0xff;
+            int len = OPCODE_LENGTH_TABLE[opv];
+            if (len == 0) {
+                log(String.format("Unrecognized opcode = 0x%02x", opv));
+                return false;
+            }
+            i += 2 * len;
+        }
+        return false;
+    }
 
+    private static final byte[] OPCODE_LENGTH_TABLE = new byte[]{
+            1, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 2, 3, 2, 2, 3, 5, 2, 2, 3, 2, 1, 1, 2,
+            2, 1, 2, 2, 3, 3, 3, 1, 1, 2, 3, 3, 3, 2, 2, 2,
+            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0,
+            0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3,
+            3, 3, 3, 1, 3, 3, 3, 3, 3, 0, 0, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3,
+            3, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 2, 2, 2, 2};
 }
