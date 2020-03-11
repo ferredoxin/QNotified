@@ -187,7 +187,7 @@ public class SyncUtils {
         initId();
         changed.putExtra("process", process);
         changed.putExtra("hook", hookId);
-        log("Tx: " + hookId);
+        //log("Tx: " + hookId);
         ctx.sendBroadcast(changed);
     }
 

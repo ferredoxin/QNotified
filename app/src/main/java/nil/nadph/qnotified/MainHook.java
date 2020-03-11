@@ -220,6 +220,7 @@ public class MainHook {
 //            Debug.waitForDebugger();
 //        }
         if (SyncUtils.isMainProcess()) {
+            ConfigItems.removePreviousCacheIfNecessary();
             injectStartupHookForMain(ctx);
             Class loadData = load("com/tencent/mobileqq/startup/step/LoadData");
             Method doStep = null;

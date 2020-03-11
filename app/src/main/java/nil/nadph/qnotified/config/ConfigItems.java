@@ -1,7 +1,12 @@
 package nil.nadph.qnotified.config;
 
 import nil.nadph.qnotified.ExfriendManager;
+import nil.nadph.qnotified.util.MainProcess;
+import nil.nadph.qnotified.util.Utils;
 
+import java.io.IOException;
+
+import static nil.nadph.qnotified.util.Utils.QN_VERSION_CODE;
 import static nil.nadph.qnotified.util.Utils.log;
 
 public class ConfigItems {
@@ -15,6 +20,7 @@ public class ConfigItems {
     public static final String qn_file_recv_redirect_path = "qn_file_recv_redirect_path";
     public static final String qn_fake_bat_expr = "qn_fake_bat_expr";
     public static final String cfg_nice_user = "cfg_nice_user";
+    public static final String cache_qn_prev_version = "cache_qn_prev_version";
 
     public static final SwitchConfigItem qn_notify_when_del = new SwitchConfigItem() {
         @Override
@@ -49,4 +55,24 @@ public class ConfigItems {
             }
         }
     };
+
+    @MainProcess
+    public static void removePreviousCacheIfNecessary() {
+        if (!Utils.__REMOVE_PREVIOUS_CACHE) return;
+        ConfigManager cache = ConfigManager.getCache();
+        if (cache.getIntOrDefault(cache_qn_prev_version, -1) < Utils.QN_VERSION_CODE) {
+            try {
+                cache.getFile().delete();
+                cache.reinit();
+            } catch (IOException e) {
+                log(e);
+            }
+            cache.putInt(cache_qn_prev_version, QN_VERSION_CODE);
+            try {
+                cache.save();
+            } catch (IOException e) {
+                log(e);
+            }
+        }
+    }
 }

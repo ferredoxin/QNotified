@@ -152,7 +152,7 @@ public class ViewBuilder {
                 item.setEnabled(isChecked);
             }
         });
-        root.findViewById(R_ID_SWITCH).setEnabled(!item.isValid());
+        root.findViewById(R_ID_SWITCH).setEnabled(item.isValid());
         return root;
     }
 

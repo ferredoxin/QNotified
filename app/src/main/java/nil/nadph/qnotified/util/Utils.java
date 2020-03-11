@@ -37,8 +37,9 @@ import static nil.nadph.qnotified.util.Initiator.load;
 @SuppressLint("SimpleDateFormat")
 public class Utils {
 
-    public static final String QN_VERSION_NAME = "0.7.0-es5";
-    public static final int QN_VERSION_CODE = 27;
+    public static final String QN_VERSION_NAME = "0.7.1-beta";
+    public static final int QN_VERSION_CODE = 29;
+    public static final boolean __REMOVE_PREVIOUS_CACHE = true;
     public static final String PACKAGE_NAME_QQ = "com.tencent.mobileqq";
     public static final String PACKAGE_NAME_QQ_INTERNATIONAL = "com.tencent.mobileqqi";
     public static final String PACKAGE_NAME_QQ_LITE = "com.tencent.qqlite";
