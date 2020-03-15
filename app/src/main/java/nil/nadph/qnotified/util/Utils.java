@@ -96,6 +96,18 @@ public class Utils {
         return false;
     }
 
+    public static boolean isCallingFromEither(String... classname) {
+        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+        for (StackTraceElement element : stackTraceElements) {
+            for (String name : classname) {
+                if (element.toString().contains(name)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public static Object getTroopManager() throws Exception {
         Object mTroopManager = invoke_virtual(getQQAppInterface(), "getManager", 51, int.class);
         if (!mTroopManager.getClass().getName().contains("TroopManager"))

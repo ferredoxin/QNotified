@@ -47,8 +47,8 @@ public class RevokeMsgHook extends BaseDelayableHook {
                     mQQMsgFacade = param.thisObject;
                     if (!isEnabled()) return;
                     ArrayList list = (ArrayList) param.args[0];
-                    if (list == null || list.isEmpty()) return;
                     param.setResult(null);
+                    if (list == null || list.isEmpty()) return;
                     Object obj = list.get(0);
                     try {
                         onRevokeMsg(obj);

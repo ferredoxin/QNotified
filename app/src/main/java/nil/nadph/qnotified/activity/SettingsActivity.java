@@ -85,7 +85,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         if (!Utils.isTim(this)) {
             ll.addView(newListItemSwitchConfigNext(this, "隐藏小程序入口", "隐藏消息列表下拉出现的小程序列表", ConfigItems.qn_hide_msg_list_miniapp, false));
             ll.addView(newListItemHookSwitchInit(this, "隐藏送礼动画", null, HideGiftAnim.get()));
-            ll.addView(newListItemHookSwitchInit(this, "禁止自动@", "[>=8.1.3]去除回复消息时自动@特性", ReplyNoAtHook.get()));
+            ll.addView(newListItemHookSwitchInit(this, "禁止回复自动@", "[>=8.1.3]去除回复消息时自动@特性", ReplyNoAtHook.get()));
             ll.addView(newListItemHookSwitchInit(this, "禁用$打开送礼界面", "禁止聊天时输入$自动弹出[选择赠送对象]窗口", $endGiftHook.get()));
             ll.addView(newListItemHookSwitchInit(this, "强制使用默认气泡", "无视个性聊天气泡", DefaultBubbleHook.get()));
         }

@@ -213,7 +213,7 @@ public class Initiator {
         return load("com.tencent.mobileqq.activity.BaseChatPie");
     }
 
-    public static Class _MessageRecord() {
+    public static Class<?> _MessageRecord() {
         return load("com/tencent/mobileqq/data/MessageRecord");
     }
 

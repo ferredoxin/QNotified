@@ -1,6 +1,7 @@
 package nil.nadph.qnotified.hook;
 
 import android.os.Looper;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 import de.robv.android.xposed.XC_MethodHook;
@@ -11,9 +12,11 @@ import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Utils;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import static nil.nadph.qnotified.util.Initiator._MessageRecord;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
@@ -59,7 +62,7 @@ public class FlashPicHook extends BaseDelayableHook {
                     }
                     String sn_ItemBuilderFactory = getShort$Name(DexKit.doFindClass(DexKit.C_ITEM_BUILDER_FAC));
                     String sn_BasePicDownloadProcessor = getShort$Name(DexKit.doFindClass(DexKit.C_BASE_PIC_DL_PROC));
-                    if (isCallingFrom(sn_ItemBuilderFactory) || isCallingFrom(sn_BasePicDownloadProcessor) || isCallingFrom("FlashPicItemBuilder")) {
+                    if (isCallingFromEither(sn_ItemBuilderFactory, sn_BasePicDownloadProcessor, "FlashPicItemBuilder")) {
                         param.setResult(false);
                     }
                 }
@@ -98,21 +101,50 @@ public class FlashPicHook extends BaseDelayableHook {
                 }
             }
             final Method __tmnp_isF = isFlashPic;
-            final Class __tmp_mBaseBubbleBuilder$ViewHolder = mBaseBubbleBuilder$ViewHolder;
+            final Class<?> __tmp_mBaseBubbleBuilder$ViewHolder = mBaseBubbleBuilder$ViewHolder;
             XposedBridge.hookMethod(m, new XC_MethodHook() {
+                private Field fBaseChatItemLayout = null;
+
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     if (!cfg.getBooleanOrFalse(qn_flash_as_pic)) return;
                     Object viewHolder = param.args[1];
                     if (viewHolder == null) return;
-                    Object baseChatItemLayout = iget_object_or_null(viewHolder, "a", load("com.tencent.mobileqq.activity.aio.BaseChatItemLayout"));
-                    boolean isFlashPic = (boolean) XposedBridge.invokeOriginalMethod(__tmnp_isF, null, new Object[]{param.args[0]});
-                    XposedHelpers.callMethod(baseChatItemLayout, "setTailMessage", isFlashPic, "闪照", null);
+                    if (fBaseChatItemLayout == null) {
+                        fBaseChatItemLayout = Utils.findField(viewHolder.getClass(), load("com.tencent.mobileqq.activity.aio.BaseChatItemLayout"), "a");
+                        fBaseChatItemLayout.setAccessible(true);
+                    }
+                    Object baseChatItemLayout = fBaseChatItemLayout.get(viewHolder);
+                    if (isFlashPic(param.args[0])) {
+                        XposedHelpers.callMethod(baseChatItemLayout, "setTailMessage", true, "闪照", null);
+                    }
                 }
             });
             inited = true;
             return true;
         } catch (Throwable e) {
+            log(e);
+            return false;
+        }
+    }
+
+    private static Field MsgRecord_msgtype = null;
+    private static Method MsgRecord_getExtInfoFromExtStr = null;
+
+    public static boolean isFlashPic(Object msgRecord) {
+        try {
+            if (MsgRecord_msgtype == null) {
+                MsgRecord_msgtype = _MessageRecord().getField("msgtype");
+                MsgRecord_msgtype.setAccessible(true);
+            }
+            if (MsgRecord_getExtInfoFromExtStr == null) {
+                MsgRecord_getExtInfoFromExtStr = _MessageRecord().getMethod("getExtInfoFromExtStr", String.class);
+                MsgRecord_getExtInfoFromExtStr.setAccessible(true);
+            }
+            int msgtype = (int) MsgRecord_msgtype.get(msgRecord);
+            return (msgtype == -2000 || msgtype == -2006)
+                    && !TextUtils.isEmpty((String) MsgRecord_getExtInfoFromExtStr.invoke(msgRecord, "commen_flash_pic"));
+        } catch (Exception e) {
             log(e);
             return false;
         }
