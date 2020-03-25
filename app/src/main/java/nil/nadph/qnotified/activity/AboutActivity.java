@@ -67,6 +67,7 @@ public class AboutActivity extends IphoneTitleBarActivityCompat {
                 "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."));
 
         ll.addView(subtitle(this, "请尊重我的的劳动成果 请勿用于商业用途 严禁盗版贩卖", Color.RED));
+        ll.addView(subtitle(this, "遇到 免费软件(包括但不限于本软件) 倒卖者请直接举报, 谢谢您的配合!"));
         //bounceScrollView.setFocusable(true);
         //bounceScrollView.setFocusableInTouchMode(true);
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
