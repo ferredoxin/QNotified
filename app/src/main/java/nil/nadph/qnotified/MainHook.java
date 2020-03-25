@@ -422,7 +422,11 @@ public class MainHook {
                     }
                 }
             }
-            return method.invoke(mOrigin, args);
+            try {
+                return method.invoke(mOrigin, args);
+            } catch (InvocationTargetException ite) {
+                throw ite.getCause();
+            }
         }
     }
 

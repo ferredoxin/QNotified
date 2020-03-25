@@ -19,10 +19,7 @@ import nil.nadph.qnotified.util.Utils;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
+import java.lang.reflect.*;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -272,24 +269,28 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
         } catch (Exception e) {
             log(e);
         }
-        String className = method.getDeclaringClass().getName();
-        if (className.endsWith("IBatteryPropertiesRegistrar")) {
-            return method.invoke(origRegistrar, args);
-        } else if (className.endsWith("IBatteryStats")) {
-            return method.invoke(origStatus, args);
-        } else if (className.endsWith("Object")) {
-            if (method.getName().equals("toString")) {
-                return "a.a.a.a$Stub$Proxy@" + Integer.toHexString(hashCode());
-            } else if (method.getName().equals("equals")) {
-                return args[0] == proxy;
-            } else if (method.getName().equals("hashCode")) {
-                return hashCode();
+        try {
+            String className = method.getDeclaringClass().getName();
+            if (className.endsWith("IBatteryPropertiesRegistrar")) {
+                return method.invoke(origRegistrar, args);
+            } else if (className.endsWith("IBatteryStats")) {
+                return method.invoke(origStatus, args);
+            } else if (className.endsWith("Object")) {
+                if (method.getName().equals("toString")) {
+                    return "a.a.a.a$Stub$Proxy@" + Integer.toHexString(hashCode());
+                } else if (method.getName().equals("equals")) {
+                    return args[0] == proxy;
+                } else if (method.getName().equals("hashCode")) {
+                    return hashCode();
+                }
+                return null;
+            } else {
+                //WTF QAQ
+                log("Panic, unexpected method " + method);
+                return null;
             }
-            return null;
-        } else {
-            //WTF QAQ
-            log("Panic, unexpected method " + method);
-            return null;
+        } catch (InvocationTargetException ite) {
+            throw ite.getCause();
         }
     }
 
