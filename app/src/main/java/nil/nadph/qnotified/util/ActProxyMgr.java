@@ -6,6 +6,7 @@ public class ActProxyMgr {
     public static final String STUB_ACTIVITY = "com.tencent.mobileqq.activity.photo.CameraPreviewActivity";
     public static final String ACTIVITY_PROXY_ACTION = "qn_act_proxy_action";
     public static final String ACTIVITY_PROXY_INTENT = "qn_act_proxy_intent";
+    public static final int ACTION_RESERVED = 0;
     public static final int ACTION_EXFRIEND_LIST = 1;
     public static final int ACTION_ADV_SETTINGS = 2;
     public static final int ACTION_ABOUT = 3;

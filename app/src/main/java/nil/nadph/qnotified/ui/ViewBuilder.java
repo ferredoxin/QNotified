@@ -442,11 +442,21 @@ public class ViewBuilder {
         return ll;
     }
 
+    @Deprecated
     public static View.OnClickListener clickToProxyActAction(final int action) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MainHook.startProxyActivity(v.getContext(), action);
+            }
+        };
+    }
+
+    public static View.OnClickListener clickToProxyActAction(final Class<?> clz) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainHook.startProxyActivity(v.getContext(), clz);
             }
         };
     }

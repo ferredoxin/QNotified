@@ -35,7 +35,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
 
     private static final int R_ID_BTN_FILE_RECV = 0x300AFF91;
 
-    private TextView __tv_muted_atall, __tv_muted_redpacket, __tv_fake_bat_status, __recv_status, __recv_desc;
+    private TextView __tv_muted_atall, __tv_muted_redpacket, __tv_fake_bat_status, __recv_status, __recv_desc, __js_status;
 
     @Override
     public boolean doOnCreate(Bundle bundle) {
@@ -77,6 +77,8 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(subtitle(this, "基本功能"));
         ll.addView(_t = newListItemButton(this, "自定义电量", "[QQ>=8.2.6]在线模式为我的电量时生效", "N/A", clickToProxyActAction(ACTION_FAKE_BAT_CONFIG_ACTIVITY)));
         __tv_fake_bat_status = (TextView) _t.findViewById(R_ID_VALUE);
+        ll.addView(_t = newListItemButton(this, "管理脚本(.js)", "请注意安全, 合理使用", "N/A", clickToProxyActAction(ManageScriptsActivity.class)));
+        __js_status = (TextView) _t.findViewById(R_ID_VALUE);
         ll.addView(newListItemHookSwitchInit(this, "语音转发", "长按语音消息", PttForwardHook.get()));
         ll.addView(newListItemHookSwitchInit(this, "发送卡片消息", "ArkAppMsg(json)+StructMsg(xml)", CardMsgHook.get()));
         ll.addView(subtitle(this, "卡片消息使用说明:先输入卡片代码(聊天界面),后长按发送按钮\n勿滥用此功能! 频繁使用此功能被举报可能封号"));
@@ -186,6 +188,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             }
         }
         updateRecvRedirectStatus();
+        __js_status.setText("0/1");
     }
 
     @Override
