@@ -246,6 +246,7 @@ public class MainHook {
                     Class director = _StartupDirector();
                     Object dir = iget_object_or_null(param.thisObject, "mDirector", director);
                     if (dir == null) dir = iget_object_or_null(param.thisObject, "a", director);
+                    if (dir == null) dir = getFirstNSFByType(param.thisObject, director);
                     if (SyncUtils.isMainProcess()) {
                         ResUtils.loadThemeByArsc(getApplication(), false);
                     }

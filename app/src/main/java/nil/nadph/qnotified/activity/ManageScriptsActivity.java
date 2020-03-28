@@ -13,12 +13,12 @@ public class ManageScriptsActivity extends IphoneTitleBarActivityCompat {
         super.doOnCreate(bundle);
         LinearLayout main = new LinearLayout(this);
         main.setOrientation(LinearLayout.VERTICAL);
-        main.addView(ViewBuilder.newListItemSwitch(this, "总开关(关闭后所有脚本均不生效)", null, false, null));
+        main.addView(ViewBuilder.newListItemSwitchStub(this, "总开关(关闭后所有脚本均不生效)", null, false));
         main.addView(ViewBuilder.newListItemButton(this, "导入 ...", null, null, null));
         main.addView(ViewBuilder.newListItemDummy(this, "dummy.js (禁用)", null, null));
         //main.addView(ViewBuilder.newListItemSwitch(this, "总开关", null, true, null));
         setContentView(main);
-        setTitle("脚本管理(.js)");
+        setTitle("脚本");
         setRightButton("帮助", ViewBuilder.clickToProxyActAction(ScriptGuideActivity.class));
         setContentBackgroundDrawable(ResUtils.skin_background);
         return true;

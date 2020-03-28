@@ -748,7 +748,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
         }
         try {
             //log("Request friendlist update for " + mUin + " ...");
-            invoke_virtual(Utils.getFriendListHandler(), "a", true, true, boolean.class, boolean.class, void.class);
+            invoke_virtual_any(Utils.getFriendListHandler(), true, true, boolean.class, boolean.class, void.class);
         } catch (Exception e) {
             log(e);
         }

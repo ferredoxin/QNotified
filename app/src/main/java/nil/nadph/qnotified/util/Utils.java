@@ -37,8 +37,8 @@ import static nil.nadph.qnotified.util.Initiator.load;
 @SuppressLint("SimpleDateFormat")
 public class Utils {
 
-    public static final String QN_VERSION_NAME = "0.7.1-beta";
-    public static final int QN_VERSION_CODE = 29;
+    public static final String QN_VERSION_NAME = "0.7.2-es1";
+    public static final int QN_VERSION_CODE = 30;
     public static final boolean __REMOVE_PREVIOUS_CACHE = true;
     public static final String PACKAGE_NAME_QQ = "com.tencent.mobileqq";
     public static final String PACKAGE_NAME_QQ_INTERNATIONAL = "com.tencent.mobileqqi";
@@ -124,6 +124,20 @@ public class Utils {
         }
     }
 
+    public static String paramsTypesToString(Class... c) {
+        if (c == null) return null;
+        if (c.length == 0) return "()";
+        StringBuilder sb = new StringBuilder("(");
+        for (int i = 0; i < c.length; i++) {
+            sb.append(c[i] == null ? "[null]" : c[i].getName());
+            if (i != c.length - 1) {
+                sb.append(",");
+            }
+        }
+        sb.append(")");
+        return sb.toString();
+    }
+
 	/*public static Object invoke_virtual(Object obj,String method,Object...args) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException{
 	 Class clazz=obj.getClass();
 	 Method m=findMethodByArgs(clazz,method,args);
@@ -163,6 +177,49 @@ public class Utils {
         }
     }
 
+    @Deprecated
+    public static Object invoke_virtual_any(Object obj, Object... argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException {
+        Class clazz = obj.getClass();
+        int argc = argsTypesAndReturnType.length / 2;
+        Class[] argt = new Class[argc];
+        Object[] argv = new Object[argc];
+        Class returnType = null;
+        if (argc * 2 + 1 == argsTypesAndReturnType.length)
+            returnType = (Class) argsTypesAndReturnType[argsTypesAndReturnType.length - 1];
+        int i, ii;
+        Method[] m;
+        Method method = null;
+        Class[] _argt;
+        for (i = 0; i < argc; i++) {
+            argt[i] = (Class) argsTypesAndReturnType[argc + i];
+            argv[i] = argsTypesAndReturnType[i];
+        }
+        loop_main:
+        do {
+            m = clazz.getDeclaredMethods();
+            loop:
+            for (i = 0; i < m.length; i++) {
+                _argt = m[i].getParameterTypes();
+                if (_argt.length == argt.length) {
+                    for (ii = 0; ii < argt.length; ii++) {
+                        if (!argt[ii].equals(_argt[ii])) continue loop;
+                    }
+                    if (returnType != null && !returnType.equals(m[i].getReturnType())) continue;
+                    if (method == null) {
+                        method = m[i];
+                        //here we go through this class
+                    } else {
+                        throw new NoSuchMethodException("Multiple methods found for __attribute__((any))" + paramsTypesToString(argt) + " in " + obj.getClass().getName());
+                    }
+                }
+            }
+        } while (method == null && !Object.class.equals(clazz = clazz.getSuperclass()));
+        if (method == null)
+            throw new NoSuchMethodException("__attribute__((a))" + paramsTypesToString(argt) + " in " + obj.getClass().getName());
+        method.setAccessible(true);
+        return method.invoke(obj, argv);
+    }
+
     public static Object invoke_virtual(Object obj, String name, Object... argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException {
         Class clazz = obj.getClass();
         int argc = argsTypesAndReturnType.length / 2;
@@ -197,7 +254,8 @@ public class Utils {
                 }
             }
         } while (!Object.class.equals(clazz = clazz.getSuperclass()));
-        if (method == null) throw new NoSuchMethodException(name + " in " + obj.getClass().getName());
+        if (method == null)
+            throw new NoSuchMethodException(name + paramsTypesToString(argt) + " in " + obj.getClass().getName());
         method.setAccessible(true);
         return method.invoke(obj, argv);
     }
@@ -615,12 +673,23 @@ public class Utils {
                 cl_bh = cl_flh.getSuperclass();
             }
             //log("bh(" + type + ")=" + ret);
-            return invoke_virtual(getQQAppInterface(), "a", type, int.class, cl_bh);
+            Object appInterface = getQQAppInterface();
+            try {
+                return invoke_virtual(appInterface, "a", type, int.class, cl_bh);
+            } catch (NoSuchMethodException e) {
+                try {
+                    Method m = appInterface.getClass().getMethod("getBusinessHandler", int.class);
+                    m.setAccessible(true);
+                    return m.invoke(appInterface, type);
+                } catch (Exception e2) {
+                    e.addSuppressed(e2);
+                }
+                throw e;
+            }
         } catch (Exception e) {
             log(e);
             return null;
         }
-
     }
 
     /**
@@ -804,7 +873,15 @@ public class Utils {
                 }
             }
             if (method_Toast_makeText == null) {
-                method_Toast_makeText = clazz_QQToast.getMethod("a", Context.class, int.class, CharSequence.class, int.class);
+                try {
+                    method_Toast_makeText = clazz_QQToast.getMethod("a", Context.class, int.class, CharSequence.class, int.class);
+                } catch (NoSuchMethodException e) {
+                    try {
+                        method_Toast_makeText = clazz_QQToast.getMethod("b", Context.class, int.class, CharSequence.class, int.class);
+                    } catch (NoSuchMethodException e2) {
+                        throw e;
+                    }
+                }
             }
             Object qqToast = method_Toast_makeText.invoke(null, ctx, type, str, length);
             return (Toast) method_Toast_show.invoke(qqToast);

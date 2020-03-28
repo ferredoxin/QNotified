@@ -138,7 +138,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(newListItemButton(this, "DelFriendReq.delType", "只能为1或2", "[不改动]", clickTheComing()));
         ll.addView(subtitle(this, "关于"));
         PackageInfo pi = Utils.getHostInfo(this);
-        ll.addView(newListItemDummy(this, pi.applicationInfo.loadLabel(this.getPackageManager()), null, pi.versionName));
+        ll.addView(newListItemDummy(this, pi.applicationInfo.loadLabel(this.getPackageManager()), null, pi.versionName + "(" + pi.versionCode + ")"));
         ll.addView(newListItemDummy(this, "模块版本", null, Utils.QN_VERSION_NAME));
         UpdateCheck uc = new UpdateCheck();
         ll.addView(_t = newListItemButton(this, "检查更新", null, "点击检查", uc));

@@ -40,6 +40,11 @@ public class SettingEntryHook extends BaseDelayableHook {
                         View itemRef = (View) Utils.iget_object_or_null(param.thisObject, "a", load("com/tencent/mobileqq/widget/FormSimpleItem"));
                         if (itemRef == null)
                             itemRef = (View) Utils.iget_object_or_null(param.thisObject, "a", load("com/tencent/mobileqq/widget/FormCommonSingleLineItem"));
+                        if (itemRef == null) {
+                            Class<?> clz = load("com/tencent/mobileqq/widget/FormCommonSingleLineItem");
+                            if (clz == null) clz = load("com/tencent/mobileqq/widget/FormSimpleItem");
+                            itemRef = (View) Utils.getFirstNSFByType(param.thisObject, clz);
+                        }
                         View item = (View) new_instance(itemRef.getClass(), param.thisObject, Context.class);
                         item.setId(R_ID_SETTING_ENTRY);
                         invoke_virtual(item, "setLeftText", "QNotified", CharSequence.class);

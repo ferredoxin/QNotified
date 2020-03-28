@@ -10,6 +10,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,7 +79,7 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
 
     public static ArrayList<TroopInfo> getTroopInfoList() throws Exception {
         Object mTroopManager = getTroopManager();
-        ArrayList tx = (ArrayList) invoke_virtual(mTroopManager, "a", ArrayList.class);
+        ArrayList tx = (ArrayList) invoke_virtual(mTroopManager, "a", ArrayList.class);//TODO
         ArrayList<TroopInfo> ret = new ArrayList<TroopInfo>();
         for (Object info : tx) {
             ret.add(new TroopInfo(info));
@@ -300,7 +301,7 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
             mTroopInfoList = getTroopInfoList();
             tv.setText("若此处群列表显示不完整,请返回后在QQ的联系人的群列表下拉刷新后再回到此处重试");
         } catch (Exception e) {
-            tv.setText("" + e);
+            tv.setText(Log.getStackTraceString(e));
             log(e);
         }
         FrameLayout.LayoutParams flp = new FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
