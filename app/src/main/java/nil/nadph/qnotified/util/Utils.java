@@ -1082,7 +1082,7 @@ public class Utils {
                 || nick.contains("代发") || nick.contains("赚") || nick.contains("换群") || nick.contains("加我")
                 || nick.contains("加盟") || nick.contains("中介") || nick.contains("兼职") || nick.contains("客服")
                 || nick.contains("招聘") || nick.contains("换钱") || nick.contains("接单") || nick.contains("承接")
-                || nick.contains("解封") || nick.contains("保号") || nick.contains("业务")
+                || nick.contains("解封") || nick.contains("保号") || nick.contains("业务") || nick.contains("互拉")
                 || nick.matches(".*[\u53f8\u6b7b][\u9a6c\u5417\u5988\u3000].*"))
             return true;
         if (nick.equalsIgnoreCase("A")) return true;
