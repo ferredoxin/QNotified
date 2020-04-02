@@ -679,28 +679,28 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
 
     @SuppressLint("MissingPermission")
     public void doNotifyDelFlAndSave(Object[] ptr) {
-        if (isNotifyWhenDeleted() && ((int) ptr[0]) > 0) {
-            Intent inner = new Intent(getApplication(), ExfriendListActivity.class);
-            inner.putExtra(ACTIVITY_PROXY_ACTION, ACTION_EXFRIEND_LIST);
-            Intent wrapper = new Intent();
-            wrapper.setClassName(getApplication().getPackageName(), ActProxyMgr.STUB_ACTIVITY);
-            wrapper.putExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT, inner);
-            PendingIntent pi = PendingIntent.getActivity(getApplication(), 0, wrapper, 0);
-            try {
+        dirtyFlag = true;
+        fileData.putLong("lastUpdateFl", lastUpdateTimeSec);
+        //log("Friendlist updated @" + lastUpdateTimeSec);
+        saveConfigure();
+        try {
+            if (isNotifyWhenDeleted() && ((int) ptr[0]) > 0) {
+                Intent inner = new Intent(getApplication(), ExfriendListActivity.class);
+                inner.putExtra(ACTIVITY_PROXY_ACTION, ACTION_EXFRIEND_LIST);
+                Intent wrapper = new Intent();
+                wrapper.setClassName(getApplication().getPackageName(), ActProxyMgr.STUB_ACTIVITY);
+                wrapper.putExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT, inner);
+                PendingIntent pi = PendingIntent.getActivity(getApplication(), 0, wrapper, 0);
                 NotificationManager nm = (NotificationManager) Utils.getApplication().getSystemService(Context.NOTIFICATION_SERVICE);
                 Notification n = createNotiComp((String) ptr[1], (String) ptr[2], (String) ptr[3], pi);
                 nm.notify(ID_EX_NOTIFY, n);
                 Vibrator vb = (Vibrator) getApplication().getSystemService(Context.VIBRATOR_SERVICE);
                 if (vb != null) vb.vibrate(new long[]{100, 200, 200, 100}, -1);
                 setRedDot();
-            } catch (Exception e) {
-                log(e);
             }
+        } catch (Exception e) {
+            log(e);
         }
-        dirtyFlag = true;
-        fileData.putLong("lastUpdateFl", lastUpdateTimeSec);
-        //log("Friendlist updated @" + lastUpdateTimeSec);
-        saveConfigure();
     }
 
     @Override
