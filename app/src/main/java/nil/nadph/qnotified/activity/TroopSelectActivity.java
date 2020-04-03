@@ -23,6 +23,8 @@ import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.FaceImpl;
 import nil.nadph.qnotified.util.Utils;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -79,7 +81,28 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
 
     public static ArrayList<TroopInfo> getTroopInfoList() throws Exception {
         Object mTroopManager = getTroopManager();
-        ArrayList tx = (ArrayList) invoke_virtual(mTroopManager, "a", ArrayList.class);//TODO
+        ArrayList tx;
+        Method m0a = null, m0b = null;
+        for (Method m : mTroopManager.getClass().getMethods()) {
+            if (m.getReturnType().equals(ArrayList.class) && Modifier.isPublic(m.getModifiers()) && m.getParameterTypes().length == 0) {
+                if (m.getName().equals("a")) {
+                    m0a = m;
+                    break;
+                } else {
+                    if (m0a == null) {
+                        m0a = m;
+                    } else {
+                        m0b = m;
+                        break;
+                    }
+                }
+            }
+        }
+        if (m0b == null) {
+            tx = (ArrayList) m0a.invoke(mTroopManager);
+        } else {
+            tx = (ArrayList) ((strcmp(m0a.getName(), m0b.getName()) > 0) ? m0b : m0a).invoke(mTroopManager);
+        }
         ArrayList<TroopInfo> ret = new ArrayList<TroopInfo>();
         for (Object info : tx) {
             ret.add(new TroopInfo(info));

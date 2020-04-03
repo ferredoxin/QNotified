@@ -5,12 +5,14 @@ import android.os.Looper;
 import android.text.TextUtils;
 import android.widget.Toast;
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Utils;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -41,7 +43,17 @@ public class RevokeMsgHook extends BaseDelayableHook {
     public boolean init() {
         if (inited) return true;
         try {
-            XposedHelpers.findAndHookMethod(_QQMessageFacade(), "a", ArrayList.class, boolean.class, new XC_MethodHook(-10086) {
+            Method revokeMsg = null;
+            for (Method m : _QQMessageFacade().getDeclaredMethods()) {
+                if (m.getReturnType().equals(void.class)) {
+                    Class<?>[] argt = m.getParameterTypes();
+                    if (argt.length == 2 && argt[0].equals(ArrayList.class) && argt[1].equals(boolean.class)) {
+                        revokeMsg = m;
+                        break;
+                    }
+                }
+            }
+            XposedBridge.hookMethod(revokeMsg, new XC_MethodHook(-10086) {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     mQQMsgFacade = param.thisObject;

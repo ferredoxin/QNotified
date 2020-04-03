@@ -10,14 +10,16 @@ import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Nullable;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class CustomDialog {
-    private static Class clz_DialogUtil;
-    private static Class clz_CustomDialog;
+    private static Class<?> clz_DialogUtil;
+    private static Class<?> clz_CustomDialog;
+    private static Method m_DialogUtil_a;
 
     private Dialog mDialog = null;
     private AlertDialog mFailsafeDialog = null;
@@ -42,12 +44,41 @@ public class CustomDialog {
                     }
                 }
             }
+            if (m_DialogUtil_a == null) {
+                Method tmpa = null, tmpb = null;
+                for (Method m : clz_DialogUtil.getDeclaredMethods()) {
+                    if (m.getReturnType().equals(clz_CustomDialog) && (Modifier.isPublic(m.getModifiers()))) {
+                        Class<?>[] argt = m.getParameterTypes();
+                        if (argt.length != 2) continue;
+                        if (argt[0].equals(Context.class) && argt[1].equals(int.class)) {
+                            if (m.getName().equals("a")) {
+                                m_DialogUtil_a = m;
+                                break;
+                            } else {
+                                if (tmpa == null) {
+                                    tmpa = m;
+                                } else {
+                                    tmpb = m;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (m_DialogUtil_a == null && tmpa != null) {
+                    if (tmpb == null) {
+                        m_DialogUtil_a = tmpa;
+                    } else {
+                        m_DialogUtil_a = (strcmp(tmpa.getName(), tmpb.getName()) > 0) ? tmpb : tmpa;
+                    }
+                }
+            }
         } catch (Exception e) {
             log(e);
         }
         CustomDialog ref = new CustomDialog();
         try {
-            ref.mDialog = (Dialog) invoke_static(clz_DialogUtil, "a", ctx, 230, Context.class, int.class, clz_CustomDialog);
+            ref.mDialog = (Dialog) m_DialogUtil_a.invoke(null, ctx, 230);
         } catch (Exception e) {
             log(e);
         }
@@ -61,6 +92,9 @@ public class CustomDialog {
     public CustomDialog setCancelable(boolean flag) {
         if (!failsafe) {
             mDialog.setCancelable(flag);
+            if (flag) {
+                mDialog.setCanceledOnTouchOutside(true);
+            }
         } else {
             mBuilder.setCancelable(flag);
         }

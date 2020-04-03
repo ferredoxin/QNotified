@@ -48,8 +48,11 @@ public class FlashPicHook extends BaseDelayableHook {
             Method isFlashPic = null;
             for (Method mi : clz.getDeclaredMethods()) {
                 if (mi.getReturnType().equals(boolean.class) && mi.getParameterTypes().length == 1) {
-                    isFlashPic = mi;
-                    break;
+                    String name = mi.getName();
+                    if (name.equals("a") || name.equals("z")) {
+                        isFlashPic = mi;
+                        break;
+                    }
                 }
             }
             XposedBridge.hookMethod(isFlashPic, new XC_MethodHook(52) {
@@ -112,6 +115,9 @@ public class FlashPicHook extends BaseDelayableHook {
                     if (viewHolder == null) return;
                     if (fBaseChatItemLayout == null) {
                         fBaseChatItemLayout = Utils.findField(viewHolder.getClass(), load("com.tencent.mobileqq.activity.aio.BaseChatItemLayout"), "a");
+                        if (fBaseChatItemLayout == null) {
+                            fBaseChatItemLayout = Utils.getFirstNSFFieldByType(viewHolder.getClass(), load("com.tencent.mobileqq.activity.aio.BaseChatItemLayout"));
+                        }
                         fBaseChatItemLayout.setAccessible(true);
                     }
                     Object baseChatItemLayout = fBaseChatItemLayout.get(viewHolder);

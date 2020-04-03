@@ -1,11 +1,14 @@
 package nil.nadph.qnotified.hook;
 
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.util.Utils;
+
+import java.lang.reflect.Method;
 
 import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
@@ -32,18 +35,28 @@ public class MuteAtAllAndRedPacket extends BaseDelayableHook {
             }
             /* @author qiwu */
             final int at_all_type = (Utils.getHostInfo(getApplication()).versionName.compareTo("7.8.0") >= 0) ? 13 : 12;
-            XposedHelpers.findAndHookMethod(cl_MessageInfo, "a", _QQAppInterface(), boolean.class, String.class, new XC_MethodHook(60) {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    int ret = (int) param.getResult();
-                    String troopuin = (String) param.args[2];
-                    if (ret != at_all_type) return;
-                    String muted = "," + ConfigManager.getDefaultConfig().getString(ConfigItems.qn_muted_at_all) + ",";
-                    if (muted.contains("," + troopuin + ",")) {
-                        param.setResult(0);
+            for (Method m : cl_MessageInfo.getDeclaredMethods()) {
+                if (m.getReturnType().equals(int.class)) {
+                    Class<?>[] argt = m.getParameterTypes();
+                    if (argt.length == 3) {
+                        if (argt[0].equals(_QQAppInterface()) && argt[1].equals(boolean.class) && argt[2].equals(String.class)) {
+                            XposedBridge.hookMethod(m, new XC_MethodHook(60) {
+                                @Override
+                                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                                    int ret = (int) param.getResult();
+                                    String troopuin = (String) param.args[2];
+                                    if (ret != at_all_type) return;
+                                    String muted = "," + ConfigManager.getDefaultConfig().getString(ConfigItems.qn_muted_at_all) + ",";
+                                    if (muted.contains("," + troopuin + ",")) {
+                                        param.setResult(0);
+                                    }
+                                }
+                            });
+                            break;
+                        }
                     }
                 }
-            });
+            }
         } catch (Exception e) {
             log(e);
         }

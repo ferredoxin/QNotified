@@ -104,7 +104,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         if (!Utils.isTim(this)) {
             ll.addView(newListItemHookSwitchInit(this, "禁止秀图自动展示", null, ShowPicGagHook.get()));
         }
-        ll.addView(newListItemHookSwitchInit(this, "转发消息点击头像查看资料卡", null, MultiForwardAvatarHook.get()));
+        ll.addView(newListItemHookSwitchInit(this, "转发消息点击头像查看资料卡", "长按头像可查看详细信息", MultiForwardAvatarHook.get()));
         if (!Utils.isTim(this)) {
             ll.addView(newListItemHookSwitchInit(this, "以图片方式打开表情", null, EmoPicHook.get()));
         }

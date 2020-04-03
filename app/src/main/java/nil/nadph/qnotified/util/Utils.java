@@ -394,7 +394,7 @@ public class Utils {
                 }
             }
         } while (!Object.class.equals(clazz = clazz.getSuperclass()));
-        if (method == null) throw new NoSuchMethodException(name);
+        if (method == null) throw new NoSuchMethodException(name + paramsTypesToString(argt));
         method.setAccessible(true);
         return method.invoke(null, argv);
     }
@@ -715,6 +715,30 @@ public class Utils {
                 } catch (IllegalAccessException ignored) {
                     //should not happen
                 }
+            }
+            clz = clz.getSuperclass();
+        }
+        return null;
+    }
+
+    /**
+     * NSF: Neither Static nor Final
+     *
+     * @param clz  Obj class
+     * @param type Field type
+     * @return the FIRST(as declared seq in dex) field value meeting the type
+     */
+    @Deprecated
+    public static Field getFirstNSFFieldByType(Class clz, Class type) {
+        if (clz == null) throw new NullPointerException("clz == null");
+        if (type == null) throw new NullPointerException("type == null");
+        while (clz != null && !clz.equals(Object.class)) {
+            for (Field f : clz.getDeclaredFields()) {
+                if (!f.getType().equals(type)) continue;
+                int m = f.getModifiers();
+                if (Modifier.isStatic(m) || Modifier.isFinal(m)) continue;
+                f.setAccessible(true);
+                return f;
             }
             clz = clz.getSuperclass();
         }
@@ -1339,5 +1363,18 @@ public class Utils {
             log(e);
             return null;
         }
+    }
+
+    @Deprecated
+    public static int strcmp(String stra, String strb) {
+        int len = Math.min(stra.length(), strb.length());
+        for (int i = 0; i < len; i++) {
+            char a = stra.charAt(i);
+            char b = strb.charAt(i);
+            if (a != b) {
+                return a - b;
+            }
+        }
+        return stra.length() - strb.length();
     }
 }
