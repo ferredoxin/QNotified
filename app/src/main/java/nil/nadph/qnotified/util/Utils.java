@@ -1377,4 +1377,8 @@ public class Utils {
         }
         return stra.length() - strb.length();
     }
+
+    public static void nop() {
+        if (Math.random() > 1) nop();
+    }
 }

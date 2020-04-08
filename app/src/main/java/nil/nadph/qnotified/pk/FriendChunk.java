@@ -130,5 +130,12 @@ public class FriendChunk implements Serializable, Cloneable {
         return (int) serverTime;
     }
 
+    public int getUinIndex(long uin) {
+        if (arrUin == null) return -1;
+        for (int i = 0; i < arrUin.length; i++) {
+            if (arrUin[i] == uin) return i;
+        }
+        return -1;
+    }
 
 }
