@@ -24,9 +24,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.*;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -218,6 +216,322 @@ public class Utils {
             throw new NoSuchMethodException("__attribute__((a))" + paramsTypesToString(argt) + " in " + obj.getClass().getName());
         method.setAccessible(true);
         return method.invoke(obj, argv);
+    }
+
+    @Deprecated
+    public static Object invoke_virtual_declared_modifier_any(Object obj, int requiredMask, int excludedMask, Object... argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException {
+        Class clazz = obj.getClass();
+        int argc = argsTypesAndReturnType.length / 2;
+        Class[] argt = new Class[argc];
+        Object[] argv = new Object[argc];
+        Class returnType = null;
+        if (argc * 2 + 1 == argsTypesAndReturnType.length)
+            returnType = (Class) argsTypesAndReturnType[argsTypesAndReturnType.length - 1];
+        int i, ii;
+        Method[] m;
+        Method method = null;
+        Class[] _argt;
+        for (i = 0; i < argc; i++) {
+            argt[i] = (Class) argsTypesAndReturnType[argc + i];
+            argv[i] = argsTypesAndReturnType[i];
+        }
+        m = clazz.getDeclaredMethods();
+        loop:
+        for (i = 0; i < m.length; i++) {
+            _argt = m[i].getParameterTypes();
+            if (_argt.length == argt.length) {
+                for (ii = 0; ii < argt.length; ii++) {
+                    if (!argt[ii].equals(_argt[ii])) continue loop;
+                }
+                if (returnType != null && !returnType.equals(m[i].getReturnType())) continue;
+                if ((m[i].getModifiers() & requiredMask) != requiredMask) continue;
+                if ((m[i].getModifiers() & excludedMask) != 0) continue;
+                if (method == null) {
+                    method = m[i];
+                    //here we go through this class
+                } else {
+                    throw new NoSuchMethodException("Multiple methods found for __attribute__((any))" + paramsTypesToString(argt) + " in " + obj.getClass().getName());
+                }
+            }
+        }
+        if (method == null)
+            throw new NoSuchMethodException("__attribute__((a))" + paramsTypesToString(argt) + " in " + obj.getClass().getName());
+        method.setAccessible(true);
+        return method.invoke(obj, argv);
+    }
+
+    /**
+     * DO NOT USE, it's fragile
+     * instance methods are counted, both public/private,
+     * static methods are EXCLUDED,
+     * count from 0
+     *
+     * @param obj
+     * @param ordinal                the ordinal of instance method meeting the signature
+     * @param expected               how many instance methods are expected there
+     * @param argsTypesAndReturnType
+     * @return
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     */
+    @Deprecated
+    public static Object invoke_virtual_declared_ordinal(Object obj, int ordinal, int expected, boolean strict, Object... argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException {
+        Class clazz = obj.getClass();
+        int argc = argsTypesAndReturnType.length / 2;
+        Class[] argt = new Class[argc];
+        Object[] argv = new Object[argc];
+        Class returnType = null;
+        if (argc * 2 + 1 == argsTypesAndReturnType.length)
+            returnType = (Class) argsTypesAndReturnType[argsTypesAndReturnType.length - 1];
+        int i, ii;
+        Method[] m;
+        Method[] candidates = new Method[expected];
+        int count = 0;
+        Class[] _argt;
+        for (i = 0; i < argc; i++) {
+            argt[i] = (Class) argsTypesAndReturnType[argc + i];
+            argv[i] = argsTypesAndReturnType[i];
+        }
+        m = clazz.getDeclaredMethods();
+        loop:
+        for (i = 0; i < m.length; i++) {
+            _argt = m[i].getParameterTypes();
+            if (_argt.length == argt.length) {
+                for (ii = 0; ii < argt.length; ii++) {
+                    if (!argt[ii].equals(_argt[ii])) continue loop;
+                }
+                if (returnType != null && !returnType.equals(m[i].getReturnType())) continue;
+                if (Modifier.isStatic(m[i].getModifiers())) continue;
+                if (count < expected) {
+                    candidates[count++] = m[i];
+                } else {
+                    if (!strict) break;
+                    throw new NoSuchMethodException("More methods than expected(" + expected + ") at " + paramsTypesToString(argt) + " in " + obj.getClass().getName());
+                }
+            }
+        }
+        if (strict && count != expected) {
+            throw new NoSuchMethodException("Less methods(" + count + ") than expected(" + expected + ") at " + paramsTypesToString(argt) + " in " + obj.getClass().getName());
+        }
+        Arrays.sort(candidates, new Comparator<Method>() {
+            @Override
+            public int compare(Method o1, Method o2) {
+                if (o1 == null && o2 == null) return 0;
+                if (o1 == null) return 1;
+                if (o2 == null) return -1;
+                return strcmp(o1.getName(), o2.getName());
+            }
+        });
+        candidates[ordinal].setAccessible(true);
+        return candidates[ordinal].invoke(obj, argv);
+    }
+
+    /**
+     * DO NOT USE, it's fragile
+     * instance methods are counted, both public/private,
+     * static methods are EXCLUDED,
+     * count from 0
+     *
+     * @param obj
+     * @param ordinal                the ordinal of instance method meeting the signature
+     * @param expected               how many instance methods are expected there
+     * @param argsTypesAndReturnType
+     * @return
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     */
+    @Deprecated
+    public static Object invoke_virtual_declared_ordinal_modifier(Object obj, int ordinal, int expected, boolean strict, int requiredMask, int excludedMask, Object... argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException {
+        Class clazz = obj.getClass();
+        int argc = argsTypesAndReturnType.length / 2;
+        Class[] argt = new Class[argc];
+        Object[] argv = new Object[argc];
+        Class returnType = null;
+        if (argc * 2 + 1 == argsTypesAndReturnType.length)
+            returnType = (Class) argsTypesAndReturnType[argsTypesAndReturnType.length - 1];
+        int i, ii;
+        Method[] m;
+        Method[] candidates = new Method[expected];
+        int count = 0;
+        Class[] _argt;
+        for (i = 0; i < argc; i++) {
+            argt[i] = (Class) argsTypesAndReturnType[argc + i];
+            argv[i] = argsTypesAndReturnType[i];
+        }
+        m = clazz.getDeclaredMethods();
+        loop:
+        for (i = 0; i < m.length; i++) {
+            _argt = m[i].getParameterTypes();
+            if (_argt.length == argt.length) {
+                for (ii = 0; ii < argt.length; ii++) {
+                    if (!argt[ii].equals(_argt[ii])) continue loop;
+                }
+                if (returnType != null && !returnType.equals(m[i].getReturnType())) continue;
+                if (Modifier.isStatic(m[i].getModifiers())) continue;
+                if ((m[i].getModifiers() & requiredMask) != requiredMask) continue;
+                if ((m[i].getModifiers() & excludedMask) != 0) continue;
+                if (count < expected) {
+                    candidates[count++] = m[i];
+                } else {
+                    if (!strict) break;
+                    throw new NoSuchMethodException("More methods than expected(" + expected + ") at " + paramsTypesToString(argt) + " in " + obj.getClass().getName());
+                }
+            }
+        }
+        if (strict && count != expected) {
+            throw new NoSuchMethodException("Less methods(" + count + ") than expected(" + expected + ") at " + paramsTypesToString(argt) + " in " + obj.getClass().getName());
+        }
+        Arrays.sort(candidates, new Comparator<Method>() {
+            @Override
+            public int compare(Method o1, Method o2) {
+                if (o1 == null && o2 == null) return 0;
+                if (o1 == null) return 1;
+                if (o2 == null) return -1;
+                return strcmp(o1.getName(), o2.getName());
+            }
+        });
+        candidates[ordinal].setAccessible(true);
+        return candidates[ordinal].invoke(obj, argv);
+    }
+
+    /**
+     * DO NOT USE, it's fragile
+     * static methods are counted, both public/private,
+     * instance methods are EXCLUDED,
+     * count from 0
+     *
+     * @param clazz
+     * @param ordinal                the ordinal of instance method meeting the signature
+     * @param expected               how many instance methods are expected there
+     * @param argsTypesAndReturnType
+     * @return
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     */
+    @Deprecated
+    public static Object invoke_static_declared_ordinal_modifier(Class clazz, int ordinal, int expected, boolean strict, int requiredMask, int excludedMask, Object... argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException {
+        int argc = argsTypesAndReturnType.length / 2;
+        Class[] argt = new Class[argc];
+        Object[] argv = new Object[argc];
+        Class returnType = null;
+        if (argc * 2 + 1 == argsTypesAndReturnType.length)
+            returnType = (Class) argsTypesAndReturnType[argsTypesAndReturnType.length - 1];
+        int i, ii;
+        Method[] m;
+        Method[] candidates = new Method[expected];
+        int count = 0;
+        Class[] _argt;
+        for (i = 0; i < argc; i++) {
+            argt[i] = (Class) argsTypesAndReturnType[argc + i];
+            argv[i] = argsTypesAndReturnType[i];
+        }
+        m = clazz.getDeclaredMethods();
+        loop:
+        for (i = 0; i < m.length; i++) {
+            _argt = m[i].getParameterTypes();
+            if (_argt.length == argt.length) {
+                for (ii = 0; ii < argt.length; ii++) {
+                    if (!argt[ii].equals(_argt[ii])) continue loop;
+                }
+                if (returnType != null && !returnType.equals(m[i].getReturnType())) continue;
+                if (!Modifier.isStatic(m[i].getModifiers())) continue;
+                if ((m[i].getModifiers() & requiredMask) != requiredMask) continue;
+                if ((m[i].getModifiers() & excludedMask) != 0) continue;
+                if (count < expected) {
+                    candidates[count++] = m[i];
+                } else {
+                    if (!strict) break;
+                    throw new NoSuchMethodException("More methods than expected(" + expected + ") at " + paramsTypesToString(argt) + " in " + clazz.getName());
+                }
+            }
+        }
+        if (strict && count != expected) {
+            throw new NoSuchMethodException("Less methods(" + count + ") than expected(" + expected + ") at " + paramsTypesToString(argt) + " in " + clazz.getName());
+        }
+        Arrays.sort(candidates, new Comparator<Method>() {
+            @Override
+            public int compare(Method o1, Method o2) {
+                if (o1 == null && o2 == null) return 0;
+                if (o1 == null) return 1;
+                if (o2 == null) return -1;
+                return strcmp(o1.getName(), o2.getName());
+            }
+        });
+        candidates[ordinal].setAccessible(true);
+        return candidates[ordinal].invoke(null, argv);
+    }
+
+    /**
+     * DO NOT USE, it's fragile
+     * static methods are counted, both public/private,
+     * instance methods are EXCLUDED,
+     * count from 0
+     *
+     * @param clazz
+     * @param ordinal                the ordinal of instance method meeting the signature
+     * @param expected               how many instance methods are expected there
+     * @param argsTypesAndReturnType
+     * @return
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     */
+    @Deprecated
+    public static Object invoke_static_declared_ordinal(Class clazz, int ordinal, int expected, boolean strict, Object... argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException {
+        int argc = argsTypesAndReturnType.length / 2;
+        Class[] argt = new Class[argc];
+        Object[] argv = new Object[argc];
+        Class returnType = null;
+        if (argc * 2 + 1 == argsTypesAndReturnType.length)
+            returnType = (Class) argsTypesAndReturnType[argsTypesAndReturnType.length - 1];
+        int i, ii;
+        Method[] m;
+        Method[] candidates = new Method[expected];
+        int count = 0;
+        Class[] _argt;
+        for (i = 0; i < argc; i++) {
+            argt[i] = (Class) argsTypesAndReturnType[argc + i];
+            argv[i] = argsTypesAndReturnType[i];
+        }
+        m = clazz.getDeclaredMethods();
+        loop:
+        for (i = 0; i < m.length; i++) {
+            _argt = m[i].getParameterTypes();
+            if (_argt.length == argt.length) {
+                for (ii = 0; ii < argt.length; ii++) {
+                    if (!argt[ii].equals(_argt[ii])) continue loop;
+                }
+                if (returnType != null && !returnType.equals(m[i].getReturnType())) continue;
+                if (!Modifier.isStatic(m[i].getModifiers())) continue;
+                if (count < expected) {
+                    candidates[count++] = m[i];
+                } else {
+                    if (!strict) break;
+                    throw new NoSuchMethodException("More methods than expected(" + expected + ") at " + paramsTypesToString(argt) + " in " + clazz.getName());
+                }
+            }
+        }
+        if (strict && count != expected) {
+            throw new NoSuchMethodException("Less methods(" + count + ") than expected(" + expected + ") at " + paramsTypesToString(argt) + " in " + clazz.getName());
+        }
+        Arrays.sort(candidates, new Comparator<Method>() {
+            @Override
+            public int compare(Method o1, Method o2) {
+                if (o1 == null && o2 == null) return 0;
+                if (o1 == null) return 1;
+                if (o2 == null) return -1;
+                return strcmp(o1.getName(), o2.getName());
+            }
+        });
+        candidates[ordinal].setAccessible(true);
+        return candidates[ordinal].invoke(null, argv);
     }
 
     public static Object invoke_virtual(Object obj, String name, Object... argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException {

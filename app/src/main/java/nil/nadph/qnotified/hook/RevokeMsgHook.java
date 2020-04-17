@@ -15,11 +15,13 @@ import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Utils;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static de.robv.android.xposed.XposedHelpers.*;
+import static de.robv.android.xposed.XposedHelpers.callMethod;
+import static de.robv.android.xposed.XposedHelpers.setObjectField;
 import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
@@ -65,12 +67,14 @@ public class RevokeMsgHook extends BaseDelayableHook {
                     ArrayList list = (ArrayList) param.args[0];
                     param.setResult(null);
                     if (list == null || list.isEmpty()) return;
-                    Object obj = list.get(0);
-                    try {
-                        onRevokeMsg(obj);
-                    } catch (Throwable t) {
-                        log(t);
+                    for (Object revokeMsgInfo : list) {
+                        try {
+                            onRevokeMsg(revokeMsgInfo);
+                        } catch (Throwable t) {
+                            log(t);
+                        }
                     }
+                    list.clear();
                 }
             });
             inited = true;
@@ -81,10 +85,10 @@ public class RevokeMsgHook extends BaseDelayableHook {
         }
     }
 
-    private void onRevokeMsg(Object revokeMsgInfo) {
+    private void onRevokeMsg(Object revokeMsgInfo) throws Exception {
         RevokeMsgInfoImpl info = new RevokeMsgInfoImpl((Parcelable) revokeMsgInfo);
         String entityUin = info.friendUin;
-        String revokerUin = info.sendUin;//FIXME: this should be fromUin, which should NOT be NULL
+        String revokerUin = info.fromUin;
         String authorUin = info.authorUin;
         int istroop = info.istroop;
         long msgUid = info.msgUid;
@@ -166,7 +170,8 @@ public class RevokeMsgHook extends BaseDelayableHook {
         }
         List<Object> list = new ArrayList<>();
         list.add(revokeGreyTip);
-        callMethod(mQQMsgFacade, "a", list, Utils.getAccount());
+        invoke_virtual_declared_ordinal_modifier(mQQMsgFacade, 0, 4, false, Modifier.PUBLIC, 0,
+                list, Utils.getAccount(), List.class, String.class, void.class);
     }
 
     private Bundle createTroopMemberHighlightItem(String memberUin) {
@@ -177,9 +182,9 @@ public class RevokeMsgHook extends BaseDelayableHook {
         return bundle;
     }
 
-    private Object createBareHighlightGreyTip(String entityUin, int istroop, String fromUin, long time, String msg, long msgUid, long shmsgseq) {
+    private Object createBareHighlightGreyTip(String entityUin, int istroop, String fromUin, long time, String msg, long msgUid, long shmsgseq) throws Exception {
         int msgtype = -2030;// MessageRecord.MSG_TYPE_TROOP_GAP_GRAY_TIPS
-        Object messageRecord = callStaticMethod(DexKit.doFindClass(DexKit.C_MSG_REC_FAC), "a", msgtype);
+        Object messageRecord = invoke_static_declared_ordinal(DexKit.doFindClass(DexKit.C_MSG_REC_FAC), 0, 2, true, msgtype, int.class);
         callMethod(messageRecord, "init", Utils.getAccount(), entityUin, fromUin, msg, time, msgtype, istroop, time);
         setObjectField(messageRecord, "msgUid", msgUid);
         setObjectField(messageRecord, "shmsgseq", shmsgseq);
@@ -187,9 +192,9 @@ public class RevokeMsgHook extends BaseDelayableHook {
         return messageRecord;
     }
 
-    private Object createBarePlainGreyTip(String entityUin, int istroop, String fromUin, long time, String msg, long msgUid, long shmsgseq) {
+    private Object createBarePlainGreyTip(String entityUin, int istroop, String fromUin, long time, String msg, long msgUid, long shmsgseq) throws Exception {
         int msgtype = -2031;// MessageRecord.MSG_TYPE_REVOKE_GRAY_TIPS
-        Object messageRecord = callStaticMethod(DexKit.doFindClass(DexKit.C_MSG_REC_FAC), "a", msgtype);
+        Object messageRecord = invoke_static_declared_ordinal(DexKit.doFindClass(DexKit.C_MSG_REC_FAC), 0, 2, true, msgtype, int.class);
         callMethod(messageRecord, "init", Utils.getAccount(), entityUin, fromUin, msg, time, msgtype, istroop, time);
         setObjectField(messageRecord, "msgUid", msgUid);
         setObjectField(messageRecord, "shmsgseq", shmsgseq);
@@ -209,7 +214,7 @@ public class RevokeMsgHook extends BaseDelayableHook {
         if (troopUin != null && troopUin.length() > 0) {
             try {
                 Object mTroopManager = getTroopManager();
-                Object troopMemberInfo = invoke_virtual(mTroopManager, "a", troopUin, memberUin,
+                Object troopMemberInfo = invoke_virtual_declared_ordinal(mTroopManager, 0, 3, false, troopUin, memberUin,
                         String.class, String.class, load("com.tencent.mobileqq.data.TroopMemberInfo"));
                 if (troopMemberInfo != null) {
                     String troopnick = (String) XposedHelpers.getObjectField(troopMemberInfo, "troopnick");
@@ -224,8 +229,10 @@ public class RevokeMsgHook extends BaseDelayableHook {
                 log(e);
             }
             try {
-                String ret;
-                String nickname = (String) callStaticMethod(DexKit.doFindClass(DexKit.C_CONTACT_UTILS), "c", getQQAppInterface(), troopUin, memberUin);
+                String ret;//getDiscussionMemberShowName
+                String nickname = (String) invoke_static_declared_ordinal_modifier(DexKit.doFindClass(DexKit.C_CONTACT_UTILS),
+                        2, 10, false, Modifier.PUBLIC, 0,
+                        getQQAppInterface(), troopUin, memberUin, _QQAppInterface(), String.class, String.class);
                 if (nickname != null && (ret = nickname.replaceAll("\\u202E", "")).trim().length() > 0) {
                     return ret;
                 }
@@ -234,8 +241,9 @@ public class RevokeMsgHook extends BaseDelayableHook {
             }
         }
         try {
-            String ret;
-            String nickname = (String) callStaticMethod(DexKit.doFindClass(DexKit.C_CONTACT_UTILS), "b", getQQAppInterface(), memberUin, true);
+            String ret;//getBuddyName
+            String nickname = (String) invoke_static_declared_ordinal_modifier(DexKit.doFindClass(DexKit.C_CONTACT_UTILS), 1, 3, true, Modifier.PUBLIC, 0,
+                    getQQAppInterface(), memberUin, true, _QQAppInterface(), String.class, boolean.class, String.class);
             if (nickname != null && (ret = nickname.replaceAll("\\u202E", "")).trim().length() > 0) {
                 return ret;
             }
@@ -249,8 +257,8 @@ public class RevokeMsgHook extends BaseDelayableHook {
     private Object getMessage(String uin, int istroop, long shmsgseq, long msgUid) {
         List list = null;
         try {
-            list = (List) invoke_virtual(mQQMsgFacade, "a", uin, istroop, shmsgseq, msgUid, String.class, int.class,
-                    long.class, long.class, List.class);
+            list = (List) invoke_virtual_declared_ordinal(mQQMsgFacade, 0, 2, false,
+                    uin, istroop, shmsgseq, msgUid, String.class, int.class, long.class, long.class, List.class);
         } catch (Exception e) {
             log(e);
         }

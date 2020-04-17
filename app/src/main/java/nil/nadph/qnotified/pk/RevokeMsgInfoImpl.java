@@ -16,12 +16,14 @@ public class RevokeMsgInfoImpl {
     public int istroop;
     public long shmsgseq;
     public String friendUin;
-    @Deprecated
-    public int longmsgid;
+    //@Deprecated
+    //public int longmsgid;
     public long msgUid;
     public String fromUin;
+    //public int f89926c;longMsgCount
     public long time;
     public String sendUin;
+    //public int d;longMsgIndex
     @Nullable
     public String authorUin = null;
     @Nullable
@@ -45,6 +47,25 @@ public class RevokeMsgInfoImpl {
             log(e);
         }
         p.recycle();
+        String summery = o.toString();
+        int keyIndex = summery.indexOf("fromuin");
+        if (keyIndex == -1) {
+            log("RevokeMsgInfoImpl/E indexOf('fromuin') == -1, leave fromUin null");
+            return;
+        }
+        int valueStart = summery.indexOf('=', keyIndex) + 1;
+        if (summery.charAt(valueStart) == ' ') valueStart++;
+        int end1 = summery.indexOf(',', valueStart);
+        int end2 = summery.indexOf(' ', valueStart);
+        if (end1 == -1) end1 = summery.length() - 1;
+        if (end2 == -1) end2 = summery.length() - 1;
+        int end = Math.min(end1, end2);
+        String str = summery.substring(valueStart, end);
+        if (str.equals("null")) {
+            fromUin = null;
+        } else {
+            fromUin = str;
+        }
     }
 
     @Override
@@ -53,9 +74,10 @@ public class RevokeMsgInfoImpl {
                 "istroop=" + istroop +
                 ", shmsgseq=" + shmsgseq +
                 ", friendUin='" + friendUin + '\'' +
-                ", sendUin='" + sendUin + '\'' +
                 ", msgUid=" + msgUid +
+                ", fromUin='" + fromUin + '\'' +
                 ", time=" + time +
+                ", sendUin='" + sendUin + '\'' +
                 ", authorUin='" + authorUin + '\'' +
                 ", opType=" + opType +
                 '}';
