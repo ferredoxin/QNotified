@@ -21,6 +21,7 @@ import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.util.CustomMenu;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.FaceImpl;
 import nil.nadph.qnotified.util.Utils;
@@ -82,11 +83,18 @@ public class PttForwardHook extends BaseDelayableHook {
                 @SuppressLint("SetTextI18n")
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    Bundle data = (Bundle) Utils.iget_object_or_null(param.thisObject, "a", Bundle.class);
+                    Field f = findField(param.thisObject.getClass(), Bundle.class, "a");
+                    if (f == null) {
+                        f = getFirstNSFFieldByType(param.thisObject.getClass(), Bundle.class);
+                    }
+                    f.setAccessible(true);
+                    Bundle data = (Bundle) f.get(param.thisObject);
                     if (!data.containsKey("ptt_forward_path")) return;
                     param.setResult(null);
                     final String path = data.getString("ptt_forward_path");
-                    final Activity ctx = (Activity) Utils.iget_object_or_null(param.thisObject, "a", Activity.class);
+                    Activity ctx = (Activity) Utils.iget_object_or_null(param.thisObject, "a", Activity.class);
+                    if (ctx == null)
+                        ctx = (Activity) Utils.iget_object_or_null(param.thisObject, "mActivity", Activity.class);
                     if (path == null || !new File(path).exists()) {
                         Utils.showToast(ctx, TOAST_TYPE_ERROR, "Error: Invalid ptt file!", Toast.LENGTH_SHORT);
                         return;
@@ -171,6 +179,7 @@ public class PttForwardHook extends BaseDelayableHook {
                     }
                     //String ret = "" +/*ctx.getIntent().getExtras();//*/iget_object(param.thisObject, "a", Bundle.class);
                     CustomDialog dialog = CustomDialog.create(ctx);
+                    final Activity finalCtx = ctx;
                     dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -179,16 +188,16 @@ public class PttForwardHook extends BaseDelayableHook {
                                     Object sesssion = Utils.createSessionInfo(cd.uin, cd.uinType);
                                     XposedHelpers.callStaticMethod(DexKit.doFindClass(DexKit.C_FACADE), "a", Utils.getQQAppInterface(), sesssion, path);
                                 }
-                                Utils.showToast(ctx, TOAST_TYPE_SUCCESS, "已发送", Toast.LENGTH_SHORT);
+                                Utils.showToast(finalCtx, TOAST_TYPE_SUCCESS, "已发送", Toast.LENGTH_SHORT);
                             } catch (Throwable e) {
                                 log(e);
                                 try {
-                                    Utils.showToast(ctx, TOAST_TYPE_ERROR, "失败: " + e, Toast.LENGTH_SHORT);
+                                    Utils.showToast(finalCtx, TOAST_TYPE_ERROR, "失败: " + e, Toast.LENGTH_SHORT);
                                 } catch (Throwable ignored) {
-                                    Toast.makeText(ctx, "失败: " + e, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(finalCtx, "失败: " + e, Toast.LENGTH_SHORT).show();
                                 }
                             }
-                            ctx.finish();
+                            finalCtx.finish();
                         }
                     });
                     dialog.setNegativeButton("取消", new Utils.DummyCallback());
@@ -245,7 +254,7 @@ public class PttForwardHook extends BaseDelayableHook {
             });
             for (Method m : cl_PttItemBuilder.getDeclaredMethods()) {
                 if (!m.getReturnType().isArray()) continue;
-                Class[] ps = m.getParameterTypes();
+                Class<?>[] ps = m.getParameterTypes();
                 if (ps.length == 1 && ps[0].equals(View.class))
                     XposedBridge.hookMethod(m, new XC_MethodHook(60) {
                         @Override
@@ -256,13 +265,9 @@ public class PttForwardHook extends BaseDelayableHook {
                             } catch (Exception ignored) {
                             }
                             Object arr = param.getResult();
-                            Class clQQCustomMenuItem = Array.get(arr, 0).getClass();
-                            Object item_forward = clQQCustomMenuItem.newInstance();
-                            iput_object(item_forward, "a", int.class, R_ID_PTT_FORWARD);
-                            iput_object(item_forward, "a", String.class, "转发");
-                            Object item_save = clQQCustomMenuItem.newInstance();
-                            iput_object(item_save, "a", int.class, R_ID_PTT_SAVE);
-                            iput_object(item_save, "a", String.class, "保存");
+                            Class<?> clQQCustomMenuItem = arr.getClass().getComponentType();
+                            Object item_forward = CustomMenu.createItem(clQQCustomMenuItem, R_ID_PTT_FORWARD, "转发");
+                            Object item_save = CustomMenu.createItem(clQQCustomMenuItem, R_ID_PTT_SAVE, "保存");
                             Object ret = Array.newInstance(clQQCustomMenuItem, Array.getLength(arr) + 2);
                             Array.set(ret, 0, Array.get(arr, 0));
                             //noinspection SuspiciousSystemArraycopy

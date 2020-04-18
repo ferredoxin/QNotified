@@ -20,6 +20,7 @@ import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.InterceptLayout;
 import nil.nadph.qnotified.ui.TouchEventToLongClickAdapter;
+import nil.nadph.qnotified.util.CustomMenu;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Utils;
 
@@ -226,14 +227,13 @@ public class CardMsgHook extends BaseDelayableHook {
             } catch (Exception ignored) {
             }
             Object arr = param.getResult();
-            Object QQCustomMenuItem = Array.get(arr, 0).getClass().newInstance();
-            iput_object(QQCustomMenuItem, "a", int.class, R_ID_COPY_CODE);
-            iput_object(QQCustomMenuItem, "a", String.class, "复制代码");
-            Object ret = Array.newInstance(QQCustomMenuItem.getClass(), Array.getLength(arr) + 1);
+            Class<?> clQQCustomMenuItem = arr.getClass().getComponentType();
+            Object item_copy = CustomMenu.createItem(clQQCustomMenuItem, R_ID_COPY_CODE, "复制代码");
+            Object ret = Array.newInstance(clQQCustomMenuItem, Array.getLength(arr) + 1);
             Array.set(ret, 0, Array.get(arr, 0));
             //noinspection SuspiciousSystemArraycopy
             System.arraycopy(arr, 1, ret, 2, Array.getLength(arr) - 1);
-            Array.set(ret, 1, QQCustomMenuItem);
+            Array.set(ret, 1, item_copy);
             param.setResult(ret);
         }
     }
