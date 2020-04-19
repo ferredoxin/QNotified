@@ -19,6 +19,7 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.bridge.SessionInfoImpl;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.CustomMenu;
@@ -185,7 +186,7 @@ public class PttForwardHook extends BaseDelayableHook {
                         public void onClick(DialogInterface dialog, int which) {
                             try {
                                 for (Utils.ContactDescriptor cd : mTargets) {
-                                    Object sesssion = Utils.createSessionInfo(cd.uin, cd.uinType);
+                                    Object sesssion = SessionInfoImpl.createSessionInfo(cd.uin, cd.uinType);
                                     XposedHelpers.callStaticMethod(DexKit.doFindClass(DexKit.C_FACADE), "a", Utils.getQQAppInterface(), sesssion, path);
                                 }
                                 Utils.showToast(finalCtx, TOAST_TYPE_SUCCESS, "已发送", Toast.LENGTH_SHORT);

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import nil.nadph.qnotified.ExfriendManager;
+import nil.nadph.qnotified.bridge.SessionInfoImpl;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -134,7 +135,7 @@ public class SendBatchMsg {
                             int delay = (System.currentTimeMillis() > 1598889601000L) ? arrayList.size() : 0;
                             for (ContactDescriptor contactInfo : arrayList) {
                                 try {
-                                    if (null == m.invoke(null, getQQAppInterface(), context, Utils.createSessionInfo(contactInfo.uin, contactInfo.uinType), msg, new ArrayList<>(), SendMsgParams.newInstance())) {
+                                    if (null == m.invoke(null, getQQAppInterface(), context, SessionInfoImpl.createSessionInfo(contactInfo.uin, contactInfo.uinType), msg, new ArrayList<>(), SendMsgParams.newInstance())) {
                                         isSuccess = false;
                                     }
                                     if (delay > 0) Thread.sleep(delay);

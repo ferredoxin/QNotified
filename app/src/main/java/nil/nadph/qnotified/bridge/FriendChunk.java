@@ -1,4 +1,4 @@
-package nil.nadph.qnotified.pk;
+package nil.nadph.qnotified.bridge;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;

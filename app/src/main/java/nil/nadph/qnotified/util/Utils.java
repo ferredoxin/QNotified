@@ -28,7 +28,6 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static nil.nadph.qnotified.util.Initiator._SessionInfo;
 import static nil.nadph.qnotified.util.Initiator.load;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
@@ -766,20 +765,6 @@ public class Utils {
 
     public static Object getMobileQQService() {
         return iget_object_or_null(getQQAppInterface(), "a", load("com/tencent/mobileqq/service/MobileQQService"));
-    }
-
-    public static Object createSessionInfo(String uin, int uinType) {
-        Class clz = _SessionInfo();
-        if (clz == null) throw new NoClassDefFoundError("SessionInfo");
-        try {
-            Object obj = new_instance(clz);
-            iput_object(obj, "a", String.class, uin);
-            iput_object(obj, "a", int.class, uinType);
-            return obj;
-        } catch (Exception e) {
-            log(e);
-        }
-        return null;
     }
 
     public static String get_RGB(int color) {

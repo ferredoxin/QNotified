@@ -18,7 +18,7 @@ import nil.nadph.qnotified.config.EventRecord;
 import nil.nadph.qnotified.config.FriendRecord;
 import nil.nadph.qnotified.config.Table;
 import nil.nadph.qnotified.hook.DelDetectorHook;
-import nil.nadph.qnotified.pk.FriendChunk;
+import nil.nadph.qnotified.bridge.FriendChunk;
 import nil.nadph.qnotified.util.ActProxyMgr;
 import nil.nadph.qnotified.util.Nullable;
 import nil.nadph.qnotified.util.Utils;
