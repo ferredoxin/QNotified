@@ -12,17 +12,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import nil.nadph.qnotified.ExfriendManager;
+import nil.nadph.qnotified.bridge.ChatActivityFacade;
 import nil.nadph.qnotified.bridge.SessionInfoImpl;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.util.Initiator._SessionInfo;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class SendBatchMsg {
@@ -117,25 +116,10 @@ public class SendBatchMsg {
                         HashSet<ContactDescriptor> arrayList = troopAndFriendSelectAdpter.mTargets;
                         if (!arrayList.isEmpty()) {
                             boolean isSuccess = true;
-                            Class facade = DexKit.doFindClass(DexKit.C_FACADE);
-                            Class SendMsgParams = null;
-                            Method m = null;
-                            for (Method mi : facade.getDeclaredMethods()) {
-                                if (!mi.getReturnType().equals(long[].class)) continue;
-                                Class[] argt = mi.getParameterTypes();
-                                if (argt.length != 6) continue;
-                                if (argt[1].equals(Context.class) && argt[2].equals(_SessionInfo())
-                                        && argt[3].equals(String.class) && argt[4].equals(ArrayList.class)) {
-                                    m = mi;
-                                    m.setAccessible(true);
-                                    SendMsgParams = argt[5];
-                                    break;
-                                }
-                            }
                             int delay = (System.currentTimeMillis() > 1598889601000L) ? arrayList.size() : 0;
                             for (ContactDescriptor contactInfo : arrayList) {
                                 try {
-                                    if (null == m.invoke(null, getQQAppInterface(), context, SessionInfoImpl.createSessionInfo(contactInfo.uin, contactInfo.uinType), msg, new ArrayList<>(), SendMsgParams.newInstance())) {
+                                    if (null == ChatActivityFacade.sendMessage(getQQAppInterface(), context, SessionInfoImpl.createSessionInfo(contactInfo.uin, contactInfo.uinType), msg)) {
                                         isSuccess = false;
                                     }
                                     if (delay > 0) Thread.sleep(delay);

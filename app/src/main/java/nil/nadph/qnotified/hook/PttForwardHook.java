@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Looper;
+import android.os.Parcelable;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,6 +19,7 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.bridge.ChatActivityFacade;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.bridge.SessionInfoImpl;
 import nil.nadph.qnotified.ui.CustomDialog;
@@ -186,8 +188,8 @@ public class PttForwardHook extends BaseDelayableHook {
                         public void onClick(DialogInterface dialog, int which) {
                             try {
                                 for (Utils.ContactDescriptor cd : mTargets) {
-                                    Object sesssion = SessionInfoImpl.createSessionInfo(cd.uin, cd.uinType);
-                                    XposedHelpers.callStaticMethod(DexKit.doFindClass(DexKit.C_FACADE), "a", Utils.getQQAppInterface(), sesssion, path);
+                                    Parcelable sesssion = SessionInfoImpl.createSessionInfo(cd.uin, cd.uinType);
+                                    ChatActivityFacade.sendPttMessage(getQQAppInterface(),sesssion,path);
                                 }
                                 Utils.showToast(finalCtx, TOAST_TYPE_SUCCESS, "已发送", Toast.LENGTH_SHORT);
                             } catch (Throwable e) {

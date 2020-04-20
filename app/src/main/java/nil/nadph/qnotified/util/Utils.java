@@ -13,8 +13,10 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+import com.tencent.mobileqq.app.QQAppInterface;
 import dalvik.system.DexFile;
 import de.robv.android.xposed.XposedBridge;
+import mqq.app.AppRuntime;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
@@ -733,8 +735,8 @@ public class Utils {
         }
     }
 
-    public static Object getQQAppInterface() {
-        return getAppRuntime();
+    public static QQAppInterface getQQAppInterface() {
+        return (QQAppInterface) getAppRuntime();
     }
 
 	/*
@@ -937,13 +939,13 @@ public class Utils {
         return null;
     }
 
-    public static Object getAppRuntime() {
+    public static AppRuntime getAppRuntime() {
         Object baseApplicationImpl = getApplication();
         try {
             Method m;
             m = hasMethod(baseApplicationImpl, "getRuntime");
-            if (m == null) return invoke_virtual(baseApplicationImpl, "a", load("mqq/app/AppRuntime"));
-            else return m.invoke(baseApplicationImpl);
+            if (m == null) return (AppRuntime) invoke_virtual(baseApplicationImpl, "a", load("mqq/app/AppRuntime"));
+            else return (AppRuntime) m.invoke(baseApplicationImpl);
         } catch (Exception e) {
             throw new AssertionError(e);
         }
