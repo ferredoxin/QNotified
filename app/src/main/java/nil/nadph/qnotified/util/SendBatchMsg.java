@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import nil.nadph.qnotified.ExfriendManager;
+import nil.nadph.qnotified.activity.TroopSelectActivity;
 import nil.nadph.qnotified.bridge.ChatActivityFacade;
 import nil.nadph.qnotified.bridge.SessionInfoImpl;
 
@@ -256,8 +257,7 @@ public class SendBatchMsg {
 
         private void init() throws Exception {
             mFriends = ExfriendManager.getCurrent().getFriendsRemark();
-            Object mTroopManager = getTroopManager();
-            ArrayList tx = (ArrayList) invoke_virtual(mTroopManager, "a", ArrayList.class);
+            ArrayList tx = TroopSelectActivity.getTroopInfoListRaw();
             mGroups = new ArrayList<>();
             for (Object info : tx) {
                 ContactDescriptor cd = new ContactDescriptor();

@@ -32,7 +32,7 @@ public class SimpleCheckInHook extends BaseDelayableHook {
         try {
             Method getMsgType = null;
             for (Method m : DexKit.doFindClass(DexKit.C_ITEM_BUILDER_FAC).getMethods()) {
-                if (m.getReturnType().equals(int.class) && m.getName().equals("a")) {
+                if (m.getReturnType().equals(int.class)) {
                     Class[] argt = m.getParameterTypes();
                     if (argt.length > 0 && argt[argt.length - 1].equals(load("com.tencent.mobileqq.data.ChatMessage"))) {
                         getMsgType = m;

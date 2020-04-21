@@ -3,7 +3,6 @@ package nil.nadph.qnotified.bridge;
 import android.content.Context;
 import android.os.Parcelable;
 import com.tencent.mobileqq.app.QQAppInterface;
-import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.util.DexKit;
 
 import java.lang.reflect.Method;
@@ -63,8 +62,22 @@ public class ChatActivityFacade {
     }
 
     public static long sendPttMessage(QQAppInterface qqAppInterface, Parcelable sessionInfo, String pttPath) {
-
-        
-        return (long) XposedHelpers.callStaticMethod(DexKit.doFindClass(DexKit.C_FACADE), "a", qqAppInterface, sessionInfo, pttPath);
+        Method send = null;
+        for (Method m : DexKit.doFindClass(DexKit.C_FACADE).getMethods()) {
+            if (m.getReturnType().equals(long.class)) {
+                Class<?>[] clz = m.getParameterTypes();
+                if (clz.length != 3) continue;
+                if (clz[0].equals(QQAppInterface.class) && clz[1].equals(_SessionInfo()) && clz[2].equals(String.class)) {
+                    send = m;
+                    break;
+                }
+            }
+        }
+        try {
+            return (long) send.invoke(null, qqAppInterface, sessionInfo, pttPath);
+        } catch (Exception e) {
+            log(e);
+            return 0;
+        }
     }
 }

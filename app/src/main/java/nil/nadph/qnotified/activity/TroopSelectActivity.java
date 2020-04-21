@@ -81,7 +81,17 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
 
     public static ArrayList<TroopInfo> getTroopInfoList() throws Exception {
         Object mTroopManager = getTroopManager();
-        ArrayList tx;
+        ArrayList<?> tx = getTroopInfoListRaw();
+        ArrayList<TroopInfo> ret = new ArrayList<TroopInfo>();
+        for (Object info : tx) {
+            ret.add(new TroopInfo(info));
+        }
+        return ret;
+    }
+
+    public static ArrayList<?> getTroopInfoListRaw() throws Exception {
+        Object mTroopManager = getTroopManager();
+        ArrayList<?> tx;
         Method m0a = null, m0b = null;
         for (Method m : mTroopManager.getClass().getMethods()) {
             if (m.getReturnType().equals(ArrayList.class) && Modifier.isPublic(m.getModifiers()) && m.getParameterTypes().length == 0) {
@@ -99,15 +109,11 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
             }
         }
         if (m0b == null) {
-            tx = (ArrayList) m0a.invoke(mTroopManager);
+            tx = (ArrayList<?>) m0a.invoke(mTroopManager);
         } else {
-            tx = (ArrayList) ((strcmp(m0a.getName(), m0b.getName()) > 0) ? m0b : m0a).invoke(mTroopManager);
+            tx = (ArrayList<?>) ((strcmp(m0a.getName(), m0b.getName()) > 0) ? m0b : m0a).invoke(mTroopManager);
         }
-        ArrayList<TroopInfo> ret = new ArrayList<TroopInfo>();
-        for (Object info : tx) {
-            ret.add(new TroopInfo(info));
-        }
-        return ret;
+        return tx;
     }
 
     @Override
