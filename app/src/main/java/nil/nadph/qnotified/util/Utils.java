@@ -1430,13 +1430,14 @@ public class Utils {
                 || nick.contains("加盟") || nick.contains("中介") || nick.contains("兼职") || nick.contains("客服")
                 || nick.contains("招聘") || nick.contains("换钱") || nick.contains("接单") || nick.contains("承接")
                 || nick.contains("解封") || nick.contains("保号") || nick.contains("业务") || nick.contains("互拉")
+                || nick.contains("刷单") || nick.contains("代打") || nick.contains("总创")
                 || nick.matches(".*[\u53f8\u6b7b][\u9a6c\u5417\u5988\u3000].*"))
             return true;
         if (nick.equalsIgnoreCase("A")) return true;
         if (nick.length() < 2) {
             return isSymbol(nick.charAt(0));
         }
-        if (nick.matches(".*[Aa]['`. ,\u2018\u2019\u201a\u201b^_\u309e].*")) {
+        if (nick.matches(".*[Aa][/'`. ,\u2018\u2019\u201a\u201b^_\u309e].*")) {
             return true;
         }
         if (nick.endsWith(".")) {
