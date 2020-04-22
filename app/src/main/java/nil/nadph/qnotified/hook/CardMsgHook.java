@@ -1,3 +1,21 @@
+/* QNotified - An Xposed module for QQ/TIM
+ * Copyright (C) 2019-2020 cinit@github.com
+ * https://github.com/cinit/QNotified
+ *
+ * This software is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library.  If not, see
+ * <https://www.gnu.org/licenses/>.
+ */
 package nil.nadph.qnotified.hook;
 
 
@@ -49,123 +67,125 @@ public class CardMsgHook extends BaseDelayableHook {
         if (inited) return true;
         try {
             //Begin: send btn
-            String _____ = "e";
+            String _BaseChatPie_init_name = "e";
             try {
                 Application ctx = Utils.getApplication();
                 if (getHostInfo(ctx).versionName.indexOf(0) == '7') {
-                    _____ = "d";
+                    _BaseChatPie_init_name = "d";
                 }
             } catch (Throwable e) {
                 //Should not happen
                 log(e);
             }
             final Class cl_BaseChatPie = load("com.tencent.mobileqq.activity.BaseChatPie");
+            Method _BaseChatPie_init = null;
             for (Method method : cl_BaseChatPie.getDeclaredMethods()) {
                 if (method.getParameterTypes().length != 0
                         || !method.getReturnType().equals(void.class)) continue;
-                if (method.getName().equals(_____)) {
-                    XposedBridge.hookMethod(method, new XC_MethodHook(40) {
-                        @Override
-                        public void afterHookedMethod(MethodHookParam param) throws Throwable {
-                            try {
-                                Object chatPie = param.thisObject;
-                                //Class cl_PatchedButton = load("com/tencent/widget/PatchedButton");
-                                final ViewGroup viewGroup = (ViewGroup) invoke_virtual(chatPie, "a", ViewGroup.class);
-                                if (viewGroup == null) return;
-                                Context ctx = viewGroup.getContext();
-                                int fun_btn = ctx.getResources().getIdentifier("fun_btn", "id", ctx.getPackageName());
-                                View sendBtn = viewGroup.findViewById(fun_btn);
-                                final Object qqApp = iget_object_or_null(param.thisObject, "a", _QQAppInterface());
-                                final Object session = iget_object_or_null(param.thisObject, "a", _SessionInfo());
-                                if (!sendBtn.getParent().getClass().getName().equals(InterceptLayout.class.getName())) {
-                                    InterceptLayout layout = InterceptLayout.setupRudely(sendBtn);
-                                    layout.setTouchInterceptor(new TouchEventToLongClickAdapter() {
-                                        @Override
-                                        public boolean onTouch(View v, MotionEvent event) {
-                                            ViewGroup vg = (ViewGroup) v;
-                                            Context ctx = v.getContext();
-                                            if (event.getAction() == MotionEvent.ACTION_DOWN &&
-                                                    vg.getChildCount() != 0 && vg.getChildAt(0).isEnabled()) {
-                                                return false;
-                                            }
-                                            return super.onTouch(v, event);
-                                        }
-
-                                        @Override
-                                        public boolean onLongClick(View v) {
-                                            try {
-                                                ViewGroup vg = (ViewGroup) v;
-                                                Context ctx = v.getContext();
-                                                if (vg.getChildCount() != 0 && !vg.getChildAt(0).isEnabled()) {
-                                                    EditText input = (EditText) viewGroup.findViewById(ctx.getResources().getIdentifier("input", "id", ctx.getPackageName()));
-                                                    String text = input.getText().toString();
-                                                    if (text.length() == 0) {
-                                                        showToast(ctx, TOAST_TYPE_ERROR, "请先输入卡片代码", Toast.LENGTH_SHORT);
-                                                    }
-                                                    return true;
-                                                }
-                                            } catch (Exception e) {
-                                                log(e);
-                                            }
-                                            return false;
-                                        }
-                                    }.setLongPressTimeoutFactor(1.5f));
-                                }
-                                sendBtn.setOnLongClickListener(new View.OnLongClickListener() {
-                                    @Override
-                                    public boolean onLongClick(View v) {
-                                        Context ctx = v.getContext();
-                                        EditText input = (EditText) viewGroup.findViewById(ctx.getResources().getIdentifier("input", "id", ctx.getPackageName()));
-                                        String text = input.getText().toString();
-                                        if (((TextView) v).length() == 0) {
-                                            return false;
-                                        } else {
-                                            if (text.contains("<?xml")) {
-                                                try {
-                                                    Object structMsg = invoke_static(DexKit.doFindClass(DexKit.C_TEST_STRUCT_MSG), "a", text, String.class, load("com.tencent.mobileqq.structmsg.AbsStructMsg"));
-                                                    if (structMsg != null) {
-                                                        XposedHelpers.callStaticMethod(DexKit.doFindClass(DexKit.C_FACADE), "a", qqApp, session, structMsg);
-                                                        input.setText("");
-                                                        return true;
-                                                    } else {
-                                                        Utils.showToast(ctx, TOAST_TYPE_ERROR, "XML语法错误(代码有误)", Toast.LENGTH_SHORT);
-                                                        return true;
-                                                    }
-                                                } catch (Throwable e) {
-                                                    if (e instanceof InvocationTargetException) e = e.getCause();
-                                                    log(e);
-                                                    Utils.showToast(ctx, TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), Toast.LENGTH_SHORT);
-                                                }
-                                            } else if (text.contains("{\"")) {
-                                                try {
-                                                    Object arkMsg = load("com.tencent.mobileqq.data.ArkAppMessage").newInstance();
-                                                    if ((boolean) invoke_virtual(arkMsg, "fromAppXml", text, String.class)) {
-                                                        XposedHelpers.callStaticMethod(DexKit.doFindClass(DexKit.C_FACADE), "a", qqApp, session, arkMsg);
-                                                        //invoke_static(DexKit.doFindClass(DexKit.C_FACADE), "a", qqApp, session, arkMsg, load("com.tencent.mobileqq.app.QQAppInterface"), _SessionInfo(), arkMsg.getClass());
-                                                        input.setText("");
-                                                        return true;
-                                                    } else {
-                                                        Utils.showToast(ctx, TOAST_TYPE_ERROR, "JSON语法错误(代码有误)", Toast.LENGTH_SHORT);
-                                                        return true;
-                                                    }
-                                                } catch (Throwable e) {
-                                                    if (e instanceof InvocationTargetException) e = e.getCause();
-                                                    log(e);
-                                                    Utils.showToast(ctx, TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), Toast.LENGTH_SHORT);
-                                                }
-                                            }
-                                        }
-                                        return true;
-                                    }
-                                });
-                            } catch (Throwable e) {
-                                log(e);
-                            }
-                        }
-                    });
+                if (method.getName().equals(_BaseChatPie_init_name)) {
+                    _BaseChatPie_init = method;
                     break;
                 }
             }
+            XposedBridge.hookMethod(_BaseChatPie_init, new XC_MethodHook(40) {
+                @Override
+                public void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    try {
+                        Object chatPie = param.thisObject;
+                        //Class cl_PatchedButton = load("com/tencent/widget/PatchedButton");
+                        final ViewGroup viewGroup = (ViewGroup) invoke_virtual(chatPie, "a", ViewGroup.class);
+                        if (viewGroup == null) return;
+                        Context ctx = viewGroup.getContext();
+                        int fun_btn = ctx.getResources().getIdentifier("fun_btn", "id", ctx.getPackageName());
+                        View sendBtn = viewGroup.findViewById(fun_btn);
+                        final Object qqApp = iget_object_or_null(param.thisObject, "a", _QQAppInterface());
+                        final Object session = iget_object_or_null(param.thisObject, "a", _SessionInfo());
+                        if (!sendBtn.getParent().getClass().getName().equals(InterceptLayout.class.getName())) {
+                            InterceptLayout layout = InterceptLayout.setupRudely(sendBtn);
+                            layout.setTouchInterceptor(new TouchEventToLongClickAdapter() {
+                                @Override
+                                public boolean onTouch(View v, MotionEvent event) {
+                                    ViewGroup vg = (ViewGroup) v;
+                                    Context ctx = v.getContext();
+                                    if (event.getAction() == MotionEvent.ACTION_DOWN &&
+                                            vg.getChildCount() != 0 && vg.getChildAt(0).isEnabled()) {
+                                        return false;
+                                    }
+                                    return super.onTouch(v, event);
+                                }
+
+                                @Override
+                                public boolean onLongClick(View v) {
+                                    try {
+                                        ViewGroup vg = (ViewGroup) v;
+                                        Context ctx = v.getContext();
+                                        if (vg.getChildCount() != 0 && !vg.getChildAt(0).isEnabled()) {
+                                            EditText input = (EditText) viewGroup.findViewById(ctx.getResources().getIdentifier("input", "id", ctx.getPackageName()));
+                                            String text = input.getText().toString();
+                                            if (text.length() == 0) {
+                                                showToast(ctx, TOAST_TYPE_ERROR, "请先输入卡片代码", Toast.LENGTH_SHORT);
+                                            }
+                                            return true;
+                                        }
+                                    } catch (Exception e) {
+                                        log(e);
+                                    }
+                                    return false;
+                                }
+                            }.setLongPressTimeoutFactor(1.5f));
+                        }
+                        sendBtn.setOnLongClickListener(new View.OnLongClickListener() {
+                            @Override
+                            public boolean onLongClick(View v) {
+                                Context ctx = v.getContext();
+                                EditText input = (EditText) viewGroup.findViewById(ctx.getResources().getIdentifier("input", "id", ctx.getPackageName()));
+                                String text = input.getText().toString();
+                                if (((TextView) v).length() == 0) {
+                                    return false;
+                                } else {
+                                    if (text.contains("<?xml")) {
+                                        try {
+                                            Object structMsg = invoke_static(DexKit.doFindClass(DexKit.C_TEST_STRUCT_MSG), "a", text, String.class, load("com.tencent.mobileqq.structmsg.AbsStructMsg"));
+                                            if (structMsg != null) {
+                                                XposedHelpers.callStaticMethod(DexKit.doFindClass(DexKit.C_FACADE), "a", qqApp, session, structMsg);
+                                                input.setText("");
+                                                return true;
+                                            } else {
+                                                Utils.showToast(ctx, TOAST_TYPE_ERROR, "XML语法错误(代码有误)", Toast.LENGTH_SHORT);
+                                                return true;
+                                            }
+                                        } catch (Throwable e) {
+                                            if (e instanceof InvocationTargetException) e = e.getCause();
+                                            log(e);
+                                            Utils.showToast(ctx, TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), Toast.LENGTH_SHORT);
+                                        }
+                                    } else if (text.contains("{\"")) {
+                                        try {
+                                            Object arkMsg = load("com.tencent.mobileqq.data.ArkAppMessage").newInstance();
+                                            if ((boolean) invoke_virtual(arkMsg, "fromAppXml", text, String.class)) {
+                                                XposedHelpers.callStaticMethod(DexKit.doFindClass(DexKit.C_FACADE), "a", qqApp, session, arkMsg);
+                                                //invoke_static(DexKit.doFindClass(DexKit.C_FACADE), "a", qqApp, session, arkMsg, load("com.tencent.mobileqq.app.QQAppInterface"), _SessionInfo(), arkMsg.getClass());
+                                                input.setText("");
+                                                return true;
+                                            } else {
+                                                Utils.showToast(ctx, TOAST_TYPE_ERROR, "JSON语法错误(代码有误)", Toast.LENGTH_SHORT);
+                                                return true;
+                                            }
+                                        } catch (Throwable e) {
+                                            if (e instanceof InvocationTargetException) e = e.getCause();
+                                            log(e);
+                                            Utils.showToast(ctx, TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), Toast.LENGTH_SHORT);
+                                        }
+                                    }
+                                }
+                                return true;
+                            }
+                        });
+                    } catch (Throwable e) {
+                        log(e);
+                    }
+                }
+            });
             //End: send btn
             //Begin: ArkApp
             Class cl_ArkAppItemBuilder = DexKit.doFindClass(DexKit.C_ARK_APP_ITEM_BUBBLE_BUILDER);
