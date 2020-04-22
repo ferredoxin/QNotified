@@ -64,7 +64,10 @@ public class DexKit {
     public static final int C_APP_CONSTANTS = 20;
 
     //the last index
-    public static final int DEOBF_NUM = 20;
+    public static final int DEOBF_NUM_C = 20;
+
+    public static final int M_BASE_CHAT_PIE_INIT = 100001;
+    public static final int DEOBF_NUM_M = 1;
 
     @Nullable
     public static Class tryLoadOrNull(int i) {
@@ -174,7 +177,7 @@ public class DexKit {
             case C_APP_CONSTANTS:
                 return "app_constants";
         }
-        throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM);
+        throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
 
     public static String c(int i) {
@@ -244,7 +247,7 @@ public class DexKit {
         if (ret != null) {
             return ret.replace("/", ".");
         }
-        throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM);
+        throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
 
     public static byte[][] b(int i) {
@@ -291,7 +294,7 @@ public class DexKit {
             case C_APP_CONSTANTS:
                 return new byte[][]{new byte[]{0x0B, 0x2E, 0x69, 0x6E, 0x64, 0x69, 0x76, 0x41, 0x6E, 0x69, 0x6D, 0x2F}};
         }
-        throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM);
+        throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
 
     public static int[] d(int i) {
@@ -335,7 +338,7 @@ public class DexKit {
             case C_APP_CONSTANTS:
                 return new int[]{1};
         }
-        throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM);
+        throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
 
     private static Class a(int i, HashSet<Class> __classes, DexDeobfReport report) {

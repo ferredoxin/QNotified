@@ -65,6 +65,7 @@ public class ProportionDrawable extends Drawable {
         if (p < 0f) p = 0f;
         if (p > 1.0f) p = 1.0f;
         fProportion = p;
+        invalidateSelf();
     }
 
     @Override

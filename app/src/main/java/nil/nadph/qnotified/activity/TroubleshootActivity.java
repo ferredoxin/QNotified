@@ -84,7 +84,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
         ll.addView(subtitle(this, ""));
         ll.addView(subtitle(this, "以下内容基本上都没用，它们为了修复故障才留在这里。"));
 
-        for (int i = 1; i <= DexKit.DEOBF_NUM; i++) {
+        for (int i = 1; i <= DexKit.DEOBF_NUM_C; i++) {
             try {
                 String tag = DexKit.a(i);
                 String orig = DexKit.c(i);

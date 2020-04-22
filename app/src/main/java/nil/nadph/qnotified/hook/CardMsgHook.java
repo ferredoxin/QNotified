@@ -77,7 +77,7 @@ public class CardMsgHook extends BaseDelayableHook {
                 //Should not happen
                 log(e);
             }
-            final Class cl_BaseChatPie = load("com.tencent.mobileqq.activity.BaseChatPie");
+            final Class cl_BaseChatPie = _BaseChatPie();
             Method _BaseChatPie_init = null;
             for (Method method : cl_BaseChatPie.getDeclaredMethods()) {
                 if (method.getParameterTypes().length != 0
@@ -294,7 +294,7 @@ public class CardMsgHook extends BaseDelayableHook {
         try {
             fmgr = invoke_virtual(activity, "getSupportFragmentManager");
             Object fragment = invoke_virtual(fmgr, "findFragmentByTag", "com.tencent.mobileqq.activity.ChatFragment", String.class);
-            Object chatpie = invoke_virtual(fragment, "a", load("com.tencent.mobileqq.activity.BaseChatPie"));
+            Object chatpie = invoke_virtual(fragment, "a", _BaseChatPie());
             if (fChatAdapter == null) {
                 for (Field f : _BaseChatPie().getDeclaredFields()) {
                     if (f.getName().equals("a") && Modifier.isPublic(f.getModifiers())) {

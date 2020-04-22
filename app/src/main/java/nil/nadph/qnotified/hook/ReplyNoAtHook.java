@@ -27,6 +27,7 @@ import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.util.Utils;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
+import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
@@ -65,7 +66,7 @@ public class ReplyNoAtHook extends BaseDelayableHook {
                 method = "k";
             }
             if (method == null) return false;
-            findAndHookMethod(load("com/tencent/mobileqq/activity/BaseChatPie"), method, boolean.class, new XC_MethodHook(49) {
+            findAndHookMethod( _BaseChatPie(), method, boolean.class, new XC_MethodHook(49) {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     if (!isEnabled()) return;
