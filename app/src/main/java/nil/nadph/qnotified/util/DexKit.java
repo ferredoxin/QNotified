@@ -38,6 +38,12 @@ import static nil.nadph.qnotified.util.Initiator._QQAppInterface;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
+/**
+ * What the fuck?
+ * I hadn't obfuscated the source code.
+ * I just don't want to name it,
+ * leaving it a()
+ */
 @SuppressWarnings("rawtypes")
 public class DexKit {
 

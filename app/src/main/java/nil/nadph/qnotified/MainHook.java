@@ -274,10 +274,12 @@ public class MainHook {
                 }
             });
         } else {
-            Class director = _StartupDirector();
-            Object dir = iget_object_or_null(step, "mDirector", director);
-            if (dir == null) dir = iget_object_or_null(step, "a", director);
-            InjectDelayableHooks.step(dir);
+            if (LicenseStatus.hasUserAgreeEula()) {
+                Class director = _StartupDirector();
+                Object dir = iget_object_or_null(step, "mDirector", director);
+                if (dir == null) dir = iget_object_or_null(step, "a", director);
+                InjectDelayableHooks.step(dir);
+            }
         }
 
     }
@@ -339,7 +341,7 @@ public class MainHook {
     private void injectStartupHookForMain(Context ctx) {
         initForStubActivity(ctx);
         asyncStartFindClass();
-        hideMiniAppEntry();
+        if (LicenseStatus.hasUserAgreeEula()) hideMiniAppEntry();
     }
 
     public boolean __stub_hooked = false;

@@ -1242,15 +1242,19 @@ public class Utils {
 
     @Deprecated
     public static void showErrorToastAnywhere(final String text) {
-        if (Looper.myLooper() == Looper.getMainLooper()) {
-            Utils.showToast(getApplication(), TOAST_TYPE_ERROR, text, Toast.LENGTH_SHORT);
-        } else {
-            SyncUtils.post(new Runnable() {
-                @Override
-                public void run() {
-                    Utils.showToast(getApplication(), TOAST_TYPE_ERROR, text, Toast.LENGTH_SHORT);
-                }
-            });
+        try {
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, text, Toast.LENGTH_SHORT);
+            } else {
+                SyncUtils.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, text, Toast.LENGTH_SHORT);
+                    }
+                });
+            }
+        } catch (Exception e) {
+            log(e);
         }
     }
 

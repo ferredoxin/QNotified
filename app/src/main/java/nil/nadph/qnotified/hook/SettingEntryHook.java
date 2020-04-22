@@ -26,8 +26,10 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.activity.EulaActivity;
 import nil.nadph.qnotified.util.ActProxyMgr;
 import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -66,12 +68,20 @@ public class SettingEntryHook extends BaseDelayableHook {
                         View item = (View) new_instance(itemRef.getClass(), param.thisObject, Context.class);
                         item.setId(R_ID_SETTING_ENTRY);
                         invoke_virtual(item, "setLeftText", "QNotified", CharSequence.class);
-                        invoke_virtual(item, "setRightText", Utils.QN_VERSION_NAME, CharSequence.class);
                         invoke_virtual(item, "setBgType", 2, int.class);
+                        if (LicenseStatus.hasUserAgreeEula()) {
+                            invoke_virtual(item, "setRightText", Utils.QN_VERSION_NAME, CharSequence.class);
+                        } else {
+                            invoke_virtual(item, "setRightText", "[未激活]", CharSequence.class);
+                        }
                         item.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                MainHook.startProxyActivity((Context) param.thisObject, ActProxyMgr.ACTION_ADV_SETTINGS);
+                                if (LicenseStatus.hasUserAgreeEula()) {
+                                    MainHook.startProxyActivity((Context) param.thisObject, ActProxyMgr.ACTION_ADV_SETTINGS);
+                                } else {
+                                    MainHook.startProxyActivity((Context) param.thisObject, EulaActivity.class);
+                                }
                             }
                         });
                         ViewGroup list = (ViewGroup) itemRef.getParent();

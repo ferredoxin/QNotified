@@ -25,10 +25,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
+import nil.nadph.qnotified.hook.SettingEntryHook;
 import nil.nadph.qnotified.ui.ProportionDrawable;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.SimpleBgDrawable;
 import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.LicenseStatus;
 
 import java.util.ArrayList;
 
@@ -118,12 +120,16 @@ public class InjectDelayableHooks {
                 DexKit.doFindClass(todos.get(idx));
             }
         }
-        for (BaseDelayableHook h : hooks) {
-            try {
-                if (h.isEnabled() && h.isTargetProc() && h.checkPreconditions()) h.init();
-            } catch (Throwable e) {
-                log(e);
+        if (LicenseStatus.hasUserAgreeEula()) {
+            for (BaseDelayableHook h : hooks) {
+                try {
+                    if (h.isEnabled() && h.isTargetProc() && h.checkPreconditions()) h.init();
+                } catch (Throwable e) {
+                    log(e);
+                }
             }
+        } else {
+            SettingEntryHook.get().init();
         }
         if (ctx != null && main[0] != null) ctx.runOnUiThread(new Runnable() {
             @Override
@@ -132,6 +138,19 @@ public class InjectDelayableHooks {
             }
         });
         return true;
+    }
+
+    public static void doInitDelayableHooksMP() {
+        for (BaseDelayableHook h : BaseDelayableHook.queryDelayableHooks()) {
+            try {
+                if (h.isEnabled() && h.isTargetProc() && h.checkPreconditions()) {
+                    SyncUtils.requestInitHook(h.getId(), h.getEffectiveProc());
+                    h.init();
+                }
+            } catch (Throwable e) {
+                log(e);
+            }
+        }
     }
 
 }

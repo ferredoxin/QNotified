@@ -53,6 +53,11 @@ public class Initiator {
         return sPluginClassLoader;
     }
 
+    @Deprecated
+    public static ClassLoader getClassLoader() {
+        return sPluginClassLoader;
+    }
+
     public static ClassLoader getHostClassLoader() {
         return sHostClassLoader;
     }

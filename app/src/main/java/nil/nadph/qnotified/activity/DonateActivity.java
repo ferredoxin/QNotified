@@ -150,7 +150,7 @@ public class DonateActivity extends IphoneTitleBarActivityCompat {
             @Override
             public void onClick(View v) {
                 CustomDialog.create(DonateActivity.this).setTitle("提示")
-                        .setMessage("\"QNotified\"请求打开支付宝\n捐赠完成后请手动打开上方 我已捐赠 开关.").setNegativeButton("取消", null)
+                        .setMessage("捐赠是自愿行为!\n本软件是开源软件, 全部功能都无需付费即可使用!\"QNotified\"请求打开支付宝\n捐赠完成后请手动打开上方 我已捐赠 开关.").setNegativeButton("取消", null)
                         .setPositiveButton("确认", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
