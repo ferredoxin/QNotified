@@ -77,7 +77,7 @@ public class CardMsgHook extends BaseDelayableHook {
                 //Should not happen
                 log(e);
             }
-            final Class cl_BaseChatPie = _BaseChatPie();
+            final Class<?> cl_BaseChatPie = _BaseChatPie();
             Method _BaseChatPie_init = null;
             for (Method method : cl_BaseChatPie.getDeclaredMethods()) {
                 if (method.getParameterTypes().length != 0

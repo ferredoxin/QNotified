@@ -18,6 +18,7 @@
  */
 package nil.nadph.qnotified.hook;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
@@ -81,6 +82,9 @@ public class SettingEntryHook extends BaseDelayableHook {
                                     MainHook.startProxyActivity((Context) param.thisObject, ActProxyMgr.ACTION_ADV_SETTINGS);
                                 } else {
                                     MainHook.startProxyActivity((Context) param.thisObject, EulaActivity.class);
+                                    if (param.thisObject instanceof Activity) {
+                                        ((Activity) param.thisObject).finish();
+                                    }
                                 }
                             }
                         });

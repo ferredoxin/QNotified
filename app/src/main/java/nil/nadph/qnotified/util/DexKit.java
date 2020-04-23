@@ -72,8 +72,8 @@ public class DexKit {
     //the last index
     public static final int DEOBF_NUM_C = 20;
 
-    public static final int M_BASE_CHAT_PIE_INIT = 100001;
-    public static final int DEOBF_NUM_M = 1;
+    public static final int N_BASE_CHAT_PIE_INIT = 100001;
+    public static final int DEOBF_NUM_N = 1;
 
     @Nullable
     public static Class tryLoadOrNull(int i) {
@@ -128,7 +128,7 @@ public class DexKit {
                 ret = a(i, cas, report);
             }
             report.v("Final decision:" + (ret == null ? null : ret.getName()));
-            cache.putString("debof_log_" + a(i), report.toString());
+            cache.putString("deobf_log_" + a(i), report.toString());
             if (ret == null) {
                 log("Multiple classes candidates found, none satisfactory.");
                 return null;
