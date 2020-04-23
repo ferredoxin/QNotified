@@ -1393,7 +1393,7 @@ public class Utils {
         if (uin > 2_0000_0000L && uin < 30_0000_0000L) {
             return true;
         }
-        Class vip = DexKit.tryLoadOrNull(DexKit.C_VIP_UTILS);
+        Class vip = DexKit.loadClassFromCache(DexKit.C_VIP_UTILS);
         try {
             if (vip != null) {
                 return "0".equals(invoke_static(vip, "a", getQQAppInterface(), uin + "", load("com/tencent/common/app/AppInterface"), String.class, String.class));
@@ -1430,7 +1430,7 @@ public class Utils {
                 || nick.contains("加盟") || nick.contains("中介") || nick.contains("兼职") || nick.contains("客服")
                 || nick.contains("招聘") || nick.contains("换钱") || nick.contains("接单") || nick.contains("承接")
                 || nick.contains("解封") || nick.contains("保号") || nick.contains("业务") || nick.contains("互拉")
-                || nick.contains("刷单") || nick.contains("代打") || nick.contains("总创")
+                || nick.contains("刷单") || nick.contains("代打") || nick.contains("总创") || nick.contains("在线接")
                 || nick.matches(".*[\u53f8\u6b7b][\u9a6c\u5417\u5988\u3000].*"))
             return true;
         if (nick.equalsIgnoreCase("A")) return true;

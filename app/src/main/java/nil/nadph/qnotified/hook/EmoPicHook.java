@@ -81,7 +81,7 @@ public class EmoPicHook extends BaseDelayableHook {
 
     @Override
     public boolean checkPreconditions() {
-        return DexKit.tryLoadOrNull(DexKit.C_AIO_UTILS) != null;
+        return DexKit.loadClassFromCache(DexKit.C_AIO_UTILS) != null;
     }
 
     @Override

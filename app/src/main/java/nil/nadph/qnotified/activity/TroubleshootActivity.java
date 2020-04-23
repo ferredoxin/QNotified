@@ -91,7 +91,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                 if (orig == null) continue;
                 orig = orig.replace("/", ".");
                 String shortName = Utils.getShort$Name(orig);
-                Class ccurr = DexKit.tryLoadOrNull(i);
+                Class ccurr = DexKit.loadClassFromCache(i);
                 String currName = "null";
                 if (ccurr != null) {
                     currName = ccurr.getName();

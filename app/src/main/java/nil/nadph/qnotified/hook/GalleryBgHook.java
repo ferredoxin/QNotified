@@ -85,7 +85,7 @@ public class GalleryBgHook extends BaseDelayableHook {
 
     @Override
     public boolean checkPreconditions() {
-        return DexKit.tryLoadOrNull(DexKit.C_ABS_GAL_SCENE) != null;
+        return DexKit.loadClassFromCache(DexKit.C_ABS_GAL_SCENE) != null;
     }
 
     @Override

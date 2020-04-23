@@ -216,7 +216,7 @@ public class ViewBuilder {
     private static void doSetupAndInit(final Context ctx, BaseDelayableHook hook) {
         final CustomDialog[] pDialog = new CustomDialog[1];
         for (int i : hook.getPreconditions()) {
-            if (DexKit.tryLoadOrNull(i) != null) continue;
+            if (DexKit.loadClassFromCache(i) != null) continue;
             final String name = DexKit.c(i).replace("/", ".");
             Utils.runOnUiThread(new Runnable() {
                 @Override
@@ -249,7 +249,7 @@ public class ViewBuilder {
     public static void doSetupForPrecondition(final Context ctx, BaseDelayableHook hook) {
         final CustomDialog[] pDialog = new CustomDialog[1];
         for (int i : hook.getPreconditions()) {
-            if (DexKit.tryLoadOrNull(i) != null) continue;
+            if (DexKit.loadClassFromCache(i) != null) continue;
             final String name = DexKit.c(i).replace("/", ".");
             Utils.runOnUiThread(new Runnable() {
                 @Override

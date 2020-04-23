@@ -1005,7 +1005,7 @@ public class MainHook {
     }
 
     private void asyncStartFindClass() {
-        if (DexKit.tryLoadOrNull(DexKit.C_DIALOG_UTIL) == null)
+        if (DexKit.loadClassFromCache(DexKit.C_DIALOG_UTIL) == null)
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -1016,7 +1016,7 @@ public class MainHook {
                     DexKit.doFindClass(DexKit.C_DIALOG_UTIL);
                 }
             }).start();
-        if (DexKit.tryLoadOrNull(DexKit.C_FACADE) == null)
+        if (DexKit.loadClassFromCache(DexKit.C_FACADE) == null)
             new Thread(new Runnable() {
                 @Override
                 public void run() {

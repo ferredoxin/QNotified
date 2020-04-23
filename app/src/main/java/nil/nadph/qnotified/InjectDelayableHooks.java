@@ -69,7 +69,7 @@ public class InjectDelayableHooks {
             for (BaseDelayableHook h : hooks) {
                 if (!h.isEnabled()) continue;
                 for (int i : h.getPreconditions()) {
-                    if (DexKit.tryLoadOrNull(i) == null) todos.add(i);
+                    if (DexKit.loadClassFromCache(i) == null) todos.add(i);
                 }
             }
             for (int idx = 0; idx < todos.size(); idx++) {

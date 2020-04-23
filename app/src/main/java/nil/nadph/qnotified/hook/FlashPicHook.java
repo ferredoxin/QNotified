@@ -62,7 +62,7 @@ public class FlashPicHook extends BaseDelayableHook {
                 }
             }
             if (!canInit) return false;
-            Class clz = DexKit.tryLoadOrNull(DexKit.C_FLASH_PIC_HELPER);
+            Class clz = DexKit.loadClassFromCache(DexKit.C_FLASH_PIC_HELPER);
             Method isFlashPic = null;
             for (Method mi : clz.getDeclaredMethods()) {
                 if (mi.getReturnType().equals(boolean.class) && mi.getParameterTypes().length == 1) {
@@ -176,8 +176,8 @@ public class FlashPicHook extends BaseDelayableHook {
 
     @Override
     public boolean checkPreconditions() {
-        return DexKit.tryLoadOrNull(DexKit.C_FLASH_PIC_HELPER) != null
-                && DexKit.tryLoadOrNull(DexKit.C_BASE_PIC_DL_PROC) != null && DexKit.tryLoadOrNull(DexKit.C_ITEM_BUILDER_FAC) != null;
+        return DexKit.loadClassFromCache(DexKit.C_FLASH_PIC_HELPER) != null
+                && DexKit.loadClassFromCache(DexKit.C_BASE_PIC_DL_PROC) != null && DexKit.loadClassFromCache(DexKit.C_ITEM_BUILDER_FAC) != null;
     }
 
     @Override

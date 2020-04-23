@@ -34,8 +34,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.regex.Pattern;
 
-import static nil.nadph.qnotified.util.Initiator._QQAppInterface;
-import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 /**
@@ -72,11 +71,11 @@ public class DexKit {
     //the last index
     public static final int DEOBF_NUM_C = 20;
 
-    public static final int N_BASE_CHAT_PIE_INIT = 100001;
+    public static final int N_BASE_CHAT_PIE__INIT = 20001;
     public static final int DEOBF_NUM_N = 1;
 
     @Nullable
-    public static Class tryLoadOrNull(int i) {
+    public static Class loadClassFromCache(int i) {
         Class ret = load(c(i));
         if (ret != null) return ret;
         try {
@@ -97,7 +96,73 @@ public class DexKit {
 
     @Nullable
     public static Class doFindClass(int i) {
-        Class ret = tryLoadOrNull(i);
+        Class ret = loadClassFromCache(i);
+        if (ret != null) return ret;
+        int ver = -1;
+        try {
+            ver = getHostInfo(getApplication()).versionCode;
+        } catch (Throwable ignored) {
+        }
+        try {
+            HashSet<DexMethodDescriptor> methods;
+            ConfigManager cache = ConfigManager.getCache();
+            DexDeobfReport report = new DexDeobfReport();
+            report.target = i;
+            report.version = ver;
+            methods = e(i, report);
+            if (methods == null || methods.size() == 0) {
+                report.v("No method candidate found.");
+                log("Unable to deobf: " + c(i));
+                return null;
+            }
+            report.v(methods.size() + " methods(es) found: " + methods);
+            HashSet<Class> cas = new HashSet<>();
+            for (DexMethodDescriptor m : methods) {
+                cas.add(load(m.getDeclaringClassName()));
+            }
+            report.v("belonging to " + cas.size() + " class(es): " + cas);
+            if (cas.size() == 1) {
+                ret = cas.iterator().next();
+            } else {
+                ret = a(i, cas, report);
+            }
+            report.v("Final decision:" + (ret == null ? null : ret.getName()));
+            cache.putString("deobf_log_" + a(i), report.toString());
+            if (ret == null) {
+                log("Multiple classes candidates found, none satisfactory.");
+                return null;
+            }
+            cache.putString("cache_" + a(i) + "_class", ret.getName());
+            cache.getAllConfig().put("cache_" + a(i) + "_code", getHostInfo(getApplication()).versionCode);
+            cache.save();
+        } catch (Exception e) {
+            log(e);
+        }
+        return ret;
+    }
+     @Nullable
+    public static Class loadClassFromCache(int i) {
+        Class ret = load(c(i));
+        if (ret != null) return ret;
+        try {
+            ConfigManager cache = ConfigManager.getCache();
+            int lastVersion = cache.getIntOrDefault("cache_" + a(i) + "_code", 0);
+            if (getHostInfo(getApplication()).versionCode != lastVersion) {
+                return null;
+            }
+            String clzn = cache.getString("cache_" + a(i) + "_class");
+            if (clzn == null) return null;
+            ret = load(clzn);
+            return ret;
+        } catch (Exception e) {
+            log(e);
+            return null;
+        }
+    }
+
+    @Nullable
+    public static Class doFindClass(int i) {
+        Class ret = loadClassFromCache(i);
         if (ret != null) return ret;
         int ver = -1;
         try {
@@ -142,6 +207,75 @@ public class DexKit {
         return ret;
     }
 
+    @Nullable
+    public static DexMethodDescriptor getMethodFromCache(int i) {
+        try {
+            ConfigManager cache = ConfigManager.getCache();
+            int lastVersion = cache.getIntOrDefault("cache_" + a(i) + "_code", 0);
+            if (getHostInfo(getApplication()).versionCode != lastVersion) {
+                return null;
+            }
+            String name = cache.getString("cache_" + a(i) + "_method");
+            return ret;
+        } catch (Exception e) {
+            log(e);
+            return null;
+        }
+    }
+
+    @Nullable
+    public static DexMethodDescriptor doFindMethod(int i) {
+        Class ret = loadClassFromCache(i);
+        if (ret != null) return ret;
+        int ver = -1;
+        try {
+            ver = getHostInfo(getApplication()).versionCode;
+        } catch (Throwable ignored) {
+        }
+        try {
+            HashSet<DexMethodDescriptor> methods;
+            ConfigManager cache = ConfigManager.getCache();
+            DexDeobfReport report = new DexDeobfReport();
+            report.target = i;
+            report.version = ver;
+            methods = e(i, report);
+            if (methods == null || methods.size() == 0) {
+                report.v("No method candidate found.");
+                log("Unable to deobf: " + c(i));
+                return null;
+            }
+            report.v(methods.size() + " methods(es) found: " + methods);
+            HashSet<Class> cas = new HashSet<>();
+            for (DexMethodDescriptor m : methods) {
+                cas.add(load(m.getDeclaringClassName()));
+            }
+            report.v("belonging to " + cas.size() + " class(es): " + cas);
+            if (cas.size() == 1) {
+                ret = cas.iterator().next();
+            } else {
+                ret = a(i, cas, report);
+            }
+            report.v("Final decision:" + (ret == null ? null : ret.getName()));
+            cache.putString("deobf_log_" + a(i), report.toString());
+            if (ret == null) {
+                log("Multiple classes candidates found, none satisfactory.");
+                return null;
+            }
+            cache.putString("cache_" + a(i) + "_class", ret.getName());
+            cache.getAllConfig().put("cache_" + a(i) + "_code", getHostInfo(getApplication()).versionCode);
+            cache.save();
+        } catch (Exception e) {
+            log(e);
+        }
+        return ret;
+    }
+
+
+
+
+
+
+
     public static String a(int i) {
         switch (i) {
             case C_DIALOG_UTIL:
@@ -182,6 +316,8 @@ public class DexKit {
                 return "qzone_msg_notify";
             case C_APP_CONSTANTS:
                 return "app_constants";
+            case N_BASE_CHAT_PIE__INIT:
+                return "base_chat_pie__init";
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
@@ -247,6 +383,9 @@ public class DexKit {
             case C_APP_CONSTANTS:
                 ret = "com.tencent.mobileqq.app.AppConstants";
                 break;
+            case N_BASE_CHAT_PIE__INIT:
+                ret = _BaseChatPie().getName();
+                break;
             default:
                 ret = null;
         }
@@ -299,6 +438,8 @@ public class DexKit {
                 return new byte[][]{new byte[]{0x14, 0x75, 0x73, 0x65, 0x20, 0x73, 0x6D, 0x61, 0x6C, 0x6C, 0x20, 0x69, 0x63, 0x6F, 0x6E, 0x20, 0x2C, 0x65, 0x78, 0x70, 0x3A}};
             case C_APP_CONSTANTS:
                 return new byte[][]{new byte[]{0x0B, 0x2E, 0x69, 0x6E, 0x64, 0x69, 0x76, 0x41, 0x6E, 0x69, 0x6D, 0x2F}};
+            case N_BASE_CHAT_PIE__INIT:
+                return new byte[][]{new byte[]{0x0F, 0x69, 0x6E, 0x70, 0x75, 0x74, 0x20, 0x73, 0x65, 0x74, 0x20, 0x65, 0x72, 0x72, 0x6F, 0x72}};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
@@ -343,6 +484,8 @@ public class DexKit {
                 return new int[]{3};
             case C_APP_CONSTANTS:
                 return new int[]{1};
+            case N_BASE_CHAT_PIE__INIT:
+                return new int[]{6, 3};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
@@ -567,9 +710,8 @@ public class DexKit {
     public static ArrayList<Integer> a(byte[] buf, byte[] target) {
         ArrayList<Integer> rets = new ArrayList<>();
         int[] ret = new int[1];
-        final float[] f = new float[1];
-        ret[0] = arrayIndexOf(buf, target, 0, buf.length, f);
-        ret[0] = arrayIndexOf(buf, int2u4le(ret[0]), 0, buf.length, f);
+        ret[0] = arrayIndexOf(buf, target, 0, buf.length);
+        ret[0] = arrayIndexOf(buf, int2u4le(ret[0]), 0, buf.length);
         //System.out.println(ret[0]);
         int strIdx = (ret[0] - readLe32(buf, 0x3c)) / 4;
         if (strIdx > 0xFFFF) {
@@ -577,7 +719,7 @@ public class DexKit {
         } else target = int2u2le(strIdx);
         int off = 0;
         while (true) {
-            off = arrayIndexOf(buf, target, off + 1, buf.length, f);
+            off = arrayIndexOf(buf, target, off + 1, buf.length);
             if (off == -1) break;
             if (buf[off - 2] == (byte) 26/*Opcodes.OP_CONST_STRING*/
                     || buf[off - 2] == (byte) 27)/* Opcodes.OP_CONST_STRING_JUMBO*/ {
@@ -707,20 +849,17 @@ public class DexKit {
         return sb.toString();
     }
 
-    public static int arrayIndexOf(byte[] arr, byte[] subarr, int startindex, int endindex, float[] progress) {
-        byte a = subarr[0];
-        float d = endindex - startindex;
-        int b = endindex - subarr.length;
-        int i = startindex;
+    public static int arrayIndexOf(byte[] arr, byte[] subArr, int startIndex, int endIndex) {
+        byte a = subArr[0];
+        float d = endIndex - startIndex;
+        int b = endIndex - subArr.length;
+        int i = startIndex;
         int ii;
         a:
         while (i <= b) {
-            if (arr[i] != a) {
-                progress[0] = (i++ - startindex) / d;
-                continue;
-            } else {
-                for (ii = 0; ii < subarr.length; ii++) {
-                    if (arr[i++] != subarr[ii]) {
+            if (arr[i] == a) {
+                for (ii = 0; ii < subArr.length; ii++) {
+                    if (arr[i++] != subArr[ii]) {
                         i = i - ii;
                         continue a;
                     }
@@ -740,13 +879,11 @@ public class DexKit {
     }
 
     public static int readLe32(byte[] buf, int index) {
-        int i = buf[index] & 0xFF | (buf[index + 1] << 8) & 0xff00 | (buf[index + 2] << 16) & 0xff0000 | (buf[index + 3] << 24) & 0xff000000;
-        return i;
+        return buf[index] & 0xFF | (buf[index + 1] << 8) & 0xff00 | (buf[index + 2] << 16) & 0xff0000 | (buf[index + 3] << 24) & 0xff000000;
     }
 
     public static int readLe16(byte[] buf, int off) {
-        int i = (buf[off] & 0xFF) | ((buf[off + 1] << 8) & 0xff00);
-        return i;
+        return (buf[off] & 0xFF) | ((buf[off + 1] << 8) & 0xff00);
     }
 
     public static class DexDeobfReport {
@@ -769,7 +906,7 @@ public class DexKit {
         public String toString() {
             return "Deobf target: " + target + '\n' +
                     "Time: " + time + '\n' +
-                    "QQ version code: " + version + '\n' +
+                    "Version code: " + version + '\n' +
                     "Result: " + result + '\n' +
                     log;
         }
