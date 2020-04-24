@@ -31,6 +31,7 @@ import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.SimpleBgDrawable;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.Utils;
 
 import java.util.ArrayList;
 
@@ -46,7 +47,9 @@ public class InjectDelayableHooks {
     public static boolean step(Object director) {
         if (inited) return true;
         inited = true;
-        final Activity ctx = (Activity) iget_object_or_null(director, "a", load("mqq/app/AppActivity"));
+        Activity activity = (Activity) iget_object_or_null(director, "a", load("mqq/app/AppActivity"));
+        if (activity == null) activity = (Activity) Utils.getFirstNSFByType(director, load("mqq/app/AppActivity"));
+        final Activity ctx = activity;
         boolean needDeobf = false;
         BaseDelayableHook[] hooks = BaseDelayableHook.queryDelayableHooks();
         for (BaseDelayableHook h : hooks) {
@@ -69,7 +72,7 @@ public class InjectDelayableHooks {
             for (BaseDelayableHook h : hooks) {
                 if (!h.isEnabled()) continue;
                 for (int i : h.getPreconditions()) {
-                    if (DexKit.loadClassFromCache(i) == null) todos.add(i);
+                    if (!DexKit.checkFor(i)) todos.add(i);
                 }
             }
             for (int idx = 0; idx < todos.size(); idx++) {
@@ -117,7 +120,7 @@ public class InjectDelayableHooks {
                             prog[0].setProportion(1.0f * j / todos.size());
                         }
                     });
-                DexKit.doFindClass(todos.get(idx));
+                DexKit.prepareFor(todos.get(idx));
             }
         }
         if (LicenseStatus.hasUserAgreeEula()) {

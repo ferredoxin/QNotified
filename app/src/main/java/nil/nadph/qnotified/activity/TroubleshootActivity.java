@@ -36,6 +36,7 @@ import nil.nadph.qnotified.config.FriendRecord;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.DexMethodDescriptor;
 import nil.nadph.qnotified.util.Utils;
 
 import java.util.Iterator;
@@ -91,16 +92,41 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                 if (orig == null) continue;
                 orig = orig.replace("/", ".");
                 String shortName = Utils.getShort$Name(orig);
-                Class ccurr = DexKit.loadClassFromCache(i);
-                String currName = "null";
-                if (ccurr != null) {
-                    currName = ccurr.getName();
+                String currName = "(void*)0";
+                DexMethodDescriptor md = DexKit.getMethodDescFromCache(i);
+                if (md != null) {
+                    currName = md.toString();
+                } else {
+                    Class<?> c = DexKit.loadClassFromCache(i);
+                    if (c != null) currName = c.getName();
                 }
-                ll.addView(subtitle(this, "  [" + i + "]" + shortName + "\n" + orig + "\n->" + currName));
+                ll.addView(subtitle(this, "  [" + i + "]" + shortName + "\n" + orig + "\n= " + currName));
             } catch (Throwable e) {
                 ll.addView(subtitle(this, "  [" + i + "]" + e.toString()));
             }
         }
+        for (int ii = 1; ii <= DexKit.DEOBF_NUM_N; ii++) {
+            int i = 20000 + ii;
+            try {
+                String tag = DexKit.a(i);
+                String orig = DexKit.c(i);
+                if (orig == null) continue;
+                orig = orig.replace("/", ".");
+                String shortName = Utils.getShort$Name(orig);
+                String currName = "(void*)0";
+                DexMethodDescriptor md = DexKit.getMethodDescFromCache(i);
+                if (md != null) {
+                    currName = md.toString();
+                } else {
+                    Class<?> c = DexKit.loadClassFromCache(i);
+                    if (c != null) currName = c.getName();
+                }
+                ll.addView(subtitle(this, "  [" + i + "]" + shortName + "\n" + orig + "\n= " + currName));
+            } catch (Throwable e) {
+                ll.addView(subtitle(this, "  [" + i + "]" + e.toString()));
+            }
+        }
+
         ll.addView(subtitle(this, "SystemClassLoader\n" + ClassLoader.getSystemClassLoader() + "\nContext.getClassLoader()\n" + this.getClassLoader() + "\nThread.getContextClassLoader()\n" + Thread.currentThread().getContextClassLoader()));
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         this.setContentView(bounceScrollView);

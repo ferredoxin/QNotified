@@ -36,6 +36,15 @@ public class DexMethodDescriptor implements Serializable, Cloneable {
      */
     public final String signature;
 
+    public DexMethodDescriptor(String desc) {
+        if (desc == null) throw new NullPointerException();
+        int a = desc.indexOf("->");
+        int b = desc.indexOf('(', a);
+        declaringClass = desc.substring(0, a);
+        methodName = desc.substring(a + 2, b);
+        signature = desc.substring(b);
+    }
+
     public DexMethodDescriptor(String clz, String n, String s) {
         if (clz == null || n == null || s == null) throw new NullPointerException();
         declaringClass = clz;

@@ -34,7 +34,8 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.regex.Pattern;
 
-import static nil.nadph.qnotified.util.Initiator.*;
+import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
+import static nil.nadph.qnotified.util.Initiator._QQAppInterface;
 import static nil.nadph.qnotified.util.Utils.*;
 
 /**
@@ -74,141 +75,80 @@ public class DexKit {
     public static final int N_BASE_CHAT_PIE__INIT = 20001;
     public static final int DEOBF_NUM_N = 1;
 
+
+    @Nullable
+    public static void prepareFor(int i) {
+        if (i / 10000 == 0) {
+            doFindClass(i);
+        } else {
+            doFindMethod(i);
+        }
+    }
+
+    @Nullable
+    public static boolean checkFor(int i) {
+        if (i / 10000 == 0) {
+            return loadClassFromCache(i) != null;
+        } else {
+            return getMethodDescFromCache(i) != null;
+        }
+    }
+
     @Nullable
     public static Class loadClassFromCache(int i) {
-        Class ret = load(c(i));
+        Class ret = Initiator.load(c(i));
         if (ret != null) return ret;
+        DexMethodDescriptor m = getMethodDescFromCache(i);
+        if (m == null) return null;
+        return Initiator.load(m.declaringClass);
+    }
+
+    @Nullable
+    public static Class doFindClass(int i) {
+        Class ret = Initiator.load(c(i));
+        if (ret != null) return ret;
+        DexMethodDescriptor m = getMethodDescFromCache(i);
+        if (m == null) m = doFindMethodDesc(i);
+        if (m == null) return null;
+        return Initiator.load(m.declaringClass);
+    }
+
+    @Nullable
+    public static Method getMethodFromCache(int i) {
+        if (i / 10000 == 0) throw new IllegalStateException("Index " + i + " attempted to access method!");
+        DexMethodDescriptor m = getMethodDescFromCache(i);
+        if (m == null) return null;
+        if (m.methodName.equals("<init>") || m.methodName.equals("<cinit>")) {
+            log("getMethodFromCache(" + i + ") methodName == " + m.methodName + " , return null");
+            return null;
+        }
         try {
-            ConfigManager cache = ConfigManager.getCache();
-            int lastVersion = cache.getIntOrDefault("cache_" + a(i) + "_code", 0);
-            if (getHostInfo(getApplication()).versionCode != lastVersion) {
-                return null;
-            }
-            String clzn = cache.getString("cache_" + a(i) + "_class");
-            if (clzn == null) return null;
-            ret = load(clzn);
-            return ret;
-        } catch (Exception e) {
+            return m.getMethodInstance(Initiator.getClassLoader());
+        } catch (NoSuchMethodException e) {
             log(e);
             return null;
         }
     }
 
     @Nullable
-    public static Class doFindClass(int i) {
-        Class ret = loadClassFromCache(i);
-        if (ret != null) return ret;
-        int ver = -1;
-        try {
-            ver = getHostInfo(getApplication()).versionCode;
-        } catch (Throwable ignored) {
+    public static Method doFindMethod(int i) {
+        if (i / 10000 == 0) throw new IllegalStateException("Index " + i + " attempted to access method!");
+        DexMethodDescriptor m = doFindMethodDesc(i);
+        if (m == null) return null;
+        if (m.methodName.equals("<init>") || m.methodName.equals("<cinit>")) {
+            log("doFindMethod(" + i + ") methodName == " + m.methodName + " , return null");
+            return null;
         }
         try {
-            HashSet<DexMethodDescriptor> methods;
-            ConfigManager cache = ConfigManager.getCache();
-            DexDeobfReport report = new DexDeobfReport();
-            report.target = i;
-            report.version = ver;
-            methods = e(i, report);
-            if (methods == null || methods.size() == 0) {
-                report.v("No method candidate found.");
-                log("Unable to deobf: " + c(i));
-                return null;
-            }
-            report.v(methods.size() + " methods(es) found: " + methods);
-            HashSet<Class> cas = new HashSet<>();
-            for (DexMethodDescriptor m : methods) {
-                cas.add(load(m.getDeclaringClassName()));
-            }
-            report.v("belonging to " + cas.size() + " class(es): " + cas);
-            if (cas.size() == 1) {
-                ret = cas.iterator().next();
-            } else {
-                ret = a(i, cas, report);
-            }
-            report.v("Final decision:" + (ret == null ? null : ret.getName()));
-            cache.putString("deobf_log_" + a(i), report.toString());
-            if (ret == null) {
-                log("Multiple classes candidates found, none satisfactory.");
-                return null;
-            }
-            cache.putString("cache_" + a(i) + "_class", ret.getName());
-            cache.getAllConfig().put("cache_" + a(i) + "_code", getHostInfo(getApplication()).versionCode);
-            cache.save();
-        } catch (Exception e) {
-            log(e);
-        }
-        return ret;
-    }
-     @Nullable
-    public static Class loadClassFromCache(int i) {
-        Class ret = load(c(i));
-        if (ret != null) return ret;
-        try {
-            ConfigManager cache = ConfigManager.getCache();
-            int lastVersion = cache.getIntOrDefault("cache_" + a(i) + "_code", 0);
-            if (getHostInfo(getApplication()).versionCode != lastVersion) {
-                return null;
-            }
-            String clzn = cache.getString("cache_" + a(i) + "_class");
-            if (clzn == null) return null;
-            ret = load(clzn);
-            return ret;
-        } catch (Exception e) {
+            return m.getMethodInstance(Initiator.getClassLoader());
+        } catch (NoSuchMethodException e) {
             log(e);
             return null;
         }
     }
 
     @Nullable
-    public static Class doFindClass(int i) {
-        Class ret = loadClassFromCache(i);
-        if (ret != null) return ret;
-        int ver = -1;
-        try {
-            ver = getHostInfo(getApplication()).versionCode;
-        } catch (Throwable ignored) {
-        }
-        try {
-            HashSet<DexMethodDescriptor> methods;
-            ConfigManager cache = ConfigManager.getCache();
-            DexDeobfReport report = new DexDeobfReport();
-            report.target = i;
-            report.version = ver;
-            methods = e(i, report);
-            if (methods == null || methods.size() == 0) {
-                report.v("No method candidate found.");
-                log("Unable to deobf: " + c(i));
-                return null;
-            }
-            report.v(methods.size() + " methods(es) found: " + methods);
-            HashSet<Class> cas = new HashSet<>();
-            for (DexMethodDescriptor m : methods) {
-                cas.add(load(m.getDeclaringClassName()));
-            }
-            report.v("belonging to " + cas.size() + " class(es): " + cas);
-            if (cas.size() == 1) {
-                ret = cas.iterator().next();
-            } else {
-                ret = a(i, cas, report);
-            }
-            report.v("Final decision:" + (ret == null ? null : ret.getName()));
-            cache.putString("deobf_log_" + a(i), report.toString());
-            if (ret == null) {
-                log("Multiple classes candidates found, none satisfactory.");
-                return null;
-            }
-            cache.putString("cache_" + a(i) + "_class", ret.getName());
-            cache.getAllConfig().put("cache_" + a(i) + "_code", getHostInfo(getApplication()).versionCode);
-            cache.save();
-        } catch (Exception e) {
-            log(e);
-        }
-        return ret;
-    }
-
-    @Nullable
-    public static DexMethodDescriptor getMethodFromCache(int i) {
+    public static DexMethodDescriptor getMethodDescFromCache(int i) {
         try {
             ConfigManager cache = ConfigManager.getCache();
             int lastVersion = cache.getIntOrDefault("cache_" + a(i) + "_code", 0);
@@ -216,7 +156,10 @@ public class DexKit {
                 return null;
             }
             String name = cache.getString("cache_" + a(i) + "_method");
-            return ret;
+            if (name != null && name.length() > 0) {
+                return new DexMethodDescriptor(name);
+            }
+            return null;
         } catch (Exception e) {
             log(e);
             return null;
@@ -224,8 +167,8 @@ public class DexKit {
     }
 
     @Nullable
-    public static DexMethodDescriptor doFindMethod(int i) {
-        Class ret = loadClassFromCache(i);
+    public static DexMethodDescriptor doFindMethodDesc(int i) {
+        DexMethodDescriptor ret = getMethodDescFromCache(i);
         if (ret != null) return ret;
         int ver = -1;
         try {
@@ -245,23 +188,18 @@ public class DexKit {
                 return null;
             }
             report.v(methods.size() + " methods(es) found: " + methods);
-            HashSet<Class> cas = new HashSet<>();
-            for (DexMethodDescriptor m : methods) {
-                cas.add(load(m.getDeclaringClassName()));
-            }
-            report.v("belonging to " + cas.size() + " class(es): " + cas);
-            if (cas.size() == 1) {
-                ret = cas.iterator().next();
+            if (methods.size() == 1) {
+                ret = methods.iterator().next();
             } else {
-                ret = a(i, cas, report);
+                ret = a(i, methods, report);
             }
-            report.v("Final decision:" + (ret == null ? null : ret.getName()));
+            report.v("Final decision:" + (ret == null ? null : ret.toString()));
             cache.putString("deobf_log_" + a(i), report.toString());
             if (ret == null) {
                 log("Multiple classes candidates found, none satisfactory.");
                 return null;
             }
-            cache.putString("cache_" + a(i) + "_class", ret.getName());
+            cache.putString("cache_" + a(i) + "_method", ret.toString());
             cache.getAllConfig().put("cache_" + a(i) + "_code", getHostInfo(getApplication()).versionCode);
             cache.save();
         } catch (Exception e) {
@@ -269,11 +207,6 @@ public class DexKit {
         }
         return ret;
     }
-
-
-
-
-
 
 
     public static String a(int i) {
@@ -490,13 +423,7 @@ public class DexKit {
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
 
-    private static Class a(int i, HashSet<Class> __classes, DexDeobfReport report) {
-        HashSet<Class> classes = new HashSet<>(__classes);
-        for (Class c : __classes) {
-            if (c == null || c.getName().contains(".")) {
-                classes.remove(c);
-            }
-        }
+    private static DexMethodDescriptor a(int i, HashSet<DexMethodDescriptor> __methods, DexDeobfReport report) {
         switch (i) {
             case C_DIALOG_UTIL:
             case C_FACADE:
@@ -508,94 +435,104 @@ public class DexKit {
             case C_TROOP_GIFT_UTIL:
             case C_TEST_STRUCT_MSG:
                 a:
-                for (Class clz : classes) {
+                for (DexMethodDescriptor m : __methods) {
+                    Class clz = Initiator.load(m.declaringClass);
                     if (Modifier.isAbstract(clz.getModifiers())) continue;
                     for (Field f : clz.getDeclaredFields()) {
                         if (!Modifier.isStatic(f.getModifiers())) continue a;
                     }
-                    return clz;
+                    return m;
                 }
                 break;
             case C_FLASH_PIC_HELPER:
                 a:
-                for (Class clz : classes) {
+                for (DexMethodDescriptor m : __methods) {
+                    Class clz = Initiator.load(m.declaringClass);
                     if (Modifier.isAbstract(clz.getModifiers())) continue;
                     for (Field f : clz.getDeclaredFields()) {
                         if (!Modifier.isStatic(f.getModifiers())) continue a;
                     }
                     if (clz.getDeclaredMethods().length > 8) continue;
-                    return clz;
+                    return m;
                 }
                 break;
             case C_BASE_PIC_DL_PROC:
-                for (Class clz : classes) {
+                for (DexMethodDescriptor md : __methods) {
+                    Class clz = Initiator.load(md.declaringClass);
                     for (Field f : clz.getDeclaredFields()) {
                         int m = f.getModifiers();
                         if (Modifier.isStatic(m) && Modifier.isFinal(m) && f.getType().equals(Pattern.class))
-                            return clz;
+                            return md;
                     }
                 }
                 break;
             case C_ITEM_BUILDER_FAC:
-                for (Class clz : classes) {
-                    if (clz.getDeclaredFields().length > 30) return clz;
+                for (DexMethodDescriptor m : __methods) {
+                    Class clz = Initiator.load(m.declaringClass);
+                    if (clz.getDeclaredFields().length > 30) return m;
                 }
                 break;
             case C_ABS_GAL_SCENE:
-                for (Class clz : classes) {
+                for (DexMethodDescriptor m : __methods) {
+                    Class clz = Initiator.load(m.declaringClass);
                     if (!Modifier.isAbstract(clz.getModifiers())) continue;
                     for (Field f : clz.getDeclaredFields()) {
                         if (f.getType().equals(View.class))
-                            return clz;
+                            return m;
                     }
                 }
                 break;
             case C_FAV_EMO_CONST:
                 a:
-                for (Class clz : classes) {
+                for (DexMethodDescriptor m : __methods) {
+                    Class clz = Initiator.load(m.declaringClass);
                     if (Modifier.isAbstract(clz.getModifiers())) continue;
                     for (Field f : clz.getDeclaredFields()) {
                         if (!Modifier.isStatic(f.getModifiers())) continue a;
                     }
                     if (clz.getDeclaredMethods().length > 3) continue;
-                    return clz;
+                    return m;
                 }
                 break;
             case C_ARK_APP_ITEM_BUBBLE_BUILDER:
-                for (Class clz : classes) {
+                for (DexMethodDescriptor m : __methods) {
+                    Class clz = Initiator.load(m.declaringClass);
                     if (Modifier.isAbstract(clz.getModifiers())) continue;
                     Class sp = clz.getSuperclass();
                     if (Object.class.equals(sp)) continue;
                     if (!Modifier.isAbstract(sp.getModifiers())) continue;
-                    if (sp.getName().contains("Builder")) return clz;
-                    return clz;
+                    if (sp.getName().contains("Builder")) return m;
+                    return m;
                 }
                 break;
             case C_PNG_FRAME_UTIL:
-                for (Class clz : classes) {
+                for (DexMethodDescriptor md : __methods) {
+                    Class clz = Initiator.load(md.declaringClass);
                     for (Method m : clz.getMethods()) {
                         if (m.getName().equals("b")) continue;
                         if (!m.getReturnType().equals(int.class)) continue;
                         if (!Modifier.isStatic(m.getModifiers())) continue;
                         Class[] argt = m.getParameterTypes();
-                        if (argt.length == 1 && int.class.equals(argt[0])) return clz;
+                        if (argt.length == 1 && int.class.equals(argt[0])) return md;
                     }
-                    return clz;
+                    return md;
                 }
                 break;
             case C_PIC_EMOTICON_INFO:
-                for (Class clz : classes) {
+                for (DexMethodDescriptor m : __methods) {
+                    Class clz = Initiator.load(m.declaringClass);
                     if (Modifier.isAbstract(clz.getModifiers())) continue;
                     Class s = clz.getSuperclass();
                     if (Object.class.equals(s)) continue;
                     s = s.getSuperclass();
                     if (Object.class.equals(s)) continue;
                     s = s.getSuperclass();
-                    if (Object.class.equals(s)) return clz;
+                    if (Object.class.equals(s)) return m;
                 }
                 break;
             case C_QZONE_MSG_NOTIFY:
-                for (Class clz : classes) {
+                for (DexMethodDescriptor md : __methods) {
+                    Class clz = Initiator.load(md.declaringClass);
                     if (Modifier.isAbstract(clz.getModifiers())) continue;
                     Class s = clz.getSuperclass();
                     if (!Object.class.equals(s)) continue;
@@ -603,16 +540,22 @@ public class DexKit {
                         if (!m.getReturnType().equals(void.class)) continue;
                         Class<?>[] argt = m.getParameterTypes();
                         if (argt.length > 7 && argt[0].equals(_QQAppInterface())) {
-                            return clz;
+                            return md;
                         }
                     }
                 }
                 break;
             case C_APP_CONSTANTS:
-                for (Class clz : classes) {
+                for (DexMethodDescriptor m : __methods) {
+                    Class clz = Initiator.load(m.declaringClass);
                     if (!Modifier.isInterface(clz.getModifiers())) continue;
                     if (clz.getDeclaredFields().length < 50) continue;
-                    return clz;
+                    return m;
+                }
+                break;
+            case N_BASE_CHAT_PIE__INIT:
+                for (DexMethodDescriptor m : __methods) {
+                    if (m.declaringClass.replace('/', '.').contains(_BaseChatPie().getName())) return m;
                 }
                 break;
         }
@@ -865,6 +808,8 @@ public class DexKit {
                     }
                 }
                 return i - ii;
+            } else {
+                i++;
             }
         }
         return -1;

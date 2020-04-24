@@ -170,7 +170,7 @@ public class ViewBuilder {
                 item.setEnabled(isChecked);
             }
         });
-        ((View)root.findViewById(R_ID_SWITCH)).setEnabled(item.isValid());
+        ((View) root.findViewById(R_ID_SWITCH)).setEnabled(item.isValid());
         return root;
     }
 
@@ -216,7 +216,7 @@ public class ViewBuilder {
     private static void doSetupAndInit(final Context ctx, BaseDelayableHook hook) {
         final CustomDialog[] pDialog = new CustomDialog[1];
         for (int i : hook.getPreconditions()) {
-            if (DexKit.loadClassFromCache(i) != null) continue;
+            if (DexKit.checkFor(i)) continue;
             final String name = DexKit.c(i).replace("/", ".");
             Utils.runOnUiThread(new Runnable() {
                 @Override
@@ -231,7 +231,7 @@ public class ViewBuilder {
 
                 }
             });
-            DexKit.doFindClass(i);
+            DexKit.prepareFor(i);
         }
         if (hook.isTargetProc()) hook.init();
         SyncUtils.requestInitHook(hook.getId(), hook.getEffectiveProc());
@@ -249,7 +249,7 @@ public class ViewBuilder {
     public static void doSetupForPrecondition(final Context ctx, BaseDelayableHook hook) {
         final CustomDialog[] pDialog = new CustomDialog[1];
         for (int i : hook.getPreconditions()) {
-            if (DexKit.loadClassFromCache(i) != null) continue;
+            if (DexKit.checkFor(i)) continue;
             final String name = DexKit.c(i).replace("/", ".");
             Utils.runOnUiThread(new Runnable() {
                 @Override
@@ -263,7 +263,7 @@ public class ViewBuilder {
                     pDialog[0].setMessage("QNotified正在定位被混淆类:\n" + name + "\n每个类一般不会超过一分钟");
                 }
             });
-            DexKit.doFindClass(i);
+            DexKit.prepareFor(i);
         }
         if (pDialog[0] != null) {
             Utils.runOnUiThread(new Runnable() {

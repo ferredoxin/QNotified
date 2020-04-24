@@ -82,7 +82,7 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
 
     public boolean checkPreconditions() {
         for (int i : getPreconditions()) {
-            if (DexKit.loadClassFromCache(i) == null) return false;
+            if (!DexKit.checkFor(i)) return false;
         }
         return true;
     }

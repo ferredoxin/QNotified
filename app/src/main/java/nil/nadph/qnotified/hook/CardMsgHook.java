@@ -20,7 +20,6 @@ package nil.nadph.qnotified.hook;
 
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Looper;
@@ -67,27 +66,17 @@ public class CardMsgHook extends BaseDelayableHook {
         if (inited) return true;
         try {
             //Begin: send btn
-            String _BaseChatPie_init_name = "e";
-            try {
-                Application ctx = Utils.getApplication();
-                if (getHostInfo(ctx).versionName.indexOf(0) == '7') {
-                    _BaseChatPie_init_name = "d";
-                }
-            } catch (Throwable e) {
-                //Should not happen
-                log(e);
-            }
             final Class<?> cl_BaseChatPie = _BaseChatPie();
             Method _BaseChatPie_init = null;
-            for (Method method : cl_BaseChatPie.getDeclaredMethods()) {
-                if (method.getParameterTypes().length != 0
-                        || !method.getReturnType().equals(void.class)) continue;
-                if (method.getName().equals(_BaseChatPie_init_name)) {
-                    _BaseChatPie_init = method;
-                    break;
-                }
-            }
-            XposedBridge.hookMethod(_BaseChatPie_init, new XC_MethodHook(40) {
+//            for (Method method : cl_BaseChatPie.getDeclaredMethods()) {
+//                if (method.getParameterTypes().length != 0
+//                        || !method.getReturnType().equals(void.class)) continue;
+//                if (method.getName().equals(_BaseChatPie_init_name)) {
+//                    _BaseChatPie_init = method;
+//                    break;
+//                }
+//            }
+            XposedBridge.hookMethod(DexKit.doFindMethod(DexKit.N_BASE_CHAT_PIE__INIT), new XC_MethodHook(40) {
                 @Override
                 public void afterHookedMethod(MethodHookParam param) throws Throwable {
                     try {
@@ -329,7 +318,7 @@ public class CardMsgHook extends BaseDelayableHook {
 
     @Override
     public int[] getPreconditions() {
-        return new int[]{DexKit.C_ARK_APP_ITEM_BUBBLE_BUILDER, DexKit.C_FACADE, DexKit.C_TEST_STRUCT_MSG};
+        return new int[]{DexKit.C_ARK_APP_ITEM_BUBBLE_BUILDER, DexKit.C_FACADE, DexKit.C_TEST_STRUCT_MSG, DexKit.N_BASE_CHAT_PIE__INIT};
     }
 
     @Override
