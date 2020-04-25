@@ -134,12 +134,15 @@ public class InjectDelayableHooks {
         } else {
             SettingEntryHook.get().init();
         }
-        if (ctx != null && main[0] != null) ctx.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ((ViewGroup) ctx.getWindow().getDecorView()).removeView(overlay[0]);
-            }
-        });
+        if (ctx != null && main[0] != null) {
+            System.gc();
+            ctx.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ((ViewGroup) ctx.getWindow().getDecorView()).removeView(overlay[0]);
+                }
+            });
+        }
         return true;
     }
 

@@ -18,38 +18,37 @@
  */
 package nil.nadph.qnotified.util;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-public class DexMethodDescriptor implements Serializable, Cloneable {
+public class DexFieldDescriptor {
     /**
      * Ljava/lang/Object;
      */
     public final String declaringClass;
     /**
-     * toString
+     * shadow$_klass_
      */
     public final String name;
     /**
-     * ()Ljava/lang/String;
+     * Ljava/lang/Class;
      */
-    public final String signature;
+    public final String type;
 
-    public DexMethodDescriptor(String desc) {
+    public DexFieldDescriptor(String desc) {
         if (desc == null) throw new NullPointerException();
         int a = desc.indexOf("->");
-        int b = desc.indexOf('(', a);
+        int b = desc.indexOf(':', a);
         declaringClass = desc.substring(0, a);
         name = desc.substring(a + 2, b);
-        signature = desc.substring(b);
+        type = desc.substring(b + 1);
     }
 
-    public DexMethodDescriptor(String clz, String n, String s) {
-        if (clz == null || n == null || s == null) throw new NullPointerException();
+    public DexFieldDescriptor(String clz, String n, String t) {
+        if (clz == null || n == null || t == null) throw new NullPointerException();
         declaringClass = clz;
         name = n;
-        signature = s;
+        type = t;
     }
 
     public String getDeclaringClassName() {
@@ -58,7 +57,7 @@ public class DexMethodDescriptor implements Serializable, Cloneable {
 
     @Override
     public String toString() {
-        return declaringClass + "->" + name + signature;
+        return declaringClass + "->" + name + ":" + type;
     }
 
     @Override
@@ -73,34 +72,22 @@ public class DexMethodDescriptor implements Serializable, Cloneable {
         return toString().hashCode();
     }
 
-    public Method getMethodInstance(ClassLoader classLoader) throws NoSuchMethodException {
+    public Field getFieldInstance(ClassLoader classLoader) throws NoSuchMethodException {
         try {
             Class<?> clz = classLoader.loadClass(declaringClass.substring(1, declaringClass.length() - 1).replace('/', '.'));
-            for (Method m : clz.getDeclaredMethods()) {
-                if (m.getName().equals(name) && getMethodTypeSig(m).equals(signature)) return m;
+            for (Field f : clz.getDeclaredFields()) {
+                if (f.getName().equals(name) && getTypeSig(f.getType()).equals(type)) return f;
             }
             while ((clz = clz.getSuperclass()) != null) {
-                for (Method m : clz.getDeclaredMethods()) {
-                    if (Modifier.isPrivate(m.getModifiers()) || Modifier.isStatic(m.getModifiers())) continue;
-                    if (m.getName().equals(name) && getMethodTypeSig(m).equals(signature)) return m;
+                for (Field f : clz.getDeclaredFields()) {
+                    if (Modifier.isPrivate(f.getModifiers()) || Modifier.isStatic(f.getModifiers())) continue;
+                    if (f.getName().equals(name) && getTypeSig(f.getType()).equals(type)) return f;
                 }
             }
-            throw new NoSuchMethodException(declaringClass + "->" + name + signature);
+            throw new NoSuchMethodException(declaringClass + "->" + name + ":" + type);
         } catch (ClassNotFoundException e) {
-            throw (NoSuchMethodException) new NoSuchMethodException(declaringClass + "->" + name + signature).initCause(e);
+            throw (NoSuchMethodException) new NoSuchMethodException(declaringClass + "->" + name + ":" + type).initCause(e);
         }
-    }
-
-    public static String getMethodTypeSig(final Method method) {
-        final StringBuilder buf = new StringBuilder();
-        buf.append("(");
-        final Class<?>[] types = method.getParameterTypes();
-        for (Class<?> type : types) {
-            buf.append(getTypeSig(type));
-        }
-        buf.append(")");
-        buf.append(getTypeSig(method.getReturnType()));
-        return buf.toString();
     }
 
     public static String getTypeSig(final Class<?> type) {
@@ -139,5 +126,4 @@ public class DexMethodDescriptor implements Serializable, Cloneable {
         }
         return "L" + type.getName().replace('.', '/') + ";";
     }
-
 }

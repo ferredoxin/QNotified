@@ -64,7 +64,7 @@ public class MultiForwardAvatarHook extends BaseDelayableHook {
         Class cl_AIOUtils = load("com/tencent/mobileqq/activity/aio/AIOUtils");
         if (cl_AIOUtils == null) return null;
         try {
-            return invoke_static(cl_AIOUtils, "a", v, View.class, load("com.tencent.mobileqq.data.ChatMessage"));
+            return invoke_static_any(cl_AIOUtils, v, View.class, load("com.tencent.mobileqq.data.ChatMessage"));
         } catch (NoSuchMethodException e) {
             return null;
         } catch (Exception e) {
@@ -82,6 +82,7 @@ public class MultiForwardAvatarHook extends BaseDelayableHook {
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     if (!isEnabled()) return;
                     Context ctx = (Context) iget_object_or_null(param.thisObject, "a", Context.class);
+                    if (ctx == null) ctx = getFirstNSFByType(param.thisObject, Context.class);
                     View view = (View) param.args[0];
                     if (ctx == null || isLeftCheckBoxVisible()) return;
                     if (ctx.getClass().getName().equals("com.tencent.mobileqq.activity.MultiForwardActivity")) {
@@ -95,7 +96,8 @@ public class MultiForwardAvatarHook extends BaseDelayableHook {
                             } catch (Exception e) {
                                 log(e);
                             }
-                        } else if (view.getClass().equals(ImageView.class)) {
+                        } else if (view.getClass().equals(ImageView.class) ||
+                                view.getClass().equals(load("com.tencent.widget.CommonImageView"))) {
                             Object msg = getChatMessageByView(view);
                             if (msg == null) return;
                             String senderuin = (String) iget_object_or_null(msg, "senderuin");
@@ -111,6 +113,7 @@ public class MultiForwardAvatarHook extends BaseDelayableHook {
                     }
                 }
             });
+            Field
             inited = true;
             return true;
         } catch (Throwable e) {

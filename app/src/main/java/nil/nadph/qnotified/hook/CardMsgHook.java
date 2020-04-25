@@ -23,6 +23,7 @@ import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Looper;
+import android.os.Parcelable;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,10 +31,11 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.tencent.mobileqq.app.QQAppInterface;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.bridge.ChatActivityFacade;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.InterceptLayout;
 import nil.nadph.qnotified.ui.TouchEventToLongClickAdapter;
@@ -41,6 +43,7 @@ import nil.nadph.qnotified.util.CustomMenu;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Utils;
 
+import java.io.Externalizable;
 import java.lang.reflect.*;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
@@ -82,20 +85,19 @@ public class CardMsgHook extends BaseDelayableHook {
                     try {
                         Object chatPie = param.thisObject;
                         //Class cl_PatchedButton = load("com/tencent/widget/PatchedButton");
-                        final ViewGroup viewGroup = (ViewGroup) invoke_virtual(chatPie, "a", ViewGroup.class);
+                        final ViewGroup viewGroup = (ViewGroup) invoke_virtual_any(chatPie, ViewGroup.class);
                         if (viewGroup == null) return;
                         Context ctx = viewGroup.getContext();
                         int fun_btn = ctx.getResources().getIdentifier("fun_btn", "id", ctx.getPackageName());
                         View sendBtn = viewGroup.findViewById(fun_btn);
-                        final Object qqApp = iget_object_or_null(param.thisObject, "a", _QQAppInterface());
-                        final Object session = iget_object_or_null(param.thisObject, "a", _SessionInfo());
+                        final QQAppInterface qqApp = getFirstNSFByType(param.thisObject, QQAppInterface.class);
+                        final Parcelable session = (Parcelable) getFirstNSFByType(param.thisObject, _SessionInfo());
                         if (!sendBtn.getParent().getClass().getName().equals(InterceptLayout.class.getName())) {
                             InterceptLayout layout = InterceptLayout.setupRudely(sendBtn);
                             layout.setTouchInterceptor(new TouchEventToLongClickAdapter() {
                                 @Override
                                 public boolean onTouch(View v, MotionEvent event) {
                                     ViewGroup vg = (ViewGroup) v;
-                                    Context ctx = v.getContext();
                                     if (event.getAction() == MotionEvent.ACTION_DOWN &&
                                             vg.getChildCount() != 0 && vg.getChildAt(0).isEnabled()) {
                                         return false;
@@ -134,9 +136,9 @@ public class CardMsgHook extends BaseDelayableHook {
                                 } else {
                                     if (text.contains("<?xml")) {
                                         try {
-                                            Object structMsg = invoke_static(DexKit.doFindClass(DexKit.C_TEST_STRUCT_MSG), "a", text, String.class, load("com.tencent.mobileqq.structmsg.AbsStructMsg"));
+                                            Externalizable structMsg = (Externalizable) invoke_static_any(DexKit.doFindClass(DexKit.C_TEST_STRUCT_MSG), text, String.class, load("com.tencent.mobileqq.structmsg.AbsStructMsg"));
                                             if (structMsg != null) {
-                                                XposedHelpers.callStaticMethod(DexKit.doFindClass(DexKit.C_FACADE), "a", qqApp, session, structMsg);
+                                                ChatActivityFacade.sendAbsStructMsg(qqApp, session, structMsg);
                                                 input.setText("");
                                                 return true;
                                             } else {
@@ -152,8 +154,7 @@ public class CardMsgHook extends BaseDelayableHook {
                                         try {
                                             Object arkMsg = load("com.tencent.mobileqq.data.ArkAppMessage").newInstance();
                                             if ((boolean) invoke_virtual(arkMsg, "fromAppXml", text, String.class)) {
-                                                XposedHelpers.callStaticMethod(DexKit.doFindClass(DexKit.C_FACADE), "a", qqApp, session, arkMsg);
-                                                //invoke_static(DexKit.doFindClass(DexKit.C_FACADE), "a", qqApp, session, arkMsg, load("com.tencent.mobileqq.app.QQAppInterface"), _SessionInfo(), arkMsg.getClass());
+                                                ChatActivityFacade.sendArkAppMessage(qqApp, session, arkMsg);
                                                 input.setText("");
                                                 return true;
                                             } else {

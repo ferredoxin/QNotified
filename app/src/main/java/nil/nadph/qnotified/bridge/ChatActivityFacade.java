@@ -23,6 +23,7 @@ import android.os.Parcelable;
 import com.tencent.mobileqq.app.QQAppInterface;
 import nil.nadph.qnotified.util.DexKit;
 
+import java.io.Externalizable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
@@ -30,8 +31,10 @@ import static nil.nadph.qnotified.util.Initiator._SessionInfo;
 import static nil.nadph.qnotified.util.Utils.log;
 
 public class ChatActivityFacade {
-    public static long[] sendMessage(QQAppInterface qQAppInterface, Context context, Parcelable sessionInfo, String msg,
+    public static long[] sendMessage(QQAppInterface qqAppInterface, Context context, Parcelable sessionInfo, String msg,
                                      ArrayList<?> atInfo, Object sendMsgParams) {
+        if (qqAppInterface == null) throw new NullPointerException("qqAppInterface == null");
+        if (sessionInfo == null) throw new NullPointerException("sessionInfo == null");
         Class facade = DexKit.doFindClass(DexKit.C_FACADE);
         Class SendMsgParams = null;
         Method m = null;
@@ -48,14 +51,17 @@ public class ChatActivityFacade {
             }
         }
         try {
-            return (long[]) m.invoke(null, qQAppInterface, context, sessionInfo, msg, atInfo, sendMsgParams);
+            return (long[]) m.invoke(null, qqAppInterface, context, sessionInfo, msg, atInfo, sendMsgParams);
         } catch (Exception e) {
             log(e);
             return null;
         }
     }
 
-    public static long[] sendMessage(QQAppInterface qQAppInterface, Context context, Parcelable sessionInfo, String msg) {
+    public static long[] sendMessage(QQAppInterface qqAppInterface, Context context, Parcelable sessionInfo, String msg) {
+        if (qqAppInterface == null) throw new NullPointerException("qqAppInterface == null");
+        if (sessionInfo == null) throw new NullPointerException("sessionInfo == null");
+        if (msg == null) throw new NullPointerException("msg == null");
         Class facade = DexKit.doFindClass(DexKit.C_FACADE);
         Class SendMsgParams = null;
         Method m = null;
@@ -72,7 +78,7 @@ public class ChatActivityFacade {
             }
         }
         try {
-            return (long[]) m.invoke(null, qQAppInterface, context, sessionInfo, msg, new ArrayList<>(), SendMsgParams.newInstance());
+            return (long[]) m.invoke(null, qqAppInterface, context, sessionInfo, msg, new ArrayList<>(), SendMsgParams.newInstance());
         } catch (Exception e) {
             log(e);
             return null;
@@ -80,6 +86,9 @@ public class ChatActivityFacade {
     }
 
     public static long sendPttMessage(QQAppInterface qqAppInterface, Parcelable sessionInfo, String pttPath) {
+        if (qqAppInterface == null) throw new NullPointerException("qqAppInterface == null");
+        if (sessionInfo == null) throw new NullPointerException("sessionInfo == null");
+        if (pttPath == null) throw new NullPointerException("pttPath == null");
         Method send = null;
         for (Method m : DexKit.doFindClass(DexKit.C_FACADE).getMethods()) {
             if (m.getReturnType().equals(long.class)) {
@@ -96,6 +105,51 @@ public class ChatActivityFacade {
         } catch (Exception e) {
             log(e);
             return 0;
+        }
+    }
+
+    public static boolean sendArkAppMessage(QQAppInterface qqAppInterface, Parcelable sessionInfo, Object arkAppMsg) {
+        if (qqAppInterface == null) throw new NullPointerException("qqAppInterface == null");
+        if (sessionInfo == null) throw new NullPointerException("sessionInfo == null");
+        if (arkAppMsg == null) throw new NullPointerException("arkAppMsg == null");
+        Method send = null;
+        for (Method m : DexKit.doFindClass(DexKit.C_FACADE).getMethods()) {
+            if (m.getReturnType().equals(boolean.class)) {
+                Class<?>[] clz = m.getParameterTypes();
+                if (clz.length != 3) continue;
+                if (clz[0].equals(QQAppInterface.class) && clz[1].equals(_SessionInfo()) && clz[2].isInstance(arkAppMsg)) {
+                    send = m;
+                    break;
+                }
+            }
+        }
+        try {
+            return (boolean) send.invoke(null, qqAppInterface, sessionInfo, arkAppMsg);
+        } catch (Exception e) {
+            log(e);
+            return false;
+        }
+    }
+
+    public static void sendAbsStructMsg(QQAppInterface qqAppInterface, Parcelable sessionInfo, Externalizable absStructMsg) {
+        if (qqAppInterface == null) throw new NullPointerException("qqAppInterface == null");
+        if (sessionInfo == null) throw new NullPointerException("sessionInfo == null");
+        if (absStructMsg == null) throw new NullPointerException("absStructMsg == null");
+        Method send = null;
+        for (Method m : DexKit.doFindClass(DexKit.C_FACADE).getMethods()) {
+            if (m.getReturnType().equals(void.class)) {
+                Class<?>[] clz = m.getParameterTypes();
+                if (clz.length != 3) continue;
+                if (clz[0].equals(QQAppInterface.class) && clz[1].equals(_SessionInfo()) && clz[2].isInstance(absStructMsg)) {
+                    send = m;
+                    break;
+                }
+            }
+        }
+        try {
+            send.invoke(null, qqAppInterface, sessionInfo, absStructMsg);
+        } catch (Exception e) {
+            log(e);
         }
     }
 }

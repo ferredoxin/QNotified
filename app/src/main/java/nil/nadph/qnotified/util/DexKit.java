@@ -21,16 +21,11 @@ package nil.nadph.qnotified.util;
 import android.view.View;
 import nil.nadph.qnotified.config.ConfigManager;
 
-import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.regex.Pattern;
 
@@ -118,8 +113,8 @@ public class DexKit {
         if (i / 10000 == 0) throw new IllegalStateException("Index " + i + " attempted to access method!");
         DexMethodDescriptor m = getMethodDescFromCache(i);
         if (m == null) return null;
-        if (m.methodName.equals("<init>") || m.methodName.equals("<cinit>")) {
-            log("getMethodFromCache(" + i + ") methodName == " + m.methodName + " , return null");
+        if (m.name.equals("<init>") || m.name.equals("<clinit>")) {
+            log("getMethodFromCache(" + i + ") methodName == " + m.name + " , return null");
             return null;
         }
         try {
@@ -135,8 +130,8 @@ public class DexKit {
         if (i / 10000 == 0) throw new IllegalStateException("Index " + i + " attempted to access method!");
         DexMethodDescriptor m = doFindMethodDesc(i);
         if (m == null) return null;
-        if (m.methodName.equals("<init>") || m.methodName.equals("<cinit>")) {
-            log("doFindMethod(" + i + ") methodName == " + m.methodName + " , return null");
+        if (m.name.equals("<init>") || m.name.equals("<clinit>")) {
+            log("doFindMethod(" + i + ") methodName == " + m.name + " , return null");
             return null;
         }
         try {
@@ -572,7 +567,7 @@ public class DexKit {
             record |= 1 << dexi;
             try {
                 for (byte[] k : keys) {
-                    HashSet<DexMethodDescriptor> ret = findMethodsByConstString(k, dexi, loader);
+                    HashSet<DexMethodDescriptor> ret = DexFlow.findMethodsByConstString(k, dexi, loader);
                     if (ret != null && ret.size() > 0) return ret;
                 }
             } catch (FileNotFoundException ignored) {
@@ -586,7 +581,7 @@ public class DexKit {
             }
             try {
                 for (byte[] k : keys) {
-                    HashSet<DexMethodDescriptor> ret = findMethodsByConstString(k, dexi, loader);
+                    HashSet<DexMethodDescriptor> ret = DexFlow.findMethodsByConstString(k, dexi, loader);
                     if (ret != null && ret.size() > 0) return ret;
                 }
             } catch (FileNotFoundException ignored) {
@@ -596,239 +591,31 @@ public class DexKit {
         }
     }
 
-    /**
-     * get ALL the possible class names
-     *
-     * @param key    the pattern
-     * @param i      C_XXXX
-     * @param loader to get dex file
-     * @return ["abc","ab"]
-     * @throws FileNotFoundException apk has no classesN.dex
-     */
-    public static HashSet<DexMethodDescriptor> findMethodsByConstString(byte[] key, int i, ClassLoader loader) throws FileNotFoundException {
-        String name;
-        byte[] buf = new byte[4096];
-        byte[] content;
-        if (i == 1) name = "classes.dex";
-        else name = "classes" + i + ".dex";
-        Enumeration<URL> urls = null;
-        try {
-            urls = (Enumeration<URL>) Utils.invoke_virtual(loader, "findResources", name, String.class);
-        } catch (Throwable e) {
-            log(e);
-        }
-        //log("dex" + i + ":" + url);
-        if (urls == null || !urls.hasMoreElements()) throw new FileNotFoundException(name);
-        InputStream in;
-        try {
-            HashSet<DexMethodDescriptor> rets = new HashSet<>();
-            while (urls.hasMoreElements()) {
-                in = urls.nextElement().openStream();
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                int ii;
-                while ((ii = in.read(buf)) != -1) {
-                    baos.write(buf, 0, ii);
-                }
-                in.close();
-                content = baos.toByteArray();
-				/*if (i == 1) {
-					log("dex" + i + ".len :" + content.length);
-				}*/
-                ArrayList<Integer> opcodeOffsets = a(content, key);
-                for (int j = 0; j < opcodeOffsets.size(); j++) {
-                    try {
-                        DexMethodDescriptor desc = getDexMethodByOpOffset(content, opcodeOffsets.get(j), true);
-                        if (desc != null) rets.add(desc);
-                    } catch (InternalError ignored) {
-                    }
-                }
-            }
-            return rets;
-        } catch (IOException e) {
-            log(e);
-            return null;
-        }
-    }
-
     public static ArrayList<Integer> a(byte[] buf, byte[] target) {
         ArrayList<Integer> rets = new ArrayList<>();
         int[] ret = new int[1];
-        ret[0] = arrayIndexOf(buf, target, 0, buf.length);
-        ret[0] = arrayIndexOf(buf, int2u4le(ret[0]), 0, buf.length);
+        ret[0] = DexFlow.arrayIndexOf(buf, target, 0, buf.length);
+        ret[0] = DexFlow.arrayIndexOf(buf, DexFlow.int2u4le(ret[0]), 0, buf.length);
         //System.out.println(ret[0]);
-        int strIdx = (ret[0] - readLe32(buf, 0x3c)) / 4;
+        int strIdx = (ret[0] - DexFlow.readLe32(buf, 0x3c)) / 4;
         if (strIdx > 0xFFFF) {
-            target = int2u4le(strIdx);
-        } else target = int2u2le(strIdx);
+            target = DexFlow.int2u4le(strIdx);
+        } else target = DexFlow.int2u2le(strIdx);
         int off = 0;
         while (true) {
-            off = arrayIndexOf(buf, target, off + 1, buf.length);
+            off = DexFlow.arrayIndexOf(buf, target, off + 1, buf.length);
             if (off == -1) break;
             if (buf[off - 2] == (byte) 26/*Opcodes.OP_CONST_STRING*/
                     || buf[off - 2] == (byte) 27)/* Opcodes.OP_CONST_STRING_JUMBO*/ {
                 ret[0] = off - 2;
                 int opcodeOffset = ret[0];
                 if (buf[off - 2] == (byte) 27 && strIdx < 0x10000) {
-                    if (readLe32(buf, opcodeOffset + 2) != strIdx) continue;
+                    if (DexFlow.readLe32(buf, opcodeOffset + 2) != strIdx) continue;
                 }
                 rets.add(opcodeOffset);
             }
         }
         return rets;
-    }
-
-    /**
-     * @param buf       the byte array containing the whole dex file
-     * @param opcodeOff offset relative to {@code buf}
-     * @param verify    whether to verify if the {@code opcodeOff} is aligned to opcode,
-     *                  return {@code null} if the offset failed the verification
-     * @return
-     */
-    @Nullable
-    public static DexMethodDescriptor getDexMethodByOpOffset(byte[] buf, int opcodeOff, boolean verify) {
-        int methodIdsSize = readLe32(buf, 0x58);
-        int methodIdsOff = readLe32(buf, 0x5c);
-        int classDefsSize = readLe32(buf, 0x60);
-        int classDefsOff = readLe32(buf, 0x64);
-        int[] p = new int[1];
-        int[] ret = new int[1];
-        int[] co = new int[1];
-        for (int cn = 0; cn < classDefsSize; cn++) {
-            int classIdx = readLe32(buf, classDefsOff + cn * 32);
-            int classDataOff = readLe32(buf, classDefsOff + cn * 32 + 24);
-            p[0] = classDataOff;
-            if (classDataOff == 0) continue;
-            int fieldIdx = 0;
-            int staticFieldsSize = readUleb128(buf, p),
-                    instanceFieldsSize = readUleb128(buf, p),
-                    directMethodsSize = readUleb128(buf, p),
-                    virtualMethodsSize = readUleb128(buf, p);
-            for (int fn = 0; fn < staticFieldsSize + instanceFieldsSize; fn++) {
-                fieldIdx += readUleb128(buf, p);
-                int accessFlags = readUleb128(buf, p);
-            }
-            int methodIdx = 0;
-            for (int mn = 0; mn < directMethodsSize; mn++) {
-                methodIdx += readUleb128(buf, p);
-                int accessFlags = readUleb128(buf, p);
-                int codeOff = co[0] = readUleb128(buf, p);
-                if (codeOff == 0) continue;
-                int insnsSize = readLe32(buf, codeOff + 12);
-                if (codeOff + 16 <= opcodeOff && opcodeOff <= codeOff + 16 + insnsSize * 2) {
-                    if (verify && !verifyOpcodeOffset(buf, codeOff + 16, insnsSize * 2, opcodeOff)) {
-                        return null;
-                    }
-                    String clz = readType(buf, classIdx);
-                    int pMethodId = methodIdsOff + 8 * methodIdx;
-                    String name = readString(buf, readLe32(buf, pMethodId + 4));
-                    String sig = readProto(buf, readLe16(buf, pMethodId + 2));
-                    return new DexMethodDescriptor(clz, name, sig);
-                }
-            }
-            methodIdx = 0;
-            for (int mn = 0; mn < virtualMethodsSize; mn++) {
-                methodIdx += readUleb128(buf, p);
-                int accessFlags = readUleb128(buf, p);
-                int codeOff = co[0] = readUleb128(buf, p);
-                if (codeOff == 0) continue;
-                int insnsSize = readLe32(buf, codeOff + 12);
-                if (codeOff + 16 <= opcodeOff && opcodeOff <= codeOff + 16 + insnsSize * 2) {
-                    if (verify && !verifyOpcodeOffset(buf, codeOff + 16, insnsSize * 2, opcodeOff)) {
-                        return null;
-                    }
-                    String clz = readType(buf, classIdx);
-                    int pMethodId = methodIdsOff + 8 * methodIdx;
-                    String name = readString(buf, readLe32(buf, pMethodId + 4));
-                    String sig = readProto(buf, readLe16(buf, pMethodId + 2));
-                    return new DexMethodDescriptor(clz, name, sig);
-                }
-            }
-        }
-        return null;
-    }
-
-    public static int readUleb128(byte[] src, int[] offset) {
-        int result = 0;
-        int count = 0;
-        int cur;
-        do {
-            cur = src[offset[0]];
-            cur &= 0xff;
-            result |= (cur & 0x7f) << count * 7;
-            count++;
-            offset[0]++;
-        } while ((cur & 0x80) == 128 && count < 5);
-        return result;
-    }
-
-    public static String readString(byte[] buf, int idx) {
-        int stringIdsOff = readLe32(buf, 0x3c);
-        int strOff = readLe32(buf, stringIdsOff + 4 * idx);
-        int len = buf[strOff];//hack,just assume it no longer than 127
-        return new String(buf, strOff + 1, len);
-    }
-
-    public static String readType(byte[] buf, int idx) {
-        int typeIdsOff = readLe32(buf, 0x44);
-        int strIdx = readLe32(buf, typeIdsOff + 4 * idx);
-        return readString(buf, strIdx);
-    }
-
-    public static String readProto(byte[] buf, int idx) {
-        int protoIdsOff = readLe32(buf, 0x4c);
-        //int shortyStrIdx = readLe32(buf, protoIdsOff + 12 * idx);
-        int returnTypeIdx = readLe32(buf, protoIdsOff + 12 * idx + 4);
-        int parametersOff = readLe32(buf, protoIdsOff + 12 * idx + 8);
-        StringBuilder sb = new StringBuilder("(");
-        if (parametersOff != 0) {
-            int size = readLe32(buf, parametersOff);
-            for (int i = 0; i < size; i++) {
-                int typeIdx = readLe16(buf, parametersOff + 4 + 2 * i);
-                sb.append(readType(buf, typeIdx));
-            }
-        }
-        sb.append(")");
-        sb.append(readType(buf, returnTypeIdx));
-        return sb.toString();
-    }
-
-    public static int arrayIndexOf(byte[] arr, byte[] subArr, int startIndex, int endIndex) {
-        byte a = subArr[0];
-        float d = endIndex - startIndex;
-        int b = endIndex - subArr.length;
-        int i = startIndex;
-        int ii;
-        a:
-        while (i <= b) {
-            if (arr[i] == a) {
-                for (ii = 0; ii < subArr.length; ii++) {
-                    if (arr[i++] != subArr[ii]) {
-                        i = i - ii;
-                        continue a;
-                    }
-                }
-                return i - ii;
-            } else {
-                i++;
-            }
-        }
-        return -1;
-    }
-
-    public static byte[] int2u4le(int i) {
-        return new byte[]{(byte) i, (byte) (i >> 8), (byte) (i >> 16), (byte) (i >> 24)};
-    }
-
-    public static byte[] int2u2le(int i) {
-        return new byte[]{(byte) i, (byte) (i >> 8)};
-    }
-
-    public static int readLe32(byte[] buf, int index) {
-        return buf[index] & 0xFF | (buf[index + 1] << 8) & 0xff00 | (buf[index + 2] << 16) & 0xff0000 | (buf[index + 3] << 24) & 0xff000000;
-    }
-
-    public static int readLe16(byte[] buf, int off) {
-        return (buf[off] & 0xFF) | ((buf[off + 1] << 8) & 0xff00);
     }
 
     public static class DexDeobfReport {
@@ -857,35 +644,4 @@ public class DexKit {
         }
     }
 
-    public static boolean verifyOpcodeOffset(byte[] buf, int insStart, int bLen, int opcodeOffset) {
-        for (int i = 0; i < bLen; ) {
-            if (insStart + i == opcodeOffset) return true;
-            int opv = buf[insStart + i] & 0xff;
-            int len = OPCODE_LENGTH_TABLE[opv];
-            if (len == 0) {
-                log(String.format("Unrecognized opcode = 0x%02x", opv));
-                return false;
-            }
-            i += 2 * len;
-        }
-        return false;
-    }
-
-    private static final byte[] OPCODE_LENGTH_TABLE = new byte[]{
-            1, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 1, 1, 1, 1, 1,
-            1, 1, 1, 2, 3, 2, 2, 3, 5, 2, 2, 3, 2, 1, 1, 2,
-            2, 1, 2, 2, 3, 3, 3, 1, 1, 2, 3, 3, 3, 2, 2, 2,
-            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0,
-            0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3,
-            3, 3, 3, 1, 3, 3, 3, 3, 3, 0, 0, 1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3,
-            3, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 2, 2, 2, 2};
 }

@@ -238,6 +238,48 @@ public class Utils {
     }
 
     @Deprecated
+    public static Object invoke_static_any(Class<?> clazz, Object... argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException {
+        int argc = argsTypesAndReturnType.length / 2;
+        Class[] argt = new Class[argc];
+        Object[] argv = new Object[argc];
+        Class returnType = null;
+        if (argc * 2 + 1 == argsTypesAndReturnType.length)
+            returnType = (Class) argsTypesAndReturnType[argsTypesAndReturnType.length - 1];
+        int i, ii;
+        Method[] m;
+        Method method = null;
+        Class[] _argt;
+        for (i = 0; i < argc; i++) {
+            argt[i] = (Class) argsTypesAndReturnType[argc + i];
+            argv[i] = argsTypesAndReturnType[i];
+        }
+        loop_main:
+        do {
+            m = clazz.getDeclaredMethods();
+            loop:
+            for (i = 0; i < m.length; i++) {
+                _argt = m[i].getParameterTypes();
+                if (_argt.length == argt.length) {
+                    for (ii = 0; ii < argt.length; ii++) {
+                        if (!argt[ii].equals(_argt[ii])) continue loop;
+                    }
+                    if (returnType != null && !returnType.equals(m[i].getReturnType())) continue;
+                    if (method == null) {
+                        method = m[i];
+                        //here we go through this class
+                    } else {
+                        throw new NoSuchMethodException("Multiple methods found for __attribute__((any))" + paramsTypesToString(argt) + " in " + clazz.getName());
+                    }
+                }
+            }
+        } while (method == null && !Object.class.equals(clazz = clazz.getSuperclass()));
+        if (method == null)
+            throw new NoSuchMethodException("__attribute__((a))" + paramsTypesToString(argt) + " in " + clazz.getName());
+        method.setAccessible(true);
+        return method.invoke(null, argv);
+    }
+
+    @Deprecated
     public static Object invoke_virtual_declared_modifier_any(Object obj, int requiredMask, int excludedMask, Object... argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException {
         Class clazz = obj.getClass();
         int argc = argsTypesAndReturnType.length / 2;
@@ -908,12 +950,12 @@ public class Utils {
         return iget_object_or_null(obj, name, null);
     }
 
-    public static Object iget_object_or_null(Object obj, String name, Class type) {
+    public static <T> T iget_object_or_null(Object obj, String name, Class<T> type) {
         Class clazz = obj.getClass();
         try {
             Field f = findField(clazz, type, name);
             f.setAccessible(true);
-            return f.get(obj);
+            return (T) f.get(obj);
         } catch (Exception e) {
         }
         return null;
@@ -1019,7 +1061,7 @@ public class Utils {
      * @return the FIRST(as declared seq in dex) field value meeting the type
      */
     @Deprecated
-    public static Object getFirstNSFByType(Object obj, Class type) {
+    public static <T> T getFirstNSFByType(Object obj, Class<T> type) {
         if (obj == null) throw new NullPointerException("obj == null");
         if (type == null) throw new NullPointerException("type == null");
         Class clz = obj.getClass();
@@ -1030,7 +1072,7 @@ public class Utils {
                 if (Modifier.isStatic(m) || Modifier.isFinal(m)) continue;
                 f.setAccessible(true);
                 try {
-                    return f.get(obj);
+                    return (T) f.get(obj);
                 } catch (IllegalAccessException ignored) {
                     //should not happen
                 }
