@@ -113,7 +113,6 @@ public class MultiForwardAvatarHook extends BaseDelayableHook {
                     }
                 }
             });
-            Field
             inited = true;
             return true;
         } catch (Throwable e) {

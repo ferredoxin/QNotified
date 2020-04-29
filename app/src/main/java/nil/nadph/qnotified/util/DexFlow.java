@@ -114,7 +114,7 @@ public class DexFlow {
         int triesSize = readLe16(buf, dexCodeOffset + 6);
         int insnsSize = readLe16(buf, dexCodeOffset + 12);
         int insnsOff = dexCodeOffset + 16;
-
+        throw new RuntimeException("Method not implemented");
     }
     //struct DexCode {
     //0   u2  registersSize;

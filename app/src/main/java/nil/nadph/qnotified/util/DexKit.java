@@ -334,7 +334,10 @@ public class DexKit {
             case C_BASE_PIC_DL_PROC:
                 return new byte[][]{new byte[]{0x2C, 0x42, 0x61, 0x73, 0x65, 0x50, 0x69, 0x63, 0x44, 0x6F, 0x77, 0x6E, 0x6C}};
             case C_ITEM_BUILDER_FAC:
-                return new byte[][]{new byte[]{0x24, 0x49, 0x74, 0x65, 0x6D, 0x42, 0x75, 0x69, 0x6C, 0x64, 0x65, 0x72, 0x20, 0x69, 0x73, 0x3A, 0x20, 0x44}};
+                return new byte[][]{
+                        new byte[]{0x24, 0x49, 0x74, 0x65, 0x6D, 0x42, 0x75, 0x69, 0x6C, 0x64, 0x65, 0x72, 0x20, 0x69, 0x73, 0x3A, 0x20, 0x44},
+                        new byte[]{0x2A, 0x66, 0x69, 0x6E, 0x64, 0x49, 0x74, 0x65, 0x6D, 0x42, 0x75, 0x69, 0x6C, 0x64, 0x65, 0x72, 0x3A, 0x20, 0x69, 0x6E, 0x76, 0x6F, 0x6B, 0x65, 0x64, 0x2E}
+                };
             case C_AIO_UTILS:
                 return new byte[][]{new byte[]{0x0D, 0x6F, 0x70, 0x65, 0x6E, 0x41, 0x49, 0x4F, 0x20, 0x62, 0x79, 0x20, 0x4D, 0x54}};
             case C_ABS_GAL_SCENE:
@@ -375,21 +378,21 @@ public class DexKit {
     public static int[] d(int i) {
         switch (i) {
             case C_DIALOG_UTIL:
-                return new int[]{4, 3};
+                return new int[]{1, 4, 3};
             case C_FACADE:
-                return new int[]{6, 3};
+                return new int[]{2, 6, 3};
             case C_FLASH_PIC_HELPER:
                 return new int[]{1, 3};
             case C_BASE_PIC_DL_PROC:
-                return new int[]{7, 2};
+                return new int[]{4, 7, 2};
             case C_ITEM_BUILDER_FAC:
                 return new int[]{11, 6, 1};
             case C_AIO_UTILS:
-                return new int[]{11, 6};
+                return new int[]{2, 11, 6};
             case C_ABS_GAL_SCENE:
                 return new int[]{1};
             case C_FAV_EMO_CONST:
-                return new int[]{4, 5};
+                return new int[]{3, 4, 5};
             case C_MSG_REC_FAC:
                 return new int[]{4};
             case C_CONTACT_UTILS:
@@ -397,23 +400,23 @@ public class DexKit {
             case C_VIP_UTILS:
                 return new int[]{4, 2, 3};
             case C_ARK_APP_ITEM_BUBBLE_BUILDER:
-                return new int[]{11, 6};
+                return new int[]{2, 11, 6};
             case C_PNG_FRAME_UTIL:
-                return new int[]{2};
+                return new int[]{3, 2};
             case C_PIC_EMOTICON_INFO:
-                return new int[]{4};
+                return new int[]{3, 4};
             case C_SIMPLE_UI_UTIL:
-                return new int[]{2};
+                return new int[]{4, 2};
             case C_TROOP_GIFT_UTIL:
-                return new int[]{9, 2};
+                return new int[]{4, 9, 2};
             case C_TEST_STRUCT_MSG:
-                return new int[]{7, 2};
+                return new int[]{4, 7, 2};
             case C_QZONE_MSG_NOTIFY:
-                return new int[]{3};
+                return new int[]{4, 3};
             case C_APP_CONSTANTS:
                 return new int[]{1};
             case N_BASE_CHAT_PIE__INIT:
-                return new int[]{6, 3};
+                return new int[]{7, 6, 3};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
