@@ -90,8 +90,8 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         } catch (Throwable e) {
             log(e);
         }
-        ll.addView(subtitle(this, "遗留功能"));//群发已不再维护
-        ll.addView(newListItemButton(this, "群发文本消息", "年少不知号贵-理性使用以免永冻", null, clickToBatchMsg()));
+//        ll.addView(subtitle(this, "遗留功能"));//群发已不再维护
+//        ll.addView(newListItemButton(this, "群发文本消息", "年少不知号贵-理性使用以免永冻", null, clickToBatchMsg()));
         ll.addView(subtitle(this, "基本功能"));
         if (!Utils.isTim(this)) {
             ll.addView(_t = newListItemButton(this, "自定义电量", "[QQ>=8.2.6]在线模式为我的电量时生效", "N/A", clickToProxyActAction(ACTION_FAKE_BAT_CONFIG_ACTIVITY)));
@@ -154,7 +154,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(newListItemSwitchStub(this, "禁用特别关心长震动", "等我找到女朋友就开发这个功能", false));
         ll.addView(newListItemButton(this, "AddFriendReq.sourceID", "自定义加好友来源", "[不改动]", clickTheComing()));
         ll.addView(newListItemButton(this, "DelFriendReq.delType", "只能为1或2", "[不改动]", clickTheComing()));
-        ll.addView(_t = newListItemButton(this, "管理脚本(.js/.java)", "请注意安全, 合理使用", "N/A", clickToProxyActAction(ManageScriptsActivity.class)));
+        ll.addView(_t = newListItemButton(this, "管理脚本(.java)", "请注意安全, 合理使用", "N/A", clickToProxyActAction(ManageScriptsActivity.class)));
         __js_status = (TextView) _t.findViewById(R_ID_VALUE);
         ll.addView(subtitle(this, "关于"));
         PackageInfo pi = Utils.getHostInfo(this);
