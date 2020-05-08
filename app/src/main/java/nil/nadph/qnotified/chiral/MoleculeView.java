@@ -25,68 +25,110 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Build;
-import android.text.BoringLayout;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import nil.nadph.qnotified.util.IndexFrom;
 
 
 public class MoleculeView extends View {
 
     protected Molecule molecule;
     protected int mGravity = Gravity.CENTER;
-    protected int mPaddingLeft, mPaddingRight, mPaddingTop, mPaddingBottom;
     protected float textSize;
     private int textColor = 0xFF000000;
     protected Paint paint = new Paint();
     protected float scaleFactor = 1;
     private Rect mViewRect = new Rect(), mDrawRect = new Rect();
 
-    private float[] labelWidth;
-    private float labelHeight;
+    private float[] labelTop;
+    private float[] labelLeft;
+    private float[] labelRight;
+    private float[] labelBottom;
+
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (molecule != null && molecule.atomCount() > 0) {
+            long begin = System.currentTimeMillis();
             if (scaleFactor == 0) calcScaleFactor(getWidth(), getHeight());
             mViewRect.set(0, 0, getWidth(), getHeight());
             Gravity.apply(mGravity, (int) (scaleFactor * molecule.rangeX() + textSize),
                     (int) (scaleFactor * molecule.rangeY() + textSize), mViewRect, mDrawRect);
             float dx = mDrawRect.left + textSize / 2;
-            float dy = mDrawRect.top + textSize / 2;
+            float dy = mDrawRect.bottom - textSize / 2;
             float mx = molecule.minX();
             float my = molecule.minY();
             Paint.FontMetrics fontMetrics = paint.getFontMetrics();
             float distance = (fontMetrics.bottom - fontMetrics.top) / 2 - fontMetrics.bottom;
-            if (labelWidth == null || labelWidth.length < molecule.atomCount()) {
-                labelWidth = new float[molecule.atomCount()];
+            if (labelTop == null || labelTop.length < molecule.atomCount()) {
+                labelTop = new float[molecule.atomCount()];
+                labelBottom = new float[molecule.atomCount()];
+                labelLeft = new float[molecule.atomCount()];
+                labelRight = new float[molecule.atomCount()];
             }
+            paint.setColor(textColor);
+            paint.setStrokeWidth(textSize / 15);
             paint.setTextAlign(Paint.Align.CENTER);
             Molecule.Atom atom, p1, p2;
             Molecule.Bond bond;
             for (int i = 0; i < molecule.atomCount(); i++) {
                 atom = molecule.getAtom(i + 1);
-                labelWidth[i] = paint.measureText(atom.element);
-                canvas.drawText(atom.element, dx + scaleFactor * (atom.x - mx), dy + scaleFactor * (atom.y - my) + distance, paint);
+                paint.setTextSize(textSize);
+                if (atom.element.equals("C") && atom.charge == 0 && atom.unpaired == 0 &&
+                        (atom.showFlag & Molecule.SHOW_FLAG_EXPLICIT) == 0) {
+                    labelLeft[i] = labelRight[i] = 0;
+                    labelTop[i] = labelBottom[i] = 0;
+                } else {
+                    labelLeft[i] = labelRight[i] = paint.measureText(atom.element) / 2;
+                    labelTop[i] = labelBottom[i] = (fontMetrics.descent - fontMetrics.ascent) / 2;
+                    canvas.drawText(atom.element, dx + scaleFactor * (atom.x - mx), dy - scaleFactor * (atom.y - my) + distance, paint);
+                    if (atom.charge != 0) {
+                        int c = atom.charge;
+                        String text;
+                        if (c > 0) {
+                            if (c == 1) text = "+";
+                            else text = c + "+";
+                        } else {
+                            if (c == -1) text = "-";
+                            else text = -c + "-";
+                        }
+                        paint.setTextSize(textSize / 2);
+                        float chgwidth = paint.measureText(text);
+                        Paint.FontMetrics chgFontMetrics = paint.getFontMetrics();
+                        float chgdis = (chgFontMetrics.bottom - chgFontMetrics.top) / 2 - chgFontMetrics.bottom;
+                        canvas.drawText(text, dx + scaleFactor * (atom.x - mx) + labelRight[i] + chgwidth / 2,
+                                dy - scaleFactor * (atom.y - my) + fontMetrics.top / 3 + chgdis, paint);
+                    }
+                }
             }
             for (int i = 0; i < molecule.bondCount(); i++) {
                 bond = molecule.getBond(i + 1);
                 p1 = molecule.getAtom(bond.from);
                 p2 = molecule.getAtom(bond.to);
-                drawBond(canvas, dx + scaleFactor * (p1.x - mx), dy + scaleFactor * (p1.y - my), dx + scaleFactor * (p2.x - mx),
-                        dy + scaleFactor * (p2.y - my), labelHeight, labelWidth[bond.from - 1], labelWidth[bond.to - 1], bond.type);
+                drawBond(canvas, dx + scaleFactor * (p1.x - mx), dy - scaleFactor * (p1.y - my), dx + scaleFactor * (p2.x - mx),
+                        dy - scaleFactor * (p2.y - my), bond.type, bond.from - 1, bond.to - 1);
             }
+            long delta = System.currentTimeMillis() - begin;
+            paint.setTextAlign(Paint.Align.LEFT);
+            paint.setTextSize(textSize / 2);
+            canvas.drawText(delta + "ms", textSize / 2, textSize / 1.25f, paint);
+            paint.setTextSize(textSize);
         }
     }
 
-    private void drawBond(Canvas canvas, float x1, float y1, float x2, float y2, float height, float w1, float w2, int type) {
+    private void drawBond(Canvas canvas, float x1, float y1, float x2, float y2, int type, @IndexFrom(0) int idx1, @IndexFrom(0) int idx2) {
         float[] ret = new float[2];
         float rad = (float) Math.atan2(y2 - y1, x2 - x1);
+        float w1 = labelLeft[idx1] * 2;
+        float w2 = labelLeft[idx2] * 2;
+        float height = labelTop[idx1] * 2;
         calcLinePointConfined(x1, y1, x2, y2, w1, height, ret);
         float basex1 = ret[0];
         float basey1 = ret[1];
+        height = labelTop[idx2] * 2;
         calcLinePointConfined(x2, y2, x1, y1, w2, height, ret);
         float delta = textSize / 6;
         float basex2 = ret[0];
@@ -98,13 +140,13 @@ public class MoleculeView extends View {
                 canvas.drawLine(basex1, basey1, basex2, basey2, paint);
                 break;
             case 2:
-                canvas.drawLine(basex1 + dx / 2, basey1 + dy / 2, basex2 + dx / 2, basey2 + dy / 2, paint);
-                canvas.drawLine(basex1 - dx / 2, basey1 - dy / 2, basex2 - dx / 2, basey2 - dy / 2, paint);
+                canvas.drawLine(basex1 + dx / 2, basey1 - dy / 2, basex2 + dx / 2, basey2 - dy / 2, paint);
+                canvas.drawLine(basex1 - dx / 2, basey1 + dy / 2, basex2 - dx / 2, basey2 + dy / 2, paint);
                 break;
             case 3:
                 canvas.drawLine(basex1, basey1, basex2, basey2, paint);
-                canvas.drawLine(basex1 + dx, basey1 + dy, basex2 + dx, basey2 + dy, paint);
-                canvas.drawLine(basex1 - dx, basey1 - dy, basex2 - dx, basey2 - dy, paint);
+                canvas.drawLine(basex1 + dx, basey1 - dy, basex2 + dx, basey2 - dy, paint);
+                canvas.drawLine(basex1 - dx, basey1 + dy, basex2 - dx, basey2 + dy, paint);
                 break;
         }
     }
@@ -160,8 +202,8 @@ public class MoleculeView extends View {
             scaleFactor = 0;
             return;
         }
-        width -= mPaddingLeft + mPaddingRight + textSize;
-        height -= mPaddingTop + mPaddingBottom + textSize;
+        width -= getPaddingLeft() + getPaddingRight() + textSize;
+        height -= getPaddingTop() + getPaddingBottom() + textSize;
         float rx = molecule.rangeX();
         float ry = molecule.rangeY();
         if (rx * ry == 0) {
@@ -183,78 +225,36 @@ public class MoleculeView extends View {
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-
         int width;
         int height;
-
-        boolean fromexisting = false;
-        final float widthLimit = (widthMode == MeasureSpec.AT_MOST)
+        final float widthLimit = (widthMode == MeasureSpec.AT_MOST || widthMode == MeasureSpec.EXACTLY)
                 ? (float) widthSize : Float.MAX_VALUE;
-
+        final float heightLimit = (heightMode == MeasureSpec.AT_MOST || heightMode == MeasureSpec.EXACTLY)
+                ? (float) heightSize : Float.MAX_VALUE;
+        float rx = 0, ry = 0;
+        if (molecule != null) {
+            rx = molecule.rangeX();
+            ry = molecule.rangeY();
+        }
+        float scale = -1;
+        if (rx != 0 && widthLimit != Float.MAX_VALUE) {
+            scale = (widthLimit - textSize - getPaddingLeft() - getPaddingRight()) / rx;
+        }
+        if (ry != 0 && heightLimit != Float.MAX_VALUE) {
+            if (scale == -1) scale = (heightLimit - textSize - getPaddingTop() - getPaddingBottom()) / ry;
+            else scale = Math.min(scale, (heightLimit - textSize - getPaddingTop() - getPaddingBottom()) / ry);
+        }
+        if (scale == -1) scale = 1;//sigh
         if (widthMode == MeasureSpec.EXACTLY) {
-            // Parent has told us how big to be. So be it.
             width = widthSize;
         } else {
-
-
+            width = (int) (scale * rx + textSize + getPaddingLeft() + getPaddingRight());
         }
-
-        int want = width - getCompoundPaddingLeft() - getCompoundPaddingRight();
-        int unpaddedWidth = want;
-
-        if (mHorizontallyScrolling) want = VERY_WIDE;
-
-        int hintWant = want;
-        int hintWidth = (mHintLayout == null) ? hintWant : mHintLayout.getWidth();
-
-        if (mLayout == null) {
-            makeNewLayout(want, hintWant, boring, hintBoring,
-                    width - getCompoundPaddingLeft() - getCompoundPaddingRight(), false);
-        } else {
-            final boolean layoutChanged = (mLayout.getWidth() != want) || (hintWidth != hintWant)
-                    || (mLayout.getEllipsizedWidth()
-                    != width - getCompoundPaddingLeft() - getCompoundPaddingRight());
-
-            final boolean widthChanged = (mHint == null) && (mEllipsize == null)
-                    && (want > mLayout.getWidth())
-                    && (mLayout instanceof BoringLayout
-                    || (fromexisting && des >= 0 && des <= want));
-
-            final boolean maximumChanged = (mMaxMode != mOldMaxMode) || (mMaximum != mOldMaximum);
-
-            if (layoutChanged || maximumChanged) {
-                if (!maximumChanged && widthChanged) {
-                    mLayout.increaseWidthTo(want);
-                } else {
-                    makeNewLayout(want, hintWant, boring, hintBoring,
-                            width - getCompoundPaddingLeft() - getCompoundPaddingRight(), false);
-                }
-            } else {
-                // Nothing has changed
-            }
-        }
-
         if (heightMode == MeasureSpec.EXACTLY) {
-            // Parent has told us how big to be. So be it.
             height = heightSize;
-            mDesiredHeightAtMeasure = -1;
         } else {
-            int desired = getDesiredHeight();
-
-            height = desired;
-            mDesiredHeightAtMeasure = desired;
-
-            if (heightMode == MeasureSpec.AT_MOST) {
-                height = Math.min(desired, heightSize);
-            }
+            height = (int) (scale * ry + textSize + getPaddingBottom() + getPaddingTop());
         }
-
-        int unpaddedHeight = height - getCompoundPaddingTop() - getCompoundPaddingBottom();
-        if (mMaxMode == LINES && mLayout.getLineCount() > mMaximum) {
-            unpaddedHeight = Math.min(unpaddedHeight, mLayout.getLineTop(mMaximum));
-        }
-
-
         setMeasuredDimension(width, height);
     }
 
@@ -271,15 +271,6 @@ public class MoleculeView extends View {
 
     public int getTextColor() {
         return textColor;
-    }
-
-    @Override
-    public void setPadding(int left, int top, int right, int bottom) {
-        mPaddingLeft = left;
-        mPaddingRight = right;
-        mPaddingTop = top;
-        mPaddingBottom = bottom;
-        super.setPadding(left, top, right, bottom);
     }
 
     public void setGravity(int gravity) {

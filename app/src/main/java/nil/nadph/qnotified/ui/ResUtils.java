@@ -120,6 +120,17 @@ public class ResUtils {
         return baos.toByteArray();
     }
 
+    public static byte[] readAll(InputStream in) throws IOException {
+        byte[] buf = new byte[1024];
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        int i;
+        while ((i = in.read(buf)) > 0) {
+            baos.write(buf, 0, i);
+        }
+        in.close();
+        return baos.toByteArray();
+    }
+
     public static void loadThemeByArsc(Context ctx, boolean load) {
         if (ctx == null) return;
         Field[] fields = ResUtils.class.getDeclaredFields();

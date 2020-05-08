@@ -74,9 +74,4 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat{
         setTitle("高级验证");
         return true;
     }
-
-    private void showMolecule(){
-        Molecule m=new Molecule();
-        m.getAtom(1).charge=0;
-    }
 }
