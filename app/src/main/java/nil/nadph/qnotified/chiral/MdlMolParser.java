@@ -163,7 +163,7 @@ public class MdlMolParser {
                 }
             }
         }
-        molecule.updateShowFlags();
+        molecule.initOnce();
         return molecule;
     }
 }

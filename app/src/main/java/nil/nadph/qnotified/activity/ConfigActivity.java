@@ -166,7 +166,7 @@ public class ConfigActivity extends Activity implements Runnable {
 			}).start();*/
         Molecule mol = null;
         try {
-            String molstr = new String(ResUtils.readAll(ResUtils.openAsset("9280425.mol")));
+            String molstr = new String(ResUtils.readAll(ResUtils.openAsset("atp.mol")));
             mol = MdlMolParser.parseString(molstr);
         } catch (Exception e) {
             Utils.log(e);
@@ -175,7 +175,6 @@ public class ConfigActivity extends Activity implements Runnable {
         moleculeView.setTextColor(0xFFFFFFFF);
         moleculeView.setGravity(Gravity.CENTER);
         moleculeView.setMolecule(mol);
-        moleculeView.setTextSize(12);
         LinearLayout ll = findViewById(R.id.mainLinearLayout2);
         ll.removeAllViews();
         ll.addView(moleculeView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
