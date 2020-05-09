@@ -517,8 +517,32 @@ public class ViewBuilder {
         return ret;
     }
 
+    public static LinearLayout.LayoutParams newLinearLayoutParams(int width, int height, int gravity, int left, int top, int right, int bottom) {
+        LinearLayout.LayoutParams ret = new LinearLayout.LayoutParams(width, height);
+        ret.setMargins(left, top, right, bottom);
+        ret.gravity = gravity;
+        return ret;
+    }
+
     public static LinearLayout.LayoutParams newLinearLayoutParams(int width, int height, int margins) {
         return newLinearLayoutParams(width, height, margins, margins, margins, margins);
+    }
+
+    public static RelativeLayout.LayoutParams newRelativeLayoutParamsM(int width, int height, int left, int top, int right, int bottom, int... verbArgv) {
+        RelativeLayout.LayoutParams ret = new RelativeLayout.LayoutParams(width, height);
+        ret.setMargins(left, top, right, bottom);
+        for (int i = 0; i < verbArgv.length / 2; i++) {
+            ret.addRule(verbArgv[i * 2], verbArgv[i * 2 + 1]);
+        }
+        return ret;
+    }
+
+    public static RelativeLayout.LayoutParams newRelativeLayoutParams(int width, int height, int... verbArgv) {
+        RelativeLayout.LayoutParams ret = new RelativeLayout.LayoutParams(width, height);
+        for (int i = 0; i < verbArgv.length / 2; i++) {
+            ret.addRule(verbArgv[i * 2], verbArgv[i * 2 + 1]);
+        }
+        return ret;
     }
 
     public static void listView_setAdapter(View v, ListAdapter adapter) {

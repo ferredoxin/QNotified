@@ -77,7 +77,7 @@ public class MoleculeView extends View {
                 labelRight = new float[molecule.atomCount()];
             }
             paint.setColor(textColor);
-            paint.setStrokeWidth(fontSize / 15);
+            paint.setStrokeWidth(fontSize / 12);
             paint.setTextAlign(Paint.Align.CENTER);
             Molecule.Atom atom, p1, p2;
             Molecule.Bond bond;
@@ -244,11 +244,13 @@ public class MoleculeView extends View {
 
     public void unselectedAllChiral() {
         selectedChiral.clear();
+        invalidate();
     }
 
     public void selectChiral(int N, boolean selected) {
         if (selected) selectedChiral.add(N);
         else selectedChiral.remove(N);
+        invalidate();
     }
 
     public int[] getSelectedChiral() {
@@ -327,7 +329,7 @@ public class MoleculeView extends View {
         float rx = molecule.rangeX();
         float ry = molecule.rangeY();
         if (mAutoTextSize) {
-            fontSize = molecule.getAverageBondLength() / 2f * ((rx + ry == 0) ? 1 : (rx * ry == 0 ? (ry == 0 ? width / rx :
+            fontSize = molecule.getAverageBondLength() / 1.8f * ((rx + ry == 0) ? 1 : (rx * ry == 0 ? (ry == 0 ? width / rx :
                     height / ry) : Math.min(width / rx, height / ry)));
             paint.setTextSize(fontSize);
         }
@@ -420,6 +422,7 @@ public class MoleculeView extends View {
 
     private void initInternal(Context ctx) {
         setClickable(true);
+        paint.setAntiAlias(true);
     }
 
     public MoleculeView(Context context) {

@@ -24,15 +24,11 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.chiral.MdlMolParser;
 import nil.nadph.qnotified.chiral.Molecule;
-import nil.nadph.qnotified.chiral.MoleculeView;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.Utils;
 
@@ -166,20 +162,12 @@ public class ConfigActivity extends Activity implements Runnable {
 			}).start();*/
         Molecule mol = null;
         try {
-            String molstr = new String(ResUtils.readAll(ResUtils.openAsset("atp.mol")));
+            String molstr = new String(ResUtils.readAll(ResUtils.openAsset("9280425.mol")));
             mol = MdlMolParser.parseString(molstr);
         } catch (Exception e) {
             Utils.log(e);
         }
-        MoleculeView moleculeView = new MoleculeView(this);
-        moleculeView.setTextColor(0xFFFFFFFF);
-        moleculeView.setGravity(Gravity.CENTER);
-        moleculeView.setMolecule(mol);
-        LinearLayout ll = findViewById(R.id.mainLinearLayout2);
-        ll.removeAllViews();
-        ll.addView(moleculeView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
-
 
     public void onAddQqClick(View v) {
         Uri uri = Uri.parse("http://wpa.qq.com/msgrd?v=3&uin=1041703712&site=qq&menu=yes");
