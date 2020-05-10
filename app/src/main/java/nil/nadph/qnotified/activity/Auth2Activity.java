@@ -123,13 +123,7 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
                 0, 0, 0, __10 * 2));
 
         nextStep = new Button(this);
-        nextStep.setEnabled(false);
-        nextStep.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showToast(Auth2Activity.this, TOAST_TYPE_ERROR, "选择错误,请重试", 0);
-            }
-        });
+        nextStep.setOnClickListener(this);
         ResUtils.applyStyleCommonBtnBlue(nextStep);
         nextStep.setText("下一步");
         ll.addView(nextStep, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, __10, __10 / 2, __10, __10 / 2));
@@ -156,10 +150,14 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
             int count = moleculeView.getSelectedChiralCount();
             if (count == 0) {
                 tvSelectedCount.setText("未选择");
-                nextStep.setEnabled(false);
             } else {
                 tvSelectedCount.setText("已选择: " + count);
-                nextStep.setEnabled(true);
+            }
+        } else if (v == nextStep) {
+            if (moleculeView.getSelectedChiralCount() == 0) {
+                showToast(Auth2Activity.this, TOAST_TYPE_INFO, "请选择手性碳原子", 0);
+            } else {
+                showToast(Auth2Activity.this, TOAST_TYPE_ERROR, "选择错误, 请重试", 0);
             }
         }
     }
