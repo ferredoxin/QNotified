@@ -18,24 +18,45 @@
  */
 package nil.nadph.qnotified.step;
 
-public class DexDeobfStep implements Step{
+import nil.nadph.qnotified.util.DexKit;
+
+public class DexDeobfStep implements Step {
+    private final int id;
+
+    public DexDeobfStep(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
     @Override
     public boolean step() {
-        return false;
+        return DexKit.prepareFor(id);
     }
 
     @Override
     public boolean isDone() {
-        return false;
+        return DexKit.checkFor(id);
     }
 
     @Override
     public int getPriority() {
-        return 0;
+        return 100;
     }
 
     @Override
     public String getDescription() {
-        return null;
+        if (id / 10000 == 0) {
+            return "定位被混淆类: " + DexKit.c(id);
+        } else {
+            return "定位被混淆方法: " + DexKit.c(id);
+        }
+    }
+
+    @Override
+    public int compareTo(Step o) {
+        return this.getPriority() - o.getPriority();
     }
 }

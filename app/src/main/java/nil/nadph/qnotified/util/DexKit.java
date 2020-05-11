@@ -79,11 +79,11 @@ public class DexKit {
 
 
     @Nullable
-    public static void prepareFor(int i) {
+    public static boolean prepareFor(int i) {
         if (i / 10000 == 0) {
-            doFindClass(i);
+            return doFindClass(i) != null;
         } else {
-            doFindMethod(i);
+            return doFindMethod(i) != null;
         }
     }
 

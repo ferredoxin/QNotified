@@ -18,7 +18,7 @@
  */
 package nil.nadph.qnotified.step;
 
-public interface Step {
+public interface Step extends Comparable<Step> {
     boolean step();
 
     boolean isDone();
