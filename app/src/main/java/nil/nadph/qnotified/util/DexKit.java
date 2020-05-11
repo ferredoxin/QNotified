@@ -19,13 +19,20 @@
 package nil.nadph.qnotified.util;
 
 import android.view.View;
+import dalvik.system.DexClassLoader;
+import dalvik.system.PathClassLoader;
 import nil.nadph.qnotified.config.ConfigManager;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.regex.Pattern;
 
@@ -570,7 +577,7 @@ public class DexKit {
             record |= 1 << dexi;
             try {
                 for (byte[] k : keys) {
-                    HashSet<DexMethodDescriptor> ret = DexFlow.findMethodsByConstString(k, dexi, loader);
+                    HashSet<DexMethodDescriptor> ret = findMethodsByConstString(k, dexi, loader);
                     if (ret != null && ret.size() > 0) return ret;
                 }
             } catch (FileNotFoundException ignored) {
@@ -584,7 +591,7 @@ public class DexKit {
             }
             try {
                 for (byte[] k : keys) {
-                    HashSet<DexMethodDescriptor> ret = DexFlow.findMethodsByConstString(k, dexi, loader);
+                    HashSet<DexMethodDescriptor> ret = findMethodsByConstString(k, dexi, loader);
                     if (ret != null && ret.size() > 0) return ret;
                 }
             } catch (FileNotFoundException ignored) {
@@ -619,6 +626,80 @@ public class DexKit {
             }
         }
         return rets;
+    }
+
+    /**
+     * get ALL the possible class names
+     *
+     * @param key    the pattern
+     * @param i      C_XXXX
+     * @param loader to get dex file
+     * @return ["abc","ab"]
+     * @throws FileNotFoundException apk has no classesN.dex
+     */
+    public static HashSet<DexMethodDescriptor> findMethodsByConstString(byte[] key, int i, ClassLoader loader) throws FileNotFoundException {
+        String name;
+        byte[] buf = new byte[4096];
+        byte[] content;
+        if (i == 1) name = "classes.dex";
+        else name = "classes" + i + ".dex";
+        HashSet<URL> urls = new HashSet<>(3);
+        try {
+            Enumeration<URL> eu;
+            eu = (Enumeration<URL>) invoke_virtual(loader, "findResources", name, String.class);
+            if (eu != null) {
+                while (eu.hasMoreElements()) {
+                    urls.add(eu.nextElement());
+                }
+            }
+        } catch (Throwable e) {
+            log(e);
+        }
+        if (!loader.getClass().equals(PathClassLoader.class) && !loader.getClass().equals(DexClassLoader.class)
+                && loader.getParent() != null) {
+            try {
+                Enumeration<URL> eu;
+                eu = (Enumeration<URL>) invoke_virtual(loader.getParent(), "findResources", name, String.class);
+                if (eu != null) {
+                    while (eu.hasMoreElements()) {
+                        urls.add(eu.nextElement());
+                    }
+                }
+            } catch (Throwable e) {
+                log(e);
+            }
+        }
+        //log("dex" + i + ":" + url);
+        if (urls.size() == 0) throw new FileNotFoundException(name);
+        InputStream in;
+        try {
+            HashSet<DexMethodDescriptor> rets = new HashSet<>();
+            for (URL url : urls) {
+                in = url.openStream();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                int ii;
+                while ((ii = in.read(buf)) != -1) {
+                    baos.write(buf, 0, ii);
+                }
+                in.close();
+                content = baos.toByteArray();
+				/*if (i == 1) {
+					log("dex" + i + ".len :" + content.length);
+				}*/
+                ArrayList<Integer> opcodeOffsets = a(content, key);
+                for (int j = 0; j < opcodeOffsets.size(); j++) {
+                    try {
+                        DexMethodDescriptor desc = DexFlow.getDexMethodByOpOffset(content, opcodeOffsets.get(j), true);
+                        if (desc != null) rets.add(desc);
+                    } catch (InternalError ignored) {
+                    }
+                }
+            }
+            return rets;
+        } catch (IOException e) {
+            log(e);
+            return null;
+        }
     }
 
     public static class DexDeobfReport {

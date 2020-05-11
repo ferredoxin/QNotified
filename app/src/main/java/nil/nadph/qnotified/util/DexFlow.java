@@ -18,18 +18,6 @@
  */
 package nil.nadph.qnotified.util;
 
-import dalvik.system.DexClassLoader;
-import dalvik.system.PathClassLoader;
-
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashSet;
-
 import static nil.nadph.qnotified.util.Utils.log;
 
 public class DexFlow {
@@ -114,7 +102,32 @@ public class DexFlow {
         int triesSize = readLe16(buf, dexCodeOffset + 6);
         int insnsSize = readLe16(buf, dexCodeOffset + 12);
         int insnsOff = dexCodeOffset + 16;
-        throw new RuntimeException("Method not implemented");
+        //we only handle new-instance and iput-object
+        String[] regObjType = new String[insSize + outsSize];
+        for (int i = 0; i < insnsSize; ) {
+            int opv = buf[insnsOff + 2 * i] & 0xff;
+            int len = OPCODE_LENGTH_TABLE[opv];
+            if (len == 0) {
+                throw new RuntimeException(String.format("Unrecognized opcode = 0x%02x", opv));
+            }
+            if (opv == 0x22) {
+                //new-instance
+                int reg = buf[insnsOff + 2 * i + 1] & 0xff;
+                int typeId = readLe16(buf, insnsOff + 2 * i + 2);
+                regObjType[reg] = readType(buf, typeId);
+            } else if (opv == 0x5b) {
+                //iput-object
+                int regs = buf[insnsOff + 2 * i + 1] & 0xff;
+                int val = regs & 0x0F;
+                //int obj = regs & 0xF0;//who cares?
+                int fieldId = readLe16(buf, insnsOff + 2 * i + 2);
+                if (field.equals(readField(buf, fieldId))) {
+                    return regObjType[val];
+                }
+            }
+            i += len;
+        }
+        return null;
     }
     //struct DexCode {
     //0   u2  registersSize;
@@ -142,80 +155,6 @@ public class DexFlow {
             if (clz.equals(c)) return true;
         }
         return false;
-    }
-
-    /**
-     * get ALL the possible class names
-     *
-     * @param key    the pattern
-     * @param i      C_XXXX
-     * @param loader to get dex file
-     * @return ["abc","ab"]
-     * @throws FileNotFoundException apk has no classesN.dex
-     */
-    public static HashSet<DexMethodDescriptor> findMethodsByConstString(byte[] key, int i, ClassLoader loader) throws FileNotFoundException {
-        String name;
-        byte[] buf = new byte[4096];
-        byte[] content;
-        if (i == 1) name = "classes.dex";
-        else name = "classes" + i + ".dex";
-        HashSet<URL> urls = new HashSet<>(3);
-        try {
-            Enumeration<URL> eu;
-            eu = (Enumeration<URL>) Utils.invoke_virtual(loader, "findResources", name, String.class);
-            if (eu != null) {
-                while (eu.hasMoreElements()) {
-                    urls.add(eu.nextElement());
-                }
-            }
-        } catch (Throwable e) {
-            log(e);
-        }
-        if (!loader.getClass().equals(PathClassLoader.class) && !loader.getClass().equals(DexClassLoader.class)
-                && loader.getParent() != null) {
-            try {
-                Enumeration<URL> eu;
-                eu = (Enumeration<URL>) Utils.invoke_virtual(loader.getParent(), "findResources", name, String.class);
-                if (eu != null) {
-                    while (eu.hasMoreElements()) {
-                        urls.add(eu.nextElement());
-                    }
-                }
-            } catch (Throwable e) {
-                log(e);
-            }
-        }
-        //log("dex" + i + ":" + url);
-        if (urls.size() == 0) throw new FileNotFoundException(name);
-        InputStream in;
-        try {
-            HashSet<DexMethodDescriptor> rets = new HashSet<>();
-            for (URL url : urls) {
-                in = url.openStream();
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                int ii;
-                while ((ii = in.read(buf)) != -1) {
-                    baos.write(buf, 0, ii);
-                }
-                in.close();
-                content = baos.toByteArray();
-				/*if (i == 1) {
-					log("dex" + i + ".len :" + content.length);
-				}*/
-                ArrayList<Integer> opcodeOffsets = DexKit.a(content, key);
-                for (int j = 0; j < opcodeOffsets.size(); j++) {
-                    try {
-                        DexMethodDescriptor desc = getDexMethodByOpOffset(content, opcodeOffsets.get(j), true);
-                        if (desc != null) rets.add(desc);
-                    } catch (InternalError ignored) {
-                    }
-                }
-            }
-            return rets;
-        } catch (IOException e) {
-            log(e);
-            return null;
-        }
     }
 
     /**
@@ -313,6 +252,15 @@ public class DexFlow {
         int typeIdsOff = readLe32(buf, 0x44);
         int strIdx = readLe32(buf, typeIdsOff + 4 * idx);
         return readString(buf, strIdx);
+    }
+
+    public static DexFieldDescriptor readField(byte[] buf, int idx) {
+        int fieldIdsOff = readLe32(buf, 0x54);
+        int p = fieldIdsOff + 8 * idx;
+        String clz = readType(buf, readLe16(buf, p));
+        String type = readType(buf, readLe16(buf, p + 2));
+        String name = readString(buf, readLe32(buf, p + 4));
+        return new DexFieldDescriptor(clz, name, type);
     }
 
     public static String readProto(byte[] buf, int idx) {
