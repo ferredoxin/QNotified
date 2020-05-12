@@ -31,7 +31,7 @@ import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.config.SwitchConfigItem;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
-import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.NonUiThread;
 import nil.nadph.qnotified.util.Utils;
 
@@ -215,9 +215,9 @@ public class ViewBuilder {
 
     private static void doSetupAndInit(final Context ctx, BaseDelayableHook hook) {
         final CustomDialog[] pDialog = new CustomDialog[1];
-        for (int i : hook.getPreconditions()) {
-            if (DexKit.checkFor(i)) continue;
-            final String name = DexKit.c(i).replace("/", ".");
+        for (Step s : hook.getPreconditions()) {
+            if (s.isDone()) continue;
+            final String name = s.getDescription();
             Utils.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -227,11 +227,11 @@ public class ViewBuilder {
                         pDialog[0].setTitle("请稍候");
                         pDialog[0].show();
                     }
-                    pDialog[0].setMessage("QNotified正在定位被混淆类:\n" + name + "\n每个类一般不会超过一分钟");
+                    pDialog[0].setMessage("QNotified正在初始化:\n" + name + "\n每个类一般不会超过一分钟");
 
                 }
             });
-            DexKit.prepareFor(i);
+            s.step();
         }
         if (hook.isTargetProc()) hook.init();
         SyncUtils.requestInitHook(hook.getId(), hook.getEffectiveProc());
@@ -248,9 +248,9 @@ public class ViewBuilder {
     @NonUiThread
     public static void doSetupForPrecondition(final Context ctx, BaseDelayableHook hook) {
         final CustomDialog[] pDialog = new CustomDialog[1];
-        for (int i : hook.getPreconditions()) {
-            if (DexKit.checkFor(i)) continue;
-            final String name = DexKit.c(i).replace("/", ".");
+        for (Step i : hook.getPreconditions()) {
+            if (i.isDone()) continue;
+            final String name = i.getDescription();
             Utils.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -260,10 +260,10 @@ public class ViewBuilder {
                         pDialog[0].setTitle("请稍候");
                         pDialog[0].show();
                     }
-                    pDialog[0].setMessage("QNotified正在定位被混淆类:\n" + name + "\n每个类一般不会超过一分钟");
+                    pDialog[0].setMessage("QNotified正在初始化:\n" + name + "\n每个类一般不会超过一分钟");
                 }
             });
-            DexKit.prepareFor(i);
+            i.step();
         }
         if (pDialog[0] != null) {
             Utils.runOnUiThread(new Runnable() {

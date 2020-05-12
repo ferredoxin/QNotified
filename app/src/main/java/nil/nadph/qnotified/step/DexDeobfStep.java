@@ -20,7 +20,7 @@ package nil.nadph.qnotified.step;
 
 import nil.nadph.qnotified.util.DexKit;
 
-public class DexDeobfStep implements Step {
+public class DexDeobfStep extends Step {
     private final int id;
 
     public DexDeobfStep(int id) {
@@ -56,7 +56,15 @@ public class DexDeobfStep implements Step {
     }
 
     @Override
-    public int compareTo(Step o) {
-        return this.getPriority() - o.getPriority();
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DexDeobfStep that = (DexDeobfStep) o;
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
     }
 }

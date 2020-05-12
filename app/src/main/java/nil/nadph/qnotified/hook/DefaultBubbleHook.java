@@ -22,6 +22,7 @@ import android.app.Application;
 import android.os.Looper;
 import android.widget.Toast;
 import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.Utils;
 
 import java.io.File;
@@ -44,8 +45,8 @@ public class DefaultBubbleHook extends BaseDelayableHook {
     }
 
     @Override
-    public int[] getPreconditions() {
-        return new int[0];
+    public Step[] getPreconditions() {
+        return new Step[0];
     }
 
     @Override

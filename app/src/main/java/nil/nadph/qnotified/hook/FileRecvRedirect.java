@@ -22,6 +22,8 @@ import android.os.Environment;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.step.DexDeobfStep;
+import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Nullable;
 
@@ -145,8 +147,8 @@ public class FileRecvRedirect extends BaseDelayableHook {
     }
 
     @Override
-    public int[] getPreconditions() {
-        return new int[]{DexKit.C_APP_CONSTANTS};
+    public Step[] getPreconditions() {
+        return new Step[]{new DexDeobfStep(DexKit.C_APP_CONSTANTS)};
     }
 
     @Override

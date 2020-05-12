@@ -31,6 +31,7 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Utils;
@@ -111,8 +112,8 @@ public class RepeaterHook extends BaseDelayableHook {
                         linearLayout.addView(imageView2, layoutParams2);
                         viewGroup.addView(linearLayout, -2, -2);
                     }
-                    ImageView imageView3 = (ImageView) relativeLayout.findViewById(101);
-                    ImageView imageView4 = (ImageView) relativeLayout.findViewById(102);
+                    ImageView imageView3 = relativeLayout.findViewById(101);
+                    ImageView imageView4 = relativeLayout.findViewById(102);
                     if (iget_object_or_null(param.args[0], "senderuin").equals(uin)) {
                         imageView3.setVisibility(0);
                         imageView4.setVisibility(8);
@@ -292,8 +293,8 @@ public class RepeaterHook extends BaseDelayableHook {
                             } else {
                                 view = relativeLayout.findViewById(101);
                             }
-                            ImageView imageView3 = (ImageView) view.findViewById(101);
-                            @SuppressLint("ResourceType") ImageView imageView4 = (ImageView) view.findViewById(102);
+                            ImageView imageView3 = view.findViewById(101);
+                            @SuppressLint("ResourceType") ImageView imageView4 = view.findViewById(102);
                             if (iget_object_or_null(param.args[0], "senderuin").equals(uin)) {
                                 imageView3.setVisibility(0);
                                 imageView4.setVisibility(8);
@@ -347,8 +348,8 @@ public class RepeaterHook extends BaseDelayableHook {
     }
 
     @Override
-    public int[] getPreconditions() {
-        return new int[0];
+    public Step[] getPreconditions() {
+        return new Step[0];
     }
 
     @Override

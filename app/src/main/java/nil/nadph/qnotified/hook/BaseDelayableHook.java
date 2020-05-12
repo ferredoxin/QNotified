@@ -20,7 +20,7 @@ package nil.nadph.qnotified.hook;
 
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.SwitchConfigItem;
-import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.step.Step;
 
 public abstract class BaseDelayableHook implements SwitchConfigItem {
 
@@ -63,6 +63,11 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
         return sAllHooks;
     }
 
+    public static void allowEarlyInit(BaseDelayableHook hook) {
+        if (hook == null) return;
+        if (hook.isTargetProc() && hook.isEnabled() && hook.checkPreconditions() && !hook.isInited()) hook.init();
+    }
+
     public boolean isTargetProc() {
         return (getEffectiveProc() & SyncUtils.getProcessType()) != 0;
     }
@@ -73,7 +78,7 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
 
     public abstract boolean init();
 
-    public abstract int[] getPreconditions();
+    public abstract Step[] getPreconditions();
 
     @Override
     public boolean isValid() {
@@ -81,8 +86,8 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
     }
 
     public boolean checkPreconditions() {
-        for (int i : getPreconditions()) {
-            if (!DexKit.checkFor(i)) return false;
+        for (Step i : getPreconditions()) {
+            if (!i.isDone()) return false;
         }
         return true;
     }

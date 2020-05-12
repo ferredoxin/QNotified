@@ -26,6 +26,8 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.step.DexDeobfStep;
+import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Utils;
 
@@ -85,8 +87,8 @@ public class EmoPicHook extends BaseDelayableHook {
     }
 
     @Override
-    public int[] getPreconditions() {
-        return new int[]{DexKit.C_AIO_UTILS};
+    public Step[] getPreconditions() {
+        return new Step[]{new DexDeobfStep(DexKit.C_AIO_UTILS)};
     }
 
     @Override

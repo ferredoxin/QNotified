@@ -601,6 +601,132 @@ public class DexKit {
         }
     }
 
+    @Nullable
+    public static byte[] getClassDeclaringDex(String klass, @Nullable int[] qf) {
+        ClassLoader loader = Initiator.getHostClassLoader();
+        int record = 0;
+        if (qf != null) for (int dexi : qf) {
+            record |= 1 << dexi;
+            try {
+                String name;
+                byte[] buf = new byte[4096];
+                byte[] content;
+                if (dexi == 1) name = "classes.dex";
+                else name = "classes" + dexi + ".dex";
+                HashSet<URL> urls = new HashSet<>(3);
+                try {
+                    Enumeration<URL> eu;
+                    eu = (Enumeration<URL>) invoke_virtual(loader, "findResources", name, String.class);
+                    if (eu != null) {
+                        while (eu.hasMoreElements()) {
+                            urls.add(eu.nextElement());
+                        }
+                    }
+                } catch (Throwable e) {
+                    log(e);
+                }
+                if (!loader.getClass().equals(PathClassLoader.class) && !loader.getClass().equals(DexClassLoader.class)
+                        && loader.getParent() != null) {
+                    try {
+                        Enumeration<URL> eu;
+                        eu = (Enumeration<URL>) invoke_virtual(loader.getParent(), "findResources", name, String.class);
+                        if (eu != null) {
+                            while (eu.hasMoreElements()) {
+                                urls.add(eu.nextElement());
+                            }
+                        }
+                    } catch (Throwable e) {
+                        log(e);
+                    }
+                }
+                if (urls.size() == 0) throw new FileNotFoundException(name);
+                InputStream in;
+                try {
+                    for (URL url : urls) {
+                        in = url.openStream();
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        int ii;
+                        while ((ii = in.read(buf)) != -1) {
+                            baos.write(buf, 0, ii);
+                        }
+                        in.close();
+                        content = baos.toByteArray();
+                        if (DexFlow.hasClassInDex(content, klass)) {
+                            return content;
+                        }
+                    }
+                } catch (IOException e) {
+                    log(e);
+                    return null;
+                }
+            } catch (FileNotFoundException ignored) {
+            }
+        }
+        int dexi = 1;
+        while (true) {
+            if ((record & (1 << dexi)) != 0) {
+                dexi++;
+                continue;
+            }
+            try {
+                String name;
+                byte[] buf = new byte[4096];
+                byte[] content;
+                if (dexi == 1) name = "classes.dex";
+                else name = "classes" + dexi + ".dex";
+                HashSet<URL> urls = new HashSet<>(3);
+                try {
+                    Enumeration<URL> eu;
+                    eu = (Enumeration<URL>) invoke_virtual(loader, "findResources", name, String.class);
+                    if (eu != null) {
+                        while (eu.hasMoreElements()) {
+                            urls.add(eu.nextElement());
+                        }
+                    }
+                } catch (Throwable e) {
+                    log(e);
+                }
+                if (!loader.getClass().equals(PathClassLoader.class) && !loader.getClass().equals(DexClassLoader.class)
+                        && loader.getParent() != null) {
+                    try {
+                        Enumeration<URL> eu;
+                        eu = (Enumeration<URL>) invoke_virtual(loader.getParent(), "findResources", name, String.class);
+                        if (eu != null) {
+                            while (eu.hasMoreElements()) {
+                                urls.add(eu.nextElement());
+                            }
+                        }
+                    } catch (Throwable e) {
+                        log(e);
+                    }
+                }
+                if (urls.size() == 0) throw new FileNotFoundException(name);
+                InputStream in;
+                try {
+                    for (URL url : urls) {
+                        in = url.openStream();
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        int ii;
+                        while ((ii = in.read(buf)) != -1) {
+                            baos.write(buf, 0, ii);
+                        }
+                        in.close();
+                        content = baos.toByteArray();
+                        if (DexFlow.hasClassInDex(content, klass)) {
+                            return content;
+                        }
+                    }
+                } catch (IOException e) {
+                    log(e);
+                    return null;
+                }
+            } catch (FileNotFoundException ignored) {
+                return null;
+            }
+            dexi++;
+        }
+    }
+
     public static ArrayList<Integer> a(byte[] buf, byte[] target) {
         ArrayList<Integer> rets = new ArrayList<>();
         int[] ret = new int[1];

@@ -37,6 +37,8 @@ import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.bridge.ChatActivityFacade;
 import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.step.DexDeobfStep;
+import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.ui.InterceptLayout;
 import nil.nadph.qnotified.ui.TouchEventToLongClickAdapter;
 import nil.nadph.qnotified.util.CustomMenu;
@@ -111,7 +113,7 @@ public class CardMsgHook extends BaseDelayableHook {
                                         ViewGroup vg = (ViewGroup) v;
                                         Context ctx = v.getContext();
                                         if (vg.getChildCount() != 0 && !vg.getChildAt(0).isEnabled()) {
-                                            EditText input = (EditText) viewGroup.findViewById(ctx.getResources().getIdentifier("input", "id", ctx.getPackageName()));
+                                            EditText input = viewGroup.findViewById(ctx.getResources().getIdentifier("input", "id", ctx.getPackageName()));
                                             String text = input.getText().toString();
                                             if (text.length() == 0) {
                                                 showToast(ctx, TOAST_TYPE_ERROR, "请先输入卡片代码", Toast.LENGTH_SHORT);
@@ -129,7 +131,7 @@ public class CardMsgHook extends BaseDelayableHook {
                             @Override
                             public boolean onLongClick(View v) {
                                 Context ctx = v.getContext();
-                                EditText input = (EditText) viewGroup.findViewById(ctx.getResources().getIdentifier("input", "id", ctx.getPackageName()));
+                                EditText input = viewGroup.findViewById(ctx.getResources().getIdentifier("input", "id", ctx.getPackageName()));
                                 String text = input.getText().toString();
                                 if (((TextView) v).length() == 0) {
                                     return false;
@@ -318,8 +320,9 @@ public class CardMsgHook extends BaseDelayableHook {
     }
 
     @Override
-    public int[] getPreconditions() {
-        return new int[]{DexKit.C_ARK_APP_ITEM_BUBBLE_BUILDER, DexKit.C_FACADE, DexKit.C_TEST_STRUCT_MSG, DexKit.N_BASE_CHAT_PIE__INIT};
+    public Step[] getPreconditions() {
+        return new Step[]{new DexDeobfStep(DexKit.C_ARK_APP_ITEM_BUBBLE_BUILDER), new DexDeobfStep(DexKit.C_FACADE),
+                new DexDeobfStep(DexKit.C_TEST_STRUCT_MSG), new DexDeobfStep(DexKit.N_BASE_CHAT_PIE__INIT)};
     }
 
     @Override

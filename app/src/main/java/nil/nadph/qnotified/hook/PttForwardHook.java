@@ -35,11 +35,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.bridge.ChatActivityFacade;
-import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.bridge.SessionInfoImpl;
+import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.step.DexDeobfStep;
+import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.CustomMenu;
@@ -113,9 +114,9 @@ public class PttForwardHook extends BaseDelayableHook {
                     if (!data.containsKey("ptt_forward_path")) return;
                     param.setResult(null);
                     final String path = data.getString("ptt_forward_path");
-                    Activity ctx = (Activity) Utils.iget_object_or_null(param.thisObject, "a", Activity.class);
+                    Activity ctx = Utils.iget_object_or_null(param.thisObject, "a", Activity.class);
                     if (ctx == null)
-                        ctx = (Activity) Utils.iget_object_or_null(param.thisObject, "mActivity", Activity.class);
+                        ctx = Utils.iget_object_or_null(param.thisObject, "mActivity", Activity.class);
                     if (path == null || !new File(path).exists()) {
                         Utils.showToast(ctx, TOAST_TYPE_ERROR, "Error: Invalid ptt file!", Toast.LENGTH_SHORT);
                         return;
@@ -207,7 +208,7 @@ public class PttForwardHook extends BaseDelayableHook {
                             try {
                                 for (Utils.ContactDescriptor cd : mTargets) {
                                     Parcelable sesssion = SessionInfoImpl.createSessionInfo(cd.uin, cd.uinType);
-                                    ChatActivityFacade.sendPttMessage(getQQAppInterface(),sesssion,path);
+                                    ChatActivityFacade.sendPttMessage(getQQAppInterface(), sesssion, path);
                                 }
                                 Utils.showToast(finalCtx, TOAST_TYPE_SUCCESS, "已发送", Toast.LENGTH_SHORT);
                             } catch (Throwable e) {
@@ -318,8 +319,8 @@ public class PttForwardHook extends BaseDelayableHook {
     }
 
     @Override
-    public int[] getPreconditions() {
-        return new int[]{DexKit.C_FACADE};
+    public Step[] getPreconditions() {
+        return new Step[]{new DexDeobfStep(DexKit.C_FACADE)};
     }
 
     @Override

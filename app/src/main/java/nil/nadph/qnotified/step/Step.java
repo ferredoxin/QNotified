@@ -18,13 +18,17 @@
  */
 package nil.nadph.qnotified.step;
 
-public interface Step extends Comparable<Step> {
-    boolean step();
+public abstract class Step implements Comparable<Step> {
+    abstract public boolean step();
 
-    boolean isDone();
+    abstract public boolean isDone();
 
-    int getPriority();
+    abstract public int getPriority();
 
-    String getDescription();
+    abstract public String getDescription();
 
+    @Override
+    public int compareTo(Step o) {
+        return this.getPriority() - o.getPriority();
+    }
 }

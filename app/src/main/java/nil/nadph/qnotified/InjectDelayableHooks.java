@@ -26,14 +26,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.hook.SettingEntryHook;
+import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.ui.ProportionDrawable;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.SimpleBgDrawable;
-import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -68,15 +70,16 @@ public class InjectDelayableHooks {
             } catch (Throwable e) {
                 log(e);
             }
-            final ArrayList<Integer> todos = new ArrayList<>();
+            final HashSet<Step> todos = new HashSet<>();
             for (BaseDelayableHook h : hooks) {
                 if (!h.isEnabled()) continue;
-                for (int i : h.getPreconditions()) {
-                    if (!DexKit.checkFor(i)) todos.add(i);
+                for (Step i : h.getPreconditions()) {
+                    if (!i.isDone()) todos.add(i);
                 }
             }
-            for (int idx = 0; idx < todos.size(); idx++) {
-                final String name = DexKit.c(todos.get(idx)).replace("/", ".");
+            final ArrayList<Step> steps = new ArrayList<>(todos);
+            Collections.sort(steps, Collections.<Step>reverseOrder());
+            for (int idx = 0; idx < steps.size(); idx++) {
                 final int j = idx;
                 if (SyncUtils.isMainProcess() && ctx != null)
                     ctx.runOnUiThread(new Runnable() {
@@ -116,11 +119,15 @@ public class InjectDelayableHooks {
                                 main[0].addView(text[0], tlp);
                                 ((ViewGroup) ctx.getWindow().getDecorView()).addView(overlay[0]);
                             }
-                            text[0].setText("QNotified正在定位被混淆类:\n" + name + "\n每个类一般不会超过一分钟");
-                            prog[0].setProportion(1.0f * j / todos.size());
+                            text[0].setText("QNotified正在初始化:\n" + steps.get(j).getDescription() + "\n每个类一般不会超过一分钟");
+                            prog[0].setProportion(1.0f * j / steps.size());
                         }
                     });
-                DexKit.prepareFor(todos.get(idx));
+                try {
+                    steps.get(idx).step();
+                } catch (Throwable e) {
+                    log(e);
+                }
             }
         }
         if (LicenseStatus.hasUserAgreeEula()) {

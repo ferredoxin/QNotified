@@ -28,6 +28,8 @@ import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.activity.EulaActivity;
+import nil.nadph.qnotified.step.DexDeobfStep;
+import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.ActProxyMgr;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
@@ -105,7 +107,7 @@ public class SettingEntryHook extends BaseDelayableHook {
                         int account_switch = list.getContext().getResources().getIdentifier("account_switch", "id", list.getContext().getPackageName());
                         try {
                             if (account_switch > 0) {
-                                View accountItem = (View) ((View) list.findViewById(account_switch)).getParent();
+                                View accountItem = (View) list.findViewById(account_switch).getParent();
                                 for (int i = 0; i < list.getChildCount(); i++) {
                                     if (list.getChildAt(i) == accountItem) {
                                         index = i + 1;
@@ -142,8 +144,8 @@ public class SettingEntryHook extends BaseDelayableHook {
     }
 
     @Override
-    public int[] getPreconditions() {
-        return new int[]{DexKit.C_DIALOG_UTIL};
+    public Step[] getPreconditions() {
+        return new Step[]{new DexDeobfStep(DexKit.C_DIALOG_UTIL)};
     }
 
     @Override

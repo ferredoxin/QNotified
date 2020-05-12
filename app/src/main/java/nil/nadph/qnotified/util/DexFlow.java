@@ -18,6 +18,8 @@
  */
 package nil.nadph.qnotified.util;
 
+import java.util.ArrayList;
+
 import static nil.nadph.qnotified.util.Utils.log;
 
 public class DexFlow {
@@ -39,9 +41,64 @@ public class DexFlow {
             2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3,
             3, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 2, 2, 2, 2};
 
+    public static DexMethodDescriptor[] getDeclaredDexMethods(byte[] buf, String klass) {
+        int methodIdsSize = readLe32(buf, 0x58);
+        int methodIdsOff = readLe32(buf, 0x5c);
+        int classDefsSize = readLe32(buf, 0x60);
+        int classDefsOff = readLe32(buf, 0x64);
+        int dexCodeOffset = -1;
+        int[] p = new int[1];
+        int[] ret = new int[1];
+        int[] co = new int[1];
+        for (int cn = 0; cn < classDefsSize; cn++) {
+            int classIdx = readLe32(buf, classDefsOff + cn * 32);
+            int classDataOff = readLe32(buf, classDefsOff + cn * 32 + 24);
+            if (!klass.equals(readType(buf, classIdx))) continue;
+            p[0] = classDataOff;
+            if (classDataOff == 0) continue;
+            int fieldIdx = 0;
+            ArrayList<DexMethodDescriptor> methods = new ArrayList<>();
+            int staticFieldsSize = readUleb128(buf, p),
+                    instanceFieldsSize = readUleb128(buf, p),
+                    directMethodsSize = readUleb128(buf, p),
+                    virtualMethodsSize = readUleb128(buf, p);
+            for (int fn = 0; fn < staticFieldsSize + instanceFieldsSize; fn++) {
+                fieldIdx += readUleb128(buf, p);
+                int accessFlags = readUleb128(buf, p);
+            }
+            int methodIdx = 0;
+            for (int mn = 0; mn < directMethodsSize; mn++) {
+                methodIdx += readUleb128(buf, p);
+                int accessFlags = readUleb128(buf, p);
+                int codeOff = co[0] = readUleb128(buf, p);
+                //if (codeOff == 0) continue;
+                int pMethodId = methodIdsOff + 8 * methodIdx;
+                String name = readString(buf, readLe32(buf, pMethodId + 4));
+                String sig = readProto(buf, readLe16(buf, pMethodId + 2));
+                methods.add(new DexMethodDescriptor(klass, name, sig));
+            }
+            methodIdx = 0;
+            for (int mn = 0; mn < virtualMethodsSize; mn++) {
+                methodIdx += readUleb128(buf, p);
+                int accessFlags = readUleb128(buf, p);
+                int codeOff = co[0] = readUleb128(buf, p);
+                //if (codeOff == 0) continue;
+                int pMethodId = methodIdsOff + 8 * methodIdx;
+                String name = readString(buf, readLe32(buf, pMethodId + 4));
+                String sig = readProto(buf, readLe16(buf, pMethodId + 2));
+                methods.add(new DexMethodDescriptor(klass, name, sig));
+            }
+            return methods.toArray(new DexMethodDescriptor[0]);
+        }
+        return null;//class not found
+    }
+
     @NonUiThread
     @Deprecated
     public static String guessNewInstanceType(byte[] buf, DexMethodDescriptor method, DexFieldDescriptor field) throws NoSuchMethodException {
+        if (buf == null) throw new NullPointerException("dex == null");
+        if (method == null) throw new NullPointerException("method == null");
+        if (field == null) throw new NullPointerException("field == null");
         int methodIdsSize = readLe32(buf, 0x58);
         int methodIdsOff = readLe32(buf, 0x5c);
         int classDefsSize = readLe32(buf, 0x60);
@@ -244,8 +301,10 @@ public class DexFlow {
     public static String readString(byte[] buf, int idx) {
         int stringIdsOff = readLe32(buf, 0x3c);
         int strOff = readLe32(buf, stringIdsOff + 4 * idx);
-        int len = buf[strOff];//hack,just assume it no longer than 127
-        return new String(buf, strOff + 1, len);
+        int[] ppos = new int[1];
+        ppos[0] = strOff;
+        int len = readUleb128(buf, ppos);
+        return new String(buf, ppos[0], len);
     }
 
     public static String readType(byte[] buf, int idx) {

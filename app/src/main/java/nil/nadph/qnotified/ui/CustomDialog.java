@@ -107,6 +107,13 @@ public class CustomDialog {
         return ref;
     }
 
+    public static CustomDialog createFailsafe(Context ctx) {
+        CustomDialog ref = new CustomDialog();
+        ref.failsafe = true;
+        ref.mBuilder = new AlertDialog.Builder(ctx, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+        return ref;
+    }
+
     public CustomDialog setCancelable(boolean flag) {
         if (!failsafe) {
             mDialog.setCancelable(flag);
