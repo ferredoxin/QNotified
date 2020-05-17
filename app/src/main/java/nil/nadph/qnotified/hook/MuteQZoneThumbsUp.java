@@ -81,7 +81,7 @@ public class MuteQZoneThumbsUp extends BaseDelayableHook {
                         }
                     }
                     String desc = (String) param.args[MSG_INFO_OFFSET];
-                    if (desc != null && desc.endsWith("赞了你的说说")) {
+                    if (desc != null && (desc.endsWith("赞了你的说说") || desc.endsWith("赞了你的分享"))) {
                         param.setResult(null);
                     }
                 }

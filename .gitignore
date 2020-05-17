@@ -1,13 +1,10 @@
 # AIDE
-*.gradle
 *.pro
 
 # Built application files
 *.apk
 *.ap_
 app/build/
-app/lib/
-app/libs/
 app/src/main/gen/
 app/src/main/bin/
 

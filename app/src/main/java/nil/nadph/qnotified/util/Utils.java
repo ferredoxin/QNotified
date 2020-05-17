@@ -132,6 +132,10 @@ public class Utils {
         return mTroopManager;
     }
 
+    public static Object getManager(int index) throws Exception {
+        return invoke_virtual(getQQAppInterface(), "getManager", index, int.class);
+    }
+
     public static PackageInfo getHostInfo(Context context) {
         try {
             return context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
@@ -365,6 +369,76 @@ public class Utils {
                 }
                 if (returnType != null && !returnType.equals(m[i].getReturnType())) continue;
                 if (Modifier.isStatic(m[i].getModifiers())) continue;
+                if (count < expected) {
+                    candidates[count++] = m[i];
+                } else {
+                    if (!strict) break;
+                    throw new NoSuchMethodException("More methods than expected(" + expected + ") at " + paramsTypesToString(argt) + " in " + obj.getClass().getName());
+                }
+            }
+        }
+        if (strict && count != expected) {
+            throw new NoSuchMethodException("Less methods(" + count + ") than expected(" + expected + ") at " + paramsTypesToString(argt) + " in " + obj.getClass().getName());
+        }
+        Arrays.sort(candidates, new Comparator<Method>() {
+            @Override
+            public int compare(Method o1, Method o2) {
+                if (o1 == null && o2 == null) return 0;
+                if (o1 == null) return 1;
+                if (o2 == null) return -1;
+                return strcmp(o1.getName(), o2.getName());
+            }
+        });
+        candidates[ordinal].setAccessible(true);
+        return candidates[ordinal].invoke(obj, argv);
+    }
+
+    /**
+     * DO NOT USE, it's fragile
+     * instance methods are counted, both public/private,
+     * static methods are EXCLUDED,
+     * count from 0
+     *
+     * @param obj
+     * @param fixed                  which class
+     * @param ordinal                the ordinal of instance method meeting the signature
+     * @param expected               how many instance methods are expected there
+     * @param argsTypesAndReturnType
+     * @return
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     */
+    @Deprecated
+    public static Object invoke_virtual_declared_fixed_modifier_ordinal(Object obj, int requiredMask, int excludedMask, Class fixed, int ordinal, int expected, boolean strict, Object... argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException {
+        int argc = argsTypesAndReturnType.length / 2;
+        Class[] argt = new Class[argc];
+        Object[] argv = new Object[argc];
+        Class returnType = null;
+        if (argc * 2 + 1 == argsTypesAndReturnType.length)
+            returnType = (Class) argsTypesAndReturnType[argsTypesAndReturnType.length - 1];
+        int i, ii;
+        Method[] m;
+        Method[] candidates = new Method[expected];
+        int count = 0;
+        Class[] _argt;
+        for (i = 0; i < argc; i++) {
+            argt[i] = (Class) argsTypesAndReturnType[argc + i];
+            argv[i] = argsTypesAndReturnType[i];
+        }
+        m = fixed.getDeclaredMethods();
+        loop:
+        for (i = 0; i < m.length; i++) {
+            _argt = m[i].getParameterTypes();
+            if (_argt.length == argt.length) {
+                for (ii = 0; ii < argt.length; ii++) {
+                    if (!argt[ii].equals(_argt[ii])) continue loop;
+                }
+                if (returnType != null && !returnType.equals(m[i].getReturnType())) continue;
+                if (Modifier.isStatic(m[i].getModifiers())) continue;
+                if ((m[i].getModifiers() & requiredMask) != requiredMask) continue;
+                if ((m[i].getModifiers() & excludedMask) != 0) continue;
                 if (count < expected) {
                     candidates[count++] = m[i];
                 } else {

@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
-          package="nil.nadph.qnotified"
-          android:versionName="0.7.4-es1"
-          android:versionCode="32">
-
-    <uses-sdk
-            android:targetSdkVersion="29"
-            android:minSdkVersion="11"/>
+          package="nil.nadph.qnotified">
 
     <application
             android:icon="@drawable/app_icon"

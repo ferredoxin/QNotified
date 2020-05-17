@@ -19,6 +19,7 @@
 package nil.nadph.qnotified.hook;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Looper;
 import android.view.View;
 import android.widget.ImageView;
@@ -27,6 +28,7 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.bridge.QQMessageFacade;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
@@ -39,6 +41,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
+import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
@@ -58,7 +61,7 @@ public class MultiForwardAvatarHook extends BaseDelayableHook {
 
     /**
      * Target TIM or QQ<=7.6.0
-     * Here we use a simple workaround, not use DexKit
+     * Here we use DexKit!!!
      *
      * @param v the view in bubble
      * @return message or null
@@ -84,13 +87,14 @@ public class MultiForwardAvatarHook extends BaseDelayableHook {
         try {
             findAndHookMethod(load("com/tencent/mobileqq/activity/aio/BaseBubbleBuilder"), "onClick", View.class, new XC_MethodHook(49) {
                 @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     if (!isEnabled()) return;
                     Context ctx = iget_object_or_null(param.thisObject, "a", Context.class);
                     if (ctx == null) ctx = getFirstNSFByType(param.thisObject, Context.class);
                     View view = (View) param.args[0];
                     if (ctx == null || isLeftCheckBoxVisible()) return;
-                    if (ctx.getClass().getName().equals("com.tencent.mobileqq.activity.MultiForwardActivity")) {
+                    String activityName = ctx.getClass().getName();
+                    if (activityName.equals("com.tencent.mobileqq.activity.MultiForwardActivity")) {
                         if (view.getClass().getName().equals("com.tencent.mobileqq.vas.avatar.VasAvatar")) {
                             String uinstr = iget_object_or_null(view, "a", String.class);
                             try {
@@ -115,14 +119,36 @@ public class MultiForwardAvatarHook extends BaseDelayableHook {
                                 log(e);
                             }
                         }
-                    }
+                    } /*else if (activityName.endsWith(".SplashActivity") || activityName.endsWith(".ChatActivity")) {
+                        final Object msg = getChatMessageByView(view);
+                        if (msg == null) return;
+                        Object chatpie = null;
+                        try {
+                            Object fmgr = invoke_virtual(ctx, "getSupportFragmentManager");
+                            Object fragment = invoke_virtual(fmgr, "findFragmentByTag", "com.tencent.mobileqq.activity.ChatFragment", String.class);
+                            chatpie = invoke_virtual(fragment, "a", _BaseChatPie());
+                        } catch (Exception e) {
+                            log(e);
+                        }
+                        if (chatpie != null) {
+                            final Object finalChatpie = chatpie;
+                            CustomDialog.createFailsafe(ctx).setTitle(Utils.getShort$Name(msg)).setMessage(chatpie.getClass().getName() + "\n" + msg.toString())
+                                    .setCancelable(true).setPositiveButton("确定", null).setNegativeButton("撤回", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    QQMessageFacade.revokeMessage(msg);
+                                }
+                            }).show();
+                            param.setResult(true);
+                        }
+                    }*/
                 }
             });
             Class<?> listener = FindAvatarLongClickListener.getLongClickListenerClass();
             Method onLongClick = listener.getMethod("onLongClick", View.class);
             XposedBridge.hookMethod(onLongClick, new XC_MethodHook(48) {
                 @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     if (!isEnabled()) return;
                     Object builder = null;
                     for (Field f : param.thisObject.getClass().getDeclaredFields()) {
@@ -136,7 +162,8 @@ public class MultiForwardAvatarHook extends BaseDelayableHook {
                     if (ctx == null) ctx = getFirstNSFByType(builder, Context.class);
                     View view = (View) param.args[0];
                     if (ctx == null || isLeftCheckBoxVisible()) return;
-                    if (ctx.getClass().getName().equals("com.tencent.mobileqq.activity.MultiForwardActivity")) {
+                    String activityName = ctx.getClass().getName();
+                    if (activityName.equals("com.tencent.mobileqq.activity.MultiForwardActivity")) {
                         Object msg = getChatMessageByView(view);
                         if (msg == null) return;
                         CustomDialog.createFailsafe(ctx).setTitle(Utils.getShort$Name(msg)).setMessage(msg.toString())

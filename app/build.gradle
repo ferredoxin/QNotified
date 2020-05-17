@@ -1,0 +1,26 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.3"
+    defaultConfig {
+        applicationId "nil.nadph.qnotified"
+        //noinspection MinSdkTooLow
+        minSdkVersion 11
+        targetSdkVersion 29
+        versionCode 32
+        versionName "0.7.4-es1"
+        //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compileOnly fileTree(include: ['*.jar'], dir: 'lib')
+    testImplementation 'junit:junit:4.12'
+}

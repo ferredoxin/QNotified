@@ -318,8 +318,10 @@ public class RepeaterHook extends BaseDelayableHook {
                                                 break;
                                             }
                                         }
-                                        if (argt.length == 3) m.invoke(null, app, session, param.args[0]);
-                                        else m.invoke(null, app, session, param.args[0], 0);
+                                        Object ret;
+                                        if (argt.length == 3) ret = m.invoke(null, app, session, param.args[0]);
+                                        else ret = m.invoke(null, app, session, param.args[0], 0);
+                                        if (ret != null) log("" + ret);
                                     } catch (Throwable e) {
                                         log(e);
                                     }

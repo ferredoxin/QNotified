@@ -238,12 +238,39 @@ public class Initiator {
         return load("com.tencent.mobileqq.activity.BaseChatPie");
     }
 
+    public static Class _ChatMessage() {
+        return load("com.tencent.mobileqq.data.ChatMessage");
+    }
+
     public static Class<?> _MessageRecord() {
         return load("com/tencent/mobileqq/data/MessageRecord");
     }
 
     public static Class _QQAppInterface() {
         return load("com/tencent/mobileqq/app/QQAppInterface");
+    }
+
+    public static Class<?> _BaseMessageManager() {
+        Class<?> clz = load("com/tencent/mobileqq/app/message/BaseMessageManager");
+        if (clz != null) return clz;
+        clz = load("com/tencent/imcore/message/BaseMessageManager");
+        if (clz != null) return clz;
+        Class<?> ref = load("com/tencent/imcore/message/BaseMessageManager$1");
+        if (ref != null) {
+            try {
+                clz = ref.getDeclaredField("this$0").getType();
+            } catch (Exception ignored) {
+            }
+        }
+        if (clz != null) return clz;
+        ref = load("com/tencent/imcore/message/BaseMessageManager$2");
+        if (ref != null) {
+            try {
+                clz = ref.getDeclaredField("this$0").getType();
+            } catch (Exception ignored) {
+            }
+        }
+        return clz;
     }
 
     @Nullable
