@@ -55,7 +55,7 @@ public class CustomDialog {
                     Class clz_Lite = load("com/dataline/activities/LiteActivity");
                     Field[] fs = clz_Lite.getDeclaredFields();
                     for (Field f : fs) {
-                        if (Modifier.isPrivate(f.getModifiers()) && Dialog.class.equals(f.getType().getSuperclass())) {
+                        if (Modifier.isPrivate(f.getModifiers()) && Dialog.class.isAssignableFrom(f.getType())) {
                             clz_CustomDialog = f.getType();
                             break;
                         }
@@ -102,7 +102,7 @@ public class CustomDialog {
         }
         if (ref.mDialog == null) {
             ref.failsafe = true;
-            ref.mBuilder = new AlertDialog.Builder(ctx, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+            ref.mBuilder = new AlertDialog.Builder(ctx, ResUtils.isInNightMode() ? AlertDialog.THEME_DEVICE_DEFAULT_DARK : AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
         }
         return ref;
     }
@@ -110,7 +110,7 @@ public class CustomDialog {
     public static CustomDialog createFailsafe(Context ctx) {
         CustomDialog ref = new CustomDialog();
         ref.failsafe = true;
-        ref.mBuilder = new AlertDialog.Builder(ctx, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+        ref.mBuilder = new AlertDialog.Builder(ctx, ResUtils.isInNightMode() ? AlertDialog.THEME_DEVICE_DEFAULT_DARK : AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
         return ref;
     }
 
@@ -156,6 +156,16 @@ public class CustomDialog {
         return this;
     }
 
+    public Context getContext() {
+        if (!failsafe) {
+            return mDialog.getContext();
+        } else {
+            if (mFailsafeDialog == null)
+                return mBuilder.getContext();
+            else return mFailsafeDialog.getContext();
+        }
+    }
+
     public CustomDialog setView(View v) {
         if (!failsafe) {
             try {
@@ -183,6 +193,15 @@ public class CustomDialog {
             }
         } else {
             mBuilder.setPositiveButton(text, listener);
+        }
+        return this;
+    }
+
+    public CustomDialog setNeutralButton(String text, DialogInterface.OnClickListener listener) {
+        if (!failsafe) {
+            //They don't have a neutral button, sigh...
+        } else {
+            mBuilder.setNeutralButton(text, listener);
         }
         return this;
     }

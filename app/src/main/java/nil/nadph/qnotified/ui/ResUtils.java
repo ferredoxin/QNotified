@@ -286,5 +286,18 @@ public class ResUtils {
         int[][] mStateSpecs = (int[][]) iget_object_or_null(color, "mStateSpecs");
         return new ColorStateList(mStateSpecs, mColors);
     }
+
+    public static boolean isInNightMode() {
+        try {
+            String themeId = (String) invoke_static(load("com/tencent/mobileqq/theme/ThemeUtil"), "getUserCurrentThemeId", getAppRuntime(), load("mqq/app/AppRuntime"));
+            return "1103".endsWith(themeId) || "2920".endsWith(themeId);
+        } catch (Exception e) {
+            if (isTim(getApplication())) {
+                return false;
+            }
+            log(e);
+            return false;
+        }
+    }
 }
 

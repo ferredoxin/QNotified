@@ -52,7 +52,8 @@ import java.util.List;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_RESERVED;
 import static nil.nadph.qnotified.util.ActProxyMgr.ACTIVITY_PROXY_ACTION;
-import static nil.nadph.qnotified.util.Initiator.*;
+import static nil.nadph.qnotified.util.Initiator._StartupDirector;
+import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
 /*TitleKit:Lcom/tencent/mobileqq/widget/navbar/NavBarCommon*/
@@ -282,6 +283,7 @@ public class MainHook {
                 Class director = _StartupDirector();
                 Object dir = iget_object_or_null(step, "mDirector", director);
                 if (dir == null) dir = iget_object_or_null(step, "a", director);
+                if (dir == null) dir = getFirstNSFByType(step, director);
                 InjectDelayableHooks.step(dir);
             }
         }

@@ -63,6 +63,7 @@ public class RepeaterHook extends BaseDelayableHook {
             Class itemHolder = null;
             Class BaseChatItemLayout = null;
             Class ChatMessage = null;
+            //begin: pic
             for (Method m : _PicItemBuilder().getDeclaredMethods()) {
                 if (!m.getReturnType().equals(View.class)) continue;
                 if (!m.getName().equals("a")) continue;
@@ -82,7 +83,9 @@ public class RepeaterHook extends BaseDelayableHook {
                     if (!isEnabled()) return;
                     ViewGroup relativeLayout = (ViewGroup) param.getResult();
                     Context ctx = relativeLayout.getContext();
-                    if (ctx.getClass().getName().contains("ChatHistoryActivity")) return;
+                    if (ctx.getClass().getName().contains("ChatHistoryActivity") ||
+                            ctx.getClass().getName().contains("MultiForwardActivity"))
+                        return;
                     final Object app = iget_object_or_null(param.thisObject, "a", _QQAppInterface());
                     final Object session = iget_object_or_null(param.thisObject, "a", _SessionInfo());
                     String uin = "" + Utils.getLongAccountUin();
@@ -244,20 +247,94 @@ public class RepeaterHook extends BaseDelayableHook {
 //                    imageView4.setOnLongClickListener(r4);
                 }
             });
-
-            XposedHelpers.findAndHookMethod(_TextItemBuilder(), "a", ChatMessage, itemHolder, View.class, BaseChatItemLayout, listener2, new XC_MethodHook() {
-                @Override
-                public void beforeHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-                    if (!isEnabled()) return;
-                    View v = (View) methodHookParam.args[2];
-                    if (v != null && v.getContext().getClass().getName().contains("ChatHistoryActivity")) return;
-                    iput_object(methodHookParam.args[0], "isFlowMessage", true);
-                    if (((int) iget_object_or_null(methodHookParam.args[0], "extraflag")) == 32768) {
-                        iput_object(methodHookParam.args[0], "extraflag", 0);
+            //end: pic
+            //begin: text
+            if (Utils.isTim(getApplication())) {
+                // TODO: 2020/5/17 Add MsgForText +1 for TIM
+                XposedHelpers.findAndHookMethod(_TextItemBuilder(), "a", ChatMessage, itemHolder, View.class, BaseChatItemLayout, listener2,
+                        new XC_MethodHook(51) {
+                            @Override
+                            public void afterHookedMethod(final MethodHookParam param) throws Throwable {
+                                if (!isEnabled()) return;
+                                View view;
+                                View resultView = (View) param.getResult();
+                                Context ctx = resultView.getContext();
+                                if (ctx.getClass().getName().contains("ChatHistoryActivity")
+                                        || ctx.getClass().getName().contains("MultiForwardActivity"))
+                                    return;
+                                final Object app = iget_object_or_null(param.thisObject, "a", load("com.tencent.mobileqq.app.QQAppInterface"));
+                                final Object session = iget_object_or_null(param.thisObject, "a", _SessionInfo());
+                                String uin = "" + Utils.getLongAccountUin();
+                                if (resultView.findViewById(101) == null) {
+                                    LinearLayout linearLayout = new LinearLayout(ctx);
+                                    linearLayout.setOrientation(0);
+                                    linearLayout.setGravity(17);
+                                    ImageView imageView = new ImageView(ctx);
+                                    imageView.setId(101);
+                                    imageView.setImageDrawable(ResUtils.loadDrawableFromAsset("repeat.png", ctx));
+                                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(-2, -2);
+                                    layoutParams.rightMargin = dip2px(ctx, (float) 10);
+                                    linearLayout.addView(imageView, layoutParams);
+                                    ViewGroup p = (ViewGroup) resultView.getParent();
+                                    if (p != null) p.removeView(resultView);
+                                    ViewGroup.LayoutParams currlp = resultView.getLayoutParams();
+                                    linearLayout.addView(resultView, -2, -2);
+                                    ImageView imageView2 = new ImageView(ctx);
+                                    imageView2.setId(102);
+                                    imageView2.setImageDrawable(ResUtils.loadDrawableFromAsset("repeat.png", ctx));
+                                    LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(-2, -2);
+                                    layoutParams2.leftMargin = dip2px(ctx, (float) 10);
+                                    linearLayout.addView(imageView2, layoutParams2);
+                                    linearLayout.setPadding(0, 0, 0, 0);
+                                    param.setResult(linearLayout);
+                                    view = linearLayout;
+                                } else {
+                                    view = resultView.findViewById(101);
+                                }
+                                ImageView imageView3 = view.findViewById(101);
+                                @SuppressLint("ResourceType") ImageView imageView4 = view.findViewById(102);
+                                if (iget_object_or_null(param.args[0], "senderuin").equals(uin)) {
+                                    imageView3.setVisibility(0);
+                                    imageView4.setVisibility(8);
+                                } else {
+                                    imageView3.setVisibility(8);
+                                    imageView4.setVisibility(0);
+                                }
+                                View.OnClickListener r0 = new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        try {
+                                            Class[] argt = null;
+                                            Method m = null;
+                                            Object msg = param.args[0];//session,app
+                                            Utils.showToastShort(view.getContext(), msg.getClass().getName());
+                                        } catch (Throwable e) {
+                                            log(e);
+                                        }
+                                    }
+                                };
+                                imageView3.setOnClickListener(r0);
+                                imageView4.setOnClickListener(r0);
+                            }
+                        });
+            } else {
+                XposedHelpers.findAndHookMethod(_TextItemBuilder(), "a", ChatMessage, itemHolder, View.class, BaseChatItemLayout, listener2, new XC_MethodHook() {
+                    @Override
+                    public void beforeHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                        if (!isEnabled()) return;
+                        View v = (View) methodHookParam.args[2];
+                        if (v != null && (v.getContext().getClass().getName().contains("ChatHistoryActivity")
+                                || v.getContext().getClass().getName().contains("MultiForwardActivity")))
+                            return;
+                        iput_object(methodHookParam.args[0], "isFlowMessage", true);
+                        if (((int) iget_object_or_null(methodHookParam.args[0], "extraflag")) == 32768) {
+                            iput_object(methodHookParam.args[0], "extraflag", 0);
+                        }
                     }
-                }
-            });
-
+                });
+            }
+            //end: text
+            //begin: ptt
             XposedHelpers.findAndHookMethod(_PttItemBuilder(), "a", ChatMessage, itemHolder, View.class, BaseChatItemLayout, listener2,
                     new XC_MethodHook(51) {
                         @Override
@@ -266,7 +343,9 @@ public class RepeaterHook extends BaseDelayableHook {
                             View view;
                             ViewGroup relativeLayout = (ViewGroup) param.getResult();
                             Context ctx = relativeLayout.getContext();
-                            if (ctx.getClass().getName().contains("ChatHistoryActivity")) return;
+                            if (ctx.getClass().getName().contains("ChatHistoryActivity")
+                                    || ctx.getClass().getName().contains("MultiForwardActivity"))
+                                return;
                             final Object app = iget_object_or_null(param.thisObject, "a", load("com.tencent.mobileqq.app.QQAppInterface"));
                             final Object session = iget_object_or_null(param.thisObject, "a", _SessionInfo());
                             String uin = "" + Utils.getLongAccountUin();
@@ -321,7 +400,6 @@ public class RepeaterHook extends BaseDelayableHook {
                                         Object ret;
                                         if (argt.length == 3) ret = m.invoke(null, app, session, param.args[0]);
                                         else ret = m.invoke(null, app, session, param.args[0], 0);
-                                        if (ret != null) log("" + ret);
                                     } catch (Throwable e) {
                                         log(e);
                                     }
@@ -331,6 +409,7 @@ public class RepeaterHook extends BaseDelayableHook {
                             imageView4.setOnClickListener(r0);
                         }
                     });
+            //end: ptt
             inited = true;
             return true;
         } catch (Throwable e) {

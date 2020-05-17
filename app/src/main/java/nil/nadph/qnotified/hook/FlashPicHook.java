@@ -36,8 +36,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-import static nil.nadph.qnotified.util.Initiator._MessageRecord;
-import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class FlashPicHook extends BaseDelayableHook {
@@ -91,21 +90,6 @@ public class FlashPicHook extends BaseDelayableHook {
                 }
             });
             Class tmp;
-            Class mPicItemBuilder = load("com.tencent.mobileqq.activity.aio.item.PicItemBuilder");
-            if (mPicItemBuilder == null) {
-                try {
-                    tmp = load("com.tencent.mobileqq.activity.aio.item.PicItemBuilder$6");
-                    mPicItemBuilder = tmp.getDeclaredField("this$0").getType();
-                } catch (Exception ignored) {
-                }
-            }
-            if (mPicItemBuilder == null) {
-                try {
-                    tmp = load("com.tencent.mobileqq.activity.aio.item.PicItemBuilder$7");
-                    mPicItemBuilder = tmp.getDeclaredField("this$0").getType();
-                } catch (Exception ignored) {
-                }
-            }
             Class mBaseBubbleBuilder$ViewHolder = load("com.tencent.mobileqq.activity.aio.BaseBubbleBuilder$ViewHolder");
             if (mBaseBubbleBuilder$ViewHolder == null) {
                 tmp = load("com.tencent.mobileqq.activity.aio.BaseBubbleBuilder");
@@ -117,7 +101,7 @@ public class FlashPicHook extends BaseDelayableHook {
                 }
             }
             Method m = null;
-            for (Method mi : mPicItemBuilder.getDeclaredMethods()) {
+            for (Method mi : _PicItemBuilder().getDeclaredMethods()) {
                 if (mi.getReturnType().equals(View.class) && mi.getParameterTypes().length == 5) {
                     m = mi;
                     break;

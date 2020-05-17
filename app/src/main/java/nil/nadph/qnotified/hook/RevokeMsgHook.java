@@ -204,7 +204,7 @@ public class RevokeMsgHook extends BaseDelayableHook {
 
     private Object createBareHighlightGreyTip(String entityUin, int istroop, String fromUin, long time, String msg, long msgUid, long shmsgseq) throws Exception {
         int msgtype = -2030;// MessageRecord.MSG_TYPE_TROOP_GAP_GRAY_TIPS
-        Object messageRecord = invoke_static_declared_ordinal(DexKit.doFindClass(DexKit.C_MSG_REC_FAC), 0, 2, true, msgtype, int.class);
+        Object messageRecord = invoke_static_declared_ordinal_modifier(DexKit.doFindClass(DexKit.C_MSG_REC_FAC), 0, 1, true, Modifier.PUBLIC, 0, msgtype, int.class);
         callMethod(messageRecord, "init", Utils.getAccount(), entityUin, fromUin, msg, time, msgtype, istroop, time);
         setObjectField(messageRecord, "msgUid", msgUid);
         setObjectField(messageRecord, "shmsgseq", shmsgseq);
@@ -214,7 +214,7 @@ public class RevokeMsgHook extends BaseDelayableHook {
 
     private Object createBarePlainGreyTip(String entityUin, int istroop, String fromUin, long time, String msg, long msgUid, long shmsgseq) throws Exception {
         int msgtype = -2031;// MessageRecord.MSG_TYPE_REVOKE_GRAY_TIPS
-        Object messageRecord = invoke_static_declared_ordinal(DexKit.doFindClass(DexKit.C_MSG_REC_FAC), 0, 2, true, msgtype, int.class);
+        Object messageRecord = invoke_static_declared_ordinal_modifier(DexKit.doFindClass(DexKit.C_MSG_REC_FAC), 0, 1, true, Modifier.PUBLIC, 0, msgtype, int.class);
         callMethod(messageRecord, "init", Utils.getAccount(), entityUin, fromUin, msg, time, msgtype, istroop, time);
         setObjectField(messageRecord, "msgUid", msgUid);
         setObjectField(messageRecord, "shmsgseq", shmsgseq);

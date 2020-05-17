@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -141,6 +142,7 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
                 Auth2Activity.this.finish();
             }
         });
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         return true;
     }
 

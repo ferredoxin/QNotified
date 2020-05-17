@@ -20,6 +20,7 @@ package nil.nadph.qnotified.activity;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
 import android.content.res.ColorStateList;
@@ -30,11 +31,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import com.tencent.mobileqq.widget.BounceScrollView;
+import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.*;
+import nil.nadph.qnotified.ui.CustomDialog;
+import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.ui.SimpleBgDrawable;
 import nil.nadph.qnotified.util.NewsHelper;
 import nil.nadph.qnotified.util.UpdateCheck;
 import nil.nadph.qnotified.util.Utils;
@@ -135,6 +138,48 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             ll.addView(newListItemHookSwitchInit(this, "简洁模式圆头像", "From Rikka", RoundAvatarHook.get()));
         }
         ll.addView(subtitle(this, "好友列表"));
+        ll.addView(newListItemButton(this, "打开资料卡", "打开指定用户的资料卡", null, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CustomDialog dialog = CustomDialog.createFailsafe(SettingsActivity.this);
+                Context ctx = dialog.getContext();
+                final EditText editText = new EditText(ctx);
+                editText.setTextSize(16);
+                int _5 = dip2px(SettingsActivity.this, 5);
+                editText.setPadding(_5, _5, _5, _5);
+                editText.setBackgroundDrawable(new HighContrastBorder());
+                LinearLayout linearLayout = new LinearLayout(ctx);
+                linearLayout.addView(editText, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, _5 * 2));
+                final AlertDialog alertDialog = (AlertDialog) dialog.setTitle("输入对方QQ号")
+                        .setView(linearLayout)
+                        .setCancelable(true)
+                        .setPositiveButton("确认", null)
+                        .setNegativeButton("取消", null)
+                        .create();
+                alertDialog.show();
+                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String text = editText.getText().toString();
+                        if (text.equals("")) {
+                            showToast(SettingsActivity.this, TOAST_TYPE_ERROR, "请输入QQ号", Toast.LENGTH_SHORT);
+                            return;
+                        }
+                        long uin = 0;
+                        try {
+                            uin = Long.parseLong(text);
+                        } catch (NumberFormatException ignored) {
+                        }
+                        if (uin < 10000) {
+                            showToast(SettingsActivity.this, TOAST_TYPE_ERROR, "请输入有效的QQ号", Toast.LENGTH_SHORT);
+                            return;
+                        }
+                        alertDialog.dismiss();
+                        MainHook.openProfileCard(SettingsActivity.this, uin);
+                    }
+                });
+            }
+        }));
         ll.addView(newListItemButton(this, "历史好友", null, null, clickToProxyActAction(ACTION_EXFRIEND_LIST)));
         ll.addView(newListItemButton(this, "导出历史好友列表", "支持csv/json格式", null, clickToProxyActAction(ACTION_FRIENDLIST_EXPORT_ACTIVITY)));
         ll.addView(newListItemConfigSwitchIfValid(this, "被删好友通知", "检测到你被好友删除后发出通知", ConfigItems.qn_notify_when_del));
@@ -163,7 +208,16 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(_t = newListItemButton(this, "检查更新", null, "点击检查", uc));
         uc.setVersionTip(_t);
         ll.addView(newListItemButton(this, "关于模块", null, null, clickToProxyActAction(ACTION_ABOUT)));
-        ll.addView(newListItemButton(this, "高级验证", null, null, clickToProxyActAction(Auth2Activity.class)));
+        ll.addView(newListItemButton(this, "高级验证", "手性碳验证码", null, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Math.random() < 0.1) {
+                    MainHook.startProxyActivity(v.getContext(), Auth2Activity.class);
+                } else {
+                    Utils.showToastShort(v.getContext(), "快了, 在做了, 进度: 0%");
+                }
+            }
+        }));
         ll.addView(subtitle(this, "调试"));
         ll.addView(newListItemButton(this, "故障排查", null, null, clickToProxyActAction(ACTION_TROUBLESHOOT_ACTIVITY)));
         ll.addView(newListItemButton(this, "Shell.exec", "正常情况下无需使用此功能", null, clickTheComing()));
@@ -237,16 +291,17 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         final FileRecvRedirect recv = FileRecvRedirect.get();
         String currPath = recv.getRedirectPath();
         if (currPath == null) currPath = recv.getDefaultPath();
-        final EditText editText = new EditText(SettingsActivity.this);
+        CustomDialog dialog = CustomDialog.createFailsafe(this);
+        Context ctx = dialog.getContext();
+        final EditText editText = new EditText(ctx);
         editText.setText(currPath);
-        editText.setTextColor(Color.BLACK);
         editText.setTextSize(16);
         int _5 = dip2px(SettingsActivity.this, 5);
         editText.setPadding(_5, _5, _5, _5);
-        editText.setBackgroundDrawable(new SimpleBgDrawable(0, 0x80000000, 1));
-        LinearLayout linearLayout = new LinearLayout(SettingsActivity.this);
+        editText.setBackgroundDrawable(new HighContrastBorder());
+        LinearLayout linearLayout = new LinearLayout(ctx);
         linearLayout.addView(editText, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, _5 * 2));
-        final AlertDialog alertDialog = new AlertDialog.Builder(SettingsActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT)
+        final AlertDialog alertDialog = (AlertDialog) dialog
                 .setTitle("输入重定向文件夹路径")
                 .setView(linearLayout)
                 .setPositiveButton("确认并激活", null)

@@ -106,6 +106,13 @@ public class Initiator {
             } catch (Exception ignored) {
             }
         }
+        if (mPicItemBuilder == null) {
+            try {
+                tmp = load("com.tencent.mobileqq.activity.aio.item.PicItemBuilder$3");
+                mPicItemBuilder = tmp.getDeclaredField("this$0").getType();
+            } catch (Exception ignored) {
+            }
+        }
         return mPicItemBuilder;
     }
 
@@ -135,6 +142,7 @@ public class Initiator {
         if (clazz == null) {
             try {
                 tmp = load("com.tencent.mobileqq.app.upgrade.UpgradeController$1");
+                if (tmp == null) tmp = load("com.tencent.mobileqq.upgrade.UpgradeController$1");
                 clazz = tmp.getDeclaredField("this$0").getType();
             } catch (Exception ignored) {
             }
@@ -142,6 +150,7 @@ public class Initiator {
         if (clazz == null) {
             try {
                 tmp = load("com.tencent.mobileqq.app.upgrade.UpgradeController$2");
+                if (tmp == null) tmp = load("com.tencent.mobileqq.upgrade.UpgradeController$2");
                 clazz = tmp.getDeclaredField("this$0").getType();
             } catch (Exception ignored) {
             }
@@ -304,7 +313,7 @@ public class Initiator {
                 "com/tencent/imcore/message/C2CMessageProcessor"}) {
             ret = load(clzName);
             if (ret != null) return ret;
-            for (int i : new int[]{1, 5, 7}) {
+            for (int i : new int[]{4, 6, 1, 5, 7}) {
                 cref = load(clzName + "$" + i);
                 if (cref != null) {
                     try {
