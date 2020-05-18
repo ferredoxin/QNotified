@@ -1117,7 +1117,9 @@ public class Utils {
                     m.setAccessible(true);
                     return m.invoke(appInterface, type);
                 } catch (Exception e2) {
-                    e.addSuppressed(e2);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        e.addSuppressed(e2);
+                    }
                 }
                 throw e;
             }

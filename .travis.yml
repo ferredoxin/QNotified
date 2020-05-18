@@ -1,0 +1,20 @@
+dist: xenial
+language: android
+sudo: false
+deploy:
+  file: app/build/outputs/apk/**/*.apk
+  file_glob: true
+  # 避免 Travis CI在部署之前清空生成的APK文件
+  skip_cleanup: true
+  on:
+    repo: cinit/QNotified
+    all_branches: true
+    tags: true
+android:
+  components:
+    - build-tools-29.0.3
+    - android-29
+before_script:
+  - chmod +x gradlew
+script:
+  - "./gradlew :app:build"

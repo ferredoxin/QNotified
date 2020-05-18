@@ -5,8 +5,7 @@ android {
     buildToolsVersion "29.0.3"
     defaultConfig {
         applicationId "nil.nadph.qnotified"
-        //noinspection MinSdkTooLow
-        minSdkVersion 11
+        minSdkVersion 14
         targetSdkVersion 29
         versionCode 32
         versionName "0.7.4-es1"
