@@ -212,7 +212,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(newListItemButton(this, "高级验证", "手性碳验证码", null, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Math.random() < 0.1) {
+                if (Math.random() < 0.3) {
                     MainHook.startProxyActivity(v.getContext(), Auth2Activity.class);
                 } else {
                     Utils.showToastShort(v.getContext(), "快了, 在做了, 进度: 0%");

@@ -19,6 +19,8 @@
 package nil.nadph.qnotified.activity;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -29,9 +31,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.tencent.mobileqq.widget.BounceScrollView;
-import nil.nadph.qnotified.chiral.MdlMolParser;
 import nil.nadph.qnotified.chiral.Molecule;
 import nil.nadph.qnotified.chiral.MoleculeView;
+import nil.nadph.qnotified.chiral.PubChemStealer;
+import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.ViewBuilder;
 import nil.nadph.qnotified.util.Utils;
@@ -42,12 +45,14 @@ import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
 import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressLint("Registered")
-public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.OnClickListener {
+public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.OnClickListener, DialogInterface.OnClickListener, Runnable {
 
     private MoleculeView moleculeView;
-    private TextView tvSelectedCount;
+    private TextView tvSelectedCount, newOne;
     private Button nextStep;
     private Molecule currMol;
+    private AlertDialog makingMol = null;
+    private int refreshId = 0;
 
     @Override
     public boolean doOnCreate(Bundle bundle) {
@@ -71,8 +76,6 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
         tv2.setTextColor(ResUtils.skin_black);
         tv2.setText("请点击(或长按)以选出下方有机物中的所有手性碳原子, 然后点击下一步. 如果您觉得下方分子过于复杂, 您可以尝试点击 看不清,换一个 以重新生成有机物.");
         ll.addView(tv2, lp_mw);
-
-        nextMol();
 
         moleculeView = new MoleculeView(this);
         moleculeView.setTextColor(ResUtils.skin_black.getDefaultColor());
@@ -105,19 +108,14 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
         });
         hl.addView(reset, ViewBuilder.newRelativeLayoutParams(WRAP_CONTENT, WRAP_CONTENT,
                 RelativeLayout.ALIGN_PARENT_LEFT, -1));
-        TextView newOne = new TextView(this);
+        newOne = new TextView(this);
         newOne.setTextColor(ResUtils.skin_black);
         newOne.setTextSize(16);
         newOne.setGravity(Gravity.CENTER);
         newOne.setPadding(__10 * 2, 0, __10 * 2, __10 / 2);
         newOne.setText("看不清,换一个");
         newOne.setTextColor(ResUtils.skin_blue);
-        newOne.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showToastShort(Auth2Activity.this, "对不起,就这一个");
-            }
-        });
+        newOne.setOnClickListener(this);
         hl.addView(newOne, ViewBuilder.newRelativeLayoutParams(WRAP_CONTENT, WRAP_CONTENT,
                 RelativeLayout.ALIGN_PARENT_RIGHT, -1));
         ll.addView(hl, ViewBuilder.newLinearLayoutParams(WRAP_CONTENT, WRAP_CONTENT,
@@ -143,6 +141,7 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
             }
         });
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        onClick(newOne);
         return true;
     }
 
@@ -155,6 +154,13 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
             } else {
                 tvSelectedCount.setText("已选择: " + count);
             }
+        } else if (v == newOne) {
+            if (makingMol == null) {
+                refreshId++;
+                makingMol = (AlertDialog) CustomDialog.createFailsafe(this).setCancelable(false).setTitle("请稍候").setMessage("正在加载")
+                        .setNegativeButton("取消", this).show();
+                new Thread(this).start();
+            }
         } else if (v == nextStep) {
             if (moleculeView.getSelectedChiralCount() == 0) {
                 showToast(Auth2Activity.this, TOAST_TYPE_INFO, "请选择手性碳原子", 0);
@@ -164,12 +170,39 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
         }
     }
 
-    private void nextMol() {
-        try {
-            String molstr = new String(ResUtils.readAll(ResUtils.openAsset("9280425.mol")));
-            currMol = MdlMolParser.parseString(molstr);
-        } catch (Exception e) {
-            Utils.log(e);
+    @Override
+    public void run() {
+        int curr = refreshId;
+        final Molecule molecule = PubChemStealer.nextRandomMolecule();
+        if (makingMol != null) {
+            makingMol.dismiss();
+            makingMol = null;
+        } else {
+            return;
         }
+        if (curr != refreshId) return;
+        if (molecule != null) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    moleculeView.setMolecule(molecule);
+                    onClick(moleculeView);
+                }
+            });
+        } else {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Utils.showToastShort(Auth2Activity.this, "加载失败");
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        dialog.dismiss();
+        makingMol = null;
+        refreshId++;
     }
 }

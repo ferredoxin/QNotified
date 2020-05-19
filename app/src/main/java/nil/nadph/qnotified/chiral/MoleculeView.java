@@ -31,6 +31,7 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import nil.nadph.qnotified.util.IndexFrom;
+import nil.nadph.qnotified.util.Utils;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -312,7 +313,9 @@ public class MoleculeView extends View {
 
     public void setMolecule(Molecule molecule) {
         this.molecule = molecule;
+        selectedChiral.clear();
         calcScaleFactor(getWidth(), getHeight());
+        requestLayout();
         invalidate();
     }
 
@@ -372,6 +375,15 @@ public class MoleculeView extends View {
         if (ry != 0 && heightLimit != Float.MAX_VALUE) {
             if (scale == -1) scale = (heightLimit - fontSize * 2 - getPaddingTop() - getPaddingBottom()) / ry;
             else scale = Math.min(scale, (heightLimit - fontSize * 2 - getPaddingTop() - getPaddingBottom()) / ry);
+        }
+        if (molecule != null && scale > 0) {
+            float avl = molecule.getAverageBondLength();
+            if (avl > 0) {
+                float ref = Utils.dip2px(getContext(), 40);
+                if (avl * scale > ref) {
+                    scale = ref / avl;
+                }
+            }
         }
         if (scale == -1) scale = 1;//sigh
         if (widthMode == MeasureSpec.EXACTLY) {
