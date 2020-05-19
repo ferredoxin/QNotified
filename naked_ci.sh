@@ -51,11 +51,14 @@ DX="$ANDROID_HOME"/build-tools/29.0.3/dx
 ZIPALIGN="$ANDROID_HOME"/build-tools/29.0.3/zipalign
 APKSIGNER="$ANDROID_HOME"/build-tools/29.0.3/apksigner
 
+$AAPT package -f --version-code "$VER_CODE" --version-name "$VER_NAME" --target-sdk-version "$TARGET_SDK" --min-sdk-version "$MIN_SDK" -m -M app/src/main/AndroidManifest.xml -I "$ANDROID_JAR" -S app/src/main/res -J out/gen
+find app/src/main/java -name "*.java" > out/sources.txt
+find out/gen -name "*.java" >> out/sources.txt
+#-Xlint:deprecation -Xlint:unchecked
+javac -g -encoding UTF-8 -source 8 -target 8 -bootclasspath "$ANDROID_JAR" -cp app/lib/api-82.jar:app/lib/qqstub.jar -sourcepath app/src/main/java -d out @out/sources.txt
+$DX --dex --output=out/classes.dex out/
 XPOSED_INIT=$(cat app/src/main/assets/xposed_init)
 echo "nil.nadph.qnotified.HookEntry" >app/src/main/assets/xposed_init
-$AAPT package -f --version-code "$VER_CODE" --version-name "$VER_NAME" --target-sdk-version "$TARGET_SDK" --min-sdk-version "$MIN_SDK" -m -M app/src/main/AndroidManifest.xml -I "$ANDROID_JAR" -S app/src/main/res -J out/gen
-javac -g -Xlint:deprecation -Xlint:unchecked -encoding UTF-8 -source 8 -target 8 -bootclasspath "$ANDROID_JAR" -cp app/lib/api-82.jar:app/lib/qqstub.jar -sourcepath app/src/main/java -d out out/gen/nil/nadph/qnotified/*.java app/src/main/java/nil/nadph/qnotified/HookLoader.java
-$DX --dex --output=out/classes.dex out/
 $AAPT package -f --version-code "$VER_CODE" --version-name "$VER_NAME" --target-sdk-version "$TARGET_SDK" --min-sdk-version "$MIN_SDK" -M app/src/main/AndroidManifest.xml -S app/src/main/res/ -A app/src/main/assets/ -I "$ANDROID_JAR" -F out/res.ap_
 echo -n "$XPOSED_INIT" >app/src/main/assets/xposed_init
 java -cp "$ANDROID_HOME"/tools/lib/sdklib-26.0.0-dev.jar com.android.sdklib.build.ApkBuilderMain out/outpu_.apk -v -u -z out/res.ap_ -f out/classes.dex
