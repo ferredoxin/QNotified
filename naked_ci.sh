@@ -45,6 +45,13 @@ rm -f out/*.dex
 rm -f out/*.apk
 rm -f out/*.ap_
 
+mkdir -p out/gen/nil/nadph/qnotified
+echo "package nil.nadph.qnotified;" >out/gen/nil/nadph/qnotified/BuildConfig.java
+echo "public final class BuildConfig {" >>out/gen/nil/nadph/qnotified/BuildConfig.java
+echo "  public static final int VERSION_CODE = $VER_CODE;" >>out/gen/nil/nadph/qnotified/BuildConfig.java
+echo "  public static final String VERSION_NAME = \"$VER_NAME\";" >>out/gen/nil/nadph/qnotified/BuildConfig.java
+echo "}" >>out/gen/nil/nadph/qnotified/BuildConfig.java
+
 ANDROID_JAR="$ANDROID_HOME"/platforms/android-29/android.jar
 AAPT="$ANDROID_HOME"/build-tools/29.0.3/aapt
 DX="$ANDROID_HOME"/build-tools/29.0.3/dx

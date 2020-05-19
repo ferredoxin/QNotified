@@ -45,6 +45,10 @@ public class LicenseStatus {
         }
     }
 
+    public static boolean isAdvancedUser() {
+        return false;
+    }
+
     public static boolean hasUserAgreeEula() {
         return getEulaStatus() == STATUS_ACCEPT;
     }

@@ -33,6 +33,7 @@ import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.activity.TroopSelectActivity;
 import nil.nadph.qnotified.bridge.ChatActivityFacade;
 import nil.nadph.qnotified.bridge.SessionInfoImpl;
+import nil.nadph.qnotified.ui.CustomDialog;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -90,10 +91,10 @@ public class SendBatchMsg {
             @Override
             public void onClick(View v) {
                 try {
-                    final Context ctx = v.getContext();
-                    LinearLayout linearLayout = getEditView(ctx);
+                    final Context exactCtx = v.getContext();
+                    LinearLayout linearLayout = getEditView(exactCtx);
                     final EditText editText = (EditText) linearLayout.getChildAt(0);
-                    AlertDialog alertDialog = new AlertDialog.Builder(ctx, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT)
+                    final AlertDialog alertDialog = new AlertDialog.Builder(exactCtx, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT)
                             .setTitle("输入群发文本")
                             .setView(linearLayout)
                             .setPositiveButton("选择群发对象", null)
@@ -106,12 +107,19 @@ public class SendBatchMsg {
                         public void onClick(View v) {
                             String msg = editText.getText().toString();
                             if (msg.isEmpty() || msg.equals("")) {
-                                showToast(ctx, TOAST_TYPE_ERROR, "请输入文本消息", Toast.LENGTH_SHORT);
+                                showToast(exactCtx, TOAST_TYPE_ERROR, "请输入文本消息", Toast.LENGTH_SHORT);
                             } else {
-                                try {
-                                    showSelectDialog(ctx, msg);
-                                } catch (Throwable e) {
-                                    log(e);
+                                if (msg.length() > 6 && !LicenseStatus.isAdvancedUser()) {
+                                    alertDialog.dismiss();
+                                    CustomDialog.create(exactCtx).setTitle("高级功能")
+                                            .setMessage("群发文本消息仅对通过了高级验证的用户开放(高级验证在功能列表靠下方).")
+                                            .setPositiveButton("确认", null).setCancelable(true).show();
+                                } else {
+                                    try {
+                                        showSelectDialog(exactCtx, msg);
+                                    } catch (Throwable e) {
+                                        log(e);
+                                    }
                                 }
                             }
                         }

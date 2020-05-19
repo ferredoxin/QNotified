@@ -137,7 +137,7 @@ public class RevokeMsgHook extends BaseDelayableHook {
                 String greyMsg = "\"" + revokerNick + "\u202d\"";
                 if (msgObject != null) {
                     greyMsg += "尝试撤回一条消息";
-                    String message = getMessageContent(msgObject);
+                    String message = getMessageContentStripped(msgObject);
                     int msgtype = getMessageType(msgObject);
                     if (msgtype == -1000 /*text msg*/) {
                         if (!TextUtils.isEmpty(message)) {
@@ -160,7 +160,7 @@ public class RevokeMsgHook extends BaseDelayableHook {
                     addHightlightItem(revokeGreyTip, 1 + revokerNick.length() + 1 + 5, 1 + revokerNick.length() + 1 + 5 + authorNick.length(), createTroopMemberHighlightItem(authorUin));
                 } else {
                     String greyMsg = "\"" + revokerNick + "\u202d\"尝试撤回\"" + authorNick + "\u202d\"的消息";
-                    String message = getMessageContent(msgObject);
+                    String message = getMessageContentStripped(msgObject);
                     int msgtype = getMessageType(msgObject);
                     if (msgtype == -1000 /*text msg*/) {
                         if (!TextUtils.isEmpty(message)) {
@@ -177,7 +177,7 @@ public class RevokeMsgHook extends BaseDelayableHook {
             if (msgObject == null) {
                 greyMsg = "对方撤回了一条消息(没收到)";
             } else {
-                String message = getMessageContent(msgObject);
+                String message = getMessageContentStripped(msgObject);
                 int msgtype = getMessageType(msgObject);
                 greyMsg = "对方尝试撤回一条消息";
                 if (msgtype == -1000 /*text msg*/) {
@@ -287,8 +287,13 @@ public class RevokeMsgHook extends BaseDelayableHook {
         return list.get(0);
     }
 
-    private String getMessageContent(Object msgObject) {
-        return (String) iget_object_or_null(msgObject, "msg");
+    private String getMessageContentStripped(Object msgObject) {
+        String msg = (String) iget_object_or_null(msgObject, "msg");
+        if (msg != null) {
+            msg = msg.replace('\n', ' ').replace('\r', ' ').replace("\u202E", "");
+            if (msg.length() > 103) msg = msg.substring(0, 100) + "...";
+        }
+        return msg;
     }
 
     private long getMessageUid(Object msgObject) {

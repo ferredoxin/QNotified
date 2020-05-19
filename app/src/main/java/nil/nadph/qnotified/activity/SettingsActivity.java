@@ -48,6 +48,7 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.ui.ViewBuilder.*;
 import static nil.nadph.qnotified.util.ActProxyMgr.*;
+import static nil.nadph.qnotified.util.SendBatchMsg.clickToBatchMsg;
 import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressLint("Registered")
@@ -92,8 +93,8 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         } catch (Throwable e) {
             log(e);
         }
-//        ll.addView(subtitle(this, "遗留功能"));//群发已不再维护
-//        ll.addView(newListItemButton(this, "群发文本消息", "年少不知号贵-理性使用以免永冻", null, clickToBatchMsg()));
+        ll.addView(subtitle(this, "遗留功能"));//群发已不再维护
+        ll.addView(newListItemButton(this, "群发文本消息", "年少不知号贵-理性使用以免永冻", null, clickToBatchMsg()));
         ll.addView(subtitle(this, "基本功能"));
         if (!Utils.isTim(this)) {
             ll.addView(_t = newListItemButton(this, "自定义电量", "[QQ>=8.2.6]在线模式为我的电量时生效", "N/A", clickToProxyActAction(ACTION_FAKE_BAT_CONFIG_ACTIVITY)));
