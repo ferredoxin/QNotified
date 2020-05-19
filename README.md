@@ -1,4 +1,12 @@
 # QNotified
+
+[![Build Status](https://travis-ci.com/cinit/QNotified.svg?branch=master)](https://travis-ci.com/cinit/QNotified)
+[![Build status](https://ci.appveyor.com/api/projects/status/c05ylj6ldgsgping?svg=true)](https://ci.appveyor.com/project/cinit/qnotified)
+[![license](https://img.shields.io/github/license/cinit/QNotified.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
+[![GitHub release](https://img.shields.io/github/release/cinit/QNotified.svg)](https://github.com/cinit/QNotified/releases/latest)
+
+等(zuo)不(si)及的小伙伴可以: [CI构建下载](https://ci.appveyor.com/project/cinit/qnotified/build/artifacts) (危!富含bug与兼容性问题,PR可能含恶意代码,自行承担风险)
+
 QNotified（以下简称本模块）是一款依赖 Xposed/太极框架运行的辅助性QQ功能增强模块, 本模块无毒无害, 免费开源, 旨在:
 1. **接手部分停更模块的部分功能**
 2. 提供被删好友通知功能
@@ -18,36 +26,37 @@ QNotified is a Xposed/TaiChi module for mobile QQ that aims to:
 1. 隐藏消息列表小程序入口
 2. 去除回复自动at
 3. 语音消息转发
-4. 文本消息群发(原QQHelper)
+4. 强制默认气泡
 5. 以图片方式打开闪照(原辅助模块)
 6. 以图片方式打开表情包(原QQ净化)
-7. Ark(json)/StructMsg(xml)卡片消息(原BUG复读机)---新版本QQ已修复
+7. Ark(json)/StructMsg(xml)卡片消息(原BUG复读机)
 8. 复读机(+1,原BUG复读机)
-9. 被删好友通知
-10. 防撤回(实验性,不稳定)
+9. 被删好友通知(可导出好友列表)
+10. 防撤回
 11. 签到文本化,隐藏礼物动画
 12. 简洁模式圆头像(from Rikka)
-13. 自定义电量(实验性)
-14. 转发消息点击头像打开资料卡
+13. 自定义电量
+14. 转发消息点击头像打开资料卡(长按查看原消息所在群)
 15. 下载重定向(原QQ净化)
 16. 屏蔽 \@全体成员 或者 群红包 的通知(不影响接收消息,不影响某些插件抢红包功能)
 17. 屏蔽QQ更新提示
 18. 屏蔽QQ空间点赞通知
 19. 禁止聊天界面输入＄自动弹出 选择赠送对象 窗口
+20. 直接打开不可通过QQ号码搜索到用户的资料卡
+21. 屏蔽秀图
 
-**在建功能** (未必一次更新全部到位)
+**计划任务** (咕咕咕)
 1. 查看已删除好友的聊天记录
 2. 收藏更多表情(原辅助模块)
-3. 屏蔽回执消息通知
+3. 屏蔽(类)回执消息(如:作业消息)通知
 4. 自定义复读次数
 5. 修复偶发性的莫名其妙好友全部被标记为删除的bug
+6. 加好友(群)自定义来源
+7. 禁用特别关心长震动
+8. 去你大爷的TX地图/QQ/内置浏览器
+9. (反)单向好友检测
 
-**考虑中功能**
-1. 去你大爷的TX地图
-2. _用户建议_ 打开网页请用户选择使用内置浏览器或外部浏览器
-3. _用户建议_ (可详细设置)在某些情景模式下禁用QQ提醒功能
-
-**如发现bug或好的建议请在Issue区留言**
+**如发现bug或好的建议请Issue/PR**
 
 本模块完全免费开源,近期发现模块倒卖现象严重,请勿上当
 
