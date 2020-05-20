@@ -1825,4 +1825,13 @@ public class Utils {
     public static void nop() {
         if (Math.random() > 1) nop();
     }
+
+    public static int[] integerSetToArray(Set<Integer> is) {
+        int[] ret = new int[is.size()];
+        Iterator<Integer> it = is.iterator();
+        for (int i = 0; i < ret.length; i++) {
+            if (it.hasNext()) ret[i] = it.next();
+        }
+        return ret;
+    }
 }

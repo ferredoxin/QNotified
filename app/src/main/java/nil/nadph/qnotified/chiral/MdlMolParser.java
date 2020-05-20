@@ -97,7 +97,7 @@ public class MdlMolParser {
             bond.type = order;
             bond.stereoDirection = style;
         }
-        Molecule molecule = new Molecule(atoms, bonds);
+        Molecule molecule = new Molecule(atoms, bonds, str);
         for (int i = start + numAtoms + numBonds + 1; i < lines.length; i++) {
             String line = lines[i];
             if (line.startsWith("M  END")) {

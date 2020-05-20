@@ -31,13 +31,17 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.tencent.mobileqq.widget.BounceScrollView;
+import nil.nadph.qnotified.chiral.ChiralCarbonHelper;
 import nil.nadph.qnotified.chiral.Molecule;
 import nil.nadph.qnotified.chiral.MoleculeView;
 import nil.nadph.qnotified.chiral.PubChemStealer;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.ViewBuilder;
+import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
+
+import java.util.HashSet;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -48,11 +52,12 @@ import static nil.nadph.qnotified.util.Utils.*;
 public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.OnClickListener, DialogInterface.OnClickListener, Runnable {
 
     private MoleculeView moleculeView;
-    private TextView tvSelectedCount, newOne;
+    private TextView tvSelectedCount, newOne, reset;
     private Button nextStep;
     private Molecule currMol;
     private AlertDialog makingMol = null;
     private int refreshId = 0;
+    private HashSet<Integer> mChiralCarbons;
 
     @Override
     public boolean doOnCreate(Bundle bundle) {
@@ -92,7 +97,7 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
 
         int __10 = dip2px(this, 10);
         RelativeLayout hl = new RelativeLayout(this);
-        TextView reset = new TextView(this);
+        reset = new TextView(this);
         reset.setTextColor(ResUtils.skin_black);
         reset.setTextSize(16);
         reset.setGravity(Gravity.CENTER);
@@ -140,8 +145,19 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
                 Auth2Activity.this.finish();
             }
         });
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
-        onClick(newOne);
+        if (LicenseStatus.getAuth2Status()) {
+            moleculeView.setMolecule(LicenseStatus.getAuth2Molecule());
+            moleculeView.setSelectedChiral(LicenseStatus.getAuth2Chiral());
+            moleculeView.setEnabled(false);
+            newOne.setVisibility(View.GONE);
+            reset.setVisibility(View.GONE);
+            nextStep.setText("验证已完成");
+            nextStep.setEnabled(false);
+            onClick(moleculeView);
+        } else {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+            onClick(newOne);
+        }
         return true;
     }
 
@@ -162,10 +178,40 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
                 new Thread(this).start();
             }
         } else if (v == nextStep) {
+            if (moleculeView.getMolecule() == null) {
+                showToast(Auth2Activity.this, TOAST_TYPE_INFO, "请先加载结构式(点\"换一个\")", 0);
+                return;
+            }
             if (moleculeView.getSelectedChiralCount() == 0) {
                 showToast(Auth2Activity.this, TOAST_TYPE_INFO, "请选择手性碳原子", 0);
             } else {
-                showToast(Auth2Activity.this, TOAST_TYPE_ERROR, "选择错误, 请重试", 0);
+                if (mChiralCarbons == null || mChiralCarbons.size() == 0) {
+                    showToast(Auth2Activity.this, TOAST_TYPE_ERROR, "未知错误, 请重新加载结构式", 0);
+                } else {
+                    boolean pass = true;
+                    HashSet<Integer> tmp = new HashSet<>(mChiralCarbons);
+                    for (int i : moleculeView.getSelectedChiral()) {
+                        if (tmp.contains(i)) {
+                            tmp.remove(i);
+                        } else {
+                            pass = false;
+                            break;
+                        }
+                    }
+                    if (tmp.size() > 0) pass = false;
+                    if (pass) {
+                        LicenseStatus.setAuth2Status(moleculeView.getMolecule(), Utils.integerSetToArray(mChiralCarbons));
+                        showToast(Auth2Activity.this, TOAST_TYPE_SUCCESS, "验证成功", 1);
+                        moleculeView.setEnabled(false);
+                        newOne.setVisibility(View.GONE);
+                        reset.setVisibility(View.GONE);
+                        nextStep.setText("验证已完成");
+                        nextStep.setEnabled(false);
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
+                    } else {
+                        showToast(Auth2Activity.this, TOAST_TYPE_ERROR, "选择错误, 请重试", 0);
+                    }
+                }
             }
         }
     }
@@ -173,7 +219,13 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
     @Override
     public void run() {
         int curr = refreshId;
-        final Molecule molecule = PubChemStealer.nextRandomMolecule();
+        Molecule mol;
+        HashSet<Integer> cc = null;
+        do {
+            mol = PubChemStealer.nextRandomMolecule();
+            if (mol != null) cc = ChiralCarbonHelper.getMoleculeChiralCarbons(mol);
+        } while (mol != null && curr == refreshId && cc.size() < 3);
+        final Molecule molecule = mol;
         if (makingMol != null) {
             makingMol.dismiss();
             makingMol = null;
@@ -182,9 +234,11 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
         }
         if (curr != refreshId) return;
         if (molecule != null) {
+            final HashSet<Integer> finalCc = cc;
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    mChiralCarbons = finalCc;
                     moleculeView.setMolecule(molecule);
                     onClick(moleculeView);
                 }

@@ -263,6 +263,14 @@ public class MoleculeView extends View {
         return ret;
     }
 
+    public void setSelectedChiral(int[] chiral) {
+        selectedChiral.clear();
+        for (int i : chiral) {
+            selectedChiral.add(i);
+        }
+        invalidate();
+    }
+
     public static void calcLinePointConfined(float x, float y, float x2, float y2, float left, float right, float top, float bottom, float[] out) {
         float w = x2 > x ? right : left;
         float h = y2 < y ? top : bottom;

@@ -32,10 +32,12 @@ public class Molecule implements Cloneable {
     private float minY = 0.0f;
     private boolean invalMinMax = true;
     private float avgBondLength;
+    private String mdlMolStr;
 
-    public Molecule(Atom[] a, Bond[] b) {
+    public Molecule(Atom[] a, Bond[] b, String mdlMol) {
         atoms = a;
         bonds = b;
+        mdlMolStr = mdlMol;
     }
 
     private void determineMinMax() {
@@ -167,6 +169,26 @@ public class Molecule implements Cloneable {
         throw new IndexOutOfBoundsException("getAtomBonds: get " + N + ", bondCount=" + this.bonds.length);
     }
 
+    @IndexFrom(1)
+    public int getAtomId(Atom atom) {
+        for (int i = 0; i < atoms.length; i++) {
+            if (atom == atoms[i]) {
+                return i + 1;
+            }
+        }
+        return -1;
+    }
+
+    @IndexFrom(1)
+    public int getBondId(Bond atom) {
+        for (int i = 0; i < bonds.length; i++) {
+            if (atom == bonds[i]) {
+                return i + 1;
+            }
+        }
+        return -1;
+    }
+
     public float getAverageBondLength() {
         return avgBondLength;
     }
@@ -264,6 +286,10 @@ public class Molecule implements Cloneable {
             sum += Math.hypot(a1.x - a2.x, a1.y - a2.y);
         }
         avgBondLength = sum / bonds.length;
+    }
+
+    public String toMdlMolString() {
+        return mdlMolStr;
     }
 
     public static final int SHOW_FLAG_DEFAULT = 0;

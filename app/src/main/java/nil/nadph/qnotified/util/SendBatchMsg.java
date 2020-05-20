@@ -109,7 +109,7 @@ public class SendBatchMsg {
                             if (msg.isEmpty() || msg.equals("")) {
                                 showToast(exactCtx, TOAST_TYPE_ERROR, "请输入文本消息", Toast.LENGTH_SHORT);
                             } else {
-                                if (msg.length() > 6 && !LicenseStatus.isAdvancedUser()) {
+                                if (msg.length() > 6 && !LicenseStatus.getAuth2Status()) {
                                     alertDialog.dismiss();
                                     CustomDialog.create(exactCtx).setTitle("高级功能")
                                             .setMessage("群发文本消息仅对通过了高级验证的用户开放(高级验证在功能列表靠下方).")

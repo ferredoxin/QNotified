@@ -27,9 +27,6 @@ import android.os.Looper;
 import android.view.View;
 import android.widget.TextView;
 import nil.nadph.qnotified.R;
-import nil.nadph.qnotified.chiral.MdlMolParser;
-import nil.nadph.qnotified.chiral.Molecule;
-import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.Utils;
 
 import java.io.IOException;
@@ -160,13 +157,29 @@ public class ConfigActivity extends Activity implements Runnable {
 						});
 				}
 			}).start();*/
-        Molecule mol = null;
-        try {
-            String molstr = new String(ResUtils.readAll(ResUtils.openAsset("9280425.mol")));
-            mol = MdlMolParser.parseString(molstr);
-        } catch (Exception e) {
-            Utils.log(e);
-        }
+//        Molecule mol = null;
+//        try {
+//            String molstr = new String(ResUtils.readAll(ResUtils.openAsset("9280425.mol")));
+//            mol = MdlMolParser.parseString(molstr);
+//        } catch (Exception e) {
+//            Utils.log(e);
+//        }
+//        MoleculeView moleculeView = new MoleculeView(this);
+//        moleculeView.setTextColor(0xFFFFFFFF);
+//        moleculeView.setGravity(Gravity.CENTER);
+//        moleculeView.setMolecule(mol);
+//        try {
+//            long begin = System.currentTimeMillis();
+//            HashSet<Integer> chiral = ChiralCarbonHelper.getMoleculeChiralCarbons(mol);
+//            long delta = System.currentTimeMillis() - begin;
+//            Log.i("QNdump", "getMoleculeChiralCarbons took " + delta + "ms");
+//            moleculeView.setSelectedChiral(Utils.integerSetToArray(chiral));
+//        } catch (Exception e) {
+//            Log.e("QNdump", "onCreate: getMoleculeChiralCarbons", e);
+//        }
+//        LinearLayout ll = findViewById(R.id.mainLinearLayout2);
+//        ll.removeAllViews();
+//        ll.addView(moleculeView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
     public void onAddQqClick(View v) {
