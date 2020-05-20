@@ -8,7 +8,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 29
         versionCode 32
-        versionName "0.7.4-es1"
+        versionName "0.7.4" + getGitHeadRefsSuffix()
         //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
