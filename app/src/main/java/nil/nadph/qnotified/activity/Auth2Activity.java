@@ -26,10 +26,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.*;
 import com.tencent.mobileqq.widget.BounceScrollView;
 import nil.nadph.qnotified.chiral.ChiralCarbonHelper;
 import nil.nadph.qnotified.chiral.Molecule;
@@ -137,15 +134,27 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
         setTitle("高级验证");
         TextView rightBtn = (TextView) getRightTextView();
         rightBtn.setVisibility(View.VISIBLE);
-        rightBtn.setText("取消");
         rightBtn.setEnabled(true);
         rightBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Auth2Activity.this.finish();
+                if (LicenseStatus.getAuth2Status()) {
+                    CustomDialog.create(Auth2Activity.this).setTitle("解除验证").setMessage("此操作将会解除验证, 是否继续?")
+                            .setCancelable(true).setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            LicenseStatus.clearAuth2Status();
+                            Utils.showToast(Auth2Activity.this, TOAST_TYPE_SUCCESS, "操作成功", Toast.LENGTH_LONG);
+                            Auth2Activity.this.finish();
+                        }
+                    }).setNegativeButton("取消", null).show();
+                } else {
+                    Auth2Activity.this.finish();
+                }
             }
         });
         if (LicenseStatus.getAuth2Status()) {
+            rightBtn.setText("吊销");
             moleculeView.setMolecule(LicenseStatus.getAuth2Molecule());
             moleculeView.setSelectedChiral(LicenseStatus.getAuth2Chiral());
             moleculeView.setEnabled(false);
@@ -155,6 +164,7 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
             nextStep.setEnabled(false);
             onClick(moleculeView);
         } else {
+            rightBtn.setText("取消");
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
             onClick(newOne);
         }
@@ -173,7 +183,8 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
         } else if (v == newOne) {
             if (makingMol == null) {
                 refreshId++;
-                makingMol = (AlertDialog) CustomDialog.createFailsafe(this).setCancelable(false).setTitle("请稍候").setMessage("正在加载")
+                makingMol = (AlertDialog) CustomDialog.createFailsafe(this).setCancelable(false).setTitle("正在加载")
+                        .setMessage("请稍候...(一般不会超过一分钟)")
                         .setNegativeButton("取消", this).show();
                 new Thread(this).start();
             }
@@ -207,6 +218,10 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
                         reset.setVisibility(View.GONE);
                         nextStep.setText("验证已完成");
                         nextStep.setEnabled(false);
+                        View rightBtn = getRightTextView();
+                        if (rightBtn instanceof TextView) {
+                            ((TextView) rightBtn).setText("吊销");
+                        }
                         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
                     } else {
                         showToast(Auth2Activity.this, TOAST_TYPE_ERROR, "选择错误, 请重试", 0);
@@ -219,12 +234,25 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
     @Override
     public void run() {
         int curr = refreshId;
-        Molecule mol;
+        Molecule mol = null;
         HashSet<Integer> cc = null;
         do {
-            mol = PubChemStealer.nextRandomMolecule();
-            if (mol != null) cc = ChiralCarbonHelper.getMoleculeChiralCarbons(mol);
-        } while (mol != null && curr == refreshId && cc.size() < 3);
+            try {
+//                long t0 = System.currentTimeMillis();
+                mol = PubChemStealer.nextRandomMolecule();
+//                long t1 = System.currentTimeMillis();
+//                if (mol != null) {
+//                    log("nextRandomMolecule took " + (t1 - t0) + "ms");
+//                }
+                if (mol != null) {
+                    cc = ChiralCarbonHelper.getMoleculeChiralCarbons(mol);
+//                    long t2 = System.currentTimeMillis();
+//                    log("getMoleculeChiralCarbons(" + mol.atomCount() + "atoms," + mol.bondCount() + "bonds) took " + (t2 - t1) + "ms");
+                }
+            } catch (RuntimeException e) {
+                log(e);
+            }
+        } while (mol != null && curr == refreshId && cc != null && cc.size() < 6);
         final Molecule molecule = mol;
         if (makingMol != null) {
             makingMol.dismiss();

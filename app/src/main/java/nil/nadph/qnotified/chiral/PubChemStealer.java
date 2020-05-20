@@ -22,7 +22,7 @@ public class PubChemStealer {
                 return getMoleculeByCid(cid);
             } catch (IOException e) {
                 retry--;
-            } catch (MdlMolParser.BadMolFormatException ignored) {
+            } catch (Exception ignored) {
             }
         }
         return null;

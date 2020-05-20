@@ -90,6 +90,20 @@ public class LicenseStatus {
         return mAuth2Mol;
     }
 
+    public static void clearAuth2Status() {
+        mAuth2Chiral = null;
+        mAuth2Mol = null;
+        ConfigManager cfg = ConfigManager.getDefaultConfig();
+        cfg.remove(qn_auth2_molecule);
+        cfg.remove(qn_auth2_chiral);
+        try {
+            cfg.save();
+        } catch (IOException e) {
+            log(e);
+            Utils.showErrorToastAnywhere(e.toString());
+        }
+    }
+
     public static void setAuth2Status(Molecule mol, int[] chiral) {
         mAuth2Mol = mol;
         mAuth2Chiral = chiral;
@@ -98,8 +112,15 @@ public class LicenseStatus {
             if (i != 0) sb.append(',');
             sb.append(chiral[i]);
         }
-        ConfigManager.getDefaultConfig().putString(qn_auth2_molecule, mol.toMdlMolString());
-        ConfigManager.getDefaultConfig().putString(qn_auth2_chiral, sb.toString());
+        ConfigManager cfg = ConfigManager.getDefaultConfig();
+        cfg.putString(qn_auth2_molecule, mol.toMdlMolString());
+        cfg.putString(qn_auth2_chiral, sb.toString());
+        try {
+            cfg.save();
+        } catch (IOException e) {
+            log(e);
+            Utils.showErrorToastAnywhere(e.toString());
+        }
     }
 
     public static boolean hasUserAgreeEula() {

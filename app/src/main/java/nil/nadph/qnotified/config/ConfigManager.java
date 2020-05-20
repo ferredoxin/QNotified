@@ -325,4 +325,12 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener {
         }
         config.put(key, v);
     }
+
+    public Object remove(String k) {
+        try {
+            if (dirty) reload();
+        } catch (Exception ignored) {
+        }
+        return config.remove(k);
+    }
 }

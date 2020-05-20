@@ -1,7 +1,6 @@
 package nil.nadph.qnotified.chiral;
 
 import nil.nadph.qnotified.util.IndexFrom;
-import nil.nadph.qnotified.util.Utils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -56,7 +55,7 @@ public class ChiralCarbonHelper {
 
     @IndexFrom(1)
     public static boolean compareChain(Molecule mol, int center, int chain1, int chain2) {
-        return compareChain(mol, center, center, chain1, chain2, mol.atomCount());
+        return compareChain(mol, center, center, chain1, chain2, (int) (3 + Math.sqrt(mol.atomCount())));
     }
 
     @IndexFrom(1)
