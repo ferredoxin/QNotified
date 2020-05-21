@@ -1660,7 +1660,7 @@ public class Utils {
     }
 
     public static boolean isAlphaVersion() {
-        return QN_VERSION_NAME.contains("-") || QN_VERSION_NAME.contains("es") || QN_VERSION_NAME.contains("a");
+        return QN_VERSION_NAME.contains("-") || QN_VERSION_NAME.contains("es") || QN_VERSION_NAME.contains("a") || QN_VERSION_NAME.length() > 10;
     }
 
     //FIXME: this may not work properly after obfuscation

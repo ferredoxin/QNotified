@@ -12,12 +12,15 @@ import java.util.Random;
 
 public class PubChemStealer {
 
+    private static final String PUB_CHEM_SITE = "https://pubchem.ncbi.nlm.nih.gov";
+    private static final String FAKE_PUB_CHEM_SITE = "http://ioctl.cc";//reserved proxy...
+
     @NonUiThread
     @Nullable
     public static Molecule nextRandomMolecule() {
         Random r = new Random();
         for (int retry = 5; retry > 0; retry--) {
-            long cid = (long) (r.nextDouble() * 100000000 + r.nextDouble() * 10000000 + 100000);
+            long cid = (long) (r.nextDouble() * 100000000 + r.nextDouble() * 10000000 + r.nextDouble() * 100000 + 100000);
             try {
                 return getMoleculeByCid(cid);
             } catch (IOException e) {
@@ -30,7 +33,7 @@ public class PubChemStealer {
 
     @NonUiThread
     public static Molecule getMoleculeByCid(long cid) throws IOException, MdlMolParser.BadMolFormatException {
-        HttpURLConnection conn = (HttpURLConnection) new URL("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/CID/" + cid + "/record/SDF/?record_type=2d&response_type=display").openConnection();
+        HttpURLConnection conn = (HttpURLConnection) new URL(FAKE_PUB_CHEM_SITE + "/rest/pug/compound/CID/" + cid + "/record/SDF/?record_type=2d&response_type=display").openConnection();
         conn.setRequestMethod("GET");
         conn.setConnectTimeout(10000);
         conn.setReadTimeout(10000);

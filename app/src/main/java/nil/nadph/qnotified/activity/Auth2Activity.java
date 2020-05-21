@@ -22,6 +22,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Looper;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -231,28 +232,49 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
         }
     }
 
+    int pullMolMiss;
+    int lastReqMs;
+    int lastProcMs;
+    long pullStartTime;
+
+    @SuppressLint("DefaultLocale")
     @Override
     public void run() {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            AlertDialog dialog = makingMol;
+            if (dialog != null) {
+                dialog.setMessage(String.format("请稍候...(一般不会超过一分钟)\nreq=%dms, proc=%dms, miss=%d, total=%.1fs", lastReqMs, lastProcMs, pullMolMiss, (System.currentTimeMillis() - pullStartTime) / 1000f));
+            }
+            return;
+        }
         int curr = refreshId;
         Molecule mol = null;
         HashSet<Integer> cc = null;
+        pullMolMiss = -1;
+        pullStartTime = System.currentTimeMillis();
         do {
             try {
-//                long t0 = System.currentTimeMillis();
+                long t0 = System.currentTimeMillis();
                 mol = PubChemStealer.nextRandomMolecule();
-//                long t1 = System.currentTimeMillis();
+                long t1 = System.currentTimeMillis();
 //                if (mol != null) {
 //                    log("nextRandomMolecule took " + (t1 - t0) + "ms");
 //                }
                 if (mol != null) {
+                    pullMolMiss++;
                     cc = ChiralCarbonHelper.getMoleculeChiralCarbons(mol);
-//                    long t2 = System.currentTimeMillis();
+                    long t2 = System.currentTimeMillis();
+                    lastProcMs = (int) (t2 - t1);
 //                    log("getMoleculeChiralCarbons(" + mol.atomCount() + "atoms," + mol.bondCount() + "bonds) took " + (t2 - t1) + "ms");
+                } else {
+                    lastProcMs = -1;
                 }
+                lastReqMs = (int) (t1 - t0);
+                if (makingMol != null) runOnUiThread(this);
             } catch (RuntimeException e) {
                 log(e);
             }
-        } while (mol != null && curr == refreshId && cc != null && cc.size() < 6);
+        } while (mol != null && curr == refreshId && cc != null && !(cc.size() > 3 || cc.size() * mol.atomCount() > 200));
         final Molecule molecule = mol;
         if (makingMol != null) {
             makingMol.dismiss();
