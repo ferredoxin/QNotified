@@ -87,6 +87,9 @@ public class ConfigActivity extends Activity implements Runnable {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (R.string.res_inject_success >>> 24 == 0x7f) {
+            throw new RuntimeException("package id must NOT be 0x7f");
+        }
         setContentView(R.layout.main);
         String str = "";
         mainLooper = Looper.getMainLooper();

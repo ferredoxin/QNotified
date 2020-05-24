@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="请输入图片文件路径(建议使用支持半透明的PNG格式图片)"
+              android:layout_marginLeft="5dp"
+              android:layout_marginRight="5dp"
+              tools:ignore="RtlHardcoded"/>
+    <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="图片路径..."
+            android:inputType="text"
+            android:ems="10"
+            android:id="@+id/selectRepeaterIcon_editTextIconLocation"/>
+    <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp">
+        <Button
+                android:text="加载"
+                android:layout_alignParentLeft="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/selectRepeaterIcon_buttonLoadFile"
+                style="?android:attr/buttonBarButtonStyle"
+                tools:ignore="RtlHardcoded"/>
+        <Button
+                android:text="浏览图库..."
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_height="wrap_content"
+                android:id="@+id/selectRepeaterIcon_buttonBrowseImg"
+                tools:ignore="RtlHardcoded"/>
+    </RelativeLayout>
+
+    <LinearLayout android:id="@+id/selectRepeaterIcon_linearLayoutDpi"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical">
+
+        <CheckBox android:id="@+id/selectRepeaterIcon_checkBoxSpecifyDpi"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginTop="5dp"
+                  android:text="图片DPI"
+                  android:checked="true"/>
+        <HorizontalScrollView android:layout_width="match_parent"
+                              android:layout_height="wrap_content">
+            <RadioGroup android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:visibility="visible"
+                        android:checkedButton="@id/selectRepeaterIcon_RadioButtonXhdpi"
+                        android:id="@+id/selectRepeaterIcon_RadioGroupDpiList">
+                <RadioButton android:id="@+id/selectRepeaterIcon_RadioButtonXxxhdpi"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:text="xxxhdpi"/>
+                <RadioButton android:id="@+id/selectRepeaterIcon_RadioButtonXxhdpi"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:text="xxhdpi"/>
+                <RadioButton android:id="@+id/selectRepeaterIcon_RadioButtonXhdpi"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:text="xhdpi"/>
+                <RadioButton android:id="@+id/selectRepeaterIcon_RadioButtonHdpi"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:text="hdpi"/>
+                <RadioButton android:id="@+id/selectRepeaterIcon_RadioButtonMdpi"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:text="mdpi"/>
+                <RadioButton android:id="@+id/selectRepeaterIcon_RadioButtonLdpi"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:text="ldpi"/>
+            </RadioGroup>
+        </HorizontalScrollView>
+    </LinearLayout>
+    <TextView android:id="@+id/selectRepeaterIcon_textViewWarnMsg"
+              android:visibility="gone"
+              android:textColor="#FF2E2E"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"/>
+
+    <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+        <ImageView android:id="@+id/selectRepeaterIcon_imageViewPreview"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_marginLeft="3dp"
+                   android:layout_marginRight="3dp"
+                   android:layout_toRightOf="@id/selectRepeaterIcon_tmp_textViewPreviewText"
+                   android:layout_toEndOf="@id/selectRepeaterIcon_tmp_textViewPreviewText"/>
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_alignParentLeft="true"
+                  android:layout_alignParentStart="true"
+                  android:id="@+id/selectRepeaterIcon_tmp_textViewPreviewText"
+                  android:text="预览:"/>
+
+        <Button android:id="@+id/selectRepeaterIcon_buttonRestoreDefaultIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                style="?android:attr/buttonBarButtonStyle"
+                android:text="恢复默认图片"/>
+    </RelativeLayout>
+</LinearLayout>

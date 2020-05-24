@@ -32,8 +32,8 @@ import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.RepeaterIconSettingDialog;
 import nil.nadph.qnotified.util.Utils;
 
 import java.lang.reflect.Method;
@@ -101,7 +101,7 @@ public class RepeaterHook extends BaseDelayableHook {
                         linearLayout.setGravity(17);
                         ImageView imageView = new ImageView(ctx);
                         imageView.setId(101);
-                        imageView.setImageDrawable(ResUtils.loadDrawableFromAsset("repeat.png", ctx));
+                        imageView.setImageDrawable(RepeaterIconSettingDialog.getRepeaterIcon(ctx));
                         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(-2, -2);
                         layoutParams.rightMargin = dip2px(ctx, (float) 10);
                         linearLayout.addView(imageView, layoutParams);
@@ -109,7 +109,7 @@ public class RepeaterHook extends BaseDelayableHook {
                         ImageView imageView2 = new ImageView(ctx);
                         imageView2.setId(102);
                         //imageView2.setImageResource(Integer.parseInt((String) Hook.config.get("+1_icon"), 16));
-                        imageView2.setImageDrawable(ResUtils.loadDrawableFromAsset("repeat.png", ctx));
+                        imageView2.setImageDrawable(RepeaterIconSettingDialog.getRepeaterIcon(ctx));
                         LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(-2, -2);
                         layoutParams2.leftMargin = dip2px(ctx, (float) 10);
                         linearLayout.addView(imageView2, layoutParams2);
@@ -271,7 +271,7 @@ public class RepeaterHook extends BaseDelayableHook {
                                     linearLayout.setGravity(17);
                                     ImageView imageView = new ImageView(ctx);
                                     imageView.setId(101);
-                                    imageView.setImageDrawable(ResUtils.loadDrawableFromAsset("repeat.png", ctx));
+                                    imageView.setImageDrawable(RepeaterIconSettingDialog.getRepeaterIcon(ctx));
                                     LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(-2, -2);
                                     layoutParams.rightMargin = dip2px(ctx, (float) 10);
                                     linearLayout.addView(imageView, layoutParams);
@@ -281,7 +281,7 @@ public class RepeaterHook extends BaseDelayableHook {
                                     linearLayout.addView(resultView, -2, -2);
                                     ImageView imageView2 = new ImageView(ctx);
                                     imageView2.setId(102);
-                                    imageView2.setImageDrawable(ResUtils.loadDrawableFromAsset("repeat.png", ctx));
+                                    imageView2.setImageDrawable(RepeaterIconSettingDialog.getRepeaterIcon(ctx));
                                     LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(-2, -2);
                                     layoutParams2.leftMargin = dip2px(ctx, (float) 10);
                                     linearLayout.addView(imageView2, layoutParams2);
@@ -356,14 +356,14 @@ public class RepeaterHook extends BaseDelayableHook {
                                 linearLayout.setGravity(17);
                                 ImageView imageView = new ImageView(ctx);
                                 imageView.setId(101);
-                                imageView.setImageDrawable(ResUtils.loadDrawableFromAsset("repeat.png", ctx));
+                                imageView.setImageDrawable(RepeaterIconSettingDialog.getRepeaterIcon(ctx));
                                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(-2, -2);
                                 layoutParams.rightMargin = dip2px(ctx, (float) 10);
                                 linearLayout.addView(imageView, layoutParams);
                                 linearLayout.addView(relativeLayout, -2, -2);
                                 ImageView imageView2 = new ImageView(ctx);
                                 imageView2.setId(102);
-                                imageView2.setImageDrawable(ResUtils.loadDrawableFromAsset("repeat.png", ctx));
+                                imageView2.setImageDrawable(RepeaterIconSettingDialog.getRepeaterIcon(ctx));
                                 LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(-2, -2);
                                 layoutParams2.leftMargin = dip2px(ctx, (float) 10);
                                 linearLayout.addView(imageView2, layoutParams2);

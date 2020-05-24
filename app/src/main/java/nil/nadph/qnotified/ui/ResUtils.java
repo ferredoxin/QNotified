@@ -92,10 +92,11 @@ public class ResUtils {
         if (skin_gray3 == null) skin_gray3 = ColorStateList.valueOf(Color.argb(255, 128, 128, 128));
         if (skin_blue == null) skin_blue = ColorStateList.valueOf(Color.argb(255, 0, 182, 249));
         if (skin_background == null) skin_background = new ColorDrawable(Color.argb(255, 240, 240, 240));
-        if (skin_common_btn_blue_pressed == null)
+        if (skin_common_btn_blue_unpressed == null || skin_common_btn_blue_pressed == null || skin_color_button_blue == null) {
             skin_common_btn_blue_pressed = new ColorDrawable(Color.argb(255, 16, 80, 210));
-        if (skin_common_btn_blue_unpressed == null)
             skin_common_btn_blue_unpressed = new ColorDrawable(Color.argb(255, 20, 100, 255));
+            skin_color_button_blue = ColorStateList.valueOf(Color.argb(255, 255, 255, 255));
+        }
     }
 
     public static byte[] readAllOrNull(String s) {

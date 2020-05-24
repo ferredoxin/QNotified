@@ -19,7 +19,6 @@
 package nil.nadph.qnotified.hook;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Looper;
 import android.view.View;
 import android.widget.ImageView;
@@ -28,7 +27,6 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.bridge.QQMessageFacade;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
@@ -41,7 +39,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
@@ -121,7 +118,7 @@ public class MultiForwardAvatarHook extends BaseDelayableHook {
                         }
                     } /*else if (activityName.endsWith(".SplashActivity") || activityName.endsWith(".ChatActivity")) {
                         final Object msg = getChatMessageByView(view);
-                        if (msg == null) return;
+                        if (msg == null || (0 != ((int) iget_object_or_null(msg, "istroop")))) return;
                         Object chatpie = null;
                         try {
                             Object fmgr = invoke_virtual(ctx, "getSupportFragmentManager");

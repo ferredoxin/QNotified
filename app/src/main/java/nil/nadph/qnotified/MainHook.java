@@ -28,23 +28,28 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.os.*;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import dalvik.system.BaseDexClassLoader;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
+import nil.nadph.qnotified.hook.MuteAtAllAndRedPacket;
 import nil.nadph.qnotified.hook.MuteQZoneThumbsUp;
 import nil.nadph.qnotified.hook.RevokeMsgHook;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.*;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.*;
 import java.util.List;
@@ -251,6 +256,7 @@ public class MainHook {
 //        }
         BaseDelayableHook.allowEarlyInit(RevokeMsgHook.get());
         BaseDelayableHook.allowEarlyInit(MuteQZoneThumbsUp.get());
+        BaseDelayableHook.allowEarlyInit(MuteAtAllAndRedPacket.get());
         if (SyncUtils.isMainProcess()) {
             ConfigItems.removePreviousCacheIfNecessary();
             injectStartupHookForMain(ctx);
@@ -345,12 +351,60 @@ public class MainHook {
 
     @MainProcess
     private void injectStartupHookForMain(Context ctx) {
+        injectModuleResources(ctx.getApplicationContext().getResources());
         initForStubActivity(ctx);
         asyncStartFindClass();
         if (LicenseStatus.hasUserAgreeEula()) hideMiniAppEntry();
     }
 
-    public boolean __stub_hooked = false;
+    private static String sModulePath = null;
+
+    @MainProcess
+    @SuppressLint("PrivateApi")
+    private static void injectModuleResources(Resources res) {
+        if (res == null) return;
+        try {
+            res.getString(R.string.res_inject_success);
+            return;
+        } catch (Resources.NotFoundException ignored) {
+        }
+        try {
+            if (sModulePath == null) {
+                String modulePath = null;
+                BaseDexClassLoader pcl = (BaseDexClassLoader) MainHook.class.getClassLoader();
+                Object pathList = iget_object_or_null(pcl, "pathList");
+                Object[] dexElements = (Object[]) iget_object_or_null(pathList, "dexElements");
+                for (Object element : dexElements) {
+                    File file = (File) iget_object_or_null(element, "path");
+                    if (file == null || file.isDirectory()) file = (File) iget_object_or_null(element, "zip");
+                    if (file == null || file.isDirectory()) file = (File) iget_object_or_null(element, "file");
+                    if (file != null && !file.isDirectory()) {
+                        String path = file.getPath();
+                        if (modulePath == null || !modulePath.contains("nil.nadph.qnotified")) {
+                            modulePath = path;
+                        }
+                    }
+                }
+                if (modulePath == null) throw new NullPointerException("get module path failed!");
+                sModulePath = modulePath;
+            }
+            AssetManager assets = res.getAssets();
+            @SuppressLint("DiscouragedPrivateApi")
+            Method addAssetPath = AssetManager.class.getDeclaredMethod("addAssetPath", String.class);
+            addAssetPath.setAccessible(true);
+            int cookie = (int) addAssetPath.invoke(assets, sModulePath);
+            try {
+                log("injectModuleResources: " + res.getString(R.string.res_inject_success));
+            } catch (Resources.NotFoundException e) {
+                log("Fatal: injectModuleResources: test injection failure!");
+                log("injectModuleResources: loader=" + MainHook.class.getClassLoader() + ", path=" + sModulePath + ", cookie=" + cookie);
+            }
+        } catch (Exception e) {
+            log(e);
+        }
+    }
+
+    private boolean __stub_hooked = false;
 
     @MainProcess
     @SuppressLint("PrivateApi")
@@ -394,7 +448,7 @@ public class MainHook {
             }
             gDefaultField.setAccessible(true);
             Object gDefault = gDefaultField.get(null);
-            Class singletonClass = Class.forName("android.util.Singleton");
+            Class<?> singletonClass = Class.forName("android.util.Singleton");
             Field mInstanceField = singletonClass.getDeclaredField("mInstance");
             mInstanceField.setAccessible(true);
             Object mInstance = mInstanceField.get(gDefault);
@@ -461,7 +515,7 @@ public class MainHook {
             try {
                 return method.invoke(mOrigin, args);
             } catch (InvocationTargetException ite) {
-                throw ite.getCause();
+                throw ite.getTargetException();
             }
         }
     }
@@ -700,11 +754,13 @@ public class MainHook {
 
         @Override
         public void callActivityOnCreate(Activity activity, Bundle icicle) {
+            injectModuleResources(activity.getResources());
             mBase.callActivityOnCreate(activity, icicle);
         }
 
         @Override
         public void callActivityOnCreate(Activity activity, Bundle icicle, PersistableBundle persistentState) {
+            injectModuleResources(activity.getResources());
             mBase.callActivityOnCreate(activity, icicle, persistentState);
         }
 

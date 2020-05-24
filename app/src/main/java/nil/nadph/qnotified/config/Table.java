@@ -98,7 +98,7 @@ public class Table<K> implements Serializable, Cloneable {
     public static ArrayList readArray(DataInputStream in) throws IOException {
         int len = in.readInt();
         byte[] buf = new byte[len];
-        in.read(buf, 0, len);
+        in.readFully(buf, 0, len);
         throw new RuntimeException("Stub!");
         //return buf;
     }
@@ -106,7 +106,7 @@ public class Table<K> implements Serializable, Cloneable {
     public static byte[] readIRaw(DataInputStream in) throws IOException {
         int len = in.readInt();
         byte[] buf = new byte[len];
-        in.read(buf, 0, len);
+        in.readFully(buf, 0, len);
         return buf;
     }
 

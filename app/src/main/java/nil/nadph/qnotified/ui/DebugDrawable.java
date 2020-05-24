@@ -75,7 +75,7 @@ public class DebugDrawable extends Drawable {
         // Draw optical bounds
         paint.setColor(Color.RED);
         paint.setStyle(Paint.Style.STROKE);
-        drawRect(canvas, paint, 1, 1, getBounds().width() - 1, getBounds().height() - 1);
+        drawRect(canvas, paint, 0, 0, getBounds().width() - 1, getBounds().height() - 1);
 		/*
 		 for (int i = 0; i < getChildCount(); i++) {
 		 View c = getChildAt(i);

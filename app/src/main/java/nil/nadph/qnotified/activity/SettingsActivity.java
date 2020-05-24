@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
 import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Html;
@@ -32,6 +33,7 @@ import android.view.ViewGroup;
 import android.widget.*;
 import com.tencent.mobileqq.widget.BounceScrollView;
 import nil.nadph.qnotified.MainHook;
+import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.*;
@@ -39,6 +41,7 @@ import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.NewsHelper;
+import nil.nadph.qnotified.util.RepeaterIconSettingDialog;
 import nil.nadph.qnotified.util.UpdateCheck;
 import nil.nadph.qnotified.util.Utils;
 
@@ -104,6 +107,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(newListItemHookSwitchInit(this, "发送卡片消息", "ArkAppMsg(json)+StructMsg(xml)", CardMsgHook.get()));
         ll.addView(subtitle(this, "卡片消息使用说明:先输入卡片代码(聊天界面),后长按发送按钮\n勿滥用此功能! 频繁使用此功能被举报可能封号"));
         ll.addView(newListItemHookSwitchInit(this, " +1", "不是复读机", RepeaterHook.get()));
+        ll.addView(newListItemButton(this, "自定义+1图标", null, null, RepeaterIconSettingDialog.OnClickListener_createDialog(this)));
         ll.addView(subtitle(this, "净化设置"));
         if (!Utils.isTim(this)) {
             ll.addView(newListItemSwitchConfigNext(this, "隐藏小程序入口", "隐藏消息列表下拉出现的小程序列表", ConfigItems.qn_hide_msg_list_miniapp, false));
@@ -232,6 +236,12 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         setTitle("高级");
         //TextView rightBtn=(TextView)invoke_virtual(this,"getRightTextView");
         //log("Title:"+invoke_virtual(this,"getTextTitle"));
+        try {
+            getString(R.string.res_inject_success);
+        } catch (Resources.NotFoundException e) {
+            CustomDialog.createFailsafe(this).setTitle("FATAL Exception").setCancelable(true).setPositiveButton(getString(android.R.string.yes), null)
+                    .setMessage("Resources injection failure!\nApplication may misbehave.\n" + e.toString()).show();
+        }
         return true;
     }
 

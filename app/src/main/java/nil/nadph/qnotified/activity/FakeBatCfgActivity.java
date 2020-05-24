@@ -30,7 +30,7 @@ import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.FakeBatteryHook;
 import nil.nadph.qnotified.ui.CustomDialog;
-import nil.nadph.qnotified.ui.DebugDrawable;
+import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.Utils;
 
@@ -96,7 +96,7 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
         pct.setBackgroundDrawable(null);
         pct.setGravity(Gravity.CENTER);
         pct.setPadding(_5dp, _5dp / 2, _5dp, _5dp / 2);
-        pct.setBackgroundDrawable(new DebugDrawable(FakeBatCfgActivity.this));
+        pct.setBackgroundDrawable(new HighContrastBorder());
         pct.setHint("电量百分比, 取值范围 [1,100]");
         pct.setText(bat.getFakeBatteryCapacity() + "");
         pct.setSelection(pct.getText().length());
