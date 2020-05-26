@@ -1,15 +1,15 @@
 [
   {
-    "code": 29,
-    "name": "0.7.1-beta",
+    "code": 35,
+    "name": "0.8.0",
     "taichi": true,
-    "beta": true,
-    "time": 1583995120,
-    "md5": "3d59606f5416129674f857fc056f4078",
-    "desc": "修复了一些已知bug,适配更多版本",
+    "beta": false,
+    "time": 1590509678,
+    "md5": "631b092ddf6303ab9de6aea343fd9494",
+    "desc": "自定义+1图标,支持TIM复读,适配QQ8.3.6/TIM3.0.0",
     "urls": [
-      "https://github.com/cinit/QNotified/releases/download/v0.7.1/QNotified_0.7.1-beta.apk",
-      "https://pan.baidu.com/s/1d0USyIpHG48aNWsXuEf-cg"
+      "https://github.com/cinit/QNotified/releases/download/v0.8.0/QNotified_0.8.0.apk",
+      "https://ww.lanzous.com/tp/id11ulg"
     ]
   }
 ]
