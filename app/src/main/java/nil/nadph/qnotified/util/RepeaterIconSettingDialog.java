@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.*;
@@ -39,7 +38,7 @@ public class RepeaterIconSettingDialog implements View.OnClickListener, DialogIn
     private TextView textViewWarning;
     private int physicalDpi;
 
-    private static Drawable sCachedRepeaterIcon;
+    private static Bitmap sCachedRepeaterIcon;
 
     public static final String qn_repeat_icon_data = "qn_repeat_icon_data";
     public static final String qn_repeat_icon_dpi = "qn_repeat_icon_dpi";
@@ -71,7 +70,7 @@ public class RepeaterIconSettingDialog implements View.OnClickListener, DialogIn
         dialog.setView(v);
     }
 
-    public static Drawable getRepeaterIcon(Context ctx) {
+    public static Bitmap getRepeaterIcon() {
         if (sCachedRepeaterIcon != null) {
             return sCachedRepeaterIcon;
         }
@@ -84,10 +83,13 @@ public class RepeaterIconSettingDialog implements View.OnClickListener, DialogIn
                 if (dpi > 0) {
                     bm.setDensity(dpi);
                 }
-                sCachedRepeaterIcon = new BitmapDrawable((ctx == null ? Utils.getApplication() : ctx).getResources(), bm);
+                sCachedRepeaterIcon = bm;
             }
         }
-        if (sCachedRepeaterIcon == null) sCachedRepeaterIcon = ResUtils.loadDrawableFromAsset("repeat.png", ctx);
+        if (sCachedRepeaterIcon == null) {
+            sCachedRepeaterIcon = BitmapFactory.decodeStream(ResUtils.openAsset("repeat.png"));
+            sCachedRepeaterIcon.setDensity(320);
+        }
         return sCachedRepeaterIcon;
     }
 
@@ -234,7 +236,7 @@ public class RepeaterIconSettingDialog implements View.OnClickListener, DialogIn
                     cfg.putInt(qn_repeat_icon_dpi, dpi);
                     cfg.putString(qn_repeat_last_file, targetIconPath);
                     cfg.save();
-                    sCachedRepeaterIcon = new BitmapDrawable(ctx.getResources(), currentIcon);
+                    sCachedRepeaterIcon = currentIcon;
                     dialog.dismiss();
                 } catch (IOException e) {
                     Utils.showToast(ctx, Utils.TOAST_TYPE_ERROR, e.toString(), 0);
@@ -265,7 +267,7 @@ public class RepeaterIconSettingDialog implements View.OnClickListener, DialogIn
                 }
             }
         } else if (v == browseBtn) {
-            Utils.showToastShort(ctx, "暂不支持...");
+            Utils.showToastShort(ctx, "暂不支持...请手动复制文件路径到文本框并加载");
         }
     }
 

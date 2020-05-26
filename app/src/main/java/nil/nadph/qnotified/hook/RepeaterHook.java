@@ -20,19 +20,23 @@ package nil.nadph.qnotified.hook;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Looper;
+import android.os.Parcelable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+import com.tencent.mobileqq.app.QQAppInterface;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.bridge.ChatActivityFacade;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.ui.LinearLayoutDelegate;
 import nil.nadph.qnotified.util.RepeaterIconSettingDialog;
 import nil.nadph.qnotified.util.Utils;
 
@@ -86,8 +90,8 @@ public class RepeaterHook extends BaseDelayableHook {
                     if (ctx.getClass().getName().contains("ChatHistoryActivity") ||
                             ctx.getClass().getName().contains("MultiForwardActivity"))
                         return;
-                    final Object app = iget_object_or_null(param.thisObject, "a", _QQAppInterface());
-                    final Object session = iget_object_or_null(param.thisObject, "a", _SessionInfo());
+                    final QQAppInterface app = getFirstNSFByType(param.thisObject, _QQAppInterface());
+                    final Parcelable session = getFirstNSFByType(param.thisObject, _SessionInfo());
                     String uin = "" + Utils.getLongAccountUin();
                     if (relativeLayout.findViewById(101) == null) {
                         View childAt = relativeLayout.getChildAt(0);
@@ -101,7 +105,7 @@ public class RepeaterHook extends BaseDelayableHook {
                         linearLayout.setGravity(17);
                         ImageView imageView = new ImageView(ctx);
                         imageView.setId(101);
-                        imageView.setImageDrawable(RepeaterIconSettingDialog.getRepeaterIcon(ctx));
+                        imageView.setImageBitmap(RepeaterIconSettingDialog.getRepeaterIcon());
                         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(-2, -2);
                         layoutParams.rightMargin = dip2px(ctx, (float) 10);
                         linearLayout.addView(imageView, layoutParams);
@@ -109,7 +113,7 @@ public class RepeaterHook extends BaseDelayableHook {
                         ImageView imageView2 = new ImageView(ctx);
                         imageView2.setId(102);
                         //imageView2.setImageResource(Integer.parseInt((String) Hook.config.get("+1_icon"), 16));
-                        imageView2.setImageDrawable(RepeaterIconSettingDialog.getRepeaterIcon(ctx));
+                        imageView2.setImageBitmap(RepeaterIconSettingDialog.getRepeaterIcon());
                         LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(-2, -2);
                         layoutParams2.leftMargin = dip2px(ctx, (float) 10);
                         linearLayout.addView(imageView2, layoutParams2);
@@ -128,22 +132,10 @@ public class RepeaterHook extends BaseDelayableHook {
                         @Override
                         public void onClick(View view) {
                             try {
-                                Class[] argt = null;
-                                Method m = null;
-                                for (Method mi : DexKit.doFindClass(DexKit.C_FACADE).getMethods()) {
-                                    if (!mi.getName().equals("a")) continue;
-                                    argt = mi.getParameterTypes();
-                                    if (argt.length < 3) continue;
-                                    if (argt[0].equals(load("com/tencent/mobileqq/app/QQAppInterface")) && argt[1].equals(_SessionInfo())
-                                            && argt[2].isAssignableFrom(param.args[0].getClass())) {
-                                        m = mi;
-                                        break;
-                                    }
-                                }
-                                if (argt.length == 3) m.invoke(null, app, session, param.args[0]);
-                                else m.invoke(null, app, session, param.args[0], 0);
+                                ChatActivityFacade.repeatMessage(app, session, param.args[0]);
                             } catch (Throwable e) {
                                 log(e);
+                                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e.toString(), Toast.LENGTH_SHORT);
                             }
                         }
                     };
@@ -262,28 +254,29 @@ public class RepeaterHook extends BaseDelayableHook {
                                 if (ctx.getClass().getName().contains("ChatHistoryActivity")
                                         || ctx.getClass().getName().contains("MultiForwardActivity"))
                                     return;
-                                final Object app = iget_object_or_null(param.thisObject, "a", load("com.tencent.mobileqq.app.QQAppInterface"));
-                                final Object session = iget_object_or_null(param.thisObject, "a", _SessionInfo());
+                                final QQAppInterface app = getFirstNSFByType(param.thisObject, QQAppInterface.class);
+                                final Parcelable session = getFirstNSFByType(param.thisObject, _SessionInfo());
                                 String uin = "" + Utils.getLongAccountUin();
                                 if (resultView.findViewById(101) == null) {
-                                    LinearLayout linearLayout = new LinearLayout(ctx);
+                                    LinearLayoutDelegate linearLayout = new LinearLayoutDelegate(ctx);
                                     linearLayout.setOrientation(0);
                                     linearLayout.setGravity(17);
                                     ImageView imageView = new ImageView(ctx);
                                     imageView.setId(101);
-                                    imageView.setImageDrawable(RepeaterIconSettingDialog.getRepeaterIcon(ctx));
+                                    imageView.setImageBitmap(RepeaterIconSettingDialog.getRepeaterIcon());
                                     LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(-2, -2);
-                                    layoutParams.rightMargin = dip2px(ctx, (float) 10);
+                                    layoutParams.rightMargin = dip2px(ctx, (float) 5);
                                     linearLayout.addView(imageView, layoutParams);
                                     ViewGroup p = (ViewGroup) resultView.getParent();
                                     if (p != null) p.removeView(resultView);
                                     ViewGroup.LayoutParams currlp = resultView.getLayoutParams();
                                     linearLayout.addView(resultView, -2, -2);
+                                    linearLayout.setDelegate(resultView);
                                     ImageView imageView2 = new ImageView(ctx);
                                     imageView2.setId(102);
-                                    imageView2.setImageDrawable(RepeaterIconSettingDialog.getRepeaterIcon(ctx));
+                                    imageView2.setImageBitmap(RepeaterIconSettingDialog.getRepeaterIcon());
                                     LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(-2, -2);
-                                    layoutParams2.leftMargin = dip2px(ctx, (float) 10);
+                                    layoutParams2.leftMargin = dip2px(ctx, (float) 5);
                                     linearLayout.addView(imageView2, layoutParams2);
                                     linearLayout.setPadding(0, 0, 0, 0);
                                     param.setResult(linearLayout);
@@ -304,12 +297,10 @@ public class RepeaterHook extends BaseDelayableHook {
                                     @Override
                                     public void onClick(View view) {
                                         try {
-                                            Class[] argt = null;
-                                            Method m = null;
-                                            Object msg = param.args[0];//session,app
-                                            Utils.showToastShort(view.getContext(), msg.getClass().getName());
+                                            ChatActivityFacade.repeatMessage(app, session, param.args[0]);
                                         } catch (Throwable e) {
                                             log(e);
+                                            Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e.toString(), Toast.LENGTH_SHORT);
                                         }
                                     }
                                 };
@@ -331,6 +322,33 @@ public class RepeaterHook extends BaseDelayableHook {
                             iput_object(methodHookParam.args[0], "extraflag", 0);
                         }
                     }
+
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        if (!isEnabled()) return;
+                        ImageView imageView = iget_object_or_null(param.args[1], "b", ImageView.class);
+                        ImageView imageView2 = iget_object_or_null(param.args[1], "c", ImageView.class);
+                        ((Boolean) invoke_virtual(param.args[0], "isSend", boolean.class) ? imageView : imageView2).setVisibility(0);
+                        Bitmap repeat = RepeaterIconSettingDialog.getRepeaterIcon();
+                        imageView.setImageBitmap(repeat);
+                        imageView2.setImageBitmap(repeat);
+                        final QQAppInterface app = getFirstNSFByType(param.thisObject, QQAppInterface.class);
+                        final Parcelable session = (Parcelable) getFirstNSFByType(param.thisObject, _SessionInfo());
+                        final Object msg = param.args[0];
+                        View.OnClickListener r0 = new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                try {
+                                    ChatActivityFacade.repeatMessage(app, session, msg);
+                                } catch (Throwable e) {
+                                    log(e);
+                                    Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e.toString(), Toast.LENGTH_SHORT);
+                                }
+                            }
+                        };
+                        imageView.setOnClickListener(r0);
+                        imageView2.setOnClickListener(r0);
+                    }
                 });
             }
             //end: text
@@ -340,73 +358,58 @@ public class RepeaterHook extends BaseDelayableHook {
                         @Override
                         public void afterHookedMethod(final MethodHookParam param) throws Throwable {
                             if (!isEnabled()) return;
-                            View view;
-                            ViewGroup relativeLayout = (ViewGroup) param.getResult();
-                            Context ctx = relativeLayout.getContext();
+                            ViewGroup convertView = (ViewGroup) param.getResult();
+                            Context ctx = convertView.getContext();
                             if (ctx.getClass().getName().contains("ChatHistoryActivity")
                                     || ctx.getClass().getName().contains("MultiForwardActivity"))
                                 return;
-                            final Object app = iget_object_or_null(param.thisObject, "a", load("com.tencent.mobileqq.app.QQAppInterface"));
-                            final Object session = iget_object_or_null(param.thisObject, "a", _SessionInfo());
+                            final QQAppInterface app = getFirstNSFByType(param.thisObject, QQAppInterface.class);
+                            final Parcelable session = getFirstNSFByType(param.thisObject, _SessionInfo());
                             String uin = "" + Utils.getLongAccountUin();
-                            if (relativeLayout.findViewById(101) == null) {
-                                LinearLayout linearLayout = new LinearLayout(ctx);
-                                //linearLayout.setId(Integer.parseInt((String) Hook.config.get("PttItem_id"), 16));
-                                linearLayout.setOrientation(0);
-                                linearLayout.setGravity(17);
-                                ImageView imageView = new ImageView(ctx);
-                                imageView.setId(101);
-                                imageView.setImageDrawable(RepeaterIconSettingDialog.getRepeaterIcon(ctx));
+                            if (convertView.findViewById(101) == null) {
+                                LinearLayoutDelegate wrapperLayout = new LinearLayoutDelegate(ctx);
+                                wrapperLayout.setDelegate(convertView);
+                                //wrapperLayout.setId(Integer.parseInt((String) Hook.config.get("PttItem_id"), 16));
+                                wrapperLayout.setOrientation(0);
+                                wrapperLayout.setGravity(17);
+                                ImageView leftIcon = new ImageView(ctx);
+                                leftIcon.setId(101);
+                                leftIcon.setImageBitmap(RepeaterIconSettingDialog.getRepeaterIcon());
                                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(-2, -2);
-                                layoutParams.rightMargin = dip2px(ctx, (float) 10);
-                                linearLayout.addView(imageView, layoutParams);
-                                linearLayout.addView(relativeLayout, -2, -2);
-                                ImageView imageView2 = new ImageView(ctx);
-                                imageView2.setId(102);
-                                imageView2.setImageDrawable(RepeaterIconSettingDialog.getRepeaterIcon(ctx));
+                                layoutParams.rightMargin = dip2px(ctx, (float) 5);
+                                wrapperLayout.addView(leftIcon, layoutParams);
+                                wrapperLayout.addView(convertView, -2, -2);
+                                ImageView rightIcon = new ImageView(ctx);
+                                rightIcon.setId(102);
+                                rightIcon.setImageBitmap(RepeaterIconSettingDialog.getRepeaterIcon());
                                 LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(-2, -2);
-                                layoutParams2.leftMargin = dip2px(ctx, (float) 10);
-                                linearLayout.addView(imageView2, layoutParams2);
-                                param.setResult(linearLayout);
-                                view = linearLayout;
-                            } else {
-                                view = relativeLayout.findViewById(101);
+                                layoutParams2.leftMargin = dip2px(ctx, (float) 5);
+                                wrapperLayout.addView(rightIcon, layoutParams2);
+                                param.setResult(wrapperLayout);
+                                convertView = wrapperLayout;
                             }
-                            ImageView imageView3 = view.findViewById(101);
-                            @SuppressLint("ResourceType") ImageView imageView4 = view.findViewById(102);
+                            ImageView leftIcon = convertView.findViewById(101);
+                            ImageView rightIcon = convertView.findViewById(102);
                             if (iget_object_or_null(param.args[0], "senderuin").equals(uin)) {
-                                imageView3.setVisibility(0);
-                                imageView4.setVisibility(8);
+                                leftIcon.setVisibility(0);
+                                rightIcon.setVisibility(8);
                             } else {
-                                imageView3.setVisibility(8);
-                                imageView4.setVisibility(0);
+                                leftIcon.setVisibility(8);
+                                rightIcon.setVisibility(0);
                             }
-                            View.OnClickListener r0 = new View.OnClickListener() {
+                            View.OnClickListener l = new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
                                     try {
-                                        Class[] argt = null;
-                                        Method m = null;
-                                        for (Method mi : DexKit.doFindClass(DexKit.C_FACADE).getMethods()) {
-                                            if (!mi.getName().equals("a")) continue;
-                                            argt = mi.getParameterTypes();
-                                            if (argt.length < 3) continue;
-                                            if (argt[0].equals(load("com/tencent/mobileqq/app/QQAppInterface")) && argt[1].equals(_SessionInfo())
-                                                    && argt[2].isAssignableFrom(param.args[0].getClass())) {
-                                                m = mi;
-                                                break;
-                                            }
-                                        }
-                                        Object ret;
-                                        if (argt.length == 3) ret = m.invoke(null, app, session, param.args[0]);
-                                        else ret = m.invoke(null, app, session, param.args[0], 0);
+                                        ChatActivityFacade.repeatMessage(app, session, param.args[0]);
                                     } catch (Throwable e) {
                                         log(e);
+                                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e.toString(), Toast.LENGTH_SHORT);
                                     }
                                 }
                             };
-                            imageView3.setOnClickListener(r0);
-                            imageView4.setOnClickListener(r0);
+                            leftIcon.setOnClickListener(l);
+                            rightIcon.setOnClickListener(l);
                         }
                     });
             //end: ptt

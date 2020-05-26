@@ -69,6 +69,7 @@ public class HookLoader implements IXposedHookLoadPackage {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     Context context = (Context) param.args[0];
+                    if ("com.bug.zqq".equals(context.getApplicationInfo().packageName)) return;
                     loadPackageParam.classLoader = context.getClassLoader();
                     invokeHandleHookMethod(context, modulePackage, handleHookClass, handleHookMethod, loadPackageParam);
                 }

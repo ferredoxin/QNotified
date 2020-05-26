@@ -18,6 +18,8 @@
  */
 package nil.nadph.qnotified.util;
 
+import android.os.Parcelable;
+import com.tencent.mobileqq.app.QQAppInterface;
 import de.robv.android.xposed.XposedBridge;
 
 import java.lang.reflect.Field;
@@ -239,8 +241,8 @@ public class Initiator {
         return load("com/tencent/imcore/message/QQMessageFacade");
     }
 
-    public static Class _SessionInfo() {
-        return load("com/tencent/mobileqq/activity/aio/SessionInfo");
+    public static <T extends Parcelable> Class<T> _SessionInfo() {
+        return (Class<T>) load("com/tencent/mobileqq/activity/aio/SessionInfo");
     }
 
     public static Class _BaseChatPie() {
@@ -255,8 +257,8 @@ public class Initiator {
         return load("com/tencent/mobileqq/data/MessageRecord");
     }
 
-    public static Class _QQAppInterface() {
-        return load("com/tencent/mobileqq/app/QQAppInterface");
+    public static Class<QQAppInterface> _QQAppInterface() {
+        return (Class<QQAppInterface>) load("com/tencent/mobileqq/app/QQAppInterface");
     }
 
     public static Class<?> _BaseMessageManager() {

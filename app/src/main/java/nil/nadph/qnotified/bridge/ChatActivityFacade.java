@@ -20,15 +20,19 @@ package nil.nadph.qnotified.bridge;
 
 import android.content.Context;
 import android.os.Parcelable;
+import android.widget.Toast;
 import com.tencent.mobileqq.app.QQAppInterface;
 import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.Utils;
 
 import java.io.Externalizable;
+import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import static nil.nadph.qnotified.util.Initiator._SessionInfo;
-import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Utils.*;
 
 public class ChatActivityFacade {
     public static long[] sendMessage(QQAppInterface qqAppInterface, Context context, Parcelable sessionInfo, String msg,
@@ -150,6 +154,56 @@ public class ChatActivityFacade {
             send.invoke(null, qqAppInterface, sessionInfo, absStructMsg);
         } catch (Exception e) {
             log(e);
+        }
+    }
+
+    public static void repeatMessage(QQAppInterface app, Parcelable session, Object msg) {
+        if (app == null) throw new NullPointerException("app == null");
+        if (session == null) throw new NullPointerException("session == null");
+        if (msg == null) throw new NullPointerException("msg == null");
+        String msgText;
+        Class[] argt = null;
+        Method m = null;
+        switch (getShort$Name(msg)) {
+            case "MessageForText":
+                msgText = (String) iget_object_or_null(msg, "msg");
+                sendMessage(app, getApplication(), session, msgText);
+                break;
+            case "MessageForPic":
+                try {
+                    for (Method mi : DexKit.doFindClass(DexKit.C_FACADE).getMethods()) {
+                        if (!mi.getName().equals("a") && !mi.getName().equals("b")) continue;
+                        argt = mi.getParameterTypes();
+                        if (argt.length < 3) continue;
+                        if (argt[0].equals(load("com/tencent/mobileqq/app/QQAppInterface")) && argt[1].equals(_SessionInfo())
+                                && argt[2].isAssignableFrom(msg.getClass()) && mi.getReturnType().equals(void.class)) {
+                            m = mi;
+                            break;
+                        }
+                    }
+                    if (argt.length == 3) m.invoke(null, app, session, msg);
+                    else m.invoke(null, app, session, msg, 0);
+                } catch (Exception e) {
+                    Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), 0);
+                    log(e);
+                }
+                break;
+            case "MessageForPtt":
+                try {
+                    String url = (String) invoke_virtual(msg, "getLocalFilePath");
+                    File file = new File(url);
+                    if (!file.exists()) {
+                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, "未找到语音文件", Toast.LENGTH_SHORT);
+                        return;
+                    }
+                    sendPttMessage(getQQAppInterface(), session, url);
+                } catch (Exception e) {
+                    Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), 0);
+                    log(e);
+                }
+                break;
+            default:
+                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, "Unsupported msg type: " + getShort$Name(msg), 0);
         }
     }
 }

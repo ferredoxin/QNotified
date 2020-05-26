@@ -31,12 +31,12 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import nil.nadph.qnotified.activity.ExfriendListActivity;
+import nil.nadph.qnotified.bridge.FriendChunk;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.config.EventRecord;
 import nil.nadph.qnotified.config.FriendRecord;
 import nil.nadph.qnotified.config.Table;
 import nil.nadph.qnotified.hook.DelDetectorHook;
-import nil.nadph.qnotified.bridge.FriendChunk;
 import nil.nadph.qnotified.util.ActProxyMgr;
 import nil.nadph.qnotified.util.Nullable;
 import nil.nadph.qnotified.util.Utils;
@@ -99,7 +99,6 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
     private ConcurrentHashMap mStdRemarks;
     private ArrayList<FriendChunk> cachedFriendChunks;
     private boolean dirtyFlag;
-    private Context remotePackageContext;
 
     private ExfriendManager(long uin) {
         persons = new ConcurrentHashMap<Long, FriendRecord>();
@@ -736,9 +735,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
     }
 
     public Notification createNotiComp(String ticker, String title, String content, PendingIntent pi) throws PackageManager.NameNotFoundException, InvocationTargetException, SecurityException, IllegalAccessException, IllegalArgumentException, NoSuchMethodException, InstantiationException {
-        if (remotePackageContext == null)
-            remotePackageContext = getApplication().createPackageContext(PACKAGE_NAME_SELF, Context.CONTEXT_INCLUDE_CODE | Context.CONTEXT_IGNORE_SECURITY);
-        Object builder = new_instance(load("android/support/v4/app/NotificationCompat$Builder"), remotePackageContext, Context.class);
+        Object builder = new_instance(load("android/support/v4/app/NotificationCompat$Builder"), getApplication(), Context.class);
         invoke_virtual(builder, "setSmallIcon", R.drawable.ic_del_friend_top, int.class);
         invoke_virtual(builder, "setTicker", ticker, CharSequence.class);
         invoke_virtual(builder, "setContentTitle", title, CharSequence.class);

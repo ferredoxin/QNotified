@@ -19,24 +19,26 @@ public class HighContrastBorder extends Drawable {
 
     @Override
     public void draw(Canvas canvas) {
-        int w = getBounds().width() - 1;
-        int h = getBounds().height() - 1;
+        int w = getBounds().width();
+        int h = getBounds().height();
+        mPaint.setStrokeWidth(0);
+        mPaint.setAntiAlias(false);
         mPaint.setColor(Color.WHITE);
-        canvas.drawLine(0, 0, w - 1, 0, mPaint);
+        canvas.drawLine(0.5f, 0.5f, w - 1.5f, 0.5f, mPaint);
         mPaint.setColor(Color.BLACK);
-        canvas.drawLine(1, 1, w, 1, mPaint);
+        canvas.drawLine(1.5f, 1.5f, w - 0.5f, 1.5f, mPaint);
         mPaint.setColor(Color.WHITE);
-        canvas.drawLine(0, 0, 0, h - 1, mPaint);
+        canvas.drawLine(0.5f, 0.5f, 0.5f, h - 1.5f, mPaint);
         mPaint.setColor(Color.BLACK);
-        canvas.drawLine(1, 1, 1, h, mPaint);
+        canvas.drawLine(1.5f, 1.5f, 1.5f, h - 0.5f, mPaint);
         mPaint.setColor(Color.WHITE);
-        canvas.drawLine(w - 1, 0, w - 1, h - 1, mPaint);
+        canvas.drawLine(w - 1.5f, 0.5f, w - 1.5f, h - 1.5f, mPaint);
         mPaint.setColor(Color.BLACK);
-        canvas.drawLine(w, 1, w, h, mPaint);
+        canvas.drawLine(w - 0.5f, 1.5f, w - 0.5f, h - 0.5f, mPaint);
         mPaint.setColor(Color.WHITE);
-        canvas.drawLine(0, h - 1, w - 1, h - 1, mPaint);
+        canvas.drawLine(0.5f, h - 1.5f, w - 1.5f, h - 1.5f, mPaint);
         mPaint.setColor(Color.BLACK);
-        canvas.drawLine(1, h, w, h, mPaint);
+        canvas.drawLine(1.5f, h - 0.5f, w - 0.5f, h - 0.5f, mPaint);
     }
 
     @Override

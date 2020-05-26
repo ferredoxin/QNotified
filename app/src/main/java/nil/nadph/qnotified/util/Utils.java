@@ -1286,7 +1286,7 @@ public class Utils {
     public static String en(String str) {
         if (str == null) return "null";
         return "\"" + str.replace("\\", "\\\\").replace("\"", "\\\"")
-                .replace("\n", "\\\n").replace("\r", "\\\r") + "\"";
+                .replace("\n", "\\n").replace("\r", "\\r") + "\"";
     }
 
     public static String de(String str) {
