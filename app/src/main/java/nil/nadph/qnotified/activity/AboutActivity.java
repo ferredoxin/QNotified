@@ -69,8 +69,7 @@ public class AboutActivity extends IphoneTitleBarActivityCompat {
         ll.addView(subtitle(this, "此模块目前承认的APP发布渠道为 Github 上本项目的 Releases 和 Xposed Installer 里的模块下载 ,也可从https://github.com/cinit/QNotified 获取源码自行编译, 如果您是在其他渠道下载的话请自己注意安全.\n Copyright (C) 2019-2020 cinit@github"));
 
         ll.addView(subtitle(this, "支持的(类)Xposed内核:"));
-        ll.addView(subtitle(this, "原生Xposed, Epic(太极), SandHook, BugHook(应用转生)"));
-        ll.addView(subtitle(this, " * YAHFA 可能存在一定兼容性问题(如卡Q,黑屏等等),遇到问题请反馈(说明发生的情况和其它必要信息,如QQ版本,模块版本,使用的框架环境,安卓版本等),谢谢"));
+        ll.addView(subtitle(this, "原生Xposed, Epic(太极), SandHook, YAHFA ,BugHook(应用转生), etc"));
 
         ll.addView(subtitle(this, "声明:"));
         ll.addView(subtitle(this, "此软件是捐赠软件 个人可以免费使用 请勿以任何方式商用本软件 如果喜欢我的作品请打赏支持我维护和开发! 任何形式或渠道包括预装手机售卖此软件​都是非法贩卖, 别上当受骗！欢迎举报贩卖者! ", Color.RED));

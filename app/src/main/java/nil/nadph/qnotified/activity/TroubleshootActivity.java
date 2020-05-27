@@ -19,10 +19,16 @@
 package nil.nadph.qnotified.activity;
 
 import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -35,6 +41,7 @@ import nil.nadph.qnotified.config.EventRecord;
 import nil.nadph.qnotified.config.FriendRecord;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.util.ActProxyMgr;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.DexMethodDescriptor;
 import nil.nadph.qnotified.util.Utils;
@@ -46,6 +53,8 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.ui.ViewBuilder.newListItemButton;
 import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
+import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_EXFRIEND_LIST;
+import static nil.nadph.qnotified.util.ActProxyMgr.ACTIVITY_PROXY_ACTION;
 import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressLint("Registered")
@@ -84,6 +93,26 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
 
         ll.addView(subtitle(this, ""));
         ll.addView(subtitle(this, "以下内容基本上都没用，它们为了修复故障才留在这里。"));
+        ll.addView(newListItemButton(this, "测试通知", "点击测试通知", null, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Intent inner = new Intent(getApplication(), ExfriendListActivity.class);
+                    inner.putExtra(ACTIVITY_PROXY_ACTION, ACTION_EXFRIEND_LIST);
+                    Intent wrapper = new Intent();
+                    wrapper.setClassName(getApplication().getPackageName(), ActProxyMgr.STUB_ACTIVITY);
+                    wrapper.putExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT, inner);
+                    PendingIntent pi = PendingIntent.getActivity(getApplication(), 0, wrapper, 0);
+                    NotificationManager nm = (NotificationManager) Utils.getApplication().getSystemService(Context.NOTIFICATION_SERVICE);
+                    Notification n = ExfriendManager.getCurrent().createNotiComp("Ticker", "Title", "Content", pi);
+                    nm.notify(ExfriendManager.ID_EX_NOTIFY, n);
+                } catch (Throwable e) {
+                    CustomDialog.createFailsafe(TroubleshootActivity.this).setCancelable(true).setPositiveButton(getString(android.R.string.ok), null)
+                            .setTitle(getShort$Name(e)).setMessage(Log.getStackTraceString(e)).show();
+                }
+            }
+        }));
+        ll.addView(subtitle(this, "反混淆信息"));
 
         for (int i = 1; i <= DexKit.DEOBF_NUM_C; i++) {
             try {

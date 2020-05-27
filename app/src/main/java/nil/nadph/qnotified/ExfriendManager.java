@@ -19,13 +19,12 @@
 package nil.nadph.qnotified;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
+import android.app.*;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Icon;
+import android.os.Build;
 import android.os.Vibrator;
 import android.view.View;
 import android.widget.TextView;
@@ -45,7 +44,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -61,7 +59,7 @@ import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class ExfriendManager implements SyncUtils.OnFileChangedListener {
-    static private final int ID_EX_NOTIFY = 65537;
+    static public final int ID_EX_NOTIFY = 65537;
     static private final int FL_UPDATE_INT_MIN = 10 * 60;//sec
     static private final int FL_UPDATE_INT_MAX = 1 * 60 * 60;//sec
 
@@ -734,14 +732,27 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
 
     }
 
-    public Notification createNotiComp(String ticker, String title, String content, PendingIntent pi) throws PackageManager.NameNotFoundException, InvocationTargetException, SecurityException, IllegalAccessException, IllegalArgumentException, NoSuchMethodException, InstantiationException {
-        Object builder = new_instance(load("android/support/v4/app/NotificationCompat$Builder"), getApplication(), Context.class);
-        invoke_virtual(builder, "setSmallIcon", R.drawable.ic_del_friend_top, int.class);
-        invoke_virtual(builder, "setTicker", ticker, CharSequence.class);
-        invoke_virtual(builder, "setContentTitle", title, CharSequence.class);
-        invoke_virtual(builder, "setContentText", content, CharSequence.class);
-        invoke_virtual(builder, "setContentIntent", pi, PendingIntent.class);
-        return (Notification) invoke_virtual(builder, "build");
+    public Notification createNotiComp(String ticker, String title, String content, PendingIntent pi) {
+        Application app = getApplication();
+        //i don't have a device API>25...so not to use the channel
+        Notification.Builder builder = new Notification.Builder(app);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            MainHook.injectModuleResources(app.getResources());
+            //we have to createWithBitmap rather than with a ResId, otherwise RemoteServiceException
+            builder.setSmallIcon(Icon.createWithBitmap(BitmapFactory.decodeResource(app.getResources(), R.drawable.ic_del_friend_top)));
+        } else {
+            //2020 now, still using <23?
+            builder.setSmallIcon(android.R.drawable.ic_delete);
+        }
+        builder.setTicker(ticker);
+        builder.setContentTitle(title);
+        builder.setContentText(content);
+        builder.setContentIntent(pi);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            return builder.build();
+        } else {
+            return builder.getNotification();
+        }
     }
 
 	/*public static int getResourceId(Context context,String name,String type,String packageName){

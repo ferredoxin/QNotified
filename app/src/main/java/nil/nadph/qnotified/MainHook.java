@@ -431,7 +431,7 @@ public class MainHook {
 
     @MainProcess
     @SuppressLint("PrivateApi")
-    private static void injectModuleResources(Resources res) {
+    public static void injectModuleResources(Resources res) {
         if (res == null) return;
         try {
             res.getString(R.string.res_inject_success);
