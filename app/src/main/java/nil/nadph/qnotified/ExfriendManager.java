@@ -25,7 +25,6 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Icon;
 import android.os.Build;
-import android.os.Vibrator;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -707,10 +706,8 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
                 wrapper.putExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT, inner);
                 PendingIntent pi = PendingIntent.getActivity(getApplication(), 0, wrapper, 0);
                 NotificationManager nm = (NotificationManager) Utils.getApplication().getSystemService(Context.NOTIFICATION_SERVICE);
-                Notification n = createNotiComp((String) ptr[1], (String) ptr[2], (String) ptr[3], pi);
+                Notification n = createNotiComp(nm, (String) ptr[1], (String) ptr[2], (String) ptr[3], new long[]{100, 200, 200, 100}, pi);
                 nm.notify(ID_EX_NOTIFY, n);
-                Vibrator vb = (Vibrator) getApplication().getSystemService(Context.VIBRATOR_SERVICE);
-                if (vb != null) vb.vibrate(new long[]{100, 200, 200, 100}, -1);
                 setRedDot();
             }
         } catch (Exception e) {
@@ -732,10 +729,18 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
 
     }
 
-    public Notification createNotiComp(String ticker, String title, String content, PendingIntent pi) {
+    public Notification createNotiComp(NotificationManager nm, String ticker, String title, String content, long[] vibration, PendingIntent pi) {
         Application app = getApplication();
-        //i don't have a device API>25...so not to use the channel
-        Notification.Builder builder = new Notification.Builder(app);
+        Notification.Builder builder;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("qn_del_notify", "删好友通知", NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setSound(null, null);
+            channel.setVibrationPattern(vibration);
+            nm.createNotificationChannel(channel);
+            builder = new Notification.Builder(app, channel.getId());
+        } else {
+            builder = new Notification.Builder(app);
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             MainHook.injectModuleResources(app.getResources());
             //we have to createWithBitmap rather than with a ResId, otherwise RemoteServiceException
@@ -748,6 +753,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
         builder.setContentTitle(title);
         builder.setContentText(content);
         builder.setContentIntent(pi);
+        builder.setVibrate(vibration);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             return builder.build();
         } else {

@@ -104,7 +104,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                     wrapper.putExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT, inner);
                     PendingIntent pi = PendingIntent.getActivity(getApplication(), 0, wrapper, 0);
                     NotificationManager nm = (NotificationManager) Utils.getApplication().getSystemService(Context.NOTIFICATION_SERVICE);
-                    Notification n = ExfriendManager.getCurrent().createNotiComp("Ticker", "Title", "Content", pi);
+                    Notification n = ExfriendManager.getCurrent().createNotiComp(nm, "Ticker", "Title", "Content", new long[]{100, 200, 200, 100}, pi);
                     nm.notify(ExfriendManager.ID_EX_NOTIFY, n);
                 } catch (Throwable e) {
                     CustomDialog.createFailsafe(TroubleshootActivity.this).setCancelable(true).setPositiveButton(getString(android.R.string.ok), null)
