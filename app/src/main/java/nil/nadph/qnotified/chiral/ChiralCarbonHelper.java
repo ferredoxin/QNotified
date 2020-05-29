@@ -42,7 +42,7 @@ public class ChiralCarbonHelper {
             int b3 = mol.getBondId(bondnh.get(2));
             int b4 = mol.getBondId(bondnh.get(3));
             return !(compareChain(mol, index, b1, b2) || compareChain(mol, index, b1, b3) || compareChain(mol, index, b1, b4)
-                    || compareChain(mol, index, b2, b3) || compareChain(mol, index, b2, b3) || compareChain(mol, index, b3, b4));
+                    || compareChain(mol, index, b2, b3) || compareChain(mol, index, b2, b4) || compareChain(mol, index, b3, b4));
         } else if (bondnh.size() == 3 && hcnt == 1) {
             int b1 = mol.getBondId(bondnh.get(0));
             int b2 = mol.getBondId(bondnh.get(1));
