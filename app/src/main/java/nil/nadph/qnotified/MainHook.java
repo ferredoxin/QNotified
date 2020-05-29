@@ -40,6 +40,7 @@ import dalvik.system.BaseDexClassLoader;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
+import nil.nadph.qnotified.activity.SettingsActivity;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
@@ -423,6 +424,7 @@ public class MainHook {
     private void injectStartupHookForMain(Context ctx) {
         injectModuleResources(ctx.getApplicationContext().getResources());
         initForStubActivity(ctx);
+        initForJumpActivityEntry(ctx);
         asyncStartFindClass();
         if (LicenseStatus.hasUserAgreeEula()) hideMiniAppEntry();
     }
@@ -546,6 +548,43 @@ public class MainHook {
             }
             //End of IActivityTaskManager
             __stub_hooked = true;
+        } catch (Exception e) {
+            log(e);
+        }
+    }
+
+    public static final String JUMP_ACTION_CMD = "qn_jump_action_cmd";
+    public static final String JUMP_ACTION_SETTING_ACTIVITY = "nil.nadph.qnotified.SETTING_ACTIVITY";
+    public static final String JUMP_ACTION_REQUEST_SKIP_DIALOG = "nil.nadph.qnotified.REQUEST_SKIP_DIALOG";
+
+    private boolean __jump_act_init = false;
+
+    @MainProcess
+    @SuppressLint("PrivateApi")
+    private void initForJumpActivityEntry(Context ctx) {
+        if (__jump_act_init) return;
+        try {
+            Class<?> clz = load("com.tencent.mobileqq.activity.JumpActivity");
+            if (clz == null) {
+                log("class JumpActivity not found.");
+                return;
+            }
+            Method doOnCreate = clz.getDeclaredMethod("doOnCreate", Bundle.class);
+            XposedBridge.hookMethod(doOnCreate, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    Activity activity = (Activity) param.thisObject;
+                    Intent intent = activity.getIntent();
+                    String cmd;
+                    if (intent == null || (cmd = intent.getStringExtra(JUMP_ACTION_CMD)) == null) return;
+                    if (JUMP_ACTION_SETTING_ACTIVITY.equals(cmd)) {
+                        Intent realIntent = new Intent(intent);
+                        realIntent.setComponent(new ComponentName(activity, SettingsActivity.class));
+                        activity.startActivity(realIntent);
+                    }
+                }
+            });
+            __jump_act_init = true;
         } catch (Exception e) {
             log(e);
         }

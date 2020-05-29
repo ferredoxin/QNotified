@@ -1,133 +1,173 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
         android:orientation="vertical"
-        android:gravity="center">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <LinearLayout
+    <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_alignParentTop="true">
-
-        <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="!!! 本模块没有激活 !!!"
-                android:padding="5dp"
-                android:gravity="center"
-                android:id="@+id/mainTextViewStatusA"/>
-
-        <View
-                android:background="?android:attr/dividerVertical"
-                android:layout_height="1dp"
-                android:layout_width="match_parent"/>
-
-        <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="_status_2"
-                android:gravity="center"
-                android:id="@+id/mainTextViewStatusB"/>
-    </LinearLayout>
-
-    <LinearLayout
-            android:id="@+id/mainLinearLayout2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="!!! 本模块没有激活 !!!"
+            android:padding="5dp"
             android:gravity="center"
-            android:orientation="vertical">
+            android:id="@+id/mainTextViewStatusA"/>
 
-        <TextView
-                android:layout_width="wrap_content"
+    <View
+            android:background="?android:attr/dividerVertical"
+            android:layout_height="1dp"
+            android:layout_width="match_parent"/>
+
+    <ScrollView
+            android:layout_height="match_parent"
+            android:layout_width="match_parent">
+
+        <LinearLayout
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="QNotified - QQ辅助型功能增强"/>
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:gravity="center">
 
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="无效版本"
-                android:id="@+id/mainTextViewVersion"/>
+            <LinearLayout
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:orientation="vertical">
 
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="请在QQ/TIM内进行操作"/>
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="_status_2"
+                        android:gravity="center"
+                        android:id="@+id/mainTextViewStatusB"/>
+            </LinearLayout>
 
-        <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:text="暂不支持轻聊版/国际版"/>
+            <LinearLayout
+                    android:id="@+id/mainLinearLayout2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="QQ侧滑-&gt;设置-&gt;QNotified 即可进入功能列表"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="QNotified - QQ辅助型功能增强"/>
 
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="本模块无毒无害且开源免费可放心食用"/>
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="如模块无法使用,EdXp可尝试取消优化+开启兼容模式, ROOT用户可尝试 用幸运破解器-工具箱-移除odex更改 移除QQ与本模块的优化, 太极尝试取消优化"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="无效版本"
+                        android:id="@+id/mainTextViewVersion"/>
 
-        <TextView
-                android:id="@+id/mainTextView"
-                android:text="ERROR!"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="请在QQ/TIM内进行操作"/>
 
-        <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:text="Source code/源代码(有问题+Issue):"/>
+                <RelativeLayout android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:padding="10dp">
 
-        <TextView
-                android:autoLink="web"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:text="https://github.com/cinit/QNotified"/>
+                    <TextView android:layout_width="wrap_content"
+                              android:id="@+id/mainRelativeLayoutLabelTextView"
+                              android:layout_height="wrap_content"
+                              android:layout_centerHorizontal="true"
+                              android:layout_marginLeft="10dp"
+                              android:layout_marginRight="10dp"
+                              android:layout_centerVertical="true"
+                              android:textAppearance="?android:attr/textAppearanceMedium"
+                              android:text="模块设置"/>
 
-        <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
-                android:text="uint32_t Author_QQ = 0x3E172320;"/>
+                    <Button android:id="@+id/mainRelativeLayoutButtonOpenQQ"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toLeftOf="@id/mainRelativeLayoutLabelTextView"
+                            android:onClick="openModuleSettingForHost"
+                            android:text="QQ"/>
 
-        <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
-                android:text="皮一下很开心 :("/>
+                    <Button android:id="@+id/mainRelativeLayoutButtonOpenTIM"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@id/mainRelativeLayoutLabelTextView"
+                            android:onClick="openModuleSettingForHost"
+                            android:text="TIM"/>
 
-        <TextView
-                android:autoLink="all"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:text="Mail: xenonhydride@gmail.com"/>
+                </RelativeLayout>
 
-        <TextView
-                android:autoLink="web"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:text="Telegram: https://t.me/Auride"/>
+                <TextView
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:text="暂不支持轻聊版/国际版"/>
 
-    </LinearLayout>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="QQ侧滑-&gt;设置-&gt;QNotified 即可进入功能列表"/>
 
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="本模块无毒无害且开源免费可放心食用"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="如模块无法使用,EdXp可尝试取消优化+开启兼容模式, ROOT用户可尝试 用幸运破解器-工具箱-移除odex更改 移除QQ与本模块的优化, 太极尝试取消优化"/>
+
+                <TextView
+                        android:id="@+id/mainTextView"
+                        android:text="ERROR!"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"/>
+
+                <TextView
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:text="Source code/源代码(有问题+Issue):"/>
+
+                <TextView
+                        android:autoLink="web"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:text="https://github.com/cinit/QNotified"/>
+
+                <TextView
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:text="uint32_t Author_QQ = 0x3E172320;"/>
+
+                <TextView
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:text="皮一下很开心 :("/>
+
+                <TextView
+                        android:autoLink="all"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:text="Mail: xenonhydride@gmail.com"/>
+
+                <TextView
+                        android:autoLink="web"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:text="Telegram: https://t.me/Auride"/>
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
 

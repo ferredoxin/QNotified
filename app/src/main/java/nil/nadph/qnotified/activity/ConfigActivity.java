@@ -19,6 +19,7 @@
 package nil.nadph.qnotified.activity;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -26,6 +27,8 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.view.View;
 import android.widget.TextView;
+import nil.nadph.qnotified.HookEntry;
+import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.util.Utils;
 
@@ -185,6 +188,7 @@ public class ConfigActivity extends Activity implements Runnable {
 //        ll.addView(moleculeView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
+
     public void onAddQqClick(View v) {
         Uri uri = Uri.parse("http://wpa.qq.com/msgrd?v=3&uin=1041703712&site=qq&menu=yes");
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
@@ -215,4 +219,22 @@ public class ConfigActivity extends Activity implements Runnable {
     public void onPointerCaptureChanged(boolean hasCapture) {
     }
 
+    public void openModuleSettingForHost(View view) {
+        String pkg = null;
+        switch (view.getId()) {
+            case R.id.mainRelativeLayoutButtonOpenQQ:
+                pkg = HookEntry.PACKAGE_NAME_QQ;
+                break;
+            case R.id.mainRelativeLayoutButtonOpenTIM:
+                pkg = HookEntry.PACKAGE_NAME_TIM;
+                break;
+        }
+        if (pkg != null) {
+            Intent intent = new Intent();
+            intent.setComponent(new ComponentName(pkg, "com.tencent.mobileqq.activity.JumpActivity"));
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.putExtra(MainHook.JUMP_ACTION_CMD, MainHook.JUMP_ACTION_SETTING_ACTIVITY);
+            startActivity(intent);
+        }
+    }
 }
