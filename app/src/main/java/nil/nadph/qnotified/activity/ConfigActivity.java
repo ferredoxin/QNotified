@@ -19,6 +19,8 @@
 package nil.nadph.qnotified.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Color;
@@ -234,7 +236,13 @@ public class ConfigActivity extends Activity implements Runnable {
             intent.setComponent(new ComponentName(pkg, "com.tencent.mobileqq.activity.JumpActivity"));
             intent.setAction(Intent.ACTION_VIEW);
             intent.putExtra(MainHook.JUMP_ACTION_CMD, MainHook.JUMP_ACTION_SETTING_ACTIVITY);
-            startActivity(intent);
+            try {
+                startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                new AlertDialog.Builder(this).setTitle("出错啦")
+                        .setMessage("拉起模块设置失败, 请确认 " + pkg + " 已安装并启用(没有被关冰箱或被冻结停用)\n" + e.toString())
+                        .setCancelable(true).setPositiveButton(android.R.string.ok, null).show();
+            }
         }
     }
 }
