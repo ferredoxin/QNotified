@@ -132,6 +132,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(newListItemHookSwitchInit(this, "转发消息点击头像查看资料卡", "长按头像可查看详细信息", MultiForwardAvatarHook.get()));
         if (!Utils.isTim(this)) {
             ll.addView(newListItemHookSwitchInit(this, "以图片方式打开表情", null, EmoPicHook.get()));
+            ll.addView(newListItemHookSwitchInit(this, "禁用夜间模式遮罩", "移除夜间模式下聊天界面的深色遮罩", DarkOverlayHook.get()));
         }
         ll.addView(newListItemHookSwitchInit(this, "防撤回", "自带撤回灰字提示", RevokeMsgHook.get()));
         //ll.addView(newListItemSwitchConfigInit(this, "聊天图片背景透明", null, qn_gallery_bg, false, GalleryBgHook.get()));
@@ -201,8 +202,6 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(subtitle(this, "参数设定"));
         ll.addView(newListItemButton(this, "小尾巴", "请勿在多个模块同时开启小尾巴", "[无]", clickTheComing()));
         ll.addView(newListItemSwitchStub(this, "禁用特别关心长震动", "等我找到女朋友就开发这个功能", false));
-        ll.addView(newListItemButton(this, "AddFriendReq.sourceID", "自定义加好友来源", "[不改动]", clickTheComing()));
-        ll.addView(newListItemButton(this, "DelFriendReq.delType", "只能为1或2", "[不改动]", clickTheComing()));
         ll.addView(_t = newListItemButton(this, "管理脚本(.java)", "请注意安全, 合理使用", "N/A", clickToProxyActAction(ManageScriptsActivity.class)));
         __js_status = (TextView) _t.findViewById(R_ID_VALUE);
         ll.addView(subtitle(this, "关于"));
@@ -213,12 +212,8 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(_t = newListItemButton(this, "检查更新", null, "点击检查", uc));
         uc.setVersionTip(_t);
         ll.addView(newListItemButton(this, "关于模块", null, null, clickToProxyActAction(ACTION_ABOUT)));
-        ll.addView(newListItemButton(this, "高级验证", "手性碳验证码", null, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MainHook.startProxyActivity(v.getContext(), Auth2Activity.class);
-            }
-        }));
+        ll.addView(newListItemButton(this, "高级验证", "手性碳验证码", null, clickToProxyActAction(Auth2Activity.class)));
+        ll.addView(newListItemButton(this, "冷门功能", "其实都还没写", null, clickToProxyActAction(PendingFuncActivity.class)));
         ll.addView(subtitle(this, "调试"));
         ll.addView(newListItemButton(this, "故障排查", null, null, clickToProxyActAction(ACTION_TROUBLESHOOT_ACTIVITY)));
         ll.addView(newListItemButton(this, "Shell.exec", "正常情况下无需使用此功能", null, clickTheComing()));

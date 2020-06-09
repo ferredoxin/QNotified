@@ -19,8 +19,6 @@
 package nil.nadph.qnotified.activity;
 
 import android.annotation.SuppressLint;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -30,11 +28,11 @@ import nil.nadph.qnotified.ui.ResUtils;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
+import static nil.nadph.qnotified.ui.ViewBuilder.*;
 import static nil.nadph.qnotified.util.Utils.dip2px;
 
 @SuppressLint("Registered")
-public class AboutActivity extends IphoneTitleBarActivityCompat {
+public class PendingFuncActivity extends IphoneTitleBarActivityCompat {
 
     @Override
     public boolean doOnCreate(Bundle bundle) {
@@ -44,12 +42,9 @@ public class AboutActivity extends IphoneTitleBarActivityCompat {
         ViewGroup.LayoutParams mmlp = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
         LinearLayout __ll = new LinearLayout(this);
         __ll.setOrientation(LinearLayout.VERTICAL);
-        ViewGroup bounceScrollView = null;
-        bounceScrollView = new BounceScrollView(this, null);
-        //invoke_virtual(bounceScrollView,"a",true,500,500,boolean.class,int.class,int.class);
+        ViewGroup bounceScrollView = new BounceScrollView(this, null);
         bounceScrollView.setLayoutParams(mmlp);
         bounceScrollView.addView(ll, new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-        //invoke_virtual(bounceScrollView,"setNeedHorizontalGesture",true,boolean.class);
         LinearLayout.LayoutParams fixlp = new LinearLayout.LayoutParams(MATCH_PARENT, dip2px(this, 48));
         RelativeLayout.LayoutParams __lp_l = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
         int mar = (int) (dip2px(this, 12) + 0.5f);
@@ -60,43 +55,35 @@ public class AboutActivity extends IphoneTitleBarActivityCompat {
         __lp_r.setMargins(mar, 0, mar, 0);
         __lp_r.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         __lp_r.addRule(RelativeLayout.CENTER_VERTICAL);
-        ColorStateList hiColor = ColorStateList.valueOf(Color.argb(255, 242, 140, 72));
-        RelativeLayout _t;
 
-        ll.addView(subtitle(this, "QNotified"));
-        ll.addView(subtitle(this, "本模块无毒无害, 免费开源, 旨在\n 1.接手部分停更模块的部分功能\n 2.提供被删好友通知\n 3.移除部分臃肿功能, 增加部分实用功能"));
+        ll.addView(subtitle(this, "以下功能还没写 (像极了PPT厂, 别打我)"));
 
-        ll.addView(subtitle(this, "注意: 6.5.5以下版本的QQ已不再受支持"));
+        ll.addView(newListItemSwitchStub(this, "强制使用默认字体", null, false));
+        ll.addView(newListItemSwitchStub(this, "点一下赞20次", "抄的花Q", false));
+        ll.addView(newListItemSwitchStub(this, "无视QQ电话与语音冲突", "允许在QQ电话时播放语音和短视频", false));
+        ll.addView(newListItemSwitchStub(this, "QQ电话关麦时释解除占用", "再开麦时如麦被其他程序占用可能崩溃", false));
+        ll.addView(newListItemSwitchStub(this, "点一下赞20次", "抄的花Q", false));
+        ll.addView(newListItemButton(this, "聊天图片自动接收原图", null, "禁用", clickTheComing()));
+        ll.addView(newListItemButton(this, "强制原图发送聊天图片", null, "禁用", clickTheComing()));
+        ll.addView(newListItemButton(this, "隐藏联系人", "和自带的\"隐藏会话\"有所不同", "0人", clickTheComing()));
+        ll.addView(newListItemButton(this, "自定义本地头像", "仅本机生效", "禁用", clickTheComing()));
+        ll.addView(newListItemButton(this, "高级通知设置", "通知展开, channel等", null, clickTheComing()));
+        ll.addView(newListItemButton(this, "QQ电话睡眠模式", "仅保持连麦, 暂停消息接收, 减少电量消耗", null, clickTheComing()));
+        ll.addView(newListItemSwitchStub(this, "禁用QQ公交卡", "如果QQ在后台会干扰NFC的话", false));
+        ll.addView(newListItemButton(this, "AddFriendReq.sourceID", "自定义加好友来源", "[不改动]", clickTheComing()));
+        ll.addView(newListItemButton(this, "DelFriendReq.delType", "只能为1或2", "[不改动]", clickTheComing()));
+        ll.addView(newListItemSwitchStub(this, "隐藏聊天界面右侧滑条", "强迫症专用", false));
 
-        ll.addView(subtitle(this, "此模块目前承认的APP发布渠道为 Github 上本项目的 Releases 和 Xposed Installer 里的模块下载 ,也可从https://github.com/cinit/QNotified 获取源码自行编译, 如果您是在其他渠道下载的话请自己注意安全.\n Copyright (C) 2019-2020 cinit@github"));
-
-        ll.addView(subtitle(this, "支持的(类)Xposed内核:"));
-        ll.addView(subtitle(this, "原生Xposed, Epic(太极), SandHook, YAHFA ,BugHook(应用转生), etc"));
-
-        ll.addView(subtitle(this, "声明:"));
-        ll.addView(subtitle(this, "此软件是捐赠软件 个人可以免费使用 请勿以任何方式商用本软件 如果喜欢我的作品请打赏支持我维护和开发! 任何形式或渠道包括预装手机售卖此软件​都是非法贩卖, 别上当受骗！欢迎举报贩卖者! ", Color.RED));
-
-        ll.addView(subtitle(this, "特别声明:"));
-        ll.addView(subtitle(this, "QNotified模块属于个人作品! 没有售后! 没有客服! 您可以与我反馈和讨论问题, 但请文明交流尊重彼此!"));
-
-        ll.addView(subtitle(this, "免责声明: 一切后果自负(包括但不限于群发导致的冻结封号)", Color.RED));
-        ll.addView(subtitle(this, "用户协议: The GNU General Public License v3.0"));
-        ll.addView(subtitle(this, "This program is distributed in the hope that it will be useful, " +
-                "but WITHOUT ANY WARRANTY; without even the implied warranty of " +
-                "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."));
-
-        ll.addView(subtitle(this, "请尊重我的的劳动成果 请勿用于商业用途 严禁盗版贩卖", Color.RED));
-        ll.addView(subtitle(this, "遇到 免费软件(包括但不限于本软件) 倒卖者请直接举报, 谢谢您的配合!"));
-        //bounceScrollView.setFocusable(true);
-        //bounceScrollView.setFocusableInTouchMode(true);
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         this.setContentView(bounceScrollView);
         LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);
         _lp_fat.weight = 1;
         //__ll.addView(bounceScrollView,_lp_fat);
+        //sdlv.setBackgroundColor(0xFFAA0000)
+        setTitle("咕咕咕");
         setContentBackgroundDrawable(ResUtils.skin_background);
-        setTitle("关于");
         return true;
     }
+
 
 }
