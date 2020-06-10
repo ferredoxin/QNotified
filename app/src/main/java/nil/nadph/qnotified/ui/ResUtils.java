@@ -176,7 +176,7 @@ public class ResUtils {
                 }
             }
             if (!success) {
-                if (DEBUG) log("Missing res: " + name);
+                logd("Missing res: " + name);
             }
         }
     }

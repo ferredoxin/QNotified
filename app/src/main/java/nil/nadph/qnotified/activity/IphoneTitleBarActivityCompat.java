@@ -50,6 +50,7 @@ public class IphoneTitleBarActivityCompat extends IphoneTitleBarActivity {
         return ret;
     }
 
+    //@Override actually
     public boolean isWrapContent() {
         return true;
     }
@@ -69,7 +70,7 @@ public class IphoneTitleBarActivityCompat extends IphoneTitleBarActivity {
             return super.getRightTextView();
         } catch (NoSuchMethodError e) {
             Class<IphoneTitleBarActivity> cl = IphoneTitleBarActivity.class;
-            Field f = null;
+            Field f;
             try {
                 f = cl.getDeclaredField("rightViewText");
             } catch (NoSuchFieldException ex) {
@@ -102,7 +103,7 @@ public class IphoneTitleBarActivityCompat extends IphoneTitleBarActivity {
 
     public View getLeftTextView() {
         Class<IphoneTitleBarActivity> cl = IphoneTitleBarActivity.class;
-        Field f = null;
+        Field f;
         try {
             f = cl.getDeclaredField("leftViewText");
         } catch (NoSuchFieldException ex) {

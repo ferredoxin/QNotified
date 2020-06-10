@@ -186,6 +186,107 @@ public class DexFlow {
         }
         return null;
     }
+
+    @NonUiThread
+    @Deprecated
+    public static DexFieldDescriptor guessFieldByNewInstance(byte[] buf, DexMethodDescriptor method, Class<?> instanceClass) throws NoSuchMethodException {
+        if (instanceClass == null) throw new NullPointerException("instanceClass == null");
+        return guessFieldByNewInstance(buf, method, "L" + instanceClass.getName().replace('.', '/') + ";");
+    }
+
+    @NonUiThread
+    @Deprecated
+    public static DexFieldDescriptor guessFieldByNewInstance(byte[] buf, DexMethodDescriptor method, String instanceClass) throws NoSuchMethodException {
+        if (buf == null) throw new NullPointerException("dex == null");
+        if (method == null) throw new NullPointerException("method == null");
+        if (instanceClass == null) throw new NullPointerException("instanceClass == null");
+        int methodIdsSize = readLe32(buf, 0x58);
+        int methodIdsOff = readLe32(buf, 0x5c);
+        int classDefsSize = readLe32(buf, 0x60);
+        int classDefsOff = readLe32(buf, 0x64);
+        int dexCodeOffset = -1;
+        int[] p = new int[1];
+        int[] ret = new int[1];
+        int[] co = new int[1];
+        main_loop:
+        for (int cn = 0; cn < classDefsSize; cn++) {
+            int classIdx = readLe32(buf, classDefsOff + cn * 32);
+            int classDataOff = readLe32(buf, classDefsOff + cn * 32 + 24);
+            if (!method.declaringClass.equals(readType(buf, classIdx))) continue;
+            p[0] = classDataOff;
+            if (classDataOff == 0) continue;
+            int fieldIdx = 0;
+            int staticFieldsSize = readUleb128(buf, p),
+                    instanceFieldsSize = readUleb128(buf, p),
+                    directMethodsSize = readUleb128(buf, p),
+                    virtualMethodsSize = readUleb128(buf, p);
+            for (int fn = 0; fn < staticFieldsSize + instanceFieldsSize; fn++) {
+                fieldIdx += readUleb128(buf, p);
+                int accessFlags = readUleb128(buf, p);
+            }
+            int methodIdx = 0;
+            for (int mn = 0; mn < directMethodsSize; mn++) {
+                methodIdx += readUleb128(buf, p);
+                int accessFlags = readUleb128(buf, p);
+                int codeOff = co[0] = readUleb128(buf, p);
+                if (codeOff == 0) continue;
+                int pMethodId = methodIdsOff + 8 * methodIdx;
+                String name = readString(buf, readLe32(buf, pMethodId + 4));
+                String sig = readProto(buf, readLe16(buf, pMethodId + 2));
+                if (method.name.equals(name) && method.signature.equals(sig)) {
+                    dexCodeOffset = codeOff;
+                    break main_loop;
+                }
+            }
+            methodIdx = 0;
+            for (int mn = 0; mn < virtualMethodsSize; mn++) {
+                methodIdx += readUleb128(buf, p);
+                int accessFlags = readUleb128(buf, p);
+                int codeOff = co[0] = readUleb128(buf, p);
+                if (codeOff == 0) continue;
+                int pMethodId = methodIdsOff + 8 * methodIdx;
+                String name = readString(buf, readLe32(buf, pMethodId + 4));
+                String sig = readProto(buf, readLe16(buf, pMethodId + 2));
+                if (method.name.equals(name) && method.signature.equals(sig)) {
+                    dexCodeOffset = codeOff;
+                    break main_loop;
+                }
+            }
+        }
+        if (dexCodeOffset == -1) throw new NoSuchMethodException(method.toString());
+        int registersSize = readLe16(buf, dexCodeOffset);
+        int insSize = readLe16(buf, dexCodeOffset + 2);
+        int outsSize = readLe16(buf, dexCodeOffset + 4);
+        int triesSize = readLe16(buf, dexCodeOffset + 6);
+        int insnsSize = readLe16(buf, dexCodeOffset + 12);
+        int insnsOff = dexCodeOffset + 16;
+        //we only handle new-instance and iput-object
+        String[] regObjType = new String[insSize + outsSize];
+        for (int i = 0; i < insnsSize; ) {
+            int opv = buf[insnsOff + 2 * i] & 0xff;
+            int len = OPCODE_LENGTH_TABLE[opv];
+            if (len == 0) {
+                throw new RuntimeException(String.format("Unrecognized opcode = 0x%02x", opv));
+            }
+            if (opv == 0x22) {
+                //new-instance
+                int reg = buf[insnsOff + 2 * i + 1] & 0xff;
+                int typeId = readLe16(buf, insnsOff + 2 * i + 2);
+                regObjType[reg] = readType(buf, typeId);
+            } else if (opv == 0x5b) {
+                //iput-object
+                int regs = buf[insnsOff + 2 * i + 1] & 0xff;
+                int val = regs & 0x0F;
+                //int obj = regs & 0xF0;//who cares?
+                int fieldId = readLe16(buf, insnsOff + 2 * i + 2);
+                if (instanceClass.equals(regObjType[val])) {
+                    return readField(buf, fieldId);
+                }
+            }
+            i += len;
+        }
+        return null;
+    }
     //struct DexCode {
     //0   u2  registersSize;
     //2   u2  insSize;

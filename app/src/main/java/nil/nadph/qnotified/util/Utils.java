@@ -1225,9 +1225,67 @@ public class Utils {
         return str == null || str.length() == 0;
     }
 
+    @Deprecated
     public static void log(String str) {
         Log.i("QNdump", str);
         if (DEBUG) try {
+            XposedBridge.log(str);
+        } catch (NoClassDefFoundError e) {
+            Log.i("Xposed", str);
+            Log.i("EdXposed-Bridge", str);
+        }
+        if (ENABLE_DUMP_LOG) {
+            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/qn_log.txt";
+            File f = new File(path);
+            try {
+                if (!f.exists()) f.createNewFile();
+                appendToFile(path, "[" + System.currentTimeMillis() + "-" + android.os.Process.myPid() + "] " + str + "\n");
+            } catch (IOException e) {
+            }
+        }
+    }
+
+    public static void loge(String str) {
+        Log.e("QNdump", str);
+        try {
+            XposedBridge.log(str);
+        } catch (NoClassDefFoundError e) {
+            Log.e("Xposed", str);
+            Log.e("EdXposed-Bridge", str);
+        }
+        if (ENABLE_DUMP_LOG) {
+            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/qn_log.txt";
+            File f = new File(path);
+            try {
+                if (!f.exists()) f.createNewFile();
+                appendToFile(path, "[" + System.currentTimeMillis() + "-" + android.os.Process.myPid() + "] " + str + "\n");
+            } catch (IOException e) {
+            }
+        }
+    }
+
+    public static void logd(String str) {
+        Log.e("QNdump", str);
+        if (DEBUG) try {
+            XposedBridge.log(str);
+        } catch (NoClassDefFoundError e) {
+            Log.d("Xposed", str);
+            Log.d("EdXposed-Bridge", str);
+        }
+        if (ENABLE_DUMP_LOG) {
+            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/qn_log.txt";
+            File f = new File(path);
+            try {
+                if (!f.exists()) f.createNewFile();
+                appendToFile(path, "[" + System.currentTimeMillis() + "-" + android.os.Process.myPid() + "] " + str + "\n");
+            } catch (IOException e) {
+            }
+        }
+    }
+
+    public static void logi(String str) {
+        Log.e("QNdump", str);
+        try {
             XposedBridge.log(str);
         } catch (NoClassDefFoundError e) {
             Log.i("Xposed", str);
