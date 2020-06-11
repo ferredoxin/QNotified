@@ -111,6 +111,7 @@ public class FlashPicHook extends BaseDelayableHook {
             final Class<?> __tmp_mBaseBubbleBuilder$ViewHolder = mBaseBubbleBuilder$ViewHolder;
             XposedBridge.hookMethod(m, new XC_MethodHook() {
                 private Field fBaseChatItemLayout = null;
+                private Method setTailMessage = null;
 
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -124,9 +125,14 @@ public class FlashPicHook extends BaseDelayableHook {
                         }
                         fBaseChatItemLayout.setAccessible(true);
                     }
-                    Object baseChatItemLayout = fBaseChatItemLayout.get(viewHolder);
-                    if (isFlashPic(param.args[0])) {
-                        XposedHelpers.callMethod(baseChatItemLayout, "setTailMessage", true, "闪照", null);
+                    if (setTailMessage == null) {
+                        setTailMessage = XposedHelpers.findMethodExact(load("com.tencent.mobileqq.activity.aio.BaseChatItemLayout"),
+                                "setTailMessage", boolean.class, CharSequence.class, View.OnClickListener.class);
+                        setTailMessage.setAccessible(true);
+                    }
+                    if (setTailMessage != null) {
+                        Object baseChatItemLayout = fBaseChatItemLayout.get(viewHolder);
+                        setTailMessage.invoke(baseChatItemLayout, isFlashPic(param.args[0]), "闪照", null);
                     }
                 }
             });
