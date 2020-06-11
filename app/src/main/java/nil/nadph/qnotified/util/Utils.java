@@ -1265,7 +1265,7 @@ public class Utils {
     }
 
     public static void logd(String str) {
-        Log.e("QNdump", str);
+        Log.d("QNdump", str);
         if (DEBUG) try {
             XposedBridge.log(str);
         } catch (NoClassDefFoundError e) {
@@ -1284,7 +1284,7 @@ public class Utils {
     }
 
     public static void logi(String str) {
-        Log.e("QNdump", str);
+        Log.i("QNdump", str);
         try {
             XposedBridge.log(str);
         } catch (NoClassDefFoundError e) {
