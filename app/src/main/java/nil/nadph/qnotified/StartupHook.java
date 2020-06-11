@@ -19,11 +19,16 @@
 package nil.nadph.qnotified;
 
 import android.content.Context;
+import android.os.Build;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
+import nil.nadph.qnotified.config.ConfigItems;
+import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Utils;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
@@ -43,7 +48,7 @@ public class StartupHook {
     private StartupHook() {
     }
 
-    public void doInit(ClassLoader rtloader) throws Throwable {
+    public void doInit(ClassLoader rtLoader) throws Throwable {
         if (first_stage_inited) return;
         try {
             XC_MethodHook startup = new XC_MethodHook(51) {
@@ -60,7 +65,7 @@ public class StartupHook {
                         ClassLoader classLoader = ctx.getClassLoader();
                         if (classLoader == null) throw new AssertionError("ERROR: classLoader == null");
                         if ("true".equals(System.getProperty(QN_FULL_TAG))) {
-                            log("Err:QNotified reloaded??");
+                            logi("Err:QNotified reloaded??");
                             //I don't know... What happened?
                             return;
                             //System.exit(-1);
@@ -70,13 +75,14 @@ public class StartupHook {
                         Initiator.init(classLoader);
                         MainHook.getInstance().performHook(ctx, param.thisObject);
                         sec_stage_inited = true;
+                        deleteDirIfNecessary(ctx);
                     } catch (Throwable e) {
                         log(e);
                         throw e;
                     }
                 }
             };
-            Class<?> loadDex = rtloader.loadClass("com.tencent.mobileqq.startup.step.LoadDex");
+            Class<?> loadDex = rtLoader.loadClass("com.tencent.mobileqq.startup.step.LoadDex");
             Method[] ms = loadDex.getDeclaredMethods();
             Method m = null;
             for (Method method : ms) {
@@ -93,10 +99,47 @@ public class StartupHook {
             log(e);
             throw e;
         }
+        XposedHelpers.findAndHookMethod("com.tencent.mobileqq.qfix.QFixApplication", rtLoader, "attachBaseContext", Context.class, new XC_MethodHook() {
+            public void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                deleteDirIfNecessary((Context) param.args[0]);
+            }
+        });
+    }
+
+    private static void deleteDirIfNecessary(Context ctx) {
+        try {
+            if (ConfigManager.getDefaultConfig().getBooleanOrFalse(ConfigItems.qn_disable_hot_patch)) {
+                deleteFile(ctx.getFileStreamPath("hotpatch"));
+            }
+            if (Build.VERSION.SDK_INT >= 24) {
+                deleteFile(new File(ctx.getDataDir(), "app_qqprotect"));
+            }
+        } catch (Throwable e) {
+            log(e);
+        }
     }
 
     public static StartupHook getInstance() {
         if (SELF == null) SELF = new StartupHook();
         return SELF;
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private static boolean deleteFile(File file) {
+        if (!file.exists()) {
+            return false;
+        }
+        if (file.isFile()) {
+            file.delete();
+        } else if (file.isDirectory()) {
+            File[] listFiles = file.listFiles();
+            if (listFiles != null) {
+                for (File deleteFile : listFiles) {
+                    deleteFile(deleteFile);
+                }
+            }
+            file.delete();
+        }
+        return !file.exists();
     }
 }

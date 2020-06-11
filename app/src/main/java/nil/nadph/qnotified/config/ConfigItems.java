@@ -33,7 +33,7 @@ public class ConfigItems {
     public static final String qn_muted_at_all = "qn_muted_at_all";
     public static final String qn_muted_red_packet = "qn_muted_red_packet";
     public static final String qn_mute_talk_back = "qn_mute_talk_back";
-    public static final String qn_disable_qq_hot_patch = "qn_disable_qq_hot_patch";
+    public static final String qn_disable_hot_patch = "qn_disable_hot_patch";
     public static final String qn_file_recv_redirect_enable = "qn_file_recv_redirect_enable";
     public static final String qn_file_recv_redirect_path = "qn_file_recv_redirect_path";
     public static final String qn_fake_bat_expr = "qn_fake_bat_expr";

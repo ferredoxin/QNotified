@@ -196,9 +196,9 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         _t.setId(R_ID_BTN_FILE_RECV);
         __recv_desc = (TextView) _t.findViewById(R_ID_DESCRIPTION);
         __recv_status = (TextView) _t.findViewById(R_ID_VALUE);
+        ll.addView(newListItemSwitchConfigNext(this, "禁用QQ热补丁", "一般无需开启", ConfigItems.qn_disable_hot_patch, false));
         ll.addView(subtitle(this, "还没完成的功能(咕咕咕)"));
         ll.addView(newListItemSwitchConfigStub(this, "屏蔽回执消息的通知", null, ConfigItems.qn_mute_talk_back, false));
-        ll.addView(newListItemSwitchConfigStub(this, "禁用QQ热补丁", "一般无需开启", ConfigItems.qn_disable_qq_hot_patch, false));
         ll.addView(subtitle(this, "参数设定"));
         ll.addView(newListItemButton(this, "小尾巴", "请勿在多个模块同时开启小尾巴", "[无]", clickTheComing()));
         ll.addView(newListItemSwitchStub(this, "禁用特别关心长震动", "等我找到女朋友就开发这个功能", false));
