@@ -86,11 +86,6 @@ public class GalleryBgHook extends BaseDelayableHook {
     }
 
     @Override
-    public boolean checkPreconditions() {
-        return DexKit.loadClassFromCache(DexKit.C_ABS_GAL_SCENE) != null;
-    }
-
-    @Override
     public Step[] getPreconditions() {
         return new Step[]{new DexDeobfStep(DexKit.C_ABS_GAL_SCENE)};
     }

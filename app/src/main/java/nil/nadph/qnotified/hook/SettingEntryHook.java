@@ -134,11 +134,6 @@ public class SettingEntryHook extends BaseDelayableHook {
     }
 
     @Override
-    public boolean checkPreconditions() {
-        return true;
-    }
-
-    @Override
     public int getEffectiveProc() {
         return SyncUtils.PROC_MAIN;
     }

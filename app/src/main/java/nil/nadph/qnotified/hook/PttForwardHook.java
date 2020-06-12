@@ -314,11 +314,6 @@ public class PttForwardHook extends BaseDelayableHook {
     }
 
     @Override
-    public boolean checkPreconditions() {
-        return true;
-    }
-
-    @Override
     public Step[] getPreconditions() {
         return new Step[]{new DexDeobfStep(DexKit.C_FACADE)};
     }

@@ -82,11 +82,6 @@ public class EmoPicHook extends BaseDelayableHook {
     }
 
     @Override
-    public boolean checkPreconditions() {
-        return DexKit.loadClassFromCache(DexKit.C_AIO_UTILS) != null;
-    }
-
-    @Override
     public Step[] getPreconditions() {
         return new Step[]{new DexDeobfStep(DexKit.C_AIO_UTILS)};
     }
