@@ -21,6 +21,7 @@ package nil.nadph.qnotified.hook;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.SwitchConfigItem;
 import nil.nadph.qnotified.step.Step;
+import nil.nadph.qnotified.util.Utils;
 
 public abstract class BaseDelayableHook implements SwitchConfigItem {
 
@@ -66,7 +67,11 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
 
     public static void allowEarlyInit(BaseDelayableHook hook) {
         if (hook == null) return;
-        if (hook.isTargetProc() && hook.isEnabled() && hook.checkPreconditions() && !hook.isInited()) hook.init();
+        try {
+            if (hook.isTargetProc() && hook.isEnabled() && hook.checkPreconditions() && !hook.isInited()) hook.init();
+        } catch (Throwable e) {
+            Utils.log(e);
+        }
     }
 
     public boolean isTargetProc() {
