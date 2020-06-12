@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import com.tencent.mobileqq.widget.BounceScrollView;
+import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.ui.ResUtils;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -56,13 +57,15 @@ public class PendingFuncActivity extends IphoneTitleBarActivityCompat {
         __lp_r.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         __lp_r.addRule(RelativeLayout.CENTER_VERTICAL);
 
-        ll.addView(subtitle(this, "以下功能还没写, 单个功能预计自出现在commit之日起, 三年内开发完毕"));
+        ll.addView(subtitle(this, "牙膏要一点一点挤, 显卡要一刀一刀切, PPT要一张一张放, 代码要一行一行写, 单个功能预计自出现在commit之日起, 三年内开发完毕"));
 
         ll.addView(newListItemSwitchStub(this, "强制使用默认字体", null, false));
         ll.addView(newListItemSwitchStub(this, "点一下赞20次", "仅限回赞界面, 与花Q等效", false));
         ll.addView(newListItemSwitchStub(this, "无视QQ电话与语音冲突", "允许在QQ电话时播放语音和短视频", false));
-        ll.addView(newListItemSwitchStub(this, "QQ电话关麦时释解除占用", "再开麦时如麦被其他程序占用可能崩溃", false));
+        ll.addView(newListItemSwitchStub(this, "QQ电话关麦时解除占用", "再开麦时如麦被其他程序占用可能崩溃", false));
         ll.addView(newListItemSwitchStub(this, "屏蔽好友热播", "隐藏动态里的好友热播", false));
+        ll.addView(newListItemSwitchConfigStub(this, "屏蔽回执消息的通知", null, ConfigItems.qn_mute_talk_back, false));
+        ll.addView(newListItemButton(this, "小尾巴", "请勿在多个模块同时开启小尾巴", "[无]", clickTheComing()));
         ll.addView(newListItemButton(this, "聊天图片自动接收原图", null, "禁用", clickTheComing()));
         ll.addView(newListItemButton(this, "强制原图发送聊天图片", null, "禁用", clickTheComing()));
         ll.addView(newListItemButton(this, "隐藏联系人", "和自带的\"隐藏会话\"有所不同", "0人", clickTheComing()));

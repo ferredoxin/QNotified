@@ -13,7 +13,7 @@ import java.util.Random;
 public class PubChemStealer {
 
     private static final String PUB_CHEM_SITE = "https://pubchem.ncbi.nlm.nih.gov";
-    private static final String FAKE_PUB_CHEM_SITE = "http://ioctl.cc";//reserved proxy...
+    private static final String FAKE_PUB_CHEM_SITE = "https://ioctl.cc";//reserved proxy...
 
     @NonUiThread
     @Nullable

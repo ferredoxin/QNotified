@@ -197,10 +197,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         __recv_desc = (TextView) _t.findViewById(R_ID_DESCRIPTION);
         __recv_status = (TextView) _t.findViewById(R_ID_VALUE);
         ll.addView(newListItemSwitchConfigNext(this, "禁用QQ热补丁", "一般无需开启", ConfigItems.qn_disable_hot_patch, false));
-        ll.addView(subtitle(this, "还没完成的功能(咕咕咕)"));
-        ll.addView(newListItemSwitchConfigStub(this, "屏蔽回执消息的通知", null, ConfigItems.qn_mute_talk_back, false));
         ll.addView(subtitle(this, "参数设定"));
-        ll.addView(newListItemButton(this, "小尾巴", "请勿在多个模块同时开启小尾巴", "[无]", clickTheComing()));
         ll.addView(newListItemSwitchStub(this, "禁用特别关心长震动", "等我找到女朋友就开发这个功能", false));
         ll.addView(_t = newListItemButton(this, "管理脚本(.java)", "请注意安全, 合理使用", "N/A", clickToProxyActAction(ManageScriptsActivity.class)));
         __js_status = (TextView) _t.findViewById(R_ID_VALUE);
@@ -213,7 +210,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         uc.setVersionTip(_t);
         ll.addView(newListItemButton(this, "关于模块", null, null, clickToProxyActAction(ACTION_ABOUT)));
         ll.addView(newListItemButton(this, "高级验证", "手性碳验证码", null, clickToProxyActAction(Auth2Activity.class)));
-        ll.addView(newListItemButton(this, "冷门功能", "其实都还没写", null, clickToProxyActAction(PendingFuncActivity.class)));
+        ll.addView(newListItemButton(this, "展望未来", "其实都还没写", null, clickToProxyActAction(PendingFuncActivity.class)));
         ll.addView(subtitle(this, "调试"));
         ll.addView(newListItemButton(this, "故障排查", null, null, clickToProxyActAction(ACTION_TROUBLESHOOT_ACTIVITY)));
         ll.addView(newListItemButton(this, "Shell.exec", "正常情况下无需使用此功能", null, clickTheComing()));
