@@ -118,6 +118,26 @@ public class Initiator {
         return mPicItemBuilder;
     }
 
+    public static Class _TroopGagMgr() {
+        Class tmp;
+        Class ret = load("com.tencent.mobileqq.troop.utils.TroopGagMgr");
+        if (ret == null) {
+            try {
+                tmp = load("com.tencent.mobileqq.troop.utils.TroopGagMgr$1");
+                ret = tmp.getDeclaredField("this$0").getType();
+            } catch (Exception ignored) {
+            }
+        }
+        if (ret == null) {
+            try {
+                tmp = load("com.tencent.mobileqq.troop.utils.TroopGagMgr$2");
+                ret = tmp.getDeclaredField("this$0").getType();
+            } catch (Exception ignored) {
+            }
+        }
+        return ret;
+    }
+
     public static Class _TextItemBuilder() {
         Class tmp;
         Class mTextItemBuilder = load("com/tencent/mobileqq/activity/aio/item/TextItemBuilder");

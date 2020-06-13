@@ -43,10 +43,7 @@ import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.activity.SettingsActivity;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.hook.BaseDelayableHook;
-import nil.nadph.qnotified.hook.MuteAtAllAndRedPacket;
-import nil.nadph.qnotified.hook.MuteQZoneThumbsUp;
-import nil.nadph.qnotified.hook.RevokeMsgHook;
+import nil.nadph.qnotified.hook.*;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.*;
 
@@ -258,6 +255,7 @@ public class MainHook {
         BaseDelayableHook.allowEarlyInit(RevokeMsgHook.get());
         BaseDelayableHook.allowEarlyInit(MuteQZoneThumbsUp.get());
         BaseDelayableHook.allowEarlyInit(MuteAtAllAndRedPacket.get());
+        BaseDelayableHook.allowEarlyInit(GagInfoDisclosure.get());
         if (SyncUtils.isMainProcess()) {
             ConfigItems.removePreviousCacheIfNecessary();
             injectStartupHookForMain(ctx);

@@ -133,6 +133,11 @@ public class Utils {
         return mTroopManager;
     }
 
+    public static Object getQQMessageFacade() throws Exception {
+        QQAppInterface app = getQQAppInterface();
+        return invoke_virtual_any(app, Initiator._QQMessageFacade());
+    }
+
     public static Object getManager(int index) throws Exception {
         return invoke_virtual(getQQAppInterface(), "getManager", index, int.class);
     }
@@ -1771,6 +1776,36 @@ public class Utils {
     public static int sp2px(Context context, float spValue) {
         final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
         return (int) (spValue * fontScale + 0.5f);
+    }
+
+    public static Method findMethodByTypes_1(Class<?> clazz, Class returnType, Class... argt) throws NoSuchMethodException {
+        Method method = null;
+        Method[] m;
+        Class[] _argt;
+        loop_main:
+        do {
+            m = clazz.getDeclaredMethods();
+            loop:
+            for (Method value : m) {
+                _argt = value.getParameterTypes();
+                if (_argt.length == argt.length) {
+                    for (int ii = 0; ii < argt.length; ii++) {
+                        if (!argt[ii].equals(_argt[ii])) continue loop;
+                    }
+                    if (returnType != null && !returnType.equals(value.getReturnType())) continue;
+                    if (method == null) {
+                        method = value;
+                        //here we go through this class
+                    } else {
+                        throw new NoSuchMethodException("Multiple methods found for __attribute__((any))" + paramsTypesToString(argt) + " in " + clazz.getName());
+                    }
+                }
+            }
+        } while (method == null && !Object.class.equals(clazz = clazz.getSuperclass()));
+        if (method == null)
+            throw new NoSuchMethodException("__attribute__((a))" + paramsTypesToString(argt) + " in " + clazz.getName());
+        method.setAccessible(true);
+        return method;
     }
 
     public static class DummyCallback implements DialogInterface.OnClickListener {

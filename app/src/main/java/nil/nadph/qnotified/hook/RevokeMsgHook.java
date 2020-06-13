@@ -25,8 +25,8 @@ import android.text.TextUtils;
 import android.widget.Toast;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.bridge.ContactUtils;
 import nil.nadph.qnotified.bridge.RevokeMsgInfoImpl;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.step.DexDeobfStep;
@@ -42,7 +42,8 @@ import java.util.Random;
 
 import static de.robv.android.xposed.XposedHelpers.callMethod;
 import static de.robv.android.xposed.XposedHelpers.setObjectField;
-import static nil.nadph.qnotified.util.Initiator.*;
+import static nil.nadph.qnotified.util.Initiator._C2CMessageProcessor;
+import static nil.nadph.qnotified.util.Initiator._QQMessageFacade;
 import static nil.nadph.qnotified.util.Utils.*;
 
 /**
@@ -133,7 +134,7 @@ public class RevokeMsgHook extends BaseDelayableHook {
         if (isGroupChat) {
             if (authorUin == null || revokerUin.equals(authorUin)) {
                 //自己撤回
-                String revokerNick = getTroopMemberNick(entityUin, revokerUin);
+                String revokerNick = ContactUtils.getTroopMemberNick(entityUin, revokerUin);
                 String greyMsg = "\"" + revokerNick + "\u202d\"";
                 if (msgObject != null) {
                     greyMsg += "尝试撤回一条消息";
@@ -151,8 +152,8 @@ public class RevokeMsgHook extends BaseDelayableHook {
                 addHightlightItem(revokeGreyTip, 1, 1 + revokerNick.length(), createTroopMemberHighlightItem(revokerUin));
             } else {
                 //被权限狗撤回(含管理,群主)
-                String revokerNick = getTroopMemberNick(entityUin, revokerUin);
-                String authorNick = getTroopMemberNick(entityUin, authorUin);
+                String revokerNick = ContactUtils.getTroopMemberNick(entityUin, revokerUin);
+                String authorNick = ContactUtils.getTroopMemberNick(entityUin, authorUin);
                 if (msgObject == null) {
                     String greyMsg = "\"" + revokerNick + "\u202d\"撤回了\"" + authorNick + "\u202d\"的消息(没收到)";
                     revokeGreyTip = createBareHighlightGreyTip(entityUin, istroop, revokerUin, time + 1, greyMsg, newMsgUid, shmsgseq);
@@ -228,50 +229,6 @@ public class RevokeMsgHook extends BaseDelayableHook {
         } catch (Exception e) {
             log(e);
         }
-    }
-
-    public String getTroopMemberNick(String troopUin, String memberUin) {
-        if (troopUin != null && troopUin.length() > 0) {
-            try {
-                Object mTroopManager = getTroopManager();
-                Object troopMemberInfo = invoke_virtual_declared_ordinal(mTroopManager, 0, 3, false, troopUin, memberUin,
-                        String.class, String.class, load("com.tencent.mobileqq.data.TroopMemberInfo"));
-                if (troopMemberInfo != null) {
-                    String troopnick = (String) XposedHelpers.getObjectField(troopMemberInfo, "troopnick");
-                    if (troopnick != null) {
-                        String ret = troopnick.replaceAll("\\u202E", "");
-                        if (ret.trim().length() > 0) {
-                            return ret;
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                log(e);
-            }
-            try {
-                String ret;//getDiscussionMemberShowName
-                String nickname = (String) invoke_static_declared_ordinal_modifier(DexKit.doFindClass(DexKit.C_CONTACT_UTILS),
-                        2, 10, false, Modifier.PUBLIC, 0,
-                        getQQAppInterface(), troopUin, memberUin, _QQAppInterface(), String.class, String.class);
-                if (nickname != null && (ret = nickname.replaceAll("\\u202E", "")).trim().length() > 0) {
-                    return ret;
-                }
-            } catch (Throwable e) {
-                log(e);
-            }
-        }
-        try {
-            String ret;//getBuddyName
-            String nickname = (String) invoke_static_declared_ordinal_modifier(DexKit.doFindClass(DexKit.C_CONTACT_UTILS), 1, 3, true, Modifier.PUBLIC, 0,
-                    getQQAppInterface(), memberUin, true, _QQAppInterface(), String.class, boolean.class, String.class);
-            if (nickname != null && (ret = nickname.replaceAll("\\u202E", "")).trim().length() > 0) {
-                return ret;
-            }
-        } catch (Throwable e) {
-            log(e);
-        }
-        //**sigh**
-        return memberUin;
     }
 
     private Object getMessage(String uin, int istroop, long shmsgseq, long msgUid) {
