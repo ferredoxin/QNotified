@@ -117,7 +117,6 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             ll.addView(newListItemHookSwitchInit(this, "强制使用默认气泡", "无视个性聊天气泡", DefaultBubbleHook.get()));
         }
         ll.addView(newListItemHookSwitchInit(this, "签到文本化", null, SimpleCheckInHook.get()));
-        ll.addView(newListItemHookSwitchInit(this, "显示禁言操作管理", "即使你只是普通群成员", GagInfoDisclosure.get()));
         ll.addView(subtitle(this, "消息通知设置(不影响接收消息)屏蔽后可能仍有[橙字],但通知栏不会有通知,赞说说不提醒仅屏蔽通知栏的通知"));
         ll.addView(subtitle(this, "    注:屏蔽后可能仍有[橙字],但不会有通知"));
         ll.addView(_t = newListItemButton(this, "屏蔽指定群@全体成员通知", Html.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[@全体成员]</font>就这点破事"), "%d个群", clickToProxyActAction(ACTION_MUTE_AT_ALL)));
@@ -137,6 +136,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         }
         ll.addView(newListItemHookSwitchInit(this, "防撤回", "自带撤回灰字提示", RevokeMsgHook.get()));
         //ll.addView(newListItemSwitchConfigInit(this, "聊天图片背景透明", null, qn_gallery_bg, false, GalleryBgHook.get()));
+        ll.addView(newListItemHookSwitchInit(this, "显示禁言操作管理", "即使你只是普通群成员", GagInfoDisclosure.get()));
         ll.addView(subtitle(this, "实验性功能(未必有效)"));
         ll.addView(newListItemHookSwitchInit(this, "收藏更多表情", "[暂不支持>=8.2.0]保存在本地", FavMoreEmo.get()));
         ll.addView(newListItemHookSwitchInit(this, "屏蔽更新提醒", null, PreUpgradeHook.get()));

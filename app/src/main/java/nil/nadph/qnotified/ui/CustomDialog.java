@@ -107,6 +107,10 @@ public class CustomDialog {
         return ref;
     }
 
+    public static int themeIdForDialog() {
+        return ResUtils.isInNightMode() ? AlertDialog.THEME_DEVICE_DEFAULT_DARK : AlertDialog.THEME_DEVICE_DEFAULT_LIGHT;
+    }
+
     public static CustomDialog createFailsafe(Context ctx) {
         CustomDialog ref = new CustomDialog();
         ref.failsafe = true;

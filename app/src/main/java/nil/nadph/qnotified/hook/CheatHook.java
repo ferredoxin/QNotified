@@ -31,6 +31,7 @@ import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
+import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Utils;
 
@@ -72,27 +73,21 @@ public class CheatHook extends BaseDelayableHook {
                     }
                     int num = (int) param.args[0];
                     if (num == 6) {
-                        param.setResult(diceNum);
+                        if (diceNum == -1) {
+                            Utils.showErrorToastAnywhere("diceNum/E unexpected -1");
+                        } else {
+                            param.setResult(diceNum);
+                        }
                     } else if (num == 3) {
-                        param.setResult(morraNum);
+                        if (morraNum == -1) {
+                            Utils.showErrorToastAnywhere("morraNum/E unexpected -1");
+                        } else {
+                            param.setResult(morraNum);
+                        }
                     }
                 }
             });
 
-            /**XposedHelpers.findAndHookMethod(mEmoticonPanelLinearLayout, "a", View.class, new XC_MethodReplacement() {
-            @Override protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-            View view=(View)methodHookParam.args[0];
-            Toast.makeText(view.getContext(),view.getTag().toString(),Toast.LENGTH_LONG).show();
-            if (view.getTag()!=null && view.getTag().toString().contains("随机骰子")){
-            showDiceDialog(view.getContext(),methodHookParam);
-            return null;
-            }else if (view.getTag().toString().contains("猜拳")){
-            showMorraDialog(view.getContext(),methodHookParam);
-            return null;
-            }
-            return XposedBridge.invokeOriginalMethod(methodHookParam.method,methodHookParam.thisObject,methodHookParam.args);
-            }
-            });**/
             XposedHelpers.findAndHookMethod(DexKit.doFindClass(DexKit.C_PIC_EMOTICON_INFO), "a", load("com.tencent.mobileqq.app.QQAppInterface"),
                     Context.class, _SessionInfo(), load("com.tencent.mobileqq.data.Emoticon"),
                     load("com.tencent.mobileqq.emoticon.EmojiStickerManager$StickerInfo"), new XC_MethodHook(43) {
@@ -106,7 +101,7 @@ public class CheatHook extends BaseDelayableHook {
                             Context context = (Context) param.args[1];
                             Object emoticon = param.args[3];
                             String name = (String) XposedHelpers.getObjectField(emoticon, "name");
-                            if ("随机骰子".equals(name)) {
+                            if ("随机骰子".equals(name) || "骰子".equals(name)) {
                                 param.setResult(null);
                                 showDiceDialog(context, param);
                             } else if ("猜拳".equals(name)) {
@@ -124,9 +119,8 @@ public class CheatHook extends BaseDelayableHook {
 
     }
 
-
     private void showDiceDialog(Context context, final XC_MethodHook.MethodHookParam param) {
-        AlertDialog alertDialog = new AlertDialog.Builder(context, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT)
+        AlertDialog alertDialog = new AlertDialog.Builder(context, CustomDialog.themeIdForDialog())
                 .setTitle("自定义骰子")
                 .setSingleChoiceItems(diceItem, diceNum, new DialogInterface.OnClickListener() {
                     @Override
@@ -161,7 +155,7 @@ public class CheatHook extends BaseDelayableHook {
     }
 
     private void showMorraDialog(Context context, final XC_MethodHook.MethodHookParam param) {
-        AlertDialog alertDialog = new AlertDialog.Builder(context, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT)
+        AlertDialog alertDialog = new AlertDialog.Builder(context, CustomDialog.themeIdForDialog())
                 .setTitle("自定义猜拳")
                 .setSingleChoiceItems(morraItem, morraNum, new DialogInterface.OnClickListener() {
                     @Override
