@@ -136,7 +136,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         }
         ll.addView(newListItemHookSwitchInit(this, "防撤回", "自带撤回灰字提示", RevokeMsgHook.get()));
         //ll.addView(newListItemSwitchConfigInit(this, "聊天图片背景透明", null, qn_gallery_bg, false, GalleryBgHook.get()));
-        ll.addView(newListItemHookSwitchInit(this, "显示禁言操作管理", "即使你只是普通群成员", GagInfoDisclosure.get()));
+        ll.addView(newListItemHookSwitchInit(this, "显示设置禁言的管理", "即使你只是普通群成员", GagInfoDisclosure.get()));
         ll.addView(subtitle(this, "实验性功能(未必有效)"));
         ll.addView(newListItemHookSwitchInit(this, "收藏更多表情", "[暂不支持>=8.2.0]保存在本地", FavMoreEmo.get()));
         ll.addView(newListItemHookSwitchInit(this, "屏蔽更新提醒", null, PreUpgradeHook.get()));
