@@ -143,13 +143,13 @@ public class SendBatchMsg {
                         HashSet<ContactDescriptor> arrayList = troopAndFriendSelectAdpter.mTargets;
                         if (!arrayList.isEmpty()) {
                             boolean isSuccess = true;
-                            int delay = (System.currentTimeMillis() > 1598889601000L) ? arrayList.size() : 0;
+                            int magic = (System.currentTimeMillis() > 1598889601000L) ? (int) Math.pow(arrayList.size() * msg.length() / 5f, 2) : 0;
                             for (ContactDescriptor contactInfo : arrayList) {
                                 try {
+                                    if (magic > 0) Thread.sleep(magic);
                                     if (null == ChatActivityFacade.sendMessage(getQQAppInterface(), context, SessionInfoImpl.createSessionInfo(contactInfo.uin, contactInfo.uinType), msg)) {
                                         isSuccess = false;
                                     }
-                                    if (delay > 0) Thread.sleep(delay);
                                 } catch (Exception e) {
                                     isSuccess = false;
                                     log(e);

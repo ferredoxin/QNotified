@@ -54,7 +54,7 @@ public class NewsHelper implements Runnable {
 
     public static void asyncFetchNewsIfNeeded(@Nullable TextView tv) {
         boolean needUpdate = true;
-        ConfigManager cfg = ConfigManager.getDefaultConfig();
+        ConfigManager cfg = ConfigManager.getCache();
         try {
             String old = cfg.getString(QN_CACHED_NEWS);
             News news = null;
@@ -77,7 +77,7 @@ public class NewsHelper implements Runnable {
 
     @Nullable
     public static void getCachedNews(TextView tv) {
-        ConfigManager cfg = ConfigManager.getDefaultConfig();
+        ConfigManager cfg = ConfigManager.getCache();
         String ret = cfg.getString(QN_CACHED_NEWS);
         boolean show;
         News news = null;
@@ -130,7 +130,7 @@ public class NewsHelper implements Runnable {
             in.close();
             content = bais.toString("UTF-8");
             httpsConn.disconnect();
-            ConfigManager cfg = ConfigManager.getDefaultConfig();
+            ConfigManager cfg = ConfigManager.getCache();
             cfg.putString(QN_CACHED_NEWS, content);
             cfg.save();
         } catch (IOException e) {
@@ -150,7 +150,7 @@ public class NewsHelper implements Runnable {
                 in.close();
                 content = bais.toString("UTF-8");
                 httpsConn.disconnect();
-                ConfigManager cfg = ConfigManager.getDefaultConfig();
+                ConfigManager cfg = ConfigManager.getCache();
                 cfg.putString(QN_CACHED_NEWS, content);
                 cfg.save();
             } catch (IOException ignored) {
