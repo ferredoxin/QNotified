@@ -455,7 +455,9 @@ public class MainHook {
                         }
                     }
                 }
-                if (modulePath == null) throw new NullPointerException("get module path failed!");
+                if (modulePath == null) {
+                    throw new RuntimeException("get module path failed, loader=" + MainHook.class.getClassLoader());
+                }
                 sModulePath = modulePath;
             }
             AssetManager assets = res.getAssets();
@@ -464,10 +466,12 @@ public class MainHook {
             addAssetPath.setAccessible(true);
             int cookie = (int) addAssetPath.invoke(assets, sModulePath);
             try {
-                log("injectModuleResources: " + res.getString(R.string.res_inject_success));
+                logd("injectModuleResources: " + res.getString(R.string.res_inject_success));
             } catch (Resources.NotFoundException e) {
-                log("Fatal: injectModuleResources: test injection failure!");
-                log("injectModuleResources: loader=" + MainHook.class.getClassLoader() + ", path=" + sModulePath + ", cookie=" + cookie);
+                loge("Fatal: injectModuleResources: test injection failure!");
+                loge("injectModuleResources: loader=" + MainHook.class.getClassLoader() + ", path=" + sModulePath + ", cookie=" + cookie);
+                File f = new File(sModulePath);
+                loge("sModulePath: exists = " + f.exists() + ", isDirectory = " + f.isDirectory() + ", canRead = " + f.canRead());
             }
         } catch (Exception e) {
             log(e);

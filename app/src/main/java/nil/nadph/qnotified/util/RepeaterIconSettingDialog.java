@@ -16,10 +16,7 @@ import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.DebugDrawable;
 import nil.nadph.qnotified.ui.ResUtils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 
 public class RepeaterIconSettingDialog implements View.OnClickListener, DialogInterface.OnClickListener, RadioGroup.OnCheckedChangeListener, CompoundButton.OnCheckedChangeListener {
 
@@ -87,8 +84,17 @@ public class RepeaterIconSettingDialog implements View.OnClickListener, DialogIn
             }
         }
         if (sCachedRepeaterIcon == null) {
-            sCachedRepeaterIcon = BitmapFactory.decodeStream(ResUtils.openAsset("repeat.png"));
-            sCachedRepeaterIcon.setDensity(320);
+            InputStream in = ResUtils.openAsset("repeat.png");
+            if (in != null) {
+                sCachedRepeaterIcon = BitmapFactory.decodeStream(in);
+                try {
+                    in.close();
+                } catch (IOException ignored) {
+                }
+                sCachedRepeaterIcon.setDensity(320);
+            } else {
+                Utils.loge("getRepeaterIcon/E ResUtils.openAsset(\"repeat.png\") == null");
+            }
         }
         return sCachedRepeaterIcon;
     }
