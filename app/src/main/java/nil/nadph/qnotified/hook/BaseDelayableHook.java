@@ -61,7 +61,8 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 ShowPicGagHook.get(),
                 DefaultBubbleHook.get(),
                 DarkOverlayHook.get(),
-                GagInfoDisclosure.get()
+                GagInfoDisclosure.get(),
+                PicMd5Hook.get()
         };
         return sAllHooks;
     }
