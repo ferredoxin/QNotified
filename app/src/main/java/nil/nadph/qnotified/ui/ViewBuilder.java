@@ -593,7 +593,7 @@ public class ViewBuilder {
         v.setText(value);
         if (ll != null) {
             v.setOnLongClickListener(ll);
-            v.setBackground(ResUtils.getDialogClickableItemBackground());
+            v.setBackgroundDrawable(ResUtils.getDialogClickableItemBackground());
         }
         if (attach) {
             vg.addView(root);
