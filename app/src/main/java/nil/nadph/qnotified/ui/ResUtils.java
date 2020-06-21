@@ -181,6 +181,13 @@ public class ResUtils {
         }
     }
 
+    public static StateListDrawable getDialogClickableItemBackground() {
+        StateListDrawable sd = new StateListDrawable();
+        sd.addState(new int[]{android.R.attr.state_pressed}, new HcbBackgroundDrawable(0x40808080));
+        sd.addState(new int[]{}, new DummyDrawable());
+        return sd;
+    }
+
     public static StateListDrawable getCommonBtnBlueBackground() {
         StateListDrawable sd = new StateListDrawable();
         sd.addState(new int[]{android.R.attr.state_pressed}, skin_common_btn_blue_pressed);

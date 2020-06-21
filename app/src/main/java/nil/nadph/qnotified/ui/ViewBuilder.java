@@ -18,15 +18,18 @@
  */
 package nil.nadph.qnotified.ui;
 
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import nil.nadph.qnotified.MainHook;
+import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.config.SwitchConfigItem;
@@ -563,4 +566,39 @@ public class ViewBuilder {
         }
         return null;
     }
+
+    public static LinearLayout newDialogClickableItemClickToCopy(final Context ctx, String title, String value, ViewGroup vg, boolean attach) {
+        return newDialogClickableItem(ctx, title, value, new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Context c = v.getContext();
+                String msg = ((TextView) v).getText().toString();
+                if (msg.length() > 0) {
+                    ClipboardManager cm = (ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);
+                    if (cm != null) {
+                        cm.setText(msg);
+                        Utils.showToastShort(c, "已复制文本");
+                    }
+                }
+                return true;
+            }
+        }, vg, attach);
+    }
+
+    public static LinearLayout newDialogClickableItem(final Context ctx, String title, String value, View.OnLongClickListener ll, ViewGroup vg, boolean attach) {
+        LinearLayout root = (LinearLayout) LayoutInflater.from(ctx).inflate(R.layout.dialog_clickable_item, vg, false);
+        TextView t = root.findViewById(R.id.dialogClickableItemTitle);
+        TextView v = root.findViewById(R.id.dialogClickableItemValue);
+        t.setText(title);
+        v.setText(value);
+        if (ll != null) {
+            v.setOnLongClickListener(ll);
+            v.setBackground(ResUtils.getDialogClickableItemBackground());
+        }
+        if (attach) {
+            vg.addView(root);
+        }
+        return root;
+    }
+
 }

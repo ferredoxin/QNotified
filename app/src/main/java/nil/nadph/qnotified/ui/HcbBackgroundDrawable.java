@@ -24,11 +24,21 @@ import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 
-public class HighContrastBorder extends Drawable {
-    private Paint mPaint;
+public class HcbBackgroundDrawable extends Drawable {
+    private final Paint mPaint;
+    private int color;
 
-    public HighContrastBorder() {
+    public HcbBackgroundDrawable(int c) {
         mPaint = new Paint();
+        color = c;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
+
+    public int getColor() {
+        return color;
     }
 
     public Paint getPaint() {
@@ -39,6 +49,7 @@ public class HighContrastBorder extends Drawable {
     public void draw(Canvas canvas) {
         int w = getBounds().width();
         int h = getBounds().height();
+        canvas.drawColor(color);
         mPaint.setStrokeWidth(0);
         mPaint.setAntiAlias(false);
         mPaint.setColor(Color.WHITE);
