@@ -71,7 +71,7 @@ echo -n "$XPOSED_INIT" >app/src/main/assets/xposed_init
 find app/src/main/java -name "*.java" > out/sources.txt
 find out/gen -name "*.java" >> out/sources.txt
 #-Xlint:deprecation -Xlint:unchecked
-javac -g -encoding UTF-8 -source 8 -target 8 -bootclasspath "$ANDROID_JAR" -cp app/lib/api-82.jar:app/lib/qqstub.jar -sourcepath app/src/main/java -d out @out/sources.txt
+javac -g -encoding UTF-8 -source 8 -target 8 -bootclasspath "$ANDROID_JAR" -cp app/lib/api-82.jar:app/lib/qqstub.jar:app/lib/jce.jar -sourcepath app/src/main/java -d out @out/sources.txt
 $DX --dex --output=out/classes.dex out/
 java -cp "$ANDROID_HOME"/tools/lib/sdklib-26.0.0-dev.jar com.android.sdklib.build.ApkBuilderMain out/outpu_.ap_ -v -u -z out/res.ap_ -f out/classes.dex
 $ZIPALIGN -v 4 out/outpu_.ap_ out/output.apk
