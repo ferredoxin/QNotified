@@ -92,7 +92,7 @@ public class ToServiceMsg extends JceStruct {
 
     @Override
     public void readFrom(JceInputStream is) throws IOException {
-        uniSeq = is.read(0,0, true);
+        uniSeq = is.read(0, 0, true);
         serviceName = is.readString(1, true);
         serviceCmd = is.readString(2, true);
         token = is.read(0L, 3, false);

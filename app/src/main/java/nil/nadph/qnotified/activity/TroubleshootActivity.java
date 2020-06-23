@@ -92,6 +92,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
         ll.addView(newListItemButton(this, "重置模块设置", "不影响历史好友信息", null, clickToReset()));
         ll.addView(newListItemButton(this, "清除[已恢复]的历史记录", "删除当前帐号下所有状态为[已恢复]的历史好友记录", null, clickToWipeDeletedFriends()));
         ll.addView(newListItemButton(this, "清除所有的历史记录", "删除当前帐号下所有的历史好友记录", null, clickToWipeAllFriends()));
+        ll.addView(newListItemButton(this, "刷新黑白名单状态", "这个按钮没啥用", null, clickToRefreshUserStatus()));
 
         ll.addView(subtitle(this, ""));
         ll.addView(subtitle(this, "以下内容基本上都没用，它们为了修复故障才留在这里。"));
@@ -168,6 +169,51 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
         return true;
     }
 
+    public View.OnClickListener clickToRefreshUserStatus() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                final long uin = Utils.getLongAccountUin();
+                if (uin < 10000) return;
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        StringBuilder sb;
+                        String msg;
+                        Throwable t = null;
+                        try {
+                            GetUserStatusResp resp = TransactionHelper.doQueryUserStatus(uin);
+                            sb = new StringBuilder();
+                            sb.append(resp.uin).append(": ");
+                            if (resp.whitelistFlags == 0 && resp.blacklistFlags == 0) {
+                                sb.append("Everything is ok");
+                            } else {
+                                if (resp.whitelistFlags != 0) {
+                                    sb.append("\nWhite: 0x").append(Integer.toHexString(resp.whitelistFlags));
+                                }
+                                if (resp.blacklistFlags != 0) {
+                                    sb.append("\nBlack: 0x").append(Integer.toHexString(resp.blacklistFlags));
+                                }
+                            }
+                            msg = sb.toString();
+                        } catch (Exception e) {
+                            msg = e.toString();
+                            t = e;
+                        }
+                        final Throwable finalT = t;
+                        final String finalMsg = msg;
+                        view.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                CustomDialog.createFailsafe(view.getContext()).setTitle(finalT == null ? "状态" : "失败")
+                                        .setCancelable(true).setMessage(finalMsg).setPositiveButton("确认", null).show();
+                            }
+                        });
+                    }
+                }).start();
+            }
+        };
+    }
 
     public View.OnClickListener clickToWipeDeletedFriends() {
         return new View.OnClickListener() {
