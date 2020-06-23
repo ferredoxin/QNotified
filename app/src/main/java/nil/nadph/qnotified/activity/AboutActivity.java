@@ -44,8 +44,7 @@ public class AboutActivity extends IphoneTitleBarActivityCompat {
         ViewGroup.LayoutParams mmlp = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
         LinearLayout __ll = new LinearLayout(this);
         __ll.setOrientation(LinearLayout.VERTICAL);
-        ViewGroup bounceScrollView = null;
-        bounceScrollView = new BounceScrollView(this, null);
+        ViewGroup bounceScrollView = new BounceScrollView(this, null);
         //invoke_virtual(bounceScrollView,"a",true,500,500,boolean.class,int.class,int.class);
         bounceScrollView.setLayoutParams(mmlp);
         bounceScrollView.addView(ll, new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));

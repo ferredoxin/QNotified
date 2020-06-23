@@ -38,6 +38,8 @@ import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.NonUiThread;
 import nil.nadph.qnotified.util.Utils;
 
+import java.util.Objects;
+
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.util.Initiator.load;
@@ -55,7 +57,8 @@ public class ViewBuilder {
     private static final int CONSTANT_LIST_ITEM_HEIGHT_DP = 48;
 
     public static RelativeLayout newListItemSwitch(Context ctx, CharSequence title, CharSequence desc, boolean on, CompoundButton.OnCheckedChangeListener listener) {
-        RelativeLayout root = new RelativeLayout(ctx);
+        RelativeLayout root = new IsolatedStateRelativeLayout(ctx);
+        root.setId(Objects.hash(title == null ? "" : title));
         root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx, CONSTANT_LIST_ITEM_HEIGHT_DP)));
         root.setBackgroundDrawable(ResUtils.getListItemBackground());
         TextView tv = new TextView(ctx);
@@ -121,6 +124,7 @@ public class ViewBuilder {
                 }
             }
         });
+        root.setId(Objects.hash(key));
         return root;
     }
 
@@ -141,6 +145,7 @@ public class ViewBuilder {
                 }
             }
         });
+        root.setId(Objects.hash(key));
         return root;
     }
 
@@ -162,6 +167,7 @@ public class ViewBuilder {
                 }
             }
         });
+        root.setId(Objects.hash(hook));
         return root;
     }
 
@@ -174,6 +180,7 @@ public class ViewBuilder {
             }
         });
         ((View) root.findViewById(R_ID_SWITCH)).setEnabled(item.isValid());
+        root.setId(Objects.hash(item));
         return root;
     }
 
@@ -303,7 +310,7 @@ public class ViewBuilder {
 
     public static RelativeLayout newListItemDummy(Context ctx, CharSequence title, CharSequence desc, CharSequence
             value) {
-        RelativeLayout root = new RelativeLayout(ctx);
+        RelativeLayout root = new IsolatedStateRelativeLayout(ctx);
         root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx, CONSTANT_LIST_ITEM_HEIGHT_DP)));
         root.setBackgroundDrawable(ResUtils.getListItemBackground());
         TextView tv = new TextView(ctx);
@@ -352,12 +359,13 @@ public class ViewBuilder {
             root.addView(tv, lp_t);
         }
         root.addView(st, lp_sw);
+        root.setId(Objects.hash(title));
         return root;
     }
 
     public static RelativeLayout newListItemButton(Context ctx, CharSequence title, CharSequence desc, CharSequence
             value, View.OnClickListener listener) {
-        RelativeLayout root = new RelativeLayout(ctx);
+        RelativeLayout root = new IsolatedStateRelativeLayout(ctx);
         root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx, CONSTANT_LIST_ITEM_HEIGHT_DP)));
         root.setBackgroundDrawable(ResUtils.getListItemBackground());
         TextView tv = new TextView(ctx);
@@ -417,6 +425,7 @@ public class ViewBuilder {
         root.addView(st, lp_st);
         root.setClickable(true);
         root.setOnClickListener(listener);
+        root.setId(Objects.hash(title));
         return root;
     }
 

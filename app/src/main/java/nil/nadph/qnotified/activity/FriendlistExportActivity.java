@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.widget.*;
 import com.tencent.mobileqq.widget.BounceScrollView;
 import nil.nadph.qnotified.ExfriendManager;
+import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.FriendRecord;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.ViewBuilder;
@@ -63,6 +64,8 @@ public class FriendlistExportActivity extends IphoneTitleBarActivityCompat {
         __ll.setOrientation(LinearLayout.VERTICAL);
         final ViewGroup bounceScrollView = new BounceScrollView(this, null);
         bounceScrollView.setLayoutParams(mmlp);
+        bounceScrollView.setId(R.id.rootBounceScrollView);
+        ll.setId(R.id.rootMainLayout);
         bounceScrollView.addView(ll, new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
         LinearLayout.LayoutParams fixlp = new LinearLayout.LayoutParams(MATCH_PARENT, dip2px(FriendlistExportActivity.this, 48));
         RelativeLayout.LayoutParams __lp_l = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);

@@ -39,6 +39,8 @@ import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.config.EventRecord;
 import nil.nadph.qnotified.config.FriendRecord;
+import nil.nadph.qnotified.remote.GetUserStatusResp;
+import nil.nadph.qnotified.remote.TransactionHelper;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.ActProxyMgr;

@@ -34,6 +34,7 @@ import android.widget.*;
 import com.tencent.mobileqq.widget.BounceScrollView;
 import nil.nadph.qnotified.InjectDelayableHooks;
 import nil.nadph.qnotified.MainHook;
+import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.hook.FakeBatteryHook;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.LicenseStatus;
@@ -58,6 +59,8 @@ public class EulaActivity extends IphoneTitleBarActivityCompat implements View.O
         ViewGroup.LayoutParams mmlp = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
         ViewGroup bounceScrollView = new BounceScrollView(this, null);
         bounceScrollView.setLayoutParams(mmlp);
+        bounceScrollView.setId(R.id.rootBounceScrollView);
+        ll.setId(R.id.rootMainLayout);
         bounceScrollView.addView(ll, new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
         this.setContentView(bounceScrollView);
         setContentBackgroundDrawable(ResUtils.skin_background);

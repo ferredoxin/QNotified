@@ -32,6 +32,7 @@ import android.widget.*;
 import com.tencent.widget.XListView;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.MainHook;
+import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.EventRecord;
 import nil.nadph.qnotified.config.FriendRecord;
 import nil.nadph.qnotified.ui.CustomDialog;
@@ -101,6 +102,8 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
         ViewGroup.LayoutParams mmlp = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
         RelativeLayout.LayoutParams mwllp = new RelativeLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
         RelativeLayout rl = new RelativeLayout(ExfriendListActivity.this);//)new_instance(load("com/tencent/mobileqq/activity/fling/TopGestureLayout"),ExfriendListActivity.this,Context.class);
+        rl.setId(R.id.rootMainLayout);
+        sdlv.setId(R.id.rootMainList);
         //invoke_virtual(rl,"setInterceptScrollLRFlag",true,boolean.class);
         //invoke_virtual(rl,"setInterceptTouchFlag",true,boolean.class);
         //iput_object(rl,"
