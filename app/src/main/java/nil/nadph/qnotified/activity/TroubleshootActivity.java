@@ -40,7 +40,6 @@ import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.config.EventRecord;
 import nil.nadph.qnotified.config.FriendRecord;
 import nil.nadph.qnotified.remote.GetUserStatusResp;
-import nil.nadph.qnotified.remote.TransactionHelper;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.ActProxyMgr;
@@ -182,7 +181,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                         String msg;
                         Throwable t = null;
                         try {
-                            GetUserStatusResp resp = TransactionHelper.doQueryUserStatus(uin);
+                            GetUserStatusResp resp = ExfriendManager.get(uin).doUpdateUserStatusFlags();
                             sb = new StringBuilder();
                             sb.append(resp.uin).append(": ");
                             if (resp.whitelistFlags == 0 && resp.blacklistFlags == 0) {

@@ -269,12 +269,12 @@ public class SendBatchMsg {
         public Button sendBtn = null;
         private ArrayList<ContactDescriptor> mFriends;
         private ArrayList<ContactDescriptor> mGroups;
-        private ArrayList<ContactDescriptor> mHits = new ArrayList<>();
-        private HashSet<ContactDescriptor> mTargets = new HashSet<>();
+        private final ArrayList<ContactDescriptor> mHits = new ArrayList<>();
+        private final HashSet<ContactDescriptor> mTargets = new HashSet<>();
         private boolean showFriends = true, showGtoups = false;
         private String searchMsg = "";
-        private Context context;
-        private FaceImpl face = FaceImpl.getInstance();
+        private final Context context;
+        private final FaceImpl face = FaceImpl.getInstance();
 
         public TroopAndFriendSelectAdpter(Context context) throws Throwable {
             this.context = context;

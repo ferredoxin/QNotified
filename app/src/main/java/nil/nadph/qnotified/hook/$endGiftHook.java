@@ -29,6 +29,7 @@ import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
 import java.lang.reflect.Method;
@@ -56,6 +57,7 @@ public class $endGiftHook extends BaseDelayableHook {
             XposedBridge.hookMethod(m, new XC_MethodHook(47) {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    if (LicenseStatus.sDisableCommonHooks) return;
                     try {
                         ConfigManager cfg = ConfigManager.getDefaultConfig();
                         if (!cfg.getBooleanOrFalse(qn_disable_$end_gift)) return;

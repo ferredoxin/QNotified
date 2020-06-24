@@ -24,10 +24,10 @@ import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 
 public class SimpleBgDrawable extends Drawable {
-    private int iColor;
-    private int iEdgeColor;
-    private int iEdgeWidth;
-    private Paint mPaint;
+    private final int iColor;
+    private final int iEdgeColor;
+    private final int iEdgeWidth;
+    private final Paint mPaint;
 
     public SimpleBgDrawable(int color, int edgeColor, int edgeWidth) {
         iColor = color;

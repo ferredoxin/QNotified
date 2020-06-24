@@ -32,6 +32,7 @@ import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
 import java.lang.reflect.Method;
@@ -84,6 +85,7 @@ public class RevokeMsgHook extends BaseDelayableHook {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     mQQMsgFacade = param.thisObject;
+                    if (LicenseStatus.sDisableCommonHooks) return;
                     if (!isEnabled()) return;
                     ArrayList list = (ArrayList) param.args[0];
                     param.setResult(null);

@@ -64,7 +64,7 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
     private FaceImpl face;
     private ExfriendManager exm;
     private ArrayList<EventRecord> evs;
-    private BaseAdapter adapter = new BaseAdapter() {
+    private final BaseAdapter adapter = new BaseAdapter() {
         @Override
         public int getCount() {
             return ExfriendListActivity.this.getCount();
@@ -219,11 +219,11 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
         }
         //log(position+"/"+getCount());
         convertView.setTag(ev);
-        TextView title = (TextView) convertView.findViewById(R_ID_EXL_TITLE);
+        TextView title = convertView.findViewById(R_ID_EXL_TITLE);
         title.setText(ev.getShowStr());
         boolean isfri = false;
 
-        TextView stat = (TextView) convertView.findViewById(R_ID_EXL_STATUS);
+        TextView stat = convertView.findViewById(R_ID_EXL_STATUS);
         try {
             if (exm.getPersons().get(ev.operand).friendStatus == FriendRecord.STATUS_FRIEND_MUTUAL)
                 isfri = true;
@@ -237,9 +237,9 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
             stat.setTextColor(ResUtils.cloneColor(ResUtils.skin_red));
             stat.setText("已删除");
         }
-        TextView subtitle = (TextView) convertView.findViewById(R_ID_EXL_SUBTITLE);
+        TextView subtitle = convertView.findViewById(R_ID_EXL_SUBTITLE);
         subtitle.setText(Utils.getIntervalDspMs(ev.timeRangeBegin * 1000, ev.timeRangeEnd * 1000));
-        ImageView imgview = (ImageView) convertView.findViewById(R_ID_EXL_FACE);
+        ImageView imgview = convertView.findViewById(R_ID_EXL_FACE);
         Bitmap bm = face.getBitmapFromCache(FaceImpl.TYPE_USER, "" + ev.operand);
         if (bm == null) {
             imgview.setImageDrawable(ResUtils.loadDrawableFromAsset("face.png", ExfriendListActivity.this));

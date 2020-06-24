@@ -19,6 +19,8 @@
 package nil.nadph.qnotified.config;
 
 import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.util.NonNull;
+import nil.nadph.qnotified.util.Nullable;
 import nil.nadph.qnotified.util.Utils;
 
 import java.io.*;
@@ -36,11 +38,11 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener {
     public static final int BYTE_ORDER_STUB = 0x12345678;
     private static ConfigManager sDefConfig;
     private static ConfigManager sCache;
-    private File file;
+    private final File file;
     private ConcurrentHashMap<String, Object> config;
     private boolean dirty;
-    private int mFileTypeId;
-    private long mTargetUin;
+    private final int mFileTypeId;
+    private final long mTargetUin;
 
     public ConfigManager(File f, int fileTypeId, long uin) throws IOException {
         file = f;
@@ -145,6 +147,15 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener {
         } catch (Exception ignored) {
         }
         return (String) config.get(key);
+    }
+
+    @Nullable
+    public Object getObject(@NonNull String key) {
+        try {
+            if (dirty) reload();
+        } catch (Exception ignored) {
+        }
+        return config.get(key);
     }
 
     public void putString(String key, String val) {
@@ -326,7 +337,16 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener {
         config.put(key, v);
     }
 
-    public Object remove(String k) {
+    public void putObject(@NonNull String key, Object v) {
+        try {
+            if (dirty) reload();
+        } catch (Exception ignored) {
+        }
+        config.put(key, v);
+    }
+
+    @Nullable
+    public Object remove(@NonNull String k) {
         try {
             if (dirty) reload();
         } catch (Exception ignored) {

@@ -144,8 +144,8 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
         }
         tvStatus.setText(desc);
         Button apply, disable;
-        apply = (Button) FakeBatCfgActivity.this.findViewById(R_ID_APPLY);
-        disable = (Button) FakeBatCfgActivity.this.findViewById(R_ID_DISABLE);
+        apply = FakeBatCfgActivity.this.findViewById(R_ID_APPLY);
+        disable = FakeBatCfgActivity.this.findViewById(R_ID_DISABLE);
         if (!enabled) {
             apply.setText("保存并启用");
         } else {
@@ -217,8 +217,8 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
         EditText pct;
         CheckBox charging;
         int val;
-        pct = (EditText) FakeBatCfgActivity.this.findViewById(R_ID_PERCENT_VALUE);
-        charging = (CheckBox) FakeBatCfgActivity.this.findViewById(R_ID_CHARGING);
+        pct = FakeBatCfgActivity.this.findViewById(R_ID_PERCENT_VALUE);
+        charging = FakeBatCfgActivity.this.findViewById(R_ID_CHARGING);
         try {
             val = Integer.parseInt(pct.getText().toString());
         } catch (NumberFormatException e) {

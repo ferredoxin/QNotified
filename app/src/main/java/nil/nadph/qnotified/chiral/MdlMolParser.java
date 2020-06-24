@@ -33,7 +33,7 @@ public class MdlMolParser {
         String[] lines = str.replace("\r\n", "\n").replace('\r', '\n').split("\n");
         for (int i = 0, linesLength = lines.length; i < linesLength; i++) {
             String line = lines[i];
-            if ((line.length() >= 39 && line.substring(34, 39).equals("V2000"))) {
+            if ((line.length() >= 39 && line.startsWith("V2000", 34))) {
                 start = i;
                 break;
             }

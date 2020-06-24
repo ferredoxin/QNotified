@@ -179,7 +179,10 @@ public class Utils {
 
     public static long getLongAccountUin() {
         try {
-            return (long) invoke_virtual(getAppRuntime(), "getLongAccountUin");
+            AppRuntime rt = getAppRuntime();
+            loge("getLongAccountUin/E getAppRuntime == null");
+            if (rt == null) return -1;
+            return (long) invoke_virtual(rt, "getLongAccountUin");
         } catch (Exception e) {
             log(e);
         }
@@ -1543,6 +1546,7 @@ public class Utils {
     }
 
     public static boolean isNiceUser() {
+        if ((LicenseStatus.getCurrentUserWhiteFlags() & UserFlagConst.WF_NICE_USER) != 0) return true;
         try {
             ConfigManager cfg = ConfigManager.getDefaultConfig();
             if (cfg.getBooleanOrDefault(ConfigItems.cfg_nice_user, false)) {
@@ -1716,9 +1720,9 @@ public class Utils {
 
     public static ContactDescriptor parseResultRec(Object a) {
         ContactDescriptor cd = new ContactDescriptor();
-        cd.uin = (String) iget_object_or_null(a, "a", String.class);
-        cd.nick = (String) iget_object_or_null(a, "b", String.class);
-        cd.uinType = (int) iget_object_or_null(a, "b", int.class);
+        cd.uin = iget_object_or_null(a, "a", String.class);
+        cd.nick = iget_object_or_null(a, "b", String.class);
+        cd.uinType = iget_object_or_null(a, "b", int.class);
         return cd;
     }
 

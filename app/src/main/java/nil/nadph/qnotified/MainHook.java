@@ -176,7 +176,7 @@ public class MainHook {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     final Activity ctx = (Activity) param.thisObject;
-                    FrameLayout frame = (FrameLayout) ctx.findViewById(android.R.id.content);
+                    FrameLayout frame = ctx.findViewById(android.R.id.content);
                     frame.getChildAt(0).setBackgroundColor(0xFF000000);
                     new Thread(new Runnable() {
                         @Override
@@ -207,7 +207,7 @@ public class MainHook {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     final Activity ctx = (Activity) param.thisObject;
-                    FrameLayout frame = (FrameLayout) ctx.findViewById(android.R.id.content);
+                    FrameLayout frame = ctx.findViewById(android.R.id.content);
                     frame.getChildAt(0).setBackgroundColor(0xFF000000);
                     new Thread(new Runnable() {
                         @Override
@@ -220,9 +220,9 @@ public class MainHook {
                                 @Override
                                 public void run() {
                                     try {
-                                        FrameLayout frame = (FrameLayout) ctx.findViewById(android.R.id.content);
+                                        FrameLayout frame = ctx.findViewById(android.R.id.content);
                                         frame.getChildAt(0).setBackgroundColor(0xFF000000);
-                                        ViewGroup list = (ViewGroup) ctx.findViewById(ctx.getResources().getIdentifier("common_xlistview", "id", ctx.getPackageName()));
+                                        ViewGroup list = ctx.findViewById(ctx.getResources().getIdentifier("common_xlistview", "id", ctx.getPackageName()));
                                         list.getChildAt(0).setBackgroundColor(0x00000000);
                                     } catch (Exception e) {
                                         log(e);
@@ -238,7 +238,7 @@ public class MainHook {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     final Activity ctx = (Activity) param.thisObject;
-                    FrameLayout frame = (FrameLayout) ctx.findViewById(android.R.id.content);
+                    FrameLayout frame = ctx.findViewById(android.R.id.content);
                     frame.getChildAt(0)/*.getChildAt(0)*/.setBackgroundColor(0xFF000000);
                 }
             });
@@ -252,6 +252,8 @@ public class MainHook {
 //        if (SyncUtils.getProcessType() == SyncUtils.PROC_MSF) {
 //            Debug.waitForDebugger();
 //        }
+        if (LicenseStatus.isLoadingDisabled()) return;
+        LicenseStatus.sDisableCommonHooks = LicenseStatus.isBlacklisted() || LicenseStatus.isSilentGone();
         BaseDelayableHook.allowEarlyInit(RevokeMsgHook.get());
         BaseDelayableHook.allowEarlyInit(MuteQZoneThumbsUp.get());
         BaseDelayableHook.allowEarlyInit(MuteAtAllAndRedPacket.get());
@@ -593,7 +595,7 @@ public class MainHook {
     }
 
     public static class IActivityManagerHandler implements InvocationHandler {
-        private Object mOrigin;
+        private final Object mOrigin;
 
         IActivityManagerHandler(Object origin) {
             mOrigin = origin;
@@ -633,7 +635,7 @@ public class MainHook {
 
     @SuppressLint("NewApi")
     public static class MyInstrumentation extends Instrumentation {
-        private Instrumentation mBase;
+        private final Instrumentation mBase;
 
         public MyInstrumentation(Instrumentation base) {
             this.mBase = base;
@@ -984,7 +986,7 @@ public class MainHook {
     }
 
     public static class MyH implements Handler.Callback {
-        private Handler.Callback mDefault;
+        private final Handler.Callback mDefault;
 
         public MyH(Handler.Callback def) {
             mDefault = def;

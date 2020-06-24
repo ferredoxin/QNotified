@@ -50,7 +50,7 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
     public static final String qn_fake_bat_enable = "qn_fake_bat_enable";
     private static final String ACTION_UPDATE_BATTERY_STATUS = "nil.nadph.qnotified.ACTION_UPDATE_BATTERY_STATUS";
     private static final String _FLAG_MANUAL_CALL = "flag_manual_call";
-    private static Collection<Long> sLockedThreadsId = Collections.synchronizedCollection(new HashSet<Long>());
+    private static final Collection<Long> sLockedThreadsId = Collections.synchronizedCollection(new HashSet<Long>());
     private static final FakeBatteryHook self = new FakeBatteryHook();
     private WeakReference<BroadcastReceiver> mBatteryLevelRecvRef = null;
     private WeakReference<BroadcastReceiver> mBatteryStatusRecvRef = null;

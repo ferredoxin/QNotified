@@ -18,6 +18,7 @@
  */
 package nil.nadph.qnotified.util;
 
+import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.chiral.MdlMolParser;
 import nil.nadph.qnotified.chiral.Molecule;
 import nil.nadph.qnotified.config.ConfigManager;
@@ -28,7 +29,7 @@ import java.util.HashSet;
 import static nil.nadph.qnotified.util.Utils.log;
 
 public class LicenseStatus {
-    public static final String qn_eula_status = "qh_eula_status";//spelling mistake, ignore it
+    public static final String qn_eula_status = "qh_eula_status";//typo, ignore it
     public static final String qn_auth2_molecule = "qn_auth2_molecule";
     public static final String qn_auth2_chiral = "qn_auth2_chiral";
 
@@ -43,7 +44,6 @@ public class LicenseStatus {
         return ConfigManager.getDefaultConfig().getIntOrDefault(qn_eula_status, 0);
     }
 
-
     public static void setEulaStatus(int status) {
         ConfigManager.getDefaultConfig().putInt(qn_eula_status, status);
         try {
@@ -55,9 +55,11 @@ public class LicenseStatus {
     }
 
     public static boolean getAuth2Status() {
+        if ((getCurrentUserWhiteFlags() & UserFlagConst.WF_BYPASS_AUTH_2) != 0) return true;
         return getAuth2Chiral() != null && getAuth2Molecule() != null;
     }
 
+    @Nullable
     public static int[] getAuth2Chiral() {
         if (mAuth2Chiral == null) {
             try {
@@ -76,6 +78,7 @@ public class LicenseStatus {
         return mAuth2Chiral;
     }
 
+    @Nullable
     public static Molecule getAuth2Molecule() {
         if (mAuth2Mol == null) {
             try {
@@ -125,5 +128,41 @@ public class LicenseStatus {
 
     public static boolean hasUserAgreeEula() {
         return getEulaStatus() == STATUS_ACCEPT;
+    }
+
+    public static volatile boolean sDisableCommonHooks = false;
+
+    public static boolean isBlacklisted() {
+        return (getCurrentUserBlackFlags() & UserFlagConst.BF_REJECT) != 0;
+    }
+
+    public static boolean isLoadingDisabled() {
+        return (getCurrentUserBlackFlags() & UserFlagConst.BF_SILENT_DISABLE_LOAD) != 0;
+    }
+
+    public static boolean isSilentGone() {
+        return (getCurrentUserBlackFlags() & UserFlagConst.BF_SILENT_GONE) != 0;
+    }
+
+    public static boolean isBypassAuth2() {
+        return (getCurrentUserWhiteFlags() & UserFlagConst.WF_BYPASS_AUTH_2) != 0;
+    }
+
+    public static final String qn_auth_uin_black_flags = "qn_auth_uin_black_flags";
+    public static final String qn_auth_uin_white_flags = "qn_auth_uin_white_flags";
+    public static final String qn_auth_uin_update_time = "qn_auth_uin_update_time";
+
+    public static int getCurrentUserBlackFlags() {
+        long uin = Utils.getLongAccountUin();
+        if (uin < 10000) return 0;
+        ExfriendManager exm = ExfriendManager.get(uin);
+        return exm.getIntOrDefault(qn_auth_uin_black_flags, 0);
+    }
+
+    public static int getCurrentUserWhiteFlags() {
+        long uin = Utils.getLongAccountUin();
+        if (uin < 10000) return 0;
+        ExfriendManager exm = ExfriendManager.get(uin);
+        return exm.getIntOrDefault(qn_auth_uin_white_flags, 0);
     }
 }

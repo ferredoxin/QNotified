@@ -25,9 +25,9 @@ public class DivDrawable extends Drawable {
 
     public static final int TYPE_HORIZONTAL = 1;
     public static final int TYPE_VERTICAL = 2;
-    private int iThickness;
-    private int iType;
-    private Paint p = new Paint();
+    private final int iThickness;
+    private final int iType;
+    private final Paint p = new Paint();
 
     public DivDrawable(int type, int thickness) {
         iType = type;

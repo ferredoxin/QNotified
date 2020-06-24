@@ -35,7 +35,10 @@ import nil.nadph.qnotified.config.EventRecord;
 import nil.nadph.qnotified.config.FriendRecord;
 import nil.nadph.qnotified.config.Table;
 import nil.nadph.qnotified.hook.DelDetectorHook;
+import nil.nadph.qnotified.remote.GetUserStatusResp;
+import nil.nadph.qnotified.remote.TransactionHelper;
 import nil.nadph.qnotified.util.ActProxyMgr;
+import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Nullable;
 import nil.nadph.qnotified.util.Utils;
 
@@ -70,7 +73,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
 
     static private final HashMap<Long, ExfriendManager> instances = new HashMap<>();
     static private ExecutorService tp;
-    private static Runnable asyncUpdateAwaitingTask = new Runnable() {
+    private static final Runnable asyncUpdateAwaitingTask = new Runnable() {
         @Override
         public void run() {
             long cuin;
@@ -80,7 +83,8 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
                     cuin = Utils.getLongAccountUin();
                     if (cuin > 10000) {
                         //log("try post task for " + cuin);
-                        getCurrent().timeToUpdateFl();
+                        ExfriendManager mgr = getCurrent();
+                        mgr.timeToUpdateFl();
                     }
                 }
             } catch (Exception e) {
@@ -95,11 +99,12 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
     private ConfigManager fileData;//Back compatibility
     private ConcurrentHashMap mStdRemarks;
     private ArrayList<FriendChunk> cachedFriendChunks;
-    private boolean dirtyFlag;
+    private boolean dirtySerializedFlag = true;
 
     private ExfriendManager(long uin) {
         persons = new ConcurrentHashMap<Long, FriendRecord>();
         events = new ConcurrentHashMap<Integer, EventRecord>();
+        dirtySerializedFlag = true;
         if (tp == null) {
             int pt = SyncUtils.getProcessType();
             if (pt != 0 && (pt & (SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF)) != 0) {
@@ -164,6 +169,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
     public void reinit() {
         persons = new ConcurrentHashMap<Long, FriendRecord>();
         events = new ConcurrentHashMap<Integer, EventRecord>();
+        dirtySerializedFlag = true;
         initForUin(mUin);
     }
 
@@ -210,8 +216,10 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
                             f.nick = (String) fnick.get(fr);
                             f.friendStatus = FriendRecord.STATUS_RESERVED;
                             f.serverTime = t;
-                            if (!persons.containsKey(f.uin))
+                            if (!persons.containsKey(f.uin)) {
                                 persons.put(f.uin, f);
+                                dirtySerializedFlag = true;
+                            }
                         }
                         saveConfigure();
                     } catch (Exception e) {
@@ -297,6 +305,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
             return;
         }
         if (persons == null) persons = new ConcurrentHashMap<Long, FriendRecord>();
+        dirtySerializedFlag = true;
         Iterator<Map.Entry<Long, Object[]>> it = t.records.entrySet().iterator();
         Map.Entry<Long, Object[]> entry;
         int _nick, _remark, _fs, _time;
@@ -315,6 +324,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
             f.friendStatus = (Integer) rec[_fs];
             f.serverTime = (Long) rec[_time];
             persons.put(f.uin, f);
+            dirtySerializedFlag = true;
         }
     }
 
@@ -391,7 +401,10 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
             log("t_ev==null,aborting!");
             return;
         }
-        if (events == null) events = new ConcurrentHashMap<Integer, EventRecord>();
+        if (events == null) {
+            events = new ConcurrentHashMap<Integer, EventRecord>();
+            dirtySerializedFlag = true;
+        }
         Iterator<Map.Entry<Integer, Object[]>> it = t.records.entrySet().iterator();
         Map.Entry<Integer, Object[]> entry;
         int __nick, __remark, __fs, _te, _tb, _ev, _op, _b, _a, _extra, _op_old, _exec;
@@ -446,6 +459,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
                 ev.after = (String) rec[_a];
                 ev.extra = (String) rec[_extra];
                 events.put(entry.getKey(), ev);
+                dirtySerializedFlag = true;
             } catch (Exception e) {
                 log(e);
             }
@@ -456,16 +470,20 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
         synchronized (this) {
             try {
                 //log("save: persons.size()="+persons.size()+"event.size="+events.size());
-                if (persons == null) return;
+                if (persons == null) {
+                    persons = new ConcurrentHashMap<Long, FriendRecord>();
+                }
                 File f = new File(Utils.getApplication().getFilesDir().getAbsolutePath() + "/qnotified_" + mUin + ".dat");
-                friendToTable();
-                eventsToTable();
+                if (dirtySerializedFlag) {
+                    friendToTable();
+                    eventsToTable();
+                    dirtySerializedFlag = false;
+                }
                 fileData.getAllConfig().put("uin", mUin);
                 fileData.save();
             } catch (IOException e) {
                 log(e);
             }
-            dirtyFlag = false;
         }
     }
 
@@ -489,6 +507,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
      */
     @Deprecated
     public ConcurrentHashMap<Long, FriendRecord> getPersons() {
+        dirtySerializedFlag = true;
         return persons;
     }
 
@@ -497,6 +516,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
      */
     @Deprecated
     public ConcurrentHashMap<Integer, EventRecord> getEvents() {
+        dirtySerializedFlag = true;
         return events;
     }
 
@@ -562,7 +582,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
             k++;
         }
         events.put(k, ev);
-        dirtyFlag = true;
+        dirtySerializedFlag = true;
         if (out == null) return;
         int unread = 0;
         if (fileData.getAllConfig().containsKey("unread")) {
@@ -597,7 +617,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
         } catch (Exception e) {
             log(e);
         }
-        dirtyFlag = true;
+        dirtySerializedFlag = true;
         setRedDot();
         saveConfigure();
     }
@@ -636,6 +656,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
                         fr.remark = fc.arrRemark[ii];
                         fr.serverTime = fc.serverTime;
                         persons.put(fc.arrUin[ii], fr);
+                        dirtySerializedFlag = true;
                     }
                 }
             }
@@ -693,7 +714,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
 
     @SuppressLint("MissingPermission")
     public void doNotifyDelFlAndSave(Object[] ptr) {
-        dirtyFlag = true;
+        dirtySerializedFlag = true;
         fileData.putLong("lastUpdateFl", lastUpdateTimeSec);
         //log("Friendlist updated @" + lastUpdateTimeSec);
         saveConfigure();
@@ -722,11 +743,12 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
 
     //TODO: f**k with IPC notify
     public boolean isNotifyWhenDeleted() {
-        return true;
+        return getBooleanOrDefault("qn_notify_when_del", true);
     }
 
     public void setNotifyWhenDeleted(boolean z) {
-
+        putObject("qn_notify_when_del", z);
+        saveConfigure();
     }
 
     public Notification createNotiComp(NotificationManager nm, String ticker, String title, String content, long[] vibration, PendingIntent pi) {
@@ -775,7 +797,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
         boolean inLogin;
         inLogin = (Utils.getLongAccountUin() == mUin);
         if (!inLogin) {
-            log("doRequestFlRefresh but uin(" + mUin + ") isn't logined in.");
+            log("doRequestFlRefresh but uin(" + mUin + ") isn't logged in.");
             return;
         }
         try {
@@ -794,8 +816,46 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
                 @Override
                 public void run() {
                     doRequestFlRefresh();
+                    doTryToUpdateUserStatusFlags();
                 }
             });
         }
+    }
+
+    public long getLongOrDefault(String key, long i) {
+        return fileData.getLongOrDefault(key, i);
+    }
+
+    public int getIntOrDefault(String key, int i) {
+        return fileData.getIntOrDefault(key, i);
+    }
+
+    public boolean getBooleanOrDefault(String key, boolean defVal) {
+        return fileData.getBooleanOrDefault(key, defVal);
+    }
+
+    public String geStringOrNull(String key) {
+        return fileData.getString(key);
+    }
+
+    public void putObject(String key, Object val) {
+        fileData.putObject(key, val);
+    }
+
+    public void doTryToUpdateUserStatusFlags() {
+        try {
+            doUpdateUserStatusFlags();
+        } catch (Exception ignored) {
+        }
+    }
+
+    public GetUserStatusResp doUpdateUserStatusFlags() throws Exception {
+        GetUserStatusResp resp = TransactionHelper.doQueryUserStatus(getUin());
+        putObject(LicenseStatus.qn_auth_uin_white_flags, resp.whitelistFlags);
+        putObject(LicenseStatus.qn_auth_uin_black_flags, resp.blacklistFlags);
+        putObject(LicenseStatus.qn_auth_uin_update_time, System.currentTimeMillis());
+        saveConfigure();
+        LicenseStatus.sDisableCommonHooks = LicenseStatus.isBlacklisted() || LicenseStatus.isSilentGone();
+        return resp;
     }
 }

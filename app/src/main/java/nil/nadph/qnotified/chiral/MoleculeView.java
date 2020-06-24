@@ -31,6 +31,7 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import nil.nadph.qnotified.util.IndexFrom;
+import nil.nadph.qnotified.util.Nullable;
 import nil.nadph.qnotified.util.Utils;
 
 import java.util.HashSet;
@@ -46,14 +47,15 @@ public class MoleculeView extends View {
     private int textColor = 0xFF000000;
     protected Paint paint = new Paint();
     protected float scaleFactor = 1;
-    private Rect mViewRect = new Rect(), mDrawRect = new Rect();
+    private final Rect mViewRect = new Rect();
+    private final Rect mDrawRect = new Rect();
     protected HashSet<Integer> selectedChiral = new HashSet<>();
 
     private float[] labelTop;
     private float[] labelLeft;
     private float[] labelRight;
     private float[] labelBottom;
-    private Rect mTmpRect = new Rect();
+    private final Rect mTmpRect = new Rect();
 
 
     @Override
@@ -263,10 +265,12 @@ public class MoleculeView extends View {
         return ret;
     }
 
-    public void setSelectedChiral(int[] chiral) {
+    public void setSelectedChiral(@Nullable int[] chiral) {
         selectedChiral.clear();
-        for (int i : chiral) {
-            selectedChiral.add(i);
+        if (chiral != null) {
+            for (int i : chiral) {
+                selectedChiral.add(i);
+            }
         }
         invalidate();
     }
@@ -319,7 +323,7 @@ public class MoleculeView extends View {
         return mAutoTextSize;
     }
 
-    public void setMolecule(Molecule molecule) {
+    public void setMolecule(@Nullable Molecule molecule) {
         this.molecule = molecule;
         selectedChiral.clear();
         calcScaleFactor(getWidth(), getHeight());

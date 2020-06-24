@@ -158,7 +158,7 @@ public class EulaActivity extends IphoneTitleBarActivityCompat implements View.O
 
     @Override
     public void onClick(View v) {
-        CheckBox iHaveRead = (CheckBox) findViewById(R_ID_I_HAVE_READ);
+        CheckBox iHaveRead = findViewById(R_ID_I_HAVE_READ);
         boolean read = iHaveRead.isChecked();
         switch (v.getId()) {
             case R_ID_I_AGREE:

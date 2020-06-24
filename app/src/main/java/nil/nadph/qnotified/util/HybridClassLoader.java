@@ -22,8 +22,8 @@ import java.net.URL;
 
 public class HybridClassLoader extends ClassLoader {
 
-    private ClassLoader clPreload;
-    private ClassLoader clBase;
+    private final ClassLoader clPreload;
+    private final ClassLoader clBase;
 
     public HybridClassLoader(ClassLoader x, ClassLoader ctx) {
         clPreload = x;

@@ -43,6 +43,7 @@ import nil.nadph.qnotified.ui.InterceptLayout;
 import nil.nadph.qnotified.ui.TouchEventToLongClickAdapter;
 import nil.nadph.qnotified.util.CustomMenu;
 import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
 import java.io.Externalizable;
@@ -84,6 +85,7 @@ public class CardMsgHook extends BaseDelayableHook {
             XposedBridge.hookMethod(DexKit.doFindMethod(DexKit.N_BASE_CHAT_PIE__INIT), new XC_MethodHook(40) {
                 @Override
                 public void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    if (LicenseStatus.sDisableCommonHooks) return;
                     try {
                         Object chatPie = param.thisObject;
                         //Class cl_PatchedButton = load("com/tencent/widget/PatchedButton");
@@ -93,7 +95,7 @@ public class CardMsgHook extends BaseDelayableHook {
                         int fun_btn = ctx.getResources().getIdentifier("fun_btn", "id", ctx.getPackageName());
                         View sendBtn = viewGroup.findViewById(fun_btn);
                         final QQAppInterface qqApp = getFirstNSFByType(param.thisObject, QQAppInterface.class);
-                        final Parcelable session = (Parcelable) getFirstNSFByType(param.thisObject, _SessionInfo());
+                        final Parcelable session = getFirstNSFByType(param.thisObject, _SessionInfo());
                         if (!sendBtn.getParent().getClass().getName().equals(InterceptLayout.class.getName())) {
                             InterceptLayout layout = InterceptLayout.setupRudely(sendBtn);
                             layout.setTouchInterceptor(new TouchEventToLongClickAdapter() {
@@ -233,6 +235,7 @@ public class CardMsgHook extends BaseDelayableHook {
 
         @Override
         protected void afterHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
+            if (LicenseStatus.sDisableCommonHooks) return;
             try {
                 ConfigManager cfg = ConfigManager.getDefaultConfig();
                 if (!cfg.getBooleanOrFalse(qn_send_card_msg)) return;

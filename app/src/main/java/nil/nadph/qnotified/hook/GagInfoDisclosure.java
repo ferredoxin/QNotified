@@ -30,6 +30,7 @@ import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Initiator;
+import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
 import java.lang.reflect.Method;
@@ -61,6 +62,7 @@ public class GagInfoDisclosure extends BaseDelayableHook {
             XposedBridge.hookMethod(m1, new XC_MethodHook(48) {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    if (LicenseStatus.sDisableCommonHooks) return;
                     if (!isEnabled()) return;
                     String selfUin = Utils.getAccount() + "";
                     String troopUin = (String) param.args[0];
@@ -100,6 +102,7 @@ public class GagInfoDisclosure extends BaseDelayableHook {
             XposedBridge.hookMethod(m2, new XC_MethodHook(48) {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    if (LicenseStatus.sDisableCommonHooks) return;
                     if (!isEnabled()) return;
                     String selfUin = Utils.getAccount() + "";
                     String troopUin = (String) param.args[0];

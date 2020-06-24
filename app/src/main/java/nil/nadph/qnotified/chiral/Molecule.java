@@ -24,15 +24,15 @@ import java.util.HashSet;
 
 public class Molecule implements Cloneable {
 
-    private Atom[] atoms;
-    private Bond[] bonds;
+    private final Atom[] atoms;
+    private final Bond[] bonds;
     private float maxX = 0.0f;
     private float maxY = 0.0f;
     private float minX = 0.0f;
     private float minY = 0.0f;
     private boolean invalMinMax = true;
     private float avgBondLength;
-    private String mdlMolStr;
+    private final String mdlMolStr;
 
     public Molecule(Atom[] a, Bond[] b, String mdlMol) {
         atoms = a;

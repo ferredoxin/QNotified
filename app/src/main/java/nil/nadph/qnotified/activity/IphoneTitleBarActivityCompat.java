@@ -58,7 +58,7 @@ public class IphoneTitleBarActivityCompat extends IphoneTitleBarActivity {
     @SuppressLint("ResourceType")
     public void setContentBackgroundDrawable(Drawable d) {
         try {
-            ((View) findViewById(16908290)).setBackgroundDrawable(d);
+            findViewById(16908290).setBackgroundDrawable(d);
         } catch (NullPointerException e) {
             log(e);
         }

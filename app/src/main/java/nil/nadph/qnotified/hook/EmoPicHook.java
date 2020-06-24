@@ -29,6 +29,7 @@ import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.util.Initiator._PicItemBuilder;
@@ -63,6 +64,7 @@ public class EmoPicHook extends BaseDelayableHook {
             XposedHelpers.findAndHookMethod(_PicItemBuilder(), "onClick", View.class, new XC_MethodHook(51) {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    if (LicenseStatus.sDisableCommonHooks) return;
                     if (!isEnabled()) return;
                     Object v0 = invoke_static(DexKit.doFindClass(DexKit.C_AIO_UTILS), "a", param.args[0], View.class, Object.class);
                     Object chatMessage = iget_object_or_null(v0, "a", load("com.tencent.mobileqq.data.ChatMessage"));

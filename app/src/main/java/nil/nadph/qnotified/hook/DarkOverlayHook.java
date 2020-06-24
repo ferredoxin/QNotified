@@ -58,6 +58,7 @@ public class DarkOverlayHook extends BaseDelayableHook {
 
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    if (LicenseStatus.sDisableCommonHooks) return;
                     if (!isEnabled()) return;
                     if (fMask == null) {
                         DexFieldDescriptor desc = FindNightMask.getNightMaskField();

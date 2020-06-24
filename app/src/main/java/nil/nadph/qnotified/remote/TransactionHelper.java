@@ -24,7 +24,7 @@ public class TransactionHelper {
             KeyStore keyStore = KeyStore.getInstance("BKS"); // 访问keytool创建的Java密钥库
             InputStream keyStream = TransactionHelper.class.getClassLoader().getResourceAsStream("assets/na_cert.bks");
             if (keyStream == null) {
-                throw new AssertionError("shipped bks not found!!!");
+                throw new RuntimeException("shipped bks not found!!!");
             }
             char[] keyStorePass = TKS_PASSWORD.toCharArray();  //证书密码
             keyStore.load(keyStream, keyStorePass);

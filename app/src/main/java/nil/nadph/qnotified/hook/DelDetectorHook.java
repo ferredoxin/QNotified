@@ -59,7 +59,7 @@ public class DelDetectorHook extends BaseDelayableHook {
     public WeakReference<TextView> exfriendRef;
     public WeakReference<TextView> redDotRef;
     private boolean inited = false;
-    private XC_MethodHook exfriendEntryHook = new XC_MethodHook(1200) {
+    private final XC_MethodHook exfriendEntryHook = new XC_MethodHook(1200) {
         @Override
         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
             try {

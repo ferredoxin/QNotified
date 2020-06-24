@@ -106,8 +106,8 @@ public class ConfigActivity extends Activity implements Runnable {
             str += r;
         }
         ((TextView) findViewById(R.id.mainTextView)).setText(str);
-        statusTv = (TextView) findViewById(R.id.mainTextViewStatusA);
-        statusTvB = (TextView) findViewById(R.id.mainTextViewStatusB);
+        statusTv = findViewById(R.id.mainTextViewStatusA);
+        statusTvB = findViewById(R.id.mainTextViewStatusB);
 
         if (Utils.getActiveModuleVersion() == null) {
             statusTv.setText("免费软件-请勿倒卖");
@@ -129,7 +129,7 @@ public class ConfigActivity extends Activity implements Runnable {
         } catch (IOException e) {
             start = e.toString();
         }
-        TextView vtv = (TextView) findViewById(R.id.mainTextViewVersion);
+        TextView vtv = findViewById(R.id.mainTextViewVersion);
         if (start.equals("nil.nadph.qnotified.HookLoader")) {
             vtv.setText("动态加载");
             vtv.setTextColor(Color.BLUE);

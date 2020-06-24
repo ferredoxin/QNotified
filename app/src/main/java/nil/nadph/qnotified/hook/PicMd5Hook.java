@@ -34,6 +34,7 @@ import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.util.CustomMenu;
 import nil.nadph.qnotified.util.Initiator;
+import nil.nadph.qnotified.util.LicenseStatus;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
@@ -92,6 +93,7 @@ public class PicMd5Hook extends BaseDelayableHook {
 
         @Override
         protected void afterHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
+            if (LicenseStatus.sDisableCommonHooks) return;
             try {
                 ConfigManager cfg = ConfigManager.getDefaultConfig();
                 if (!PicMd5Hook.get().isEnabled()) return;

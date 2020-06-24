@@ -1,12 +1,9 @@
 package nil.nadph.qnotified.bridge;
 
-import android.view.View;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.util.*;
+import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.Initiator;
+import nil.nadph.qnotified.util.Utils;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import static nil.nadph.qnotified.util.Utils.*;

@@ -34,10 +34,7 @@ import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ViewBuilder;
-import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.Nullable;
-import nil.nadph.qnotified.util.UiThread;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.util.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -89,6 +86,7 @@ public class MultiForwardAvatarHook extends BaseDelayableHook {
             findAndHookMethod(load("com/tencent/mobileqq/activity/aio/BaseBubbleBuilder"), "onClick", View.class, new XC_MethodHook(49) {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    if (LicenseStatus.sDisableCommonHooks) return;
                     if (!isEnabled()) return;
                     Context ctx = iget_object_or_null(param.thisObject, "a", Context.class);
                     if (ctx == null) ctx = getFirstNSFByType(param.thisObject, Context.class);

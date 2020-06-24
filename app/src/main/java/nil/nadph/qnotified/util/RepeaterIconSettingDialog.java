@@ -20,20 +20,23 @@ import java.io.*;
 
 public class RepeaterIconSettingDialog implements View.OnClickListener, DialogInterface.OnClickListener, RadioGroup.OnCheckedChangeListener, CompoundButton.OnCheckedChangeListener {
 
-    private Context ctx;
-    private AlertDialog dialog;
+    private final Context ctx;
+    private final AlertDialog dialog;
     private String targetIconPath;
-    private Button saveBtn, loadBtn, browseBtn, restoreDefBtn;
+    private Button saveBtn;
+    private final Button loadBtn;
+    private final Button browseBtn;
+    private final Button restoreDefBtn;
     private Bitmap currentIcon;
     private BitmapDrawable currentIconDrawable;
-    private EditText pathInput;
-    private ImageView prevImgView;
-    private CheckBox specDpi;
-    private RadioGroup dpiGroup;
-    private LinearLayout linearLayoutDpi;
+    private final EditText pathInput;
+    private final ImageView prevImgView;
+    private final CheckBox specDpi;
+    private final RadioGroup dpiGroup;
+    private final LinearLayout linearLayoutDpi;
     private boolean useDefault;
-    private TextView textViewWarning;
-    private int physicalDpi;
+    private final TextView textViewWarning;
+    private final int physicalDpi;
 
     private static Bitmap sCachedRepeaterIcon;
 

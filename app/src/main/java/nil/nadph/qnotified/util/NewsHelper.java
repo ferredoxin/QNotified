@@ -46,7 +46,7 @@ public class NewsHelper implements Runnable {
     private static final int INTERVAL_SEC = 3600;
 
     //-------------------------------------------
-    private WeakReference<TextView> ptv;
+    private final WeakReference<TextView> ptv;
 
     private NewsHelper(@Nullable WeakReference<TextView> p) {
         ptv = p;

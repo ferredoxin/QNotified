@@ -53,7 +53,7 @@ public class ResUtils {
     static public Drawable skin_common_btn_blue_pressed, skin_common_btn_blue_unpressed;
 
     static private String cachedThemeId;
-    static private Map<String, Drawable> cachedDrawable = new HashMap<>();
+    static private final Map<String, Drawable> cachedDrawable = new HashMap<>();
 
     public static void initTheme(Context ctx) throws Throwable {
         try {

@@ -41,10 +41,10 @@ public class FaceImpl implements InvocationHandler {
     static private WeakReference<FaceImpl> self;
     private static Class class_FaceDecoder;
     private static Class clz_DecodeTaskCompletionListener;
-    private HashMap<String, Bitmap> cachedUserFace;
-    private HashMap<String, Bitmap> cachedTroopFace;
-    private HashMap<String, WeakReference<ImageView>> registeredView;
-    private Object mFaceDecoder;
+    private final HashMap<String, Bitmap> cachedUserFace;
+    private final HashMap<String, Bitmap> cachedTroopFace;
+    private final HashMap<String, WeakReference<ImageView>> registeredView;
+    private final Object mFaceDecoder;
 
     private FaceImpl() throws Throwable {
         //private Object faceMgr;

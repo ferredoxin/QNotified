@@ -38,7 +38,7 @@ public class Table<K> implements Serializable, Cloneable {
             Method m = Class.class.getMethod("getDeclaredConstructor", Class[].class);
             Constructor<Void> c = (Constructor<Void>) m.invoke(Void.class, new Object[]{new Class[0]});
             c.setAccessible(true);
-            tmp = (Void) c.newInstance();
+            tmp = c.newInstance();
         } catch (Exception e) {
             //**sigh**
             e.printStackTrace();

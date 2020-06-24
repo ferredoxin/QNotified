@@ -40,7 +40,7 @@ public class HookLoader implements IXposedHookLoadPackage {
     /**
      * 宿主程序的包名(允许多个),过滤无意义的包名,防止无意义的apk文件加载
      */
-    private static List<String> hostAppPackages = new ArrayList<>();
+    private static final List<String> hostAppPackages = new ArrayList<>();
 
     static {
         // TODO: Add the package name of application your want to hook!

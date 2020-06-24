@@ -37,6 +37,7 @@ import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.ViewBuilder;
 import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.UserFlagConst;
 import nil.nadph.qnotified.util.Utils;
 
 import java.util.HashSet;
@@ -44,6 +45,7 @@ import java.util.HashSet;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
+import static nil.nadph.qnotified.util.LicenseStatus.getCurrentUserWhiteFlags;
 import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressLint("Registered")
@@ -56,6 +58,7 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
     private AlertDialog makingMol = null;
     private int refreshId = 0;
     private HashSet<Integer> mChiralCarbons;
+    private static boolean bypassMode = false;
 
     @Override
     public boolean doOnCreate(Bundle bundle) {
@@ -139,7 +142,7 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
         rightBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (LicenseStatus.getAuth2Status()) {
+                if (LicenseStatus.getAuth2Molecule() != null) {
                     CustomDialog.create(Auth2Activity.this).setTitle("解除验证").setMessage("此操作将会解除验证, 是否继续?")
                             .setCancelable(true).setPositiveButton("确认", new DialogInterface.OnClickListener() {
                         @Override
@@ -155,13 +158,24 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
             }
         });
         if (LicenseStatus.getAuth2Status()) {
-            rightBtn.setText("吊销");
-            moleculeView.setMolecule(LicenseStatus.getAuth2Molecule());
+            Molecule mol = LicenseStatus.getAuth2Molecule();
+            moleculeView.setMolecule(mol);
             moleculeView.setSelectedChiral(LicenseStatus.getAuth2Chiral());
             moleculeView.setEnabled(false);
-            newOne.setVisibility(View.GONE);
-            reset.setVisibility(View.GONE);
-            nextStep.setText("验证已完成");
+            if (mol != null) {
+                rightBtn.setText("吊销");
+                newOne.setVisibility(View.GONE);
+                reset.setVisibility(View.GONE);
+                nextStep.setText("验证已完成");
+            } else {
+                rightBtn.setVisibility(View.GONE);
+                if ((getCurrentUserWhiteFlags() & UserFlagConst.WF_BYPASS_AUTH_2) != 0) {
+                    bypassMode = true;
+                    nextStep.setText("AUTH_2 白名单用户免验证");
+                } else {
+                    nextStep.setText("出错啦");
+                }
+            }
             nextStep.setEnabled(false);
             onClick(moleculeView);
         } else {
@@ -182,6 +196,17 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
                 tvSelectedCount.setText("已选择: " + count);
             }
         } else if (v == newOne) {
+            if (bypassMode) {
+                bypassMode = false;
+                TextView tv = (TextView) getRightTextView();
+                if (tv != null) {
+                    tv.setText("取消");
+                    tv.setVisibility(View.VISIBLE);
+                }
+                moleculeView.setEnabled(true);
+                nextStep.setEnabled(true);
+                nextStep.setText("下一步");
+            }
             if (makingMol == null) {
                 refreshId++;
                 makingMol = (AlertDialog) CustomDialog.createFailsafe(this).setCancelable(false).setTitle("正在加载")

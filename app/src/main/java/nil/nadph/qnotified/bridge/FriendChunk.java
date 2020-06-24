@@ -31,7 +31,7 @@ public class FriendChunk implements Serializable, Cloneable {
     private static Field[] from;
     private static Field[] to;
     private static int validLength = -1;
-    private static int maxLength = 14;
+    private static final int maxLength = 14;
     private static Field f_uin, f_remark, f_nick, f_cSpecialFlag, f_status, f_stSelfInfo;
     public byte cHasOtherRespFlag;
     public byte cRespType;

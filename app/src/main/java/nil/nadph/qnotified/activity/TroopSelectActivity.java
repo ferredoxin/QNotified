@@ -71,7 +71,7 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
     private ArrayList<TroopInfo> mTroopInfoList;
     private int hits;
     private boolean searchMode = false;
-    private BaseAdapter mAdapter = new BaseAdapter() {
+    private final BaseAdapter mAdapter = new BaseAdapter() {
         @Override
         public int getCount() {
             return TroopSelectActivity.this.getCount();
@@ -159,7 +159,7 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
     @Override
     public void onClick(View v) {
         if (v.getId() == R_ID_TRP_LAYOUT) {
-            CheckBox c = (CheckBox) v.findViewById(R_ID_TRP_CHECKBOX);
+            CheckBox c = v.findViewById(R_ID_TRP_CHECKBOX);
             c.toggle();
             return;
         }
@@ -257,17 +257,17 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
         TroopInfo info = mTroopInfoList.get(position);
         convertView.setTag(info.troopuin);
         if (searchMode) {
-            TextView title = (TextView) convertView.findViewById(R_ID_TRP_TITLE);
+            TextView title = convertView.findViewById(R_ID_TRP_TITLE);
             title.setText(info._troopname);
-            TextView subtitle = (TextView) convertView.findViewById(R_ID_TRP_SUBTITLE);
+            TextView subtitle = convertView.findViewById(R_ID_TRP_SUBTITLE);
             subtitle.setText(info._troopuin);
         } else {
-            TextView title = (TextView) convertView.findViewById(R_ID_TRP_TITLE);
+            TextView title = convertView.findViewById(R_ID_TRP_TITLE);
             title.setText(info.troopname);
-            TextView subtitle = (TextView) convertView.findViewById(R_ID_TRP_SUBTITLE);
+            TextView subtitle = convertView.findViewById(R_ID_TRP_SUBTITLE);
             subtitle.setText(info.troopuin);
         }
-        ImageView imgview = (ImageView) convertView.findViewById(R_ID_TRP_FACE);
+        ImageView imgview = convertView.findViewById(R_ID_TRP_FACE);
         Bitmap bm = face.getBitmapFromCache(FaceImpl.TYPE_TROOP, info.troopuin);
         if (bm == null) {
             imgview.setImageDrawable(ResUtils.loadDrawableFromAsset("face.png", this));
@@ -276,7 +276,7 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
             imgview.setImageBitmap(bm);
         }
         boolean selected = muted.contains(info.troopuin);
-        CheckBox check = (CheckBox) convertView.findViewById(R_ID_TRP_CHECKBOX);
+        CheckBox check = convertView.findViewById(R_ID_TRP_CHECKBOX);
         check.setChecked(selected);
         return convertView;
     }

@@ -376,7 +376,7 @@ public class PHPArray implements Iterable<HashMap.Entry> {
 
     public static class Ref {
         ArrayList chain;
-        private PHPArray root;
+        private final PHPArray root;
 
         private Ref(PHPArray arr) {
             root = arr;

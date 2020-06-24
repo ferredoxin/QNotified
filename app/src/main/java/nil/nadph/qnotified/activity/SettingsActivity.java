@@ -103,7 +103,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(subtitle(this, "基本功能"));
         if (!Utils.isTim(this)) {
             ll.addView(_t = newListItemButton(this, "自定义电量", "[QQ>=8.2.6]在线模式为我的电量时生效", "N/A", clickToProxyActAction(ACTION_FAKE_BAT_CONFIG_ACTIVITY)));
-            __tv_fake_bat_status = (TextView) _t.findViewById(R_ID_VALUE);
+            __tv_fake_bat_status = _t.findViewById(R_ID_VALUE);
         }
         ll.addView(newListItemHookSwitchInit(this, "语音转发", "长按语音消息", PttForwardHook.get()));
         ll.addView(newListItemHookSwitchInit(this, "发送卡片消息", "ArkAppMsg(json)+StructMsg(xml)", CardMsgHook.get()));
@@ -122,9 +122,9 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(subtitle(this, "消息通知设置(不影响接收消息)屏蔽后可能仍有[橙字],但通知栏不会有通知,赞说说不提醒仅屏蔽通知栏的通知"));
         ll.addView(subtitle(this, "    注:屏蔽后可能仍有[橙字],但不会有通知"));
         ll.addView(_t = newListItemButton(this, "屏蔽指定群@全体成员通知", Html.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[@全体成员]</font>就这点破事"), "%d个群", clickToProxyActAction(ACTION_MUTE_AT_ALL)));
-        __tv_muted_atall = (TextView) _t.findViewById(R_ID_VALUE);
+        __tv_muted_atall = _t.findViewById(R_ID_VALUE);
         ll.addView(_t = newListItemButton(this, "屏蔽指定群的红包通知", Html.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[QQ红包][有红包]</font>恭喜发财"), "%d个群", clickToProxyActAction(ACTION_MUTE_RED_PACKET)));
-        __tv_muted_redpacket = (TextView) _t.findViewById(R_ID_VALUE);
+        __tv_muted_redpacket = _t.findViewById(R_ID_VALUE);
         ll.addView(newListItemHookSwitchInit(this, "赞说说不提醒", "不影响评论,转发或击掌的通知", MuteQZoneThumbsUp.get()));
         ll.addView(subtitle(this, "图片相关"));
         ll.addView(newListItemHookSwitchInit(this, "以图片方式打开闪照", null, FlashPicHook.get()));
@@ -197,13 +197,13 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         }
         ll.addView(_t = newListItemButton(this, "下载重定向[不支持>=8.2.8]", "N/A", "N/A", this));
         _t.setId(R_ID_BTN_FILE_RECV);
-        __recv_desc = (TextView) _t.findViewById(R_ID_DESCRIPTION);
-        __recv_status = (TextView) _t.findViewById(R_ID_VALUE);
+        __recv_desc = _t.findViewById(R_ID_DESCRIPTION);
+        __recv_status = _t.findViewById(R_ID_VALUE);
         ll.addView(newListItemSwitchConfigNext(this, "禁用QQ热补丁", "一般无需开启", ConfigItems.qn_disable_hot_patch, false));
         ll.addView(subtitle(this, "参数设定"));
         ll.addView(newListItemSwitchStub(this, "禁用特别关心长震动", "等我找到女朋友就开发这个功能", false));
         ll.addView(_t = newListItemButton(this, "管理脚本(.java)", "请注意安全, 合理使用", "N/A", clickToProxyActAction(ManageScriptsActivity.class)));
-        __js_status = (TextView) _t.findViewById(R_ID_VALUE);
+        __js_status = _t.findViewById(R_ID_VALUE);
         ll.addView(subtitle(this, "关于"));
         PackageInfo pi = Utils.getHostInfo(this);
         ll.addView(newListItemDummy(this, pi.applicationInfo.loadLabel(this.getPackageManager()), null, pi.versionName + "(" + pi.versionCode + ")"));

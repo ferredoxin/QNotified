@@ -27,11 +27,11 @@ import android.view.Gravity;
 
 public class ProportionDrawable extends Drawable {
 
-    private int iGravity;
-    private int iDoneColor;
-    private int iUndoneColor;
+    private final int iGravity;
+    private final int iDoneColor;
+    private final int iUndoneColor;
     private float fProportion;
-    private Paint p;
+    private final Paint p;
 
     public ProportionDrawable(int doneColor, int undoneColor, int gravity, float prop) {
         iGravity = gravity;

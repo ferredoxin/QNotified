@@ -38,8 +38,6 @@ import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.NonUiThread;
 import nil.nadph.qnotified.util.Utils;
 
-import java.util.Objects;
-
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.util.Initiator.load;
@@ -58,7 +56,7 @@ public class ViewBuilder {
 
     public static RelativeLayout newListItemSwitch(Context ctx, CharSequence title, CharSequence desc, boolean on, CompoundButton.OnCheckedChangeListener listener) {
         RelativeLayout root = new IsolatedStateRelativeLayout(ctx);
-        root.setId(Objects.hash(title == null ? "" : title));
+        root.setId((title == null ? "" : title).hashCode());
         root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx, CONSTANT_LIST_ITEM_HEIGHT_DP)));
         root.setBackgroundDrawable(ResUtils.getListItemBackground());
         TextView tv = new TextView(ctx);
@@ -124,7 +122,7 @@ public class ViewBuilder {
                 }
             }
         });
-        root.setId(Objects.hash(key));
+        root.setId(key.hashCode());
         return root;
     }
 
@@ -145,7 +143,7 @@ public class ViewBuilder {
                 }
             }
         });
-        root.setId(Objects.hash(key));
+        root.setId(key.hashCode());
         return root;
     }
 
@@ -167,7 +165,7 @@ public class ViewBuilder {
                 }
             }
         });
-        root.setId(Objects.hash(hook));
+        root.setId(hook.getClass().getName().hashCode());
         return root;
     }
 
@@ -179,8 +177,8 @@ public class ViewBuilder {
                 item.setEnabled(isChecked);
             }
         });
-        ((View) root.findViewById(R_ID_SWITCH)).setEnabled(item.isValid());
-        root.setId(Objects.hash(item));
+        root.findViewById(R_ID_SWITCH).setEnabled(item.isValid());
+        root.setId(item.hashCode());
         return root;
     }
 
@@ -359,7 +357,7 @@ public class ViewBuilder {
             root.addView(tv, lp_t);
         }
         root.addView(st, lp_sw);
-        root.setId(Objects.hash(title));
+        root.setId(title.toString().hashCode());
         return root;
     }
 
@@ -425,10 +423,9 @@ public class ViewBuilder {
         root.addView(st, lp_st);
         root.setClickable(true);
         root.setOnClickListener(listener);
-        root.setId(Objects.hash(title));
+        root.setId(title.toString().hashCode());
         return root;
     }
-
 
     public static LinearLayout subtitle(Context ctx, CharSequence title) {
         LinearLayout ll = new LinearLayout(ctx);
