@@ -90,6 +90,7 @@ public class SendBatchMsg {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (LicenseStatus.sDisableCommonHooks) return;
                 try {
                     final Context exactCtx = v.getContext();
                     LinearLayout linearLayout = getEditView(exactCtx);

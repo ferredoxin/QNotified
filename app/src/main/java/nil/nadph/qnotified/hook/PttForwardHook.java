@@ -43,10 +43,7 @@ import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.util.CustomMenu;
-import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.FaceImpl;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.util.*;
 
 import java.io.File;
 import java.lang.reflect.Array;
@@ -281,6 +278,7 @@ public class PttForwardHook extends BaseDelayableHook {
                     XposedBridge.hookMethod(m, new XC_MethodHook(60) {
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            if (LicenseStatus.sDisableCommonHooks) return;
                             try {
                                 ConfigManager cfg = ConfigManager.getDefaultConfig();
                                 if (!cfg.getBooleanOrFalse(qn_enable_ptt_forward)) return;

@@ -73,25 +73,25 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
 
     static private final HashMap<Long, ExfriendManager> instances = new HashMap<>();
     static private ExecutorService tp;
-    private static final Runnable asyncUpdateAwaitingTask = new Runnable() {
-        @Override
-        public void run() {
-            long cuin;
-            try {
-                while (true) {
-                    Thread.sleep(1000L * FL_UPDATE_INT_MAX);
-                    cuin = Utils.getLongAccountUin();
-                    if (cuin > 10000) {
-                        //log("try post task for " + cuin);
-                        ExfriendManager mgr = getCurrent();
-                        mgr.timeToUpdateFl();
-                    }
-                }
-            } catch (Exception e) {
-                log(e);
-            }
-        }
-    };
+    //    private static final Runnable asyncUpdateAwaitingTask = new Runnable() {
+//        @Override
+//        public void run() {
+//            long cuin;
+//            try {
+//                while (true) {
+//                    Thread.sleep(1000L * FL_UPDATE_INT_MAX);
+//                    cuin = Utils.getLongAccountUin();
+//                    if (cuin > 10000) {
+//                        //log("try post task for " + cuin);
+//                        ExfriendManager mgr = getCurrent();
+//                        mgr.timeToUpdateFl();
+//                    }
+//                }
+//            } catch (Exception e) {
+//                log(e);
+//            }
+//        }
+//    };
     public long lastUpdateTimeSec;
     private long mUin;
     private ConcurrentHashMap<Long, FriendRecord> persons;
@@ -109,7 +109,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
             int pt = SyncUtils.getProcessType();
             if (pt != 0 && (pt & (SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF)) != 0) {
                 tp = Executors.newCachedThreadPool();
-                tp.execute(asyncUpdateAwaitingTask);
+                //tp.execute(asyncUpdateAwaitingTask);
             }
         }
         initForUin(uin);

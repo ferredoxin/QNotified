@@ -36,6 +36,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 import dalvik.system.BaseDexClassLoader;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
@@ -426,6 +427,7 @@ public class MainHook {
         initForStubActivity(ctx);
         initForJumpActivityEntry(ctx);
         asyncStartFindClass();
+        if (LicenseStatus.sDisableCommonHooks) return;
         if (LicenseStatus.hasUserAgreeEula()) hideMiniAppEntry();
     }
 
@@ -577,14 +579,35 @@ public class MainHook {
             XposedBridge.hookMethod(doOnCreate, new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    Activity activity = (Activity) param.thisObject;
+                    final Activity activity = (Activity) param.thisObject;
                     Intent intent = activity.getIntent();
                     String cmd;
                     if (intent == null || (cmd = intent.getStringExtra(JUMP_ACTION_CMD)) == null) return;
                     if (JUMP_ACTION_SETTING_ACTIVITY.equals(cmd)) {
-                        Intent realIntent = new Intent(intent);
-                        realIntent.setComponent(new ComponentName(activity, SettingsActivity.class));
-                        activity.startActivity(realIntent);
+                        if (LicenseStatus.sDisableCommonHooks) {
+                            long uin = Utils.getLongAccountUin();
+                            if (uin > 10000) {
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            ExfriendManager.getCurrent().doUpdateUserStatusFlags();
+                                        } catch (final Exception e) {
+                                            activity.runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    Toast.makeText(activity, e.toString(), Toast.LENGTH_LONG).show();
+                                                }
+                                            });
+                                        }
+                                    }
+                                }).start();
+                            }
+                        } else {
+                            Intent realIntent = new Intent(intent);
+                            realIntent.setComponent(new ComponentName(activity, SettingsActivity.class));
+                            activity.startActivity(realIntent);
+                        }
                     }
                 }
             });

@@ -27,6 +27,7 @@ import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
 import java.lang.reflect.Method;
@@ -63,6 +64,7 @@ public class SimpleCheckInHook extends BaseDelayableHook {
             XposedBridge.hookMethod(getMsgType, new XC_MethodHook(39) {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    if (LicenseStatus.sDisableCommonHooks) return;
                     try {
                         ConfigManager cfg = ConfigManager.getDefaultConfig();
                         if (!cfg.getBooleanOrFalse(qn_sign_in_as_text)) return;

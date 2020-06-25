@@ -38,6 +38,7 @@ import nil.nadph.qnotified.bridge.FriendChunk;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
 import java.lang.ref.WeakReference;
@@ -63,9 +64,11 @@ public class DelDetectorHook extends BaseDelayableHook {
         @Override
         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
             try {
+                if (LicenseStatus.sDisableCommonHooks) return;
                 boolean hide = false;
                 try {
                     hide = ConfigManager.getDefaultConfig().getBooleanOrFalse("qn_hide_ex_entry_group");
+                    if (LicenseStatus.isSilentGone()) return;
                 } catch (Throwable e) {
                     log(e);
                 }
@@ -181,6 +184,7 @@ public class DelDetectorHook extends BaseDelayableHook {
                 exfriend.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        if (LicenseStatus.sDisableCommonHooks) return;
                         Intent intent = new Intent(splashActivity, ExfriendListActivity.class);
                         intent.putExtra(ACTIVITY_PROXY_ACTION, ACTION_EXFRIEND_LIST);
                         splashActivity.startActivity(intent);

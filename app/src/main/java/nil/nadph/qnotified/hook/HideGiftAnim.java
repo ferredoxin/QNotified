@@ -26,6 +26,7 @@ import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.step.Step;
+import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.util.Initiator._TroopGiftAnimationController;
@@ -52,6 +53,7 @@ public class HideGiftAnim extends BaseDelayableHook {
             XposedHelpers.findAndHookMethod(clz, "a", load("com/tencent/mobileqq/data/MessageForDeliverGiftTips"), new XC_MethodHook(39) {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    if (LicenseStatus.sDisableCommonHooks) return;
                     try {
                         ConfigManager cfg = ConfigManager.getDefaultConfig();
                         if (!cfg.getBooleanOrFalse(qn_hide_gift_animation)) return;

@@ -25,6 +25,7 @@ import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.step.Step;
+import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
 import java.lang.reflect.Method;
@@ -62,6 +63,7 @@ public class MuteAtAllAndRedPacket extends BaseDelayableHook {
                             XposedBridge.hookMethod(m, new XC_MethodHook(60) {
                                 @Override
                                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                                    if (LicenseStatus.sDisableCommonHooks) return;
                                     int ret = (int) param.getResult();
                                     String troopuin = (String) param.args[2];
                                     if (ret != at_all_type) return;
@@ -83,6 +85,7 @@ public class MuteAtAllAndRedPacket extends BaseDelayableHook {
             XposedHelpers.findAndHookMethod(load("com.tencent.mobileqq.data.MessageForQQWalletMsg"), "doParse", new XC_MethodHook(200) {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    if (LicenseStatus.sDisableCommonHooks) return;
                     boolean mute = false;
                     int istroop = (Integer) iget_object_or_null(param.thisObject, "istroop");
                     if (istroop != 1) return;
