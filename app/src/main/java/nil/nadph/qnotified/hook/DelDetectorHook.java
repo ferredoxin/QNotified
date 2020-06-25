@@ -278,8 +278,8 @@ public class DelDetectorHook extends BaseDelayableHook {
                 try {
                     FriendChunk fc = new FriendChunk(param.thisObject);
                     ExfriendManager.onGetFriendListResp(fc);
-                    int i = fc.getUinIndex(3211711411L);
-                    if (i != -1) nop();
+//                    int i = fc.getUinIndex(3211711411L);
+//                    if (i != -1) nop();
 						/*String ret="dump object:"+param.thisObject.getClass().getCanonicalName()+"\n";
 						 Field[] fs=param.thisObject.getClass().getDeclaredFields();
 						 for(int i=0;i<fs.length;i++){
