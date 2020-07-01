@@ -133,7 +133,13 @@ public class InjectDelayableHooks {
         if (LicenseStatus.hasUserAgreeEula()) {
             for (BaseDelayableHook h : hooks) {
                 try {
-                    if (h.isEnabled() && h.isTargetProc() && h.checkPreconditions()) h.init();
+                    if (h.isEnabled() && h.isTargetProc()) {
+                        if (h.checkPreconditions()) {
+                            h.init();
+                        } else {
+                            loge("InjectDelayableHooks/E not init " + h + " ,since checkPreconditions == false");
+                        }
+                    }
                 } catch (Throwable e) {
                     log(e);
                 }

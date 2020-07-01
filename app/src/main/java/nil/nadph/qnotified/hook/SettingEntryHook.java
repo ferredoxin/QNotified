@@ -32,10 +32,7 @@ import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.activity.EulaActivity;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.util.ActProxyMgr;
-import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.util.*;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -50,6 +47,7 @@ public class SettingEntryHook extends BaseDelayableHook {
     private SettingEntryHook() {
     }
 
+    @NonNull
     public static SettingEntryHook get() {
         return self;
     }
@@ -165,6 +163,11 @@ public class SettingEntryHook extends BaseDelayableHook {
             log(e);
             return false;
         }
+    }
+
+    @Override
+    public boolean checkPreconditions() {
+        return true;
     }
 
     @Override

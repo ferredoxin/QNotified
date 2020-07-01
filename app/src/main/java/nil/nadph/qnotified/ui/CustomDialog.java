@@ -25,6 +25,7 @@ import android.content.DialogInterface;
 import android.view.View;
 import android.widget.TextView;
 import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.NonNull;
 import nil.nadph.qnotified.util.Nullable;
 
 import java.lang.reflect.Field;
@@ -47,7 +48,7 @@ public class CustomDialog {
     public static CustomDialog create(Context ctx) {
         try {
             if (clz_DialogUtil == null) {
-                clz_DialogUtil = DexKit.doFindClass(DexKit.C_DIALOG_UTIL);
+                clz_DialogUtil = DexKit.loadClassFromCache(DexKit.C_DIALOG_UTIL);
             }
             if (clz_CustomDialog == null) {
                 clz_CustomDialog = load("com/tencent/mobileqq/utils/QQCustomDialog");
@@ -185,7 +186,30 @@ public class CustomDialog {
         return this;
     }
 
-    public CustomDialog setPositiveButton(String text, DialogInterface.OnClickListener listener) {
+    @NonNull
+    public CustomDialog setPositiveButton(int text, @Nullable DialogInterface.OnClickListener listener) {
+        Context ctx;
+        if (failsafe) {
+            ctx = mBuilder.getContext();
+        } else {
+            ctx = mDialog.getContext();
+        }
+        return setPositiveButton(ctx.getString(text), listener);
+    }
+
+    @NonNull
+    public CustomDialog setNegativeButton(int text, @Nullable DialogInterface.OnClickListener listener) {
+        Context ctx;
+        if (failsafe) {
+            ctx = mBuilder.getContext();
+        } else {
+            ctx = mDialog.getContext();
+        }
+        return setNegativeButton(ctx.getString(text), listener);
+    }
+
+    @NonNull
+    public CustomDialog setPositiveButton(@NonNull String text, @Nullable DialogInterface.OnClickListener listener) {
         if (!failsafe) {
             if (text != null && listener == null) {
                 listener = new DummyCallback();
@@ -201,7 +225,18 @@ public class CustomDialog {
         return this;
     }
 
-    public CustomDialog setNeutralButton(String text, DialogInterface.OnClickListener listener) {
+    @NonNull
+    public CustomDialog setNeutralButton(@NonNull String text, @Nullable DialogInterface.OnClickListener listener) {
+        if (!failsafe) {
+            //They don't have a neutral button, sigh...
+        } else {
+            mBuilder.setNeutralButton(text, listener);
+        }
+        return this;
+    }
+
+    @NonNull
+    public CustomDialog setNeutralButton(int text, @Nullable DialogInterface.OnClickListener listener) {
         if (!failsafe) {
             //They don't have a neutral button, sigh...
         } else {

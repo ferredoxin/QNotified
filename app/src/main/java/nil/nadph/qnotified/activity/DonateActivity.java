@@ -117,7 +117,11 @@ public class DonateActivity extends IphoneTitleBarActivityCompat {
         ll.addView(newListItemButton(this, "Mail", null, "xenonhydride@gmail.com", null));
         ll.addView(newListItemButton(this, "Telegram", null, "Auride", clickToUrl("https://t.me/Auride")));
         ll.addView(subtitle(this, "扶贫方式"));
-        if (isNiceUser()) ll.addView(newListItemButton(this, "支付宝", null, null, clickToAlipay()));
+        if (isNiceUser()) {
+            ll.addView(newListItemButton(this, "支付宝", null, null, clickToAlipay()));
+            ll.addView(newListItemButton(this, "微信支付", null, null, clickToFxxkWxpay()));
+        }
+        ll.addView(newListItemButton(this, "Bitcoin", null, null, clickToBtc()));
 
         ll.addView(subtitle(this, "FAQ1:"));
         ll.addView(subtitle(this, "Q: 捐赠后能解锁隐藏功能吗?"));
@@ -129,8 +133,8 @@ public class DonateActivity extends IphoneTitleBarActivityCompat {
         ll.addView(subtitle(this, "Q: 已知 我已捐赠 这个Switch开和关没有任何区别,那这个开关意义何在"));
         ll.addView(subtitle(this, "A: 和B站上up主的明示投币一个道理"));
         ll.addView(subtitle(this, "FAQ4:"));
-        ll.addView(subtitle(this, "Q: 为什么不加个授权验证,然后收费?"));
-        ll.addView(subtitle(this, "A: 开源软件搞什么授权验证"));
+        ll.addView(subtitle(this, "Q: 为什么不加个付费验证,然后收费?"));
+        ll.addView(subtitle(this, "A: 开源软件搞什么付费验证"));
 
         //bounceScrollView.setFocusable(true);
         //bounceScrollView.setFocusableInTouchMode(true);
@@ -164,6 +168,28 @@ public class DonateActivity extends IphoneTitleBarActivityCompat {
                                 }
                             }
                         }).setCancelable(true).create().show();
+            }
+        };
+    }
+
+    private View.OnClickListener clickToFxxkWxpay() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CustomDialog.createFailsafe(DonateActivity.this).setTitle("为什么不支持微信支付")
+                        .setMessage("微信支付收款0.01很容易导致账户被冻结, 故不提供微信支付.")
+                        .setPositiveButton("确认", null).setCancelable(true).create().show();
+            }
+        };
+    }
+
+    private View.OnClickListener clickToBtc() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CustomDialog.createFailsafe(DonateActivity.this).setTitle("BTC")
+                        .setMessage("即将开放...")
+                        .setPositiveButton("确认", null).setCancelable(true).create().show();
             }
         };
     }
