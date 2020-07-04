@@ -70,6 +70,8 @@ public class DexKit {
     public static final int C_TEST_STRUCT_MSG = 18;
     public static final int C_QZONE_MSG_NOTIFY = 19;
     public static final int C_APP_CONSTANTS = 20;
+    public static final int C_CustomWidgetUtil = 21;
+    // TODO: 2020/7/4 add CustomWidgetUtil to DexKit
 
     //the last index
     public static final int DEOBF_NUM_C = 20;

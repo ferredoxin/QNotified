@@ -35,10 +35,10 @@ import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.bridge.ChatActivityFacade;
 import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.dialog.RepeaterIconSettingDialog;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.ui.LinearLayoutDelegate;
 import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.RepeaterIconSettingDialog;
 import nil.nadph.qnotified.util.Utils;
 
 import java.lang.reflect.Method;

@@ -1,4 +1,4 @@
-package nil.nadph.qnotified.util;
+package nil.nadph.qnotified.dialog;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -15,6 +15,7 @@ import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.DebugDrawable;
 import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.util.Utils;
 
 import java.io.*;
 

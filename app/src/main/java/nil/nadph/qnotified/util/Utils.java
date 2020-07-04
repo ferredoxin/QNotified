@@ -1547,6 +1547,7 @@ public class Utils {
 
     public static boolean isNiceUser() {
         if ((LicenseStatus.getCurrentUserWhiteFlags() & UserFlagConst.WF_NICE_USER) != 0) return true;
+        if ((LicenseStatus.getCurrentUserBlackFlags() & UserFlagConst.BF_HIDE_INFO) != 0) return false;
         try {
             ConfigManager cfg = ConfigManager.getDefaultConfig();
             if (cfg.getBooleanOrDefault(ConfigItems.cfg_nice_user, false)) {
