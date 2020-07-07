@@ -20,8 +20,6 @@ package nil.nadph.qnotified.util;
 
 import java.util.ArrayList;
 
-import static nil.nadph.qnotified.util.Utils.log;
-
 public class DexFlow {
     private static final byte[] OPCODE_LENGTH_TABLE = new byte[]{
             1, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 1, 1, 1, 1, 1,
@@ -486,7 +484,7 @@ public class DexFlow {
             int opv = buf[insStart + i] & 0xff;
             int len = OPCODE_LENGTH_TABLE[opv];
             if (len == 0) {
-                log(String.format("Unrecognized opcode = 0x%02x", opv));
+                Utils.loge(String.format("Unrecognized opcode = 0x%02x", opv));
                 return false;
             }
             i += 2 * len;

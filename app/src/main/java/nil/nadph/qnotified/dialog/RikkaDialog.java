@@ -13,8 +13,10 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
+import nil.nadph.qnotified.hook.rikka.ShowMsgCount;
 import nil.nadph.qnotified.ui.DummyDrawable;
 import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.ui.ViewBuilder;
 import nil.nadph.qnotified.util.NonNull;
 import nil.nadph.qnotified.util.Utils;
 
@@ -136,7 +138,6 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
     private RikkaConfigItem[] queryRikkaHooks() {
         return new RikkaConfigItem[]{
                 RikkaConfigItem.createDummy(this, "dummy0"),
-                RikkaConfigItem.createDummy(this, "dummy1"),
                 RikkaConfigItem.createStub(this, "隐藏截屏分享"),
                 RikkaConfigItem.createStub(this, "隐藏群内右上角一起嗨"),
                 RikkaConfigItem.createStub(this, "屏蔽群名片炫彩字"),
@@ -145,7 +146,7 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
                 RikkaConfigItem.createStub(this, "屏蔽戳一戳窗口动画"),
                 RikkaConfigItem.createStub(this, "聊天页显示完整时间"),
                 RikkaConfigItem.createStub(this, "自定义机型"),
-                RikkaConfigItem.createStub(this, "显示具体消息数量"),
+                RikkaConfigItem.create(this, "显示具体消息数量", ShowMsgCount.get()),
                 RikkaConfigItem.createStub(this, "群上传apk显示应用名"),
                 RikkaConfigItem.createStub(this, "免广告送免费礼物"),
                 RikkaConfigItem.createStub(this, "聊天界面+号显示更多功能"),
@@ -179,9 +180,24 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
             return new RikkaConfigItem(dialog) {
 
                 @Override
-                public void onClick(View v) {
+                public void onClick(final View v) {
                     hook.setEnabled(!hook.isEnabled());
-                    invalidateStatus();
+                    if (hook.isEnabled() && !hook.isInited()) {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ViewBuilder.doSetupAndInit(v.getContext(), hook);
+                                v.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        invalidateStatus();
+                                    }
+                                });
+                            }
+                        }).start();
+                    } else {
+                        invalidateStatus();
+                    }
                 }
 
                 @Override

@@ -80,7 +80,7 @@ public class DonateActivity extends IphoneTitleBarActivityCompat {
 
         ll.addView(subtitle(this, "QNotified是开源软件,完全免费,无需任何授权/卡密/加群即可使用全部功能,没有卡密或者授权这类的东西,请勿上当受骗!!!"));
         ll.addView(subtitle(this, "如果你希望支持作者, 保持更新的动力, 可请使用以下方式捐赠, 完成后手动打开 [我已捐赠] 即可"));
-        ll.addView(subtitle(this, "免费开发不易, 需要花费很多个人精力, 且回报甚微, 甚至有人盗卖, 感谢理解"));
+        ll.addView(subtitle(this, "免费开发不易, 需要花费很多个人精力, 且回报甚微, 甚至被人盗卖, 感谢理解"));
         RelativeLayout iHaveDonated = newListItemSwitchConfig(this, "我已捐赠", null, qn_donated_choice, false);
         ((CompoundButton) iHaveDonated.findViewById(R_ID_SWITCH)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -162,7 +162,7 @@ public class DonateActivity extends IphoneTitleBarActivityCompat {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 if (!hasAlipay()) {
-                                    showToastShort(DonateActivity.this, "未安装支付宝");
+                                    showToastShort(DonateActivity.this, "拉起支付宝失败");
                                 } else {
                                     jumpToAlipay();
                                 }

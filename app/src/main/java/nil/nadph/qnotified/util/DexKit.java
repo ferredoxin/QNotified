@@ -71,10 +71,9 @@ public class DexKit {
     public static final int C_QZONE_MSG_NOTIFY = 19;
     public static final int C_APP_CONSTANTS = 20;
     public static final int C_CustomWidgetUtil = 21;
-    // TODO: 2020/7/4 add CustomWidgetUtil to DexKit
 
     //the last index
-    public static final int DEOBF_NUM_C = 20;
+    public static final int DEOBF_NUM_C = 21;
 
     public static final int N_BASE_CHAT_PIE__INIT = 20001;
     public static final int N_BASE_CHAT_PIE__handleNightMask = 20002;
@@ -192,7 +191,7 @@ public class DexKit {
                 log("Unable to deobf: " + c(i));
                 return null;
             }
-            report.v(methods.size() + " methods(es) found: " + methods);
+            report.v(methods.size() + " method(s) found: " + methods);
             if (methods.size() == 1) {
                 ret = methods.iterator().next();
             } else {
@@ -254,6 +253,8 @@ public class DexKit {
                 return "qzone_msg_notify";
             case C_APP_CONSTANTS:
                 return "app_constants";
+            case C_CustomWidgetUtil:
+                return "CustomWidgetUtil";
             case N_BASE_CHAT_PIE__INIT:
                 return "base_chat_pie__init";
             case N_BASE_CHAT_PIE__handleNightMask:
@@ -323,6 +324,9 @@ public class DexKit {
             case C_APP_CONSTANTS:
                 ret = "com.tencent.mobileqq.app.AppConstants";
                 break;
+            case C_CustomWidgetUtil:
+                ret = "com.tencent.widget.CustomWidgetUtil";
+                break;
             case N_BASE_CHAT_PIE__INIT:
             case N_BASE_CHAT_PIE__handleNightMask:
                 ret = _BaseChatPie().getName();
@@ -386,6 +390,9 @@ public class DexKit {
                 return new byte[][]{new byte[]{0x0F, 0x69, 0x6E, 0x70, 0x75, 0x74, 0x20, 0x73, 0x65, 0x74, 0x20, 0x65, 0x72, 0x72, 0x6F, 0x72}};
             case N_BASE_CHAT_PIE__handleNightMask:
                 return new byte[][]{new byte[]{0x2D, 0x23, 0x68, 0x61, 0x6E, 0x64, 0x6C, 0x65, 0x4E, 0x69, 0x67, 0x68, 0x74, 0x4D, 0x61, 0x73, 0x6B, 0x23, 0x20, 0x3A, 0x20, 0x69, 0x6E, 0x4E, 0x69, 0x67, 0x68, 0x74, 0x4D, 0x6F, 0x64, 0x65}};
+            case C_CustomWidgetUtil:
+                return new byte[][]{new byte[]{0x03, 0x4E, 0x45, 0x57, 0x00}};
+
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
@@ -433,6 +440,8 @@ public class DexKit {
             case N_BASE_CHAT_PIE__INIT:
             case N_BASE_CHAT_PIE__handleNightMask:
                 return new int[]{7, 6, 3};
+            case C_CustomWidgetUtil:
+                return new int[]{5, 4, 9};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
@@ -573,8 +582,28 @@ public class DexKit {
                     if (m.declaringClass.replace('/', '.').contains(_BaseChatPie().getName())) return m;
                 }
                 break;
+            case C_CustomWidgetUtil:
+                a:
+                for (DexMethodDescriptor m : __methods) {
+                    Class clz = Initiator.load(m.declaringClass);
+                    if (clz.isEnum()) continue;
+                    if (Modifier.isAbstract(clz.getModifiers())) continue;
+                    if (Object.class != clz.getSuperclass()) continue;
+                    for (Field f : clz.getDeclaredFields()) {
+                        if (!Modifier.isStatic(f.getModifiers())) continue a;
+                    }
+                    return m;
+                }
+                break;
         }
         return null;
+    }
+
+    public static boolean p(int i) {
+        if (i == C_CustomWidgetUtil) {
+            return true;
+        }
+        return false;
     }
 
     @Nullable
@@ -583,12 +612,24 @@ public class DexKit {
         int record = 0;
         int[] qf = d(i);
         byte[][] keys = b(i);
+        boolean check = p(i);
         if (qf != null) for (int dexi : qf) {
             record |= 1 << dexi;
             try {
                 for (byte[] k : keys) {
                     HashSet<DexMethodDescriptor> ret = findMethodsByConstString(k, dexi, loader);
-                    if (ret != null && ret.size() > 0) return ret;
+                    if (ret != null && ret.size() > 0) {
+                        if (check) {
+                            DexMethodDescriptor m = a(i, ret, rep);
+                            if (m != null) {
+                                ret.clear();
+                                ret.add(m);
+                                return ret;
+                            }
+                        } else {
+                            return ret;
+                        }
+                    }
                 }
             } catch (FileNotFoundException ignored) {
             }
@@ -602,7 +643,18 @@ public class DexKit {
             try {
                 for (byte[] k : keys) {
                     HashSet<DexMethodDescriptor> ret = findMethodsByConstString(k, dexi, loader);
-                    if (ret != null && ret.size() > 0) return ret;
+                    if (ret != null && ret.size() > 0) {
+                        if (check) {
+                            DexMethodDescriptor m = a(i, ret, rep);
+                            if (m != null) {
+                                ret.clear();
+                                ret.add(m);
+                                return ret;
+                            }
+                        } else {
+                            return ret;
+                        }
+                    }
                 }
             } catch (FileNotFoundException ignored) {
                 return null;

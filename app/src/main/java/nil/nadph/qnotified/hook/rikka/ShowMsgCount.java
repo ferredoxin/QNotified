@@ -19,13 +19,17 @@
 package nil.nadph.qnotified.hook.rikka;
 
 import android.os.Looper;
+import android.widget.TextView;
 import android.widget.Toast;
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.NonNull;
 import nil.nadph.qnotified.util.Utils;
 
@@ -48,7 +52,14 @@ public class ShowMsgCount extends BaseDelayableHook {
     public boolean init() {
         if (inited) return true;
         try {
-
+            XposedHelpers.findAndHookMethod(DexKit.doFindClass(DexKit.C_CustomWidgetUtil), "a", TextView.class, Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE, String.class, new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    if (LicenseStatus.sDisableCommonHooks) return;
+                    if (!isEnabled()) return;
+                    param.args[4] = Integer.MAX_VALUE;
+                }
+            });
             inited = true;
             return true;
         } catch (Throwable e) {
@@ -59,7 +70,7 @@ public class ShowMsgCount extends BaseDelayableHook {
 
     @Override
     public Step[] getPreconditions() {
-        return new Step[]{new DexDeobfStep(DexKit.C_TROOP_GIFT_UTIL)};
+        return new Step[]{new DexDeobfStep(DexKit.C_CustomWidgetUtil)};
     }
 
     @Override

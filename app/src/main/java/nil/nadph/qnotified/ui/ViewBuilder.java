@@ -221,7 +221,7 @@ public class ViewBuilder {
         return root;
     }
 
-    private static void doSetupAndInit(final Context ctx, BaseDelayableHook hook) {
+    public static void doSetupAndInit(final Context ctx, BaseDelayableHook hook) {
         final CustomDialog[] pDialog = new CustomDialog[1];
         for (Step s : hook.getPreconditions()) {
             if (s.isDone()) continue;

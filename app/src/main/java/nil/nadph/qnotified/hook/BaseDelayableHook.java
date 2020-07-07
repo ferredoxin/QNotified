@@ -20,7 +20,9 @@ package nil.nadph.qnotified.hook;
 
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.SwitchConfigItem;
+import nil.nadph.qnotified.hook.rikka.ShowMsgCount;
 import nil.nadph.qnotified.step.Step;
+import nil.nadph.qnotified.util.NonNull;
 import nil.nadph.qnotified.util.Utils;
 
 public abstract class BaseDelayableHook implements SwitchConfigItem {
@@ -62,7 +64,8 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 DefaultBubbleHook.get(),
                 DarkOverlayHook.get(),
                 GagInfoDisclosure.get(),
-                PicMd5Hook.get()
+                PicMd5Hook.get(),
+                ShowMsgCount.get()
         };
         return sAllHooks;
     }
@@ -86,6 +89,7 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
 
     public abstract boolean init();
 
+    @NonNull
     public abstract Step[] getPreconditions();
 
     @Override
@@ -112,10 +116,15 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
         return -1;
     }
 
+    /**
+     * safe to call, no Throwable allowed
+     *
+     * @return whether the config item is enabled
+     */
     public abstract boolean isEnabled();
 
     /**
-     * This method must be safe to call even it is NOT inited
+     * This method must be safe to call even if it is NOT inited
      *
      * @param enabled has no effect if isValid() returns false
      */
