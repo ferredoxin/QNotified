@@ -20,6 +20,7 @@ package nil.nadph.qnotified.hook;
 
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.SwitchConfigItem;
+import nil.nadph.qnotified.hook.rikka.IgnoreDiyCard;
 import nil.nadph.qnotified.hook.rikka.ShowMsgCount;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.NonNull;
@@ -65,7 +66,9 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 DarkOverlayHook.get(),
                 GagInfoDisclosure.get(),
                 PicMd5Hook.get(),
-                ShowMsgCount.get()
+                ShowMsgCount.get(),
+                IgnoreDiyCard.get(),
+                InspectMessage.get()
         };
         return sAllHooks;
     }

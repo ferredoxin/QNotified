@@ -77,7 +77,8 @@ public class DexKit {
 
     public static final int N_BASE_CHAT_PIE__INIT = 20001;
     public static final int N_BASE_CHAT_PIE__handleNightMask = 20002;
-    public static final int DEOBF_NUM_N = 2;
+    public static final int N_BASE_CHAT_PIE__updateSession = 20003;
+    public static final int DEOBF_NUM_N = 3;
 
 
     @Nullable
@@ -259,6 +260,8 @@ public class DexKit {
                 return "base_chat_pie__init";
             case N_BASE_CHAT_PIE__handleNightMask:
                 return "base_chat_pie__handleNightMask";
+            case N_BASE_CHAT_PIE__updateSession:
+                return "base_chat_pie__updateSession";
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
@@ -329,6 +332,7 @@ public class DexKit {
                 break;
             case N_BASE_CHAT_PIE__INIT:
             case N_BASE_CHAT_PIE__handleNightMask:
+            case N_BASE_CHAT_PIE__updateSession:
                 ret = _BaseChatPie().getName();
                 break;
             default:
@@ -390,6 +394,8 @@ public class DexKit {
                 return new byte[][]{new byte[]{0x0F, 0x69, 0x6E, 0x70, 0x75, 0x74, 0x20, 0x73, 0x65, 0x74, 0x20, 0x65, 0x72, 0x72, 0x6F, 0x72}};
             case N_BASE_CHAT_PIE__handleNightMask:
                 return new byte[][]{new byte[]{0x2D, 0x23, 0x68, 0x61, 0x6E, 0x64, 0x6C, 0x65, 0x4E, 0x69, 0x67, 0x68, 0x74, 0x4D, 0x61, 0x73, 0x6B, 0x23, 0x20, 0x3A, 0x20, 0x69, 0x6E, 0x4E, 0x69, 0x67, 0x68, 0x74, 0x4D, 0x6F, 0x64, 0x65}};
+            case N_BASE_CHAT_PIE__updateSession:
+                return new byte[][]{new byte[]{0x19, 0x41, 0x49, 0x4F, 0x54, 0x69, 0x6D, 0x65, 0x20, 0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6F, 0x6E, 0x20, 0x65, 0x6E, 0x64}};
             case C_CustomWidgetUtil:
                 return new byte[][]{new byte[]{0x03, 0x4E, 0x45, 0x57, 0x00}};
 
@@ -439,6 +445,7 @@ public class DexKit {
                 return new int[]{1};
             case N_BASE_CHAT_PIE__INIT:
             case N_BASE_CHAT_PIE__handleNightMask:
+            case N_BASE_CHAT_PIE__updateSession:
                 return new int[]{7, 6, 3};
             case C_CustomWidgetUtil:
                 return new int[]{5, 4, 9};
@@ -578,6 +585,7 @@ public class DexKit {
                 break;
             case N_BASE_CHAT_PIE__INIT:
             case N_BASE_CHAT_PIE__handleNightMask:
+            case N_BASE_CHAT_PIE__updateSession:
                 for (DexMethodDescriptor m : __methods) {
                     if (m.declaringClass.replace('/', '.').contains(_BaseChatPie().getName())) return m;
                 }

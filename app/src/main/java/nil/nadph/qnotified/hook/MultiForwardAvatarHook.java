@@ -48,7 +48,7 @@ public class MultiForwardAvatarHook extends BaseDelayableHook {
     public static final String qn_multi_forward_avatar_profile = "qn_multi_forward_avatar_profile";
     private static final MultiForwardAvatarHook self = new MultiForwardAvatarHook();
     private boolean inited = false;
-    private Field mLeftCheckBoxVisible = null;
+    private static Field mLeftCheckBoxVisible = null;
 
     private MultiForwardAvatarHook() {
     }
@@ -254,7 +254,7 @@ public class MultiForwardAvatarHook extends BaseDelayableHook {
     }
 
     @UiThread
-    private static void createAndShowDialogForDetail(final Context ctx, final Object msg) {
+    public static void createAndShowDialogForDetail(final Context ctx, final Object msg) {
         if (msg == null) {
             loge("createAndShowDialogForDetail/E msg == null");
             return;
@@ -402,7 +402,7 @@ public class MultiForwardAvatarHook extends BaseDelayableHook {
         }
     }
 
-    public boolean isLeftCheckBoxVisible() {
+    public static boolean isLeftCheckBoxVisible() {
         Field a = null, b = null;
         try {
             if (mLeftCheckBoxVisible != null) {

@@ -334,4 +334,9 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
         makingMol = null;
         refreshId++;
     }
+
+    @Override
+    public boolean isWrapContent() {
+        return LicenseStatus.getAuth2Molecule() != null || bypassMode;
+    }
 }

@@ -131,7 +131,7 @@ public class RikkaColorPickDialog extends RikkaDialog.RikkaConfigItem {
     }
 
     public static int getCurrentRikkaBorderColor() {
-        final int DEFAULT_COLOR = 0xFF4040FF;
+        final int DEFAULT_COLOR = 0xFFFF8000;
         ConfigManager cfg = ConfigManager.getDefaultConfig();
         if (cfg.getBooleanOrFalse(rq_dialog_border_color_enabled)) {
             return cfg.getIntOrDefault(rq_dialog_border_color, DEFAULT_COLOR);

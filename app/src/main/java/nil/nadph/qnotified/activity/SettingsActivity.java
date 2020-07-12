@@ -106,7 +106,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             ll.addView(_t = newListItemButton(this, "自定义电量", "[QQ>=8.2.6]在线模式为我的电量时生效", "N/A", clickToProxyActAction(ACTION_FAKE_BAT_CONFIG_ACTIVITY)));
             __tv_fake_bat_status = _t.findViewById(R_ID_VALUE);
         }
-        ll.addView(newListItemButton(this, "花Q", null, null, new View.OnClickListener() {
+        ll.addView(newListItemButton(this, "花Q(缩水版)", "若无另行说明, 所有功能开关都即时生效", null, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 RikkaDialog.showRikkaFuncDialog(SettingsActivity.this);
@@ -149,6 +149,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(subtitle(this, "实验性功能(未必有效)"));
         ll.addView(newListItemHookSwitchInit(this, "收藏更多表情", "[暂不支持>=8.2.0]保存在本地", FavMoreEmo.get()));
         ll.addView(newListItemHookSwitchInit(this, "屏蔽更新提醒", null, PreUpgradeHook.get()));
+        ll.addView(newListItemHookSwitchInit(this, "检查消息", "长按AIO右下角+后点头像", InspectMessage.get()));
         if (!Utils.isTim(this)) {
             ll.addView(newListItemHookSwitchInit(this, "自定义猜拳骰子", null, CheatHook.get()));
             ll.addView(newListItemHookSwitchInit(this, "简洁模式圆头像", "From Rikka", RoundAvatarHook.get()));

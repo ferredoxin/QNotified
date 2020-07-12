@@ -520,6 +520,16 @@ public class ViewBuilder {
         };
     }
 
+    public static View.OnLongClickListener longClickToTest() {
+        return new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Utils.showToastShort(v.getContext(), "TEST");
+                return false;
+            }
+        };
+    }
+
     public static LinearLayout.LayoutParams newLinearLayoutParams(int width, int height, int left, int top, int right, int bottom) {
         LinearLayout.LayoutParams ret = new LinearLayout.LayoutParams(width, height);
         ret.setMargins(left, top, right, bottom);

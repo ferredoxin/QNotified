@@ -52,14 +52,16 @@ public class ShowMsgCount extends BaseDelayableHook {
     public boolean init() {
         if (inited) return true;
         try {
-            XposedHelpers.findAndHookMethod(DexKit.doFindClass(DexKit.C_CustomWidgetUtil), "a", TextView.class, Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE, String.class, new XC_MethodHook() {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.sDisableCommonHooks) return;
-                    if (!isEnabled()) return;
-                    param.args[4] = Integer.MAX_VALUE;
-                }
-            });
+            XposedHelpers.findAndHookMethod(DexKit.doFindClass(DexKit.C_CustomWidgetUtil), "a",
+                    TextView.class, Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE, String.class,
+                    new XC_MethodHook(49) {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            if (LicenseStatus.sDisableCommonHooks) return;
+                            if (!isEnabled()) return;
+                            param.args[4] = Integer.MAX_VALUE;
+                        }
+                    });
             inited = true;
             return true;
         } catch (Throwable e) {

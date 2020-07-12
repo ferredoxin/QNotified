@@ -16,7 +16,7 @@
  * License along with this library.  If not, see
  * <https://www.gnu.org/licenses/>.
  */
-package nil.nadph.qnotified.hook;
+package nil.nadph.qnotified.hook.rikka;
 
 import android.os.Looper;
 import android.widget.Toast;
@@ -24,67 +24,56 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.step.DexDeobfStep;
+import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.NonNull;
 import nil.nadph.qnotified.util.Utils;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
-public class MuteQZoneThumbsUp extends BaseDelayableHook {
-
-    public static final String qn_mute_thumb_up = "qn_mute_thumb_up";
-    private static final MuteQZoneThumbsUp self = new MuteQZoneThumbsUp();
+public class IgnoreDiyCard extends BaseDelayableHook {
+    public static final String rq_ignore_diy_card = "rq_ignore_diy_card";
+    private static final IgnoreDiyCard self = new IgnoreDiyCard();
     private boolean inited = false;
 
-    private MuteQZoneThumbsUp() {
+    private IgnoreDiyCard() {
     }
 
-    public static MuteQZoneThumbsUp get() {
+    @NonNull
+    public static IgnoreDiyCard get() {
         return self;
     }
-
-    protected int MSG_INFO_OFFSET = -1;
 
     @Override
     public boolean init() {
         if (inited) return true;
         try {
-            Class<?> clz = DexKit.doFindClass(DexKit.C_QZONE_MSG_NOTIFY);
-            Method showQZoneMsgNotification = null;
-            for (Method m : clz.getDeclaredMethods()) {
-                if (m.getReturnType().equals(void.class)) {
-                    if (showQZoneMsgNotification == null ||
-                            m.getParameterTypes().length > showQZoneMsgNotification.getParameterTypes().length) {
-                        showQZoneMsgNotification = m;
-                    }
+            Method initHeaderView = null;
+            for (Method m : load("com.tencent.mobileqq.activity.FriendProfileCardActivity").getDeclaredMethods()) {
+                if (m.getName().equals("a") && m.getReturnType().equals(void.class)) {
+                    Class<?>[] argt = m.getParameterTypes();
+                    if (argt.length != 1) continue;
+                    initHeaderView = m;
+                    break;
                 }
             }
-            XposedBridge.hookMethod(showQZoneMsgNotification, new XC_MethodHook() {
+            XposedBridge.hookMethod(initHeaderView, new XC_MethodHook(49) {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     if (LicenseStatus.sDisableCommonHooks) return;
                     if (!isEnabled()) return;
-                    if (MSG_INFO_OFFSET < 0) {
-                        Class<?>[] argt = ((Method) param.method).getParameterTypes();
-                        int hit = 0;
-                        for (int i = 0; i < argt.length; i++) {
-                            if (argt[i].equals(String.class)) {
-                                if (hit == 1) {
-                                    MSG_INFO_OFFSET = i;
-                                    break;
-                                } else {
-                                    hit++;
-                                }
-                            }
-                        }
-                    }
-                    String desc = (String) param.args[MSG_INFO_OFFSET];
-                    if (desc != null && (desc.endsWith("赞了你的说说") || desc.endsWith("赞了你的分享") || desc.endsWith("赞了你的照片"))) {
-                        param.setResult(null);
+                    Class<?> _ProfileCardInfo = ((Method) param.method).getParameterTypes()[0];
+                    Object info = Utils.iget_object_or_null(param.thisObject, "a", _ProfileCardInfo);
+                    Class<?> _Card = load("com.tencent.mobileqq.data.Card");
+                    Object card = Utils.iget_object_or_null(info, "a", _Card);
+                    Field f = _Card.getField("lCurrentStyleId");
+                    if (f.getLong(card) == 22) {
+                        f.setLong(card, 0);
                     }
                 }
             });
@@ -94,6 +83,11 @@ public class MuteQZoneThumbsUp extends BaseDelayableHook {
             log(e);
             return false;
         }
+    }
+
+    @Override
+    public Step[] getPreconditions() {
+        return new Step[0];
     }
 
     @Override
@@ -107,15 +101,10 @@ public class MuteQZoneThumbsUp extends BaseDelayableHook {
     }
 
     @Override
-    public Step[] getPreconditions() {
-        return new Step[]{new DexDeobfStep(DexKit.C_QZONE_MSG_NOTIFY)};
-    }
-
-    @Override
     public void setEnabled(boolean enabled) {
         try {
             ConfigManager mgr = ConfigManager.getDefaultConfig();
-            mgr.getAllConfig().put(qn_mute_thumb_up, enabled);
+            mgr.getAllConfig().put(rq_ignore_diy_card, enabled);
             mgr.save();
         } catch (final Exception e) {
             Utils.log(e);
@@ -134,11 +123,14 @@ public class MuteQZoneThumbsUp extends BaseDelayableHook {
 
     @Override
     public boolean isEnabled() {
-        try {
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_mute_thumb_up);
-        } catch (Exception e) {
-            log(e);
-            return false;
-        }
+        return false;
+        // TODO: 2020/7/12 Fix compatibility for QQ8.3.9
+//        try {
+//            return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_ignore_diy_card);
+//        } catch (Exception e) {
+//            log(e);
+//            return false;
+//        }
     }
 }
+
