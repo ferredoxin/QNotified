@@ -102,12 +102,30 @@ public class InspectMessage extends BaseDelayableHook implements View.OnLongClic
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     if (LicenseStatus.sDisableCommonHooks) return;
+                    if (!isEnabled()) return;
                     ViewGroup panel = (ViewGroup) param.thisObject;
-                    View v = panel.getChildAt(panel.getChildCount() - 1);
+                    final View v = panel.getChildAt(panel.getChildCount() - 1);
                     v.setOnLongClickListener(InspectMessage.this);
                 }
             });
             //end panel
+            //begin tweak
+            findAndHookMethod(load("com.tencent.mobileqq.activity.aio.panel.PanelIconLinearLayout"), "setAllEnable", boolean.class, new XC_MethodHook(47) {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    if (LicenseStatus.sDisableCommonHooks) return;
+                    if (!isEnabled()) return;
+                    boolean z = (boolean) param.args[0];
+                    ViewGroup panel = (ViewGroup) param.thisObject;
+                    int cnt = panel.getChildCount();
+                    if (cnt == 0) return;
+                    View v = panel.getChildAt(cnt - 1);
+                    v.setEnabled(true);
+                    v.setClickable(z);
+                    v.setLongClickable(true);
+                }
+            });
+            //end tweak
             inited = true;
             return true;
         } catch (Throwable e) {
