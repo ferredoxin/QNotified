@@ -142,4 +142,14 @@ public class IphoneTitleBarActivityCompat extends IphoneTitleBarActivity {
         }
     }
 
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            Bundle windowState = savedInstanceState.getBundle("android:viewHierarchyState");
+            if (windowState != null) {
+                windowState.setClassLoader(IphoneTitleBarActivityCompat.class.getClassLoader());
+            }
+        }
+        super.onRestoreInstanceState(savedInstanceState);
+    }
 }
