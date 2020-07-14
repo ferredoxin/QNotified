@@ -55,7 +55,7 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
         } catch (Throwable e) {
             Utils.log(e);
         }
-        if (textColor == null || dialogBgDrawable == null) {
+        if (textColor == null || dialogBgColor == null) {
             if (nightMode) {
                 textColor = ColorStateList.valueOf(Color.WHITE);
                 dialogBgColor = ColorStateList.valueOf(Color.BLACK);
