@@ -66,7 +66,7 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
         }
         int __5_dp = Utils.dip2px(mContext, 5);
         dialogBgDrawable = new GradientDrawable();
-        dialogBgDrawable.setColor(dialogBgColor);
+        dialogBgDrawable.setColor(dialogBgColor.getDefaultColor());
         float f = __5_dp * 2;
         dialogBgDrawable.setCornerRadii(new float[]{f, f, f, f, f, f, f, f});
         itemOffDrawable = new GradientDrawable();
