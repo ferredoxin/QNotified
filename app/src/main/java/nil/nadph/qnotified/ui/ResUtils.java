@@ -45,7 +45,7 @@ public class ResUtils {
     static public ColorStateList skin_black;
     static public ColorStateList skin_red;
     static public ColorStateList skin_blue;
-    static public ColorStateList skin_color_white;
+    static public ColorStateList skin_tips;
     static public Drawable bg_texture;
     static public Drawable skin_list_item_normal = null, skin_list_item_unread = null, skin_list_item_pressed = null;
     static public Drawable list_checkbox_selected_nopress, list_checkbox_selected, list_checkbox_multi, list_checkbox;
@@ -67,7 +67,7 @@ public class ResUtils {
         skin_gray3
                 = skin_black
                 = skin_red
-                = skin_blue = skin_color_white = null;
+                = skin_blue = skin_tips = null;
         skin_list_item_normal = skin_list_item_unread = skin_list_item_pressed
                 = skin_background = null;
         list_checkbox_selected_nopress = list_checkbox_selected = list_checkbox_multi = list_checkbox = null;
@@ -89,7 +89,7 @@ public class ResUtils {
         if (skin_icon_arrow_right_normal == null)
             skin_icon_arrow_right_normal = loadDrawableFromAsset("skin_icon_arrow_right_normal.png", ctx);
         if (skin_black == null) skin_black = ColorStateList.valueOf(0xFF000000);
-        if (skin_color_white == null) skin_color_white = ColorStateList.valueOf(0xFFFFFFFF);
+        if (skin_tips == null) skin_tips = ColorStateList.valueOf(0xFFFFFFFF);
         if (skin_red == null) skin_red = ColorStateList.valueOf(Color.argb(255, 255, 70, 41));
         if (skin_gray3 == null) skin_gray3 = ColorStateList.valueOf(Color.argb(255, 128, 128, 128));
         if (skin_blue == null) skin_blue = ColorStateList.valueOf(Color.argb(255, 0, 182, 249));

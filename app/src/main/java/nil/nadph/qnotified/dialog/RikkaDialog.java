@@ -51,7 +51,7 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
                 ResUtils.initTheme(mContext);
             }
             textColor = ResUtils.skin_black;
-            dialogBgColor = ResUtils.skin_color_white;
+            dialogBgColor = ColorStateList.valueOf(ResUtils.skin_tips.getDefaultColor());
         } catch (Throwable e) {
             Utils.log(e);
         }
