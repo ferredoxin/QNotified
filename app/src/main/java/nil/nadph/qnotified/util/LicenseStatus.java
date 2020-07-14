@@ -152,17 +152,26 @@ public class LicenseStatus {
     public static final String qn_auth_uin_white_flags = "qn_auth_uin_white_flags";
     public static final String qn_auth_uin_update_time = "qn_auth_uin_update_time";
 
+    public static final String qn_sticky_black_flags = "qn_sticky_black_flags";
+    public static final String qn_sticky_white_flags = "qn_sticky_white_flags";
+
     public static int getCurrentUserBlackFlags() {
         long uin = Utils.getLongAccountUin();
         if (uin < 10000) return 0;
         ExfriendManager exm = ExfriendManager.get(uin);
-        return exm.getIntOrDefault(qn_auth_uin_black_flags, 0);
+        int user = exm.getIntOrDefault(qn_auth_uin_black_flags, 0);
+        ConfigManager cfg = ConfigManager.getDefaultConfig();
+        int sticky = cfg.getIntOrDefault(qn_sticky_black_flags, 0);
+        return user | sticky;
     }
 
     public static int getCurrentUserWhiteFlags() {
         long uin = Utils.getLongAccountUin();
         if (uin < 10000) return 0;
         ExfriendManager exm = ExfriendManager.get(uin);
-        return exm.getIntOrDefault(qn_auth_uin_white_flags, 0);
+        int user = exm.getIntOrDefault(qn_auth_uin_white_flags, 0);
+        ConfigManager cfg = ConfigManager.getDefaultConfig();
+        int sticky = cfg.getIntOrDefault(qn_sticky_white_flags, 0);
+        return user | sticky;
     }
 }

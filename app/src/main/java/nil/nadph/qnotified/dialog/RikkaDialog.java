@@ -29,6 +29,7 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
     GradientDrawable itemOffDrawable;
     GradientDrawable dialogBgDrawable;
     private ColorStateList textColor;
+    private ColorStateList dialogBgColor;
 
     protected RikkaDialog(Context context) {
         super(context);
@@ -50,23 +51,22 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
                 ResUtils.initTheme(mContext);
             }
             textColor = ResUtils.skin_black;
+            dialogBgColor = ResUtils.skin_color_white;
         } catch (Throwable e) {
             Utils.log(e);
         }
-        if (textColor == null) {
+        if (textColor == null || dialogBgDrawable == null) {
             if (nightMode) {
                 textColor = ColorStateList.valueOf(Color.WHITE);
+                dialogBgColor = ColorStateList.valueOf(Color.BLACK);
             } else {
                 textColor = ColorStateList.valueOf(Color.BLACK);
+                dialogBgColor = ColorStateList.valueOf(Color.WHITE);
             }
         }
         int __5_dp = Utils.dip2px(mContext, 5);
         dialogBgDrawable = new GradientDrawable();
-        if (nightMode) {
-            dialogBgDrawable.setColor(0xD0000000);
-        } else {
-            dialogBgDrawable.setColor(0xFFFFFFFF);
-        }
+        dialogBgDrawable.setColor(dialogBgColor);
         float f = __5_dp * 2;
         dialogBgDrawable.setCornerRadii(new float[]{f, f, f, f, f, f, f, f});
         itemOffDrawable = new GradientDrawable();

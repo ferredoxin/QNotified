@@ -37,10 +37,7 @@ import nil.nadph.qnotified.config.Table;
 import nil.nadph.qnotified.hook.DelDetectorHook;
 import nil.nadph.qnotified.remote.GetUserStatusResp;
 import nil.nadph.qnotified.remote.TransactionHelper;
-import nil.nadph.qnotified.util.ActProxyMgr;
-import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.Nullable;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.util.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -855,7 +852,28 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
         putObject(LicenseStatus.qn_auth_uin_black_flags, resp.blacklistFlags);
         putObject(LicenseStatus.qn_auth_uin_update_time, System.currentTimeMillis());
         saveConfigure();
+        ConfigManager cfg = ConfigManager.getDefaultConfig();
+        boolean changed = false;
+        if ((resp.whitelistFlags & UserFlagConst.WF_FUNC_STICKY) != 0) {
+            int old = cfg.getIntOrDefault(LicenseStatus.qn_sticky_white_flags, 0);
+            int curr = old | resp.whitelistFlags;
+            if (curr != old) {
+                changed = true;
+                cfg.putInt(LicenseStatus.qn_sticky_white_flags, curr);
+            }
+        }
+        if ((resp.blacklistFlags & UserFlagConst.BF_FUNC_STICKY) != 0) {
+            int old = cfg.getIntOrDefault(LicenseStatus.qn_sticky_black_flags, 0);
+            int curr = old | resp.blacklistFlags;
+            if (curr != old) {
+                changed = true;
+                cfg.putInt(LicenseStatus.qn_sticky_black_flags, curr);
+            }
+        }
         LicenseStatus.sDisableCommonHooks = LicenseStatus.isBlacklisted() || LicenseStatus.isSilentGone();
+        if (changed) {
+            cfg.save();
+        }
         return resp;
     }
 }
