@@ -1,15 +1,15 @@
 [
   {
-    "code": 35,
-    "name": "0.8.0",
+    "code": 36,
+    "name": "0.8.3",
     "taichi": true,
     "beta": false,
-    "time": 1590509678,
-    "md5": "631b092ddf6303ab9de6aea343fd9494",
-    "desc": "自定义+1图标,支持TIM复读,适配QQ8.3.6/TIM3.0.0",
+    "time": 1594816128,
+    "md5": "00555b296b39da66baaacadef97c2427",
+    "desc": "添加了一些功能, 适配 QQ 8.4.1",
     "urls": [
-      "https://github.com/cinit/QNotified/releases/download/v0.8.0/QNotified_0.8.0.apk",
-      "https://ww.lanzous.com/tp/id11ulg"
+      "https://github.com/cinit/QNotified/releases/download/v0.8.3/QNotified_0.8.3.apk",
+      "https://wwe.lanzous.com/iMzHwemueqb"
     ]
   }
 ]
