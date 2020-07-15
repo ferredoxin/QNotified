@@ -57,7 +57,7 @@ public class Utils {
 
     public static final String QN_VERSION_NAME = BuildConfig.VERSION_NAME;
     public static final int QN_VERSION_CODE = BuildConfig.VERSION_CODE;
-    public static final boolean __REMOVE_PREVIOUS_CACHE = true;
+    public static final boolean __REMOVE_PREVIOUS_CACHE = false;
     public static final String PACKAGE_NAME_QQ = "com.tencent.mobileqq";
     public static final String PACKAGE_NAME_QQ_INTERNATIONAL = "com.tencent.mobileqqi";
     public static final String PACKAGE_NAME_QQ_LITE = "com.tencent.qqlite";

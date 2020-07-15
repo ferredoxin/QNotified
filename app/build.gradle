@@ -7,8 +7,8 @@ android {
         applicationId "nil.nadph.qnotified"
         minSdkVersion 14
         targetSdkVersion 29
-        versionCode 35
-        versionName "0.8.0" + getGitHeadRefsSuffix()
+        versionCode 36
+        versionName "0.8.3" + getGitHeadRefsSuffix()
         //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
