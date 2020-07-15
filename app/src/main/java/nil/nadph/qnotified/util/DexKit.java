@@ -608,7 +608,7 @@ public class DexKit {
     }
 
     public static boolean p(int i) {
-        if (i == C_CustomWidgetUtil) {
+        if (i == C_CustomWidgetUtil || i == N_BASE_CHAT_PIE__INIT) {
             return true;
         }
         return false;

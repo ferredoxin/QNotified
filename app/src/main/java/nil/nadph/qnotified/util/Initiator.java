@@ -150,6 +150,13 @@ public class Initiator {
         }
         if (mTextItemBuilder == null) {
             try {
+                tmp = load("com/tencent/mobileqq/activity/aio/item/TextItemBuilder$7");
+                mTextItemBuilder = tmp.getDeclaredField("this$0").getType();
+            } catch (Exception ignored) {
+            }
+        }
+        if (mTextItemBuilder == null) {
+            try {
                 tmp = load("com/tencent/mobileqq/activity/aio/item/TextItemBuilder$6");
                 mTextItemBuilder = tmp.getDeclaredField("this$0").getType();
             } catch (Exception ignored) {
