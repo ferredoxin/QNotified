@@ -473,9 +473,21 @@ public class MainHook {
                 logd("injectModuleResources: " + res.getString(R.string.res_inject_success));
             } catch (Resources.NotFoundException e) {
                 loge("Fatal: injectModuleResources: test injection failure!");
-                loge("injectModuleResources: loader=" + MainHook.class.getClassLoader() + ", path=" + sModulePath + ", cookie=" + cookie);
-                File f = new File(sModulePath);
-                loge("sModulePath: exists = " + f.exists() + ", isDirectory = " + f.isDirectory() + ", canRead = " + f.canRead());
+                loge("injectModuleResources: cookie=" + cookie + ", path=" + sModulePath + ", loader=" + MainHook.class.getClassLoader());
+                long length = -1;
+                boolean read = false;
+                boolean exist = false;
+                boolean isDir = false;
+                try {
+                    File f = new File(sModulePath);
+                    exist = f.exists();
+                    isDir = f.isDirectory();
+                    length = f.length();
+                    read = f.canRead();
+                } catch (Throwable e2) {
+                    log(e2);
+                }
+                loge("sModulePath: exists = " + exist + ", isDirectory = " + isDir + ", canRead = " + read + ", fileLength = " + length);
             }
         } catch (Exception e) {
             log(e);
