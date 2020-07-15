@@ -28,6 +28,8 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Looper;
+import android.os.MessageQueue;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -111,6 +113,19 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                         throw new RuntimeException("Stub!");
                     }
                 }).start();
+            }
+        }));
+        ll.addView(newListItemButton(this, "退出 Looper", "没事别按", null, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Looper looper = Looper.getMainLooper();
+                    MessageQueue queue = looper.getQueue();
+                    iput_object(queue, "mQuitAllowed", true);
+                    looper.quit();
+                } catch (Throwable e) {
+                    Toast.makeText(TroubleshootActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                }
             }
         }));
         ll.addView(newListItemButton(this, "测试通知", "点击测试通知", null, new View.OnClickListener() {
