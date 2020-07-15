@@ -96,21 +96,10 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
         ll.addView(subtitle(this, ""));
         ll.addView(subtitle(this, "以下内容基本上都没用，它们为了修复故障才留在这里。"));
         ll.addView(subtitle(this, "测试"));
-        ll.addView(newListItemButton(this, "主线程抛异常1", "没事别按", null, new View.OnClickListener() {
+        ll.addView(newListItemButton(this, "主线程抛异常", "没事别按", null, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 throw new RuntimeException("Stub!");
-            }
-        }));
-        ll.addView(newListItemButton(this, "主线程抛异常2", "没事别按", null, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        throw new RuntimeException("Stub!");
-                    }
-                });
             }
         }));
         ll.addView(newListItemButton(this, "子线程抛异常", "没事别按", null, new View.OnClickListener() {
