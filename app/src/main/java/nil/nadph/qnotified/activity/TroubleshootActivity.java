@@ -65,7 +65,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
     @Override
     public boolean doOnCreate(Bundle savedInstanceState) {
         super.doOnCreate(savedInstanceState);
-        LinearLayout ll = new LinearLayout(this);
+        final LinearLayout ll = new LinearLayout(this);
         ll.setOrientation(LinearLayout.VERTICAL);
         ViewGroup.LayoutParams mmlp = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
         LinearLayout __ll = new LinearLayout(this);
@@ -120,7 +120,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
             public void onClick(View v) {
                 try {
                     Looper looper = Looper.getMainLooper();
-                    MessageQueue queue = looper.getQueue();
+                    MessageQueue queue = (MessageQueue) iget_object_or_null(looper, "mQueue");
                     iput_object(queue, "mQuitAllowed", true);
                     looper.quit();
                 } catch (Throwable e) {
