@@ -106,7 +106,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             ll.addView(_t = newListItemButton(this, "自定义电量", "[QQ>=8.2.6]在线模式为我的电量时生效", "N/A", clickToProxyActAction(ACTION_FAKE_BAT_CONFIG_ACTIVITY)));
             __tv_fake_bat_status = _t.findViewById(R_ID_VALUE);
         }
-        ll.addView(newListItemButton(this, "花Q(缩水版)", "若无另行说明, 所有功能开关都即时生效", null, new View.OnClickListener() {
+        ll.addView(newListItemButton(this, "花Q(残血版)", "若无另行说明, 所有功能开关都即时生效", null, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 RikkaDialog.showRikkaFuncDialog(SettingsActivity.this);
