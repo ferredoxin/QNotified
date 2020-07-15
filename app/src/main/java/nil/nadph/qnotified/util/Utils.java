@@ -1082,8 +1082,13 @@ public class Utils {
         return null;
     }
 
+    @MainProcess
     public static AppRuntime getAppRuntime() {
         Object baseApplicationImpl = getApplication();
+        if (!SyncUtils.isMainProcess()) {
+            loge("getAppRuntime/W invoked but not in main process!");
+            return null;
+        }
         try {
             Method m;
             m = hasMethod(baseApplicationImpl, "getRuntime");
