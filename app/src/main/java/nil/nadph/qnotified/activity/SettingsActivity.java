@@ -149,7 +149,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(subtitle(this, "实验性功能(未必有效)"));
         ll.addView(newListItemHookSwitchInit(this, "收藏更多表情", "[暂不支持>=8.2.0]保存在本地", FavMoreEmo.get()));
         ll.addView(newListItemHookSwitchInit(this, "屏蔽更新提醒", null, PreUpgradeHook.get()));
-        ll.addView(newListItemHookSwitchInit(this, "检查消息", "长按AIO右下角+后点头像", InspectMessage.get()));
+        ll.addView(newListItemHookSwitchInit(this, "检查消息", "长按AIO右下角+后点头像(没啥用)", InspectMessage.get()));
         if (!Utils.isTim(this)) {
             ll.addView(newListItemHookSwitchInit(this, "自定义猜拳骰子", null, CheatHook.get()));
             ll.addView(newListItemHookSwitchInit(this, "简洁模式圆头像", "From Rikka", RoundAvatarHook.get()));

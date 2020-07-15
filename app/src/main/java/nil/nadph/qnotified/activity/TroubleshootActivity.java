@@ -95,6 +95,35 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
 
         ll.addView(subtitle(this, ""));
         ll.addView(subtitle(this, "以下内容基本上都没用，它们为了修复故障才留在这里。"));
+        ll.addView(subtitle(this, "测试"));
+        ll.addView(newListItemButton(this, "主线程抛异常1", "没事别按", null, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                throw new RuntimeException("Stub!");
+            }
+        }));
+        ll.addView(newListItemButton(this, "主线程抛异常2", "没事别按", null, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        throw new RuntimeException("Stub!");
+                    }
+                });
+            }
+        }));
+        ll.addView(newListItemButton(this, "子线程抛异常", "没事别按", null, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        throw new RuntimeException("Stub!");
+                    }
+                }).start();
+            }
+        }));
         ll.addView(newListItemButton(this, "测试通知", "点击测试通知", null, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,8 +143,9 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                 }
             }
         }));
-        ll.addView(subtitle(this, "反混淆信息"));
+        ll.addView(subtitle(this, ""));
 
+        ll.addView(subtitle(this, "反混淆信息"));
         for (int i = 1; i <= DexKit.DEOBF_NUM_C; i++) {
             try {
                 String tag = DexKit.a(i);
