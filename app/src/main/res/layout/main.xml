@@ -141,10 +141,12 @@
                         android:text="https://github.com/cinit/QNotified"/>
 
                 <TextView
+
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:clickable="true"
                         android:focusable="true"
+                        android:textIsSelectable="true"
                         android:text="uint32_t Author_QQ = 0x3E172320;"/>
 
                 <TextView
@@ -165,6 +167,11 @@
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:text="Telegram: https://t.me/Auride"/>
+
+                <TextView
+                        android:id="@+id/mainTextViewBuildTime"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"/>
 
             </LinearLayout>
         </LinearLayout>

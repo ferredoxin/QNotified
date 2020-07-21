@@ -13,6 +13,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
+import nil.nadph.qnotified.hook.rikka.IgnoreDiyCard;
 import nil.nadph.qnotified.hook.rikka.ShowMsgCount;
 import nil.nadph.qnotified.ui.DummyDrawable;
 import nil.nadph.qnotified.ui.ResUtils;

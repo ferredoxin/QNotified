@@ -32,6 +32,7 @@ import nil.nadph.qnotified.util.Utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
@@ -53,7 +54,7 @@ public class IgnoreDiyCard extends BaseDelayableHook {
     public boolean init() {
         if (inited) return true;
         try {
-            Method initHeaderView = null;
+            //Method initHeaderView = null;
             for (Method m : load("com.tencent.mobileqq.activity.FriendProfileCardActivity").getDeclaredMethods()) {
                 if (m.getName().equals("a") && m.getReturnType().equals(void.class)) {
                     Class<?>[] argt = m.getParameterTypes();

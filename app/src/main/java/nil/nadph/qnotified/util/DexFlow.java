@@ -19,6 +19,7 @@
 package nil.nadph.qnotified.util;
 
 import java.util.ArrayList;
+import java.util.zip.Adler32;
 
 public class DexFlow {
     private static final byte[] OPCODE_LENGTH_TABLE = new byte[]{
@@ -490,6 +491,40 @@ public class DexFlow {
             i += 2 * len;
         }
         return false;
+    }
+
+    public static byte[] extractPayload(byte[] dex) {
+        int chunkROff = readLe32(dex, dex.length - 4);
+        if (chunkROff > dex.length) {
+            return null;
+        }
+        int base = dex.length - chunkROff;
+        int size = readLe32(dex, base);
+        if (size > dex.length) {
+            return null;
+        }
+        int flags = readLe32(dex, base + 4);
+        int a32_got = readLe32(dex, base + 8);
+        int extra = readLe32(dex, base + 12);
+        if (flags != 0) {
+            return null;
+        }
+        int key = extra & 0xFF;
+        byte[] dat = new byte[size];
+        if (key == 0) {
+            System.arraycopy(dex, base + 16, dat, 0, size);
+        } else {
+            for (int i = 0; i < size; i++) {
+                dat[i] = (byte) (key ^ dex[base + 16 + i]);
+            }
+        }
+        Adler32 adler32 = new Adler32();
+        adler32.update(dat);
+        int a32 = (int) adler32.getValue();
+        if (a32 != a32_got) {
+            return null;
+        }
+        return dat;
     }
 }
 
