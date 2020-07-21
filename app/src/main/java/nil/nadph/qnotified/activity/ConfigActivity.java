@@ -36,6 +36,7 @@ import nil.nadph.qnotified.util.Utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 
 public class ConfigActivity extends Activity implements Runnable {
 
@@ -140,6 +141,12 @@ public class ConfigActivity extends Activity implements Runnable {
             vtv.setText(start);
             vtv.setTextColor(Color.RED);
         }
+        long delta = System.currentTimeMillis();
+        long ts = Utils.getBuildTimestamp();
+        delta = System.currentTimeMillis() - delta;
+        String text = "Build Time: " + (ts > 0 ? new Date(ts).toString() : "unknown") + ", delta=" + delta + "ms";
+        TextView tvbt = findViewById(R.id.mainTextViewBuildTime);
+        tvbt.setText(text);
 /*
 		new Thread(new Runnable(){
 				@Override

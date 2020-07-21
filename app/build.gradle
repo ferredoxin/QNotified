@@ -26,3 +26,67 @@ dependencies {
     compileOnly fileTree(include: ['*.jar'], dir: 'lib')
     testImplementation 'junit:junit:4.12'
 }
+
+def _execDexTail = { String dexPath ->
+    URLClassLoader cl = new URLClassLoader(new File(rootProject.projectDir, "app" + File.separator + "utils" + File.separator + "tail.jar").toURL());
+    byte[] time = cl.loadClass("cc.ioctl.dextail.HexUtils").getMethod("getTimeAsByteArray").invoke(null) as byte[];
+    PrintStream stdout = System.out;
+    boolean result = cl.loadClass("cc.ioctl.dextail.Main").getMethod("checkAndUpdateTail", String.class, byte[].class, boolean.class, PrintStream.class)
+            .invoke(null, dexPath, time, true, stdout);
+    return result;
+}
+
+task dexTailDebug {
+    doLast {
+        println("dexTailDebug.doLast invoked");
+        String path = "intermediates/dex/debug/out/classes.dex";
+        if (!"/".equals(File.separator)) {
+            path = path.replace('/'.charAt(0), File.separatorChar);
+        }
+        File dexFile = new File(project.buildDir, path);
+        if (!dexFile.exists()) {
+            throw new RuntimeException("dex not found: " + dexFile.getAbsolutePath());
+        }
+        if (!_execDexTail(dexFile.getAbsolutePath())) {
+            throw new RuntimeException("DedxTail returned false");
+        }
+    }
+}
+
+task dexTailRelease {
+    doLast {
+        println("dexTailRelease.doLast invoked")
+        String path = "intermediates/dex/release/out/classes.dex";
+        if (!"/".equals(File.separator)) {
+            path = path.replace('/'.charAt(0), File.separatorChar);
+        }
+        File dexFile = new File(project.buildDir, path);
+        if (!dexFile.exists()) {
+            throw new RuntimeException("dex not found: " + dexFile.getAbsolutePath());
+        }
+        if (!_execDexTail(dexFile.getAbsolutePath())) {
+            throw new RuntimeException("DedxTail returned false");
+        }
+    }
+}
+
+tasks.whenTaskAdded { t ->
+    if (t.name == 'assembleDebug') {
+        t.dependsOn dexTailDebug
+    }
+    if (t.name == 'mergeDexDebug') {
+        dexTailDebug.dependsOn t
+    }
+    if (t.name == 'stripDebugDebugSymbols') {
+        dexTailDebug.mustRunAfter(t)
+    }
+    if (t.name == 'assembleRelease') {
+        t.dependsOn dexTailRelease
+    }
+    if (t.name == 'mergeDexRelease') {
+        dexTailRelease.dependsOn t
+    }
+    if (t.name == 'stripReleaseDebugSymbols') {
+        dexTailRelease.mustRunAfter(t)
+    }
+}

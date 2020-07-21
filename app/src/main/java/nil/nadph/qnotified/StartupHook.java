@@ -43,7 +43,7 @@ public class StartupHook {
     public static final String QN_FULL_TAG = "qn_full_tag";
     public static StartupHook SELF;
     private boolean first_stage_inited = false;
-    private boolean sec_stage_inited = false;
+    boolean sec_stage_inited = false;
 
     private StartupHook() {
     }
@@ -73,6 +73,7 @@ public class StartupHook {
                         }
                         System.setProperty(QN_FULL_TAG, "true");
                         Initiator.init(classLoader);
+                        if (Utils.getBuildTimestamp() < 0) return;
                         MainHook.getInstance().performHook(ctx, param.thisObject);
                         sec_stage_inited = true;
                         deleteDirIfNecessary(ctx);
@@ -106,7 +107,7 @@ public class StartupHook {
         });
     }
 
-    private static void deleteDirIfNecessary(Context ctx) {
+    static void deleteDirIfNecessary(Context ctx) {
         try {
             if (ConfigManager.getDefaultConfig().getBooleanOrFalse(ConfigItems.qn_disable_hot_patch)) {
                 deleteFile(ctx.getFileStreamPath("hotpatch"));

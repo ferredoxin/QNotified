@@ -49,6 +49,7 @@ import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.DexMethodDescriptor;
 import nil.nadph.qnotified.util.Utils;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -193,6 +194,9 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
         }
 
         ll.addView(subtitle(this, "SystemClassLoader\n" + ClassLoader.getSystemClassLoader() + "\nContext.getClassLoader()\n" + this.getClassLoader() + "\nThread.getContextClassLoader()\n" + Thread.currentThread().getContextClassLoader()));
+        long ts = Utils.getBuildTimestamp();
+        ll.addView(subtitle(this, "Build Time: " + (ts > 0 ? new Date(ts).toString() : "unknown")));
+
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         this.setContentView(bounceScrollView);
         LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);

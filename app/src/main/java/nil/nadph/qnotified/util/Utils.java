@@ -40,10 +40,9 @@ import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.*;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -1884,6 +1883,59 @@ public class Utils {
             return msg + uin + uinType;
         }
 
+    }
+
+    private static long sBuildTimestamp = -2;
+
+    public static long getBuildTimestamp() {
+        if (sBuildTimestamp != -2) return sBuildTimestamp;
+        try {
+            ClassLoader loader = Utils.class.getClassLoader();
+            Enumeration<URL> eu;
+            HashSet<URL> urls = new HashSet<URL>();
+            eu = (Enumeration<URL>) invoke_virtual(loader, "findResources", "classes.dex", String.class);
+            if (eu != null) {
+                while (eu.hasMoreElements()) {
+                    urls.add(eu.nextElement());
+                }
+            }
+            if (urls.size() == 0) {
+                sBuildTimestamp = -1;
+                loge("getBuildTimestamp/E urls.size == 0, loader = " + loader);
+            } else {
+                byte[] buf = new byte[1024];
+                for (URL u : urls) {
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    try {
+                        InputStream in = u.openStream();
+                        int len;
+                        while ((len = in.read(buf)) > 0) {
+                            baos.write(buf, 0, len);
+                        }
+                        in.close();
+                        byte[] dex = baos.toByteArray();
+                        if (dex.length > 1024 * 1024 || dex.length < 128 * 1024) {
+                            continue;
+                        }
+                        byte[] tail = DexFlow.extractPayload(dex);
+                        if (tail != null) {
+                            long time = 0;
+                            for (int i = 0; i < 8; i++) {
+                                time |= ((tail[i] & 0xFFL) << (8 * i));
+                            }
+                            sBuildTimestamp = time;
+                            return time;
+                        }
+                    } catch (Exception e2) {
+                        log(e2);
+                    }
+                }
+            }
+        } catch (Throwable e) {
+            sBuildTimestamp = -1;
+            log(e);
+        }
+        return sBuildTimestamp;
     }
 
     public static void onStubClassInitialize() {
