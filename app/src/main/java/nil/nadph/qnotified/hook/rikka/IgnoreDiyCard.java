@@ -56,28 +56,37 @@ public class IgnoreDiyCard extends BaseDelayableHook {
         try {
             //Method initHeaderView = null;
             for (Method m : load("com.tencent.mobileqq.activity.FriendProfileCardActivity").getDeclaredMethods()) {
-                if (m.getName().equals("a") && m.getReturnType().equals(void.class)) {
+                if (m.getName().equals("a") && !Modifier.isStatic(m.getModifiers()) && m.getReturnType().equals(void.class)) {
                     Class<?>[] argt = m.getParameterTypes();
                     if (argt.length != 1) continue;
-                    initHeaderView = m;
-                    break;
+                    if (argt[0].isPrimitive()) continue;
+                    //initHeaderView = m;
+                    //break;
+                    XposedBridge.hookMethod(m, new XC_MethodHook(49) {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            if (LicenseStatus.sDisableCommonHooks) return;
+                            if (!isEnabled()) return;
+                            Class<?> _ProfileCardInfo = ((Method) param.method).getParameterTypes()[0];
+                            Object info = Utils.iget_object_or_null(param.thisObject, "a", _ProfileCardInfo);
+                            if (info != null) {
+                                Class<?> _Card = load("com.tencent.mobileqq.data.Card");
+                                Object card = Utils.iget_object_or_null(info, "a", _Card);
+                                if (card != null) {
+                                    Field f = _Card.getField("lCurrentStyleId");
+                                    if (f.getLong(card) == 22 || f.getLong(card) == 21) {
+                                        f.setLong(card, 0);
+                                    }
+                                } else {
+                                    loge("IgnoreDiyCard/W but info.<Card> == null");
+                                }
+                            } else {
+                                loge("IgnoreDiyCard/W but info == null");
+                            }
+                        }
+                    });
                 }
             }
-            XposedBridge.hookMethod(initHeaderView, new XC_MethodHook(49) {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.sDisableCommonHooks) return;
-                    if (!isEnabled()) return;
-                    Class<?> _ProfileCardInfo = ((Method) param.method).getParameterTypes()[0];
-                    Object info = Utils.iget_object_or_null(param.thisObject, "a", _ProfileCardInfo);
-                    Class<?> _Card = load("com.tencent.mobileqq.data.Card");
-                    Object card = Utils.iget_object_or_null(info, "a", _Card);
-                    Field f = _Card.getField("lCurrentStyleId");
-                    if (f.getLong(card) == 22) {
-                        f.setLong(card, 0);
-                    }
-                }
-            });
             inited = true;
             return true;
         } catch (Throwable e) {
@@ -124,14 +133,14 @@ public class IgnoreDiyCard extends BaseDelayableHook {
 
     @Override
     public boolean isEnabled() {
-        return false;
+        //return false;
         // TODO: 2020/7/12 Fix compatibility for QQ8.3.9
-//        try {
-//            return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_ignore_diy_card);
-//        } catch (Exception e) {
-//            log(e);
-//            return false;
-//        }
+        try {
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_ignore_diy_card);
+        } catch (Exception e) {
+            log(e);
+            return false;
+        }
     }
 }
 
