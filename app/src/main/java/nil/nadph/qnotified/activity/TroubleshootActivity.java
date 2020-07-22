@@ -44,10 +44,7 @@ import nil.nadph.qnotified.config.FriendRecord;
 import nil.nadph.qnotified.remote.GetUserStatusResp;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.util.ActProxyMgr;
-import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.DexMethodDescriptor;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.util.*;
 
 import java.util.Date;
 import java.util.Iterator;
@@ -193,7 +190,10 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
             }
         }
 
-        ll.addView(subtitle(this, "SystemClassLoader\n" + ClassLoader.getSystemClassLoader() + "\nContext.getClassLoader()\n" + this.getClassLoader() + "\nThread.getContextClassLoader()\n" + Thread.currentThread().getContextClassLoader()));
+        ll.addView(subtitle(this, "SystemClassLoader\n" + ClassLoader.getSystemClassLoader()
+                + "\nContext.getClassLoader()\n" + this.getClassLoader()
+                + "\nThread.getContextClassLoader()\n" + Thread.currentThread().getContextClassLoader()
+                + "\nInitiator.getHostClassLoader()\n" + Initiator.getHostClassLoader()));
         long ts = Utils.getBuildTimestamp();
         ll.addView(subtitle(this, "Build Time: " + (ts > 0 ? new Date(ts).toString() : "unknown")));
 
