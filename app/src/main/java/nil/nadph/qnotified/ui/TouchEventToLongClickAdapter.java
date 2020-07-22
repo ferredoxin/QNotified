@@ -69,15 +69,9 @@ abstract public class TouchEventToLongClickAdapter implements View.OnTouchListen
                 }
                 break;
             case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_UP:
                 mDownTime = -1;
                 break;
-            case MotionEvent.ACTION_UP:
-                if (mDownTime < 0) break;
-                long curr = System.currentTimeMillis();
-                if (curr - mDownTime > THRESHOLD) {
-                    mDownTime = -1;
-                    break;
-                }
         }
         return false;
     }
