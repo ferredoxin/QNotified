@@ -20,6 +20,7 @@ package nil.nadph.qnotified.hook;
 
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.SwitchConfigItem;
+import nil.nadph.qnotified.hook.rikka.DefaultFont;
 import nil.nadph.qnotified.hook.rikka.IgnoreDiyCard;
 import nil.nadph.qnotified.hook.rikka.ShowMsgCount;
 import nil.nadph.qnotified.step.Step;
@@ -68,7 +69,8 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 PicMd5Hook.get(),
                 ShowMsgCount.get(),
                 IgnoreDiyCard.get(),
-                InspectMessage.get()
+                InspectMessage.get(),
+                DefaultFont.get()
         };
         return sAllHooks;
     }
@@ -76,7 +78,8 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
     public static void allowEarlyInit(BaseDelayableHook hook) {
         if (hook == null) return;
         try {
-            if (hook.isTargetProc() && hook.isEnabled() && hook.checkPreconditions() && !hook.isInited()) hook.init();
+            if (hook.isTargetProc() && hook.isEnabled() && hook.checkPreconditions() && !hook.isInited())
+                hook.init();
         } catch (Throwable e) {
             Utils.log(e);
         }
