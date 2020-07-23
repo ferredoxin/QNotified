@@ -1,3 +1,5 @@
+import java.lang.reflect.Array
+
 apply plugin: 'com.android.application'
 
 android {
@@ -39,16 +41,30 @@ def _execDexTail = { String dexPath ->
 task dexTailDebug {
     doLast {
         println("dexTailDebug.doLast invoked");
-        String path = "intermediates/dex/debug/out/classes.dex";
+        ArrayList<File> pathList = new ArrayList<>();
+        String tmp_path = "intermediates/dex/debug/out/classes.dex";
         if (!"/".equals(File.separator)) {
-            path = path.replace('/'.charAt(0), File.separatorChar);
+            tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar);
         }
-        File dexFile = new File(project.buildDir, path);
-        if (!dexFile.exists()) {
-            throw new RuntimeException("dex not found: " + dexFile.getAbsolutePath());
+        File tmp_f = new File(project.buildDir, tmp_path);
+        if (tmp_f.exists()) {
+            pathList.add(tmp_f);
         }
-        if (!_execDexTail(dexFile.getAbsolutePath())) {
-            throw new RuntimeException("DedxTail returned false");
+        tmp_path = "intermediates/dex/debug/mergeDexDebug/classes.dex";
+        if (!"/".equals(File.separator)) {
+            tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar);
+        }
+        tmp_f = new File(project.buildDir, tmp_path);
+        if (tmp_f.exists()) {
+            pathList.add(tmp_f);
+        }
+        if (pathList.size() == 0) {
+            throw new RuntimeException("dex not found: we only support 3.6.x, 4.0.x and 4.1.x");
+        }
+        for (File f : pathList) {
+            if (!_execDexTail(f.getAbsolutePath())) {
+                throw new RuntimeException("DedxTail returned false");
+            }
         }
     }
 }
@@ -56,16 +72,30 @@ task dexTailDebug {
 task dexTailRelease {
     doLast {
         println("dexTailRelease.doLast invoked")
-        String path = "intermediates/dex/release/out/classes.dex";
+        ArrayList<File> pathList = new ArrayList<>();
+        String tmp_path = "intermediates/dex/release/out/classes.dex";
         if (!"/".equals(File.separator)) {
-            path = path.replace('/'.charAt(0), File.separatorChar);
+            tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar);
         }
-        File dexFile = new File(project.buildDir, path);
-        if (!dexFile.exists()) {
-            throw new RuntimeException("dex not found: " + dexFile.getAbsolutePath());
+        File tmp_f = new File(project.buildDir, tmp_path);
+        if (tmp_f.exists()) {
+            pathList.add(tmp_f);
         }
-        if (!_execDexTail(dexFile.getAbsolutePath())) {
-            throw new RuntimeException("DedxTail returned false");
+        tmp_path = "intermediates/dex/release/mergeDexRelease/classes.dex";
+        if (!"/".equals(File.separator)) {
+            tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar);
+        }
+        tmp_f = new File(project.buildDir, tmp_path);
+        if (tmp_f.exists()) {
+            pathList.add(tmp_f);
+        }
+        if (pathList.size() == 0) {
+            throw new RuntimeException("dex not found: we only support 3.6.x, 4.0.x and 4.1.x");
+        }
+        for (File f : pathList) {
+            if (!_execDexTail(f.getAbsolutePath())) {
+                throw new RuntimeException("DedxTail returned false");
+            }
         }
     }
 }
