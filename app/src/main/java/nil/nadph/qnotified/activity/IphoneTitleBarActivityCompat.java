@@ -74,7 +74,7 @@ public class IphoneTitleBarActivityCompat extends IphoneTitleBarActivity {
             try {
                 f = cl.getDeclaredField("rightViewText");
             } catch (NoSuchFieldException ex) {
-                //WTF!!! it's 9103 now, still using QQ<6.5.5???
+                //WTF!!! it's 0202 now, still using QQ<6.5.5???
                 Field l = null, r = null;
                 for (Field fs : cl.getDeclaredFields()) {
                     if (!Modifier.isPublic(fs.getModifiers())) continue;
@@ -107,7 +107,7 @@ public class IphoneTitleBarActivityCompat extends IphoneTitleBarActivity {
         try {
             f = cl.getDeclaredField("leftViewText");
         } catch (NoSuchFieldException ex) {
-            //WTF!!! it's 9103 now, still using QQ<6.5.5???
+            //WTF!!! it's 0202 now, still using QQ<6.5.5???
             Field l = null, r = null;
             for (Field fs : cl.getDeclaredFields()) {
                 if (!Modifier.isPublic(fs.getModifiers())) continue;

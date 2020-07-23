@@ -19,16 +19,20 @@
 package nil.nadph.qnotified.hook;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.bridge.QQMessageFacade;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
+import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
@@ -73,9 +77,22 @@ public class InspectMessage extends BaseDelayableHook implements View.OnLongClic
                     if (activityName.equals("com.tencent.mobileqq.activity.MultiForwardActivity")) {
                         return;
                     }
-                    Object msg = MultiForwardAvatarHook.getChatMessageByView(view);
+                    final Object msg = MultiForwardAvatarHook.getChatMessageByView(view);
                     if (msg == null) return;
-                    MultiForwardAvatarHook.createAndShowDialogForDetail(ctx, msg);
+                    boolean showRevoke = false;
+                    int istroop = (int) iget_object_or_null(msg, "istroop");
+                    if (istroop == 0 && LicenseStatus.getAuth2Status()) showRevoke = true;
+                    CustomDialog dialog = CustomDialog.createFailsafe(ctx).setTitle(Utils.getShort$Name(msg)).setMessage(msg.toString())
+                            .setCancelable(true).setPositiveButton("确定", null);
+                    if (showRevoke) {
+                        dialog.setNegativeButton("撤回", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                QQMessageFacade.revokeMessage(msg);
+                            }
+                        });
+                    }
+                    dialog.show();
                     param.setResult(null);
                 }
             });
