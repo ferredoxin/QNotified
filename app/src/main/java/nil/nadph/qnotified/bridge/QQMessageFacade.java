@@ -40,11 +40,11 @@ public class QQMessageFacade {
             long t = (long) iget_object_or_null(msg2, "time");
             t -= 1 + 10f * Math.random();
             iput_object(msg2, "time", t);
-            Object ayzl = invoke_virtual(getQQAppInterface(), "a", Initiator.load("azzc"));
-            invoke_virtual(ayzl, "b", true, boolean.class, void.class);
+            Object msgCache = invoke_virtual(getQQAppInterface(), "a", DexKit.doFindClass(DexKit.C_MessageCache));
+            invoke_virtual(msgCache, "b", true, boolean.class, void.class);
             invoke_virtual_declared_fixed_modifier_ordinal(mgr, Modifier.PUBLIC, 0, Initiator._BaseMessageManager(), 2, 4, true, msg2, Initiator._MessageRecord(), void.class);
         } catch (Exception e) {
-            log("revokeMessage failed");
+            loge("revokeMessage failed");
             log(e);
             throw e;
         }

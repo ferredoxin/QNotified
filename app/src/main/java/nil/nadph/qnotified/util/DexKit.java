@@ -19,6 +19,7 @@
 package nil.nadph.qnotified.util;
 
 import android.view.View;
+
 import dalvik.system.DexClassLoader;
 import dalvik.system.PathClassLoader;
 import nil.nadph.qnotified.config.ConfigManager;
@@ -71,9 +72,10 @@ public class DexKit {
     public static final int C_QZONE_MSG_NOTIFY = 19;
     public static final int C_APP_CONSTANTS = 20;
     public static final int C_CustomWidgetUtil = 21;
+    public static final int C_MessageCache = 22;
 
     //the last index
-    public static final int DEOBF_NUM_C = 21;
+    public static final int DEOBF_NUM_C = 22;
 
     public static final int N_BASE_CHAT_PIE__INIT = 20001;
     public static final int N_BASE_CHAT_PIE__handleNightMask = 20002;
@@ -120,7 +122,8 @@ public class DexKit {
 
     @Nullable
     public static Method getMethodFromCache(int i) {
-        if (i / 10000 == 0) throw new IllegalStateException("Index " + i + " attempted to access method!");
+        if (i / 10000 == 0)
+            throw new IllegalStateException("Index " + i + " attempted to access method!");
         DexMethodDescriptor m = getMethodDescFromCache(i);
         if (m == null) return null;
         if (m.name.equals("<init>") || m.name.equals("<clinit>")) {
@@ -137,7 +140,8 @@ public class DexKit {
 
     @Nullable
     public static Method doFindMethod(int i) {
-        if (i / 10000 == 0) throw new IllegalStateException("Index " + i + " attempted to access method!");
+        if (i / 10000 == 0)
+            throw new IllegalStateException("Index " + i + " attempted to access method!");
         DexMethodDescriptor m = doFindMethodDesc(i);
         if (m == null) return null;
         if (m.name.equals("<init>") || m.name.equals("<clinit>")) {
@@ -256,6 +260,8 @@ public class DexKit {
                 return "app_constants";
             case C_CustomWidgetUtil:
                 return "CustomWidgetUtil";
+            case C_MessageCache:
+                return "MessageCache";
             case N_BASE_CHAT_PIE__INIT:
                 return "base_chat_pie__init";
             case N_BASE_CHAT_PIE__handleNightMask:
@@ -330,6 +336,9 @@ public class DexKit {
             case C_CustomWidgetUtil:
                 ret = "com.tencent.widget.CustomWidgetUtil";
                 break;
+            case C_MessageCache:
+                ret = "com/tencent/mobileqq/service/message/MessageCache";
+                break;
             case N_BASE_CHAT_PIE__INIT:
             case N_BASE_CHAT_PIE__handleNightMask:
             case N_BASE_CHAT_PIE__updateSession:
@@ -390,6 +399,8 @@ public class DexKit {
                 return new byte[][]{new byte[]{0x14, 0x75, 0x73, 0x65, 0x20, 0x73, 0x6D, 0x61, 0x6C, 0x6C, 0x20, 0x69, 0x63, 0x6F, 0x6E, 0x20, 0x2C, 0x65, 0x78, 0x70, 0x3A}};
             case C_APP_CONSTANTS:
                 return new byte[][]{new byte[]{0x0B, 0x2E, 0x69, 0x6E, 0x64, 0x69, 0x76, 0x41, 0x6E, 0x69, 0x6D, 0x2F}};
+            case C_MessageCache:
+                return new byte[][]{new byte[]{0x12, 0x51, 0x2E, 0x6D, 0x73, 0x67, 0x2E, 0x4D, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x43, 0x61, 0x63, 0x68, 0x65}};
             case N_BASE_CHAT_PIE__INIT:
                 return new byte[][]{new byte[]{0x0F, 0x69, 0x6E, 0x70, 0x75, 0x74, 0x20, 0x73, 0x65, 0x74, 0x20, 0x65, 0x72, 0x72, 0x6F, 0x72}};
             case N_BASE_CHAT_PIE__handleNightMask:
@@ -443,6 +454,8 @@ public class DexKit {
                 return new int[]{4, 3};
             case C_APP_CONSTANTS:
                 return new int[]{1};
+            case C_MessageCache:
+                return new int[]{1, 4};
             case N_BASE_CHAT_PIE__INIT:
             case N_BASE_CHAT_PIE__handleNightMask:
             case N_BASE_CHAT_PIE__updateSession:
@@ -587,7 +600,8 @@ public class DexKit {
             case N_BASE_CHAT_PIE__handleNightMask:
             case N_BASE_CHAT_PIE__updateSession:
                 for (DexMethodDescriptor m : __methods) {
-                    if (m.declaringClass.replace('/', '.').contains(_BaseChatPie().getName())) return m;
+                    if (m.declaringClass.replace('/', '.').contains(_BaseChatPie().getName()))
+                        return m;
                 }
                 break;
             case C_CustomWidgetUtil:
@@ -601,6 +615,13 @@ public class DexKit {
                         if (!Modifier.isStatic(f.getModifiers())) continue a;
                     }
                     return m;
+                }
+                break;
+            case C_MessageCache:
+                for (DexMethodDescriptor m : __methods) {
+                    if ("<clinit>".equals(m.name)) {
+                        return m;
+                    }
                 }
                 break;
         }
