@@ -24,7 +24,6 @@ import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
@@ -85,10 +84,15 @@ public class InspectMessage extends BaseDelayableHook implements View.OnLongClic
                     CustomDialog dialog = CustomDialog.createFailsafe(ctx).setTitle(Utils.getShort$Name(msg)).setMessage(msg.toString())
                             .setCancelable(true).setPositiveButton("确定", null);
                     if (showRevoke) {
+                        final Context finalCtx = ctx;
                         dialog.setNegativeButton("撤回", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                QQMessageFacade.revokeMessage(msg);
+                                try {
+                                    QQMessageFacade.revokeMessage(msg);
+                                } catch (Throwable e) {
+                                    Utils.showToast(finalCtx, TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), Toast.LENGTH_LONG);
+                                }
                             }
                         });
                     }

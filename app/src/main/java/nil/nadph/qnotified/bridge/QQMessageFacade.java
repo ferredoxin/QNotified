@@ -30,7 +30,7 @@ public class QQMessageFacade {
         }
     }
 
-    public static void revokeMessage(Object msg) {
+    public static void revokeMessage(Object msg) throws Exception {
         if (msg == null) throw new NullPointerException("msg == null");
         int istroop = (int) iget_object_or_null(msg, "istroop");
         //if (istroop != 0) throw new IllegalArgumentException("istroop(" + istroop + ") is not supported");
@@ -46,6 +46,7 @@ public class QQMessageFacade {
         } catch (Exception e) {
             log("revokeMessage failed");
             log(e);
+            throw e;
         }
     }
 //

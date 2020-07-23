@@ -148,6 +148,14 @@ public class LicenseStatus {
         return (getCurrentUserWhiteFlags() & UserFlagConst.WF_BYPASS_AUTH_2) != 0;
     }
 
+    public static boolean isAsserted() {
+        return (getCurrentUserWhiteFlags() & (UserFlagConst.WF_ASSERTED | UserFlagConst.WF_INSIDER)) != 0;
+    }
+
+    public static boolean isInsider() {
+        return (getCurrentUserWhiteFlags() & UserFlagConst.WF_INSIDER) != 0;
+    }
+
     public static final String qn_auth_uin_black_flags = "qn_auth_uin_black_flags";
     public static final String qn_auth_uin_white_flags = "qn_auth_uin_white_flags";
     public static final String qn_auth_uin_update_time = "qn_auth_uin_update_time";
