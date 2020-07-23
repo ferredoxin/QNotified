@@ -112,6 +112,8 @@ public class CardMsgHook extends BaseDelayableHook {
                                 @Override
                                 public boolean onLongClick(View v) {
                                     try {
+                                        if (LicenseStatus.sDisableCommonHooks) return false;
+                                        if (!LicenseStatus.isAsserted()) return false;
                                         ViewGroup vg = (ViewGroup) v;
                                         Context ctx = v.getContext();
                                         if (vg.getChildCount() != 0 && !vg.getChildAt(0).isEnabled()) {
@@ -132,6 +134,8 @@ public class CardMsgHook extends BaseDelayableHook {
                         sendBtn.setOnLongClickListener(new View.OnLongClickListener() {
                             @Override
                             public boolean onLongClick(View v) {
+                                if (LicenseStatus.sDisableCommonHooks) return false;
+                                if (!LicenseStatus.isAsserted()) return false;
                                 Context ctx = v.getContext();
                                 EditText input = viewGroup.findViewById(ctx.getResources().getIdentifier("input", "id", ctx.getPackageName()));
                                 String text = input.getText().toString();
@@ -236,11 +240,7 @@ public class CardMsgHook extends BaseDelayableHook {
         @Override
         protected void afterHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
             if (LicenseStatus.sDisableCommonHooks) return;
-            try {
-                ConfigManager cfg = ConfigManager.getDefaultConfig();
-                if (!cfg.getBooleanOrFalse(qn_send_card_msg)) return;
-            } catch (Exception ignored) {
-            }
+            if (!CardMsgHook.get().isEnabled()) return;
             Object arr = param.getResult();
             Class<?> clQQCustomMenuItem = arr.getClass().getComponentType();
             Object item_copy = CustomMenu.createItem(clQQCustomMenuItem, R_ID_COPY_CODE, "复制代码");
@@ -357,6 +357,7 @@ public class CardMsgHook extends BaseDelayableHook {
     @Override
     public boolean isEnabled() {
         try {
+            if (!LicenseStatus.isAsserted()) return false;
             return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_send_card_msg);
         } catch (Exception e) {
             log(e);
