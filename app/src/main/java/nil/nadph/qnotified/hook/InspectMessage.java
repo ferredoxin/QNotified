@@ -24,6 +24,7 @@ import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
@@ -125,6 +126,7 @@ public class InspectMessage extends BaseDelayableHook implements View.OnLongClic
                     if (LicenseStatus.sDisableCommonHooks) return;
                     if (!isEnabled()) return;
                     ViewGroup panel = (ViewGroup) param.thisObject;
+                    loge("m=" + param.method);
                     final View v = panel.getChildAt(panel.getChildCount() - 1);
                     v.setOnLongClickListener(InspectMessage.this);
                 }
@@ -157,6 +159,7 @@ public class InspectMessage extends BaseDelayableHook implements View.OnLongClic
 
     @Override
     public boolean onLongClick(View v) {
+        loge("Lino. 164");
         bInspectMode = !bInspectMode;
         Context ctx = v.getContext();
         if (bInspectMode) {
@@ -179,7 +182,7 @@ public class InspectMessage extends BaseDelayableHook implements View.OnLongClic
 
     @Override
     public Step[] getPreconditions() {
-        return new Step[]{new DexDeobfStep(DexKit.C_AIO_UTILS)};
+        return new Step[]{new DexDeobfStep(DexKit.C_AIO_UTILS), new DexDeobfStep(DexKit.C_MessageCache), new DexDeobfStep(DexKit.C_MSG_REC_FAC)};
     }
 
     @Override
