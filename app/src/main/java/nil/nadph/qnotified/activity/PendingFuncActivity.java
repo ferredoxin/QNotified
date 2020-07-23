@@ -23,8 +23,11 @@ import android.os.Bundle;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
 import com.tencent.mobileqq.widget.BounceScrollView;
+
 import nil.nadph.qnotified.config.ConfigItems;
+import nil.nadph.qnotified.hook.rikka.DefaultFont;
 import nil.nadph.qnotified.ui.ResUtils;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -58,8 +61,7 @@ public class PendingFuncActivity extends IphoneTitleBarActivityCompat {
         __lp_r.addRule(RelativeLayout.CENTER_VERTICAL);
 
         ll.addView(subtitle(this, "牙膏要一点一点挤, 显卡要一刀一刀切, PPT要一张一张放, 代码要一行一行写, 单个功能预计自出现在commit之日起, 三年内开发完毕"));
-
-        ll.addView(newListItemSwitchStub(this, "强制使用默认字体", null, false));
+        ll.addView(newListItemHookSwitchInit(this, "强制使用默认字体", null, DefaultFont.get()));
         ll.addView(newListItemSwitchStub(this, "点一下赞20次", "仅限回赞界面, 与花Q等效", false));
         ll.addView(newListItemSwitchStub(this, "无视QQ电话与语音冲突", "允许在QQ电话时播放语音和短视频", false));
         ll.addView(newListItemSwitchStub(this, "QQ电话关麦时解除占用", "再开麦时如麦被其他程序占用可能崩溃", false));
