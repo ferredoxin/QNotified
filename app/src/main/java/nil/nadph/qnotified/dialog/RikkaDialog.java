@@ -15,6 +15,7 @@ import android.widget.TextView;
 import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.hook.rikka.DefaultFont;
+import nil.nadph.qnotified.hook.rikka.DisableScreenshotHelper;
 import nil.nadph.qnotified.hook.rikka.ShowMsgCount;
 import nil.nadph.qnotified.ui.DummyDrawable;
 import nil.nadph.qnotified.ui.ResUtils;
@@ -142,7 +143,7 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
                 RikkaConfigItem.create(this, "强制使用默认字体", DefaultFont.get()),
                 RikkaConfigItem.create(this, "显示具体消息数量", ShowMsgCount.get()),
                 new RikkaBaseApkFormatDialog(this),
-                RikkaConfigItem.createStub(this, "隐藏截屏分享"),
+                RikkaConfigItem.create(this, "隐藏截屏分享", DisableScreenshotHelper.get()),
                 RikkaConfigItem.createStub(this, "隐藏群内右上角一起嗨"),
                 RikkaConfigItem.createStub(this, "屏蔽群名片炫彩字"),
                 RikkaConfigItem.createStub(this, "屏蔽所有进群特效"),
