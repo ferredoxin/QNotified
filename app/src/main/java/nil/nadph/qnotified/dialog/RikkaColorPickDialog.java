@@ -8,6 +8,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.*;
+
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.CustomDialog;
@@ -91,7 +92,7 @@ public class RikkaColorPickDialog extends RikkaDialog.RikkaConfigItem {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 enableColor = isChecked;
-                panel.setVisibility(enableColor ? View.VISIBLE : View.INVISIBLE);
+                panel.setVisibility(enableColor ? View.VISIBLE : View.GONE);
             }
         });
         dialog.setView(vg);

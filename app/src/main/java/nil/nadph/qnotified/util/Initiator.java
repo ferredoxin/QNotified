@@ -19,7 +19,9 @@
 package nil.nadph.qnotified.util;
 
 import android.os.Parcelable;
+
 import com.tencent.mobileqq.app.QQAppInterface;
+
 import de.robv.android.xposed.XposedBridge;
 
 import java.lang.reflect.Field;
@@ -71,7 +73,8 @@ public class Initiator {
         }
         className = className.replace('/', '.');
         if (className.endsWith(";")) {
-            if (className.charAt(0) == 'L') className = className.substring(1, className.length() - 1);
+            if (className.charAt(0) == 'L')
+                className = className.substring(1, className.length() - 1);
             else className = className.substring(0, className.length() - 1);
         }
         if (className.startsWith(".")) {
@@ -163,6 +166,25 @@ public class Initiator {
             }
         }
         return mTextItemBuilder;
+    }
+
+    public static Class _TroopFileUploadMgr() {
+        Class<?> ret, cref;
+        for (String clzName : new String[]{"com.tencent.mobileqq.troop.filemanager.upload.TroopFileUploadMgr"}) {
+            ret = load(clzName);
+            if (ret != null) return ret;
+            for (int i : new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9}) {
+                cref = load(clzName + "$" + i);
+                if (cref != null) {
+                    try {
+                        return cref.getDeclaredField("this$0").getType();
+                    } catch (Exception ignored) {
+                    }
+                }
+            }
+        }
+        log("Initiator/E class TroopFileUploadMgr not found");
+        return null;
     }
 
     public static Class _UpgradeController() {
