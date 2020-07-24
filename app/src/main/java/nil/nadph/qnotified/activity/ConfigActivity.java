@@ -61,7 +61,7 @@ public class ConfigActivity extends Activity implements Runnable {
         while (isVisible && needRun) {
             try {
                 Thread.sleep(100);
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ignored) {
             }
             step += 30;
             stage = (stage + step / 256) % 6;

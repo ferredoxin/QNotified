@@ -27,6 +27,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Looper;
 import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,7 +60,7 @@ import static nil.nadph.qnotified.util.SendBatchMsg.clickToBatchMsg;
 import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressLint("Registered")
-public class SettingsActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener {
+public class SettingsActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener, Runnable {
 
     private static final int R_ID_BTN_FILE_RECV = 0x300AFF91;
 
@@ -111,12 +112,15 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             ll.addView(_t = newListItemButton(this, "自定义电量", "[QQ>=8.2.6]在线模式为我的电量时生效", "N/A", clickToProxyActAction(ACTION_FAKE_BAT_CONFIG_ACTIVITY)));
             __tv_fake_bat_status = _t.findViewById(R_ID_VALUE);
         }
-        ll.addView(newListItemButton(this, "花Q[狐狸狸魔改版好评绝赞上线中]", "若无另行说明, 所有功能开关都即时生效", null, new View.OnClickListener() {
+        ViewGroup _tmp_vg = newListItemButton(this, "花Q[狐狸狸魔改版好评绝赞上线中]", "若无另行说明, 所有功能开关都即时生效", null, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 RikkaDialog.showRikkaFuncDialog(SettingsActivity.this);
             }
-        }));
+        });
+        mRikkaTitle = _tmp_vg.findViewById(R_ID_TITLE);
+        mRikkaDesc = _tmp_vg.findViewById(R_ID_DESCRIPTION);
+        ll.addView(_tmp_vg);
         ll.addView(newListItemHookSwitchInit(this, "语音转发", "长按语音消息", PttForwardHook.get()));
         if (LicenseStatus.isAsserted()) {
             ll.addView(newListItemHookSwitchInit(this, "发送卡片消息", "ArkAppMsg(json)+StructMsg(xml)", CardMsgHook.get()));
@@ -281,6 +285,16 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         }
         updateRecvRedirectStatus();
         __js_status.setText("0/1");
+        needRun = true;
+        isVisible = true;
+        new Thread(this).start();
+    }
+
+    @Override
+    public void doOnPause() {
+        super.doOnPause();
+        needRun = false;
+        isVisible = false;
     }
 
     @Override
@@ -304,6 +318,58 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             }
         }
     }
+
+    int color;
+    int step;//(0-255)
+    int stage;//0-5
+    private boolean isVisible = false;
+    private boolean needRun = false;
+    private TextView mRikkaTitle, mRikkaDesc;
+    private Looper mainLooper = Looper.getMainLooper();
+
+
+    /**
+     * 没良心的method
+     */
+    @Override
+    public void run() {
+        if (mRikkaTitle != null && mRikkaDesc != null && Looper.myLooper() == mainLooper) {
+            mRikkaTitle.setTextColor(color);
+            mRikkaDesc.setTextColor(color);
+            return;
+        }
+        while (isVisible && needRun) {
+            try {
+                Thread.sleep(75);
+            } catch (InterruptedException ignored) {
+            }
+            step += 30;
+            stage = (stage + step / 256) % 6;
+            step = step % 256;
+            switch (stage) {
+                case 0:
+                    color = Color.argb(255, 255, step, 0);//R-- RG-
+                    break;
+                case 1:
+                    color = Color.argb(255, 255 - step, 255, 0);//RG- -G-
+                    break;
+                case 2:
+                    color = Color.argb(255, 0, 255, step);//-G- -GB
+                    break;
+                case 3:
+                    color = Color.argb(255, 0, 255 - step, 255);//-GB --B
+                    break;
+                case 4:
+                    color = Color.argb(255, step, 0, 255);//--B R-B
+                    break;
+                case 5:
+                    color = Color.argb(255, 255, 0, 255 - step);//R-B R--
+                    break;
+            }
+            runOnUiThread(this);
+        }
+    }
+
 
     private void showChangeRecvPathDialog() {
         final FileRecvRedirect recv = FileRecvRedirect.get();
