@@ -16,6 +16,7 @@ import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.hook.rikka.DefaultFont;
 import nil.nadph.qnotified.hook.rikka.DisableScreenshotHelper;
+import nil.nadph.qnotified.hook.rikka.IgnoreDiyCard;
 import nil.nadph.qnotified.hook.rikka.ShowMsgCount;
 import nil.nadph.qnotified.ui.DummyDrawable;
 import nil.nadph.qnotified.ui.ResUtils;
@@ -144,6 +145,7 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
                 RikkaConfigItem.create(this, "显示具体消息数量", ShowMsgCount.get()),
                 new RikkaBaseApkFormatDialog(this),
                 RikkaConfigItem.create(this, "隐藏截屏分享", DisableScreenshotHelper.get()),
+                RikkaConfigItem.create(this, "屏蔽DIY名片", IgnoreDiyCard.get()),
                 RikkaConfigItem.createStub(this, "隐藏群内右上角一起嗨"),
                 RikkaConfigItem.createStub(this, "屏蔽群名片炫彩字"),
                 RikkaConfigItem.createStub(this, "屏蔽所有进群特效"),
@@ -153,7 +155,6 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
                 RikkaConfigItem.createStub(this, "自定义机型"),
                 RikkaConfigItem.createStub(this, "免广告送免费礼物"),
                 RikkaConfigItem.createStub(this, "聊天界面+号显示更多功能"),
-                RikkaConfigItem.createStub(this, "屏蔽DIY名片"),
                 RikkaConfigItem.createStub(this, "免小程序15秒广告"),
                 new RikkaColorPickDialog(this),
         };

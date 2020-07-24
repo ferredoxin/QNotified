@@ -20,6 +20,7 @@ package nil.nadph.qnotified.hook.rikka;
 
 import android.os.Looper;
 import android.widget.Toast;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
@@ -54,14 +55,12 @@ public class IgnoreDiyCard extends BaseDelayableHook {
     public boolean init() {
         if (inited) return true;
         try {
-            //Method initHeaderView = null;
             for (Method m : load("com.tencent.mobileqq.activity.FriendProfileCardActivity").getDeclaredMethods()) {
                 if (m.getName().equals("a") && !Modifier.isStatic(m.getModifiers()) && m.getReturnType().equals(void.class)) {
                     Class<?>[] argt = m.getParameterTypes();
-                    if (argt.length != 1) continue;
-                    if (argt[0].isPrimitive()) continue;
-                    //initHeaderView = m;
-                    //break;
+                    if (argt.length != 2) continue;
+                    if (argt[1] != boolean.class) continue;
+                    if (argt[0].getSuperclass() != Object.class) continue;
                     XposedBridge.hookMethod(m, new XC_MethodHook(49) {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -133,8 +132,6 @@ public class IgnoreDiyCard extends BaseDelayableHook {
 
     @Override
     public boolean isEnabled() {
-        //return false;
-        // TODO: 2020/7/12 Fix compatibility for QQ8.3.9
         try {
             return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_ignore_diy_card);
         } catch (Exception e) {
