@@ -20,6 +20,7 @@ package nil.nadph.qnotified.hook;
 
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.SwitchConfigItem;
+import nil.nadph.qnotified.hook.rikka.BaseApk;
 import nil.nadph.qnotified.hook.rikka.DefaultFont;
 import nil.nadph.qnotified.hook.rikka.IgnoreDiyCard;
 import nil.nadph.qnotified.hook.rikka.ShowMsgCount;
@@ -70,7 +71,8 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 ShowMsgCount.get(),
                 IgnoreDiyCard.get(),
                 InspectMessage.get(),
-                DefaultFont.get()
+                DefaultFont.get(),
+                BaseApk.get()
         };
         return sAllHooks;
     }
