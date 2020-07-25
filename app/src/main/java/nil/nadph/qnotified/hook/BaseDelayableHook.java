@@ -24,6 +24,7 @@ import nil.nadph.qnotified.hook.rikka.BaseApk;
 import nil.nadph.qnotified.hook.rikka.DefaultFont;
 import nil.nadph.qnotified.hook.rikka.DisableScreenshotHelper;
 import nil.nadph.qnotified.hook.rikka.IgnoreDiyCard;
+import nil.nadph.qnotified.hook.rikka.OneTapTwentyLikes;
 import nil.nadph.qnotified.hook.rikka.ShowMsgCount;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.NonNull;
@@ -74,7 +75,8 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 InspectMessage.get(),
                 DefaultFont.get(),
                 BaseApk.get(),
-                DisableScreenshotHelper.get()
+                DisableScreenshotHelper.get(),
+                OneTapTwentyLikes.get()
         };
         return sAllHooks;
     }

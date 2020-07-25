@@ -9,8 +9,8 @@ android {
         applicationId "nil.nadph.qnotified"
         minSdkVersion 14
         targetSdkVersion 29
-        versionCode 36
-        versionName "0.8.3" + (getGitHeadRefsSuffix.call() as String)
+        versionCode 37
+        versionName "0.8.4" + (getGitHeadRefsSuffix.call() as String)
         //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
