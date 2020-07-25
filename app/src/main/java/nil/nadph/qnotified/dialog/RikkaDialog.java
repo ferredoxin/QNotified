@@ -145,7 +145,7 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
                 RikkaConfigItem.create(this, "显示具体消息数量", ShowMsgCount.get()),
                 new RikkaBaseApkFormatDialog(this),
                 RikkaConfigItem.create(this, "隐藏截屏分享", DisableScreenshotHelper.get()),
-                RikkaConfigItem.create(this, "屏蔽DIY名片", IgnoreDiyCard.get()),
+                RikkaConfigItem.create(this, "屏蔽DIY名片[可能需要重启QQ]", IgnoreDiyCard.get()),
                 RikkaConfigItem.createStub(this, "隐藏群内右上角一起嗨"),
                 RikkaConfigItem.createStub(this, "屏蔽群名片炫彩字"),
                 RikkaConfigItem.createStub(this, "屏蔽所有进群特效"),
