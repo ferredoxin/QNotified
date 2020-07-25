@@ -87,6 +87,33 @@ public class Initiator {
         }
     }
 
+    public static Class _VoteHelper() {
+        Class tmp;
+        Class mVoteHelper = load("com/tencent/mobileqq/profile/vote/VoteHelper");
+        if (mVoteHelper == null) {
+            try {
+                tmp = load("com/tencent/mobileqq/profile/vote/VoteHelper$1");
+                mVoteHelper = tmp.getDeclaredField("this$0").getType();
+            } catch (Exception ignored) {
+            }
+        }
+        if (mVoteHelper == null) {
+            try {
+                tmp = load("com.tencent.mobileqq.troop.utils.TroopGagMgr$3");
+                mVoteHelper = tmp.getDeclaredField("this$0").getType();
+            } catch (Exception ignored) {
+            }
+        }
+        if (mVoteHelper == null) {
+            try {
+                tmp = load("com.tencent.mobileqq.troop.utils.TroopGagMgr$4");
+                mVoteHelper = tmp.getDeclaredField("this$0").getType();
+            } catch (Exception ignored) {
+            }
+        }
+        return mVoteHelper;
+    }
+
     public static Class _PicItemBuilder() {
         Class tmp;
         Class mPicItemBuilder = load("com.tencent.mobileqq.activity.aio.item.PicItemBuilder");
