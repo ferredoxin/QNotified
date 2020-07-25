@@ -18,6 +18,7 @@
  */
 package nil.nadph.qnotified.hook.rikka;
 
+import android.content.Intent;
 import android.os.Looper;
 import android.widget.Toast;
 
@@ -56,39 +57,49 @@ public class IgnoreDiyCard extends BaseDelayableHook {
         if (inited) return true;
         try {
             for (Method m : load("com.tencent.mobileqq.activity.FriendProfileCardActivity").getDeclaredMethods()) {
-                if (m.getName().equals("a") && !Modifier.isStatic(m.getModifiers()) && m.getReturnType().equals(void.class)) {
-                    Class<?>[] argt = m.getParameterTypes();
-                    if (argt.length != 2) continue;
-                    if (argt[1] != boolean.class) continue;
-                    if (argt[0].getSuperclass() != Object.class) continue;
-                    XposedBridge.hookMethod(m, new XC_MethodHook(49) {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            if (LicenseStatus.sDisableCommonHooks) return;
-                            if (!isEnabled()) return;
-                            Class<?> _ProfileCardInfo = ((Method) param.method).getParameterTypes()[0];
-                            Object info = Utils.iget_object_or_null(param.thisObject, "a", _ProfileCardInfo);
-                            if (info != null) {
-                                Class<?> _Card = load("com.tencent.mobileqq.data.Card");
-                                Object card = Utils.iget_object_or_null(info, "a", _Card);
-                                if (card != null) {
-                                    Field f = _Card.getField("lCurrentStyleId");
-                                    if (f.getLong(card) == 22 || f.getLong(card) == 21) {
-                                        f.setLong(card, 0);
-                                    }
-                                } else {
-                                    loge("IgnoreDiyCard/W but info.<Card> == null");
+                Class<?>[] argt = m.getParameterTypes();
+                if (Utils.getHostVersionCode() <= 1406) {
+                    if (m.getName().equals("a") && !Modifier.isStatic(m.getModifiers()) && m.getReturnType().equals(void.class)) {
+                        if (argt.length != 2) continue;
+                        if (argt[1] != boolean.class) continue;
+                        if (argt[0].getSuperclass() != Object.class) continue;
+                    }
+                } else {
+                    if (m.getName().equals("b") && !Modifier.isStatic(m.getModifiers()) && m.getReturnType().equals(void.class)) {
+                        logi("Hooked >1392 version successful");
+                        if (argt.length != 1) continue;
+                        if (argt[0].getSuperclass() == Intent.class) continue;
+                        if (argt[0].getSuperclass() != Object.class) continue;
+                    }
+                }
+                XposedBridge.hookMethod(m, new XC_MethodHook(49) {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        if (LicenseStatus.sDisableCommonHooks) return;
+                        if (!isEnabled()) return;
+                        Class<?> _ProfileCardInfo = ((Method) param.method).getParameterTypes()[0];
+                        Object info = Utils.iget_object_or_null(param.thisObject, "a", _ProfileCardInfo);
+                        if (info != null) {
+                            Class<?> _Card = load("com.tencent.mobileqq.data.Card");
+                            Object card = Utils.iget_object_or_null(info, "a", _Card);
+                            if (card != null) {
+                                Field f = _Card.getField("lCurrentStyleId");
+                                if (f.getLong(card) == 22 || f.getLong(card) == 21) {
+                                    f.setLong(card, 0);
                                 }
                             } else {
-                                loge("IgnoreDiyCard/W but info == null");
+                                loge("IgnoreDiyCard/W but info.<Card> == null");
                             }
+                        } else {
+                            loge("IgnoreDiyCard/W but info == null");
                         }
-                    });
-                }
+                    }
+                });
             }
             inited = true;
             return true;
-        } catch (Throwable e) {
+        } catch (
+                Throwable e) {
             log(e);
             return false;
         }
