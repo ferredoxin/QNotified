@@ -61,9 +61,11 @@ public class SettingEntryHook extends BaseDelayableHook {
                 protected void afterHookedMethod(final MethodHookParam param) throws Throwable {
                     if (LicenseStatus.isLoadingDisabled() || LicenseStatus.isSilentGone()) return;
                     try {
-                        View itemRef = (View) Utils.iget_object_or_null(param.thisObject, "a", load("com/tencent/mobileqq/widget/FormSimpleItem"));
-                        if (itemRef == null)
-                            itemRef = (View) Utils.iget_object_or_null(param.thisObject, "a", load("com/tencent/mobileqq/widget/FormCommonSingleLineItem"));
+                        Class<?> itemClass = null;
+                        View itemRef = null;
+                        itemRef = (View) Utils.iget_object_or_null(param.thisObject, "a", load("com/tencent/mobileqq/widget/FormSimpleItem"));
+                        if (itemRef == null && (itemClass = load("com/tencent/mobileqq/widget/FormCommonSingleLineItem")) != null)
+                            itemRef = (View) Utils.iget_object_or_null(param.thisObject, "a", itemClass);
                         if (itemRef == null) {
                             Class<?> clz = load("com/tencent/mobileqq/widget/FormCommonSingleLineItem");
                             if (clz == null) clz = load("com/tencent/mobileqq/widget/FormSimpleItem");
