@@ -87,6 +87,19 @@ public class Initiator {
         }
     }
 
+    public static Class _TroopEnterEffectController() {
+        Class tmp;
+        Class mController = load("com.tencent.mobileqq.troop.enterEffect.TroopEnterEffect.Controller");
+        if (mController == null) {
+            try {
+                tmp = load("com.tencent.mobileqq.troop.enterEffect.TroopEnterEffectController$3");
+                mController = tmp.getDeclaredField("this$0").getType();
+            } catch (Exception ignored) {
+            }
+        }
+        return mController;
+    }
+
     public static Class _VoteHelper() {
         Class tmp;
         Class mVoteHelper = load("com/tencent/mobileqq/profile/vote/VoteHelper");

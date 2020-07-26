@@ -66,7 +66,6 @@ public class IgnoreDiyCard extends BaseDelayableHook {
                     }
                 } else {
                     if (m.getName().equals("b") && !Modifier.isStatic(m.getModifiers()) && m.getReturnType().equals(void.class)) {
-                        logi("Hooked >1392 version successful");
                         if (argt.length != 1) continue;
                         if (argt[0].getSuperclass() == Intent.class) continue;
                         if (argt[0].getSuperclass() != Object.class) continue;
