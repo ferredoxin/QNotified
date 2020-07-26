@@ -87,6 +87,19 @@ public class Initiator {
         }
     }
 
+    public static Class _ColorNickManager() {
+        Class tmp;
+        Class mColorNickManager = load("com.tencent.mobileqq.vas.ColorNickManager");
+        if (mColorNickManager == null) {
+            try {
+                tmp = load("com.tencent.mobileqq.vas.ColorNickManager$2");
+                mColorNickManager = tmp.getDeclaredField("this$0").getType();
+            } catch (Exception ignored) {
+            }
+        }
+        return mColorNickManager;
+    }
+
     public static Class _TroopEnterEffectController() {
         Class tmp;
         Class mController = load("com.tencent.mobileqq.troop.enterEffect.TroopEnterEffect.Controller");

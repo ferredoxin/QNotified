@@ -15,6 +15,7 @@ import android.widget.TextView;
 import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.hook.rikka.DefaultFont;
+import nil.nadph.qnotified.hook.rikka.DisableColorNickName;
 import nil.nadph.qnotified.hook.rikka.DisableEnterEffect;
 import nil.nadph.qnotified.hook.rikka.DisableScreenshotHelper;
 import nil.nadph.qnotified.hook.rikka.IgnoreDiyCard;
@@ -150,8 +151,8 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
                 RikkaConfigItem.create(this, "屏蔽DIY名片[可能需要重启QQ]", IgnoreDiyCard.get()),
                 RikkaConfigItem.create(this, "一键20赞", OneTapTwentyLikes.get()),
                 RikkaConfigItem.create(this, "屏蔽所有进群特效", DisableEnterEffect.get()),
+                RikkaConfigItem.create(this, "屏蔽群名片炫彩字", DisableColorNickName.get()),
                 RikkaConfigItem.createStub(this, "隐藏群内右上角一起嗨"),
-                RikkaConfigItem.createStub(this, "屏蔽群名片炫彩字"),
                 RikkaConfigItem.createStub(this, "屏蔽掉落特效"),
                 RikkaConfigItem.createStub(this, "屏蔽戳一戳窗口动画"),
                 RikkaConfigItem.createStub(this, "聊天页显示完整时间"),
