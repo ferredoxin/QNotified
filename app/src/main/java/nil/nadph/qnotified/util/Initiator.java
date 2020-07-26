@@ -87,7 +87,7 @@ public class Initiator {
         }
     }
 
-    public static Class _Controller() {
+    public static Class _TroopEnterEffectController() {
         Class tmp;
         Class mController = load("com/tencent/mobileqq/profile/vote/VoteHelper");
         if (mController == null) {

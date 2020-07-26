@@ -19,7 +19,6 @@ import nil.nadph.qnotified.util.Utils;
 import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
 import static nil.nadph.qnotified.util.Utils.getApplication;
 import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.logi;
 
 public class DisableEnterEffect extends BaseDelayableHook {
     public final static String rq_disable_enter_effect = "rq_disable_enter_effect";
@@ -44,7 +43,7 @@ public class DisableEnterEffect extends BaseDelayableHook {
     public boolean init() {
         if (isInited()) return true;
         try {
-            for (Method m : Initiator._Controller().getDeclaredMethods()) {
+            for (Method m : Initiator._TroopEnterEffectController().getDeclaredMethods()) {
                 if (m.getName().equals("a") && !Modifier.isStatic(m.getModifiers()) && m.getReturnType().equals(void.class)) {
                     XposedBridge.hookMethod(m, new XC_MethodHook() {
                         @Override
