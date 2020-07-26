@@ -179,8 +179,10 @@ public class Utils {
     public static long getLongAccountUin() {
         try {
             AppRuntime rt = getAppRuntime();
-            loge("getLongAccountUin/E getAppRuntime == null");
-            if (rt == null) return -1;
+            if (rt == null) {
+                loge("getLongAccountUin/E getAppRuntime == null");
+                return -1;
+            }
             return (long) invoke_virtual(rt, "getLongAccountUin");
         } catch (Exception e) {
             log(e);
