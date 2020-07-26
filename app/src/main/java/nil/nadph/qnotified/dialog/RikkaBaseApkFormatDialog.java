@@ -7,14 +7,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import java.io.IOException;
-
+import android.widget.*;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.rikka.BaseApk;
@@ -22,6 +15,8 @@ import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.util.NonNull;
 import nil.nadph.qnotified.util.Nullable;
 import nil.nadph.qnotified.util.Utils;
+
+import java.io.IOException;
 
 import static nil.nadph.qnotified.util.Utils.log;
 
@@ -57,7 +52,7 @@ public class RikkaBaseApkFormatDialog extends RikkaDialog.RikkaConfigItem {
         enableBaseApk = ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_base_apk_enabled);
         enable.setChecked(enableBaseApk);
         panel.setVisibility(enableBaseApk ? View.VISIBLE : View.GONE);
-        currentFormat = getCurrentBaseApkFormat();
+        currentFormat = ConfigManager.getDefaultConfig().getString(rq_base_apk_format);
         if (currentFormat == null) currentFormat = DEFAULT_BASE_APK_FORMAT;
         input.addTextChangedListener(new TextWatcher() {
             @Override
@@ -83,7 +78,7 @@ public class RikkaBaseApkFormatDialog extends RikkaDialog.RikkaConfigItem {
                 previre.setText(result);
             }
         });
-        input.setText(getCurrentBaseApkFormat());
+        input.setText(currentFormat);
         enable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -138,7 +133,7 @@ public class RikkaBaseApkFormatDialog extends RikkaDialog.RikkaConfigItem {
 
     @Override
     public String getName() {
-        return "不要base.apk不要base.apk";
+        return "群上传重命名base.apk";
     }
 
     @Nullable

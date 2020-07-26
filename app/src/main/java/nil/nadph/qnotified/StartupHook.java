@@ -23,8 +23,6 @@ import android.os.Build;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
-import nil.nadph.qnotified.config.ConfigItems;
-import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Utils;
 
@@ -109,11 +107,11 @@ public class StartupHook {
 
     static void deleteDirIfNecessary(Context ctx) {
         try {
-            if (ConfigManager.getDefaultConfig().getBooleanOrFalse(ConfigItems.qn_disable_hot_patch)) {
-                deleteFile(ctx.getFileStreamPath("hotpatch"));
-            }
             if (Build.VERSION.SDK_INT >= 24) {
                 deleteFile(new File(ctx.getDataDir(), "app_qqprotect"));
+            }
+            if (new File(ctx.getFilesDir(), "qn_disable_hot_patch").exists()) {
+                deleteFile(ctx.getFileStreamPath("hotpatch"));
             }
         } catch (Throwable e) {
             log(e);

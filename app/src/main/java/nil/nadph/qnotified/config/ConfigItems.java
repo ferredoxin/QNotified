@@ -18,14 +18,15 @@
  */
 package nil.nadph.qnotified.config;
 
+import android.content.Context;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.util.MainProcess;
 import nil.nadph.qnotified.util.Utils;
 
+import java.io.File;
 import java.io.IOException;
 
-import static nil.nadph.qnotified.util.Utils.QN_VERSION_CODE;
-import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.*;
 
 public class ConfigItems {
     public static final String qn_hide_msg_list_miniapp = "qn_hide_msg_list_miniapp";
@@ -33,12 +34,46 @@ public class ConfigItems {
     public static final String qn_muted_at_all = "qn_muted_at_all";
     public static final String qn_muted_red_packet = "qn_muted_red_packet";
     public static final String qn_mute_talk_back = "qn_mute_talk_back";
-    public static final String qn_disable_hot_patch = "qn_disable_hot_patch";
     public static final String qn_file_recv_redirect_enable = "qn_file_recv_redirect_enable";
     public static final String qn_file_recv_redirect_path = "qn_file_recv_redirect_path";
     public static final String qn_fake_bat_expr = "qn_fake_bat_expr";
     public static final String cfg_nice_user = "cfg_nice_user";
     public static final String cache_qn_prev_version = "cache_qn_prev_version";
+
+    public static final SwitchConfigItem qn_disable_hot_patch = new SwitchConfigItem() {
+        @Override
+        public boolean isValid() {
+            return true;
+        }
+
+        @Override
+        public boolean isEnabled() {
+            try {
+                Context ctx = getApplication();
+                return new File(ctx.getFilesDir(), "qn_disable_hot_patch").exists();
+            } catch (Throwable e) {
+                Utils.showErrorToastAnywhere(e.toString());
+                return false;
+            }
+        }
+
+        @Override
+        public void setEnabled(boolean enabled) {
+            try {
+                Context ctx = getApplication();
+                File f = new File(ctx.getFilesDir(), "qn_disable_hot_patch");
+                if (enabled != f.exists()) {
+                    if (enabled) {
+                        f.createNewFile();
+                    } else {
+                        f.delete();
+                    }
+                }
+            } catch (Throwable e) {
+                Utils.showErrorToastAnywhere(e.toString());
+            }
+        }
+    };
 
     public static final SwitchConfigItem qn_notify_when_del = new SwitchConfigItem() {
         @Override

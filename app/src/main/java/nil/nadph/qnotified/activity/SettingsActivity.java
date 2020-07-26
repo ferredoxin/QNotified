@@ -32,9 +32,7 @@ import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-
 import com.tencent.mobileqq.widget.BounceScrollView;
-
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigItems;
@@ -218,7 +216,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         _t.setId(R_ID_BTN_FILE_RECV);
         __recv_desc = _t.findViewById(R_ID_DESCRIPTION);
         __recv_status = _t.findViewById(R_ID_VALUE);
-        ll.addView(newListItemSwitchConfigNext(this, "禁用QQ热补丁", "一般无需开启", ConfigItems.qn_disable_hot_patch, false));
+        ll.addView(newListItemSwitchConfigNext(this, "禁用QQ热补丁", "一般无需开启", ConfigItems.qn_disable_hot_patch));
         ll.addView(subtitle(this, "参数设定"));
         ll.addView(newListItemSwitchStub(this, "禁用特别关心长震动", "等我找到女朋友就开发这个功能", false));
         ll.addView(_t = newListItemButton(this, "管理脚本(.java)", "请注意安全, 合理使用", "N/A", clickToProxyActAction(ManageScriptsActivity.class)));

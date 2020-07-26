@@ -147,6 +147,24 @@ public class ViewBuilder {
         return root;
     }
 
+    public static RelativeLayout newListItemSwitchConfigNext(Context ctx, CharSequence title, CharSequence desc, final SwitchConfigItem item) {
+        boolean on = item.isEnabled();
+        RelativeLayout root = newListItemSwitch(ctx, title, desc, on, new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                try {
+                    item.setEnabled(isChecked);
+                    Utils.showToastShort(buttonView.getContext(), "重启QQ生效");
+                } catch (Throwable e) {
+                    Utils.log(e);
+                    Utils.showToastShort(buttonView.getContext(), e.toString());
+                }
+            }
+        });
+        root.setId(title.hashCode());
+        return root;
+    }
+
     public static RelativeLayout newListItemHookSwitchInit(final Context ctx, CharSequence title, CharSequence desc, final BaseDelayableHook hook) {
         boolean on = hook.isEnabled();
         RelativeLayout root = newListItemSwitch(ctx, title, desc, on, new CompoundButton.OnCheckedChangeListener() {
