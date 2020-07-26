@@ -48,10 +48,10 @@ public class RikkaBaseApkFormatDialog extends RikkaDialog.RikkaConfigItem {
         dialog.setCanceledOnTouchOutside(false);
         final Context ctx = dialog.getContext();
         vg = (LinearLayout) LayoutInflater.from(ctx).inflate(R.layout.rikka_base_apk_dialog, null);
-        final TextView preview = vg.findViewById(R.id.textViewBorderBaseApkPreview);
-        final TextView input = vg.findViewById(R.id.editTextBorderBaseApkFormat);
+        final TextView preview = vg.findViewById(R.id.textViewBaseApkPreview);
+        final TextView input = vg.findViewById(R.id.editTextBaseApkFormat);
         final CheckBox enable = vg.findViewById(R.id.checkBoxEnableBaseApk);
-        final LinearLayout panel = vg.findViewById(R.id.layoutBorderBaseApkPanel);
+        final LinearLayout panel = vg.findViewById(R.id.layoutBaseApkPanel);
         enableBaseApk = ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_base_apk_enabled);
         enable.setChecked(enableBaseApk);
         panel.setVisibility(enableBaseApk ? View.VISIBLE : View.GONE);

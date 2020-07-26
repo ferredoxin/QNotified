@@ -22,7 +22,7 @@ public class CustomMsgTimeFormat extends BaseDelayableHook {
     private final static CustomMsgTimeFormat self = new CustomMsgTimeFormat();
     private static boolean isInit = false;
 
-    public static CustomMsgTimeFormat get(){
+    public static CustomMsgTimeFormat get() {
         return self;
     }
 

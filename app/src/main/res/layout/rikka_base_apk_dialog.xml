@@ -12,7 +12,7 @@
             android:text="重命名base.apk"/>
 
     <LinearLayout
-            android:id="@+id/layoutBorderBaseApkPanel"
+            android:id="@+id/layoutBaseApkPanel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -30,7 +30,7 @@
                     android:textAppearance="@android:style/TextAppearance.Holo.Medium"/>
 
             <EditText
-                    android:id="@+id/editTextBorderBaseApkFormat"
+                    android:id="@+id/editTextBaseApkFormat"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
@@ -51,7 +51,7 @@
                     android:text="预览:"/>
 
             <TextView
-                    android:id="@+id/textViewBorderBaseApkPreview"
+                    android:id="@+id/textViewBaseApkPreview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
