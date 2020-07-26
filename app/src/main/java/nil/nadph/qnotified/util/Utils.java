@@ -99,7 +99,7 @@ public class Utils {
         } catch (Exception e) {
             log(e);
             //noinspection UnnecessaryInitCause
-            throw (AssertionError) new AssertionError("FATAL: Utils.getApplication() failure!").initCause(e);
+            throw (RuntimeException) new RuntimeException("FATAL: Utils.getApplication() failure!").initCause(e);
         }
     }
 
