@@ -74,9 +74,9 @@ public class DexKit {
     public static final int C_CustomWidgetUtil = 21;
     public static final int C_MessageCache = 22;
     public static final int C_ScreenShotHelper = 23;
-
+    public static final int C_TimeFormatterUtils = 24;
     //the last index
-    public static final int DEOBF_NUM_C = 23;
+    public static final int DEOBF_NUM_C = 24;
 
     public static final int N_BASE_CHAT_PIE__INIT = 20001;
     public static final int N_BASE_CHAT_PIE__handleNightMask = 20002;
@@ -265,6 +265,8 @@ public class DexKit {
                 return "MessageCache";
             case C_ScreenShotHelper:
                 return "ScreenShotHelper";
+            case C_TimeFormatterUtils:
+                return "TimeFormatterUtils";
             case N_BASE_CHAT_PIE__INIT:
                 return "base_chat_pie__init";
             case N_BASE_CHAT_PIE__handleNightMask:
@@ -345,6 +347,9 @@ public class DexKit {
             case C_ScreenShotHelper:
                 ret = "com.tencent.mobileqq.screendetect.ScreenShotHelper";
                 break;
+            case C_TimeFormatterUtils:
+                ret = "ccom.tencent.mobileqq.utils.TimeFormatterUtils";
+                break;
             case N_BASE_CHAT_PIE__INIT:
             case N_BASE_CHAT_PIE__handleNightMask:
             case N_BASE_CHAT_PIE__updateSession:
@@ -409,6 +414,8 @@ public class DexKit {
                 return new byte[][]{new byte[]{0x12, 0x51, 0x2E, 0x6D, 0x73, 0x67, 0x2E, 0x4D, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x43, 0x61, 0x63, 0x68, 0x65}};
             case C_ScreenShotHelper:
                 return new byte[][]{new byte[]{0x1D, 0x6F, 0x6E, 0x41, 0x63, 0x74, 0x69, 0x76, 0x69, 0x74, 0x79, 0x52, 0x65, 0x73, 0x75, 0x6D, 0x65, 0x48, 0x69, 0x64, 0x65, 0x46, 0x6C, 0x6F, 0x61, 0x74, 0x56, 0x69, 0x65, 0x77}};
+            case C_TimeFormatterUtils:
+                return new byte[][]{new byte[]{0x12, 0x54, 0x69, 0x6D, 0x65, 0x46, 0x6F, 0x72, 0x6D, 0x61, 0x74, 0x74, 0x65, 0x72, 0x55, 0x74, 0x69, 0x6C, 0x73}};
             case N_BASE_CHAT_PIE__INIT:
                 return new byte[][]{new byte[]{0x0F, 0x69, 0x6E, 0x70, 0x75, 0x74, 0x20, 0x73, 0x65, 0x74, 0x20, 0x65, 0x72, 0x72, 0x6F, 0x72}};
             case N_BASE_CHAT_PIE__handleNightMask:
@@ -466,6 +473,8 @@ public class DexKit {
                 return new int[]{1, 4};
             case C_ScreenShotHelper:
                 return new int[]{4, 2};
+            case C_TimeFormatterUtils:
+                return new int[]{1, 4};
             case N_BASE_CHAT_PIE__INIT:
             case N_BASE_CHAT_PIE__handleNightMask:
             case N_BASE_CHAT_PIE__updateSession:
@@ -487,6 +496,7 @@ public class DexKit {
             case C_SIMPLE_UI_UTIL:
             case C_TROOP_GIFT_UTIL:
             case C_TEST_STRUCT_MSG:
+            case C_TimeFormatterUtils:
                 a:
                 for (DexMethodDescriptor m : __methods) {
                     Class clz = Initiator.load(m.declaringClass);

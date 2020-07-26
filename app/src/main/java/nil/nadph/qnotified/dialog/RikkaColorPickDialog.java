@@ -21,14 +21,16 @@ import java.io.IOException;
 import static nil.nadph.qnotified.util.Utils.log;
 
 public class RikkaColorPickDialog extends RikkaDialog.RikkaConfigItem {
+    private static final String rq_dialog_border_color = "rq_dialog_border_color";
+    private static final String rq_dialog_border_color_enabled = "rq_dialog_border_color_enabled";
+
     @Nullable
     private AlertDialog dialog;
     @Nullable
     private LinearLayout vg;
-    private static final String rq_dialog_border_color = "rq_dialog_border_color";
-    private static final String rq_dialog_border_color_enabled = "rq_dialog_border_color_enabled";
+
     private int currentColor;
-    private boolean currentColorValid = true;
+    private boolean currentColorValid = false;
     private boolean enableColor;
 
     public RikkaColorPickDialog(@NonNull RikkaDialog d) {

@@ -21,6 +21,7 @@ package nil.nadph.qnotified.hook;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.SwitchConfigItem;
 import nil.nadph.qnotified.hook.rikka.BaseApk;
+import nil.nadph.qnotified.hook.rikka.CustomMsgTimeFormat;
 import nil.nadph.qnotified.hook.rikka.DefaultFont;
 import nil.nadph.qnotified.hook.rikka.DisableColorNickName;
 import nil.nadph.qnotified.hook.rikka.DisableEnterEffect;
@@ -80,7 +81,8 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 DisableScreenshotHelper.get(),
                 OneTapTwentyLikes.get(),
                 DisableEnterEffect.get(),
-                DisableColorNickName.get()
+                DisableColorNickName.get(),
+                CustomMsgTimeFormat.get()
         };
         return sAllHooks;
     }

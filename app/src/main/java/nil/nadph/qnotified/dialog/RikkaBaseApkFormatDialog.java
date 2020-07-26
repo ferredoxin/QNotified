@@ -8,6 +8,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.*;
+
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.rikka.BaseApk;
@@ -23,12 +24,14 @@ import static nil.nadph.qnotified.util.Utils.log;
 public class RikkaBaseApkFormatDialog extends RikkaDialog.RikkaConfigItem {
     private static final String DEFAULT_BASE_APK_FORMAT = "%n_%v.apk";
 
+    private static final String rq_base_apk_format = "rq_base_apk_format";
+    private static final String rq_base_apk_enabled = "rq_base_apk_enabled";
+
     @Nullable
     private AlertDialog dialog;
     @Nullable
     private LinearLayout vg;
-    private static final String rq_base_apk_format = "rq_base_apk_format";
-    private static final String rq_base_apk_enabled = "rq_base_apk_enabled";
+
     private String currentFormat;
     private boolean enableBaseApk;
 
@@ -45,7 +48,7 @@ public class RikkaBaseApkFormatDialog extends RikkaDialog.RikkaConfigItem {
         dialog.setCanceledOnTouchOutside(false);
         final Context ctx = dialog.getContext();
         vg = (LinearLayout) LayoutInflater.from(ctx).inflate(R.layout.rikka_base_apk_dialog, null);
-        final TextView previre = vg.findViewById(R.id.textViewBorderBaseApkPreview);
+        final TextView preview = vg.findViewById(R.id.textViewBorderBaseApkPreview);
         final TextView input = vg.findViewById(R.id.editTextBorderBaseApkFormat);
         final CheckBox enable = vg.findViewById(R.id.checkBoxEnableBaseApk);
         final LinearLayout panel = vg.findViewById(R.id.layoutBorderBaseApkPanel);
@@ -75,7 +78,7 @@ public class RikkaBaseApkFormatDialog extends RikkaDialog.RikkaConfigItem {
                 if (!format.toLowerCase().contains(".apk")) {
                     result += "\n提示:你还没有输入.apk后缀哦";
                 }
-                previre.setText(result);
+                preview.setText(result);
             }
         });
         input.setText(currentFormat);
