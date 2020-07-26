@@ -253,8 +253,33 @@ public class MainHook {
 //        if (SyncUtils.getProcessType() == SyncUtils.PROC_MSF) {
 //            Debug.waitForDebugger();
 //        }
-        if (LicenseStatus.isLoadingDisabled()) return;
-        LicenseStatus.sDisableCommonHooks = LicenseStatus.isBlacklisted() || LicenseStatus.isSilentGone();
+        try {
+            Class<?> _NewRuntime = Initiator.load("com.tencent.mobileqq.startup.step.NewRuntime");
+            Method[] methods = _NewRuntime.getDeclaredMethods();
+            Method doStep = null;
+            if (methods.length == 1) {
+                doStep = methods[0];
+            } else {
+                for (Method m : methods) {
+                    if (Modifier.isProtected(m.getModifiers()) || m.getName().equals("doStep")) {
+                        doStep = m;
+                        break;
+                    }
+                }
+            }
+            XposedBridge.hookMethod(doStep, new XC_MethodHook(52) {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    Utils.$access$set$sAppRuntimeInit(true);
+                    //logi("NewRuntime/I after doStep");
+                    if (LicenseStatus.isLoadingDisabled()) return;
+                    LicenseStatus.sDisableCommonHooks = LicenseStatus.isBlacklisted() || LicenseStatus.isSilentGone();
+                }
+            });
+        } catch (Throwable e) {
+            loge("NewRuntime/E hook failed: " + e);
+            Utils.$access$set$sAppRuntimeInit(true);
+        }
         BaseDelayableHook.allowEarlyInit(RevokeMsgHook.get());
         BaseDelayableHook.allowEarlyInit(MuteQZoneThumbsUp.get());
         BaseDelayableHook.allowEarlyInit(MuteAtAllAndRedPacket.get());

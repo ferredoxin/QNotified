@@ -181,8 +181,10 @@ public class Utils {
     public static long getLongAccountUin() {
         try {
             AppRuntime rt = getAppRuntime();
-            loge("getLongAccountUin/E getAppRuntime == null");
-            if (rt == null) return -1;
+            if (rt == null) {
+                loge("getLongAccountUin/E getAppRuntime == null");
+                return -1;
+            }
             return (long) invoke_virtual(rt, "getLongAccountUin");
         } catch (Exception e) {
             log(e);
@@ -1088,13 +1090,24 @@ public class Utils {
         return null;
     }
 
+    private static boolean sAppRuntimeInit = false;
+
+    public static void $access$set$sAppRuntimeInit(boolean z) {
+        sAppRuntimeInit = z;
+    }
+
+    @Nullable
     @MainProcess
     public static AppRuntime getAppRuntime() {
-        Object baseApplicationImpl = getApplication();
-        if (!SyncUtils.isMainProcess()) {
-            loge("getAppRuntime/W invoked but not in main process!");
+        if (!sAppRuntimeInit) {
+            loge("getAppRuntime/W invoked before NewRuntime.step");
             return null;
         }
+        Object baseApplicationImpl = getApplication();
+//        if (!SyncUtils.isMainProcess()) {
+//            loge("getAppRuntime/W invoked but not in main process!");
+//            return null;
+//        }
         try {
             Method m;
             m = hasMethod(baseApplicationImpl, "getRuntime");
