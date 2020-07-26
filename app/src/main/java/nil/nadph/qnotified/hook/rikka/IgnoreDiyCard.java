@@ -21,7 +21,6 @@ package nil.nadph.qnotified.hook.rikka;
 import android.content.Intent;
 import android.os.Looper;
 import android.widget.Toast;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
@@ -63,13 +62,13 @@ public class IgnoreDiyCard extends BaseDelayableHook {
                         if (argt.length != 2) continue;
                         if (argt[1] != boolean.class) continue;
                         if (argt[0].getSuperclass() != Object.class) continue;
-                    }
+                    } else continue;
                 } else {
                     if (m.getName().equals("b") && !Modifier.isStatic(m.getModifiers()) && m.getReturnType().equals(void.class)) {
                         if (argt.length != 1) continue;
                         if (argt[0].getSuperclass() == Intent.class) continue;
                         if (argt[0].getSuperclass() != Object.class) continue;
-                    }
+                    } else continue;
                 }
                 XposedBridge.hookMethod(m, new XC_MethodHook(49) {
                     @Override
