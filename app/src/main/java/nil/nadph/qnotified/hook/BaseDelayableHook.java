@@ -28,6 +28,7 @@ import nil.nadph.qnotified.hook.rikka.DisableEnterEffect;
 import nil.nadph.qnotified.hook.rikka.DisableScreenshotHelper;
 import nil.nadph.qnotified.hook.rikka.IgnoreDiyCard;
 import nil.nadph.qnotified.hook.rikka.OneTapTwentyLikes;
+import nil.nadph.qnotified.hook.rikka.RemoveSendGiftAd;
 import nil.nadph.qnotified.hook.rikka.ShowMsgCount;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.NonNull;
@@ -82,7 +83,8 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 OneTapTwentyLikes.get(),
                 DisableEnterEffect.get(),
                 DisableColorNickName.get(),
-                CustomMsgTimeFormat.get()
+                CustomMsgTimeFormat.get(),
+                RemoveSendGiftAd.get()
         };
         return sAllHooks;
     }

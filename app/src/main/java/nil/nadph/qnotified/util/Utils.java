@@ -31,7 +31,9 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
 import com.tencent.mobileqq.app.QQAppInterface;
+
 import dalvik.system.DexFile;
 import de.robv.android.xposed.XposedBridge;
 import mqq.app.AppRuntime;
@@ -706,7 +708,8 @@ public class Utils {
                         for (ii = 0; ii < argt.length; ii++) {
                             if (!argt[ii].equals(_argt[ii])) continue loop;
                         }
-                        if (returnType != null && !returnType.equals(m[i].getReturnType())) continue;
+                        if (returnType != null && !returnType.equals(m[i].getReturnType()))
+                            continue;
                         method = m[i];
                         break loop_main;
                     }
@@ -749,7 +752,8 @@ public class Utils {
                         for (ii = 0; ii < argt.length; ii++) {
                             if (!argt[ii].equals(_argt[ii])) continue loop;
                         }
-                        if (returnType != null && !returnType.equals(m[i].getReturnType())) continue;
+                        if (returnType != null && !returnType.equals(m[i].getReturnType()))
+                            continue;
                         method = m[i];
                         break loop_main;
                     }
@@ -787,14 +791,16 @@ public class Utils {
                         for (ii = 0; ii < argt.length; ii++) {
                             if (!argt[ii].equals(_argt[ii])) continue loop;
                         }
-                        if (returnType != null && !returnType.equals(m[i].getReturnType())) continue;
+                        if (returnType != null && !returnType.equals(m[i].getReturnType()))
+                            continue;
                         method = m[i];
                         break loop_main;
                     }
                 }
             }
         } while (!Object.class.equals(clazz = clazz.getSuperclass()));
-        if (method == null) throw new NoSuchMethodException(name + " in " + obj.getClass().getName());
+        if (method == null)
+            throw new NoSuchMethodException(name + " in " + obj.getClass().getName());
         method.setAccessible(true);
         Object ret;
         boolean needPatch = false;
@@ -846,7 +852,8 @@ public class Utils {
                         for (ii = 0; ii < argt.length; ii++) {
                             if (!argt[ii].equals(_argt[ii])) continue loop;
                         }
-                        if (returnType != null && !returnType.equals(m[i].getReturnType())) continue;
+                        if (returnType != null && !returnType.equals(m[i].getReturnType()))
+                            continue;
                         method = m[i];
                         break loop_main;
                     }
@@ -1104,7 +1111,8 @@ public class Utils {
         try {
             Method m;
             m = hasMethod(baseApplicationImpl, "getRuntime");
-            if (m == null) return (AppRuntime) invoke_virtual(baseApplicationImpl, "a", load("mqq/app/AppRuntime"));
+            if (m == null)
+                return (AppRuntime) invoke_virtual(baseApplicationImpl, "a", load("mqq/app/AppRuntime"));
             else return (AppRuntime) m.invoke(baseApplicationImpl);
         } catch (Exception e) {
             throw new AssertionError(e);
@@ -1563,8 +1571,10 @@ public class Utils {
     }
 
     public static boolean isNiceUser() {
-        if ((LicenseStatus.getCurrentUserWhiteFlags() & UserFlagConst.WF_NICE_USER) != 0) return true;
-        if ((LicenseStatus.getCurrentUserBlackFlags() & UserFlagConst.BF_HIDE_INFO) != 0) return false;
+        if ((LicenseStatus.getCurrentUserWhiteFlags() & UserFlagConst.WF_NICE_USER) != 0)
+            return true;
+        if ((LicenseStatus.getCurrentUserBlackFlags() & UserFlagConst.BF_HIDE_INFO) != 0)
+            return false;
         try {
             ConfigManager cfg = ConfigManager.getDefaultConfig();
             if (cfg.getBooleanOrDefault(ConfigItems.cfg_nice_user, false)) {

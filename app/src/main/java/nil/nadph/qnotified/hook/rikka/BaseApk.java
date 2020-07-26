@@ -44,19 +44,19 @@ public class BaseApk extends BaseDelayableHook {
     public boolean init() {
         if (isInit) return true;
         try {
-            final Class<?> ItemManagerClz = Initiator.load("com.tencent.mobileqq.troop.utils.TroopFileTransferManager$Item");
+            final Class<?> _ItemManagerClz = Initiator.load("com.tencent.mobileqq.troop.utils.TroopFileTransferManager$Item");
             for (Method m : Initiator._TroopFileUploadMgr().getDeclaredMethods()) {
                 if (m.getName().equals("b") && !Modifier.isStatic(m.getModifiers()) && m.getReturnType().equals(int.class)) {
                     Class<?>[] argt = m.getParameterTypes();
-                    if (argt.length == 3 && argt[0] == long.class && argt[1] == ItemManagerClz && argt[2] == Bundle.class) {
+                    if (argt.length == 3 && argt[0] == long.class && argt[1] == _ItemManagerClz && argt[2] == Bundle.class) {
                         XposedBridge.hookMethod(m, new XC_MethodHook() {
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                                 if (LicenseStatus.sDisableCommonHooks) return;
                                 if (!isEnabled()) return;
                                 Object item = param.args[1];
-                                Field localFile = XposedHelpers.findField(ItemManagerClz, "LocalFile");
-                                Field fileName = XposedHelpers.findField(ItemManagerClz, "FileName");
+                                Field localFile = XposedHelpers.findField(_ItemManagerClz, "LocalFile");
+                                Field fileName = XposedHelpers.findField(_ItemManagerClz, "FileName");
                                 if (fileName.get(item).equals("base.apk")) {
                                     PackageManager packageManager = Utils.getApplication().getPackageManager();
                                     PackageInfo packageArchiveInfo = packageManager.getPackageArchiveInfo((String) localFile.get(item), PackageManager.GET_ACTIVITIES);
