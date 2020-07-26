@@ -89,7 +89,7 @@ public class Initiator {
 
     public static Class _TroopEnterEffectController() {
         Class tmp;
-        Class mController = load("com.tencent.mobileqq.troop.enterEffect.TroopEnterEffectController");
+        Class mController = load("com.tencent.mobileqq.troop.enterEffect.TroopEnterEffect.Controller");
         if (mController == null) {
             try {
                 tmp = load("com.tencent.mobileqq.troop.enterEffect.TroopEnterEffectController$3");
