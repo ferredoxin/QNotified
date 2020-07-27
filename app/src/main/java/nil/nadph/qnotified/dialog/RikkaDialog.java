@@ -14,15 +14,7 @@ import android.widget.TextView;
 
 import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
-import nil.nadph.qnotified.hook.rikka.DefaultFont;
-import nil.nadph.qnotified.hook.rikka.DisableColorNickName;
-import nil.nadph.qnotified.hook.rikka.DisableDropSticker;
-import nil.nadph.qnotified.hook.rikka.DisableEnterEffect;
-import nil.nadph.qnotified.hook.rikka.DisableScreenshotHelper;
-import nil.nadph.qnotified.hook.rikka.IgnoreDiyCard;
-import nil.nadph.qnotified.hook.rikka.OneTapTwentyLikes;
-import nil.nadph.qnotified.hook.rikka.RemoveSendGiftAd;
-import nil.nadph.qnotified.hook.rikka.ShowMsgCount;
+import nil.nadph.qnotified.hook.rikka.*;
 import nil.nadph.qnotified.ui.DummyDrawable;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.ViewBuilder;
@@ -154,6 +146,8 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
                 RikkaConfigItem.create(this, "屏蔽所有进群特效", DisableEnterEffect.get()),
                 RikkaConfigItem.create(this, "屏蔽群名片炫彩字", DisableColorNickName.get()),
                 RikkaConfigItem.create(this, "屏蔽掉落表情特效[重启QQ生效]", DisableDropSticker.get()),
+//                RikkaConfigItem.create(this, "屏蔽抖动窗口", DisableShakeWindow.get()),
+                RikkaConfigItem.create(this, "屏蔽戳一戳&放大招动画", DisablePokeEffect.get()),
                 RikkaConfigItem.create(this, "一键20赞", OneTapTwentyLikes.get()),
                 new RikkaCustomMsgTimeFormatDialog(this),
                 RikkaConfigItem.create(this, "免广告送免费礼物[仅限群聊]", RemoveSendGiftAd.get()),
