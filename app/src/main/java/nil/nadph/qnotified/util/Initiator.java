@@ -106,6 +106,26 @@ public class Initiator {
         return null;
     }
 
+    public static Class _GdtMvViewController() {
+        Class tmp;
+        Class mGdtMvViewController = load("com.tencent.gdtad.api.motivevideo.GdtMvViewController");
+        if (mGdtMvViewController == null) {
+            try {
+                tmp = load("com.tencent.gdtad.api.motivevideo.GdtMvViewController$6");
+                mGdtMvViewController = tmp.getDeclaredField("this$0").getType();
+            } catch (Exception ignored) {
+            }
+        }
+        if (mGdtMvViewController == null) {
+            try {
+                tmp = load("com.tencent.gdtad.api.motivevideo.GdtMvViewController$8");
+                mGdtMvViewController = tmp.getDeclaredField("this$0").getType();
+            } catch (Exception ignored) {
+            }
+        }
+        return mGdtMvViewController;
+    }
+
     public static Class _GivingHeartItemBuilder() {
         Class tmp;
         Class mGivingHeartItemBuilder = load("com.tencent.mobileqq.activity.aio.item.GivingHeartItemBuilder");
