@@ -80,6 +80,7 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
 //                DisableShakeWindow.get(),
                 DisablePokeEffect.get(),
                 RemoveMiniProgramAd.get(),
+                JumpController.get()
         };
         return sAllHooks;
     }
