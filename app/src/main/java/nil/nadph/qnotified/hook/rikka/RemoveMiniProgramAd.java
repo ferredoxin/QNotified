@@ -4,7 +4,6 @@ import android.os.Looper;
 import android.widget.Toast;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -20,18 +19,18 @@ import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
 import static nil.nadph.qnotified.util.Utils.getApplication;
 import static nil.nadph.qnotified.util.Utils.log;
 
-public class DisablePokeEffect extends BaseDelayableHook {
-    public final static String rq_disable_poke_effect = "rq_disable_poke_effect";
-    private final static DisablePokeEffect self = new DisablePokeEffect();
+public class RemoveMiniProgramAd extends BaseDelayableHook {
+    public final static String rq_remove_mini_program_ad = "rq_remove_mini_program_ad";
+    private final static RemoveMiniProgramAd self = new RemoveMiniProgramAd();
     private static boolean isInit = false;
 
-    public static DisablePokeEffect get() {
+    public static RemoveMiniProgramAd get() {
         return self;
     }
 
     @Override
     public int getEffectiveProc() {
-        return SyncUtils.PROC_MAIN;
+        return SyncUtils.PROC_ANY & ~(SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF | SyncUtils.PROC_QZONE | SyncUtils.PROC_PEAK);
     }
 
     @Override
@@ -43,32 +42,22 @@ public class DisablePokeEffect extends BaseDelayableHook {
     public boolean init() {
         if (isInit) return true;
         try {
-            for (Method m : Initiator._GivingHeartItemBuilder().getDeclaredMethods()) {
-                if (m.getName().equals("a") && m.getParameterTypes().length == 3 && !Modifier.isStatic(m.getModifiers())) {
+            for (Method m : Initiator._GdtMvViewController().getDeclaredMethods()) {
+                if (m.getName().equals("x") && m.getParameterTypes().length == 0) {
                     XposedBridge.hookMethod(m, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             if (LicenseStatus.sDisableCommonHooks) return;
                             if (!isEnabled()) return;
-                            param.setResult(null);
+                            Utils.iput_object(param.thisObject, "c", Boolean.TYPE, true);
                         }
                     });
                 }
-//                "fangdazhao" need to fix.
-//                if (m.getName().equals("b") && m.getParameterTypes().length == 2 && !Modifier.isStatic(m.getModifiers())) {
-//                    XposedBridge.hookMethod(m, new XC_MethodHook() {
-//                        @Override
-//                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-//                            if (LicenseStatus.sDisableCommonHooks) return;
-//                            if (!isEnabled()) return;
-//                            param.setResult(null);
-//                        }
-//                    });
-//                }
             }
             isInit = true;
             return true;
         } catch (Exception e) {
+            Utils.log(e);
             return false;
         }
     }
@@ -82,7 +71,7 @@ public class DisablePokeEffect extends BaseDelayableHook {
     public void setEnabled(boolean enabled) {
         try {
             ConfigManager mgr = ConfigManager.getDefaultConfig();
-            mgr.getAllConfig().put(rq_disable_poke_effect, enabled);
+            mgr.getAllConfig().put(rq_remove_mini_program_ad, enabled);
             mgr.save();
         } catch (final Exception e) {
             Utils.log(e);
@@ -102,7 +91,7 @@ public class DisablePokeEffect extends BaseDelayableHook {
     @Override
     public boolean isEnabled() {
         try {
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_disable_poke_effect);
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_remove_mini_program_ad);
         } catch (Exception e) {
             log(e);
             return false;

@@ -79,6 +79,7 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 DisableDropSticker.get(),
 //                DisableShakeWindow.get(),
                 DisablePokeEffect.get(),
+                RemoveMiniProgramAd.get(),
         };
         return sAllHooks;
     }
