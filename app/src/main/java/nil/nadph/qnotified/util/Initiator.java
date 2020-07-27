@@ -87,6 +87,45 @@ public class Initiator {
         }
     }
 
+    public static Class _ConfigHandler() {
+        Class<?> ret, cref;
+        for (String clzName : new String[]{"com.tencent.mobileqq.app.ConfigHandler"}) {
+            ret = load(clzName);
+            if (ret != null) return ret;
+            for (int i : new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}) {
+                cref = load(clzName + "$" + i);
+                if (cref != null) {
+                    try {
+                        return cref.getDeclaredField("this$0").getType();
+                    } catch (Exception ignored) {
+                    }
+                }
+            }
+        }
+        log("Initiator/E class ConfigHandler not found");
+        return null;
+    }
+
+    public static Class _GivingHeartItemBuilder() {
+        Class tmp;
+        Class mGivingHeartItemBuilder = load("com.tencent.mobileqq.activity.aio.item.GivingHeartItemBuilder");
+        if (mGivingHeartItemBuilder == null) {
+            try {
+                tmp = load("com.tencent.mobileqq.activity.aio.item.GivingHeartItemBuilder$10");
+                mGivingHeartItemBuilder = tmp.getDeclaredField("this$0").getType();
+            } catch (Exception ignored) {
+            }
+        }
+        if (mGivingHeartItemBuilder == null) {
+            try {
+                tmp = load("com.tencent.mobileqq.activity.aio.item.GivingHeartItemBuilder$5");
+                mGivingHeartItemBuilder = tmp.getDeclaredField("this$0").getType();
+            } catch (Exception ignored) {
+            }
+        }
+        return mGivingHeartItemBuilder;
+    }
+
     public static Class _ColorNickManager() {
         Class tmp;
         Class mColorNickManager = load("com.tencent.mobileqq.vas.ColorNickManager");
