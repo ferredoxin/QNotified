@@ -73,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
-                android:text="格式说明: !!!记得添加.apk后缀!!!\n%n 应用名称\n%p 包名(packageName)\n%v 版本名(versionName)\n%c 版本号(versionCode)"/>
+                android:text="格式说明:\n%n 应用名称\n%p 包名(packageName)\n%v 版本名(versionName)\n%c 版本号(versionCode)"/>
 
     </LinearLayout>
 </LinearLayout>
