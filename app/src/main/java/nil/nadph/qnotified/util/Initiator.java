@@ -102,7 +102,7 @@ public class Initiator {
                 }
             }
         }
-        log("Initiator/E class TroopFileUploadMgr not found");
+        log("Initiator/E class ConfigHandler not found");
         return null;
     }
 
