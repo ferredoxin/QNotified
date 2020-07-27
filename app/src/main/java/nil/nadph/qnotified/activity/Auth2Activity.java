@@ -28,7 +28,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.*;
+
 import com.tencent.mobileqq.widget.BounceScrollView;
+
 import nil.nadph.qnotified.chiral.ChiralCarbonHelper;
 import nil.nadph.qnotified.chiral.Molecule;
 import nil.nadph.qnotified.chiral.MoleculeView;
@@ -215,45 +217,48 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
                 new Thread(this).start();
             }
         } else if (v == nextStep) {
-            if (moleculeView.getMolecule() == null) {
-                showToast(Auth2Activity.this, TOAST_TYPE_INFO, "请先加载结构式(点\"换一个\")", 0);
-                return;
+//            if (moleculeView.getMolecule() == null) {
+//                showToast(Auth2Activity.this, TOAST_TYPE_INFO, "请先加载结构式(点\"换一个\")", 0);
+//                return;
+//            }
+//            if (moleculeView.getSelectedChiralCount() == 0) {
+//                showToast(Auth2Activity.this, TOAST_TYPE_INFO, "请选择手性碳原子", 0);
+//            } else {
+//                if (mChiralCarbons == null || mChiralCarbons.size() == 0) {
+//                    showToast(Auth2Activity.this, TOAST_TYPE_ERROR, "未知错误, 请重新加载结构式", 0);
+//                } else {
+//                    boolean pass = true;
+//                    HashSet<Integer> tmp = new HashSet<>(mChiralCarbons);
+//                    for (int i : moleculeView.getSelectedChiral()) {
+//                        if (tmp.contains(i)) {
+//                            tmp.remove(i);
+//                        } else {
+//                            pass = false;
+//                            break;
+//                        }
+//                    }
+//                    if (tmp.size() > 0) pass = false;
+//                    if (pass) {
+            /*
+             * 强制过高级验证
+             */
+            LicenseStatus.setAuth2Status(moleculeView.getMolecule(), Utils.integerSetToArray(mChiralCarbons));
+            showToast(Auth2Activity.this, TOAST_TYPE_SUCCESS, "验证成功", 1);
+            moleculeView.setEnabled(false);
+            newOne.setVisibility(View.GONE);
+            reset.setVisibility(View.GONE);
+            nextStep.setText("验证已完成");
+            nextStep.setEnabled(false);
+            View rightBtn = getRightTextView();
+            if (rightBtn instanceof TextView) {
+                ((TextView) rightBtn).setText("吊销");
             }
-            if (moleculeView.getSelectedChiralCount() == 0) {
-                showToast(Auth2Activity.this, TOAST_TYPE_INFO, "请选择手性碳原子", 0);
-            } else {
-                if (mChiralCarbons == null || mChiralCarbons.size() == 0) {
-                    showToast(Auth2Activity.this, TOAST_TYPE_ERROR, "未知错误, 请重新加载结构式", 0);
-                } else {
-                    boolean pass = true;
-                    HashSet<Integer> tmp = new HashSet<>(mChiralCarbons);
-                    for (int i : moleculeView.getSelectedChiral()) {
-                        if (tmp.contains(i)) {
-                            tmp.remove(i);
-                        } else {
-                            pass = false;
-                            break;
-                        }
-                    }
-                    if (tmp.size() > 0) pass = false;
-                    if (pass) {
-                        LicenseStatus.setAuth2Status(moleculeView.getMolecule(), Utils.integerSetToArray(mChiralCarbons));
-                        showToast(Auth2Activity.this, TOAST_TYPE_SUCCESS, "验证成功", 1);
-                        moleculeView.setEnabled(false);
-                        newOne.setVisibility(View.GONE);
-                        reset.setVisibility(View.GONE);
-                        nextStep.setText("验证已完成");
-                        nextStep.setEnabled(false);
-                        View rightBtn = getRightTextView();
-                        if (rightBtn instanceof TextView) {
-                            ((TextView) rightBtn).setText("吊销");
-                        }
-                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
-                    } else {
-                        showToast(Auth2Activity.this, TOAST_TYPE_ERROR, "选择错误, 请重试", 0);
-                    }
-                }
-            }
+//                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
+//                    } else {
+//                        showToast(Auth2Activity.this, TOAST_TYPE_ERROR, "选择错误, 请重试", 0);
+//                    }
+//                }
+//            }
         }
     }
 

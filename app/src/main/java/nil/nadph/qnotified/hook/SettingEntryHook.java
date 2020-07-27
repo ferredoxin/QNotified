@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.ExfriendManager;
@@ -68,7 +69,8 @@ public class SettingEntryHook extends BaseDelayableHook {
                             itemRef = (View) Utils.iget_object_or_null(param.thisObject, "a", itemClass);
                         if (itemRef == null) {
                             Class<?> clz = load("com/tencent/mobileqq/widget/FormCommonSingleLineItem");
-                            if (clz == null) clz = load("com/tencent/mobileqq/widget/FormSimpleItem");
+                            if (clz == null)
+                                clz = load("com/tencent/mobileqq/widget/FormSimpleItem");
                             itemRef = (View) Utils.getFirstNSFByType(param.thisObject, clz);
                         }
                         View item = (View) new_instance(itemRef.getClass(), param.thisObject, Context.class);
@@ -110,18 +112,21 @@ public class SettingEntryHook extends BaseDelayableHook {
                         item.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                if (LicenseStatus.isBlacklisted()) {
-                                    Utils.showToast((Context) param.thisObject, TOAST_TYPE_ERROR, "无法使用本模块因为您已被拉黑", Toast.LENGTH_LONG);
+//                                if (LicenseStatus.isBlacklisted()) {
+//                                    Utils.showToast((Context) param.thisObject, TOAST_TYPE_ERROR, "无法使用本模块因为您已被拉黑", Toast.LENGTH_LONG);
+//                                } else {
+                                /*
+                                 * 去除黑名单检测
+                                 */
+                                if (LicenseStatus.hasUserAgreeEula()) {
+                                    MainHook.startProxyActivity((Context) param.thisObject, ActProxyMgr.ACTION_ADV_SETTINGS);
                                 } else {
-                                    if (LicenseStatus.hasUserAgreeEula()) {
-                                        MainHook.startProxyActivity((Context) param.thisObject, ActProxyMgr.ACTION_ADV_SETTINGS);
-                                    } else {
-                                        MainHook.startProxyActivity((Context) param.thisObject, EulaActivity.class);
-                                        if (param.thisObject instanceof Activity) {
-                                            ((Activity) param.thisObject).finish();
-                                        }
+                                    MainHook.startProxyActivity((Context) param.thisObject, EulaActivity.class);
+                                    if (param.thisObject instanceof Activity) {
+                                        ((Activity) param.thisObject).finish();
                                     }
                                 }
+//                                }
                             }
                         });
                         ViewGroup list = (ViewGroup) itemRef.getParent();
