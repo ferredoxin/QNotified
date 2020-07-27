@@ -16,6 +16,7 @@ import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.hook.rikka.DefaultFont;
 import nil.nadph.qnotified.hook.rikka.DisableColorNickName;
+import nil.nadph.qnotified.hook.rikka.DisableDropSticker;
 import nil.nadph.qnotified.hook.rikka.DisableEnterEffect;
 import nil.nadph.qnotified.hook.rikka.DisableScreenshotHelper;
 import nil.nadph.qnotified.hook.rikka.IgnoreDiyCard;
@@ -148,15 +149,15 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
                 RikkaConfigItem.create(this, "强制使用默认字体", DefaultFont.get()),
                 RikkaConfigItem.create(this, "显示具体消息数量", ShowMsgCount.get()),
                 new RikkaBaseApkFormatDialog(this),
-                RikkaConfigItem.create(this, "隐藏截屏分享", DisableScreenshotHelper.get()),
+                RikkaConfigItem.create(this, "屏蔽截屏分享", DisableScreenshotHelper.get()),
                 RikkaConfigItem.create(this, "屏蔽DIY名片[可能需要重启QQ]", IgnoreDiyCard.get()),
-                RikkaConfigItem.create(this, "一键20赞", OneTapTwentyLikes.get()),
                 RikkaConfigItem.create(this, "屏蔽所有进群特效", DisableEnterEffect.get()),
                 RikkaConfigItem.create(this, "屏蔽群名片炫彩字", DisableColorNickName.get()),
+                RikkaConfigItem.create(this, "屏蔽掉落表情特效[重启QQ生效]", DisableDropSticker.get()),
+                RikkaConfigItem.create(this, "一键20赞", OneTapTwentyLikes.get()),
                 new RikkaCustomMsgTimeFormatDialog(this),
                 RikkaConfigItem.create(this, "免广告送免费礼物[仅限群聊]", RemoveSendGiftAd.get()),
                 RikkaConfigItem.createStub(this, "隐藏群内右上角一起嗨"),
-                RikkaConfigItem.createStub(this, "屏蔽掉落特效"),
                 RikkaConfigItem.createStub(this, "屏蔽戳一戳窗口动画"),
                 RikkaConfigItem.createStub(this, "自定义机型"),
                 RikkaConfigItem.createStub(this, "聊天界面+号显示更多功能"),
