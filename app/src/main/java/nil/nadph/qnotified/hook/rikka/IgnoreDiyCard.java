@@ -38,6 +38,7 @@ import java.lang.reflect.Modifier;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
+//屏蔽Diy卡片
 public class IgnoreDiyCard extends BaseDelayableHook {
     public static final String rq_ignore_diy_card = "rq_ignore_diy_card";
     private static final IgnoreDiyCard self = new IgnoreDiyCard();

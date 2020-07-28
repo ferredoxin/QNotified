@@ -20,6 +20,7 @@ import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
 import static nil.nadph.qnotified.util.Utils.getApplication;
 import static nil.nadph.qnotified.util.Utils.log;
 
+//屏蔽群聊炫彩昵称
 public class DisableColorNickName extends BaseDelayableHook {
     public final static String rq_disable_color_nick_name = "rq_disable_color_nick_name";
     private final static DisableColorNickName self = new DisableColorNickName();

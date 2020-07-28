@@ -20,6 +20,7 @@ import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
 import static nil.nadph.qnotified.util.Utils.getApplication;
 import static nil.nadph.qnotified.util.Utils.log;
 
+//屏蔽所有进场特效
 public class DisableEnterEffect extends BaseDelayableHook {
     public final static String rq_disable_enter_effect = "rq_disable_enter_effect";
     private final static DisableEnterEffect self = new DisableEnterEffect();

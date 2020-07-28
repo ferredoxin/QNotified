@@ -18,6 +18,7 @@ import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
+//自定义聊天页面时间格式
 public class CustomMsgTimeFormat extends BaseDelayableHook {
     private final static CustomMsgTimeFormat self = new CustomMsgTimeFormat();
     private static boolean isInit = false;

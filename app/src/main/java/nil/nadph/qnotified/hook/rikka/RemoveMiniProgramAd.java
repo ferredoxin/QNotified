@@ -19,6 +19,7 @@ import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
 import static nil.nadph.qnotified.util.Utils.getApplication;
 import static nil.nadph.qnotified.util.Utils.log;
 
+//去除小程序广告 需要手动点关闭
 public class RemoveMiniProgramAd extends BaseDelayableHook {
     public final static String rq_remove_mini_program_ad = "rq_remove_mini_program_ad";
     private final static RemoveMiniProgramAd self = new RemoveMiniProgramAd();

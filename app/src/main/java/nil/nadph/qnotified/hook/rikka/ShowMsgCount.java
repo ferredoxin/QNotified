@@ -35,6 +35,7 @@ import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.util.Utils.*;
 
+//显示具体消息数量
 public class ShowMsgCount extends BaseDelayableHook {
     public static final String rq_show_msg_count = "rq_show_msg_count";
     private static final ShowMsgCount self = new ShowMsgCount();
