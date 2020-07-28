@@ -10,6 +10,7 @@ import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Utils;
 
+//自定义机型
 public class CustomDeviceModel extends BaseDelayableHook {
     private final static CustomDeviceModel self = new CustomDeviceModel();
     private static boolean isInit = false;

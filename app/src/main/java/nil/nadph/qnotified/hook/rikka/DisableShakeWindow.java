@@ -20,6 +20,7 @@ import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
 import static nil.nadph.qnotified.util.Utils.getApplication;
 import static nil.nadph.qnotified.util.Utils.log;
 
+//屏蔽抖动窗口 作用暂时不明
 public class DisableShakeWindow extends BaseDelayableHook {
     public final static String rq_disable_shake_window = "rq_disable_shake_window";
     private final static DisableDropSticker self = new DisableDropSticker();

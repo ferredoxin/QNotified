@@ -143,10 +143,10 @@ public class RikkaCustomDeviceModelDialog extends RikkaDialog.RikkaConfigItem {
                     cfg.putBoolean(rq_custom_device_model_enabled, true);
                     cfg.putString(rq_custom_device_manufacturer, currentDeviceManufacturer);
                     cfg.putString(rq_custom_device_model, currentDeviceModel);
-                    Utils.showToast(ctx, Utils.TOAST_TYPE_SUCCESS, "重启QQ生效!", Toast.LENGTH_SHORT);
                 }
                 try {
                     cfg.save();
+                    Utils.showToast(ctx, Utils.TOAST_TYPE_SUCCESS, "重启QQ生效!", Toast.LENGTH_SHORT);
                 } catch (IOException e) {
                     log(e);
                 }

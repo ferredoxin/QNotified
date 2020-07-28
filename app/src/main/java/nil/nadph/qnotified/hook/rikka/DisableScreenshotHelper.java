@@ -23,6 +23,7 @@ import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
 import static nil.nadph.qnotified.util.Utils.getApplication;
 import static nil.nadph.qnotified.util.Utils.log;
 
+//屏蔽截屏分享
 public class DisableScreenshotHelper extends BaseDelayableHook {
     public static final String rq_disable_screenshot_helper = "rq_disable_screenshot_helper";
     private static final DisableScreenshotHelper self = new DisableScreenshotHelper();
@@ -34,7 +35,7 @@ public class DisableScreenshotHelper extends BaseDelayableHook {
 
     @Override
     public int getEffectiveProc() {
-        return SyncUtils.PROC_MAIN;
+        return SyncUtils.PROC_ANY;
     }
 
     @Override

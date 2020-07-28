@@ -21,6 +21,7 @@ import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
 import static nil.nadph.qnotified.util.Utils.getApplication;
 import static nil.nadph.qnotified.util.Utils.log;
 
+//强制使用默认字体
 public class DefaultFont extends BaseDelayableHook {
     public static final String rq_default_font = "rq_default_font";
     private static final DefaultFont self = new DefaultFont();

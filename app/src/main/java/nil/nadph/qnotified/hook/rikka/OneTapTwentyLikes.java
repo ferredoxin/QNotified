@@ -21,6 +21,7 @@ import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
 import static nil.nadph.qnotified.util.Utils.getApplication;
 import static nil.nadph.qnotified.util.Utils.log;
 
+//回赞界面一键20赞
 public class OneTapTwentyLikes extends BaseDelayableHook {
     public static final String rq_one_tap_twenty_likes = "rq_one_tap_twenty_likes";
     private static final OneTapTwentyLikes self = new OneTapTwentyLikes();
