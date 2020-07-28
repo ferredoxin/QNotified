@@ -57,7 +57,7 @@ public class RikkaCustomMsgTimeFormatDialog extends RikkaDialog.RikkaConfigItem 
         vg = (LinearLayout) LayoutInflater.from(ctx).inflate(R.layout.rikka_msg_time_formart_dialog, null);
         final TextView preview = vg.findViewById(R.id.textViewMsgTimeFormatPreview);
         final TextView invalid = vg.findViewById(R.id.textViewInvalidMsgTimeFormat);
-        final TextView input = vg.findViewById(R.id.editTextMsgTimeFormatFormat);
+        final TextView input = vg.findViewById(R.id.editTextMsgTimeFormat);
         final CheckBox enable = vg.findViewById(R.id.checkBoxEnableMsgTimeFormat);
         final LinearLayout panel = vg.findViewById(R.id.layoutMsgTimeFormatPanel);
         enableMsgTimeFormat = ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_msg_time_enabled);
