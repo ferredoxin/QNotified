@@ -6,13 +6,13 @@
     android:padding="10dp">
 
     <CheckBox
-        android:id="@+id/checkBoxEnableMsgTimeFormat"
+        android:id="@+id/checkBoxEnableCustomDeviceModel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="启用消息时间自定义" />
+        android:text="启用自定义机型" />
 
     <LinearLayout
-        android:id="@+id/layoutMsgTimeFormatPanel"
+        android:id="@+id/layoutCustomDeviceModelPreview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -26,15 +26,36 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="格式:"
+                android:text="厂商:"
                 android:textAppearance="@android:style/TextAppearance.Holo.Medium" />
 
             <EditText
-                android:id="@+id/editTextMsgTimeFormat"
+                android:id="@+id/editTextCustomDeviceManufacturer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:hint="输入格式, 如 yyyy年MM月dd日 HH:mm:ss"
+                android:hint="输入厂商,如 小米"
+                android:inputType="text" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="型号:"
+                android:textAppearance="@android:style/TextAppearance.Holo.Medium" />
+
+            <EditText
+                android:id="@+id/editTextCustomDeviceModel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="输入型号,如 小米10 Pro"
                 android:inputType="text" />
         </LinearLayout>
 
@@ -51,38 +72,23 @@
                 android:text="预览:" />
 
             <TextView
-                android:id="@+id/textViewInvalidMsgTimeFormat"
+                android:id="@+id/textViewCustomDeviceManufacturerPreview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
                 android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:text="该格式无效!"
-                android:textColor="#FFFF4040" />
+                android:text="Xiaomi"
+                android:textSize="16sp" />
 
             <TextView
-                android:id="@+id/textViewMsgTimeFormatPreview"
-                android:layout_width="match_parent"
+                android:id="@+id/textViewDeviceModelPreview"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:textAppearance="@android:style/TextAppearance.Holo" />
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:text="Mi 10 Pro"
+                android:textSize="16sp" />
+
         </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp"
-            android:text="!!!注意: 严格区分大小写!!!!"
-            android:textColor="#FF9800"
-            android:textSize="20sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp"
-            android:text="格式说明:\n yyyy -年\n MM -月\n dd -日\n HH -时\n mm -分\n ss -秒" />
-
     </LinearLayout>
 </LinearLayout>

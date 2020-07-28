@@ -152,8 +152,8 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
                 new RikkaCustomMsgTimeFormatDialog(this),
                 RikkaConfigItem.create(this, "免广告送免费礼物[仅限群聊]", RemoveSendGiftAd.get()),
                 RikkaConfigItem.create(this, "免小程序广告[需手动关闭广告]", RemoveMiniProgramAd.get()),
+                new RikkaCustomDeviceModelDialog(this),
 //                RikkaConfigItem.createStub(this, "隐藏群内右上角一起嗨"),
-//                RikkaConfigItem.createStub(this, "自定义机型"),
 //                RikkaConfigItem.createStub(this, "聊天界面+号显示更多功能"),
                 new RikkaColorPickDialog(this),
         };
