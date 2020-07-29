@@ -31,7 +31,9 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.tencent.mobileqq.app.QQAppInterface;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
@@ -154,7 +156,8 @@ public class CardMsgHook extends BaseDelayableHook {
                                                 return true;
                                             }
                                         } catch (Throwable e) {
-                                            if (e instanceof InvocationTargetException) e = e.getCause();
+                                            if (e instanceof InvocationTargetException)
+                                                e = e.getCause();
                                             log(e);
                                             Utils.showToast(ctx, TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), Toast.LENGTH_SHORT);
                                         }
@@ -170,7 +173,8 @@ public class CardMsgHook extends BaseDelayableHook {
                                                 return true;
                                             }
                                         } catch (Throwable e) {
-                                            if (e instanceof InvocationTargetException) e = e.getCause();
+                                            if (e instanceof InvocationTargetException)
+                                                e = e.getCause();
                                             log(e);
                                             Utils.showToast(ctx, TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), Toast.LENGTH_SHORT);
                                         }

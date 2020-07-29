@@ -19,6 +19,7 @@
 package nil.nadph.qnotified.config;
 
 import android.content.Context;
+
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.util.MainProcess;
 import nil.nadph.qnotified.util.Utils;

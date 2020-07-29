@@ -21,7 +21,9 @@ package nil.nadph.qnotified.bridge;
 import android.content.Context;
 import android.os.Parcelable;
 import android.widget.Toast;
+
 import com.tencent.mobileqq.app.QQAppInterface;
+
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Utils;
 

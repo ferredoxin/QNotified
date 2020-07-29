@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.view.View;
 import android.widget.TextView;
+
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.NonNull;
 import nil.nadph.qnotified.util.Nullable;

@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.hook.SettingEntryHook;
 import nil.nadph.qnotified.step.Step;
@@ -50,7 +51,8 @@ public class InjectDelayableHooks {
         if (inited) return true;
         inited = true;
         Activity activity = (Activity) iget_object_or_null(director, "a", load("mqq/app/AppActivity"));
-        if (activity == null) activity = (Activity) Utils.getFirstNSFByType(director, load("mqq/app/AppActivity"));
+        if (activity == null)
+            activity = (Activity) Utils.getFirstNSFByType(director, load("mqq/app/AppActivity"));
         final Activity ctx = activity;
         boolean needDeobf = false;
         BaseDelayableHook[] hooks = BaseDelayableHook.queryDelayableHooks();

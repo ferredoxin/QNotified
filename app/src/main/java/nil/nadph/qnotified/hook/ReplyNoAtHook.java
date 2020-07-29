@@ -21,6 +21,7 @@ package nil.nadph.qnotified.hook;
 import android.app.Application;
 import android.os.Looper;
 import android.widget.Toast;
+
 import de.robv.android.xposed.XC_MethodHook;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;

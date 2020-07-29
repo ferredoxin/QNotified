@@ -21,6 +21,7 @@ package nil.nadph.qnotified.hook;
 import android.app.Application;
 import android.os.Looper;
 import android.widget.Toast;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
@@ -65,7 +66,8 @@ public class RoundAvatarHook extends BaseDelayableHook {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     try {
-                        if (!ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_round_avatar)) return;
+                        if (!ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_round_avatar))
+                            return;
                     } catch (Throwable e) {
                         log(e);
                     }

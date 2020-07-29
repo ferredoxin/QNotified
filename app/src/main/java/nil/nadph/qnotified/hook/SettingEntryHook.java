@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.ExfriendManager;
@@ -68,7 +69,8 @@ public class SettingEntryHook extends BaseDelayableHook {
                             itemRef = (View) Utils.iget_object_or_null(param.thisObject, "a", itemClass);
                         if (itemRef == null) {
                             Class<?> clz = load("com/tencent/mobileqq/widget/FormCommonSingleLineItem");
-                            if (clz == null) clz = load("com/tencent/mobileqq/widget/FormSimpleItem");
+                            if (clz == null)
+                                clz = load("com/tencent/mobileqq/widget/FormSimpleItem");
                             itemRef = (View) Utils.getFirstNSFByType(param.thisObject, clz);
                         }
                         View item = (View) new_instance(itemRef.getClass(), param.thisObject, Context.class);

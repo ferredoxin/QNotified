@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import de.robv.android.xposed.XC_MethodHook;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.SyncUtils;

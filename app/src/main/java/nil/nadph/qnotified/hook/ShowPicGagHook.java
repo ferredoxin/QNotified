@@ -22,6 +22,7 @@ import android.app.Application;
 import android.graphics.Bitmap;
 import android.os.Looper;
 import android.widget.Toast;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;

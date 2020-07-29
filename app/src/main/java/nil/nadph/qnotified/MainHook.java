@@ -37,6 +37,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
+
 import dalvik.system.BaseDexClassLoader;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
@@ -477,8 +478,10 @@ public class MainHook {
                 Object[] dexElements = (Object[]) iget_object_or_null(pathList, "dexElements");
                 for (Object element : dexElements) {
                     File file = (File) iget_object_or_null(element, "path");
-                    if (file == null || file.isDirectory()) file = (File) iget_object_or_null(element, "zip");
-                    if (file == null || file.isDirectory()) file = (File) iget_object_or_null(element, "file");
+                    if (file == null || file.isDirectory())
+                        file = (File) iget_object_or_null(element, "zip");
+                    if (file == null || file.isDirectory())
+                        file = (File) iget_object_or_null(element, "file");
                     if (file != null && !file.isDirectory()) {
                         String path = file.getPath();
                         if (modulePath == null || !modulePath.contains("nil.nadph.qnotified")) {
@@ -621,7 +624,8 @@ public class MainHook {
                     final Activity activity = (Activity) param.thisObject;
                     Intent intent = activity.getIntent();
                     String cmd;
-                    if (intent == null || (cmd = intent.getStringExtra(JUMP_ACTION_CMD)) == null) return;
+                    if (intent == null || (cmd = intent.getStringExtra(JUMP_ACTION_CMD)) == null)
+                        return;
                     if (JUMP_ACTION_SETTING_ACTIVITY.equals(cmd)) {
                         if (LicenseStatus.sDisableCommonHooks) {
                             long uin = Utils.getLongAccountUin();

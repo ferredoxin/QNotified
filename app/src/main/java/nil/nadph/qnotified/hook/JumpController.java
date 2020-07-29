@@ -21,6 +21,7 @@ package nil.nadph.qnotified.hook;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
@@ -50,7 +51,8 @@ public class JumpController extends BaseDelayableHook {
                 if (m.getReturnType() == void.class) {
                     Class<?>[] argt = m.getParameterTypes();
                     if (argt.length == 4) {
-                        if (argt[0] != Context.class || argt[1] != Intent.class || !argt[3].isInterface()) continue;
+                        if (argt[0] != Context.class || argt[1] != Intent.class || !argt[3].isInterface())
+                            continue;
                         Interceptor_checkAndDo = argt[3].getMethods()[0];
                         JefsClass_intercept = m;
                     } else if (argt.length == 1) {
@@ -70,7 +72,8 @@ public class JumpController extends BaseDelayableHook {
                         Runnable runnable = (Runnable) param.args[2];
                         Object interceptor = param.args[3];
                         Utils.logi("JumpController/I intercept: ctx=" + ctx + ", intent=" + intent + ", r=" + runnable + ", interceptor=" + interceptor);
-                        if (ctx == null || intent == null || runnable == null || interceptor == null) return;
+                        if (ctx == null || intent == null || runnable == null || interceptor == null)
+                            return;
                         final int result = checkIntent(ctx, intent);
                         if (result != JMP_DEFAULT) {
                             if (result == JMP_ALLOW) {

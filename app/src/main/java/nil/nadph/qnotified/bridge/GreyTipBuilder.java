@@ -1,6 +1,7 @@
 package nil.nadph.qnotified.bridge;
 
 import android.os.Bundle;
+
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Utils;
 

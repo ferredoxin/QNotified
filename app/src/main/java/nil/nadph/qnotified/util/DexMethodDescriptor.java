@@ -81,7 +81,8 @@ public class DexMethodDescriptor implements Serializable, Cloneable {
             }
             while ((clz = clz.getSuperclass()) != null) {
                 for (Method m : clz.getDeclaredMethods()) {
-                    if (Modifier.isPrivate(m.getModifiers()) || Modifier.isStatic(m.getModifiers())) continue;
+                    if (Modifier.isPrivate(m.getModifiers()) || Modifier.isStatic(m.getModifiers()))
+                        continue;
                     if (m.getName().equals(name) && getMethodTypeSig(m).equals(signature)) return m;
                 }
             }

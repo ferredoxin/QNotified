@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Looper;
+
 import nil.nadph.qnotified.hook.BaseDelayableHook;
 
 import java.util.*;

@@ -203,7 +203,8 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener {
             a:
             while (in.available() > 0) {
                 int _type = in.read();
-                if (_type < 0 || _type > 255) throw new IOException("Unexpected type:" + _type + ",version:" + endian);
+                if (_type < 0 || _type > 255)
+                    throw new IOException("Unexpected type:" + _type + ",version:" + endian);
                 key = readIStr(in);
                 switch ((byte) _type) {
                     case TYPE_VOID:

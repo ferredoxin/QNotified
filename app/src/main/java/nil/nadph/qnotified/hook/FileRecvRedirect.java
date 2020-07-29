@@ -19,6 +19,7 @@
 package nil.nadph.qnotified.hook;
 
 import android.os.Environment;
+
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;

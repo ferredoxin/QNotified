@@ -20,6 +20,7 @@ package nil.nadph.qnotified.bridge;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import nil.nadph.qnotified.util.Initiator;
 
 import java.lang.reflect.Constructor;
