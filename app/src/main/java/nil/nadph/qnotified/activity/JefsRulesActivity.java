@@ -103,6 +103,7 @@ public class JefsRulesActivity extends IphoneTitleBarActivityCompat implements V
             layoutEdit.setId(R.id.jefsRulesEditLayout);
             {
                 TextView _tmp_1 = new TextView(this);
+                _tmp_1.setTextColor(ResUtils.skin_gray3);
                 _tmp_1.setText("规则从上到下按顺序进行匹配\n" +
                         "支持通配符 * 及 **\n" +
                         "规则格式: 动作,匹配项;\n可以有多个匹配项, 构成并且关系, \n如: 动作,匹配项1,匹配项2,匹配项3;\n" +
