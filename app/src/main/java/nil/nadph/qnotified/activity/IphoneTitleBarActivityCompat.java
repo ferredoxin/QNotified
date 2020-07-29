@@ -24,7 +24,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+
 import com.tencent.mobileqq.app.IphoneTitleBarActivity;
+
 import nil.nadph.qnotified.ui.ResUtils;
 
 import java.lang.reflect.Field;

@@ -153,6 +153,7 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
                 RikkaConfigItem.create(this, "免广告送免费礼物[仅限群聊送礼物]", RemoveSendGiftAd.get()),
                 RikkaConfigItem.create(this, "免小程序广告[需要手动关闭广告]", RemoveMiniProgramAd.get()),
                 new RikkaCustomDeviceModelDialog(this),
+                new RikkaCustomSplash(this),
                 new RikkaColorPickDialog(this),
         };
     }

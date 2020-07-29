@@ -45,6 +45,7 @@ import nil.nadph.qnotified.activity.SettingsActivity;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.*;
+import nil.nadph.qnotified.hook.rikka.CustomSplash;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.*;
 
@@ -284,6 +285,7 @@ public class MainHook {
         BaseDelayableHook.allowEarlyInit(MuteQZoneThumbsUp.get());
         BaseDelayableHook.allowEarlyInit(MuteAtAllAndRedPacket.get());
         BaseDelayableHook.allowEarlyInit(GagInfoDisclosure.get());
+        BaseDelayableHook.allowEarlyInit(CustomSplash.get());
         if (SyncUtils.isMainProcess()) {
             ConfigItems.removePreviousCacheIfNecessary();
             injectStartupHookForMain(ctx);

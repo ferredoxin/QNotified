@@ -83,6 +83,5 @@
             android:layout_marginStart="10dp"
             android:layout_marginLeft="10dp"
             android:text="格式说明:\n yyyy -年\n MM -月\n dd -日\n HH -时\n mm -分\n ss -秒" />
-
     </LinearLayout>
 </LinearLayout>

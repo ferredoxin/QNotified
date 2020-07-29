@@ -76,7 +76,7 @@ public class DisableDropSticker extends BaseDelayableHook {
             ConfigManager mgr = ConfigManager.getDefaultConfig();
             mgr.getAllConfig().put(rq_disable_drop_sticker, enabled);
             mgr.save();
-        } catch (final Exception e) {
+        } catch (final Throwable e) {
             Utils.log(e);
             if (Looper.myLooper() == Looper.getMainLooper()) {
                 Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);

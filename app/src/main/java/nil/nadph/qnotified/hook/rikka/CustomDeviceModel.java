@@ -42,8 +42,7 @@ public class CustomDeviceModel extends BaseDelayableHook {
             model.set(Clz.newInstance(), RikkaCustomDeviceModelDialog.getCurrentDeviceModel());
             isInit = true;
             return true;
-        } catch (
-                Exception e) {
+        } catch (Throwable e) {
             Utils.log(e);
             return false;
         }

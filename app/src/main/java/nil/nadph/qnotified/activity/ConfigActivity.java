@@ -29,6 +29,7 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.view.View;
 import android.widget.TextView;
+
 import nil.nadph.qnotified.HookEntry;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;

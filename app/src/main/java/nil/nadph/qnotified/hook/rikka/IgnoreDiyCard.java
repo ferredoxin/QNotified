@@ -21,6 +21,7 @@ package nil.nadph.qnotified.hook.rikka;
 import android.content.Intent;
 import android.os.Looper;
 import android.widget.Toast;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
@@ -97,8 +98,7 @@ public class IgnoreDiyCard extends BaseDelayableHook {
             }
             inited = true;
             return true;
-        } catch (
-                Throwable e) {
+        } catch (Throwable e) {
             log(e);
             return false;
         }

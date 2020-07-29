@@ -25,7 +25,9 @@ import android.os.Bundle;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
 import com.tencent.mobileqq.widget.BounceScrollView;
+
 import nil.nadph.qnotified.ui.ResUtils;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;

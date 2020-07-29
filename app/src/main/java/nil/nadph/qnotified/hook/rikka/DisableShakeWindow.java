@@ -23,10 +23,10 @@ import static nil.nadph.qnotified.util.Utils.log;
 //屏蔽抖动窗口 作用暂时不明
 public class DisableShakeWindow extends BaseDelayableHook {
     public final static String rq_disable_shake_window = "rq_disable_shake_window";
-    private final static DisableDropSticker self = new DisableDropSticker();
+    private final static DisableShakeWindow self = new DisableShakeWindow();
     private static boolean isInit = false;
 
-    public static DisableDropSticker get() {
+    public static DisableShakeWindow get() {
         return self;
     }
 
@@ -60,7 +60,7 @@ public class DisableShakeWindow extends BaseDelayableHook {
             }
             isInit = true;
             return true;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             Utils.log(e);
             return false;
         }

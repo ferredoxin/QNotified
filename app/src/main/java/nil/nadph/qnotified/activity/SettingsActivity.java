@@ -32,7 +32,9 @@ import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+
 import com.tencent.mobileqq.widget.BounceScrollView;
+
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigItems;
