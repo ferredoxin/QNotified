@@ -23,6 +23,7 @@ import android.os.Looper;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.widget.Toast;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;

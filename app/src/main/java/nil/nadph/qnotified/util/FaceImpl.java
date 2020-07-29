@@ -22,6 +22,7 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.ImageView;
+
 import nil.nadph.qnotified.ui.ResUtils;
 
 import java.lang.ref.WeakReference;
@@ -138,7 +139,8 @@ public class FaceImpl implements InvocationHandler {
 
     public boolean registerView(int type, String uin, ImageView v) {
         boolean ret;
-        if (ret = requestDecodeFace(type, uin)) registeredView.put(type + " " + uin, new WeakReference<>(v));
+        if (ret = requestDecodeFace(type, uin))
+            registeredView.put(type + " " + uin, new WeakReference<>(v));
         return ret;
     }
 

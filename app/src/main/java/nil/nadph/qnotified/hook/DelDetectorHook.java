@@ -29,6 +29,7 @@ import android.widget.ExpandableListAdapter;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.ExfriendManager;
@@ -302,7 +303,8 @@ public class DelDetectorHook extends BaseDelayableHook {
                     long deluin = (Long) iget_object_or_null(param.thisObject, "deluin");
                     int result = (Integer) iget_object_or_null(param.thisObject, "result");
                     short errorCode = (Short) iget_object_or_null(param.thisObject, "errorCode");
-                    if (result == 0 && errorCode == 0) ExfriendManager.get(uin).markActiveDelete(deluin);
+                    if (result == 0 && errorCode == 0)
+                        ExfriendManager.get(uin).markActiveDelete(deluin);
 						/*String ret="dump object:"+param.thisObject.getClass().getCanonicalName()+"\n";
 						 Field[] fs=param.thisObject.getClass().getDeclaredFields();
 						 for(int i=0;i<fs.length;i++){

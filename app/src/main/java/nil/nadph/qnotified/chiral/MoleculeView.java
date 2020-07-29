@@ -30,6 +30,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+
 import nil.nadph.qnotified.util.IndexFrom;
 import nil.nadph.qnotified.util.Nullable;
 import nil.nadph.qnotified.util.Utils;
@@ -385,8 +386,10 @@ public class MoleculeView extends View {
             scale = (widthLimit - fontSize * 2 - getPaddingLeft() - getPaddingRight()) / rx;
         }
         if (ry != 0 && heightLimit != Float.MAX_VALUE) {
-            if (scale == -1) scale = (heightLimit - fontSize * 2 - getPaddingTop() - getPaddingBottom()) / ry;
-            else scale = Math.min(scale, (heightLimit - fontSize * 2 - getPaddingTop() - getPaddingBottom()) / ry);
+            if (scale == -1)
+                scale = (heightLimit - fontSize * 2 - getPaddingTop() - getPaddingBottom()) / ry;
+            else
+                scale = Math.min(scale, (heightLimit - fontSize * 2 - getPaddingTop() - getPaddingBottom()) / ry);
         }
         if (molecule != null && scale > 0) {
             float avl = molecule.getAverageBondLength();

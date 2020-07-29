@@ -22,6 +22,7 @@ import android.os.Looper;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
@@ -79,7 +80,8 @@ public class FlashPicHook extends BaseDelayableHook {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     try {
-                        if (!ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_flash_as_pic)) return;
+                        if (!ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_flash_as_pic))
+                            return;
                     } catch (Exception e) {
                         log(e);
                     }

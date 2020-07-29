@@ -29,6 +29,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.activity.TroopSelectActivity;
 import nil.nadph.qnotified.bridge.ChatActivityFacade;
@@ -383,12 +384,14 @@ public class SendBatchMsg {
             } else {
                 if (showFriends) {
                     for (ContactDescriptor cd : mFriends) {
-                        if (cd.nick.contains(searchMsg) || cd.uin.contains(searchMsg)) mHits.add(cd);
+                        if (cd.nick.contains(searchMsg) || cd.uin.contains(searchMsg))
+                            mHits.add(cd);
                     }
                 }
                 if (showGtoups) {
                     for (ContactDescriptor cd : mGroups) {
-                        if (cd.nick.contains(searchMsg) || cd.uin.contains(searchMsg)) mHits.add(cd);
+                        if (cd.nick.contains(searchMsg) || cd.uin.contains(searchMsg))
+                            mHits.add(cd);
                     }
                 }
             }

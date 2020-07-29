@@ -23,10 +23,12 @@ import android.content.res.ColorStateList;
 import android.text.util.Linkify;
 import android.view.View;
 import android.widget.TextView;
+
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.ResUtils;
 
 import javax.net.ssl.HttpsURLConnection;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;

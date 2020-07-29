@@ -28,6 +28,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.SyncUtils;

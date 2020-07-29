@@ -20,6 +20,7 @@ package nil.nadph.qnotified;
 
 import android.content.Context;
 import android.os.Build;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
@@ -61,7 +62,8 @@ public class StartupHook {
                         if (f == null) ctx = (Context) sget_object(clz, "a", clz);
                         else ctx = (Context) f.get(null);
                         ClassLoader classLoader = ctx.getClassLoader();
-                        if (classLoader == null) throw new AssertionError("ERROR: classLoader == null");
+                        if (classLoader == null)
+                            throw new AssertionError("ERROR: classLoader == null");
                         if ("true".equals(System.getProperty(QN_FULL_TAG))) {
                             logi("Err:QNotified reloaded??");
                             //I don't know... What happened?

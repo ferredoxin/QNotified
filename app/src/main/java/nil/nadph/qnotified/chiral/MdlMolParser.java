@@ -38,7 +38,8 @@ public class MdlMolParser {
                 break;
             }
         }
-        if (start == -1) throw new BadMolFormatException("V2000 tag not found at any_line.substring(34, 39)");
+        if (start == -1)
+            throw new BadMolFormatException("V2000 tag not found at any_line.substring(34, 39)");
         int numAtoms = Integer.parseInt(lines[start].substring(0, 3).trim());
         int numBonds = Integer.parseInt(lines[start].substring(3, 6).trim());
         atoms = new Molecule.Atom[numAtoms];

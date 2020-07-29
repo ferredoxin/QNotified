@@ -28,6 +28,7 @@ import android.os.Build;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import nil.nadph.qnotified.activity.ExfriendListActivity;
 import nil.nadph.qnotified.bridge.FriendChunk;
 import nil.nadph.qnotified.config.ConfigManager;
@@ -589,7 +590,8 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
         fileData.getAllConfig().put("unread", unread);
         String title, ticker, tag, c;
         //Notification.Builder nb=Notification.Builder();
-        if (ev._remark != null && ev._remark.length() > 0) tag = ev._remark + "(" + ev.operand + ")";
+        if (ev._remark != null && ev._remark.length() > 0)
+            tag = ev._remark + "(" + ev.operand + ")";
         else if (ev._nick != null && ev._nick.length() > 0) tag = ev._nick + "(" + ev.operand + ")";
         else tag = "" + ev.operand;
         out[0] = unread;

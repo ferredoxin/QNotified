@@ -93,7 +93,8 @@ public class InterceptLayout extends LinearLayout {
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (mKeyInterceptor != null && mKeyInterceptor.onKey(this, event.getKeyCode(), event)) return true;
+        if (mKeyInterceptor != null && mKeyInterceptor.onKey(this, event.getKeyCode(), event))
+            return true;
         return super.dispatchKeyEvent(event);
     }
 

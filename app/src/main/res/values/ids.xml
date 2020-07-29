@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item type="id" name="item_showPicMd5"/>
-    <item type="id" name="rootBounceScrollView"/>
-    <item type="id" name="rootMainLayout"/>
-    <item type="id" name="rootMainList"/>
-    <item type="id" name="root_content_toolbarLayout"/>
+    <item name="item_showPicMd5" type="id" />
+    <item name="rootBounceScrollView" type="id" />
+    <item name="rootMainLayout" type="id" />
+    <item name="rootMainList" type="id" />
+    <item name="root_content_toolbarLayout" type="id" />
 
 </resources>

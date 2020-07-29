@@ -20,6 +20,7 @@ package nil.nadph.qnotified.hook;
 
 import android.os.Looper;
 import android.widget.Toast;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;

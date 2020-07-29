@@ -10,6 +10,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.*;
+
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.CustomDialog;

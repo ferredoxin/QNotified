@@ -27,6 +27,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.widget.Button;
+
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.util.ArscKit;
 import nil.nadph.qnotified.util.Nullable;
@@ -84,7 +85,8 @@ public class ResUtils {
             list_checkbox_selected_nopress = loadDrawableFromAsset("list_checkbox_selected_nopress.png", ctx);
         if (list_checkbox_selected == null)
             list_checkbox_selected = loadDrawableFromAsset("list_checkbox_selected.png", ctx);
-        if (list_checkbox_multi == null) list_checkbox_multi = loadDrawableFromAsset("list_checkbox_multi.png", ctx);
+        if (list_checkbox_multi == null)
+            list_checkbox_multi = loadDrawableFromAsset("list_checkbox_multi.png", ctx);
         if (list_checkbox == null) list_checkbox = loadDrawableFromAsset("list_checkbox.png", ctx);
         if (skin_icon_arrow_right_normal == null)
             skin_icon_arrow_right_normal = loadDrawableFromAsset("skin_icon_arrow_right_normal.png", ctx);
@@ -93,7 +95,8 @@ public class ResUtils {
         if (skin_red == null) skin_red = ColorStateList.valueOf(Color.argb(255, 255, 70, 41));
         if (skin_gray3 == null) skin_gray3 = ColorStateList.valueOf(Color.argb(255, 128, 128, 128));
         if (skin_blue == null) skin_blue = ColorStateList.valueOf(Color.argb(255, 0, 182, 249));
-        if (skin_background == null) skin_background = new ColorDrawable(Color.argb(255, 240, 240, 240));
+        if (skin_background == null)
+            skin_background = new ColorDrawable(Color.argb(255, 240, 240, 240));
         if (skin_common_btn_blue_unpressed == null || skin_common_btn_blue_pressed == null || skin_color_button_blue == null) {
             skin_common_btn_blue_pressed = new ColorDrawable(Color.argb(255, 16, 80, 210));
             skin_common_btn_blue_unpressed = new ColorDrawable(Color.argb(255, 20, 100, 255));

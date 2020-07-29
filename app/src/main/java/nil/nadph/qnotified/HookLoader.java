@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
+
 import dalvik.system.PathClassLoader;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;

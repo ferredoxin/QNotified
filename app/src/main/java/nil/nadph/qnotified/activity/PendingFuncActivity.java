@@ -66,7 +66,7 @@ public class PendingFuncActivity extends IphoneTitleBarActivityCompat {
         ll.addView(newListItemSwitchStub(this, "QQ电话关麦时解除占用", "再开麦时如麦被其他程序占用可能崩溃", false));
         ll.addView(newListItemSwitchStub(this, "屏蔽好友热播", "隐藏动态里的好友热播", false));
         ll.addView(newListItemSwitchConfigStub(this, "屏蔽回执消息的通知", null, ConfigItems.qn_mute_talk_back, false));
-        ll.addView(newListItemButton(this, "小尾巴", "请勿在多个模块同时开启小尾巴", "[无]", clickTheComing()));
+//        ll.addView(newListItemButton(this, "小尾巴", "请勿在多个模块同时开启小尾巴", "[无]", clickTheComing()));
         ll.addView(newListItemButton(this, "聊天图片自动接收原图", null, "禁用", clickTheComing()));
         ll.addView(newListItemButton(this, "强制原图发送聊天图片", null, "禁用", clickTheComing()));
         ll.addView(newListItemButton(this, "隐藏联系人", "和自带的\"隐藏会话\"有所不同", "0人", clickTheComing()));

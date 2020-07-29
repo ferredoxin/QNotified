@@ -80,7 +80,8 @@ public class DexFieldDescriptor {
             }
             while ((clz = clz.getSuperclass()) != null) {
                 for (Field f : clz.getDeclaredFields()) {
-                    if (Modifier.isPrivate(f.getModifiers()) || Modifier.isStatic(f.getModifiers())) continue;
+                    if (Modifier.isPrivate(f.getModifiers()) || Modifier.isStatic(f.getModifiers()))
+                        continue;
                     if (f.getName().equals(name) && getTypeSig(f.getType()).equals(type)) return f;
                 }
             }

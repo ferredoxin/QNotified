@@ -26,6 +26,7 @@ import android.os.Build;
 import android.os.Looper;
 import android.os.Parcelable;
 import android.widget.Toast;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
