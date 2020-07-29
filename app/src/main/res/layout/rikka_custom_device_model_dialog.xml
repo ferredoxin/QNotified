@@ -88,7 +88,6 @@
                 android:layout_marginRight="10dp"
                 android:text="Mi 10 Pro"
                 android:textSize="16sp" />
-
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

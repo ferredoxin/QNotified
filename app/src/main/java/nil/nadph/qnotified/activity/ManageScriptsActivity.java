@@ -21,6 +21,7 @@ package nil.nadph.qnotified.activity;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.LinearLayout;
+
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.ViewBuilder;
 

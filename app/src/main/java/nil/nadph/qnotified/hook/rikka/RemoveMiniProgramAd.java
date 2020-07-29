@@ -57,7 +57,7 @@ public class RemoveMiniProgramAd extends BaseDelayableHook {
             }
             isInit = true;
             return true;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             Utils.log(e);
             return false;
         }

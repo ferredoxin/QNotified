@@ -28,7 +28,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.*;
+
 import com.tencent.mobileqq.widget.BounceScrollView;
+
 import nil.nadph.qnotified.chiral.ChiralCarbonHelper;
 import nil.nadph.qnotified.chiral.Molecule;
 import nil.nadph.qnotified.chiral.MoleculeView;

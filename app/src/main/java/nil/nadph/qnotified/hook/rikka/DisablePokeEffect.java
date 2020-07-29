@@ -69,7 +69,7 @@ public class DisablePokeEffect extends BaseDelayableHook {
             }
             isInit = true;
             return true;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             return false;
         }
     }

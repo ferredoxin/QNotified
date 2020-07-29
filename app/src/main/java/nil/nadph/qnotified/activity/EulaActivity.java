@@ -31,7 +31,9 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+
 import com.tencent.mobileqq.widget.BounceScrollView;
+
 import nil.nadph.qnotified.InjectDelayableHooks;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
