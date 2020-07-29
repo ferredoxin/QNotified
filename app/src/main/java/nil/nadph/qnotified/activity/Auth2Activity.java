@@ -60,7 +60,7 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
     private AlertDialog makingMol = null;
     private int refreshId = 0;
     private HashSet<Integer> mChiralCarbons;
-    private static boolean bypassMode = false;
+    private boolean bypassMode = false;
 
     @Override
     public boolean doOnCreate(Bundle bundle) {

@@ -31,9 +31,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-
 import com.tencent.mobileqq.app.QQAppInterface;
-
 import dalvik.system.DexFile;
 import de.robv.android.xposed.XposedBridge;
 import mqq.app.AppRuntime;
@@ -1400,7 +1398,17 @@ public class Utils {
     private static Method method_Toast_makeText;
     private static Class clazz_QQToast;
 
-    public static Toast showToast(Context ctx, int type, CharSequence str, int length) {
+    /**
+     * Make a QQ custom toast.
+     *
+     * @param context  The context to use.
+     * @param type     The type of toast, Either {@link #TOAST_TYPE_INFO}, {@link #TOAST_TYPE_ERROR}
+     *                 or {@link #TOAST_TYPE_SUCCESS}
+     * @param text     The text to show.
+     * @param duration How long to display the message.  Either {@link android.widget.Toast#LENGTH_SHORT} or
+     *                 {@link android.widget.Toast#LENGTH_LONG}
+     */
+    public static Toast showToast(Context context, int type, CharSequence text, int duration) {
         try {
             if (clazz_QQToast == null) {
                 clazz_QQToast = load("com/tencent/mobileqq/widget/QQToast");
@@ -1436,11 +1444,11 @@ public class Utils {
                     }
                 }
             }
-            Object qqToast = method_Toast_makeText.invoke(null, ctx, type, str, length);
+            Object qqToast = method_Toast_makeText.invoke(null, context, type, text, duration);
             return (Toast) method_Toast_show.invoke(qqToast);
         } catch (Exception e) {
             log(e);
-            Toast t = Toast.makeText(ctx, str, length);
+            Toast t = Toast.makeText(context, text, duration);
             t.show();
             return t;
         }

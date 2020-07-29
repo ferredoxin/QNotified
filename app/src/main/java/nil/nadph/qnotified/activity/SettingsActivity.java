@@ -45,10 +45,7 @@ import nil.nadph.qnotified.hook.*;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.NewsHelper;
-import nil.nadph.qnotified.util.UpdateCheck;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.util.*;
 
 import java.io.File;
 
@@ -64,7 +61,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
 
     private static final int R_ID_BTN_FILE_RECV = 0x300AFF91;
 
-    private TextView __tv_muted_atall, __tv_muted_redpacket, __tv_fake_bat_status, __recv_status, __recv_desc, __js_status;
+    private TextView __tv_muted_atall, __tv_muted_redpacket, __tv_fake_bat_status, __recv_status, __recv_desc, __js_status, __jmp_ctl_cnt;
 
     @Override
     public boolean doOnCreate(Bundle bundle) {
@@ -220,6 +217,17 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         __recv_status = _t.findViewById(R_ID_VALUE);
         ll.addView(newListItemSwitchConfigNext(this, "禁用QQ热补丁", "一般无需开启", ConfigItems.qn_disable_hot_patch));
         ll.addView(subtitle(this, "参数设定"));
+        ll.addView(_t = newListItemButton(this, "跳转控制", "跳转自身及第三方Activity控制", "N/A", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Initiator.load("com.tencent.mobileqq.haoliyou.JefsClass") != null) {
+                    MainHook.startProxyActivity(v.getContext(), JefsRulesActivity.class);
+                } else {
+                    Utils.showToast(SettingsActivity.this, TOAST_TYPE_ERROR, "当前版本客户端版本不支持", Toast.LENGTH_SHORT);
+                }
+            }
+        }));
+        __jmp_ctl_cnt = _t.findViewById(R_ID_VALUE);
         ll.addView(newListItemSwitchStub(this, "禁用特别关心长震动", "等我找到女朋友就开发这个功能", false));
         ll.addView(_t = newListItemButton(this, "管理脚本(.java)", "请注意安全, 合理使用", "N/A", clickToProxyActAction(ManageScriptsActivity.class)));
         __js_status = _t.findViewById(R_ID_VALUE);
@@ -285,6 +293,14 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         }
         updateRecvRedirectStatus();
         __js_status.setText("0/1");
+        if (__jmp_ctl_cnt != null) {
+            int cnt = JumpController.get().getEffectiveRulesCount();
+            if (cnt == -1) {
+                __jmp_ctl_cnt.setText("[禁用]");
+            } else {
+                __jmp_ctl_cnt.setText("" + cnt);
+            }
+        }
         needRun = true;
         isVisible = true;
         new Thread(this).start();

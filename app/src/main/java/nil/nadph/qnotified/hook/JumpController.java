@@ -18,26 +18,39 @@
  */
 package nil.nadph.qnotified.hook;
 
+import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Looper;
 import android.widget.Toast;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.step.Step;
+import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.util.Initiator;
+import nil.nadph.qnotified.util.NonNull;
 import nil.nadph.qnotified.util.Utils;
 
 import java.lang.reflect.Method;
 
+import static nil.nadph.qnotified.util.Utils.*;
+
 public class JumpController extends BaseDelayableHook {
+    private static final String qn_jmp_ctl_enable = "qn_jmp_ctl_enable";
+
+    private static final String DEFAULT_RULES = "A,P:me.singleneuron.locknotification;\n" +
+            "A,P:cn.nexus6p.QQMusicNotify;\n";
+
     public static final int JMP_DEFAULT = 0;
     public static final int JMP_ALLOW = 1;
     public static final int JMP_REJECT = 2;
-    //public static final int JMP_QUERY = 3;
-    // TODO: 2020/7/27 struggle with JMP_QUERY
-    Method JefsClass_run = null;
+    public static final int JMP_QUERY = 3;
+
+    Method JefsClass_runV = null;
     Method Interceptor_checkAndDo = null;
 
     @Override
@@ -51,14 +64,13 @@ public class JumpController extends BaseDelayableHook {
                 if (m.getReturnType() == void.class) {
                     Class<?>[] argt = m.getParameterTypes();
                     if (argt.length == 4) {
-                        if (argt[0] != Context.class || argt[1] != Intent.class || !argt[3].isInterface())
-                            continue;
+                        if (argt[0] != Context.class || argt[1] != Intent.class || !argt[3].isInterface()) continue;
                         Interceptor_checkAndDo = argt[3].getMethods()[0];
                         JefsClass_intercept = m;
                     } else if (argt.length == 1) {
                         if (argt[0] != Runnable.class) continue;
-                        JefsClass_run = m;
-                        JefsClass_run.setAccessible(true);
+                        JefsClass_runV = m;
+                        JefsClass_runV.setAccessible(true);
                     }
                 }
             }
@@ -66,18 +78,22 @@ public class JumpController extends BaseDelayableHook {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     try {
-                        Object that = param.thisObject;
+                        final Object that = param.thisObject;
                         final Context ctx = (Context) param.args[0];
                         final Intent intent = (Intent) param.args[1];
-                        Runnable runnable = (Runnable) param.args[2];
+                        final Runnable runnable = (Runnable) param.args[2];
                         Object interceptor = param.args[3];
-                        Utils.logi("JumpController/I intercept: ctx=" + ctx + ", intent=" + intent + ", r=" + runnable + ", interceptor=" + interceptor);
-                        if (ctx == null || intent == null || runnable == null || interceptor == null)
-                            return;
-                        final int result = checkIntent(ctx, intent);
+//                        Utils.logi("JumpController/I intercept: ctx=" + ctx + ", intent=" + intent + ", r=" + runnable + ", interceptor=" + interceptor);
+                        if (ctx == null || intent == null || runnable == null || interceptor == null) return;
+                        int result = checkIntent(ctx, intent);
+                        ComponentName cmp = intent.getComponent();
+                        if (cmp != null && ctx.getPackageName().equals(cmp.getPackageName()) &&
+                                cmp.getClassName().startsWith("nil.nadph.qnotified.activity.")) {
+                            result = JMP_ALLOW;
+                        }
                         if (result != JMP_DEFAULT) {
                             if (result == JMP_ALLOW) {
-                                JefsClass_run.invoke(that, runnable);
+                                JefsClass_runV.invoke(that, runnable);
                                 param.setResult(null);
                             } else if (result == JMP_REJECT) {
                                 Utils.runOnUiThread(new Runnable() {
@@ -87,26 +103,45 @@ public class JumpController extends BaseDelayableHook {
                                     }
                                 });
                                 param.setResult(null);
-                            }/* else if (result == JMP_QUERY) {
-                                String pkg = intent.getPackage();
-                                if (TextUtils.isEmpty(pkg)) {
-                                    ComponentName cmp = intent.getComponent();
-                                    if (cmp != null) pkg = cmp.getPackageName();
+                            } else if (result == JMP_QUERY) {
+                                if (!(ctx instanceof Activity)) {
+                                    //**sigh**
+                                    Utils.logi("JumpController/I JMP_QUERY but no token, ctx=" + ctx + ", intent=" + intent);
+                                    Utils.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(ctx, "JumpController/I JMP_QUERY but no token, ctx=" + ctx + ", intent=" + intent, Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                    return;
                                 }
-                                List<ResolveInfo> activities = ctx.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-                                String action = intent.getAction();
-                                Interceptor_checkAndDo.invoke(interceptor, pkg, intent.getDataString(), action, activities, runnable);
+//                                PackageManager pm = ctx.getPackageManager();
+//                                List<ResolveInfo> activities = pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+//                                final String desc = (activities.size() == 1 ? ('"' + activities.get(0).loadLabel(pm).toString() + '"') : intent.toString());
+                                final String desc = intent.toString();
                                 Utils.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Toast.makeText(ctx, "Query: " + intent, Toast.LENGTH_SHORT).show();
+                                        CustomDialog.create(ctx).setTitle("跳转控制").setMessage("即将打开 " + desc)
+                                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        try {
+                                                            JefsClass_runV.invoke(that, runnable);
+                                                        } catch (Exception e) {
+                                                            Utils.showErrorToastAnywhere(e.toString());
+                                                        }
+                                                    }
+                                                }).setNegativeButton(android.R.string.cancel, null).setCancelable(true).show();
                                     }
                                 });
-                            } */ else {
+                                param.setResult(null);
+                            } else {
+                                final int finalResult = result;
                                 Utils.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Toast.makeText(ctx, "JumpController/E: Unknown result: " + result + " for " + intent, Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(ctx, "JumpController/E: Unknown result: " + finalResult + " for " + intent, Toast.LENGTH_SHORT).show();
                                     }
                                 });
                             }
@@ -149,16 +184,51 @@ public class JumpController extends BaseDelayableHook {
     }
 
     @Override
-    public boolean isEnabled() {
-        return false;
+    public void setEnabled(boolean enabled) {
+        try {
+            ConfigManager mgr = ConfigManager.getDefaultConfig();
+            mgr.getAllConfig().put(qn_jmp_ctl_enable, enabled);
+            mgr.save();
+        } catch (final Exception e) {
+            Utils.log(e);
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+            } else {
+                SyncUtils.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+                    }
+                });
+            }
+        }
     }
 
     @Override
-    public void setEnabled(boolean enabled) {
+    public boolean isEnabled() {
+        try {
+            return ConfigManager.getDefaultConfig().getBooleanOrDefault(qn_jmp_ctl_enable, true);
+        } catch (Exception e) {
+            log(e);
+            return false;
+        }
     }
 
     public int checkIntent(Context ctx, Intent intent) {
         if (intent == null) return JMP_DEFAULT;
         return JMP_DEFAULT;
+    }
+
+    @NonNull
+    public String getRuleString() {
+        return DEFAULT_RULES;
+    }
+
+    public int getEffectiveRulesCount() {
+        if (isEnabled() && isInited()) {
+            return 2;
+        } else {
+            return -1;
+        }
     }
 }
