@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.widget.Toast;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -31,18 +32,20 @@ import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.ui.CustomDialog;
-import nil.nadph.qnotified.util.Initiator;
-import nil.nadph.qnotified.util.NonNull;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.util.*;
 
 import java.lang.reflect.Method;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class JumpController extends BaseDelayableHook {
     private static final String qn_jmp_ctl_enable = "qn_jmp_ctl_enable";
+    private static final String qn_jmp_ctl_rules = "qn_jmp_ctl_rules";
 
-    private static final String DEFAULT_RULES = "A,P:me.singleneuron.locknotification;\n" +
+    public static final String DEFAULT_RULES = "A,P:me.singleneuron.locknotification;\n" +
             "A,P:cn.nexus6p.QQMusicNotify;\n";
 
     public static final int JMP_DEFAULT = 0;
@@ -52,6 +55,8 @@ public class JumpController extends BaseDelayableHook {
 
     Method JefsClass_runV = null;
     Method Interceptor_checkAndDo = null;
+
+    private ArrayList<Rule> rules = null;
 
     @Override
     public boolean init() {
@@ -78,6 +83,8 @@ public class JumpController extends BaseDelayableHook {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     try {
+                        if (LicenseStatus.sDisableCommonHooks) return;
+                        if (!isEnabled()) return;
                         final Object that = param.thisObject;
                         final Context ctx = (Context) param.args[0];
                         final Intent intent = (Intent) param.args[1];
@@ -216,19 +223,234 @@ public class JumpController extends BaseDelayableHook {
 
     public int checkIntent(Context ctx, Intent intent) {
         if (intent == null) return JMP_DEFAULT;
+        for (Rule r : getRuleList()) {
+            if (r == null) continue;
+            int v = r.applyTo(intent);
+            if (v != JMP_DEFAULT) {
+                return v;
+            }
+        }
         return JMP_DEFAULT;
     }
 
     @NonNull
     public String getRuleString() {
-        return DEFAULT_RULES;
+        try {
+            String r = ConfigManager.getDefaultConfig().getString(qn_jmp_ctl_rules);
+            if (r == null) r = DEFAULT_RULES;
+            return r;
+        } catch (Exception e) {
+            log(e);
+            return "";
+        }
+    }
+
+    @NonNull
+    public ArrayList<Rule> getRuleList() {
+        if (rules == null) {
+            return reloadRuleList();
+        }
+        return rules;
+    }
+
+    @NonNull
+    protected ArrayList<Rule> reloadRuleList() {
+        String ruleStr = getRuleString();
+        try {
+            rules = parseRules(ruleStr);
+        } catch (ParseException e) {
+            rules = new ArrayList<>();
+            log(e);
+        }
+        return rules;
+    }
+
+
+    public void setRuleString(String r) {
+        if (r == null) return;
+        try {
+            ConfigManager.getDefaultConfig().putString(qn_jmp_ctl_rules, r);
+            ConfigManager.getDefaultConfig().save();
+            reloadRuleList();
+        } catch (Exception e) {
+            log(e);
+        }
     }
 
     public int getEffectiveRulesCount() {
         if (isEnabled() && isInited()) {
-            return 2;
+            return getRuleList().size();
         } else {
             return -1;
         }
+    }
+
+    public static ArrayList<Rule> parseRules(String rules) throws ParseException {
+        int idx = 0;
+        ArrayList<Rule> result = new ArrayList<>();
+        while (idx < rules.length()) {
+            String expr;
+            int delta = rules.indexOf(';', idx);
+            if (delta == -1) break;
+            expr = rules.substring(idx, delta);
+            if (expr.length() < 3) {
+                throw new ParseException("incorrect rule format(too short)", idx);
+            }
+            if (expr.charAt(1) != ',') {
+                throw new ParseException("expected ',', got " + expr.charAt(1), idx + 1);
+            }
+            Rule r = new Rule();
+            String verb = expr.substring(0, 1).toUpperCase();
+            switch (verb.charAt(0)) {
+                case 'A':
+                    r.verb = JMP_ALLOW;
+                    break;
+                case 'R':
+                    r.verb = JMP_REJECT;
+                    break;
+                case 'Q':
+                    r.verb = JMP_QUERY;
+                    break;
+                default:
+                    throw new ParseException("unexpected verb " + expr.charAt(0), idx);
+            }
+            String[] conditions = expr.substring(2).split(",");
+            for (String condition : conditions) {
+                if (condition.length() < 3) {
+                    throw new ParseException("condition too short: " + condition, idx);
+                }
+                if (condition.charAt(1) != ':') {
+                    throw new ParseException("expected ':', got " + condition.charAt(1), idx);
+                }
+                String type = condition.substring(0, 1).toUpperCase();
+                switch (type.charAt(0)) {
+                    case 'P': {
+                        r.pkg = condition.substring(2);
+                        break;
+                    }
+                    case 'C': {
+                        r.cmp = condition.substring(2);
+                        break;
+                    }
+                    case 'A': {
+                        r.action = condition.substring(2);
+                        break;
+                    }
+                    default:
+                        throw new ParseException("unexpected condition type " + type.charAt(0), idx);
+                }
+            }
+            result.add(r);
+            int lf = rules.indexOf('\n', delta);
+            if (lf == -1) break;
+            idx = lf + 1;
+        }
+        return result;
+    }
+
+    public static class Rule {
+        public int verb;
+        @Nullable
+        public String pkg;
+        @Nullable
+        public String cmp;
+        @Nullable
+        public String action;
+
+        public int applyTo(Intent i) {
+            if (i == null) return JMP_DEFAULT;
+            if (pkg == null && cmp == null && action == null) {
+                return JMP_DEFAULT;
+            }
+            boolean pass = true;
+            if (cmp != null) {
+                ComponentName c = i.getComponent();
+                if (c == null) {
+                    pass = false;
+                } else {
+                    String p = c.getPackageName();
+                    String clz = c.getClassName();
+                    String[] _tmp = cmp.split("/");
+                    if (_tmp.length != 2) {
+                        pass = false;
+                    } else {
+                        String _p = _tmp[0];
+                        String _c = _tmp[1];
+                        if (_c.startsWith(".")) {
+                            _c = _p + _c;
+                        }
+                        if (!cmpWildcard(_c, clz) || !cmpWildcard(_p, p)) {
+                            pass = false;
+                        }
+                    }
+                }
+            } else if (pkg != null) {
+                String p = i.getPackage();
+                if (p == null) {
+                    ComponentName c = i.getComponent();
+                    if (c != null) {
+                        p = c.getPackageName();
+                    }
+                }
+                if (p == null) {
+                    pass = false;
+                } else {
+                    if (!cmpWildcard(pkg, p)) {
+                        pass = false;
+                    }
+                }
+            }
+            if (pass && action != null) {
+                if (!cmpWildcard(action, i.getAction())) {
+                    pass = false;
+                }
+            }
+            if (pass) {
+                return verb;
+            } else {
+                return JMP_DEFAULT;
+            }
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            switch (verb) {
+                case JMP_ALLOW:
+                    sb.append('A');
+                    break;
+                case JMP_REJECT:
+                    sb.append('R');
+                    break;
+                case JMP_QUERY:
+                    sb.append('Q');
+                    break;
+                default:
+                    sb.append(verb);
+            }
+            if (!TextUtils.isEmpty(cmp)) {
+                sb.append(",C:");
+                sb.append(cmp);
+            }
+            if (!TextUtils.isEmpty(pkg)) {
+                sb.append(",P:");
+                sb.append(pkg);
+            }
+            if (!TextUtils.isEmpty(action)) {
+                sb.append(",A:");
+                sb.append(action);
+            }
+            sb.append(';');
+            return sb.toString();
+        }
+    }
+
+    static boolean cmpWildcard(String exp, String str) {
+        if (exp == null || str == null) return false;
+        if (exp.equals(str)) return true;
+        if (!exp.contains("*")) return false;
+        String regex = exp.replace(".", "\\.").replace("**", ".+").replace("*", "[^.]+");
+        Pattern p = Pattern.compile(regex);
+        return p.matcher(str).matches();
     }
 }

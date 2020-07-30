@@ -20,6 +20,7 @@ package nil.nadph.qnotified.activity;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.content.pm.PackageInfo;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -36,9 +37,13 @@ import nil.nadph.qnotified.ui.ViewBuilder;
 import nil.nadph.qnotified.util.UiThread;
 import nil.nadph.qnotified.util.Utils;
 
+import java.text.ParseException;
+import java.util.ArrayList;
+
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.util.Utils.dip2px;
+import static nil.nadph.qnotified.util.Utils.log;
 
 @SuppressLint("Registered")
 public class JefsRulesActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener {
@@ -79,8 +84,22 @@ public class JefsRulesActivity extends IphoneTitleBarActivityCompat implements V
             layoutDisplay = new LinearLayout(this);
             layoutDisplay.setOrientation(LinearLayout.VERTICAL);
             layoutDisplay.setId(R.id.jefsRulesDisplayLayout);
+            {
+                String appLabel = "QQ/TIM";
+                try {
+                    PackageInfo pi = Utils.getHostInfo(this);
+                    appLabel = pi.applicationInfo.loadLabel(this.getPackageManager()).toString();
+                } catch (Throwable e) {
+                    log(e);
+                }
+                TextView _tmp_1 = new TextView(this);
+                _tmp_1.setTextColor(ResUtils.skin_gray3);
+                _tmp_1.setText("本功能用于去除恼人的 \"即将离开" + appLabel + " 前往其他应用\" 对话框, " +
+                        "也可用于限制或禁止" + appLabel + "跳转到特定第三方APP或启动某特定活动(自身的也行)");
+                layoutDisplay.addView(_tmp_1, ViewBuilder.newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, __5));
+            }
             rulesTv = new TextView(this);
-            rulesTv.setTextSize(12);
+            rulesTv.setTextSize(14);
             rulesTv.setPadding(__5, __5, __5, __5);
             rulesTv.setHorizontallyScrolling(true);
             rulesTv.setTextColor(ResUtils.skin_black);
@@ -101,12 +120,21 @@ public class JefsRulesActivity extends IphoneTitleBarActivityCompat implements V
             layoutEdit.setId(R.id.jefsRulesEditLayout);
             {
                 TextView _tmp_1 = new TextView(this);
-                _tmp_1.setText("支持通配符 * 及 **");
+                _tmp_1.setTextColor(ResUtils.skin_gray3);
+                _tmp_1.setText("规则从上到下按顺序进行匹配\n" +
+                        "支持通配符 * 及 **\n" +
+                        "规则格式: 动作,匹配项;\n可以有多个匹配项, 构成并且关系, \n如: 动作,匹配项1,匹配项2,匹配项3;\n" +
+                        "动作有A/D/Q三种: 允许(A), 禁止(D), 弹窗询问(Q), 匹配项有3种(P/C/A)\n" +
+                        "按包名(P): 如  A,P:com.tencent.mm;    允许跳转到微信\n" +
+                        "按组件(C): 如  D,C:de.robv.android.xposed.installer/.WelcomeActivity;  禁止跳转到Xposed的主界面\n" +
+                        "按动作(A): 如  Q,A:android.intent.action.DIAL;    在每次跳转到拨号前询问\n" +
+                        "关于通配符: aa.bbb.*.dddd 可以匹配 aa.bbb.ccccc.dddd 而不匹配 aa.bbb.cc.ee.dddd\n" +
+                        " aa.bbb.**.dddd 可以匹配 aa.bbb.cc.dddd 和 aa.bbb.cc.ee.dddd 但不匹配 aa.bbb.dddd");
                 layoutEdit.addView(_tmp_1, ViewBuilder.newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, __5));
             }
             rulesEt = new EditText(this);
             rulesEt.setHorizontallyScrolling(true);
-            rulesEt.setTextSize(12);
+            rulesEt.setTextSize(16);
             rulesEt.setPadding(__5, __5, __5, __5);
             rulesEt.setBackgroundDrawable(new HighContrastBorder());
             rulesEt.setTextColor(ResUtils.skin_black);
@@ -234,6 +262,7 @@ public class JefsRulesActivity extends IphoneTitleBarActivityCompat implements V
         CustomDialog.create(this).setPositiveButton("确认", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                jmpctl.setRuleString(JumpController.DEFAULT_RULES);
                 goToDisplayMode();
             }
         }).setNegativeButton("取消", null).setTitle("重置规则").setMessage("将恢复默认规则, 当前规则将会丢失")
@@ -242,6 +271,13 @@ public class JefsRulesActivity extends IphoneTitleBarActivityCompat implements V
 
     @UiThread
     private void checkAndSaveRules(String rules) {
-        Utils.showToast(this, Utils.TOAST_TYPE_ERROR, "暂不支持", Toast.LENGTH_SHORT);
+        try {
+            ArrayList<JumpController.Rule> ruleList = JumpController.parseRules(rules);
+            jmpctl.setRuleString(rules);
+            goToDisplayMode();
+        } catch (ParseException e) {
+            CustomDialog.createFailsafe(this).setPositiveButton("确认", null).setTitle("格式错误").setMessage(e.toString())
+                    .setCancelable(true).show();
+        }
     }
 }
