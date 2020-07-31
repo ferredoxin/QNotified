@@ -27,20 +27,13 @@ import android.widget.TextView;
 
 import com.tencent.mobileqq.widget.BounceScrollView;
 
-import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.hook.PttForwardHook;
-import nil.nadph.qnotified.hook.rikka.DefaultFont;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.LicenseStatus;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.ui.ViewBuilder.clickTheComing;
-import static nil.nadph.qnotified.ui.ViewBuilder.newListItemButton;
-import static nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit;
 import static nil.nadph.qnotified.ui.ViewBuilder.newListItemSwitchConfig;
-import static nil.nadph.qnotified.ui.ViewBuilder.newListItemSwitchConfigStub;
-import static nil.nadph.qnotified.ui.ViewBuilder.newListItemSwitchStub;
 import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
 import static nil.nadph.qnotified.util.Utils.dip2px;
 

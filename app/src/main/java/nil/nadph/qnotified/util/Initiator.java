@@ -87,6 +87,26 @@ public class Initiator {
         }
     }
 
+
+    public static Class _ConversationTitleBtnCtrl() {
+        Class<?> ret, cref;
+        for (String clzName : new String[]{"com.tencent.mobileqq.activity.ConversationTitleBtnCtrl"}) {
+            ret = load(clzName);
+            if (ret != null) return ret;
+            for (int i : new int[]{1, 2, 4, 5, 6}) {
+                cref = load(clzName + "$" + i);
+                if (cref != null) {
+                    try {
+                        return cref.getDeclaredField("this$0").getType();
+                    } catch (Exception ignored) {
+                    }
+                }
+            }
+        }
+        log("Initiator/E class ConversationTitleBtnCtrl not found");
+        return null;
+    }
+
     public static Class _ConfigHandler() {
         Class<?> ret, cref;
         for (String clzName : new String[]{"com.tencent.mobileqq.app.ConfigHandler"}) {
