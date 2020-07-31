@@ -27,7 +27,9 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+
 import com.tencent.mobileqq.widget.BounceScrollView;
+
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.hook.JumpController;
 import nil.nadph.qnotified.ui.CustomDialog;
@@ -48,12 +50,10 @@ import static nil.nadph.qnotified.util.Utils.log;
 @SuppressLint("Registered")
 public class JefsRulesActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener {
 
-    private CompoundButton mainSwitch;
     private EditText rulesEt;
     private TextView rulesTv;
     private LinearLayout layoutDisplay;
     private LinearLayout layoutEdit;
-    //private boolean currentEnabled;
     private final JumpController jmpctl = JumpController.get();
     private boolean currEditMode;
 
@@ -68,7 +68,6 @@ public class JefsRulesActivity extends IphoneTitleBarActivityCompat implements V
         mainLayout.setOrientation(LinearLayout.VERTICAL);
 
         RelativeLayout _tmp = ViewBuilder.newListItemHookSwitchInit(this, "总开关", "关闭后所有规则不生效", JumpController.get());
-        mainSwitch = _tmp.findViewById(ViewBuilder.R_ID_SWITCH);
         mainLayout.addView(_tmp, ViewBuilder.newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 0));
 
         int __10 = dip2px(this, 10);

@@ -84,6 +84,7 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 CustomDeviceModel.get(),
                 CustomSplash.get(),
                 DisableAvatarDecoration.get(),
+                DisableCameraButton.get(),
         };
         return sAllHooks;
     }
