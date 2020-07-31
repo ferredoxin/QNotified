@@ -24,9 +24,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-
 import com.tencent.mobileqq.app.IphoneTitleBarActivity;
-
 import nil.nadph.qnotified.ui.ResUtils;
 
 import java.lang.reflect.Field;
@@ -138,9 +136,13 @@ public class IphoneTitleBarActivityCompat extends IphoneTitleBarActivity {
     public void setRightButton(String text, View.OnClickListener l) {
         TextView btn = (TextView) getRightTextView();
         if (btn != null) {
-            btn.setText(text);
-            btn.setVisibility(View.VISIBLE);
-            btn.setOnClickListener(l);
+            if (text != null) {
+                btn.setText(text);
+                btn.setVisibility(View.VISIBLE);
+                btn.setOnClickListener(l);
+            } else {
+                btn.setVisibility(View.GONE);
+            }
         }
     }
 

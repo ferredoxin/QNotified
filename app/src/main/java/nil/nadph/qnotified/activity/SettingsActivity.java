@@ -32,9 +32,7 @@ import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-
 import com.tencent.mobileqq.widget.BounceScrollView;
-
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigItems;
@@ -260,6 +258,12 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         _lp_fat.weight = 1;
         //__ll.addView(bounceScrollView,_lp_fat);
         setContentBackgroundDrawable(ResUtils.skin_background);
+        setRightButton("更多", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showOverflowPopupMenu();
+            }
+        });
         setTitle("高级");
         //TextView rightBtn=(TextView)invoke_virtual(this,"getRightTextView");
         //log("Title:"+invoke_virtual(this,"getTextTitle"));
@@ -458,6 +462,10 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             __recv_status.setText("[禁用]");
             __recv_desc.setText(recv.getDefaultPath());
         }
+    }
+
+    private void showOverflowPopupMenu() {
+        Utils.showToast(this, TOAST_TYPE_INFO, "没有更多了", Toast.LENGTH_SHORT);
     }
 
 }
