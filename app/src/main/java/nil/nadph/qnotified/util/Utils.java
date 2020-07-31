@@ -31,7 +31,9 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
 import com.tencent.mobileqq.app.QQAppInterface;
+
 import dalvik.system.DexFile;
 import de.robv.android.xposed.XposedBridge;
 import mqq.app.AppRuntime;
@@ -2019,5 +2021,14 @@ public class Utils {
             if (it.hasNext()) ret[i] = it.next();
         }
         return ret;
+    }
+
+    public static String getPathTail(File path) {
+        return getPathTail(path.getPath());
+    }
+
+    public static String getPathTail(String path) {
+        String[] arr = path.split("/");
+        return arr[arr.length - 1];
     }
 }
