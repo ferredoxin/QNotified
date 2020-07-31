@@ -371,6 +371,9 @@ public class PttForwardHook extends BaseDelayableHook {
         CustomDialog dialog = CustomDialog.createFailsafe(context);
         final Context ctx = dialog.getContext();
         final EditText editText = new EditText(ctx);
+        TextView tv = new TextView(ctx);
+        tv.setText("格式为.slk/.amr 一般无法直接打开slk格式 而且大多数语音均为slk格式(转发语音可以看到格式) 请自行寻找软件进行转码");
+        tv.setPadding(20, 10, 20, 10);
         String lastSaveDir = ConfigManager.getCache().getString(qn_cache_ptt_save_last_parent_dir);
         if (TextUtils.isEmpty(lastSaveDir)) {
             File f = ctx.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
@@ -386,10 +389,10 @@ public class PttForwardHook extends BaseDelayableHook {
         editText.setBackgroundDrawable(new HighContrastBorder());
         LinearLayout linearLayout = new LinearLayout(ctx);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.addView(ViewBuilder.subtitle(ctx, "格式为.slk/.amr 一般无法直接打开slk格式 而且大多数语音均为slk格式(转发语音可以看到格式) 请自行寻找软件进行转码"));
+        linearLayout.addView(tv, MATCH_PARENT, WRAP_CONTENT);
         linearLayout.addView(editText, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, _5 * 2));
         final AlertDialog alertDialog = (AlertDialog) dialog
-                .setTitle("输入保存路径")
+                .setTitle("输入保存路径(请自行转码)")
                 .setView(linearLayout)
                 .setPositiveButton("保存", null)
                 .setNegativeButton("取消", null)
