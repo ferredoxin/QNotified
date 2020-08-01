@@ -43,7 +43,7 @@ import static nil.nadph.qnotified.util.Utils.*;
 public class IgnoreDiyCard extends BaseDelayableHook {
     public static final String rq_ignore_diy_card = "rq_ignore_diy_card";
     private static final IgnoreDiyCard self = new IgnoreDiyCard();
-    private boolean inited = false;
+    private boolean isInit = false;
 
     private IgnoreDiyCard() {
     }
@@ -55,7 +55,7 @@ public class IgnoreDiyCard extends BaseDelayableHook {
 
     @Override
     public boolean init() {
-        if (inited) return true;
+        if (isInit) return true;
         try {
             for (Method m : load("com.tencent.mobileqq.activity.FriendProfileCardActivity").getDeclaredMethods()) {
                 Class<?>[] argt = m.getParameterTypes();
@@ -96,7 +96,7 @@ public class IgnoreDiyCard extends BaseDelayableHook {
                     }
                 });
             }
-            inited = true;
+            isInit = true;
             return true;
         } catch (Throwable e) {
             log(e);
@@ -116,7 +116,7 @@ public class IgnoreDiyCard extends BaseDelayableHook {
 
     @Override
     public boolean isInited() {
-        return inited;
+        return isInit;
     }
 
     @Override

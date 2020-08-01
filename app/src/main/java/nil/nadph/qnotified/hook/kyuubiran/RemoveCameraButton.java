@@ -1,4 +1,4 @@
-package nil.nadph.qnotified.hook.rikka;
+package nil.nadph.qnotified.hook.kyuubiran;
 
 import android.os.Looper;
 import android.widget.Toast;
@@ -19,12 +19,13 @@ import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
 import static nil.nadph.qnotified.util.Utils.getApplication;
 import static nil.nadph.qnotified.util.Utils.log;
 
-public class DisableCameraButton extends BaseDelayableHook {
-    public static final String rq_disable_camera_button = "rq_disable_camera_button";
-    private static final DisableCameraButton self = new DisableCameraButton();
-    private static boolean isInit = false;
+//屏蔽聊天界面相机图标
+public class RemoveCameraButton extends BaseDelayableHook {
+    public static final String kr_disable_camera_button = "kr_disable_camera_button";
+    private static final RemoveCameraButton self = new RemoveCameraButton();
+    private boolean isInit = false;
 
-    public static DisableCameraButton get() {
+    public static RemoveCameraButton get() {
         return self;
     }
 
@@ -70,7 +71,7 @@ public class DisableCameraButton extends BaseDelayableHook {
     @Override
     public boolean isEnabled() {
         try {
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_disable_camera_button);
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(kr_disable_camera_button);
         } catch (Exception e) {
             log(e);
             return false;
@@ -81,7 +82,7 @@ public class DisableCameraButton extends BaseDelayableHook {
     public void setEnabled(boolean enabled) {
         try {
             ConfigManager mgr = ConfigManager.getDefaultConfig();
-            mgr.getAllConfig().put(rq_disable_camera_button, enabled);
+            mgr.getAllConfig().put(kr_disable_camera_button, enabled);
             mgr.save();
         } catch (final Exception e) {
             Utils.log(e);

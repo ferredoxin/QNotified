@@ -22,9 +22,9 @@ import static nil.nadph.qnotified.util.Utils.log;
 
 //屏蔽戳一戳动画
 public class DisablePokeEffect extends BaseDelayableHook {
-    public final static String rq_disable_poke_effect = "rq_disable_poke_effect";
-    private final static DisablePokeEffect self = new DisablePokeEffect();
-    private static boolean isInit = false;
+    public static final String rq_disable_poke_effect = "rq_disable_poke_effect";
+    private static final DisablePokeEffect self = new DisablePokeEffect();
+    private boolean isInit = false;
 
     public static DisablePokeEffect get() {
         return self;
@@ -45,7 +45,8 @@ public class DisablePokeEffect extends BaseDelayableHook {
         if (isInit) return true;
         try {
             for (Method m : Initiator._GivingHeartItemBuilder().getDeclaredMethods()) {
-                if (m.getName().equals("a") && m.getParameterTypes().length == 3 && !Modifier.isStatic(m.getModifiers())) {
+                Class<?>[] argt = m.getParameterTypes();
+                if (m.getName().equals("a") && argt.length == 3 && !Modifier.isStatic(m.getModifiers())) {
                     XposedBridge.hookMethod(m, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {

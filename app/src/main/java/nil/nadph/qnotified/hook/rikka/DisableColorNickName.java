@@ -22,9 +22,9 @@ import static nil.nadph.qnotified.util.Utils.log;
 
 //屏蔽群聊炫彩昵称
 public class DisableColorNickName extends BaseDelayableHook {
-    public final static String rq_disable_color_nick_name = "rq_disable_color_nick_name";
-    private final static DisableColorNickName self = new DisableColorNickName();
-    private static boolean isInit = false;
+    public static final String rq_disable_color_nick_name = "rq_disable_color_nick_name";
+    private static final DisableColorNickName self = new DisableColorNickName();
+    private boolean isInit = false;
 
     public static DisableColorNickName get() {
         return self;
@@ -46,7 +46,7 @@ public class DisableColorNickName extends BaseDelayableHook {
         try {
             for (Method m : Initiator._ColorNickManager().getDeclaredMethods()) {
                 Class<?>[] argt = m.getParameterTypes();
-                if (m.getName().equals("a") && Modifier.isStatic(m.getModifiers()) && m.getReturnType().equals(void.class) && argt.length == 3) {
+                if (m.getName().equals("a") && Modifier.isStatic(m.getModifiers()) && m.getReturnType() == void.class && argt.length == 3) {
                     XposedBridge.hookMethod(m, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {

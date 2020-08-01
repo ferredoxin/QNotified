@@ -24,7 +24,7 @@ import static nil.nadph.qnotified.util.Utils.log;
 
 //重命名base.apk
 public class BaseApk extends BaseDelayableHook {
-    private final static BaseApk self = new BaseApk();
+    private static final BaseApk self = new BaseApk();
     private boolean isInit = false;
 
     public static BaseApk get() {

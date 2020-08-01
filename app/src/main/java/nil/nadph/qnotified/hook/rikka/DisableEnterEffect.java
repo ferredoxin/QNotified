@@ -22,9 +22,9 @@ import static nil.nadph.qnotified.util.Utils.log;
 
 //屏蔽所有进场特效
 public class DisableEnterEffect extends BaseDelayableHook {
-    public final static String rq_disable_enter_effect = "rq_disable_enter_effect";
-    private final static DisableEnterEffect self = new DisableEnterEffect();
-    private static boolean isInit = false;
+    public static final String rq_disable_enter_effect = "rq_disable_enter_effect";
+    private static final DisableEnterEffect self = new DisableEnterEffect();
+    private boolean isInit = false;
 
     public static DisableEnterEffect get() {
         return self;
@@ -42,10 +42,10 @@ public class DisableEnterEffect extends BaseDelayableHook {
 
     @Override
     public boolean init() {
-        if (isInited()) return true;
+        if (isInit) return true;
         try {
             for (Method m : Initiator._TroopEnterEffectController().getDeclaredMethods()) {
-                if (m.getName().equals("a") && !Modifier.isStatic(m.getModifiers()) && m.getReturnType().equals(void.class)) {
+                if (m.getName().equals("a") && !Modifier.isStatic(m.getModifiers()) && m.getReturnType() == void.class) {
                     XposedBridge.hookMethod(m, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {

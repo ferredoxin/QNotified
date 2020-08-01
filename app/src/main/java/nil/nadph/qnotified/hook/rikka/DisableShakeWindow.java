@@ -24,7 +24,7 @@ import static nil.nadph.qnotified.util.Utils.log;
 public class DisableShakeWindow extends BaseDelayableHook {
     public final static String rq_disable_shake_window = "rq_disable_shake_window";
     private final static DisableShakeWindow self = new DisableShakeWindow();
-    private static boolean isInit = false;
+    private boolean isInit = false;
 
     public static DisableShakeWindow get() {
         return self;

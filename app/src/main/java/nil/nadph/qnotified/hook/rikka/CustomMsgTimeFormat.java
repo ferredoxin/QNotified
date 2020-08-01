@@ -20,8 +20,8 @@ import nil.nadph.qnotified.util.Utils;
 
 //自定义聊天页面时间格式
 public class CustomMsgTimeFormat extends BaseDelayableHook {
-    private final static CustomMsgTimeFormat self = new CustomMsgTimeFormat();
-    private static boolean isInit = false;
+    private static final CustomMsgTimeFormat self = new CustomMsgTimeFormat();
+    private boolean isInit = false;
 
     public static CustomMsgTimeFormat get() {
         return self;

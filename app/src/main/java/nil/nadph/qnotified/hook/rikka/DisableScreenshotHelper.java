@@ -48,7 +48,7 @@ public class DisableScreenshotHelper extends BaseDelayableHook {
         if (isInit) return true;
         try {
             for (Method m : DexKit.doFindClass(DexKit.C_ScreenShotHelper).getDeclaredMethods()) {
-                if (m.getName().equals("a") && Modifier.isStatic(m.getModifiers()) && m.getReturnType().equals(void.class)) {
+                if (m.getName().equals("a") && Modifier.isStatic(m.getModifiers()) && m.getReturnType() == void.class) {
                     Class<?>[] argt = m.getParameterTypes();
                     if (argt.length == 3 && argt[0] == Context.class && argt[1] == String.class && argt[2] == Handler.class) {
                         XposedBridge.hookMethod(m, new XC_MethodHook() {

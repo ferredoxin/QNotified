@@ -21,6 +21,7 @@ package nil.nadph.qnotified.hook.rikka;
 import android.os.Looper;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
@@ -39,7 +40,7 @@ import static nil.nadph.qnotified.util.Utils.*;
 public class ShowMsgCount extends BaseDelayableHook {
     public static final String rq_show_msg_count = "rq_show_msg_count";
     private static final ShowMsgCount self = new ShowMsgCount();
-    private boolean inited = false;
+    private boolean isInit = false;
 
     private ShowMsgCount() {
     }
@@ -51,7 +52,7 @@ public class ShowMsgCount extends BaseDelayableHook {
 
     @Override
     public boolean init() {
-        if (inited) return true;
+        if (isInit) return true;
         try {
             XposedHelpers.findAndHookMethod(DexKit.doFindClass(DexKit.C_CustomWidgetUtil), "a",
                     TextView.class, Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE, String.class,
@@ -63,7 +64,7 @@ public class ShowMsgCount extends BaseDelayableHook {
                             param.args[4] = Integer.MAX_VALUE;
                         }
                     });
-            inited = true;
+            isInit = true;
             return true;
         } catch (Throwable e) {
             log(e);
@@ -83,7 +84,7 @@ public class ShowMsgCount extends BaseDelayableHook {
 
     @Override
     public boolean isInited() {
-        return inited;
+        return isInit;
     }
 
     @Override

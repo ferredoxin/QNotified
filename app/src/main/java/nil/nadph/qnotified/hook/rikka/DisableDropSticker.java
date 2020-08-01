@@ -22,9 +22,9 @@ import static nil.nadph.qnotified.util.Utils.log;
 
 //屏蔽掉落小表情
 public class DisableDropSticker extends BaseDelayableHook {
-    public final static String rq_disable_drop_sticker = "rq_disable_drop_sticker";
-    private final static DisableDropSticker self = new DisableDropSticker();
-    private static boolean isInit = false;
+    public static final String rq_disable_drop_sticker = "rq_disable_drop_sticker";
+    private static final DisableDropSticker self = new DisableDropSticker();
+    private boolean isInit = false;
 
     public static DisableDropSticker get() {
         return self;
@@ -46,7 +46,8 @@ public class DisableDropSticker extends BaseDelayableHook {
         if (isInit) return true;
         try {
             for (Method m : Initiator._ConfigHandler().getDeclaredMethods()) {
-                if (m.getName().equals("f") && !Modifier.isStatic(m.getModifiers()) && m.getParameterTypes().length == 1) {
+                Class<?>[] argt = m.getParameterTypes();
+                if (m.getName().equals("f") && !Modifier.isStatic(m.getModifiers()) && argt.length == 1) {
                     XposedBridge.hookMethod(m, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
