@@ -2,9 +2,6 @@ package nil.nadph.qnotified.hook.rikka;
 
 import android.os.Looper;
 import android.widget.Toast;
-
-import java.lang.reflect.Method;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
@@ -15,9 +12,9 @@ import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
-import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
-import static nil.nadph.qnotified.util.Utils.getApplication;
-import static nil.nadph.qnotified.util.Utils.log;
+import java.lang.reflect.Method;
+
+import static nil.nadph.qnotified.util.Utils.*;
 
 //去除小程序广告 需要手动点关闭
 public class RemoveMiniProgramAd extends BaseDelayableHook {
@@ -31,7 +28,8 @@ public class RemoveMiniProgramAd extends BaseDelayableHook {
 
     @Override
     public int getEffectiveProc() {
-        return SyncUtils.PROC_ANY & ~(SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF | SyncUtils.PROC_QZONE | SyncUtils.PROC_PEAK);
+        return SyncUtils.PROC_ANY & ~(SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF | SyncUtils.PROC_QZONE
+                | SyncUtils.PROC_PEAK | SyncUtils.PROC_VIDEO);
     }
 
     @Override
