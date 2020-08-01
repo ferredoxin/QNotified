@@ -32,7 +32,9 @@ import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+
 import com.tencent.mobileqq.widget.BounceScrollView;
+
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigItems;
@@ -46,6 +48,7 @@ import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.*;
 
 import java.io.File;
+import java.io.IOException;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -58,6 +61,7 @@ import static nil.nadph.qnotified.util.Utils.*;
 public class SettingsActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener, Runnable {
 
     private static final int R_ID_BTN_FILE_RECV = 0x300AFF91;
+    private static final String qn_enable_fancy_rgb = "qn_enable_fancy_rgb";
 
     private TextView __tv_muted_atall, __tv_muted_redpacket, __tv_fake_bat_status, __recv_status, __recv_desc, __js_status, __jmp_ctl_cnt;
 
@@ -112,10 +116,26 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             ll.addView(_t = newListItemButton(this, "自定义电量", "[QQ>=8.2.6]在线模式为我的电量时生效", "N/A", clickToProxyActAction(ACTION_FAKE_BAT_CONFIG_ACTIVITY)));
             __tv_fake_bat_status = _t.findViewById(R_ID_VALUE);
         }
-        ViewGroup _tmp_vg = newListItemButton(this, "花Q[狐狸狸魔改版好评绝赞上线中]", "若无另行说明, 所有功能开关都即时生效", null, new View.OnClickListener() {
+        ViewGroup _tmp_vg = newListItemButton(this, "花Q", "若无另行说明, 所有功能开关都即时生效", null, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 RikkaDialog.showRikkaFuncDialog(SettingsActivity.this);
+            }
+        });
+        _tmp_vg.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                rgbEnabled = !rgbEnabled;
+                ConfigManager cfg = ConfigManager.getDefaultConfig();
+                cfg.putBoolean(qn_enable_fancy_rgb, rgbEnabled);
+                try {
+                    cfg.save();
+                } catch (IOException ignored) {
+                }
+                if (rgbEnabled) {
+                    startRgbIfEnabled();
+                }
+                return true;
             }
         });
         mRikkaTitle = _tmp_vg.findViewById(R_ID_TITLE);
@@ -282,6 +302,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
     public void doOnResume() {
         super.doOnResume();
         ConfigManager cfg = ConfigManager.getDefaultConfig();
+        rgbEnabled = cfg.getBooleanOrFalse(qn_enable_fancy_rgb);
         String str = cfg.getString(ConfigItems.qn_muted_at_all);
         int n = 0;
         if (str != null && str.length() > 4) n = str.split(",").length;
@@ -310,15 +331,23 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
                 __jmp_ctl_cnt.setText("" + cnt);
             }
         }
-        needRun = true;
         isVisible = true;
-        new Thread(this).start();
+        startRgbIfEnabled();
     }
 
     @Override
     public void doOnPause() {
+        isVisible = false;
         super.doOnPause();
-        needRun = false;
+    }
+
+    private void startRgbIfEnabled() {
+        if (!rgbEnabled || !isVisible) return;
+        mRikkaTitle.setText("花Q[狐狸狸魔改版]");
+        new Thread(this).start();
+    }
+
+    private void stopRgb() {
         isVisible = false;
     }
 
@@ -348,7 +377,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
     int step;//(0-255)
     int stage;//0-5
     private boolean isVisible = false;
-    private boolean needRun = false;
+    private boolean rgbEnabled = false;
     private TextView mRikkaTitle, mRikkaDesc;
     private Looper mainLooper = Looper.getMainLooper();
 
@@ -359,11 +388,17 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
     @Override
     public void run() {
         if (mRikkaTitle != null && mRikkaDesc != null && Looper.myLooper() == mainLooper) {
-            mRikkaTitle.setTextColor(color);
-            mRikkaDesc.setTextColor(color);
+            if (rgbEnabled) {
+                mRikkaTitle.setTextColor(color);
+                mRikkaDesc.setTextColor(color);
+            } else {
+                mRikkaTitle.setText("花Q");
+                mRikkaTitle.setTextColor(ResUtils.skin_black);
+                mRikkaDesc.setTextColor(ResUtils.skin_gray3);
+            }
             return;
         }
-        while (isVisible && needRun) {
+        while (isVisible && rgbEnabled) {
             try {
                 Thread.sleep(75);
             } catch (InterruptedException ignored) {
@@ -393,6 +428,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             }
             runOnUiThread(this);
         }
+        runOnUiThread(this);
     }
 
 

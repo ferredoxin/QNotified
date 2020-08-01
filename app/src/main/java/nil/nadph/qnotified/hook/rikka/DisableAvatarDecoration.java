@@ -21,9 +21,9 @@ import static nil.nadph.qnotified.util.Utils.getApplication;
 import static nil.nadph.qnotified.util.Utils.log;
 
 public class DisableAvatarDecoration extends BaseDelayableHook {
-    public final static String rq_disable_avatar_decoration = "rq_disable_avatar_decoration";
-    private final static DisableAvatarDecoration self = new DisableAvatarDecoration();
-    private static boolean isInit = false;
+    public static final String rq_disable_avatar_decoration = "rq_disable_avatar_decoration";
+    private static final DisableAvatarDecoration self = new DisableAvatarDecoration();
+    private boolean isInit = false;
 
 
     public static DisableAvatarDecoration get() {

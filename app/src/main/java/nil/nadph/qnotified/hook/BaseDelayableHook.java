@@ -20,6 +20,8 @@ package nil.nadph.qnotified.hook;
 
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.SwitchConfigItem;
+import nil.nadph.qnotified.hook.kyuubiran.RemoveCameraButton;
+import nil.nadph.qnotified.hook.kyuubiran.RemovePlayTogether;
 import nil.nadph.qnotified.hook.rikka.*;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.NonNull;
@@ -84,7 +86,8 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 CustomDeviceModel.get(),
                 CustomSplash.get(),
                 DisableAvatarDecoration.get(),
-                DisableCameraButton.get(),
+                RemoveCameraButton.get(),
+                RemovePlayTogether.get(),
         };
         return sAllHooks;
     }

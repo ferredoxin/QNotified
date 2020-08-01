@@ -18,8 +18,8 @@ import nil.nadph.qnotified.util.Utils;
 
 //自定义启动图
 public class CustomSplash extends BaseDelayableHook {
-    private final static CustomSplash self = new CustomSplash();
-    private static boolean isInit = false;
+    private static final CustomSplash self = new CustomSplash();
+    private boolean isInit = false;
 
     private static final byte[] TRANSPARENT_PNG = new byte[]{
             (byte) 0x89, (byte) 0x50, (byte) 0x4E, (byte) 0x47, (byte) 0x0D, (byte) 0x0A, (byte) 0x1A, (byte) 0x0A,

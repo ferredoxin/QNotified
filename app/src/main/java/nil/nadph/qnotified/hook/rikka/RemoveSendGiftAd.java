@@ -22,9 +22,9 @@ import static nil.nadph.qnotified.util.Utils.log;
 
 //去除群聊送礼物广告
 public class RemoveSendGiftAd extends BaseDelayableHook {
-    public final static String rq_remove_send_gift_ad = "rq_remove_send_gift_ad";
-    private final static RemoveSendGiftAd self = new RemoveSendGiftAd();
-    private static boolean isInit = false;
+    public static final String rq_remove_send_gift_ad = "rq_remove_send_gift_ad";
+    private static final RemoveSendGiftAd self = new RemoveSendGiftAd();
+    private boolean isInit = false;
 
     public static RemoveSendGiftAd get() {
         return self;

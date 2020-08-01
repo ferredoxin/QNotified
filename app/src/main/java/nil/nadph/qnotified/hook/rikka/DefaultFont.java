@@ -47,7 +47,7 @@ public class DefaultFont extends BaseDelayableHook {
         try {
             Class<?> C_ChatMessage = Initiator.load("com.tencent.mobileqq.data.ChatMessage");
             for (Method m : Initiator._TextItemBuilder().getDeclaredMethods()) {
-                if (m.getName().equals("a") && !Modifier.isStatic(m.getModifiers()) && m.getReturnType().equals(void.class)) {
+                if (m.getName().equals("a") && !Modifier.isStatic(m.getModifiers()) && m.getReturnType() == void.class) {
                     Class<?>[] argt = m.getParameterTypes();
                     if (argt.length == 2 && argt[0] != View.class && argt[1] == C_ChatMessage) {
                         XposedBridge.hookMethod(m, new XC_MethodHook() {
