@@ -35,7 +35,7 @@ jobs:
     - name: Upload articact
       uses: actions/upload-artifact@v2
       with:
-        path: app/build
+        path: app/build/outputs/apk
         name: gradle
 
   naked:
