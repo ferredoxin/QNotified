@@ -103,12 +103,11 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             log(e);
         }
         if (LicenseStatus.isAsserted()) {
-            ll.addView(subtitle(this, "遗留功能"));//群发已不再维护
-            ll.addView(newListItemButton(this, "群发文本消息", "年少不知号贵-理性使用以免永冻", null, clickToBatchMsg()));
+            ll.addView(newListItemButton(this, "Alpha测试性功能", "嘘!这是个秘密!", null, clickToProxyActAction(AlphaTestFuncActivity.class)));
         }
 
         if (LicenseStatus.isBypassAuth2()) {
-            ll.addView(newListItemButton(this, "测试性功能", "你发现了神秘入口", null, clickToProxyActAction(AlphaTestFuncActivity.class)));
+            ll.addView(newListItemButton(this, "Beta测试性功能", "你发现了神秘入口", null, clickToProxyActAction(BetaTestFuncActivity.class)));
         }
         ll.addView(subtitle(this, ""));
         ll.addView(subtitle(this, "基本功能"));
@@ -142,10 +141,6 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         mRikkaDesc = _tmp_vg.findViewById(R_ID_DESCRIPTION);
         ll.addView(_tmp_vg);
         ll.addView(newListItemHookSwitchInit(this, "语音转发", "长按语音消息", PttForwardHook.get()));
-        if (LicenseStatus.isAsserted()) {
-            ll.addView(newListItemHookSwitchInit(this, "发送卡片消息", "ArkAppMsg(json)+StructMsg(xml)", CardMsgHook.get()));
-            ll.addView(subtitle(this, "卡片消息使用说明:先输入卡片代码(聊天界面),后长按发送按钮\n勿滥用此功能! 频繁使用此功能被举报可能封号"));
-        }
         ll.addView(newListItemHookSwitchInit(this, " +1", "不是复读机", RepeaterHook.get()));
         ll.addView(newListItemButton(this, "自定义+1图标", null, null, RepeaterIconSettingDialog.OnClickListener_createDialog(this)));
         ll.addView(subtitle(this, "净化设置"));

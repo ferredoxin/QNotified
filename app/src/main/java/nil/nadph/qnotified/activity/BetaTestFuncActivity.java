@@ -27,20 +27,18 @@ import android.widget.TextView;
 
 import com.tencent.mobileqq.widget.BounceScrollView;
 
-import nil.nadph.qnotified.hook.CardMsgHook;
+import nil.nadph.qnotified.hook.PttForwardHook;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.LicenseStatus;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.ui.ViewBuilder.newListItemButton;
-import static nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemSwitchConfig;
 import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
-import static nil.nadph.qnotified.util.SendBatchMsg.clickToBatchMsg;
 import static nil.nadph.qnotified.util.Utils.dip2px;
 
 @SuppressLint("Registered")
-public class AlphaTestFuncActivity extends IphoneTitleBarActivityCompat {
+public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
 
     @Override
     public boolean doOnCreate(Bundle bundle) {
@@ -63,29 +61,15 @@ public class AlphaTestFuncActivity extends IphoneTitleBarActivityCompat {
         __lp_r.setMargins(mar, 0, mar, 0);
         __lp_r.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         __lp_r.addRule(RelativeLayout.CENTER_VERTICAL);
-        if (!LicenseStatus.isAsserted()) {
+        if (!LicenseStatus.isBypassAuth2()) {
             TextView tv = new TextView(this);
             tv.setText("你是怎么进来的???????????????????");
             tv.setTextColor(ResUtils.skin_red);
             tv.setTextSize(30);
             ll.addView(tv, MATCH_PARENT, WRAP_CONTENT);
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Thread.sleep(5000);
-                        AlphaTestFuncActivity.this.finish();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }).start();
         } else {
-            ll.addView(subtitle(this, "Alpha内测功能 请勿截图此页面"));
-            ll.addView(subtitle(this, "遗留功能"));//群发已不再维护
-            ll.addView(newListItemButton(this, "群发文本消息", "年少不知号贵-理性使用以免永冻", null, clickToBatchMsg()));
-            ll.addView(newListItemHookSwitchInit(this, "发送卡片消息", "ArkAppMsg(json)+StructMsg(xml)", CardMsgHook.get()));
-            ll.addView(subtitle(this, "卡片消息使用说明:先输入卡片代码(聊天界面),后长按发送按钮\n勿滥用此功能! 频繁使用此功能被举报可能封号"));
+            ll.addView(subtitle(this, "Beta测试功能 仅用于测试稳定性[可能会存在BUG 包括但不限于功能不生效、QQ出现卡顿乃至QQ闪退 请酌情开启]"));
+            ll.addView(newListItemSwitchConfig(this, "保存语音", "需要打开语音转发才能使用本功能", PttForwardHook.qn_enable_ptt_save, false));
         }
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         this.setContentView(bounceScrollView);
