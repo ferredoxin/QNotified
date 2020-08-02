@@ -6,8 +6,12 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+  WARN_ON_PR: "artifact upload is disabled due to the workflow is trigged by pull request."
+
 jobs:
   gradle:
+    name: Gradle CI Build
     runs-on: ubuntu-latest
 
     steps:
@@ -29,17 +33,21 @@ jobs:
 
     - name: Build project
       run: |
+        if ${{ !!github.head_ref }}; then echo "::warning:: Gradle $WARN_ON_PR"; fi
         gradle wrapper
         bash gradlew build
     
     - name: Upload articact
       uses: actions/upload-artifact@v2
+      if: ${{ !github.head_ref }}
       with:
         path: app/build/outputs/apk
         name: gradle
 
   naked:
     runs-on: ubuntu-latest
+    name: Naked CI Build
+    
     steps:
     - uses: actions/checkout@v2
       name: Clone repository
@@ -52,11 +60,13 @@ jobs:
     
     - name: Run naked script
       run: |
+        if ${{ !!github.head_ref }}; then echo "::warning:: Naked $WARN_ON_PR"; fi
         chmod +x naked_ci.sh
         ./naked_ci.sh
 
     - name: Upload articact
       uses: actions/upload-artifact@v2
+      if: ${{ !github.head_ref }}
       with:
         path: out/output.apk
         name: naked
