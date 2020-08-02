@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  gradle:
     runs-on: ubuntu-latest
 
     steps:
@@ -35,4 +35,28 @@ jobs:
     - name: Upload articact
       uses: actions/upload-artifact@v2
       with:
-        path: build/libs
+        path: app/build
+        name: gradle
+
+  naked:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      name: Clone repository
+
+    - name: Prepare Java 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+        java-package: jdk+fx
+    
+    - name: Run naked script
+      run: |
+        chmod +x naked_ci.sh
+        ./naked_ci.sh
+
+    - name: Upload articact
+      uses: actions/upload-artifact@v2
+      with:
+        path: out/output.apk
+        name: naked
