@@ -4,7 +4,6 @@ import com.qq.taf.jce.JceInputStream;
 import com.qq.taf.jce.JceOutputStream;
 
 import javax.net.ssl.*;
-
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,17 +41,17 @@ public class TransactionHelper {
 
     public static GetUserStatusResp doQueryUserStatus(long uin) throws Exception {
         GetUserStatusReq req = new GetUserStatusReq(uin);
-        JceOutputStream body = new JceOutputStream();
+        JceOutputStream body = Utf8JceUtils.newOutputStream();
         req.writeTo(body);
         ToServiceMsg toServiceMsg = new ToServiceMsg("NAuth.QNotified", "GetUserStatus", body.toByteArray());
-        JceOutputStream jceout = new JceOutputStream();
+        JceOutputStream jceout = Utf8JceUtils.newOutputStream();
         toServiceMsg.writeTo(jceout);
         FromServiceMsg reply = doSendMsg(toServiceMsg);
         if (reply.getResultCode() != 0) {
             throw new IOException("RemoteError: " + reply.getResultCode() + ": " + reply.getErrorMsg());
         }
         GetUserStatusResp resp = new GetUserStatusResp();
-        resp.readFrom(new JceInputStream(reply.getBody()));
+        resp.readFrom(Utf8JceUtils.newInputStream(reply.getBody()));
         return resp;
     }
 
@@ -65,7 +64,7 @@ public class TransactionHelper {
         try {
             in = s.getInputStream();
             out = s.getOutputStream();
-            JceOutputStream jceout = new JceOutputStream();
+            JceOutputStream jceout = Utf8JceUtils.newOutputStream();
             msg.writeTo(jceout);
             byte[] buf = jceout.toByteArray();
             writeBe32(out, buf.length);
@@ -87,7 +86,7 @@ public class TransactionHelper {
             s.close();
             if (done < size) throw new IOException("recv " + done + " less than expected " + size);
             FromServiceMsg fromServiceMsg = new FromServiceMsg();
-            JceInputStream jin = new JceInputStream(inbuf);
+            JceInputStream jin = Utf8JceUtils.newInputStream(inbuf);
             fromServiceMsg.readFrom(jin);
             return fromServiceMsg;
         } catch (Exception e) {

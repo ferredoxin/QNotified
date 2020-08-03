@@ -4,8 +4,6 @@ import com.qq.taf.jce.JceInputStream;
 import com.qq.taf.jce.JceOutputStream;
 import com.qq.taf.jce.JceStruct;
 
-import java.io.IOException;
-
 public class FromServiceMsg extends JceStruct {
     public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
     private int uniSeq;//0
@@ -22,13 +20,13 @@ public class FromServiceMsg extends JceStruct {
 
     public FromServiceMsg(int u, JceStruct struct) {
         uniSeq = u;
-        JceOutputStream jout = new JceOutputStream();
+        JceOutputStream jout = Utf8JceUtils.newOutputStream();
         try {
             struct.writeTo(jout);
             resultCode = 0;
             errorMsg = "";
             body = jout.toByteArray();
-        } catch (IOException e) {
+        } catch (Exception e) {
             resultCode = 500;
             errorMsg = "internal server error";
             body = EMPTY_BYTE_ARRAY;
@@ -57,9 +55,9 @@ public class FromServiceMsg extends JceStruct {
         return body;
     }
 
-    public void getBody(JceStruct struct) throws IOException {
+    public void getBody(JceStruct struct) {
         byte[] b = getBody();
-        JceInputStream in = new JceInputStream(b);
+        JceInputStream in = Utf8JceUtils.newInputStream(b);
         struct.readFrom(in);
     }
 
@@ -88,7 +86,7 @@ public class FromServiceMsg extends JceStruct {
     }
 
     @Override
-    public void writeTo(JceOutputStream os) throws IOException {
+    public void writeTo(JceOutputStream os) {
         os.write(uniSeq, 0);
         os.write(resultCode, 1);
         os.write(errorMsg, 2);
@@ -96,7 +94,7 @@ public class FromServiceMsg extends JceStruct {
     }
 
     @Override
-    public void readFrom(JceInputStream is) throws IOException {
+    public void readFrom(JceInputStream is) {
         uniSeq = is.read(0, 0, true);
         resultCode = is.read(0, 1, true);
         errorMsg = is.readString(2, false);
