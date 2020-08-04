@@ -22,7 +22,7 @@ public class ToServiceMsg extends JceStruct {
 
     public ToServiceMsg(String name, String cmd, JceStruct struct) throws IOException {
         uniSeq = r.nextInt();
-        JceOutputStream jout = new JceOutputStream();
+        JceOutputStream jout = Utf8JceUtils.newOutputStream();
         struct.writeTo(jout);
         body = jout.toByteArray();
         serviceName = name;
@@ -82,7 +82,7 @@ public class ToServiceMsg extends JceStruct {
     }
 
     @Override
-    public void writeTo(JceOutputStream os) throws IOException {
+    public void writeTo(JceOutputStream os) {
         os.write(uniSeq, 0);
         os.write(serviceName, 1);
         os.write(serviceCmd, 2);
@@ -91,7 +91,7 @@ public class ToServiceMsg extends JceStruct {
     }
 
     @Override
-    public void readFrom(JceInputStream is) throws IOException {
+    public void readFrom(JceInputStream is) {
         uniSeq = is.read(0, 0, true);
         serviceName = is.readString(1, true);
         serviceCmd = is.readString(2, true);
