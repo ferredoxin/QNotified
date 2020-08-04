@@ -87,6 +87,18 @@ public class Initiator {
         }
     }
 
+    public static Class _QbossADImmersionBannerManager() {
+        Class tmp;
+        Class mQbossADImmersionBannerManager = load("cooperation.vip.qqbanner.QbossADImmersionBannerManager");
+        if (mQbossADImmersionBannerManager == null) {
+            try {
+                tmp = load("cooperation.vip.qqbanner.QbossADImmersionBannerManager$1");
+                mQbossADImmersionBannerManager = tmp.getDeclaredField("this$0").getType();
+            } catch (Exception ignored) {
+            }
+        }
+        return mQbossADImmersionBannerManager;
+    }
 
     public static Class _ConversationTitleBtnCtrl() {
         Class<?> ret, cref;

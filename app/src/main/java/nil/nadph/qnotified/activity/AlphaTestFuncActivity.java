@@ -73,7 +73,7 @@ public class AlphaTestFuncActivity extends IphoneTitleBarActivityCompat {
                 @Override
                 public void run() {
                     try {
-                        Thread.sleep(5000);
+                        Thread.sleep(3000);
                         AlphaTestFuncActivity.this.finish();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
