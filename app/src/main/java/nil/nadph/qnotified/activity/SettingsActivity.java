@@ -106,7 +106,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             ll.addView(newListItemButton(this, "Alpha测试性功能", "嘘!这是个秘密!", null, clickToProxyActAction(AlphaTestFuncActivity.class)));
         }
 
-        if (LicenseStatus.isBypassAuth2()) {
+        if (LicenseStatus.getAuth2Status()) {
             ll.addView(newListItemButton(this, "Beta测试性功能", "你发现了神秘入口", null, clickToProxyActAction(BetaTestFuncActivity.class)));
         }
         ll.addView(subtitle(this, ""));

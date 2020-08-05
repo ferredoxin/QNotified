@@ -63,7 +63,7 @@ public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
         __lp_r.setMargins(mar, 0, mar, 0);
         __lp_r.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         __lp_r.addRule(RelativeLayout.CENTER_VERTICAL);
-        if (!LicenseStatus.isBypassAuth2()) {
+        if (!LicenseStatus.getAuth2Status()) {
             TextView tv = new TextView(this);
             tv.setText("你是怎么进来的???????????????????");
             tv.setTextColor(ResUtils.skin_red);
