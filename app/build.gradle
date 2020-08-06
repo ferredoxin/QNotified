@@ -8,7 +8,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 38
-        versionName "0.8.7" + (getGitHeadRefsSuffix.call() as String)
+        versionName "0.8.7" + (getBuildIdSuffix.call() as String) + (getGitHeadRefsSuffix.call() as String)
         //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled false
     }

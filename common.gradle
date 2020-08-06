@@ -19,4 +19,16 @@ gradle.allprojects {
         }
         return ""
     }
+
+    ext.getBuildIdSuffix = {
+        try {
+            String _ci_build_id;
+            _ci_build_id = System.getenv().get("APPCENTER_BUILD_ID");
+            if (_ci_build_id != null) return "." + _ci_build_id;
+            else return "";
+        } catch (Exception e) {
+            e.printStackTrace()
+        }
+        return ""
+    }
 }
