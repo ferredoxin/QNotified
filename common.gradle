@@ -1,21 +1,19 @@
 gradle.allprojects {
     ext.getGitHeadRefsSuffix = {
-        try {
-            // .git/HEAD描述当前目录所指向的分支信息，内容示例："ref: refs/heads/master\n"
-            def headFile = new File(rootProject.projectDir, '.git' + File.separator + 'HEAD')
-            if (headFile.exists()) {
-                String[] strings = headFile.getText('UTF-8').split(" ");
-                if (strings.size() > 1) {
-                    String refFilePath = '.git' + File.separator + strings[1];
-                    // 根据HEAD读取当前指向的hash值，路径示例为：".git/refs/heads/master"
-                    def refFile = new File(rootProject.projectDir, refFilePath.replace("\n", "").replace("\r", ""));
-                    // 索引文件内容为hash值+"\n"，
-                    // 示例："90312cd9157587d11779ed7be776e3220050b308\n"
-                    return "." + refFile.getText('UTF-8').substring(0, 7)
-                }
+        // .git/HEAD描述当前目录所指向的分支信息，内容示例："ref: refs/heads/master\n"
+        def headFile = new File(rootProject.projectDir, '.git' + File.separator + 'HEAD')
+        if (headFile.exists()) {
+            String[] strings = headFile.getText('UTF-8').split(" ");
+            if (strings.size() > 1) {
+                String refFilePath = '.git' + File.separator + strings[1];
+                // 根据HEAD读取当前指向的hash值，路径示例为：".git/refs/heads/master"
+                def refFile = new File(rootProject.projectDir, refFilePath.replace("\n", "").replace("\r", ""));
+                // 索引文件内容为hash值+"\n"，
+                // 示例："90312cd9157587d11779ed7be776e3220050b308\n"
+                return "." + refFile.getText('UTF-8').substring(0, 7)
             }
-        } catch (Exception e) {
-            e.printStackTrace()
+        } else {
+            throw new RuntimeException("HEAD file does not exist, aborting")
         }
         return ""
     }
