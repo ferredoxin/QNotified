@@ -106,7 +106,6 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         if (LicenseStatus.getAuth2Status()) {
             ll.addView(newListItemButton(this, "Beta测试性功能", "你发现了神秘入口", null, clickToProxyActAction(BetaTestFuncActivity.class)));
         }
-        ll.addView(subtitle(this, ""));
         ll.addView(subtitle(this, "基本功能"));
         if (!Utils.isTim(this)) {
             ll.addView(_t = newListItemButton(this, "自定义电量", "[QQ>=8.2.6]在线模式为我的电量时生效", "N/A", clickToProxyActAction(ACTION_FAKE_BAT_CONFIG_ACTIVITY)));
