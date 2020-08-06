@@ -156,4 +156,9 @@ public class IphoneTitleBarActivityCompat extends IphoneTitleBarActivity {
         }
         super.onRestoreInstanceState(savedInstanceState);
     }
+
+    @Override
+    public ClassLoader getClassLoader() {
+        return IphoneTitleBarActivityCompat.class.getClassLoader();
+    }
 }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="theme_color_blp">#fb7299</color>
+    <color name="theme_color_gol">#ffbb33</color>
+    <color name="theme_color_cag">#0f9d58</color>
+    <color name="theme_color_ftb">#2196f3</color>
+    <color name="theme_color_ghp">#aa66cc</color>
+
+    <color name="theme_color_mar">#db4437</color>
+    <color name="theme_color_tpo">#ff8833</color>
+    <color name="theme_color_tlg">#009688</color>
+    <color name="theme_color_ryb">#4169e1</color>
+    <color name="theme_color_gap">#673ab7</color>
+
+</resources>

@@ -36,6 +36,12 @@ public class HybridClassLoader extends ClassLoader {
             return ClassLoader.getSystemClassLoader().loadClass(name);
         } catch (ClassNotFoundException ignored) {
         }
+        if (name != null && (name.startsWith("androidx.") || name.startsWith("android.support.v4."))) {
+            //Nevertheless, this will not interfere with the host application,
+            //classes in host application SHOULD find with their own ClassLoader, eg Class.forName()
+            //use shipped androidx.
+            throw new ClassNotFoundException(name);
+        }
         if (clPreload != null) {
             try {
                 return clPreload.loadClass(name);

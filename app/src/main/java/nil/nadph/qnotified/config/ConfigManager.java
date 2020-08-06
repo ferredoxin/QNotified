@@ -149,6 +149,16 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener {
         return (String) config.get(key);
     }
 
+    public String getStringOrDefault(String key, String defVal) {
+        try {
+            if (dirty) reload();
+        } catch (Exception ignored) {
+        }
+        String val = (String) config.get(key);
+        if (val == null) val = defVal;
+        return val;
+    }
+
     @Nullable
     public Object getObject(@NonNull String key) {
         try {

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="侧滑栏">
+        <SwitchPreference
+                android:key="hideDaily"
+                android:title="隐藏打卡"/>
+        <SwitchPreference
+                android:key="hideQrCode"
+                android:title="隐藏我的二维码"/>
+        <SwitchPreference
+                android:key="hideBack"
+                android:title="隐藏返回按钮"/>
+        <SwitchPreference
+                android:key="hideMineStory"
+                android:title="隐藏我的状态"/>
+        <SwitchPreference
+                android:key="hideNightTheme"
+                android:title="隐藏夜间模式"/>
+        <SwitchPreference
+                android:key="hideCityWeather"
+                android:title="隐藏城市天气"/>
+        <SwitchPreference
+                android:key="hideApollo"
+                android:title="隐藏厘米秀"/>
+        <MultiSelectListPreference
+                android:entries="@array/sidebar_list_titles"
+                android:entryValues="@array/sidebar_list_values"
+                android:key="hideSidebarItems"
+                android:title="隐藏侧滑栏列表"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="设置界面">
+        <MultiSelectListPreference
+                android:entries="@array/sidebar_setting_list_titles"
+                android:entryValues="@array/sidebar_setting_list_titles"
+                android:key="hideSettingItems"
+                android:title="隐藏设置列表"/>
+    </PreferenceCategory>
+</PreferenceScreen>
