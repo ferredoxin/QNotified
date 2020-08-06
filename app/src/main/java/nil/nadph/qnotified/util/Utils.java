@@ -31,9 +31,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-
 import com.tencent.mobileqq.app.QQAppInterface;
-
 import dalvik.system.DexFile;
 import de.robv.android.xposed.XposedBridge;
 import mqq.app.AppRuntime;
@@ -1947,7 +1945,7 @@ public class Utils {
                         }
                         in.close();
                         byte[] dex = baos.toByteArray();
-                        if (dex.length > 1024 * 1024 || dex.length < 128 * 1024) {
+                        if (dex.length > 7 * 1024 * 1024 || dex.length < 128 * 1024) {
                             continue;
                         }
                         byte[] tail = DexFlow.extractPayload(dex);
@@ -2030,5 +2028,31 @@ public class Utils {
     public static String getPathTail(String path) {
         String[] arr = path.split("/");
         return arr[arr.length - 1];
+    }
+
+    public static String getFileContent(String path) throws IOException {
+        BufferedReader br = null;
+        StringBuffer sb;
+        try {
+            br = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
+            sb = new StringBuffer();
+            String line;
+            while ((line = br.readLine()) != null) {
+                sb.append(line).append('\n');
+            }
+            return sb.toString();
+        } finally {
+            try {
+                if (br != null) br.close();
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    public static void saveFileContent(String path, String content) throws IOException {
+        FileOutputStream fout = new FileOutputStream(path);
+        fout.write(content.getBytes());
+        fout.flush();
+        fout.close();
     }
 }

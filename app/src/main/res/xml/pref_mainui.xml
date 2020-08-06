@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="消息">
+        <SwitchPreference
+                android:key="hideOnlineStatus"
+                android:title="隐藏在线状态"/>
+        <SwitchPreference
+                android:key="hideVipNameplate"
+                android:title="隐藏会员铭牌"/>
+        <SwitchPreference
+                android:key="hideMiniAppEntry"
+                android:title="隐藏小程序入口"/>
+        <MultiSelectListPreference
+                android:entries="@array/mainui_conversation_pmi_titles"
+                android:entryValues="@array/mainui_conversation_pmi_titles"
+                android:key="hidePopupMenu"
+                android:title="隐藏快捷入口"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="联系人">
+        <SwitchPreference
+                android:key="hideNewFriend"
+                android:title="隐藏新朋友"/>
+        <MultiSelectListPreference
+                android:entries="@array/manui_contacts_tabs_titles"
+                android:entryValues="@array/mainui_contacts_tabs_values"
+                android:key="hideSlidingIndicator"
+                android:title="隐藏滑动分组"/>
+        <SwitchPreference
+                android:key="hideSpecialCare"
+                android:title="隐藏特别关心分组"/>
+        <SwitchPreference
+                android:key="hideUnusualContacts"
+                android:title="隐藏不常用联系人"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="动态">
+        <SwitchPreference
+                android:key="hideHotSearch"
+                android:title="隐藏热搜"/>
+        <MultiSelectListPreference
+                android:entries="@array/mainui_leba_entry_titles"
+                android:entryValues="@array/mainui_leba_entry_values"
+                android:key="hideLebaList"
+                android:title="隐藏入口"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="其他">
+        <MultiSelectListPreference
+                android:entries="@array/mainui_hide_menu_titles"
+                android:entryValues="@array/mainui_hide_menu_titles"
+                android:key="hideMenu"
+                android:title="隐藏菜单"/>
+        <MultiSelectListPreference
+                android:entries="@array/mainui_tabs_titles"
+                android:entryValues="@array/mainui_tabs_values"
+                android:key="hideTabs"
+                android:title="隐藏分组"/>
+        <MultiSelectListPreference
+                android:entries="@array/mainui_tabs_num_titles"
+                android:entryValues="@array/mainui_tabs_num_values"
+                android:key="hideTabsNum"
+                android:title="隐藏消息数量"/>
+    </PreferenceCategory>
+</PreferenceScreen>

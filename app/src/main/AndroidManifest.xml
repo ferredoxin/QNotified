@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="nil.nadph.qnotified">
+          xmlns:tools="http://schemas.android.com/tools"
+          package="nil.nadph.qnotified">
 
     <application
-        android:icon="@drawable/app_icon"
-        android:label="@string/app_name"
-        android:resizeableActivity="true"
-        android:theme="@style/AppTheme"
-        tools:ignore="AllowBackup,GoogleAppIndexingWarning,UnusedAttribute">
+            android:icon="@drawable/app_icon"
+            android:label="@string/app_name"
+            android:resizeableActivity="true"
+            android:theme="@style/AppThemeDummy"
+            tools:ignore="AllowBackup,GoogleAppIndexingWarning,UnusedAttribute">
         <activity
-            android:name=".activity.ConfigActivity"
-            android:label="@string/app_name">
+                android:name=".activity.ConfigActivity"
+                android:label="@string/app_name">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS"/>
             </intent-filter>
         </activity>
 
         <meta-data
-            android:name="xposedmodule"
-            android:value="true" />
+                android:name="xposedmodule"
+                android:value="true"/>
         <meta-data
-            android:name="xposeddescription"
-            android:value="@string/xposeddescription" />
+                android:name="xposeddescription"
+                android:value="@string/xposeddescription"/>
         <meta-data
-            android:name="xposedminversion"
-            android:value="51" />
+                android:name="xposedminversion"
+                android:value="51"/>
 
     </application>
 

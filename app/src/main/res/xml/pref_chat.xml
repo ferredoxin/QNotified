@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="装扮">
+        <SwitchPreference
+                android:key="hideAvatar"
+                android:title="隐藏头像挂件"/>
+        <SwitchPreference
+                android:key="hideBubble"
+                android:title="隐藏个性气泡"/>
+        <SwitchPreference
+                android:key="hideFont"
+                android:title="隐藏字体特效"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="表情">
+        <SwitchPreference
+                android:key="hideAioEggs"
+                android:title="隐藏掉落表情"/>
+        <SwitchPreference
+                android:key="hideSticker"
+                android:title="隐藏联想表情"/>
+        <SwitchPreference
+                android:key="hideProEmoticon"
+                android:title="隐藏推荐表情"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="其它">
+        <MultiSelectListPreference
+                android:entries="@array/chat_panel_icon_titles"
+                android:entryValues="@array/chat_panel_icon_titles"
+                android:key="hidePanelIcon"
+                android:title="隐藏工具栏"/>
+        <SwitchPreference
+                android:key="hideGrayTipItem"
+                android:title="屏蔽提示"/>
+        <EditTextPreference
+                android:dependency="hideGrayTipItem"
+                android:dialogLayout="@layout/preference_dialog_et"
+                android:dialogMessage="请输入需要屏蔽的关键字(多个关键字之间用空格隔开)："
+                android:key="grayTipKeywords"
+                android:title="提示关键字"/>
+    </PreferenceCategory>
+</PreferenceScreen>

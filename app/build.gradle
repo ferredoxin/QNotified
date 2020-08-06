@@ -1,5 +1,3 @@
-import java.lang.reflect.Array
-
 apply plugin: 'com.android.application'
 
 android {
@@ -7,11 +5,12 @@ android {
     buildToolsVersion "29.0.3"
     defaultConfig {
         applicationId "nil.nadph.qnotified"
-        minSdkVersion 14
+        minSdkVersion 21
         targetSdkVersion 29
         versionCode 38
         versionName "0.8.7" + (getGitHeadRefsSuffix.call() as String)
         //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled false
     }
     buildTypes {
         release {
@@ -22,11 +21,21 @@ android {
     aaptOptions {
         additionalParameters '--allow-reserved-package-id', '--package-id', '0x75'
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
     compileOnly fileTree(include: ['*.jar'], dir: 'lib')
+    implementation 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2'
+    implementation 'com.jaredrummler:colorpicker:1.1.0'
+    //implementation 'de.psdev.licensesdialog:licensesdialog:2.0.0'
+    implementation 'ru.noties.markwon:core:3.0.1'
     testImplementation 'junit:junit:4.12'
+    // androidx
+    implementation 'androidx.preference:preference:1.1.1'
 }
 
 def _execDexTail = { String dexPath ->
@@ -42,6 +51,7 @@ task dexTailDebug {
     doLast {
         println("dexTailDebug.doLast invoked");
         ArrayList<File> pathList = new ArrayList<>();
+        //3.6.x
         String tmp_path = "intermediates/dex/debug/out/classes.dex";
         if (!"/".equals(File.separator)) {
             tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar);
@@ -50,6 +60,7 @@ task dexTailDebug {
         if (tmp_f.exists()) {
             pathList.add(tmp_f);
         }
+        //4.0.x single
         tmp_path = "intermediates/dex/debug/mergeDexDebug/classes.dex";
         if (!"/".equals(File.separator)) {
             tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar);
@@ -58,6 +69,7 @@ task dexTailDebug {
         if (tmp_f.exists()) {
             pathList.add(tmp_f);
         }
+        //end
         if (pathList.size() == 0) {
             throw new RuntimeException("dex not found: we only support 3.6.x, 4.0.x and 4.1.x");
         }
@@ -73,6 +85,7 @@ task dexTailRelease {
     doLast {
         println("dexTailRelease.doLast invoked")
         ArrayList<File> pathList = new ArrayList<>();
+        //3.6.x single?
         String tmp_path = "intermediates/dex/release/out/classes.dex";
         if (!"/".equals(File.separator)) {
             tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar);
@@ -81,6 +94,7 @@ task dexTailRelease {
         if (tmp_f.exists()) {
             pathList.add(tmp_f);
         }
+        //4.0.x single
         tmp_path = "intermediates/dex/release/mergeDexRelease/classes.dex";
         if (!"/".equals(File.separator)) {
             tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar);
@@ -89,6 +103,7 @@ task dexTailRelease {
         if (tmp_f.exists()) {
             pathList.add(tmp_f);
         }
+        //end
         if (pathList.size() == 0) {
             throw new RuntimeException("dex not found: we only support 3.6.x, 4.0.x and 4.1.x");
         }
@@ -110,6 +125,10 @@ tasks.whenTaskAdded { t ->
     if (t.name == 'stripDebugDebugSymbols') {
         dexTailDebug.mustRunAfter(t)
     }
+    if (t.name == 'dexBuilderDebug' || t.name == 'mergeExtDexDebug'
+            || t.name == 'mergeLibDexDebug' || t.name == 'mergeProjectDexDebug') {
+        dexTailDebug.mustRunAfter(t)
+    }
     if (t.name == 'assembleRelease') {
         t.dependsOn dexTailRelease
     }
@@ -117,6 +136,10 @@ tasks.whenTaskAdded { t ->
         dexTailRelease.dependsOn t
     }
     if (t.name == 'stripReleaseDebugSymbols') {
+        dexTailRelease.mustRunAfter(t)
+    }
+    if (t.name == 'dexBuilderRelease' || t.name == 'mergeExtDexRelease'
+            || t.name == 'mergeLibDexRelease' || t.name == 'mergeProjectDexRelease') {
         dexTailRelease.mustRunAfter(t)
     }
 }

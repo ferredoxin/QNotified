@@ -1,5 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="@android:style/Theme.Holo">
+    <style name="AppThemeDummy" parent="@android:style/Theme.Holo">
     </style>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme.Def" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <!--    <style name="AppTheme.Dialog" parent="Theme.AppCompat.Light.Dialog.Alert">-->
+    <!--        <item name="android:windowIsTranslucent">true</item>-->
+    <!--        <item name="android:windowNoTitle">true</item>-->
+    <!--    </style>-->
+
+    <style name="AppTheme.Blp" parent="AppTheme.Def">
+        <item name="colorPrimary">@color/theme_color_blp</item>
+        <item name="colorPrimaryDark">@color/theme_color_blp</item>
+        <item name="colorAccent">@color/theme_color_blp</item>
+        <item name="themeColor">@color/theme_color_blp</item>
+    </style>
+
+    <style name="AppTheme.Gol" parent="AppTheme.Def">
+        <item name="colorPrimary">@color/theme_color_gol</item>
+        <item name="colorPrimaryDark">@color/theme_color_gol</item>
+        <item name="colorAccent">@color/theme_color_gol</item>
+        <item name="themeColor">@color/theme_color_gol</item>
+    </style>
+
+    <style name="AppTheme.Cag" parent="AppTheme.Def">
+        <item name="colorPrimary">@color/theme_color_cag</item>
+        <item name="colorPrimaryDark">@color/theme_color_cag</item>
+        <item name="colorAccent">@color/theme_color_cag</item>
+        <item name="themeColor">@color/theme_color_cag</item>
+    </style>
+
+    <style name="AppTheme.Ftb" parent="AppTheme.Def">
+        <item name="colorPrimary">@color/theme_color_ftb</item>
+        <item name="colorPrimaryDark">@color/theme_color_ftb</item>
+        <item name="colorAccent">@color/theme_color_ftb</item>
+        <item name="themeColor">@color/theme_color_ftb</item>
+    </style>
+
+    <style name="AppTheme.Ghp" parent="AppTheme.Def">
+        <item name="colorPrimary">@color/theme_color_ghp</item>
+        <item name="colorPrimaryDark">@color/theme_color_ghp</item>
+        <item name="colorAccent">@color/theme_color_ghp</item>
+        <item name="themeColor">@color/theme_color_ghp</item>
+    </style>
+
+    <style name="AppTheme.Mar" parent="AppTheme.Def">
+        <item name="colorPrimary">@color/theme_color_mar</item>
+        <item name="colorPrimaryDark">@color/theme_color_mar</item>
+        <item name="colorAccent">@color/theme_color_mar</item>
+        <item name="themeColor">@color/theme_color_mar</item>
+    </style>
+
+    <style name="AppTheme.TPO" parent="AppTheme.Def">
+        <item name="colorPrimary">@color/theme_color_tpo</item>
+        <item name="colorPrimaryDark">@color/theme_color_tpo</item>
+        <item name="colorAccent">@color/theme_color_tpo</item>
+        <item name="themeColor">@color/theme_color_tpo</item>
+    </style>
+
+    <style name="AppTheme.Tlg" parent="AppTheme.Def">
+        <item name="colorPrimary">@color/theme_color_tlg</item>
+        <item name="colorPrimaryDark">@color/theme_color_tlg</item>
+        <item name="colorAccent">@color/theme_color_tlg</item>
+        <item name="themeColor">@color/theme_color_tlg</item>
+    </style>
+
+    <style name="AppTheme.Ryb" parent="AppTheme.Def">
+        <item name="colorPrimary">@color/theme_color_ryb</item>
+        <item name="colorPrimaryDark">@color/theme_color_ryb</item>
+        <item name="colorAccent">@color/theme_color_ryb</item>
+        <item name="themeColor">@color/theme_color_ryb</item>
+    </style>
+
+    <style name="AppTheme.Gap" parent="AppTheme.Def">
+        <item name="colorPrimary">@color/theme_color_gap</item>
+        <item name="colorPrimaryDark">@color/theme_color_gap</item>
+        <item name="colorAccent">@color/theme_color_gap</item>
+        <item name="themeColor">@color/theme_color_gap</item>
+    </style>
+
 </resources>

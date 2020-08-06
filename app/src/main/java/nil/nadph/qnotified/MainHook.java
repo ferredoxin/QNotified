@@ -37,7 +37,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
-
 import dalvik.system.BaseDexClassLoader;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
@@ -46,8 +45,8 @@ import nil.nadph.qnotified.activity.SettingsActivity;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.*;
-import nil.nadph.qnotified.hook.rikka.CustomSplash;
 import nil.nadph.qnotified.hook.kyuubiran.RemoveCameraButton;
+import nil.nadph.qnotified.hook.rikka.CustomSplash;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.*;
 
@@ -83,6 +82,33 @@ public class MainHook {
     public static final XC_MethodHook invokeRecord = new XC_MethodHook(200) {
         @Override
         protected void afterHookedMethod(MethodHookParam param) throws IllegalAccessException, IllegalArgumentException {
+            Member m = param.method;
+            StringBuilder ret = new StringBuilder(m.getDeclaringClass().getSimpleName() + "->" + ((m instanceof Method) ? m.getName() : "<init>") + "(");
+            Class[] argt;
+            if (m instanceof Method)
+                argt = ((Method) m).getParameterTypes();
+            else if (m instanceof Constructor)
+                argt = ((Constructor) m).getParameterTypes();
+            else argt = new Class[0];
+            for (int i = 0; i < argt.length; i++) {
+                if (i != 0) ret.append(",\n");
+                ret.append(param.args[i]);
+            }
+            ret.append(")=").append(param.getResult());
+            Utils.log(ret.toString());
+            ret = new StringBuilder("↑dump object:" + m.getDeclaringClass().getCanonicalName() + "\n");
+            Field[] fs = m.getDeclaringClass().getDeclaredFields();
+            for (int i = 0; i < fs.length; i++) {
+                fs[i].setAccessible(true);
+                ret.append(i < fs.length - 1 ? "├" : "↓").append(fs[i].getName()).append("=").append(Utils.en_toStr(fs[i].get(param.thisObject))).append("\n");
+            }
+            log(ret.toString());
+            Utils.dumpTrace();
+        }
+    };
+    public static final XC_MethodHook invokeInterceptor = new XC_MethodHook(200) {
+        @Override
+        protected void beforeHookedMethod(MethodHookParam param) throws IllegalAccessException, IllegalArgumentException {
             Member m = param.method;
             StringBuilder ret = new StringBuilder(m.getDeclaringClass().getSimpleName() + "->" + ((m instanceof Method) ? m.getName() : "<init>") + "(");
             Class[] argt;
@@ -684,7 +710,8 @@ public class MainHook {
                     ComponentName component = raw.getComponent();
                     //log("startActivity, rawIntent=" + raw);
                     if (component != null &&
-                            component.getClassName().startsWith("nil.nadph.qnotified.")) {
+                            (component.getClassName().startsWith("nil.nadph.qnotified.")
+                                    || component.getClassName().startsWith("me.zpp0196.qqpurify.activity."))) {
                         Intent wrapper = new Intent();
                         wrapper.setClassName(component.getPackageName(), ActProxyMgr.STUB_ACTIVITY);
                         wrapper.putExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT, raw);
@@ -715,7 +742,8 @@ public class MainHook {
                 //log("newActivity: " + className);
                 return mBase.newActivity(cl, className, intent);
             } catch (Exception e) {
-                if (className.startsWith("nil.nadph.qnotified.")) {
+                if (className.startsWith("nil.nadph.qnotified.")
+                        || className.startsWith("me.zpp0196.qqpurify.activity.")) {
                     return (Activity) Initiator.class.getClassLoader().loadClass(className).newInstance();
                 }
                 throw e;
@@ -935,12 +963,24 @@ public class MainHook {
 
         @Override
         public void callActivityOnCreate(Activity activity, Bundle icicle) {
+            if (icicle != null) {
+                String className = activity.getClass().getName();
+                if (className.startsWith("me.zpp0196.qqpurify.activity.")) {
+                    icicle.setClassLoader(MainHook.class.getClassLoader());
+                }
+            }
             injectModuleResources(activity.getResources());
             mBase.callActivityOnCreate(activity, icicle);
         }
 
         @Override
         public void callActivityOnCreate(Activity activity, Bundle icicle, PersistableBundle persistentState) {
+            if (icicle != null) {
+                String className = activity.getClass().getName();
+                if (className.startsWith("me.zpp0196.qqpurify.activity.")) {
+                    icicle.setClassLoader(MainHook.class.getClassLoader());
+                }
+            }
             injectModuleResources(activity.getResources());
             mBase.callActivityOnCreate(activity, icicle, persistentState);
         }
