@@ -1,10 +1,10 @@
 # QNotified
 
-[![Build Status](https://travis-ci.com/cinit/QNotified.svg?branch=master)](https://travis-ci.com/cinit/QNotified)
+[![Build status](https://build.appcenter.ms/v0.1/apps/599b1851-3361-4e64-a277-6a4c8f6e7332/branches/master/badge)](https://appcenter.ms)
 [![license](https://img.shields.io/github/license/cinit/QNotified.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 [![GitHub release](https://img.shields.io/github/release/cinit/QNotified.svg)](https://github.com/cinit/QNotified/releases/latest)
 
-等(zuo)不(si)及的小伙伴可以: [CI构建下载](https://github.com/cinit/QNotified/actions) (危!富含bug与兼容性问题,PR可能含恶意代码,自行承担风险)
+等(zuo)不(si)及的小伙伴可以: [CI构建下载](https://install.appcenter.ms/orgs/qnotifieddev/apps/qnotified/distribution_groups/alpha) (危!富含bug与兼容性问题,PR可能含恶意代码,自行承担风险)
 
 QNotified（以下简称本模块）是一款依赖 Xposed/太极框架运行的辅助性QQ功能增强模块, 本模块无毒无害, 免费开源, 旨在:
 1. **接手部分停更模块的部分功能**
