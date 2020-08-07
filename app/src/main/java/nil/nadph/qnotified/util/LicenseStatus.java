@@ -144,6 +144,7 @@ public class LicenseStatus {
         return (getCurrentUserBlackFlags() & UserFlagConst.BF_SILENT_GONE) != 0;
     }
 
+    @Deprecated
     public static boolean isBypassAuth2() {
         return (getCurrentUserWhiteFlags() & UserFlagConst.WF_BYPASS_AUTH_2) != 0;
     }

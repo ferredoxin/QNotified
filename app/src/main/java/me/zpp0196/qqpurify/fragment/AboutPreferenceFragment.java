@@ -1,10 +1,24 @@
 package me.zpp0196.qqpurify.fragment;
 
 import android.app.AlertDialog;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 import androidx.preference.Preference;
+import de.psdev.licensesdialog.LicensesDialog;
+import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
+import de.psdev.licensesdialog.licenses.MITLicense;
+import de.psdev.licensesdialog.model.Notice;
+import de.psdev.licensesdialog.model.Notices;
+import io.noties.markwon.Markwon;
 import me.zpp0196.qqpurify.fragment.base.AbstractPreferenceFragment;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.util.Utils;
+
+import java.util.List;
 
 /**
  * Created by zpp0196 on 2019/2/9.
@@ -29,30 +43,63 @@ public class AboutPreferenceFragment extends AbstractPreferenceFragment {
     }
 
     void showLicensesDialog() {
-//        Notices notices = new Notices();
+        final Notices notices = new Notices();
 //        Notice commonsIo = new Notice("Apache Commons IO", "https://github.com/apache/commons-io", "Copyright 2002-2019 The Apache Software Foundation", new ApacheSoftwareLicense20());
-//        Notice flycoTabLayout = new Notice("FlycoTabLayout", "https://github.com/H07000223/FlycoTabLayout", "Copyright (c) 2015 H07000223", new MITLicense());
-//        Notice markwon = new Notice("Markwon", "https://github.com/noties/Markwon", "Copyright 2017 Dimitry Ivanov (mail@dimitryivanov.ru)", new ApacheSoftwareLicense20());
-//        Notice colorPicker = new Notice("ColorPicker", "https://github.com/jaredrummler/ColorPicker", "Copyright 2016 Jared Rummler\nCopyright 2015 Daniel Nilsson", new ApacheSoftwareLicense20());
+        Notice flycoTabLayout = new Notice("FlycoTabLayout", "https://github.com/H07000223/FlycoTabLayout", "Copyright (c) 2015 H07000223", new MITLicense());
+        Notice markwon = new Notice("Markwon", "https://github.com/noties/Markwon", "Copyright 2017 Dimitry Ivanov (mail@dimitryivanov.ru)", new ApacheSoftwareLicense20());
+        Notice colorPicker = new Notice("ColorPicker", "https://github.com/jaredrummler/ColorPicker", "Copyright 2016 Jared Rummler\nCopyright 2015 Daniel Nilsson", new ApacheSoftwareLicense20());
 //        notices.addNotice(commonsIo);
-//        notices.addNotice(flycoTabLayout);
-//        notices.addNotice(markwon);
-//        notices.addNotice(colorPicker);
+        notices.addNotice(flycoTabLayout);
+        notices.addNotice(markwon);
+        notices.addNotice(colorPicker);
+        notices.addNotice(LicensesDialog.LICENSES_DIALOG_NOTICE);
+        //drop WebView, it will cause crash
+        ListView listView = new ListView(mActivity);
+        listView.setBackgroundDrawable(null);
+        listView.setDivider(null);
+        listView.setAdapter(new BaseAdapter() {
+            final List<Notice> mNotices = notices.getNotices();
+            final LayoutInflater inflater = LayoutInflater.from(mActivity);
+            final Markwon markwon = Markwon.create(mActivity);
+
+            @Override
+            public int getCount() {
+                return mNotices.size();
+            }
+
+            @Override
+            public Object getItem(int position) {
+                return mNotices.get(position);
+            }
+
+            @Override
+            public long getItemId(int position) {
+                return position;
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                TextView title;
+                TextView licenseView;
+                Notice notice = mNotices.get(position);
+                if (convertView == null) {
+                    convertView = inflater.inflate(R.layout.simple_license_item, parent, false);
+                }
+                title = convertView.findViewById(R.id.sLicenseItem_title);
+                licenseView = convertView.findViewById(R.id.sLicenseItem_licensePrev);
+                markwon.setMarkdown(title, "- " + notice.getName() + "  \n(<" + notice.getUrl() + ">)");
+                licenseView.setText(notice.getCopyright() + "\n\n" + notice.getLicense().getSummaryText(mActivity));
+                return convertView;
+            }
+        });
 //        new LicensesDialogFragment.Builder(mActivity)
 //                .setNotices(notices)
 //                .build()
 //                .showNow(mActivity.getSupportFragmentManager(), "licenses-dialog");
-        new AlertDialog.Builder(mActivity).setTitle("开放源代码许可")
-                .setMessage("FlycoTabLayout\nCopyright (c) 2015 H07000223\n" +
-                        "https://github.com/H07000223/FlycoTabLayout\n\n" +
-                        "Markwon\nCopyright 2017 Dimitry Ivanov (mail@dimitryivanov.ru)\n" +
-                        "https://github.com/noties/Markwon\n\n" +
-                        "ColorPicker\nCopyright 2016 Jared Rummler\nCopyright 2015 Daniel Nilsson\n" +
-                        "https://github.com/jaredrummler/ColorPicker\n\n" +
-                        "这里本应使用 de.psdev.licensesdialog.LicensesDialogFragment 展示本程序使用的开源第三方库, " +
-                        "但是因为执行 new WebView(mContext) 会导致本模块注入宿主的资源因重置而丢失(结果是整个插件" +
-                        "连带宿主一同奔溃, 且二次注入后 obtainStyledAttributes() 仍然存在问题), 故先用此下策")
-                .setPositiveButton(android.R.string.ok, null).show();
+////The execution of `new WenView(mActivity)` will cause the Resources reload, thus killing the host.
+        new AlertDialog.Builder(mActivity).setTitle(de.psdev.licensesdialog.R.string.notices_title)
+                .setView(listView).setCancelable(true)
+                .setPositiveButton(de.psdev.licensesdialog.R.string.notices_close, null).show();
     }
 
     @Override
