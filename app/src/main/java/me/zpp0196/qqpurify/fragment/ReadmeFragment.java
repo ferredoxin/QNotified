@@ -10,10 +10,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import nil.nadph.qnotified.R;
+import io.noties.markwon.Markwon;
 import me.zpp0196.qqpurify.activity.MainActivity;
 import me.zpp0196.qqpurify.utils.Utils;
-import ru.noties.markwon.Markwon;
+import nil.nadph.qnotified.R;
 
 /**
  * Created by zpp0196 on 2019/5/16.
