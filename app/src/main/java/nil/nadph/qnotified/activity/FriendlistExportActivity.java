@@ -24,12 +24,11 @@ import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-
 import com.tencent.mobileqq.widget.BounceScrollView;
-
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.FriendRecord;
+import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.ViewBuilder;
 import nil.nadph.qnotified.util.Utils;
@@ -167,7 +166,7 @@ public class FriendlistExportActivity extends IphoneTitleBarActivityCompat {
 
         ll.addView(subtitle(FriendlistExportActivity.this, "请输入要导出列表的QQ号(默认为当前登录的QQ号):"));
         final EditText etuin = new EditText(FriendlistExportActivity.this);
-        etuin.setBackgroundDrawable(null);
+        etuin.setBackgroundDrawable(new HighContrastBorder());
         etuin.setTextSize(Utils.dip2sp(FriendlistExportActivity.this, 18));
         etuin.setTextColor(ResUtils.skin_black);
         ll.addView(etuin, stdlp);
@@ -181,7 +180,7 @@ public class FriendlistExportActivity extends IphoneTitleBarActivityCompat {
 
         ll.addView(subtitle(FriendlistExportActivity.this, "导出文件保存路径(默认在内置存储根目录下):"));
         final EditText expath = new EditText(FriendlistExportActivity.this);
-        expath.setBackgroundDrawable(null);
+        expath.setBackgroundDrawable(new HighContrastBorder());
         expath.setTextSize(Utils.dip2sp(FriendlistExportActivity.this, 18));
         expath.setTextColor(ResUtils.skin_black);
         String refpath = new File(Environment.getExternalStorageDirectory(), new Date().toString().replace(" ", "") + ".txt").getAbsolutePath();
@@ -189,6 +188,7 @@ public class FriendlistExportActivity extends IphoneTitleBarActivityCompat {
         ll.addView(expath, stdlp);
 
         Button exportbtn = new Button(FriendlistExportActivity.this);
+        ResUtils.applyStyleCommonBtnBlue(exportbtn);
         exportbtn.setText("导出");
 
         final long refuin = currentUin;
