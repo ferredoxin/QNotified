@@ -103,7 +103,7 @@ public class SettingEntryHook extends BaseDelayableHook {
                                 }
                             });
                         } else {
-                            if (LicenseStatus.hasUserAgreeEula()) {
+                            if (LicenseStatus.hasUserAcceptEula()) {
                                 invoke_virtual(item, "setRightText", Utils.QN_VERSION_NAME, CharSequence.class);
                             } else {
                                 invoke_virtual(item, "setRightText", "[未激活]", CharSequence.class);
@@ -115,7 +115,7 @@ public class SettingEntryHook extends BaseDelayableHook {
                                 if (LicenseStatus.isBlacklisted()) {
                                     Utils.showToast((Context) param.thisObject, TOAST_TYPE_ERROR, "无法使用本模块因为您已被拉黑", Toast.LENGTH_LONG);
                                 } else {
-                                    if (LicenseStatus.hasUserAgreeEula()) {
+                                    if (LicenseStatus.hasUserAcceptEula()) {
                                         MainHook.startProxyActivity((Context) param.thisObject, ActProxyMgr.ACTION_ADV_SETTINGS);
                                     } else {
                                         MainHook.startProxyActivity((Context) param.thisObject, EulaActivity.class);

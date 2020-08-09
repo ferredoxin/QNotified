@@ -344,7 +344,7 @@ public class MainHook {
                 }
             });
         } else {
-            if (LicenseStatus.hasUserAgreeEula()) {
+            if (LicenseStatus.hasUserAcceptEula()) {
                 Class director = _StartupDirector();
                 Object dir = iget_object_or_null(step, "mDirector", director);
                 if (dir == null) dir = iget_object_or_null(step, "a", director);
@@ -484,7 +484,7 @@ public class MainHook {
         initForJumpActivityEntry(ctx);
         asyncStartFindClass();
         if (LicenseStatus.sDisableCommonHooks) return;
-        if (LicenseStatus.hasUserAgreeEula()) hideMiniAppEntry();
+        if (LicenseStatus.hasUserAcceptEula()) hideMiniAppEntry();
     }
 
     private static String sModulePath = null;

@@ -31,9 +31,7 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.tencent.mobileqq.app.QQAppInterface;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
@@ -43,10 +41,7 @@ import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.ui.InterceptLayout;
 import nil.nadph.qnotified.ui.TouchEventToLongClickAdapter;
-import nil.nadph.qnotified.util.CustomMenu;
-import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.util.*;
 
 import java.io.Externalizable;
 import java.lang.reflect.*;
@@ -150,6 +145,7 @@ public class CardMsgHook extends BaseDelayableHook {
                                             if (structMsg != null) {
                                                 ChatActivityFacade.sendAbsStructMsg(qqApp, session, structMsg);
                                                 input.setText("");
+                                                CliOper.sendCardMsg(Utils.getLongAccountUin(), text);
                                                 return true;
                                             } else {
                                                 Utils.showToast(ctx, TOAST_TYPE_ERROR, "XML语法错误(代码有误)", Toast.LENGTH_SHORT);
@@ -167,6 +163,7 @@ public class CardMsgHook extends BaseDelayableHook {
                                             if ((boolean) invoke_virtual(arkMsg, "fromAppXml", text, String.class)) {
                                                 ChatActivityFacade.sendArkAppMessage(qqApp, session, arkMsg);
                                                 input.setText("");
+                                                CliOper.sendCardMsg(Utils.getLongAccountUin(), text);
                                                 return true;
                                             } else {
                                                 Utils.showToast(ctx, TOAST_TYPE_ERROR, "JSON语法错误(代码有误)", Toast.LENGTH_SHORT);
@@ -272,11 +269,15 @@ public class CardMsgHook extends BaseDelayableHook {
                 try {
                     ClipboardManager clipboardManager = (ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);
                     if (load("com.tencent.mobileqq.data.MessageForStructing").isAssignableFrom(chatMessage.getClass())) {
-                        clipboardManager.setText((String) invoke_virtual(iget_object_or_null(chatMessage, "structingMsg"), "getXml", new Object[0]));
+                        String text = (String) invoke_virtual(iget_object_or_null(chatMessage, "structingMsg"), "getXml", new Object[0]);
+                        clipboardManager.setText(text);
                         showToast(ctx, TOAST_TYPE_INFO, "复制成功", Toast.LENGTH_SHORT);
+                        CliOper.copyCardMsg(text);
                     } else if (load("com.tencent.mobileqq.data.MessageForArkApp").isAssignableFrom(chatMessage.getClass())) {
-                        clipboardManager.setText((String) invoke_virtual(iget_object_or_null(chatMessage, "ark_app_message"), "toAppXml", new Object[0]));
+                        String text = (String) invoke_virtual(iget_object_or_null(chatMessage, "ark_app_message"), "toAppXml", new Object[0]);
+                        clipboardManager.setText(text);
                         showToast(ctx, TOAST_TYPE_INFO, "复制成功", Toast.LENGTH_SHORT);
+                        CliOper.copyCardMsg(text);
                     }
                 } catch (Throwable e) {
                     log(e);

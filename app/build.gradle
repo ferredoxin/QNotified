@@ -38,6 +38,12 @@ dependencies {
     implementation 'androidx.preference:preference:1.1.1'
 }
 
+dependencies {
+    def appCenterSdkVersion = '3.3.0'
+    implementation "com.microsoft.appcenter:appcenter-analytics:${appCenterSdkVersion}"
+    implementation "com.microsoft.appcenter:appcenter-crashes:${appCenterSdkVersion}"
+}
+
 def _execDexTail = { String dexPath ->
     URLClassLoader cl = new URLClassLoader(new File(rootProject.projectDir, "app" + File.separator + "utils" + File.separator + "tail.jar").toURL());
     byte[] time = cl.loadClass("cc.ioctl.dextail.HexUtils").getMethod("getTimeAsByteArray").invoke(null) as byte[];

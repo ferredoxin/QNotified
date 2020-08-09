@@ -19,6 +19,7 @@
 package nil.nadph.qnotified.util;
 
 import nil.nadph.qnotified.ExfriendManager;
+import nil.nadph.qnotified.activity.EulaActivity;
 import nil.nadph.qnotified.chiral.MdlMolParser;
 import nil.nadph.qnotified.chiral.Molecule;
 import nil.nadph.qnotified.config.ConfigManager;
@@ -32,10 +33,6 @@ public class LicenseStatus {
     public static final String qn_eula_status = "qh_eula_status";//typo, ignore it
     public static final String qn_auth2_molecule = "qn_auth2_molecule";
     public static final String qn_auth2_chiral = "qn_auth2_chiral";
-
-    public static final int STATUS_DEFAULT = 0;
-    public static final int STATUS_ACCEPT = 1;
-    public static final int STATUS_DENIAL = 2;
 
     private static Molecule mAuth2Mol = null;
     private static int[] mAuth2Chiral = null;
@@ -126,8 +123,13 @@ public class LicenseStatus {
         }
     }
 
-    public static boolean hasUserAgreeEula() {
-        return getEulaStatus() == STATUS_ACCEPT;
+    public static boolean hasEulaUpdated() {
+        int s = getEulaStatus();
+        return (s != 0 && s != EulaActivity.CURRENT_EULA_VERSION);
+    }
+
+    public static boolean hasUserAcceptEula() {
+        return getEulaStatus() == EulaActivity.CURRENT_EULA_VERSION;
     }
 
     public static volatile boolean sDisableCommonHooks = false;
