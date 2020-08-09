@@ -28,7 +28,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.SyncUtils;
@@ -441,7 +440,9 @@ public class ViewBuilder {
         lp_st.addRule(RelativeLayout.LEFT_OF, R_ID_ARROW);
         root.addView(st, lp_st);
         root.setClickable(true);
-        root.setOnClickListener(listener);
+        if (listener != null) {
+            root.setOnClickListener(listener);
+        }
         root.setId(title.toString().hashCode());
         return root;
     }

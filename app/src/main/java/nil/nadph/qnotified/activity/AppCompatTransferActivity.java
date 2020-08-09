@@ -19,7 +19,11 @@
 package nil.nadph.qnotified.activity;
 
 import android.os.Bundle;
+import android.os.PersistableBundle;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import nil.nadph.qnotified.util.CliOper;
+import nil.nadph.qnotified.util.Utils;
 
 public class AppCompatTransferActivity extends AppCompatActivity {
     @Override
@@ -38,5 +42,9 @@ public class AppCompatTransferActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
     }
 
-
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
+        super.onCreate(savedInstanceState, persistentState);
+        CliOper.enterModuleActivity(Utils.getShort$Name(this));
+    }
 }

@@ -27,13 +27,12 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-
 import com.tencent.mobileqq.widget.BounceScrollView;
-
 import nil.nadph.qnotified.InjectDelayableHooks;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
@@ -42,13 +41,15 @@ import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
+import java.io.IOException;
+
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
 
 @SuppressLint("Registered")
 public class EulaActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener {
-    public static final int CURRENT_EULA_VERSION = 4;
+    public static final int CURRENT_EULA_VERSION = 5;
     private static final int R_ID_I_HAVE_READ = 0x300AFF91;
     private static final int R_ID_I_AGREE = 0x300AFF92;
     private static final int R_ID_I_DENY = 0x300AFF93;
@@ -69,12 +70,21 @@ public class EulaActivity extends IphoneTitleBarActivityCompat implements View.O
         setTitle("EULA");
         LinearLayout.LayoutParams stdlp = new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
 
+        if (LicenseStatus.hasEulaUpdated()) {
+            TextView tv_updated = new TextView(this);
+            tv_updated.setTextSize(22);
+            tv_updated.setGravity(Gravity.CENTER);
+            tv_updated.getPaint().setFakeBoldText(true);
+            tv_updated.setTextColor(ResUtils.skin_red);
+            tv_updated.setText("用户协议发生变更, 您需要同意接受下方《协议》及《隐私条款》才能继续使用本模块");
+            ll.addView(tv_updated, stdlp);
+        }
         TextView tv = new TextView(this);
         tv.setTextSize(28);
         tv.getPaint().setFakeBoldText(true);
         tv.setGravity(Gravity.CENTER);
         tv.setTextColor(ResUtils.skin_black);
-        tv.setText("QNotified 最终用户许可协议\n 与 使用须知");
+        tv.setText("QNotified 最终用户许可协议\n与《隐私条款》");
         ll.addView(tv, stdlp);
 
         SpannableStringBuilder sb = new SpannableStringBuilder();
@@ -105,7 +115,12 @@ public class EulaActivity extends IphoneTitleBarActivityCompat implements View.O
                 "  6.对于因不可抗力或因黑客攻击、通讯线路中断等本“软件”不能控制的原因造成的网络服务中断或其他缺陷，导致用户不能正常使用软件，本“软件”不承担任何责任。\n" +
                 "  7.本声明未涉及的问题请参见国家有关法律法规，当本声明与国家有关法律法规冲突时，以国家法律法规为准。\n" +
                 "  8.如您不接受以上声明协议，请停止使用并立即卸载删除本软件。\n");
-        appendEx2(sb, "六．终解释权归本“软件”作者所有\n");
+        appendEx2(sb, "六．终解释权归本“软件”作者所有\n\n");
+        try {
+            sb.append(Utils.getFileContent(ResUtils.openAsset("privacy_license.txt")));
+        } catch (IOException e) {
+            sb.append(Log.getStackTraceString(e));
+        }
 
         tv = new TextView(this);
         tv.setTextSize(16);
@@ -122,10 +137,10 @@ public class EulaActivity extends IphoneTitleBarActivityCompat implements View.O
 
         int _5dp = Utils.dip2px(this, 5);
 
-        if (!LicenseStatus.hasUserAgreeEula()) {
+        if (!LicenseStatus.hasUserAcceptEula()) {
             CheckBox iHaveRead = new CheckBox(this);
             iHaveRead.setId(R_ID_I_HAVE_READ);
-            iHaveRead.setText("我已阅读<<协议>>并自愿承担由使用本软件导致的一切后果");
+            iHaveRead.setText("我已阅读<<协议>>和<<隐私条款>>并自愿承担由使用本软件导致的一切后果");
             iHaveRead.setTextSize(17);
             iHaveRead.setTextColor(ResUtils.skin_black);
             iHaveRead.setButtonDrawable(ResUtils.getCheckBoxBackground());
@@ -152,7 +167,7 @@ public class EulaActivity extends IphoneTitleBarActivityCompat implements View.O
             tv.getPaint().setFakeBoldText(true);
             tv.setGravity(Gravity.CENTER);
             tv.setTextColor(ResUtils.skin_gray3);
-            tv.setText("你已阅读并同意<<协议>>");
+            tv.setText("你已阅读并同意<<协议>>和<<隐私条款>>");
             ll.addView(tv, stdlp);
         }
         return true;
@@ -168,7 +183,7 @@ public class EulaActivity extends IphoneTitleBarActivityCompat implements View.O
                     Utils.showToast(this, Utils.TOAST_TYPE_ERROR, "请先勾选\"我已阅读<<协议>>\"", Toast.LENGTH_SHORT);
                     return;
                 } else {
-                    LicenseStatus.setEulaStatus(LicenseStatus.STATUS_ACCEPT);
+                    LicenseStatus.setEulaStatus(CURRENT_EULA_VERSION);
                     InjectDelayableHooks.doInitDelayableHooksMP();
                     MainHook.startProxyActivity(this, SettingsActivity.class);
                     finish();

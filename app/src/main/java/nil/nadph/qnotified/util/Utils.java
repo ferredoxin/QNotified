@@ -180,7 +180,7 @@ public class Utils {
         try {
             AppRuntime rt = getAppRuntime();
             if (rt == null) {
-                loge("getLongAccountUin/E getAppRuntime == null");
+                logw("getLongAccountUin/E getAppRuntime == null");
                 return -1;
             }
             return (long) invoke_virtual(rt, "getLongAccountUin");
@@ -1098,7 +1098,7 @@ public class Utils {
     @MainProcess
     public static AppRuntime getAppRuntime() {
         if (!sAppRuntimeInit) {
-            loge("getAppRuntime/W invoked before NewRuntime.step");
+            logw("getAppRuntime/W invoked before NewRuntime.step");
             return null;
         }
         Object baseApplicationImpl = getApplication();
@@ -1279,6 +1279,7 @@ public class Utils {
     public static void loge(String str) {
         Log.e("QNdump", str);
         try {
+            BugCollector.onThrowable(new Throwable(str));
             XposedBridge.log(str);
         } catch (NoClassDefFoundError e) {
             Log.e("Xposed", str);
@@ -1321,6 +1322,25 @@ public class Utils {
         } catch (NoClassDefFoundError e) {
             Log.i("Xposed", str);
             Log.i("EdXposed-Bridge", str);
+        }
+        if (ENABLE_DUMP_LOG) {
+            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/qn_log.txt";
+            File f = new File(path);
+            try {
+                if (!f.exists()) f.createNewFile();
+                appendToFile(path, "[" + System.currentTimeMillis() + "-" + android.os.Process.myPid() + "] " + str + "\n");
+            } catch (IOException e) {
+            }
+        }
+    }
+
+    public static void logw(String str) {
+        Log.i("QNdump", str);
+        try {
+            XposedBridge.log(str);
+        } catch (NoClassDefFoundError e) {
+            Log.w("Xposed", str);
+            Log.w("EdXposed-Bridge", str);
         }
         if (ENABLE_DUMP_LOG) {
             String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/qn_log.txt";
@@ -2030,11 +2050,11 @@ public class Utils {
         return arr[arr.length - 1];
     }
 
-    public static String getFileContent(String path) throws IOException {
+    public static String getFileContent(InputStream in) throws IOException {
         BufferedReader br = null;
         StringBuffer sb;
         try {
-            br = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
+            br = new BufferedReader(new InputStreamReader(in));
             sb = new StringBuffer();
             String line;
             while ((line = br.readLine()) != null) {
@@ -2047,6 +2067,10 @@ public class Utils {
             } catch (Exception ignored) {
             }
         }
+    }
+
+    public static String getFileContent(String path) throws IOException {
+        return getFileContent(new FileInputStream(path));
     }
 
     public static void saveFileContent(String path, String content) throws IOException {

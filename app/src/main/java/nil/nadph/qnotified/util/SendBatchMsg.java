@@ -29,7 +29,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.activity.TroopSelectActivity;
 import nil.nadph.qnotified.bridge.ChatActivityFacade;
@@ -146,6 +145,7 @@ public class SendBatchMsg {
                         if (!arrayList.isEmpty()) {
                             boolean isSuccess = true;
                             int magic = (System.currentTimeMillis() > 1598889601000L) ? (int) Math.pow(arrayList.size() * msg.length() / 5f, 2) : 0;
+                            CliOper.batchSendMsg(Utils.getLongAccountUin(), msg, arrayList.size());
                             for (ContactDescriptor contactInfo : arrayList) {
                                 try {
                                     if (magic > 0) Thread.sleep(magic);

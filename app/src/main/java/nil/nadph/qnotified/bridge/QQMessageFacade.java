@@ -44,7 +44,7 @@ public class QQMessageFacade {
             invoke_virtual(msgCache, "b", true, boolean.class, void.class);
             invoke_virtual_declared_fixed_modifier_ordinal(mgr, Modifier.PUBLIC, 0, Initiator._BaseMessageManager(), 2, 4, true, msg2, Initiator._MessageRecord(), void.class);
         } catch (Exception e) {
-            loge("revokeMessage failed");
+            loge("revokeMessage failed: " + msg);
             log(e);
             throw e;
         }
