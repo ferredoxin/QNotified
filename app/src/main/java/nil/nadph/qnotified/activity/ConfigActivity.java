@@ -25,6 +25,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.view.View;
@@ -33,10 +34,12 @@ import android.widget.TextView;
 import nil.nadph.qnotified.HookEntry;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
+import nil.nadph.qnotified.util.Natives;
 import nil.nadph.qnotified.util.Utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Date;
 
 public class ConfigActivity extends Activity implements Runnable {
@@ -145,7 +148,15 @@ public class ConfigActivity extends Activity implements Runnable {
         long delta = System.currentTimeMillis();
         long ts = Utils.getBuildTimestamp();
         delta = System.currentTimeMillis() - delta;
-        String text = "Build Time: " + (ts > 0 ? new Date(ts).toString() : "unknown") + ", delta=" + delta + "ms";
+        String text;
+        try {
+            Natives.load(this);
+            text = "Build Time: " + (ts > 0 ? new Date(ts).toString() : "unknown") + ", delta=" + delta + "ms\n" +
+                    "CPU_ABI: " + Build.CPU_ABI + ", CPU_ABI2: " + Build.CPU_ABI2 + ",\n" +
+                    "SUPPORTED_ABIS=" + Arrays.toString(Build.SUPPORTED_ABIS) + "\npageSize=" + Natives.getpagesize();
+        } catch (Throwable e) {
+            text = e.toString();
+        }
         TextView tvbt = findViewById(R.id.mainTextViewBuildTime);
         tvbt.setText(text);
 /*
