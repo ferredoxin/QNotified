@@ -36,9 +36,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-
 import com.tencent.mobileqq.widget.BounceScrollView;
-
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.config.EventRecord;
@@ -119,10 +117,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
             @Override
             public void onClick(View v) {
                 try {
-                    Looper looper = Looper.getMainLooper();
-                    MessageQueue queue = (MessageQueue) iget_object_or_null(looper, "mQueue");
-                    iput_object(queue, "mQuitAllowed", true);
-                    looper.quit();
+                    quitLooper();
                 } catch (Throwable e) {
                     Toast.makeText(TroubleshootActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
                 }
@@ -283,6 +278,13 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                 dialog.show();
             }
         };
+    }
+
+    public static void quitLooper() throws Exception {
+        Looper looper = Looper.getMainLooper();
+        MessageQueue queue = (MessageQueue) iget_object_or_null(looper, "mQueue");
+        iput_object(queue, "mQuitAllowed", true);
+        looper.quit();
     }
 
     public View.OnClickListener clickToWipeAllFriends() {

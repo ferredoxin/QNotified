@@ -31,11 +31,17 @@ dependencies {
     compileOnly fileTree(include: ['*.jar'], dir: 'lib')
     implementation 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2'
     implementation 'com.jaredrummler:colorpicker:1.1.0'
-    //implementation 'de.psdev.licensesdialog:licensesdialog:2.0.0'
-    implementation 'ru.noties.markwon:core:3.0.1'
+    implementation 'de.psdev.licensesdialog:licensesdialog:2.0.0'
+    implementation 'io.noties.markwon:core:4.5.0'
     testImplementation 'junit:junit:4.12'
     // androidx
     implementation 'androidx.preference:preference:1.1.1'
+}
+
+dependencies {
+    def appCenterSdkVersion = '3.3.0'
+    implementation "com.microsoft.appcenter:appcenter-analytics:${appCenterSdkVersion}"
+    implementation "com.microsoft.appcenter:appcenter-crashes:${appCenterSdkVersion}"
 }
 
 def _execDexTail = { String dexPath ->

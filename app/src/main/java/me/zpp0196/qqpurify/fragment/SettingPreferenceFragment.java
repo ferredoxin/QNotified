@@ -69,7 +69,7 @@ public class SettingPreferenceFragment extends AbstractPreferenceFragment
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         if ("displayDesktop".equals(preference.getKey())) {
             Utils.showToastShort(mActivity, "对不起, 此功能暂不开放");
-            return true;
+            return false;
         }
         return super.onPreferenceChange(preference, newValue);
     }

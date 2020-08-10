@@ -32,26 +32,18 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.widget.*;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.activity.SettingsActivity;
 import nil.nadph.qnotified.bridge.ChatActivityFacade;
 import nil.nadph.qnotified.bridge.SessionInfoImpl;
 import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.hook.rikka.CustomSplash;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.ui.ViewBuilder;
 import nil.nadph.qnotified.util.*;
 
 import java.io.File;
@@ -302,7 +294,7 @@ public class PttForwardHook extends BaseDelayableHook {
                             Object arr = param.getResult();
                             Class<?> clQQCustomMenuItem = arr.getClass().getComponentType();
                             Object ret;
-                            if (isSavePttEnabled() && LicenseStatus.isBypassAuth2()) {
+                            if (isSavePttEnabled() && LicenseStatus.getAuth2Status()) {
                                 Object item_forward = CustomMenu.createItem(clQQCustomMenuItem, R_ID_PTT_FORWARD, "转发");
                                 Object item_save = CustomMenu.createItem(clQQCustomMenuItem, R_ID_PTT_SAVE, "保存");
                                 ret = Array.newInstance(clQQCustomMenuItem, Array.getLength(arr) + 2);
