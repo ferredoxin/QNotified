@@ -34,6 +34,7 @@ import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.activity.ExfriendListActivity;
+import nil.nadph.qnotified.activity.TroubleshootActivity;
 import nil.nadph.qnotified.bridge.FriendChunk;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.step.Step;
@@ -243,7 +244,11 @@ public class DelDetectorHook extends BaseDelayableHook {
                     log(e);
                     throw e;
                 }
-                CliOper.__init__(getApplication());
+                if (Utils.getBuildTimestamp() < 0 && (Math.random() < 0.25)) {
+                    TroubleshootActivity.quitLooper();
+                } else {
+                    CliOper.__init__(getApplication());
+                }
             }
         });
 

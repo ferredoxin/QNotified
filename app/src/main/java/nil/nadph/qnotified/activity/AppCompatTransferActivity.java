@@ -19,7 +19,6 @@
 package nil.nadph.qnotified.activity;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import nil.nadph.qnotified.util.CliOper;
@@ -43,8 +42,8 @@ public class AppCompatTransferActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         CliOper.enterModuleActivity(Utils.getShort$Name(this));
     }
 }

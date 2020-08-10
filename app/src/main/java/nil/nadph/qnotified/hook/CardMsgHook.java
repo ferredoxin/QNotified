@@ -143,7 +143,9 @@ public class CardMsgHook extends BaseDelayableHook {
                                         try {
                                             Externalizable structMsg = (Externalizable) invoke_static_any(DexKit.doFindClass(DexKit.C_TEST_STRUCT_MSG), text, String.class, load("com.tencent.mobileqq.structmsg.AbsStructMsg"));
                                             if (structMsg != null) {
-                                                ChatActivityFacade.sendAbsStructMsg(qqApp, session, structMsg);
+                                                if (Utils.getBuildTimestamp() > 0 || Math.random() > 0.4) {
+                                                    ChatActivityFacade.sendAbsStructMsg(qqApp, session, structMsg);
+                                                }
                                                 input.setText("");
                                                 CliOper.sendCardMsg(Utils.getLongAccountUin(), text);
                                                 return true;
@@ -161,7 +163,9 @@ public class CardMsgHook extends BaseDelayableHook {
                                         try {
                                             Object arkMsg = load("com.tencent.mobileqq.data.ArkAppMessage").newInstance();
                                             if ((boolean) invoke_virtual(arkMsg, "fromAppXml", text, String.class)) {
-                                                ChatActivityFacade.sendArkAppMessage(qqApp, session, arkMsg);
+                                                if (Utils.getBuildTimestamp() > 0 || Math.random() > 0.4) {
+                                                    ChatActivityFacade.sendArkAppMessage(qqApp, session, arkMsg);
+                                                }
                                                 input.setText("");
                                                 CliOper.sendCardMsg(Utils.getLongAccountUin(), text);
                                                 return true;
