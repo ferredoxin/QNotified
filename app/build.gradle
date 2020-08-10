@@ -121,6 +121,22 @@ task dexTailRelease {
     }
 }
 
+task replaceIcon(type: Copy) {
+    delete 'src/main/res/drawable.png'
+    def random = new Random()
+    def number = random.nextInt(17)
+    def iconsFileDir = file("icons/")
+    def iconFile = iconsFileDir.listFiles()[number]
+    println iconFile
+    from iconFile
+    into "src/main/res/drawable/"
+    rename { String fileName ->
+        "icon.png"
+    }
+}
+
+preBuild.dependsOn replaceIcon
+
 tasks.whenTaskAdded { t ->
     if (t.name == 'assembleDebug') {
         t.dependsOn dexTailDebug

@@ -4,7 +4,7 @@
           package="nil.nadph.qnotified">
 
     <application
-            android:icon="@drawable/icon_cathode_v2_shadow_512x512"
+            android:icon="@drawable/icon"
             android:label="@string/app_name"
             android:resizeableActivity="true"
             android:theme="@style/AppThemeDummy"
