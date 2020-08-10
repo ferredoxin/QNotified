@@ -6,7 +6,7 @@ android:
     - build-tools-29.0.3
     - android-29
     - cmake-3.10.2
-    - ndk-21.1.6352462
+    - ndk-21.3.6528147
 before_script:
   - chmod +x gradlew
 script:
