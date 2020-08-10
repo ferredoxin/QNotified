@@ -1,8 +1,13 @@
 package nil.nadph.qnotified.util;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.os.Build;
+import android.os.Environment;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 
 public class Natives {
     public static final int RTLD_LAZY = 0x00001;    /* Lazy function call binding.  */
@@ -74,7 +79,43 @@ public class Natives {
     public static native long call(long addr, long argv);
 
     @SuppressLint("UnsafeDynamicallyLoadedCode")
-    public static void load() {
-        System.load(new File(Utils.getApplication().getFilesDir(), "libnatives.so").getAbsolutePath());
+    public static void load(Context ctx) throws Throwable {
+        try {
+            getpagesize();
+            return;
+        } catch (UnsatisfiedLinkError ignored) {
+        }
+        String abi = Build.CPU_ABI;
+        String soName = "libnatives_" + abi + "_" + Utils.QN_VERSION_NAME + ".so";
+        File dir = new File(ctx.getFilesDir(), "qn_dyn_lib");
+        if (!dir.isDirectory()) {
+            if (dir.isFile()) {
+                dir.delete();
+            }
+            dir.mkdir();
+        }
+        File soFile = new File(dir, soName);
+        if (!soFile.exists()) {
+            InputStream in = Natives.class.getClassLoader().getResourceAsStream("lib/" + abi + "/libnatives.so");
+            if (in == null) throw new UnsatisfiedLinkError("Unsupported ABI: " + abi);
+            //clean up old files
+            for (String name : dir.list()) {
+                if (name.startsWith("libnatives_")) {
+                    new File(dir, name).delete();
+                }
+            }
+            //extract so file
+            soFile.createNewFile();
+            FileOutputStream fout = new FileOutputStream(soFile);
+            byte[] buf = new byte[1024];
+            int i;
+            while ((i = in.read(buf)) > 0) {
+                fout.write(buf, 0, i);
+            }
+            in.close();
+            fout.flush();
+            fout.close();
+        }
+        System.load(soFile.getAbsolutePath());
     }
 }

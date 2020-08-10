@@ -20,7 +20,7 @@ release/
 bin/
 gen/
 out/
-
+app/.cxx/
 # Gradle files
 .gradle/
 build/
