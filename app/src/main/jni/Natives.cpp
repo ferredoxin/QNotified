@@ -11,7 +11,7 @@
 #include "unistd.h"
 #include "sys/mman.h"
 
-typedef unsigned char uchar;
+#include "natives_utils.h"
 
 //jint JNI_OnLoad(JavaVM *jvm, void *resv) {
 //}
@@ -21,7 +21,7 @@ typedef unsigned char uchar;
  * Method:    mwrite
  * Signature: (JI[BI)V
  */
-void Java_nil_nadph_qnotified_util_Natives_mwrite
+EXPORT void Java_nil_nadph_qnotified_util_Natives_mwrite
         (JNIEnv *env, jclass clz, jlong ptr, jint len, jbyteArray arr, jint offset) {
     jbyte *bufptr = (jbyte *) ptr;
     int blen = env->GetArrayLength(arr);
@@ -45,7 +45,7 @@ void Java_nil_nadph_qnotified_util_Natives_mwrite
  * Method:    mread
  * Signature: (JI[BI)V
  */
-void Java_nil_nadph_qnotified_util_Natives_mread
+EXPORT void Java_nil_nadph_qnotified_util_Natives_mread
         (JNIEnv *env, jclass, jlong ptr, jint len, jbyteArray arr, jint offset) {
     jbyte *bufptr = (jbyte *) ptr;
     int blen = env->GetArrayLength(arr);
@@ -69,7 +69,7 @@ void Java_nil_nadph_qnotified_util_Natives_mread
  * Method:    malloc
  * Signature: (I)J
  */
-jlong Java_nil_nadph_qnotified_util_Natives_malloc
+EXPORT jlong Java_nil_nadph_qnotified_util_Natives_malloc
         (JNIEnv *env, jclass, jint len) {
     jlong ptr = (jlong) malloc(len);
     return ptr;
@@ -80,7 +80,7 @@ jlong Java_nil_nadph_qnotified_util_Natives_malloc
  * Method:    free
  * Signature: (J)V
  */
-void Java_nil_nadph_qnotified_util_Natives_free(JNIEnv *, jclass, jlong ptr) {
+EXPORT void Java_nil_nadph_qnotified_util_Natives_free(JNIEnv *, jclass, jlong ptr) {
     free((void *) ptr);
 }
 
@@ -89,7 +89,8 @@ void Java_nil_nadph_qnotified_util_Natives_free(JNIEnv *, jclass, jlong ptr) {
  * Method:    memcpy
  * Signature: (JJI)V
  */
-void Java_nil_nadph_qnotified_util_Natives_memcpy(JNIEnv *, jclass, jlong dest, jlong src, jint n) {
+EXPORT void
+Java_nil_nadph_qnotified_util_Natives_memcpy(JNIEnv *, jclass, jlong dest, jlong src, jint n) {
     memcpy((void *) dest, (void *) src, n);
 }
 
@@ -98,7 +99,7 @@ void Java_nil_nadph_qnotified_util_Natives_memcpy(JNIEnv *, jclass, jlong dest, 
  * Method:    memset
  * Signature: (JII)V
  */
-void Java_nil_nadph_qnotified_util_Natives_memset
+EXPORT void Java_nil_nadph_qnotified_util_Natives_memset
         (JNIEnv *, jclass, jlong addr, jint c, jint num) {
     memset((void *) addr, c, num);
 }
@@ -108,7 +109,8 @@ void Java_nil_nadph_qnotified_util_Natives_memset
  * Method:    mprotect
  * Signature: (JII)I
  */
-jint Java_nil_nadph_qnotified_util_Natives_mprotect(JNIEnv *, jclass, jlong addr, jint len, jint prot) {
+EXPORT jint
+Java_nil_nadph_qnotified_util_Natives_mprotect(JNIEnv *, jclass, jlong addr, jint len, jint prot) {
     if (mprotect((void *) addr, len, prot)) {
         return errno;
     } else {
@@ -121,7 +123,8 @@ jint Java_nil_nadph_qnotified_util_Natives_mprotect(JNIEnv *, jclass, jlong addr
  * Method:    dlsym
  * Signature: (JLjava/lang/String;)J
  */
-jlong Java_nil_nadph_qnotified_util_Natives_dlsym(JNIEnv *env, jclass, jlong h, jstring name) {
+EXPORT jlong
+Java_nil_nadph_qnotified_util_Natives_dlsym(JNIEnv *env, jclass, jlong h, jstring name) {
     const char *p;
     jboolean copy;
     p = env->GetStringUTFChars(name, &copy);
@@ -136,7 +139,8 @@ jlong Java_nil_nadph_qnotified_util_Natives_dlsym(JNIEnv *env, jclass, jlong h, 
  * Method:    dlopen
  * Signature: (Ljava/lang/String;I)J
  */
-jlong Java_nil_nadph_qnotified_util_Natives_dlopen(JNIEnv *env, jclass, jstring name, jint flag) {
+EXPORT jlong
+Java_nil_nadph_qnotified_util_Natives_dlopen(JNIEnv *env, jclass, jstring name, jint flag) {
     const char *p;
     jboolean copy;
     p = env->GetStringUTFChars(name, &copy);
@@ -151,8 +155,22 @@ jlong Java_nil_nadph_qnotified_util_Natives_dlopen(JNIEnv *env, jclass, jstring 
  * Method:    dlclose
  * Signature: (J)I
  */
-jint Java_nil_nadph_qnotified_util_Natives_dlclose(JNIEnv *, jclass, jlong h) {
+EXPORT jint Java_nil_nadph_qnotified_util_Natives_dlclose(JNIEnv *, jclass, jlong h) {
     return (jint) dlclose((void *) h);
+}
+
+/*
+ * Class:     nil_nadph_qnotified_util_Natives
+ * Method:    dlerror
+ * Signature: ()Ljava/lang/String;
+ */
+EXPORT jstring Java_nil_nadph_qnotified_util_Natives_dlerror
+        (JNIEnv *env, jclass) {
+    const char *str = dlerror();
+    if (str == nullptr) {
+        return nullptr;
+    }
+    return env->NewStringUTF(str);
 }
 
 /*
@@ -160,7 +178,7 @@ jint Java_nil_nadph_qnotified_util_Natives_dlclose(JNIEnv *, jclass, jlong h) {
  * Method:    sizeofptr
  * Signature: ()I
  */
-jint Java_nil_nadph_qnotified_util_Natives_sizeofptr(JNIEnv *, jclass) {
+EXPORT jint Java_nil_nadph_qnotified_util_Natives_sizeofptr(JNIEnv *, jclass) {
     return sizeof(void *);
 }
 
@@ -169,8 +187,7 @@ jint Java_nil_nadph_qnotified_util_Natives_sizeofptr(JNIEnv *, jclass) {
  * Method:    getpagesize
  * Signature: ()I
  */
-JNIEXPORT jint
-JNICALL Java_nil_nadph_qnotified_util_Natives_getpagesize(JNIEnv *, jclass) {
+EXPORT jint Java_nil_nadph_qnotified_util_Natives_getpagesize(JNIEnv *, jclass) {
     return getpagesize();
 }
 
@@ -179,7 +196,7 @@ JNICALL Java_nil_nadph_qnotified_util_Natives_getpagesize(JNIEnv *, jclass) {
  * Method:    call
  * Signature: (J)J
  */
-jlong Java_nil_nadph_qnotified_util_Natives_call__J(JNIEnv *, jclass, jlong addr) {
+EXPORT jlong Java_nil_nadph_qnotified_util_Natives_call__J(JNIEnv *, jclass, jlong addr) {
     void *(*fun)();
     fun = (void *(*)()) (addr);
     void *ret = fun();
@@ -191,7 +208,8 @@ jlong Java_nil_nadph_qnotified_util_Natives_call__J(JNIEnv *, jclass, jlong addr
  * Method:    call
  * Signature: (JJ)J
  */
-jlong Java_nil_nadph_qnotified_util_Natives_call__JJ(JNIEnv *, jclass, jlong addr, jlong arg) {
+EXPORT jlong Java_nil_nadph_qnotified_util_Natives_call__JJ
+        (JNIEnv *, jclass, jlong addr, jlong arg) {
     void *(*fun)(void *);
     fun = (void *(*)(void *)) (addr);
     void *ret = fun((void *) arg);

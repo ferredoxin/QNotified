@@ -5,7 +5,7 @@
 [![GitHub release](https://img.shields.io/github/release/cinit/QNotified.svg)](https://github.com/cinit/QNotified/releases/latest)  
 等(zuo)不(si)及的小伙伴可以: [CI构建下载](https://install.appcenter.ms/orgs/qnotifieddev/apps/qnotified/distribution_groups/alpha) (危!富含bug与兼容性问题,PR可能含恶意代码,自行承担风险)
 
-QNotified（以下简称本模块）是一款依赖 Xposed/太极框架运行的辅助性QQ功能增强模块, 本模块无毒无害, 免费开源, 旨在:  
+QNotified（以下简称本模块）是一款依赖 Xposed框架运行的辅助性QQ功能增强模块, 本模块无毒无害, 免费开源, 旨在:  
 1. **接手部分停更模块的部分功能**
 2. 提供被删好友通知功能
 3. **移除部分臃肿功能, 增加部分实用功能**
@@ -54,7 +54,7 @@ QNotified is a Xposed/TaiChi module for mobile QQ that aims to:
 26. 群发文本消息(注1)
 27. 显示具体消息数量而不是99+(原花Q)
 
-注1: 卡片消息及群发文本这两个功能因大量被用于广告影流而废除
+注1: 卡片消息及群发文本这两个功能因大量被用于广告引流而废除
 
 #### 计划任务:
 1. 查看已删除好友的聊天记录

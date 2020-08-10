@@ -17,11 +17,6 @@ public class CliOper {
         sInit = true;
         AppCenter.start(app, "ddf4b597-1833-45dd-af28-96ca504b8123",
                 Analytics.class, Crashes.class);
-        Map<String, String> properties = new HashMap<>();
-        properties.put("versionName", Utils.QN_VERSION_NAME);
-        properties.put("versionCode", String.valueOf(Utils.QN_VERSION_CODE));
-        properties.put("Auth2Status", String.valueOf(LicenseStatus.getAuth2Status()));
-        Analytics.trackEvent("onLoad", properties);
     }
 
     public static void openModuleSettings() {

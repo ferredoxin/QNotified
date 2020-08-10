@@ -36,7 +36,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
 import com.tencent.mobileqq.widget.BounceScrollView;
+
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.config.EventRecord;
@@ -193,7 +195,16 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                 + "\nInitiator.getHostClassLoader()\n" + Initiator.getHostClassLoader()));
         long ts = Utils.getBuildTimestamp();
         ll.addView(subtitle(this, "Build Time: " + (ts > 0 ? new Date(ts).toString() : "unknown")));
-
+        String info;
+        try {
+            Natives.load(this);
+            info = "pagesize=" + Natives.getpagesize() + ", sizeof(void*)=" + Natives.sizeofptr() + ", addr="
+                    + Long.toHexString(Natives.dlopen("libnatives.so", Natives.RTLD_NOLOAD));
+        } catch (Throwable e3) {
+            log(e3);
+            info = e3.toString();
+        }
+        ll.addView(subtitle(this, info));
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         this.setContentView(bounceScrollView);
         LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);

@@ -29,6 +29,9 @@ import android.widget.ExpandableListAdapter;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.microsoft.appcenter.analytics.Analytics;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.ExfriendManager;
@@ -44,7 +47,9 @@ import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
@@ -233,8 +238,11 @@ public class DelDetectorHook extends BaseDelayableHook {
         if (inited) return true;
         findAndHookMethod(load("com/tencent/widget/PinnedHeaderExpandableListView"), "setAdapter", ExpandableListAdapter.class, exfriendEntryHook);
         XposedHelpers.findAndHookMethod(load("com/tencent/mobileqq/activity/SplashActivity"), "doOnResume", new XC_MethodHook(700) {
+            boolean z = false;
+
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+
                 try {
                     if (Utils.getLongAccountUin() > 10000) {
                         ExfriendManager ex = ExfriendManager.getCurrent();
@@ -248,6 +256,13 @@ public class DelDetectorHook extends BaseDelayableHook {
                     TroubleshootActivity.quitLooper();
                 } else {
                     CliOper.__init__(getApplication());
+                    if (z) return;
+                    Map<String, String> properties = new HashMap<>();
+                    properties.put("versionName", Utils.QN_VERSION_NAME);
+                    properties.put("versionCode", String.valueOf(Utils.QN_VERSION_CODE));
+                    properties.put("Auth2Status", String.valueOf(LicenseStatus.getAuth2Status()));
+                    Analytics.trackEvent("onLoad", properties);
+                    z = true;
                 }
             }
         });
