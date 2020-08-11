@@ -132,7 +132,7 @@ public class InjectDelayableHooks {
                 }
             }
         }
-        if (LicenseStatus.hasUserAgreeEula()) {
+        if (LicenseStatus.hasUserAcceptEula()) {
             for (BaseDelayableHook h : hooks) {
                 try {
                     if (h.isEnabled() && h.isTargetProc()) {

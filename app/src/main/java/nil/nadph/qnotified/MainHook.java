@@ -37,6 +37,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
+
 import dalvik.system.BaseDexClassLoader;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
@@ -137,7 +138,7 @@ public class MainHook {
     public static WeakReference<Activity> splashActivityRef;
 
 
-    private boolean third_stage_inited = false;
+    boolean third_stage_inited = false;
 
     private MainHook() {
     }
@@ -343,8 +344,13 @@ public class MainHook {
                     //startFakeString();
                 }
             });
+            try {
+                Natives.load(ctx);
+            } catch (Throwable e3) {
+                Utils.log(e3);
+            }
         } else {
-            if (LicenseStatus.hasUserAgreeEula()) {
+            if (LicenseStatus.hasUserAcceptEula()) {
                 Class director = _StartupDirector();
                 Object dir = iget_object_or_null(step, "mDirector", director);
                 if (dir == null) dir = iget_object_or_null(step, "a", director);
@@ -484,7 +490,7 @@ public class MainHook {
         initForJumpActivityEntry(ctx);
         asyncStartFindClass();
         if (LicenseStatus.sDisableCommonHooks) return;
-        if (LicenseStatus.hasUserAgreeEula()) hideMiniAppEntry();
+        if (LicenseStatus.hasUserAcceptEula()) hideMiniAppEntry();
     }
 
     private static String sModulePath = null;

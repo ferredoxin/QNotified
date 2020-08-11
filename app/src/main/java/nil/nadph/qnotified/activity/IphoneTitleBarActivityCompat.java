@@ -26,6 +26,8 @@ import android.view.View;
 import android.widget.TextView;
 import com.tencent.mobileqq.app.IphoneTitleBarActivity;
 import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.util.CliOper;
+import nil.nadph.qnotified.util.Utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -47,6 +49,7 @@ public class IphoneTitleBarActivityCompat extends IphoneTitleBarActivity {
         } catch (Throwable e) {
             log(e);
         }
+        CliOper.enterModuleActivity(Utils.getShort$Name(this));
         return ret;
     }
 

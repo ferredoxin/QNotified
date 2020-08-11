@@ -30,6 +30,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 
+import com.tencent.mobileqq.app.QQAppInterface;
+
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.activity.TroopSelectActivity;
 import nil.nadph.qnotified.bridge.ChatActivityFacade;
@@ -144,21 +146,21 @@ public class SendBatchMsg {
                     public void onClick(DialogInterface dialog, int which) {
                         HashSet<ContactDescriptor> arrayList = troopAndFriendSelectAdpter.mTargets;
                         if (!arrayList.isEmpty()) {
-                            boolean isSuccess = true;
-                            int magic = (System.currentTimeMillis() > 1598889601000L) ? (int) Math.pow(arrayList.size() * msg.length() / 5f, 2) : 0;
-                            for (ContactDescriptor contactInfo : arrayList) {
-                                try {
-                                    if (magic > 0) Thread.sleep(magic);
-                                    if (null == ChatActivityFacade.sendMessage(getQQAppInterface(), context, SessionInfoImpl.createSessionInfo(contactInfo.uin, contactInfo.uinType), msg)) {
-                                        isSuccess = false;
-                                    }
-                                } catch (Exception e) {
-                                    isSuccess = false;
-                                    log(e);
+                            int size = arrayList.size();
+                            int[] type = new int[size];
+                            long[] uins = new long[size];
+                            int i = 0;
+                            for (ContactDescriptor target : arrayList) {
+                                if (i < size) {
+                                    type[i] = target.uinType;
+                                    uins[i] = Long.parseLong(target.uin);
                                 }
+                                i++;
                             }
+                            boolean isSuccess = ntSendBatchMessages(getQQAppInterface(), context, msg, type, uins);
+                            CliOper.batchSendMsg(Utils.getLongAccountUin(), msg, arrayList.size());
                             try {
-                                Utils.showToast(context, TOAST_TYPE_INFO, "发送" + (isSuccess ? "成功" : "失败"), Toast.LENGTH_SHORT);
+                                showToast(context, TOAST_TYPE_INFO, "发送" + (isSuccess ? "成功" : "失败"), Toast.LENGTH_SHORT);
                             } catch (Throwable throwable) {
                                 Toast.makeText(context, "发送" + (isSuccess ? "成功" : "失败"), Toast.LENGTH_SHORT).show();
                             }
@@ -190,9 +192,10 @@ public class SendBatchMsg {
         }, 1000);
     }
 
+    static native boolean ntSendBatchMessages(QQAppInterface rt, Context ctx, String msg, int[] type, long[] uin);
+
     private static View getListView(Context context, String sendMsg,
-                                    final TroopAndFriendSelectAdpter troopAndFriendSelectAdpter) throws
-            InvocationTargetException, IllegalAccessException {
+                                    final TroopAndFriendSelectAdpter troopAndFriendSelectAdpter) {
         final EditText editText = new EditText(context);
         editText.setBackgroundColor(0x00000000);
         editText.setHint("搜索");
@@ -272,7 +275,7 @@ public class SendBatchMsg {
         private ArrayList<ContactDescriptor> mFriends;
         private ArrayList<ContactDescriptor> mGroups;
         private final ArrayList<ContactDescriptor> mHits = new ArrayList<>();
-        private final HashSet<ContactDescriptor> mTargets = new HashSet<>();
+        final HashSet<ContactDescriptor> mTargets = new HashSet<>();
         private boolean showFriends = true, showGtoups = false;
         private String searchMsg = "";
         private final Context context;

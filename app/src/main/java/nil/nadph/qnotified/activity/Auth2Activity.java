@@ -28,9 +28,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.*;
-
 import com.tencent.mobileqq.widget.BounceScrollView;
-
 import nil.nadph.qnotified.chiral.ChiralCarbonHelper;
 import nil.nadph.qnotified.chiral.Molecule;
 import nil.nadph.qnotified.chiral.MoleculeView;
@@ -38,6 +36,7 @@ import nil.nadph.qnotified.chiral.PubChemStealer;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.ViewBuilder;
+import nil.nadph.qnotified.util.CliOper;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.UserFlagConst;
 import nil.nadph.qnotified.util.Utils;
@@ -61,6 +60,7 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
     private int refreshId = 0;
     private HashSet<Integer> mChiralCarbons;
     private boolean bypassMode = false;
+    private int validRetryCount = 0;
 
     @Override
     public boolean doOnCreate(Bundle bundle) {
@@ -152,6 +152,7 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
                             LicenseStatus.clearAuth2Status();
                             Utils.showToast(Auth2Activity.this, TOAST_TYPE_SUCCESS, "操作成功", Toast.LENGTH_LONG);
                             Auth2Activity.this.finish();
+                            CliOper.revokeAuth2Once();
                         }
                     }).setNegativeButton("取消", null).show();
                 } else {
@@ -185,6 +186,8 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
             onClick(newOne);
         }
+        validRetryCount = 0;
+        CliOper.openAuth2Activity();
         return true;
     }
 
@@ -251,6 +254,7 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
                             ((TextView) rightBtn).setText("吊销");
                         }
                         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
+                        CliOper.passAuth2Once(validRetryCount, moleculeView.getSelectedChiral().length);
                     } else {
                         showToast(Auth2Activity.this, TOAST_TYPE_ERROR, "选择错误, 请重试", 0);
                     }
@@ -320,6 +324,7 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
                     onClick(moleculeView);
                 }
             });
+            validRetryCount++;
         } else {
             runOnUiThread(new Runnable() {
                 @Override
@@ -335,6 +340,14 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
         dialog.dismiss();
         makingMol = null;
         refreshId++;
+    }
+
+    @Override
+    public void doOnDestroy() {
+        if (!LicenseStatus.getAuth2Status()) {
+            CliOper.abortAuth2Once(validRetryCount);
+        }
+        super.doOnDestroy();
     }
 
     @Override

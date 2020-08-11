@@ -3,6 +3,8 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
+    ndkVersion "21.3.6528147"
+
     defaultConfig {
         applicationId "nil.nadph.qnotified"
         minSdkVersion 21
@@ -11,6 +13,10 @@ android {
         versionName "0.8.7" + (getBuildIdSuffix.call() as String) + (getGitHeadRefsSuffix.call() as String)
         //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled false
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+            //drop "mips" , 'armeabi',
+        }
     }
     buildTypes {
         release {
@@ -25,6 +31,15 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    // Encapsulates your external native build configurations.
+    externalNativeBuild {
+        // Encapsulates your CMake build configurations.
+        cmake {
+            // Provides a relative path to your CMake build script.
+            path "src/main/jni/CMakeLists.txt"
+            version "3.10.2"
+        }
+    }
 }
 
 dependencies {
@@ -36,6 +51,12 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     // androidx
     implementation 'androidx.preference:preference:1.1.1'
+}
+
+dependencies {
+    def appCenterSdkVersion = '3.3.0'
+    implementation "com.microsoft.appcenter:appcenter-analytics:${appCenterSdkVersion}"
+    implementation "com.microsoft.appcenter:appcenter-crashes:${appCenterSdkVersion}"
 }
 
 def _execDexTail = { String dexPath ->
@@ -114,6 +135,23 @@ task dexTailRelease {
         }
     }
 }
+
+task replaceIcon(type: Copy) {
+    delete 'src/main/res/drawable.png'
+    def random = new Random()
+    def iconsFileDir = file("icons/")
+    def fileCount = iconsFileDir.listFiles().length
+    def number = random.nextInt(fileCount)
+    def iconFile = iconsFileDir.listFiles()[number]
+    println iconFile
+    from iconFile
+    into "src/main/res/drawable/"
+    rename { String fileName ->
+        "icon.png"
+    }
+}
+
+preBuild.dependsOn replaceIcon
 
 tasks.whenTaskAdded { t ->
     if (t.name == 'assembleDebug') {

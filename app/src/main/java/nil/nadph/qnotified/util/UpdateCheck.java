@@ -32,31 +32,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ViewBuilder;
 
 import javax.net.ssl.HttpsURLConnection;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Date;
 
 import static nil.nadph.qnotified.util.Utils.log;
 
 public class UpdateCheck implements View.OnClickListener, Runnable {
 
-    public static final String UPDATE_INFO_GET1 = "https://raw.githubusercontent.com/cinit/QNotified/master/update_info";
-    public static final String UPDATE_INFO_GET2 = "https://gitee.com/kernelex/QNotified/raw/master/update_info";
+    public static final String UPDATE_INFO_GET1 = "https://api.appcenter.ms/v0.1/public/sdk/apps/ddf4b597-1833-45dd-af28-96ca504b8123/releases/latest";
     public static final String qn_update_info = "qn_update_info";
     public static final String qn_update_time = "qn_update_time";
     private final int RL_LOAD = 1;
     private final int RL_SHOW_RET = 2;
     int currVerCode = Utils.QN_VERSION_CODE;
     String currVerName = Utils.QN_VERSION_NAME;
-    private ViewGroup viewGroup;
+    ViewGroup viewGroup;
     private boolean clicked = false;
     private PHPArray result;
     private int runlevel;
@@ -67,27 +65,6 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
     public String doRefreshInfo() {
         String content = null;
         int failed = 0;
-        try {
-            URL reqURL = new URL(UPDATE_INFO_GET2);
-            HttpsURLConnection httpsConn = (HttpsURLConnection) reqURL.openConnection();
-            InputStream in = httpsConn.getInputStream();
-            ByteArrayOutputStream bais = new ByteArrayOutputStream();
-            byte[] buf = new byte[256];
-            int len;
-            while ((len = in.read(buf)) != -1) {
-                bais.write(buf, 0, len);
-            }
-            in.close();
-            content = bais.toString("UTF-8");
-            httpsConn.disconnect();
-            ConfigManager cache = ConfigManager.getCache();
-            cache.putString(qn_update_info, content);
-            cache.getAllConfig().put(qn_update_time, System.currentTimeMillis() / 1000L);
-            cache.save();
-            return content;
-        } catch (IOException e) {
-            //fuck,try another
-        }
         try {
             URL reqURL = new URL(UPDATE_INFO_GET1);
             HttpsURLConnection httpsConn = (HttpsURLConnection) reqURL.openConnection();
@@ -134,36 +111,32 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
     }
 
     public void setVersionTip(ViewGroup vg) {
+        String str = getCachedUpdateInfoOrNull();
+        if (str != null) {
+            doSetVersionTip(vg, PHPArray.fromJson(str));
+        }
+    }
+
+    public void doSetVersionTip(ViewGroup vg, PHPArray json) {
         viewGroup = vg;
         try {
             TextView tv_v = viewGroup.findViewById(ViewBuilder.R_ID_VALUE);
             TextView tv_t = viewGroup.findViewById(ViewBuilder.R_ID_TITLE);
-            String str = getCachedUpdateInfoOrNull();
-            if (str != null) {
-                String highest = currVerName;
-                int hv = currVerCode;
-                long time = 0;
-                for (Object obj : PHPArray.fromJson(str)._$_E()) {
-                    PHPArray info = (PHPArray) obj;
-                    int v = ((Number) info.__("code")._$()).intValue();
-                    if (v > hv) {
-                        hv = v;
-                        highest = info.__("name")._$().toString();
-                        time = ((Number) info.__("code")._$()).longValue();
-                    }
+            long currBuildTime = Utils.getBuildTimestamp();
+            long latestBuildTime;
+            String latestName;
+            latestBuildTime = iso8601ToTimestampMs((String) json.__("uploaded_at")._$());
+            latestName = (String) json.__("short_version")._$();
+            if (latestBuildTime - currBuildTime > 10 * 60 * 1000L) {
+                //has newer
+                tv_v.setText(latestName);
+                tv_v.setTextColor(Color.argb(255, 242, 140, 72));
+                tv_t.setText("有新版本可用");
+                if (clicked) {
+                    doShowUpdateInfo();
                 }
-                if (hv > currVerCode) {
-                    //has newer
-                    tv_v.setText(highest);
-                    tv_v.setTextColor(Color.argb(255, 242, 140, 72));
-                    tv_t.setText("有新版本可用");
-                    if (clicked) {
-                        doShowUpdateInfo();
-                    }
-                } else {
-                    if (System.currentTimeMillis() / 1000L - time < 3 * 24 * 3600)
-                        tv_v.setText("已是最新");
-                }
+            } else {
+                tv_v.setText("已是最新");
             }
         } catch (Exception e) {
             log(e);
@@ -181,29 +154,7 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
                 new Handler(viewGroup.getContext().getMainLooper()).post(this);
                 return;
             case RL_SHOW_RET:
-                TextView tv_v = viewGroup.findViewById(ViewBuilder.R_ID_VALUE);
-                TextView tv_t = viewGroup.findViewById(ViewBuilder.R_ID_TITLE);
-                String highest = currVerName;
-                int hv = currVerCode;
-                for (Object obj : result._$_E()) {
-                    PHPArray info = (PHPArray) obj;
-                    int v = ((Number) info.__("code")._$()).intValue();
-                    if (v > hv) {
-                        hv = v;
-                        highest = info.__("name")._$().toString();
-                    }
-                }
-                if (hv > currVerCode) {
-                    //has newer
-                    tv_v.setText(highest);
-                    tv_v.setTextColor(Color.argb(255, 242, 140, 72));
-                    tv_t.setText("有新版本可用");
-                    if (clicked) {
-                        doShowUpdateInfo();
-                    }
-                } else {
-                    tv_v.setText("已是最新");
-                }
+                doSetVersionTip(viewGroup, result);
                 runlevel = 0;
                 if (clicked) doShowUpdateInfo();
                 return;
@@ -234,44 +185,39 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
             //TextView list = new TextView(ctx);
             //main.addView(list, WRAP_CONTENT, WRAP_CONTENT);
             //list.setAutoLinkMask(Linkify.WEB_URLS);
-            for (Object obj : result._$_E()) {
-                PHPArray ver = (PHPArray) obj;
-                String vn = (String) ver.__("name")._$();
-                int vc = ((Number) ver.__("code")._$()).intValue();
-                String desc = "" + ver.__("desc")._$();
-                String md5 = (String) ver.__("md5")._$();
-                long time = ((Number) ver.__("time")._$()).longValue();
-                String date = Utils.getRelTimeStrSec(time);
-                boolean taichi = ver.__("taichi")._$b();
-                boolean beta = ver.__("beta")._$b();
-                SpannableString tmp = new SpannableString(vn + " (" + vc + ")");
-                tmp.setSpan(new RelativeSizeSpan(1.8f), 0, tmp.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                sb.append(tmp);
-                switch (Utils.sign(vc - currVerCode)) {
-                    case 0:
-                        sb.append("当前版本");
-                        break;
-                    case -1:
-                        sb.append("旧版本");
-                        break;
-                    case 1:
-                        sb.append("新版本");
-                }
-                sb.append("\n发布于").append(date);
-                sb.append(beta ? " (测试版) " : "");
-                sb.append('\n');
-                if (taichi) sb.append("已适配太极\n");
-                sb.append("md5:").append(md5).append("\n");
-                sb.append(desc);
-                sb.append("\n下载地址:\n");
-                for (Object obj2 : ver.__("urls")._$_E()) {
-                    tmp = new SpannableString((String) obj2);
-                    tmp.setSpan(new URLSpan((String) obj2), 0, tmp.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    sb.append(tmp);
-                    sb.append("\n");
-                }
-                sb.append("\n");
+
+            PHPArray ver = (PHPArray) result;
+            String vn = (String) ver.__("short_version")._$();
+            int vc = Integer.parseInt((String) ver.__("version")._$());
+            String desc = "" + ver.__("release_notes")._$();
+            String md5 = (String) ver.__("fingerprint")._$();
+            String download_url = (String) ver.__("download_url")._$();
+            long time = iso8601ToTimestampMs((String) ver.__("uploaded_at")._$());
+            String date = Utils.getRelTimeStrSec(time / 1000L);
+
+            SpannableString tmp = new SpannableString(vn + " (" + vc + ")");
+            tmp.setSpan(new RelativeSizeSpan(1.8f), 0, tmp.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            sb.append(tmp);
+
+            if (currVerName.equals(vn)) {
+                sb.append("当前版本");
+            } else if (time - Utils.getBuildTimestamp() > 10 * 60 * 1000) {
+                sb.append("新版本");
+            } else if (time - Utils.getBuildTimestamp() < -10 * 60 * 1000) {
+                sb.append("旧版本");
             }
+
+            sb.append("\n发布于").append(date);
+
+            sb.append("\nmd5:").append(md5).append("\n");
+            sb.append(desc);
+            sb.append("\n下载地址:\n");
+            tmp = new SpannableString((String) download_url);
+            tmp.setSpan(new URLSpan((String) download_url), 0, tmp.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            sb.append(tmp);
+            sb.append("\n");
+            sb.append("\n");
+
             //list.setText(sb);
             dialog.setMessage(sb);
             TextView tv = dialog.getMessageTextView();
@@ -304,5 +250,22 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
         } else {
             doShowUpdateInfo();
         }
+    }
+
+    public static long iso8601ToTimestampMs(String expr) {
+        if (!expr.endsWith("Z")) {
+            throw new IllegalArgumentException("reject, not UTC");
+        }
+        String[] arr = expr.replace("Z", "").split("T");
+        String[] p1 = arr[0].split("-");
+        int yyyy = Integer.parseInt(p1[0]);
+        int MM = Integer.parseInt(p1[1]);
+        int dd = Integer.parseInt(p1[2]);
+        String[] p2 = arr[1].split("[:.]");
+        int HH = Integer.parseInt(p2[0]);
+        int mm = Integer.parseInt(p2[1]);
+        int ss = Integer.parseInt(p2[2]);
+        int ms = Integer.parseInt(p2[3]);
+        return Date.UTC(yyyy - 1900, MM - 1, dd, HH, mm, ss) + ms;
     }
 }

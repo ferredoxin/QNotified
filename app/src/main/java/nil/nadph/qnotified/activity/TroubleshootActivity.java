@@ -119,10 +119,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
             @Override
             public void onClick(View v) {
                 try {
-                    Looper looper = Looper.getMainLooper();
-                    MessageQueue queue = (MessageQueue) iget_object_or_null(looper, "mQueue");
-                    iput_object(queue, "mQuitAllowed", true);
-                    looper.quit();
+                    quitLooper();
                 } catch (Throwable e) {
                     Toast.makeText(TroubleshootActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
                 }
@@ -198,7 +195,16 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                 + "\nInitiator.getHostClassLoader()\n" + Initiator.getHostClassLoader()));
         long ts = Utils.getBuildTimestamp();
         ll.addView(subtitle(this, "Build Time: " + (ts > 0 ? new Date(ts).toString() : "unknown")));
-
+        String info;
+        try {
+            Natives.load(this);
+            info = "pagesize=" + Natives.getpagesize() + ", sizeof(void*)=" + Natives.sizeofptr() + ", addr="
+                    + Long.toHexString(Natives.dlopen("libnatives.so", Natives.RTLD_NOLOAD));
+        } catch (Throwable e3) {
+            log(e3);
+            info = e3.toString();
+        }
+        ll.addView(subtitle(this, info));
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         this.setContentView(bounceScrollView);
         LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);
@@ -283,6 +289,13 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                 dialog.show();
             }
         };
+    }
+
+    public static void quitLooper() throws Exception {
+        Looper looper = Looper.getMainLooper();
+        MessageQueue queue = (MessageQueue) iget_object_or_null(looper, "mQueue");
+        iput_object(queue, "mQuitAllowed", true);
+        looper.quit();
     }
 
     public View.OnClickListener clickToWipeAllFriends() {

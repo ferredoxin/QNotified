@@ -1,17 +1,16 @@
 # QNotified
 
-[![Build status](https://build.appcenter.ms/v0.1/apps/599b1851-3361-4e64-a277-6a4c8f6e7332/branches/master/badge)](https://appcenter.ms)
+[![Build status](https://build.appcenter.ms/v0.1/apps/599b1851-3361-4e64-a277-6a4c8f6e7332/branches/master/badge)](https://install.appcenter.ms/orgs/qnotifieddev/apps/qnotified/distribution_groups/alpha)
 [![license](https://img.shields.io/github/license/cinit/QNotified.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
-[![GitHub release](https://img.shields.io/github/release/cinit/QNotified.svg)](https://github.com/cinit/QNotified/releases/latest)
-
+[![GitHub release](https://img.shields.io/github/release/cinit/QNotified.svg)](https://github.com/cinit/QNotified/releases/latest)  
 等(zuo)不(si)及的小伙伴可以: [CI构建下载](https://install.appcenter.ms/orgs/qnotifieddev/apps/qnotified/distribution_groups/alpha) (危!富含bug与兼容性问题,PR可能含恶意代码,自行承担风险)
 
-QNotified（以下简称本模块）是一款依赖 Xposed/太极框架运行的辅助性QQ功能增强模块, 本模块无毒无害, 免费开源, 旨在:
+QNotified（以下简称本模块）是一款依赖 Xposed框架运行的辅助性QQ功能增强模块, 本模块无毒无害, 免费开源, 旨在:  
 1. **接手部分停更模块的部分功能**
 2. 提供被删好友通知功能
 3. **移除部分臃肿功能, 增加部分实用功能**
 
-QNotified is a Xposed/TaiChi module for mobile QQ that aims to:
+QNotified is a Xposed/TaiChi module for mobile QQ that aims to:  
 1. bring some nice functions in some modules back to life
 2. automatically refreshes friend list and tell(notify) user which friend had deleted him/her
 3. remove some unnecessary functions and add to facility
@@ -19,7 +18,7 @@ QNotified is a Xposed/TaiChi module for mobile QQ that aims to:
 -  **适配QQ版本** : 普通版QQ,TIM (全版本)
 -  **使用方法** : 在Xposed Installer 激活模块后，在QQ自带设置中点击QNotified即可开关对应功能。
 - 关于删好友通知:  **(从安装并激活日起生效，无法查看安装本模块以前删除自己的好友!)** ,自己删除好友没有多余提示但是有记录。激活模块后自动检测，无需手动配置. 
-- QQ内模块界面主题自动跟随QQ主题或ColorQQ(2). 
+- QQ内模块界面主题自动跟随 QQ主题 或 Substratum主题如MaterialQQ - GoogleBlue 或 ColorQQ(2) . 
 
 # 一切开发旨在学习，请勿用于非法用途
 - 本项目保证永久开源，欢迎提交PR，但是请不要提交明显用于非法用途的功能。
@@ -55,7 +54,7 @@ QNotified is a Xposed/TaiChi module for mobile QQ that aims to:
 26. 群发文本消息(注1)
 27. 显示具体消息数量而不是99+(原花Q)
 
-注1: 卡片消息及群发文本这两个功能因大量被用于广告影流而废除
+注1: 卡片消息及群发文本这两个功能因大量被用于广告引流而废除
 
 #### 计划任务:
 1. 查看已删除好友的聊天记录

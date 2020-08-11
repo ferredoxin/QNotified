@@ -25,13 +25,16 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
 import android.os.Build;
+import android.os.Debug;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
 import com.tencent.mobileqq.app.QQAppInterface;
+
 import dalvik.system.DexFile;
 import de.robv.android.xposed.XposedBridge;
 import mqq.app.AppRuntime;
@@ -180,7 +183,7 @@ public class Utils {
         try {
             AppRuntime rt = getAppRuntime();
             if (rt == null) {
-                loge("getLongAccountUin/E getAppRuntime == null");
+                logw("getLongAccountUin/E getAppRuntime == null");
                 return -1;
             }
             return (long) invoke_virtual(rt, "getLongAccountUin");
@@ -1098,7 +1101,7 @@ public class Utils {
     @MainProcess
     public static AppRuntime getAppRuntime() {
         if (!sAppRuntimeInit) {
-            loge("getAppRuntime/W invoked before NewRuntime.step");
+            logw("getAppRuntime/W invoked before NewRuntime.step");
             return null;
         }
         Object baseApplicationImpl = getApplication();
@@ -1279,6 +1282,7 @@ public class Utils {
     public static void loge(String str) {
         Log.e("QNdump", str);
         try {
+            BugCollector.onThrowable(new Throwable(str));
             XposedBridge.log(str);
         } catch (NoClassDefFoundError e) {
             Log.e("Xposed", str);
@@ -1321,6 +1325,25 @@ public class Utils {
         } catch (NoClassDefFoundError e) {
             Log.i("Xposed", str);
             Log.i("EdXposed-Bridge", str);
+        }
+        if (ENABLE_DUMP_LOG) {
+            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/qn_log.txt";
+            File f = new File(path);
+            try {
+                if (!f.exists()) f.createNewFile();
+                appendToFile(path, "[" + System.currentTimeMillis() + "-" + android.os.Process.myPid() + "] " + str + "\n");
+            } catch (IOException e) {
+            }
+        }
+    }
+
+    public static void logw(String str) {
+        Log.i("QNdump", str);
+        try {
+            XposedBridge.log(str);
+        } catch (NoClassDefFoundError e) {
+            Log.w("Xposed", str);
+            Log.w("EdXposed-Bridge", str);
         }
         if (ENABLE_DUMP_LOG) {
             String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/qn_log.txt";
@@ -1916,62 +1939,23 @@ public class Utils {
 
     }
 
-    private static long sBuildTimestamp = -2;
+    private static native long ntGetBuildTimestamp();
 
     public static long getBuildTimestamp() {
-        if (sBuildTimestamp != -2) return sBuildTimestamp;
+        Context ctx = null;
         try {
-            ClassLoader loader = Utils.class.getClassLoader();
-            Enumeration<URL> eu;
-            HashSet<URL> urls = new HashSet<URL>();
-            eu = (Enumeration<URL>) invoke_virtual(loader, "findResources", "classes.dex", String.class);
-            if (eu != null) {
-                while (eu.hasMoreElements()) {
-                    urls.add(eu.nextElement());
-                }
-            }
-            if (urls.size() == 0) {
-                sBuildTimestamp = -1;
-                loge("getBuildTimestamp/E urls.size == 0, loader = " + loader);
-            } else {
-                byte[] buf = new byte[1024];
-                for (URL u : urls) {
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    try {
-                        InputStream in = u.openStream();
-                        int len;
-                        while ((len = in.read(buf)) > 0) {
-                            baos.write(buf, 0, len);
-                        }
-                        in.close();
-                        byte[] dex = baos.toByteArray();
-                        if (dex.length > 7 * 1024 * 1024 || dex.length < 128 * 1024) {
-                            continue;
-                        }
-                        byte[] tail = DexFlow.extractPayload(dex);
-                        if (tail != null) {
-                            long time = 0;
-                            for (int i = 0; i < 8; i++) {
-                                time |= ((tail[i] & 0xFFL) << (8 * i));
-                            }
-                            sBuildTimestamp = time;
-                            return time;
-                        }
-                    } catch (Exception e2) {
-                        log(e2);
-                    }
-                }
-            }
-        } catch (Throwable e) {
-            sBuildTimestamp = -1;
-            log(e);
+            ctx = getApplication();
+        } catch (Throwable ignored) {
         }
-        return sBuildTimestamp;
-    }
-
-    public static void onStubClassInitialize() {
-        Throwable th = new Throwable("WTF: stub class was initialized!!!");
-        log(th);
+        if (ctx == null) {
+            ctx = Utils.getCurrentActivity();
+        }
+        try {
+            Natives.load(ctx);
+            return ntGetBuildTimestamp();
+        } catch (Throwable throwable) {
+            return -3;
+        }
     }
 
     @Nullable
@@ -2030,11 +2014,11 @@ public class Utils {
         return arr[arr.length - 1];
     }
 
-    public static String getFileContent(String path) throws IOException {
+    public static String getFileContent(InputStream in) throws IOException {
         BufferedReader br = null;
         StringBuffer sb;
         try {
-            br = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
+            br = new BufferedReader(new InputStreamReader(in));
             sb = new StringBuffer();
             String line;
             while ((line = br.readLine()) != null) {
@@ -2047,6 +2031,10 @@ public class Utils {
             } catch (Exception ignored) {
             }
         }
+    }
+
+    public static String getFileContent(String path) throws IOException {
+        return getFileContent(new FileInputStream(path));
     }
 
     public static void saveFileContent(String path, String content) throws IOException {
