@@ -31,7 +31,9 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.tencent.mobileqq.app.QQAppInterface;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
@@ -141,11 +143,7 @@ public class CardMsgHook extends BaseDelayableHook {
                                 } else {
                                     if (text.contains("<?xml")) {
                                         try {
-                                            Externalizable structMsg = (Externalizable) invoke_static_any(DexKit.doFindClass(DexKit.C_TEST_STRUCT_MSG), text, String.class, load("com.tencent.mobileqq.structmsg.AbsStructMsg"));
-                                            if (structMsg != null) {
-                                                if (Utils.getBuildTimestamp() > 0 || Math.random() > 0.4) {
-                                                    ChatActivityFacade.sendAbsStructMsg(qqApp, session, structMsg);
-                                                }
+                                            if (ntSendCardMsg(qqApp, session, text)) {
                                                 input.setText("");
                                                 CliOper.sendCardMsg(Utils.getLongAccountUin(), text);
                                                 return true;
@@ -154,18 +152,16 @@ public class CardMsgHook extends BaseDelayableHook {
                                                 return true;
                                             }
                                         } catch (Throwable e) {
-                                            if (e instanceof InvocationTargetException)
+                                            if (e instanceof InvocationTargetException) {
                                                 e = e.getCause();
+                                            }
                                             log(e);
                                             Utils.showToast(ctx, TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), Toast.LENGTH_SHORT);
                                         }
                                     } else if (text.contains("{\"")) {
                                         try {
                                             Object arkMsg = load("com.tencent.mobileqq.data.ArkAppMessage").newInstance();
-                                            if ((boolean) invoke_virtual(arkMsg, "fromAppXml", text, String.class)) {
-                                                if (Utils.getBuildTimestamp() > 0 || Math.random() > 0.4) {
-                                                    ChatActivityFacade.sendArkAppMessage(qqApp, session, arkMsg);
-                                                }
+                                            if (ntSendCardMsg(qqApp, session, text)) {
                                                 input.setText("");
                                                 CliOper.sendCardMsg(Utils.getLongAccountUin(), text);
                                                 return true;
@@ -174,8 +170,9 @@ public class CardMsgHook extends BaseDelayableHook {
                                                 return true;
                                             }
                                         } catch (Throwable e) {
-                                            if (e instanceof InvocationTargetException)
+                                            if (e instanceof InvocationTargetException) {
                                                 e = e.getCause();
+                                            }
                                             log(e);
                                             Utils.showToast(ctx, TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), Toast.LENGTH_SHORT);
                                         }
@@ -325,6 +322,8 @@ public class CardMsgHook extends BaseDelayableHook {
             return null;
         }
     }
+
+    static native boolean ntSendCardMsg(QQAppInterface rt, Parcelable session, String msg) throws Exception;
 
     @Override
     public int getEffectiveProc() {

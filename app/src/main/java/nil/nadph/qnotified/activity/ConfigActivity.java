@@ -145,12 +145,12 @@ public class ConfigActivity extends Activity implements Runnable {
             vtv.setText(start);
             vtv.setTextColor(Color.RED);
         }
-        long delta = System.currentTimeMillis();
-        long ts = Utils.getBuildTimestamp();
-        delta = System.currentTimeMillis() - delta;
         String text;
         try {
+            long delta = System.currentTimeMillis();
             Natives.load(this);
+            long ts = Utils.getBuildTimestamp();
+            delta = System.currentTimeMillis() - delta;
             text = "Build Time: " + (ts > 0 ? new Date(ts).toString() : "unknown") + ", delta=" + delta + "ms\n" +
                     "CPU_ABI: " + Build.CPU_ABI + ", CPU_ABI2: " + Build.CPU_ABI2 + ",\n" +
                     "SUPPORTED_ABIS=" + Arrays.toString(Build.SUPPORTED_ABIS) + "\npageSize=" + Natives.getpagesize();

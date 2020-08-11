@@ -25,13 +25,16 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
 import android.os.Build;
+import android.os.Debug;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
 import com.tencent.mobileqq.app.QQAppInterface;
+
 import dalvik.system.DexFile;
 import de.robv.android.xposed.XposedBridge;
 import mqq.app.AppRuntime;
@@ -1936,62 +1939,23 @@ public class Utils {
 
     }
 
-    private static long sBuildTimestamp = -2;
+    private static native long ntGetBuildTimestamp();
 
     public static long getBuildTimestamp() {
-        if (sBuildTimestamp != -2) return sBuildTimestamp;
+        Context ctx = null;
         try {
-            ClassLoader loader = Utils.class.getClassLoader();
-            Enumeration<URL> eu;
-            HashSet<URL> urls = new HashSet<URL>();
-            eu = (Enumeration<URL>) invoke_virtual(loader, "findResources", "classes.dex", String.class);
-            if (eu != null) {
-                while (eu.hasMoreElements()) {
-                    urls.add(eu.nextElement());
-                }
-            }
-            if (urls.size() == 0) {
-                sBuildTimestamp = -1;
-                loge("getBuildTimestamp/E urls.size == 0, loader = " + loader);
-            } else {
-                byte[] buf = new byte[1024];
-                for (URL u : urls) {
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    try {
-                        InputStream in = u.openStream();
-                        int len;
-                        while ((len = in.read(buf)) > 0) {
-                            baos.write(buf, 0, len);
-                        }
-                        in.close();
-                        byte[] dex = baos.toByteArray();
-                        if (dex.length > 7 * 1024 * 1024 || dex.length < 128 * 1024) {
-                            continue;
-                        }
-                        byte[] tail = DexFlow.extractPayload(dex);
-                        if (tail != null) {
-                            long time = 0;
-                            for (int i = 0; i < 8; i++) {
-                                time |= ((tail[i] & 0xFFL) << (8 * i));
-                            }
-                            sBuildTimestamp = time;
-                            return time;
-                        }
-                    } catch (Exception e2) {
-                        log(e2);
-                    }
-                }
-            }
-        } catch (Throwable e) {
-            sBuildTimestamp = -1;
-            log(e);
+            ctx = getApplication();
+        } catch (Throwable ignored) {
         }
-        return sBuildTimestamp;
-    }
-
-    public static void onStubClassInitialize() {
-        Throwable th = new Throwable("WTF: stub class was initialized!!!");
-        log(th);
+        if (ctx == null) {
+            ctx = Utils.getCurrentActivity();
+        }
+        try {
+            Natives.load(ctx);
+            return ntGetBuildTimestamp();
+        } catch (Throwable throwable) {
+            return -3;
+        }
     }
 
     @Nullable
