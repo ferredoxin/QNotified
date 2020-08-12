@@ -717,7 +717,8 @@ public class MainHook {
                     //log("startActivity, rawIntent=" + raw);
                     if (component != null &&
                             (component.getClassName().startsWith("nil.nadph.qnotified.")
-                                    || component.getClassName().startsWith("me.zpp0196.qqpurify.activity."))) {
+                                    || component.getClassName().startsWith("me.zpp0196.qqpurify.activity.")
+                                        || component.getClassName().startsWith("me.singleneuron."))) {
                         Intent wrapper = new Intent();
                         wrapper.setClassName(component.getPackageName(), ActProxyMgr.STUB_ACTIVITY);
                         wrapper.putExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT, raw);
@@ -749,7 +750,8 @@ public class MainHook {
                 return mBase.newActivity(cl, className, intent);
             } catch (Exception e) {
                 if (className.startsWith("nil.nadph.qnotified.")
-                        || className.startsWith("me.zpp0196.qqpurify.activity.")) {
+                        || className.startsWith("me.zpp0196.qqpurify.activity.")
+                            || className.startsWith("me.singleneuron.")) {
                     return (Activity) Initiator.class.getClassLoader().loadClass(className).newInstance();
                 }
                 throw e;
@@ -971,7 +973,8 @@ public class MainHook {
         public void callActivityOnCreate(Activity activity, Bundle icicle) {
             if (icicle != null) {
                 String className = activity.getClass().getName();
-                if (className.startsWith("me.zpp0196.qqpurify.activity.")) {
+                if (className.startsWith("me.zpp0196.qqpurify.activity.")
+                        || className.startsWith("me.singleneuron.")) {
                     icicle.setClassLoader(MainHook.class.getClassLoader());
                 }
             }
@@ -983,7 +986,8 @@ public class MainHook {
         public void callActivityOnCreate(Activity activity, Bundle icicle, PersistableBundle persistentState) {
             if (icicle != null) {
                 String className = activity.getClass().getName();
-                if (className.startsWith("me.zpp0196.qqpurify.activity.")) {
+                if (className.startsWith("me.zpp0196.qqpurify.activity.")
+                    || className.startsWith("me.singleneuron.")) {
                     icicle.setClassLoader(MainHook.class.getClassLoader());
                 }
             }

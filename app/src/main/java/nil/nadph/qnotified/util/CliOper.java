@@ -17,6 +17,10 @@ public class CliOper {
         sInit = true;
         AppCenter.start(app, "ddf4b597-1833-45dd-af28-96ca504b8123",
                 Analytics.class, Crashes.class);
+        long longAccount = Utils.getLongAccountUin();
+        if (longAccount!=-1) {
+            AppCenter.setUserId(String.valueOf(longAccount));
+        }
     }
 
     public static void openModuleSettings() {
