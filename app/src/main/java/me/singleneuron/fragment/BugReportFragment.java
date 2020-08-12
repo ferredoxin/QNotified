@@ -40,6 +40,7 @@ public class BugReportFragment extends PreferenceFragmentCompat {
             } else {*/
                 ListPreference listPreference = new ListPreference(getContext());
                 listPreference.setEntryValues(bugReportArguments.choices);
+                listPreference.setEntries(bugReportArguments.choices);
                 preference = listPreference;
             //}
             preference.setKey(bugReportArguments.key);
