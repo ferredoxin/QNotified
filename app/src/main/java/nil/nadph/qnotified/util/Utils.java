@@ -25,16 +25,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
 import android.os.Build;
-import android.os.Debug;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-
 import com.tencent.mobileqq.app.QQAppInterface;
-
 import dalvik.system.DexFile;
 import de.robv.android.xposed.XposedBridge;
 import mqq.app.AppRuntime;
@@ -45,7 +42,6 @@ import nil.nadph.qnotified.config.ConfigManager;
 
 import java.io.*;
 import java.lang.reflect.*;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -816,7 +812,8 @@ public class Utils {
             Throwable cause = e.getCause();
             if (cause instanceof NullPointerException) {
                 String tr = android.util.Log.getStackTraceString(cause);
-                if (tr.indexOf("ExposedBridge.invokeOriginalMethod") != 0 || tr.indexOf("ExposedBridge.invokeOriginalMethod") != 0)
+                if (tr.indexOf("ExposedBridge.invokeOriginalMethod") != 0
+                        || Pattern.compile("me\\.[.a-zA-Z]+\\.invokeOriginalMethod").matcher(tr).find())
                     needPatch = true;
             }
             if (!needPatch) throw e;
