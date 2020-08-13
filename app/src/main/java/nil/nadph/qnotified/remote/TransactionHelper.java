@@ -55,6 +55,19 @@ public class TransactionHelper {
         return resp;
     }
 
+    public static GetBugReportArgsResp doGetBugReportArgs() throws IOException {
+        ToServiceMsg toServiceMsg = new ToServiceMsg("NAuth.QNotified", "GetBugReportArgs", Utf8JceUtils.NO_DATA);
+        JceOutputStream jceout = Utf8JceUtils.newOutputStream();
+        toServiceMsg.writeTo(jceout);
+        FromServiceMsg reply = doSendMsg(toServiceMsg);
+        if (reply.getResultCode() != 0) {
+            throw new IOException("RemoteError: " + reply.getResultCode() + ": " + reply.getErrorMsg());
+        }
+        GetBugReportArgsResp resp = new GetBugReportArgsResp();
+        resp.readFrom(Utf8JceUtils.newInputStream(reply.getBody()));
+        return resp;
+    }
+
     public static FromServiceMsg doSendMsg(ToServiceMsg msg) throws IOException {
         initSslContext();
         SSLSocket s = (SSLSocket) sslFactory.createSocket();

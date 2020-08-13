@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.preference.PreferenceCategory
+        android:key="pref_bug_report_category"
+        app:title="提交问题" />
+
+    <androidx.preference.Preference
+        android:key="pref_bug_report_commit"
+        app:title="提交">
+
+    </androidx.preference.Preference>
+
+</androidx.preference.PreferenceScreen>

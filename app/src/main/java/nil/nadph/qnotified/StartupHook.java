@@ -20,11 +20,11 @@ package nil.nadph.qnotified;
 
 import android.content.Context;
 import android.os.Build;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.util.Initiator;
+import nil.nadph.qnotified.util.Natives;
 import nil.nadph.qnotified.util.Utils;
 
 import java.io.File;
@@ -73,6 +73,11 @@ public class StartupHook {
                         }
                         System.setProperty(QN_FULL_TAG, "true");
                         Initiator.init(classLoader);
+                        try {
+                            Natives.load(ctx);
+                        } catch (Throwable e3) {
+                            Utils.log(e3);
+                        }
                         if (Utils.getBuildTimestamp() < 0) return;
                         MainHook.getInstance().performHook(ctx, param.thisObject);
                         sec_stage_inited = true;

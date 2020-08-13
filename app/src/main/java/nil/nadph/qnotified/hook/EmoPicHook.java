@@ -22,10 +22,10 @@ import android.app.Application;
 import android.os.Looper;
 import android.view.View;
 import android.widget.Toast;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.bridge.AIOUtilsImpl;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
@@ -33,8 +33,9 @@ import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
+import java.lang.reflect.Field;
+
 import static nil.nadph.qnotified.util.Initiator._PicItemBuilder;
-import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class EmoPicHook extends BaseDelayableHook {
@@ -63,16 +64,33 @@ public class EmoPicHook extends BaseDelayableHook {
             }
             if (!canInit) return false;
             XposedHelpers.findAndHookMethod(_PicItemBuilder(), "onClick", View.class, new XC_MethodHook(51) {
+
+                Field f_picExtraData = null;
+                Field f_imageBizType = null;
+                Field f_imageType = null;
+
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     if (LicenseStatus.sDisableCommonHooks) return;
                     if (!isEnabled()) return;
-                    Object v0 = invoke_static(DexKit.doFindClass(DexKit.C_AIO_UTILS), "a", param.args[0], View.class, Object.class);
-                    Object chatMessage = iget_object_or_null(v0, "a", load("com.tencent.mobileqq.data.ChatMessage"));
-                    Object picMessageExtraData = iget_object_or_null(chatMessage, "picExtraData");
-                    iput_object(chatMessage, "imageType", int.class, 0);
+                    Object chatMsg = AIOUtilsImpl.getChatMessage((View) param.args[0]);
+                    if (chatMsg == null) return;
+                    if (f_picExtraData == null) {
+                        f_picExtraData = Utils.findField(chatMsg.getClass(), null, "picExtraData");
+                        f_picExtraData.setAccessible(true);
+                    }
+                    Object picMessageExtraData = f_picExtraData.get(chatMsg);
+                    if (f_imageType == null) {
+                        f_imageType = Utils.findField(chatMsg.getClass(), null, "imageType");
+                        f_imageType.setAccessible(true);
+                    }
+                    f_imageType.setInt(chatMsg, 0);
                     if (picMessageExtraData != null) {
-                        iput_object(picMessageExtraData, "imageBizType", int.class, 0);
+                        if (f_imageBizType == null) {
+                            f_imageBizType = Utils.findField(picMessageExtraData.getClass(), null, "imageBizType");
+                            f_imageBizType.setAccessible(true);
+                        }
+                        f_imageBizType.setInt(picMessageExtraData, 0);
                     }
                 }
             });
