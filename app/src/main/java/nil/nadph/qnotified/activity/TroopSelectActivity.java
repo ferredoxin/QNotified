@@ -211,6 +211,10 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
                     cfg.putString(ConfigItems.qn_muted_red_packet, ret);
                     cfg.save();
                 }
+                if (mActionInt == ACTION_CHAT_TAIL_TROOPS_ACTIVITY) {
+                    cfg.putString(ConfigItems.qn_chat_tail_troops, ret);
+                    cfg.save();
+                }
                 this.finish();
             } catch (Exception e) {
                 try {
@@ -367,6 +371,8 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
             title = "屏蔽@全体成员";
         else if (mActionInt == ACTION_MUTE_RED_PACKET)
             title = "屏蔽群红包";
+        else if (mActionInt == ACTION_CHAT_TAIL_TROOPS_ACTIVITY)
+            title = "选择小尾巴生效群";
         setTitle(title);
         rightBtn = (TextView) getRightTextView();
         //log("Title:"+invoke_virtual(this,"getTextTitle"));
@@ -384,6 +390,8 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
             list = ConfigManager.getDefaultConfig().getString(ConfigItems.qn_muted_at_all);
         if (mActionInt == ACTION_MUTE_RED_PACKET)
             list = ConfigManager.getDefaultConfig().getString(ConfigItems.qn_muted_red_packet);
+        if (mActionInt == ACTION_CHAT_TAIL_TROOPS_ACTIVITY)
+            list = ConfigManager.getDefaultConfig().getString(ConfigItems.qn_chat_tail_troops);
         if (list != null) {
             for (String s : list.split(",")) {
                 if (s.length() > 4) {

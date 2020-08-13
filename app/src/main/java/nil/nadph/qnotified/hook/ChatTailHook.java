@@ -18,10 +18,16 @@
  */
 package nil.nadph.qnotified.hook;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.BatteryManager;
+import android.os.Build;
 import android.os.Looper;
 import android.os.Parcelable;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -30,21 +36,25 @@ import android.widget.Toast;
 import com.tencent.mobileqq.app.QQAppInterface;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.bridge.ChatActivityFacade;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.ui.InterceptLayout;
+import nil.nadph.qnotified.ui.TouchEventToLongClickAdapter;
+import nil.nadph.qnotified.util.*;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
+import java.lang.ref.WeakReference;
+import java.lang.reflect.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 
-import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
-import static nil.nadph.qnotified.util.Initiator._SessionInfo;
+import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
+import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class ChatTailHook extends BaseDelayableHook implements InvocationHandler, SyncUtils.BroadcastListener {
@@ -91,7 +101,6 @@ public class ChatTailHook extends BaseDelayableHook implements InvocationHandler
                             View sendBtn = viewGroup.findViewById(fun_btn);
                             final QQAppInterface qqApp = getFirstNSFByType(param.thisObject, QQAppInterface.class);
                             final Parcelable session = getFirstNSFByType(param.thisObject, _SessionInfo());
-
                             sendBtn.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -100,7 +109,26 @@ public class ChatTailHook extends BaseDelayableHook implements InvocationHandler
                                     EditText input = viewGroup.findViewById(ctx.getResources().getIdentifier("input", "id", ctx.getPackageName()));
                                     String text = input.getText().toString();
                                     if (((TextView) v).length() != 0) {
-                                        text = text + ChatTailHook.get().getTailCapacity();
+                                        Field field = null;
+                                        for (Field f : session.getClass().getDeclaredFields()) {
+                                            if (f.getName().equalsIgnoreCase("a") && f.getType() == String.class) {
+                                                field = f;
+                                            }
+                                        }
+                                        String uin = "";
+                                        try {
+                                            uin = (String) field.get(session);
+                                            String muted = "," + ConfigManager.getDefaultConfig().getString(ConfigItems.qn_chat_tail_troops) + ",";
+                                            if (muted.contains("," + uin + ",")) {
+                                                text = text + ChatTailHook.get().getTailCapacity();
+                                            } else {
+                                                muted = "," + ConfigManager.getDefaultConfig().getString(ConfigItems.qn_chat_tail_friends) + ",";
+                                                if (muted.contains("," + uin + ",")) {
+                                                    text = text + ChatTailHook.get().getTailCapacity();
+                                                }
+                                            }
+                                        } catch (IllegalAccessException e) {
+                                        }
                                         ChatActivityFacade.sendMessage(qqApp, ctx, session, text);
                                         input.setText("");
                                     }
