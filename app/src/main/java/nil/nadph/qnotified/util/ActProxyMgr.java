@@ -35,6 +35,7 @@ public class ActProxyMgr {
     public static final int ACTION_TROUBLESHOOT_ACTIVITY = 8;
     public static final int ACTION_FRIENDLIST_EXPORT_ACTIVITY = 9;
     public static final int ACTION_FAKE_BAT_CONFIG_ACTIVITY = 10;
+    public static final int ACTION_CHAT_TAIL_CONFIG_ACTIVITY = 11;
 
     @Deprecated
     public static Class<?> getActivityByAction(int action) {
@@ -56,6 +57,8 @@ public class ActProxyMgr {
                 return FriendlistExportActivity.class;
             case ACTION_FAKE_BAT_CONFIG_ACTIVITY:
                 return FakeBatCfgActivity.class;
+            case ACTION_CHAT_TAIL_CONFIG_ACTIVITY:
+                return ChatTailActivity.class;
             default:
                 return null;
         }

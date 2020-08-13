@@ -83,6 +83,10 @@ public class Utils {
         return null;
     }
 
+    public static boolean isNullOrEmpty(String str) {
+        return str == null || str.replace(" ", "").equalsIgnoreCase("");
+    }
+
     public static void runOnUiThread(Runnable r) {
         if (mHandler == null) mHandler = new Handler(Looper.getMainLooper());
         mHandler.post(r);
