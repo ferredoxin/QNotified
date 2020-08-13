@@ -27,6 +27,7 @@ import android.widget.TextView;
 
 import com.tencent.mobileqq.widget.BounceScrollView;
 
+import nil.nadph.qnotified.hook.MutePokePacket;
 import nil.nadph.qnotified.hook.PttForwardHook;
 import nil.nadph.qnotified.hook.kyuubiran.RemoveQbossAD;
 import nil.nadph.qnotified.hook.rikka.RemoveMiniProgramAd;
@@ -35,9 +36,9 @@ import nil.nadph.qnotified.util.LicenseStatus;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit;
-import static nil.nadph.qnotified.ui.ViewBuilder.newListItemSwitchConfig;
-import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
+import static nil.nadph.qnotified.ui.ViewBuilder.*;
+import static nil.nadph.qnotified.ui.ViewBuilder.clickToProxyActAction;
+import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_CHAT_TAIL_CONFIG_ACTIVITY;
 import static nil.nadph.qnotified.util.Utils.dip2px;
 
 @SuppressLint("Registered")
@@ -85,6 +86,8 @@ public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
             ll.addView(subtitle(this, "Beta测试功能 仅用于测试稳定性[可能会存在BUG 包括但不限于功能不生效、QQ出现卡顿乃至QQ闪退 请酌情开启]"));
             ll.addView(newListItemSwitchConfig(this, "保存语音", "需要打开语音转发才能使用本功能", PttForwardHook.qn_enable_ptt_save, false));
             ll.addView(newListItemHookSwitchInit(this, "屏蔽小程序广告", "需要手动关闭广告哦", RemoveMiniProgramAd.get()));
+            ll.addView(newListItemButton(this, "自定义聊天小尾巴", "回车发送不生效", "N/A", clickToProxyActAction(ACTION_CHAT_TAIL_CONFIG_ACTIVITY)));
+            ll.addView(newListItemHookSwitchInit(this, "屏蔽戳一戳", "或许吧...", MutePokePacket.get()));
         }
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         this.setContentView(bounceScrollView);
