@@ -12,6 +12,8 @@ import androidx.preference.PreferenceFragmentCompat;
 import com.microsoft.appcenter.AppCenter;
 import com.microsoft.appcenter.analytics.Analytics;
 
+import java.io.IOError;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +32,12 @@ public class BugReportFragment extends PreferenceFragmentCompat {
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.pref_bug_report);
         PreferenceCategory preferenceCategory = findPreference(BugReportPreference.CATEGORY);
-        ArrayList<BugReportArguments> bugReportArgumentsList = BaseBugReport.getInstance().getBugReportArgumentsList();
+        ArrayList<BugReportArguments> bugReportArgumentsList;
+        try {
+            bugReportArgumentsList = BaseBugReport.getInstance().getBugReportArgumentsList();
+        } catch (IOException e) {
+            throw new IOError(e);
+        }
         for (BugReportArguments bugReportArguments : bugReportArgumentsList) {
             Preference preference;
             /*if (bugReportArguments.multiple) {
@@ -38,9 +45,9 @@ public class BugReportFragment extends PreferenceFragmentCompat {
                 multiSelectListPreference.setEntries(bugReportArguments.choices);
                 preference = multiSelectListPreference;
             } else {*/
-                ListPreference listPreference = new ListPreference(getContext());
-                listPreference.setEntryValues(bugReportArguments.choices);
-                listPreference.setEntries(bugReportArguments.choices);
+            ListPreference listPreference = new ListPreference(getContext());
+            listPreference.setEntryValues(bugReportArguments.choices);
+            listPreference.setEntries(bugReportArguments.choices);
                 preference = listPreference;
             //}
             preference.setKey(bugReportArguments.key);
