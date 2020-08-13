@@ -79,34 +79,36 @@ public class ChatTailHook extends BaseDelayableHook implements InvocationHandler
             XposedBridge.hookMethod(DexKit.doFindMethod(DexKit.N_BASE_CHAT_PIE__INIT), new XC_MethodHook(40) {
                 @Override
                 public void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.sDisableCommonHooks) return;
-                    try {
-                        Object chatPie = param.thisObject;
-                        //Class cl_PatchedButton = load("com/tencent/widget/PatchedButton");
-                        final ViewGroup viewGroup = (ViewGroup) invoke_virtual_any(chatPie, ViewGroup.class);
-                        if (viewGroup == null) return;
-                        Context ctx = viewGroup.getContext();
-                        int fun_btn = ctx.getResources().getIdentifier("fun_btn", "id", ctx.getPackageName());
-                        View sendBtn = viewGroup.findViewById(fun_btn);
-                        final QQAppInterface qqApp = getFirstNSFByType(param.thisObject, QQAppInterface.class);
-                        final Parcelable session = getFirstNSFByType(param.thisObject, _SessionInfo());
+                    if (isEnabled()) {
+                        if (LicenseStatus.sDisableCommonHooks) return;
+                        try {
+                            Object chatPie = param.thisObject;
+                            //Class cl_PatchedButton = load("com/tencent/widget/PatchedButton");
+                            final ViewGroup viewGroup = (ViewGroup) invoke_virtual_any(chatPie, ViewGroup.class);
+                            if (viewGroup == null) return;
+                            Context ctx = viewGroup.getContext();
+                            int fun_btn = ctx.getResources().getIdentifier("fun_btn", "id", ctx.getPackageName());
+                            View sendBtn = viewGroup.findViewById(fun_btn);
+                            final QQAppInterface qqApp = getFirstNSFByType(param.thisObject, QQAppInterface.class);
+                            final Parcelable session = getFirstNSFByType(param.thisObject, _SessionInfo());
 
-                        sendBtn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (LicenseStatus.sDisableCommonHooks) return;
-                                Context ctx = v.getContext();
-                                EditText input = viewGroup.findViewById(ctx.getResources().getIdentifier("input", "id", ctx.getPackageName()));
-                                String text = input.getText().toString();
-                                if (((TextView) v).length() != 0) {
-                                    text = text + ChatTailHook.get().getTailCapacity();
-                                    ChatActivityFacade.sendMessage(qqApp, ctx, session, text);
-                                    input.setText("");
+                            sendBtn.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if (LicenseStatus.sDisableCommonHooks) return;
+                                    Context ctx = v.getContext();
+                                    EditText input = viewGroup.findViewById(ctx.getResources().getIdentifier("input", "id", ctx.getPackageName()));
+                                    String text = input.getText().toString();
+                                    if (((TextView) v).length() != 0) {
+                                        text = text + ChatTailHook.get().getTailCapacity();
+                                        ChatActivityFacade.sendMessage(qqApp, ctx, session, text);
+                                        input.setText("");
+                                    }
                                 }
-                            }
-                        });
-                    } catch (Throwable e) {
-                        log(e);
+                            });
+                        } catch (Throwable e) {
+                            log(e);
+                        }
                     }
                 }
             });
