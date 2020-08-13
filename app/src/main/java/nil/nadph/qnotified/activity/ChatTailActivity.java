@@ -115,6 +115,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         pct.setText(ct.getTailCapacity() + "");
         pct.setSelection(pct.getText().length());
         ll.addView(pct, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 2 * _5dp, _5dp, 2 * _5dp, _5dp));
+        ll.addView(newListItemSwitchConfigNext(this, "全局开关", "开启将无视生效范围", ConfigItems.qn_chat_tail_global, false));
         Button apply = new Button(ChatTailActivity.this);
         apply.setId(R_ID_APPLY);
         apply.setOnClickListener(this);

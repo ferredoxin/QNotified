@@ -119,7 +119,7 @@ public class ChatTailHook extends BaseDelayableHook implements InvocationHandler
                                         try {
                                             uin = (String) field.get(session);
                                             String muted = "," + ConfigManager.getDefaultConfig().getString(ConfigItems.qn_chat_tail_troops) + ",";
-                                            if (muted.contains("," + uin + ",")) {
+                                            if (muted.contains("," + uin + ",") || ConfigManager.getDefaultConfig().getBooleanOrFalse(ConfigItems.qn_chat_tail_global)) {
                                                 text = text + ChatTailHook.get().getTailCapacity();
                                             } else {
                                                 muted = "," + ConfigManager.getDefaultConfig().getString(ConfigItems.qn_chat_tail_friends) + ",";
