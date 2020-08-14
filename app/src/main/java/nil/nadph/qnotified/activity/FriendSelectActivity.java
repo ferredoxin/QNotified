@@ -173,9 +173,9 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
                 ret = "";
             } else ret = sb.substring(1);
             try {
-                ConfigManager cfg = ConfigManager.getDefaultConfig();
+                ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
                 if (mActionInt == ACTION_CHAT_TAIL_FRIENDS_ACTIVITY) {
-                    cfg.putString(ConfigItems.qn_chat_tail_friends + "_" + ExfriendManager.getCurrent().getUin(), ret);
+                    cfg.putString(ConfigItems.qn_chat_tail_friends, ret);
                     cfg.save();
                 }
                 this.finish();
@@ -346,7 +346,7 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
         muted = new HashSet<>();
         String list = null;
         if (mActionInt == ACTION_CHAT_TAIL_FRIENDS_ACTIVITY)
-            list = ConfigManager.getDefaultConfig().getString(ConfigItems.qn_chat_tail_friends + "_" + ExfriendManager.getCurrent().getUin());
+            list = ExfriendManager.getCurrent().getConfig().getString(ConfigItems.qn_chat_tail_friends);
 
         if (list != null) {
             for (String s : list.split(",")) {

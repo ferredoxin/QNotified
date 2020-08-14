@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import com.tencent.mobileqq.widget.BounceScrollView;
+import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigItems;
@@ -138,7 +139,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
     @Override
     public void doOnResume() {
         super.doOnResume();
-        ConfigManager cfg = ConfigManager.getDefaultConfig();
+        ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
         String str = cfg.getString(ConfigItems.qn_chat_tail_troops);
         int n = 0;
         if (str != null && str.length() > 4) n = str.split(",").length;

@@ -109,7 +109,7 @@ public class ChatTailHook extends BaseDelayableHook {
                                     Context ctx = v.getContext();
                                     EditText input = viewGroup.findViewById(ctx.getResources().getIdentifier("input", "id", ctx.getPackageName()));
                                     String text = input.getText().toString();
-                                    ConfigManager cfg = ConfigManager.getDefaultConfig();
+                                    ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
                                     if (((TextView) v).length() != 0) {
                                         Field field = null;
                                         for (Field f : session.getClass().getDeclaredFields()) {
@@ -120,11 +120,11 @@ public class ChatTailHook extends BaseDelayableHook {
                                         String uin = "";
                                         try {
                                             uin = (String) field.get(session);
-                                            String muted = "," + cfg.getString(ConfigItems.qn_chat_tail_troops + "_" + ExfriendManager.getCurrent().getUin()) + ",";
-                                            if (muted.contains("," + uin + ",") || cfg.getBooleanOrFalse(ConfigItems.qn_chat_tail_global + "_" + ExfriendManager.getCurrent().getUin())) {
+                                            String muted = "," + cfg.getString(ConfigItems.qn_chat_tail_troops) + ",";
+                                            if (muted.contains("," + uin + ",") || cfg.getBooleanOrFalse(ConfigItems.qn_chat_tail_global)) {
                                                 text = text + ChatTailHook.get().getTailCapacity();
                                             } else {
-                                                muted = "," + cfg.getString(ConfigItems.qn_chat_tail_friends + "_" + ExfriendManager.getCurrent().getUin()) + ",";
+                                                muted = "," + cfg.getString(ConfigItems.qn_chat_tail_friends) + ",";
                                                 if (muted.contains("," + uin + ",")) {
                                                     text = text + ChatTailHook.get().getTailCapacity();
                                                 }
@@ -154,8 +154,8 @@ public class ChatTailHook extends BaseDelayableHook {
 
     public void setTail(String tail) {
         try {
-            ConfigManager cfg = ConfigManager.getDefaultConfig();
-            cfg.putString(ConfigItems.qn_chat_tail + "_" + ExfriendManager.getCurrent().getUin(), tail);
+            ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
+            cfg.putString(ConfigItems.qn_chat_tail, tail);
             cfg.save();
             Intent intent = new Intent(ACTION_UPDATE_CHAT_TAIL);
             SyncUtils.sendGenericBroadcast(intent);
@@ -165,7 +165,7 @@ public class ChatTailHook extends BaseDelayableHook {
     }
 
     public String getTailStatus() {
-        return ConfigManager.getDefaultConfig().getStringOrDefault(ConfigItems.qn_chat_tail + "_" + ExfriendManager.getCurrent().getUin(), "");
+        return ExfriendManager.getCurrent().getConfig().getStringOrDefault(ConfigItems.qn_chat_tail, "");
     }
 
     public String getTailCapacity() {
@@ -190,9 +190,9 @@ public class ChatTailHook extends BaseDelayableHook {
     @Override
     public void setEnabled(boolean enabled) {
         try {
-            ConfigManager mgr = ConfigManager.getDefaultConfig();
-            mgr.getAllConfig().put(qn_chat_tail_enable + "_" + ExfriendManager.getCurrent().getUin(), enabled);
-            mgr.save();
+            ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
+            cfg.putBoolean(qn_chat_tail_enable, enabled);
+            cfg.save();
         } catch (final Exception e) {
             Utils.log(e);
             if (Looper.myLooper() == Looper.getMainLooper()) {
@@ -211,7 +211,7 @@ public class ChatTailHook extends BaseDelayableHook {
     @Override
     public boolean isEnabled() {
         try {
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_chat_tail_enable + "_" + ExfriendManager.getCurrent().getUin());
+            return ExfriendManager.getCurrent().getBooleanOrDefault(qn_chat_tail_enable, false);
         } catch (Exception e) {
             log(e);
             return false;

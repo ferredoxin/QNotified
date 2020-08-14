@@ -203,7 +203,7 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
                 ret = "";
             } else ret = sb.substring(1);
             try {
-                ConfigManager cfg = ConfigManager.getDefaultConfig();
+                ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
                 if (mActionInt == ACTION_MUTE_AT_ALL) {
                     cfg.putString(ConfigItems.qn_muted_at_all, ret);
                     cfg.save();
@@ -213,7 +213,7 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
                     cfg.save();
                 }
                 if (mActionInt == ACTION_CHAT_TAIL_TROOPS_ACTIVITY) {
-                    cfg.putString(ConfigItems.qn_chat_tail_troops + "_" + ExfriendManager.getCurrent().getUin(), ret);
+                    cfg.putString(ConfigItems.qn_chat_tail_troops, ret);
                     cfg.save();
                 }
                 this.finish();
@@ -392,7 +392,7 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
         if (mActionInt == ACTION_MUTE_RED_PACKET)
             list = ConfigManager.getDefaultConfig().getString(ConfigItems.qn_muted_red_packet);
         if (mActionInt == ACTION_CHAT_TAIL_TROOPS_ACTIVITY)
-            list = ConfigManager.getDefaultConfig().getString(ConfigItems.qn_chat_tail_troops + "_" + ExfriendManager.getCurrent().getUin());
+            list = ExfriendManager.getCurrent().getConfig().getString(ConfigItems.qn_chat_tail_troops);
         if (list != null) {
             for (String s : list.split(",")) {
                 if (s.length() > 4) {
