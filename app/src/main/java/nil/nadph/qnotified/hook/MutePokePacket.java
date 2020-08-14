@@ -50,7 +50,7 @@ public class MutePokePacket extends BaseDelayableHook {
             XposedHelpers.findAndHookMethod(load("com.tencent.mobileqq.data.MessageForPoke"), "doParse", new XC_MethodHook(200) {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.sDisableCommonHooks) return;
+                    if (LicenseStatus.sDisableCommonHooks || !isEnabled()) return;
                     XposedHelpers.setObjectField(param.thisObject, "isPlayed", true);
                 }
             });
@@ -101,7 +101,7 @@ public class MutePokePacket extends BaseDelayableHook {
 
     @Override
     public int getEffectiveProc() {
-        return SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF;
+        return SyncUtils.PROC_MAIN;
     }
 
     @Override

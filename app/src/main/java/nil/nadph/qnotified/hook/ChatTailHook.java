@@ -37,6 +37,7 @@ import com.tencent.mobileqq.app.QQAppInterface;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
+import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.bridge.ChatActivityFacade;
 import nil.nadph.qnotified.config.ConfigItems;
@@ -57,7 +58,7 @@ import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
-public class ChatTailHook extends BaseDelayableHook implements InvocationHandler, SyncUtils.BroadcastListener {
+public class ChatTailHook extends BaseDelayableHook {
     public static final String qn_chat_tail_enable = "qn_chat_tail_enable";
     private static final String ACTION_UPDATE_CHAT_TAIL = "nil.nadph.qnotified.ACTION_UPDATE_CHAT_TAIL";
     private static final ChatTailHook self = new ChatTailHook();
@@ -108,6 +109,7 @@ public class ChatTailHook extends BaseDelayableHook implements InvocationHandler
                                     Context ctx = v.getContext();
                                     EditText input = viewGroup.findViewById(ctx.getResources().getIdentifier("input", "id", ctx.getPackageName()));
                                     String text = input.getText().toString();
+                                    ConfigManager cfg = ConfigManager.getDefaultConfig();
                                     if (((TextView) v).length() != 0) {
                                         Field field = null;
                                         for (Field f : session.getClass().getDeclaredFields()) {
@@ -118,11 +120,11 @@ public class ChatTailHook extends BaseDelayableHook implements InvocationHandler
                                         String uin = "";
                                         try {
                                             uin = (String) field.get(session);
-                                            String muted = "," + ConfigManager.getDefaultConfig().getString(ConfigItems.qn_chat_tail_troops) + ",";
-                                            if (muted.contains("," + uin + ",") || ConfigManager.getDefaultConfig().getBooleanOrFalse(ConfigItems.qn_chat_tail_global)) {
+                                            String muted = "," + cfg.getString(ConfigItems.qn_chat_tail_troops + "_" + ExfriendManager.getCurrent().getUin()) + ",";
+                                            if (muted.contains("," + uin + ",") || cfg.getBooleanOrFalse(ConfigItems.qn_chat_tail_global + "_" + ExfriendManager.getCurrent().getUin())) {
                                                 text = text + ChatTailHook.get().getTailCapacity();
                                             } else {
-                                                muted = "," + ConfigManager.getDefaultConfig().getString(ConfigItems.qn_chat_tail_friends) + ",";
+                                                muted = "," + cfg.getString(ConfigItems.qn_chat_tail_friends + "_" + ExfriendManager.getCurrent().getUin()) + ",";
                                                 if (muted.contains("," + uin + ",")) {
                                                     text = text + ChatTailHook.get().getTailCapacity();
                                                 }
@@ -150,15 +152,10 @@ public class ChatTailHook extends BaseDelayableHook implements InvocationHandler
     }
 
 
-    @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        return new Object();
-    }
-
     public void setTail(String tail) {
         try {
             ConfigManager cfg = ConfigManager.getDefaultConfig();
-            cfg.putString(ConfigItems.qn_chat_tail, tail);
+            cfg.putString(ConfigItems.qn_chat_tail + "_" + ExfriendManager.getCurrent().getUin(), tail);
             cfg.save();
             Intent intent = new Intent(ACTION_UPDATE_CHAT_TAIL);
             SyncUtils.sendGenericBroadcast(intent);
@@ -168,7 +165,7 @@ public class ChatTailHook extends BaseDelayableHook implements InvocationHandler
     }
 
     public String getTailStatus() {
-        return ConfigManager.getDefaultConfig().getStringOrDefault(ConfigItems.qn_chat_tail, "");
+        return ConfigManager.getDefaultConfig().getStringOrDefault(ConfigItems.qn_chat_tail + "_" + ExfriendManager.getCurrent().getUin(), "");
     }
 
     public String getTailCapacity() {
@@ -177,7 +174,7 @@ public class ChatTailHook extends BaseDelayableHook implements InvocationHandler
 
     @Override
     public int getEffectiveProc() {
-        return SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF;
+        return SyncUtils.PROC_MAIN;
     }
 
     @Override
@@ -194,7 +191,7 @@ public class ChatTailHook extends BaseDelayableHook implements InvocationHandler
     public void setEnabled(boolean enabled) {
         try {
             ConfigManager mgr = ConfigManager.getDefaultConfig();
-            mgr.getAllConfig().put(qn_chat_tail_enable, enabled);
+            mgr.getAllConfig().put(qn_chat_tail_enable + "_" + ExfriendManager.getCurrent().getUin(), enabled);
             mgr.save();
         } catch (final Exception e) {
             Utils.log(e);
@@ -214,16 +211,11 @@ public class ChatTailHook extends BaseDelayableHook implements InvocationHandler
     @Override
     public boolean isEnabled() {
         try {
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_chat_tail_enable);
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_chat_tail_enable + "_" + ExfriendManager.getCurrent().getUin());
         } catch (Exception e) {
             log(e);
             return false;
         }
-    }
-
-    @Override
-    public boolean onReceive(Context context, Intent intent) {
-        return true;
     }
 
 }

@@ -37,6 +37,7 @@ import android.widget.*;
 
 import com.tencent.widget.XListView;
 
+import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
@@ -212,7 +213,7 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
                     cfg.save();
                 }
                 if (mActionInt == ACTION_CHAT_TAIL_TROOPS_ACTIVITY) {
-                    cfg.putString(ConfigItems.qn_chat_tail_troops, ret);
+                    cfg.putString(ConfigItems.qn_chat_tail_troops + "_" + ExfriendManager.getCurrent().getUin(), ret);
                     cfg.save();
                 }
                 this.finish();
@@ -391,7 +392,7 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
         if (mActionInt == ACTION_MUTE_RED_PACKET)
             list = ConfigManager.getDefaultConfig().getString(ConfigItems.qn_muted_red_packet);
         if (mActionInt == ACTION_CHAT_TAIL_TROOPS_ACTIVITY)
-            list = ConfigManager.getDefaultConfig().getString(ConfigItems.qn_chat_tail_troops);
+            list = ConfigManager.getDefaultConfig().getString(ConfigItems.qn_chat_tail_troops + "_" + ExfriendManager.getCurrent().getUin());
         if (list != null) {
             for (String s : list.split(",")) {
                 if (s.length() > 4) {
