@@ -51,7 +51,7 @@ public class ActProxyMgr {
             case ACTION_CHAT_TAIL_TROOPS_ACTIVITY:
                 return TroopSelectActivity.class;
             case ACTION_CHAT_TAIL_FRIENDS_ACTIVITY:
-                return FriendInputActivity.class;
+                return FriendSelectActivity.class;
             case ACTION_ABOUT:
                 return AboutActivity.class;
             case ACTION_DONATE_ACTIVITY:
