@@ -115,7 +115,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         pct.setPadding(_5dp, _5dp / 2, _5dp, _5dp / 2);
         pct.setBackgroundDrawable(new HighContrastBorder());
         pct.setHint(ChatTailActivity.delimiter + "之前为前缀，" + ChatTailActivity.delimiter + "之后为后缀");
-        pct.setText(ct.getTailCapacity());
+        pct.setText(ct.getTailCapacity().replace("\n","\\n"));
         pct.setSelection(pct.getText().length());
         ll.addView(pct, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 2 * _5dp, _5dp, 2 * _5dp, _5dp));
         ll.addView(newListItemSwitchFriendConfigNext(this, "全局开关", "开启将无视生效范围(无需重启QQ)", ConfigItems.qn_chat_tail_global, false));
