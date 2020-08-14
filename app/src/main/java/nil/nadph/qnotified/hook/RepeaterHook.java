@@ -71,18 +71,17 @@ public class RepeaterHook extends BaseDelayableHook {
             Class BaseChatItemLayout = null;
             Class ChatMessage = null;
             //begin: pic
-            for (Method m : _TextItemBuilder().getDeclaredMethods()) {
-                if (!m.getReturnType().equals(View.class)) continue;
-                if (!m.getName().equals("a")) continue;
+            for (Method m : _PicItemBuilder().getDeclaredMethods()) {
                 Class[] argt = m.getParameterTypes();
-                if (argt.length != 5) continue;
-                if (!argt[2].equals(View.class)) continue;
-                if (argt[4].getInterfaces().length != 2) continue;
-                getView = m;
-                listener2 = argt[4];
-                itemHolder = argt[1];
-                ChatMessage = argt[0];
-                BaseChatItemLayout = argt[3];
+                if (m.getReturnType() == View.class && m.getName().equalsIgnoreCase("a")) {
+                    if (argt.length > 4 && argt[2] == View.class) {
+                        getView = m;
+                        listener2 = argt[4];
+                        itemHolder = argt[1];
+                        ChatMessage = argt[0];
+                        BaseChatItemLayout = argt[3];
+                    }
+                }
             }
             XposedBridge.hookMethod(getView, new XC_MethodHook(50) {
                 @Override
