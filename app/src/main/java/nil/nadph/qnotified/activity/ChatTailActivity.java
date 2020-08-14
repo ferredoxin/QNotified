@@ -177,7 +177,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
 
     @Override
     public void onClick(View v) {
-        ConfigManager cfg = ConfigManager.getDefaultConfig();
+        ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
         switch (v.getId()) {
             case R_ID_APPLY:
                 //if (mMsfResponsive) {
