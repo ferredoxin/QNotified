@@ -34,22 +34,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
-
 import com.tencent.widget.XListView;
-
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.config.FriendRecord;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.FaceImpl;
 import nil.nadph.qnotified.util.Utils;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.*;
 
 import static android.view.View.GONE;
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
@@ -59,7 +54,7 @@ import static nil.nadph.qnotified.util.Utils.*;
 
 
 @SuppressLint("Registered")
-public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
+public class FriendSelectActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
 
     private static final int R_ID_TRP_LAYOUT = 0x300AFF30;
     private static final int R_ID_TRP_TITLE = 0x300AFF31;
@@ -71,28 +66,27 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
     private static final int R_ID_TRP_REVERSE = 0x300AFF37;
     private static final int R_ID_TRP_SELECT_ALL = 0x300AFF38;
     public static int HIGHLIGHT_COLOR = 0xFF20B0FF;
-    private ArrayList<TroopInfo> mTroopInfoList;
     private int hits;
     private boolean searchMode = false;
     private final BaseAdapter mAdapter = new BaseAdapter() {
         @Override
         public int getCount() {
-            return TroopSelectActivity.this.getCount();
+            return FriendSelectActivity.this.getCount();
         }
 
         @Override
         public Object getItem(int position) {
-            return TroopSelectActivity.this.getItem(position);
+            return FriendSelectActivity.this.getItem(position);
         }
 
         @Override
         public long getItemId(int position) {
-            return TroopSelectActivity.this.getItemId(position);
+            return FriendSelectActivity.this.getItemId(position);
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            return TroopSelectActivity.this.getView(position, convertView, parent);
+            return FriendSelectActivity.this.getView(position, convertView, parent);
         }
     };
     private int mActionInt;
@@ -100,42 +94,14 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
     private EditText search;
     private TextView rightBtn, cancel, reverse, selectAll;
     private HashSet<String> muted;
+    private List<FriendInfo> mFriendList = getFriendList();
 
-    public static ArrayList<TroopInfo> getTroopInfoList() throws Exception {
-        Object mTroopManager = getTroopManager();
-        ArrayList<?> tx = getTroopInfoListRaw();
-        ArrayList<TroopInfo> ret = new ArrayList<TroopInfo>();
-        for (Object info : tx) {
-            ret.add(new TroopInfo(info));
+    public static ArrayList<FriendInfo> getFriendList() {
+        ArrayList<FriendInfo> ret = new ArrayList<FriendInfo>();
+        for (FriendRecord fr : ExfriendManager.getCurrent().getPersons().values()) {
+            ret.add(new FriendInfo(fr));
         }
         return ret;
-    }
-
-    public static ArrayList<?> getTroopInfoListRaw() throws Exception {
-        Object mTroopManager = getTroopManager();
-        ArrayList<?> tx;
-        Method m0a = null, m0b = null;
-        for (Method m : mTroopManager.getClass().getMethods()) {
-            if (m.getReturnType().equals(ArrayList.class) && Modifier.isPublic(m.getModifiers()) && m.getParameterTypes().length == 0) {
-                if (m.getName().equals("a")) {
-                    m0a = m;
-                    break;
-                } else {
-                    if (m0a == null) {
-                        m0a = m;
-                    } else {
-                        m0b = m;
-                        break;
-                    }
-                }
-            }
-        }
-        if (m0b == null) {
-            tx = (ArrayList<?>) m0a.invoke(mTroopManager);
-        } else {
-            tx = (ArrayList<?>) ((strcmp(m0a.getName(), m0b.getName()) > 0) ? m0b : m0a).invoke(mTroopManager);
-        }
-        return tx;
     }
 
     @Override
@@ -204,16 +170,8 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
             } else ret = sb.substring(1);
             try {
                 ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
-                if (mActionInt == ACTION_MUTE_AT_ALL) {
-                    cfg.putString(ConfigItems.qn_muted_at_all, ret);
-                    cfg.save();
-                }
-                if (mActionInt == ACTION_MUTE_RED_PACKET) {
-                    cfg.putString(ConfigItems.qn_muted_red_packet, ret);
-                    cfg.save();
-                }
-                if (mActionInt == ACTION_CHAT_TAIL_TROOPS_ACTIVITY) {
-                    cfg.putString(ConfigItems.qn_chat_tail_troops, ret);
+                if (mActionInt == ACTION_CHAT_TAIL_FRIENDS_ACTIVITY) {
+                    cfg.putString(ConfigItems.qn_chat_tail_friends, ret);
                     cfg.save();
                 }
                 this.finish();
@@ -225,17 +183,17 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
                 }
             }
         } else if (v == selectAll) {
-            for (TroopInfo info : mTroopInfoList) {
-                muted.add(info.troopuin);
+            for (FriendInfo info : mFriendList) {
+                muted.add(info.uin + "");
             }
             mAdapter.notifyDataSetInvalidated();
         } else if (v == reverse) {
-            for (TroopInfo info : mTroopInfoList) {
+            for (FriendInfo info : mFriendList) {
                 HashSet<String> ref = (HashSet<String>) muted.clone();
-                if (ref.contains(info.troopuin)) {
-                    muted.remove(info.troopuin);
+                if (ref.contains(info.uin + "")) {
+                    muted.remove(info.uin + "");
                 } else {
-                    muted.add(info.troopuin);
+                    muted.add(info.uin + "");
                 }
             }
             mAdapter.notifyDataSetInvalidated();
@@ -245,44 +203,46 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
     public int getCount() {
         if (searchMode && hits > 0) {
             return hits;
-        } else return mTroopInfoList == null ? 0 : mTroopInfoList.size();
+        } else return mFriendList == null ? 0 : mFriendList.size();
     }
 
-    public Object getItem(int position) {
+    public FriendInfo getItem(int position) {
         if (searchMode && hits > 0) {
-            return mTroopInfoList.get(position);
-        } else return mTroopInfoList == null ? null : mTroopInfoList.get(position);
+            return mFriendList.get(position);
+        } else return mFriendList == null ? null : mFriendList.get(position);
     }
 
     public long getItemId(int position) {
-        TroopInfo info = (TroopInfo) getItem(position);
-        return info == null ? -1 : Long.parseLong(info.troopuin);
+        FriendInfo info = getItem(position);
+        return info == null ? -1 : Long.parseLong(info.uin.toString());
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) convertView = createItemView();
-        TroopInfo info = mTroopInfoList.get(position);
-        convertView.setTag(info.troopuin);
+        FriendInfo info = mFriendList.get(position);
+        convertView.setTag(info.uin + "");
+        String nick = Utils.isNullOrEmpty(info.remark) ? info.nick : info.remark;;
         if (searchMode) {
             TextView title = convertView.findViewById(R_ID_TRP_TITLE);
-            title.setText(info._troopname);
+            title.setText(nick);
             TextView subtitle = convertView.findViewById(R_ID_TRP_SUBTITLE);
-            subtitle.setText(info._troopuin);
+            subtitle.setText(info.uin + "");
         } else {
             TextView title = convertView.findViewById(R_ID_TRP_TITLE);
-            title.setText(info.troopname);
+            title.setText(nick);
             TextView subtitle = convertView.findViewById(R_ID_TRP_SUBTITLE);
-            subtitle.setText(info.troopuin);
+            subtitle.setText(info.uin + "");
         }
+
         ImageView imgview = convertView.findViewById(R_ID_TRP_FACE);
-        Bitmap bm = face.getBitmapFromCache(FaceImpl.TYPE_TROOP, info.troopuin);
+        Bitmap bm = face.getBitmapFromCache(FaceImpl.TYPE_USER, info.uin + "");
         if (bm == null) {
             imgview.setImageDrawable(ResUtils.loadDrawableFromAsset("face.png", this));
-            face.registerView(FaceImpl.TYPE_TROOP, info.troopuin, imgview);
+            face.registerView(FaceImpl.TYPE_USER, info.uin + "", imgview);
         } else {
             imgview.setImageBitmap(bm);
         }
-        boolean selected = muted.contains(info.troopuin);
+        boolean selected = muted.contains(info.uin + "");
         CheckBox check = convertView.findViewById(R_ID_TRP_CHECKBOX);
         check.setChecked(selected);
         return convertView;
@@ -311,7 +271,7 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
         bar.setId(R.id.root_content_toolbarLayout);
         bar.setOrientation(LinearLayout.HORIZONTAL);
         search = new EditText(this);
-        search.setHint("搜索...群名或群号");
+        search.setHint("搜索...好友名或好友QQ号");
         search.setPadding(3, 3, 3, 3);
         search.setFocusable(false);
         search.setOnClickListener(this);
@@ -355,8 +315,8 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
         tv.setTextColor(ResUtils.skin_gray3);
         tv.setTextSize(Utils.dip2sp(this, 14));
         try {
-            mTroopInfoList = getTroopInfoList();
-            tv.setText("若此处群列表显示不完整,请返回后在QQ的联系人的群列表下拉刷新后再回到此处重试");
+            mFriendList = getFriendList();
+            tv.setText("若此处好友列表显示不完整,请返回后在QQ的联系人的好友列表下拉刷新后再回到此处重试");
         } catch (Exception e) {
             tv.setText(Log.getStackTraceString(e));
             log(e);
@@ -368,12 +328,8 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
         main.addView(f, new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         this.setContentView(main);
         String title = "Fatal error!";
-        if (mActionInt == ACTION_MUTE_AT_ALL)
-            title = "屏蔽@全体成员";
-        else if (mActionInt == ACTION_MUTE_RED_PACKET)
-            title = "屏蔽群红包";
-        else if (mActionInt == ACTION_CHAT_TAIL_TROOPS_ACTIVITY)
-            title = "选择小尾巴生效群";
+        if (mActionInt == ACTION_CHAT_TAIL_FRIENDS_ACTIVITY)
+            title = "选择小尾巴生效好友";
         setTitle(title);
         rightBtn = (TextView) getRightTextView();
         //log("Title:"+invoke_virtual(this,"getTextTitle"));
@@ -387,12 +343,9 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
         //invoke_virtual(sdlv,"setOnScrollGroupFloatingListener",true,load("com/tencent/widget/AbsListView$OnScrollListener"));
         muted = new HashSet<>();
         String list = null;
-        if (mActionInt == ACTION_MUTE_AT_ALL)
-            list = ConfigManager.getDefaultConfig().getString(ConfigItems.qn_muted_at_all);
-        if (mActionInt == ACTION_MUTE_RED_PACKET)
-            list = ConfigManager.getDefaultConfig().getString(ConfigItems.qn_muted_red_packet);
-        if (mActionInt == ACTION_CHAT_TAIL_TROOPS_ACTIVITY)
-            list = ExfriendManager.getCurrent().getConfig().getString(ConfigItems.qn_chat_tail_troops);
+        if (mActionInt == ACTION_CHAT_TAIL_FRIENDS_ACTIVITY)
+            list = ExfriendManager.getCurrent().getConfig().getString(ConfigItems.qn_chat_tail_friends);
+
         if (list != null) {
             for (String s : list.split(",")) {
                 if (s.length() > 4) {
@@ -466,35 +419,44 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
     public void parseKeyword(String keyword) {
         //if(hits == null)hits=new ArrayList<>();
         hits = 0;
-        if (false && keyword.contains(" ")) {
-            String[] words = keyword.split(" ");
-            //FIXME: temporary workaround for multi-keyword search
-        } else {
-            int start, len = keyword.length();
-            for (TroopInfo info : mTroopInfoList) {
-                info.hit = 0;
-                start = info.troopuin.indexOf(keyword);
-                boolean y = false;
+        int start, len = keyword.length();
+        for (FriendInfo info : mFriendList) {
+            info.hit = 0;
+            // QQ号搜索
+            start = info.uin.indexOf(keyword);
+            boolean y = false;
+            if (start != -1) {
+                SpannableString ret = new SpannableString(info.uin);
+                ret.setSpan(new ForegroundColorSpan(HIGHLIGHT_COLOR), start, start + len, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                info._uin = ret;
+                info.hit += 10;
+                y = true;
+            } else info._uin = info.uin;
+            // 备注搜索
+            if (!Utils.isNullOrEmpty(info.remark)) {// 判断是否为空(是否有备注)
+                start = info.remark.indexOf(keyword);
                 if (start != -1) {
-                    SpannableString ret = new SpannableString(info.troopuin);
+                    SpannableString ret = new SpannableString(info.remark);
                     ret.setSpan(new ForegroundColorSpan(HIGHLIGHT_COLOR), start, start + len, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-                    info._troopuin = ret;
+                    info._remark = ret;
                     info.hit += 10;
                     y = true;
-                } else info._troopuin = info.troopuin;
-                start = info.troopname.indexOf(keyword);
-                if (start != -1) {
-                    SpannableString ret = new SpannableString(info.troopname);
-                    ret.setSpan(new ForegroundColorSpan(HIGHLIGHT_COLOR), start, start + len, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-                    info._troopname = ret;
-                    info.hit += 10;
-                    y = true;
-                } else info._troopname = info.troopname;
-                if (y) hits++;
+                } else info._remark = info.remark;
             }
-
+            // 昵称搜索
+            start = info.nick.indexOf(keyword);
+            if (start != -1) {
+                SpannableString ret = new SpannableString(info.nick);
+                ret.setSpan(new ForegroundColorSpan(HIGHLIGHT_COLOR), start, start + len, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                info._nick = ret;
+                info.hit += 10;
+                y = true;
+            } else info._nick = info.nick;
+            if (y) hits++;
         }
-        Collections.sort(mTroopInfoList);
+
+
+        Collections.sort(mFriendList);
         mAdapter.notifyDataSetChanged();
     }
 
@@ -511,24 +473,29 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
         rightBtn.setText("完成(" + muted.size() + ")");
     }
 
-
-    public static class TroopInfo implements Comparable {
-        public String troopuin;
-        public String troopname;
-        public CharSequence _troopuin;
-        public CharSequence _troopname;
+    public static class FriendInfo implements Comparable {
+        public FriendRecord info;
+        public String nick;
+        public String remark;
+        public String uin;
+        public CharSequence _nick;
+        public CharSequence _remark;
+        public CharSequence _uin;
         public int hit;
 
-        public TroopInfo(Object obj) {
-            _troopname = troopname = (String) iget_object_or_null(obj, "troopname");
-            _troopuin = troopuin = (String) iget_object_or_null(obj, "troopuin");
-            hit = 0;
+        FriendInfo(FriendRecord i) {
+            this.info = i;
+            this._uin = this.uin = info.uin + "";
+            this._nick = this.nick = info.nick;
+            this._remark = this.remark = Utils.isNullOrEmpty(info.remark) ? "" : info.remark;
+            this.hit = 0;
         }
 
         @Override
         public int compareTo(Object o) {
-            TroopInfo t = (TroopInfo) o;
+            FriendInfo t = (FriendInfo) o;
             return t.hit - hit;
         }
     }
+
 }

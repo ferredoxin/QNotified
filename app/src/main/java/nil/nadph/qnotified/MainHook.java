@@ -708,11 +708,13 @@ public class MainHook {
                 if (index != -1) {
                     Intent raw = (Intent) args[index];
                     ComponentName component = raw.getComponent();
+                    Context hostApp = Utils.getApplication();
                     //log("startActivity, rawIntent=" + raw);
-                    if (component != null &&
-                            (component.getClassName().startsWith("nil.nadph.qnotified.")
-                                    || component.getClassName().startsWith("me.zpp0196.qqpurify.activity.")
-                                    || component.getClassName().startsWith("me.singleneuron."))) {
+                    if (hostApp != null && component != null
+                            && hostApp.getPackageName().equals(component.getPackageName())
+                            && (component.getClassName().startsWith("nil.nadph.qnotified.")
+                            || component.getClassName().startsWith("me.zpp0196.qqpurify.activity.")
+                            || component.getClassName().startsWith("me.singleneuron."))) {
                         Intent wrapper = new Intent();
                         wrapper.setClassName(component.getPackageName(), ActProxyMgr.STUB_ACTIVITY);
                         wrapper.putExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT, raw);
