@@ -44,17 +44,13 @@ import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.FaceImpl;
 import nil.nadph.qnotified.util.Utils;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 import static android.view.View.GONE;
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_CHAT_TAIL_FRIENDS_ACTIVITY;
-import static nil.nadph.qnotified.util.ActProxyMgr.ACTIVITY_PROXY_ACTION;
-import static nil.nadph.qnotified.util.Utils.dip2px;
-import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.ActProxyMgr.*;
+import static nil.nadph.qnotified.util.Utils.*;
 
 
 @SuppressLint("Registered")
@@ -421,35 +417,31 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
     public void parseKeyword(String keyword) {
         //if(hits == null)hits=new ArrayList<>();
         hits = 0;
-        if (false && keyword.contains(" ")) {
-            String[] words = keyword.split(" ");
-            //FIXME: temporary workaround for multi-keyword search
-        } else {
-            int start, len = keyword.length();
-            for (FriendInfo info : mFriendList) {
-                info.hit = 0;
-                start = (info.uin + "").indexOf(keyword);
-                boolean y = false;
-                if (start != -1) {
-                    SpannableString ret = new SpannableString((info.uin + ""));
-                    ret.setSpan(new ForegroundColorSpan(HIGHLIGHT_COLOR), start, start + len, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-                    info.uin = ret;
-                    info.hit += 10;
-                    y = true;
-                } else info._nick = info.nick;
-                start = info.nick.indexOf(keyword);
-                if (start != -1) {
-                    SpannableString ret = new SpannableString(info.nick);
-                    ret.setSpan(new ForegroundColorSpan(HIGHLIGHT_COLOR), start, start + len, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-                    info._nick = ret;
-                    info.hit += 10;
-                    y = true;
-                } else info._nick = info.nick;
-                if (y) hits++;
-            }
-
+        int start, len = keyword.length();
+        for (FriendInfo info : mFriendList) {
+            info.hit = 0;
+            start = info.uin.indexOf(keyword);
+            boolean y = false;
+            if (start != -1) {
+                SpannableString ret = new SpannableString(info.uin);
+                ret.setSpan(new ForegroundColorSpan(HIGHLIGHT_COLOR), start, start + len, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                info._uin = ret;
+                info.hit += 10;
+                y = true;
+            } else info._uin = info.uin;
+            start = info.nick.indexOf(keyword);
+            if (start != -1) {
+                SpannableString ret = new SpannableString(info.nick);
+                ret.setSpan(new ForegroundColorSpan(HIGHLIGHT_COLOR), start, start + len, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                info._nick = ret;
+                info.hit += 10;
+                y = true;
+            } else info._nick = info.nick;
+            if (y) hits++;
         }
-        //Collections.sort(mFriendList);
+
+
+        Collections.sort(mFriendList);
         mAdapter.notifyDataSetChanged();
     }
 
@@ -466,19 +458,25 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
         rightBtn.setText("完成(" + muted.size() + ")");
     }
 
-    public static class FriendInfo {
+    public static class FriendInfo implements Comparable {
         private FriendRecord info;
-        private String nick;
-        private String _uin;
+        public String nick;
+        public String uin;
         public CharSequence _nick;
-        public CharSequence uin;
-        private int hit;
+        public CharSequence _uin;
+        public int hit;
 
         FriendInfo(FriendRecord i) {
             this.info = i;
-            this.hit = 0;
-            this.uin = this._uin = info.uin + "";
+            this._uin = this.uin = info.uin + "";
             this._nick = this.nick = info.nick;
+            this.hit = 0;
+        }
+
+        @Override
+        public int compareTo(Object o) {
+            FriendInfo t = (FriendInfo) o;
+            return t.hit - hit;
         }
     }
 
