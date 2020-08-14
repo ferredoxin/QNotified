@@ -40,6 +40,10 @@ public class ConfigItems {
     public static final String qn_fake_bat_expr = "qn_fake_bat_expr";
     public static final String cfg_nice_user = "cfg_nice_user";
     public static final String cache_qn_prev_version = "cache_qn_prev_version";
+    public static final String qn_chat_tail = "qn_chat_tail";
+    public static final String qn_chat_tail_troops = "qn_chat_tail_troops";
+    public static final String qn_chat_tail_friends = "qn_chat_tail_friends";
+    public static final String qn_chat_tail_global = "qn_chat_tail_global";
 
     public static final SwitchConfigItem qn_disable_hot_patch = new SwitchConfigItem() {
         @Override
@@ -109,6 +113,7 @@ public class ConfigItems {
             }
         }
     };
+
 
     @MainProcess
     public static void removePreviousCacheIfNecessary() {
