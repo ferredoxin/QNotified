@@ -54,6 +54,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
     private static final int R_ID_APPLY = 0x300AFF81;
     private static final int R_ID_DISABLE = 0x300AFF82;
     private static final int R_ID_PERCENT_VALUE = 0x300AFF83;
+    public static final String delimiter = "@";
 
     TextView tvStatus;
 
@@ -94,6 +95,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(_t = subtitle(ChatTailActivity.this, ""));
         tvStatus = (TextView) _t.getChildAt(0);
         ll.addView(subtitle(ChatTailActivity.this, "默认不换行，换行符号请输入\\n"));
+        ll.addView(subtitle(ChatTailActivity.this, ChatTailActivity.delimiter + "将会被替换为消息"));
         ll.addView(subtitle(ChatTailActivity.this, "回车发送不生效"));
 
         ll.addView(_s = newListItemButton(this, "选择生效的群", "未选择的群将不展示小尾巴", "N/A", clickToProxyActAction(ACTION_CHAT_TAIL_TROOPS_ACTIVITY)));
@@ -101,7 +103,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(_s = newListItemButton(this, "选择生效的好友", "未选择的好友将不展示小尾巴", "N/A", clickToProxyActAction(ACTION_CHAT_TAIL_FRIENDS_ACTIVITY)));
         __tv_chat_tail_friends = _s.findViewById(R_ID_VALUE);
 
-        ll.addView(subtitle(ChatTailActivity.this, "设置小尾巴:"));
+        ll.addView(subtitle(ChatTailActivity.this, "设置小尾巴(" + ChatTailActivity.delimiter + " 将会被替换为消息"));
         int _5dp = dip2px(ChatTailActivity.this, 5);
         EditText pct = new EditText(ChatTailActivity.this);
         pct.setId(R_ID_PERCENT_VALUE);
@@ -112,8 +114,8 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         pct.setGravity(Gravity.CENTER);
         pct.setPadding(_5dp, _5dp / 2, _5dp, _5dp / 2);
         pct.setBackgroundDrawable(new HighContrastBorder());
-        pct.setHint("输入你的小尾巴");
-        pct.setText(ct.getTailCapacity() + "");
+        pct.setHint(ChatTailActivity.delimiter + "之前为前缀，" + ChatTailActivity.delimiter + "之后为后缀");
+        pct.setText(ct.getTailCapacity());
         pct.setSelection(pct.getText().length());
         ll.addView(pct, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 2 * _5dp, _5dp, 2 * _5dp, _5dp));
         ll.addView(newListItemSwitchFriendConfigNext(this, "全局开关", "开启将无视生效范围(无需重启QQ)", ConfigItems.qn_chat_tail_global, false));
@@ -238,6 +240,10 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         String val = pct.getText().toString();
         if (Utils.isNullOrEmpty(val)) {
             Utils.showToast(ChatTailActivity.this, TOAST_TYPE_ERROR, "请输入小尾巴", Toast.LENGTH_SHORT);
+            return;
+        }
+        if (!val.contains(ChatTailActivity.delimiter)) {
+            Utils.showToast(ChatTailActivity.this, TOAST_TYPE_ERROR, "请在小尾巴中加入" + ChatTailActivity.delimiter + "", Toast.LENGTH_SHORT);
             return;
         }
         ct.setTail(val);
