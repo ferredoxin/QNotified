@@ -179,9 +179,9 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         ConfigManager cfg = ConfigManager.getDefaultConfig();
         switch (v.getId()) {
             case R_ID_APPLY:
-                if (mMsfResponsive) {
-                    doUpdateTailCfg();
-                } else {
+                //if (mMsfResponsive) {
+                doUpdateTailCfg();
+               /* } else {
                     final Dialog waitDialog = CustomDialog.create(this).setCancelable(true).setTitle("请稍候")
                             .setMessage("等待 :MSF 进程响应").show();
                     SyncUtils.enumerateProc(this, SyncUtils.PROC_MSF, 3000, new SyncUtils.EnumCallback() {
@@ -214,6 +214,8 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
                         }
                     });
                 }
+
+                */
                 break;
             case R_ID_DISABLE:
                 cfg.putBoolean(ChatTailHook.qn_chat_tail_enable, false);
@@ -242,11 +244,11 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
             cfg.putBoolean(ChatTailHook.qn_chat_tail_enable, true);
             try {
                 cfg.save();
-                boolean success = true;
-                if (!ct.isInited()) success = ct.init();
-                SyncUtils.requestInitHook(ct.getId(), ct.getEffectiveProc());
-                if (!success)
-                    Utils.showToast(ChatTailActivity.this, TOAST_TYPE_ERROR, "初始化错误: 可能是版本不支持", Toast.LENGTH_SHORT);
+                //  boolean success = true;
+                // if (!ct.isInited()) success = ct.init();
+                //SyncUtils.requestInitHook(ct.getId(), ct.getEffectiveProc());
+                //  if (!success)
+                //   Utils.showToast(ChatTailActivity.this, TOAST_TYPE_ERROR, "初始化错误: 可能是版本不支持", Toast.LENGTH_SHORT);
             } catch (Exception e) {
                 Utils.showToast(ChatTailActivity.this, TOAST_TYPE_ERROR, "错误:" + e.toString(), Toast.LENGTH_LONG);
                 log(e);
