@@ -108,15 +108,17 @@ public class ChatTailHook extends BaseDelayableHook {
                                     if (LicenseStatus.sDisableCommonHooks) return;
                                     Context ctx = v.getContext();
                                     EditText input = viewGroup.findViewById(ctx.getResources().getIdentifier("input", "id", ctx.getPackageName()));
+                                    StringBuilder debug = new StringBuilder();
                                     String text = input.getText().toString();
                                     ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
-                                    if (((TextView) v).length() != 0) {
-                                        Field field = null;
-                                        for (Field f : session.getClass().getDeclaredFields()) {
-                                            if (f.getName().equalsIgnoreCase("a") && f.getType() == String.class) {
-                                                field = f;
-                                            }
+
+                                    Field field = null;
+                                    for (Field f : session.getClass().getDeclaredFields()) {
+                                        if (f.getName().equalsIgnoreCase("a") && f.getType() == String.class) {
+                                            field = f;
                                         }
+                                    }
+                                    if (((TextView) v).length() != 0) {
                                         String uin = "";
                                         try {
                                             uin = (String) field.get(session);
