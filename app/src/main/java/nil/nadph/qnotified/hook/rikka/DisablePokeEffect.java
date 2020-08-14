@@ -52,7 +52,8 @@ public class DisablePokeEffect extends BaseDelayableHook {
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             if (LicenseStatus.sDisableCommonHooks) return;
                             if (!isEnabled()) return;
-                            param.setResult(null);
+                            // param.setResult(null);// 此处不应为null
+                            param.setResult(true);
                         }
                     });
                 }
