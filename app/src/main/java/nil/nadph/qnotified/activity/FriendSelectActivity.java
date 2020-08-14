@@ -221,17 +221,19 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
         if (convertView == null) convertView = createItemView();
         FriendInfo info = mFriendList.get(position);
         convertView.setTag(info.uin + "");
+        String nick = Utils.isNullOrEmpty(info.remark) ? info.nick : info.remark;;
         if (searchMode) {
             TextView title = convertView.findViewById(R_ID_TRP_TITLE);
-            title.setText(info.nick);
+            title.setText(nick);
             TextView subtitle = convertView.findViewById(R_ID_TRP_SUBTITLE);
             subtitle.setText(info.uin + "");
         } else {
             TextView title = convertView.findViewById(R_ID_TRP_TITLE);
-            title.setText(info.nick);
+            title.setText(nick);
             TextView subtitle = convertView.findViewById(R_ID_TRP_SUBTITLE);
             subtitle.setText(info.uin + "");
         }
+
         ImageView imgview = convertView.findViewById(R_ID_TRP_FACE);
         Bitmap bm = face.getBitmapFromCache(FaceImpl.TYPE_USER, info.uin + "");
         if (bm == null) {
@@ -420,6 +422,7 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
         int start, len = keyword.length();
         for (FriendInfo info : mFriendList) {
             info.hit = 0;
+            // QQ号搜索
             start = info.uin.indexOf(keyword);
             boolean y = false;
             if (start != -1) {
@@ -429,6 +432,18 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
                 info.hit += 10;
                 y = true;
             } else info._uin = info.uin;
+            // 备注搜索
+            if (!Utils.isNullOrEmpty(info.remark)) {// 判断是否为空(是否有备注)
+                start = info.remark.indexOf(keyword);
+                if (start != -1) {
+                    SpannableString ret = new SpannableString(info.remark);
+                    ret.setSpan(new ForegroundColorSpan(HIGHLIGHT_COLOR), start, start + len, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                    info._remark = ret;
+                    info.hit += 10;
+                    y = true;
+                } else info._remark = info.remark;
+            }
+            // 昵称搜索
             start = info.nick.indexOf(keyword);
             if (start != -1) {
                 SpannableString ret = new SpannableString(info.nick);
@@ -459,10 +474,12 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
     }
 
     public static class FriendInfo implements Comparable {
-        private FriendRecord info;
+        public FriendRecord info;
         public String nick;
+        public String remark;
         public String uin;
         public CharSequence _nick;
+        public CharSequence _remark;
         public CharSequence _uin;
         public int hit;
 
@@ -470,6 +487,7 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
             this.info = i;
             this._uin = this.uin = info.uin + "";
             this._nick = this.nick = info.nick;
+            this._remark = this.remark = Utils.isNullOrEmpty(info.remark) ? "" : info.remark;
             this.hit = 0;
         }
 
