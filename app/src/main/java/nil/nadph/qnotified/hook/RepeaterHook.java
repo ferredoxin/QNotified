@@ -71,7 +71,7 @@ public class RepeaterHook extends BaseDelayableHook {
             Class BaseChatItemLayout = null;
             Class ChatMessage = null;
             //begin: pic
-            for (Method m : _PicItemBuilder().getDeclaredMethods()) {
+            for (Method m : _TextItemBuilder().getDeclaredMethods()) {
                 if (!m.getReturnType().equals(View.class)) continue;
                 if (!m.getName().equals("a")) continue;
                 Class[] argt = m.getParameterTypes();
