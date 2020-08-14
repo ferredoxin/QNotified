@@ -149,12 +149,13 @@ public class ViewBuilder {
     }
 
     public static RelativeLayout newListItemSwitchFriendConfigNext(Context ctx, CharSequence title, CharSequence desc, final String key, boolean defVal) {
-        boolean on = ConfigManager.getDefaultConfig().getBooleanOrDefault(key, defVal);
+        ConfigManager mgr = ExfriendManager.getCurrent().getConfig();
+        boolean on = mgr.getBooleanOrDefault(key, defVal);
         RelativeLayout root = newListItemSwitch(ctx, title, desc, on, new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 try {
-                    ConfigManager mgr = ExfriendManager.getCurrent().getConfig();
+
                     mgr.getAllConfig().put(key, isChecked);
                     mgr.save();
                     Utils.showToastShort(buttonView.getContext(), "设置成功");
