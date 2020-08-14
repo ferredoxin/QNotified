@@ -116,7 +116,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         pct.setText(ct.getTailCapacity() + "");
         pct.setSelection(pct.getText().length());
         ll.addView(pct, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 2 * _5dp, _5dp, 2 * _5dp, _5dp));
-        ll.addView(newListItemSwitchConfigNext(this, "全局开关", "开启将无视生效范围(无需重启QQ)", ConfigItems.qn_chat_tail_global, false));
+        ll.addView(newListItemSwitchFriendConfigNext(this, "全局开关", "开启将无视生效范围(无需重启QQ)", ConfigItems.qn_chat_tail_global, false));
         Button apply = new Button(ChatTailActivity.this);
         apply.setId(R_ID_APPLY);
         apply.setOnClickListener(this);
@@ -177,7 +177,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
 
     @Override
     public void onClick(View v) {
-        ConfigManager cfg = ConfigManager.getDefaultConfig();
+        ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
         switch (v.getId()) {
             case R_ID_APPLY:
                 //if (mMsfResponsive) {
@@ -232,7 +232,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
 
     private void doUpdateTailCfg() {
         ChatTailHook ct = ChatTailHook.get();
-        ConfigManager cfg = ConfigManager.getDefaultConfig();
+        ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
         EditText pct;
         pct = ChatTailActivity.this.findViewById(R_ID_PERCENT_VALUE);
         String val = pct.getText().toString();
