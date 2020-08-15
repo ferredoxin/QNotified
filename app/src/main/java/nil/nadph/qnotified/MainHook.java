@@ -301,8 +301,10 @@ public class MainHook {
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     Utils.$access$set$sAppRuntimeInit(true);
                     //logi("NewRuntime/I after doStep");
-                    if (LicenseStatus.isLoadingDisabled()) return;
-                    LicenseStatus.sDisableCommonHooks = LicenseStatus.isBlacklisted() || LicenseStatus.isSilentGone();
+                    if (SyncUtils.isMainProcess()) {
+                        // fix error in :video, and QZone启动失败
+                        LicenseStatus.sDisableCommonHooks = LicenseStatus.isLoadingDisabled() || LicenseStatus.isBlacklisted() || LicenseStatus.isSilentGone();
+                    }
                 }
             });
         } catch (Throwable e) {
