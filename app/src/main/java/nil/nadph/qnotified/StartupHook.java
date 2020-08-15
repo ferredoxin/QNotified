@@ -20,6 +20,7 @@ package nil.nadph.qnotified;
 
 import android.content.Context;
 import android.os.Build;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
@@ -57,7 +58,7 @@ public class StartupHook {
                         if (sec_stage_inited) return;
                         Utils.checkLogFlag();
                         Context ctx;
-                        Class clz = param.thisObject.getClass().getClassLoader().loadClass("com.tencent.common.app.BaseApplicationImpl");
+                        Class<?> clz = param.thisObject.getClass().getClassLoader().loadClass("com.tencent.common.app.BaseApplicationImpl");
                         final Field f = hasField(clz, "sApplication");
                         if (f == null) ctx = (Context) sget_object(clz, "a", clz);
                         else ctx = (Context) f.get(null);
