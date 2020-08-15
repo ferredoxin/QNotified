@@ -39,6 +39,7 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.activity.ChatTailActivity;
 import nil.nadph.qnotified.bridge.ChatActivityFacade;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
@@ -120,15 +121,16 @@ public class ChatTailHook extends BaseDelayableHook {
                                     }
                                     if (((TextView) v).length() != 0) {
                                         String uin = "";
+                                        ChatTailHook ct = ChatTailHook.get();
                                         try {
                                             uin = (String) field.get(session);
                                             String muted = "," + cfg.getString(ConfigItems.qn_chat_tail_troops) + ",";
                                             if (muted.contains("," + uin + ",") || cfg.getBooleanOrFalse(ConfigItems.qn_chat_tail_global)) {
-                                                text = text + ChatTailHook.get().getTailCapacity();
+                                                text = ct.getTailCapacity().replace(ChatTailActivity.delimiter, text);
                                             } else {
                                                 muted = "," + cfg.getString(ConfigItems.qn_chat_tail_friends) + ",";
                                                 if (muted.contains("," + uin + ",")) {
-                                                    text = text + ChatTailHook.get().getTailCapacity();
+                                                    text = ct.getTailCapacity().replace(ChatTailActivity.delimiter, text);
                                                 }
                                             }
                                         } catch (IllegalAccessException e) {
@@ -159,8 +161,6 @@ public class ChatTailHook extends BaseDelayableHook {
             ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
             cfg.putString(ConfigItems.qn_chat_tail, tail);
             cfg.save();
-            Intent intent = new Intent(ACTION_UPDATE_CHAT_TAIL);
-            SyncUtils.sendGenericBroadcast(intent);
         } catch (IOException e) {
             log(e);
         }
@@ -173,6 +173,7 @@ public class ChatTailHook extends BaseDelayableHook {
     public String getTailCapacity() {
         return getTailStatus().replace("\\n", "\n");
     }
+
 
     @Override
     public int getEffectiveProc() {
@@ -219,5 +220,6 @@ public class ChatTailHook extends BaseDelayableHook {
             return false;
         }
     }
+
 
 }
