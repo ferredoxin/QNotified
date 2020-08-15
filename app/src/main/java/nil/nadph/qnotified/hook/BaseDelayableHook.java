@@ -45,6 +45,7 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 PttForwardHook.get(),
                 MuteAtAllAndRedPacket.get(),
                 CardMsgHook.get(),
+                ChatTailHook.get(),
                 FlashPicHook.get(),
                 RepeaterHook.get(),
                 EmoPicHook.get(),

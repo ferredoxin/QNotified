@@ -26,6 +26,9 @@ import java.io.IOException;
 
 public class Utf8JceUtils {
 
+    public static final String[] DUMMY_STRING_ARRAY = new String[]{""};
+    public static final byte[] NO_DATA = new byte[0];
+
     public static <T extends JceStruct> T decodeJceStruct(T struct, byte[] bs) throws IOException {
         JceInputStream is = newInputStream(bs);
         struct.readFrom(is);

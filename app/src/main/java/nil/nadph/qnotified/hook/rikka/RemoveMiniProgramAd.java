@@ -92,6 +92,7 @@ public class RemoveMiniProgramAd extends BaseDelayableHook {
     @Override
     public boolean isEnabled() {
         try {
+            if (!LicenseStatus.getAuth2Status()) return false;
             return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_remove_mini_program_ad);
         } catch (Exception e) {
             log(e);

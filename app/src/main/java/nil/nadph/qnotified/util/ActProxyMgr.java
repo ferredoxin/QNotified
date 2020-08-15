@@ -35,6 +35,9 @@ public class ActProxyMgr {
     public static final int ACTION_TROUBLESHOOT_ACTIVITY = 8;
     public static final int ACTION_FRIENDLIST_EXPORT_ACTIVITY = 9;
     public static final int ACTION_FAKE_BAT_CONFIG_ACTIVITY = 10;
+    public static final int ACTION_CHAT_TAIL_CONFIG_ACTIVITY = 11;
+    public static final int ACTION_CHAT_TAIL_TROOPS_ACTIVITY = 12;
+    public static final int ACTION_CHAT_TAIL_FRIENDS_ACTIVITY = 13;
 
     @Deprecated
     public static Class<?> getActivityByAction(int action) {
@@ -45,7 +48,10 @@ public class ActProxyMgr {
                 return SettingsActivity.class;
             case ACTION_MUTE_AT_ALL:
             case ACTION_MUTE_RED_PACKET:
+            case ACTION_CHAT_TAIL_TROOPS_ACTIVITY:
                 return TroopSelectActivity.class;
+            case ACTION_CHAT_TAIL_FRIENDS_ACTIVITY:
+                return FriendSelectActivity.class;
             case ACTION_ABOUT:
                 return AboutActivity.class;
             case ACTION_DONATE_ACTIVITY:
@@ -56,6 +62,8 @@ public class ActProxyMgr {
                 return FriendlistExportActivity.class;
             case ACTION_FAKE_BAT_CONFIG_ACTIVITY:
                 return FakeBatCfgActivity.class;
+            case ACTION_CHAT_TAIL_CONFIG_ACTIVITY:
+                return ChatTailActivity.class;
             default:
                 return null;
         }

@@ -37,7 +37,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
-
 import dalvik.system.BaseDexClassLoader;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
@@ -344,11 +343,6 @@ public class MainHook {
                     //startFakeString();
                 }
             });
-            try {
-                Natives.load(ctx);
-            } catch (Throwable e3) {
-                Utils.log(e3);
-            }
         } else {
             if (LicenseStatus.hasUserAcceptEula()) {
                 Class director = _StartupDirector();
@@ -714,10 +708,13 @@ public class MainHook {
                 if (index != -1) {
                     Intent raw = (Intent) args[index];
                     ComponentName component = raw.getComponent();
+                    Context hostApp = Utils.getApplication();
                     //log("startActivity, rawIntent=" + raw);
-                    if (component != null &&
-                            (component.getClassName().startsWith("nil.nadph.qnotified.")
-                                    || component.getClassName().startsWith("me.zpp0196.qqpurify.activity."))) {
+                    if (hostApp != null && component != null
+                            && hostApp.getPackageName().equals(component.getPackageName())
+                            && (component.getClassName().startsWith("nil.nadph.qnotified.")
+                            || component.getClassName().startsWith("me.zpp0196.qqpurify.activity.")
+                            || component.getClassName().startsWith("me.singleneuron."))) {
                         Intent wrapper = new Intent();
                         wrapper.setClassName(component.getPackageName(), ActProxyMgr.STUB_ACTIVITY);
                         wrapper.putExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT, raw);
@@ -749,7 +746,8 @@ public class MainHook {
                 return mBase.newActivity(cl, className, intent);
             } catch (Exception e) {
                 if (className.startsWith("nil.nadph.qnotified.")
-                        || className.startsWith("me.zpp0196.qqpurify.activity.")) {
+                        || className.startsWith("me.zpp0196.qqpurify.activity.")
+                        || className.startsWith("me.singleneuron.")) {
                     return (Activity) Initiator.class.getClassLoader().loadClass(className).newInstance();
                 }
                 throw e;
@@ -971,7 +969,8 @@ public class MainHook {
         public void callActivityOnCreate(Activity activity, Bundle icicle) {
             if (icicle != null) {
                 String className = activity.getClass().getName();
-                if (className.startsWith("me.zpp0196.qqpurify.activity.")) {
+                if (className.startsWith("me.zpp0196.qqpurify.activity.")
+                        || className.startsWith("me.singleneuron.")) {
                     icicle.setClassLoader(MainHook.class.getClassLoader());
                 }
             }
@@ -983,7 +982,8 @@ public class MainHook {
         public void callActivityOnCreate(Activity activity, Bundle icicle, PersistableBundle persistentState) {
             if (icicle != null) {
                 String className = activity.getClass().getName();
-                if (className.startsWith("me.zpp0196.qqpurify.activity.")) {
+                if (className.startsWith("me.zpp0196.qqpurify.activity.")
+                        || className.startsWith("me.singleneuron.")) {
                     icicle.setClassLoader(MainHook.class.getClassLoader());
                 }
             }
