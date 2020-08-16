@@ -12,7 +12,6 @@ import nil.nadph.qnotified.util.Utils
 object NoApplet : BaseDelayableHookAdapter("noapplet") {
 
     override fun doInit(): Boolean {
-        super.init()
         try {
             val jumpActivityClass = Class.forName("com.tencent.mobileqq.activity.JumpActivity")
             XposedBridge.hookAllMethods(jumpActivityClass, "getIntent", object : XC_MethodHook() {
