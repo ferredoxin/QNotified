@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 29
@@ -53,6 +55,7 @@ dependencies {
     implementation 'de.psdev.licensesdialog:licensesdialog:2.0.0'
     implementation 'io.noties.markwon:core:4.5.0'
     testImplementation 'junit:junit:4.12'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     // androidx
     implementation 'androidx.preference:preference:1.1.1'
 }

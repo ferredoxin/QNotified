@@ -30,6 +30,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 import com.tencent.mobileqq.app.QQAppInterface;
 import dalvik.system.DexFile;
@@ -2043,5 +2044,17 @@ public class Utils {
         fout.write(content.getBytes());
         fout.flush();
         fout.close();
+    }
+
+    public static View getChildAtRecursive(ViewGroup vg, int... index) {
+        View v = vg;
+        for (int i1 = 0, indexLength = index.length; i1 < indexLength; i1++) {
+            int i = index[i1];
+            v = vg.getChildAt(i);
+            if (i1 != index.length - 1) {
+                vg = (ViewGroup) v;
+            }
+        }
+        return v;
     }
 }
