@@ -31,6 +31,7 @@ import android.os.Looper;
 import android.view.View;
 import android.widget.TextView;
 
+import me.singleneuron.util.HookStatue;
 import nil.nadph.qnotified.HookEntry;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
@@ -114,12 +115,14 @@ public class ConfigActivity extends Activity implements Runnable {
         statusTv = findViewById(R.id.mainTextViewStatusA);
         statusTvB = findViewById(R.id.mainTextViewStatusB);
 
-        if (Utils.getActiveModuleVersion() == null) {
+        HookStatue.Statue statue = HookStatue.INSTANCE.getStatue(this,true);
+
+        if (!HookStatue.INSTANCE.isActive(statue)) {
             statusTv.setText("免费软件-请勿倒卖");
-            statusTvB.setText("请在正确安装Xposed框架后,在Xposed Installer中(重新)勾选QNotified以激活本模块(太极/无极请无视提示)");
+            statusTvB.setText(getString(HookStatue.INSTANCE.getStatueName(statue))+"，请在正确安装Xposed框架后,在Xposed Installer中(重新)勾选QNotified以激活本模块(太极/无极请无视提示)");
             needRun = true;
         } else {
-            statusTv.setText("模块已激活");
+            statusTv.setText(HookStatue.INSTANCE.getStatueName(statue));
             statusTv.setTextColor(0xB000FF00);
             statusTvB.setText("更新模块后需要重启手机方可生效\n当前生效版本号见下方ActiveModuleVersion");
         }
