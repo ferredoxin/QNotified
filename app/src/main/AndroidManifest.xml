@@ -21,6 +21,12 @@
             </intent-filter>
         </activity>
 
+        <!-- for debug -->
+        <!--<activity
+            android:name="me.singleneuron.activity.BugReportActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.DayNight" />-->
+
         <meta-data
                 android:name="xposedmodule"
                 android:value="true"/>
