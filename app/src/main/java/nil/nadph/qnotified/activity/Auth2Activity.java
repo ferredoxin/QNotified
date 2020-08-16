@@ -187,7 +187,6 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
             onClick(newOne);
         }
         validRetryCount = 0;
-        CliOper.openAuth2Activity();
         return true;
     }
 

@@ -23,16 +23,6 @@ public class CliOper {
         }
     }
 
-    public static void openModuleSettings() {
-        __init__(Utils.getApplication());
-        Analytics.trackEvent("openModuleSettings");
-    }
-
-    public static void openAuth2Activity() {
-        __init__(Utils.getApplication());
-        Analytics.trackEvent("openAuth2Activity");
-    }
-
     public static void passAuth2Once(int retryCount, int chiralCount) {
         __init__(Utils.getApplication());
         Map<String, String> prop = new HashMap<>();

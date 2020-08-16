@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.preference.ListPreference;
-import androidx.preference.MultiSelectListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
@@ -26,18 +25,22 @@ import nil.nadph.qnotified.util.Utils;
 
 public class BugReportFragment extends PreferenceFragmentCompat {
 
-    Map<String,String> arguments = new HashMap<>();
+    private Map<String,String> arguments = new HashMap<>();
+    private ArrayList<BugReportArguments> bugReportArgumentsList;
+
+    private BugReportFragment() {}
+
+    public static BugReportFragment getInstance(ArrayList<BugReportArguments> list) {
+        BugReportFragment fragment = new BugReportFragment();
+        fragment.bugReportArgumentsList = list;
+        return fragment;
+    }
 
     @Override
-    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-        addPreferencesFromResource(R.xml.pref_bug_report);
+    public void onResume() {
+        super.onResume();
         PreferenceCategory preferenceCategory = findPreference(BugReportPreference.CATEGORY);
-        ArrayList<BugReportArguments> bugReportArgumentsList;
-        try {
-            bugReportArgumentsList = BaseBugReport.getInstance().getBugReportArgumentsList();
-        } catch (IOException e) {
-            throw new IOError(e);
-        }
+        preferenceCategory.removeAll();
         for (BugReportArguments bugReportArguments : bugReportArgumentsList) {
             Preference preference;
             /*if (bugReportArguments.multiple) {
@@ -48,7 +51,7 @@ public class BugReportFragment extends PreferenceFragmentCompat {
             ListPreference listPreference = new ListPreference(getContext());
             listPreference.setEntryValues(bugReportArguments.choices);
             listPreference.setEntries(bugReportArguments.choices);
-                preference = listPreference;
+            preference = listPreference;
             //}
             preference.setKey(bugReportArguments.key);
             preference.setTitle(bugReportArguments.name);
@@ -64,7 +67,7 @@ public class BugReportFragment extends PreferenceFragmentCompat {
             arguments.put("QQ",String.valueOf(Utils.getLongAccountUin()));
             arguments.put("App Center ID", AppCenter.getInstallId().get().toString());
             for (BugReportArguments bugReportArguments : bugReportArgumentsList) {
-                if (arguments.get(bugReportArguments.key)==null) {
+                if (arguments.get(bugReportArguments.key)==null||arguments.get(bugReportArguments.key).isEmpty()) {
                     Toast.makeText(getContext(),String.format("请填写%s。",bugReportArguments.name),Toast.LENGTH_LONG).show();
                     return true;
                 }
@@ -74,4 +77,10 @@ public class BugReportFragment extends PreferenceFragmentCompat {
             return true;
         });
     }
+
+    @Override
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+        addPreferencesFromResource(R.xml.pref_bug_report);
+    }
+
 }
