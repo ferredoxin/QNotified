@@ -30,7 +30,6 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.view.View;
 import android.widget.TextView;
-
 import me.singleneuron.util.HookStatue;
 import nil.nadph.qnotified.HookEntry;
 import nil.nadph.qnotified.MainHook;
@@ -115,11 +114,12 @@ public class ConfigActivity extends Activity implements Runnable {
         statusTv = findViewById(R.id.mainTextViewStatusA);
         statusTvB = findViewById(R.id.mainTextViewStatusB);
 
-        HookStatue.Statue statue = HookStatue.INSTANCE.getStatue(this,true);
+        HookStatue.Statue statue = HookStatue.INSTANCE.getStatue(this, false);
 
         if (!HookStatue.INSTANCE.isActive(statue)) {
             statusTv.setText("免费软件-请勿倒卖");
-            statusTvB.setText(getString(HookStatue.INSTANCE.getStatueName(statue))+"，请在正确安装Xposed框架后,在Xposed Installer中(重新)勾选QNotified以激活本模块(太极/无极请无视提示)");
+            statusTvB.setText(getString(HookStatue.INSTANCE.getStatueName(statue))
+                    + "，请在正确安装Xposed框架后,在Xposed Installer中(重新)勾选QNotified以激活本模块(太极/无极请无视提示)");
             needRun = true;
         } else {
             statusTv.setText(HookStatue.INSTANCE.getStatueName(statue));
