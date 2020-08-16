@@ -7,6 +7,8 @@
     <FrameLayout
         android:id="@+id/bug_report_content_frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent" >
+
+    </FrameLayout>
 
 </LinearLayout>
