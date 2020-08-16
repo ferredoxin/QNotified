@@ -4,17 +4,16 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import nil.nadph.qnotified.databinding.FragmentLoadingBugReportBinding;
+import nil.nadph.qnotified.util.Utils;
 
 public class LoadingBugReportFragment extends Fragment {
 
-    private FragmentLoadingBugReportBinding binding;
-    private Runnable mRunnable;
+    FragmentLoadingBugReportBinding binding;
+    Runnable mRunnable;
 
     @Nullable
     @Override
@@ -34,10 +33,15 @@ public class LoadingBugReportFragment extends Fragment {
     }
 
     public void onError(String string) {
-        binding.textView.setText("加载失败");
-        binding.textView2.setText(string);
-        binding.button.setVisibility(View.VISIBLE);
-        binding.progressBar.setVisibility(View.GONE);
+        Utils.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                binding.textView.setText("加载失败");
+                binding.textView2.setText(string);
+                binding.button.setVisibility(View.VISIBLE);
+                binding.progressBar.setVisibility(View.GONE);
+            }
+        });
     }
 
     public void setOnRetry(Runnable runnable) {

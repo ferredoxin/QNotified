@@ -89,8 +89,12 @@ public class Utils {
     }
 
     public static void runOnUiThread(Runnable r) {
-        if (mHandler == null) mHandler = new Handler(Looper.getMainLooper());
-        mHandler.post(r);
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            r.run();
+        } else {
+            if (mHandler == null) mHandler = new Handler(Looper.getMainLooper());
+            mHandler.post(r);
+        }
     }
 
     public static Application getApplication() {

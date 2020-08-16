@@ -15,7 +15,7 @@
 
     <TextView android:id="@+id/sLicenseItem_licensePrev"
               android:typeface="monospace"
-              android:textSize="12sp"
+              android:textSize="14sp"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:layout_margin="5dp"
