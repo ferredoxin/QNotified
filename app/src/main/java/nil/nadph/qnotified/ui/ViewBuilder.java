@@ -28,6 +28,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.SyncUtils;
@@ -137,6 +138,27 @@ public class ViewBuilder {
                     mgr.getAllConfig().put(key, isChecked);
                     mgr.save();
                     Utils.showToastShort(buttonView.getContext(), "重启QQ生效");
+                } catch (Throwable e) {
+                    Utils.log(e);
+                    Utils.showToastShort(buttonView.getContext(), e.toString());
+                }
+            }
+        });
+        root.setId(key.hashCode());
+        return root;
+    }
+
+    public static RelativeLayout newListItemSwitchFriendConfigNext(Context ctx, CharSequence title, CharSequence desc, final String key, boolean defVal) {
+        ConfigManager mgr = ExfriendManager.getCurrent().getConfig();
+        boolean on = mgr.getBooleanOrDefault(key, defVal);
+        RelativeLayout root = newListItemSwitch(ctx, title, desc, on, new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                try {
+
+                    mgr.getAllConfig().put(key, isChecked);
+                    mgr.save();
+                    Utils.showToastShort(buttonView.getContext(), "设置成功");
                 } catch (Throwable e) {
                     Utils.log(e);
                     Utils.showToastShort(buttonView.getContext(), e.toString());

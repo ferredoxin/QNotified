@@ -36,9 +36,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-
 import com.tencent.mobileqq.widget.BounceScrollView;
-
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.config.EventRecord;
@@ -120,6 +118,28 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
             public void onClick(View v) {
                 try {
                     quitLooper();
+                } catch (Throwable e) {
+                    Toast.makeText(TroubleshootActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }));
+        ll.addView(newListItemButton(this, "((void(*)())0)();", "空指针测试, 没事别按", null, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Natives.load(TroubleshootActivity.this);
+                    Natives.call(0L);
+                } catch (Throwable e) {
+                    Toast.makeText(TroubleshootActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }));
+        ll.addView(newListItemButton(this, "*((int*)0)=0;", "空指针测试, 没事别按", null, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Natives.load(TroubleshootActivity.this);
+                    Natives.memset(0, 0, 1);
                 } catch (Throwable e) {
                     Toast.makeText(TroubleshootActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
                 }

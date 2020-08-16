@@ -309,6 +309,20 @@ public class Initiator {
             } catch (Exception ignored) {
             }
         }
+        if (mTextItemBuilder == null) {
+            try {
+                tmp = load("com/tencent/mobileqq/activity/aio/item/TextItemBuilder$3");
+                mTextItemBuilder = tmp.getDeclaredField("this$0").getType();
+            } catch (Exception ignored) {
+            }
+        }
+        if (mTextItemBuilder == null) {
+            try {
+                tmp = load("com/tencent/mobileqq/activity/aio/item/TextItemBuilder$8");
+                mTextItemBuilder = tmp.getDeclaredField("this$0").getType();
+            } catch (Exception ignored) {
+            }
+        }
         return mTextItemBuilder;
     }
 

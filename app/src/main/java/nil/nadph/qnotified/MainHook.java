@@ -37,7 +37,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
-
 import dalvik.system.BaseDexClassLoader;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
@@ -302,8 +301,10 @@ public class MainHook {
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     Utils.$access$set$sAppRuntimeInit(true);
                     //logi("NewRuntime/I after doStep");
-                    if (LicenseStatus.isLoadingDisabled()) return;
-                    LicenseStatus.sDisableCommonHooks = LicenseStatus.isBlacklisted() || LicenseStatus.isSilentGone();
+                    if (SyncUtils.isMainProcess()) {
+                        // fix error in :video, and QZone启动失败
+                        LicenseStatus.sDisableCommonHooks = LicenseStatus.isLoadingDisabled() || LicenseStatus.isBlacklisted() || LicenseStatus.isSilentGone();
+                    }
                 }
             });
         } catch (Throwable e) {
@@ -344,11 +345,6 @@ public class MainHook {
                     //startFakeString();
                 }
             });
-            try {
-                Natives.load(ctx);
-            } catch (Throwable e3) {
-                Utils.log(e3);
-            }
         } else {
             if (LicenseStatus.hasUserAcceptEula()) {
                 Class director = _StartupDirector();
@@ -714,11 +710,13 @@ public class MainHook {
                 if (index != -1) {
                     Intent raw = (Intent) args[index];
                     ComponentName component = raw.getComponent();
+                    Context hostApp = Utils.getApplication();
                     //log("startActivity, rawIntent=" + raw);
-                    if (component != null &&
-                            (component.getClassName().startsWith("nil.nadph.qnotified.")
-                                    || component.getClassName().startsWith("me.zpp0196.qqpurify.activity.")
-                                        || component.getClassName().startsWith("me.singleneuron."))) {
+                    if (hostApp != null && component != null
+                            && hostApp.getPackageName().equals(component.getPackageName())
+                            && (component.getClassName().startsWith("nil.nadph.qnotified.")
+                            || component.getClassName().startsWith("me.zpp0196.qqpurify.activity.")
+                            || component.getClassName().startsWith("me.singleneuron."))) {
                         Intent wrapper = new Intent();
                         wrapper.setClassName(component.getPackageName(), ActProxyMgr.STUB_ACTIVITY);
                         wrapper.putExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT, raw);
@@ -751,7 +749,7 @@ public class MainHook {
             } catch (Exception e) {
                 if (className.startsWith("nil.nadph.qnotified.")
                         || className.startsWith("me.zpp0196.qqpurify.activity.")
-                            || className.startsWith("me.singleneuron.")) {
+                        || className.startsWith("me.singleneuron.")) {
                     return (Activity) Initiator.class.getClassLoader().loadClass(className).newInstance();
                 }
                 throw e;
@@ -987,7 +985,7 @@ public class MainHook {
             if (icicle != null) {
                 String className = activity.getClass().getName();
                 if (className.startsWith("me.zpp0196.qqpurify.activity.")
-                    || className.startsWith("me.singleneuron.")) {
+                        || className.startsWith("me.singleneuron.")) {
                     icicle.setClassLoader(MainHook.class.getClassLoader());
                 }
             }

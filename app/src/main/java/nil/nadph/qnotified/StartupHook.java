@@ -25,6 +25,7 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.util.Initiator;
+import nil.nadph.qnotified.util.Natives;
 import nil.nadph.qnotified.util.Utils;
 
 import java.io.File;
@@ -57,7 +58,7 @@ public class StartupHook {
                         if (sec_stage_inited) return;
                         Utils.checkLogFlag();
                         Context ctx;
-                        Class clz = param.thisObject.getClass().getClassLoader().loadClass("com.tencent.common.app.BaseApplicationImpl");
+                        Class<?> clz = param.thisObject.getClass().getClassLoader().loadClass("com.tencent.common.app.BaseApplicationImpl");
                         final Field f = hasField(clz, "sApplication");
                         if (f == null) ctx = (Context) sget_object(clz, "a", clz);
                         else ctx = (Context) f.get(null);
@@ -73,6 +74,11 @@ public class StartupHook {
                         }
                         System.setProperty(QN_FULL_TAG, "true");
                         Initiator.init(classLoader);
+                        try {
+                            Natives.load(ctx);
+                        } catch (Throwable e3) {
+                            Utils.log(e3);
+                        }
                         if (Utils.getBuildTimestamp() < 0) return;
                         MainHook.getInstance().performHook(ctx, param.thisObject);
                         sec_stage_inited = true;

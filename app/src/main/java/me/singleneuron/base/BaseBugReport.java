@@ -1,17 +1,21 @@
 package me.singleneuron.base;
 
-import java.util.ArrayList;
-
+import androidx.annotation.NonNull;
 import me.singleneuron.data.BugReportArguments;
+import nil.nadph.qnotified.remote.NAuthBugReportArgsImpl;
+import nil.nadph.qnotified.util.NonUiThread;
+
+import java.io.IOException;
+import java.util.ArrayList;
 
 public abstract class BaseBugReport {
 
+    @NonNull
     public static BaseBugReport getInstance() {
-        // Todo
-        //return new BaseBugReport();
-        return null;
+        return new NAuthBugReportArgsImpl();
     }
 
-    public abstract ArrayList<BugReportArguments> getBugReportArgumentsList();
-
+    @NonNull
+    @NonUiThread
+    public abstract ArrayList<BugReportArguments> getBugReportArgumentsList() throws IOException;
 }
