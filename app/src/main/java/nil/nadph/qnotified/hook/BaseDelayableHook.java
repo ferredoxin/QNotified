@@ -92,7 +92,7 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 RemoveCameraButton.get(),
                 RemovePlayTogether.get(),
                 RemoveQbossAD.get(),
-                NoApplet.INSTANCE
+                NoApplet.INSTANCE,
         };
         return sAllHooks;
     }
