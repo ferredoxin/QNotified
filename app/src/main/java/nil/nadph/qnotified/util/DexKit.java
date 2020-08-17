@@ -690,7 +690,7 @@ public class DexKit {
                     Class clz = Initiator.load(m.declaringClass);
                     if (clz.isEnum()) continue;
                     if (Modifier.isAbstract(clz.getModifiers())) continue;
-                    if (Object.class != clz.getSuperclass()) continue;
+                    if (clz.getSuperclass() == Object.class) continue;
                     return m;
                 }
                 break;
