@@ -296,7 +296,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
                         }
                     })
                     .setMessage("Resources injection failure!\nApplication may misbehave.\n" + e.toString()
-                            + "\n如果您刚刚更新了插件, 请点击重启QQ应用新版。需要开启即时模块(Edxp)。").show();
+                            + "\n如果您刚刚更新了插件, 您可能需要重启QQ/TIM(太/无极阴,应用转生,天鉴等虚拟框架)或者重启手机(EdXp, Xposed, 太极阳), 如果重启手机后问题仍然存在, 请向作者反馈, 并提供详细日志").show();
         }
         return true;
     }
