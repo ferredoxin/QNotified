@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class QNScriptManager {
+
+    private static List<QNScript> scripts = new ArrayList<>();
+
     /**
      * 添加一个脚本
      *
@@ -81,16 +84,9 @@ public class QNScriptManager {
         }
     }
 
-    private static void execute(String code) throws Throwable {
-        Interpreter ip = new Interpreter();
-        ip.eval(code);
-        //ip.source("./script.java");
-        QNParam qp = ParamBuilder.builder()
-                .setContent("测试消息")
-                .setSenderUin(123456L)
-                .seUin(654321L)
-                .build();
-       // ip.set("param", qp);
-        ip.eval("qwq(param)");
+    public static void execute(String code) throws Throwable {
+        Interpreter lp = new Interpreter();
+        lp.eval(code);
+        scripts.add(QNScript.create(lp));
     }
 }
