@@ -18,10 +18,10 @@ object adNoApplet : BaseDelayableHookAdapter("noapplet") {
             Utils.logd("NoApplet inited")
             XposedBridge.hookAllMethods(Activity::class.java, "getIntent", object : XC_MethodHook() {
                 override fun afterHookedMethod(param: MethodHookParam?) {
+                    if (param!!.thisObject::class.java.simpleName != "JumpActivity") return
                     if (LicenseStatus.sDisableCommonHooks) return
                     if (!isEnabled) return
                     //Utils.logd("NoApplet started: "+param!!.thisObject::class.java.simpleName)
-                    if (param!!.thisObject::class.java.simpleName != "JumpActivity") return
                     val originIntent = param.result as Intent
                     val originUri = originIntent.data
                     val schemeUri = originUri.toString()
