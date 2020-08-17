@@ -17,51 +17,46 @@ public class QNScriptManager {
     /**
      * 添加一个脚本
      *
-     * @param c
+     * @param file 文件
      */
-    public static void addScript(String c) {
-        if (Utils.isNullOrEmpty(c) || hasScript(c)) return;
+    public static void addScript(String file) {
+        if (Utils.isNullOrEmpty(file) || hasScript(file)) return;
         // to do
+        // 操作: 将文件移动到软件数据文件夹下
     }
 
     /**
      * 判断脚本是否存在
      *
-     * @param code
-     * @return
+     * @param file 文件
+     * @return 是否存在
      */
-    public static boolean hasScript(String code) {
-        if (Utils.isNullOrEmpty(code)) return false;
+    public static boolean hasScript(String file) {
+        if (Utils.isNullOrEmpty(file)) return false;
         // to do
+        // 判断文件
         return true;
     }
 
     /**
-     * 判断脚本是否存在
+     * 删除脚本
      *
-     * @param order
+     * @param file
+     */
+    public static void delScript(String file) {
+        // to do
+        // 删除文件
+    }
+
+    /**
+     * 获取所有的脚本代码
+     *
      * @return
      */
-    public static boolean hasScript(int order) {
-        return hasScript(ConfigManager.getDefaultConfig().getStringOrDefault(ConfigItems.qn_script_code + order, ""));
-    }
-
-    /**
-     * 删除脚本
-     *
-     * @param code
-     */
-    public static void delScript(String code) {
+    public static List<String> getScriptCodes() {
         // to do
-    }
-
-    /**
-     * 删除脚本
-     *
-     * @param order
-     */
-    public static void delScript(int order) {
-        delScript(ConfigManager.getDefaultConfig().getStringOrDefault(ConfigItems.qn_script_code + order, ""));
+        // 返回全部脚本代码
+        return new ArrayList<>();
     }
 
     /**
@@ -69,13 +64,12 @@ public class QNScriptManager {
      *
      * @return
      */
-    public static List<String> getScripts() {
-        // to do
-        return new ArrayList<>();
+    public static List<QNScript> getScripts() {
+        return scripts;
     }
 
     public static void init() {
-        for (String code : getScripts()) {
+        for (String code : getScriptCodes()) {
             try {
                 execute(code);
             } catch (Throwable throwable) {
