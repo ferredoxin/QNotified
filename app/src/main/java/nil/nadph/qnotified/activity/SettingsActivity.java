@@ -250,7 +250,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             }
         }));
         __jmp_ctl_cnt = _t.findViewById(R_ID_VALUE);
-        ll.addView(newListItemSwitchStub(this, "禁用特别关心长震动", "等我找到女朋友就开发这个功能", false));
+        ll.addView(newListItemSwitchStub(this, "禁用特别关心长震动", "他女朋友都没了他也没开发这个功能", false));
         ll.addView(_t = newListItemButton(this, "管理脚本(.java)", "请注意安全, 合理使用", "N/A", clickToProxyActAction(ManageScriptsActivity.class)));
         __js_status = _t.findViewById(R_ID_VALUE);
         ll.addView(subtitle(this, "关于"));
