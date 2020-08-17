@@ -18,7 +18,7 @@
  */
 package nil.nadph.qnotified.hook;
 
-import me.singleneuron.hook.NoApplet;
+import me.singleneuron.hook.adNoApplet;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.SwitchConfigItem;
 import nil.nadph.qnotified.hook.kyuubiran.RemoveCameraButton;
@@ -92,7 +92,7 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 RemoveCameraButton.get(),
                 RemovePlayTogether.get(),
                 RemoveQbossAD.get(),
-                NoApplet.INSTANCE
+                adNoApplet.INSTANCE,
         };
         return sAllHooks;
     }
