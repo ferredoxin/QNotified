@@ -64,7 +64,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
     private static final int R_ID_APPLY = 0x300AFF81;
     private static final int R_ID_DISABLE = 0x300AFF82;
     private static final int R_ID_PERCENT_VALUE = 0x300AFF83;
-    public static final String delimiter = "@";
+    public static final String delimiter = "#msg#";
     private static int battery = 0;
     private static String power = "未充电";
 
@@ -138,7 +138,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         __tv_chat_tail_time_format = _s.findViewById(R_ID_VALUE);
         ll.addView(subtitle(ChatTailActivity.this, "设置小尾巴"));
         ll.addView(subtitle(ChatTailActivity.this, "可用变量: "));
-        ll.addView(subtitle(ChatTailActivity.this, "@         : 当前消息"));
+        ll.addView(subtitle(ChatTailActivity.this, delimiter + "         : 当前消息"));
         ll.addView(subtitle(ChatTailActivity.this, "#model#   : 手机型号"));
         ll.addView(subtitle(ChatTailActivity.this, "#brand#   : 手机厂商"));
         ll.addView(subtitle(ChatTailActivity.this, "#battery# : 当前变量"));
