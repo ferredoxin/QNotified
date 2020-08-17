@@ -26,9 +26,9 @@ public class BugReportActivity extends AppCompatTransferActivity {
         setTitle("反馈");
         binding = ActivityBugReportBinding.inflate(getLayoutInflater());
         loadingBugReportFragment = new LoadingBugReportFragment();
-        loadingBugReportFragment.setOnRetry(() -> thread.start());
+        loadingBugReportFragment.setOnRetry(() -> new Thread(new runnable()).start());
         changeFragment(loadingBugReportFragment);
-        thread.start();
+        new Thread(new runnable()).start();
         setContentView(binding.getRoot());
     }
 
@@ -36,10 +36,10 @@ public class BugReportActivity extends AppCompatTransferActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.bug_report_content_frame, fragment).addToBackStack(fragment.getClass().getSimpleName()).commit();
     }
 
-    Thread thread = new Thread() {
+    private class runnable implements Runnable {
+
         @Override
         public void run() {
-            super.run();
             try {
                 ArrayList<BugReportArguments> list = BaseBugReport.getInstance().getBugReportArgumentsList();
                 runOnUiThread(() -> {
@@ -51,6 +51,6 @@ public class BugReportActivity extends AppCompatTransferActivity {
                 e.printStackTrace();
             }
         }
-    };
+    }
 
 }
