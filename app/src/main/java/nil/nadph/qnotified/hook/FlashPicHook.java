@@ -77,6 +77,9 @@ public class FlashPicHook extends BaseDelayableHook {
                 }
             }
             XposedBridge.hookMethod(isFlashPic, new XC_MethodHook(52) {
+                String sn_ItemBuilderFactory = null;
+                String sn_BasePicDownloadProcessor = null;
+
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     try {
@@ -85,8 +88,12 @@ public class FlashPicHook extends BaseDelayableHook {
                     } catch (Exception e) {
                         log(e);
                     }
-                    String sn_ItemBuilderFactory = getShort$Name(DexKit.doFindClass(DexKit.C_ITEM_BUILDER_FAC));
-                    String sn_BasePicDownloadProcessor = getShort$Name(DexKit.doFindClass(DexKit.C_BASE_PIC_DL_PROC));
+                    if (sn_BasePicDownloadProcessor == null) {
+                        sn_BasePicDownloadProcessor = getShort$Name(DexKit.doFindClass(DexKit.C_BASE_PIC_DL_PROC));
+                    }
+                    if (sn_ItemBuilderFactory == null) {
+                        sn_ItemBuilderFactory = getShort$Name(DexKit.doFindClass(DexKit.C_ITEM_BUILDER_FAC));
+                    }
                     if (isCallingFromEither(sn_ItemBuilderFactory, sn_BasePicDownloadProcessor, "FlashPicItemBuilder")) {
                         param.setResult(false);
                     }

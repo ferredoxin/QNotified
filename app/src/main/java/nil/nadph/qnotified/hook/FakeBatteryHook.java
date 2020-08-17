@@ -26,7 +26,6 @@ import android.os.Build;
 import android.os.Looper;
 import android.os.Parcelable;
 import android.widget.Toast;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
@@ -268,7 +267,7 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         try {
             if (isEnabled()) {
-                if (args.length == 2 && method.getName().equals("getProperty")) {
+                if (method.getName().equals("getProperty") && args.length == 2) {
                     int id = (int) args[0];
                     Parcelable prop = (Parcelable) args[1];
                     if (id == BatteryManager.BATTERY_PROPERTY_STATUS) {
@@ -282,7 +281,7 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
                         BatteryProperty_setLong(prop, getFakeBatteryCapacity());
                         return 0;
                     }
-                } else if (args.length == 0 && method.getName().equals("isCharging")) {
+                } else if (method.getName().equals("isCharging") && (args == null || args.length == 0)) {
                     return isFakeBatteryCharging();
                 }
             }

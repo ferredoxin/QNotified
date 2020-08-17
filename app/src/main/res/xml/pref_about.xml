@@ -10,8 +10,8 @@
         <Preference
                 android:key="version_qq"
                 android:title="QQ版本"/>
-        <Preference
-                android:key="licenses"
-                android:title="开放源代码许可"/>
+        <!--        <Preference-->
+        <!--                android:key="licenses"-->
+        <!--                android:title="开放源代码许可"/>-->
     </PreferenceCategory>
 </PreferenceScreen>

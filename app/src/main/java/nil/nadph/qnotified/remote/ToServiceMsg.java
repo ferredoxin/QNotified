@@ -11,10 +11,10 @@ public class ToServiceMsg extends JceStruct {
     private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
     private static final Random r = new Random();
     private int uniSeq;//0
-    private String serviceName;//1
-    private String serviceCmd;//2
+    private String serviceName = "";//1
+    private String serviceCmd = "";//2
     private long token;//3
-    private byte[] body;//4
+    private byte[] body = EMPTY_BYTE_ARRAY;//4
 
     public ToServiceMsg() {
         uniSeq = r.nextInt();

@@ -48,9 +48,9 @@ public class MuteAtAllAndRedPacket extends BaseDelayableHook {
     public boolean init() {
         if (inited) return true;
         try {
-            Class cl_MessageInfo = load("com/tencent/mobileqq/troop/data/MessageInfo");
+            Class<?> cl_MessageInfo = load("com/tencent/mobileqq/troop/data/MessageInfo");
             if (cl_MessageInfo == null) {
-                Class c = _MessageRecord();
+                Class<?> c = _MessageRecord();
                 cl_MessageInfo = c.getDeclaredField("mMessageInfo").getType();
             }
             /* @author qiwu */

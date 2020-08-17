@@ -33,6 +33,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import com.tencent.mobileqq.widget.BounceScrollView;
+
+import me.singleneuron.hook.NewRoundHead;
+import me.singleneuron.hook.adNoApplet;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigItems;
@@ -171,6 +174,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(newListItemHookSwitchInit(this, "防撤回", "自带撤回灰字提示", RevokeMsgHook.get()));
         //ll.addView(newListItemSwitchConfigInit(this, "聊天图片背景透明", null, qn_gallery_bg, false, GalleryBgHook.get()));
         ll.addView(newListItemHookSwitchInit(this, "显示设置禁言的管理", "即使你只是普通群成员", GagInfoDisclosure.get()));
+        ll.addView(newListItemHookSwitchInit(this, "小程序分享转链接", "感谢Alcatraz323开发远离小程序,感谢神经元移植到Xposed", adNoApplet.INSTANCE));
         ll.addView(subtitle(this, "实验性功能(未必有效)"));
         ll.addView(newListItemHookSwitchInit(this, "收藏更多表情", "[暂不支持>=8.2.0]保存在本地", FavMoreEmo.get()));
         ll.addView(newListItemHookSwitchInit(this, "屏蔽更新提醒", null, PreUpgradeHook.get()));
@@ -178,6 +182,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         if (!Utils.isTim(this)) {
             ll.addView(newListItemHookSwitchInit(this, "自定义猜拳骰子", null, CheatHook.get()));
             ll.addView(newListItemHookSwitchInit(this, "简洁模式圆头像", "From Rikka", RoundAvatarHook.get()));
+            ll.addView(newListItemHookSwitchInit(this,"新版简洁模式圆头像","From Rikka, 仅支持8.3.9", NewRoundHead.INSTANCE));
         }
         ll.addView(subtitle(this, "好友列表"));
         ll.addView(newListItemButton(this, "打开资料卡", "打开指定用户的资料卡", null, new View.OnClickListener() {
@@ -245,7 +250,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             }
         }));
         __jmp_ctl_cnt = _t.findViewById(R_ID_VALUE);
-        ll.addView(newListItemSwitchStub(this, "禁用特别关心长震动", "等我找到女朋友就开发这个功能", false));
+        ll.addView(newListItemSwitchStub(this, "禁用特别关心长震动", "他女朋友都没了他也没开发这个功能", false));
         ll.addView(_t = newListItemButton(this, "管理脚本(.java)", "请注意安全, 合理使用", "N/A", clickToProxyActAction(ManageScriptsActivity.class)));
         __js_status = _t.findViewById(R_ID_VALUE);
         ll.addView(subtitle(this, "关于"));
@@ -258,7 +263,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(newListItemButton(this, "关于模块", null, null, clickToProxyActAction(ACTION_ABOUT)));
         ll.addView(newListItemButton(this, "高级验证", "手性碳验证码", null, clickToProxyActAction(Auth2Activity.class)));
         ll.addView(newListItemButton(this, "展望未来", "其实都还没写", null, clickToProxyActAction(PendingFuncActivity.class)));
-        ll.addView(newListItemButton(this, "特别鸣谢", "感谢卖动绘制图标", null, null));
+        ll.addView(newListItemButton(this, "特别鸣谢", "感谢卖动绘制图标", null, clickToProxyActAction(LicenseActivity.class)));
         ll.addView(subtitle(this, "调试"));
         ll.addView(newListItemButton(this, "故障排查", null, null, clickToProxyActAction(ACTION_TROUBLESHOOT_ACTIVITY)));
         ll.addView(newListItemButton(this, "Shell.exec", "正常情况下无需使用此功能", null, clickTheComing()));
@@ -286,10 +291,16 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             getString(R.string.res_inject_success);
         } catch (Resources.NotFoundException e) {
             CustomDialog.createFailsafe(this).setTitle("FATAL Exception").setCancelable(true).setPositiveButton(getString(android.R.string.yes), null)
+                    .setNeutralButton("重启QQ", (dialog, which) -> {
+                        try {
+                            android.os.Process.killProcess(android.os.Process.myPid());
+                        } catch (Throwable e1) {
+                            log(e1);
+                        }
+                    })
                     .setMessage("Resources injection failure!\nApplication may misbehave.\n" + e.toString()
-                            + "\n如果您刚刚更新了插件, 您可能需要重启QQ/TIM(太/无极阴,应用转生,天鉴等虚拟框架)或者重启手机(EdXp, Xposed, 太极阳), 如果重启手机后问题仍然存在, 请向作者反馈, 并提供详细日志.").show();
+                            + "\n如果您刚刚更新了插件, 您可能需要重启QQ/TIM(太/无极阴,应用转生,天鉴等虚拟框架)或者重启手机(EdXp, Xposed, 太极阳), 如果重启手机后问题仍然存在, 请向作者反馈, 并提供详细日志").show();
         }
-        CliOper.openModuleSettings();
         return true;
     }
 

@@ -28,6 +28,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.SyncUtils;
@@ -41,8 +42,7 @@ import nil.nadph.qnotified.util.Utils;
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.dip2px;
-import static nil.nadph.qnotified.util.Utils.dip2sp;
+import static nil.nadph.qnotified.util.Utils.*;
 
 public class ViewBuilder {
 
@@ -147,6 +147,27 @@ public class ViewBuilder {
         return root;
     }
 
+    public static RelativeLayout newListItemSwitchFriendConfigNext(Context ctx, CharSequence title, CharSequence desc, final String key, boolean defVal) {
+        ConfigManager mgr = ExfriendManager.getCurrent().getConfig();
+        boolean on = mgr.getBooleanOrDefault(key, defVal);
+        RelativeLayout root = newListItemSwitch(ctx, title, desc, on, new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                try {
+
+                    mgr.getAllConfig().put(key, isChecked);
+                    mgr.save();
+                    Utils.showToastShort(buttonView.getContext(), "设置成功");
+                } catch (Throwable e) {
+                    Utils.log(e);
+                    Utils.showToastShort(buttonView.getContext(), e.toString());
+                }
+            }
+        });
+        root.setId(key.hashCode());
+        return root;
+    }
+
     public static RelativeLayout newListItemSwitchConfigNext(Context ctx, CharSequence title, CharSequence desc, final SwitchConfigItem item) {
         boolean on = item.isEnabled();
         RelativeLayout root = newListItemSwitch(ctx, title, desc, on, new CompoundButton.OnCheckedChangeListener() {
@@ -239,28 +260,55 @@ public class ViewBuilder {
         return root;
     }
 
+    @NonUiThread
     public static void doSetupAndInit(final Context ctx, BaseDelayableHook hook) {
         final CustomDialog[] pDialog = new CustomDialog[1];
-        for (Step s : hook.getPreconditions()) {
-            if (s.isDone()) continue;
-            final String name = s.getDescription();
-            Utils.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (pDialog[0] == null) {
-                        pDialog[0] = CustomDialog.create(ctx);
-                        pDialog[0].setCancelable(false);
-                        pDialog[0].setTitle("请稍候");
-                        pDialog[0].show();
-                    }
-                    pDialog[0].setMessage("QNotified正在初始化:\n" + name + "\n每个类一般不会超过一分钟");
+        Throwable err = null;
+        try {
+            for (Step s : hook.getPreconditions()) {
+                if (s.isDone()) continue;
+                final String name = s.getDescription();
+                Utils.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (pDialog[0] == null) {
+                            pDialog[0] = CustomDialog.create(ctx);
+                            pDialog[0].setCancelable(false);
+                            pDialog[0].setTitle("请稍候");
+                            pDialog[0].show();
+                        }
+                        pDialog[0].setMessage("QNotified正在初始化:\n" + name + "\n每个类一般不会超过一分钟");
 
-                }
-            });
-            s.step();
+                    }
+                });
+                s.step();
+            }
+        } catch (Throwable stepErr) {
+            err = stepErr;
         }
-        if (hook.isTargetProc()) hook.init();
-        SyncUtils.requestInitHook(hook.getId(), hook.getEffectiveProc());
+        if (err == null) {
+            if (hook.isTargetProc()) {
+                boolean success = false;
+                try {
+                    success = hook.init();
+                } catch (Throwable ex) {
+                    err = ex;
+                }
+                if (!success) {
+                    Utils.runOnUiThread(() -> {
+                        Utils.showToast(ctx, TOAST_TYPE_ERROR, "初始化失败", Toast.LENGTH_SHORT);
+                    });
+                }
+            }
+            SyncUtils.requestInitHook(hook.getId(), hook.getEffectiveProc());
+        }
+        if (err != null) {
+            Throwable finalErr = err;
+            Utils.runOnUiThread(() -> {
+                CustomDialog.createFailsafe(ctx).setTitle("发生错误").setMessage(finalErr.toString())
+                        .setCancelable(true).setPositiveButton(android.R.string.ok, null).show();
+            });
+        }
         if (pDialog[0] != null) {
             Utils.runOnUiThread(new Runnable() {
                 @Override
@@ -274,22 +322,34 @@ public class ViewBuilder {
     @NonUiThread
     public static void doSetupForPrecondition(final Context ctx, BaseDelayableHook hook) {
         final CustomDialog[] pDialog = new CustomDialog[1];
-        for (Step i : hook.getPreconditions()) {
-            if (i.isDone()) continue;
-            final String name = i.getDescription();
-            Utils.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (pDialog[0] == null) {
-                        pDialog[0] = CustomDialog.create(ctx);
-                        pDialog[0].setCancelable(false);
-                        pDialog[0].setTitle("请稍候");
-                        pDialog[0].show();
+        Throwable error = null;
+        try {
+            for (Step i : hook.getPreconditions()) {
+                if (i.isDone()) continue;
+                final String name = i.getDescription();
+                Utils.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (pDialog[0] == null) {
+                            pDialog[0] = CustomDialog.create(ctx);
+                            pDialog[0].setCancelable(false);
+                            pDialog[0].setTitle("请稍候");
+                            pDialog[0].show();
+                        }
+                        pDialog[0].setMessage("QNotified正在初始化:\n" + name + "\n每个类一般不会超过一分钟");
                     }
-                    pDialog[0].setMessage("QNotified正在初始化:\n" + name + "\n每个类一般不会超过一分钟");
-                }
+                });
+                i.step();
+            }
+        } catch (Throwable e) {
+            error = e;
+        }
+        if (error != null) {
+            Throwable finalErr = error;
+            Utils.runOnUiThread(() -> {
+                CustomDialog.createFailsafe(ctx).setTitle("发生错误").setMessage(finalErr.toString())
+                        .setCancelable(true).setPositiveButton(android.R.string.ok, null).show();
             });
-            i.step();
         }
         if (pDialog[0] != null) {
             Utils.runOnUiThread(new Runnable() {

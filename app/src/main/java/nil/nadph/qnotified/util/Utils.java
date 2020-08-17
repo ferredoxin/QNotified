@@ -25,16 +25,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
 import android.os.Build;
-import android.os.Debug;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
-
 import com.tencent.mobileqq.app.QQAppInterface;
-
 import dalvik.system.DexFile;
 import de.robv.android.xposed.XposedBridge;
 import mqq.app.AppRuntime;
@@ -45,7 +43,6 @@ import nil.nadph.qnotified.config.ConfigManager;
 
 import java.io.*;
 import java.lang.reflect.*;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -87,9 +84,17 @@ public class Utils {
         return null;
     }
 
+    public static boolean isNullOrEmpty(String str) {
+        return str == null || str.replace(" ", "").equalsIgnoreCase("");
+    }
+
     public static void runOnUiThread(Runnable r) {
-        if (mHandler == null) mHandler = new Handler(Looper.getMainLooper());
-        mHandler.post(r);
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            r.run();
+        } else {
+            if (mHandler == null) mHandler = new Handler(Looper.getMainLooper());
+            mHandler.post(r);
+        }
     }
 
     public static Application getApplication() {
@@ -816,7 +821,8 @@ public class Utils {
             Throwable cause = e.getCause();
             if (cause instanceof NullPointerException) {
                 String tr = android.util.Log.getStackTraceString(cause);
-                if (tr.indexOf("ExposedBridge.invokeOriginalMethod") != 0 || tr.indexOf("ExposedBridge.invokeOriginalMethod") != 0)
+                if (tr.indexOf("ExposedBridge.invokeOriginalMethod") != 0
+                        || Pattern.compile("me\\.[.a-zA-Z]+\\.invokeOriginalMethod").matcher(tr).find())
                     needPatch = true;
             }
             if (!needPatch) throw e;
@@ -2042,5 +2048,17 @@ public class Utils {
         fout.write(content.getBytes());
         fout.flush();
         fout.close();
+    }
+
+    public static View getChildAtRecursive(ViewGroup vg, int... index) {
+        View v = vg;
+        for (int i1 = 0, indexLength = index.length; i1 < indexLength; i1++) {
+            int i = index[i1];
+            v = vg.getChildAt(i);
+            if (i1 != index.length - 1) {
+                vg = (ViewGroup) v;
+            }
+        }
+        return v;
     }
 }
