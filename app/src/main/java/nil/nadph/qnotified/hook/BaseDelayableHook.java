@@ -18,6 +18,7 @@
  */
 package nil.nadph.qnotified.hook;
 
+import me.singleneuron.hook.NewRoundHead;
 import me.singleneuron.hook.adNoApplet;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.SwitchConfigItem;
@@ -93,6 +94,7 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 RemovePlayTogether.get(),
                 RemoveQbossAD.get(),
                 adNoApplet.INSTANCE,
+                NewRoundHead.INSTANCE
         };
         return sAllHooks;
     }
