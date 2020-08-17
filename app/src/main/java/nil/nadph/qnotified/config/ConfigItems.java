@@ -44,6 +44,9 @@ public class ConfigItems {
     public static final String qn_chat_tail_troops = "qn_chat_tail_troops";
     public static final String qn_chat_tail_friends = "qn_chat_tail_friends";
     public static final String qn_chat_tail_global = "qn_chat_tail_global";
+    public static final String qn_script_global = "qn_script_global";
+    public static final String qn_script_count = "qn_script_count";
+    public static final String qn_script_code = "qn_script_code_";
 
     public static final SwitchConfigItem qn_disable_hot_patch = new SwitchConfigItem() {
         @Override

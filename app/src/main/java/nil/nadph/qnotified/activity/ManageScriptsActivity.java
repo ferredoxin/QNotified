@@ -22,6 +22,8 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.LinearLayout;
 
+import nil.nadph.qnotified.config.ConfigItems;
+import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.ViewBuilder;
 
@@ -32,7 +34,8 @@ public class ManageScriptsActivity extends IphoneTitleBarActivityCompat {
         super.doOnCreate(bundle);
         LinearLayout main = new LinearLayout(this);
         main.setOrientation(LinearLayout.VERTICAL);
-        main.addView(ViewBuilder.newListItemSwitchStub(this, "总开关(关闭后所有脚本均不生效)", null, false));
+
+        main.addView(ViewBuilder.newListItemSwitchConfigNext(this, "总开关(关闭后所有脚本均不生效)", null, ConfigItems.qn_script_global, false));
         main.addView(ViewBuilder.newListItemButton(this, "导入 ...", null, null, null));
         main.addView(ViewBuilder.newListItemDummy(this, "demo.java (禁用)", null, null));
         //main.addView(ViewBuilder.newListItemSwitch(this, "总开关", null, true, null));
