@@ -33,6 +33,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import com.tencent.mobileqq.widget.BounceScrollView;
+
+import me.singleneuron.hook.NewRoundHead;
 import me.singleneuron.hook.adNoApplet;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
@@ -180,6 +182,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         if (!Utils.isTim(this)) {
             ll.addView(newListItemHookSwitchInit(this, "自定义猜拳骰子", null, CheatHook.get()));
             ll.addView(newListItemHookSwitchInit(this, "简洁模式圆头像", "From Rikka", RoundAvatarHook.get()));
+            ll.addView(newListItemHookSwitchInit(this,"新版简洁模式圆头像","From Rikka, 仅支持8.3.9", NewRoundHead.INSTANCE));
         }
         ll.addView(subtitle(this, "好友列表"));
         ll.addView(newListItemButton(this, "打开资料卡", "打开指定用户的资料卡", null, new View.OnClickListener() {
@@ -247,7 +250,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             }
         }));
         __jmp_ctl_cnt = _t.findViewById(R_ID_VALUE);
-        ll.addView(newListItemSwitchStub(this, "禁用特别关心长震动", "等我找到女朋友就开发这个功能", false));
+        ll.addView(newListItemSwitchStub(this, "禁用特别关心长震动", "他女朋友都没了他也没开发这个功能", false));
         ll.addView(_t = newListItemButton(this, "管理脚本(.java)", "请注意安全, 合理使用", "N/A", clickToProxyActAction(ManageScriptsActivity.class)));
         __js_status = _t.findViewById(R_ID_VALUE);
         ll.addView(subtitle(this, "关于"));
