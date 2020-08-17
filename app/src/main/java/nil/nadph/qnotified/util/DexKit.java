@@ -76,8 +76,10 @@ public class DexKit {
     public static final int C_ScreenShotHelper = 23;
     public static final int C_TimeFormatterUtils = 24;
     public static final int C_TogetherControlHelper = 25;
+    //unknown class name
+    public static final int C_GroupAppActivity = 26;
     //the last index
-    public static final int DEOBF_NUM_C = 25;
+    public static final int DEOBF_NUM_C = 26;
 
     public static final int N_BASE_CHAT_PIE__INIT = 20001;
     public static final int N_BASE_CHAT_PIE__handleNightMask = 20002;
@@ -270,6 +272,8 @@ public class DexKit {
                 return "TimeFormatterUtils";
             case C_TogetherControlHelper:
                 return "TogetherControlHelper";
+            case C_GroupAppActivity:
+                return "GroupAppActivity";
             case N_BASE_CHAT_PIE__INIT:
                 return "base_chat_pie__init";
             case N_BASE_CHAT_PIE__handleNightMask:
@@ -357,6 +361,10 @@ public class DexKit {
                 //guess
                 ret = "com.tencent.mobileqq.together.TogetherControlHelper";
                 break;
+            case C_GroupAppActivity:
+                //unknown
+                ret = "com.tencent.mobileqq.IntimateRelationship";
+                break;
             case N_BASE_CHAT_PIE__INIT:
             case N_BASE_CHAT_PIE__handleNightMask:
             case N_BASE_CHAT_PIE__updateSession:
@@ -425,6 +433,8 @@ public class DexKit {
                 return new byte[][]{new byte[]{0x12, 0x54, 0x69, 0x6D, 0x65, 0x46, 0x6F, 0x72, 0x6D, 0x61, 0x74, 0x74, 0x65, 0x72, 0x55, 0x74, 0x69, 0x6C, 0x73}};
             case C_TogetherControlHelper:
                 return new byte[][]{new byte[]{0x16, 0x53, 0x49, 0x4E, 0x47, 0x20, 0x74, 0x6F, 0x67, 0x65, 0x74, 0x68, 0x65, 0x72, 0x20, 0x69, 0x73, 0x20, 0x63, 0x6C, 0x69, 0x63, 0x6B}};
+            case C_GroupAppActivity:
+                return new byte[][]{new byte[]{0x11, 0x6F, 0x6E, 0x44, 0x72, 0x61, 0x77, 0x65, 0x72, 0x53, 0x74, 0x61, 0x72, 0x74, 0x4F, 0x70, 0x65, 0x6E}};
             case N_BASE_CHAT_PIE__INIT:
                 return new byte[][]{new byte[]{0x0F, 0x69, 0x6E, 0x70, 0x75, 0x74, 0x20, 0x73, 0x65, 0x74, 0x20, 0x65, 0x72, 0x72, 0x6F, 0x72}};
             case N_BASE_CHAT_PIE__handleNightMask:
@@ -485,6 +495,8 @@ public class DexKit {
             case C_TimeFormatterUtils:
                 return new int[]{1, 4};
             case C_TogetherControlHelper:
+                return new int[]{2, 11, 6};
+            case C_GroupAppActivity:
                 return new int[]{2, 11, 6};
             case N_BASE_CHAT_PIE__INIT:
             case N_BASE_CHAT_PIE__handleNightMask:
@@ -665,6 +677,15 @@ public class DexKit {
                 }
                 break;
             case C_TogetherControlHelper:
+                for (DexMethodDescriptor m : __methods) {
+                    Class clz = Initiator.load(m.declaringClass);
+                    if (clz.isEnum()) continue;
+                    if (Modifier.isAbstract(clz.getModifiers())) continue;
+                    if (Object.class != clz.getSuperclass()) continue;
+                    return m;
+                }
+                break;
+            case C_GroupAppActivity:
                 for (DexMethodDescriptor m : __methods) {
                     Class clz = Initiator.load(m.declaringClass);
                     if (clz.isEnum()) continue;
