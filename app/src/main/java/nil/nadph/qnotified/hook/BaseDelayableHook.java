@@ -22,9 +22,7 @@ import me.singleneuron.hook.NewRoundHead;
 import me.singleneuron.hook.adNoApplet;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.SwitchConfigItem;
-import nil.nadph.qnotified.hook.kyuubiran.RemoveCameraButton;
-import nil.nadph.qnotified.hook.kyuubiran.RemovePlayTogether;
-import nil.nadph.qnotified.hook.kyuubiran.RemoveQbossAD;
+import nil.nadph.qnotified.hook.kyuubiran.*;
 import nil.nadph.qnotified.hook.rikka.*;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.NonNull;
@@ -94,7 +92,10 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 RemovePlayTogether.get(),
                 RemoveQbossAD.get(),
                 adNoApplet.INSTANCE,
-                NewRoundHead.INSTANCE
+                NewRoundHead.INSTANCE,
+//                AutomaticMosaicName.INSTANCE,
+//                TestQQMe.INSTANCE,
+//                RemoveGroupApp.INSTANCE,
         };
         return sAllHooks;
     }
