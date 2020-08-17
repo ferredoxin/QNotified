@@ -288,20 +288,15 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             getString(R.string.res_inject_success);
         } catch (Resources.NotFoundException e) {
             CustomDialog.createFailsafe(this).setTitle("FATAL Exception").setCancelable(true).setPositiveButton(getString(android.R.string.yes), null)
-                    .setNeutralButton("清除缓存", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            try {
-                                ConfigManager cfg = ConfigManager.getCache();
-                                cfg.getAllConfig().clear();
-                                cfg.getFile().delete();
-                                System.exit(0);
-                            } catch (Throwable e) {
-                                log(e);
-                            }
+                    .setNeutralButton("重启QQ", (dialog, which) -> {
+                        try {
+                            android.os.Process.killProcess(android.os.Process.myPid());
+                        } catch (Throwable e1) {
+                            log(e1);
                         }
-                    }).setMessage("Resources injection failure!\nApplication may misbehave.\n" + e.toString()
-                    + "\n如果您刚刚更新了插件, 您可能需要重启QQ/TIM(太/无极阴,应用转生,天鉴等虚拟框架)或者重启手机(EdXp, Xposed, 太极阳), 如果重启手机后问题仍然存在, 请向作者反馈, 并提供详细日志.").show();
+                    })
+                    .setMessage("Resources injection failure!\nApplication may misbehave.\n" + e.toString()
+                            + "\n如果您刚刚更新了插件, 请点击重启QQ应用新版。需要开启即时模块(Edxp)。").show();
         }
         return true;
     }
