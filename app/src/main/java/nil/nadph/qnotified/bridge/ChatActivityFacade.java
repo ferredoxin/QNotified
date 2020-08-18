@@ -114,51 +114,6 @@ public class ChatActivityFacade {
         }
     }
 
-    public static boolean sendArkAppMessage(QQAppInterface qqAppInterface, Parcelable sessionInfo, Object arkAppMsg) {
-        if (qqAppInterface == null) throw new NullPointerException("qqAppInterface == null");
-        if (sessionInfo == null) throw new NullPointerException("sessionInfo == null");
-        if (arkAppMsg == null) throw new NullPointerException("arkAppMsg == null");
-        Method send = null;
-        for (Method m : DexKit.doFindClass(DexKit.C_FACADE).getMethods()) {
-            if (m.getReturnType().equals(boolean.class)) {
-                Class<?>[] clz = m.getParameterTypes();
-                if (clz.length != 3) continue;
-                if (clz[0].equals(QQAppInterface.class) && clz[1].equals(_SessionInfo()) && clz[2].isInstance(arkAppMsg)) {
-                    send = m;
-                    break;
-                }
-            }
-        }
-        try {
-            return (boolean) send.invoke(null, qqAppInterface, sessionInfo, arkAppMsg);
-        } catch (Exception e) {
-            log(e);
-            return false;
-        }
-    }
-
-    public static void sendAbsStructMsg(QQAppInterface qqAppInterface, Parcelable sessionInfo, Externalizable absStructMsg) {
-        if (qqAppInterface == null) throw new NullPointerException("qqAppInterface == null");
-        if (sessionInfo == null) throw new NullPointerException("sessionInfo == null");
-        if (absStructMsg == null) throw new NullPointerException("absStructMsg == null");
-        Method send = null;
-        for (Method m : DexKit.doFindClass(DexKit.C_FACADE).getMethods()) {
-            if (m.getReturnType().equals(void.class)) {
-                Class<?>[] clz = m.getParameterTypes();
-                if (clz.length != 3) continue;
-                if (clz[0].equals(QQAppInterface.class) && clz[1].equals(_SessionInfo()) && clz[2].isInstance(absStructMsg)) {
-                    send = m;
-                    break;
-                }
-            }
-        }
-        try {
-            send.invoke(null, qqAppInterface, sessionInfo, absStructMsg);
-        } catch (Exception e) {
-            log(e);
-        }
-    }
-
     public static void repeatMessage(QQAppInterface app, Parcelable session, Object msg) {
         if (app == null) throw new NullPointerException("app == null");
         if (session == null) throw new NullPointerException("session == null");
