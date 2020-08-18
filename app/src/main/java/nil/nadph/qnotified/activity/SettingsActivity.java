@@ -44,6 +44,7 @@ import nil.nadph.qnotified.dialog.RepeaterIconSettingDialog;
 import nil.nadph.qnotified.dialog.RikkaDialog;
 import nil.nadph.qnotified.hook.*;
 import nil.nadph.qnotified.hook.kyuubiran.RemoveQbossAD;
+import nil.nadph.qnotified.hook.rikka.RemoveMiniProgramAd;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
@@ -176,6 +177,8 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(newListItemHookSwitchInit(this, "显示设置禁言的管理", "即使你只是普通群成员", GagInfoDisclosure.get()));
         ll.addView(newListItemHookSwitchInit(this, "小程序分享转链接", "感谢Alcatraz323开发远离小程序,感谢神经元移植到Xposed", adNoApplet.INSTANCE));
         ll.addView(subtitle(this, "实验性功能(未必有效)"));
+        ll.addView(_t = newListItemButton(this, "下载重定向", "N/A", "N/A", this));
+        ll.addView(newListItemHookSwitchInit(this, "屏蔽小程序广告[手动关闭]", "请勿反馈此功能无效", RemoveMiniProgramAd.get()));
         ll.addView(newListItemHookSwitchInit(this, "收藏更多表情", "[暂不支持>=8.2.0]保存在本地", FavMoreEmo.get()));
         ll.addView(newListItemHookSwitchInit(this, "屏蔽更新提醒", null, PreUpgradeHook.get()));
         ll.addView(newListItemHookSwitchInit(this, "检查消息", "暂时没有用", InspectMessage.get()));
@@ -233,7 +236,6 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         if (!Utils.isTim(this)) {
             ll.addView(newListItemSwitchConfigNext(this, "隐藏分组下方入口", "隐藏分组列表最下方的历史好友按钮", ConfigItems.qn_hide_ex_entry_group, false));
         }
-        ll.addView(_t = newListItemButton(this, "下载重定向[不支持>=8.2.8]", "N/A", "N/A", this));
         _t.setId(R_ID_BTN_FILE_RECV);
         __recv_desc = _t.findViewById(R_ID_DESCRIPTION);
         __recv_status = _t.findViewById(R_ID_VALUE);

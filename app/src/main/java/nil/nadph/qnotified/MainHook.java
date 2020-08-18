@@ -45,7 +45,7 @@ import nil.nadph.qnotified.activity.SettingsActivity;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.*;
-import nil.nadph.qnotified.hook.kyuubiran.RemoveCameraButton;
+import nil.nadph.qnotified.hook.kyuubiran.*;
 import nil.nadph.qnotified.hook.rikka.CustomSplash;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.*;
