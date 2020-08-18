@@ -33,7 +33,7 @@ public class PubChemStealer {
 
     @NonUiThread
     public static Molecule getMoleculeByCid(long cid) throws IOException, MdlMolParser.BadMolFormatException {
-        HttpURLConnection conn = (HttpURLConnection) new URL(FAKE_PUB_CHEM_SITE + "/rest/pug/compound/CID/" + cid + "/record/SDF/?record_type=2d&response_type=display").openConnection();
+        HttpURLConnection conn = (HttpURLConnection) new URL(PUB_CHEM_SITE + "/rest/pug/compound/CID/" + cid + "/record/SDF/?record_type=2d&response_type=display").openConnection();
         conn.setRequestMethod("GET");
         conn.setConnectTimeout(10000);
         conn.setReadTimeout(10000);
