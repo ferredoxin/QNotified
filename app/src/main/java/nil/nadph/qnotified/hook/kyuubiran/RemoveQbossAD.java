@@ -1,6 +1,5 @@
 package nil.nadph.qnotified.hook.kyuubiran;
 
-import android.content.Context;
 import android.os.Looper;
 import android.view.View;
 import android.widget.Toast;

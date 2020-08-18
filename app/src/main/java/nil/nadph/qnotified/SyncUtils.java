@@ -26,7 +26,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Looper;
-
 import nil.nadph.qnotified.hook.BaseDelayableHook;
 
 import java.util.*;
@@ -109,7 +108,13 @@ public class SyncUtils {
                     if (hookId != -1 && (myType & targetType) != 0) {
                         BaseDelayableHook hook = BaseDelayableHook.getHookByType(hookId);
                         //log("Remote: recv init " + hook);
-                        if (hook != null) hook.init();
+                        if (hook != null) {
+                            try {
+                                hook.init();
+                            } catch (Throwable e) {
+                                log(e);
+                            }
+                        }
                     }
                     break;
                 case ENUM_PROC_REQ:

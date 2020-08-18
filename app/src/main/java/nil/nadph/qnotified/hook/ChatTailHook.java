@@ -18,45 +18,36 @@
  */
 package nil.nadph.qnotified.hook;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Looper;
 import android.os.Parcelable;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
-import com.tencent.mobileqq.app.QQAppInterface;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.activity.ChatTailActivity;
-import nil.nadph.qnotified.bridge.ChatActivityFacade;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.dialog.RikkaCustomMsgTimeFormatDialog;
 import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.ui.InterceptLayout;
-import nil.nadph.qnotified.ui.TouchEventToLongClickAdapter;
-import nil.nadph.qnotified.util.*;
+import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.Utils;
 
 import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.lang.reflect.*;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
-import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static nil.nadph.qnotified.util.Initiator.*;
+import static android.content.Context.ACTIVITY_SERVICE;
+import static android.content.Context.BATTERY_SERVICE;
+import static androidx.core.content.ContextCompat.getSystemService;
+import static nil.nadph.qnotified.util.Initiator._SessionInfo;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class ChatTailHook extends BaseDelayableHook {
@@ -77,17 +68,74 @@ public class ChatTailHook extends BaseDelayableHook {
     public boolean init() {
         if (inited) return true;
         try {
-            //Begin: send btn
-            final Class<?> cl_BaseChatPie = _BaseChatPie();
-            Method _BaseChatPie_init = null;
-//            for (Method method : cl_BaseChatPie.getDeclaredMethods()) {
-//                if (method.getParameterTypes().length != 0
-//                        || !method.getReturnType().equals(void.class)) continue;
-//                if (method.getName().equals(_BaseChatPie_init_name)) {
-//                    _BaseChatPie_init = method;
-//                    break;
-//                }
-//            }
+            Class facade = DexKit.doFindClass(DexKit.C_FACADE);
+            //Class SendMsgParams = null;
+            Method m = null;
+            for (Method mi : facade.getDeclaredMethods()) {
+                if (!mi.getReturnType().equals(long[].class)) continue;
+                Class[] argt = mi.getParameterTypes();
+                if (argt.length != 6) continue;
+                if (argt[1].equals(Context.class) && argt[2].equals(_SessionInfo())
+                        && argt[3].equals(String.class) && argt[4].equals(ArrayList.class)) {
+                    m = mi;
+                    m.setAccessible(true);
+                    //SendMsgParams = argt[5];
+                    break;
+                }
+            }
+
+            XposedBridge.hookMethod(m, new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    if (isEnabled()) {
+                        if (LicenseStatus.sDisableCommonHooks) return;
+                        String msg = (String) param.args[3];
+                        // StringBuilder debug = new StringBuilder();
+                        //  debug.append("当前消息: ").append(msg).append("\n");
+                        String text = msg;
+                        final Parcelable session = (Parcelable) param.args[2];
+                        try {
+                            // Object chatPie = param.thisObject;
+                            // m.invoke(null, qqAppInterface, context, sessionInfo, msg, new ArrayList<>(), SendMsgParams.newInstance());
+                            // final Parcelable session = getFirstNSFByType(param.thisObject, _SessionInfo());
+                            // String text = input.getText().toString();
+                            Field field = null;
+                            for (Field f : session.getClass().getDeclaredFields()) {
+                                // 因为有多个同名变量，所以要判断返回类型
+                                if (f.getName().equalsIgnoreCase("a") && f.getType() == String.class) {
+                                    field = f;
+                                    //debug.append("变量反射成功！！！").append("\n");
+                                }
+                            }
+                            String uin = (String) field.get(session);
+                            //String uin = "123321";
+                            ChatTailHook ct = ChatTailHook.get();
+                            // debug.append("当前小尾巴: ").append(ct.getTailCapacity().replace("\n", "\\n")).append("\n");
+                            // debug.append("当前uin: ").append(uin).append("\n");
+
+                            // debug.append("群列表: ").append(muted).append("\n");
+                            if (ct.isGlobal() || ct.containsTroop(uin) || ct.containsFriend(uin)) {
+                                int battery = FakeBatteryHook.get().getFakeBatteryStatus() < 1 ? ChatTailActivity.getBattery() : FakeBatteryHook.get().getFakeBatteryCapacity();
+                                text = ct.getTailCapacity().
+                                        replace(ChatTailActivity.delimiter, msg)
+                                        .replace("#model#", Build.MODEL)
+                                        .replace("#brand#", Build.BRAND)
+                                        .replace("#battery#", battery + "")
+                                        .replace("#power#", ChatTailActivity.getPower())
+                                        .replace("#time#", new SimpleDateFormat(RikkaCustomMsgTimeFormatDialog.getTimeFormat()).format(new Date()));
+                            }
+                        } catch (Throwable e) {
+                            //log(e);
+                            e.printStackTrace();
+                        } finally {
+                            //   debug.append("最终消息: ").append(text.replace("\n", "\\n")).append("\n");
+                            param.args[3] = text;
+                            //param.args[3] = debug.toString();
+                        }
+                    }
+                }
+            });
+            /*
             XposedBridge.hookMethod(DexKit.doFindMethod(DexKit.N_BASE_CHAT_PIE__INIT), new XC_MethodHook(40) {
                 @Override
                 public void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -146,6 +194,8 @@ public class ChatTailHook extends BaseDelayableHook {
                     }
                 }
             });
+
+             */
             //End: send btn
             inited = true;
             return true;
@@ -153,6 +203,20 @@ public class ChatTailHook extends BaseDelayableHook {
             log(throwable);
             return false;
         }
+    }
+
+    private boolean containsFriend(String uin) {
+        String muted = "," + ExfriendManager.getCurrent().getConfig().getString(ConfigItems.qn_chat_tail_friends) + ",";
+        return muted.contains("," + uin + ",");
+    }
+
+    private boolean isGlobal() {
+        return ExfriendManager.getCurrent().getConfig().getBooleanOrFalse(ConfigItems.qn_chat_tail_global);
+    }
+
+    private boolean containsTroop(String uin) {
+        String muted = "," + ExfriendManager.getCurrent().getConfig().getString(ConfigItems.qn_chat_tail_troops) + ",";
+        return muted.contains("," + uin + ",");
     }
 
 

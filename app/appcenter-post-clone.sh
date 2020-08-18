@@ -2,6 +2,7 @@
 
 commit=$(git show -s --format="%s %b")
 echo "commit: $commit"
+echo "trigger: $APPCENTER_TRIGGER"
 
 if [[ $APPCENTER_TRIGGER == "manual" ]]; then
     echo "Manual trigger, continue building..."

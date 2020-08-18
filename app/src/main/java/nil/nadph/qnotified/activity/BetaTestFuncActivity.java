@@ -30,7 +30,7 @@ import com.tencent.mobileqq.widget.BounceScrollView;
 import nil.nadph.qnotified.hook.ChatTailHook;
 import nil.nadph.qnotified.hook.MutePokePacket;
 import nil.nadph.qnotified.hook.PttForwardHook;
-import nil.nadph.qnotified.hook.kyuubiran.RemoveQbossAD;
+import nil.nadph.qnotified.hook.kyuubiran.*;
 import nil.nadph.qnotified.hook.rikka.RemoveMiniProgramAd;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.LicenseStatus;
@@ -93,6 +93,9 @@ public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
             ll.addView(_t = newListItemButton(this, "自定义聊天小尾巴", "回车发送不生效", "N/A", clickToProxyActAction(ACTION_CHAT_TAIL_CONFIG_ACTIVITY)));
             __tv_chat_tail_status = _t.findViewById(R_ID_VALUE);
             ll.addView(newListItemHookSwitchInit(this, "屏蔽戳一戳", "OvO", MutePokePacket.get()));
+//            ll.addView(newListItemHookSwitchInit(this, "昵称/群名字打码", "娱乐功能", AutomaticMosaicName.INSTANCE));
+//            ll.addView(newListItemHookSwitchInit(this, "侧滑精简", "芜湖~重启生效", TestQQMe.INSTANCE));
+//            ll.addView(newListItemHookSwitchInit(this, "群应用爬", "啊这", RemoveGroupApp.INSTANCE));
         }
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         this.setContentView(bounceScrollView);
@@ -106,6 +109,11 @@ public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
     @Override
     protected void onResume() {
         super.onResume();
-        __tv_chat_tail_status.setText(ChatTailHook.get().isEnabled() ? ChatTailHook.get().getTailCapacity().replace("\n", "") : "[未启用]");
+        String text = ChatTailHook.get().isEnabled() ? ChatTailHook.get().getTailCapacity().replace("\n", "") : "[未启用]";
+        if (text.length() > 3) {
+            // 避免过长影响美观
+            text = "..." + text.substring(text.length() - 3);
+        }
+        __tv_chat_tail_status.setText(text);
     }
 }

@@ -20,6 +20,11 @@ package nil.nadph.qnotified.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -31,6 +36,8 @@ import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.dialog.RikkaCustomMsgTimeFormatDialog;
+import nil.nadph.qnotified.dialog.RikkaDialog;
 import nil.nadph.qnotified.hook.ChatTailHook;
 import nil.nadph.qnotified.hook.FakeBatteryHook;
 import nil.nadph.qnotified.hook.JumpController;
@@ -38,6 +45,9 @@ import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.Utils;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static android.text.InputType.TYPE_CLASS_NUMBER;
 import static android.text.InputType.TYPE_CLASS_TEXT;
@@ -55,15 +65,34 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
     private static final int R_ID_DISABLE = 0x300AFF82;
     private static final int R_ID_PERCENT_VALUE = 0x300AFF83;
     public static final String delimiter = "@";
+    private static int battery = 0;
+    private static String power = "未充电";
 
     TextView tvStatus;
 
     private boolean mMsfResponsive = false;
-    private TextView __tv_chat_tail_groups, __tv_chat_tail_friends;
+    private TextView __tv_chat_tail_groups, __tv_chat_tail_friends, __tv_chat_tail_time_format;
+
+    public static int getBattery() {
+        return battery;
+    }
+
+    public static String getPower() {
+        if (FakeBatteryHook.get().isEnabled()) {
+            return FakeBatteryHook.get().isFakeBatteryCharging() ? "充电中" : "未充电";
+        }
+        return power;
+    }
 
     @Override
     public boolean doOnCreate(Bundle bundle) {
         super.doOnCreate(bundle);
+        if (!FakeBatteryHook.get().isEnabled()) {
+            IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+            filter.addAction(Intent.ACTION_POWER_CONNECTED);
+            filter.addAction(Intent.ACTION_POWER_DISCONNECTED);
+            registerReceiver(new BatteryReceiver(), filter);//注册BroadcastReceiver
+        }
         LinearLayout ll = new LinearLayout(this);
         ll.setOrientation(LinearLayout.VERTICAL);
         ViewGroup.LayoutParams mmlp = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
@@ -76,7 +105,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.setId(R.id.rootMainLayout);
         bounceScrollView.addView(ll, new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
         //invoke_virtual(bounceScrollView,"setNeedHorizontalGesture",true,boolean.class);
-        LinearLayout.LayoutParams fixlp = new LinearLayout.LayoutParams(MATCH_PARENT, dip2px(ChatTailActivity.this, 48));
+        //LinearLayout.LayoutParams fixlp = new LinearLayout.LayoutParams(MATCH_PARENT, dip2px(ChatTailActivity.this, 48));
         RelativeLayout.LayoutParams __lp_l = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
         int mar = (int) (dip2px(ChatTailActivity.this, 12) + 0.5f);
         __lp_l.setMargins(mar, 0, mar, 0);
@@ -95,15 +124,26 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(_t = subtitle(ChatTailActivity.this, ""));
         tvStatus = (TextView) _t.getChildAt(0);
         ll.addView(subtitle(ChatTailActivity.this, "默认不换行，换行符号请输入\\n"));
-        ll.addView(subtitle(ChatTailActivity.this, ChatTailActivity.delimiter + "将会被替换为消息"));
-        ll.addView(subtitle(ChatTailActivity.this, "回车发送不生效"));
 
         ll.addView(_s = newListItemButton(this, "选择生效的群", "未选择的群将不展示小尾巴", "N/A", clickToProxyActAction(ACTION_CHAT_TAIL_TROOPS_ACTIVITY)));
         __tv_chat_tail_groups = _s.findViewById(R_ID_VALUE);
         ll.addView(_s = newListItemButton(this, "选择生效的好友", "未选择的好友将不展示小尾巴", "N/A", clickToProxyActAction(ACTION_CHAT_TAIL_FRIENDS_ACTIVITY)));
         __tv_chat_tail_friends = _s.findViewById(R_ID_VALUE);
-
-        ll.addView(subtitle(ChatTailActivity.this, "设置小尾巴(" + ChatTailActivity.delimiter + " 将会被替换为消息"));
+        ll.addView(_s = newListItemButton(this, "设置日期格式", "请在QN内置花Q的\"聊天页自定义时间格式\"中设置", RikkaCustomMsgTimeFormatDialog.getTimeFormat(), new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Utils.showToastShort(ChatTailActivity.this, "请在QN内置花Q的\"聊天页自定义时间格式\"中设置");
+            }
+        }));
+        __tv_chat_tail_time_format = _s.findViewById(R_ID_VALUE);
+        ll.addView(subtitle(ChatTailActivity.this, "设置小尾巴"));
+        ll.addView(subtitle(ChatTailActivity.this, "可用变量: "));
+        ll.addView(subtitle(ChatTailActivity.this, "@         : 当前消息"));
+        ll.addView(subtitle(ChatTailActivity.this, "#model#   : 手机型号"));
+        ll.addView(subtitle(ChatTailActivity.this, "#brand#   : 手机厂商"));
+        ll.addView(subtitle(ChatTailActivity.this, "#battery# : 当前变量"));
+        ll.addView(subtitle(ChatTailActivity.this, "#power#   : 是否正在充电"));
+        ll.addView(subtitle(ChatTailActivity.this, "#time#    : 当前时间"));
         int _5dp = dip2px(ChatTailActivity.this, 5);
         EditText pct = new EditText(ChatTailActivity.this);
         pct.setId(R_ID_PERCENT_VALUE);
@@ -114,8 +154,8 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         pct.setGravity(Gravity.CENTER);
         pct.setPadding(_5dp, _5dp / 2, _5dp, _5dp / 2);
         pct.setBackgroundDrawable(new HighContrastBorder());
-        pct.setHint(ChatTailActivity.delimiter + "之前为前缀，" + ChatTailActivity.delimiter + "之后为后缀");
-        pct.setText(ct.getTailCapacity().replace("\n","\\n"));
+        pct.setHint(ChatTailActivity.delimiter + " 将会被替换为消息");
+        pct.setText(ct.getTailCapacity().replace("\n", "\\n"));
         pct.setSelection(pct.getText().length());
         ll.addView(pct, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 2 * _5dp, _5dp, 2 * _5dp, _5dp));
         ll.addView(newListItemSwitchFriendConfigNext(this, "全局开关", "开启将无视生效范围(无需重启QQ)", ConfigItems.qn_chat_tail_global, false));
@@ -138,6 +178,28 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         return true;
     }
 
+    private class BatteryReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            switch (action) {
+                case Intent.ACTION_BATTERY_CHANGED: {
+                    int current = intent.getExtras().getInt("level");//获得当前电量
+                    int total = intent.getExtras().getInt("scale");//获得总电量
+                    int percent = current * 100 / total;
+                    ChatTailActivity.battery = percent;
+                }
+                case Intent.ACTION_POWER_DISCONNECTED: {
+                    ChatTailActivity.power = "未充电";
+                }
+                case Intent.ACTION_POWER_CONNECTED: {
+                    ChatTailActivity.power = "充电中";
+                }
+            }
+
+        }
+    }
+
     @Override
     public void doOnResume() {
         super.doOnResume();
@@ -157,7 +219,13 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         boolean enabled = ct.isEnabled();
         String desc = "当前状态: ";
         if (enabled) {
-            desc += "已开启: " + ct.getTailCapacity().replace("\n", "");
+            desc += "已开启: \n" + ct.getTailCapacity()
+                    .replace(ChatTailActivity.delimiter, "示例消息")
+                    .replace("#model#", Build.MODEL)
+                    .replace("#brand#", Build.BRAND)
+                    .replace("#battery#", battery + "")
+                    .replace("#power#", ChatTailActivity.getPower())
+                    .replace("#time#", new SimpleDateFormat(RikkaCustomMsgTimeFormatDialog.getTimeFormat()).format(new Date()));
         } else {
             desc += "禁用";
         }
