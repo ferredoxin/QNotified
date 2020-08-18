@@ -8,6 +8,8 @@ import com.microsoft.appcenter.crashes.Crashes;
 import java.util.HashMap;
 import java.util.Map;
 
+import nil.nadph.qnotified.BuildConfig;
+
 public class CliOper {
     private static boolean sInit = false;
 
@@ -20,6 +22,10 @@ public class CliOper {
         long longAccount = Utils.getLongAccountUin();
         if (longAccount!=-1) {
             AppCenter.setUserId(String.valueOf(longAccount));
+        }
+        if (BuildConfig.DEBUG) {
+            Analytics.setEnabled(false);
+            Crashes.setEnabled(false);
         }
     }
 

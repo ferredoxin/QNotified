@@ -161,4 +161,12 @@ public class RikkaCustomMsgTimeFormatDialog extends RikkaDialog.RikkaConfigItem 
         }
         return null;
     }
+
+    @Nullable
+    public static String getTimeFormat() {
+        ConfigManager cfg = ConfigManager.getDefaultConfig();
+        String val = cfg.getString(rq_msg_time_format);
+        if (val == null) val = DEFAULT_MSG_TIME_FORMAT;
+        return val;
+    }
 }
