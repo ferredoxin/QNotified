@@ -2,10 +2,16 @@ package me.singleneuron.base;
 
 import android.os.Looper;
 import android.widget.Toast;
+
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XC_MethodReplacement;
+import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.step.Step;
+import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.util.Utils.*;
@@ -41,6 +47,7 @@ public abstract class BaseDelayableHookAdapter extends BaseDelayableHook {
 
     @Override
     public boolean init() {
+        if (!checkEnabled()) return false;
         if (inited) return true;
         inited = doInit();
         return inited;
@@ -69,12 +76,7 @@ public abstract class BaseDelayableHookAdapter extends BaseDelayableHook {
             if (Looper.myLooper() == Looper.getMainLooper()) {
                 Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
             } else {
-                SyncUtils.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-                    }
-                });
+                SyncUtils.post(() -> Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT));
             }
         }
     }
@@ -88,4 +90,52 @@ public abstract class BaseDelayableHookAdapter extends BaseDelayableHook {
             return false;
         }
     }
+
+    public boolean checkEnabled() {
+        if (LicenseStatus.sDisableCommonHooks) return false;
+        if (!isEnabled()) return false;
+        return true;
+    }
+
+    public abstract class XposedMethodHookAdapter extends XC_MethodHook {
+
+        @Override
+        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+            if (!checkEnabled()) return;
+            try {
+                beforeMethod(param);
+            } catch (Exception e) {
+                Utils.log(e);
+            }
+        }
+
+        @Override
+        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+            if (!checkEnabled()) return;
+            try {
+                afterMethod(param);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        abstract protected void beforeMethod(XC_MethodHook.MethodHookParam param) throws Throwable;
+        abstract protected void afterMethod(XC_MethodHook.MethodHookParam param) throws Throwable;
+
+    }
+
+    public abstract class XposedMethodReplacementAdapter extends XC_MethodReplacement {
+
+        @Override
+        protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+            if (!checkEnabled()) {
+                return XposedBridge.invokeOriginalMethod(methodHookParam.method,methodHookParam.thisObject,methodHookParam.args);
+            }
+            return replaceMethod(methodHookParam);
+        }
+
+        abstract protected Object replaceMethod(MethodHookParam param) throws Throwable;
+
+    }
+
 }
