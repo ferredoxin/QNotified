@@ -37,6 +37,7 @@ import com.tencent.mobileqq.widget.BounceScrollView;
 import me.singleneuron.hook.ForceSystemCamera;
 import me.singleneuron.hook.NewRoundHead;
 import me.singleneuron.hook.adNoApplet;
+import me.singleneuron.util.QQVersion;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigItems;
@@ -56,6 +57,7 @@ import java.io.IOException;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static me.singleneuron.util.QQVersion.*;
 import static nil.nadph.qnotified.ui.ViewBuilder.*;
 import static nil.nadph.qnotified.util.ActProxyMgr.*;
 import static nil.nadph.qnotified.util.Utils.*;
@@ -113,7 +115,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             ll.addView(newListItemButton(this, "Beta测试性功能", "你发现了神秘入口", null, clickToProxyActAction(BetaTestFuncActivity.class)));
         }
         ll.addView(subtitle(this, "基本功能"));
-        if (!Utils.isTim(this)) {
+        if (!Utils.isTim(this)&&getHostVersionCode()>=QQ_8_2_6) {
             ll.addView(_t = newListItemButton(this, "自定义电量", "[QQ>=8.2.6]在线模式为我的电量时生效", "N/A", clickToProxyActAction(ACTION_FAKE_BAT_CONFIG_ACTIVITY)));
             __tv_fake_bat_status = _t.findViewById(R_ID_VALUE);
         }
@@ -151,7 +153,9 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             ll.addView(newListItemHookSwitchInit(this, "移除消息列表顶栏横幅广告", "就是主页顶上那个烦人的广告", RemoveQbossAD.get()));
             ll.addView(newListItemSwitchConfigNext(this, "隐藏小程序入口", "隐藏消息列表下拉出现的小程序列表", ConfigItems.qn_hide_msg_list_miniapp, false));
             ll.addView(newListItemHookSwitchInit(this, "隐藏送礼动画", null, HideGiftAnim.get()));
-            ll.addView(newListItemHookSwitchInit(this, "禁止回复自动@", "[>=8.1.3]去除回复消息时自动@特性", ReplyNoAtHook.get()));
+            if (getHostVersionCode()>=QQ_8_1_3) {
+                ll.addView(newListItemHookSwitchInit(this, "禁止回复自动@", "[>=8.1.3]去除回复消息时自动@特性", ReplyNoAtHook.get()));
+            }
             ll.addView(newListItemHookSwitchInit(this, "禁用$打开送礼界面", "禁止聊天时输入$自动弹出[选择赠送对象]窗口", $endGiftHook.get()));
             ll.addView(newListItemHookSwitchInit(this, "强制使用默认气泡", "无视个性聊天气泡", DefaultBubbleHook.get()));
         }
@@ -183,13 +187,15 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         __recv_desc = _t.findViewById(R_ID_DESCRIPTION);
         __recv_status = _t.findViewById(R_ID_VALUE);
         ll.addView(newListItemHookSwitchInit(this, "屏蔽小程序广告[手动关闭]", "请勿反馈此功能无效", RemoveMiniProgramAd.get()));
-        ll.addView(newListItemHookSwitchInit(this, "收藏更多表情", "[暂不支持>=8.2.0]保存在本地", FavMoreEmo.get()));
+        if (getHostVersionCode()<QQ_8_2_0) {
+            ll.addView(newListItemHookSwitchInit(this, "收藏更多表情", "[暂不支持>=8.2.0]保存在本地", FavMoreEmo.get()));
+        }
         ll.addView(newListItemHookSwitchInit(this, "屏蔽更新提醒", null, PreUpgradeHook.get()));
         ll.addView(newListItemHookSwitchInit(this, "检查消息", "暂时没有用", InspectMessage.get()));
         if (!Utils.isTim(this)) {
             ll.addView(newListItemHookSwitchInit(this, "自定义猜拳骰子", null, CheatHook.get()));
             ll.addView(newListItemHookSwitchInit(this, "简洁模式圆头像", "From Rikka", RoundAvatarHook.get()));
-            if (getHostInfo(this).versionCode==1424) {
+            if (checkHostVersionCode(QQ_8_3_9)) {
                 ll.addView(newListItemHookSwitchInit(this, "新版简洁模式圆头像", "From Rikka, 仅支持8.3.9", NewRoundHead.INSTANCE));
                 ll.addView(newListItemHookSwitchInit(this,"强制使用系统相机","仅支持8.3.9", ForceSystemCamera.INSTANCE));
             }
