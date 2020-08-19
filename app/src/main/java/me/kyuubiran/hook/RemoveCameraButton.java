@@ -1,4 +1,4 @@
-package nil.nadph.qnotified.hook.kyuubiran;
+package me.kyuubiran.hook;
 
 import android.os.Looper;
 import android.widget.Toast;
