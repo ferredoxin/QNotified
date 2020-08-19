@@ -108,11 +108,12 @@ public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
     @Override
     protected void onResume() {
         super.onResume();
-        String text = ChatTailHook.get().isEnabled() ? ChatTailHook.get().getTailCapacity().replace("\n", "") : "[未启用]";
-        if (text.length() > 3) {
+        String text = ChatTailHook.get().isEnabled() ? ChatTailHook.get().getTailCapacity().replace("\n", "") : null;
+        if (text != null && text.length() > 3) {
             // 避免过长影响美观
             text = "..." + text.substring(text.length() - 3);
         }
+        if (text == null) text = "[未启用]";
         __tv_chat_tail_status.setText(text);
     }
 }

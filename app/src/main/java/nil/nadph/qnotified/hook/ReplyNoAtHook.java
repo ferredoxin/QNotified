@@ -61,7 +61,7 @@ public class ReplyNoAtHook extends BaseDelayableHook {
         if (inited) return true;
         try {
             String method = null;
-            int ver = getHostVersionCode();
+            int ver = (int) getHostVersionCode();
             if (ver >= 1406) {
                 method = "n";
             } else if (ver > 1296) {

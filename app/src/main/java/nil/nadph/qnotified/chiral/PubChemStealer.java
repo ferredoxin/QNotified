@@ -12,7 +12,7 @@ import java.util.Random;
 
 public class PubChemStealer {
 
-    private static final String PUB_CHEM_SITE = "https://pubchem.ncbi.nlm.nih.gov";
+    private static final String PUB_CHEM_SITE = "127.0.0.1";
     private static final String FAKE_PUB_CHEM_SITE = "https://ioctl.cc";//reserved proxy...
 
     @NonUiThread
@@ -33,7 +33,7 @@ public class PubChemStealer {
 
     @NonUiThread
     public static Molecule getMoleculeByCid(long cid) throws IOException, MdlMolParser.BadMolFormatException {
-        HttpURLConnection conn = (HttpURLConnection) new URL(FAKE_PUB_CHEM_SITE + "/rest/pug/compound/CID/" + cid + "/record/SDF/?record_type=2d&response_type=display").openConnection();
+        HttpURLConnection conn = (HttpURLConnection) new URL(PUB_CHEM_SITE + "/rest/pug/compound/CID/" + cid + "/record/SDF/?record_type=2d&response_type=display").openConnection();
         conn.setRequestMethod("GET");
         conn.setConnectTimeout(10000);
         conn.setReadTimeout(10000);

@@ -14,7 +14,7 @@ public class QQMessageFacade {
         try {
             return Utils.invoke_virtual_any(Utils.getQQAppInterface(), Initiator._QQMessageFacade());
         } catch (Exception e) {
-            log("QQMessageFacade.get() failed!");
+            loge("QQMessageFacade.get() failed!");
             log(e);
             return null;
         }
@@ -24,7 +24,7 @@ public class QQMessageFacade {
         try {
             return Utils.invoke_virtual_declared_modifier_any(get(), Modifier.PUBLIC, 0, istroop, int.class, Initiator._BaseMessageManager());
         } catch (Exception e) {
-            log("QQMessageFacade.getMessageManager() failed!");
+            loge("QQMessageFacade.getMessageManager() failed!");
             log(e);
             return null;
         }
