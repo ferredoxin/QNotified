@@ -1,19 +1,18 @@
-package nil.nadph.qnotified.hook.kyuubiran;
+package me.kyuubiran.hook;
 
 import android.os.Looper;
-import android.view.View;
 import android.widget.Toast;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
+import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.util.Initiator;
+import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
@@ -21,13 +20,13 @@ import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
 import static nil.nadph.qnotified.util.Utils.getApplication;
 import static nil.nadph.qnotified.util.Utils.log;
 
-//移除消息列表顶栏横幅广告
-public class RemoveQbossAD extends BaseDelayableHook {
-    public static final String kr_remove_qboss_ad = "kr_remove_qboss_ad";
-    private static final RemoveQbossAD self = new RemoveQbossAD();
+//屏蔽群聊界面一起嗨
+public class RemovePlayTogether extends BaseDelayableHook {
+    public static final String kr_remove_play_together = "kr_remove_play_together";
+    private static final RemovePlayTogether self = new RemovePlayTogether();
     private boolean isInit = false;
 
-    public static RemoveQbossAD get() {
+    public static RemovePlayTogether get() {
         return self;
     }
 
@@ -45,15 +44,14 @@ public class RemoveQbossAD extends BaseDelayableHook {
     public boolean init() {
         if (isInit) return true;
         try {
-            for (Method m : Initiator._QbossADImmersionBannerManager().getDeclaredMethods()) {
+            for (Method m : DexKit.doFindClass(DexKit.C_TogetherControlHelper).getDeclaredMethods()) {
                 Class<?>[] argt = m.getParameterTypes();
-                if (m.getReturnType() == View.class && argt.length == 0 && !Modifier.isStatic(m.getModifiers())) {
+                if ("h".equals(m.getName()) && m.getReturnType() == void.class && argt.length == 0) {
                     XposedBridge.hookMethod(m, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             if (LicenseStatus.sDisableCommonHooks) return;
                             if (!isEnabled()) return;
-//                            Toast.makeText(getApplication(), "屏蔽消息列表横幅广告成功!", android.widget.Toast.LENGTH_SHORT).show();
                             param.setResult(null);
                         }
                     });
@@ -69,14 +67,14 @@ public class RemoveQbossAD extends BaseDelayableHook {
 
     @Override
     public Step[] getPreconditions() {
-        return new Step[0];
+        return new Step[]{new DexDeobfStep(DexKit.C_TogetherControlHelper)};
     }
 
     @Override
     public void setEnabled(boolean enabled) {
         try {
             ConfigManager mgr = ConfigManager.getDefaultConfig();
-            mgr.getAllConfig().put(kr_remove_qboss_ad, enabled);
+            mgr.getAllConfig().put(kr_remove_play_together, enabled);
             mgr.save();
         } catch (final Exception e) {
             Utils.log(e);
@@ -96,7 +94,7 @@ public class RemoveQbossAD extends BaseDelayableHook {
     @Override
     public boolean isEnabled() {
         try {
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(kr_remove_qboss_ad);
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(kr_remove_play_together);
         } catch (Exception e) {
             log(e);
             return false;

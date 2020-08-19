@@ -27,11 +27,11 @@ import android.widget.TextView;
 
 import com.tencent.mobileqq.widget.BounceScrollView;
 
+import me.kyuubiran.hook.*;
+import me.kyuubiran.hook.testhook.*;
 import nil.nadph.qnotified.hook.ChatTailHook;
 import nil.nadph.qnotified.hook.MutePokePacket;
 import nil.nadph.qnotified.hook.PttForwardHook;
-import nil.nadph.qnotified.hook.kyuubiran.*;
-import nil.nadph.qnotified.hook.rikka.RemoveMiniProgramAd;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.LicenseStatus;
 
