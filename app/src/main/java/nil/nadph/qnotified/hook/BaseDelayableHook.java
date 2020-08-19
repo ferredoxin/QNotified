@@ -18,6 +18,7 @@
  */
 package nil.nadph.qnotified.hook;
 
+import me.singleneuron.hook.ForceSystemCamera;
 import me.singleneuron.hook.NewRoundHead;
 import me.singleneuron.hook.adNoApplet;
 import nil.nadph.qnotified.SyncUtils;
@@ -93,6 +94,7 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 RemoveQbossAD.get(),
                 adNoApplet.INSTANCE,
                 NewRoundHead.INSTANCE,
+                ForceSystemCamera.INSTANCE,
 //                AutomaticMosaicName.INSTANCE,
 //                TestQQMe.INSTANCE,
 //                RemoveGroupApp.INSTANCE,

@@ -34,6 +34,7 @@ import android.view.ViewGroup;
 import android.widget.*;
 import com.tencent.mobileqq.widget.BounceScrollView;
 
+import me.singleneuron.hook.ForceSystemCamera;
 import me.singleneuron.hook.NewRoundHead;
 import me.singleneuron.hook.adNoApplet;
 import nil.nadph.qnotified.MainHook;
@@ -190,6 +191,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             ll.addView(newListItemHookSwitchInit(this, "简洁模式圆头像", "From Rikka", RoundAvatarHook.get()));
             if (getHostInfo(this).versionCode==1424) {
                 ll.addView(newListItemHookSwitchInit(this, "新版简洁模式圆头像", "From Rikka, 仅支持8.3.9", NewRoundHead.INSTANCE));
+                ll.addView(newListItemHookSwitchInit(this,"强制使用系统相机","仅支持8.3.9", ForceSystemCamera.INSTANCE));
             }
         }
         ll.addView(subtitle(this, "好友列表"));
