@@ -52,11 +52,14 @@ dependencies {
     compileOnly fileTree(include: ['*.jar'], dir: 'lib')
     implementation 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2'
     implementation 'com.jaredrummler:colorpicker:1.1.0'
-    implementation 'de.psdev.licensesdialog:licensesdialog:2.0.0'
-    implementation 'io.noties.markwon:core:4.5.0'
-    testImplementation 'junit:junit:4.12'
+    implementation 'de.psdev.licensesdialog:licensesdialog:2.1.0'
+    implementation 'io.noties.markwon:core:4.5.1'
+    testImplementation 'junit:junit:4.13'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "com.github.topjohnwu.libsu:core:2.5.1"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9"
+    // 脚本解析
+    implementation 'org.apache-extras.beanshell:bsh:2.0b6'
     // androidx
     implementation 'androidx.preference:preference:1.1.1'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'

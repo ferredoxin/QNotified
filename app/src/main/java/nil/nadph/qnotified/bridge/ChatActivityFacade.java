@@ -168,6 +168,7 @@ public class ChatActivityFacade {
         Method m = null;
         switch (getShort$Name(msg)) {
             case "MessageForText":
+            case "MessageForFoldMsg":
                 msgText = (String) iget_object_or_null(msg, "msg");
                 sendMessage(app, getApplication(), session, msgText);
                 break;

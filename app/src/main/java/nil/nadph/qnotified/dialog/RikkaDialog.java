@@ -14,8 +14,7 @@ import android.widget.TextView;
 
 import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
-import nil.nadph.qnotified.hook.kyuubiran.RemoveCameraButton;
-import nil.nadph.qnotified.hook.kyuubiran.RemovePlayTogether;
+import me.kyuubiran.hook.*;
 import nil.nadph.qnotified.hook.rikka.*;
 import nil.nadph.qnotified.ui.DummyDrawable;
 import nil.nadph.qnotified.ui.ResUtils;

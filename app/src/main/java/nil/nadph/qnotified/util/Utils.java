@@ -149,6 +149,10 @@ public class Utils {
         return invoke_virtual(getQQAppInterface(), "getManager", index, int.class);
     }
 
+    public static PackageInfo getHostInfo() {
+        return getHostInfo(getApplication());
+    }
+
     public static PackageInfo getHostInfo(Context context) {
         try {
             return context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
@@ -156,6 +160,10 @@ public class Utils {
             Log.e("Utils", "Can not get PackageInfo!");
             throw new AssertionError("Can not get PackageInfo!");
         }
+    }
+
+    public static boolean checkHostVersionCode(long versionCode) {
+        return versionCode == getHostVersionCode();
     }
 
     public static String paramsTypesToString(Class... c) {
@@ -179,9 +187,13 @@ public class Utils {
 	 return m.invoke(obj,args);
 	 }*/
 
-    public static int getHostVersionCode() {
+    public static long getHostVersionCode() {
         PackageInfo pi = getHostInfo(getApplication());
-        return pi.versionCode;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            return pi.getLongVersionCode();
+        } else {
+            return pi.versionCode;
+        }
     }
 
     public static long getLongAccountUin() {
