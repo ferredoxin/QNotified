@@ -40,7 +40,8 @@ import nil.nadph.qnotified.BuildConfig;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.ui.ResUtils;
+import me.singleneuron.util.KotlinUtils;
+
 
 import java.io.*;
 import java.lang.reflect.*;
@@ -113,7 +114,8 @@ public class Utils {
     }
 
     public static String readByReader(Reader r) throws IOException {
-        StringBuilder str = new StringBuilder();
+
+        /*StringBuilder str = new StringBuilder();
         BufferedReader br = new BufferedReader(r);
         char[] buff = new char[1024];
         for (int len = 0; len != -1; len = br.read(buff)) {
@@ -121,6 +123,9 @@ public class Utils {
         }
         br.close();
         return str.toString();
+
+         */
+        return KotlinUtils.Companion.readFromBufferedReader(new BufferedReader(r));
     }
 
     public static boolean isCallingFrom(String classname) {
