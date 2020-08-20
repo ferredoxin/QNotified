@@ -36,7 +36,7 @@ import com.tencent.mobileqq.widget.BounceScrollView;
 
 import me.singleneuron.hook.ForceSystemCamera;
 import me.singleneuron.hook.NewRoundHead;
-import me.singleneuron.hook.adNoApplet;
+import me.singleneuron.hook.NoApplet;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigItems;
@@ -50,6 +50,7 @@ import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.*;
+import me.singleneuron.util.KotlinUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -179,7 +180,8 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(newListItemHookSwitchInit(this, "防撤回", "自带撤回灰字提示", RevokeMsgHook.get()));
         //ll.addView(newListItemSwitchConfigInit(this, "聊天图片背景透明", null, qn_gallery_bg, false, GalleryBgHook.get()));
         ll.addView(newListItemHookSwitchInit(this, "显示设置禁言的管理", "即使你只是普通群成员", GagInfoDisclosure.get()));
-        ll.addView(newListItemHookSwitchInit(this, "小程序分享转链接", "感谢Alcatraz323开发远离小程序,感谢神经元移植到Xposed", adNoApplet.INSTANCE));
+        KotlinUtils.Companion.addViewConditionally(ll,this,"小程序分享转链接","感谢Alcatraz323开发远离小程序,感谢神经元移植到Xposed", NoApplet.INSTANCE);
+        //ll.addView(newListItemHookSwitchInit(this, "小程序分享转链接", "感谢Alcatraz323开发远离小程序,感谢神经元移植到Xposed", adNoApplet.INSTANCE));
         ll.addView(subtitle(this, "实验性功能(未必有效)"));
         ll.addView(_t = newListItemButton(this, "下载重定向", "N/A", "N/A", this));
         _t.setId(R_ID_BTN_FILE_RECV);

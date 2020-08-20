@@ -1,3 +1,8 @@
+/*
+    from Alcatraz323
+    https://github.com/alcatraz323/noapplet
+ */
+
 package me.singleneuron.util;
 
 import android.text.TextUtils;

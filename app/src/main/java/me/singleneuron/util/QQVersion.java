@@ -1,7 +1,8 @@
 package me.singleneuron.util;
 
 public class QQVersion {
-    
+
+    public static final int QQ_8_0_0 = 1024;
     public static final int QQ_8_0_5 = 1186;
     public static final int QQ_8_0_7 = 1204;
     public static final int QQ_8_0_8 = 1218;
