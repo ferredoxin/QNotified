@@ -1115,6 +1115,8 @@ public class Utils {
         sAppRuntimeInit = z;
     }
 
+    private static Field f_mAppRuntime = null;
+
     @Nullable
     @MainProcess
     public static AppRuntime getAppRuntime() {
@@ -1127,14 +1129,24 @@ public class Utils {
 //            loge("getAppRuntime/W invoked but not in main process!");
 //            return null;
 //        }
+//        try {
+//            Method m;
+//            m = hasMethod(baseApplicationImpl, "getRuntime");
+//            if (m == null)
+//                return (AppRuntime) invoke_virtual(baseApplicationImpl, "a", load("mqq/app/AppRuntime"));
+//            else return (AppRuntime) m.invoke(baseApplicationImpl);
+//        } catch (Exception e) {
+//            throw new AssertionError(e);
+//        }
         try {
-            Method m;
-            m = hasMethod(baseApplicationImpl, "getRuntime");
-            if (m == null)
-                return (AppRuntime) invoke_virtual(baseApplicationImpl, "a", load("mqq/app/AppRuntime"));
-            else return (AppRuntime) m.invoke(baseApplicationImpl);
+            if (f_mAppRuntime == null) {
+                f_mAppRuntime = Class.forName("mqq.app.MobileQQ").getDeclaredField("mAppRuntime");
+                f_mAppRuntime.setAccessible(true);
+            }
+            return (AppRuntime) f_mAppRuntime.get(baseApplicationImpl);
         } catch (Exception e) {
-            throw new AssertionError(e);
+            log(e);
+            return null;
         }
     }
 

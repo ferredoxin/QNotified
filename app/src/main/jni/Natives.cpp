@@ -275,7 +275,7 @@ uint8_t *extractPayload(uint8_t *dex, int dexLength, int *outLength) {
 
 static int64_t sBuildTimestamp = -2;
 
-static const int DEX_MAX_SIZE = 7 * 1024 * 1024;
+static const int DEX_MAX_SIZE = 12 * 1024 * 1024;
 
 jlong doGetBuildTimestamp(JNIEnv *env, jclass clazz) {
     if (sBuildTimestamp != -2)return sBuildTimestamp;

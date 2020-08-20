@@ -15,7 +15,7 @@ QNotified（以下简称本模块）是一款依赖 Xposed框架运行的辅助�
 2. 提供被删好友通知功能
 3. **移除部分臃肿功能, 增加部分实用功能**
 
-QNotified is a Xposed/TaiChi module for mobile QQ that aims to:  
+QNotified is a Xposed module for mobile QQ that aims to:
 1. bring some nice functions in some modules back to life
 2. automatically refreshes friend list and tell(notify) user which friend had deleted him/her
 3. remove some unnecessary functions and add to facility

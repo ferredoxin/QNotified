@@ -19,9 +19,7 @@
 package nil.nadph.qnotified.util;
 
 import android.os.Parcelable;
-
 import com.tencent.mobileqq.app.QQAppInterface;
-
 import de.robv.android.xposed.XposedBridge;
 
 import java.lang.reflect.Field;
@@ -32,7 +30,7 @@ import static nil.nadph.qnotified.util.Utils.log;
 public class Initiator {
 
     private static ClassLoader sHostClassLoader;
-    private static ClassLoader sPluginClassLoader;
+    private static ClassLoader sPluginParentClassLoader;
 
     public static void init(ClassLoader classLoader) {
         if (classLoader == null) throw new NullPointerException("classLoader == null");
@@ -46,7 +44,7 @@ public class Initiator {
                 curr = XposedBridge.class.getClassLoader();
             }
             if (!curr.getClass().getName().equals(HybridClassLoader.class.getName())) {
-                fParent.set(mine, sPluginClassLoader = new HybridClassLoader(curr, classLoader));
+                fParent.set(mine, sPluginParentClassLoader = new HybridClassLoader(curr, classLoader));
             }
         } catch (Exception e) {
             log(e);
@@ -54,13 +52,9 @@ public class Initiator {
     }
 
     public static ClassLoader getPluginClassLoader() {
-        return sPluginClassLoader;
+        return Initiator.class.getClassLoader();
     }
 
-    @Deprecated
-    public static ClassLoader getClassLoader() {
-        return sPluginClassLoader;
-    }
 
     public static ClassLoader getHostClassLoader() {
         return sHostClassLoader;
@@ -68,7 +62,7 @@ public class Initiator {
 
     @Nullable
     public static Class<?> load(String className) {
-        if (sPluginClassLoader == null || className == null || className.isEmpty()) {
+        if (sPluginParentClassLoader == null || className == null || className.isEmpty()) {
             return null;
         }
         className = className.replace('/', '.');
@@ -81,7 +75,7 @@ public class Initiator {
             className = Utils.PACKAGE_NAME_QQ + className;
         }
         try {
-            return sPluginClassLoader.loadClass(className);
+            return sPluginParentClassLoader.loadClass(className);
         } catch (Throwable e) {
             return null;
         }
