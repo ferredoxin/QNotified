@@ -1903,6 +1903,17 @@ public class Utils {
         return Utils.class.getResourceAsStream(s);
     }
 
+    public static void copy(File s, File f) throws Exception {
+        if (!s.exists()) throw new FileNotFoundException("源文件不存在");
+        if (!f.exists()) f.createNewFile();
+        FileReader fr = new FileReader(s);
+        FileWriter fw = new FileWriter(f);
+        char[] buff = new char[1024];
+        for (int len = 0; len != -1; len = fr.read(buff)) {
+            fw.write(buff, 0, len);
+        }
+    }
+
     public static class DummyCallback implements DialogInterface.OnClickListener {
         public DummyCallback() {
         }

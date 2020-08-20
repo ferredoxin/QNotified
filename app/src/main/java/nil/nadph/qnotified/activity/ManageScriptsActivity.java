@@ -19,18 +19,29 @@
 package nil.nadph.qnotified.activity;
 
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.LinearLayout;
 
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.dialog.ScriptSettingDialog;
 import nil.nadph.qnotified.script.QNScript;
 import nil.nadph.qnotified.script.QNScriptManager;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.ViewBuilder;
+import nil.nadph.qnotified.util.Utils;
+
+import static nil.nadph.qnotified.util.Utils.log;
 
 @SuppressLint("Registered")
 public class ManageScriptsActivity extends IphoneTitleBarActivityCompat {
+
+    private final int REQUEST_CODE = 114514;
+
     @Override
     public boolean doOnCreate(Bundle bundle) {
         super.doOnCreate(bundle);
@@ -38,6 +49,12 @@ public class ManageScriptsActivity extends IphoneTitleBarActivityCompat {
         main.setOrientation(LinearLayout.VERTICAL);
 
         main.addView(ViewBuilder.newListItemSwitch(this, "总开关(关闭后所有脚本均不生效)", null, ConfigManager.getDefaultConfig().getBooleanOrDefault(ConfigItems.qn_script_global, false), QNScriptManager::changeGlobal));
+        main.addView(ViewBuilder.newListItemButton(this, "导入 ...", null, null, v -> {
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("*/*");
+            startActivityForResult(intent, REQUEST_CODE);
+        }));
         main.addView(ViewBuilder.newListItemSwitch(this, "全部启用", null, QNScriptManager.isEnableAll(), QNScriptManager::enableAll));
         //main.addView(ViewBuilder.newListItemDummy(this, "demo.java (禁用)", null, null));
         //main.addView(ViewBuilder.newListItemSwitch(this, "总开关", null, true, null));
@@ -49,9 +66,48 @@ public class ManageScriptsActivity extends IphoneTitleBarActivityCompat {
         return true;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data == null) {
+            // 用户未选择任何文件，直接返回
+            return;
+        }
+        Uri uri = data.getData(); // 获取用户选择文件的URI
+        // 通过ContentProvider查询文件路径
+        ContentResolver resolver = this.getContentResolver();
+        Cursor cursor = resolver.query(uri, null, null, null, null);
+        if (cursor == null) {
+            // 未查询到，说明为普通文件，可直接通过URI获取文件路径
+            String path = uri.getPath();
+            try {
+                QNScriptManager.addScript(path);
+                Utils.showToastShort(this, "添加完毕");
+            } catch (Exception e) {
+                log(e);
+                Utils.showToastShort(this, "未知错误: " + e.getMessage());
+            }
+            return;
+        }
+        if (cursor.moveToFirst()) {
+            // 多媒体文件，从数据库中获取文件的真实路径
+            String path = cursor.getString(cursor.getColumnIndex("_data"));
+            try {
+                QNScriptManager.addScript(path);
+                Utils.showToastShort(this, "添加完毕");
+            } catch (Exception e) {
+                log(e);
+                Utils.showToastShort(this, "未知错误: " + e.getMessage());
+            }
+        }
+        cursor.close();
+    }
+
     private void addAllScript(LinearLayout main) {
         for (QNScript qs : QNScriptManager.getScripts()) {
-            main.addView(ViewBuilder.newListItemButton(this, qs.getName(), qs.getDecs(), qs.getEnable(), v -> QNScript.onClick(v, qs)));
+            String name = qs.getName() == null ? "出错" : qs.getName();
+            String decs = qs.getDecs() == null ? "出错" : qs.getDecs();
+            main.addView(ViewBuilder.newListItemButton(this, name, decs, qs.getEnable(), view -> ScriptSettingDialog.OnClickListener_createDialog(view.getContext(), qs)));
         }
     }
 }

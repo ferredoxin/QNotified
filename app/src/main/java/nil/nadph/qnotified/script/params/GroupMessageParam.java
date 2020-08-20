@@ -4,22 +4,22 @@ public class GroupMessageParam {
     /**
      * 发送者id
      */
-    public long senderuin;
+    public String senderuin;
     /**
      * 群id
      */
-    public long uin;
+    public String uin;
     /**
      * 消息内容
      */
     public String content;
 
-    public GroupMessageParam setSenderUin(long uin) {
+    public GroupMessageParam setSenderUin(String uin) {
         this.senderuin = uin;
         return this;
     }
 
-    public GroupMessageParam setUin(long uin) {
+    public GroupMessageParam setUin(String uin) {
         this.uin = uin;
         return this;
     }

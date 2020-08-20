@@ -68,7 +68,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
     private static final int R_ID_BTN_FILE_RECV = 0x300AFF91;
     private static final String qn_enable_fancy_rgb = "qn_enable_fancy_rgb";
 
-    private TextView __tv_muted_atall, __tv_muted_redpacket, __tv_fake_bat_status, __recv_status, __recv_desc, __js_status, __jmp_ctl_cnt;
+    private TextView __tv_muted_atall, __tv_muted_redpacket, __tv_fake_bat_status, __recv_status, __recv_desc, __jmp_ctl_cnt;
 
     @Override
     public boolean doOnCreate(Bundle bundle) {
@@ -115,7 +115,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             ll.addView(newListItemButton(this, "Beta测试性功能", "你发现了神秘入口", null, clickToProxyActAction(BetaTestFuncActivity.class)));
         }
         ll.addView(subtitle(this, "基本功能"));
-        if (!Utils.isTim(this)&&getHostVersionCode()>=QQ_8_2_6) {
+        if (!Utils.isTim(this) && getHostVersionCode() >= QQ_8_2_6) {
             ll.addView(_t = newListItemButton(this, "自定义电量", "[QQ>=8.2.6]在线模式为我的电量时生效", "N/A", clickToProxyActAction(ACTION_FAKE_BAT_CONFIG_ACTIVITY)));
             __tv_fake_bat_status = _t.findViewById(R_ID_VALUE);
         }
@@ -153,7 +153,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             ll.addView(newListItemHookSwitchInit(this, "移除消息列表顶栏横幅广告", "就是主页顶上那个烦人的广告", RemoveQbossAD.get()));
             ll.addView(newListItemSwitchConfigNext(this, "隐藏小程序入口", "隐藏消息列表下拉出现的小程序列表", ConfigItems.qn_hide_msg_list_miniapp, false));
             ll.addView(newListItemHookSwitchInit(this, "隐藏送礼动画", null, HideGiftAnim.get()));
-            if (getHostVersionCode()>=QQ_8_1_3) {
+            if (getHostVersionCode() >= QQ_8_1_3) {
                 ll.addView(newListItemHookSwitchInit(this, "禁止回复自动@", "[>=8.1.3]去除回复消息时自动@特性", ReplyNoAtHook.get()));
             }
             ll.addView(newListItemHookSwitchInit(this, "禁用$打开送礼界面", "禁止聊天时输入$自动弹出[选择赠送对象]窗口", $endGiftHook.get()));
@@ -187,7 +187,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         __recv_desc = _t.findViewById(R_ID_DESCRIPTION);
         __recv_status = _t.findViewById(R_ID_VALUE);
         ll.addView(newListItemHookSwitchInit(this, "屏蔽小程序广告[手动关闭]", "请勿反馈此功能无效", RemoveMiniProgramAd.get()));
-        if (getHostVersionCode()<QQ_8_2_0) {
+        if (getHostVersionCode() < QQ_8_2_0) {
             ll.addView(newListItemHookSwitchInit(this, "收藏更多表情", "[暂不支持>=8.2.0]保存在本地", FavMoreEmo.get()));
         }
         ll.addView(newListItemHookSwitchInit(this, "屏蔽更新提醒", null, PreUpgradeHook.get()));
@@ -197,7 +197,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             ll.addView(newListItemHookSwitchInit(this, "简洁模式圆头像", "From Rikka", RoundAvatarHook.get()));
             if (checkHostVersionCode(QQ_8_3_9)) {
                 ll.addView(newListItemHookSwitchInit(this, "新版简洁模式圆头像", "From Rikka, 仅支持8.3.9", NewRoundHead.INSTANCE));
-                ll.addView(newListItemHookSwitchInit(this,"强制使用系统相机","仅支持8.3.9", ForceSystemCamera.INSTANCE));
+                ll.addView(newListItemHookSwitchInit(this, "强制使用系统相机", "仅支持8.3.9", ForceSystemCamera.INSTANCE));
             }
         }
         ll.addView(subtitle(this, "好友列表"));
@@ -263,8 +263,6 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         }));
         __jmp_ctl_cnt = _t.findViewById(R_ID_VALUE);
         ll.addView(newListItemSwitchStub(this, "禁用特别关心长震动", "他女朋友都没了他也没开发这个功能", false));
-        ll.addView(_t = newListItemButton(this, "管理脚本(.java)", "请注意安全, 合理使用", "N/A", clickToProxyActAction(ManageScriptsActivity.class)));
-        __js_status = _t.findViewById(R_ID_VALUE);
         ll.addView(subtitle(this, "关于"));
         PackageInfo pi = Utils.getHostInfo(this);
         ll.addView(newListItemDummy(this, pi.applicationInfo.loadLabel(this.getPackageManager()), null, pi.versionName + "(" + pi.versionCode + ")"));
@@ -341,7 +339,6 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             }
         }
         updateRecvRedirectStatus();
-        __js_status.setText(QNScriptManager.getEnableCount() + "/" + QNScriptManager.getAllCount());
         if (__jmp_ctl_cnt != null) {
             int cnt = JumpController.get().getEffectiveRulesCount();
             if (cnt == -1) {

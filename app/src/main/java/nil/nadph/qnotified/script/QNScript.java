@@ -3,8 +3,12 @@ package nil.nadph.qnotified.script;
 import android.view.View;
 import bsh.EvalError;
 import bsh.Interpreter;
+import nil.nadph.qnotified.config.ConfigItems;
+import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.dialog.ScriptSettingDialog;
 import nil.nadph.qnotified.script.params.*;
+
+import java.io.IOException;
 
 import static nil.nadph.qnotified.util.Utils.log;
 
@@ -18,17 +22,10 @@ public class QNScript {
         this.code = code;
     }
 
-    public void onLoad() {
-        try {
-            instance.eval("onLoade()");
-        } catch (EvalError evalError) {
-            log(evalError);
-        }
-    }
-
     public void onEnable() {
         try {
             instance.eval("onEnable()");
+            QNScriptManager.addEnable();
         } catch (EvalError evalError) {
             log(evalError);
         }
@@ -37,6 +34,7 @@ public class QNScript {
     public void onDisable() {
         try {
             instance.eval("onDisable()");
+            QNScriptManager.delEnable();
         } catch (EvalError evalError) {
             log(evalError);
         }
@@ -47,6 +45,7 @@ public class QNScript {
             instance.set("groupMessageParam", param);
             instance.eval("onGroupMessage(groupMessageParam)");
         } catch (EvalError evalError) {
+            QNScriptManager.error = evalError.getMessage();
             log(evalError);
         }
     }
@@ -56,6 +55,7 @@ public class QNScript {
             instance.set("friendMessageParam", param);
             instance.eval("onFriendMessage(friendMessageParam)");
         } catch (EvalError evalError) {
+            QNScriptManager.error = evalError.getMessage();
             log(evalError);
         }
     }
@@ -146,26 +146,28 @@ public class QNScript {
     }
 
     public boolean isEnable() {
+        this.enable = ConfigManager.getDefaultConfig().getBooleanOrFalse(ConfigItems.qn_script_enable_ + getLabel());
         return this.enable;
     }
 
     public boolean setEnable(boolean enable) {
+        if (enable) onEnable();
+        else onDisable();
+        // 写入配置文件
+        ConfigManager cfg = ConfigManager.getDefaultConfig();
+        cfg.putBoolean(ConfigItems.qn_script_enable_ + getLabel(), enable);
+        try {
+            cfg.save();
+        } catch (IOException e) {
+            log(e);
+        }
         return this.enable = enable;
     }
 
-    public static QNScript create(Interpreter lp,String code) {
-        return new QNScript(lp,code);
+    public static QNScript create(Interpreter lp, String code) {
+        return new QNScript(lp, code);
     }
 
-    /**
-     * 处理点击事件
-     *
-     * @param view
-     * @param qs
-     */
-    public static void onClick(View view, QNScript qs) {
-        ScriptSettingDialog.createAndShowDialog(view.getContext(), qs);
-    }
 
     public CharSequence getEnable() {
         return isEnable() ? "[启用]" : "[禁用]";

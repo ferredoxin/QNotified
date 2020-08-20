@@ -102,15 +102,9 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
 //                AutomaticMosaicName.INSTANCE,
 //                TestQQMe.INSTANCE,
 //                RemoveGroupApp.INSTANCE,
+                ScriptEventHook.get(),
         };
         return sAllHooks;
-    }
-
-    public static void registerHook(BaseDelayableHook hook) {
-        if (sAllHooks == null) queryDelayableHooks();
-        List<BaseDelayableHook> hooks = Arrays.asList(sAllHooks);
-        hooks.add(hook);
-        sAllHooks = hooks.toArray(new BaseDelayableHook[sAllHooks.length + 1]);
     }
 
     public static void allowEarlyInit(BaseDelayableHook hook) {

@@ -29,7 +29,7 @@ public class ScriptSettingDialog implements CompoundButton.OnCheckedChangeListen
                 .setCancelable(true).create();
         ctx = dialog.getContext();
         dialog.setCanceledOnTouchOutside(false);
-        @SuppressLint("InflateParams") View v = LayoutInflater.from(ctx).inflate(R.layout.script_setting_dialog, null);
+        View v = LayoutInflater.from(ctx).inflate(R.layout.script_setting_dialog, null);
         code = v.findViewById(R.id.script_code_text);
         decs = v.findViewById(R.id.script_decs_text);
         author = v.findViewById(R.id.script_author_text);
@@ -42,11 +42,12 @@ public class ScriptSettingDialog implements CompoundButton.OnCheckedChangeListen
     public AlertDialog show() {
         dialog.show();
         saveBtn.setOnClickListener(this);
+        saveBtn.setText("保存");
         enable.setChecked(script.isEnable());
         enable.setOnCheckedChangeListener(this);
-        version.setText(script.getVersion());
-        author.setText(script.getAuthor());
-        decs.setText(script.getDecs());
+        version.setText("版本: " + script.getVersion());
+        author.setText("作者: " + script.getAuthor());
+        decs.setText("简介: " + script.getDecs());
         code.setText(script.getCode());
         return dialog;
     }
@@ -67,7 +68,7 @@ public class ScriptSettingDialog implements CompoundButton.OnCheckedChangeListen
         new ScriptSettingDialog(ctx, qs).show();
     }
 
-    public static View.OnClickListener OnClickListener_createDialog(final Context ctx, QNScript qs) {
-        return v -> createAndShowDialog(ctx, qs);
+    public static void OnClickListener_createDialog(final Context ctx, QNScript qs) {
+        createAndShowDialog(ctx, qs);
     }
 }
