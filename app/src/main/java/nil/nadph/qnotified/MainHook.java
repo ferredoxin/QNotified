@@ -1126,7 +1126,8 @@ public class MainHook {
                         log(e);
                     }
                     if (bundle != null) {
-                        bundle.setClassLoader(Initiator.getPluginClassLoader());
+                        bundle.setClassLoader(Initiator.getHostClassLoader());
+                        //we do NOT have a custom Bundle, but the host may have
                         if (intent.hasExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT)) {
                             Intent realIntent = intent.getParcelableExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT);
                             field_intent.set(record, realIntent);
@@ -1160,7 +1161,7 @@ public class MainHook {
                                         log(e);
                                     }
                                     if (bundle != null) {
-                                        bundle.setClassLoader(Initiator.getPluginClassLoader());
+                                        bundle.setClassLoader(Initiator.getHostClassLoader());
                                         if (wrapper.hasExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT)) {
                                             Intent realIntent = wrapper.getParcelableExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT);
                                             fmIntent.set(item, realIntent);
