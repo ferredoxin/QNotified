@@ -101,6 +101,7 @@ public class InspectMessage extends BaseDelayableHook implements View.OnLongClic
                         });
                     }
                     dialog.show();
+                    param.setResult(null);
                 }
             });
             //begin panel
