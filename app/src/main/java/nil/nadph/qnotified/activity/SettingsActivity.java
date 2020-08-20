@@ -46,6 +46,7 @@ import nil.nadph.qnotified.dialog.RikkaDialog;
 import nil.nadph.qnotified.hook.*;
 import me.kyuubiran.hook.*;
 import nil.nadph.qnotified.hook.rikka.RemoveMiniProgramAd;
+import nil.nadph.qnotified.script.QNScriptManager;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
@@ -340,7 +341,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             }
         }
         updateRecvRedirectStatus();
-        __js_status.setText("0/1");
+        __js_status.setText(QNScriptManager.getEnableCount() + "/" + QNScriptManager.getAllCount());
         if (__jmp_ctl_cnt != null) {
             int cnt = JumpController.get().getEffectiveRulesCount();
             if (cnt == -1) {

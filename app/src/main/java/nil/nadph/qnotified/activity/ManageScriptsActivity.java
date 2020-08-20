@@ -24,6 +24,8 @@ import android.widget.LinearLayout;
 
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.script.QNScript;
+import nil.nadph.qnotified.script.QNScriptManager;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.ViewBuilder;
 
@@ -35,10 +37,11 @@ public class ManageScriptsActivity extends IphoneTitleBarActivityCompat {
         LinearLayout main = new LinearLayout(this);
         main.setOrientation(LinearLayout.VERTICAL);
 
-        main.addView(ViewBuilder.newListItemSwitchConfigNext(this, "总开关(关闭后所有脚本均不生效)", null, ConfigItems.qn_script_global, false));
-        main.addView(ViewBuilder.newListItemButton(this, "导入 ...", null, null, null));
-        main.addView(ViewBuilder.newListItemDummy(this, "demo.java (禁用)", null, null));
+        main.addView(ViewBuilder.newListItemSwitch(this, "总开关(关闭后所有脚本均不生效)", null, ConfigManager.getDefaultConfig().getBooleanOrDefault(ConfigItems.qn_script_global, false), QNScriptManager::changeGlobal));
+        main.addView(ViewBuilder.newListItemSwitch(this, "全部启用", null, QNScriptManager.isEnableAll(), QNScriptManager::enableAll));
+        //main.addView(ViewBuilder.newListItemDummy(this, "demo.java (禁用)", null, null));
         //main.addView(ViewBuilder.newListItemSwitch(this, "总开关", null, true, null));
+        addAllScript(main);
         setContentView(main);
         setTitle("脚本");
         setRightButton("帮助", ViewBuilder.clickToProxyActAction(ScriptGuideActivity.class));
@@ -46,8 +49,9 @@ public class ManageScriptsActivity extends IphoneTitleBarActivityCompat {
         return true;
     }
 
-    @Override
-    public void doOnResume() {
-        super.doOnResume();
+    private void addAllScript(LinearLayout main) {
+        for (QNScript qs : QNScriptManager.getScripts()) {
+            main.addView(ViewBuilder.newListItemButton(this, qs.getName(), qs.getDecs(), qs.getEnable(), v -> QNScript.onClick(v, qs)));
+        }
     }
 }

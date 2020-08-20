@@ -111,6 +111,16 @@ public class Utils {
         }
     }
 
+    public static String readByReader(Reader r) throws IOException {
+        StringBuilder str = new StringBuilder();
+        BufferedReader br = new BufferedReader(r);
+        char[] buff = new char[1024];
+        for (int len = 0; len != -1; len = br.read(buff)) {
+            str.append(new String(buff, 0, len));
+        }
+        return str.toString();
+    }
+
     public static boolean isCallingFrom(String classname) {
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
         for (StackTraceElement element : stackTraceElements) {
@@ -1887,6 +1897,10 @@ public class Utils {
             throw new NoSuchMethodException("__attribute__((a))" + paramsTypesToString(argt) + " in " + clazz.getName());
         method.setAccessible(true);
         return method;
+    }
+
+    public static InputStream toInputStream(String s) {
+        return Utils.class.getResourceAsStream(s);
     }
 
     public static class DummyCallback implements DialogInterface.OnClickListener {

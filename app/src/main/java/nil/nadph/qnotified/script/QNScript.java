@@ -1,30 +1,42 @@
 package nil.nadph.qnotified.script;
 
+import android.view.View;
 import bsh.EvalError;
 import bsh.Interpreter;
+import nil.nadph.qnotified.dialog.ScriptSettingDialog;
 import nil.nadph.qnotified.script.params.*;
 
 import static nil.nadph.qnotified.util.Utils.log;
 
 public class QNScript {
     private final Interpreter instance;
+    private final String code;
     private boolean enable;
 
-    public QNScript(Interpreter lp) {
+    public QNScript(Interpreter lp, String code) {
         this.instance = lp;
+        this.code = code;
     }
 
-    public void enable() {
+    public void onLoad() {
         try {
-            instance.eval("enable()");
+            instance.eval("onLoade()");
         } catch (EvalError evalError) {
             log(evalError);
         }
     }
 
-    public void disable() {
+    public void onEnable() {
         try {
-            instance.eval("disable()");
+            instance.eval("onEnable()");
+        } catch (EvalError evalError) {
+            log(evalError);
+        }
+    }
+
+    public void onDisable() {
+        try {
+            instance.eval("onDisable()");
         } catch (EvalError evalError) {
             log(evalError);
         }
@@ -129,6 +141,10 @@ public class QNScript {
         return "";
     }
 
+    public String getCode() {
+        return code;
+    }
+
     public boolean isEnable() {
         return this.enable;
     }
@@ -137,7 +153,21 @@ public class QNScript {
         return this.enable = enable;
     }
 
-    public static QNScript create(Interpreter lp) {
-        return new QNScript(lp);
+    public static QNScript create(Interpreter lp,String code) {
+        return new QNScript(lp,code);
+    }
+
+    /**
+     * 处理点击事件
+     *
+     * @param view
+     * @param qs
+     */
+    public static void onClick(View view, QNScript qs) {
+        ScriptSettingDialog.createAndShowDialog(view.getContext(), qs);
+    }
+
+    public CharSequence getEnable() {
+        return isEnable() ? "[启用]" : "[禁用]";
     }
 }

@@ -30,6 +30,9 @@ import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.NonNull;
 import nil.nadph.qnotified.util.Utils;
 
+import java.util.Arrays;
+import java.util.List;
+
 public abstract class BaseDelayableHook implements SwitchConfigItem {
 
     private static BaseDelayableHook[] sAllHooks;
@@ -101,6 +104,13 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
 //                RemoveGroupApp.INSTANCE,
         };
         return sAllHooks;
+    }
+
+    public static void registerHook(BaseDelayableHook hook) {
+        if (sAllHooks == null) queryDelayableHooks();
+        List<BaseDelayableHook> hooks = Arrays.asList(sAllHooks);
+        hooks.add(hook);
+        sAllHooks = hooks.toArray(new BaseDelayableHook[sAllHooks.length + 1]);
     }
 
     public static void allowEarlyInit(BaseDelayableHook hook) {
