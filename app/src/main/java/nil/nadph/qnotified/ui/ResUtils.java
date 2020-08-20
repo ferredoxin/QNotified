@@ -226,7 +226,7 @@ public class ResUtils {
     }
 
     public static InputStream openAsset(String name) {
-        return ResUtils.class.getClassLoader().getResourceAsStream("assets/" + name);
+        return ResUtils.class.getClassLoader().getResourceAsStream("/assets/" + name);
     }
 
     public static Drawable loadDrawableFromAsset(String name, Context mContext) {

@@ -47,7 +47,6 @@ public class QNScript {
             instance.set("groupMessageParam", param);
             instance.eval("onGroupMessage(groupMessageParam)");
         } catch (EvalError evalError) {
-            QNScriptManager.error = evalError.getMessage();
             log(evalError);
         }
     }
@@ -57,7 +56,6 @@ public class QNScript {
             instance.set("friendMessageParam", param);
             instance.eval("onFriendMessage(friendMessageParam)");
         } catch (EvalError evalError) {
-            QNScriptManager.error = evalError.getMessage();
             log(evalError);
         }
     }

@@ -28,13 +28,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-import nil.nadph.qnotified.ExfriendManager;
-import nil.nadph.qnotified.MainHook;
-import nil.nadph.qnotified.R;
-import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.*;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.config.SwitchConfigItem;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
+import nil.nadph.qnotified.hook.CardMsgHook;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.NonUiThread;
 import nil.nadph.qnotified.util.Utils;
@@ -187,7 +185,7 @@ public class ViewBuilder {
     }
 
     public static RelativeLayout newListItemHookSwitchInit(final Context ctx, CharSequence title, CharSequence desc, final BaseDelayableHook hook) {
-        boolean on = hook.isEnabled();
+        boolean on = hook instanceof CardMsgHook ? ((CardMsgHook) hook).isTrue() : hook.isEnabled();
         RelativeLayout root = newListItemSwitch(ctx, title, desc, on, new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(final CompoundButton buttonView, boolean isChecked) {

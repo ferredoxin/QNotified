@@ -19,8 +19,18 @@ public class GroupMessageParam {
         return this;
     }
 
+    public GroupMessageParam setSenderUin(long uin) {
+        this.senderuin = uin + "";
+        return this;
+    }
+
     public GroupMessageParam setUin(String uin) {
         this.uin = uin;
+        return this;
+    }
+
+    public GroupMessageParam setUin(long uin) {
+        this.uin = uin + "";
         return this;
     }
 
@@ -29,7 +39,7 @@ public class GroupMessageParam {
         return this;
     }
 
-    public GroupMessageParam create(){
+    public GroupMessageParam create() {
         return this;
     }
 }

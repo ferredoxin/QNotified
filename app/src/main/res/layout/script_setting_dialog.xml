@@ -52,10 +52,10 @@
         <Switch
                 android:text="启用"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
                 android:id="@+id/script_enable"
-                android:layout_marginLeft="22dp"/>
+                android:layout_marginLeft="-1dp"/>
         <Button
                 android:id="@+id/script_save"
                 style="?android:attr/buttonBarButtonStyle"
@@ -63,7 +63,15 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:text="保存"
-                tools:ignore="RtlHardcoded" android:layout_marginLeft="338dp"/>
+                tools:ignore="RtlHardcoded" android:layout_marginLeft="181dp"/>
+        <Button
+                android:id="@+id/script_delete"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="删除"
+                tools:ignore="RtlHardcoded" android:layout_marginLeft="96dp"/>
     </RelativeLayout>
 
 

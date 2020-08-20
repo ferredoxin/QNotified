@@ -40,6 +40,7 @@ import nil.nadph.qnotified.BuildConfig;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.ui.ResUtils;
 
 import java.io.*;
 import java.lang.reflect.*;
@@ -116,7 +117,7 @@ public class Utils {
         BufferedReader br = new BufferedReader(r);
         char[] buff = new char[1024];
         for (int len = 0; len != -1; len = br.read(buff)) {
-            str.append(new String(buff, 0, len));
+            str.append(buff, 0, len);
         }
         br.close();
         return str.toString();
@@ -1900,8 +1901,8 @@ public class Utils {
         return method;
     }
 
-    public static InputStream toInputStream(String s) {
-        return Utils.class.getResourceAsStream(s);
+    public static InputStream toInputStream(String name) {
+        return Utils.class.getResourceAsStream("/assets/" + name);
     }
 
     public static void copy(File s, File f) throws Exception {

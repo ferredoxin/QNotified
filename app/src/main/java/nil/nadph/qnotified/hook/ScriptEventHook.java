@@ -82,7 +82,6 @@ public class ScriptEventHook extends BaseDelayableHook {
             inited = true;
             return true;
         } catch (Throwable e) {
-            QNScriptManager.error = e.getMessage();
             log(e);
             return false;
         }

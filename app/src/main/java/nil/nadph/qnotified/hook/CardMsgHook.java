@@ -22,6 +22,7 @@ package nil.nadph.qnotified.hook;
 import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.os.Build;
 import android.os.Looper;
 import android.os.Parcelable;
 import android.view.MotionEvent;
@@ -37,8 +38,10 @@ import com.tencent.mobileqq.app.QQAppInterface;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.activity.ChatTailActivity;
 import nil.nadph.qnotified.bridge.ChatActivityFacade;
 import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.dialog.RikkaCustomMsgTimeFormatDialog;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.ui.InterceptLayout;
@@ -47,6 +50,8 @@ import nil.nadph.qnotified.util.*;
 
 import java.io.Externalizable;
 import java.lang.reflect.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static nil.nadph.qnotified.util.Initiator.*;
@@ -100,6 +105,8 @@ public class CardMsgHook extends BaseDelayableHook {
                             layout.setTouchInterceptor(new TouchEventToLongClickAdapter() {
                                 @Override
                                 public boolean onTouch(View v, MotionEvent event) {
+                                    if (!LicenseStatus.isAsserted()) return false;
+                                    if (!CardMsgHook.get().isTrue()) return false;
                                     ViewGroup vg = (ViewGroup) v;
                                     if (event.getAction() == MotionEvent.ACTION_DOWN &&
                                             vg.getChildCount() != 0 && vg.getChildAt(0).isEnabled()) {
@@ -113,13 +120,14 @@ public class CardMsgHook extends BaseDelayableHook {
                                     try {
                                         if (LicenseStatus.sDisableCommonHooks) return false;
                                         if (!LicenseStatus.isAsserted()) return false;
+                                        if (!CardMsgHook.get().isTrue()) return false;
                                         ViewGroup vg = (ViewGroup) v;
                                         Context ctx = v.getContext();
                                         if (vg.getChildCount() != 0 && !vg.getChildAt(0).isEnabled()) {
                                             EditText input = viewGroup.findViewById(ctx.getResources().getIdentifier("input", "id", ctx.getPackageName()));
                                             String text = input.getText().toString();
                                             if (text.length() == 0) {
-                                                showToast(ctx, TOAST_TYPE_ERROR, "请先输入卡片代码", Toast.LENGTH_SHORT);
+                                                showToast(ctx, TOAST_TYPE_ERROR, "请先卡片输入代码", Toast.LENGTH_SHORT);
                                             }
                                             return true;
                                         }
@@ -134,7 +142,6 @@ public class CardMsgHook extends BaseDelayableHook {
                             @Override
                             public boolean onLongClick(View v) {
                                 if (LicenseStatus.sDisableCommonHooks) return false;
-                                if (!LicenseStatus.isAsserted()) return false;
                                 Context ctx = v.getContext();
                                 EditText input = viewGroup.findViewById(ctx.getResources().getIdentifier("input", "id", ctx.getPackageName()));
                                 String text = input.getText().toString();
@@ -142,6 +149,8 @@ public class CardMsgHook extends BaseDelayableHook {
                                     return false;
                                 } else {
                                     if (text.contains("<?xml")) {
+                                        if (!LicenseStatus.isAsserted()) return false;
+                                        if (!CardMsgHook.get().isTrue()) return false;
                                         try {
                                             if (ntSendCardMsg(qqApp, session, text)) {
                                                 input.setText("");
@@ -159,6 +168,8 @@ public class CardMsgHook extends BaseDelayableHook {
                                             Utils.showToast(ctx, TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), Toast.LENGTH_SHORT);
                                         }
                                     } else if (text.contains("{\"")) {
+                                        if (!LicenseStatus.isAsserted()) return false;
+                                        if (!CardMsgHook.get().isTrue()) return false;
                                         try {
                                             Object arkMsg = load("com.tencent.mobileqq.data.ArkAppMessage").newInstance();
                                             if (ntSendCardMsg(qqApp, session, text)) {
@@ -175,6 +186,22 @@ public class CardMsgHook extends BaseDelayableHook {
                                             }
                                             log(e);
                                             Utils.showToast(ctx, TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), Toast.LENGTH_SHORT);
+                                        }
+                                    } else {
+                                        if (!LicenseStatus.getAuth2Status()) return false;
+                                        if (!Utils.isNullOrEmpty(ChatTailHook.get().getTailCapacity())) {
+                                            int battery = FakeBatteryHook.get().isEnabled() ? FakeBatteryHook.get().getFakeBatteryStatus() < 1 ? ChatTailActivity.getBattery() : FakeBatteryHook.get().getFakeBatteryCapacity() : ChatTailActivity.getBattery();
+                                            String tc = ChatTailHook.get().getTailCapacity().
+                                                    replace(ChatTailActivity.delimiter, input.getText())
+                                                    .replace("#model#", Build.MODEL)
+                                                    .replace("#brand#", Build.BRAND)
+                                                    .replace("#battery#", battery + "")
+                                                    .replace("#power#", ChatTailActivity.getPower())
+                                                    .replace("#time#", new SimpleDateFormat(RikkaCustomMsgTimeFormatDialog.getTimeFormat()).format(new Date()));
+                                            input.setText(tc);
+                                            sendBtn.callOnClick();
+                                        } else {
+                                            Utils.showToast(ctx, TOAST_TYPE_ERROR, "你还没有设置小尾巴", Toast.LENGTH_SHORT);
                                         }
                                     }
                                 }
@@ -242,7 +269,8 @@ public class CardMsgHook extends BaseDelayableHook {
         @Override
         protected void afterHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
             if (LicenseStatus.sDisableCommonHooks) return;
-            if (!CardMsgHook.get().isEnabled()) return;
+            if (!LicenseStatus.isAsserted()) return;
+            if (!CardMsgHook.get().isTrue()) return;
             Object arr = param.getResult();
             Class<?> clQQCustomMenuItem = arr.getClass().getComponentType();
             Object item_copy = CustomMenu.createItem(clQQCustomMenuItem, R_ID_COPY_CODE, "复制代码");
@@ -262,6 +290,8 @@ public class CardMsgHook extends BaseDelayableHook {
 
         @Override
         protected void beforeHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
+            if (!LicenseStatus.isAsserted()) return;
+            if (!CardMsgHook.get().isTrue()) return;
             int id = (int) param.args[0];
             Activity ctx = (Activity) param.args[1];
             Object chatMessage = param.args[2];
@@ -289,39 +319,6 @@ public class CardMsgHook extends BaseDelayableHook {
 
     private Field fChatAdapter = null;
     private Field fBubbleOnLongClickListener = null;
-
-    public View.OnLongClickListener getBubbleLongClickListener(Activity activity) {
-        Object fmgr;
-        try {
-            fmgr = invoke_virtual(activity, "getSupportFragmentManager");
-            Object fragment = invoke_virtual(fmgr, "findFragmentByTag", "com.tencent.mobileqq.activity.ChatFragment", String.class);
-            Object chatpie = invoke_virtual(fragment, "a", _BaseChatPie());
-            if (fChatAdapter == null) {
-                for (Field f : _BaseChatPie().getDeclaredFields()) {
-                    if (f.getName().equals("a") && Modifier.isPublic(f.getModifiers())) {
-                        Class type = f.getType();
-                        if (BaseAdapter.class.isAssignableFrom(type)) {
-                            fChatAdapter = f;
-                            fChatAdapter.setAccessible(true);
-                        }
-                    }
-                }
-            }
-            BaseAdapter chatAdapter1 = (BaseAdapter) fChatAdapter.get(chatpie);
-            if (fBubbleOnLongClickListener == null) {
-                for (Field f : fChatAdapter.getType().getDeclaredFields()) {
-                    if (View.OnLongClickListener.class.isAssignableFrom(f.getType())) {
-                        fBubbleOnLongClickListener = f;
-                        fBubbleOnLongClickListener.setAccessible(true);
-                    }
-                }
-            }
-            return (View.OnLongClickListener) fBubbleOnLongClickListener.get(chatAdapter1);
-        } catch (Exception e) {
-            log(e);
-            return null;
-        }
-    }
 
     static native boolean ntSendCardMsg(QQAppInterface rt, Parcelable session, String msg) throws Exception;
 
@@ -364,8 +361,22 @@ public class CardMsgHook extends BaseDelayableHook {
 
     @Override
     public boolean isEnabled() {
+        // try {
+        return true;
+        //return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_send_card_msg);
+        //} catch (Exception e) {
+        //log(e);
+        //  return false;
+        // }
+    }
+
+    /**
+     * 真·是否启用
+     *
+     * @return
+     */
+    public boolean isTrue() {
         try {
-            if (!LicenseStatus.isAsserted()) return false;
             return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_send_card_msg);
         } catch (Exception e) {
             log(e);

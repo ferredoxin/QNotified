@@ -15,12 +15,17 @@ public class FriendMessageParam {
         return this;
     }
 
+    public FriendMessageParam setUin(long uin) {
+        this.uin = uin + "";
+        return this;
+    }
+
     public FriendMessageParam setContent(String content) {
         this.content = content;
         return this;
     }
 
-    public FriendMessageParam create(){
+    public FriendMessageParam create() {
         return this;
     }
 }
