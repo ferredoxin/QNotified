@@ -81,9 +81,12 @@ public class InspectMessage extends BaseDelayableHook implements View.OnLongClic
                     if (msg == null) return;
                     boolean showRevoke = false;
                     int istroop = (int) iget_object_or_null(msg, "istroop");
-                    if (istroop == 0 && LicenseStatus.getAuth2Status()) showRevoke = true;
-                    CustomDialog dialog = CustomDialog.createFailsafe(ctx).setTitle(Utils.getShort$Name(msg)).setMessage(msg.toString())
-                            .setCancelable(true).setPositiveButton("确定", null);
+                    if (msg.toString().indexOf("senderUin:" + Utils.getLongAccountUin()) != -1 && LicenseStatus.getAuth2Status()) showRevoke = true;
+                    CustomDialog dialog = CustomDialog.create(ctx);
+                    dialog.setTitle(Utils.getShort$Name(msg));
+                    dialog.setMessage(msg.toString());
+                    dialog.setCancelable(true);
+                    dialog.setPositiveButton("确认", null);
                     if (showRevoke) {
                         final Context finalCtx = ctx;
                         dialog.setNegativeButton("撤回", new DialogInterface.OnClickListener() {
@@ -98,7 +101,6 @@ public class InspectMessage extends BaseDelayableHook implements View.OnLongClic
                         });
                     }
                     dialog.show();
-                    param.setResult(null);
                 }
             });
             //begin panel
