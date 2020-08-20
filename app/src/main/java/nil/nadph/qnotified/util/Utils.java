@@ -118,6 +118,7 @@ public class Utils {
         for (int len = 0; len != -1; len = br.read(buff)) {
             str.append(new String(buff, 0, len));
         }
+        br.close();
         return str.toString();
     }
 
@@ -1912,6 +1913,8 @@ public class Utils {
         for (int len = 0; len != -1; len = fr.read(buff)) {
             fw.write(buff, 0, len);
         }
+        fw.close();
+        fr.close();
     }
 
     public static class DummyCallback implements DialogInterface.OnClickListener {

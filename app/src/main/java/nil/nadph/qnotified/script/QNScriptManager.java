@@ -8,6 +8,7 @@ import android.widget.CompoundButton;
 import androidx.annotation.RequiresApi;
 import bsh.EvalError;
 import bsh.Interpreter;
+import bsh.util.Util;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.util.Initiator;
@@ -35,7 +36,7 @@ public class QNScriptManager {
      */
     public static void addScript(String file) throws Exception {
         if (isNullOrEmpty(file)) throw new RuntimeException("file is null");
-        if (hasScript(file)) throw new RuntimeException("script exists");
+        if (hasScript(file)) throw new RuntimeException("脚本已存在");
         // to do
         // 操作: 将文件移动到软件数据文件夹下
         File s = new File(file);
@@ -68,16 +69,12 @@ public class QNScriptManager {
         if (Utils.isNullOrEmpty(file)) return false;
         // to do
         // 判断文件
-        try {
-            QNScript qs = execute(Utils.readByReader(new FileReader(new File(file))));
-            for (QNScript q : getScripts()) {
-                if (qs.getLabel().equalsIgnoreCase(q.getLabel())) {
-                    return true;
-                }
+        QNScriptInfo info = QNScriptInfo.getInfo(Utils.readByReader(new FileReader(new File(file))));
+        if (info == null) throw new RuntimeException("不是有效的脚本文件");
+        for (QNScript q : getScripts()) {
+            if (info.label.equalsIgnoreCase(q.getLabel())) {
+                return true;
             }
-        } catch (EvalError e) {
-            log(e);
-            throw new RuntimeException("不是有效的java文件");
         }
         return false;
     }
@@ -138,7 +135,7 @@ public class QNScriptManager {
 
     public static void init() {
         if (init) return;
-        scriptsPath = getApplication().getFilesDir().getAbsolutePath() + "/scripts/";
+        scriptsPath = getApplication().getFilesDir().getAbsolutePath() + "/qn_script/";
         for (String code : getScriptCodes()) {
             try {
                 scripts.add(execute(code));

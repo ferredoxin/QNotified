@@ -15,11 +15,13 @@ import static nil.nadph.qnotified.util.Utils.log;
 public class QNScript {
     private final Interpreter instance;
     private final String code;
+    private final QNScriptInfo info;
     private boolean enable;
 
     public QNScript(Interpreter lp, String code) {
         this.instance = lp;
         this.code = code;
+        this.info = QNScriptInfo.getInfo(code);
     }
 
     public void onEnable() {
@@ -97,48 +99,23 @@ public class QNScript {
     }
 
     public String getName() {
-        try {
-            return (String) instance.get("name");
-        } catch (EvalError evalError) {
-            log(evalError);
-        }
-        return "";
+        return info.name;
     }
 
     public String getLabel() {
-        try {
-            return (String) instance.get("label");
-        } catch (EvalError evalError) {
-            log(evalError);
-        }
-        return "";
+        return info.label;
     }
 
     public String getVersion() {
-        try {
-            return (String) instance.get("version");
-        } catch (EvalError evalError) {
-            log(evalError);
-        }
-        return "";
+        return info.version;
     }
 
     public String getAuthor() {
-        try {
-            return (String) instance.get("author");
-        } catch (EvalError evalError) {
-            log(evalError);
-        }
-        return "";
+        return info.author;
     }
 
     public String getDecs() {
-        try {
-            return (String) instance.get("decs");
-        } catch (EvalError evalError) {
-            log(evalError);
-        }
-        return "";
+        return info.decs;
     }
 
     public String getCode() {

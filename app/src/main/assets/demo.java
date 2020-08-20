@@ -1,12 +1,12 @@
+//InfoStart
+//@author:          lliiooll
+//@name:            示例脚本
+//@version:         0.0.1
+//@label:           demo
+//@decs:            用于QN脚本开发的入门示例
+//InfoEnd
 
 import nil.nadph.qnotified.script.QNClient;
-
-// 示例java
-String name="示例脚本";// 脚本名称
-String label="demo";// 脚本标签
-String version="0.0.1";// 脚本版本
-String author="lliiooll";// 脚本作者
-String decs="用于QN脚本开发的入门示例";// 脚本简介
 
 public void onEnable(){
 // 将会在脚本启用时调用
