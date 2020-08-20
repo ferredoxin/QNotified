@@ -19,10 +19,9 @@
 package nil.nadph.qnotified.hook;
 
 import me.kyuubiran.hook.*;
-import me.kyuubiran.hook.testhook.*;
 import me.singleneuron.hook.ForceSystemCamera;
 import me.singleneuron.hook.NewRoundHead;
-import me.singleneuron.hook.adNoApplet;
+import me.singleneuron.hook.NoApplet;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.SwitchConfigItem;
 import nil.nadph.qnotified.hook.rikka.*;
@@ -93,7 +92,7 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 RemoveCameraButton.get(),
                 RemovePlayTogether.get(),
                 RemoveQbossAD.get(),
-                adNoApplet.INSTANCE,
+                NoApplet.INSTANCE,
                 NewRoundHead.INSTANCE,
                 ForceSystemCamera.INSTANCE,
 //                AutomaticMosaicName.INSTANCE,
