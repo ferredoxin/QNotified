@@ -7,7 +7,6 @@ import android.widget.TextView
 import android.widget.Toast
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
-import me.kyuubiran.hook.SimplifyQQSettingMe
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.hook.BaseDelayableHook
@@ -54,7 +53,7 @@ object TestQQMe : BaseDelayableHook() {
 //                    val layout3: LinearLayout = Utils.iget_object_or_null(param?.thisObject, "a", View::class.java) as LinearLayout
 //                    setZeroHeightWeight(layout3)
                     for (i in 1 until layout2.childCount) {
-                         val child = layout2.getChildAt(i) as LinearLayout
+                        val child = layout2.getChildAt(i) as LinearLayout
                         val tv = child.getChildAt(1) as TextView
                         val text = tv.text
                         when {
@@ -92,7 +91,7 @@ object TestQQMe : BaseDelayableHook() {
                     })
                 }
             }
-            SimplifyQQSettingMe.isInit = true
+            isInit = true
             true
         } catch (t: Throwable) {
             Utils.log(t)

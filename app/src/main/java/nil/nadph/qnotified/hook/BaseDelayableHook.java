@@ -19,6 +19,7 @@
 package nil.nadph.qnotified.hook;
 
 import me.kyuubiran.hook.*;
+import me.kyuubiran.hook.testhook.TestQQMe;
 import me.singleneuron.hook.ForceSystemCamera;
 import me.singleneuron.hook.NewRoundHead;
 import me.singleneuron.hook.NoApplet;
