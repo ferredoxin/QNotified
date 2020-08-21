@@ -32,6 +32,7 @@ import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+
 import com.tencent.mobileqq.widget.BounceScrollView;
 
 import me.kyuubiran.hook.testhook.*;
@@ -190,7 +191,9 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         __recv_status = _t.findViewById(R_ID_VALUE);
         ll.addView(newListItemHookSwitchInit(this, "屏蔽小程序广告[需要手动关闭广告]", "请勿反馈此功能无效", RemoveMiniProgramAd.get()));
         ll.addView(newListItemHookSwitchInit(this, "侧滑精简[重启QQ生效]", "测试性功能 最好使用8.4.1确保兼容性", TestQQMe.INSTANCE));
-        ll.addView(newListItemHookSwitchInit(this, "昵称/群名字打码", "这只是一个娱乐功能", AutomaticMosaicName.INSTANCE));
+        ll.addView(newListItemHookSwitchInit(this, "群应用爬", "不会真有人用群应用吧 不会吧不会吧", RemoveGroupApp.INSTANCE));
+        ll.addView(newListItemHookSwitchInit(this, "昵称/群名字打码", "娱乐功能 不进行维护", AutomaticMosaicName.INSTANCE));
+        ll.addView(newListItemHookSwitchInit(this, "自己的消息和头像居左显示", "娱乐功能 不进行维护", ShowSelfMsgByLeft.INSTANCE));
         if (getHostVersionCode() < QQ_8_2_0) {
             ll.addView(newListItemHookSwitchInit(this, "收藏更多表情", "[暂不支持>=8.2.0]保存在本地", FavMoreEmo.get()));
         }
