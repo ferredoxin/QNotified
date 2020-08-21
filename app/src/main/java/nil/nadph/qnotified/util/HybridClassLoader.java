@@ -36,10 +36,11 @@ public class HybridClassLoader extends ClassLoader {
             return ClassLoader.getSystemClassLoader().loadClass(name);
         } catch (ClassNotFoundException ignored) {
         }
-        if (name != null && (name.startsWith("androidx.") || name.startsWith("android.support.v4."))) {
+        if (name != null && (name.startsWith("androidx.") || name.startsWith("android.support.v4.")
+                || name.startsWith("kotlin.") || name.startsWith("kotlinx."))) {
             //Nevertheless, this will not interfere with the host application,
             //classes in host application SHOULD find with their own ClassLoader, eg Class.forName()
-            //use shipped androidx.
+            //use shipped androidx and kotlin lib.
             throw new ClassNotFoundException(name);
         }
         if (clPreload != null) {
