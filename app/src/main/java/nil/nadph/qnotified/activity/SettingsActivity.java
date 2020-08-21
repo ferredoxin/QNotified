@@ -116,7 +116,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             ll.addView(newListItemButton(this, "Beta测试性功能", "你发现了神秘入口", null, clickToProxyActAction(BetaTestFuncActivity.class)));
         }
         ll.addView(subtitle(this, "基本功能"));
-        if (!Utils.isTim(this)&&getHostVersionCode()>=QQ_8_2_6) {
+        if (!Utils.isTim(this) && getHostVersionCode() >= QQ_8_2_6) {
             ll.addView(_t = newListItemButton(this, "自定义电量", "[QQ>=8.2.6]在线模式为我的电量时生效", "N/A", clickToProxyActAction(ACTION_FAKE_BAT_CONFIG_ACTIVITY)));
             __tv_fake_bat_status = _t.findViewById(R_ID_VALUE);
         }
@@ -154,7 +154,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             ll.addView(newListItemHookSwitchInit(this, "移除消息列表顶栏横幅广告", "就是主页顶上那个烦人的广告", RemoveQbossAD.get()));
             ll.addView(newListItemSwitchConfigNext(this, "隐藏小程序入口", "隐藏消息列表下拉出现的小程序列表", ConfigItems.qn_hide_msg_list_miniapp, false));
             ll.addView(newListItemHookSwitchInit(this, "隐藏送礼动画", null, HideGiftAnim.get()));
-            if (getHostVersionCode()>=QQ_8_1_3) {
+            if (getHostVersionCode() >= QQ_8_1_3) {
                 ll.addView(newListItemHookSwitchInit(this, "禁止回复自动@", "[>=8.1.3]去除回复消息时自动@特性", ReplyNoAtHook.get()));
             }
             ll.addView(newListItemHookSwitchInit(this, "禁用$打开送礼界面", "禁止聊天时输入$自动弹出[选择赠送对象]窗口", $endGiftHook.get()));
@@ -181,7 +181,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(newListItemHookSwitchInit(this, "防撤回", "自带撤回灰字提示", RevokeMsgHook.get()));
         //ll.addView(newListItemSwitchConfigInit(this, "聊天图片背景透明", null, qn_gallery_bg, false, GalleryBgHook.get()));
         ll.addView(newListItemHookSwitchInit(this, "显示设置禁言的管理", "即使你只是普通群成员", GagInfoDisclosure.get()));
-        KotlinUtils.Companion.addViewConditionally(ll,this,"小程序分享转链接","感谢Alcatraz323开发远离小程序,感谢神经元移植到Xposed", NoApplet.INSTANCE);
+        KotlinUtils.Companion.addViewConditionally(ll, this, "小程序分享转链接", "感谢Alcatraz323开发远离小程序,感谢神经元移植到Xposed", NoApplet.INSTANCE);
         //ll.addView(newListItemHookSwitchInit(this, "小程序分享转链接", "感谢Alcatraz323开发远离小程序,感谢神经元移植到Xposed", adNoApplet.INSTANCE));
         ll.addView(subtitle(this, "实验性功能(未必有效)"));
         ll.addView(_t = newListItemButton(this, "下载重定向", "N/A", "N/A", this));
@@ -189,18 +189,19 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         __recv_desc = _t.findViewById(R_ID_DESCRIPTION);
         __recv_status = _t.findViewById(R_ID_VALUE);
         ll.addView(newListItemHookSwitchInit(this, "屏蔽小程序广告[需要手动关闭广告]", "请勿反馈此功能无效", RemoveMiniProgramAd.get()));
-                    ll.addView(newListItemHookSwitchInit(this, "侧滑精简[重启QQ生效]", "测试性功能 最好使用8.4.1确保兼容性", TestQQMe.INSTANCE));
-        if (getHostVersionCode()<QQ_8_2_0) {
+        ll.addView(newListItemHookSwitchInit(this, "侧滑精简[重启QQ生效]", "测试性功能 最好使用8.4.1确保兼容性", TestQQMe.INSTANCE));
+        ll.addView(newListItemHookSwitchInit(this, "昵称/群名字打码", "这只是一个娱乐功能", AutomaticMosaicName.INSTANCE));
+        if (getHostVersionCode() < QQ_8_2_0) {
             ll.addView(newListItemHookSwitchInit(this, "收藏更多表情", "[暂不支持>=8.2.0]保存在本地", FavMoreEmo.get()));
         }
         ll.addView(newListItemHookSwitchInit(this, "屏蔽更新提醒", null, PreUpgradeHook.get()));
-        ll.addView(newListItemHookSwitchInit(this, "检查消息", LicenseStatus.getAuth2Status()?"暂时有点用（聊天界面长按+号后点击头像）":"暂时没有用", InspectMessage.get()));
+        ll.addView(newListItemHookSwitchInit(this, "检查消息", LicenseStatus.getAuth2Status() ? "暂时有点用（聊天界面长按+号后点击头像）" : "暂时没有用", InspectMessage.get()));
         if (!Utils.isTim(this)) {
             ll.addView(newListItemHookSwitchInit(this, "自定义猜拳骰子", null, CheatHook.get()));
             ll.addView(newListItemHookSwitchInit(this, "简洁模式圆头像", "From Rikka", RoundAvatarHook.get()));
             if (checkHostVersionCode(QQ_8_3_9)) {
                 ll.addView(newListItemHookSwitchInit(this, "新版简洁模式圆头像", "From Rikka, 仅支持8.3.9", NewRoundHead.INSTANCE));
-                ll.addView(newListItemHookSwitchInit(this,"强制使用系统相机","仅支持8.3.9", ForceSystemCamera.INSTANCE));
+                ll.addView(newListItemHookSwitchInit(this, "强制使用系统相机", "仅支持8.3.9", ForceSystemCamera.INSTANCE));
             }
         }
         ll.addView(subtitle(this, "好友列表"));

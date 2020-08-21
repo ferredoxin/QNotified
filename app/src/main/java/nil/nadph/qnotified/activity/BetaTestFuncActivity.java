@@ -92,7 +92,6 @@ public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
             ll.addView(_t = newListItemButton(this, "自定义聊天小尾巴", "回车发送不生效", "N/A", clickToProxyActAction(ACTION_CHAT_TAIL_CONFIG_ACTIVITY)));
             __tv_chat_tail_status = _t.findViewById(R_ID_VALUE);
             ll.addView(newListItemHookSwitchInit(this, "屏蔽戳一戳", "OvO", MutePokePacket.get()));
-//            ll.addView(newListItemHookSwitchInit(this, "昵称/群名字打码", "娱乐功能", AutomaticMosaicName.INSTANCE));
 //            ll.addView(newListItemHookSwitchInit(this, "群应用爬", "不会真有人用群应用吧 不会吧不会吧", RemoveGroupApp.INSTANCE));
         }
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
