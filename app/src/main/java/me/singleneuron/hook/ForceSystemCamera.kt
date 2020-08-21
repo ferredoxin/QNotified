@@ -2,12 +2,13 @@ package me.singleneuron.hook
 
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
-import me.singleneuron.base.BaseDelayableHookAdapter
+import me.singleneuron.base.BaseDelayableConditionalHookAdapter
+import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.util.LicenseStatus
 import nil.nadph.qnotified.util.Utils
 import java.lang.Exception
 
-object ForceSystemCamera : BaseDelayableHookAdapter("forceSystemCamera") {
+object ForceSystemCamera : BaseDelayableConditionalHookAdapter("forceSystemCamera") {
     override fun doInit(): Boolean {
         try {
             val babg = Class.forName("babg")
@@ -25,4 +26,7 @@ object ForceSystemCamera : BaseDelayableHookAdapter("forceSystemCamera") {
         }
         return true
     }
+
+    override val condition: () -> Boolean
+        get() = {Utils.getHostVersionCode()== QQVersion.QQ_8_3_9}
 }
