@@ -19,6 +19,7 @@
 package nil.nadph.qnotified.hook;
 
 import me.kyuubiran.hook.*;
+import me.kyuubiran.hook.ShowSelfMsgByLeft;
 import me.kyuubiran.hook.testhook.TestQQMe;
 import me.singleneuron.hook.ForceSystemCamera;
 import me.singleneuron.hook.NewRoundHead;
@@ -98,7 +99,8 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 ForceSystemCamera.INSTANCE,
                 AutomaticMosaicName.INSTANCE,
                 TestQQMe.INSTANCE,
-//                RemoveGroupApp.INSTANCE,
+                ShowSelfMsgByLeft.INSTANCE,
+                RemoveGroupApp.INSTANCE,
         };
         return sAllHooks;
     }
