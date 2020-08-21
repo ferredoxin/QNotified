@@ -96,7 +96,7 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 NoApplet.INSTANCE,
                 NewRoundHead.INSTANCE,
                 ForceSystemCamera.INSTANCE,
-//                AutomaticMosaicName.INSTANCE,
+                AutomaticMosaicName.INSTANCE,
                 TestQQMe.INSTANCE,
 //                RemoveGroupApp.INSTANCE,
         };
