@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static nil.nadph.qnotified.config.Table.*;
 import static nil.nadph.qnotified.util.Utils.log;
 
-public class ConfigManager implements SyncUtils.OnFileChangedListener {
+public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConfigItem {
     //DataOutputStream should be BIG_ENDIAN, as is.
     public static final int BYTE_ORDER_STUB = 0x12345678;
     private static ConfigManager sDefConfig;
@@ -363,5 +363,69 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener {
         } catch (Exception ignored) {
         }
         return config.remove(k);
+    }
+
+    @Nullable
+    public boolean containsKey(@NonNull String k) {
+        try {
+            if (dirty) reload();
+        } catch (Exception ignored) {
+        }
+        return config.containsKey(k);
+    }
+
+    @Override
+    public boolean isValid() {
+        return true;
+    }
+
+    @Override
+    public boolean hasConfig(String name) {
+        return containsKey(name);
+    }
+
+    @Override
+    public boolean getBooleanConfig(String name) {
+        return getBooleanOrDefault(name, false);
+    }
+
+    @Override
+    public void setBooleanConfig(String name, boolean val) {
+        putBoolean(name, val);
+        try {
+            save();
+        } catch (IOException e) {
+            log(e);
+        }
+    }
+
+    @Override
+    public int getIntConfig(String name) {
+        return getIntOrDefault(name, -1);
+    }
+
+    @Override
+    public void setIntConfig(String name, int val) {
+        putInt(name, val);
+        try {
+            save();
+        } catch (IOException e) {
+            log(e);
+        }
+    }
+
+    @Override
+    public String getStringConfig(String name) {
+        return getString(name);
+    }
+
+    @Override
+    public void setStringConfig(String name, String val) {
+        putString(name, val);
+        try {
+            save();
+        } catch (IOException e) {
+            log(e);
+        }
     }
 }

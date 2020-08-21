@@ -80,10 +80,15 @@ public class InspectMessage extends BaseDelayableHook implements View.OnLongClic
                     final Object msg = MultiForwardAvatarHook.getChatMessageByView(view);
                     if (msg == null) return;
                     boolean showRevoke = false;
-                    int istroop = (int) iget_object_or_null(msg, "istroop");
-                    if (istroop == 0 && LicenseStatus.getAuth2Status()) showRevoke = true;
-                    CustomDialog dialog = CustomDialog.createFailsafe(ctx).setTitle(Utils.getShort$Name(msg)).setMessage(msg.toString())
-                            .setCancelable(true).setPositiveButton("确定", null);
+                    //判断私聊或群聊  istroop = 0 为私聊 ，1 为群聊
+                    //int istroop = (int) iget_object_or_null(msg, "istroop");
+                    //取消istroop判断，在群里也可以撤回部分消息
+                    if (LicenseStatus.getAuth2Status()) showRevoke = true;
+                    CustomDialog dialog = CustomDialog.createFailsafe(ctx);
+                    dialog.setTitle(Utils.getShort$Name(msg));
+                    dialog.setMessage(msg.toString());
+                    dialog.setCancelable(true);
+                    dialog.setPositiveButton("确认", null);
                     if (showRevoke) {
                         final Context finalCtx = ctx;
                         dialog.setNegativeButton("撤回", new DialogInterface.OnClickListener() {

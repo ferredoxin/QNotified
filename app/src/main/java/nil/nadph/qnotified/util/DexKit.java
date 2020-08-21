@@ -135,7 +135,7 @@ public class DexKit {
             return null;
         }
         try {
-            return m.getMethodInstance(Initiator.getClassLoader());
+            return m.getMethodInstance(Initiator.getHostClassLoader());
         } catch (NoSuchMethodException e) {
             log(e);
             return null;
@@ -153,7 +153,7 @@ public class DexKit {
             return null;
         }
         try {
-            return m.getMethodInstance(Initiator.getClassLoader());
+            return m.getMethodInstance(Initiator.getHostClassLoader());
         } catch (NoSuchMethodException e) {
             log(e);
             return null;

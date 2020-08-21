@@ -18,15 +18,22 @@
  */
 package me.kyuubiran.hook;
 
-import java.io.IOException;
-
 import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.config.MultiConfigItem;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.util.Utils;
 
-public abstract class BaseMultiConfigDelayableHook extends BaseDelayableHook {
+import java.io.IOException;
+
+public abstract class BaseMultiConfigDelayableHook extends BaseDelayableHook implements MultiConfigItem {
 
     private final String _$shadow$ns$prefix = this.getClass().getSimpleName() + "$";
+
+    public boolean hasConfig(String name) {
+        if (name == null) throw new NullPointerException("name == null");
+        ConfigManager cfg = ConfigManager.getDefaultConfig();
+        return cfg.hasConfig(_$shadow$ns$prefix + name);
+    }
 
     public boolean getBooleanConfig(String name) {
         if (name == null) throw new NullPointerException("name == null");

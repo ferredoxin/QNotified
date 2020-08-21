@@ -100,7 +100,7 @@ public abstract class BaseDelayableHookAdapter extends BaseDelayableHook {
     public abstract class XposedMethodHookAdapter extends XC_MethodHook {
 
         @Override
-        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+        final protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
             if (!checkEnabled()) return;
             try {
                 beforeMethod(param);
@@ -110,7 +110,7 @@ public abstract class BaseDelayableHookAdapter extends BaseDelayableHook {
         }
 
         @Override
-        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+        final protected void afterHookedMethod(MethodHookParam param) throws Throwable {
             if (!checkEnabled()) return;
             try {
                 afterMethod(param);
@@ -119,15 +119,15 @@ public abstract class BaseDelayableHookAdapter extends BaseDelayableHook {
             }
         }
 
-        abstract protected void beforeMethod(XC_MethodHook.MethodHookParam param) throws Throwable;
-        abstract protected void afterMethod(XC_MethodHook.MethodHookParam param) throws Throwable;
+        protected void beforeMethod(XC_MethodHook.MethodHookParam param) throws Throwable { }
+        protected void afterMethod(XC_MethodHook.MethodHookParam param) throws Throwable { }
 
     }
 
     public abstract class XposedMethodReplacementAdapter extends XC_MethodReplacement {
 
         @Override
-        protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+        final protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
             if (!checkEnabled()) {
                 return XposedBridge.invokeOriginalMethod(methodHookParam.method,methodHookParam.thisObject,methodHookParam.args);
             }

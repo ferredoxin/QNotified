@@ -31,6 +31,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.os.*;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -41,7 +42,7 @@ import dalvik.system.BaseDexClassLoader;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
-import me.kyuubiran.hook.*;
+import me.kyuubiran.hook.RemoveCameraButton;
 import nil.nadph.qnotified.activity.SettingsActivity;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
@@ -632,6 +633,8 @@ public class MainHook {
     }
 
     public static final String JUMP_ACTION_CMD = "qn_jump_action_cmd";
+    public static final String JUMP_ACTION_TARGET = "qn_jump_action_target";
+    public static final String JUMP_ACTION_START_ACTIVITY = "nil.nadph.qnotified.START_ACTIVITY";
     public static final String JUMP_ACTION_SETTING_ACTIVITY = "nil.nadph.qnotified.SETTING_ACTIVITY";
     public static final String JUMP_ACTION_REQUEST_SKIP_DIALOG = "nil.nadph.qnotified.REQUEST_SKIP_DIALOG";
 
@@ -680,6 +683,18 @@ public class MainHook {
                             Intent realIntent = new Intent(intent);
                             realIntent.setComponent(new ComponentName(activity, SettingsActivity.class));
                             activity.startActivity(realIntent);
+                        }
+                    } else if (JUMP_ACTION_START_ACTIVITY.equals(cmd)) {
+                        String target = intent.getStringExtra(JUMP_ACTION_TARGET);
+                        if (!TextUtils.isEmpty(target)) {
+                            try {
+                                Class<?> activityClass = Class.forName(target);
+                                Intent realIntent = new Intent(intent);
+                                realIntent.setComponent(new ComponentName(activity, activityClass));
+                                activity.startActivity(realIntent);
+                            } catch (Exception e) {
+                                log("Unable to start Activity: " + e.toString());
+                            }
                         }
                     }
                 }
@@ -1126,7 +1141,8 @@ public class MainHook {
                         log(e);
                     }
                     if (bundle != null) {
-                        bundle.setClassLoader(Initiator.getPluginClassLoader());
+                        bundle.setClassLoader(Initiator.getHostClassLoader());
+                        //we do NOT have a custom Bundle, but the host may have
                         if (intent.hasExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT)) {
                             Intent realIntent = intent.getParcelableExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT);
                             field_intent.set(record, realIntent);
@@ -1160,7 +1176,7 @@ public class MainHook {
                                         log(e);
                                     }
                                     if (bundle != null) {
-                                        bundle.setClassLoader(Initiator.getPluginClassLoader());
+                                        bundle.setClassLoader(Initiator.getHostClassLoader());
                                         if (wrapper.hasExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT)) {
                                             Intent realIntent = wrapper.getParcelableExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT);
                                             fmIntent.set(item, realIntent);
