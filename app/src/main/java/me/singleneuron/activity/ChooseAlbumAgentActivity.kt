@@ -6,10 +6,10 @@ import android.content.Intent
 import android.content.Intent.*
 import android.net.Uri
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import nil.nadph.qnotified.R
+import nil.nadph.qnotified.activity.AppCompatTransferActivity
 
-class ChooseAlbumAgentActivity : AppCompatActivity() {
+class ChooseAlbumAgentActivity : AppCompatTransferActivity() {
 
     private val REQUEST_CODE = 1
     private val REQUEST_CODE_QQ = 2
@@ -19,7 +19,7 @@ class ChooseAlbumAgentActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val intent = Intent(ACTION_GET_CONTENT).apply {
             type = "*/*"
-            putExtra(EXTRA_MIME_TYPES,arrayOf("image/*","video/*"))
+            putExtra(EXTRA_MIME_TYPES, arrayOf("image/*", "video/*"))
             putExtra(EXTRA_ALLOW_MULTIPLE,true)
         }
         if (intent.resolveActivity(packageManager)!=null) {
