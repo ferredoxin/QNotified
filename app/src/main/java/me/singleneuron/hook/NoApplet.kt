@@ -3,6 +3,7 @@ package me.singleneuron.hook
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.os.Parcelable
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import me.singleneuron.base.BaseDelayableConditionalHookAdapter
@@ -25,6 +26,8 @@ object NoApplet : BaseDelayableConditionalHookAdapter("noapplet") {
                     if (param!!.thisObject::class.java.simpleName != "JumpActivity") return
                     //Utils.logd("NoApplet started: "+param.thisObject::class.java.simpleName)
                     val originIntent = param.result as Intent
+                    /*Utils.logd("NoApplet getIntent: $originIntent")
+                    Utils.logd("NoApplet getExtra: ${originIntent.extras}")*/
                     val originUri = originIntent.data
                     val schemeUri = originUri.toString()
                     if (!schemeUri.contains("mini_program")) return

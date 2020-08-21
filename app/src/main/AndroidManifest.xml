@@ -26,9 +26,9 @@
             android:name="me.singleneuron.activity.BugReportActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.DayNight" />-->
-        <activity android:name="me.singleneuron.activity.ChooseAlbumAgentActivity"
+        <!--<activity android:name="me.singleneuron.activity.ChooseAlbumAgentActivity"
             android:exported="true"
-            android:theme="@style/noDisplay" />
+            android:theme="@style/noDisplay" />-->
 
         <meta-data
                 android:name="xposedmodule"
