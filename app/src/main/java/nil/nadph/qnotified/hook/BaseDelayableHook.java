@@ -103,6 +103,7 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
 //                TestQQMe.INSTANCE,
 //                RemoveGroupApp.INSTANCE,
                 ScriptEventHook.get(),
+                InputButtonHook.get(),
         };
         return sAllHooks;
     }

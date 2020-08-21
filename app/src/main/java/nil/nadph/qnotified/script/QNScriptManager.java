@@ -100,6 +100,11 @@ public class QNScriptManager {
                 log(e);
             }
         }
+        for (QNScript q : scripts) {
+            if (q.getLabel().equalsIgnoreCase(script.getLabel())) {
+                scripts.remove(q);
+            }
+        }
         return false;
     }
 

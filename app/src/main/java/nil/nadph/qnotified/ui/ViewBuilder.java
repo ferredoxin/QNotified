@@ -185,7 +185,7 @@ public class ViewBuilder {
     }
 
     public static RelativeLayout newListItemHookSwitchInit(final Context ctx, CharSequence title, CharSequence desc, final BaseDelayableHook hook) {
-        boolean on = hook instanceof CardMsgHook ? ((CardMsgHook) hook).isTrue() : hook.isEnabled();
+        boolean on = hook.isEnabled();
         RelativeLayout root = newListItemSwitch(ctx, title, desc, on, new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(final CompoundButton buttonView, boolean isChecked) {
