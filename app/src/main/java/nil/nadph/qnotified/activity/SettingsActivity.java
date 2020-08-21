@@ -37,6 +37,7 @@ import com.tencent.mobileqq.widget.BounceScrollView;
 import me.kyuubiran.hook.testhook.*;
 import me.singleneuron.hook.ForceSystemAlbum;
 import me.singleneuron.hook.ForceSystemCamera;
+import me.singleneuron.hook.ForceSystemFile;
 import me.singleneuron.hook.NewRoundHead;
 import me.singleneuron.hook.NoApplet;
 import nil.nadph.qnotified.MainHook;
@@ -203,7 +204,8 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         }
         KotlinUtils.Companion.addViewConditionally(ll,this,"新版简洁模式圆头像", "From Rikka, 仅支持8.3.9", NewRoundHead.INSTANCE);
         KotlinUtils.Companion.addViewConditionally(ll,this,"强制使用系统相机", "仅支持8.3.9", ForceSystemCamera.INSTANCE);
-        KotlinUtils.Companion.addViewConditionally(ll,this,"强制使用系统相册","", ForceSystemAlbum.INSTANCE);
+        KotlinUtils.Companion.addViewConditionally(ll,this,"强制使用系统相册","仅支持8.3.9", ForceSystemAlbum.INSTANCE);
+        KotlinUtils.Companion.addViewConditionally(ll,this,"强制使用系统文件","仅支持8.3.9", ForceSystemFile.INSTANCE);
         ll.addView(subtitle(this, "好友列表"));
         ll.addView(newListItemButton(this, "打开资料卡", "打开指定用户的资料卡", null, new View.OnClickListener() {
             @Override

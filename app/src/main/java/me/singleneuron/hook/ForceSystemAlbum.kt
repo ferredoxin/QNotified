@@ -9,10 +9,12 @@ import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.util.Utils
 
-object ForceSystemAlbum : BaseDelayableConditionalHookAdapter("forceSystemAlbum",SyncUtils.PROC_ANY) {
+object ForceSystemAlbum : BaseDelayableConditionalHookAdapter("forceSystemFile") {
 
     override fun doInit(): Boolean {
         //val albumClass = Class.forName("com.tencent.mobileqq.activity.photo.album.NewList")
+
+        /* for debug only
         val hook = object : XposedMethodHookAdapter() {
             override fun beforeMethod(param: MethodHookParam?) {
                 val intent : Intent = param!!.args[0] as Intent
@@ -22,7 +24,7 @@ object ForceSystemAlbum : BaseDelayableConditionalHookAdapter("forceSystemAlbum"
             }
         }
         XposedBridge.hookAllMethods(Activity::class.java,"startActivity", hook)
-        XposedBridge.hookAllMethods(Activity::class.java,"startActivityForResult", hook)
+        XposedBridge.hookAllMethods(Activity::class.java,"startActivityForResult", hook)*/
 
         val photoListPanelClass = Class.forName("com.tencent.mobileqq.activity.aio.photo.PhotoListPanel")
         XposedBridge.hookAllMethods(photoListPanelClass,"e",object : XposedMethodHookAdapter() {

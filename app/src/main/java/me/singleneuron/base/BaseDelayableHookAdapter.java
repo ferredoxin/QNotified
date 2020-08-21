@@ -53,7 +53,7 @@ public abstract class BaseDelayableHookAdapter extends BaseDelayableHook {
             inited = doInit();
         } catch (Exception e) {
             Utils.log(e);
-            return false;
+            inited = false;
         }
         return inited;
     }
