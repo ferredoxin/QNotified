@@ -84,7 +84,7 @@ public class InspectMessage extends BaseDelayableHook implements View.OnLongClic
                     //int istroop = (int) iget_object_or_null(msg, "istroop");
                     //取消istroop判断，在群里也可以撤回部分消息
                     if (LicenseStatus.getAuth2Status()) showRevoke = true;
-                    CustomDialog dialog = CustomDialog.create(ctx);
+                    CustomDialog dialog = CustomDialog.createFailsafe(ctx);
                     dialog.setTitle(Utils.getShort$Name(msg));
                     dialog.setMessage(msg.toString());
                     dialog.setCancelable(true);
