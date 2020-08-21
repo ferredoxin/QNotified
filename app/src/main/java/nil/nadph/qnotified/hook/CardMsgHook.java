@@ -127,7 +127,7 @@ public class CardMsgHook extends BaseDelayableHook {
                                             EditText input = viewGroup.findViewById(ctx.getResources().getIdentifier("input", "id", ctx.getPackageName()));
                                             String text = input.getText().toString();
                                             if (text.length() == 0) {
-                                                showToast(ctx, TOAST_TYPE_ERROR, "请先卡片输入代码", Toast.LENGTH_SHORT);
+                                                showToast(ctx, TOAST_TYPE_ERROR, "请先输入卡片代码", Toast.LENGTH_SHORT);
                                             }
                                             return true;
                                         }
