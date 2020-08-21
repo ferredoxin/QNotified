@@ -8,9 +8,9 @@ import androidx.preference.SwitchPreference;
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 import me.zpp0196.qqpurify.fragment.base.AbstractPreferenceFragment;
 import me.zpp0196.qqpurify.fragment.custom.ColorPickerPreference;
-import me.zpp0196.qqpurify.utils.Setting;
 import me.zpp0196.qqpurify.utils.ThemeUtils;
 import nil.nadph.qnotified.R;
+import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.util.Utils;
 
 /**
@@ -31,7 +31,7 @@ public class SettingPreferenceFragment extends AbstractPreferenceFragment
         disPlayDesktop.setOnPreferenceChangeListener(this);
 
         ColorPickerPreference appThemeColor = findPreference("appThemeColor");
-        appThemeColor.setPersistent(true);
+        appThemeColor.setPersistent(false);
         appThemeColor.setColor(ThemeUtils.getThemeColor(mActivity));
         appThemeColor.setPresets(ThemeUtils.getColors(mActivity));
         appThemeColor.setSummary(ThemeUtils.getThemeTitle());
@@ -49,7 +49,8 @@ public class SettingPreferenceFragment extends AbstractPreferenceFragment
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             try {
-                                Setting.restore();
+                                if (Math.random() < 2) throw new UnsupportedOperationException("不支持此操作");
+                                //Setting.restore();
                                 mActivity.mRefreshedFragment.clear();
                                 SettingPreferenceFragment.this.initPreferences();
                                 Toast.makeText(mActivity, "已恢复到默认设置", Toast.LENGTH_SHORT).show();

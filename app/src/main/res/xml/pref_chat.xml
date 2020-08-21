@@ -5,10 +5,10 @@
                 android:key="hideAvatar"
                 android:title="隐藏头像挂件"/>
         <SwitchPreference
-                android:key="hideBubble"
+                android:key="DefaultBubbleHook"
                 android:title="隐藏个性气泡"/>
         <SwitchPreference
-                android:key="hideFont"
+                android:key="DefaultFont"
                 android:title="隐藏字体特效"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="表情">
