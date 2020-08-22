@@ -80,7 +80,6 @@ public class StartupHook {
                         } catch (Throwable e3) {
                             Utils.log(e3);
                         }
-                        QNScriptManager.init();
                         if (Utils.getBuildTimestamp() < 0) return;
                         MainHook.getInstance().performHook(ctx, param.thisObject);
                         sec_stage_inited = true;
