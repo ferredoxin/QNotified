@@ -279,6 +279,8 @@ public class ChatTailHook extends BaseDelayableHook {
     public boolean isEnabled() {
         try {
             return ExfriendManager.getCurrent().getBooleanOrDefault(qn_chat_tail_enable, false);
+        } catch (IllegalArgumentException e) {
+            return false;
         } catch (Exception e) {
             log(e);
             return false;
