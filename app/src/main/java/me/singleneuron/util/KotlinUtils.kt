@@ -1,10 +1,13 @@
 package me.singleneuron.util
 
 import android.content.Context
+import android.content.Intent
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import me.singleneuron.base.BaseDelayableConditionalHookAdapter
 import nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit
+import nil.nadph.qnotified.util.Utils
 import java.io.BufferedReader
 import java.io.File
 import java.io.IOException
@@ -35,6 +38,12 @@ class KotlinUtils {
         @Throws(IOException::class)
         fun readFromBufferedReader(bufferedReader: BufferedReader) : String{
             return bufferedReader.readText()
+        }
+
+        fun dumpIntent(intent: Intent){
+            Utils.logd(intent.toString())
+            Utils.logd(intent.extras.toString())
+            Utils.logd(Log.getStackTraceString(Throwable()))
         }
 
     }
