@@ -104,6 +104,8 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 ForceSystemFile.INSTANCE,
                 ShowSelfMsgByLeft.INSTANCE,
                 RemoveGroupApp.INSTANCE,
+                ScriptEventHook.get(),
+                InputButtonHook.get(),
                 SimplifyQQSettingMe.INSTANCE,
         };
         return sAllHooks;

@@ -1,30 +1,42 @@
 package nil.nadph.qnotified.script;
 
+import android.view.View;
 import bsh.EvalError;
 import bsh.Interpreter;
+import nil.nadph.qnotified.config.ConfigItems;
+import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.dialog.ScriptSettingDialog;
 import nil.nadph.qnotified.script.params.*;
+
+import java.io.IOException;
 
 import static nil.nadph.qnotified.util.Utils.log;
 
 public class QNScript {
     private final Interpreter instance;
+    private final String code;
+    private final QNScriptInfo info;
     private boolean enable;
 
-    public QNScript(Interpreter lp) {
+    public QNScript(Interpreter lp, String code) {
         this.instance = lp;
+        this.code = code;
+        this.info = QNScriptInfo.getInfo(code);
     }
 
-    public void enable() {
+    public void onEnable() {
         try {
-            instance.eval("enable()");
+            instance.eval("onEnable()");
+            QNScriptManager.addEnable();
         } catch (EvalError evalError) {
             log(evalError);
         }
     }
 
-    public void disable() {
+    public void onDisable() {
         try {
-            instance.eval("disable()");
+            instance.eval("onDisable()");
+            QNScriptManager.delEnable();
         } catch (EvalError evalError) {
             log(evalError);
         }
@@ -85,59 +97,54 @@ public class QNScript {
     }
 
     public String getName() {
-        try {
-            return (String) instance.get("name");
-        } catch (EvalError evalError) {
-            log(evalError);
-        }
-        return "";
+        return info.name;
     }
 
     public String getLabel() {
-        try {
-            return (String) instance.get("label");
-        } catch (EvalError evalError) {
-            log(evalError);
-        }
-        return "";
+        return info.label;
     }
 
     public String getVersion() {
-        try {
-            return (String) instance.get("version");
-        } catch (EvalError evalError) {
-            log(evalError);
-        }
-        return "";
+        return info.version;
     }
 
     public String getAuthor() {
-        try {
-            return (String) instance.get("author");
-        } catch (EvalError evalError) {
-            log(evalError);
-        }
-        return "";
+        return info.author;
     }
 
     public String getDecs() {
-        try {
-            return (String) instance.get("decs");
-        } catch (EvalError evalError) {
-            log(evalError);
-        }
-        return "";
+        return info.decs;
+    }
+
+    public String getCode() {
+        return code;
     }
 
     public boolean isEnable() {
+        this.enable = ConfigManager.getDefaultConfig().getBooleanOrFalse(ConfigItems.qn_script_enable_ + getLabel());
         return this.enable;
     }
 
     public boolean setEnable(boolean enable) {
+        if (enable) onEnable();
+        else onDisable();
+        // 写入配置文件
+        ConfigManager cfg = ConfigManager.getDefaultConfig();
+        cfg.putBoolean(ConfigItems.qn_script_enable_ + getLabel(), enable);
+        try {
+            cfg.save();
+        } catch (IOException e) {
+            log(e);
+        }
         return this.enable = enable;
     }
 
-    public static QNScript create(Interpreter lp) {
-        return new QNScript(lp);
+    public static QNScript create(Interpreter lp, String code) {
+        return new QNScript(lp, code);
+    }
+
+
+    public CharSequence getEnable() {
+        return isEnable() ? "[启用]" : "[禁用]";
     }
 }
