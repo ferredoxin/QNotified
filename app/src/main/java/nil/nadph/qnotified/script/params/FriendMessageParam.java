@@ -4,14 +4,19 @@ public class FriendMessageParam {
     /**
      * 好友id
      */
-    public long uin;
+    public String uin;
     /**
      * 消息内容
      */
     public String content;
 
-    public FriendMessageParam setUin(long uin) {
+    public FriendMessageParam setUin(String uin) {
         this.uin = uin;
+        return this;
+    }
+
+    public FriendMessageParam setUin(long uin) {
+        this.uin = uin + "";
         return this;
     }
 
@@ -20,7 +25,7 @@ public class FriendMessageParam {
         return this;
     }
 
-    public FriendMessageParam create(){
+    public FriendMessageParam create() {
         return this;
     }
 }

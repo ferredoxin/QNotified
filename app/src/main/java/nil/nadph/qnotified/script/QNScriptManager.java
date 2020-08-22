@@ -1,28 +1,56 @@
 package nil.nadph.qnotified.script;
 
+import android.widget.CompoundButton;
 import bsh.EvalError;
 import bsh.Interpreter;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Utils;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import static nil.nadph.qnotified.util.Utils.*;
 
 public class QNScriptManager {
 
     private static List<QNScript> scripts = new ArrayList<>();
+    public static int enables = 0;
+    public static boolean enableall = false;
+    public static String scriptsPath;
+    private static boolean init = false;
+
 
     /**
      * 添加一个脚本
      *
      * @param file 文件
      */
-    public static void addScript(String file) {
-        if (Utils.isNullOrEmpty(file) || hasScript(file)) return;
+    public static void addScript(String file) throws Exception {
+        if (isNullOrEmpty(file)) throw new RuntimeException("file is null");
+        if (hasScript(file)) throw new RuntimeException("脚本已存在");
         // to do
         // 操作: 将文件移动到软件数据文件夹下
+        File s = new File(file);
+        File dir = new File(scriptsPath);
+        if (!dir.exists()) dir.mkdirs();
+        File f = new File(dir, s.getName());
+        Utils.copy(s, f);
+        String code = readByReader(new FileReader(f));
+        if (!isNullOrEmpty(code))
+            scripts.add(execute(code));
+    }
+
+    public static void addEnable() {
+        enables++;
+        if (enables > scripts.size() - 1) enables = scripts.size();
+    }
+
+    public static void delEnable() {
+        enables--;
+        if (enables < 0) enables = 0;
     }
 
     /**
@@ -31,22 +59,56 @@ public class QNScriptManager {
      * @param file 文件
      * @return 是否存在
      */
-    public static boolean hasScript(String file) {
+    public static boolean hasScript(String file) throws Exception {
         if (Utils.isNullOrEmpty(file)) return false;
         // to do
         // 判断文件
-        return true;
+        QNScriptInfo info = QNScriptInfo.getInfo(Utils.readByReader(new FileReader(new File(file))));
+        if (info == null) throw new RuntimeException("不是有效的脚本文件");
+        for (QNScript q : getScripts()) {
+            if (info.label.equalsIgnoreCase(q.getLabel())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
      * 删除脚本
      *
-     * @param file
+     * @param script
+     * @return
      */
-    public static void delScript(String file) {
+    public static boolean delScript(QNScript script) {
         // to do
         // 删除文件
+        File dir = new File(scriptsPath);
+        if (!dir.exists()) dir.mkdirs();
+        if (!dir.isDirectory()) {
+            log(new RuntimeException("脚本文件夹不应为一个文件"));
+            return false;
+        }
+        for (File f : dir.listFiles()) {
+            if (f.isDirectory()) continue;
+            try {
+                QNScriptInfo info = QNScriptInfo.getInfo(Utils.readByReader(new FileReader(f)));
+                if (info.label.equalsIgnoreCase(script.getLabel())) {
+                    f.delete();
+                    return true;
+                }
+            } catch (Exception e) {
+                log(e);
+            }
+        }
+        for (QNScript q : scripts) {
+            if (q.getLabel().equalsIgnoreCase(script.getLabel())) {
+                scripts.remove(q);
+            }
+        }
+        return false;
     }
+
+    public static String error = "啥也没";
 
     /**
      * 获取所有的脚本代码
@@ -56,7 +118,30 @@ public class QNScriptManager {
     public static List<String> getScriptCodes() {
         // to do
         // 返回全部脚本代码
-        return new ArrayList<>();
+        List<String> codes = new ArrayList<String>() {{
+            try {
+                add(Utils.readByReader(new InputStreamReader(Utils.toInputStream("demo.java"))));
+            } catch (IOException e) {
+                log(e);
+            }
+        }};
+        File dir = new File(scriptsPath);
+        if (!dir.exists()) dir.mkdirs();
+        if (!dir.isDirectory()) {
+            log(new RuntimeException("脚本文件夹不应为一个文件"));
+            return codes;
+        }
+        for (File f : dir.listFiles()) {
+            if (f.isDirectory()) continue;
+            try {
+                String code = Utils.readByReader(new FileReader(f));
+                if (!Utils.isNullOrEmpty(code))
+                    codes.add(code);
+            } catch (Exception e) {
+                log(e);
+            }
+        }
+        return codes;
     }
 
     /**
@@ -69,18 +154,71 @@ public class QNScriptManager {
     }
 
     public static void init() {
+        if (init) return;
+        scriptsPath = getApplication().getFilesDir().getAbsolutePath() + "/qn_script/";
         for (String code : getScriptCodes()) {
             try {
-                execute(code);
-            } catch (Throwable throwable) {
-                throwable.printStackTrace();
+                scripts.add(execute(code));
+            } catch (EvalError e) {
+                log(e);
             }
+        }
+        init = true;
+    }
+
+    public static QNScript execute(String code) throws EvalError {
+        Interpreter lp = new Interpreter();
+        lp.setClassLoader(Initiator.class.getClassLoader());
+        QNScript qn = QNScript.create(lp, code);
+        lp.eval(code);
+        return qn;
+    }
+
+
+    public static void changeGlobal(CompoundButton compoundButton, boolean b) {
+        ConfigManager cfg = ConfigManager.getDefaultConfig();
+        cfg.putBoolean(ConfigItems.qn_script_global, b);
+        try {
+            cfg.save();
+        } catch (IOException e) {
+            log(e);
         }
     }
 
-    public static void execute(String code) throws Throwable {
-        Interpreter lp = new Interpreter();
-        lp.eval(code);
-        scripts.add(QNScript.create(lp));
+    public static void enableAll() {
+        enableall = true;
+        for (QNScript qs : QNScriptManager.getScripts())
+            if (!qs.isEnable()) {
+                qs.setEnable(true);
+                addEnable();
+            }
+
+    }
+
+    public static void disableAll() {
+        enableall = false;
+        for (QNScript qs : QNScriptManager.getScripts())
+            if (qs.isEnable()) {
+                qs.setEnable(false);
+                delEnable();
+            }
+
+    }
+
+    public static int getAllCount() {
+        return scripts.size();
+    }
+
+    public static int getEnableCount() {
+        return enables;
+    }
+
+    public static void enableAll(CompoundButton compoundButton, boolean b) {
+        if (b) enableAll();
+        else disableAll();
+    }
+
+    public static boolean isEnableAll() {
+        return enableall;
     }
 }

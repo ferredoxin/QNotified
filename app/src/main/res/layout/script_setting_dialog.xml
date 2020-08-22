@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+    <TextView
+            android:id="@+id/script_decs_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text="简介: N/A"
+            tools:ignore="RtlHardcoded"/>
+    <TextView
+            android:id="@+id/script_version_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text="版本: N/A"
+            tools:ignore="RtlHardcoded"/>
+    <TextView
+            android:id="@+id/script_author_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text="作者: N/A"
+            tools:ignore="RtlHardcoded"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text="代码: "
+            tools:ignore="RtlHardcoded"/>
+
+    <EditText
+            android:id="@+id/script_code_text"
+            android:layout_width="match_parent"
+            android:layout_height="184dp"
+            android:inputType="textMultiLine"/>
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="39dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp">
+
+        <Switch
+                android:text="启用"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:id="@+id/script_enable"
+                android:layout_marginLeft="-1dp"/>
+        <Button
+                android:id="@+id/script_save"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="保存"
+                tools:ignore="RtlHardcoded" android:layout_marginLeft="181dp"/>
+        <Button
+                android:id="@+id/script_delete"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="删除"
+                tools:ignore="RtlHardcoded" android:layout_marginLeft="96dp"/>
+    </RelativeLayout>
+
+
+    <TextView
+            android:id="@+id/selectRepeaterIcon_textViewWarnMsg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#FF2E2E"
+            android:visibility="gone"/>
+
+</LinearLayout>
