@@ -31,40 +31,101 @@ import android.os.Looper;
 import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tencent.mobileqq.widget.BounceScrollView;
 
-import me.kyuubiran.hook.testhook.*;
+import java.io.File;
+import java.io.IOException;
+
+import me.kyuubiran.hook.AutomaticMosaicName;
+import me.kyuubiran.hook.RemoveGroupApp;
+import me.kyuubiran.hook.RemoveQbossAD;
+import me.kyuubiran.hook.ShowSelfMsgByLeft;
 import me.singleneuron.hook.ForceSystemAlbum;
 import me.singleneuron.hook.ForceSystemCamera;
 import me.singleneuron.hook.ForceSystemFile;
 import me.singleneuron.hook.NewRoundHead;
 import me.singleneuron.hook.NoApplet;
+import me.singleneuron.util.KotlinUtils;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.dialog.RepeaterIconSettingDialog;
 import nil.nadph.qnotified.dialog.RikkaDialog;
-import nil.nadph.qnotified.hook.*;
-import me.kyuubiran.hook.*;
+import nil.nadph.qnotified.hook.$endGiftHook;
+import nil.nadph.qnotified.hook.CheatHook;
+import nil.nadph.qnotified.hook.DarkOverlayHook;
+import nil.nadph.qnotified.hook.DefaultBubbleHook;
+import nil.nadph.qnotified.hook.EmoPicHook;
+import nil.nadph.qnotified.hook.FakeBatteryHook;
+import nil.nadph.qnotified.hook.FavMoreEmo;
+import nil.nadph.qnotified.hook.FileRecvRedirect;
+import nil.nadph.qnotified.hook.FlashPicHook;
+import nil.nadph.qnotified.hook.GagInfoDisclosure;
+import nil.nadph.qnotified.hook.HideGiftAnim;
+import nil.nadph.qnotified.hook.InspectMessage;
+import nil.nadph.qnotified.hook.JumpController;
+import nil.nadph.qnotified.hook.MultiForwardAvatarHook;
+import nil.nadph.qnotified.hook.MuteQZoneThumbsUp;
+import nil.nadph.qnotified.hook.PreUpgradeHook;
+import nil.nadph.qnotified.hook.PttForwardHook;
+import nil.nadph.qnotified.hook.RepeaterHook;
+import nil.nadph.qnotified.hook.ReplyNoAtHook;
+import nil.nadph.qnotified.hook.RevokeMsgHook;
+import nil.nadph.qnotified.hook.RoundAvatarHook;
+import nil.nadph.qnotified.hook.ShowPicGagHook;
+import nil.nadph.qnotified.hook.SimpleCheckInHook;
 import nil.nadph.qnotified.hook.rikka.RemoveMiniProgramAd;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.util.*;
-import me.singleneuron.util.KotlinUtils;
-
-import java.io.File;
-import java.io.IOException;
+import nil.nadph.qnotified.util.Initiator;
+import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.NewsHelper;
+import nil.nadph.qnotified.util.UpdateCheck;
+import nil.nadph.qnotified.util.Utils;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static me.singleneuron.util.QQVersion.*;
-import static nil.nadph.qnotified.ui.ViewBuilder.*;
-import static nil.nadph.qnotified.util.ActProxyMgr.*;
-import static nil.nadph.qnotified.util.Utils.*;
+import static me.singleneuron.util.QQVersion.QQ_8_1_3;
+import static me.singleneuron.util.QQVersion.QQ_8_2_0;
+import static me.singleneuron.util.QQVersion.QQ_8_2_6;
+import static nil.nadph.qnotified.ui.ViewBuilder.R_ID_DESCRIPTION;
+import static nil.nadph.qnotified.ui.ViewBuilder.R_ID_TITLE;
+import static nil.nadph.qnotified.ui.ViewBuilder.R_ID_VALUE;
+import static nil.nadph.qnotified.ui.ViewBuilder.clickTheComing;
+import static nil.nadph.qnotified.ui.ViewBuilder.clickToProxyActAction;
+import static nil.nadph.qnotified.ui.ViewBuilder.clickToUrl;
+import static nil.nadph.qnotified.ui.ViewBuilder.doSetupForPrecondition;
+import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemButton;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemConfigSwitchIfValid;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemDummy;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemSwitchConfigNext;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemSwitchStub;
+import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
+import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_ABOUT;
+import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_DONATE_ACTIVITY;
+import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_EXFRIEND_LIST;
+import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_FAKE_BAT_CONFIG_ACTIVITY;
+import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_FRIENDLIST_EXPORT_ACTIVITY;
+import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_MUTE_AT_ALL;
+import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_MUTE_RED_PACKET;
+import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_TROUBLESHOOT_ACTIVITY;
+import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
+import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_INFO;
+import static nil.nadph.qnotified.util.Utils.dip2px;
+import static nil.nadph.qnotified.util.Utils.getHostVersionCode;
+import static nil.nadph.qnotified.util.Utils.get_RGB;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.showToast;
 
 @SuppressLint("Registered")
 public class SettingsActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener, Runnable {
@@ -148,22 +209,18 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         mRikkaTitle = _tmp_vg.findViewById(R_ID_TITLE);
         mRikkaDesc = _tmp_vg.findViewById(R_ID_DESCRIPTION);
         ll.addView(_tmp_vg);
-        ll.addView(newListItemButton(this, "QQ净化", "别看了, 暂时用不了", null, clickToProxyActAction(me.zpp0196.qqpurify.activity.MainActivity.class)));
+        ll.addView(newListItemButton(this, "QQ净化[WIP]", "开发中...", null, clickToProxyActAction(me.zpp0196.qqpurify.activity.MainActivity.class)));
         ll.addView(newListItemHookSwitchInit(this, "语音转发", "长按语音消息", PttForwardHook.get()));
         ll.addView(newListItemHookSwitchInit(this, " +1", "不是复读机", RepeaterHook.get()));
         ll.addView(newListItemButton(this, "自定义+1图标", null, null, RepeaterIconSettingDialog.OnClickListener_createDialog(this)));
         ll.addView(subtitle(this, "净化设置"));
         if (!Utils.isTim(this)) {
-            ll.addView(newListItemHookSwitchInit(this, "移除消息列表顶栏横幅广告", "就是主页顶上那个烦人的广告", RemoveQbossAD.get()));
             ll.addView(newListItemSwitchConfigNext(this, "隐藏小程序入口", "隐藏消息列表下拉出现的小程序列表", ConfigItems.qn_hide_msg_list_miniapp, false));
-            ll.addView(newListItemHookSwitchInit(this, "隐藏送礼动画", null, HideGiftAnim.get()));
             if (getHostVersionCode() >= QQ_8_1_3) {
                 ll.addView(newListItemHookSwitchInit(this, "禁止回复自动@", "[>=8.1.3]去除回复消息时自动@特性", ReplyNoAtHook.get()));
             }
             ll.addView(newListItemHookSwitchInit(this, "禁用$打开送礼界面", "禁止聊天时输入$自动弹出[选择赠送对象]窗口", $endGiftHook.get()));
-            ll.addView(newListItemHookSwitchInit(this, "强制使用默认气泡", "无视个性聊天气泡", DefaultBubbleHook.get()));
         }
-        ll.addView(newListItemHookSwitchInit(this, "签到文本化", null, SimpleCheckInHook.get()));
         ll.addView(subtitle(this, "消息通知设置(不影响接收消息)屏蔽后可能仍有[橙字],但通知栏不会有通知,赞说说不提醒仅屏蔽通知栏的通知"));
         ll.addView(subtitle(this, "    注:屏蔽后可能仍有[橙字],但不会有通知"));
         ll.addView(_t = newListItemButton(this, "屏蔽指定群@全体成员通知", Html.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[@全体成员]</font>就这点破事"), "%d个群", clickToProxyActAction(ACTION_MUTE_AT_ALL)));
@@ -171,14 +228,10 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(_t = newListItemButton(this, "屏蔽指定群的红包通知", Html.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[QQ红包][有红包]</font>恭喜发财"), "%d个群", clickToProxyActAction(ACTION_MUTE_RED_PACKET)));
         __tv_muted_redpacket = _t.findViewById(R_ID_VALUE);
         ll.addView(newListItemHookSwitchInit(this, "赞说说不提醒", "不影响评论,转发或击掌的通知", MuteQZoneThumbsUp.get()));
-        ll.addView(subtitle(this, "图片相关"));
-        ll.addView(newListItemHookSwitchInit(this, "以图片方式打开闪照", null, FlashPicHook.get()));
-        if (!Utils.isTim(this)) {
-            ll.addView(newListItemHookSwitchInit(this, "禁止秀图自动展示", null, ShowPicGagHook.get()));
-        }
         ll.addView(newListItemHookSwitchInit(this, "转发消息点头像查看详细信息", "仅限合并转发的消息", MultiForwardAvatarHook.get()));
         if (!Utils.isTim(this)) {
-            ll.addView(newListItemHookSwitchInit(this, "以图片方式打开表情", null, EmoPicHook.get()));
+            ll.addView(subtitle(this, "图片相关"));
+            ll.addView(newListItemHookSwitchInit(this, "禁止秀图自动展示", null, ShowPicGagHook.get()));
             ll.addView(newListItemHookSwitchInit(this, "禁用夜间模式遮罩", "移除夜间模式下聊天界面的深色遮罩", DarkOverlayHook.get()));
         }
         ll.addView(newListItemHookSwitchInit(this, "防撤回", "自带撤回灰字提示", RevokeMsgHook.get()));
@@ -192,7 +245,6 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         __recv_desc = _t.findViewById(R_ID_DESCRIPTION);
         __recv_status = _t.findViewById(R_ID_VALUE);
         ll.addView(newListItemHookSwitchInit(this, "屏蔽小程序广告[需要手动关闭广告]", "请勿反馈此功能无效", RemoveMiniProgramAd.get()));
-        ll.addView(newListItemHookSwitchInit(this, "群应用爬", "不会真有人用群应用吧 不会吧不会吧", RemoveGroupApp.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "昵称/群名字打码", "娱乐功能 不进行维护", AutomaticMosaicName.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "自己的消息和头像居左显示", "娱乐功能 不进行维护", ShowSelfMsgByLeft.INSTANCE));
         if (getHostVersionCode() < QQ_8_2_0) {
@@ -204,10 +256,10 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             ll.addView(newListItemHookSwitchInit(this, "自定义猜拳骰子", null, CheatHook.get()));
             ll.addView(newListItemHookSwitchInit(this, "简洁模式圆头像", "From Rikka", RoundAvatarHook.get()));
         }
-        KotlinUtils.Companion.addViewConditionally(ll,this,"新版简洁模式圆头像", "From Rikka, 仅支持8.3.9", NewRoundHead.INSTANCE);
-        KotlinUtils.Companion.addViewConditionally(ll,this,"强制使用系统相机", "仅支持8.3.9", ForceSystemCamera.INSTANCE);
-        KotlinUtils.Companion.addViewConditionally(ll,this,"强制使用系统相册","仅支持8.3.9", ForceSystemAlbum.INSTANCE);
-        KotlinUtils.Companion.addViewConditionally(ll,this,"强制使用系统文件","仅支持8.3.9", ForceSystemFile.INSTANCE);
+        KotlinUtils.Companion.addViewConditionally(ll,this,"新版简洁模式圆头像", "From Rikka, 支持8.3.9/8.4.1", NewRoundHead.INSTANCE);
+        KotlinUtils.Companion.addViewConditionally(ll,this,"强制使用系统相机", "仅能录像，支持8.3.9/8.4.1", ForceSystemCamera.INSTANCE);
+        KotlinUtils.Companion.addViewConditionally(ll,this,"强制使用系统相册","支持8.3.9/8.4.1", ForceSystemAlbum.INSTANCE);
+        KotlinUtils.Companion.addViewConditionally(ll,this,"强制使用系统文件","支持8.3.9/8.4.1", ForceSystemFile.INSTANCE);
         ll.addView(subtitle(this, "好友列表"));
         ll.addView(newListItemButton(this, "打开资料卡", "打开指定用户的资料卡", null, new View.OnClickListener() {
             @Override

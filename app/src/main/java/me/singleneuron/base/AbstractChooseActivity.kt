@@ -11,7 +11,6 @@ abstract class AbstractChooseActivity : AppCompatTransferActivity() {
 
     companion object {
         val REQUEST_CODE = 1
-        val REQUEST_CODE_QQ = 2
     }
 
     final override fun onStart() {
@@ -62,12 +61,9 @@ abstract class AbstractChooseActivity : AppCompatTransferActivity() {
                     }
                 }
             }
-            startActivityForResult(intent, REQUEST_CODE_QQ)
-        } else if (requestCode == REQUEST_CODE_QQ) {
-            finish()
-        } else {
-            finish()
+            startActivity(intent)
         }
+        finish()
     }
 
 }

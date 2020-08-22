@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="装扮">
         <SwitchPreference
-                android:key="hideAvatar"
+                android:key="DisableAvatarDecoration"
                 android:title="隐藏头像挂件"/>
         <SwitchPreference
                 android:key="DefaultBubbleHook"
@@ -13,7 +13,7 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="表情">
         <SwitchPreference
-                android:key="hideAioEggs"
+                android:key="DisableDropSticker"
                 android:title="隐藏掉落表情"/>
         <SwitchPreference
                 android:key="hideSticker"
@@ -23,6 +23,9 @@
                 android:title="隐藏推荐表情"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="其它">
+        <SwitchPreference
+                android:key="DisablePokeEffect"
+                android:title="隐藏戳一戳动画"/>
         <MultiSelectListPreference
                 android:entries="@array/chat_panel_icon_titles"
                 android:entryValues="@array/chat_panel_icon_titles"

@@ -19,6 +19,7 @@ object NoApplet : BaseDelayableConditionalHookAdapter("noapplet") {
 
     override fun doInit(): Boolean {
         try {
+
             //val jumpActivityClass = Class.forName("com.tencent.mobileqq.activity.JumpActivity")
             Utils.logd("NoApplet inited")
             XposedBridge.hookAllMethods(Activity::class.java, "getIntent", object : XposedMethodHookAdapter() {
