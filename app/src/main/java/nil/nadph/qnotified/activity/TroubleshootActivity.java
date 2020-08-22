@@ -38,6 +38,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 import com.tencent.mobileqq.widget.BounceScrollView;
 import me.singleneuron.activity.BugReportActivity;
+import me.singleneuron.hook.DebugDump;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.config.EventRecord;
@@ -98,6 +99,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
         ll.addView(subtitle(this, ""));
         ll.addView(subtitle(this, "以下内容基本上都没用，它们为了修复故障才留在这里。"));
         ll.addView(subtitle(this, "测试"));
+        ll.addView(newListItemHookSwitchInit(this,"堆栈转储","没事别开", DebugDump.INSTANCE));
         ll.addView(newListItemButton(this, "主线程抛异常", "没事别按", null, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
