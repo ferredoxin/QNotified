@@ -49,7 +49,12 @@ public abstract class BaseDelayableHookAdapter extends BaseDelayableHook {
     public boolean init() {
         if (!checkEnabled()) return false;
         if (inited) return true;
-        inited = doInit();
+        try {
+            inited = doInit();
+        } catch (Exception e) {
+            Utils.log(e);
+            inited = false;
+        }
         return inited;
     }
 
@@ -115,7 +120,7 @@ public abstract class BaseDelayableHookAdapter extends BaseDelayableHook {
             try {
                 afterMethod(param);
             } catch (Exception e) {
-                e.printStackTrace();
+                Utils.log(e);
             }
         }
 

@@ -1,13 +1,10 @@
 package me.zpp0196.qqpurify.activity;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -19,7 +16,6 @@ import com.flyco.tablayout.SlidingTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
 import me.zpp0196.qqpurify.fragment.*;
 import me.zpp0196.qqpurify.utils.Constants;
-import me.zpp0196.qqpurify.utils.Setting;
 import me.zpp0196.qqpurify.utils.ThemeUtils;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.activity.AppCompatTransferActivity;
@@ -46,7 +42,6 @@ public class MainActivity extends AppCompatTransferActivity implements ViewPager
         setContentView(R.layout.activity_main);
         initTabLayout();
         initToolbar();
-        initSetting();
 //        boolean z = hasAppCompatAttr(this);
 //        Utils.logi("hasAppCompatAttr = " + z);
 //        //int defStyleWebView = (int) Utils.sget_object(Initiator.load("com.android.internal.R$attr"), "webViewStyle");
@@ -93,27 +88,9 @@ public class MainActivity extends AppCompatTransferActivity implements ViewPager
         updateTitle(0);
     }
 
-    private void initSetting() {
-        try {
-            Setting.init(this);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-    }
-
     private void updateTitle(int position) {
         String actionBarTitle = mFragments.get(position).getToolbarTitle();
         mTitleTextView.setText(actionBarTitle);
-    }
-
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent();
-        // 返回修改时间判断是否需要重启QQ
-        intent.putExtra(KEY_LAST_MODIFIED, Setting.getLong(KEY_LAST_MODIFIED, System.currentTimeMillis()));
-        setResult(Activity.RESULT_OK, intent);
-        finish();
     }
 
     @Override
