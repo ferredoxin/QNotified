@@ -43,8 +43,6 @@ import java.io.File;
 import java.io.IOException;
 
 import me.kyuubiran.hook.AutomaticMosaicName;
-import me.kyuubiran.hook.RemoveGroupApp;
-import me.kyuubiran.hook.RemoveQbossAD;
 import me.kyuubiran.hook.ShowSelfMsgByLeft;
 import me.singleneuron.hook.ForceSystemAlbum;
 import me.singleneuron.hook.ForceSystemCamera;
@@ -61,14 +59,10 @@ import nil.nadph.qnotified.dialog.RikkaDialog;
 import nil.nadph.qnotified.hook.$endGiftHook;
 import nil.nadph.qnotified.hook.CheatHook;
 import nil.nadph.qnotified.hook.DarkOverlayHook;
-import nil.nadph.qnotified.hook.DefaultBubbleHook;
-import nil.nadph.qnotified.hook.EmoPicHook;
 import nil.nadph.qnotified.hook.FakeBatteryHook;
 import nil.nadph.qnotified.hook.FavMoreEmo;
 import nil.nadph.qnotified.hook.FileRecvRedirect;
-import nil.nadph.qnotified.hook.FlashPicHook;
 import nil.nadph.qnotified.hook.GagInfoDisclosure;
-import nil.nadph.qnotified.hook.HideGiftAnim;
 import nil.nadph.qnotified.hook.InspectMessage;
 import nil.nadph.qnotified.hook.JumpController;
 import nil.nadph.qnotified.hook.MultiForwardAvatarHook;
@@ -80,7 +74,6 @@ import nil.nadph.qnotified.hook.ReplyNoAtHook;
 import nil.nadph.qnotified.hook.RevokeMsgHook;
 import nil.nadph.qnotified.hook.RoundAvatarHook;
 import nil.nadph.qnotified.hook.ShowPicGagHook;
-import nil.nadph.qnotified.hook.SimpleCheckInHook;
 import nil.nadph.qnotified.hook.rikka.RemoveMiniProgramAd;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.HighContrastBorder;
@@ -256,10 +249,10 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             ll.addView(newListItemHookSwitchInit(this, "自定义猜拳骰子", null, CheatHook.get()));
             ll.addView(newListItemHookSwitchInit(this, "简洁模式圆头像", "From Rikka", RoundAvatarHook.get()));
         }
-        KotlinUtils.Companion.addViewConditionally(ll,this,"新版简洁模式圆头像", "From Rikka, 支持8.3.6/8.3.9/8.4.1/8.4.5", NewRoundHead.INSTANCE);
-        KotlinUtils.Companion.addViewConditionally(ll,this,"强制使用系统相机", "仅能录像，支持8.3.6/8.3.9/8.4.1/8.4.5", ForceSystemCamera.INSTANCE);
-        KotlinUtils.Companion.addViewConditionally(ll,this,"强制使用系统相册","支持8.3.6/8.3.9/8.4.1/8.4.5", ForceSystemAlbum.INSTANCE);
-        KotlinUtils.Companion.addViewConditionally(ll,this,"强制使用系统文件","支持8.3.6/8.3.9/8.4.1/8.4.5", ForceSystemFile.INSTANCE);
+        KotlinUtils.Companion.addViewConditionally(ll,this,"新版简洁模式圆头像", "From Rikka, 支持8.3.6及更高，重启后生效", NewRoundHead.INSTANCE);
+        KotlinUtils.Companion.addViewConditionally(ll,this,"强制使用系统相机", "仅能录像，支持8.3.6及更高", ForceSystemCamera.INSTANCE);
+        KotlinUtils.Companion.addViewConditionally(ll,this,"强制使用系统相册","支持8.3.6及更高", ForceSystemAlbum.INSTANCE);
+        KotlinUtils.Companion.addViewConditionally(ll,this,"强制使用系统文件","支持8.3.6及更高", ForceSystemFile.INSTANCE);
         ll.addView(subtitle(this, "好友列表"));
         ll.addView(newListItemButton(this, "打开资料卡", "打开指定用户的资料卡", null, new View.OnClickListener() {
             @Override

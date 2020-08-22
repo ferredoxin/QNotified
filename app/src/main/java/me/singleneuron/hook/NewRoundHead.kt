@@ -1,15 +1,22 @@
 package me.singleneuron.hook
 
 import de.robv.android.xposed.XposedHelpers
-import me.singleneuron.base.BaseDelayableConditionalHookAdapter
+import me.singleneuron.base.BaseDelayableHighPerformanceConditionalHookAdapter
+import me.singleneuron.data.PageFaultHighPerformanceFunctionCache
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.util.Utils
 
-object NewRoundHead : BaseDelayableConditionalHookAdapter("newroundhead") {
+object NewRoundHead : BaseDelayableHighPerformanceConditionalHookAdapter("newroundhead") {
+
+    init {
+        recordTime = true
+    }
+
     override fun doInit(): Boolean {
         //特征字符串："FaceManager"
         val faceManagerClass = Class.forName(getClass())
         //参数和值都是byte类型
+        //这个方法在QQ主界面初始化时会调用200+次，因此需要极高的性能
         XposedHelpers.findAndHookMethod(faceManagerClass, "a", Byte::class.javaPrimitiveType, object : XposedMethodHookAdapter(){
             override fun beforeMethod(param: MethodHookParam?) {
                 //Utils.logd("NewRoundHead Started");
@@ -19,8 +26,7 @@ object NewRoundHead : BaseDelayableConditionalHookAdapter("newroundhead") {
         return true
     }
 
-    override val condition: () -> Boolean
-        get() = {Utils.getHostVersionCode()==QQVersion.QQ_8_3_6 || Utils.getHostVersionCode()==QQVersion.QQ_8_3_9 || Utils.getHostVersionCode()==QQVersion.QQ_8_4_1 || Utils.getHostVersionCode()==QQVersion.QQ_8_4_5}
+    override val conditionCache: PageFaultHighPerformanceFunctionCache<Boolean> = PageFaultHighPerformanceFunctionCache {Utils.getHostVersionCode()>=QQVersion.QQ_8_3_6}
 
     override fun getClass():String {
         return when(Utils.getHostVersionCode()) {
