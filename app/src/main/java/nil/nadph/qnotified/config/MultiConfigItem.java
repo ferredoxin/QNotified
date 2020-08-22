@@ -34,4 +34,7 @@ public interface MultiConfigItem extends AbstractConfigItem {
     String getStringConfig(String name);
 
     void setStringConfig(String name, String val);
+
+    @Override
+    boolean sync();
 }

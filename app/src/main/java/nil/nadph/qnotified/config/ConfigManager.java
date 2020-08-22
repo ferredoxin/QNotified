@@ -392,11 +392,6 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
     @Override
     public void setBooleanConfig(String name, boolean val) {
         putBoolean(name, val);
-        try {
-            save();
-        } catch (IOException e) {
-            log(e);
-        }
     }
 
     @Override
@@ -407,11 +402,6 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
     @Override
     public void setIntConfig(String name, int val) {
         putInt(name, val);
-        try {
-            save();
-        } catch (IOException e) {
-            log(e);
-        }
     }
 
     @Override
@@ -422,10 +412,16 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
     @Override
     public void setStringConfig(String name, String val) {
         putString(name, val);
+    }
+
+    @Override
+    public boolean sync() {
         try {
             save();
+            return true;
         } catch (IOException e) {
-            log(e);
+            Utils.log(e);
+            return false;
         }
     }
 }
