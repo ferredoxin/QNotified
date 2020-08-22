@@ -16,6 +16,7 @@ import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.ui.ViewBuilder;
 import nil.nadph.qnotified.util.Utils;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -72,6 +73,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
     private void bindPreferenceSummary(Preference preference) {
         String pref_key = preference.getKey();
         if (pref_key == null) return;
+        pref_key = pref_key.replace("!", "");
         String[] __ = pref_key.split("\\$");
         String cfgName = __[0];
         String keyName = null;
@@ -86,15 +88,14 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
             return;
         }
         try {
+            String val = ((MultiConfigItem) _item).getStringConfig(keyName);
             if (preference instanceof ListPreference) {
-                String val = ((MultiConfigItem) _item).getStringConfig(keyName);
                 if (val != null) {
                     ListPreference listPreference = (ListPreference) preference;
                     int index = listPreference.findIndexOfValue(val);
                     preference.setSummary(index >= 0 ? listPreference.getEntries()[index] : null);
                 }
             } else {
-                String val = ((MultiConfigItem) _item).getStringConfig(keyName);
                 if (!TextUtils.isEmpty(val)) {
                     preference.setSummary(val);
                 }
@@ -109,6 +110,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
     private void bindPreferenceValue(Preference preference) {
         String pref_key = preference.getKey();
         if (pref_key == null) return;
+        pref_key = pref_key.replace("!", "");
         String[] __ = pref_key.split("\\$");
         String cfgName = __[0];
         String keyName = null;
@@ -135,14 +137,19 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
                     CharSequence[] vals = ((MultiSelectListPreference) preference).getEntryValues();
                     for (CharSequence val : vals) {
                         String kval = val.toString();
+                        String __fullName = (keyName == null ? "" : keyName.concat("$")).concat(kval);
                         //implicit throw a NPE if key is illegal
-                        if (item.hasConfig(keyName.concat("$").concat(kval))) {
-                            if (item.getBooleanConfig(kval)) {
+                        if (item.hasConfig(__fullName)) {
+                            boolean z;
+                            if (z = item.getBooleanConfig(__fullName)) {
                                 selected.add(kval);
                             } else {
                                 selected.remove(kval);
                             }
-                        }
+                            //Utils.logd(String.format("Load/D \"%s\"->%s", __fullName, "" + z));
+                        } /*else {
+                            Utils.logd(String.format("Load/D \"%s\"->%s", __fullName, "null"));
+                        }*/
                     }
                     ((MultiSelectListPreference) preference).setValues(selected);
                 } else if (preference instanceof TwoStatePreference) {
@@ -175,6 +182,11 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
             if (pref_key == null) {
                 return false;
             }
+            boolean restartRequired = false;
+            if (pref_key.contains("!")) {
+                restartRequired = true;
+                pref_key = pref_key.replace("!", "");
+            }
             String[] __ = pref_key.split("\\$");
             String cfgName = __[0];
             String keyName = null;
@@ -186,7 +198,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
                 Toast.makeText(mActivity, "404", Toast.LENGTH_SHORT).show();
                 return false;
             }
-            if (keyName == null) {
+            if (keyName == null && newValue instanceof Boolean && _item instanceof SwitchConfigItem) {
                 SwitchConfigItem item = (SwitchConfigItem) _item;
                 boolean val2 = (Boolean) newValue;
                 item.setEnabled(val2);
@@ -200,12 +212,18 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
                     item.setBooleanConfig(keyName, (Boolean) newValue);
                 } else if (newValue instanceof Set && preference instanceof MultiSelectListPreference) {
                     //handle String only
-                    Set<String> selected = ((MultiSelectListPreference) preference).getValues();
+                    Set<String> selected = (Set<String>) newValue;
                     //CharSequence[] texts=((MultiSelectListPreference) preference).getEntries();
                     CharSequence[] vals = ((MultiSelectListPreference) preference).getEntryValues();
+                    //CharSequence[] ents = ((MultiSelectListPreference) preference).getEntries();
+//                    Utils.logd(String.format("Save/D selected=%s", selected));
+//                    Utils.logd(String.format("Save/D val=%s", Arrays.toString(vals) ));
+//                    Utils.logd(String.format("Save/D ent=%s", Arrays.toString(ents) ));
                     for (CharSequence val : vals) {
+                        String __fullName = (keyName == null ? "" : keyName.concat("$")).concat(val.toString());
                         String kval = val.toString();
-                        item.setBooleanConfig(keyName.concat("$").concat(kval), selected.contains(kval));
+                        item.setBooleanConfig(__fullName, selected.contains(kval));
+                        //Utils.logd(String.format("Save/D \"%s\"->%s", __fullName, selected.contains(kval)));
                     }
                 } else {
                     throw new UnsupportedOperationException("" + newValue);
@@ -223,9 +241,13 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
                     }).start();
                 }
             }
+            _item.sync();
+            if (restartRequired) {
+                Utils.showToastShort(mActivity, "重启QQ生效");
+            }
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            Utils.log(e);
             Toast.makeText(mActivity, "保存失败: " + e.getMessage(), Toast.LENGTH_LONG).show();
             return false;
         }

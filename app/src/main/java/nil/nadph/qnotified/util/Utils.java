@@ -35,6 +35,7 @@ import android.widget.Toast;
 import com.tencent.mobileqq.app.QQAppInterface;
 import dalvik.system.DexFile;
 import de.robv.android.xposed.XposedBridge;
+import me.kyuubiran.utils.UtilsKt;
 import mqq.app.AppRuntime;
 import nil.nadph.qnotified.BuildConfig;
 import nil.nadph.qnotified.SyncUtils;
