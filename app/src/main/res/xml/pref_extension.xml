@@ -3,7 +3,7 @@
     <PreferenceCategory android:title="通用">
         <SwitchPreference
                 android:key="DisableScreenshotHelper"
-                android:title="屏蔽截屏分享"/>
+                android:title="隐藏截屏分享"/>
         <SwitchPreference
                 android:key="IgnoreDiyCard!"
                 android:title="屏蔽DIY名片"/>
