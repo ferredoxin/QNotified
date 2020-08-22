@@ -12,6 +12,7 @@ import nil.nadph.qnotified.util.LicenseStatus
 import nil.nadph.qnotified.util.Utils
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
+import java.util.*
 
 //侧滑栏精简
 object SimplifyQQSettingMe : BaseMultiConfigDelayableHook() {
@@ -85,7 +86,7 @@ object SimplifyQQSettingMe : BaseMultiConfigDelayableHook() {
                         for (i in 1 until midcontentListLayout.childCount) {
                             val child = midcontentListLayout.getChildAt(i) as LinearLayout
                             val tv = child.getChildAt(1) as TextView
-                            val text = tv.text
+                            val text = tv.text.toString()
                             when {
                                 text.contains("开播") && getBooleanConfig(HIDE_KAI_BO_LA_E) -> {
                                     setZeroHeightWeight(child)
@@ -93,7 +94,7 @@ object SimplifyQQSettingMe : BaseMultiConfigDelayableHook() {
                                 text.contains("世界") && getBooleanConfig(HIDE_XIAO_SHI_JIE) -> {
                                     setZeroHeightWeight(child)
                                 }
-                                text.contains("会员") && getBooleanConfig(HIDE_HUI_YUAN) -> {
+                                (text.contains("会员") || text.toLowerCase(Locale.ROOT).contains("vip")) && getBooleanConfig(HIDE_HUI_YUAN) -> {
                                     setZeroHeightWeight(child)
                                 }
                                 text.contains("钱包") && getBooleanConfig(HIDE_QIAN_BAO) -> {
