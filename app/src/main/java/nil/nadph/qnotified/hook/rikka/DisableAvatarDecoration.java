@@ -20,6 +20,7 @@ import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
 import static nil.nadph.qnotified.util.Utils.getApplication;
 import static nil.nadph.qnotified.util.Utils.log;
 
+//屏蔽头像挂件
 public class DisableAvatarDecoration extends BaseDelayableHook {
     public static final String rq_disable_avatar_decoration = "rq_disable_avatar_decoration";
     private static final DisableAvatarDecoration self = new DisableAvatarDecoration();

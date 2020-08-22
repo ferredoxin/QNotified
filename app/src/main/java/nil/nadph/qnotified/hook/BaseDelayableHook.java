@@ -19,8 +19,8 @@
 package nil.nadph.qnotified.hook;
 
 import me.kyuubiran.hook.*;
+import me.singleneuron.hook.DebugDump;
 import me.kyuubiran.hook.ShowSelfMsgByLeft;
-import me.kyuubiran.hook.testhook.*;
 import me.singleneuron.hook.ForceSystemAlbum;
 import me.singleneuron.hook.ForceSystemCamera;
 import me.singleneuron.hook.ForceSystemFile;
@@ -107,6 +107,8 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 ScriptEventHook.get(),
                 InputButtonHook.get(),
                 SimplifyQQSettingMe.INSTANCE,
+                DebugDump.INSTANCE
+//                RemoveGroupApp.INSTANCE,
         };
         return sAllHooks;
     }
