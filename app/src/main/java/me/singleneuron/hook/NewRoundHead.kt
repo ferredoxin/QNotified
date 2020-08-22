@@ -20,12 +20,14 @@ object NewRoundHead : BaseDelayableConditionalHookAdapter("newroundhead") {
     }
 
     override val condition: () -> Boolean
-        get() = {Utils.getHostVersionCode()==QQVersion.QQ_8_3_9 || Utils.getHostVersionCode()==QQVersion.QQ_8_4_1}
+        get() = {Utils.getHostVersionCode()==QQVersion.QQ_8_3_6 || Utils.getHostVersionCode()==QQVersion.QQ_8_3_9 || Utils.getHostVersionCode()==QQVersion.QQ_8_4_1 || Utils.getHostVersionCode()==QQVersion.QQ_8_4_5}
 
     override fun getClass():String {
         return when(Utils.getHostVersionCode()) {
+            QQVersion.QQ_8_3_6 -> "beft"
             QQVersion.QQ_8_3_9 -> "bfsw"
             QQVersion.QQ_8_4_1 -> "aocs"
+            QQVersion.QQ_8_4_5 -> "aope"
             else -> super.getClass()
         }
     }
