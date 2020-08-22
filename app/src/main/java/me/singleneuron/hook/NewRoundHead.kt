@@ -9,7 +9,7 @@ import nil.nadph.qnotified.util.Utils
 object NewRoundHead : BaseDelayableHighPerformanceConditionalHookAdapter("newroundhead") {
 
     init {
-        recordTime = true
+        recordTime = false
     }
 
     override fun doInit(): Boolean {
