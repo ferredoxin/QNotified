@@ -41,6 +41,7 @@ import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import me.singleneuron.util.KotlinUtils;
+import nil.nadph.qnotified.ui.ResUtils;
 
 
 import java.io.*;
@@ -1919,7 +1920,7 @@ public class Utils {
     }
 
     public static InputStream toInputStream(String name) {
-        return Utils.class.getResourceAsStream("/assets/" + name);
+        return ResUtils.openAsset(name);
     }
 
     public static void copy(File s, File f) throws Exception {

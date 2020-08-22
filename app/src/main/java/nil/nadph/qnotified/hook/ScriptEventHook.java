@@ -52,6 +52,7 @@ public class ScriptEventHook extends BaseDelayableHook {
     @Override
     public boolean init() {
         if (inited) return true;
+        QNScriptManager.init();
         try {
         /*
 
