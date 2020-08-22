@@ -21,7 +21,6 @@ package nil.nadph.qnotified.hook;
 import me.kyuubiran.hook.*;
 import me.singleneuron.hook.DebugDump;
 import me.kyuubiran.hook.ShowSelfMsgByLeft;
-import me.kyuubiran.hook.testhook.*;
 import me.singleneuron.hook.ForceSystemAlbum;
 import me.singleneuron.hook.ForceSystemCamera;
 import me.singleneuron.hook.ForceSystemFile;

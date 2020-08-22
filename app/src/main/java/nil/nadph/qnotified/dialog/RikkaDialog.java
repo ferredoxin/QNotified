@@ -139,19 +139,9 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
 
     private RikkaConfigItem[] queryRikkaHooks() {
         return new RikkaConfigItem[]{
-                RikkaConfigItem.create(this, "强制使用默认字体", DefaultFont.get()),
                 RikkaConfigItem.create(this, "显示具体消息数量", ShowMsgCount.get()),
                 new RikkaBaseApkFormatDialog(this),
-                RikkaConfigItem.create(this, "屏蔽截屏分享", DisableScreenshotHelper.get()),
-                RikkaConfigItem.create(this, "屏蔽消息界面相机图标[需要重启QQ]", RemoveCameraButton.get()),
-                RikkaConfigItem.create(this, "屏蔽一起嗨", RemovePlayTogether.get()),
-                RikkaConfigItem.create(this, "屏蔽头像挂件", DisableAvatarDecoration.get()),
-                RikkaConfigItem.create(this, "屏蔽DIY名片[可能需要重启QQ]", IgnoreDiyCard.get()),
-                RikkaConfigItem.create(this, "屏蔽所有进群特效", DisableEnterEffect.get()),
-                RikkaConfigItem.create(this, "屏蔽群名片炫彩字", DisableColorNickName.get()),
-                RikkaConfigItem.create(this, "屏蔽掉落表情特效[需要重启QQ]", DisableDropSticker.get()),
 //                RikkaConfigItem.create(this, "屏蔽抖动窗口", DisableShakeWindow.get()),
-                RikkaConfigItem.create(this, "屏蔽戳一戳动画", DisablePokeEffect.get()),
                 RikkaConfigItem.create(this, "回赞界面一键20赞", OneTapTwentyLikes.get()),
                 new RikkaCustomMsgTimeFormatDialog(this),
                 RikkaConfigItem.create(this, "免广告送免费礼物[仅限群聊送礼物]", RemoveSendGiftAd.get()),
