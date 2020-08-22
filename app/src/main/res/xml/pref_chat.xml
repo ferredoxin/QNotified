@@ -31,14 +31,14 @@
                 android:entryValues="@array/chat_panel_icon_titles"
                 android:key="hidePanelIcon"
                 android:title="隐藏工具栏"/>
+        <SwitchPreference
+                android:key="hideGrayTipItem"
+                android:title="屏蔽提示"/>
         <EditTextPreference
                 android:dependency="hideGrayTipItem"
                 android:dialogLayout="@layout/preference_dialog_et"
                 android:dialogMessage="请输入需要屏蔽的关键字(多个关键字之间用空格隔开)："
                 android:key="grayTipKeywords"
                 android:title="提示关键字"/>
-        <SwitchPreference
-                android:key="hideGrayTipItem"
-                android:title="屏蔽提示"/>
     </PreferenceCategory>
 </PreferenceScreen>
