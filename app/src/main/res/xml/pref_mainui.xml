@@ -43,6 +43,9 @@
                 android:title="隐藏入口"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="其他">
+        <SwitchPreference
+                android:key="RemoveCameraButton!"
+                android:title="隐藏相机入口"/>
         <MultiSelectListPreference
                 android:entries="@array/mainui_hide_menu_titles"
                 android:entryValues="@array/mainui_hide_menu_titles"

@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="通用">
+        <SwitchPreference
+                android:key="DisableScreenshotHelper"
+                android:title="屏蔽截屏分享"/>
+        <SwitchPreference
+                android:key="IgnoreDiyCard!"
+                android:title="屏蔽DIY名片"/>
+    </PreferenceCategory>
     <PreferenceCategory android:title="聊天">
         <SwitchPreference
                 android:key="RevokeMsgHook"

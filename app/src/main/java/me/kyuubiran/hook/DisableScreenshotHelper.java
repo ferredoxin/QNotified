@@ -1,4 +1,4 @@
-package nil.nadph.qnotified.hook.rikka;
+package me.kyuubiran.hook;
 
 import android.content.Context;
 import android.os.Handler;
@@ -25,7 +25,7 @@ import static nil.nadph.qnotified.util.Utils.log;
 
 //屏蔽截屏分享
 public class DisableScreenshotHelper extends BaseDelayableHook {
-    public static final String rq_disable_screenshot_helper = "rq_disable_screenshot_helper";
+    public static final String kr_disable_screenshot_helper = "kr_disable_screenshot_helper";
     private static final DisableScreenshotHelper self = new DisableScreenshotHelper();
     private boolean isInit = false;
 
@@ -78,7 +78,7 @@ public class DisableScreenshotHelper extends BaseDelayableHook {
     @Override
     public boolean isEnabled() {
         try {
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_disable_screenshot_helper);
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(kr_disable_screenshot_helper);
         } catch (Exception e) {
             log(e);
             return false;
@@ -89,7 +89,7 @@ public class DisableScreenshotHelper extends BaseDelayableHook {
     public void setEnabled(boolean enabled) {
         try {
             ConfigManager mgr = ConfigManager.getDefaultConfig();
-            mgr.getAllConfig().put(rq_disable_screenshot_helper, enabled);
+            mgr.getAllConfig().put(kr_disable_screenshot_helper, enabled);
             mgr.save();
         } catch (final Exception e) {
             Utils.log(e);

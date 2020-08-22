@@ -148,7 +148,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         mRikkaTitle = _tmp_vg.findViewById(R_ID_TITLE);
         mRikkaDesc = _tmp_vg.findViewById(R_ID_DESCRIPTION);
         ll.addView(_tmp_vg);
-        ll.addView(newListItemButton(this, "QQ净化", "别看了, 暂时用不了", null, clickToProxyActAction(me.zpp0196.qqpurify.activity.MainActivity.class)));
+        ll.addView(newListItemButton(this, "QQ净化[WIP]", "开发中...", null, clickToProxyActAction(me.zpp0196.qqpurify.activity.MainActivity.class)));
         ll.addView(newListItemHookSwitchInit(this, "语音转发", "长按语音消息", PttForwardHook.get()));
         ll.addView(newListItemHookSwitchInit(this, " +1", "不是复读机", RepeaterHook.get()));
         ll.addView(newListItemButton(this, "自定义+1图标", null, null, RepeaterIconSettingDialog.OnClickListener_createDialog(this)));
@@ -192,7 +192,6 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         __recv_desc = _t.findViewById(R_ID_DESCRIPTION);
         __recv_status = _t.findViewById(R_ID_VALUE);
         ll.addView(newListItemHookSwitchInit(this, "屏蔽小程序广告[需要手动关闭广告]", "请勿反馈此功能无效", RemoveMiniProgramAd.get()));
-        ll.addView(newListItemHookSwitchInit(this, "群应用爬", "不会真有人用群应用吧 不会吧不会吧", RemoveGroupApp.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "昵称/群名字打码", "娱乐功能 不进行维护", AutomaticMosaicName.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "自己的消息和头像居左显示", "娱乐功能 不进行维护", ShowSelfMsgByLeft.INSTANCE));
         if (getHostVersionCode() < QQ_8_2_0) {
@@ -204,10 +203,10 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             ll.addView(newListItemHookSwitchInit(this, "自定义猜拳骰子", null, CheatHook.get()));
             ll.addView(newListItemHookSwitchInit(this, "简洁模式圆头像", "From Rikka", RoundAvatarHook.get()));
         }
-        KotlinUtils.Companion.addViewConditionally(ll,this,"新版简洁模式圆头像", "From Rikka, 仅支持8.3.9", NewRoundHead.INSTANCE);
-        KotlinUtils.Companion.addViewConditionally(ll,this,"强制使用系统相机", "仅支持8.3.9", ForceSystemCamera.INSTANCE);
-        KotlinUtils.Companion.addViewConditionally(ll,this,"强制使用系统相册","仅支持8.3.9", ForceSystemAlbum.INSTANCE);
-        KotlinUtils.Companion.addViewConditionally(ll,this,"强制使用系统文件","仅支持8.3.9", ForceSystemFile.INSTANCE);
+        KotlinUtils.Companion.addViewConditionally(ll, this, "新版简洁模式圆头像", "From Rikka, 仅支持8.3.9", NewRoundHead.INSTANCE);
+        KotlinUtils.Companion.addViewConditionally(ll, this, "强制使用系统相机", "仅支持8.3.9", ForceSystemCamera.INSTANCE);
+        KotlinUtils.Companion.addViewConditionally(ll, this, "强制使用系统相册", "仅支持8.3.9", ForceSystemAlbum.INSTANCE);
+        KotlinUtils.Companion.addViewConditionally(ll, this, "强制使用系统文件", "仅支持8.3.9", ForceSystemFile.INSTANCE);
         ll.addView(subtitle(this, "好友列表"));
         ll.addView(newListItemButton(this, "打开资料卡", "打开指定用户的资料卡", null, new View.OnClickListener() {
             @Override

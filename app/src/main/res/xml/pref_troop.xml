@@ -7,6 +7,9 @@
         <SwitchPreference
                 android:key="hideOnlineNumber"
                 android:title="隐藏在线人数"/>
+        <SwitchPreference
+                android:key="RemovePlayTogether"
+                android:title="隐藏一起嗨"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="头衔">
         <SwitchPreference
@@ -16,7 +19,7 @@
                 android:key="hideGlamourLevel"
                 android:title="隐藏魅力等级"/>
         <SwitchPreference
-                android:key="hideColorNick"
+                android:key="DisableColorNickName"
                 android:title="隐藏炫彩昵称"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="动画">
@@ -24,7 +27,7 @@
                 android:key="HideGiftAnim"
                 android:title="隐藏礼物动画"/>
         <SwitchPreference
-                android:key="hideEnterEffect"
+                android:key="DisableEnterEffect!"
                 android:title="隐藏入场动画"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="群助手">
@@ -39,5 +42,10 @@
         <SwitchPreference
                 android:key="hideNoticeRecommend"
                 android:title="隐藏群通知里面的群推荐"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="其他">
+        <SwitchPreference
+                android:key="RemoveGroupApp"
+                android:title="隐藏滑动群应用"/>
     </PreferenceCategory>
 </PreferenceScreen>
