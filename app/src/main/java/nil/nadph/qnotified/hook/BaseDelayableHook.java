@@ -102,8 +102,7 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 AutomaticMosaicName.INSTANCE,
                 TestQQMe.INSTANCE,
                 ForceSystemAlbum.INSTANCE,
-                ForceSystemFile.INSTANCE
-//                RemoveGroupApp.INSTANCE,
+                ForceSystemFile.INSTANCE,
                 ShowSelfMsgByLeft.INSTANCE,
                 RemoveGroupApp.INSTANCE,
         };
