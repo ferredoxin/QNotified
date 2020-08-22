@@ -45,11 +45,6 @@ public abstract class BaseMultiConfigDelayableHook extends BaseDelayableHook imp
         if (name == null) throw new NullPointerException("name == null");
         ConfigManager cfg = ConfigManager.getDefaultConfig();
         cfg.putBoolean(_$shadow$ns$prefix + name, val);
-        try {
-            cfg.save();
-        } catch (IOException e) {
-            Utils.log(e);
-        }
     }
 
     public int getIntConfig(String name) {
@@ -62,11 +57,6 @@ public abstract class BaseMultiConfigDelayableHook extends BaseDelayableHook imp
         if (name == null) throw new NullPointerException("name == null");
         ConfigManager cfg = ConfigManager.getDefaultConfig();
         cfg.putInt(_$shadow$ns$prefix + name, val);
-        try {
-            cfg.save();
-        } catch (IOException e) {
-            Utils.log(e);
-        }
     }
 
     public String getStringConfig(String name) {
@@ -79,10 +69,17 @@ public abstract class BaseMultiConfigDelayableHook extends BaseDelayableHook imp
         if (name == null) throw new NullPointerException("name == null");
         ConfigManager cfg = ConfigManager.getDefaultConfig();
         cfg.putString(_$shadow$ns$prefix + name, val);
+    }
+
+    @Override
+    public boolean sync() {
         try {
+            ConfigManager cfg = ConfigManager.getDefaultConfig();
             cfg.save();
+            return true;
         } catch (IOException e) {
             Utils.log(e);
+            return false;
         }
     }
 }

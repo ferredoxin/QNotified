@@ -80,6 +80,11 @@ public class ConfigItems {
                 Utils.showErrorToastAnywhere(e.toString());
             }
         }
+
+        @Override
+        public boolean sync() {
+            return true;
+        }
     };
 
     public static final SwitchConfigItem qn_notify_when_del = new SwitchConfigItem() {
@@ -113,6 +118,11 @@ public class ConfigItems {
             } catch (IllegalArgumentException e) {
                 log(e);
             }
+        }
+
+        @Override
+        public boolean sync() {
+            return true;
         }
     };
 
