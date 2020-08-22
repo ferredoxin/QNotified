@@ -67,33 +67,39 @@
     </string-array>
 
     <string-array name="sidebar_list_titles">
-        <item>会员栏</item>
-        <item>QQ钱包</item>
-        <item>我的收藏</item>
-        <item>我的文件</item>
-        <item>我的相册</item>
+        <item>开播啦鹅</item>
+        <item>我的小世界</item>
+        <item>开通会员</item>
+        <item>我的钱包</item>
         <item>个性装扮</item>
-        <item>网上营业厅</item>
+        <item>情侣空间</item>
+        <item>我的收藏</item>
+        <item>我的相册</item>
+        <item>我的文件</item>
         <item>我的日程</item>
-        <item>我的名片夹</item>
         <item>我的视频</item>
+        <item>小游戏</item>
         <item>腾讯文档</item>
-        <item>免流量特权</item>
+        <item>每日打卡</item>
+        <item>开通王卡</item>
     </string-array>
 
     <string-array name="sidebar_list_values">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
-        <item>6</item>
-        <item>7</item>
-        <item>8</item>
-        <item>9</item>
-        <item>10</item>
-        <item>11</item>
+        <item>hide_kai_bo_la_e</item>
+        <item>hide_xiao_shi_jie</item>
+        <item>hide_hui_yuan</item>
+        <item>hide_qian_bao</item>
+        <item>hide_zhuang_ban</item>
+        <item>hide_qing_lv</item>
+        <item>hide_shou_cang</item>
+        <item>hide_xiang_ce</item>
+        <item>hide_wen_jian</item>
+        <item>hide_ri_cheng</item>
+        <item>hide_shi_pin</item>
+        <item>hide_xiao_you_xi</item>
+        <item>hide_wen_dang</item>
+        <item>hide_da_ka</item>
+        <item>hide_wang_ka</item>
     </string-array>
 
     <string-array name="sidebar_setting_list_titles">

@@ -24,6 +24,7 @@ import android.os.Build;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
+import nil.nadph.qnotified.script.QNScriptManager;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Natives;
 import nil.nadph.qnotified.util.Utils;

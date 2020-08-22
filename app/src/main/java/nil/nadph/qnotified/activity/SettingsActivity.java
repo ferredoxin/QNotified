@@ -72,7 +72,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
     private static final int R_ID_BTN_FILE_RECV = 0x300AFF91;
     private static final String qn_enable_fancy_rgb = "qn_enable_fancy_rgb";
 
-    private TextView __tv_muted_atall, __tv_muted_redpacket, __tv_fake_bat_status, __recv_status, __recv_desc, __js_status, __jmp_ctl_cnt;
+    private TextView __tv_muted_atall, __tv_muted_redpacket, __tv_fake_bat_status, __recv_status, __recv_desc, __jmp_ctl_cnt;
 
     @Override
     public boolean doOnCreate(Bundle bundle) {
@@ -192,7 +192,6 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         __recv_desc = _t.findViewById(R_ID_DESCRIPTION);
         __recv_status = _t.findViewById(R_ID_VALUE);
         ll.addView(newListItemHookSwitchInit(this, "屏蔽小程序广告[需要手动关闭广告]", "请勿反馈此功能无效", RemoveMiniProgramAd.get()));
-        ll.addView(newListItemHookSwitchInit(this, "侧滑精简[重启QQ生效]", "测试性功能 最好使用8.4.1确保兼容性", TestQQMe.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "群应用爬", "不会真有人用群应用吧 不会吧不会吧", RemoveGroupApp.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "昵称/群名字打码", "娱乐功能 不进行维护", AutomaticMosaicName.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "自己的消息和头像居左显示", "娱乐功能 不进行维护", ShowSelfMsgByLeft.INSTANCE));
@@ -272,8 +271,6 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         }));
         __jmp_ctl_cnt = _t.findViewById(R_ID_VALUE);
         ll.addView(newListItemSwitchStub(this, "禁用特别关心长震动", "他女朋友都没了他也没开发这个功能", false));
-        ll.addView(_t = newListItemButton(this, "管理脚本(.java)", "请注意安全, 合理使用", "N/A", clickToProxyActAction(ManageScriptsActivity.class)));
-        __js_status = _t.findViewById(R_ID_VALUE);
         ll.addView(subtitle(this, "关于"));
         PackageInfo pi = Utils.getHostInfo(this);
         ll.addView(newListItemDummy(this, pi.applicationInfo.loadLabel(this.getPackageManager()), null, pi.versionName + "(" + pi.versionCode + ")"));
@@ -350,7 +347,6 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             }
         }
         updateRecvRedirectStatus();
-        __js_status.setText("0/1");
         if (__jmp_ctl_cnt != null) {
             int cnt = JumpController.get().getEffectiveRulesCount();
             if (cnt == -1) {

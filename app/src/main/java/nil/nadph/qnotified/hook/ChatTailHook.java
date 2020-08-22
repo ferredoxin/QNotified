@@ -89,6 +89,7 @@ public class ChatTailHook extends BaseDelayableHook {
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     if (isEnabled()) {
                         if (LicenseStatus.sDisableCommonHooks) return;
+                        if (!LicenseStatus.getAuth2Status()) return;
                         String msg = (String) param.args[3];
                         // StringBuilder debug = new StringBuilder();
                         //  debug.append("当前消息: ").append(msg).append("\n");
@@ -115,7 +116,7 @@ public class ChatTailHook extends BaseDelayableHook {
 
                             // debug.append("群列表: ").append(muted).append("\n");
                             if (ct.isGlobal() || ct.containsTroop(uin) || ct.containsFriend(uin)) {
-                                int battery = FakeBatteryHook.get().getFakeBatteryStatus() < 1 ? ChatTailActivity.getBattery() : FakeBatteryHook.get().getFakeBatteryCapacity();
+                                int battery = FakeBatteryHook.get().isEnabled() ? FakeBatteryHook.get().getFakeBatteryStatus() < 1 ? ChatTailActivity.getBattery() : FakeBatteryHook.get().getFakeBatteryCapacity() : ChatTailActivity.getBattery();
                                 text = ct.getTailCapacity().
                                         replace(ChatTailActivity.delimiter, msg)
                                         .replace("#model#", Build.MODEL)
@@ -125,8 +126,7 @@ public class ChatTailHook extends BaseDelayableHook {
                                         .replace("#time#", new SimpleDateFormat(RikkaCustomMsgTimeFormatDialog.getTimeFormat()).format(new Date()));
                             }
                         } catch (Throwable e) {
-                            //log(e);
-                            e.printStackTrace();
+                            log(e);
                         } finally {
                             //   debug.append("最终消息: ").append(text.replace("\n", "\\n")).append("\n");
                             param.args[3] = text;
