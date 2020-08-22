@@ -1,6 +1,8 @@
 package me.singleneuron.hook
 
+import android.content.Intent
 import de.robv.android.xposed.XC_MethodHook
+import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import me.singleneuron.base.BaseDelayableConditionalHookAdapter
 import me.singleneuron.util.QQVersion
@@ -20,6 +22,7 @@ object ForceSystemCamera : BaseDelayableConditionalHookAdapter("forceSystemCamer
                     param.result = false
                 }
             })
+
         } catch (e:Exception) {
             Utils.log(e)
             return false
