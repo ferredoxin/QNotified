@@ -26,7 +26,7 @@ object ForceSystemCamera : BaseDelayableConditionalHookAdapter("forceSystemCamer
     }
 
     override val condition: () -> Boolean
-        get() = {Utils.getHostVersionCode()==QQVersion.QQ_8_3_6 || Utils.getHostVersionCode()== QQVersion.QQ_8_3_9 || Utils.getHostVersionCode()==QQVersion.QQ_8_4_1 || Utils.getHostVersionCode()==QQVersion.QQ_8_4_5}
+        get() = {Utils.getHostVersionCode()==QQVersion.QQ_8_3_6 || Utils.getHostVersionCode()==QQVersion.QQ_8_3_9 || Utils.getHostVersionCode()==QQVersion.QQ_8_4_1 || Utils.getHostVersionCode()==QQVersion.QQ_8_4_5}
 
     override fun getClass(): String {
         return when(Utils.getHostVersionCode()) {
