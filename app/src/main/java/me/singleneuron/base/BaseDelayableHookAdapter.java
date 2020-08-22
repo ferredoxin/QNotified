@@ -6,7 +6,6 @@ import android.widget.Toast;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
@@ -14,14 +13,16 @@ import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
+import static nil.nadph.qnotified.util.Utils.getApplication;
+import static nil.nadph.qnotified.util.Utils.log;
 
 public abstract class BaseDelayableHookAdapter extends BaseDelayableHook {
 
     private boolean inited = false;
 
     private final int proc;
-    private final String cfgName;
+    protected final String cfgName;
     private final Step[] cond;
     private final boolean defVal;
 
