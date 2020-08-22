@@ -142,7 +142,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(_a = subtitle(ChatTailActivity.this, delimiter + "         : 当前消息"));
         ll.addView(_b = subtitle(ChatTailActivity.this, "#model#   : 手机型号"));
         ll.addView(_c = subtitle(ChatTailActivity.this, "#brand#   : 手机厂商"));
-        ll.addView(_d = subtitle(ChatTailActivity.this, "#battery# : 当前变量"));
+        ll.addView(_d = subtitle(ChatTailActivity.this, "#battery# : 当前电量"));
         ll.addView(_e = subtitle(ChatTailActivity.this, "#power#   : 是否正在充电"));
         ll.addView(_f = subtitle(ChatTailActivity.this, "#time#    : 当前时间"));
         ll.addView(_g = subtitle(ChatTailActivity.this, "\\n       : 换行"));
