@@ -19,8 +19,9 @@
 package nil.nadph.qnotified.hook;
 
 import me.kyuubiran.hook.*;
-import me.kyuubiran.hook.testhook.TestQQMe;
 import me.singleneuron.hook.DebugDump;
+import me.kyuubiran.hook.ShowSelfMsgByLeft;
+import me.kyuubiran.hook.testhook.*;
 import me.singleneuron.hook.ForceSystemAlbum;
 import me.singleneuron.hook.ForceSystemCamera;
 import me.singleneuron.hook.ForceSystemFile;
@@ -100,9 +101,13 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 NewRoundHead.INSTANCE,
                 ForceSystemCamera.INSTANCE,
                 AutomaticMosaicName.INSTANCE,
-                TestQQMe.INSTANCE,
                 ForceSystemAlbum.INSTANCE,
                 ForceSystemFile.INSTANCE,
+                ShowSelfMsgByLeft.INSTANCE,
+                RemoveGroupApp.INSTANCE,
+                ScriptEventHook.get(),
+                InputButtonHook.get(),
+                SimplifyQQSettingMe.INSTANCE,
                 DebugDump.INSTANCE
 //                RemoveGroupApp.INSTANCE,
         };
@@ -128,6 +133,11 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
     public abstract boolean isInited();
 
     public abstract boolean init();
+
+    @Override
+    public boolean sync() {
+        return true;
+    }
 
     @NonNull
     public abstract Step[] getPreconditions();

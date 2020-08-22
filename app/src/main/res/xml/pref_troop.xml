@@ -21,7 +21,7 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="动画">
         <SwitchPreference
-                android:key="hideGiftAnim"
+                android:key="HideGiftAnim"
                 android:title="隐藏礼物动画"/>
         <SwitchPreference
                 android:key="hideEnterEffect"

@@ -28,6 +28,7 @@ import android.widget.RelativeLayout;
 
 import com.tencent.mobileqq.widget.BounceScrollView;
 
+import nil.nadph.qnotified.script.QNScriptManager;
 import nil.nadph.qnotified.ui.ResUtils;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -64,7 +65,7 @@ public class ScriptGuideActivity extends IphoneTitleBarActivityCompat {
         ColorStateList hiColor = ColorStateList.valueOf(Color.argb(255, 242, 140, 72));
         RelativeLayout _t;
 
-        ll.addView(subtitle(this, "这里啥也没有"));
+        ll.addView(subtitle(this, QNScriptManager.error));
         //bounceScrollView.setFocusable(true);
         //bounceScrollView.setFocusableInTouchMode(true);
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));

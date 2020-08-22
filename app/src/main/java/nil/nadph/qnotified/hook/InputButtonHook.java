@@ -28,18 +28,14 @@ import android.os.Parcelable;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.tencent.mobileqq.app.QQAppInterface;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.activity.ChatTailActivity;
-import nil.nadph.qnotified.bridge.ChatActivityFacade;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.dialog.RikkaCustomMsgTimeFormatDialog;
 import nil.nadph.qnotified.step.DexDeobfStep;
@@ -48,34 +44,34 @@ import nil.nadph.qnotified.ui.InterceptLayout;
 import nil.nadph.qnotified.ui.TouchEventToLongClickAdapter;
 import nil.nadph.qnotified.util.*;
 
-import java.io.Externalizable;
-import java.lang.reflect.*;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static nil.nadph.qnotified.util.Initiator.*;
+import static nil.nadph.qnotified.util.Initiator._SessionInfo;
+import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
 
-public class CardMsgHook extends BaseDelayableHook {
+public class InputButtonHook extends BaseDelayableHook {
     public static final int R_ID_COPY_CODE = 0x00EE77CC;
-    public static final String qn_send_card_msg = "qn_send_card_msg";
-    private static final CardMsgHook self = new CardMsgHook();
+    private static final InputButtonHook self = new InputButtonHook();
     private boolean inited = false;
 
-    private CardMsgHook() {
+    private InputButtonHook() {
     }
 
-    public static CardMsgHook get() {
+    public static InputButtonHook get() {
         return self;
     }
 
     @Override
     public boolean init() {
         if (inited) return true;
-
-        /*
         try {
             //Begin: send btn
 //            for (Method method : cl_BaseChatPie.getDeclaredMethods()) {
@@ -105,8 +101,7 @@ public class CardMsgHook extends BaseDelayableHook {
                             layout.setTouchInterceptor(new TouchEventToLongClickAdapter() {
                                 @Override
                                 public boolean onTouch(View v, MotionEvent event) {
-                                    if (!LicenseStatus.isAsserted()) return false;
-                                    if (!CardMsgHook.get().isTrue()) return false;
+                                    if (!LicenseStatus.isAsserted() || !CardMsgHook.get().isEnabled()) return false;
                                     ViewGroup vg = (ViewGroup) v;
                                     if (event.getAction() == MotionEvent.ACTION_DOWN &&
                                             vg.getChildCount() != 0 && vg.getChildAt(0).isEnabled()) {
@@ -119,8 +114,7 @@ public class CardMsgHook extends BaseDelayableHook {
                                 public boolean onLongClick(View v) {
                                     try {
                                         if (LicenseStatus.sDisableCommonHooks) return false;
-                                        if (!LicenseStatus.isAsserted()) return false;
-                                        if (!CardMsgHook.get().isTrue()) return false;
+                                        if (!LicenseStatus.isAsserted() || !CardMsgHook.get().isEnabled()) return false;
                                         ViewGroup vg = (ViewGroup) v;
                                         Context ctx = v.getContext();
                                         if (vg.getChildCount() != 0 && !vg.getChildAt(0).isEnabled()) {
@@ -149,10 +143,9 @@ public class CardMsgHook extends BaseDelayableHook {
                                     return false;
                                 } else {
                                     if (text.contains("<?xml")) {
-                                        if (!LicenseStatus.isAsserted()) return false;
-                                        if (!CardMsgHook.get().isTrue()) return false;
+                                        if (!LicenseStatus.isAsserted() || !CardMsgHook.get().isEnabled()) return false;
                                         try {
-                                            if (ntSendCardMsg(qqApp, session, text)) {
+                                            if (CardMsgHook.ntSendCardMsg(qqApp, session, text)) {
                                                 input.setText("");
                                                 CliOper.sendCardMsg(Utils.getLongAccountUin(), text);
                                                 return true;
@@ -168,11 +161,10 @@ public class CardMsgHook extends BaseDelayableHook {
                                             Utils.showToast(ctx, TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), Toast.LENGTH_SHORT);
                                         }
                                     } else if (text.contains("{\"")) {
-                                        if (!LicenseStatus.isAsserted()) return false;
-                                        if (!CardMsgHook.get().isTrue()) return false;
+                                        if (!LicenseStatus.isAsserted() || !CardMsgHook.get().isEnabled()) return false;
                                         try {
-                                            Object arkMsg = load("com.tencent.mobileqq.data.ArkAppMessage").newInstance();
-                                            if (ntSendCardMsg(qqApp, session, text)) {
+                                            // Object arkMsg = load("com.tencent.mobileqq.data.ArkAppMessage").newInstance();
+                                            if (CardMsgHook.ntSendCardMsg(qqApp, session, text)) {
                                                 input.setText("");
                                                 CliOper.sendCardMsg(Utils.getLongAccountUin(), text);
                                                 return true;
@@ -253,79 +245,67 @@ public class CardMsgHook extends BaseDelayableHook {
 //                    break;
 //                }
 //            }
-
-         */
-        inited = true;
-        return true;
-        // } catch (Throwable throwable) {
-        //   log(throwable);
-        // return false;
-        //}
+            inited = true;
+            return true;
+        } catch (Throwable throwable) {
+            log(throwable);
+            return false;
+        }
     }
 
-    /*
-        public static class GetMenuItemCallBack extends XC_MethodHook {
-            public GetMenuItemCallBack() {
-                super(60);
-            }
-
-            @Override
-            protected void afterHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
-                if (LicenseStatus.sDisableCommonHooks) return;
-                if (!LicenseStatus.isAsserted()) return;
-                if (!CardMsgHook.get().isTrue()) return;
-                Object arr = param.getResult();
-                Class<?> clQQCustomMenuItem = arr.getClass().getComponentType();
-                Object item_copy = CustomMenu.createItem(clQQCustomMenuItem, R_ID_COPY_CODE, "复制代码");
-                Object ret = Array.newInstance(clQQCustomMenuItem, Array.getLength(arr) + 1);
-                Array.set(ret, 0, Array.get(arr, 0));
-                //noinspection SuspiciousSystemArraycopy
-                System.arraycopy(arr, 1, ret, 2, Array.getLength(arr) - 1);
-                Array.set(ret, 1, item_copy);
-                param.setResult(ret);
-            }
+    public static class GetMenuItemCallBack extends XC_MethodHook {
+        public GetMenuItemCallBack() {
+            super(60);
         }
 
-        public static class MenuItemClickCallback extends XC_MethodHook {
-            public MenuItemClickCallback() {
-                super(60);
-            }
+        @Override
+        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+            if (LicenseStatus.sDisableCommonHooks) return;
+            if (!LicenseStatus.isAsserted() || !CardMsgHook.get().isEnabled()) return;
+            Object arr = param.getResult();
+            Class<?> clQQCustomMenuItem = arr.getClass().getComponentType();
+            Object item_copy = CustomMenu.createItem(clQQCustomMenuItem, R_ID_COPY_CODE, "复制代码");
+            Object ret = Array.newInstance(clQQCustomMenuItem, Array.getLength(arr) + 1);
+            Array.set(ret, 0, Array.get(arr, 0));
+            //noinspection SuspiciousSystemArraycopy
+            System.arraycopy(arr, 1, ret, 2, Array.getLength(arr) - 1);
+            Array.set(ret, 1, item_copy);
+            param.setResult(ret);
+        }
+    }
 
-            @Override
-            protected void beforeHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
-                if (!LicenseStatus.isAsserted()) return;
-                if (!CardMsgHook.get().isTrue()) return;
-                int id = (int) param.args[0];
-                Activity ctx = (Activity) param.args[1];
-                Object chatMessage = param.args[2];
-                if (id == R_ID_COPY_CODE) {
-                    param.setResult(null);
-                    try {
-                        ClipboardManager clipboardManager = (ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);
-                        if (load("com.tencent.mobileqq.data.MessageForStructing").isAssignableFrom(chatMessage.getClass())) {
-                            String text = (String) invoke_virtual(iget_object_or_null(chatMessage, "structingMsg"), "getXml", new Object[0]);
-                            clipboardManager.setText(text);
-                            showToast(ctx, TOAST_TYPE_INFO, "复制成功", Toast.LENGTH_SHORT);
-                            CliOper.copyCardMsg(text);
-                        } else if (load("com.tencent.mobileqq.data.MessageForArkApp").isAssignableFrom(chatMessage.getClass())) {
-                            String text = (String) invoke_virtual(iget_object_or_null(chatMessage, "ark_app_message"), "toAppXml", new Object[0]);
-                            clipboardManager.setText(text);
-                            showToast(ctx, TOAST_TYPE_INFO, "复制成功", Toast.LENGTH_SHORT);
-                            CliOper.copyCardMsg(text);
-                        }
-                    } catch (Throwable e) {
-                        log(e);
+    public static class MenuItemClickCallback extends XC_MethodHook {
+        public MenuItemClickCallback() {
+            super(60);
+        }
+
+        @Override
+        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+            if (!LicenseStatus.isAsserted() || !CardMsgHook.get().isEnabled()) return;
+            int id = (int) param.args[0];
+            Activity ctx = (Activity) param.args[1];
+            Object chatMessage = param.args[2];
+            if (id == R_ID_COPY_CODE) {
+                param.setResult(null);
+                try {
+                    ClipboardManager clipboardManager = (ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);
+                    if (load("com.tencent.mobileqq.data.MessageForStructing").isAssignableFrom(chatMessage.getClass())) {
+                        String text = (String) invoke_virtual(iget_object_or_null(chatMessage, "structingMsg"), "getXml", new Object[0]);
+                        clipboardManager.setText(text);
+                        showToast(ctx, TOAST_TYPE_INFO, "复制成功", Toast.LENGTH_SHORT);
+                        CliOper.copyCardMsg(text);
+                    } else if (load("com.tencent.mobileqq.data.MessageForArkApp").isAssignableFrom(chatMessage.getClass())) {
+                        String text = (String) invoke_virtual(iget_object_or_null(chatMessage, "ark_app_message"), "toAppXml", new Object[0]);
+                        clipboardManager.setText(text);
+                        showToast(ctx, TOAST_TYPE_INFO, "复制成功", Toast.LENGTH_SHORT);
+                        CliOper.copyCardMsg(text);
                     }
+                } catch (Throwable e) {
+                    log(e);
                 }
             }
         }
-
-        private Field fChatAdapter = null;
-        private Field fBubbleOnLongClickListener = null;
-
-
-     */
-    static native boolean ntSendCardMsg(QQAppInterface rt, Parcelable session, String msg) throws Exception;
+    }
 
     @Override
     public int getEffectiveProc() {
@@ -345,32 +325,10 @@ public class CardMsgHook extends BaseDelayableHook {
 
     @Override
     public void setEnabled(boolean enabled) {
-        try {
-            ConfigManager mgr = ConfigManager.getDefaultConfig();
-            mgr.getAllConfig().put(qn_send_card_msg, enabled);
-            mgr.save();
-        } catch (final Exception e) {
-            Utils.log(e);
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-            } else {
-                SyncUtils.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-                    }
-                });
-            }
-        }
     }
 
     @Override
     public boolean isEnabled() {
-        try {
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_send_card_msg);
-        } catch (Exception e) {
-            log(e);
-            return false;
-        }
+        return true;
     }
 }

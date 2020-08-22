@@ -18,15 +18,22 @@
  */
 package me.kyuubiran.hook;
 
-import java.io.IOException;
-
 import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.config.MultiConfigItem;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.util.Utils;
 
-public abstract class BaseMultiConfigDelayableHook extends BaseDelayableHook {
+import java.io.IOException;
+
+public abstract class BaseMultiConfigDelayableHook extends BaseDelayableHook implements MultiConfigItem {
 
     private final String _$shadow$ns$prefix = this.getClass().getSimpleName() + "$";
+
+    public boolean hasConfig(String name) {
+        if (name == null) throw new NullPointerException("name == null");
+        ConfigManager cfg = ConfigManager.getDefaultConfig();
+        return cfg.hasConfig(_$shadow$ns$prefix + name);
+    }
 
     public boolean getBooleanConfig(String name) {
         if (name == null) throw new NullPointerException("name == null");
@@ -38,11 +45,6 @@ public abstract class BaseMultiConfigDelayableHook extends BaseDelayableHook {
         if (name == null) throw new NullPointerException("name == null");
         ConfigManager cfg = ConfigManager.getDefaultConfig();
         cfg.putBoolean(_$shadow$ns$prefix + name, val);
-        try {
-            cfg.save();
-        } catch (IOException e) {
-            Utils.log(e);
-        }
     }
 
     public int getIntConfig(String name) {
@@ -55,11 +57,6 @@ public abstract class BaseMultiConfigDelayableHook extends BaseDelayableHook {
         if (name == null) throw new NullPointerException("name == null");
         ConfigManager cfg = ConfigManager.getDefaultConfig();
         cfg.putInt(_$shadow$ns$prefix + name, val);
-        try {
-            cfg.save();
-        } catch (IOException e) {
-            Utils.log(e);
-        }
     }
 
     public String getStringConfig(String name) {
@@ -72,10 +69,17 @@ public abstract class BaseMultiConfigDelayableHook extends BaseDelayableHook {
         if (name == null) throw new NullPointerException("name == null");
         ConfigManager cfg = ConfigManager.getDefaultConfig();
         cfg.putString(_$shadow$ns$prefix + name, val);
+    }
+
+    @Override
+    public boolean sync() {
         try {
+            ConfigManager cfg = ConfigManager.getDefaultConfig();
             cfg.save();
+            return true;
         } catch (IOException e) {
             Utils.log(e);
+            return false;
         }
     }
 }

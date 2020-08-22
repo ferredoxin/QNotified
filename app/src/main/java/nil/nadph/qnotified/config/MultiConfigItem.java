@@ -18,15 +18,23 @@
  */
 package nil.nadph.qnotified.config;
 
-public interface SwitchConfigItem extends AbstractConfigItem {
+public interface MultiConfigItem extends AbstractConfigItem {
     boolean isValid();
 
-    boolean isEnabled();
+    boolean hasConfig(String name);
 
-    /**
-     * Set whether it is enabled, but NOT init or deinit it!
-     *
-     * @param enabled has no effect if isValid() returns false
-     */
-    void setEnabled(boolean enabled);
+    boolean getBooleanConfig(String name);
+
+    void setBooleanConfig(String name, boolean val);
+
+    int getIntConfig(String name);
+
+    void setIntConfig(String name, int val);
+
+    String getStringConfig(String name);
+
+    void setStringConfig(String name, String val);
+
+    @Override
+    boolean sync();
 }

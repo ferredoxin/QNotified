@@ -35,11 +35,15 @@ import android.widget.Toast;
 import com.tencent.mobileqq.app.QQAppInterface;
 import dalvik.system.DexFile;
 import de.robv.android.xposed.XposedBridge;
+import me.kyuubiran.utils.UtilsKt;
 import mqq.app.AppRuntime;
 import nil.nadph.qnotified.BuildConfig;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
+import me.singleneuron.util.KotlinUtils;
+import nil.nadph.qnotified.ui.ResUtils;
+
 
 import java.io.*;
 import java.lang.reflect.*;
@@ -109,6 +113,21 @@ public class Utils {
             //noinspection UnnecessaryInitCause
             throw (RuntimeException) new RuntimeException("FATAL: Utils.getApplication() failure!").initCause(e);
         }
+    }
+
+    public static String readByReader(Reader r) throws IOException {
+
+        /*StringBuilder str = new StringBuilder();
+        BufferedReader br = new BufferedReader(r);
+        char[] buff = new char[1024];
+        for (int len = 0; len != -1; len = br.read(buff)) {
+            str.append(buff, 0, len);
+        }
+        br.close();
+        return str.toString();
+
+         */
+        return KotlinUtils.Companion.readFromBufferedReader(new BufferedReader(r));
     }
 
     public static boolean isCallingFrom(String classname) {
@@ -1899,6 +1918,23 @@ public class Utils {
             throw new NoSuchMethodException("__attribute__((a))" + paramsTypesToString(argt) + " in " + clazz.getName());
         method.setAccessible(true);
         return method;
+    }
+
+    public static InputStream toInputStream(String name) {
+        return ResUtils.openAsset(name);
+    }
+
+    public static void copy(File s, File f) throws Exception {
+        if (!s.exists()) throw new FileNotFoundException("源文件不存在");
+        if (!f.exists()) f.createNewFile();
+        FileReader fr = new FileReader(s);
+        FileWriter fw = new FileWriter(f);
+        char[] buff = new char[1024];
+        for (int len = 0; len != -1; len = fr.read(buff)) {
+            fw.write(buff, 0, len);
+        }
+        fw.close();
+        fr.close();
     }
 
     public static class DummyCallback implements DialogInterface.OnClickListener {
