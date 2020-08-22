@@ -25,12 +25,14 @@ object ForceSystemFile : BaseDelayableConditionalHookAdapter("forceSystemAlbum")
     }
 
     override val condition: () -> Boolean
-        get() = {Utils.getHostVersionCode()==QQVersion.QQ_8_3_9 || Utils.getHostVersionCode()==QQVersion.QQ_8_4_1}
+        get() = {Utils.getHostVersionCode()==QQVersion.QQ_8_3_6 || Utils.getHostVersionCode()== QQVersion.QQ_8_3_9 || Utils.getHostVersionCode()==QQVersion.QQ_8_4_1 || Utils.getHostVersionCode()==QQVersion.QQ_8_4_5}
 
     override fun getClass(): String {
         return when(Utils.getHostVersionCode()) {
+            QQVersion.QQ_8_3_6 -> "zyr"
             QQVersion.QQ_8_3_9 -> "aaxe"
             QQVersion.QQ_8_4_1 -> "abqn"
+            QQVersion.QQ_8_4_5 -> "abur"
             else -> super.getClass()
         }
     }
