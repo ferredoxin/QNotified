@@ -16,7 +16,6 @@ import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.ui.ViewBuilder;
 import nil.nadph.qnotified.util.Utils;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -243,7 +242,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
             }
             _item.sync();
             if (restartRequired) {
-                Utils.showToastShort(mActivity, "重启QQ生效");
+                Utils.showToastShort(mActivity, "重启" + Utils.getHostAppName() + "生效");
             }
             return true;
         } catch (Exception e) {

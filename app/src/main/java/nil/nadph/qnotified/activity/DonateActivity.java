@@ -37,6 +37,7 @@ import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.util.Utils;
 
 import java.net.URLEncoder;
 
@@ -128,7 +129,7 @@ public class DonateActivity extends IphoneTitleBarActivityCompat {
         ll.addView(subtitle(this, "Q: 捐赠后能解锁隐藏功能吗?"));
         ll.addView(subtitle(this, "A: 不能. 所有功能全部都是可以白嫖的"));
         ll.addView(subtitle(this, "FAQ2:"));
-        ll.addView(subtitle(this, "Q: 我捐赠过,但是QQ数据被清除后没了怎么办"));
+        ll.addView(subtitle(this, "Q: 我捐赠过,但是" + Utils.getHostAppName() + "数据被清除后没了怎么办"));
         ll.addView(subtitle(this, "A: 直接打开 我已捐赠 即可"));
         ll.addView(subtitle(this, "FAQ3:"));
         ll.addView(subtitle(this, "Q: 已知 我已捐赠 这个Switch开和关没有任何区别,那这个开关意义何在"));
