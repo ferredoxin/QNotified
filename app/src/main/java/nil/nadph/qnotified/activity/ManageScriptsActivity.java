@@ -52,7 +52,7 @@ public class ManageScriptsActivity extends IphoneTitleBarActivityCompat {
         main.addView(ViewBuilder.newListItemButton(this, "导入 ...", null, null, v -> {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("*/*");
+            intent.setType("text/x-java");
             startActivityForResult(intent, REQUEST_CODE);
         }));
         main.addView(ViewBuilder.newListItemSwitch(this, "全部启用", null, QNScriptManager.isEnableAll(), QNScriptManager::enableAll));
