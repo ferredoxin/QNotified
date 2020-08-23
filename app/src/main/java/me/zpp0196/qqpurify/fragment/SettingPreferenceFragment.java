@@ -3,14 +3,16 @@ package me.zpp0196.qqpurify.fragment;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.widget.Toast;
+
 import androidx.preference.Preference;
 import androidx.preference.SwitchPreference;
+
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
+
 import me.zpp0196.qqpurify.fragment.base.AbstractPreferenceFragment;
 import me.zpp0196.qqpurify.fragment.custom.ColorPickerPreference;
 import me.zpp0196.qqpurify.utils.ThemeUtils;
 import nil.nadph.qnotified.R;
-import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.util.Utils;
 
 /**
@@ -26,8 +28,7 @@ public class SettingPreferenceFragment extends AbstractPreferenceFragment
         findPreference("restoreDefault").setOnPreferenceClickListener(this);
 
         SwitchPreference disPlayDesktop = findPreference("displayDesktop");
-// TODO: 2020/8/5 Remove displayDesktop
-        disPlayDesktop.setChecked(false);
+        disPlayDesktop.setChecked(true);
         disPlayDesktop.setOnPreferenceChangeListener(this);
 
         ColorPickerPreference appThemeColor = findPreference("appThemeColor");
