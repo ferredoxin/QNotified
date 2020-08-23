@@ -160,7 +160,11 @@ public class QNScriptManager {
         scriptsPath = getApplication().getFilesDir().getAbsolutePath() + "/qn_script/";
         for (String code : getScriptCodes()) {
             try {
-                scripts.add(execute(code));
+                QNScript qs = execute(code);
+                scripts.add(qs);
+                if (qs.isEnable()){
+                    qs.setEnable(true);
+                }
             } catch (EvalError e) {
                 log(e);
             }
