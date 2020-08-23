@@ -4,6 +4,7 @@ import android.content.Intent
 import de.robv.android.xposed.XposedHelpers
 import me.singleneuron.activity.ChooseFileAgentActivity
 import me.singleneuron.base.BaseDelayableConditionalHookAdapter
+import me.singleneuron.data.PageFaultHighPerformanceFunctionCache
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.util.Utils
 
@@ -24,8 +25,7 @@ object ForceSystemFile : BaseDelayableConditionalHookAdapter("forceSystemAlbum")
         return true
     }
 
-    override val condition: () -> Boolean
-        get() = {Utils.getHostVersionCode()==QQVersion.QQ_8_3_6 || Utils.getHostVersionCode()==QQVersion.QQ_8_3_9 || Utils.getHostVersionCode()==QQVersion.QQ_8_4_1 || Utils.getHostVersionCode()==QQVersion.QQ_8_4_5}
+    override val conditionCache: PageFaultHighPerformanceFunctionCache<Boolean> = PageFaultHighPerformanceFunctionCache {Utils.getHostVersionCode()>=QQVersion.QQ_8_3_6}
 
     override fun getClass(): String {
         return when(Utils.getHostVersionCode()) {

@@ -24,6 +24,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
@@ -35,15 +36,13 @@ import android.widget.Toast;
 import com.tencent.mobileqq.app.QQAppInterface;
 import dalvik.system.DexFile;
 import de.robv.android.xposed.XposedBridge;
-import me.kyuubiran.utils.UtilsKt;
+import me.singleneuron.util.KotlinUtils;
 import mqq.app.AppRuntime;
 import nil.nadph.qnotified.BuildConfig;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
-import me.singleneuron.util.KotlinUtils;
 import nil.nadph.qnotified.ui.ResUtils;
-
 
 import java.io.*;
 import java.lang.reflect.*;
@@ -181,6 +180,10 @@ public class Utils {
         }
     }
 
+    public static PackageManager getPackageManager() {
+        return getApplication().getPackageManager();
+    }
+
     public static boolean checkHostVersionCode(long versionCode) {
         return versionCode == getHostVersionCode();
     }
@@ -206,13 +209,25 @@ public class Utils {
 	 return m.invoke(obj,args);
 	 }*/
 
+    private static long sHostVersionCode = 0;
+
     public static long getHostVersionCode() {
+        if (sHostVersionCode != 0) return sHostVersionCode;
         PackageInfo pi = getHostInfo(getApplication());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            return pi.getLongVersionCode();
+            sHostVersionCode = pi.getLongVersionCode();
         } else {
-            return pi.versionCode;
+            sHostVersionCode = pi.versionCode;
         }
+        return sHostVersionCode;
+    }
+
+    private static String sHostAppName = null;
+
+    public static String getHostAppName() {
+        if (sHostAppName != null) return sHostAppName;
+        sHostAppName = getHostInfo().applicationInfo.loadLabel(getPackageManager()).toString();
+        return sHostAppName;
     }
 
     public static long getLongAccountUin() {
