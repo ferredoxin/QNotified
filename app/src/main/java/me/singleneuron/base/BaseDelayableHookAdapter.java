@@ -110,7 +110,7 @@ public abstract class BaseDelayableHookAdapter extends BaseDelayableHook {
         final protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
             long startTime = 0;
             if (recordTime) {
-                startTime = System.currentTimeMillis();
+                startTime = System.nanoTime();
             }
             if (!checkEnabled()) return;
             try {
@@ -119,7 +119,7 @@ public abstract class BaseDelayableHookAdapter extends BaseDelayableHook {
                 Utils.log(e);
             }
             if (recordTime) {
-                Utils.logd(cfgName+" costs time: "+(System.currentTimeMillis()-startTime)+" ms");
+                Utils.logd(cfgName+" costs time: "+(System.nanoTime()-startTime)+" ns");
             }
         }
 
@@ -127,7 +127,7 @@ public abstract class BaseDelayableHookAdapter extends BaseDelayableHook {
         final protected void afterHookedMethod(MethodHookParam param) throws Throwable {
             long startTime = 0;
             if (recordTime) {
-                startTime = System.currentTimeMillis();
+                startTime = System.nanoTime();
             }
             if (!checkEnabled()) return;
             try {
@@ -136,7 +136,7 @@ public abstract class BaseDelayableHookAdapter extends BaseDelayableHook {
                 Utils.log(e);
             }
             if (recordTime) {
-                Utils.logd(cfgName+" costs time: "+(System.currentTimeMillis()-startTime)+" ms");
+                Utils.logd(cfgName+" costs time: "+(System.nanoTime()-startTime)+" ns");
             }
         }
 
