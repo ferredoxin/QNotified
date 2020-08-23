@@ -17,6 +17,7 @@ public class QNScript {
     private final String code;
     private final QNScriptInfo info;
     private boolean enable;
+    private boolean init = false;
 
     public QNScript(Interpreter lp, String code) {
         this.instance = lp;
@@ -26,6 +27,9 @@ public class QNScript {
 
     public void onEnable() {
         try {
+            if (!init){
+                instance.eval(code);
+            }
             instance.eval("onEnable()");
             QNScriptManager.addEnable();
         } catch (EvalError evalError) {
@@ -34,6 +38,7 @@ public class QNScript {
     }
 
     public void onDisable() {
+        if (!init) return;
         try {
             instance.eval("onDisable()");
             QNScriptManager.delEnable();
@@ -43,6 +48,7 @@ public class QNScript {
     }
 
     public void onGroupMessage(GroupMessageParam param) {
+        if (!init) return;
         try {
             instance.set("groupMessageParam", param);
             instance.eval("onGroupMessage(groupMessageParam)");
@@ -52,6 +58,7 @@ public class QNScript {
     }
 
     public void onFriendMessage(FriendMessageParam param) {
+        if (!init) return;
         try {
             instance.set("friendMessageParam", param);
             instance.eval("onFriendMessage(friendMessageParam)");
@@ -61,6 +68,7 @@ public class QNScript {
     }
 
     public void onFriendRequest(FriendRequestParam param) {
+        if (!init) return;
         try {
             instance.set("friendRequestParam", param);
             instance.eval("onFriendRequest(friendRequestParam)");
@@ -70,6 +78,7 @@ public class QNScript {
     }
 
     public void onFriendAdded(FriendAddedParam param) {
+        if (!init) return;
         try {
             instance.set("friendAddedParam", param);
             instance.eval("onFriendAdded(friendAddedParam)");
@@ -79,6 +88,7 @@ public class QNScript {
     }
 
     public void onGroupRequest(GroupRequestParam param) {
+        if (!init) return;
         try {
             instance.set("groupRequestParam", param);
             instance.eval("onGroupRequest(groupRequestParam)");
@@ -88,6 +98,7 @@ public class QNScript {
     }
 
     public void onGroupJoined(GroupJoinedParam param) {
+        if (!init) return;
         try {
             instance.set("groupJoinedParam", param);
             instance.eval("onGroupJoined(groupJoinedParam)");

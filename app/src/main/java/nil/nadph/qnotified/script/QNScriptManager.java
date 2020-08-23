@@ -27,10 +27,11 @@ public class QNScriptManager {
      * 添加一个脚本
      *
      * @param file 文件
+     * @return
      */
-    public static void addScript(String file) throws Exception {
-        if (isNullOrEmpty(file)) throw new RuntimeException("file is null");
-        if (hasScript(file)) throw new RuntimeException("脚本已存在");
+    public static String addScript(String file) throws Exception {
+        if (isNullOrEmpty(file)) return "file is null";
+        if (hasScript(file)) return "脚本已存在";
         // to do
         // 操作: 将文件移动到软件数据文件夹下
         File s = new File(file);
@@ -41,6 +42,7 @@ public class QNScriptManager {
         String code = readByReader(new FileReader(f));
         if (!isNullOrEmpty(code))
             scripts.add(execute(code));
+        return "";
     }
 
     public static void addEnable() {
@@ -169,9 +171,7 @@ public class QNScriptManager {
     public static QNScript execute(String code) throws EvalError {
         Interpreter lp = new Interpreter();
         lp.setClassLoader(Initiator.class.getClassLoader());
-        QNScript qn = QNScript.create(lp, code);
-        lp.eval(code);
-        return qn;
+        return QNScript.create(lp, code);
     }
 
 
