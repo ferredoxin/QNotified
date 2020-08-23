@@ -8,11 +8,8 @@
 
 import nil.nadph.qnotified.script.QNClient;
 
-public void onEnable(){
-// 将会在脚本启用时调用
-}
-public void onDisable(){
-// 将会在脚本禁用时调用
+public void onLoad(){
+// 将会在脚本加载时调用
 }
 public void onGroupMessage(Object param){
 // 将会在收到群消息且脚本启用时调用

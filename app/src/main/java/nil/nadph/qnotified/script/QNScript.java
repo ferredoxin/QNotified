@@ -10,6 +10,7 @@ import nil.nadph.qnotified.script.params.*;
 
 import java.io.IOException;
 
+import static nil.nadph.qnotified.util.Utils.en;
 import static nil.nadph.qnotified.util.Utils.log;
 
 public class QNScript {
@@ -25,23 +26,13 @@ public class QNScript {
         this.info = QNScriptInfo.getInfo(code);
     }
 
-    public void onEnable() {
+    public void onLoad() {
         try {
             if (!init){
                 instance.eval(code);
             }
-            instance.eval("onEnable()");
+            instance.eval("onLoad()");
             QNScriptManager.addEnable();
-        } catch (EvalError evalError) {
-            log(evalError);
-        }
-    }
-
-    public void onDisable() {
-        if (!init) return;
-        try {
-            instance.eval("onDisable()");
-            QNScriptManager.delEnable();
         } catch (EvalError evalError) {
             log(evalError);
         }
@@ -137,8 +128,6 @@ public class QNScript {
     }
 
     public boolean setEnable(boolean enable) {
-        if (enable) onEnable();
-        else onDisable();
         // 写入配置文件
         ConfigManager cfg = ConfigManager.getDefaultConfig();
         cfg.putBoolean(ConfigItems.qn_script_enable_ + getLabel(), enable);

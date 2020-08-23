@@ -1,6 +1,7 @@
 package nil.nadph.qnotified.script;
 
 import android.widget.CompoundButton;
+import android.widget.Toast;
 import bsh.EvalError;
 import bsh.Interpreter;
 import nil.nadph.qnotified.config.ConfigItems;
@@ -162,8 +163,8 @@ public class QNScriptManager {
             try {
                 QNScript qs = execute(code);
                 scripts.add(qs);
-                if (qs.isEnable()){
-                    qs.setEnable(true);
+                if (qs.isEnable()) {
+                    qs.onLoad();
                 }
             } catch (EvalError e) {
                 log(e);
@@ -220,6 +221,7 @@ public class QNScriptManager {
     public static void enableAll(CompoundButton compoundButton, boolean b) {
         if (b) enableAll();
         else disableAll();
+        Utils.showToast(compoundButton.getContext(), Utils.TOAST_TYPE_ERROR, "重启QQ生效", Toast.LENGTH_SHORT);
     }
 
     public static boolean isEnableAll() {
