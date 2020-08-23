@@ -20,8 +20,8 @@ class KotlinUtils {
      */
 
     companion object {
-        fun ViewGroup.addViewConditionally(view: View, condition: ()->Boolean) {
-            if (condition()) {
+        fun ViewGroup.addViewConditionally(view: View, condition: Boolean) {
+            if (condition) {
                 this.addView(view)
             }
         }

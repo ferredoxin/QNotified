@@ -25,6 +25,7 @@ public abstract class BaseDelayableHookAdapter extends BaseDelayableHook {
     protected final String cfgName;
     private final Step[] cond;
     private final boolean defVal;
+    protected boolean recordTime = false;
 
     protected BaseDelayableHookAdapter(String cfgName) {
         this(cfgName, SyncUtils.PROC_MAIN);
@@ -107,21 +108,35 @@ public abstract class BaseDelayableHookAdapter extends BaseDelayableHook {
 
         @Override
         final protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+            long startTime = 0;
+            if (recordTime) {
+                startTime = System.currentTimeMillis();
+            }
             if (!checkEnabled()) return;
             try {
                 beforeMethod(param);
             } catch (Exception e) {
                 Utils.log(e);
             }
+            if (recordTime) {
+                Utils.logd(cfgName+" costs time: "+(System.currentTimeMillis()-startTime)+" ms");
+            }
         }
 
         @Override
         final protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+            long startTime = 0;
+            if (recordTime) {
+                startTime = System.currentTimeMillis();
+            }
             if (!checkEnabled()) return;
             try {
                 afterMethod(param);
             } catch (Exception e) {
                 Utils.log(e);
+            }
+            if (recordTime) {
+                Utils.logd(cfgName+" costs time: "+(System.currentTimeMillis()-startTime)+" ms");
             }
         }
 
@@ -134,10 +149,20 @@ public abstract class BaseDelayableHookAdapter extends BaseDelayableHook {
 
         @Override
         final protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-            if (!checkEnabled()) {
-                return XposedBridge.invokeOriginalMethod(methodHookParam.method,methodHookParam.thisObject,methodHookParam.args);
+            long startTime = 0;
+            Object object;
+            if (recordTime) {
+                startTime = System.currentTimeMillis();
             }
-            return replaceMethod(methodHookParam);
+            if (!checkEnabled()) {
+                object = XposedBridge.invokeOriginalMethod(methodHookParam.method,methodHookParam.thisObject,methodHookParam.args);
+            } else {
+                object = replaceMethod(methodHookParam);
+            }
+            if (recordTime) {
+                Utils.logd(cfgName+" costs time: "+(System.currentTimeMillis()-startTime)+" ms");
+            }
+            return object;
         }
 
         abstract protected Object replaceMethod(MethodHookParam param) throws Throwable;
