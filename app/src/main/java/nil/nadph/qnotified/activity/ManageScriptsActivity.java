@@ -74,6 +74,39 @@ public class ManageScriptsActivity extends IphoneTitleBarActivityCompat {
             return;
         }
         Uri uri = data.getData(); // 获取用户选择文件的URI
+        if (uri != null) {
+            ContentResolver resolver = this.getContentResolver();
+            Cursor c = resolver.query(uri, null, null, null, null);
+            if (c == null) {
+                String path = uri.getPath();
+                try {
+                    QNScriptManager.addScript(path);
+                    Utils.showToastShort(this, "添加完毕");
+                } catch (Exception e) {
+                    log(e);
+                    Utils.showToastShort(this, "未知错误: " + e.getMessage());
+                }
+            } else {
+                if (c.moveToFirst()) {
+                    int da = c.getColumnIndex("_data");
+                    if (da < 0) {
+                        Utils.showToastShort(this, "请选择正确的文件");
+                    } else {
+                        try {
+                            QNScriptManager.addScript(c.getString(da));
+                            Utils.showToastShort(this, "添加完毕");
+                        } catch (Exception e) {
+                            log(e);
+                            Utils.showToastShort(this, "未知错误: " + e.getMessage());
+                        }
+                    }
+                }
+                c.close();
+            }
+        } else {
+            Utils.showToastShort(this, "内部错误");
+        }
+        /*
         // 通过ContentProvider查询文件路径
         ContentResolver resolver = this.getContentResolver();
         Cursor cursor = resolver.query(uri, null, null, null, null);
@@ -104,8 +137,9 @@ public class ManageScriptsActivity extends IphoneTitleBarActivityCompat {
                 Utils.showToastShort(this, "未知错误: " + e.getMessage());
             }
         }
-        cursor.close();
+        cursor.close();*/
     }
+
 
     private void addAllScript(LinearLayout main) {
         for (QNScript qs : QNScriptManager.getScripts()) {
