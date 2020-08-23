@@ -237,7 +237,7 @@ public class Utils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             return pi.getLongVersionCode();
         } else {
-            return pi.versionCode;
+            return (long) pi.versionCode;
         }
     });
 
