@@ -1,6 +1,7 @@
 package nil.nadph.qnotified.script;
 
 import android.widget.CompoundButton;
+import android.widget.Toast;
 import bsh.EvalError;
 import bsh.Interpreter;
 import nil.nadph.qnotified.config.ConfigItems;
@@ -27,10 +28,11 @@ public class QNScriptManager {
      * 添加一个脚本
      *
      * @param file 文件
+     * @return
      */
-    public static void addScript(String file) throws Exception {
-        if (isNullOrEmpty(file)) throw new RuntimeException("file is null");
-        if (hasScript(file)) throw new RuntimeException("脚本已存在");
+    public static String addScript(String file) throws Exception {
+        if (isNullOrEmpty(file)) return "file is null";
+        if (hasScript(file)) return "脚本已存在";
         // to do
         // 操作: 将文件移动到软件数据文件夹下
         File s = new File(file);
@@ -41,6 +43,7 @@ public class QNScriptManager {
         String code = readByReader(new FileReader(f));
         if (!isNullOrEmpty(code))
             scripts.add(execute(code));
+        return "";
     }
 
     public static void addEnable() {
@@ -158,7 +161,11 @@ public class QNScriptManager {
         scriptsPath = getApplication().getFilesDir().getAbsolutePath() + "/qn_script/";
         for (String code : getScriptCodes()) {
             try {
-                scripts.add(execute(code));
+                QNScript qs = execute(code);
+                scripts.add(qs);
+                if (qs.isEnable()) {
+                    qs.onLoad();
+                }
             } catch (EvalError e) {
                 log(e);
             }
@@ -169,9 +176,7 @@ public class QNScriptManager {
     public static QNScript execute(String code) throws EvalError {
         Interpreter lp = new Interpreter();
         lp.setClassLoader(Initiator.class.getClassLoader());
-        QNScript qn = QNScript.create(lp, code);
-        lp.eval(code);
-        return qn;
+        return QNScript.create(lp, code);
     }
 
 
@@ -216,6 +221,7 @@ public class QNScriptManager {
     public static void enableAll(CompoundButton compoundButton, boolean b) {
         if (b) enableAll();
         else disableAll();
+        Utils.showToast(compoundButton.getContext(), Utils.TOAST_TYPE_ERROR, "重启QQ生效", Toast.LENGTH_SHORT);
     }
 
     public static boolean isEnableAll() {

@@ -10,6 +10,7 @@ import nil.nadph.qnotified.script.params.*;
 
 import java.io.IOException;
 
+import static nil.nadph.qnotified.util.Utils.en;
 import static nil.nadph.qnotified.util.Utils.log;
 
 public class QNScript {
@@ -17,6 +18,7 @@ public class QNScript {
     private final String code;
     private final QNScriptInfo info;
     private boolean enable;
+    private boolean init = false;
 
     public QNScript(Interpreter lp, String code) {
         this.instance = lp;
@@ -24,25 +26,20 @@ public class QNScript {
         this.info = QNScriptInfo.getInfo(code);
     }
 
-    public void onEnable() {
+    public void onLoad() {
         try {
-            instance.eval("onEnable()");
+            if (!init){
+                instance.eval(code);
+            }
+            instance.eval("onLoad()");
             QNScriptManager.addEnable();
         } catch (EvalError evalError) {
             log(evalError);
         }
     }
 
-    public void onDisable() {
-        try {
-            instance.eval("onDisable()");
-            QNScriptManager.delEnable();
-        } catch (EvalError evalError) {
-            log(evalError);
-        }
-    }
-
     public void onGroupMessage(GroupMessageParam param) {
+        if (!init) return;
         try {
             instance.set("groupMessageParam", param);
             instance.eval("onGroupMessage(groupMessageParam)");
@@ -52,6 +49,7 @@ public class QNScript {
     }
 
     public void onFriendMessage(FriendMessageParam param) {
+        if (!init) return;
         try {
             instance.set("friendMessageParam", param);
             instance.eval("onFriendMessage(friendMessageParam)");
@@ -61,6 +59,7 @@ public class QNScript {
     }
 
     public void onFriendRequest(FriendRequestParam param) {
+        if (!init) return;
         try {
             instance.set("friendRequestParam", param);
             instance.eval("onFriendRequest(friendRequestParam)");
@@ -70,6 +69,7 @@ public class QNScript {
     }
 
     public void onFriendAdded(FriendAddedParam param) {
+        if (!init) return;
         try {
             instance.set("friendAddedParam", param);
             instance.eval("onFriendAdded(friendAddedParam)");
@@ -79,6 +79,7 @@ public class QNScript {
     }
 
     public void onGroupRequest(GroupRequestParam param) {
+        if (!init) return;
         try {
             instance.set("groupRequestParam", param);
             instance.eval("onGroupRequest(groupRequestParam)");
@@ -88,6 +89,7 @@ public class QNScript {
     }
 
     public void onGroupJoined(GroupJoinedParam param) {
+        if (!init) return;
         try {
             instance.set("groupJoinedParam", param);
             instance.eval("onGroupJoined(groupJoinedParam)");
@@ -126,8 +128,6 @@ public class QNScript {
     }
 
     public boolean setEnable(boolean enable) {
-        if (enable) onEnable();
-        else onDisable();
         // 写入配置文件
         ConfigManager cfg = ConfigManager.getDefaultConfig();
         cfg.putBoolean(ConfigItems.qn_script_enable_ + getLabel(), enable);
