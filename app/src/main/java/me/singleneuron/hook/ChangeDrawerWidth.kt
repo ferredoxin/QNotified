@@ -25,10 +25,11 @@ object ChangeDrawerWidth : BaseDelayableConditionalHookAdapter("changeDrawerWidt
     private fun getResourceID(): Int {
         return when(Utils.getHostVersionCode()) {
             QQVersion.QQ_8_4_1 -> 0x7f090834
+            QQVersion.QQ_8_4_5 -> 0x7f090841
             else -> return super.getID()
         }
     }
 
-    override val conditionCache: PageFaultHighPerformanceFunctionCache<Boolean> = PageFaultHighPerformanceFunctionCache { Utils.getHostVersionCode()==QQVersion.QQ_8_4_1 }
+    override val conditionCache: PageFaultHighPerformanceFunctionCache<Boolean> = PageFaultHighPerformanceFunctionCache { Utils.getHostVersionCode()==QQVersion.QQ_8_4_1 || Utils.getHostVersionCode()==QQVersion.QQ_8_4_5}
 
 }
