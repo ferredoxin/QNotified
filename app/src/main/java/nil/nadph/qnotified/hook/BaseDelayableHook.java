@@ -129,8 +129,7 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 InputButtonHook.get(),
                 SimplifyQQSettingMe.INSTANCE,
                 DebugDump.INSTANCE,
-                ChangeDrawerWidth.INSTANCE
-//                RemoveGroupApp.INSTANCE,
+                ChangeDrawerWidth.INSTANCE,
         };
         return sAllHooks;
     }
