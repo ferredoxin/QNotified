@@ -1,7 +1,10 @@
 package me.singleneuron.hook
 
+import android.content.Context
 import android.content.res.Resources
+import android.util.DisplayMetrics
 import android.util.TypedValue
+import android.view.WindowManager
 import de.robv.android.xposed.XposedHelpers
 import me.singleneuron.base.BaseDelayableConditionalHookAdapter
 import me.singleneuron.data.PageFaultHighPerformanceFunctionCache
@@ -15,7 +18,6 @@ object ChangeDrawerWidth : BaseDelayableConditionalHookAdapter("changeDrawerWidt
         XposedHelpers.findAndHookMethod(Resources::class.java, "getDimensionPixelSize", Int::class.javaPrimitiveType, object : XposedMethodHookAdapter() {
             override fun beforeMethod(param: MethodHookParam?) {
                 if (param!!.args[0] == getResourceID()) {
-                    val width: Int = getWidth()
                     param.result = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, width.toFloat(), (param.thisObject as Resources).displayMetrics).toInt()
                 }
             }
@@ -32,13 +34,28 @@ object ChangeDrawerWidth : BaseDelayableConditionalHookAdapter("changeDrawerWidt
         }
     }
 
+    override fun setEnabled(enabled: Boolean) {}
+
+    override fun isEnabled(): Boolean {
+        return width!=0
+    }
+
     override val conditionCache: PageFaultHighPerformanceFunctionCache<Boolean> = PageFaultHighPerformanceFunctionCache { Utils.getHostVersionCode() == QQVersion.QQ_8_4_1 || Utils.getHostVersionCode() == QQVersion.QQ_8_4_5 }
-    var `ChangeDrawerWidth$width` = "ChangeDrawerWidth\$width";
 
-    fun getWidth(): Int =
-            ConfigManager.getDefaultConfig().getIntOrDefault(`ChangeDrawerWidth$width`, 75);
+    private const val ChangeDrawerWidth_width = "ChangeDrawerWidth_width"
 
-    fun setWidth(w: Int) {
-        ConfigManager.getDefaultConfig().apply { putInt(`ChangeDrawerWidth$width`, w); save() }
+    var width: Int
+        get() {
+            return ConfigManager.getDefaultConfig().getIntOrDefault(ChangeDrawerWidth_width, 0)
+        }
+        set(value) {
+            ConfigManager.getDefaultConfig().apply { putInt(ChangeDrawerWidth_width, value); save() }
+        }
+
+    fun getMaxWidth(context: Context) :Float {
+        val dm = DisplayMetrics()
+        val windowManager: WindowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        windowManager.defaultDisplay.getMetrics(dm)
+        return (dm.widthPixels/dm.density)
     }
 }
