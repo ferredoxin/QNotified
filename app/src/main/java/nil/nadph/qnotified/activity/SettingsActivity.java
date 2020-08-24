@@ -254,7 +254,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         KotlinUtils.Companion.addViewConditionally(ll, this, "新版简洁模式圆头像", "From Rikka, 支持8.3.6及更高，重启后生效", NewRoundHead.INSTANCE);
         KotlinUtils.Companion.addViewConditionally(ll, this, "强制使用系统相机", "仅能录像，支持8.3.6及更高", ForceSystemCamera.INSTANCE);
         KotlinUtils.Companion.addViewConditionally(ll, this, "强制使用系统相册", "支持8.3.6及更高", ForceSystemAlbum.INSTANCE);
-        KotlinUtils.Companion.addViewConditionally(ll, this, "强制使用系统文件", "支持.3.6及更高", ForceSystemFile.INSTANCE);
+        KotlinUtils.Companion.addViewConditionally(ll, this, "强制使用系统文件", "支持8.3.6及更高", ForceSystemFile.INSTANCE);
         KotlinUtils.Companion.addViewConditionally(ll,this,"设置侧滑边距","感谢祈无，仅支持8.4.1，重启后生效", ChangeDrawerWidth.INSTANCE);
         ll.addView(subtitle(this, "好友列表"));
         ll.addView(newListItemButton(this, "打开资料卡", "打开指定用户的资料卡", null, new View.OnClickListener() {
