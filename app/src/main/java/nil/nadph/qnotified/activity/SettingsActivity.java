@@ -31,11 +31,25 @@ import android.os.Looper;
 import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.tencent.mobileqq.widget.BounceScrollView;
+
+import java.io.File;
+import java.io.IOException;
+
 import me.kyuubiran.hook.AutomaticMosaicName;
 import me.kyuubiran.hook.ShowSelfMsgByLeft;
-import me.singleneuron.hook.*;
+import me.singleneuron.hook.ChangeDrawerWidth;
+import me.singleneuron.hook.ForceSystemAlbum;
+import me.singleneuron.hook.ForceSystemCamera;
+import me.singleneuron.hook.ForceSystemFile;
+import me.singleneuron.hook.NewRoundHead;
+import me.singleneuron.hook.NoApplet;
 import me.singleneuron.util.KotlinUtils;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
@@ -43,22 +57,69 @@ import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.dialog.RepeaterIconSettingDialog;
 import nil.nadph.qnotified.dialog.RikkaDialog;
-import nil.nadph.qnotified.hook.*;
+import nil.nadph.qnotified.hook.$endGiftHook;
+import nil.nadph.qnotified.hook.CheatHook;
+import nil.nadph.qnotified.hook.DarkOverlayHook;
+import nil.nadph.qnotified.hook.FakeBatteryHook;
+import nil.nadph.qnotified.hook.FavMoreEmo;
+import nil.nadph.qnotified.hook.FileRecvRedirect;
+import nil.nadph.qnotified.hook.GagInfoDisclosure;
+import nil.nadph.qnotified.hook.InspectMessage;
+import nil.nadph.qnotified.hook.JumpController;
+import nil.nadph.qnotified.hook.MultiForwardAvatarHook;
+import nil.nadph.qnotified.hook.MuteQZoneThumbsUp;
+import nil.nadph.qnotified.hook.PreUpgradeHook;
+import nil.nadph.qnotified.hook.PttForwardHook;
+import nil.nadph.qnotified.hook.RepeaterHook;
+import nil.nadph.qnotified.hook.ReplyNoAtHook;
+import nil.nadph.qnotified.hook.RevokeMsgHook;
+import nil.nadph.qnotified.hook.RoundAvatarHook;
+import nil.nadph.qnotified.hook.ShowPicGagHook;
 import nil.nadph.qnotified.hook.rikka.RemoveMiniProgramAd;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.util.*;
-
-import java.io.File;
-import java.io.IOException;
+import nil.nadph.qnotified.util.Initiator;
+import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.NewsHelper;
+import nil.nadph.qnotified.util.UpdateCheck;
+import nil.nadph.qnotified.util.Utils;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static me.singleneuron.util.QQVersion.*;
-import static nil.nadph.qnotified.ui.ViewBuilder.*;
-import static nil.nadph.qnotified.util.ActProxyMgr.*;
-import static nil.nadph.qnotified.util.Utils.*;
+import static me.singleneuron.util.QQVersion.QQ_8_1_3;
+import static me.singleneuron.util.QQVersion.QQ_8_2_0;
+import static me.singleneuron.util.QQVersion.QQ_8_2_6;
+import static nil.nadph.qnotified.ui.ViewBuilder.R_ID_DESCRIPTION;
+import static nil.nadph.qnotified.ui.ViewBuilder.R_ID_TITLE;
+import static nil.nadph.qnotified.ui.ViewBuilder.R_ID_VALUE;
+import static nil.nadph.qnotified.ui.ViewBuilder.clickTheComing;
+import static nil.nadph.qnotified.ui.ViewBuilder.clickToProxyActAction;
+import static nil.nadph.qnotified.ui.ViewBuilder.clickToUrl;
+import static nil.nadph.qnotified.ui.ViewBuilder.doSetupForPrecondition;
+import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemButton;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemConfigSwitchIfValid;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemDummy;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemSwitchConfigNext;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemSwitchStub;
+import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
+import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_ABOUT;
+import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_DONATE_ACTIVITY;
+import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_EXFRIEND_LIST;
+import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_FAKE_BAT_CONFIG_ACTIVITY;
+import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_FRIENDLIST_EXPORT_ACTIVITY;
+import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_MUTE_AT_ALL;
+import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_MUTE_RED_PACKET;
+import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_TROUBLESHOOT_ACTIVITY;
+import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
+import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_INFO;
+import static nil.nadph.qnotified.util.Utils.dip2px;
+import static nil.nadph.qnotified.util.Utils.getHostVersionCode;
+import static nil.nadph.qnotified.util.Utils.get_RGB;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.showToast;
 
 @SuppressLint("Registered")
 public class SettingsActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener, Runnable {
@@ -193,7 +254,8 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         KotlinUtils.Companion.addViewConditionally(ll, this, "新版简洁模式圆头像", "From Rikka, 支持8.3.6及更高，重启后生效", NewRoundHead.INSTANCE);
         KotlinUtils.Companion.addViewConditionally(ll, this, "强制使用系统相机", "仅能录像，支持8.3.6及更高", ForceSystemCamera.INSTANCE);
         KotlinUtils.Companion.addViewConditionally(ll, this, "强制使用系统相册", "支持8.3.6及更高", ForceSystemAlbum.INSTANCE);
-        KotlinUtils.Companion.addViewConditionally(ll, this, "强制使用系统文件", "支持8.3.6及更高", ForceSystemFile.INSTANCE);
+        KotlinUtils.Companion.addViewConditionally(ll, this, "强制使用系统文件", "支持.3.6及更高", ForceSystemFile.INSTANCE);
+        KotlinUtils.Companion.addViewConditionally(ll,this,"设置侧滑边距","感谢祈无，仅支持8.4.1，重启后生效", ChangeDrawerWidth.INSTANCE);
         ll.addView(subtitle(this, "好友列表"));
         ll.addView(newListItemButton(this, "打开资料卡", "打开指定用户的资料卡", null, new View.OnClickListener() {
             @Override
