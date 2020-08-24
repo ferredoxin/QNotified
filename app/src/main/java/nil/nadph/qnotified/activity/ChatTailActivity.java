@@ -19,7 +19,6 @@
 package nil.nadph.qnotified.activity;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -33,15 +32,11 @@ import android.widget.*;
 import com.tencent.mobileqq.widget.BounceScrollView;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.R;
-import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.dialog.RikkaCustomMsgTimeFormatDialog;
-import nil.nadph.qnotified.dialog.RikkaDialog;
 import nil.nadph.qnotified.hook.ChatTailHook;
 import nil.nadph.qnotified.hook.FakeBatteryHook;
-import nil.nadph.qnotified.hook.JumpController;
-import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.Utils;
@@ -49,13 +44,12 @@ import nil.nadph.qnotified.util.Utils;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static android.text.InputType.TYPE_CLASS_NUMBER;
 import static android.text.InputType.TYPE_CLASS_TEXT;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.ui.ViewBuilder.*;
-import static nil.nadph.qnotified.ui.ViewBuilder.clickToProxyActAction;
-import static nil.nadph.qnotified.util.ActProxyMgr.*;
+import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_CHAT_TAIL_FRIENDS_ACTIVITY;
+import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_CHAT_TAIL_TROOPS_ACTIVITY;
 import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressLint("Registered")
@@ -168,7 +162,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         _f.setOnClickListener(v -> pct.setText(pct.getText() + "#time#"));
         _g.setOnClickListener(v -> pct.setText(pct.getText() + "\\n"));
         ll.addView(pct, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 2 * _5dp, _5dp, 2 * _5dp, _5dp));
-        ll.addView(newListItemSwitchFriendConfigNext(this, "全局开关", "开启将无视生效范围(无需重启QQ)", ConfigItems.qn_chat_tail_global, false));
+        ll.addView(newListItemSwitchFriendConfigNext(this, "全局开关", "开启将无视生效范围(无需重启" + Utils.getHostAppName() + ")", ConfigItems.qn_chat_tail_global, false));
         Button apply = new Button(ChatTailActivity.this);
         apply.setId(R_ID_APPLY);
         apply.setOnClickListener(this);

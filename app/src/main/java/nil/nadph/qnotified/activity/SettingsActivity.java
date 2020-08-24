@@ -44,6 +44,7 @@ import java.io.IOException;
 
 import me.kyuubiran.hook.AutomaticMosaicName;
 import me.kyuubiran.hook.ShowSelfMsgByLeft;
+import me.singleneuron.hook.ChangeDrawerWidth;
 import me.singleneuron.hook.ForceSystemAlbum;
 import me.singleneuron.hook.ForceSystemCamera;
 import me.singleneuron.hook.ForceSystemFile;
@@ -131,6 +132,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
     @Override
     public boolean doOnCreate(Bundle bundle) {
         super.doOnCreate(bundle);
+        String _hostName = Utils.getHostAppName();
         LinearLayout ll = new LinearLayout(this);
         ll.setId(R.id.rootMainLayout);
         ll.setOrientation(LinearLayout.VERTICAL);
@@ -237,7 +239,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         _t.setId(R_ID_BTN_FILE_RECV);
         __recv_desc = _t.findViewById(R_ID_DESCRIPTION);
         __recv_status = _t.findViewById(R_ID_VALUE);
-        ll.addView(newListItemHookSwitchInit(this, "屏蔽小程序广告[需要手动关闭广告]", "请勿反馈此功能无效", RemoveMiniProgramAd.get()));
+        ll.addView(newListItemHookSwitchInit(this, "屏蔽小程序广告", "需要手动关闭广告, 请勿反馈此功能无效", RemoveMiniProgramAd.get()));
         ll.addView(newListItemHookSwitchInit(this, "昵称/群名字打码", "娱乐功能 不进行维护", AutomaticMosaicName.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "自己的消息和头像居左显示", "娱乐功能 不进行维护", ShowSelfMsgByLeft.INSTANCE));
         if (getHostVersionCode() < QQ_8_2_0) {
@@ -249,10 +251,11 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             ll.addView(newListItemHookSwitchInit(this, "自定义猜拳骰子", null, CheatHook.get()));
             ll.addView(newListItemHookSwitchInit(this, "简洁模式圆头像", "From Rikka", RoundAvatarHook.get()));
         }
-        KotlinUtils.Companion.addViewConditionally(ll,this,"新版简洁模式圆头像", "From Rikka, 支持8.3.6及更高，重启后生效", NewRoundHead.INSTANCE);
-        KotlinUtils.Companion.addViewConditionally(ll,this,"强制使用系统相机", "仅能录像，支持8.3.6及更高", ForceSystemCamera.INSTANCE);
-        KotlinUtils.Companion.addViewConditionally(ll,this,"强制使用系统相册","支持8.3.6及更高", ForceSystemAlbum.INSTANCE);
-        KotlinUtils.Companion.addViewConditionally(ll,this,"强制使用系统文件","支持8.3.6及更高", ForceSystemFile.INSTANCE);
+        KotlinUtils.Companion.addViewConditionally(ll, this, "新版简洁模式圆头像", "From Rikka, 支持8.3.6及更高，重启后生效", NewRoundHead.INSTANCE);
+        KotlinUtils.Companion.addViewConditionally(ll, this, "强制使用系统相机", "仅能录像，支持8.3.6及更高", ForceSystemCamera.INSTANCE);
+        KotlinUtils.Companion.addViewConditionally(ll, this, "强制使用系统相册", "支持8.3.6及更高", ForceSystemAlbum.INSTANCE);
+        KotlinUtils.Companion.addViewConditionally(ll, this, "强制使用系统文件", "支持8.3.6及更高", ForceSystemFile.INSTANCE);
+        KotlinUtils.Companion.addViewConditionally(ll,this,"设置侧滑边距","感谢祈无，仅支持8.4.1，重启后生效", ChangeDrawerWidth.INSTANCE);
         ll.addView(subtitle(this, "好友列表"));
         ll.addView(newListItemButton(this, "打开资料卡", "打开指定用户的资料卡", null, new View.OnClickListener() {
             @Override
@@ -302,7 +305,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         if (!Utils.isTim(this)) {
             ll.addView(newListItemSwitchConfigNext(this, "隐藏分组下方入口", "隐藏分组列表最下方的历史好友按钮", ConfigItems.qn_hide_ex_entry_group, false));
         }
-        ll.addView(newListItemSwitchConfigNext(this, "禁用QQ热补丁", "一般无需开启", ConfigItems.qn_disable_hot_patch));
+        ll.addView(newListItemSwitchConfigNext(this, "禁用" + _hostName + "热补丁", "一般无需开启", ConfigItems.qn_disable_hot_patch));
         ll.addView(subtitle(this, "参数设定"));
         ll.addView(_t = newListItemButton(this, "跳转控制", "跳转自身及第三方Activity控制", "N/A", new View.OnClickListener() {
             @Override
@@ -354,7 +357,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             getString(R.string.res_inject_success);
         } catch (Resources.NotFoundException e) {
             CustomDialog.createFailsafe(this).setTitle("FATAL Exception").setCancelable(true).setPositiveButton(getString(android.R.string.yes), null)
-                    .setNeutralButton("重启QQ", (dialog, which) -> {
+                    .setNeutralButton("重启" + Utils.getHostAppName(), (dialog, which) -> {
                         try {
                             android.os.Process.killProcess(android.os.Process.myPid());
                         } catch (Throwable e1) {
@@ -362,7 +365,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
                         }
                     })
                     .setMessage("Resources injection failure!\nApplication may misbehave.\n" + e.toString()
-                            + "\n如果您刚刚更新了插件, 您可能需要重启QQ/TIM(太/无极阴,应用转生,天鉴等虚拟框架)或者重启手机(EdXp, Xposed, 太极阳), 如果重启手机后问题仍然存在, 请向作者反馈, 并提供详细日志").show();
+                            + "\n如果您刚刚更新了插件, 您可能需要重启" + Utils.getHostAppName() + "(太/无极阴,应用转生,天鉴等虚拟框架)或者重启手机(EdXp, Xposed, 太极阳), 如果重启手机后问题仍然存在, 请向作者反馈, 并提供详细日志").show();
         }
         return true;
     }

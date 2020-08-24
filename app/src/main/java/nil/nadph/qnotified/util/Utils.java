@@ -33,9 +33,39 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import com.tencent.mobileqq.app.QQAppInterface;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import dalvik.system.DexFile;
 import de.robv.android.xposed.XposedBridge;
+import me.singleneuron.data.PageFaultHighPerformanceFunctionCache;
 import me.singleneuron.util.KotlinUtils;
 import mqq.app.AppRuntime;
 import nil.nadph.qnotified.BuildConfig;
@@ -43,13 +73,6 @@ import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.ResUtils;
-
-import java.io.*;
-import java.lang.reflect.*;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static nil.nadph.qnotified.util.Initiator.load;
 
@@ -209,25 +232,23 @@ public class Utils {
 	 return m.invoke(obj,args);
 	 }*/
 
-    private static long sHostVersionCode = 0;
-
-    public static long getHostVersionCode() {
-        if (sHostVersionCode != 0) return sHostVersionCode;
+    private static PageFaultHighPerformanceFunctionCache<Long> hostVersionCode = new PageFaultHighPerformanceFunctionCache(()->{
         PackageInfo pi = getHostInfo(getApplication());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            sHostVersionCode = pi.getLongVersionCode();
+            return pi.getLongVersionCode();
         } else {
-            sHostVersionCode = pi.versionCode;
+            return (long) pi.versionCode;
         }
-        return sHostVersionCode;
+    });
+
+    public static long getHostVersionCode() {
+        return hostVersionCode.getValue();
     }
 
-    private static String sHostAppName = null;
+    private static PageFaultHighPerformanceFunctionCache<String> hostAppName = new PageFaultHighPerformanceFunctionCache(()-> getHostInfo().applicationInfo.loadLabel(getPackageManager()).toString());
 
     public static String getHostAppName() {
-        if (sHostAppName != null) return sHostAppName;
-        sHostAppName = getHostInfo().applicationInfo.loadLabel(getPackageManager()).toString();
-        return sHostAppName;
+        return hostAppName.getValue();
     }
 
     public static long getLongAccountUin() {

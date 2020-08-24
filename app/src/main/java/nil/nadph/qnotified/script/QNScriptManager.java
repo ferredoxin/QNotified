@@ -221,7 +221,7 @@ public class QNScriptManager {
     public static void enableAll(CompoundButton compoundButton, boolean b) {
         if (b) enableAll();
         else disableAll();
-        Utils.showToast(compoundButton.getContext(), Utils.TOAST_TYPE_ERROR, "重启QQ生效", Toast.LENGTH_SHORT);
+        Utils.showToast(compoundButton.getContext(), Utils.TOAST_TYPE_ERROR, "重启" + Utils.getHostAppName() + "生效", Toast.LENGTH_SHORT);
     }
 
     public static boolean isEnableAll() {

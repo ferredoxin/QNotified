@@ -51,10 +51,10 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="QNotified - QQ辅助型功能增强"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="QNotified - QQ/TIM辅助型功能增强"
+                        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
                 <TextView
                     android:id="@+id/mainTextViewVersion"
