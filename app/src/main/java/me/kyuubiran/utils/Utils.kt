@@ -2,6 +2,7 @@ package me.kyuubiran.utils
 
 import android.content.Context
 import android.os.Looper
+import android.view.View
 import android.widget.Toast
 import nil.nadph.qnotified.util.Utils
 
@@ -15,4 +16,13 @@ fun Context.showToastByTencent(text: CharSequence, type: Int = Utils.TOAST_TYPE_
     if (Looper.getMainLooper() == Looper.myLooper())
         Utils.showToast(this, type, text, duration)
     else Utils.runOnUiThread { showToastByTencent(text, duration) }
+}
+
+fun setZeroHeightWeight(v: View) {
+    v.layoutParams.width = 0
+    v.layoutParams.height = 0
+}
+
+fun logd(msg: String = "开始Hook了") {
+    Utils.logd("好耶 $msg")
 }
