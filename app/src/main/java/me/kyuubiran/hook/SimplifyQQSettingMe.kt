@@ -5,6 +5,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
+import me.kyuubiran.utils.setZeroHeightWeight
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.step.Step
 import nil.nadph.qnotified.util.Initiator
@@ -45,11 +46,6 @@ object SimplifyQQSettingMe : BaseMultiConfigDelayableHook() {
 
     override fun getPreconditions(): Array<Step?> {
         return arrayOfNulls(0)
-    }
-
-    fun setZeroHeightWeight(v: View) {
-        v.layoutParams.width = 0
-        v.layoutParams.height = 0
     }
 
     override fun init(): Boolean {
