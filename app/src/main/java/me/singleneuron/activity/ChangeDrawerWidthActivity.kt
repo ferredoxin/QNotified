@@ -5,10 +5,11 @@ import me.singleneuron.hook.ChangeDrawerWidth
 import nil.nadph.qnotified.R
 import nil.nadph.qnotified.activity.AppCompatTransferActivity
 import nil.nadph.qnotified.databinding.ActivityChangeDrawerWidthBinding
+import nil.nadph.qnotified.ui.___WindowIsTranslucent
 
-class ChangeDrawerWidthActivity : AppCompatTransferActivity() {
+class ChangeDrawerWidthActivity : AppCompatTransferActivity(), ___WindowIsTranslucent {
 
-    private lateinit var binding : ActivityChangeDrawerWidthBinding
+    private lateinit var binding: ActivityChangeDrawerWidthBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.MaterialDialogActivity)

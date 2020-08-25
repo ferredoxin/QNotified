@@ -6,8 +6,9 @@ import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import nil.nadph.qnotified.activity.AppCompatTransferActivity
+import nil.nadph.qnotified.ui.___WindowIsTranslucent
 
-abstract class AbstractChooseActivity : AppCompatTransferActivity() {
+abstract class AbstractChooseActivity : AppCompatTransferActivity(), ___WindowIsTranslucent {
 
     companion object {
         val REQUEST_CODE = 1
