@@ -29,12 +29,12 @@ android {
         release {
             shrinkResources true
             minifyEnabled true
-            proguardFiles 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),'proguard-rules.pro'
         }
         debug {
             shrinkResources true
             minifyEnabled true
-            proguardFiles 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),'proguard-rules.pro'
         }
     }
     aaptOptions {
