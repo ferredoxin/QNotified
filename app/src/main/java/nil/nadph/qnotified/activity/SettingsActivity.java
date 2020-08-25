@@ -223,7 +223,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         __tv_muted_atall = _t.findViewById(R_ID_VALUE);
         ll.addView(_t = newListItemButton(this, "屏蔽指定群的红包通知", Html.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[QQ红包][有红包]</font>恭喜发财"), "%d个群", clickToProxyActAction(ACTION_MUTE_RED_PACKET)));
         __tv_muted_redpacket = _t.findViewById(R_ID_VALUE);
-        ll.addView(newListItemHookSwitchInit(this, "赞说说不提醒", "不影响评论,转发或击掌的通知", MuteQZoneThumbsUp.get()));
+        ll.addView(newListItemHookSwitchInit(this, "被赞说说不提醒", "不影响评论,转发或击掌的通知", MuteQZoneThumbsUp.get()));
         ll.addView(newListItemHookSwitchInit(this, "转发消息点头像查看详细信息", "仅限合并转发的消息", MultiForwardAvatarHook.get()));
         if (!Utils.isTim(this)) {
             ll.addView(subtitle(this, "图片相关"));
