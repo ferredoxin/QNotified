@@ -3,19 +3,16 @@ package me.singleneuron.hook
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import android.os.Parcelable
-import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import me.singleneuron.base.BaseDelayableConditionalHookAdapter
-import me.singleneuron.base.BaseDelayableHookAdapter
+import me.singleneuron.data.PageFaultHighPerformanceFunctionCache
 import me.singleneuron.util.NoAppletUtil
 import me.singleneuron.util.QQVersion
-import nil.nadph.qnotified.util.LicenseStatus
 import nil.nadph.qnotified.util.Utils
 
 object NoApplet : BaseDelayableConditionalHookAdapter("noapplet") {
 
-    override val condition: () -> Boolean = {Utils.getHostVersionCode()>=QQVersion.QQ_8_0_0}
+    override val conditionCache: PageFaultHighPerformanceFunctionCache<Boolean> = PageFaultHighPerformanceFunctionCache {Utils.getHostVersionCode()>=QQVersion.QQ_8_0_0}
 
     override fun doInit(): Boolean {
         try {

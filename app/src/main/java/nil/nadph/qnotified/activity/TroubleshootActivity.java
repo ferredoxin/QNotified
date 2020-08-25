@@ -156,7 +156,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                     Intent inner = new Intent(getApplication(), ExfriendListActivity.class);
                     inner.putExtra(ACTIVITY_PROXY_ACTION, ACTION_EXFRIEND_LIST);
                     Intent wrapper = new Intent();
-                    wrapper.setClassName(getApplication().getPackageName(), ActProxyMgr.STUB_ACTIVITY);
+                    wrapper.setClassName(getApplication().getPackageName(), ActProxyMgr.STUB_DEFAULT_ACTIVITY);
                     wrapper.putExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT, inner);
                     PendingIntent pi = PendingIntent.getActivity(getApplication(), 0, wrapper, 0);
                     NotificationManager nm = (NotificationManager) Utils.getApplication().getSystemService(Context.NOTIFICATION_SERVICE);
@@ -369,7 +369,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                 });
                 dialog.setNegativeButton("取消", new Utils.DummyCallback());
                 dialog.setCancelable(true);
-                dialog.setMessage("确认清除缓存,并重新计算适配数据?\n点击确认后请等待3秒后手动重启QQ.");
+                dialog.setMessage("确认清除缓存,并重新计算适配数据?\n点击确认后请等待3秒后手动重启" + Utils.getHostAppName() + ".");
                 dialog.setTitle("确认操作");
                 dialog.show();
             }
@@ -396,7 +396,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                 });
                 dialog.setNegativeButton("取消", new Utils.DummyCallback());
                 dialog.setCancelable(true);
-                dialog.setMessage("此操作将删除该模块的所有配置信息,包括屏蔽通知的群列表,但不包括历史好友列表.点击确认后请等待3秒后手动重启QQ.\n此操作不可恢复");
+                dialog.setMessage("此操作将删除该模块的所有配置信息,包括屏蔽通知的群列表,但不包括历史好友列表.点击确认后请等待3秒后手动重启" + Utils.getHostAppName() + ".\n此操作不可恢复");
                 dialog.setTitle("确认操作");
                 dialog.show();
             }

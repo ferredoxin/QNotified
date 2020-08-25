@@ -24,6 +24,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import androidx.appcompat.app.AppCompatDelegate;
 import com.tencent.mobileqq.app.IphoneTitleBarActivity;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.CliOper;
@@ -44,6 +45,11 @@ public class IphoneTitleBarActivityCompat extends IphoneTitleBarActivity {
         boolean ret = super.doOnCreate(bundle);
         try {
             ResUtils.initTheme(this);
+            try {
+                AppCompatDelegate.setDefaultNightMode(ResUtils.isInNightMode() ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+            } catch (Throwable e) {
+                log(e);
+            }
             Object exlist_mFlingHandler = new_instance(load("com/tencent/mobileqq/activity/fling/FlingGestureHandler"), this, Activity.class);
             iput_object(this, "mFlingHandler", exlist_mFlingHandler);
         } catch (Throwable e) {

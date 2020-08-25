@@ -1,13 +1,28 @@
 package me.singleneuron.base
 
-import de.robv.android.xposed.XposedBridge
+import me.singleneuron.data.PageFaultHighPerformanceFunctionCache
 import nil.nadph.qnotified.SyncUtils
-import nil.nadph.qnotified.util.LicenseStatus
 
-abstract class BaseDelayableConditionalHookAdapter @JvmOverloads constructor(string:String, proc:Int = SyncUtils.PROC_MAIN) : BaseDelayableHookAdapter(string, proc), ConditionalHook {
+abstract class BaseDelayableConditionalHookAdapter @JvmOverloads constructor(string:String, proc:Int = SyncUtils.PROC_MAIN) : BaseDelayableHookAdapter(string, proc) {
+
+    //如有更改重启后生效
+    protected abstract val conditionCache : PageFaultHighPerformanceFunctionCache<Boolean>
+
+    open val condition : Boolean
+    get() {
+        return conditionCache.getValue()
+    }
 
     override fun checkEnabled(): Boolean {
-        return condition()&&super.checkEnabled()
+        return condition&&super.checkEnabled()
     }
-    
+
+    internal open fun getClass(): String {
+        throw RuntimeException("$cfgName :Unsupported QQ Version")
+    }
+
+    internal open fun getID(): Int {
+        throw RuntimeException("$cfgName :Unsupported QQ Version")
+    }
+
 }

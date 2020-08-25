@@ -134,7 +134,7 @@ public class ViewBuilder {
                     ConfigManager mgr = ConfigManager.getDefaultConfig();
                     mgr.getAllConfig().put(key, isChecked);
                     mgr.save();
-                    Utils.showToastShort(buttonView.getContext(), "重启QQ生效");
+                    Utils.showToastShort(buttonView.getContext(), "重启" + Utils.getHostAppName() + "生效");
                 } catch (Throwable e) {
                     Utils.log(e);
                     Utils.showToastShort(buttonView.getContext(), e.toString());
@@ -173,7 +173,7 @@ public class ViewBuilder {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 try {
                     item.setEnabled(isChecked);
-                    Utils.showToastShort(buttonView.getContext(), "重启QQ生效");
+                    Utils.showToastShort(buttonView.getContext(), "重启" + Utils.getHostAppName() + "生效");
                 } catch (Throwable e) {
                     Utils.log(e);
                     Utils.showToastShort(buttonView.getContext(), e.toString());
