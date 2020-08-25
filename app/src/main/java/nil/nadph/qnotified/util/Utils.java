@@ -65,7 +65,7 @@ import java.util.regex.Pattern;
 
 import dalvik.system.DexFile;
 import de.robv.android.xposed.XposedBridge;
-import me.singleneuron.data.PageFaultHighPerformanceFunctionCache;
+import me.singleneuron.qn_kernel.service.InterruptServiceRoutine;
 import me.singleneuron.util.KotlinUtils;
 import mqq.app.AppRuntime;
 import nil.nadph.qnotified.BuildConfig;
@@ -232,23 +232,12 @@ public class Utils {
 	 return m.invoke(obj,args);
 	 }*/
 
-    private static PageFaultHighPerformanceFunctionCache<Long> hostVersionCode = new PageFaultHighPerformanceFunctionCache(()->{
-        PackageInfo pi = getHostInfo(getApplication());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            return pi.getLongVersionCode();
-        } else {
-            return (long) pi.versionCode;
-        }
-    });
-
     public static long getHostVersionCode() {
-        return hostVersionCode.getValue();
+        return InterruptServiceRoutine.INSTANCE.interrupt(InterruptServiceRoutine.GET_VERSION_CODE);
     }
 
-    private static PageFaultHighPerformanceFunctionCache<String> hostAppName = new PageFaultHighPerformanceFunctionCache(()-> getHostInfo().applicationInfo.loadLabel(getPackageManager()).toString());
-
     public static String getHostAppName() {
-        return hostAppName.getValue();
+        return InterruptServiceRoutine.INSTANCE.interrupt(InterruptServiceRoutine.GET_APP_NAME);
     }
 
     public static long getLongAccountUin() {

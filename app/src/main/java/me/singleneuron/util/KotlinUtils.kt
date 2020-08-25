@@ -26,8 +26,8 @@ class KotlinUtils {
             }
         }
 
-        fun ViewGroup.addViewConditionally(context: Context, title: String, desc:String, hook:BaseDelayableConditionalHookAdapter) {
-            addViewConditionally(newListItemHookSwitchInit(context,title,desc,hook),hook.condition)
+        fun ViewGroup.addViewConditionally(context: Context, title: String, desc: String, hook: BaseDelayableConditionalHookAdapter) {
+            addViewConditionally(newListItemHookSwitchInit(context, title, desc, hook), hook.condition)
         }
 
         @Throws(IOException::class)
