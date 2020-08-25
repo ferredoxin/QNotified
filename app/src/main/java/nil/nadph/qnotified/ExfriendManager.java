@@ -722,7 +722,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
                 Intent inner = new Intent(getApplication(), ExfriendListActivity.class);
                 inner.putExtra(ACTIVITY_PROXY_ACTION, ACTION_EXFRIEND_LIST);
                 Intent wrapper = new Intent();
-                wrapper.setClassName(getApplication().getPackageName(), ActProxyMgr.STUB_ACTIVITY);
+                wrapper.setClassName(getApplication().getPackageName(), ActProxyMgr.STUB_DEFAULT_ACTIVITY);
                 wrapper.putExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT, inner);
                 PendingIntent pi = PendingIntent.getActivity(getApplication(), 0, wrapper, 0);
                 NotificationManager nm = (NotificationManager) Utils.getApplication().getSystemService(Context.NOTIFICATION_SERVICE);

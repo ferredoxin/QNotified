@@ -21,7 +21,8 @@ package nil.nadph.qnotified.util;
 import nil.nadph.qnotified.activity.*;
 
 public class ActProxyMgr {
-    public static final String STUB_ACTIVITY = "com.tencent.mobileqq.activity.photo.CameraPreviewActivity";
+    public static final String STUB_DEFAULT_ACTIVITY = "com.tencent.mobileqq.activity.photo.CameraPreviewActivity";
+    public static final String STUB_TRANSLUCENT_ACTIVITY = "cooperation.qlink.QlinkStandardDialogActivity";
     public static final String ACTIVITY_PROXY_ACTION = "qn_act_proxy_action";
     public static final String ACTIVITY_PROXY_INTENT = "qn_act_proxy_intent";
     public static final int ACTION_RESERVED = 0;

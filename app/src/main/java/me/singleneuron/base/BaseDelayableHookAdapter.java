@@ -6,7 +6,6 @@ import android.widget.Toast;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
@@ -14,16 +13,19 @@ import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
+import static nil.nadph.qnotified.util.Utils.getApplication;
+import static nil.nadph.qnotified.util.Utils.log;
 
 public abstract class BaseDelayableHookAdapter extends BaseDelayableHook {
 
     private boolean inited = false;
 
     private final int proc;
-    private final String cfgName;
+    protected final String cfgName;
     private final Step[] cond;
     private final boolean defVal;
+    protected boolean recordTime = false;
 
     protected BaseDelayableHookAdapter(String cfgName) {
         this(cfgName, SyncUtils.PROC_MAIN);
@@ -106,21 +108,35 @@ public abstract class BaseDelayableHookAdapter extends BaseDelayableHook {
 
         @Override
         final protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+            long startTime = 0;
+            if (recordTime) {
+                startTime = System.nanoTime();
+            }
             if (!checkEnabled()) return;
             try {
                 beforeMethod(param);
             } catch (Exception e) {
                 Utils.log(e);
             }
+            if (recordTime) {
+                Utils.logd(cfgName+" costs time: "+(System.nanoTime()-startTime)+" ns");
+            }
         }
 
         @Override
         final protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+            long startTime = 0;
+            if (recordTime) {
+                startTime = System.nanoTime();
+            }
             if (!checkEnabled()) return;
             try {
                 afterMethod(param);
             } catch (Exception e) {
                 Utils.log(e);
+            }
+            if (recordTime) {
+                Utils.logd(cfgName+" costs time: "+(System.nanoTime()-startTime)+" ns");
             }
         }
 
@@ -133,10 +149,20 @@ public abstract class BaseDelayableHookAdapter extends BaseDelayableHook {
 
         @Override
         final protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-            if (!checkEnabled()) {
-                return XposedBridge.invokeOriginalMethod(methodHookParam.method,methodHookParam.thisObject,methodHookParam.args);
+            long startTime = 0;
+            Object object;
+            if (recordTime) {
+                startTime = System.currentTimeMillis();
             }
-            return replaceMethod(methodHookParam);
+            if (!checkEnabled()) {
+                object = XposedBridge.invokeOriginalMethod(methodHookParam.method,methodHookParam.thisObject,methodHookParam.args);
+            } else {
+                object = replaceMethod(methodHookParam);
+            }
+            if (recordTime) {
+                Utils.logd(cfgName+" costs time: "+(System.currentTimeMillis()-startTime)+" ms");
+            }
+            return object;
         }
 
         abstract protected Object replaceMethod(MethodHookParam param) throws Throwable;

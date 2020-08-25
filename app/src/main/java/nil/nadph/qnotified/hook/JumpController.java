@@ -27,27 +27,34 @@ import android.os.Looper;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import java.lang.reflect.Method;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.regex.Pattern;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.ui.CustomDialog;
-import nil.nadph.qnotified.util.*;
+import nil.nadph.qnotified.util.Initiator;
+import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.NonNull;
+import nil.nadph.qnotified.util.Nullable;
+import nil.nadph.qnotified.util.Utils;
 
-import java.lang.reflect.Method;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.regex.Pattern;
-
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
+import static nil.nadph.qnotified.util.Utils.getApplication;
+import static nil.nadph.qnotified.util.Utils.log;
 
 public class JumpController extends BaseDelayableHook {
     private static final String qn_jmp_ctl_enable = "qn_jmp_ctl_enable";
     private static final String qn_jmp_ctl_rules = "qn_jmp_ctl_rules";
 
     public static final String DEFAULT_RULES = "A,P:me.singleneuron.locknotification;\n" +
-            "A,P:cn.nexus6p.QQMusicNotify;\n";
+            "A,P:cn.nexus6p.QQMusicNotify;\n" +
+            "A,A:android.media.action.VIDEO_CAPTURE;\n";
 
     public static final int JMP_DEFAULT = 0;
     public static final int JMP_ALLOW = 1;
@@ -92,7 +99,7 @@ public class JumpController extends BaseDelayableHook {
                         final Intent intent = (Intent) param.args[1];
                         final Runnable runnable = (Runnable) param.args[2];
                         Object interceptor = param.args[3];
-//                        Utils.logi("JumpController/I intercept: ctx=" + ctx + ", intent=" + intent + ", r=" + runnable + ", interceptor=" + interceptor);
+                        //Utils.logi("JumpController/I intercept: ctx=" + ctx + ", intent=" + intent + ", r=" + runnable + ", interceptor=" + interceptor);
                         if (ctx == null || intent == null || runnable == null || interceptor == null)
                             return;
                         int result = checkIntent(ctx, intent);
