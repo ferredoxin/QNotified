@@ -54,6 +54,7 @@ import me.singleneuron.hook.NoApplet;
 import me.singleneuron.util.KotlinUtils;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
+import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.dialog.RepeaterIconSettingDialog;
@@ -375,13 +376,13 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
     @Override
     public void doOnResume() {
         super.doOnResume();
-        ConfigManager cfg = ConfigManager.getDefaultConfig();
+        ConfigManager cfg = ConfigManager.getDefaultConfig();//改这里的话可能会引发其他问题，所以只把红包和全体改了
         rgbEnabled = cfg.getBooleanOrFalse(qn_enable_fancy_rgb);
-        String str = cfg.getString(ConfigItems.qn_muted_at_all);
+        String str = ExfriendManager.getCurrent().getConfig().getString(ConfigItems.qn_muted_at_all);
         int n = 0;
         if (str != null && str.length() > 4) n = str.split(",").length;
         __tv_muted_atall.setText(n + "个群");
-        str = cfg.getString(ConfigItems.qn_muted_red_packet);
+        str = ExfriendManager.getCurrent().getConfig().getString(ConfigItems.qn_muted_red_packet);
         n = 0;
         if (str != null && str.length() > 4) n = str.split(",").length;
         __tv_muted_redpacket.setText(n + "个群");

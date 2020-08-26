@@ -388,9 +388,9 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
         muted = new HashSet<>();
         String list = null;
         if (mActionInt == ACTION_MUTE_AT_ALL)
-            list = ConfigManager.getDefaultConfig().getString(ConfigItems.qn_muted_at_all);
+            list = ExfriendManager.getCurrent().getConfig().getString(ConfigItems.qn_muted_at_all);
         if (mActionInt == ACTION_MUTE_RED_PACKET)
-            list = ConfigManager.getDefaultConfig().getString(ConfigItems.qn_muted_red_packet);
+            list = ExfriendManager.getCurrent().getConfig().getString(ConfigItems.qn_muted_red_packet);
         if (mActionInt == ACTION_CHAT_TAIL_TROOPS_ACTIVITY)
             list = ExfriendManager.getCurrent().getConfig().getString(ConfigItems.qn_chat_tail_troops);
         if (list != null) {
