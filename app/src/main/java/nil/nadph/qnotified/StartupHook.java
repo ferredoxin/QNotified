@@ -20,11 +20,10 @@ package nil.nadph.qnotified;
 
 import android.content.Context;
 import android.os.Build;
-
+import android.util.Log;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
-import nil.nadph.qnotified.script.QNScriptManager;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Natives;
 import nil.nadph.qnotified.util.Utils;
@@ -51,6 +50,7 @@ public class StartupHook {
 
     public void doInit(ClassLoader rtLoader) throws Throwable {
         if (first_stage_inited) return;
+        //checkClassLoaderIsolation();
         try {
             XC_MethodHook startup = new XC_MethodHook(51) {
                 @Override
@@ -149,5 +149,23 @@ public class StartupHook {
             file.delete();
         }
         return !file.exists();
+    }
+
+    private static void checkClassLoaderIsolation() {
+        Class<?> stub;
+        try {
+            stub = Class.forName("com.tencent.common.app.BaseApplicationImpl");
+        } catch (ClassNotFoundException e) {
+            Log.d("QNdump", "checkClassLoaderIsolation success");
+            return;
+        }
+        Log.e("QNdump", "checkClassLoaderIsolation failure!");
+        Log.e("QNdump", "HostApp: " + stub.getClassLoader());
+        Log.e("QNdump", "Module: " + StartupHook.class.getClassLoader());
+        Log.e("QNdump", "Module.parent: " + StartupHook.class.getClassLoader().getParent());
+        Log.e("QNdump", "XposedBridge: " + XposedBridge.class.getClassLoader());
+        Log.e("QNdump", "SystemClassLoader: " + ClassLoader.getSystemClassLoader());
+        Log.e("QNdump", "currentThread.getContextClassLoader(): " + Thread.currentThread().getContextClassLoader());
+        Log.e("QNdump", "Context.class: " + Context.class.getClassLoader());
     }
 }

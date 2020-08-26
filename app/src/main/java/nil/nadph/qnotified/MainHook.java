@@ -1211,7 +1211,7 @@ public class MainHook {
     private void hideMiniAppEntry() {
         try {
             if (Utils.isTim(getApplication())) return;
-        } catch (Exception ignored) {
+        } catch (Throwable ignored) {
         }
         try {
             ConfigManager cache = ConfigManager.getCache();
@@ -1316,7 +1316,7 @@ public class MainHook {
                     });
                 }
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             log(e);
         }
     }
