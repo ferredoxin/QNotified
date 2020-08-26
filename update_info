@@ -8,7 +8,7 @@
     "md5": "null",
     "desc": "请还在使用0.8.3的用户复制下方链接到浏览器自行下载最新版, 尽快升级. 如新版本无法安装, 请先卸载旧版本qn模块后再安装新版即可, 注:如网页打不开请科学上网",
     "urls": [
-      "https://install.appcenter.ms/orgs/qnotifieddev/apps/qnotified/distribution_groups/alpha",
+      "https://install.appcenter.ms/orgs/qnotifieddev/apps/qnotified/distribution_groups/alpha"
     ]
   }
 ]
