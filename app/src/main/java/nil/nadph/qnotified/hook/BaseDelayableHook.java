@@ -26,7 +26,7 @@ import me.kyuubiran.hook.RemovePlayTogether;
 import me.kyuubiran.hook.RemoveQbossAD;
 import me.kyuubiran.hook.ShowSelfMsgByLeft;
 import me.kyuubiran.hook.SimplifyQQSettingMe;
-import me.kyuubiran.hook.testhook.TestDoNotPlayFire;
+import me.kyuubiran.hook.testhook.CutMessage;
 import me.singleneuron.hook.ChangeDrawerWidth;
 import me.singleneuron.hook.DebugDump;
 import me.singleneuron.hook.ForceSystemAlbum;
@@ -131,7 +131,7 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 SimplifyQQSettingMe.INSTANCE,
                 DebugDump.INSTANCE,
                 ChangeDrawerWidth.INSTANCE,
-                TestDoNotPlayFire.INSTANCE,
+                CutMessage.INSTANCE,
         };
         return sAllHooks;
     }
