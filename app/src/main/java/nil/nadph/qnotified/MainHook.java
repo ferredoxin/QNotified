@@ -49,6 +49,7 @@ import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.*;
 import nil.nadph.qnotified.hook.rikka.CustomSplash;
 import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.ui.___WindowIsTranslucent;
 import nil.nadph.qnotified.util.*;
 
 import java.io.File;
@@ -732,8 +733,17 @@ public class MainHook {
                             && (component.getClassName().startsWith("nil.nadph.qnotified.")
                             || component.getClassName().startsWith("me.zpp0196.qqpurify.activity.")
                             || component.getClassName().startsWith("me.singleneuron."))) {
+                        boolean isTranslucent = false;
+                        try {
+                            Class<?> targetActivity = Class.forName(component.getClassName());
+                            if (targetActivity != null && (___WindowIsTranslucent.class.isAssignableFrom(targetActivity))) {
+                                isTranslucent = true;
+                            }
+                        } catch (ClassNotFoundException ignored) {
+                        }
                         Intent wrapper = new Intent();
-                        wrapper.setClassName(component.getPackageName(), ActProxyMgr.STUB_ACTIVITY);
+                        wrapper.setClassName(component.getPackageName(),
+                                isTranslucent ? ActProxyMgr.STUB_TRANSLUCENT_ACTIVITY : ActProxyMgr.STUB_DEFAULT_ACTIVITY);
                         wrapper.putExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT, raw);
                         args[index] = wrapper;
                         //log("startActivity, wrap intent with " + wrapper);
@@ -1201,7 +1211,7 @@ public class MainHook {
     private void hideMiniAppEntry() {
         try {
             if (Utils.isTim(getApplication())) return;
-        } catch (Exception ignored) {
+        } catch (Throwable ignored) {
         }
         try {
             ConfigManager cache = ConfigManager.getCache();
@@ -1306,7 +1316,7 @@ public class MainHook {
                     });
                 }
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             log(e);
         }
     }

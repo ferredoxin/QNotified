@@ -65,7 +65,7 @@ import java.util.regex.Pattern;
 
 import dalvik.system.DexFile;
 import de.robv.android.xposed.XposedBridge;
-import me.singleneuron.data.PageFaultHighPerformanceFunctionCache;
+import me.singleneuron.qn_kernel.service.InterruptServiceRoutine;
 import me.singleneuron.util.KotlinUtils;
 import mqq.app.AppRuntime;
 import nil.nadph.qnotified.BuildConfig;
@@ -232,23 +232,12 @@ public class Utils {
 	 return m.invoke(obj,args);
 	 }*/
 
-    private static PageFaultHighPerformanceFunctionCache<Long> hostVersionCode = new PageFaultHighPerformanceFunctionCache(()->{
-        PackageInfo pi = getHostInfo(getApplication());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            return pi.getLongVersionCode();
-        } else {
-            return (long) pi.versionCode;
-        }
-    });
-
     public static long getHostVersionCode() {
-        return hostVersionCode.getValue();
+        return InterruptServiceRoutine.INSTANCE.interrupt(InterruptServiceRoutine.GET_VERSION_CODE);
     }
 
-    private static PageFaultHighPerformanceFunctionCache<String> hostAppName = new PageFaultHighPerformanceFunctionCache(()-> getHostInfo().applicationInfo.loadLabel(getPackageManager()).toString());
-
     public static String getHostAppName() {
-        return hostAppName.getValue();
+        return InterruptServiceRoutine.INSTANCE.interrupt(InterruptServiceRoutine.GET_APP_NAME);
     }
 
     public static long getLongAccountUin() {
@@ -1443,8 +1432,27 @@ public class Utils {
 
     public static void log(Throwable th) {
         if (th == null) return;
-        BugCollector.onThrowable(th);
-        log(Log.getStackTraceString(th));
+        String msg = Log.getStackTraceString(th);
+        Log.e("QNdump", msg);
+        try {
+            XposedBridge.log(th);
+        } catch (NoClassDefFoundError e) {
+            Log.e("Xposed", msg);
+            Log.e("EdXposed-Bridge", msg);
+        }
+        try {
+            BugCollector.onThrowable(th);
+        } catch (Throwable ignored) {
+        }
+        if (ENABLE_DUMP_LOG) {
+            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/qn_log.txt";
+            File f = new File(path);
+            try {
+                if (!f.exists()) f.createNewFile();
+                appendToFile(path, "[" + System.currentTimeMillis() + "-" + android.os.Process.myPid() + "] " + msg + "\n");
+            } catch (IOException e) {
+            }
+        }
     }
 
     public static void checkLogFlag() {

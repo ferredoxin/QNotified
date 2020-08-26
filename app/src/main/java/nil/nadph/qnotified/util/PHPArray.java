@@ -148,6 +148,9 @@ public class PHPArray implements Iterable<HashMap.Entry> {
                                 case 'r':
                                     ret.append('\r');
                                     break;
+                                case '/':
+                                    ret.append('/');
+                                    break;
                                 case '\\':
                                     ret.append('\\');
                                     break;

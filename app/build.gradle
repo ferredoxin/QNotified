@@ -21,9 +21,20 @@ android {
         }
     }
     buildTypes {
+//        debug {
+//            shrinkResources false
+//            minifyEnabled false
+//            //proguardFiles 'proguard-rules.pro'
+//        }
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            shrinkResources true
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),'proguard-rules.pro'
+        }
+        debug {
+            shrinkResources true
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),'proguard-rules.pro'
         }
     }
     aaptOptions {
@@ -62,7 +73,8 @@ dependencies {
     implementation 'org.apache-extras.beanshell:bsh:2.0b6'
     // androidx
     implementation 'androidx.preference:preference:1.1.1'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0'
+    implementation 'com.google.android.material:material:1.3.0-alpha02'
 }
 
 dependencies {
@@ -84,12 +96,21 @@ task dexTailDebug {
     doLast {
         println("dexTailDebug.doLast invoked");
         ArrayList<File> pathList = new ArrayList<>();
-        //3.6.x
+        //3.6.x, plain
         String tmp_path = "intermediates/dex/debug/out/classes.dex";
         if (!"/".equals(File.separator)) {
             tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar);
         }
         File tmp_f = new File(project.buildDir, tmp_path);
+        if (tmp_f.exists()) {
+            pathList.add(tmp_f);
+        }
+        //3.6.x, shrunk
+        tmp_path = "intermediates/dex/debug/shrunkDex/classes.dex";
+        if (!"/".equals(File.separator)) {
+            tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar);
+        }
+        tmp_f = new File(project.buildDir, tmp_path);
         if (tmp_f.exists()) {
             pathList.add(tmp_f);
         }
@@ -124,6 +145,15 @@ task dexTailRelease {
             tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar);
         }
         File tmp_f = new File(project.buildDir, tmp_path);
+        if (tmp_f.exists()) {
+            pathList.add(tmp_f);
+        }
+        //3.6.x, shrunk
+        tmp_path = "intermediates/dex/release/shrunkDex/classes.dex";
+        if (!"/".equals(File.separator)) {
+            tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar);
+        }
+        tmp_f = new File(project.buildDir, tmp_path);
         if (tmp_f.exists()) {
             pathList.add(tmp_f);
         }
@@ -176,7 +206,8 @@ tasks.whenTaskAdded { t ->
         dexTailDebug.mustRunAfter(t)
     }
     if (t.name == 'dexBuilderDebug' || t.name == 'mergeExtDexDebug'
-            || t.name == 'mergeLibDexDebug' || t.name == 'mergeProjectDexDebug') {
+            || t.name == 'mergeLibDexDebug' || t.name == 'mergeProjectDexDebug'
+            || t.name == 'shrinkDebugRes' || t.name.startsWith('minifyDebug')) {
         dexTailDebug.mustRunAfter(t)
     }
     if (t.name == 'assembleRelease') {
@@ -189,7 +220,8 @@ tasks.whenTaskAdded { t ->
         dexTailRelease.mustRunAfter(t)
     }
     if (t.name == 'dexBuilderRelease' || t.name == 'mergeExtDexRelease'
-            || t.name == 'mergeLibDexRelease' || t.name == 'mergeProjectDexRelease') {
+            || t.name == 'mergeLibDexRelease' || t.name == 'mergeProjectDexRelease'
+            || t.name == 'shrinkReleaseRes' || t.name.startsWith('minifyRelease')) {
         dexTailRelease.mustRunAfter(t)
     }
 }

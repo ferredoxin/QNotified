@@ -18,12 +18,15 @@
  */
 package nil.nadph.qnotified.util;
 
+import android.content.Context;
+
 import java.net.URL;
 
 public class HybridClassLoader extends ClassLoader {
 
     private final ClassLoader clPreload;
     private final ClassLoader clBase;
+    private static final ClassLoader sBootClassLoader = Context.class.getClassLoader();
 
     public HybridClassLoader(ClassLoader x, ClassLoader ctx) {
         clPreload = x;
@@ -33,7 +36,7 @@ public class HybridClassLoader extends ClassLoader {
     @Override
     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
         try {
-            return ClassLoader.getSystemClassLoader().loadClass(name);
+            return sBootClassLoader.loadClass(name);
         } catch (ClassNotFoundException ignored) {
         }
         if (name != null && (name.startsWith("androidx.") || name.startsWith("android.support.v4.")
@@ -43,6 +46,8 @@ public class HybridClassLoader extends ClassLoader {
             //use shipped androidx and kotlin lib.
             throw new ClassNotFoundException(name);
         }
+        //The ClassLoader for XPatch is terrible, XposedBridge.class.getClassLoader() == Context.getClassLoader(),
+        //which mess up with my kotlin lib.
         if (clPreload != null) {
             try {
                 return clPreload.loadClass(name);

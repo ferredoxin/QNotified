@@ -25,6 +25,7 @@ public class RemoveCameraButton extends BaseDelayableHook {
     private static final RemoveCameraButton self = new RemoveCameraButton();
     private boolean isInit = false;
 
+
     public static RemoveCameraButton get() {
         return self;
     }
