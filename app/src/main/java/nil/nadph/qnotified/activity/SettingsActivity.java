@@ -44,6 +44,7 @@ import java.io.IOException;
 
 import me.kyuubiran.hook.AutomaticMosaicName;
 import me.kyuubiran.hook.ShowSelfMsgByLeft;
+import me.singleneuron.activity.ChangeDrawerWidthActivity;
 import me.singleneuron.hook.ChangeDrawerWidth;
 import me.singleneuron.hook.ForceSystemAlbum;
 import me.singleneuron.hook.ForceSystemCamera;
@@ -222,7 +223,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         __tv_muted_atall = _t.findViewById(R_ID_VALUE);
         ll.addView(_t = newListItemButton(this, "屏蔽指定群的红包通知", Html.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[QQ红包][有红包]</font>恭喜发财"), "%d个群", clickToProxyActAction(ACTION_MUTE_RED_PACKET)));
         __tv_muted_redpacket = _t.findViewById(R_ID_VALUE);
-        ll.addView(newListItemHookSwitchInit(this, "赞说说不提醒", "不影响评论,转发或击掌的通知", MuteQZoneThumbsUp.get()));
+        ll.addView(newListItemHookSwitchInit(this, "被赞说说不提醒", "不影响评论,转发或击掌的通知", MuteQZoneThumbsUp.get()));
         ll.addView(newListItemHookSwitchInit(this, "转发消息点头像查看详细信息", "仅限合并转发的消息", MultiForwardAvatarHook.get()));
         if (!Utils.isTim(this)) {
             ll.addView(subtitle(this, "图片相关"));
@@ -255,7 +256,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         KotlinUtils.Companion.addViewConditionally(ll, this, "强制使用系统相机", "仅能录像，支持8.3.6及更高", ForceSystemCamera.INSTANCE);
         KotlinUtils.Companion.addViewConditionally(ll, this, "强制使用系统相册", "支持8.3.6及更高", ForceSystemAlbum.INSTANCE);
         KotlinUtils.Companion.addViewConditionally(ll, this, "强制使用系统文件", "支持8.3.6及更高", ForceSystemFile.INSTANCE);
-        KotlinUtils.Companion.addViewConditionally(ll,this,"设置侧滑边距","感谢祈无，支持8.4.1和8.4.5，重启后生效", ChangeDrawerWidth.INSTANCE);
+        KotlinUtils.Companion.addViewConditionally(ll, newListItemButton(this, "修改侧滑边距", "感谢祈无，仅支持8.4.1/8.4.5，重启后生效", "", clickToProxyActAction(ChangeDrawerWidthActivity.class)),ChangeDrawerWidth.INSTANCE.getCondition());
         ll.addView(subtitle(this, "好友列表"));
         ll.addView(newListItemButton(this, "打开资料卡", "打开指定用户的资料卡", null, new View.OnClickListener() {
             @Override

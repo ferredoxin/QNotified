@@ -26,8 +26,8 @@ class KotlinUtils {
             }
         }
 
-        fun ViewGroup.addViewConditionally(context: Context, title: String, desc:String, hook:BaseDelayableConditionalHookAdapter) {
-            addViewConditionally(newListItemHookSwitchInit(context,title,desc,hook),hook.condition)
+        fun ViewGroup.addViewConditionally(context: Context, title: String, desc: String, hook: BaseDelayableConditionalHookAdapter) {
+            addViewConditionally(newListItemHookSwitchInit(context, title, desc, hook), hook.condition)
         }
 
         @Throws(IOException::class)
@@ -36,11 +36,11 @@ class KotlinUtils {
         }
 
         @Throws(IOException::class)
-        fun readFromBufferedReader(bufferedReader: BufferedReader) : String{
+        fun readFromBufferedReader(bufferedReader: BufferedReader): String {
             return bufferedReader.readText()
         }
 
-        fun dumpIntent(intent: Intent){
+        fun dumpIntent(intent: Intent) {
             Utils.logd(intent.toString())
             Utils.logd(intent.extras.toString())
             Utils.logd(Log.getStackTraceString(Throwable()))
