@@ -1432,8 +1432,27 @@ public class Utils {
 
     public static void log(Throwable th) {
         if (th == null) return;
-        BugCollector.onThrowable(th);
-        log(Log.getStackTraceString(th));
+        String msg = Log.getStackTraceString(th);
+        Log.e("QNdump", msg);
+        try {
+            XposedBridge.log(th);
+        } catch (NoClassDefFoundError e) {
+            Log.e("Xposed", msg);
+            Log.e("EdXposed-Bridge", msg);
+        }
+        try {
+            BugCollector.onThrowable(th);
+        } catch (Throwable ignored) {
+        }
+        if (ENABLE_DUMP_LOG) {
+            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/qn_log.txt";
+            File f = new File(path);
+            try {
+                if (!f.exists()) f.createNewFile();
+                appendToFile(path, "[" + System.currentTimeMillis() + "-" + android.os.Process.myPid() + "] " + msg + "\n");
+            } catch (IOException e) {
+            }
+        }
     }
 
     public static void checkLogFlag() {
