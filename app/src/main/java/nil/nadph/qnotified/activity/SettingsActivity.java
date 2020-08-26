@@ -376,7 +376,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
     @Override
     public void doOnResume() {
         super.doOnResume();
-        ConfigManager cfg = ConfigManager.getDefaultConfig();//改这里的话怕引发其他问题，所以先把红包和全体改了
+        ConfigManager cfg = ConfigManager.getDefaultConfig();//改这里的话可能会引发其他问题，所以只把红包和全体改了
         rgbEnabled = cfg.getBooleanOrFalse(qn_enable_fancy_rgb);
         String str = ExfriendManager.getCurrent().getConfig().getString(ConfigItems.qn_muted_at_all);
         int n = 0;
