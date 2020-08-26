@@ -25,9 +25,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.tencent.mobileqq.widget.BounceScrollView;
-
 import nil.nadph.qnotified.hook.CardMsgHook;
 import nil.nadph.qnotified.script.QNScriptManager;
 import nil.nadph.qnotified.ui.ResUtils;
@@ -35,11 +33,7 @@ import nil.nadph.qnotified.util.LicenseStatus;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.ui.ViewBuilder.R_ID_VALUE;
-import static nil.nadph.qnotified.ui.ViewBuilder.clickToProxyActAction;
-import static nil.nadph.qnotified.ui.ViewBuilder.newListItemButton;
-import static nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit;
-import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
+import static nil.nadph.qnotified.ui.ViewBuilder.*;
 import static nil.nadph.qnotified.util.SendBatchMsg.clickToBatchMsg;
 import static nil.nadph.qnotified.util.Utils.dip2px;
 
@@ -51,7 +45,6 @@ public class AlphaTestFuncActivity extends IphoneTitleBarActivityCompat {
     @Override
     public boolean doOnCreate(Bundle bundle) {
         super.doOnCreate(bundle);
-        RelativeLayout _t;
         LinearLayout ll = new LinearLayout(this);
         ll.setOrientation(LinearLayout.VERTICAL);
         ViewGroup.LayoutParams mmlp = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
@@ -95,6 +88,7 @@ public class AlphaTestFuncActivity extends IphoneTitleBarActivityCompat {
             ll.addView(subtitle(this, "卡片消息使用说明:先输入卡片代码(聊天界面),后长按发送按钮\n勿滥用此功能! 频繁使用此功能被举报可能封号"));
             ll.addView(subtitle(this, "警告: 请勿发送违规内容! 在您使用 群发文本消息 及 发送卡片消息 时, " +
                     "本模块会向服务器报告您发送的消息内容以及当前QQ号, 如您不同意, 请勿使用群发与卡片消息功能!", Color.RED));
+            ViewGroup _t;
             ll.addView(_t = newListItemButton(this, "管理脚本(.java)", "请注意安全, 合理使用", "N/A", clickToProxyActAction(ManageScriptsActivity.class)));
             __js_status = _t.findViewById(R_ID_VALUE);
         }
@@ -104,12 +98,15 @@ public class AlphaTestFuncActivity extends IphoneTitleBarActivityCompat {
         _lp_fat.weight = 1;
 
         setContentBackgroundDrawable(ResUtils.skin_background);
+        setTitle("Alpha内测功能");
         return true;
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        __js_status.setText(QNScriptManager.getEnableCount() + "/" + QNScriptManager.getAllCount());
+    public void doOnResume() {
+        super.doOnResume();
+        if (__js_status != null) {
+            __js_status.setText(QNScriptManager.getEnableCount() + "/" + QNScriptManager.getAllCount());
+        }
     }
 }

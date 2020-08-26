@@ -27,21 +27,16 @@ import android.widget.TextView;
 import com.tencent.mobileqq.widget.BounceScrollView;
 import me.kyuubiran.hook.testhook.CutMessage;
 import nil.nadph.qnotified.hook.ChatTailHook;
-
 import nil.nadph.qnotified.hook.MutePokePacket;
 import nil.nadph.qnotified.hook.PttForwardHook;
+import nil.nadph.qnotified.script.QNScriptManager;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.ui.ViewBuilder.R_ID_VALUE;
-import static nil.nadph.qnotified.ui.ViewBuilder.clickToProxyActAction;
-import static nil.nadph.qnotified.ui.ViewBuilder.newListItemButton;
-import static nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit;
-import static nil.nadph.qnotified.ui.ViewBuilder.newListItemSwitchConfig;
-import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
+import static nil.nadph.qnotified.ui.ViewBuilder.*;
 import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_CHAT_TAIL_CONFIG_ACTIVITY;
 import static nil.nadph.qnotified.util.Utils.dip2px;
 
@@ -73,7 +68,7 @@ public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
         __lp_r.setMargins(mar, 0, mar, 0);
         __lp_r.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         __lp_r.addRule(RelativeLayout.CENTER_VERTICAL);
-        if (!LicenseStatus.getAuth2Status()) {
+        if (LicenseStatus.hasBlackFlags()) {
             TextView tv = new TextView(this);
             tv.setText("你是怎么进来的???????????????????");
             tv.setTextColor(ResUtils.skin_red);
@@ -104,7 +99,19 @@ public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
         _lp_fat.weight = 1;
 
         setContentBackgroundDrawable(ResUtils.skin_background);
+        setTitle("Beta测试性功能");
         return true;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String text = ChatTailHook.get().isEnabled() ? ChatTailHook.get().getTailCapacity().replace("\n", "") : null;
+        if (text != null && text.length() > 3) {
+            // 避免过长影响美观
+            text = "..." + text.substring(text.length() - 3);
+        }
+        if (text == null) text = "[未启用]";
+        __tv_chat_tail_status.setText(text);
+    }
 }

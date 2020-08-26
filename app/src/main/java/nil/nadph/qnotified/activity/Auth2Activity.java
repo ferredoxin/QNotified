@@ -27,16 +27,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.widget.*;
 import com.tencent.mobileqq.widget.BounceScrollView;
-
-import java.util.HashSet;
-
 import nil.nadph.qnotified.chiral.ChiralCarbonHelper;
 import nil.nadph.qnotified.chiral.Molecule;
 import nil.nadph.qnotified.chiral.MoleculeView;
@@ -49,16 +41,13 @@ import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.UserFlagConst;
 import nil.nadph.qnotified.util.Utils;
 
+import java.util.HashSet;
+
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
 import static nil.nadph.qnotified.util.LicenseStatus.getCurrentUserWhiteFlags;
-import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
-import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_INFO;
-import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_SUCCESS;
-import static nil.nadph.qnotified.util.Utils.dip2px;
-import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.showToast;
+import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressLint("Registered")
 public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.OnClickListener, DialogInterface.OnClickListener, Runnable {
@@ -193,24 +182,11 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
             nextStep.setEnabled(false);
             onClick(moleculeView);
         } else {
-            /*rightBtn.setText("取消");
+            rightBtn.setText("取消");
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
-            onClick(newOne);*/
-            LicenseStatus.setAuth2Status(moleculeView.getMolecule(), Utils.integerSetToArray(mChiralCarbons));
-            showToast(Auth2Activity.this, TOAST_TYPE_SUCCESS, "验证成功", 1);
-            moleculeView.setEnabled(false);
-            newOne.setVisibility(View.GONE);
-            reset.setVisibility(View.GONE);
-            nextStep.setText("验证已完成");
-            nextStep.setEnabled(false);
-            if (rightBtn instanceof TextView) {
-                ((TextView) rightBtn).setText("吊销");
-            }
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
-            CliOper.passAuth2Once(validRetryCount, moleculeView.getSelectedChiral().length);
+            onClick(newOne);
         }
         validRetryCount = 0;
-
         return true;
     }
 
