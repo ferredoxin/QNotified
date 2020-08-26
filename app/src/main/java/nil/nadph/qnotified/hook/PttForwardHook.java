@@ -294,7 +294,7 @@ public class PttForwardHook extends BaseDelayableHook {
                             Object arr = param.getResult();
                             Class<?> clQQCustomMenuItem = arr.getClass().getComponentType();
                             Object ret;
-                            if (isSavePttEnabled() && LicenseStatus.getAuth2Status()) {
+                            if (isSavePttEnabled()) {
                                 Object item_forward = CustomMenu.createItem(clQQCustomMenuItem, R_ID_PTT_FORWARD, "转发");
                                 Object item_save = CustomMenu.createItem(clQQCustomMenuItem, R_ID_PTT_SAVE, "保存");
                                 ret = Array.newInstance(clQQCustomMenuItem, Array.getLength(arr) + 2);
