@@ -12,7 +12,7 @@ import java.util.Random;
 
 public class PubChemStealer {
 
-    private static final String PUB_CHEM_SITE = "127.0.0.1";
+    private static final String PUB_CHEM_SITE = "http://127.0.0.1:8081";
     private static final String FAKE_PUB_CHEM_SITE = "https://ioctl.cc";//reserved proxy...
 
     @NonUiThread

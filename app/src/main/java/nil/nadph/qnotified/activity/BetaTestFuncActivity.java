@@ -43,7 +43,7 @@ import static nil.nadph.qnotified.util.Utils.dip2px;
 @SuppressLint("Registered")
 public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
 
-    TextView __tv_chat_tail_status, __js_status;
+    TextView __tv_chat_tail_status;
 
     @Override
     public boolean doOnCreate(Bundle bundle) {
@@ -68,7 +68,7 @@ public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
         __lp_r.setMargins(mar, 0, mar, 0);
         __lp_r.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         __lp_r.addRule(RelativeLayout.CENTER_VERTICAL);
-        if (!LicenseStatus.getAuth2Status()) {
+        if (LicenseStatus.hasBlackFlags()) {
             TextView tv = new TextView(this);
             tv.setText("你是怎么进来的???????????????????");
             tv.setTextColor(ResUtils.skin_red);
@@ -91,8 +91,6 @@ public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
             ll.addView(_t = newListItemButton(this, "自定义聊天小尾巴", "回车发送不生效", "N/A", clickToProxyActAction(ACTION_CHAT_TAIL_CONFIG_ACTIVITY)));
             __tv_chat_tail_status = _t.findViewById(R_ID_VALUE);
             ll.addView(newListItemHookSwitchInit(this, "屏蔽戳一戳", "OvO", MutePokePacket.get()));
-            ll.addView(_t = newListItemButton(this, "管理脚本(.java)", "请注意安全, 合理使用", "N/A", clickToProxyActAction(ManageScriptsActivity.class)));
-            __js_status = _t.findViewById(R_ID_VALUE);
             ll.addView(newListItemHookSwitchInit(this, "在LogCat输出所有接收的消息", "[Debug]无关人士请不要打开 没有任何作用", CutMessage.INSTANCE));
         }
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
@@ -101,6 +99,7 @@ public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
         _lp_fat.weight = 1;
 
         setContentBackgroundDrawable(ResUtils.skin_background);
+        setTitle("Beta测试性功能");
         return true;
     }
 
@@ -114,6 +113,5 @@ public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
         }
         if (text == null) text = "[未启用]";
         __tv_chat_tail_status.setText(text);
-        __js_status.setText(QNScriptManager.getEnableCount() + "/" + QNScriptManager.getAllCount());
     }
 }
