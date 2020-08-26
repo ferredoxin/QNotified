@@ -33,9 +33,39 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import com.tencent.mobileqq.app.QQAppInterface;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import dalvik.system.DexFile;
 import de.robv.android.xposed.XposedBridge;
+import me.singleneuron.qn_kernel.service.InterruptServiceRoutine;
 import me.singleneuron.util.KotlinUtils;
 import mqq.app.AppRuntime;
 import nil.nadph.qnotified.BuildConfig;
@@ -43,13 +73,6 @@ import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.ResUtils;
-
-import java.io.*;
-import java.lang.reflect.*;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static nil.nadph.qnotified.util.Initiator.load;
 
@@ -210,11 +233,11 @@ public class Utils {
 	 }*/
 
     public static long getHostVersionCode() {
-        return KotlinUtils.Companion.getHostVersionCode();
+        return InterruptServiceRoutine.INSTANCE.interrupt(InterruptServiceRoutine.GET_VERSION_CODE);
     }
 
     public static String getHostAppName() {
-        return KotlinUtils.Companion.getHostAppName();
+        return InterruptServiceRoutine.INSTANCE.interrupt(InterruptServiceRoutine.GET_APP_NAME);
     }
 
     public static long getLongAccountUin() {
