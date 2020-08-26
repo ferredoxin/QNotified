@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Looper
 import android.view.View
 import android.widget.Toast
+import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.Nullable
 import nil.nadph.qnotified.util.Utils
 
@@ -39,11 +40,19 @@ fun logd(i: Int, msg: String? = "") {
     }
 }
 
+fun log(t: Throwable) {
+    Utils.log(t)
+}
+
 @Nullable
 fun getObjectOrNull(obj: Any?, str: String, clz: Class<*>? = null): Any? {
     return Utils.iget_object_or_null(obj, str, clz)
 }
 
-fun putObject(obj: Any?, name: String, type: Class<*>? = null, value: Any) {
+fun putObject(obj: Any?, name: String, value: Any, type: Class<*>? = null) {
     Utils.iput_object(obj, name, type, value)
+}
+
+fun loadClass(clzName: String): Class<*> {
+    return Initiator.load(clzName)
 }
