@@ -23,15 +23,15 @@
         </activity>
 
         <activity
-            android:name="me.singleneuron.activity.QQPurifyAgentActivity"
-            android:label="@string/qqpurify_name"
-            android:icon="@drawable/qqpurify_launcher"
-            android:excludeFromRecents="true"
-            android:theme="@style/noDisplay">
-            <intent-filter>
-                <!--                <action android:name="android.intent.action.MAIN" />-->
-                <!--                <category android:name="android.intent.category.LAUNCHER" />-->
-            </intent-filter>
+                android:name="me.singleneuron.activity.QQPurifyAgentActivity"
+                android:label="@string/qqpurify_name"
+                android:icon="@drawable/qqpurify_launcher"
+                android:excludeFromRecents="true"
+                android:theme="@style/noDisplay">
+            <!-- <intent-filter>-->
+            <!--     <action android:name="android.intent.action.MAIN" />-->
+            <!--     <category android:name="android.intent.category.LAUNCHER" />-->
+            <!--  </intent-filter>-->
         </activity>
 
         <!-- for debug -->
