@@ -181,6 +181,7 @@ public class InputButtonHook extends BaseDelayableHook {
                                         }
                                     } else {
                                         if (LicenseStatus.hasBlackFlags()) return false;
+                                        if (!ChatTailHook.get().isEnabled()) return false;
                                         if (!Utils.isNullOrEmpty(ChatTailHook.get().getTailCapacity())) {
                                             int battery = FakeBatteryHook.get().isEnabled() ? FakeBatteryHook.get().getFakeBatteryStatus() < 1 ? ChatTailActivity.getBattery() : FakeBatteryHook.get().getFakeBatteryCapacity() : ChatTailActivity.getBattery();
                                             String tc = ChatTailHook.get().getTailCapacity().

@@ -99,29 +99,35 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
         ll.addView(subtitle(this, ""));
         ll.addView(subtitle(this, "以下内容基本上都没用，它们为了修复故障才留在这里。"));
         ll.addView(subtitle(this, "测试"));
-        ll.addView(newListItemHookSwitchInit(this,"堆栈转储","没事别开", DebugDump.INSTANCE));
-        ll.addView(newListItemButton(this, "主线程抛异常", "没事别按", null, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                throw new RuntimeException("Stub!");
-            }
-        }));
-        ll.addView(newListItemButton(this, "子线程抛异常", "没事别按", null, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        throw new RuntimeException("Stub!");
-                    }
-                }).start();
-            }
-        }));
+        ll.addView(newListItemHookSwitchInit(this, "堆栈转储", "没事别开", DebugDump.INSTANCE));
         ll.addView(newListItemButton(this, "退出 Looper", "没事别按", null, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
                     quitLooper();
+                } catch (Throwable e) {
+                    Toast.makeText(TroubleshootActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }));
+        ll.addView(newListItemButton(this, "abort()", "没事别按", null, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    long libc = Natives.dlopen("libc.so", Natives.RTLD_NOLOAD);
+                    if (libc == 0) {
+                        throw new RuntimeException("dlopen libc.so failed");
+                    }
+                    long abort = Natives.dlsym(libc, "abort");
+                    if (abort == 0) {
+                        String msg = Natives.dlerror();
+                        if (msg != null) {
+                            throw new RuntimeException(msg);
+                        } else {
+                            throw new RuntimeException("dlsym 'abort' failed");
+                        }
+                    }
+                    Natives.call(abort);
                 } catch (Throwable e) {
                     Toast.makeText(TroubleshootActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
                 }
