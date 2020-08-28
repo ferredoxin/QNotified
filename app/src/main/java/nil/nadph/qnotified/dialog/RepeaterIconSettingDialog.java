@@ -9,7 +9,23 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioGroup;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.core.view.ViewCompat;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigManager;
@@ -17,8 +33,6 @@ import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.DebugDrawable;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.Utils;
-
-import java.io.*;
 
 public class RepeaterIconSettingDialog implements View.OnClickListener, DialogInterface.OnClickListener, RadioGroup.OnCheckedChangeListener, CompoundButton.OnCheckedChangeListener {
 
@@ -60,7 +74,8 @@ public class RepeaterIconSettingDialog implements View.OnClickListener, DialogIn
         restoreDefBtn.setOnClickListener(this);
         prevImgView = v.findViewById(R.id.selectRepeaterIcon_imageViewPreview);
         prevImgView.setPadding(1, 1, 1, 1);
-        prevImgView.setBackgroundDrawable(new DebugDrawable(ctx));
+        //prevImgView.setBackgroundDrawable(new DebugDrawable(ctx));
+        ViewCompat.setBackground(prevImgView, new DebugDrawable(ctx));
         specDpi = v.findViewById(R.id.selectRepeaterIcon_checkBoxSpecifyDpi);
         specDpi.setOnCheckedChangeListener(this);
         dpiGroup = v.findViewById(R.id.selectRepeaterIcon_RadioGroupDpiList);

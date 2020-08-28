@@ -19,7 +19,6 @@
 package nil.nadph.qnotified.util;
 
 import java.util.ArrayList;
-import java.util.zip.Adler32;
 
 public class DexFlow {
     private static final byte[] OPCODE_LENGTH_TABLE = new byte[]{
@@ -187,7 +186,7 @@ public class DexFlow {
     }
 
     @NonUiThread
-    @Deprecated
+    //@Deprecated
     public static DexFieldDescriptor guessFieldByNewInstance(byte[] buf, DexMethodDescriptor method, Class<?> instanceClass) throws NoSuchMethodException {
         if (instanceClass == null) throw new NullPointerException("instanceClass == null");
         return guessFieldByNewInstance(buf, method, "L" + instanceClass.getName().replace('.', '/') + ";");

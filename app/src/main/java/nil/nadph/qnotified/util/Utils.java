@@ -33,36 +33,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import com.tencent.mobileqq.app.QQAppInterface;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import dalvik.system.DexFile;
 import de.robv.android.xposed.XposedBridge;
 import me.singleneuron.qn_kernel.service.InterruptServiceRoutine;
@@ -73,6 +44,13 @@ import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.ResUtils;
+
+import java.io.*;
+import java.lang.reflect.*;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static nil.nadph.qnotified.util.Initiator.load;
 
@@ -232,6 +210,10 @@ public class Utils {
 	 return m.invoke(obj,args);
 	 }*/
 
+    public static int getHostVersionCode32() {
+        return (int) getHostVersionCode();
+    }
+
     public static long getHostVersionCode() {
         return InterruptServiceRoutine.INSTANCE.interrupt(InterruptServiceRoutine.GET_VERSION_CODE);
     }
@@ -272,7 +254,7 @@ public class Utils {
         }
     }
 
-    @Deprecated
+    //@Deprecated
     public static Object invoke_virtual_any(Object obj, Object... argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException {
         Class clazz = obj.getClass();
         int argc = argsTypesAndReturnType.length / 2;
@@ -315,7 +297,7 @@ public class Utils {
         return method.invoke(obj, argv);
     }
 
-    @Deprecated
+    //@Deprecated
     public static Object invoke_static_any(Class<?> clazz, Object... argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException {
         int argc = argsTypesAndReturnType.length / 2;
         Class[] argt = new Class[argc];
@@ -357,7 +339,7 @@ public class Utils {
         return method.invoke(null, argv);
     }
 
-    @Deprecated
+    //@Deprecated
     public static Object invoke_virtual_declared_modifier_any(Object obj, int requiredMask, int excludedMask, Object... argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException {
         Class clazz = obj.getClass();
         int argc = argsTypesAndReturnType.length / 2;
@@ -415,7 +397,7 @@ public class Utils {
      * @throws IllegalAccessException
      * @throws IllegalArgumentException
      */
-    @Deprecated
+    //@Deprecated
     public static Object invoke_virtual_declared_ordinal(Object obj, int ordinal, int expected, boolean strict, Object... argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException {
         Class clazz = obj.getClass();
         int argc = argsTypesAndReturnType.length / 2;
@@ -484,7 +466,7 @@ public class Utils {
      * @throws IllegalAccessException
      * @throws IllegalArgumentException
      */
-    @Deprecated
+    //@Deprecated
     public static Object invoke_virtual_declared_fixed_modifier_ordinal(Object obj, int requiredMask, int excludedMask, Class fixed, int ordinal, int expected, boolean strict, Object... argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException {
         int argc = argsTypesAndReturnType.length / 2;
         Class[] argt = new Class[argc];
@@ -553,7 +535,7 @@ public class Utils {
      * @throws IllegalAccessException
      * @throws IllegalArgumentException
      */
-    @Deprecated
+    //@Deprecated
     public static Object invoke_virtual_declared_ordinal_modifier(Object obj, int ordinal, int expected, boolean strict, int requiredMask, int excludedMask, Object... argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException {
         Class clazz = obj.getClass();
         int argc = argsTypesAndReturnType.length / 2;
@@ -623,7 +605,7 @@ public class Utils {
      * @throws IllegalAccessException
      * @throws IllegalArgumentException
      */
-    @Deprecated
+    //@Deprecated
     public static Object invoke_static_declared_ordinal_modifier(Class clazz, int ordinal, int expected, boolean strict, int requiredMask, int excludedMask, Object... argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException {
         int argc = argsTypesAndReturnType.length / 2;
         Class[] argt = new Class[argc];
@@ -1245,7 +1227,7 @@ public class Utils {
      * @param type Field type
      * @return the FIRST(as declared seq in dex) field value meeting the type
      */
-    @Deprecated
+    //@Deprecated
     public static <T> T getFirstNSFByType(Object obj, Class<T> type) {
         if (obj == null) throw new NullPointerException("obj == null");
         if (type == null) throw new NullPointerException("type == null");
@@ -1274,7 +1256,7 @@ public class Utils {
      * @param type Field type
      * @return the FIRST(as declared seq in dex) field value meeting the type
      */
-    @Deprecated
+    //@Deprecated
     public static Field getFirstNSFFieldByType(Class clz, Class type) {
         if (clz == null) throw new NullPointerException("clz == null");
         if (type == null) throw new NullPointerException("type == null");
@@ -1574,7 +1556,7 @@ public class Utils {
         return showToast(ctx, 0, str, 0);
     }
 
-    @Deprecated
+    //@Deprecated
     public static void showErrorToastAnywhere(final String text) {
         try {
             if (Looper.myLooper() == Looper.getMainLooper()) {
@@ -1687,9 +1669,13 @@ public class Utils {
      * same: t0 d1 w2 m3 y4
      */
     private static int difTimeMs(Date t1, Date t2) {
-        if (t1.getYear() != t2.getYear()) return 5;
-        if (t1.getMonth() != t2.getMonth()) return 4;
-        if (t1.getDate() != t2.getDate()) return 3;
+        Calendar c1 = Calendar.getInstance();
+        c1.setTime(t1);
+        Calendar c2 = Calendar.getInstance();
+        c2.setTime(t2);
+        if (c1.get(Calendar.YEAR) != c2.get(Calendar.YEAR)) return 5;
+        if (c1.get(Calendar.MONTH) != c2.get(Calendar.MONTH)) return 4;
+        if (c1.get(Calendar.DATE) != c2.get(Calendar.DATE)) return 3;
         if (t1.equals(t2)) return 0;
         return 1;
     }
@@ -1794,6 +1780,7 @@ public class Utils {
      * 只是隐藏我的联系方式
      * 未必是完全正确的方法, but just do it.
      **/
+    @SuppressWarnings("deprecation")
     private static boolean isExp() {
         try {
             Object pathList = iget_object_or_null(XposedBridge.class.getClassLoader(), "pathList");
@@ -2089,7 +2076,7 @@ public class Utils {
         }
     }
 
-    @Deprecated
+    //@Deprecated
     public static int strcmp(String stra, String strb) {
         int len = Math.min(stra.length(), strb.length());
         for (int i = 0; i < len; i++) {

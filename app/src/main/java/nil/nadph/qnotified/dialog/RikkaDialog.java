@@ -7,15 +7,22 @@ import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.view.*;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import androidx.core.view.ViewCompat;
+
 import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
-import me.kyuubiran.hook.*;
-import nil.nadph.qnotified.hook.rikka.*;
+import nil.nadph.qnotified.hook.rikka.OneTapTwentyLikes;
+import nil.nadph.qnotified.hook.rikka.RemoveSendGiftAd;
+import nil.nadph.qnotified.hook.rikka.ShowMsgCount;
 import nil.nadph.qnotified.ui.DummyDrawable;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.ViewBuilder;
@@ -83,7 +90,8 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
         Window win = getWindow();
         win.setBackgroundDrawable(new DummyDrawable());
         ScrollView outer = new ScrollView(mContext);
-        outer.setBackgroundDrawable(dialogBgDrawable);
+        //outer.setBackgroundDrawable(dialogBgDrawable);
+        ViewCompat.setBackground(outer,dialogBgDrawable);
         //outer.setVerticalScrollbarTrackDrawable(null);
         LinearLayout ll = new LinearLayout(mContext);
         ll.setClickable(true);
@@ -167,7 +175,8 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
         public void invalidateStatus() {
             View v = view;
             if (v == null) return;
-            v.setBackgroundDrawable(isEnabled() ? rikkaDialog.itemOnDrawable : rikkaDialog.itemOffDrawable);
+            //v.setBackgroundDrawable(isEnabled() ? rikkaDialog.itemOnDrawable : rikkaDialog.itemOffDrawable);
+            ViewCompat.setBackground(v, isEnabled() ? rikkaDialog.itemOnDrawable : rikkaDialog.itemOffDrawable);
         }
 
         public static RikkaConfigItem create(RikkaDialog dialog, final String name, final BaseDelayableHook hook) {

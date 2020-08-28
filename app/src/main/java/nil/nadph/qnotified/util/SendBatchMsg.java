@@ -23,29 +23,46 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tencent.mobileqq.app.QQAppInterface;
 
-import nil.nadph.qnotified.ExfriendManager;
-import nil.nadph.qnotified.activity.TroopSelectActivity;
-import nil.nadph.qnotified.bridge.ChatActivityFacade;
-import nil.nadph.qnotified.bridge.SessionInfoImpl;
-import nil.nadph.qnotified.ui.CustomDialog;
-
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import nil.nadph.qnotified.ExfriendManager;
+import nil.nadph.qnotified.activity.TroopSelectActivity;
+import nil.nadph.qnotified.ui.CustomDialog;
+
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.ContactDescriptor;
+import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
+import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_INFO;
+import static nil.nadph.qnotified.util.Utils.dip2px;
+import static nil.nadph.qnotified.util.Utils.getQQAppInterface;
+import static nil.nadph.qnotified.util.Utils.iget_object_or_null;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.showToast;
 
 public class SendBatchMsg {
 
@@ -89,6 +106,7 @@ public class SendBatchMsg {
         }
     }
 
+    @SuppressWarnings("deprecation")
     public static View.OnClickListener clickToBatchMsg() {
         return new View.OnClickListener() {
             @Override
@@ -98,7 +116,7 @@ public class SendBatchMsg {
                     final Context exactCtx = v.getContext();
                     LinearLayout linearLayout = getEditView(exactCtx);
                     final EditText editText = (EditText) linearLayout.getChildAt(0);
-                    final AlertDialog alertDialog = new AlertDialog.Builder(exactCtx, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT)
+                    final AlertDialog alertDialog = new AlertDialog.Builder(exactCtx, Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1 ? android.R.style.Theme_DeviceDefault_Light_Dialog_Alert : AlertDialog.THEME_DEVICE_DEFAULT_LIGHT)
                             .setTitle("输入群发文本")
                             .setView(linearLayout)
                             .setPositiveButton("选择群发对象", null)
@@ -136,9 +154,10 @@ public class SendBatchMsg {
     }
 
 
+    @SuppressWarnings("deprecation")
     private static void showSelectDialog(final Context context, final String msg) throws Throwable {
         final TroopAndFriendSelectAdpter troopAndFriendSelectAdpter = new TroopAndFriendSelectAdpter(context);
-        final AlertDialog alertDialog = new AlertDialog.Builder(context, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT)
+        final AlertDialog alertDialog = new AlertDialog.Builder(context, Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1 ? android.R.style.Theme_DeviceDefault_Light_Dialog_Alert : AlertDialog.THEME_DEVICE_DEFAULT_LIGHT)
                 .setTitle("发送到")
                 .setView(getListView(context, msg, troopAndFriendSelectAdpter))
                 .setPositiveButton("发送", new DialogInterface.OnClickListener() {

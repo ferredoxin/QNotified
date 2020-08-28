@@ -2,11 +2,13 @@ package me.zpp0196.qqpurify.utils;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
-import nil.nadph.qnotified.R;
-import nil.nadph.qnotified.config.ConfigManager;
+
+import androidx.core.content.ContextCompat;
 
 import java.io.IOException;
+
+import nil.nadph.qnotified.R;
+import nil.nadph.qnotified.config.ConfigManager;
 
 /**
  * Created by zpp0196 on 2019/5/18.
@@ -53,7 +55,8 @@ public class ThemeUtils {
     }
 
     public static int getThemeColor(Context context) {
-        return context.getResources().getColor(mTheme.colorId);
+        return ContextCompat.getColor(context,mTheme.colorId);
+        //return context.getResources().getColor(mTheme.colorId);
     }
 
     public static String getThemeTitle() {
@@ -68,19 +71,19 @@ public class ThemeUtils {
 
     public static int[] getColors(Context context) {
         Themes[] themes = Themes.values();
-        Resources res = context.getResources();
+        //Resources res = context.getResources();
         int[] colors = new int[themes.length];
         for (int i = 0; i < colors.length; i++) {
-            colors[i] = res.getColor(themes[i].colorId);
+            colors[i] = ContextCompat.getColor(context,themes[i].colorId);
+            //colors[i] = res.getColor(themes[i].colorId);
         }
         return colors;
     }
 
     private static Themes color2Theme(Context context, int color) {
         Themes[] themes = Themes.values();
-        Resources res = context.getResources();
         for (Themes theme : themes) {
-            if (res.getColor(theme.colorId) == color) {
+            if (ContextCompat.getColor(context,theme.colorId) == color) {
                 return theme;
             }
         }

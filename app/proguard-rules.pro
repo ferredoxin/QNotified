@@ -40,3 +40,6 @@
 }
 
 -dontobfuscate
+
+-dontwarn javax.**
+-dontwarn java.awt.**

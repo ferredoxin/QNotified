@@ -71,7 +71,7 @@ public class BinaryXmlParser {
             return parseXml(bos.toByteArray());
 
         } catch (Exception e) {
-            Utils.log("parse xml error:" + e.toString());
+            Utils.loge("parse xml error:" + e.toString());
         } finally {
             try {
                 if (fis != null) {

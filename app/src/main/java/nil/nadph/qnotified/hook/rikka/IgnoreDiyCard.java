@@ -59,7 +59,7 @@ public class IgnoreDiyCard extends BaseDelayableHook {
         try {
             for (Method m : load("com.tencent.mobileqq.activity.FriendProfileCardActivity").getDeclaredMethods()) {
                 Class<?>[] argt = m.getParameterTypes();
-                if (Utils.getHostVersionCode() <= 1406) {
+                if (Utils.getHostVersionCode32() <= 1406) {
                     if (m.getName().equals("a") && !Modifier.isStatic(m.getModifiers()) && m.getReturnType().equals(void.class)) {
                         if (argt.length != 2) continue;
                         if (argt[1] != boolean.class) continue;

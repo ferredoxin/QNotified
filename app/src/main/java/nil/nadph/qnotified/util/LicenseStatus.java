@@ -18,14 +18,14 @@
  */
 package nil.nadph.qnotified.util;
 
+import java.io.IOException;
+import java.util.HashSet;
+
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.activity.EulaActivity;
 import nil.nadph.qnotified.chiral.MdlMolParser;
 import nil.nadph.qnotified.chiral.Molecule;
 import nil.nadph.qnotified.config.ConfigManager;
-
-import java.io.IOException;
-import java.util.HashSet;
 
 import static nil.nadph.qnotified.util.Utils.log;
 
@@ -146,7 +146,7 @@ public class LicenseStatus {
         return (getCurrentUserBlackFlags() & UserFlagConst.BF_SILENT_GONE) != 0;
     }
 
-    @Deprecated
+    //@Deprecated
     public static boolean isBypassAuth2() {
         return (getCurrentUserWhiteFlags() & UserFlagConst.WF_BYPASS_AUTH_2) != 0;
     }
