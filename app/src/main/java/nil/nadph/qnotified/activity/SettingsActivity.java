@@ -44,7 +44,7 @@ import com.tencent.mobileqq.widget.BounceScrollView;
 import java.io.File;
 import java.io.IOException;
 
-import me.kyuubiran.hook.AutomaticMosaicName;
+import me.kyuubiran.hook.AutoMosaicName;
 import me.kyuubiran.hook.ShowSelfMsgByLeft;
 import me.singleneuron.activity.ChangeDrawerWidthActivity;
 import me.singleneuron.hook.ChangeDrawerWidth;
@@ -239,7 +239,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         __recv_desc = _t.findViewById(R_ID_DESCRIPTION);
         __recv_status = _t.findViewById(R_ID_VALUE);
         ll.addView(newListItemHookSwitchInit(this, "屏蔽小程序广告", "需要手动关闭广告, 请勿反馈此功能无效", RemoveMiniProgramAd.get()));
-        ll.addView(newListItemHookSwitchInit(this, "昵称/群名字打码", "娱乐功能 不进行维护", AutomaticMosaicName.INSTANCE));
+        ll.addView(newListItemHookSwitchInit(this, "昵称/群名字打码", "娱乐功能 不进行维护", AutoMosaicName.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "自己的消息和头像居左显示", "娱乐功能 不进行维护", ShowSelfMsgByLeft.INSTANCE));
         if (getHostVersionCode32() < QQ_8_2_0) {
             ll.addView(newListItemHookSwitchInit(this, "收藏更多表情", "[暂不支持>=8.2.0]保存在本地", FavMoreEmo.get()));

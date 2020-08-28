@@ -18,7 +18,7 @@
  */
 package nil.nadph.qnotified.hook;
 
-import me.kyuubiran.hook.AutomaticMosaicName;
+import me.kyuubiran.hook.AutoMosaicName;
 import me.kyuubiran.hook.DisableScreenshotHelper;
 import me.kyuubiran.hook.RemoveCameraButton;
 import me.kyuubiran.hook.RemoveGroupApp;
@@ -121,7 +121,7 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 NoApplet.INSTANCE,
                 NewRoundHead.INSTANCE,
                 ForceSystemCamera.INSTANCE,
-                AutomaticMosaicName.INSTANCE,
+                AutoMosaicName.INSTANCE,
                 ForceSystemAlbum.INSTANCE,
                 ForceSystemFile.INSTANCE,
                 ShowSelfMsgByLeft.INSTANCE,
