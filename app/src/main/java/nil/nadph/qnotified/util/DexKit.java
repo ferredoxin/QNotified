@@ -20,10 +20,6 @@ package nil.nadph.qnotified.util;
 
 import android.view.View;
 
-import dalvik.system.DexClassLoader;
-import dalvik.system.PathClassLoader;
-import nil.nadph.qnotified.config.ConfigManager;
-
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -37,9 +33,16 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.regex.Pattern;
 
+import dalvik.system.DexClassLoader;
+import dalvik.system.PathClassLoader;
+import nil.nadph.qnotified.config.ConfigManager;
+
 import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
 import static nil.nadph.qnotified.util.Initiator._QQAppInterface;
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.getHostVersionCode;
+import static nil.nadph.qnotified.util.Utils.invoke_virtual;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.logi;
 
 /**
  * What the fuck?
@@ -131,7 +134,7 @@ public class DexKit {
         DexMethodDescriptor m = getMethodDescFromCache(i);
         if (m == null) return null;
         if (m.name.equals("<init>") || m.name.equals("<clinit>")) {
-            log("getMethodFromCache(" + i + ") methodName == " + m.name + " , return null");
+            logi("getMethodFromCache(" + i + ") methodName == " + m.name + " , return null");
             return null;
         }
         try {
@@ -149,7 +152,7 @@ public class DexKit {
         DexMethodDescriptor m = doFindMethodDesc(i);
         if (m == null) return null;
         if (m.name.equals("<init>") || m.name.equals("<clinit>")) {
-            log("doFindMethod(" + i + ") methodName == " + m.name + " , return null");
+            logi("doFindMethod(" + i + ") methodName == " + m.name + " , return null");
             return null;
         }
         try {
@@ -165,7 +168,7 @@ public class DexKit {
         try {
             ConfigManager cache = ConfigManager.getCache();
             int lastVersion = cache.getIntOrDefault("cache_" + a(i) + "_code", 0);
-            if (getHostInfo(getApplication()).versionCode != lastVersion) {
+            if (getHostVersionCode() != lastVersion) {
                 return null;
             }
             String name = cache.getString("cache_" + a(i) + "_method");
@@ -185,7 +188,7 @@ public class DexKit {
         if (ret != null) return ret;
         int ver = -1;
         try {
-            ver = getHostInfo(getApplication()).versionCode;
+            ver = (int) getHostVersionCode();
         } catch (Throwable ignored) {
         }
         try {
@@ -197,7 +200,7 @@ public class DexKit {
             methods = e(i, report);
             if (methods == null || methods.size() == 0) {
                 report.v("No method candidate found.");
-                log("Unable to deobf: " + c(i));
+                logi("Unable to deobf: " + c(i));
                 return null;
             }
             report.v(methods.size() + " method(s) found: " + methods);
@@ -209,11 +212,11 @@ public class DexKit {
             report.v("Final decision:" + (ret == null ? null : ret.toString()));
             cache.putString("deobf_log_" + a(i), report.toString());
             if (ret == null) {
-                log("Multiple classes candidates found, none satisfactory.");
+                logi("Multiple classes candidates found, none satisfactory.");
                 return null;
             }
             cache.putString("cache_" + a(i) + "_method", ret.toString());
-            cache.getAllConfig().put("cache_" + a(i) + "_code", getHostInfo(getApplication()).versionCode);
+            cache.getAllConfig().put("cache_" + a(i) + "_code", getHostVersionCode());
             cache.save();
         } catch (Exception e) {
             log(e);

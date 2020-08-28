@@ -70,7 +70,7 @@ public class BaseApk extends BaseDelayableHook {
                                                 .replace("%n", applicationInfo.loadLabel(packageManager).toString())
                                                 .replace("%p", applicationInfo.packageName)
                                                 .replace("%v", packageArchiveInfo.versionName)
-                                                .replace("%c", String.valueOf(packageArchiveInfo.versionCode));
+                                                .replace("%c", String.valueOf(Utils.getHostVersionCode()));
                                         fileName.set(item, result);
                                     }
                                 }

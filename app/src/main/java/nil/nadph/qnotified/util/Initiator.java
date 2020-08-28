@@ -19,12 +19,15 @@
 package nil.nadph.qnotified.util;
 
 import android.os.Parcelable;
+
 import com.tencent.mobileqq.app.QQAppInterface;
-import de.robv.android.xposed.XposedBridge;
 
 import java.lang.reflect.Field;
 
+import de.robv.android.xposed.XposedBridge;
+
 import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.loge;
 
 @SuppressWarnings("rawtypes")
 public class Initiator {
@@ -109,7 +112,7 @@ public class Initiator {
                 }
             }
         }
-        log("Initiator/E class ConversationTitleBtnCtrl not found");
+        loge("Initiator/E class ConversationTitleBtnCtrl not found");
         return null;
     }
 
@@ -128,7 +131,7 @@ public class Initiator {
                 }
             }
         }
-        log("Initiator/E class ConfigHandler not found");
+        loge("Initiator/E class ConfigHandler not found");
         return null;
     }
 
@@ -335,7 +338,7 @@ public class Initiator {
                 }
             }
         }
-        log("Initiator/E class TroopFileUploadMgr not found");
+        loge("Initiator/E class TroopFileUploadMgr not found");
         return null;
     }
 
@@ -526,7 +529,7 @@ public class Initiator {
                 }
             }
         }
-        log("Initiator/E class C2CMessageProcessor not found");
+        loge("Initiator/E class C2CMessageProcessor not found");
         return null;
     }
 }

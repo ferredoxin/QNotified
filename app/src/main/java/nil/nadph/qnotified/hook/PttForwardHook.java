@@ -32,19 +32,13 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.*;
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.bridge.ChatActivityFacade;
-import nil.nadph.qnotified.bridge.SessionInfoImpl;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.step.DexDeobfStep;
-import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.ui.CustomDialog;
-import nil.nadph.qnotified.ui.HighContrastBorder;
-import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.util.*;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.core.view.ViewCompat;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -56,12 +50,39 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
+import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.bridge.ChatActivityFacade;
+import nil.nadph.qnotified.bridge.SessionInfoImpl;
+import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.step.DexDeobfStep;
+import nil.nadph.qnotified.step.Step;
+import nil.nadph.qnotified.ui.CustomDialog;
+import nil.nadph.qnotified.ui.HighContrastBorder;
+import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.util.CustomMenu;
+import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.FaceImpl;
+import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.Utils;
+
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
+import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_SUCCESS;
+import static nil.nadph.qnotified.util.Utils.dip2px;
+import static nil.nadph.qnotified.util.Utils.dip2sp;
+import static nil.nadph.qnotified.util.Utils.findField;
+import static nil.nadph.qnotified.util.Utils.getApplication;
+import static nil.nadph.qnotified.util.Utils.getFirstNSFFieldByType;
+import static nil.nadph.qnotified.util.Utils.getQQAppInterface;
+import static nil.nadph.qnotified.util.Utils.invoke_virtual;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.showToast;
 
 
 public class PttForwardHook extends BaseDelayableHook {
@@ -378,7 +399,8 @@ public class PttForwardHook extends BaseDelayableHook {
         editText.setTextSize(16);
         int _5 = dip2px(ctx, 5);
         editText.setPadding(_5, _5, _5, _5);
-        editText.setBackgroundDrawable(new HighContrastBorder());
+        //editText.setBackgroundDrawable(new HighContrastBorder());
+        ViewCompat.setBackground(editText, new HighContrastBorder());
         LinearLayout linearLayout = new LinearLayout(ctx);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.addView(tv, MATCH_PARENT, WRAP_CONTENT);

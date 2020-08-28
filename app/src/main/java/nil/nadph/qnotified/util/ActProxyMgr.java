@@ -18,7 +18,16 @@
  */
 package nil.nadph.qnotified.util;
 
-import nil.nadph.qnotified.activity.*;
+import nil.nadph.qnotified.activity.AboutActivity;
+import nil.nadph.qnotified.activity.ChatTailActivity;
+import nil.nadph.qnotified.activity.DonateActivity;
+import nil.nadph.qnotified.activity.ExfriendListActivity;
+import nil.nadph.qnotified.activity.FakeBatCfgActivity;
+import nil.nadph.qnotified.activity.FriendSelectActivity;
+import nil.nadph.qnotified.activity.FriendlistExportActivity;
+import nil.nadph.qnotified.activity.SettingsActivity;
+import nil.nadph.qnotified.activity.TroopSelectActivity;
+import nil.nadph.qnotified.activity.TroubleshootActivity;
 
 public class ActProxyMgr {
     public static final String STUB_DEFAULT_ACTIVITY = "com.tencent.mobileqq.activity.photo.CameraPreviewActivity";
@@ -40,7 +49,7 @@ public class ActProxyMgr {
     public static final int ACTION_CHAT_TAIL_TROOPS_ACTIVITY = 12;
     public static final int ACTION_CHAT_TAIL_FRIENDS_ACTIVITY = 13;
 
-    @Deprecated
+    //@Deprecated
     public static Class<?> getActivityByAction(int action) {
         switch (action) {
             case ACTION_EXFRIEND_LIST:

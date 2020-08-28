@@ -70,6 +70,7 @@ public class HighContrastBorder extends Drawable {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public int getOpacity() {
         return android.graphics.PixelFormat.TRANSLUCENT;
     }

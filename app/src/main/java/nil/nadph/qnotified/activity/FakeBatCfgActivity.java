@@ -24,7 +24,15 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.core.view.ViewCompat;
 
 import com.tencent.mobileqq.widget.BounceScrollView;
 
@@ -42,7 +50,10 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
 import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
+import static nil.nadph.qnotified.util.Utils.dip2px;
+import static nil.nadph.qnotified.util.Utils.dip2sp;
+import static nil.nadph.qnotified.util.Utils.log;
 
 @SuppressLint("Registered")
 public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener {
@@ -98,10 +109,12 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
         pct.setInputType(TYPE_CLASS_NUMBER);
         pct.setTextColor(ResUtils.skin_black);
         pct.setTextSize(dip2sp(FakeBatCfgActivity.this, 18));
-        pct.setBackgroundDrawable(null);
+        //pct.setBackgroundDrawable(null);
+        ViewCompat.setBackground(pct,null);
         pct.setGravity(Gravity.CENTER);
         pct.setPadding(_5dp, _5dp / 2, _5dp, _5dp / 2);
-        pct.setBackgroundDrawable(new HighContrastBorder());
+        //pct.setBackgroundDrawable(new HighContrastBorder());
+        ViewCompat.setBackground(pct,new HighContrastBorder());
         pct.setHint("电量百分比, 取值范围 [1,100]");
         pct.setText(bat.getFakeBatteryCapacity() + "");
         pct.setSelection(pct.getText().length());

@@ -23,19 +23,31 @@ import android.os.Looper;
 import android.view.View;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.util.*;
+import nil.nadph.qnotified.util.DexFieldDescriptor;
+import nil.nadph.qnotified.util.DexFlow;
+import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.DexMethodDescriptor;
+import nil.nadph.qnotified.util.Initiator;
+import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.Utils;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
+import static nil.nadph.qnotified.util.Utils.getApplication;
+import static nil.nadph.qnotified.util.Utils.getHostVersionCode;
+import static nil.nadph.qnotified.util.Utils.isTim;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.loge;
+import static nil.nadph.qnotified.util.Utils.logi;
 
 public class DarkOverlayHook extends BaseDelayableHook {
     public static final String qn_disable_dark_overlay = "qn_disable_dark_overlay";
@@ -144,7 +156,7 @@ public class DarkOverlayHook extends BaseDelayableHook {
             String fieldName = null;
             ConfigManager cache = ConfigManager.getCache();
             int lastVersion = cache.getIntOrDefault(cache_night_mask_field_version_code, 0);
-            int version = getHostInfo(getApplication()).versionCode;
+            int version = (int) Utils.getHostVersionCode();
             if (version == lastVersion) {
                 String name = cache.getString(cache_night_mask_field);
                 if (name != null && name.length() > 0) {
@@ -156,7 +168,7 @@ public class DarkOverlayHook extends BaseDelayableHook {
             if (baseChatPie == null) return null;
             DexMethodDescriptor handleNightMask = DexKit.doFindMethodDesc(DexKit.N_BASE_CHAT_PIE__handleNightMask);
             if (handleNightMask == null) {
-                log("getNightMaskField: handleNightMask is null");
+                logi("getNightMaskField: handleNightMask is null");
                 return null;
             }
             byte[] dex = DexKit.getClassDeclaringDex(DexMethodDescriptor.getTypeSig(baseChatPie),
@@ -191,7 +203,7 @@ public class DarkOverlayHook extends BaseDelayableHook {
             try {
                 ConfigManager cache = ConfigManager.getCache();
                 int lastVersion = cache.getIntOrDefault(cache_night_mask_field_version_code, 0);
-                if (getHostInfo(getApplication()).versionCode != lastVersion) {
+                if (getHostVersionCode() != lastVersion) {
                     return false;
                 }
                 String name = cache.getString(cache_night_mask_field);

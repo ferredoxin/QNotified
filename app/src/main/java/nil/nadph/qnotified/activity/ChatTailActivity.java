@@ -28,8 +28,20 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.core.view.ViewCompat;
+
 import com.tencent.mobileqq.widget.BounceScrollView;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigItems;
@@ -41,16 +53,21 @@ import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.Utils;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import static android.text.InputType.TYPE_CLASS_TEXT;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.ui.ViewBuilder.*;
+import static nil.nadph.qnotified.ui.ViewBuilder.R_ID_VALUE;
+import static nil.nadph.qnotified.ui.ViewBuilder.clickToProxyActAction;
+import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemButton;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemSwitchFriendConfigNext;
+import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
 import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_CHAT_TAIL_FRIENDS_ACTIVITY;
 import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_CHAT_TAIL_TROOPS_ACTIVITY;
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
+import static nil.nadph.qnotified.util.Utils.dip2px;
+import static nil.nadph.qnotified.util.Utils.dip2sp;
+import static nil.nadph.qnotified.util.Utils.log;
 
 @SuppressLint("Registered")
 public class ChatTailActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener {
@@ -146,10 +163,12 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         pct.setInputType(TYPE_CLASS_TEXT);
         pct.setTextColor(ResUtils.skin_black);
         pct.setTextSize(dip2sp(ChatTailActivity.this, 18));
-        pct.setBackgroundDrawable(null);
+        //pct.setBackgroundDrawable(null);
+        ViewCompat.setBackground(pct,null);
         pct.setGravity(Gravity.CENTER);
         pct.setPadding(_5dp, _5dp / 2, _5dp, _5dp / 2);
-        pct.setBackgroundDrawable(new HighContrastBorder());
+        //pct.setBackgroundDrawable(new HighContrastBorder());
+        ViewCompat.setBackground(pct,new HighContrastBorder());
         pct.setHint(ChatTailActivity.delimiter + " 将会被替换为消息");
         pct.setText(ct.getTailCapacity().replace("\n", "\\n"));
         pct.setSelection(pct.getText().length());

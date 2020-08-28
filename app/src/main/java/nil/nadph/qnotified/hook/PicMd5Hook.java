@@ -19,11 +19,15 @@
 package nil.nadph.qnotified.hook;
 
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.view.View;
 import android.widget.Toast;
+
+import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -37,11 +41,11 @@ import nil.nadph.qnotified.util.CustomMenu;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Method;
-
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
+import static nil.nadph.qnotified.util.Utils.iget_object_or_null;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.showToast;
 
 public class PicMd5Hook extends BaseDelayableHook {
     public static final String qn_show_pic_md5 = "qn_show_pic_md5";
@@ -133,7 +137,7 @@ public class PicMd5Hook extends BaseDelayableHook {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             ClipboardManager clipboardManager = (ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);
-                            clipboardManager.setText(md5);
+                            clipboardManager.setPrimaryClip(ClipData.newPlainText(null, md5));
                         }
                     }).setNegativeButton("关闭", null).show();
                 } catch (Throwable e) {

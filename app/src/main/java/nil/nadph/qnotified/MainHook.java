@@ -30,7 +30,14 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
-import android.os.*;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Looper;
+import android.os.Message;
+import android.os.Parcelable;
+import android.os.PersistableBundle;
+import android.os.TestLooperManager;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -38,6 +45,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
+
+import java.io.File;
+import java.lang.ref.WeakReference;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Proxy;
+import java.util.List;
+
 import dalvik.system.BaseDexClassLoader;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
@@ -46,23 +66,38 @@ import me.kyuubiran.hook.RemoveCameraButton;
 import nil.nadph.qnotified.activity.SettingsActivity;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.hook.*;
+import nil.nadph.qnotified.hook.BaseDelayableHook;
+import nil.nadph.qnotified.hook.GagInfoDisclosure;
+import nil.nadph.qnotified.hook.MuteAtAllAndRedPacket;
+import nil.nadph.qnotified.hook.MuteQZoneThumbsUp;
+import nil.nadph.qnotified.hook.RevokeMsgHook;
 import nil.nadph.qnotified.hook.rikka.CustomSplash;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.___WindowIsTranslucent;
-import nil.nadph.qnotified.util.*;
-
-import java.io.File;
-import java.lang.ref.WeakReference;
-import java.lang.reflect.*;
-import java.util.List;
+import nil.nadph.qnotified.util.ActProxyMgr;
+import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.Initiator;
+import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.MainProcess;
+import nil.nadph.qnotified.util.Nullable;
+import nil.nadph.qnotified.util.Utils;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_RESERVED;
 import static nil.nadph.qnotified.util.ActProxyMgr.ACTIVITY_PROXY_ACTION;
 import static nil.nadph.qnotified.util.Initiator._StartupDirector;
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.getApplication;
+import static nil.nadph.qnotified.util.Utils.getFirstNSFByType;
+import static nil.nadph.qnotified.util.Utils.getHostVersionCode;
+import static nil.nadph.qnotified.util.Utils.getLongAccountUin;
+import static nil.nadph.qnotified.util.Utils.iget_object_or_null;
+import static nil.nadph.qnotified.util.Utils.isAlphaVersion;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.logd;
+import static nil.nadph.qnotified.util.Utils.loge;
+import static nil.nadph.qnotified.util.Utils.logi;
+import static nil.nadph.qnotified.util.Utils.new_instance;
 
 /*TitleKit:Lcom/tencent/mobileqq/widget/navbar/NavBarCommon*/
 
@@ -97,14 +132,14 @@ public class MainHook {
                 ret.append(param.args[i]);
             }
             ret.append(")=").append(param.getResult());
-            Utils.log(ret.toString());
+            Utils.logi(ret.toString());
             ret = new StringBuilder("↑dump object:" + m.getDeclaringClass().getCanonicalName() + "\n");
             Field[] fs = m.getDeclaringClass().getDeclaredFields();
             for (int i = 0; i < fs.length; i++) {
                 fs[i].setAccessible(true);
                 ret.append(i < fs.length - 1 ? "├" : "↓").append(fs[i].getName()).append("=").append(Utils.en_toStr(fs[i].get(param.thisObject))).append("\n");
             }
-            log(ret.toString());
+            logi(ret.toString());
             Utils.dumpTrace();
         }
     };
@@ -124,14 +159,14 @@ public class MainHook {
                 ret.append(param.args[i]);
             }
             ret.append(")=").append(param.getResult());
-            Utils.log(ret.toString());
+            Utils.logi(ret.toString());
             ret = new StringBuilder("↑dump object:" + m.getDeclaringClass().getCanonicalName() + "\n");
             Field[] fs = m.getDeclaringClass().getDeclaredFields();
             for (int i = 0; i < fs.length; i++) {
                 fs[i].setAccessible(true);
                 ret.append(i < fs.length - 1 ? "├" : "↓").append(fs[i].getName()).append("=").append(Utils.en_toStr(fs[i].get(param.thisObject))).append("\n");
             }
-            log(ret.toString());
+            logi(ret.toString());
             Utils.dumpTrace();
         }
     };
@@ -154,7 +189,7 @@ public class MainHook {
         try {
             return findAndHookMethod(clazz, methodName, parameterTypesAndCallback);
         } catch (Throwable e) {
-            log(e.toString());
+            log(e);
             return null;
         }
     }
@@ -164,7 +199,7 @@ public class MainHook {
         try {
             return findAndHookMethod(clazzName, cl, methodName, parameterTypesAndCallback);
         } catch (Throwable e) {
-            log(e.toString());
+            log(e);
             return null;
         }
     }
@@ -592,7 +627,7 @@ public class MainHook {
                     activityManagerClass = Class.forName("android.app.ActivityManager");
                     gDefaultField = activityManagerClass.getDeclaredField("IActivityManagerSingleton");
                 } catch (Exception err2) {
-                    log("WTF: Unable to get IActivityManagerSingleton");
+                    logi("WTF: Unable to get IActivityManagerSingleton");
                     log(err1);
                     log(err2);
                     return;
@@ -648,7 +683,7 @@ public class MainHook {
         try {
             Class<?> clz = load("com.tencent.mobileqq.activity.JumpActivity");
             if (clz == null) {
-                log("class JumpActivity not found.");
+                logi("class JumpActivity not found.");
                 return;
             }
             Method doOnCreate = clz.getDeclaredMethod("doOnCreate", Bundle.class);
@@ -694,7 +729,7 @@ public class MainHook {
                                 realIntent.setComponent(new ComponentName(activity, activityClass));
                                 activity.startActivity(realIntent);
                             } catch (Exception e) {
-                                log("Unable to start Activity: " + e.toString());
+                                logi("Unable to start Activity: " + e.toString());
                             }
                         }
                     }
@@ -1217,7 +1252,7 @@ public class MainHook {
             ConfigManager cache = ConfigManager.getCache();
             if (ConfigManager.getDefaultConfig().getBooleanOrFalse(ConfigItems.qn_hide_msg_list_miniapp)) {
                 int lastVersion = cache.getIntOrDefault("qn_hide_msg_list_miniapp_version_code", 0);
-                if (getHostInfo(getApplication()).versionCode == lastVersion) {
+                if (getHostVersionCode() == lastVersion) {
                     String methodName = cache.getString("qn_hide_msg_list_miniapp_method_name");
                     findAndHookMethod(load("com/tencent/mobileqq/activity/Conversation"), methodName, XC_MethodReplacement.returnConstant(null));
                 } else {
@@ -1309,7 +1344,7 @@ public class MainHook {
                                 throw new NullPointerException("Failed to get Conversation.?() to hide MiniApp!");
                             ConfigManager cache = ConfigManager.getCache();
                             cache.putString("qn_hide_msg_list_miniapp_method_name", methodName);
-                            cache.getAllConfig().put("qn_hide_msg_list_miniapp_version_code", getHostInfo(getApplication()).versionCode);
+                            cache.getAllConfig().put("qn_hide_msg_list_miniapp_version_code", getHostVersionCode());
                             cache.save();
                             param.setThrowable(new UnsupportedOperationException("MiniAppEntry disabled"));
                         }

@@ -33,8 +33,26 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.core.view.ViewCompat;
+
 import com.tencent.widget.XListView;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigItems;
@@ -44,13 +62,13 @@ import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.FaceImpl;
 import nil.nadph.qnotified.util.Utils;
 
-import java.util.*;
-
 import static android.view.View.GONE;
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.util.ActProxyMgr.*;
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_CHAT_TAIL_FRIENDS_ACTIVITY;
+import static nil.nadph.qnotified.util.ActProxyMgr.ACTIVITY_PROXY_ACTION;
+import static nil.nadph.qnotified.util.Utils.dip2px;
+import static nil.nadph.qnotified.util.Utils.log;
 
 
 @SuppressLint("Registered")
@@ -278,7 +296,8 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
         search.setId(R_ID_TRP_SEARCH_EDIT);
         search.addTextChangedListener(this);
         search.setTextColor(cTitle);
-        search.setBackgroundDrawable(null);
+        //search.setBackgroundDrawable(null);
+        ViewCompat.setBackground(search,null);
         LinearLayout.LayoutParams btnlp = new LinearLayout.LayoutParams(WRAP_CONTENT, bar_hi);
         LinearLayout.LayoutParams searchlp = new LinearLayout.LayoutParams(WRAP_CONTENT, bar_hi);
         searchlp.weight = 1;
@@ -286,19 +305,22 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
         reverse.setText("反选");
         reverse.setId(R_ID_TRP_REVERSE);
         reverse.setTextColor(cTitle);
-        reverse.setBackgroundDrawable(null);
+        //reverse.setBackgroundDrawable(null);
+        ViewCompat.setBackground(reverse,null);
         reverse.setOnClickListener(this);
         selectAll = new Button(this);
         selectAll.setText("全选");
         selectAll.setId(R_ID_TRP_SELECT_ALL);
         selectAll.setTextColor(cTitle);
-        selectAll.setBackgroundDrawable(null);
+        //selectAll.setBackgroundDrawable(null);
+        ViewCompat.setBackground(selectAll,null);
         selectAll.setOnClickListener(this);
         cancel = new Button(this);
         cancel.setText("取消");
         cancel.setTextColor(cTitle);
         cancel.setId(R_ID_TRP_CANCEL);
-        cancel.setBackgroundDrawable(null);
+        //cancel.setBackgroundDrawable(null);
+        ViewCompat.setBackground(cancel,null);
         cancel.setOnClickListener(this);
         cancel.setVisibility(GONE);
         bar.addView(search, searchlp);
@@ -368,14 +390,16 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
         llayout.setGravity(Gravity.CENTER_VERTICAL);
         llayout.setOrientation(LinearLayout.HORIZONTAL);
         llayout.setPadding(std_mg, std_mg / 2, 0, std_mg / 2);
-        llayout.setBackgroundDrawable(ResUtils.getListItemBackground());
+        //llayout.setBackgroundDrawable(ResUtils.getListItemBackground());
+        ViewCompat.setBackground(llayout,ResUtils.getListItemBackground());
         llayout.setOnClickListener(this);
         llayout.setId(R_ID_TRP_LAYOUT);
         CheckBox checkBox = new CheckBox(this);
         checkBox.setId(R_ID_TRP_CHECKBOX);
         checkBox.setOnCheckedChangeListener(this);
         checkBox.setButtonDrawable(null);
-        checkBox.setBackgroundDrawable(ResUtils.getCheckBoxBackground());
+        //checkBox.setBackgroundDrawable(ResUtils.getCheckBoxBackground());
+        ViewCompat.setBackground(checkBox,ResUtils.getCheckBoxBackground());
         LinearLayout.LayoutParams imglp = new LinearLayout.LayoutParams(Utils.dip2px(this, 50), Utils.dip2px(this, 50));
         imglp.setMargins(tmp = Utils.dip2px(this, 12), tmp / 2, tmp / 2, tmp / 2);
         ImageView imgview = new ImageView(this);

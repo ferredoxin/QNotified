@@ -27,6 +27,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
 import de.robv.android.xposed.XC_MethodHook;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.SyncUtils;
@@ -35,14 +38,22 @@ import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ViewBuilder;
-import nil.nadph.qnotified.util.*;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.Nullable;
+import nil.nadph.qnotified.util.UiThread;
+import nil.nadph.qnotified.util.Utils;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
+import static nil.nadph.qnotified.util.Utils.getApplication;
+import static nil.nadph.qnotified.util.Utils.getFirstNSFByType;
+import static nil.nadph.qnotified.util.Utils.getShort$Name;
+import static nil.nadph.qnotified.util.Utils.iget_object_or_null;
+import static nil.nadph.qnotified.util.Utils.invoke_static_any;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.loge;
 
 public class MultiForwardAvatarHook extends BaseDelayableHook {
 
@@ -66,7 +77,7 @@ public class MultiForwardAvatarHook extends BaseDelayableHook {
      * @return message or null
      */
     @Nullable
-    @Deprecated
+    //@Deprecated
     public static Object getChatMessageByView(View v) {
         Class cl_AIOUtils = DexKit.doFindClass(DexKit.C_AIO_UTILS);
         if (cl_AIOUtils == null) return null;

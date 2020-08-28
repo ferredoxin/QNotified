@@ -26,13 +26,22 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Looper;
-import nil.nadph.qnotified.hook.BaseDelayableHook;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
+
+import nil.nadph.qnotified.hook.BaseDelayableHook;
 
 import static nil.nadph.qnotified.util.Utils.getApplication;
 import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.loge;
 
 //import libcore.io.Libcore;
 
@@ -169,7 +178,7 @@ public class SyncUtils {
         //log("Proc:  " + android.os.Process.myPid() + "/" + getProcessType() + "/" + getProcessName());
     }
 
-    @Deprecated
+    //@Deprecated
     public static void sendGenericBroadcast(Intent intent) {
         sendGenericBroadcast(null, intent);
     }
@@ -282,7 +291,7 @@ public class SyncUtils {
 				 String procName = new String(b, 0, len).trim();
 				 //XposedBridge.log(procName);*/
             } catch (Throwable e) {
-                log("getProcessName error " + e);
+                loge("getProcessName error " + e);
             }
             retry++;
             if (retry >= 3) {

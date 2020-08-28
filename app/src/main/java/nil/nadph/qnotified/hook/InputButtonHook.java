@@ -20,10 +20,10 @@ package nil.nadph.qnotified.hook;
 
 
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Build;
-import android.os.Looper;
 import android.os.Parcelable;
 import android.view.MotionEvent;
 import android.view.View;
@@ -31,30 +31,41 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.tencent.mobileqq.app.QQAppInterface;
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.activity.ChatTailActivity;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.dialog.RikkaCustomMsgTimeFormatDialog;
-import nil.nadph.qnotified.step.DexDeobfStep;
-import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.ui.InterceptLayout;
-import nil.nadph.qnotified.ui.TouchEventToLongClickAdapter;
-import nil.nadph.qnotified.util.*;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
+import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.activity.ChatTailActivity;
+import nil.nadph.qnotified.dialog.RikkaCustomMsgTimeFormatDialog;
+import nil.nadph.qnotified.step.DexDeobfStep;
+import nil.nadph.qnotified.step.Step;
+import nil.nadph.qnotified.ui.InterceptLayout;
+import nil.nadph.qnotified.ui.TouchEventToLongClickAdapter;
+import nil.nadph.qnotified.util.CliOper;
+import nil.nadph.qnotified.util.CustomMenu;
+import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.Utils;
+
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static nil.nadph.qnotified.util.Initiator._SessionInfo;
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
+import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_INFO;
+import static nil.nadph.qnotified.util.Utils.getFirstNSFByType;
+import static nil.nadph.qnotified.util.Utils.iget_object_or_null;
+import static nil.nadph.qnotified.util.Utils.invoke_virtual;
+import static nil.nadph.qnotified.util.Utils.invoke_virtual_any;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.showToast;
 
 
 public class InputButtonHook extends BaseDelayableHook {
@@ -292,12 +303,12 @@ public class InputButtonHook extends BaseDelayableHook {
                     ClipboardManager clipboardManager = (ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);
                     if (load("com.tencent.mobileqq.data.MessageForStructing").isAssignableFrom(chatMessage.getClass())) {
                         String text = (String) invoke_virtual(iget_object_or_null(chatMessage, "structingMsg"), "getXml", new Object[0]);
-                        clipboardManager.setText(text);
+                        clipboardManager.setPrimaryClip(ClipData.newPlainText(null, text));
                         showToast(ctx, TOAST_TYPE_INFO, "复制成功", Toast.LENGTH_SHORT);
                         CliOper.copyCardMsg(text);
                     } else if (load("com.tencent.mobileqq.data.MessageForArkApp").isAssignableFrom(chatMessage.getClass())) {
                         String text = (String) invoke_virtual(iget_object_or_null(chatMessage, "ark_app_message"), "toAppXml", new Object[0]);
-                        clipboardManager.setText(text);
+                        clipboardManager.setPrimaryClip(ClipData.newPlainText(null, text));
                         showToast(ctx, TOAST_TYPE_INFO, "复制成功", Toast.LENGTH_SHORT);
                         CliOper.copyCardMsg(text);
                     }
