@@ -18,6 +18,9 @@
  */
 package nil.nadph.qnotified.hook;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import me.singleneuron.util.QQVersion;
@@ -25,9 +28,6 @@ import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Utils;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 
 import static nil.nadph.qnotified.util.Utils.log;
 
@@ -55,22 +55,11 @@ public class VasProfileAntiCrash extends BaseDelayableHook {
             //switch only support int, not long
             switch (versionCode32) {
                 case (int) QQVersion.QQ_8_4_1: {
-                    Class<?> Card = Initiator.load("com.tencent.mobileqq.data.Card");
-                    for (Method m : Initiator.load("azfl").getDeclaredMethods()) {//TODO: azxy可适配845，这几天没空写代码和测试，希望有大佬能加上
-                        Class<?>[] argt;
-                        if (Modifier.isStatic(m.getModifiers()) && m.getName().equals("a")
-                                && m.getReturnType() == long.class && (argt = m.getParameterTypes()).length == 1
-                                && argt[0] == Card) {
-                            XposedBridge.hookMethod(m, new XC_MethodHook() {
-                                @Override
-                                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                                    if (param.hasThrowable()) {
-                                        param.setResult(0L);
-                                    }
-                                }
-                            });
-                        }
-                    }
+                    doHook("azfl");
+                    break;
+                }
+                case (int) QQVersion.QQ_8_4_5: {
+                    doHook("azxy");
                     break;
                 }
             }
@@ -79,6 +68,25 @@ public class VasProfileAntiCrash extends BaseDelayableHook {
         } catch (Throwable e) {
             log(e);
             return false;
+        }
+    }
+
+    private void doHook(String className) {
+        Class<?> Card = Initiator.load("com.tencent.mobileqq.data.Card");
+        for (Method m : Initiator.load(className).getDeclaredMethods()) {
+            Class<?>[] argt;
+            if (Modifier.isStatic(m.getModifiers()) && m.getName().equals("a")
+                    && m.getReturnType() == long.class && (argt = m.getParameterTypes()).length == 1
+                    && argt[0] == Card) {
+                XposedBridge.hookMethod(m, new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        if (param.hasThrowable()) {
+                            param.setResult(0L);
+                        }
+                    }
+                });
+            }
         }
     }
 
