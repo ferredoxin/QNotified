@@ -56,7 +56,7 @@ public class VasProfileAntiCrash extends BaseDelayableHook {
             switch (versionCode32) {
                 case (int) QQVersion.QQ_8_4_1: {
                     Class<?> Card = Initiator.load("com.tencent.mobileqq.data.Card");
-                    for (Method m : Initiator.load("azfl").getDeclaredMethods()) {
+                    for (Method m : Initiator.load("azfl").getDeclaredMethods()) {//TODO: azxy可适配845，这几天没空写代码和测试，希望有大佬能加上
                         Class<?>[] argt;
                         if (Modifier.isStatic(m.getModifiers()) && m.getName().equals("a")
                                 && m.getReturnType() == long.class && (argt = m.getParameterTypes()).length == 1
