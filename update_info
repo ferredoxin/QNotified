@@ -1,15 +1,14 @@
 [
   {
-    "code": 36,
-    "name": "0.8.3",
+    "code": 100,
+    "name": "0.8.9+",
     "taichi": true,
     "beta": false,
-    "time": 1594816128,
-    "md5": "00555b296b39da66baaacadef97c2427",
-    "desc": "添加了一些功能, 适配 QQ 8.4.1",
+    "time": 1598454120,
+    "md5": "null",
+    "desc": "请还在使用0.8.3的用户复制下方链接到浏览器自行下载最新版, 尽快升级. 如新版本无法安装, 请先卸载旧版本qn模块后再安装新版即可, 注:如网页打不开请科学上网",
     "urls": [
-      "https://github.com/cinit/QNotified/releases/download/v0.8.3/QNotified_0.8.3.apk",
-      "https://wwe.lanzous.com/iMzHwemueqb"
+      "https://install.appcenter.ms/orgs/qnotifieddev/apps/qnotified/distribution_groups/alpha"
     ]
   }
 ]

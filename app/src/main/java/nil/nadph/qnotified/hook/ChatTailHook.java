@@ -89,7 +89,7 @@ public class ChatTailHook extends BaseDelayableHook {
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     if (isEnabled()) {
                         if (LicenseStatus.sDisableCommonHooks) return;
-                        if (!LicenseStatus.getAuth2Status()) return;
+                        if (LicenseStatus.hasBlackFlags()) return;
                         String msg = (String) param.args[3];
                         // StringBuilder debug = new StringBuilder();
                         //  debug.append("当前消息: ").append(msg).append("\n");

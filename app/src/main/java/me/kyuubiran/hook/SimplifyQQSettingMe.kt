@@ -126,7 +126,7 @@ object SimplifyQQSettingMe : BaseMultiConfigDelayableHook() {
                                 text.contains("打卡") && getBooleanConfig(HIDE_DA_KA) -> {
                                     setZeroHeightWeight(child)
                                 }
-                                (text.contains("王卡") || text.contains("流量")) && getBooleanConfig(HIDE_WANG_KA) -> {
+                                (text.contains("王卡") || text.contains("流量") || text.toLowerCase(Locale.ROOT).contains("送svip")) && getBooleanConfig(HIDE_WANG_KA) -> {
                                     setZeroHeightWeight(child)
                                 }
                             }

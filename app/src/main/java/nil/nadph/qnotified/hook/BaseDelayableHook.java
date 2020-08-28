@@ -132,6 +132,7 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 DebugDump.INSTANCE,
                 ChangeDrawerWidth.INSTANCE,
                 CutMessage.INSTANCE,
+                VasProfileAntiCrash.get(),
         };
         return sAllHooks;
     }
