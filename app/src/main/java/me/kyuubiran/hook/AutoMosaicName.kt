@@ -14,7 +14,7 @@ import nil.nadph.qnotified.util.Utils
 import java.lang.reflect.Method
 
 //聊天界面顶栏群名字/好友昵称自动打码
-object AutomaticMosaicName : BaseDelayableHook() {
+object AutoMosaicName : BaseDelayableHook() {
     private const val kr_automatic_mosaic_name = "kr_automatic_mosaic_name"
     var isInit = false
 
@@ -29,7 +29,6 @@ object AutomaticMosaicName : BaseDelayableHook() {
                 val argt = m.parameterTypes
                 if (argt.size == 1 && argt[0] == Boolean::class.java && m.name == "t") {
                     XposedBridge.hookMethod(m, object : XC_MethodHook() {
-                        @Throws(Throwable::class)
                         override fun beforeHookedMethod(param: MethodHookParam) {
                             if (LicenseStatus.sDisableCommonHooks) return
                             param.args[0] = isEnabled
