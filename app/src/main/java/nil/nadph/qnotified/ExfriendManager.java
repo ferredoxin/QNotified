@@ -19,20 +19,25 @@
 package nil.nadph.qnotified;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.Application;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
+import android.app.*;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.core.app.NotificationCompat;
+import nil.nadph.qnotified.activity.ExfriendListActivity;
+import nil.nadph.qnotified.bridge.FriendChunk;
+import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.config.EventRecord;
+import nil.nadph.qnotified.config.FriendRecord;
+import nil.nadph.qnotified.config.Table;
+import nil.nadph.qnotified.hook.DelDetectorHook;
+import nil.nadph.qnotified.remote.GetUserStatusResp;
+import nil.nadph.qnotified.remote.TransactionHelper;
+import nil.nadph.qnotified.util.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,37 +51,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import nil.nadph.qnotified.activity.ExfriendListActivity;
-import nil.nadph.qnotified.bridge.FriendChunk;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.config.EventRecord;
-import nil.nadph.qnotified.config.FriendRecord;
-import nil.nadph.qnotified.config.Table;
-import nil.nadph.qnotified.hook.DelDetectorHook;
-import nil.nadph.qnotified.remote.GetUserStatusResp;
-import nil.nadph.qnotified.remote.TransactionHelper;
-import nil.nadph.qnotified.util.ActProxyMgr;
-import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.Nullable;
-import nil.nadph.qnotified.util.UserFlagConst;
-import nil.nadph.qnotified.util.Utils;
-
-import static nil.nadph.qnotified.config.Table.TYPE_INT;
-import static nil.nadph.qnotified.config.Table.TYPE_IUTF8;
-import static nil.nadph.qnotified.config.Table.TYPE_LONG;
+import static nil.nadph.qnotified.config.Table.*;
 import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_EXFRIEND_LIST;
 import static nil.nadph.qnotified.util.ActProxyMgr.ACTIVITY_PROXY_ACTION;
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.ContactDescriptor;
-import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
-import static nil.nadph.qnotified.util.Utils.getApplication;
-import static nil.nadph.qnotified.util.Utils.invoke_virtual;
-import static nil.nadph.qnotified.util.Utils.invoke_virtual_any;
-import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.logd;
-import static nil.nadph.qnotified.util.Utils.logi;
-import static nil.nadph.qnotified.util.Utils.logw;
-import static nil.nadph.qnotified.util.Utils.showToast;
+import static nil.nadph.qnotified.util.Utils.*;
 
 public class ExfriendManager implements SyncUtils.OnFileChangedListener {
     static public final int ID_EX_NOTIFY = 65537;
@@ -773,20 +752,21 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
     @SuppressWarnings("deprecation")
     public Notification createNotiComp(NotificationManager nm, String ticker, String title, String content, long[] vibration, PendingIntent pi) {
         Application app = getApplication();
-        NotificationCompat.Builder builder;
+        //Do not use NotificationCompat, NotificationCompat does NOT support setSmallIcon with Bitmap.
+        Notification.Builder builder;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel("qn_del_notify", "删好友通知", NotificationManager.IMPORTANCE_DEFAULT);
             channel.setSound(null, null);
             channel.setVibrationPattern(vibration);
             nm.createNotificationChannel(channel);
-            builder = new NotificationCompat.Builder(app, channel.getId());
+            builder = new Notification.Builder(app, channel.getId());
         } else {
-            builder = new NotificationCompat.Builder(app);
+            builder = new Notification.Builder(app);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             MainHook.injectModuleResources(app.getResources());
-            //we have to createWithBitmap rather than with a ResId, otherwise RemoteServiceException
-            builder.setSmallIcon(R.drawable.ic_del_friend_top);
+            //We have to createWithBitmap rather than with a ResId, otherwise RemoteServiceException
+            builder.setSmallIcon(Icon.createWithBitmap(BitmapFactory.decodeResource(app.getResources(), R.drawable.ic_del_friend_top)));
         } else {
             //2020 now, still using <23?
             builder.setSmallIcon(android.R.drawable.ic_delete);
@@ -796,7 +776,11 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
         builder.setContentText(content);
         builder.setContentIntent(pi);
         builder.setVibrate(vibration);
-        return builder.build();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            return builder.build();
+        } else {
+            return builder.getNotification();
+        }
     }
 
 	/*public static int getResourceId(Context context,String name,String type,String packageName){

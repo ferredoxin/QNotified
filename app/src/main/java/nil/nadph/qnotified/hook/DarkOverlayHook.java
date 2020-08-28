@@ -41,13 +41,7 @@ import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
-import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
-import static nil.nadph.qnotified.util.Utils.getApplication;
-import static nil.nadph.qnotified.util.Utils.getHostVersionCode;
-import static nil.nadph.qnotified.util.Utils.isTim;
-import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.loge;
-import static nil.nadph.qnotified.util.Utils.logi;
+import static nil.nadph.qnotified.util.Utils.*;
 
 public class DarkOverlayHook extends BaseDelayableHook {
     public static final String qn_disable_dark_overlay = "qn_disable_dark_overlay";
@@ -156,7 +150,7 @@ public class DarkOverlayHook extends BaseDelayableHook {
             String fieldName = null;
             ConfigManager cache = ConfigManager.getCache();
             int lastVersion = cache.getIntOrDefault(cache_night_mask_field_version_code, 0);
-            int version = (int) Utils.getHostVersionCode();
+            int version = Utils.getHostVersionCode32();
             if (version == lastVersion) {
                 String name = cache.getString(cache_night_mask_field);
                 if (name != null && name.length() > 0) {
@@ -203,7 +197,7 @@ public class DarkOverlayHook extends BaseDelayableHook {
             try {
                 ConfigManager cache = ConfigManager.getCache();
                 int lastVersion = cache.getIntOrDefault(cache_night_mask_field_version_code, 0);
-                if (getHostVersionCode() != lastVersion) {
+                if (getHostVersionCode32() != lastVersion) {
                     return false;
                 }
                 String name = cache.getString(cache_night_mask_field);

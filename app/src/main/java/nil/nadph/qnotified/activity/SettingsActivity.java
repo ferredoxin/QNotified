@@ -118,13 +118,7 @@ import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_FRIENDLIST_EXPORT_ACTI
 import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_MUTE_AT_ALL;
 import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_MUTE_RED_PACKET;
 import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_TROUBLESHOOT_ACTIVITY;
-import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
-import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_INFO;
-import static nil.nadph.qnotified.util.Utils.dip2px;
-import static nil.nadph.qnotified.util.Utils.getHostVersionCode;
-import static nil.nadph.qnotified.util.Utils.get_RGB;
-import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.showToast;
+import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressLint("Registered")
 public class SettingsActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener, Runnable {
@@ -177,7 +171,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         }
 
         ll.addView(subtitle(this, "基本功能"));
-        if (!Utils.isTim(this) && getHostVersionCode() >= QQ_8_2_6) {
+        if (!Utils.isTim(this) && getHostVersionCode32() >= QQ_8_2_6) {
             ll.addView(_t = newListItemButton(this, "自定义电量", "[QQ>=8.2.6]在线模式为我的电量时生效", "N/A", clickToProxyActAction(ACTION_FAKE_BAT_CONFIG_ACTIVITY)));
             __tv_fake_bat_status = _t.findViewById(R_ID_VALUE);
         }
@@ -213,7 +207,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(subtitle(this, "净化设置"));
         if (!Utils.isTim(this)) {
             ll.addView(newListItemSwitchConfigNext(this, "隐藏小程序入口", "隐藏消息列表下拉出现的小程序列表", ConfigItems.qn_hide_msg_list_miniapp, false));
-            if (getHostVersionCode() >= QQ_8_1_3) {
+            if (getHostVersionCode32() >= QQ_8_1_3) {
                 ll.addView(newListItemHookSwitchInit(this, "禁止回复自动@", "[>=8.1.3]去除回复消息时自动@特性", ReplyNoAtHook.get()));
             }
             ll.addView(newListItemHookSwitchInit(this, "禁用$打开送礼界面", "禁止聊天时输入$自动弹出[选择赠送对象]窗口", $endGiftHook.get()));
@@ -247,7 +241,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(newListItemHookSwitchInit(this, "屏蔽小程序广告", "需要手动关闭广告, 请勿反馈此功能无效", RemoveMiniProgramAd.get()));
         ll.addView(newListItemHookSwitchInit(this, "昵称/群名字打码", "娱乐功能 不进行维护", AutomaticMosaicName.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "自己的消息和头像居左显示", "娱乐功能 不进行维护", ShowSelfMsgByLeft.INSTANCE));
-        if (getHostVersionCode() < QQ_8_2_0) {
+        if (getHostVersionCode32() < QQ_8_2_0) {
             ll.addView(newListItemHookSwitchInit(this, "收藏更多表情", "[暂不支持>=8.2.0]保存在本地", FavMoreEmo.get()));
         }
         ll.addView(newListItemHookSwitchInit(this, "屏蔽更新提醒", null, PreUpgradeHook.get()));
