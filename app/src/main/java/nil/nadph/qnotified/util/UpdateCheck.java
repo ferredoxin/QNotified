@@ -271,7 +271,7 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
         int ms = Integer.parseInt(p2[3]);
         //return Date.UTC(yyyy - 1900, MM - 1, dd, HH, mm, ss) + ms;
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-        calendar.set(yyyy,MM,dd,HH,mm,ss);
+        calendar.set(yyyy, MM - 1, dd, HH, mm, ss);
         return calendar.getTime().getTime() + ms;
     }
 }
