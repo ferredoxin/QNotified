@@ -18,14 +18,7 @@
  */
 package nil.nadph.qnotified.hook;
 
-import me.kyuubiran.hook.AutoMosaicName;
-import me.kyuubiran.hook.DisableScreenshotHelper;
-import me.kyuubiran.hook.RemoveCameraButton;
-import me.kyuubiran.hook.RemoveGroupApp;
-import me.kyuubiran.hook.RemovePlayTogether;
-import me.kyuubiran.hook.RemoveQbossAD;
-import me.kyuubiran.hook.ShowSelfMsgByLeft;
-import me.kyuubiran.hook.SimplifyQQSettingMe;
+import me.kyuubiran.hook.*;
 import me.kyuubiran.hook.testhook.CutMessage;
 import me.singleneuron.hook.ChangeDrawerWidth;
 import me.singleneuron.hook.DebugDump;
@@ -133,6 +126,7 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 ChangeDrawerWidth.INSTANCE,
                 CutMessage.INSTANCE,
                 VasProfileAntiCrash.get(),
+                RevokeMsg.INSTANCE,
         };
         return sAllHooks;
     }
