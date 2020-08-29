@@ -3,13 +3,23 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="20dp">
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="狐狸狸版防撤回"
+            android:textSize="20sp"
+            android:textColor="@color/theme_color_blp"
+            android:paddingBottom="10dp"/>
     <CheckBox
             android:id="@+id/kr_revoke_msg_enabled"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="启用狐狸狸版防撤回"/>
+            android:text="启用狐狸狸版防撤回"
+            android:textColor="@color/theme_color_ftb"/>
     <LinearLayout
+            android:paddingTop="6dp"
             android:id="@+id/kr_revoke_msg_panel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -18,8 +28,10 @@
                 android:id="@+id/kr_revoke_msg_show_msg_text_enabled"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="显示撤回的内容(仅文字)"/>
+                android:text="显示撤回的内容(仅文字)"
+                android:textColor="@color/theme_color_ftb"/>
         <TextView
+                android:paddingTop="6dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="自定义撤回提示"
@@ -32,6 +44,7 @@
                 android:inputType="text"
                 android:autofillHints=""/>
         <TextView
+                android:paddingTop="6dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="自定义未收到消息时提示"
@@ -44,6 +57,7 @@
                 android:inputType="text"
                 android:autofillHints=""/>
         <TextView
+                android:paddingTop="6dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="上述自定义撤回提示均不包含管理员/群主撤回群员的提示

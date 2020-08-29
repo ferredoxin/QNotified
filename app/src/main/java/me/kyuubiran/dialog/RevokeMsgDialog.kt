@@ -1,6 +1,5 @@
 package me.kyuubiran.dialog
 
-import android.app.AlertDialog
 import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,6 +9,7 @@ import android.widget.CheckBox
 import android.widget.CompoundButton
 import android.widget.EditText
 import android.widget.LinearLayout
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import me.kyuubiran.hook.RevokeMsg
 import me.kyuubiran.utils.getDefaultCfg
 import nil.nadph.qnotified.R
@@ -36,7 +36,7 @@ object RevokeMsgDialog {
         val mPanel = mViewGroup.findViewById<LinearLayout>(R.id.kr_revoke_msg_panel)
         val mRevokedMsgTips = mViewGroup.findViewById<EditText>(R.id.kr_revoked_msg_tips_text)
         val mUnreceivedRevokedMsgTips = mViewGroup.findViewById<EditText>(R.id.kr_unreceived_revoked_msg_tips_text)
-        val mDialog = AlertDialog.Builder(ctx)
+        val mDialog = MaterialAlertDialogBuilder(ctx, R.style.MaterialDialog)
 
         mEnable.isChecked = enable
         mPanel.visibility = if (enable) View.VISIBLE else View.GONE
@@ -83,7 +83,6 @@ object RevokeMsgDialog {
             }
         })
 
-        mDialog.setTitle("狐狸狸版消息防撤回")
         mDialog.setView(mViewGroup)
         mDialog.setPositiveButton("保存") { _, _ -> save() }
         mDialog.setNegativeButton("取消") { _, _ -> }
