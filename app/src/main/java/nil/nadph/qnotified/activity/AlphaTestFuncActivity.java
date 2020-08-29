@@ -21,11 +21,13 @@ package nil.nadph.qnotified.activity;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.tencent.mobileqq.widget.BounceScrollView;
+import me.kyuubiran.dialog.RevokeMsgDialog;
 import nil.nadph.qnotified.hook.CardMsgHook;
 import nil.nadph.qnotified.script.QNScriptManager;
 import nil.nadph.qnotified.ui.ResUtils;
@@ -81,7 +83,9 @@ public class AlphaTestFuncActivity extends IphoneTitleBarActivityCompat {
                 }
             }).start();
         } else {
-            ll.addView(subtitle(this, "Alpha内测功能 请勿截图此页面"));
+            View v = subtitle(this, "Alpha内测功能 请勿截图此页面");
+            v.setOnClickListener(v1 -> RevokeMsgDialog.INSTANCE.onShow(AlphaTestFuncActivity.this));
+            ll.addView(v);
             ll.addView(subtitle(this, "遗留功能"));//群发已不再维护
             ll.addView(newListItemButton(this, "群发文本消息", "年少不知号贵-理性使用以免永冻", null, clickToBatchMsg()));
             ll.addView(newListItemHookSwitchInit(this, "发送卡片消息", "ArkAppMsg(json)+StructMsg(xml)", CardMsgHook.get()));

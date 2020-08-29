@@ -23,8 +23,25 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
+
+import androidx.core.view.ViewCompat;
+
 import com.tencent.mobileqq.widget.BounceScrollView;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Date;
+import java.util.Map;
+
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.FriendRecord;
@@ -33,16 +50,12 @@ import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.ViewBuilder;
 import nil.nadph.qnotified.util.Utils;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Date;
-import java.util.Map;
-
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.csvenc;
+import static nil.nadph.qnotified.util.Utils.dip2px;
+import static nil.nadph.qnotified.util.Utils.en;
 
 @SuppressLint("Registered")
 public class FriendlistExportActivity extends IphoneTitleBarActivityCompat {
@@ -174,7 +187,8 @@ public class FriendlistExportActivity extends IphoneTitleBarActivityCompat {
 
         ll.addView(subtitle(FriendlistExportActivity.this, "请输入要导出列表的QQ号(默认为当前登录的QQ号):"));
         final EditText etuin = new EditText(FriendlistExportActivity.this);
-        etuin.setBackgroundDrawable(new HighContrastBorder());
+        //etuin.setBackgroundDrawable(new HighContrastBorder());
+        ViewCompat.setBackground(etuin, new HighContrastBorder());
         etuin.setPadding(__3_, __3_, __3_, __3_);
         etuin.setTextSize(Utils.dip2sp(FriendlistExportActivity.this, 18));
         etuin.setTextColor(ResUtils.skin_black);
@@ -189,7 +203,8 @@ public class FriendlistExportActivity extends IphoneTitleBarActivityCompat {
 
         ll.addView(subtitle(FriendlistExportActivity.this, "导出文件保存路径(默认在内置存储根目录下):"));
         final EditText expath = new EditText(FriendlistExportActivity.this);
-        expath.setBackgroundDrawable(new HighContrastBorder());
+       // expath.setBackgroundDrawable(new HighContrastBorder());
+        ViewCompat.setBackground(expath, new HighContrastBorder());
         expath.setPadding(__3_, __3_, __3_, __3_);
         expath.setTextSize(Utils.dip2sp(FriendlistExportActivity.this, 18));
         expath.setTextColor(ResUtils.skin_black);

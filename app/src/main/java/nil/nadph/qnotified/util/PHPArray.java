@@ -19,7 +19,13 @@
 package nil.nadph.qnotified.util;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
 
 /**
  * A simple class to use json and vector like php array
@@ -68,7 +74,7 @@ public class PHPArray implements Iterable<HashMap.Entry> {
         }
     }
 
-    @Deprecated
+    //@Deprecated
     public static PHPArray fromJson(String json) {
         int off = 0;
         Stack<Integer> types = new Stack<>();

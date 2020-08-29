@@ -24,6 +24,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import androidx.core.view.ViewCompat;
+
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 public class LinearLayoutDelegate extends LinearLayout {
@@ -55,9 +57,11 @@ public class LinearLayoutDelegate extends LinearLayout {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void setBackgroundDrawable(Drawable background) {
         if (delegate != null)
-            delegate.setBackgroundDrawable(background);
+            //delegate.setBackgroundDrawable(background);
+            ViewCompat.setBackground(delegate,background);
     }
 
     @Override

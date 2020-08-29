@@ -97,14 +97,14 @@ public class MainHook {
                 ret.append(param.args[i]);
             }
             ret.append(")=").append(param.getResult());
-            Utils.log(ret.toString());
+            Utils.logi(ret.toString());
             ret = new StringBuilder("↑dump object:" + m.getDeclaringClass().getCanonicalName() + "\n");
             Field[] fs = m.getDeclaringClass().getDeclaredFields();
             for (int i = 0; i < fs.length; i++) {
                 fs[i].setAccessible(true);
                 ret.append(i < fs.length - 1 ? "├" : "↓").append(fs[i].getName()).append("=").append(Utils.en_toStr(fs[i].get(param.thisObject))).append("\n");
             }
-            log(ret.toString());
+            logi(ret.toString());
             Utils.dumpTrace();
         }
     };
@@ -124,14 +124,14 @@ public class MainHook {
                 ret.append(param.args[i]);
             }
             ret.append(")=").append(param.getResult());
-            Utils.log(ret.toString());
+            Utils.logi(ret.toString());
             ret = new StringBuilder("↑dump object:" + m.getDeclaringClass().getCanonicalName() + "\n");
             Field[] fs = m.getDeclaringClass().getDeclaredFields();
             for (int i = 0; i < fs.length; i++) {
                 fs[i].setAccessible(true);
                 ret.append(i < fs.length - 1 ? "├" : "↓").append(fs[i].getName()).append("=").append(Utils.en_toStr(fs[i].get(param.thisObject))).append("\n");
             }
-            log(ret.toString());
+            logi(ret.toString());
             Utils.dumpTrace();
         }
     };
@@ -154,7 +154,7 @@ public class MainHook {
         try {
             return findAndHookMethod(clazz, methodName, parameterTypesAndCallback);
         } catch (Throwable e) {
-            log(e.toString());
+            log(e);
             return null;
         }
     }
@@ -164,7 +164,7 @@ public class MainHook {
         try {
             return findAndHookMethod(clazzName, cl, methodName, parameterTypesAndCallback);
         } catch (Throwable e) {
-            log(e.toString());
+            log(e);
             return null;
         }
     }
@@ -592,7 +592,7 @@ public class MainHook {
                     activityManagerClass = Class.forName("android.app.ActivityManager");
                     gDefaultField = activityManagerClass.getDeclaredField("IActivityManagerSingleton");
                 } catch (Exception err2) {
-                    log("WTF: Unable to get IActivityManagerSingleton");
+                    logi("WTF: Unable to get IActivityManagerSingleton");
                     log(err1);
                     log(err2);
                     return;
@@ -648,7 +648,7 @@ public class MainHook {
         try {
             Class<?> clz = load("com.tencent.mobileqq.activity.JumpActivity");
             if (clz == null) {
-                log("class JumpActivity not found.");
+                logi("class JumpActivity not found.");
                 return;
             }
             Method doOnCreate = clz.getDeclaredMethod("doOnCreate", Bundle.class);
@@ -694,7 +694,7 @@ public class MainHook {
                                 realIntent.setComponent(new ComponentName(activity, activityClass));
                                 activity.startActivity(realIntent);
                             } catch (Exception e) {
-                                log("Unable to start Activity: " + e.toString());
+                                logi("Unable to start Activity: " + e.toString());
                             }
                         }
                     }
@@ -758,6 +758,7 @@ public class MainHook {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @SuppressLint("NewApi")
     public static class MyInstrumentation extends Instrumentation {
         private final Instrumentation mBase;
@@ -1217,7 +1218,7 @@ public class MainHook {
             ConfigManager cache = ConfigManager.getCache();
             if (ConfigManager.getDefaultConfig().getBooleanOrFalse(ConfigItems.qn_hide_msg_list_miniapp)) {
                 int lastVersion = cache.getIntOrDefault("qn_hide_msg_list_miniapp_version_code", 0);
-                if (getHostInfo(getApplication()).versionCode == lastVersion) {
+                if (getHostVersionCode32() == lastVersion) {
                     String methodName = cache.getString("qn_hide_msg_list_miniapp_method_name");
                     findAndHookMethod(load("com/tencent/mobileqq/activity/Conversation"), methodName, XC_MethodReplacement.returnConstant(null));
                 } else {
@@ -1267,7 +1268,7 @@ public class MainHook {
 
                     Class tmp;
                     Class miniapp = null;
-                    if (Utils.getHostVersionCode() >= 1312) {
+                    if (Utils.getHostVersionCode32() >= 1312) {
                         //for 8.2.6
                         miniapp = load("com/tencent/mobileqq/mini/entry/MiniAppDesktop");
                         if (miniapp == null) {
@@ -1309,7 +1310,7 @@ public class MainHook {
                                 throw new NullPointerException("Failed to get Conversation.?() to hide MiniApp!");
                             ConfigManager cache = ConfigManager.getCache();
                             cache.putString("qn_hide_msg_list_miniapp_method_name", methodName);
-                            cache.getAllConfig().put("qn_hide_msg_list_miniapp_version_code", getHostInfo(getApplication()).versionCode);
+                            cache.getAllConfig().put("qn_hide_msg_list_miniapp_version_code", getHostVersionCode32());
                             cache.save();
                             param.setThrowable(new UnsupportedOperationException("MiniAppEntry disabled"));
                         }

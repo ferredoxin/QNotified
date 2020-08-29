@@ -25,8 +25,19 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import androidx.core.view.ViewCompat;
+
 import com.tencent.mobileqq.widget.BounceScrollView;
+
+import java.text.ParseException;
+import java.util.ArrayList;
+
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.hook.JumpController;
 import nil.nadph.qnotified.ui.CustomDialog;
@@ -35,9 +46,6 @@ import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.ViewBuilder;
 import nil.nadph.qnotified.util.UiThread;
 import nil.nadph.qnotified.util.Utils;
-
-import java.text.ParseException;
-import java.util.ArrayList;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -125,7 +133,8 @@ public class JefsRulesActivity extends IphoneTitleBarActivityCompat implements V
             rulesEt.setHorizontallyScrolling(true);
             rulesEt.setTextSize(16);
             rulesEt.setPadding(__5, __5, __5, __5);
-            rulesEt.setBackgroundDrawable(new HighContrastBorder());
+            //rulesEt.setBackgroundDrawable(new HighContrastBorder());
+            ViewCompat.setBackground(rulesEt,new HighContrastBorder());
             rulesEt.setTextColor(ResUtils.skin_black);
             rulesEt.setTypeface(Typeface.MONOSPACE);
             layoutEdit.addView(rulesEt, ViewBuilder.newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, __10));

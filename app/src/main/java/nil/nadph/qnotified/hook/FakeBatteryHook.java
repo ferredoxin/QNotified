@@ -26,6 +26,18 @@ import android.os.Build;
 import android.os.Looper;
 import android.os.Parcelable;
 import android.widget.Toast;
+
+import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
@@ -36,15 +48,13 @@ import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Utils;
 
-import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.lang.reflect.*;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
+import static nil.nadph.qnotified.util.Utils.getApplication;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.loge;
+import static nil.nadph.qnotified.util.Utils.logi;
+import static nil.nadph.qnotified.util.Utils.logw;
 
 public class FakeBatteryHook extends BaseDelayableHook implements InvocationHandler, SyncUtils.BroadcastListener {
     public static final String qn_fake_bat_enable = "qn_fake_bat_enable";
@@ -136,7 +146,7 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
             if (Build.VERSION.SDK_INT >= 21) {
                 BatteryManager batmgr = (BatteryManager) getApplication().getSystemService(Context.BATTERY_SERVICE);
                 if (batmgr == null) {
-                    log("Wtf, init FakeBatteryHook but BatteryManager is null!");
+                    logi("Wtf, init FakeBatteryHook but BatteryManager is null!");
                     return false;
                 }
                 if (Build.VERSION.SDK_INT < 23) {
@@ -148,7 +158,7 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
                 origRegistrar = fBatteryPropertiesRegistrar.get(batmgr);
                 Class<?> cIBatteryPropertiesRegistrar = fBatteryPropertiesRegistrar.getType();
                 if (origRegistrar == null) {
-                    log("Error! mBatteryPropertiesRegistrar(original) got null");
+                    loge("Error! mBatteryPropertiesRegistrar(original) got null");
                     return false;
                 }
                 Class<?> cIBatteryStatus = null;
@@ -159,11 +169,11 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
                     origStatus = fBatteryStatus.get(batmgr);
                     cIBatteryStatus = fBatteryStatus.getType();
                     if (origStatus == null) {
-                        log("FakeBatteryHook/W Field mBatteryStats found, but instance got null");
+                        logw("FakeBatteryHook/W Field mBatteryStats found, but instance got null");
                     }
                 } catch (NoSuchFieldException e) {
                     if (Build.VERSION.SDK_INT >= 23) {
-                        log("FakeBatteryHook/W Field mBatteryStats not found, but SDK_INT is " + Build.VERSION.SDK_INT);
+                        logw("FakeBatteryHook/W Field mBatteryStats not found, but SDK_INT is " + Build.VERSION.SDK_INT);
                     }
                 }
                 Object proxy;
@@ -305,7 +315,7 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
                 return null;
             } else {
                 //WTF QAQ
-                log("Panic, unexpected method " + method);
+                logi("Panic, unexpected method " + method);
                 return null;
             }
         } catch (InvocationTargetException ite) {

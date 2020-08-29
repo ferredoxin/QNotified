@@ -3,7 +3,6 @@ package nil.nadph.qnotified.util;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
-import android.os.Environment;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -78,6 +77,7 @@ public class Natives {
 
     public static native long call(long addr, long argv);
 
+    @SuppressWarnings("deprecation")
     @SuppressLint("UnsafeDynamicallyLoadedCode")
     public static void load(Context ctx) throws Throwable {
         try {

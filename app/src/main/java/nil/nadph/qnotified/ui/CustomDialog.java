@@ -22,19 +22,24 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.view.View;
 import android.widget.TextView;
-
-import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.NonNull;
-import nil.nadph.qnotified.util.Nullable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.NonNull;
+import nil.nadph.qnotified.util.Nullable;
+
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.DummyCallback;
+import static nil.nadph.qnotified.util.Utils.iget_object_or_null;
+import static nil.nadph.qnotified.util.Utils.invoke_virtual;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.strcmp;
 
 public class CustomDialog {
     private static Class<?> clz_DialogUtil;
@@ -45,6 +50,12 @@ public class CustomDialog {
     private AlertDialog mFailsafeDialog = null;
     private AlertDialog.Builder mBuilder = null;
     private boolean failsafe = false;
+
+    @SuppressWarnings("deprecation")
+    private static int THEME_LIGHT = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1 ? android.R.style.Theme_DeviceDefault_Light_Dialog_Alert : AlertDialog.THEME_DEVICE_DEFAULT_LIGHT;
+    @SuppressWarnings("deprecation")
+    private static int THEME_DARK = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1 ? android.R.style.Theme_DeviceDefault_Dialog_Alert : AlertDialog.THEME_DEVICE_DEFAULT_DARK;
+
 
     public static CustomDialog create(Context ctx) {
         try {
@@ -104,19 +115,19 @@ public class CustomDialog {
         }
         if (ref.mDialog == null) {
             ref.failsafe = true;
-            ref.mBuilder = new AlertDialog.Builder(ctx, ResUtils.isInNightMode() ? AlertDialog.THEME_DEVICE_DEFAULT_DARK : AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+            ref.mBuilder = new AlertDialog.Builder(ctx, ResUtils.isInNightMode() ? THEME_DARK : THEME_LIGHT);
         }
         return ref;
     }
 
     public static int themeIdForDialog() {
-        return ResUtils.isInNightMode() ? AlertDialog.THEME_DEVICE_DEFAULT_DARK : AlertDialog.THEME_DEVICE_DEFAULT_LIGHT;
+        return ResUtils.isInNightMode() ? THEME_DARK : THEME_LIGHT;
     }
 
     public static CustomDialog createFailsafe(Context ctx) {
         CustomDialog ref = new CustomDialog();
         ref.failsafe = true;
-        ref.mBuilder = new AlertDialog.Builder(ctx, ResUtils.isInNightMode() ? AlertDialog.THEME_DEVICE_DEFAULT_DARK : AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+        ref.mBuilder = new AlertDialog.Builder(ctx, ResUtils.isInNightMode() ? THEME_DARK : THEME_LIGHT);
         return ref;
     }
 
@@ -308,4 +319,5 @@ public class CustomDialog {
             return null;
         }
     }
+
 }

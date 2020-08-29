@@ -24,6 +24,7 @@ import android.os.Parcelable;
 import nil.nadph.qnotified.util.Nullable;
 
 import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.logi;
 
 public class RevokeMsgInfoImpl {
 
@@ -69,7 +70,7 @@ public class RevokeMsgInfoImpl {
         String summery = o.toString();
         int keyIndex = summery.indexOf("fromuin");
         if (keyIndex == -1) {
-            log("RevokeMsgInfoImpl/E indexOf('fromuin') == -1, leave fromUin null");
+            logi("RevokeMsgInfoImpl/E indexOf('fromuin') == -1, leave fromUin null");
             return;
         }
         int valueStart = summery.indexOf('=', keyIndex) + 1;

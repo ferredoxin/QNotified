@@ -29,12 +29,12 @@ android {
         release {
             shrinkResources true
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
             shrinkResources true
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     aaptOptions {
@@ -105,7 +105,7 @@ task dexTailDebug {
         if (tmp_f.exists()) {
             pathList.add(tmp_f);
         }
-        //3.6.x, shrunk
+        //3.6.x, minify
         tmp_path = "intermediates/dex/debug/shrunkDex/classes.dex";
         if (!"/".equals(File.separator)) {
             tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar);
@@ -116,6 +116,15 @@ task dexTailDebug {
         }
         //4.0.x single
         tmp_path = "intermediates/dex/debug/mergeDexDebug/classes.dex";
+        if (!"/".equals(File.separator)) {
+            tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar);
+        }
+        tmp_f = new File(project.buildDir, tmp_path);
+        if (tmp_f.exists()) {
+            pathList.add(tmp_f);
+        }
+        //4.0.x minify
+        tmp_path = "intermediates/dex/debug/minifyDebugWithR8/classes.dex";
         if (!"/".equals(File.separator)) {
             tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar);
         }
@@ -148,7 +157,7 @@ task dexTailRelease {
         if (tmp_f.exists()) {
             pathList.add(tmp_f);
         }
-        //3.6.x, shrunk
+        //3.6.x, minify
         tmp_path = "intermediates/dex/release/shrunkDex/classes.dex";
         if (!"/".equals(File.separator)) {
             tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar);
@@ -159,6 +168,15 @@ task dexTailRelease {
         }
         //4.0.x single
         tmp_path = "intermediates/dex/release/mergeDexRelease/classes.dex";
+        if (!"/".equals(File.separator)) {
+            tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar);
+        }
+        tmp_f = new File(project.buildDir, tmp_path);
+        if (tmp_f.exists()) {
+            pathList.add(tmp_f);
+        }
+        //4.0.x minify
+        tmp_path = "intermediates/dex/release/minifyReleaseWithR8/classes.dex";
         if (!"/".equals(File.separator)) {
             tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar);
         }

@@ -28,7 +28,6 @@ import android.os.Build;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import nil.nadph.qnotified.activity.ExfriendListActivity;
 import nil.nadph.qnotified.bridge.FriendChunk;
 import nil.nadph.qnotified.config.ConfigManager;
@@ -175,7 +174,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
      * @return f**k! Do NOT edit the cfg!!!
      * @hide
      */
-    @Deprecated
+    //@Deprecated
     public ConfigManager getConfig() {
         return fileData;
     }
@@ -191,7 +190,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
                 } catch (Throwable e) {
                 }
                 if (persons.size() == 0 && mStdRemarks != null) {
-                    log("WARNING:INIT FROM THE INTERNAL");
+                    logw("WARNING:INIT FROM THE INTERNAL");
                     try {
                         //Here we try to copy friendlist
                         Object fr;
@@ -255,7 +254,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
     private void updateFriendTableVersion() {
         Table<Long> fr = (Table<Long>) fileData.getAllConfig().get("friends");
         if (fr == null) {
-            log("damn! updateFriendTableVersion in null");
+            logd("damn! updateFriendTableVersion in null");
         }
         /* uin+"" is key */
         fr.keyName = "uin";
@@ -299,7 +298,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
     private void tableToFriend() {
         Table<Long> t = (Table<Long>) fileData.getAllConfig().get("friends");
         if (t == null) {
-            log("t_fr==null,aborting!");
+            logi("t_fr==null,aborting!");
             return;
         }
         if (persons == null) persons = new ConcurrentHashMap<Long, FriendRecord>();
@@ -332,7 +331,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
     private void initEventsTable() {
         Table<Integer> ev = (Table<Integer>) fileData.getAllConfig().get("events");
         if (ev == null) {
-            log("damn! initEvT in null");
+            logd("damn! initEvT in null");
             return;
         }
         /** uin+"" is key */
@@ -396,7 +395,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
     private void tableToEvents() {
         Table<Integer> t = (Table<Integer>) fileData.getAllConfig().get("events");
         if (t == null) {
-            log("t_ev==null,aborting!");
+            logi("t_ev==null,aborting!");
             return;
         }
         if (events == null) {
@@ -503,7 +502,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
     /**
      * @hide
      */
-    @Deprecated
+    //@Deprecated
     public ConcurrentHashMap<Long, FriendRecord> getPersons() {
         dirtySerializedFlag = true;
         return persons;
@@ -512,7 +511,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
     /**
      * @hide
      */
-    @Deprecated
+    //@Deprecated
     public ConcurrentHashMap<Integer, EventRecord> getEvents() {
         dirtySerializedFlag = true;
         return events;
@@ -552,7 +551,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
         if (redDotRef == null) return;
         final TextView rd = (TextView) redDotRef.get();
         if (rd == null) {
-            log("Red dot missing!");
+            logi("Red dot missing!");
             return;
         }
         int m = 0;
@@ -634,7 +633,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
             }
             integrity = tmp == 0;
             if (!integrity) {
-                log("Inconsistent friendlist chunk data!Aborting!total=" + tmp);
+                logi("Inconsistent friendlist chunk data!Aborting!total=" + tmp);
                 return;
             }
             HashMap<Long, FriendRecord> del = new HashMap<>(persons);
@@ -750,8 +749,10 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
         saveConfigure();
     }
 
+    @SuppressWarnings("deprecation")
     public Notification createNotiComp(NotificationManager nm, String ticker, String title, String content, long[] vibration, PendingIntent pi) {
         Application app = getApplication();
+        //Do not use NotificationCompat, NotificationCompat does NOT support setSmallIcon with Bitmap.
         Notification.Builder builder;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel("qn_del_notify", "删好友通知", NotificationManager.IMPORTANCE_DEFAULT);
@@ -764,7 +765,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             MainHook.injectModuleResources(app.getResources());
-            //we have to createWithBitmap rather than with a ResId, otherwise RemoteServiceException
+            //We have to createWithBitmap rather than with a ResId, otherwise RemoteServiceException
             builder.setSmallIcon(Icon.createWithBitmap(BitmapFactory.decodeResource(app.getResources(), R.drawable.ic_del_friend_top)));
         } else {
             //2020 now, still using <23?
@@ -796,7 +797,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
         boolean inLogin;
         inLogin = (Utils.getLongAccountUin() == mUin);
         if (!inLogin) {
-            log("doRequestFlRefresh but uin(" + mUin + ") isn't logged in.");
+            logi("doRequestFlRefresh but uin(" + mUin + ") isn't logged in.");
             return;
         }
         try {

@@ -18,6 +18,7 @@
  */
 package nil.nadph.qnotified.ui;
 
+import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
@@ -27,12 +28,23 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
-import nil.nadph.qnotified.*;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.core.view.ViewCompat;
+
+import nil.nadph.qnotified.ExfriendManager;
+import nil.nadph.qnotified.MainHook;
+import nil.nadph.qnotified.R;
+import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.config.SwitchConfigItem;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
-import nil.nadph.qnotified.hook.CardMsgHook;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.NonUiThread;
 import nil.nadph.qnotified.util.Utils;
@@ -40,7 +52,9 @@ import nil.nadph.qnotified.util.Utils;
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
+import static nil.nadph.qnotified.util.Utils.dip2px;
+import static nil.nadph.qnotified.util.Utils.dip2sp;
 
 public class ViewBuilder {
 
@@ -56,7 +70,8 @@ public class ViewBuilder {
         RelativeLayout root = new IsolatedStateRelativeLayout(ctx);
         root.setId((title == null ? "" : title).hashCode());
         root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx, CONSTANT_LIST_ITEM_HEIGHT_DP)));
-        root.setBackgroundDrawable(ResUtils.getListItemBackground());
+        //root.setBackgroundDrawable(ResUtils.getListItemBackground());
+        ViewCompat.setBackground(root,ResUtils.getListItemBackground());
         TextView tv = new TextView(ctx);
         tv.setText(title);
         tv.setId(R_ID_TITLE);
@@ -386,7 +401,8 @@ public class ViewBuilder {
             value) {
         RelativeLayout root = new IsolatedStateRelativeLayout(ctx);
         root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx, CONSTANT_LIST_ITEM_HEIGHT_DP)));
-        root.setBackgroundDrawable(ResUtils.getListItemBackground());
+        //root.setBackgroundDrawable(ResUtils.getListItemBackground());
+        ViewCompat.setBackground(root,ResUtils.getListItemBackground());
         TextView tv = new TextView(ctx);
         tv.setText(title);
         tv.setId(R_ID_TITLE);
@@ -441,7 +457,8 @@ public class ViewBuilder {
             value, View.OnClickListener listener) {
         RelativeLayout root = new IsolatedStateRelativeLayout(ctx);
         root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx, CONSTANT_LIST_ITEM_HEIGHT_DP)));
-        root.setBackgroundDrawable(ResUtils.getListItemBackground());
+        //root.setBackgroundDrawable(ResUtils.getListItemBackground());
+        ViewCompat.setBackground(root,ResUtils.getListItemBackground());
         TextView tv = new TextView(ctx);
         tv.setText(title);
         tv.setId(R_ID_TITLE);
@@ -547,7 +564,6 @@ public class ViewBuilder {
         return ll;
     }
 
-    @Deprecated
     public static View.OnClickListener clickToProxyActAction(final int action) {
         return new View.OnClickListener() {
             @Override
@@ -647,7 +663,7 @@ public class ViewBuilder {
             Class<?> clazz = v.getClass();
             clazz.getMethod("setAdapter", ListAdapter.class).invoke(v, adapter);
         } catch (Exception e) {
-            Utils.log("tencent_ListView->setAdapter: " + e.toString());
+            Utils.logi("tencent_ListView->setAdapter: " + e.toString());
         }
     }
 
@@ -656,7 +672,7 @@ public class ViewBuilder {
             Class<?> clazz = load("com/tencent/widget/Switch");
             return (CompoundButton) clazz.getConstructor(Context.class).newInstance(ctx);
         } catch (Exception e) {
-            Utils.log("Switch->new: " + e.toString());
+            Utils.logi("Switch->new: " + e.toString());
         }
         return null;
     }
@@ -670,7 +686,8 @@ public class ViewBuilder {
                 if (msg.length() > 0) {
                     ClipboardManager cm = (ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);
                     if (cm != null) {
-                        cm.setText(msg);
+                        //cm.setText(msg);
+                        cm.setPrimaryClip(ClipData.newPlainText(null, msg));
                         Utils.showToastShort(c, "已复制文本");
                     }
                 }
@@ -687,7 +704,8 @@ public class ViewBuilder {
         v.setText(value);
         if (ll != null) {
             v.setOnLongClickListener(ll);
-            v.setBackgroundDrawable(ResUtils.getDialogClickableItemBackground());
+            //v.setBackgroundDrawable(ResUtils.getDialogClickableItemBackground());
+            ViewCompat.setBackground(v,ResUtils.getDialogClickableItemBackground());
         }
         if (attach) {
             vg.addView(root);
