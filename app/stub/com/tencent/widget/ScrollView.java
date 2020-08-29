@@ -1,4 +1,4 @@
-package com.tencent.mobileqq.widget;
+package com.tencent.widget;
 
 import android.annotation.TargetApi;
 import android.content.Context;
