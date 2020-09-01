@@ -7,6 +7,10 @@ android {
     buildToolsVersion "29.0.3"
     ndkVersion "21.3.6528147"
 
+    viewBinding {
+        enabled true
+    }
+    
     defaultConfig {
         applicationId "nil.nadph.qnotified"
         minSdkVersion 21
