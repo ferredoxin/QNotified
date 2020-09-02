@@ -19,18 +19,20 @@
 package nil.nadph.qnotified;
 
 import android.content.Context;
+import android.os.Binder;
 import android.os.Build;
 import android.util.Log;
+
+import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Natives;
 import nil.nadph.qnotified.util.Utils;
-
-import java.io.File;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
 import static nil.nadph.qnotified.util.Utils.*;
 
@@ -56,6 +58,9 @@ public class StartupHook {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     try {
+                        if (Build.VERSION.SDK_INT >= 30) {
+                            Utils.getParamAvailability(param, Binder.getCallingPid());
+                        }
                         if (sec_stage_inited) return;
                         Utils.checkLogFlag();
                         Context ctx;

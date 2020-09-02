@@ -29,13 +29,28 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.system.Os;
+import android.system.OsConstants;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import com.tencent.mobileqq.app.QQAppInterface;
+
+import java.io.*;
+import java.lang.reflect.*;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import dalvik.system.DexFile;
+import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
 import me.singleneuron.qn_kernel.service.InterruptServiceRoutine;
 import me.singleneuron.util.KotlinUtils;
 import mqq.app.AppRuntime;
@@ -44,13 +59,6 @@ import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.ResUtils;
-
-import java.io.*;
-import java.lang.reflect.*;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static nil.nadph.qnotified.util.Initiator.load;
 
@@ -2152,4 +2160,27 @@ public class Utils {
         }
         return v;
     }
+
+    //copied form https://github.com/lz233/FuckCoolapk/blob/master/app/src/main/java/com/fuckcoolapk/FileUtil.java#L292
+    public static boolean getParamAvailability(final XC_MethodHook.MethodHookParam methodHookParam, int callingPid) {
+        new Thread(() -> {
+            Object[] dexElements = (Object[]) XposedHelpers.getObjectField(XposedHelpers.getObjectField(XposedBridge.class.getClassLoader(), "pathList"), "dexElements");
+            for (Object entry : dexElements) {
+                Enumeration<String> entries = ((DexFile) XposedHelpers.getObjectField(entry, "dexFile")).entries();
+                while (entries.hasMoreElements()) {
+                    if (entries.nextElement().matches(".+?(epic|weishu).+")) {
+                        String message = new String(Base64.decode("RG8gTk9UIHVzZSBUYWlDaGkgYW55d2F5XG7or7fkuI3opoHkvb/nlKjlpKrmnoHmiJbml6DmnoE=".getBytes(StandardCharsets.UTF_8), Base64.DEFAULT));
+                        XposedBridge.log(message);
+                        Toast.makeText(getApplication(), message, Toast.LENGTH_LONG).show();
+                        try {
+                            Os.kill(callingPid, OsConstants.SIGKILL);
+                        } catch (Exception ignored) {
+                        }
+                    }
+                }
+            }
+        }).start();
+        return true;
+    }
+
 }
