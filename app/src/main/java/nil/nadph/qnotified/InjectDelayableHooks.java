@@ -24,13 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.core.view.ViewCompat;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-
 import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.hook.SettingEntryHook;
 import nil.nadph.qnotified.step.Step;
@@ -40,13 +34,14 @@ import nil.nadph.qnotified.ui.SimpleBgDrawable;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.dip2px;
-import static nil.nadph.qnotified.util.Utils.iget_object_or_null;
-import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.loge;
+import static nil.nadph.qnotified.util.Utils.*;
 
 public class InjectDelayableHooks {
 
@@ -128,7 +123,13 @@ public class InjectDelayableHooks {
                                 main[0].addView(text[0], tlp);
                                 ((ViewGroup) ctx.getWindow().getDecorView()).addView(overlay[0]);
                             }
-                            text[0].setText("QNotified正在初始化:\n" + steps.get(j).getDescription() + "\n每个类一般不会超过一分钟");
+                            String statusText;
+                            try {
+                                statusText = "QNotified正在初始化:\n" + steps.get(j).getDescription() + "\n每个类一般不会超过一分钟";
+                            } catch (Throwable e22) {
+                                statusText = e22.toString();
+                            }
+                            text[0].setText(statusText);
                             prog[0].setProportion(1.0f * j / steps.size());
                         }
                     });
