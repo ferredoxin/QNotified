@@ -29,8 +29,6 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
-import android.system.Os;
-import android.system.OsConstants;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -2171,11 +2169,12 @@ public class Utils {
                     if (entries.nextElement().matches(".+?(epic|weishu).+")) {
                         String message = new String(Base64.decode("RG8gTk9UIHVzZSBUYWlDaGkgYW55d2F5XG7or7fkuI3opoHkvb/nlKjlpKrmnoHmiJbml6DmnoE=".getBytes(StandardCharsets.UTF_8), Base64.DEFAULT));
                         XposedBridge.log(message);
-                        Toast.makeText(getApplication(), message, Toast.LENGTH_LONG).show();
-                        try {
+                        Utils.runOnUiThread(() -> Toast.makeText(getApplication(), message, Toast.LENGTH_LONG).show());
+                        /*try {
                             Os.kill(callingPid, OsConstants.SIGKILL);
                         } catch (Exception ignored) {
-                        }
+                        }*/
+                        return;
                     }
                 }
             }
