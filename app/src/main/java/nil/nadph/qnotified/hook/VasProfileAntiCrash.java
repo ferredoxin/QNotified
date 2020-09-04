@@ -18,6 +18,9 @@
  */
 package nil.nadph.qnotified.hook;
 
+import android.util.JsonReader;
+import android.util.Log;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.regex.Pattern;
@@ -77,24 +80,28 @@ public class VasProfileAntiCrash extends BaseDelayableHook {
 
     private void doHook(String className) {
         try {
-            XposedBridge.hookAllMethods(Double.class, "parseDouble", new XC_MethodHook() {
+            XposedBridge.hookAllMethods(JsonReader.class, "nextLong", new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    if (!Log.getStackTraceString(new Throwable()).contains("FriendProfileCardActivity"))
+                        return;
                     try {
-                    String string = (String) param.args[0];
-                    Pattern pattern = Pattern.compile("[\u4e00-\u9fa5]");
-                    if (pattern.matcher(string).find()) {
-                        param.setResult((double) 0);
-                    }
+                        param.setResult(XposedBridge.invokeOriginalMethod(param.method,param.thisObject,param.args));
                     } catch (Exception e) {
-                        //ignore
+                        String string = e.toString();
+                        Pattern pattern = Pattern.compile("[\u4e00-\u9fa5]");
+                        if (pattern.matcher(string).find()) {
+                            param.setResult((double) 0);
+                        } else {
+                            throw e;
+                        }
                     }
                 }
             });
         } catch (Exception e) {
             //ignore
         }
-        if (className==null) return;
+        if (className == null) return;
         Class<?> Card = Initiator.load("com.tencent.mobileqq.data.Card");
         for (Method m : Initiator.load(className).getDeclaredMethods()) {
             Class<?>[] argt;
