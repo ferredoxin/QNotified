@@ -13,12 +13,6 @@ import java.io.BufferedReader
 import java.io.File
 import java.io.IOException
 
-
-/*
-    use in Java:
-    KotlinUtils.Companion.readFile(yourFile)
- */
-
 fun ViewGroup.addViewConditionally(view: View, condition: Boolean) {
     if (condition) {
         this.addView(view)
