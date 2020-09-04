@@ -5,7 +5,8 @@ import android.content.Intent
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import me.singleneuron.base.BaseDelayableConditionalHookAdapter
+import me.singleneuron.base.Conditional
+import nil.nadph.qnotified.hook.BaseDelayableHook
 import nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit
 import nil.nadph.qnotified.util.Utils
 import java.io.BufferedReader
@@ -24,7 +25,7 @@ fun ViewGroup.addViewConditionally(view: View, condition: Boolean) {
     }
 }
 
-fun ViewGroup.addViewConditionally(context: Context, title: String, desc: String, hook: BaseDelayableConditionalHookAdapter) {
+fun <T> ViewGroup.addViewConditionally(context: Context, title: String, desc: String, hook: T) where T:BaseDelayableHook, T:Conditional{
     addViewConditionally(newListItemHookSwitchInit(context, title, desc, hook), hook.condition)
 }
 
