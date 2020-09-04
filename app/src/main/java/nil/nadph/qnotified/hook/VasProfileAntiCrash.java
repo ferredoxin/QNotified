@@ -20,6 +20,7 @@ package nil.nadph.qnotified.hook;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.regex.Pattern;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -62,6 +63,9 @@ public class VasProfileAntiCrash extends BaseDelayableHook {
                     doHook("azxy");
                     break;
                 }
+                default: {
+                    doHook(null);
+                }
             }
             inited = true;
             return true;
@@ -72,6 +76,25 @@ public class VasProfileAntiCrash extends BaseDelayableHook {
     }
 
     private void doHook(String className) {
+        try {
+            XposedBridge.hookAllMethods(Double.class, "parseDouble", new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    try {
+                    String string = (String) param.args[0];
+                    Pattern pattern = Pattern.compile("[\u4e00-\u9fa5]");
+                    if (pattern.matcher(string).find()) {
+                        param.setResult((double) 0);
+                    }
+                    } catch (Exception e) {
+                        //ignore
+                    }
+                }
+            });
+        } catch (Exception e) {
+            //ignore
+        }
+        if (className==null) return;
         Class<?> Card = Initiator.load("com.tencent.mobileqq.data.Card");
         for (Method m : Initiator.load(className).getDeclaredMethods()) {
             Class<?>[] argt;
