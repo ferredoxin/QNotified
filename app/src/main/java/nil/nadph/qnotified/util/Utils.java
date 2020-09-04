@@ -33,17 +33,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import com.tencent.mobileqq.app.QQAppInterface;
-import dalvik.system.DexFile;
-import de.robv.android.xposed.XposedBridge;
-import me.singleneuron.qn_kernel.service.InterruptServiceRoutine;
-import me.singleneuron.util.KotlinUtils;
-import mqq.app.AppRuntime;
-import nil.nadph.qnotified.BuildConfig;
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.config.ConfigItems;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.ui.ResUtils;
 
 import java.io.*;
 import java.lang.reflect.*;
@@ -52,6 +43,17 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import dalvik.system.DexFile;
+import de.robv.android.xposed.XposedBridge;
+import me.singleneuron.qn_kernel.service.InterruptServiceRoutine;
+import mqq.app.AppRuntime;
+import nil.nadph.qnotified.BuildConfig;
+import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.config.ConfigItems;
+import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.ui.ResUtils;
+
+import static me.singleneuron.util.KotlinUtilsKt.readFromBufferedReader;
 import static nil.nadph.qnotified.util.Initiator.load;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
@@ -127,7 +129,7 @@ public class Utils {
         return str.toString();
 
          */
-        return KotlinUtils.Companion.readFromBufferedReader(new BufferedReader(r));
+        return readFromBufferedReader(new BufferedReader(r));
     }
 
     public static boolean isCallingFrom(String classname) {
