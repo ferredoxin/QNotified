@@ -23,7 +23,6 @@ import android.util.Log;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.regex.Pattern;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -80,22 +79,13 @@ public class VasProfileAntiCrash extends BaseDelayableHook {
 
     private void doHook(String className) {
         try {
+
             XposedBridge.hookAllMethods(JsonReader.class, "nextLong", new XC_MethodHook() {
                 @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    if (!Log.getStackTraceString(new Throwable()).contains("FriendProfileCardActivity"))
-                        return;
-                    try {
-                        param.setResult(XposedBridge.invokeOriginalMethod(param.method,param.thisObject,param.args));
-                    } catch (Exception e) {
-                        String string = e.toString();
-                        Pattern pattern = Pattern.compile("[\u4e00-\u9fa5]");
-                        if (pattern.matcher(string).find()) {
-                            param.setResult((double) 0);
-                        } else {
-                            throw e;
-                        }
-                    }
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    if (!param.hasThrowable()) return;
+                    if (!Log.getStackTraceString(param.getThrowable()).contains("FriendProfileCardActivity")) return;
+                    param.setResult(0L);
                 }
             });
         } catch (Exception e) {
