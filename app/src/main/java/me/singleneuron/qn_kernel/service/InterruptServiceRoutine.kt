@@ -1,6 +1,6 @@
 package me.singleneuron.qn_kernel.service
 
-import android.os.Build
+import androidx.core.content.pm.PackageInfoCompat
 import me.singleneuron.data.PageFaultHighPerformanceFunctionCache
 import me.singleneuron.qn_kernel.data.InterruptVector
 import me.singleneuron.qn_kernel.data.PageFaultInterruptVector
@@ -23,11 +23,7 @@ object InterruptServiceRoutine {
     private val getHostVersionCodeService: InterruptVector<Long> = object : PageFaultInterruptVector<Long>() {
         override val cache = PageFaultHighPerformanceFunctionCache {
             val pi = Utils.getHostInfo(Utils.getApplication())
-            return@PageFaultHighPerformanceFunctionCache if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                pi.longVersionCode
-            } else {
-                pi.versionCode.toLong()
-            }
+            return@PageFaultHighPerformanceFunctionCache PackageInfoCompat.getLongVersionCode(pi)
         }
         override val SYSTEM_CALL_NUMBER: Int = GET_VERSION_CODE
     }

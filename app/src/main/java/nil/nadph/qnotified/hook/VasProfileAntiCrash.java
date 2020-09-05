@@ -18,6 +18,9 @@
  */
 package nil.nadph.qnotified.hook;
 
+import android.util.JsonReader;
+import android.util.Log;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
@@ -62,6 +65,9 @@ public class VasProfileAntiCrash extends BaseDelayableHook {
                     doHook("azxy");
                     break;
                 }
+                default: {
+                    doHook(null);
+                }
             }
             inited = true;
             return true;
@@ -72,6 +78,20 @@ public class VasProfileAntiCrash extends BaseDelayableHook {
     }
 
     private void doHook(String className) {
+        try {
+
+            XposedBridge.hookAllMethods(JsonReader.class, "nextLong", new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    if (!param.hasThrowable()) return;
+                    if (!Log.getStackTraceString(param.getThrowable()).contains("FriendProfileCardActivity")) return;
+                    param.setResult(0L);
+                }
+            });
+        } catch (Exception e) {
+            //ignore
+        }
+        if (className == null) return;
         Class<?> Card = Initiator.load("com.tencent.mobileqq.data.Card");
         for (Method m : Initiator.load(className).getDeclaredMethods()) {
             Class<?>[] argt;
