@@ -8,9 +8,7 @@ import nil.nadph.qnotified.util.Utils
 
 object NewRoundHead : BaseDelayableHighPerformanceConditionalHookAdapter("newroundhead") {
 
-    init {
-        recordTime = false
-    }
+    override val recordTime: Boolean = false
 
     override fun doInit(): Boolean {
         //特征字符串："FaceManager"
