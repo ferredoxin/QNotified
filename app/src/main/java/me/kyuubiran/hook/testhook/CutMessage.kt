@@ -38,14 +38,15 @@ object CutMessage : BaseDelayableHook() {
                             if (LicenseStatus.sDisableCommonHooks) return
                             if (!isEnabled) return
                             val msgRecord = param?.args?.get(0)
-                            val msg = msgRecord?.let { getMsg(it) }
-                            if (msg != null) {
-                                val senderUin = getSenderUin(msgRecord)
-                                val msgType = getMsgType(msgRecord)
-                                val friendUin = getFriendUin(msgRecord)
-                                val selfUin = getSelfUin(msgRecord)
-                                val time = getTime(msgRecord)
+                            try {
+                                val msg = msgRecord?.let { getMsg(it) }
+                                val senderUin = msgRecord?.let { getSenderUin(it) }
+                                val msgType = msgRecord?.let { getMsgType(it) }
+                                val friendUin = msgRecord?.let { getFriendUin(it) }
+                                val selfUin = msgRecord?.let { getSelfUin(it) }
+                                val time = msgRecord?.let { getTime(it) }
                                 logd("收到一份来自${senderUin}的消息:\n${msg}\n消息类型是${msgType}\n好友QQ是${friendUin}\n自己QQ是${selfUin}\n时间戳${time}")
+                            } catch (t: Throwable) {
                             }
                         }
                     })
