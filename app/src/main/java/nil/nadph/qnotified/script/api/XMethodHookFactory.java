@@ -16,7 +16,7 @@
  * along with this software.  If not, see
  * <https://www.gnu.org/licenses/>.
  */
-package nil.nadph.qnotified.script;
+package nil.nadph.qnotified.script.api;
 
 import android.annotation.SuppressLint;
 import de.robv.android.xposed.XC_MethodHook;
