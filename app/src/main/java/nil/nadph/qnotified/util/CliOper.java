@@ -6,10 +6,7 @@ import com.microsoft.appcenter.AppCenter;
 import com.microsoft.appcenter.analytics.Analytics;
 import com.microsoft.appcenter.crashes.Crashes;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import nil.nadph.qnotified.BuildConfig;
@@ -19,42 +16,25 @@ import static nil.nadph.qnotified.util.Utils.getApplication;
 
 public class CliOper {
 
-    public static void __init__(Application app, boolean mustInit) {
+    private static boolean appCenterInit = false;
+    private final static String appCenterToken = BuildConfig.DEBUG?"530d3819-3543-46e3-8c59-5576604f3801":"ddf4b597-1833-45dd-af28-96ca504b8123";
+
+    public static void __init__(Application app) {
         if (app == null) return;
-        if (BuildConfig.DEBUG) return;
+        //if (BuildConfig.DEBUG) return;
+        if (appCenterInit) return;
 
-        if (!Crashes.isEnabled().get()) {
-            AppCenter.start(app, "ddf4b597-1833-45dd-af28-96ca504b8123", Crashes.class);
-            long longAccount = Utils.getLongAccountUin();
-            if (longAccount!=-1) {
-                AppCenter.setUserId(String.valueOf(longAccount));
-            }
+        long longAccount = Utils.getLongAccountUin();
+        if (longAccount != -1) {
+            AppCenter.setUserId(String.valueOf(longAccount));
         }
+        AppCenter.start(app, appCenterToken, Analytics.class,Crashes.class);
+        appCenterInit = true;
 
-        ConfigManager configManager = ConfigManager.getDefaultConfig();
-        final String LAST_TRACE_DATA_CONFIG = "lastTraceDate";
-        final String format = "yyyy-MM-dd";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, Locale.getDefault());
-        String nowTime = simpleDateFormat.format(new Date(System.currentTimeMillis()));
-        if (!mustInit) {
-            String oldTime = configManager.getString(LAST_TRACE_DATA_CONFIG);
-            if (oldTime != null&&oldTime.equals(nowTime)) {
-                if (Analytics.isEnabled().get()) {
-                    Analytics.setEnabled(false);
-                }
-                return;
-            }
-        }
-        configManager.putString(LAST_TRACE_DATA_CONFIG, nowTime);
-
-        if (!Analytics.isEnabled().get()) {
-            AppCenter.start(app, "ddf4b597-1833-45dd-af28-96ca504b8123", Analytics.class);
-            Analytics.setEnabled(true);
-        }
     }
 
     public static void onLoad() {
-        CliOper.__init__(getApplication(),false);
+        CliOper.__init__(getApplication());
         final String LAST_TRACE_HASHCODE_CONFIG = "lastTraceHashcode";
         ConfigManager configManager = ConfigManager.getDefaultConfig();
         Integer oldHashCode = null;
@@ -81,11 +61,13 @@ public class CliOper {
         } catch (Exception e) {
             //ignored
         }
+        __init__(Utils.getApplication());
         Analytics.trackEvent("onLoad", properties);
+        Utils.logd("start App Center Trace OnLoad:" + properties.toString());
     }
 
     public static void passAuth2Once(int retryCount, int chiralCount) {
-        __init__(Utils.getApplication(),true);
+        __init__(Utils.getApplication());
         Map<String, String> prop = new HashMap<>();
         prop.put("retryCount", String.valueOf(retryCount));
         prop.put("chiralCount", String.valueOf(chiralCount));
@@ -108,7 +90,7 @@ public class CliOper {
 
     public static void copyCardMsg(String msg) {
         if (msg == null) return;
-        __init__(Utils.getApplication(),true);
+        __init__(Utils.getApplication());
         try {
             Analytics.trackEvent("copyCardMsg", digestCardMsg(msg));
         } catch (Throwable e) {
@@ -118,7 +100,7 @@ public class CliOper {
 
     public static void sendCardMsg(long uin, String msg) {
         if (msg == null) return;
-        __init__(Utils.getApplication(),true);
+        __init__(Utils.getApplication());
         try {
             Map<String, String> prop = digestCardMsg(msg);
             prop.put("uin", String.valueOf(uin));
@@ -137,7 +119,7 @@ public class CliOper {
         properties.put("msg", msg);
         properties.put("uin", String.valueOf(uin));
         properties.put("count", String.valueOf(count));
-        __init__(Utils.getApplication(),true);
+        __init__(Utils.getApplication());
         Analytics.trackEvent("batchSendMsg", properties);
     }
 
@@ -227,12 +209,13 @@ public class CliOper {
     }
 
     public static void enterModuleActivity(String shortName) {
-        /*try {
+        try {
             __init__(Utils.getApplication());
             Map<String, String> prop = new HashMap<>();
             prop.put("name", shortName);
             Analytics.trackEvent("enterModuleActivity", prop);
+            Utils.logd("Start App Center Trace enterModuleActivity: "+prop.toString());
         } catch (Throwable ignored) {
-        }*/
+        }
     }
 }
