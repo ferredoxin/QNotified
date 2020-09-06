@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import me.singleneuron.base.CrashesListenerAdapter;
 import nil.nadph.qnotified.BuildConfig;
 import nil.nadph.qnotified.config.ConfigManager;
 
@@ -47,7 +46,6 @@ public class CliOper {
         configManager.putString(LAST_TRACE_DATA_CONFIG, nowTime);
 
         sInit = true;
-        Crashes.setListener(new CrashesListenerAdapter());
         AppCenter.start(app, "ddf4b597-1833-45dd-af28-96ca504b8123", Analytics.class);
         Analytics.setEnabled(true);
         long longAccount = Utils.getLongAccountUin();
