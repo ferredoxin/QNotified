@@ -29,7 +29,7 @@ public class BugCollector {
             if (Utils.isCallingFrom("BugCollector")) return;
             Application ctx = Utils.getApplication();
             if (ctx != null) {
-                CliOper.__init__(ctx);
+                CliOper.__init__(ctx,true);
                 Crashes.trackError(th);
             }
         } catch (Throwable ignored) {
