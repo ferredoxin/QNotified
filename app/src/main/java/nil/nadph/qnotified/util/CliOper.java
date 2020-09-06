@@ -18,20 +18,17 @@ import nil.nadph.qnotified.config.ConfigManager;
 import static nil.nadph.qnotified.util.Utils.getApplication;
 
 public class CliOper {
-    private static boolean sInit = false;
 
     public static void __init__(Application app, boolean mustInit) {
         if (app == null) return;
-        if (sInit) return;
         if (BuildConfig.DEBUG) return;
-
-        long longAccount = Utils.getLongAccountUin();
-        if (longAccount!=-1) {
-            AppCenter.setUserId(String.valueOf(longAccount));
-        }
 
         if (!Crashes.isEnabled().get()) {
             AppCenter.start(app, "ddf4b597-1833-45dd-af28-96ca504b8123", Crashes.class);
+            long longAccount = Utils.getLongAccountUin();
+            if (longAccount!=-1) {
+                AppCenter.setUserId(String.valueOf(longAccount));
+            }
         }
 
         ConfigManager configManager = ConfigManager.getDefaultConfig();
@@ -50,9 +47,10 @@ public class CliOper {
         }
         configManager.putString(LAST_TRACE_DATA_CONFIG, nowTime);
 
-        sInit = true;
-        AppCenter.start(app, "ddf4b597-1833-45dd-af28-96ca504b8123", Analytics.class);
-        Analytics.setEnabled(true);
+        if (!Analytics.isEnabled().get()) {
+            AppCenter.start(app, "ddf4b597-1833-45dd-af28-96ca504b8123", Analytics.class);
+            Analytics.setEnabled(true);
+        }
     }
 
     public static void onLoad() {
@@ -69,6 +67,10 @@ public class CliOper {
         properties.put("versionName", Utils.QN_VERSION_NAME);
         properties.put("versionCode", String.valueOf(Utils.QN_VERSION_CODE));
         properties.put("Auth2Status", String.valueOf(LicenseStatus.getAuth2Status()));
+        long longAccount = Utils.getLongAccountUin();
+        if (longAccount!=-1) {
+            properties.put("Uin", String.valueOf(longAccount));
+        }
         Integer newHashCode = properties.hashCode();
         if (oldHashCode!=null&&oldHashCode.equals(newHashCode)) {
             return;
