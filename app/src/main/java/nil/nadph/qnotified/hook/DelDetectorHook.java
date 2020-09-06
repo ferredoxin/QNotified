@@ -31,14 +31,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.lang.ref.WeakReference;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.Locale;
 
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedHelpers;
+import me.singleneuron.hook.AppCenterHookKt;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.activity.ExfriendListActivity;
@@ -237,6 +234,7 @@ public class DelDetectorHook extends BaseDelayableHook {
     public boolean init() {
         if (inited) return true;
         findAndHookMethod(load("com/tencent/widget/PinnedHeaderExpandableListView"), "setAdapter", ExpandableListAdapter.class, exfriendEntryHook);
+        AppCenterHookKt.initAppCenterHook();
         XposedHelpers.findAndHookMethod(load("com/tencent/mobileqq/activity/SplashActivity"), "doOnResume", new XC_MethodHook(700) {
             boolean z = false;
 
@@ -259,28 +257,6 @@ public class DelDetectorHook extends BaseDelayableHook {
                     CliOper.onLoad();
                     z = true;
                 }
-            }
-        });
-        XposedHelpers.findAndHookMethod(com.microsoft.appcenter.analytics.channel.SessionTracker.class, "hasSessionTimedOut", new XC_MethodReplacement() {
-            @Override
-            protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-                try {
-                    ConfigManager configManager = ConfigManager.getDefaultConfig();
-                    final String LAST_TRACE_DATA_CONFIG = "lastTraceDate";
-                    final String format = "yyyy-MM-dd";
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, Locale.getDefault());
-                    String nowTime = simpleDateFormat.format(new Date(System.currentTimeMillis()));
-                    String oldTime = configManager.getString(LAST_TRACE_DATA_CONFIG);
-                    Utils.logd("Hooked hasSessionTimedOut: oldTime="+oldTime+" nowTime="+nowTime);
-                    if (oldTime != null && oldTime.equals(nowTime)) {
-                        return false;
-                    }
-                    configManager.putString(LAST_TRACE_DATA_CONFIG, nowTime);
-                    configManager.save();
-                } catch (Exception e) {
-                    Utils.log(e);
-                }
-                return true;
             }
         });
 		/*
