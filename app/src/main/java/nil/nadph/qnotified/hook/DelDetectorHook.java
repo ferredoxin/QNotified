@@ -30,7 +30,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.microsoft.appcenter.analytics.Analytics;
+import java.lang.ref.WeakReference;
+import java.util.HashSet;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
@@ -45,11 +46,6 @@ import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.CliOper;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
-
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
@@ -255,13 +251,8 @@ public class DelDetectorHook extends BaseDelayableHook {
                 if (Utils.getBuildTimestamp() < 0 && (Math.random() < 0.25)) {
                     TroubleshootActivity.quitLooper();
                 } else {
-                    CliOper.__init__(getApplication());
                     if (z) return;
-                    Map<String, String> properties = new HashMap<>();
-                    properties.put("versionName", Utils.QN_VERSION_NAME);
-                    properties.put("versionCode", String.valueOf(Utils.QN_VERSION_CODE));
-                    properties.put("Auth2Status", String.valueOf(LicenseStatus.getAuth2Status()));
-                    Analytics.trackEvent("onLoad", properties);
+                    CliOper.onLoad();
                     z = true;
                 }
             }

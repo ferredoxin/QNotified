@@ -1,14 +1,21 @@
 package nil.nadph.qnotified.util;
 
 import android.app.Application;
+
 import com.microsoft.appcenter.AppCenter;
 import com.microsoft.appcenter.analytics.Analytics;
 import com.microsoft.appcenter.crashes.Crashes;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import nil.nadph.qnotified.BuildConfig;
+import nil.nadph.qnotified.config.ConfigManager;
+
+import static nil.nadph.qnotified.util.Utils.getApplication;
 
 public class CliOper {
     private static boolean sInit = false;
@@ -29,6 +36,31 @@ public class CliOper {
         }
     }
 
+    public static void onLoad() {
+        CliOper.__init__(getApplication());
+        try {
+            final String format = "yyyy-MM-dd";
+            final String LAST_TRACE_DATA_CONFIG = "lastTraceDate";
+            ConfigManager configManager = ConfigManager.getDefaultConfig();
+            String oldTime = configManager.getString(LAST_TRACE_DATA_CONFIG);
+            if (oldTime!=null) {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, Locale.getDefault());
+                String nowTime = simpleDateFormat.format(new Date(System.currentTimeMillis()));
+                if (oldTime.equals(nowTime)){
+                    return;
+                }
+                configManager.putString(LAST_TRACE_DATA_CONFIG,nowTime);
+            }
+        } catch (Exception e) {
+            Utils.log(e);
+        }
+        Map<String, String> properties = new HashMap<>();
+        properties.put("versionName", Utils.QN_VERSION_NAME);
+        properties.put("versionCode", String.valueOf(Utils.QN_VERSION_CODE));
+        properties.put("Auth2Status", String.valueOf(LicenseStatus.getAuth2Status()));
+        Analytics.trackEvent("onLoad", properties);
+    }
+
     public static void passAuth2Once(int retryCount, int chiralCount) {
         __init__(Utils.getApplication());
         Map<String, String> prop = new HashMap<>();
@@ -38,17 +70,17 @@ public class CliOper {
     }
 
     public static void abortAuth2Once(int retryCount) {
-        __init__(Utils.getApplication());
+        /*__init__(Utils.getApplication());
         Map<String, String> prop = new HashMap<>();
         prop.put("retryCount", String.valueOf(retryCount));
-        Analytics.trackEvent("abortAuth2Once", prop);
+        Analytics.trackEvent("abortAuth2Once", prop);*/
     }
 
     public static void revokeAuth2Once() {
-        __init__(Utils.getApplication());
+        /*__init__(Utils.getApplication());
         Map<String, String> prop = new HashMap<>();
         prop.put("isAuth2Whitelist", String.valueOf(LicenseStatus.isBypassAuth2()));
-        Analytics.trackEvent("revokeAuth2Once", prop);
+        Analytics.trackEvent("revokeAuth2Once", prop);*/
     }
 
     public static void copyCardMsg(String msg) {
@@ -172,12 +204,12 @@ public class CliOper {
     }
 
     public static void enterModuleActivity(String shortName) {
-        try {
+        /*try {
             __init__(Utils.getApplication());
             Map<String, String> prop = new HashMap<>();
             prop.put("name", shortName);
             Analytics.trackEvent("enterModuleActivity", prop);
         } catch (Throwable ignored) {
-        }
+        }*/
     }
 }
