@@ -6,10 +6,7 @@ import com.microsoft.appcenter.AppCenter;
 import com.microsoft.appcenter.analytics.Analytics;
 import com.microsoft.appcenter.crashes.Crashes;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import nil.nadph.qnotified.BuildConfig;
@@ -38,26 +35,23 @@ public class CliOper {
 
     public static void onLoad() {
         CliOper.__init__(getApplication());
-        try {
-            final String format = "yyyy-MM-dd";
-            final String LAST_TRACE_DATA_CONFIG = "lastTraceDate";
-            ConfigManager configManager = ConfigManager.getDefaultConfig();
-            String oldTime = configManager.getString(LAST_TRACE_DATA_CONFIG);
-            if (oldTime!=null) {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, Locale.getDefault());
-                String nowTime = simpleDateFormat.format(new Date(System.currentTimeMillis()));
-                if (oldTime.equals(nowTime)){
-                    return;
-                }
-                configManager.putString(LAST_TRACE_DATA_CONFIG,nowTime);
-            }
-        } catch (Exception e) {
-            Utils.log(e);
-        }
-        Map<String, String> properties = new HashMap<>();
+        final String LAST_TRACE_HASHCODE_CONFIG = "lastTraceHashcode";
+        ConfigManager configManager = ConfigManager.getDefaultConfig();
+        String oldHashCode = configManager.getString(LAST_TRACE_HASHCODE_CONFIG);
+        HashMap<String, String> properties = new HashMap<>();
         properties.put("versionName", Utils.QN_VERSION_NAME);
         properties.put("versionCode", String.valueOf(Utils.QN_VERSION_CODE));
         properties.put("Auth2Status", String.valueOf(LicenseStatus.getAuth2Status()));
+        String newHashCode = String.valueOf(properties.hashCode());
+        if (oldHashCode!=null&&oldHashCode.equals(newHashCode)) {
+            return;
+        }
+        try {
+            configManager.putString(LAST_TRACE_HASHCODE_CONFIG, newHashCode);
+            configManager.save();
+        } catch (Exception e) {
+            //ignored
+        }
         Analytics.trackEvent("onLoad", properties);
     }
 
