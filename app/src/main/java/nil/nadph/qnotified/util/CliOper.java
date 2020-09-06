@@ -47,7 +47,7 @@ public class CliOper {
         }
         configManager.putString(LAST_TRACE_DATA_CONFIG, nowTime);
 
-        if (Analytics.isEnabled().get()) {
+        if (!Analytics.isEnabled().get()) {
             AppCenter.start(app, "ddf4b597-1833-45dd-af28-96ca504b8123", Analytics.class);
             Analytics.setEnabled(true);
         }
