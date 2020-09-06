@@ -34,6 +34,9 @@ public class CliOper {
         if (!mustInit) {
             String oldTime = configManager.getString(LAST_TRACE_DATA_CONFIG);
             if (oldTime != null&&oldTime.equals(nowTime)) {
+                if (Analytics.isEnabled().get()) {
+                    Analytics.setEnabled(false);
+                }
                 return;
             }
         }
@@ -43,6 +46,7 @@ public class CliOper {
         Crashes.setListener(new CrashesListenerAdapter());
         AppCenter.start(app, "ddf4b597-1833-45dd-af28-96ca504b8123",
                 Analytics.class, Crashes.class);
+        Analytics.setEnabled(true);
         long longAccount = Utils.getLongAccountUin();
         if (longAccount!=-1) {
             AppCenter.setUserId(String.valueOf(longAccount));
