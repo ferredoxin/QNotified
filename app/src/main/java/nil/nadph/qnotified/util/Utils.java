@@ -990,11 +990,11 @@ public class Utils {
             field = Class.forName(viewStr).getDeclaredField("mOnClickListener");
             retrievedListener = (View.OnClickListener) field.get(view);
         } catch (NoSuchFieldException ex) {
-            log("Reflection: No Such Field.");
+            logw("Reflection: No Such Field.");
         } catch (IllegalAccessException ex) {
-            log("Reflection: Illegal Access.");
+            logw("Reflection: Illegal Access.");
         } catch (ClassNotFoundException ex) {
-            log("Reflection: Class Not Found.");
+            logw("Reflection: Class Not Found.");
         }
         return retrievedListener;
     }
@@ -1018,11 +1018,11 @@ public class Utils {
                 retrievedListener = (View.OnClickListener) clickListenerField.get(listenerInfo);
             }
         } catch (NoSuchFieldException ex) {
-            log("Reflection: No Such Field.");
+            logw("Reflection: No Such Field.");
         } catch (IllegalAccessException ex) {
-            log("Reflection: Illegal Access.");
+            logw("Reflection: Illegal Access.");
         } catch (ClassNotFoundException ex) {
-            log("Reflection: Class Not Found.");
+            logw("Reflection: Class Not Found.");
         }
         return retrievedListener;
     }
@@ -1043,7 +1043,7 @@ public class Utils {
             }
             return ret;
         } catch (Throwable e) {
-            log("CLONE : " + e.toString());
+            log(e);
         }
         return null;
     }
@@ -1064,7 +1064,7 @@ public class Utils {
             }
             return ret;
         } catch (Throwable e) {
-            log("CLONE : " + e.toString());
+            log(e);
         }
         return null;
     }
@@ -1317,7 +1317,7 @@ public class Utils {
         return str == null || str.length() == 0;
     }
 
-    @Deprecated
+    /*@Deprecated
     public static void log(String str) {
         Log.i("QNdump", str);
         if (DEBUG) try {
@@ -1335,7 +1335,7 @@ public class Utils {
             } catch (IOException e) {
             }
         }
-    }
+    }*/
 
     public static void loge(String str) {
         Log.e("QNdump", str);
@@ -1358,8 +1358,8 @@ public class Utils {
     }
 
     public static void logd(String str) {
-        Log.d("QNdump", str);
         if (DEBUG) try {
+            Log.d("QNdump", str);
             XposedBridge.log(str);
         } catch (NoClassDefFoundError e) {
             Log.d("Xposed", str);
@@ -1377,8 +1377,8 @@ public class Utils {
     }
 
     public static void logi(String str) {
-        Log.i("QNdump", str);
         try {
+            Log.i("QNdump", str);
             XposedBridge.log(str);
         } catch (NoClassDefFoundError e) {
             Log.i("Xposed", str);
@@ -1831,7 +1831,7 @@ public class Utils {
     }
 
     public static <T> T dump(T obj) {
-        log("dump:" + obj);
+        logd("dump:" + obj);
         return obj;
     }
 
