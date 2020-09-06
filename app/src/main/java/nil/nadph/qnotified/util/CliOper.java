@@ -26,6 +26,10 @@ public class CliOper {
         if (sInit) return;
         if (BuildConfig.DEBUG) return;
 
+        if (!Crashes.isEnabled().get()) {
+            AppCenter.start(app, "ddf4b597-1833-45dd-af28-96ca504b8123", Crashes.class);
+        }
+
         ConfigManager configManager = ConfigManager.getDefaultConfig();
         final String LAST_TRACE_DATA_CONFIG = "lastTraceDate";
         final String format = "yyyy-MM-dd";
@@ -44,8 +48,7 @@ public class CliOper {
 
         sInit = true;
         Crashes.setListener(new CrashesListenerAdapter());
-        AppCenter.start(app, "ddf4b597-1833-45dd-af28-96ca504b8123",
-                Analytics.class, Crashes.class);
+        AppCenter.start(app, "ddf4b597-1833-45dd-af28-96ca504b8123", Analytics.class);
         Analytics.setEnabled(true);
         long longAccount = Utils.getLongAccountUin();
         if (longAccount!=-1) {
