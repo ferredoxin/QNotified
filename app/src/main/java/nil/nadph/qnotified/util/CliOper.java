@@ -47,6 +47,8 @@ public class CliOper {
         properties.put("versionName", Utils.QN_VERSION_NAME);
         properties.put("versionCode", String.valueOf(Utils.QN_VERSION_CODE));
         properties.put("Auth2Status", String.valueOf(LicenseStatus.getAuth2Status()));
+        properties.put("WhiteList", Integer.toHexString(LicenseStatus.getCurrentUserWhiteFlags()));
+        properties.put("BlackList", Integer.toHexString(LicenseStatus.getCurrentUserBlackFlags()));
         long longAccount = Utils.getLongAccountUin();
         if (longAccount!=-1) {
             properties.put("Uin", String.valueOf(longAccount));
