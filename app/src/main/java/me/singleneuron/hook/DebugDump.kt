@@ -2,6 +2,7 @@ package me.singleneuron.hook
 
 import android.app.Activity
 import android.content.Intent
+import android.util.Log
 import de.robv.android.xposed.XposedBridge
 import me.singleneuron.base.BaseDelayableHookAdapter
 import me.singleneuron.util.dump
@@ -17,6 +18,7 @@ object DebugDump : BaseDelayableHookAdapter("debugDump",SyncUtils.PROC_ANY) {
             override fun beforeMethod(param: MethodHookParam?) {
                 val intent : Intent = param!!.args[0] as Intent
                 Utils.logd("debugDump: startActivity")
+                Utils.logd(Log.getStackTraceString(Throwable()))
                 intent.dump()
             }
         }
