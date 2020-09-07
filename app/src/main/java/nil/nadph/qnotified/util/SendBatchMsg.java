@@ -29,19 +29,7 @@ import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 
 import com.tencent.mobileqq.app.QQAppInterface;
 
@@ -51,18 +39,10 @@ import java.util.HashSet;
 
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.activity.TroopSelectActivity;
-import nil.nadph.qnotified.ui.CustomDialog;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.util.Utils.ContactDescriptor;
-import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
-import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_INFO;
-import static nil.nadph.qnotified.util.Utils.dip2px;
-import static nil.nadph.qnotified.util.Utils.getQQAppInterface;
-import static nil.nadph.qnotified.util.Utils.iget_object_or_null;
-import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.showToast;
+import static nil.nadph.qnotified.util.Utils.*;
 
 public class SendBatchMsg {
 
@@ -131,11 +111,8 @@ public class SendBatchMsg {
                             if (msg.isEmpty() || msg.equals("")) {
                                 showToast(exactCtx, TOAST_TYPE_ERROR, "请输入文本消息", Toast.LENGTH_SHORT);
                             } else {
-                                if (msg.length() > 6 && !LicenseStatus.getAuth2Status()) {
-                                    alertDialog.dismiss();
-                                    CustomDialog.create(exactCtx).setTitle("高级功能")
-                                            .setMessage("群发文本消息仅对通过了高级验证的用户开放(高级验证在功能列表靠下方).")
-                                            .setPositiveButton("确认", null).setCancelable(true).show();
+                                if (msg.length() > 6 && !LicenseStatus.isAsserted()) {
+                                    showToast(exactCtx, TOAST_TYPE_ERROR, "超出字数限制：输入被限制在五个字以内", Toast.LENGTH_SHORT);
                                 } else {
                                     try {
                                         showSelectDialog(exactCtx, msg);
