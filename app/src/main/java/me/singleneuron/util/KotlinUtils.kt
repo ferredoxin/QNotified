@@ -5,7 +5,9 @@ import android.content.Intent
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import me.singleneuron.base.CardMsgCheckResult
 import me.singleneuron.base.Conditional
+import me.singleneuron.base.bridge.CardMsgList
 import nil.nadph.qnotified.hook.BaseDelayableHook
 import nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit
 import nil.nadph.qnotified.util.Utils
@@ -41,4 +43,21 @@ fun dumpIntent(intent: Intent) {
     Utils.logd(intent.toString())
     Utils.logd(intent.extras.toString())
     Utils.logd(Log.getStackTraceString(Throwable()))
+}
+
+fun checkCardMsg(string: String): CardMsgCheckResult {
+    val blackList = CardMsgList.getInstance().blackList
+    for (black in blackList) {
+        var hit = true
+        for (rule in black.value) {
+            if (!string.contains(rule, true)) {
+                hit = false
+                break
+            }
+        }
+        if (hit) {
+            return CardMsgCheckResult(false,black.key)
+        }
+    }
+    return CardMsgCheckResult(true)
 }
