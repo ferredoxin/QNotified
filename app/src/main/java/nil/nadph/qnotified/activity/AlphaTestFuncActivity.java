@@ -30,6 +30,7 @@ import android.widget.TextView;
 import com.tencent.mobileqq.widget.BounceScrollView;
 
 import me.kyuubiran.dialog.RevokeMsgDialog;
+import me.singleneuron.util.KotlinUtilsKt;
 import nil.nadph.qnotified.hook.CardMsgHook;
 import nil.nadph.qnotified.script.QNScriptManager;
 import nil.nadph.qnotified.ui.ResUtils;
@@ -105,6 +106,7 @@ public class AlphaTestFuncActivity extends IphoneTitleBarActivityCompat {
 
         setContentBackgroundDrawable(ResUtils.skin_background);
         setTitle("Alpha内测功能");
+        KotlinUtilsKt.showEulaDialog(this);
         return true;
     }
 
