@@ -5,6 +5,8 @@ import android.content.Intent
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import me.singleneuron.base.Conditional
 import me.singleneuron.base.bridge.CardMsgList
 import me.singleneuron.data.CardMsgCheckResult
@@ -21,7 +23,7 @@ fun ViewGroup.addViewConditionally(view: View, condition: Boolean) {
     }
 }
 
-fun <T> ViewGroup.addViewConditionally(context: Context, title: String, desc: String, hook: T) where T:BaseDelayableHook, T:Conditional{
+fun <T> ViewGroup.addViewConditionally(context: Context, title: String, desc: String, hook: T) where T : BaseDelayableHook, T : Conditional {
     addViewConditionally(newListItemHookSwitchInit(context, title, desc, hook), hook.condition)
 }
 
@@ -46,18 +48,25 @@ fun dumpIntent(intent: Intent) {
 }
 
 fun checkCardMsg(string: String): CardMsgCheckResult {
-    val blackList = CardMsgList.getInstance().blackList
-    for (black in blackList) {
-        var hit = true
-        for (rule in black.value) {
-            if (!string.contains(rule, true)) {
-                hit = false
-                break
+    try {
+        val blackListString = CardMsgList.getInstance().invoke()
+        val blackList = Gson().fromJson<HashMap<String, Array<String>>>(blackListString, object : TypeToken<HashMap<String, Array<String>>>() {}.type)
+        Utils.logd(Gson().toJson(blackList))
+        for (black in blackList) {
+            var hit = true
+            for (rule in black.value) {
+                if (Regex(rule,RegexOption.IGNORE_CASE).containsMatchIn(string)) {
+                    hit = false
+                    break
+                }
+            }
+            if (hit) {
+                return CardMsgCheckResult(false, black.key)
             }
         }
-        if (hit) {
-            return CardMsgCheckResult(false,black.key)
-        }
+        return CardMsgCheckResult(true)
+    } catch (e: Exception) {
+        Utils.log(e)
+        return CardMsgCheckResult(false, "Failed: $e")
     }
-    return CardMsgCheckResult(true)
 }

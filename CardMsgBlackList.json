@@ -1,0 +1,19 @@
+{
+    "禁止引流":
+        [
+            "mqqapi",
+            "forward"
+        ],
+    "禁止发送回执消息":
+        [
+            "viewReceiptMessage"
+        ],
+    "禁止干扰性卡片":
+        [
+            "com.tencent.mobileqq.reading"
+        ],
+    "禁止作业消息":
+        [
+            "serviceID(' ')*=(' ')*('|\")13('|\")"
+        ]
+}

@@ -45,6 +45,7 @@ import java.util.Map;
 
 import me.singleneuron.activity.BugReportActivity;
 import me.singleneuron.hook.DebugDump;
+import me.singleneuron.util.KotlinUtilsKt;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.config.EventRecord;
@@ -116,6 +117,12 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                     Utils.runOnUiThread(() -> Toast.makeText(Utils.getApplication(),e.toString(),Toast.LENGTH_LONG).show());
                     Utils.log(e);
                 }
+            }
+        }));
+        ll.addView(newListItemButton(this, "在日志中打印卡片黑名单", "点了也没用", null, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                KotlinUtilsKt.checkCardMsg("");
             }
         }));
         ll.addView(newListItemButton(this, "打开X5调试页面", "内置浏览器调试页面", null, new View.OnClickListener() {
