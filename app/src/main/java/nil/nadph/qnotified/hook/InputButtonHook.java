@@ -42,6 +42,7 @@ import java.util.Date;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import me.singleneuron.hook.CopyCardMsg;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.activity.ChatTailActivity;
 import nil.nadph.qnotified.dialog.RikkaCustomMsgTimeFormatDialog;
@@ -49,23 +50,12 @@ import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.ui.InterceptLayout;
 import nil.nadph.qnotified.ui.TouchEventToLongClickAdapter;
-import nil.nadph.qnotified.util.CliOper;
-import nil.nadph.qnotified.util.CustomMenu;
-import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.util.*;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static nil.nadph.qnotified.util.Initiator._SessionInfo;
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
-import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_INFO;
-import static nil.nadph.qnotified.util.Utils.getFirstNSFByType;
-import static nil.nadph.qnotified.util.Utils.iget_object_or_null;
-import static nil.nadph.qnotified.util.Utils.invoke_virtual;
-import static nil.nadph.qnotified.util.Utils.invoke_virtual_any;
-import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.showToast;
+import static nil.nadph.qnotified.util.Utils.*;
 
 
 public class InputButtonHook extends BaseDelayableHook {
@@ -273,7 +263,7 @@ public class InputButtonHook extends BaseDelayableHook {
         @Override
         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
             if (LicenseStatus.sDisableCommonHooks) return;
-            if (!LicenseStatus.isAsserted() || !CardMsgHook.get().isEnabled()) return;
+            if (LicenseStatus.hasBlackFlags() || !CopyCardMsg.INSTANCE.isEnabled()) return;
             Object arr = param.getResult();
             Class<?> clQQCustomMenuItem = arr.getClass().getComponentType();
             Object item_copy = CustomMenu.createItem(clQQCustomMenuItem, R_ID_COPY_CODE, "复制代码");
@@ -293,7 +283,7 @@ public class InputButtonHook extends BaseDelayableHook {
 
         @Override
         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-            if (!LicenseStatus.isAsserted() || !CardMsgHook.get().isEnabled()) return;
+            if (LicenseStatus.hasBlackFlags() || !CopyCardMsg.INSTANCE.isEnabled()) return;
             int id = (int) param.args[0];
             Activity ctx = (Activity) param.args[1];
             Object chatMessage = param.args[2];

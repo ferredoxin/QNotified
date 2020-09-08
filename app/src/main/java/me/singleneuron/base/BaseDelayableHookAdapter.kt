@@ -32,7 +32,9 @@ abstract class BaseDelayableHookAdapter @JvmOverloads protected constructor(prot
         return inited
     }
 
+    @Throws(Throwable::class)
     protected abstract fun doInit(): Boolean
+
     override fun isInited(): Boolean {
         return inited
     }
@@ -116,12 +118,12 @@ abstract class BaseDelayableHookAdapter @JvmOverloads protected constructor(prot
 
     abstract inner class XposedMethodReplacementAdapter : XC_MethodReplacement() {
         @Throws(Throwable::class)
-        override fun replaceHookedMethod(methodHookParam: MethodHookParam): Any {
+        override fun replaceHookedMethod(methodHookParam: MethodHookParam): Any? {
             var startTime: Long = 0
             if (recordTime) {
                 startTime = System.currentTimeMillis()
             }
-            val returnObject: Any = if (!checkEnabled()) {
+            val returnObject: Any? = if (!checkEnabled()) {
                 XposedBridge.invokeOriginalMethod(methodHookParam.method, methodHookParam.thisObject, methodHookParam.args)
             } else {
                 replaceMethod(methodHookParam)
@@ -133,7 +135,7 @@ abstract class BaseDelayableHookAdapter @JvmOverloads protected constructor(prot
         }
 
         @Throws(Throwable::class)
-        protected abstract fun replaceMethod(param: MethodHookParam?): Any
+        protected abstract fun replaceMethod(param: MethodHookParam?): Any?
     }
 
 }

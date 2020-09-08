@@ -1,6 +1,7 @@
 package nil.nadph.qnotified.util;
 
 import android.app.Application;
+
 import com.microsoft.appcenter.AppCenter;
 import com.microsoft.appcenter.analytics.Analytics;
 import com.microsoft.appcenter.crashes.Crashes;
@@ -9,24 +10,62 @@ import java.util.HashMap;
 import java.util.Map;
 
 import nil.nadph.qnotified.BuildConfig;
+import nil.nadph.qnotified.config.ConfigManager;
+
+import static nil.nadph.qnotified.util.Utils.getApplication;
 
 public class CliOper {
-    private static boolean sInit = false;
+
+    private static boolean appCenterInit = false;
+    private final static String appCenterToken = BuildConfig.DEBUG?"530d3819-3543-46e3-8c59-5576604f3801":"ddf4b597-1833-45dd-af28-96ca504b8123";
 
     public static void __init__(Application app) {
         if (app == null) return;
-        if (sInit) return;
-        sInit = true;
-        AppCenter.start(app, "ddf4b597-1833-45dd-af28-96ca504b8123",
-                Analytics.class, Crashes.class);
+        //if (BuildConfig.DEBUG) return;
+        if (appCenterInit) return;
+
         long longAccount = Utils.getLongAccountUin();
-        if (longAccount!=-1) {
+        if (longAccount != -1) {
             AppCenter.setUserId(String.valueOf(longAccount));
         }
-        if (BuildConfig.DEBUG) {
-            Analytics.setEnabled(false);
-            Crashes.setEnabled(false);
+        AppCenter.start(app, appCenterToken, Analytics.class,Crashes.class);
+        appCenterInit = true;
+
+    }
+
+    public static void onLoad() {
+        CliOper.__init__(getApplication());
+        final String LAST_TRACE_HASHCODE_CONFIG = "lastTraceHashcode";
+        ConfigManager configManager = ConfigManager.getDefaultConfig();
+        Integer oldHashCode = null;
+        try {
+            oldHashCode = (Integer) configManager.getObject(LAST_TRACE_HASHCODE_CONFIG);
+        } catch (Exception e) {
+            Utils.log(e);
         }
+        HashMap<String, String> properties = new HashMap<>();
+        properties.put("versionName", Utils.QN_VERSION_NAME);
+        properties.put("versionCode", String.valueOf(Utils.QN_VERSION_CODE));
+        properties.put("Auth2Status", String.valueOf(LicenseStatus.getAuth2Status()));
+        properties.put("WhiteList", Integer.toHexString(LicenseStatus.getCurrentUserWhiteFlags()));
+        properties.put("BlackList", Integer.toHexString(LicenseStatus.getCurrentUserBlackFlags()));
+        long longAccount = Utils.getLongAccountUin();
+        if (longAccount!=-1) {
+            properties.put("Uin", String.valueOf(longAccount));
+        }
+        Integer newHashCode = properties.hashCode();
+        if (oldHashCode!=null&&oldHashCode.equals(newHashCode)) {
+            return;
+        }
+        try {
+            configManager.putObject(LAST_TRACE_HASHCODE_CONFIG, newHashCode);
+            configManager.save();
+        } catch (Exception e) {
+            //ignored
+        }
+        __init__(Utils.getApplication());
+        Analytics.trackEvent("onLoad", properties);
+        Utils.logd("start App Center Trace OnLoad:" + properties.toString());
     }
 
     public static void passAuth2Once(int retryCount, int chiralCount) {
@@ -38,17 +77,17 @@ public class CliOper {
     }
 
     public static void abortAuth2Once(int retryCount) {
-        __init__(Utils.getApplication());
+        /*__init__(Utils.getApplication());
         Map<String, String> prop = new HashMap<>();
         prop.put("retryCount", String.valueOf(retryCount));
-        Analytics.trackEvent("abortAuth2Once", prop);
+        Analytics.trackEvent("abortAuth2Once", prop);*/
     }
 
     public static void revokeAuth2Once() {
-        __init__(Utils.getApplication());
+        /*__init__(Utils.getApplication());
         Map<String, String> prop = new HashMap<>();
         prop.put("isAuth2Whitelist", String.valueOf(LicenseStatus.isBypassAuth2()));
-        Analytics.trackEvent("revokeAuth2Once", prop);
+        Analytics.trackEvent("revokeAuth2Once", prop);*/
     }
 
     public static void copyCardMsg(String msg) {
@@ -177,6 +216,7 @@ public class CliOper {
             Map<String, String> prop = new HashMap<>();
             prop.put("name", shortName);
             Analytics.trackEvent("enterModuleActivity", prop);
+            Utils.logd("Start App Center Trace enterModuleActivity: "+prop.toString());
         } catch (Throwable ignored) {
         }
     }

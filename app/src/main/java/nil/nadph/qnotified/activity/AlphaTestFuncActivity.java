@@ -26,7 +26,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.tencent.mobileqq.widget.BounceScrollView;
+
 import me.kyuubiran.dialog.RevokeMsgDialog;
 import nil.nadph.qnotified.hook.CardMsgHook;
 import nil.nadph.qnotified.script.QNScriptManager;
@@ -90,8 +92,8 @@ public class AlphaTestFuncActivity extends IphoneTitleBarActivityCompat {
             ll.addView(newListItemButton(this, "群发文本消息", "年少不知号贵-理性使用以免永冻", null, clickToBatchMsg()));
             ll.addView(newListItemHookSwitchInit(this, "发送卡片消息", "ArkAppMsg(json)+StructMsg(xml)", CardMsgHook.get()));
             ll.addView(subtitle(this, "卡片消息使用说明:先输入卡片代码(聊天界面),后长按发送按钮\n勿滥用此功能! 频繁使用此功能被举报可能封号"));
-            ll.addView(subtitle(this, "警告: 请勿发送违规内容! 在您使用 群发文本消息 及 发送卡片消息 时, " +
-                    "本模块会向服务器报告您发送的消息内容以及当前QQ号, 如您不同意, 请勿使用群发与卡片消息功能!", Color.RED));
+            ll.addView(subtitle(this, "警告: 请勿发送违规内容! 在您使用 群发文本消息 及 发送卡片消息 时，本模块会向服务器报告您发送的消息内容以及当前QQ号。"
+                    + "继续使用 群发 或 卡片消息 功能代表您同意放弃自己的一切权利，并允许QNotified开发组及管理组在非匿名的前提下任意存储、分析、使用、分享您的数据", Color.RED));
             ViewGroup _t;
             ll.addView(_t = newListItemButton(this, "管理脚本(.java)", "请注意安全, 合理使用", "N/A", clickToProxyActAction(ManageScriptsActivity.class)));
             __js_status = _t.findViewById(R_ID_VALUE);
