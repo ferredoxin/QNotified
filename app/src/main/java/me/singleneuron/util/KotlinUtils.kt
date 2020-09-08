@@ -50,18 +50,11 @@ fun dumpIntent(intent: Intent) {
 fun checkCardMsg(string: String): CardMsgCheckResult {
     try {
         val blackListString = CardMsgList.getInstance().invoke()
-        val blackList = Gson().fromJson<HashMap<String, Array<String>>>(blackListString, object : TypeToken<HashMap<String, Array<String>>>() {}.type)
+        val blackList = Gson().fromJson<HashMap<String, String>>(blackListString, object : TypeToken<HashMap<String, String>>() {}.type)
         Utils.logd(Gson().toJson(blackList))
-        for (black in blackList) {
-            var hit = true
-            for (rule in black.value) {
-                if (Regex(rule,RegexOption.IGNORE_CASE).containsMatchIn(string)) {
-                    hit = false
-                    break
-                }
-            }
-            if (hit) {
-                return CardMsgCheckResult(false, black.key)
+        for (rule in blackList) {
+            if (Regex(rule.value, setOf(RegexOption.IGNORE_CASE,RegexOption.DOT_MATCHES_ALL,RegexOption.LITERAL)).containsMatchIn(string)) {
+                return CardMsgCheckResult(false, rule.key)
             }
         }
         return CardMsgCheckResult(true)
