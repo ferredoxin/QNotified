@@ -5,9 +5,9 @@ import android.content.Intent
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import me.singleneuron.base.CardMsgCheckResult
 import me.singleneuron.base.Conditional
 import me.singleneuron.base.bridge.CardMsgList
+import me.singleneuron.data.CardMsgCheckResult
 import nil.nadph.qnotified.hook.BaseDelayableHook
 import nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit
 import nil.nadph.qnotified.util.Utils

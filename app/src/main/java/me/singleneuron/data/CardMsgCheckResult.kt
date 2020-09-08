@@ -1,3 +1,3 @@
-package me.singleneuron.base
+package me.singleneuron.data
 
 data class CardMsgCheckResult @JvmOverloads constructor(val accept:Boolean, val reason:String? = null)
