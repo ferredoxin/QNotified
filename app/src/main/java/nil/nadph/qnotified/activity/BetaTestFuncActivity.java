@@ -106,7 +106,6 @@ public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
 
         setContentBackgroundDrawable(ResUtils.skin_background);
         setTitle("Beta测试性功能");
-//        KotlinUtilsKt.showEulaDialog(this);
         return true;
     }
 
