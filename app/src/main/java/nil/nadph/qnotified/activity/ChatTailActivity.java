@@ -68,6 +68,7 @@ import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
 import static nil.nadph.qnotified.util.Utils.dip2px;
 import static nil.nadph.qnotified.util.Utils.dip2sp;
 import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.logi;
 
 @SuppressLint("Registered")
 public class ChatTailActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener {
@@ -75,6 +76,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
     private static final int R_ID_APPLY = 0x300AFF81;
     private static final int R_ID_DISABLE = 0x300AFF82;
     private static final int R_ID_PERCENT_VALUE = 0x300AFF83;
+    private static final int R_ID_REGEX_VALUE = 0x300AFF84;
     public static final String delimiter = "#msg#";
     private static int battery = 0;
     private static String power = "未充电";
@@ -158,21 +160,9 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(_f = subtitle(ChatTailActivity.this, "#time#    : 当前时间"));
         ll.addView(_g = subtitle(ChatTailActivity.this, "\\n       : 换行"));
         int _5dp = dip2px(ChatTailActivity.this, 5);
-        EditText pct = new EditText(ChatTailActivity.this);
-        pct.setId(R_ID_PERCENT_VALUE);
-        pct.setInputType(TYPE_CLASS_TEXT);
-        pct.setTextColor(ResUtils.skin_black);
-        pct.setTextSize(dip2sp(ChatTailActivity.this, 18));
-        //pct.setBackgroundDrawable(null);
-        ViewCompat.setBackground(pct,null);
-        pct.setGravity(Gravity.CENTER);
-        pct.setPadding(_5dp, _5dp / 2, _5dp, _5dp / 2);
-        //pct.setBackgroundDrawable(new HighContrastBorder());
-        ViewCompat.setBackground(pct,new HighContrastBorder());
-        pct.setHint(ChatTailActivity.delimiter + " 将会被替换为消息");
-        pct.setText(ct.getTailCapacity().replace("\n", "\\n"));
-        pct.setSelection(pct.getText().length());
-        if (pct.getText() == null) pct.setText("");
+        EditText pct = createEditText(R_ID_PERCENT_VALUE, _5dp,
+                ct.getTailCapacity().replace("\n", "\\n"),
+                ChatTailActivity.delimiter + " 将会被替换为消息");
         _a.setOnClickListener(v -> pct.setText(pct.getText() + delimiter));
         _b.setOnClickListener(v -> pct.setText(pct.getText() + "#model#"));
         _c.setOnClickListener(v -> pct.setText(pct.getText() + "#brand#"));
@@ -181,6 +171,13 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         _f.setOnClickListener(v -> pct.setText(pct.getText() + "#time#"));
         _g.setOnClickListener(v -> pct.setText(pct.getText() + "\\n"));
         ll.addView(pct, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 2 * _5dp, _5dp, 2 * _5dp, _5dp));
+        ll.addView(newListItemSwitchFriendConfigNext(this, "正则开关",
+                "通过正则表达式的消息不会携带小尾巴(无需重启" + Utils.getHostAppName() + ")",
+                ConfigItems.qn_chat_tail_regex, false));
+        ll.addView(createEditText(R_ID_REGEX_VALUE, _5dp, ChatTailHook.getTailRegex(),
+                "需要有正则表达式相关知识(部分匹配)"),
+                newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT,
+                        2 * _5dp, _5dp, 2 * _5dp, _5dp));
         ll.addView(newListItemSwitchFriendConfigNext(this, "全局开关", "开启将无视生效范围(无需重启" + Utils.getHostAppName() + ")", ConfigItems.qn_chat_tail_global, false));
         Button apply = new Button(ChatTailActivity.this);
         apply.setId(R_ID_APPLY);
@@ -199,6 +196,26 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         setContentBackgroundDrawable(ResUtils.skin_background);
         setTitle("聊天小尾巴");
         return true;
+    }
+
+    private EditText createEditText(int id, int _5dp, String text, String hint) {
+        EditText pct = new EditText(ChatTailActivity.this);
+        pct.setId(id);
+        pct.setInputType(TYPE_CLASS_TEXT);
+        pct.setTextColor(ResUtils.skin_black);
+        pct.setTextSize(dip2sp(ChatTailActivity.this, 18));
+        //pct.setBackgroundDrawable(null);
+        ViewCompat.setBackground(pct,null);
+        pct.setGravity(Gravity.CENTER);
+        pct.setPadding(_5dp, _5dp / 2, _5dp, _5dp / 2);
+        //pct.setBackgroundDrawable(new HighContrastBorder());
+        ViewCompat.setBackground(pct,new HighContrastBorder());
+        pct.setHint(hint);
+        pct.setText(text);
+        pct.setSelection(pct.getText().length());
+        //if (pct.getText() == null) pct.setText("");
+        //吐槽一下，如果返回为空的话，上一行代码是会报错的啊，Android本身在设置时有帮忙处理
+        return pct;
     }
 
     private class BatteryReceiver extends BroadcastReceiver {
@@ -242,13 +259,16 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         boolean enabled = ct.isEnabled();
         String desc = "当前状态: ";
         if (enabled) {
-            desc += "已开启: \n" + ct.getTailCapacity()
-                    .replace(ChatTailActivity.delimiter, "示例消息")
-                    .replace("#model#", Build.MODEL)
-                    .replace("#brand#", Build.BRAND)
-                    .replace("#battery#", battery + "")
-                    .replace("#power#", ChatTailActivity.getPower())
-                    .replace("#time#", new SimpleDateFormat(RikkaCustomMsgTimeFormatDialog.getTimeFormat()).format(new Date()));
+            if (!ct.isRegex() || !ct.isPassRegex("示例消息"))
+                desc += "已开启: \n" + ct.getTailCapacity()
+                        .replace(ChatTailActivity.delimiter, "示例消息")
+                        .replace("#model#", Build.MODEL)
+                        .replace("#brand#", Build.BRAND)
+                        .replace("#battery#", battery + "")
+                        .replace("#power#", ChatTailActivity.getPower())
+                        .replace("#time#", new SimpleDateFormat(RikkaCustomMsgTimeFormatDialog.getTimeFormat()).format(new Date()));
+            else
+                desc += "已开启: \n示例消息";
         } else {
             desc += "禁用";
         }
@@ -275,6 +295,9 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
             case R_ID_APPLY:
                 //if (mMsfResponsive) {
                 doUpdateTailCfg();
+                logi("isRegex:" + String.valueOf(ChatTailHook.isRegex()));
+                logi("isPassRegex:" + String.valueOf(ChatTailHook.isPassRegex("示例消息")));
+                logi("getTailRegex:" + ChatTailHook.getTailRegex());
                /* } else {
                     final Dialog waitDialog = CustomDialog.create(this).setCancelable(true).setTitle("请稍候")
                             .setMessage("等待 :MSF 进程响应").show();
@@ -338,6 +361,10 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
             return;
         }
         ct.setTail(val);
+        val = ((EditText) ChatTailActivity.this.findViewById(R_ID_REGEX_VALUE)).getText().toString();
+        if (!Utils.isNullOrEmpty(val)) {
+            ct.setTailRegex(val);
+        }
         if (!ct.isEnabled()) {
             cfg.putBoolean(ChatTailHook.qn_chat_tail_enable, true);
             try {
