@@ -44,6 +44,7 @@ import me.kyuubiran.hook.AutoMosaicName;
 import me.kyuubiran.hook.ShowSelfMsgByLeft;
 import me.singleneuron.activity.ChangeDrawerWidthActivity;
 import me.singleneuron.hook.*;
+import me.singleneuron.hook.decorator.SimpleReceiptMessage;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
@@ -203,6 +204,8 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         addViewConditionally(ll, this, "强制使用系统文件", "支持8.3.6及更高", ForceSystemFile.INSTANCE);
         addViewConditionally(ll, newListItemButton(this, "修改侧滑边距", "感谢祈无，仅支持8.4.1/8.4.5，重启后生效", "", clickToProxyActAction(ChangeDrawerWidthActivity.class)), ChangeDrawerWidth.INSTANCE.getCondition());
         ll.addView(newListItemHookSwitchInit(this,"屏蔽QQ空间滑动相机",null,DisableCameraOnSweepingInQzone.INSTANCE));
+        ll.addView(newListItemHookSwitchInit(this,"回执消息文本化",null, SimpleReceiptMessage.INSTANCE));
+
         ll.addView(subtitle(this, "好友列表"));
         ll.addView(newListItemButton(this, "打开资料卡", "打开指定用户的资料卡", null, new View.OnClickListener() {
             @Override

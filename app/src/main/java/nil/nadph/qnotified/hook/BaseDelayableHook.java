@@ -54,7 +54,6 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 RevokeMsgHook.get(),
                 FakeVipHook.get(),
                 HideGiftAnim.get(),
-                SimpleCheckInHook.get(),
                 PreUpgradeHook.get(),
                 CheatHook.get(),
                 RoundAvatarHook.get(),
@@ -107,7 +106,8 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 CutMessage.INSTANCE,
                 VasProfileAntiCrash.get(),
                 RevokeMsg.INSTANCE,
-                DisableCameraOnSweepingInQzone.INSTANCE
+                DisableCameraOnSweepingInQzone.INSTANCE,
+                ItemBuilderFactoryHook.INSTANCE
         };
         return sAllHooks;
     }
