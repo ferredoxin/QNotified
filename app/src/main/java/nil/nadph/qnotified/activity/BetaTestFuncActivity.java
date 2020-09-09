@@ -25,12 +25,14 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.tencent.mobileqq.widget.BounceScrollView;
-
 import me.kyuubiran.hook.testhook.CutMessage;
 import me.singleneuron.hook.CopyCardMsg;
+
 import nil.nadph.qnotified.hook.CardMsgHook;
+
+import me.singleneuron.util.KotlinUtilsKt;
+
 import nil.nadph.qnotified.hook.ChatTailHook;
 import nil.nadph.qnotified.hook.MutePokePacket;
 import nil.nadph.qnotified.hook.PttForwardHook;
@@ -96,13 +98,13 @@ public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
             ll.addView(_t = newListItemButton(this, "自定义聊天小尾巴", "回车发送不生效", "N/A", clickToProxyActAction(ACTION_CHAT_TAIL_CONFIG_ACTIVITY)));
             __tv_chat_tail_status = _t.findViewById(R_ID_VALUE);
             ll.addView(newListItemHookSwitchInit(this, "屏蔽戳一戳", "OvO", MutePokePacket.get()));
-            ll.addView(newListItemHookSwitchInit(this,"复制卡片消息","", CopyCardMsg.INSTANCE));
+            ll.addView(newListItemHookSwitchInit(this, "复制卡片消息", "", CopyCardMsg.INSTANCE));
             ll.addView(newListItemHookSwitchInit(this, "在LogCat输出所有接收的消息", "[Debug]无关人士请不要打开 没有任何作用", CutMessage.INSTANCE));
             ll.addView(newListItemButton(this, "群发文本消息（限制五个字以内）", "年少不知号贵-理性使用以免永冻", null, clickToBatchMsg()));
-            ll.addView(newListItemHookSwitchInit(this, "发送卡片消息", "ArkAppMsg(json)+StructMsg(xml)", CardMsgHook.get()));
-            ll.addView(subtitle(this, "卡片消息使用说明:先输入卡片代码(聊天界面),后长按发送按钮\n勿滥用此功能! 频繁使用此功能被举报可能封号"));
-            ll.addView(subtitle(this, "警告: 请勿发送违规内容! 在您使用 群发文本消息 及 发送卡片消息 时，本模块会向服务器报告您发送的消息内容以及当前QQ号。"
-                    + "继续使用 群发 或 卡片消息 功能代表您同意放弃自己的一切权利，并允许QNotified开发组及管理组在非匿名的前提下任意存储、分析、使用、分享您的数据", Color.RED));
+            ll.addView(subtitle(this, "警告: 请勿发送违规内容! 在您使用 群发文本消息 时，本模块会向服务器报告您 群发的消息内容 以及当前QQ号。"
+                    + "继续使用 群发 功能代表您同意放弃自己的一切权利，并允许QNotified开发组及管理组在非匿名的前提下任意存储、分析、使用、分享您的数据", Color.RED));
+            ll.addView(subtitle(this, "想要隐私就不要去玩 群发 或者 卡片消息, 是否开启功能是你们的自由", Color.RED));
+            ll.addView(subtitle(this, "如果您看不懂, 或无法理解以上内容, 请勿使用 群发 或 卡片消息 功能!", Color.RED));
         }
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         this.setContentView(bounceScrollView);
@@ -111,6 +113,7 @@ public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
 
         setContentBackgroundDrawable(ResUtils.skin_background);
         setTitle("Beta测试性功能");
+        KotlinUtilsKt.showEulaDialog(this);
         return true;
     }
 
