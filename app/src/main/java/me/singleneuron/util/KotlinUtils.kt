@@ -26,6 +26,7 @@ import nil.nadph.qnotified.activity.EulaActivity
 import nil.nadph.qnotified.hook.BaseDelayableHook
 import nil.nadph.qnotified.ui.ViewBuilder
 import nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit
+import nil.nadph.qnotified.util.LicenseStatus
 import nil.nadph.qnotified.util.Utils
 import java.io.BufferedReader
 import java.io.File
@@ -62,6 +63,7 @@ fun dumpIntent(intent: Intent) {
 }
 
 fun checkCardMsg(string: String): CardMsgCheckResult {
+    if (BuildConfig.DEBUG||LicenseStatus.isInsider()) return CardMsgCheckResult(true)
     try {
         Utils.logd("trying: $string")
         val blackListString = CardMsgList.getInstance().invoke()
