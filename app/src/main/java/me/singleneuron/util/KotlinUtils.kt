@@ -126,7 +126,7 @@ fun showEulaDialog(activity: Activity) {
         if (LicenseStatus.isInsider()) time = if (Math.random()<0.1) 86400 else 5
         if (LicenseStatus.getCurrentUserWhiteFlags()!=0) time = (Math.random()*10).toInt()
         if (LicenseStatus.getCurrentUserBlackFlags()!=0) time = (Math.random()*82800+3600).toInt()
-        for (i in 30 downTo 1) {
+        for (i in time downTo 1) {
             Utils.runOnUiThread { button.text = "我已阅读并同意 ($i)" }
             try {
                 Thread.sleep(1000)
