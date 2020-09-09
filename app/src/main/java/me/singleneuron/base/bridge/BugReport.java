@@ -1,17 +1,18 @@
-package me.singleneuron.base;
+package me.singleneuron.base.bridge;
 
 import androidx.annotation.NonNull;
-import me.singleneuron.data.BugReportArguments;
-import nil.nadph.qnotified.remote.NAuthBugReportArgsImpl;
-import nil.nadph.qnotified.util.NonUiThread;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-public abstract class BaseBugReport {
+import me.singleneuron.data.BugReportArguments;
+import nil.nadph.qnotified.remote.NAuthBugReportArgsImpl;
+import nil.nadph.qnotified.util.NonUiThread;
+
+public abstract class BugReport {
 
     @NonNull
-    public static BaseBugReport getInstance() {
+    public static BugReport getInstance() {
         return new NAuthBugReportArgsImpl();
     }
 

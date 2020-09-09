@@ -30,6 +30,7 @@ import android.widget.TextView;
 import com.tencent.mobileqq.widget.BounceScrollView;
 
 import me.kyuubiran.dialog.RevokeMsgDialog;
+
 import me.singleneuron.util.KotlinUtilsKt;
 import nil.nadph.qnotified.hook.CardMsgHook;
 import nil.nadph.qnotified.script.QNScriptManager;
