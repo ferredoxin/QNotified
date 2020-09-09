@@ -119,6 +119,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             ll.addView(newListItemButton(this, "Alpha测试性功能", "嘘!这是个秘密!", null, clickToProxyActAction(AlphaTestFuncActivity.class)));
         }
         if (!LicenseStatus.hasBlackFlags()) {
+            ll.addView(newListItemButton(this, "Beta测试性功能", "仅用于测试稳定性", null, clickToProxyActAction(BetaTestFuncActivity.class)));
             ll.addView(newListItemButton(this, "Omega测试性功能", "这是个不存在的功能", null, v -> KotlinUtilsKt.showEulaDialog(SettingsActivity.this)));
         }
         ll.addView(subtitle(this, "基本功能"));
@@ -182,9 +183,6 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         addViewConditionally(ll, this, "小程序分享转链接", "感谢Alcatraz323开发远离小程序,感谢神经元移植到Xposed", NoApplet.INSTANCE);
         //ll.addView(newListItemHookSwitchInit(this, "小程序分享转链接", "感谢Alcatraz323开发远离小程序,感谢神经元移植到Xposed", adNoApplet.INSTANCE));
         ll.addView(subtitle(this, "实验性功能(未必有效)"));
-        if (!LicenseStatus.hasBlackFlags()) {
-            ll.addView(newListItemButton(this, "Beta测试性功能", "仅用于测试稳定性", null, clickToProxyActAction(BetaTestFuncActivity.class)));
-        }
         ll.addView(_t = newListItemButton(this, "下载重定向", "N/A", "N/A", this));
         _t.setId(R_ID_BTN_FILE_RECV);
         __recv_desc = _t.findViewById(R_ID_DESCRIPTION);
