@@ -11,13 +11,10 @@ import androidx.preference.PreferenceFragmentCompat;
 import com.microsoft.appcenter.AppCenter;
 import com.microsoft.appcenter.analytics.Analytics;
 
-import java.io.IOError;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import me.singleneuron.base.BaseBugReport;
 import me.singleneuron.data.BugReportArguments;
 import me.singleneuron.preference.BugReportPreference;
 import nil.nadph.qnotified.R;

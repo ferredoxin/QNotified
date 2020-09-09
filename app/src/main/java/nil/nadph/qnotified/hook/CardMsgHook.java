@@ -19,42 +19,19 @@
 package nil.nadph.qnotified.hook;
 
 
-import android.app.Activity;
-import android.content.ClipboardManager;
-import android.content.Context;
-import android.os.Build;
 import android.os.Looper;
 import android.os.Parcelable;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tencent.mobileqq.app.QQAppInterface;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.activity.ChatTailActivity;
-import nil.nadph.qnotified.bridge.ChatActivityFacade;
 import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.dialog.RikkaCustomMsgTimeFormatDialog;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.ui.InterceptLayout;
-import nil.nadph.qnotified.ui.TouchEventToLongClickAdapter;
-import nil.nadph.qnotified.util.*;
+import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.Utils;
 
-import java.io.Externalizable;
-import java.lang.reflect.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 
@@ -373,4 +350,5 @@ public class CardMsgHook extends BaseDelayableHook {
             return false;
         }
     }
+
 }

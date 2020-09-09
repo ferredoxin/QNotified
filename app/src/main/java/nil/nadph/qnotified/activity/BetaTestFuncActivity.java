@@ -28,6 +28,11 @@ import android.widget.TextView;
 import com.tencent.mobileqq.widget.BounceScrollView;
 import me.kyuubiran.hook.testhook.CutMessage;
 import me.singleneuron.hook.CopyCardMsg;
+
+import nil.nadph.qnotified.hook.CardMsgHook;
+
+import me.singleneuron.util.KotlinUtilsKt;
+
 import nil.nadph.qnotified.hook.ChatTailHook;
 import nil.nadph.qnotified.hook.MutePokePacket;
 import nil.nadph.qnotified.hook.PttForwardHook;
@@ -108,6 +113,7 @@ public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
 
         setContentBackgroundDrawable(ResUtils.skin_background);
         setTitle("Beta测试性功能");
+        KotlinUtilsKt.showEulaDialog(this);
         return true;
     }
 
