@@ -29,7 +29,6 @@ import android.widget.TextView;
 import com.tencent.mobileqq.widget.BounceScrollView;
 
 import me.singleneuron.hook.CopyCardMsg;
-import me.singleneuron.util.KotlinUtilsKt;
 import nil.nadph.qnotified.hook.CardMsgHook;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.LicenseStatus;
@@ -104,7 +103,6 @@ public class OmegaTestFuncActivity extends IphoneTitleBarActivityCompat {
 
         setContentBackgroundDrawable(ResUtils.skin_background);
         setTitle("Omega测试性功能");
-        KotlinUtilsKt.showEulaDialog(this);
         return true;
     }
 

@@ -21,11 +21,11 @@ import me.singleneuron.base.Conditional
 import me.singleneuron.base.bridge.CardMsgList
 import me.singleneuron.data.CardMsgCheckResult
 import nil.nadph.qnotified.BuildConfig
+import nil.nadph.qnotified.MainHook
 import nil.nadph.qnotified.R
 import nil.nadph.qnotified.activity.EulaActivity
 import nil.nadph.qnotified.activity.OmegaTestFuncActivity
 import nil.nadph.qnotified.hook.BaseDelayableHook
-import nil.nadph.qnotified.ui.ViewBuilder
 import nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit
 import nil.nadph.qnotified.util.LicenseStatus
 import nil.nadph.qnotified.util.Utils
@@ -84,11 +84,11 @@ fun checkCardMsg(string: String): CardMsgCheckResult {
 }
 
 fun showEulaDialog(activity: Activity) {
-    val linearLayout = LinearLayout(activity)
     if (BuildConfig.DEBUG) {
-        ViewBuilder.clickToProxyActAction(OmegaTestFuncActivity::class.java).onClick(linearLayout)
+        MainHook.startProxyActivity(activity,OmegaTestFuncActivity::class.java)
         return
     }
+    val linearLayout = LinearLayout(activity)
     linearLayout.orientation = LinearLayout.VERTICAL
     val textView = TextView(activity)
     textView.text = "为避免滥用，在您使用 发送卡片消息 及 群发文本消息 时，本模块会向服务器报告您使用此功能时发送的消息内容以及当前QQ号。\n继续使用 群发 或 卡片消息 功能代表您同意放弃自己的一切权利，并允许QNotified开发组及管理组在非匿名的前提下任意存储、分析、使用、分享您的数据。如您不同意，请立刻退出。"
@@ -101,10 +101,10 @@ fun showEulaDialog(activity: Activity) {
             .setView(linearLayout)
             .setCancelable(false)
             .setPositiveButton("我已阅读并同意"){ _: DialogInterface, _: Int ->
-                ViewBuilder.clickToProxyActAction(OmegaTestFuncActivity::class.java).onClick(linearLayout)
+                MainHook.startProxyActivity(activity,OmegaTestFuncActivity::class.java)
             }
             .setNeutralButton("查看用户协议"){ _: DialogInterface, _: Int ->
-                ViewBuilder.clickToProxyActAction(EulaActivity::class.java).onClick(linearLayout)
+                MainHook.startProxyActivity(activity,EulaActivity::class.java)
                 activity.finish()
             }
             .setNegativeButton("取消"){ _: DialogInterface, _: Int ->
@@ -123,8 +123,8 @@ fun showEulaDialog(activity: Activity) {
     button.isEnabled = false
     Thread {
         var time = 30
-        if (LicenseStatus.isInsider()) time = if (Math.random()<0.1) 86400 else 5
         if (LicenseStatus.getCurrentUserWhiteFlags()!=0) time = (Math.random()*10).toInt()
+        if (LicenseStatus.isInsider()) time = if (Math.random()<0.1) 86400 else 5
         if (LicenseStatus.getCurrentUserBlackFlags()!=0) time = (Math.random()*82800+3600).toInt()
         for (i in time downTo 1) {
             Utils.runOnUiThread { button.text = "我已阅读并同意 ($i)" }
@@ -139,6 +139,9 @@ fun showEulaDialog(activity: Activity) {
             editText.isEnabled = true
             editText.visibility = View.VISIBLE
             textView.text = textView.text.toString() + "\n请在下方输入框中输入 我已阅读并同意"
+            if (LicenseStatus.isInsider()) {
+                editText.setText("我已阅读并同意")
+            }
         }
     }.start()
 }
