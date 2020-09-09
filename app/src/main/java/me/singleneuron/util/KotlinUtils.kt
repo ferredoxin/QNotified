@@ -20,6 +20,7 @@ import com.google.gson.reflect.TypeToken
 import me.singleneuron.base.Conditional
 import me.singleneuron.base.bridge.CardMsgList
 import me.singleneuron.data.CardMsgCheckResult
+import nil.nadph.qnotified.BuildConfig
 import nil.nadph.qnotified.R
 import nil.nadph.qnotified.activity.EulaActivity
 import nil.nadph.qnotified.hook.BaseDelayableHook
@@ -62,11 +63,13 @@ fun dumpIntent(intent: Intent) {
 
 fun checkCardMsg(string: String): CardMsgCheckResult {
     try {
+        Utils.logd("trying: $string")
         val blackListString = CardMsgList.getInstance().invoke()
         val blackList = Gson().fromJson<HashMap<String, String>>(blackListString, object : TypeToken<HashMap<String, String>>() {}.type)
         Utils.logd(Gson().toJson(blackList))
         for (rule in blackList) {
-            if (Regex(rule.value, setOf(RegexOption.IGNORE_CASE,RegexOption.DOT_MATCHES_ALL,RegexOption.LITERAL)).containsMatchIn(string)) {
+            Utils.logd("checking: $rule")
+            if (Regex(rule.value, setOf(RegexOption.IGNORE_CASE,RegexOption.DOT_MATCHES_ALL)).containsMatchIn(string)) {
                 return CardMsgCheckResult(false, rule.key)
             }
         }
@@ -78,6 +81,7 @@ fun checkCardMsg(string: String): CardMsgCheckResult {
 }
 
 fun showEulaDialog(activity: Activity) {
+    if (BuildConfig.DEBUG) return
     val linearLayout = LinearLayout(activity)
     linearLayout.orientation = LinearLayout.VERTICAL
     val textView = TextView(activity)
