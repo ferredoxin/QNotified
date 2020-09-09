@@ -30,7 +30,6 @@ import android.widget.TextView;
 import com.tencent.mobileqq.widget.BounceScrollView;
 
 import me.kyuubiran.dialog.RevokeMsgDialog;
-
 import me.singleneuron.util.KotlinUtilsKt;
 import nil.nadph.qnotified.hook.CardMsgHook;
 import nil.nadph.qnotified.script.QNScriptManager;
@@ -43,6 +42,7 @@ import static nil.nadph.qnotified.ui.ViewBuilder.*;
 import static nil.nadph.qnotified.util.SendBatchMsg.clickToBatchMsg;
 import static nil.nadph.qnotified.util.Utils.dip2px;
 
+@Deprecated
 @SuppressLint("Registered")
 public class AlphaTestFuncActivity extends IphoneTitleBarActivityCompat {
 
