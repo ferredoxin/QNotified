@@ -45,6 +45,7 @@ import me.kyuubiran.hook.ShowSelfMsgByLeft;
 import me.singleneuron.activity.ChangeDrawerWidthActivity;
 import me.singleneuron.hook.*;
 import me.singleneuron.hook.decorator.SimpleReceiptMessage;
+import me.singleneuron.util.KotlinUtilsKt;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
@@ -117,7 +118,9 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         if (LicenseStatus.isAsserted()) {
             ll.addView(newListItemButton(this, "Alpha测试性功能", "嘘!这是个秘密!", null, clickToProxyActAction(AlphaTestFuncActivity.class)));
         }
-
+        if (!LicenseStatus.hasBlackFlags()) {
+            ll.addView(newListItemButton(this, "Omega测试性功能", "这是个不存在的功能", null, v -> KotlinUtilsKt.showEulaDialog(SettingsActivity.this)));
+        }
         ll.addView(subtitle(this, "基本功能"));
         if (!Utils.isTim(this) && getHostVersionCode32() >= QQ_8_2_6) {
             ll.addView(_t = newListItemButton(this, "自定义电量", "[QQ>=8.2.6]在线模式为我的电量时生效", "N/A", clickToProxyActAction(ACTION_FAKE_BAT_CONFIG_ACTIVITY)));
