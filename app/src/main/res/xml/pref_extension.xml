@@ -27,7 +27,7 @@
                 android:key="preventAt"
                 android:title="防止被@"/>
         <SwitchPreference
-                android:key="SimpleCheckInHook"
+                android:key="SimpleCheckIn"
                 android:title="签到文本化"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="文件">
