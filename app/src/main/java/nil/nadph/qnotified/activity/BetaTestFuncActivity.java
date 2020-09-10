@@ -31,7 +31,6 @@ import me.kyuubiran.hook.testhook.CutMessage;
 import nil.nadph.qnotified.hook.ChatTailHook;
 import nil.nadph.qnotified.hook.MutePokePacket;
 import nil.nadph.qnotified.hook.PttForwardHook;
-import nil.nadph.qnotified.script.QNScriptManager;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
@@ -46,7 +45,6 @@ import static nil.nadph.qnotified.util.Utils.dip2px;
 public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
 
     TextView __tv_chat_tail_status;
-    TextView __js_status;
 
     @Override
     public boolean doOnCreate(Bundle bundle) {
@@ -95,9 +93,6 @@ public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
             __tv_chat_tail_status = _t.findViewById(R_ID_VALUE);
             ll.addView(newListItemHookSwitchInit(this, "屏蔽戳一戳", "OvO", MutePokePacket.get()));
             ll.addView(newListItemHookSwitchInit(this, "在LogCat输出所有接收的消息", "[Debug]无关人士请不要打开 没有任何作用", CutMessage.INSTANCE));
-            ViewGroup __t;
-            ll.addView(__t = newListItemButton(this, "管理脚本(.java)", "请注意安全, 合理使用", "N/A", clickToProxyActAction(ManageScriptsActivity.class)));
-            __js_status = __t.findViewById(R_ID_VALUE);
         }
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         this.setContentView(bounceScrollView);
@@ -119,8 +114,5 @@ public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
         }
         if (text == null) text = "[未启用]";
         __tv_chat_tail_status.setText(text);
-        if (__js_status != null) {
-            __js_status.setText(QNScriptManager.getEnableCount() + "/" + QNScriptManager.getAllCount());
-        }
     }
 }

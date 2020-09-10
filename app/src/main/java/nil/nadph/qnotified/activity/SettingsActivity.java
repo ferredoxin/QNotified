@@ -116,11 +116,9 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         } catch (Throwable e) {
             log(e);
         }
-/* 
         if (LicenseStatus.isAsserted()) {
             ll.addView(newListItemButton(this, "Alpha测试性功能", "嘘!这是个秘密!", null, clickToProxyActAction(AlphaTestFuncActivity.class)));
         }
-*/  
         if (!LicenseStatus.hasBlackFlags()) {
             ll.addView(newListItemButton(this, "Beta测试性功能", "仅用于测试稳定性", null, clickToProxyActAction(BetaTestFuncActivity.class)));
             ll.addView(newListItemButton(this, "Omega测试性功能", "这是个不存在的功能", null, v -> KotlinUtilsKt.showEulaDialog(SettingsActivity.this)));
