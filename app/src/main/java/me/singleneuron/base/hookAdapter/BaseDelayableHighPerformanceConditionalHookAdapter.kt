@@ -1,4 +1,4 @@
-package me.singleneuron.base
+package me.singleneuron.base.hookAdapter
 
 import me.singleneuron.data.PageFaultHighPerformanceFunctionCache
 import nil.nadph.qnotified.SyncUtils

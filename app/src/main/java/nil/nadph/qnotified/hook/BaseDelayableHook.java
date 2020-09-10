@@ -107,9 +107,9 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 CutMessage.INSTANCE,
                 VasProfileAntiCrash.get(),
                 RevokeMsg.INSTANCE,
-                DisableCameraOnSweepingInQzone.INSTANCE,
                 ItemBuilderFactoryHook.INSTANCE,
-                SimpleCheckIn.INSTANCE
+                SimpleCheckIn.INSTANCE,
+                StartActivityHook.INSTANCE
         };
         return sAllHooks;
     }

@@ -1,7 +1,7 @@
 package me.singleneuron.hook.decorator
 
 import de.robv.android.xposed.XC_MethodHook
-import me.singleneuron.base.BaseItemBuilderFactoryHookDecorator
+import me.singleneuron.base.decorator.BaseItemBuilderFactoryHookDecorator
 import nil.nadph.qnotified.util.Utils
 
 object SimpleCheckIn: BaseItemBuilderFactoryHookDecorator("qn_sign_in_as_text") {
