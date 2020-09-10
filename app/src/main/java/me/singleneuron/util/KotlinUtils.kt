@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Color
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -91,7 +92,8 @@ fun showEulaDialog(activity: Activity) {
     val linearLayout = LinearLayout(activity)
     linearLayout.orientation = LinearLayout.VERTICAL
     val textView = TextView(activity)
-    textView.text = "为避免滥用，在您使用 发送卡片消息 及 群发文本消息 时，本模块会向服务器报告您使用此功能时发送的消息内容以及当前QQ号。\n继续使用 群发 或 卡片消息 功能代表您同意放弃自己的一切权利，并允许QNotified开发组及管理组在非匿名的前提下任意存储、分析、使用、分享您的数据。如您不同意，请立刻退出。"
+    textView.text = "为避免滥用，在您使用 发送卡片消息 及 群发文本消息 时，本模块会向服务器报告您使用此功能时发送的消息内容以及当前QQ号。\n继续使用 群发 或 卡片消息 功能代表您同意放弃自己的一切权利，并允许QNotified开发组及管理组在非匿名的前提下任意存储、分析、使用、分享您的数据。如您不同意，请立刻退出。\n请您在使用此功能时自觉遵守您所在地区的法律法规，开发者不为您使用此功能产生的后果承担任何责任，并保留在必要的时候配合执法机构调查的权利。"
+    textView.setTextColor(Color.RED)
     val editText = EditText(activity)
     editText.isEnabled = false
     editText.visibility = View.INVISIBLE
