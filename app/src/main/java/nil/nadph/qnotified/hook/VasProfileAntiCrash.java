@@ -65,6 +65,10 @@ public class VasProfileAntiCrash extends BaseDelayableHook {
                     doHook("azxy");
                     break;
                 }
+                case (int) QQVersion.QQ_8_4_8: {
+                     doHook("aymn");
+                     break;
+                 }
                 default: {
                     doHook(null);
                 }
