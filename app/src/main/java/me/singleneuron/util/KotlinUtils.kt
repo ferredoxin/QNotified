@@ -108,7 +108,6 @@ fun showEulaDialog(activity: Activity) {
                 activity.finish()
             }
             .setNegativeButton("取消"){ _: DialogInterface, _: Int ->
-                activity.finish()
             }
     val dialog = builder.create()
     dialog.show()
