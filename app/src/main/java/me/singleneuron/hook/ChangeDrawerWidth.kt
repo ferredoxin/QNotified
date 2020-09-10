@@ -41,7 +41,7 @@ object ChangeDrawerWidth : BaseDelayableConditionalHookAdapter("changeDrawerWidt
         return width!=0
     }
 
-    override val conditionCache: PageFaultHighPerformanceFunctionCache<Boolean> = PageFaultHighPerformanceFunctionCache { Utils.getHostVersionCode() == QQVersion.QQ_8_4_1 || Utils.getHostVersionCode() == QQVersion.QQ_8_4_5 }
+    override val conditionCache: PageFaultHighPerformanceFunctionCache<Boolean> = PageFaultHighPerformanceFunctionCache { Utils.getHostVersionCode() >= QQVersion.QQ_8_4_1 }
 
     private const val ChangeDrawerWidth_width = "ChangeDrawerWidth_width"
 
