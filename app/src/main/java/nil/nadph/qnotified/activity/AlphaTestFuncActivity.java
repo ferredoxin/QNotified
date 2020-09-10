@@ -22,6 +22,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -96,6 +97,7 @@ public class AlphaTestFuncActivity extends IphoneTitleBarActivityCompat {
 
         setContentBackgroundDrawable(ResUtils.skin_background);
         setTitle("Alpha内测功能");
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         return true;
     }
 
