@@ -3,6 +3,7 @@ package nil.nadph.qnotified.bridge;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Utils;
+import me.singleneuron.util.QQVersion;
 
 import java.lang.reflect.Modifier;
 
@@ -40,7 +41,9 @@ public class QQMessageFacade {
             long t = (long) iget_object_or_null(msg2, "time");
             t -= 1 + 10f * Math.random();
             iput_object(msg2, "time", t);
-            Object msgCache = invoke_virtual(getQQAppInterface(), "a", DexKit.doFindClass(DexKit.C_MessageCache));
+            String fuckingMethod = "a";
+            if (Utils.getHostVersionCode() >= QQVersion.QQ_8_4_8) fuckingMethod = "getMsgCache";
+            Object msgCache = invoke_virtual(getQQAppInterface(), fuckingMethod, DexKit.doFindClass(DexKit.C_MessageCache));
             invoke_virtual(msgCache, "b", true, boolean.class, void.class);
             invoke_virtual_declared_fixed_modifier_ordinal(mgr, Modifier.PUBLIC, 0, Initiator._BaseMessageManager(), 2, 4, true, msg2, Initiator._MessageRecord(), void.class);
         } catch (Exception e) {
