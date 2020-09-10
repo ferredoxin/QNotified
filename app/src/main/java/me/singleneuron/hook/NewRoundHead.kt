@@ -32,6 +32,7 @@ object NewRoundHead : BaseDelayableHighPerformanceConditionalHookAdapter("newrou
             QQVersion.QQ_8_3_9 -> "bfsw"
             QQVersion.QQ_8_4_1 -> "aocs"
             QQVersion.QQ_8_4_5 -> "aope"
+            QQVersion.QQ_8_4_8 -> "anho"
             else -> super.getClass()
         }
     }
