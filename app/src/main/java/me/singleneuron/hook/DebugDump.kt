@@ -2,29 +2,21 @@ package me.singleneuron.hook
 
 import android.app.Activity
 import android.content.Intent
-import android.util.Log
+import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
-import me.singleneuron.base.BaseDelayableHookAdapter
+import me.singleneuron.base.decorator.BaseStartActivityHookDecorator
 import me.singleneuron.util.dump
-import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.util.Utils
 
-object DebugDump : BaseDelayableHookAdapter("debugDump",SyncUtils.PROC_ANY) {
+object DebugDump : BaseStartActivityHookDecorator("debugDump") {
+
+    override fun doDecorate(intent: Intent, param: XC_MethodHook.MethodHookParam): Boolean {
+        Utils.logd("debugDump: startActivity "+param.thisObject::class.java.name)
+        intent.dump()
+        return false
+    }
 
     override fun doInit(): Boolean {
-
-        //dump startActivity
-        val hook = object : XposedMethodHookAdapter() {
-            override fun beforeMethod(param: MethodHookParam?) {
-                val intent : Intent = param!!.args[0] as Intent
-                Utils.logd("debugDump: startActivity")
-                Utils.logd(Log.getStackTraceString(Throwable()))
-                intent.dump()
-            }
-        }
-        XposedBridge.hookAllMethods(Activity::class.java,"startActivity", hook)
-        XposedBridge.hookAllMethods(Activity::class.java,"startActivityForResult", hook)
-
         //dump setResult
         XposedBridge.hookAllMethods(Activity::class.java,"setResult", object : XposedMethodHookAdapter() {
             override fun beforeMethod(param: MethodHookParam?) {

@@ -3,7 +3,7 @@ package me.singleneuron.hook
 import android.content.Intent
 import de.robv.android.xposed.XposedBridge
 import me.singleneuron.activity.ChooseAlbumAgentActivity
-import me.singleneuron.base.BaseDelayableConditionalHookAdapter
+import me.singleneuron.base.adapter.BaseDelayableConditionalHookAdapter
 import me.singleneuron.data.PageFaultHighPerformanceFunctionCache
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.util.Utils

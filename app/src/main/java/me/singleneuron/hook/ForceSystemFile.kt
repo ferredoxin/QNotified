@@ -3,7 +3,7 @@ package me.singleneuron.hook
 import android.content.Intent
 import de.robv.android.xposed.XposedHelpers
 import me.singleneuron.activity.ChooseFileAgentActivity
-import me.singleneuron.base.BaseDelayableConditionalHookAdapter
+import me.singleneuron.base.adapter.BaseDelayableConditionalHookAdapter
 import me.singleneuron.data.PageFaultHighPerformanceFunctionCache
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.util.Utils
