@@ -1,4 +1,4 @@
-package me.singleneuron.base.hookAdapter
+package me.singleneuron.base.adapter
 
 import me.singleneuron.base.Conditional
 import me.singleneuron.data.PageFaultHighPerformanceFunctionCache

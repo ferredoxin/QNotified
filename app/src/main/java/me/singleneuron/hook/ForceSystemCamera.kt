@@ -2,7 +2,7 @@ package me.singleneuron.hook
 
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
-import me.singleneuron.base.hookAdapter.BaseDelayableConditionalHookAdapter
+import me.singleneuron.base.adapter.BaseDelayableConditionalHookAdapter
 import me.singleneuron.data.PageFaultHighPerformanceFunctionCache
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.util.LicenseStatus

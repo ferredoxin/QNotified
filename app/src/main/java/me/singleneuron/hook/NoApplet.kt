@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import de.robv.android.xposed.XposedBridge
-import me.singleneuron.base.hookAdapter.BaseDelayableConditionalHookAdapter
+import me.singleneuron.base.adapter.BaseDelayableConditionalHookAdapter
 import me.singleneuron.data.PageFaultHighPerformanceFunctionCache
 import me.singleneuron.util.NoAppletUtil
 import me.singleneuron.util.QQVersion

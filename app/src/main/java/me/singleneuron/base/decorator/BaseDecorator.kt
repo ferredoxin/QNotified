@@ -1,6 +1,6 @@
 package me.singleneuron.base.decorator
 
-import me.singleneuron.base.hookAdapter.BaseDelayableHookAdapter
+import me.singleneuron.base.adapter.BaseDelayableHookAdapter
 
 abstract class BaseDecorator(cfg: String): BaseDelayableHookAdapter(cfg)  {
     override fun init(): Boolean {

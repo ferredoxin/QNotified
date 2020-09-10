@@ -2,7 +2,7 @@ package me.singleneuron.hook
 
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
-import me.singleneuron.base.hookAdapter.BaseDelayableHookAdapter
+import me.singleneuron.base.adapter.BaseDelayableHookAdapter
 import me.singleneuron.hook.decorator.SimpleCheckIn
 import me.singleneuron.hook.decorator.SimpleReceiptMessage
 import nil.nadph.qnotified.step.DexDeobfStep

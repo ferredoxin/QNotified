@@ -1,4 +1,4 @@
-package me.singleneuron.base.hookAdapter
+package me.singleneuron.base.adapter
 
 import android.os.Looper
 import android.widget.Toast
