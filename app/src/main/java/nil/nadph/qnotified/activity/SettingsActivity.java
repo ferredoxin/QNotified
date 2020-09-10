@@ -204,7 +204,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         addViewConditionally(ll, this, "强制使用系统相机", "仅能录像，支持8.3.6及更高", ForceSystemCamera.INSTANCE);
         addViewConditionally(ll, this, "强制使用系统相册", "支持8.3.6及更高", ForceSystemAlbum.INSTANCE);
         addViewConditionally(ll, this, "强制使用系统文件", "支持8.3.6及更高", ForceSystemFile.INSTANCE);
-        addViewConditionally(ll, newListItemButton(this, "修改侧滑边距", "感谢祈无，仅支持8.4.1/8.4.5，重启后生效", "", clickToProxyActAction(ChangeDrawerWidthActivity.class)), ChangeDrawerWidth.INSTANCE.getCondition());
+        addViewConditionally(ll, newListItemButton(this, "修改侧滑边距", "感谢祈无，支持8.4.1及更高，重启后生效", "", clickToProxyActAction(ChangeDrawerWidthActivity.class)), ChangeDrawerWidth.INSTANCE.getCondition());
         ll.addView(newListItemHookSwitchInit(this,"屏蔽QQ空间滑动相机",null, DisableQzoneSlideCamera.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this,"回执消息文本化",null, SimpleReceiptMessage.INSTANCE));
 
