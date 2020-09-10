@@ -30,6 +30,7 @@ object ChangeDrawerWidth : BaseDelayableConditionalHookAdapter("changeDrawerWidt
         return when (Utils.getHostVersionCode()) {
             QQVersion.QQ_8_4_1 -> 0x7f090834
             QQVersion.QQ_8_4_5 -> 0x7f090841
+            QQVersion.QQ_8_4_8 -> 0x7f090882
             else -> return super.getID()
         }
     }
