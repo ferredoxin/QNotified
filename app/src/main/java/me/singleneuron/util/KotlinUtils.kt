@@ -100,7 +100,7 @@ fun showEulaDialog(activity: Activity) {
     val builder = MaterialAlertDialogBuilder(activity, R.style.MaterialDialog)
             .setView(linearLayout)
             .setCancelable(false)
-            .setPositiveButton("我已阅读并同意"){ _: DialogInterface, _: Int ->
+            .setPositiveButton("我已阅读并同意用户协议"){ _: DialogInterface, _: Int ->
                 MainHook.startProxyActivity(activity,OmegaTestFuncActivity::class.java)
             }
             .setNeutralButton("查看用户协议"){ _: DialogInterface, _: Int ->
@@ -117,7 +117,7 @@ fun showEulaDialog(activity: Activity) {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         override fun afterTextChanged(s: Editable?) {
-            button.isEnabled = editText.text.toString() == "我已阅读并同意"
+            button.isEnabled = editText.text.toString() == "我已阅读并同意用户协议"
         }
     })
     button.isEnabled = false
@@ -127,7 +127,7 @@ fun showEulaDialog(activity: Activity) {
         if (LicenseStatus.isInsider()) time = if (Math.random()<0.1) 86400 else 5
         if (LicenseStatus.getCurrentUserBlackFlags()!=0) time = (Math.random()*82800+3600).toInt()
         for (i in time downTo 1) {
-            Utils.runOnUiThread { button.text = "我已阅读并同意 ($i)" }
+            Utils.runOnUiThread { button.text = "我已阅读并同意用户协议 ($i)" }
             try {
                 Thread.sleep(1000)
             } catch (e: InterruptedException) {
@@ -138,9 +138,9 @@ fun showEulaDialog(activity: Activity) {
             button.text = "确定"
             editText.isEnabled = true
             editText.visibility = View.VISIBLE
-            textView.text = textView.text.toString() + "\n请在下方输入框中输入 我已阅读并同意"
+            textView.text = textView.text.toString() + "\n请在下方输入框中输入 我已阅读并同意用户协议"
             if (LicenseStatus.isInsider()) {
-                editText.setText("我已阅读并同意")
+                editText.setText("我已阅读并同意用户协议")
             }
         }
     }.start()
