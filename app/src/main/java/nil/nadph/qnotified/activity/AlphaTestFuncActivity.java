@@ -29,19 +29,19 @@ import android.widget.TextView;
 import com.tencent.mobileqq.widget.BounceScrollView;
 
 import me.kyuubiran.dialog.RevokeMsgDialog;
-import nil.nadph.qnotified.script.QNScriptManager;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.LicenseStatus;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.ui.ViewBuilder.*;
+import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
 import static nil.nadph.qnotified.util.Utils.dip2px;
 
+@Deprecated
 @SuppressLint("Registered")
 public class AlphaTestFuncActivity extends IphoneTitleBarActivityCompat {
 
-    TextView __js_status;
+
 
     @Override
     public boolean doOnCreate(Bundle bundle) {
@@ -85,9 +85,7 @@ public class AlphaTestFuncActivity extends IphoneTitleBarActivityCompat {
             View v = subtitle(this, "Alpha内测功能 请勿截图此页面");
             v.setOnClickListener(v1 -> RevokeMsgDialog.INSTANCE.onShow(AlphaTestFuncActivity.this));
             ll.addView(v);
-            ViewGroup _t;	
-            ll.addView(_t = newListItemButton(this, "管理脚本(.java)", "请注意安全, 合理使用", "N/A", clickToProxyActAction(ManageScriptsActivity.class)));	
-            __js_status = _t.findViewById(R_ID_VALUE);
+
         }
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         this.setContentView(bounceScrollView);
@@ -102,8 +100,6 @@ public class AlphaTestFuncActivity extends IphoneTitleBarActivityCompat {
     @Override
     public void doOnResume() {
         super.doOnResume();
-        if (__js_status != null) {	
-            __js_status.setText(QNScriptManager.getEnableCount() + "/" + QNScriptManager.getAllCount());	
-        }
+
     }
 }
