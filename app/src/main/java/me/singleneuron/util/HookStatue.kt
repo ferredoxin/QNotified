@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.annotation.IntDef
 import androidx.annotation.StringRes
 import com.topjohnwu.superuser.Shell
@@ -26,7 +25,7 @@ object HookStatue {
     }
 
     fun Context.getStatue(useSu: Boolean): Statue {
-        val isInstall = isInstall(this)
+        val isInstall = IsInstall(this)
         val getMagiskModule: BaseGetMagiskModule = if (useSu) {
             GetMagiskModule()
         } else {
@@ -106,7 +105,18 @@ object HookStatue {
         return isExp
     }
 
-    class isInstall {
+    class IsInstall constructor(val context: Context){
+
+
+        var isEdxpManagerInstall = false
+        var isXposedInstall = false
+
+        init {
+            val packageManager = context.packageManager
+            val pid = PackageInstallDetect(packageManager)
+            isXposedInstall = pid.isPackageInstall(xposed_installer_packageName)
+            isEdxpManagerInstall = pid.isPackageInstall(edxposed_installer_packageName) || pid.isPackageInstall(edxposed_manager_packageName)
+        }
 
         companion object {
             const val xposed_installer_packageName = "de.robv.android.xposed.installer"
@@ -114,29 +124,11 @@ object HookStatue {
             const val edxposed_manager_packageName = "org.meowcat.edxposed.manager"
         }
 
-        private constructor() {}
-        constructor(context: Context) {
-            val packageManager = context.packageManager
-            val pid = PackageInstallDetect(packageManager)
-            isXposedInstall = pid.isPackageInstall(xposed_installer_packageName)
-            isEdxpManagerInstall = pid.isPackageInstall(edxposed_installer_packageName) || pid.isPackageInstall(edxposed_manager_packageName)
-        }
-
-        var isEdxpManagerInstall = false
-        var isXposedInstall = false
-
-        class PackageInstallDetect {
-
-            private var packageManager: PackageManager? = null
-
-            private constructor() {}
-            constructor(mPackageManager: PackageManager) {
-                packageManager = mPackageManager
-            }
+        class PackageInstallDetect constructor(private val packageManager: PackageManager) {
 
             fun isPackageInstall(packageName: String): Boolean {
                 return try {
-                    packageManager!!.getPackageInfo(packageName, PackageManager.GET_GIDS)
+                    packageManager.getPackageInfo(packageName, PackageManager.GET_GIDS)
                     true
                 } catch (e: Exception) {
                     //ignore

@@ -33,17 +33,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import com.tencent.mobileqq.app.QQAppInterface;
-import dalvik.system.DexFile;
-import de.robv.android.xposed.XposedBridge;
-import me.singleneuron.qn_kernel.service.InterruptServiceRoutine;
-import me.singleneuron.util.KotlinUtils;
-import mqq.app.AppRuntime;
-import nil.nadph.qnotified.BuildConfig;
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.config.ConfigItems;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.ui.ResUtils;
 
 import java.io.*;
 import java.lang.reflect.*;
@@ -52,6 +43,17 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import dalvik.system.DexFile;
+import de.robv.android.xposed.XposedBridge;
+import me.singleneuron.qn_kernel.service.InterruptServiceRoutine;
+import mqq.app.AppRuntime;
+import nil.nadph.qnotified.BuildConfig;
+import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.config.ConfigItems;
+import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.ui.ResUtils;
+
+import static me.singleneuron.util.KotlinUtilsKt.readFromBufferedReader;
 import static nil.nadph.qnotified.util.Initiator.load;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
@@ -127,7 +129,7 @@ public class Utils {
         return str.toString();
 
          */
-        return KotlinUtils.Companion.readFromBufferedReader(new BufferedReader(r));
+        return readFromBufferedReader(new BufferedReader(r));
     }
 
     public static boolean isCallingFrom(String classname) {
@@ -988,11 +990,11 @@ public class Utils {
             field = Class.forName(viewStr).getDeclaredField("mOnClickListener");
             retrievedListener = (View.OnClickListener) field.get(view);
         } catch (NoSuchFieldException ex) {
-            log("Reflection: No Such Field.");
+            logw("Reflection: No Such Field.");
         } catch (IllegalAccessException ex) {
-            log("Reflection: Illegal Access.");
+            logw("Reflection: Illegal Access.");
         } catch (ClassNotFoundException ex) {
-            log("Reflection: Class Not Found.");
+            logw("Reflection: Class Not Found.");
         }
         return retrievedListener;
     }
@@ -1016,11 +1018,11 @@ public class Utils {
                 retrievedListener = (View.OnClickListener) clickListenerField.get(listenerInfo);
             }
         } catch (NoSuchFieldException ex) {
-            log("Reflection: No Such Field.");
+            logw("Reflection: No Such Field.");
         } catch (IllegalAccessException ex) {
-            log("Reflection: Illegal Access.");
+            logw("Reflection: Illegal Access.");
         } catch (ClassNotFoundException ex) {
-            log("Reflection: Class Not Found.");
+            logw("Reflection: Class Not Found.");
         }
         return retrievedListener;
     }
@@ -1041,7 +1043,7 @@ public class Utils {
             }
             return ret;
         } catch (Throwable e) {
-            log("CLONE : " + e.toString());
+            log(e);
         }
         return null;
     }
@@ -1062,7 +1064,7 @@ public class Utils {
             }
             return ret;
         } catch (Throwable e) {
-            log("CLONE : " + e.toString());
+            log(e);
         }
         return null;
     }
@@ -1315,7 +1317,7 @@ public class Utils {
         return str == null || str.length() == 0;
     }
 
-    @Deprecated
+    /*@Deprecated
     public static void log(String str) {
         Log.i("QNdump", str);
         if (DEBUG) try {
@@ -1333,7 +1335,7 @@ public class Utils {
             } catch (IOException e) {
             }
         }
-    }
+    }*/
 
     public static void loge(String str) {
         Log.e("QNdump", str);
@@ -1356,8 +1358,8 @@ public class Utils {
     }
 
     public static void logd(String str) {
-        Log.d("QNdump", str);
         if (DEBUG) try {
+            Log.d("QNdump", str);
             XposedBridge.log(str);
         } catch (NoClassDefFoundError e) {
             Log.d("Xposed", str);
@@ -1375,8 +1377,8 @@ public class Utils {
     }
 
     public static void logi(String str) {
-        Log.i("QNdump", str);
         try {
+            Log.i("QNdump", str);
             XposedBridge.log(str);
         } catch (NoClassDefFoundError e) {
             Log.i("Xposed", str);
@@ -1829,7 +1831,7 @@ public class Utils {
     }
 
     public static <T> T dump(T obj) {
-        log("dump:" + obj);
+        logd("dump:" + obj);
         return obj;
     }
 

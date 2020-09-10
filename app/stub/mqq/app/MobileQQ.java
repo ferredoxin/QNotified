@@ -177,9 +177,9 @@ public abstract class MobileQQ extends BaseApplication {
         throw new RuntimeException("Stub!");
     }
 
-    public String getProcessName() {
-        throw new RuntimeException("Stub!");
-    }
+//    public String getProcessName() {
+//        throw new RuntimeException("Stub!");
+//    }
 
     public void setProperty(String name, String value) {
         this.properties.setProperty(name, value);

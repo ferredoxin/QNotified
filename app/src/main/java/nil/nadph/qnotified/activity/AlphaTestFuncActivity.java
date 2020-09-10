@@ -19,30 +19,29 @@
 package nil.nadph.qnotified.activity;
 
 import android.annotation.SuppressLint;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.tencent.mobileqq.widget.BounceScrollView;
+
 import me.kyuubiran.dialog.RevokeMsgDialog;
-import nil.nadph.qnotified.hook.CardMsgHook;
-import nil.nadph.qnotified.script.QNScriptManager;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.LicenseStatus;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.ui.ViewBuilder.*;
-import static nil.nadph.qnotified.util.SendBatchMsg.clickToBatchMsg;
+import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
 import static nil.nadph.qnotified.util.Utils.dip2px;
 
+@Deprecated
 @SuppressLint("Registered")
 public class AlphaTestFuncActivity extends IphoneTitleBarActivityCompat {
 
-    TextView __js_status;
+
 
     @Override
     public boolean doOnCreate(Bundle bundle) {
@@ -86,15 +85,7 @@ public class AlphaTestFuncActivity extends IphoneTitleBarActivityCompat {
             View v = subtitle(this, "Alpha内测功能 请勿截图此页面");
             v.setOnClickListener(v1 -> RevokeMsgDialog.INSTANCE.onShow(AlphaTestFuncActivity.this));
             ll.addView(v);
-            ll.addView(subtitle(this, "遗留功能"));//群发已不再维护
-            ll.addView(newListItemButton(this, "群发文本消息", "年少不知号贵-理性使用以免永冻", null, clickToBatchMsg()));
-            ll.addView(newListItemHookSwitchInit(this, "发送卡片消息", "ArkAppMsg(json)+StructMsg(xml)", CardMsgHook.get()));
-            ll.addView(subtitle(this, "卡片消息使用说明:先输入卡片代码(聊天界面),后长按发送按钮\n勿滥用此功能! 频繁使用此功能被举报可能封号"));
-            ll.addView(subtitle(this, "警告: 请勿发送违规内容! 在您使用 群发文本消息 及 发送卡片消息 时, " +
-                    "本模块会向服务器报告您发送的消息内容以及当前QQ号, 如您不同意, 请勿使用群发与卡片消息功能!", Color.RED));
-            ViewGroup _t;
-            ll.addView(_t = newListItemButton(this, "管理脚本(.java)", "请注意安全, 合理使用", "N/A", clickToProxyActAction(ManageScriptsActivity.class)));
-            __js_status = _t.findViewById(R_ID_VALUE);
+
         }
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         this.setContentView(bounceScrollView);
@@ -109,8 +100,6 @@ public class AlphaTestFuncActivity extends IphoneTitleBarActivityCompat {
     @Override
     public void doOnResume() {
         super.doOnResume();
-        if (__js_status != null) {
-            __js_status.setText(QNScriptManager.getEnableCount() + "/" + QNScriptManager.getAllCount());
-        }
+
     }
 }

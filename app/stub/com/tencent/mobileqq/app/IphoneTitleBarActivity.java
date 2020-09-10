@@ -5,15 +5,10 @@ import android.graphics.Paint;
 import android.view.View;
 
 import static android.view.Window.FEATURE_CUSTOM_TITLE;
-import static nil.nadph.qnotified.util.Utils.onStubClassInitialize;
 
 @Deprecated
 public class IphoneTitleBarActivity extends BaseActivity {
     public static final int LAYER_TYPE_SOFTWARE = 1;
-
-    static {
-        onStubClassInitialize();
-    }
 
     protected void requestWindowFeature(Intent intent) {
         requestWindowFeature(FEATURE_CUSTOM_TITLE);

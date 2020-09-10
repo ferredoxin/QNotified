@@ -1220,9 +1220,9 @@ public class MainHook {
                 int lastVersion = cache.getIntOrDefault("qn_hide_msg_list_miniapp_version_code", 0);
                 if (getHostVersionCode32() == lastVersion) {
                     String methodName = cache.getString("qn_hide_msg_list_miniapp_method_name");
-                    findAndHookMethod(load("com/tencent/mobileqq/activity/Conversation"), methodName, XC_MethodReplacement.returnConstant(null));
+                    findAndHookMethod(Initiator._Conversation(), methodName, XC_MethodReplacement.returnConstant(null));
                 } else {
-                    Class con = load("com/tencent/mobileqq/activity/Conversation");
+                    Class con = Initiator._Conversation();
                     for (Method m : con.getDeclaredMethods()) {
                         Class[] ps = m.getParameterTypes();
                         if (ps != null && ps.length > 0) continue;

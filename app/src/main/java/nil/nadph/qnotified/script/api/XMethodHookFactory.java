@@ -16,7 +16,7 @@
  * along with this software.  If not, see
  * <https://www.gnu.org/licenses/>.
  */
-package nil.nadph.qnotified.script;
+package nil.nadph.qnotified.script.api;
 
 import android.annotation.SuppressLint;
 import de.robv.android.xposed.XC_MethodHook;
@@ -33,7 +33,7 @@ public class XMethodHookFactory {
      * See {@link #create(XC_MethodHookImpl, int)}
      *
      * @param impl The actual method hook callback
-     * @return A XC_MethodHook you can use with {@link XposedBridge#hookMethod(Member, XC_MethodHook)}.
+     * @return An XC_MethodHook object you can use with {@link XposedBridge#hookMethod(Member, XC_MethodHook)}.
      */
     public static XC_MethodHook create(final XC_MethodHookImpl impl) {
         return create(impl, 50);
@@ -48,7 +48,7 @@ public class XMethodHookFactory {
      *
      * @param impl     The actual method hook callback
      * @param priority See {@link XCallback#priority}.
-     * @return A XC_MethodHook you can use with {@link XposedBridge#hookMethod(Member, XC_MethodHook)}.
+     * @return An XC_MethodHook object you can use with {@link XposedBridge#hookMethod(Member, XC_MethodHook)}.
      */
     public static XC_MethodHook create(final XC_MethodHookImpl impl, final int priority) {
         if (impl == null) throw new NullPointerException("hookImpl == null");

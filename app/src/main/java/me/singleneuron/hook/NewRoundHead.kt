@@ -1,16 +1,14 @@
 package me.singleneuron.hook
 
 import de.robv.android.xposed.XposedHelpers
-import me.singleneuron.base.BaseDelayableHighPerformanceConditionalHookAdapter
+import me.singleneuron.base.adapter.BaseDelayableHighPerformanceConditionalHookAdapter
 import me.singleneuron.data.PageFaultHighPerformanceFunctionCache
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.util.Utils
 
 object NewRoundHead : BaseDelayableHighPerformanceConditionalHookAdapter("newroundhead") {
 
-    init {
-        recordTime = false
-    }
+    override val recordTime: Boolean = false
 
     override fun doInit(): Boolean {
         //特征字符串："FaceManager"

@@ -30,16 +30,28 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.MessageQueue;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tencent.mobileqq.widget.BounceScrollView;
+
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
+
 import me.singleneuron.activity.BugReportActivity;
+import me.singleneuron.data.CardMsgCheckResult;
 import me.singleneuron.hook.DebugDump;
+import me.singleneuron.util.KotlinUtilsKt;
 import nil.nadph.qnotified.ExfriendManager;
+import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.config.EventRecord;
 import nil.nadph.qnotified.config.FriendRecord;
@@ -47,10 +59,6 @@ import nil.nadph.qnotified.remote.GetUserStatusResp;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.*;
-
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Map;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -100,6 +108,40 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
         ll.addView(subtitle(this, "以下内容基本上都没用，它们为了修复故障才留在这里。"));
         ll.addView(subtitle(this, "测试"));
         ll.addView(newListItemHookSwitchInit(this, "堆栈转储", "没事别开", DebugDump.INSTANCE));
+        ll.addView(newListItemButton(this, "强制重新生成日志历史记录", null, null, new View.OnClickListener() {
+            final String LAST_TRACE_HASHCODE_CONFIG = "lastTraceHashcode";
+            final String LAST_TRACE_DATA_CONFIG = "lastTraceDate";
+            @Override
+            public void onClick(View v) {
+                try {
+                    ConfigManager configManager = ConfigManager.getDefaultConfig();
+                    configManager.remove(LAST_TRACE_DATA_CONFIG);
+                    configManager.remove(LAST_TRACE_HASHCODE_CONFIG);
+                    configManager.save();
+                } catch (Exception e) {
+                    Utils.runOnUiThread(() -> Toast.makeText(Utils.getApplication(),e.toString(),Toast.LENGTH_LONG).show());
+                    Utils.log(e);
+                }
+            }
+        }));
+        ll.addView(newListItemButton(this, "测试卡片黑名单", null, null, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                KotlinUtilsKt.checkCardMsg("");
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(TroubleshootActivity.this, R.style.MaterialDialog);
+                EditText editText = new EditText(TroubleshootActivity.this);
+                editText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+                builder.setView(editText)
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String msg = editText.getText().toString();
+                                CardMsgCheckResult result = KotlinUtilsKt.checkCardMsg(msg);
+                                Toast.makeText(TroubleshootActivity.this,result.toString(),Toast.LENGTH_LONG).show();
+                            }
+                        }).create().show();
+            }
+        }));
         ll.addView(newListItemButton(this, "打开X5调试页面", "内置浏览器调试页面", null, new View.OnClickListener() {
             @Override
             public void onClick(View v) {

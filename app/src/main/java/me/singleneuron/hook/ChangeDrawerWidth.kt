@@ -6,7 +6,7 @@ import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.WindowManager
 import de.robv.android.xposed.XposedHelpers
-import me.singleneuron.base.BaseDelayableConditionalHookAdapter
+import me.singleneuron.base.adapter.BaseDelayableConditionalHookAdapter
 import me.singleneuron.data.PageFaultHighPerformanceFunctionCache
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.config.ConfigManager

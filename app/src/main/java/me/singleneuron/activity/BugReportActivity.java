@@ -1,17 +1,19 @@
 package me.singleneuron.activity;
 
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import me.singleneuron.base.BaseBugReport;
+
+import java.util.ArrayList;
+
+import me.singleneuron.base.bridge.BugReport;
 import me.singleneuron.data.BugReportArguments;
 import me.singleneuron.fragment.BugReportFragment;
 import me.singleneuron.fragment.LoadingBugReportFragment;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.activity.AppCompatTransferActivity;
 import nil.nadph.qnotified.databinding.ActivityBugReportBinding;
-
-import java.util.ArrayList;
 
 public class BugReportActivity extends AppCompatTransferActivity {
 
@@ -41,7 +43,7 @@ public class BugReportActivity extends AppCompatTransferActivity {
         @Override
         public void run() {
             try {
-                ArrayList<BugReportArguments> list = BaseBugReport.getInstance().getBugReportArgumentsList();
+                ArrayList<BugReportArguments> list = BugReport.getInstance().getBugReportArgumentsList();
                 runOnUiThread(() -> {
                     bugReportFragment = BugReportFragment.getInstance(list);
                     changeFragment(bugReportFragment);

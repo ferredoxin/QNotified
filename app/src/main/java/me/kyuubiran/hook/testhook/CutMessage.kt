@@ -3,10 +3,10 @@ package me.kyuubiran.hook.testhook
 import android.os.Looper
 import android.widget.Toast
 import de.robv.android.xposed.XC_MethodHook
-
 import de.robv.android.xposed.XposedBridge
 import me.kyuubiran.utils.getObjectOrNull
 import me.kyuubiran.utils.logd
+import me.singleneuron.data.MsgRecordData
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.hook.BaseDelayableHook
@@ -37,15 +37,21 @@ object CutMessage : BaseDelayableHook() {
                         override fun beforeHookedMethod(param: MethodHookParam?) {
                             if (LicenseStatus.sDisableCommonHooks) return
                             if (!isEnabled) return
-                            val msgRecord = param?.args?.get(0)
-                            val msg = msgRecord?.let { getMsg(it) }
-                            if (msg != null) {
+                            val msgRecord = param?.args?.get(0)?: return
+                            if (msgRecord::class.java.name!="com.tencent.imcore.message.QQMessageFacade${'$'}Message") return
+                            val msgRecordData = MsgRecordData(msgRecord)
+                            try {
+                                logd("收到一份消息: \n$msgRecordData")
+                                //logd(msgRecord::class.java.name)
+                                /*val msg = getMsg(msgRecord)
                                 val senderUin = getSenderUin(msgRecord)
                                 val msgType = getMsgType(msgRecord)
                                 val friendUin = getFriendUin(msgRecord)
                                 val selfUin = getSelfUin(msgRecord)
                                 val time = getTime(msgRecord)
-                                logd("收到一份来自${senderUin}的消息:\n${msg}\n消息类型是${msgType}\n好友QQ是${friendUin}\n自己QQ是${selfUin}\n时间戳${time}")
+                                logd("收到一份来自${senderUin}的消息:\n${msg}\n消息类型是${msgType}\n好友QQ是${friendUin}\n自己QQ是${selfUin}\n时间戳${time}")*/
+                            } catch (t: Throwable) {
+                                //log(t)
                             }
                         }
                     })

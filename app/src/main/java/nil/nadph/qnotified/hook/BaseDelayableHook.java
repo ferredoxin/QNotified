@@ -20,30 +20,11 @@ package nil.nadph.qnotified.hook;
 
 import me.kyuubiran.hook.*;
 import me.kyuubiran.hook.testhook.CutMessage;
-import me.singleneuron.hook.ChangeDrawerWidth;
-import me.singleneuron.hook.DebugDump;
-import me.singleneuron.hook.ForceSystemAlbum;
-import me.singleneuron.hook.ForceSystemCamera;
-import me.singleneuron.hook.ForceSystemFile;
-import me.singleneuron.hook.NewRoundHead;
-import me.singleneuron.hook.NoApplet;
+import me.singleneuron.hook.*;
+import me.singleneuron.hook.decorator.SimpleCheckIn;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.SwitchConfigItem;
-import nil.nadph.qnotified.hook.rikka.BaseApk;
-import nil.nadph.qnotified.hook.rikka.CustomDeviceModel;
-import nil.nadph.qnotified.hook.rikka.CustomMsgTimeFormat;
-import nil.nadph.qnotified.hook.rikka.CustomSplash;
-import nil.nadph.qnotified.hook.rikka.DefaultFont;
-import nil.nadph.qnotified.hook.rikka.DisableAvatarDecoration;
-import nil.nadph.qnotified.hook.rikka.DisableColorNickName;
-import nil.nadph.qnotified.hook.rikka.DisableDropSticker;
-import nil.nadph.qnotified.hook.rikka.DisableEnterEffect;
-import nil.nadph.qnotified.hook.rikka.DisablePokeEffect;
-import nil.nadph.qnotified.hook.rikka.IgnoreDiyCard;
-import nil.nadph.qnotified.hook.rikka.OneTapTwentyLikes;
-import nil.nadph.qnotified.hook.rikka.RemoveMiniProgramAd;
-import nil.nadph.qnotified.hook.rikka.RemoveSendGiftAd;
-import nil.nadph.qnotified.hook.rikka.ShowMsgCount;
+import nil.nadph.qnotified.hook.rikka.*;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.NonNull;
 import nil.nadph.qnotified.util.Utils;
@@ -74,7 +55,6 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 RevokeMsgHook.get(),
                 FakeVipHook.get(),
                 HideGiftAnim.get(),
-                SimpleCheckInHook.get(),
                 PreUpgradeHook.get(),
                 CheatHook.get(),
                 RoundAvatarHook.get(),
@@ -127,6 +107,9 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 CutMessage.INSTANCE,
                 VasProfileAntiCrash.get(),
                 RevokeMsg.INSTANCE,
+                ItemBuilderFactoryHook.INSTANCE,
+                SimpleCheckIn.INSTANCE,
+                StartActivityHook.INSTANCE
         };
         return sAllHooks;
     }

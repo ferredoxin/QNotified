@@ -43,6 +43,9 @@ import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import static android.content.Context.ACTIVITY_SERVICE;
 import static android.content.Context.BATTERY_SERVICE;
@@ -114,8 +117,12 @@ public class ChatTailHook extends BaseDelayableHook {
                             // debug.append("当前小尾巴: ").append(ct.getTailCapacity().replace("\n", "\\n")).append("\n");
                             // debug.append("当前uin: ").append(uin).append("\n");
 
+                            logi("isRegex:" + String.valueOf(ChatTailHook.isRegex()));
+                            logi("isPassRegex:" + String.valueOf(ChatTailHook.isPassRegex(msg)));
+                            logi("getTailRegex:" + ChatTailHook.getTailRegex());
                             // debug.append("群列表: ").append(muted).append("\n");
-                            if (ct.isGlobal() || ct.containsTroop(uin) || ct.containsFriend(uin)) {
+                            if ((ct.isGlobal() || ct.containsTroop(uin) || ct.containsFriend(uin))
+                                && isRegex() && !isPassRegex(msg)) {
                                 int battery = FakeBatteryHook.get().isEnabled() ? FakeBatteryHook.get().getFakeBatteryStatus() < 1 ? ChatTailActivity.getBattery() : FakeBatteryHook.get().getFakeBatteryCapacity() : ChatTailActivity.getBattery();
                                 text = ct.getTailCapacity().
                                         replace(ChatTailActivity.delimiter, msg)
@@ -214,6 +221,25 @@ public class ChatTailHook extends BaseDelayableHook {
         return ExfriendManager.getCurrent().getConfig().getBooleanOrFalse(ConfigItems.qn_chat_tail_global);
     }
 
+    public static boolean isRegex() {
+        return ExfriendManager.getCurrent().getConfig()
+                .getBooleanOrFalse(ConfigItems.qn_chat_tail_regex);
+    }
+
+    /**
+     * 通过正则表达式的消息不会携带小尾巴（主要是考虑到用户可能写错表达式）
+     * @param msg 原始聊天消息文本
+     * @return 该消息是否通过指定的正则表达式
+     * */
+    public static boolean isPassRegex(String msg) {
+        try {
+            return Pattern.compile(getTailRegex()).matcher(msg).find();
+        }catch (PatternSyntaxException e) {
+            XposedBridge.log(e);
+            return false;
+        }
+    }
+
     private boolean containsTroop(String uin) {
         String muted = "," + ExfriendManager.getCurrent().getConfig().getString(ConfigItems.qn_chat_tail_troops) + ",";
         return muted.contains("," + uin + ",");
@@ -238,6 +264,21 @@ public class ChatTailHook extends BaseDelayableHook {
         return getTailStatus().replace("\\n", "\n");
     }
 
+    public static void setTailRegex(String regex){
+        try {
+            ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
+            cfg.putString(ConfigItems.qn_chat_tail_regex_text, regex);
+            cfg.save();
+        } catch (IOException e) {
+            log(e);
+        }
+    }
+
+    public static String getTailRegex(){
+        // (?:(?![A-Za-z0-9])(?:[\x21-\x7e？！]))$
+        return ExfriendManager.getCurrent().getConfig()
+                .getStringOrDefault(ConfigItems.qn_chat_tail_regex_text, "");
+    }
 
     @Override
     public int getEffectiveProc() {

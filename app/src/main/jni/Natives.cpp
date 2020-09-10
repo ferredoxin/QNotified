@@ -448,6 +448,26 @@ jboolean handleSendCardMsg(JNIEnv *env, jclass clazz, jobject rt, jobject sessio
     }
     if (doGetBuildTimestamp(env, clazz) < 0)_exit(0);
     if (env->GetStringLength(msg) < 3)return false;
+
+    jclass utilsClass = env->FindClass("nil/nadph/qnotified/util/Utils");
+    jclass cardMsgListClass = env->FindClass("me/singleneuron/util/KotlinUtilsKt");
+    jmethodID getInstance = env->GetStaticMethodID(cardMsgListClass,"checkCardMsg", "(Ljava/lang/String;)Lme/singleneuron/data/CardMsgCheckResult;");
+    jobject result = env->CallStaticObjectMethod(cardMsgListClass,getInstance,msg);
+    jclass cardMsgCheckResultClass = env->FindClass("me/singleneuron/data/CardMsgCheckResult");
+    jmethodID toString = env->GetMethodID(cardMsgCheckResultClass,"toString", "()Ljava/lang/String;");
+    jmethodID getAccepted = env->GetMethodID(cardMsgCheckResultClass,"getAccept", "()Z");
+    auto resultString = (jstring) env->CallObjectMethod(result,toString);
+    jmethodID logd = env->GetStaticMethodID(utilsClass,"logd", "(Ljava/lang/String;)V");
+    env->CallStaticVoidMethod(utilsClass,logd,resultString);
+    bool boolean = env->CallBooleanMethod(result,getAccepted);
+    if (!boolean) {
+        jmethodID getReason = env->GetMethodID(cardMsgCheckResultClass,"getReason", "()Ljava/lang/String;");
+        auto reason = (jstring) env->CallObjectMethod(result,getReason);
+        jmethodID showErrorToastAnywhere = env->GetStaticMethodID(utilsClass,"showErrorToastAnywhere","(Ljava/lang/String;)V");
+        env->CallStaticVoidMethod(utilsClass,showErrorToastAnywhere,reason);
+        return true;
+    }
+
     jchar format;
     env->GetStringRegion(msg, 0, 1, &format);
     if (format == '<') {
