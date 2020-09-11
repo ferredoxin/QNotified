@@ -102,7 +102,7 @@ public class RikkaColorPickDialog extends RikkaDialog.RikkaConfigItem {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (currentColorValid) {
+                if (currentColorValid || !enableColor) {
                     ConfigManager cfg = ConfigManager.getDefaultConfig();
                     if (enableColor) {
                         cfg.putInt(rq_dialog_border_color, currentColor);
