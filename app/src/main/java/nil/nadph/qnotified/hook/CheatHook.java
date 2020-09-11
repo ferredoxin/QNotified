@@ -36,6 +36,7 @@ import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
+import me.singleneuron.util.QQVersion;
 
 import java.util.Random;
 
@@ -90,8 +91,10 @@ public class CheatHook extends BaseDelayableHook {
                     }
                 }
             });
-
-            XposedHelpers.findAndHookMethod(DexKit.doFindClass(DexKit.C_PIC_EMOTICON_INFO), "a", load("com.tencent.mobileqq.app.QQAppInterface"),
+            
+            String fuckingMethod = "a";
+            if (Utils.getHostVersionCode() >= QQVersion.QQ_8_4_8) fuckingMethod = "sendMagicEmoticon";
+            XposedHelpers.findAndHookMethod(DexKit.doFindClass(DexKit.C_PIC_EMOTICON_INFO), fuckingMethod, load("com.tencent.mobileqq.app.QQAppInterface"),
                     Context.class, _SessionInfo(), load("com.tencent.mobileqq.data.Emoticon"),
                     load("com.tencent.mobileqq.emoticon.EmojiStickerManager$StickerInfo"), new XC_MethodHook(43) {
                         @Override
