@@ -139,9 +139,9 @@ fun showEulaDialog(activity: Activity) {
             button.text = "确定"
             editText.isEnabled = true
             editText.visibility = View.VISIBLE
-            textView.text = textView.text.toString() + "\n请在下方输入框中输入 我已阅读并同意用户协议"
+            textView.text = textView.text.toString() + "\n请在下方输入框中输入 “我深刻的理解协议条款以及隐私政策，并且为此造成的后果承担，我们应该遵循中国特色的社会主义道路，集中力量办大事。”"
             if (LicenseStatus.isInsider()) {
-                editText.setText("我已阅读并同意用户协议")
+                editText.setText("我深刻的理解协议条款以及隐私政策，并且为此造成的后果承担，我们应该遵循中国特色的社会主义道路，集中力量办大事。")
             }
         }
     }.start()
