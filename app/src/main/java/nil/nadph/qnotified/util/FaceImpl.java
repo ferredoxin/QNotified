@@ -22,7 +22,6 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.ImageView;
-
 import nil.nadph.qnotified.ui.ResUtils;
 
 import java.lang.ref.WeakReference;
@@ -52,6 +51,9 @@ public class FaceImpl implements InvocationHandler {
         Object qqAppInterface = Utils.getAppRuntime();
         class_FaceDecoder = load("com/tencent/mobileqq/util/FaceDecoder");
         if (class_FaceDecoder == null) {
+            class_FaceDecoder = load("com/tencent/mobileqq/app/face/FaceDecoder");
+        }
+        if (class_FaceDecoder == null) {
             Class cl_rxMsg = load("com/tencent/mobileqq/receipt/ReceiptMessageReadMemberListFragment");
             Field[] fs = cl_rxMsg.getDeclaredFields();
             for (Field f : fs) {
@@ -61,7 +63,7 @@ public class FaceImpl implements InvocationHandler {
             }
         }
         mFaceDecoder = class_FaceDecoder.getConstructor(load("com/tencent/common/app/AppInterface")).newInstance(qqAppInterface);
-        Utils.invoke_virtual(mFaceDecoder, "a", createListener(), clz_DecodeTaskCompletionListener);
+        Utils.invoke_virtual_any(mFaceDecoder, createListener(), clz_DecodeTaskCompletionListener);
         cachedUserFace = new HashMap<>();
         cachedTroopFace = new HashMap<>();
         registeredView = new HashMap<>();
@@ -79,6 +81,9 @@ public class FaceImpl implements InvocationHandler {
 
     private Object createListener() {
         clz_DecodeTaskCompletionListener = load("com/tencent/mobileqq/util/FaceDecoder$DecodeTaskCompletionListener");
+        if (clz_DecodeTaskCompletionListener == null) {
+            clz_DecodeTaskCompletionListener = load("com/tencent/mobileqq/app/face/FaceDecoder$DecodeTaskCompletionListener");
+        }
         if (clz_DecodeTaskCompletionListener == null) {
             Class[] argt;
             Method[] ms = class_FaceDecoder.getDeclaredMethods();
@@ -130,7 +135,7 @@ public class FaceImpl implements InvocationHandler {
 
     public boolean requestDecodeFace(int type, String uin) {
         try {
-            return (boolean) Utils.invoke_virtual(mFaceDecoder, "a", uin, type, true, (byte) 0, String.class, int.class, boolean.class, byte.class, boolean.class);
+            return (boolean) Utils.invoke_virtual_any(mFaceDecoder, uin, type, true, (byte) 0, String.class, int.class, boolean.class, byte.class, boolean.class);
         } catch (Exception e) {
             Utils.log(e);
             return false;
