@@ -55,6 +55,7 @@ public class ReplyNoAtHook extends BaseDelayableHook {
      * 827 1328 m
      * ...
      * 836 1406 n ^
+     * 848 1492 createAtMsg
      */
     @Override
     public boolean init() {
@@ -62,7 +63,9 @@ public class ReplyNoAtHook extends BaseDelayableHook {
         try {
             String method = null;
             int ver = getHostVersionCode32();
-            if (ver >= 1406) {
+            if (ver >= 1492) {
+                method = "createAtMsg";
+            } else if (ver >= 1406) {
                 method = "n";
             } else if (ver > 1296) {
                 method = "m";
