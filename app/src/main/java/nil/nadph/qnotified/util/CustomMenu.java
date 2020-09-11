@@ -18,15 +18,44 @@
  */
 package nil.nadph.qnotified.util;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 
 import static nil.nadph.qnotified.util.Utils.log;
 
 public class CustomMenu {
 
+    public static Object createItem(Class<?> clazz, int id, String title, int icon) {
+        try {
+            try {
+                Constructor initWithArgv = clazz.getConstructor(int.class, String.class, int.class);
+                return initWithArgv.newInstance(id, title, icon);
+            } catch (NoSuchMethodException unused) {
+                //no direct constructor, reflex
+                Object item = createItem(clazz, id, title);
+                Field f;
+                f = Utils.findField(clazz, int.class, "b");
+                if (f == null) f = Utils.findField(clazz, int.class, "icon");
+                f.setAccessible(true);
+                f.set(item, icon);
+                return item;
+            }
+        } catch (Exception e) {
+            Utils.logw(e.toString());
+            //sign... drop icon
+            return createItem(clazz, id, title);
+        }
+    }
+
     public static Object createItem(Class<?> clazz, int id, String title) {
         try {
-            Object item = clazz.newInstance();
+            Object item;
+            try {
+                Constructor initWithArgv = clazz.getConstructor(int.class, String.class);
+                return initWithArgv.newInstance(id, title);
+            } catch (NoSuchMethodException ignored) {
+            }
+            item = clazz.newInstance();
             Field f;
             f = Utils.findField(clazz, int.class, "id");
             if (f == null) f = Utils.findField(clazz, int.class, "a");
