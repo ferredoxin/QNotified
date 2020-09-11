@@ -20,13 +20,21 @@ package nil.nadph.qnotified.util;
 
 import java.lang.reflect.Field;
 
-import static nil.nadph.qnotified.util.Utils.log;
+import nil.nadph.qnotified.util.Utils;
+import me.singleneuron.util.QQVersion;
+
+import de.robv.android.xposed.XposedHelpers;
 
 public class CustomMenu {
 
     public static Object createItem(Class<?> clazz, int id, String title) {
         try {
-            Object item = clazz.newInstance();
+            Object item = null;
+            if (Utils.getHostVersionCode() < QQVersion.QQ_8_4_8) {
+                item = clazz.newInstance();
+            } else {
+                item = XposedHelpers.newInstance(clazz, id, title);
+            }
             Field f;
             f = Utils.findField(clazz, int.class, "id");
             if (f == null) f = Utils.findField(clazz, int.class, "a");
@@ -38,7 +46,7 @@ public class CustomMenu {
             f.set(item, title);
             return item;
         } catch (Exception e) {
-            log(e);
+            Utils.log(e);
             return null;
         }
     }
