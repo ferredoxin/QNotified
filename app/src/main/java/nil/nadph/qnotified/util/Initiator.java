@@ -88,6 +88,7 @@ public class Initiator {
         if (mQbossADImmersionBannerManager == null) {
             try {
                 tmp = load("cooperation.vip.qqbanner.QbossADImmersionBannerManager$1");
+                if (tmp == null) tmp = load("cooperation.vip.qqbanner.QbossADImmersionBannerManager$2");
                 mQbossADImmersionBannerManager = tmp.getDeclaredField("this$0").getType();
             } catch (Exception ignored) {
             }
