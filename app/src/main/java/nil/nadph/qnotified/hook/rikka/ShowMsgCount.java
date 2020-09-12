@@ -62,6 +62,8 @@ public class ShowMsgCount extends BaseDelayableHook {
             for (Method m : clazz.getDeclaredMethods()) {
                 Class<?>[] argt = m.getParameterTypes();
                 if (argt.length == 6 && Modifier.isStatic(m.getModifiers()) && m.getReturnType() == void.class) {
+                    // TIM 3.1.1(1084) smali references
+                    // updateCustomNoteTxt(Landroid/widget/TextView;IIIILjava/lang/String;)V
                     XposedBridge.hookMethod(m, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -73,16 +75,6 @@ public class ShowMsgCount extends BaseDelayableHook {
                     break;
                 }
             }
-//            XposedHelpers.findAndHookMethod(DexKit.doFindClass(DexKit.C_CustomWidgetUtil), "a",
-//                    TextView.class, Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE, String.class,
-//                    new XC_MethodHook(49) {
-//                        @Override
-//                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-//                            if (LicenseStatus.sDisableCommonHooks) return;
-//                            if (!isEnabled()) return;
-//                            param.args[4] = Integer.MAX_VALUE;
-//                        }
-//                    });
             isInit = true;
             return true;
         } catch (Throwable e) {
