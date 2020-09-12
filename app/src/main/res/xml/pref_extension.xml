@@ -50,6 +50,7 @@
                 android:dependency="FileRecvRedirect"
                 android:dialogLayout="@layout/preference_dialog_et"
                 android:key="$qn_file_recv_redirect_path"
-                android:title="下载目录"/>
+                android:title="下载目录"
+                android:summary="目录需为绝对路径且不含中文"/>
     </PreferenceCategory>
 </PreferenceScreen>
