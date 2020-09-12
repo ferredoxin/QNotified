@@ -22,7 +22,11 @@ import android.os.Looper;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
@@ -54,9 +58,11 @@ public class ShowMsgCount extends BaseDelayableHook {
     public boolean init() {
         if (isInit) return true;
         try {
-            XposedHelpers.findAndHookMethod(DexKit.doFindClass(DexKit.C_CustomWidgetUtil), "a",
-                    TextView.class, Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE, String.class,
-                    new XC_MethodHook(49) {
+            Class<?> clazz = DexKit.doFindClass(DexKit.C_CustomWidgetUtil);
+            for (Method m : clazz.getDeclaredMethods()) {
+                Class<?>[] argt = m.getParameterTypes();
+                if (argt.length == 6 && Modifier.isStatic(m.getModifiers()) && m.getReturnType() == void.class) {
+                    XposedBridge.hookMethod(m, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             if (LicenseStatus.sDisableCommonHooks) return;
@@ -64,6 +70,19 @@ public class ShowMsgCount extends BaseDelayableHook {
                             param.args[4] = Integer.MAX_VALUE;
                         }
                     });
+                    break;
+                }
+            }
+//            XposedHelpers.findAndHookMethod(DexKit.doFindClass(DexKit.C_CustomWidgetUtil), "a",
+//                    TextView.class, Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE, String.class,
+//                    new XC_MethodHook(49) {
+//                        @Override
+//                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+//                            if (LicenseStatus.sDisableCommonHooks) return;
+//                            if (!isEnabled()) return;
+//                            param.args[4] = Integer.MAX_VALUE;
+//                        }
+//                    });
             isInit = true;
             return true;
         } catch (Throwable e) {
