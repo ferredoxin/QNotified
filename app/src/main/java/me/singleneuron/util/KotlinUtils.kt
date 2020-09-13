@@ -127,14 +127,15 @@ fun showEulaDialog(activity: Activity) {
         if (LicenseStatus.getCurrentUserWhiteFlags()!=0) time = (Math.random()*10).toInt()
         if (LicenseStatus.isInsider()) time = if (Math.random()<0.1) 86400 else 5
         if (LicenseStatus.getCurrentUserBlackFlags()!=0) time = (Math.random()*82800+3600).toInt()
-        for (i in time downTo 1) {
-            Utils.runOnUiThread { button.text = "我已阅读并同意用户协议 ($i)" }
+        if (Math.random()<0.01) time = - time
+        do {
+            Utils.runOnUiThread { button.text = "我已阅读并同意用户协议 ($time)" }
             try {
                 Thread.sleep(1000)
             } catch (e: InterruptedException) {
                 e.printStackTrace()
             }
-        }
+        } while (--time!=0)
         Utils.runOnUiThread {
             button.text = "确定"
             editText.isEnabled = true
