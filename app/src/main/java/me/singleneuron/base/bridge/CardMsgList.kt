@@ -12,7 +12,7 @@ abstract class CardMsgList {
         @NonNull
         fun getInstance(): ()->String {
             //Todo
-            return ::getBlackListExample
+            return ::getBlackListFormGithub
         }
 
     }
