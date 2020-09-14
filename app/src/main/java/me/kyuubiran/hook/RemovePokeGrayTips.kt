@@ -26,11 +26,12 @@ object RemovePokeGrayTips : BaseDelayableHook() {
         if (isInited) return true
         return try {
             val HighlightItem = loadClass("com.tencent.mobileqq.data.MessageForGrayTips\$HightlightItem")
-            XposedBridge.hookAllConstructors(HighlightItem, object : XC_MethodHook() {
+            XposedBridge.hookAllConstructors(HighlightItem, object : XC_MethodHook(66) {
                 override fun beforeHookedMethod(param: MethodHookParam?) {
                     if (LicenseStatus.sDisableCommonHooks) return
                     if (!isEnabled) return
-                    if (param?.args?.get(7).toString().contains("gxh.vip.qq.com")) param?.result = null
+                    val str = param?.args?.get(7) as String
+                    if (str.contains("gxh.vip.qq.com")) param.thisObject = null
                 }
             })
             isInit = true
