@@ -7,6 +7,7 @@ import android.widget.Toast
 import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.Nullable
 import nil.nadph.qnotified.util.Utils
+import java.lang.reflect.Method
 
 fun Context.showToastBySystem(text: CharSequence, duration: Int = Toast.LENGTH_SHORT) {
     if (Looper.getMainLooper() == Looper.myLooper())
@@ -55,4 +56,8 @@ fun putObject(obj: Any?, name: String, value: Any, type: Class<*>? = null) {
 
 fun loadClass(clzName: String): Class<*> {
     return Initiator.load(clzName)
+}
+
+fun getMethods(clzName: String): Array<Method> {
+    return Initiator.load(clzName).declaredMethods
 }

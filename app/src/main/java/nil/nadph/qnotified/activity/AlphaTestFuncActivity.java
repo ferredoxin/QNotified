@@ -26,22 +26,20 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.tencent.mobileqq.widget.BounceScrollView;
-
 import me.kyuubiran.dialog.RevokeMsgDialog;
+import me.kyuubiran.hook.RemovePokeGrayTips;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.LicenseStatus;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit;
 import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
 import static nil.nadph.qnotified.util.Utils.dip2px;
 
-@Deprecated
 @SuppressLint("Registered")
 public class AlphaTestFuncActivity extends IphoneTitleBarActivityCompat {
-
 
 
     @Override
@@ -71,21 +69,19 @@ public class AlphaTestFuncActivity extends IphoneTitleBarActivityCompat {
             tv.setTextColor(ResUtils.skin_red);
             tv.setTextSize(30);
             ll.addView(tv, MATCH_PARENT, WRAP_CONTENT);
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Thread.sleep(3000);
-                        AlphaTestFuncActivity.this.finish();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+            new Thread(() -> {
+                try {
+                    Thread.sleep(3000);
+                    AlphaTestFuncActivity.this.finish();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }).start();
         } else {
-            View v = subtitle(this, "Alpha内测功能 请勿截图此页面");
+            View v = subtitle(this, "狐狸狸测试功能");
             v.setOnClickListener(v1 -> RevokeMsgDialog.INSTANCE.onShow(AlphaTestFuncActivity.this));
             ll.addView(v);
+            ll.addView(newListItemHookSwitchInit(this, "屏蔽戳一戳灰字提示[暂不支持8.4.8+]", "仅屏蔽开启之后的提示", RemovePokeGrayTips.INSTANCE));
 
         }
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
@@ -94,7 +90,7 @@ public class AlphaTestFuncActivity extends IphoneTitleBarActivityCompat {
         _lp_fat.weight = 1;
 
         setContentBackgroundDrawable(ResUtils.skin_background);
-        setTitle("Alpha内测功能");
+        setTitle("请勿改动");
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         return true;
     }
@@ -102,6 +98,5 @@ public class AlphaTestFuncActivity extends IphoneTitleBarActivityCompat {
     @Override
     public void doOnResume() {
         super.doOnResume();
-
     }
 }
