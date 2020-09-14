@@ -117,7 +117,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             log(e);
         }
         if (LicenseStatus.isAsserted()) {
-            ll.addView(newListItemButton(this, "Alpha测试性功能", "嘘!这是个秘密!", null, clickToProxyActAction(AlphaTestFuncActivity.class)));
+            ll.addView(newListItemButton(this, "狐狸狸测试功能", "不管你是什么人都别动这里的东西", null, clickToProxyActAction(AlphaTestFuncActivity.class)));
         }
         if (!LicenseStatus.hasBlackFlags()) {
             ll.addView(newListItemButton(this, "Beta测试性功能", "仅用于测试稳定性", null, clickToProxyActAction(BetaTestFuncActivity.class)));
@@ -167,9 +167,9 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         }
         ll.addView(subtitle(this, "消息通知设置(不影响接收消息)屏蔽后可能仍有[橙字],但通知栏不会有通知,赞说说不提醒仅屏蔽通知栏的通知"));
         ll.addView(subtitle(this, "    注:屏蔽后可能仍有[橙字],但不会有通知"));
-        ll.addView(_t = newListItemButton(this, "屏蔽指定群@全体成员通知", HtmlCompat.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[@全体成员]</font>就这点破事",FROM_HTML_MODE_LEGACY), "%d个群", clickToProxyActAction(ACTION_MUTE_AT_ALL)));
+        ll.addView(_t = newListItemButton(this, "屏蔽指定群@全体成员通知", HtmlCompat.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[@全体成员]</font>就这点破事", FROM_HTML_MODE_LEGACY), "%d个群", clickToProxyActAction(ACTION_MUTE_AT_ALL)));
         __tv_muted_atall = _t.findViewById(R_ID_VALUE);
-        ll.addView(_t = newListItemButton(this, "屏蔽指定群的红包通知", HtmlCompat.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[QQ红包][有红包]</font>恭喜发财",FROM_HTML_MODE_LEGACY), "%d个群", clickToProxyActAction(ACTION_MUTE_RED_PACKET)));
+        ll.addView(_t = newListItemButton(this, "屏蔽指定群的红包通知", HtmlCompat.fromHtml("<font color='" + get_RGB(hiColor.getDefaultColor()) + "'>[QQ红包][有红包]</font>恭喜发财", FROM_HTML_MODE_LEGACY), "%d个群", clickToProxyActAction(ACTION_MUTE_RED_PACKET)));
         __tv_muted_redpacket = _t.findViewById(R_ID_VALUE);
         ll.addView(newListItemHookSwitchInit(this, "被赞说说不提醒", "不影响评论,转发或击掌的通知", MuteQZoneThumbsUp.get()));
         ll.addView(newListItemHookSwitchInit(this, "转发消息点头像查看详细信息", "仅限合并转发的消息", MultiForwardAvatarHook.get()));
@@ -205,8 +205,8 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         addViewConditionally(ll, this, "强制使用系统相册", "支持8.3.6及更高", ForceSystemAlbum.INSTANCE);
         addViewConditionally(ll, this, "强制使用系统文件", "支持8.3.6及更高", ForceSystemFile.INSTANCE);
         addViewConditionally(ll, newListItemButton(this, "修改侧滑边距", "感谢祈无，支持8.4.1及更高，重启后生效", "", clickToProxyActAction(ChangeDrawerWidthActivity.class)), ChangeDrawerWidth.INSTANCE.getCondition());
-        ll.addView(newListItemHookSwitchInit(this,"屏蔽QQ空间滑动相机",null, DisableQzoneSlideCamera.INSTANCE));
-        ll.addView(newListItemHookSwitchInit(this,"回执消息文本化",null, SimpleReceiptMessage.INSTANCE));
+        ll.addView(newListItemHookSwitchInit(this, "屏蔽QQ空间滑动相机", null, DisableQzoneSlideCamera.INSTANCE));
+        ll.addView(newListItemHookSwitchInit(this, "回执消息文本化", null, SimpleReceiptMessage.INSTANCE));
 
         ll.addView(subtitle(this, "好友列表"));
         ll.addView(newListItemButton(this, "打开资料卡", "打开指定用户的资料卡", null, new View.OnClickListener() {
@@ -470,7 +470,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         int _5 = dip2px(SettingsActivity.this, 5);
         editText.setPadding(_5, _5, _5, _5);
         //editText.setBackgroundDrawable(new HighContrastBorder());
-        ViewCompat.setBackground(editText,new HighContrastBorder());
+        ViewCompat.setBackground(editText, new HighContrastBorder());
         LinearLayout linearLayout = new LinearLayout(ctx);
         linearLayout.addView(editText, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, _5 * 2));
         final AlertDialog alertDialog = (AlertDialog) dialog
