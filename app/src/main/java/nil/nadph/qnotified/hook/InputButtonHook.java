@@ -102,7 +102,7 @@ public class InputButtonHook extends BaseDelayableHook {
                             layout.setTouchInterceptor(new TouchEventToLongClickAdapter() {
                                 @Override
                                 public boolean onTouch(View v, MotionEvent event) {
-                                    if (!LicenseStatus.isAsserted() || !CardMsgHook.get().isEnabled()) return false;
+                                    if (LicenseStatus.hasBlackFlags() || !CardMsgHook.get().isEnabled()) return false;
                                     ViewGroup vg = (ViewGroup) v;
                                     if (event.getAction() == MotionEvent.ACTION_DOWN &&
                                             vg.getChildCount() != 0 && vg.getChildAt(0).isEnabled()) {
@@ -115,7 +115,7 @@ public class InputButtonHook extends BaseDelayableHook {
                                 public boolean onLongClick(View v) {
                                     try {
                                         if (LicenseStatus.sDisableCommonHooks) return false;
-                                        if (!LicenseStatus.isAsserted() || !CardMsgHook.get().isEnabled()) return false;
+                                        if (LicenseStatus.hasBlackFlags() || !CardMsgHook.get().isEnabled()) return false;
                                         ViewGroup vg = (ViewGroup) v;
                                         Context ctx = v.getContext();
                                         if (vg.getChildCount() != 0 && !vg.getChildAt(0).isEnabled()) {
@@ -144,7 +144,7 @@ public class InputButtonHook extends BaseDelayableHook {
                                     return false;
                                 } else {
                                     if (text.contains("<?xml")) {
-                                        if (!LicenseStatus.isAsserted() || !CardMsgHook.get().isEnabled()) return false;
+                                        if (LicenseStatus.hasBlackFlags() || !CardMsgHook.get().isEnabled()) return false;
                                         try {
                                             if (CardMsgHook.ntSendCardMsg(qqApp, session, text)) {
                                                 input.setText("");
@@ -162,7 +162,7 @@ public class InputButtonHook extends BaseDelayableHook {
                                             Utils.showToast(ctx, TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), Toast.LENGTH_SHORT);
                                         }
                                     } else if (text.contains("{\"")) {
-                                        if (!LicenseStatus.isAsserted() || !CardMsgHook.get().isEnabled()) return false;
+                                        if (LicenseStatus.hasBlackFlags() || !CardMsgHook.get().isEnabled()) return false;
                                         try {
                                             // Object arkMsg = load("com.tencent.mobileqq.data.ArkAppMessage").newInstance();
                                             if (CardMsgHook.ntSendCardMsg(qqApp, session, text)) {

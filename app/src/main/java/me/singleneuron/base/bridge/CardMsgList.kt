@@ -2,6 +2,7 @@ package me.singleneuron.base.bridge
 
 import com.google.gson.Gson
 import nil.nadph.qnotified.util.NonNull
+import java.net.URL
 
 abstract class CardMsgList {
 
@@ -26,4 +27,8 @@ fun getBlackListExample(): String {
             "禁止音视频通话" to """ti\.qq\.com"""
     )
     return Gson().toJson(map)
+}
+
+fun getBlackListFormGithub(): String {
+    return URL("https://raw.githubusercontent.com/cinit/QNotified/master/CardMsgBlackList.json").readText()
 }
