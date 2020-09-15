@@ -102,7 +102,8 @@ public class InputButtonHook extends BaseDelayableHook {
                             layout.setTouchInterceptor(new TouchEventToLongClickAdapter() {
                                 @Override
                                 public boolean onTouch(View v, MotionEvent event) {
-                                    if (LicenseStatus.hasBlackFlags() || !CardMsgHook.get().isEnabled()) return false;
+                                    if (LicenseStatus.hasBlackFlags() || !CardMsgHook.get().isEnabled())
+                                        return false;
                                     ViewGroup vg = (ViewGroup) v;
                                     if (event.getAction() == MotionEvent.ACTION_DOWN &&
                                             vg.getChildCount() != 0 && vg.getChildAt(0).isEnabled()) {
@@ -115,7 +116,8 @@ public class InputButtonHook extends BaseDelayableHook {
                                 public boolean onLongClick(View v) {
                                     try {
                                         if (LicenseStatus.sDisableCommonHooks) return false;
-                                        if (LicenseStatus.hasBlackFlags() || !CardMsgHook.get().isEnabled()) return false;
+                                        if (LicenseStatus.hasBlackFlags() || !CardMsgHook.get().isEnabled())
+                                            return false;
                                         ViewGroup vg = (ViewGroup) v;
                                         Context ctx = v.getContext();
                                         if (vg.getChildCount() != 0 && !vg.getChildAt(0).isEnabled()) {
@@ -140,63 +142,59 @@ public class InputButtonHook extends BaseDelayableHook {
                                 Context ctx = v.getContext();
                                 EditText input = viewGroup.findViewById(ctx.getResources().getIdentifier("input", "id", ctx.getPackageName()));
                                 String text = input.getText().toString();
-                                if (((TextView) v).length() == 0) {
+                                if (((TextView) v).length() == 0 || LicenseStatus.hasBlackFlags() || !CardMsgHook.get().isEnabled()) {
                                     return false;
+                                } else if (text.contains("<?xml") || text.contains("{\"")) {
+                                    new Thread(() -> {
+                                        if (text.contains("<?xml")) {
+                                            try {
+                                                if (CardMsgHook.ntSendCardMsg(qqApp, session, text)) {
+                                                    Utils.runOnUiThread(()->input.setText(""));
+                                                    CliOper.sendCardMsg(Utils.getLongAccountUin(), text);
+                                                } else {
+                                                    Utils.showToast(ctx, TOAST_TYPE_ERROR, "XML语法错误(代码有误)", Toast.LENGTH_SHORT);
+                                                }
+                                            } catch (Throwable e) {
+                                                if (e instanceof InvocationTargetException) {
+                                                    e = e.getCause();
+                                                }
+                                                log(e);
+                                                Utils.showToast(ctx, TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), Toast.LENGTH_SHORT);
+                                            }
+                                        } else if (text.contains("{\"")) {
+                                            try {
+                                                // Object arkMsg = load("com.tencent.mobileqq.data.ArkAppMessage").newInstance();
+                                                if (CardMsgHook.ntSendCardMsg(qqApp, session, text)) {
+                                                    Utils.runOnUiThread(()->input.setText(""));
+                                                    CliOper.sendCardMsg(Utils.getLongAccountUin(), text);
+                                                } else {
+                                                    Utils.showToast(ctx, TOAST_TYPE_ERROR, "JSON语法错误(代码有误)", Toast.LENGTH_SHORT);
+                                                }
+                                            } catch (Throwable e) {
+                                                if (e instanceof InvocationTargetException) {
+                                                    e = e.getCause();
+                                                }
+                                                log(e);
+                                                Utils.showToast(ctx, TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), Toast.LENGTH_SHORT);
+                                            }
+                                        }
+                                    }).start();
                                 } else {
-                                    if (text.contains("<?xml")) {
-                                        if (LicenseStatus.hasBlackFlags() || !CardMsgHook.get().isEnabled()) return false;
-                                        try {
-                                            if (CardMsgHook.ntSendCardMsg(qqApp, session, text)) {
-                                                input.setText("");
-                                                CliOper.sendCardMsg(Utils.getLongAccountUin(), text);
-                                                return true;
-                                            } else {
-                                                Utils.showToast(ctx, TOAST_TYPE_ERROR, "XML语法错误(代码有误)", Toast.LENGTH_SHORT);
-                                                return true;
-                                            }
-                                        } catch (Throwable e) {
-                                            if (e instanceof InvocationTargetException) {
-                                                e = e.getCause();
-                                            }
-                                            log(e);
-                                            Utils.showToast(ctx, TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), Toast.LENGTH_SHORT);
-                                        }
-                                    } else if (text.contains("{\"")) {
-                                        if (LicenseStatus.hasBlackFlags() || !CardMsgHook.get().isEnabled()) return false;
-                                        try {
-                                            // Object arkMsg = load("com.tencent.mobileqq.data.ArkAppMessage").newInstance();
-                                            if (CardMsgHook.ntSendCardMsg(qqApp, session, text)) {
-                                                input.setText("");
-                                                CliOper.sendCardMsg(Utils.getLongAccountUin(), text);
-                                                return true;
-                                            } else {
-                                                Utils.showToast(ctx, TOAST_TYPE_ERROR, "JSON语法错误(代码有误)", Toast.LENGTH_SHORT);
-                                                return true;
-                                            }
-                                        } catch (Throwable e) {
-                                            if (e instanceof InvocationTargetException) {
-                                                e = e.getCause();
-                                            }
-                                            log(e);
-                                            Utils.showToast(ctx, TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), Toast.LENGTH_SHORT);
-                                        }
+                                    if (LicenseStatus.hasBlackFlags()) return false;
+                                    if (!ChatTailHook.get().isEnabled()) return false;
+                                    if (!Utils.isNullOrEmpty(ChatTailHook.get().getTailCapacity())) {
+                                        int battery = FakeBatteryHook.get().isEnabled() ? FakeBatteryHook.get().getFakeBatteryStatus() < 1 ? ChatTailActivity.getBattery() : FakeBatteryHook.get().getFakeBatteryCapacity() : ChatTailActivity.getBattery();
+                                        String tc = ChatTailHook.get().getTailCapacity().
+                                                replace(ChatTailActivity.delimiter, input.getText())
+                                                .replace("#model#", Build.MODEL)
+                                                .replace("#brand#", Build.BRAND)
+                                                .replace("#battery#", battery + "")
+                                                .replace("#power#", ChatTailActivity.getPower())
+                                                .replace("#time#", new SimpleDateFormat(RikkaCustomMsgTimeFormatDialog.getTimeFormat()).format(new Date()));
+                                        input.setText(tc);
+                                        sendBtn.callOnClick();
                                     } else {
-                                        if (LicenseStatus.hasBlackFlags()) return false;
-                                        if (!ChatTailHook.get().isEnabled()) return false;
-                                        if (!Utils.isNullOrEmpty(ChatTailHook.get().getTailCapacity())) {
-                                            int battery = FakeBatteryHook.get().isEnabled() ? FakeBatteryHook.get().getFakeBatteryStatus() < 1 ? ChatTailActivity.getBattery() : FakeBatteryHook.get().getFakeBatteryCapacity() : ChatTailActivity.getBattery();
-                                            String tc = ChatTailHook.get().getTailCapacity().
-                                                    replace(ChatTailActivity.delimiter, input.getText())
-                                                    .replace("#model#", Build.MODEL)
-                                                    .replace("#brand#", Build.BRAND)
-                                                    .replace("#battery#", battery + "")
-                                                    .replace("#power#", ChatTailActivity.getPower())
-                                                    .replace("#time#", new SimpleDateFormat(RikkaCustomMsgTimeFormatDialog.getTimeFormat()).format(new Date()));
-                                            input.setText(tc);
-                                            sendBtn.callOnClick();
-                                        } else {
-                                            Utils.showToast(ctx, TOAST_TYPE_ERROR, "你还没有设置小尾巴", Toast.LENGTH_SHORT);
-                                        }
+                                        Utils.showToast(ctx, TOAST_TYPE_ERROR, "你还没有设置小尾巴", Toast.LENGTH_SHORT);
                                     }
                                 }
                                 return true;
