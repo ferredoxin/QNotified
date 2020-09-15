@@ -5,7 +5,7 @@
 [![GitHub release](https://img.shields.io/github/release/cinit/QNotified.svg)](https://github.com/cinit/QNotified/releases/latest) 
 
 ---
-**QNotified开发组已于2020年8月15日停止开发工作，感谢陪伴。**
+**QNotified开发组,管理组已正式休止活动，后续开发工作将由你们进行，感谢陪伴。**
 ---
 
 等(zuo)不(si)及的小伙伴可以: [CI构建下载](https://install.appcenter.ms/orgs/qnotifieddev/apps/qnotified/distribution_groups/alpha) (危!富含bug与兼容性问题,PR可能含恶意代码,自行承担风险)
