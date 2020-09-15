@@ -1,6 +1,6 @@
 /* QNotified - An Xposed module for QQ/TIM
  * Copyright (C) 2019-2020 xenonhydride@gmail.com
- * https://github.com/cinit/QNotified
+ * https://github.com/ferredoxin/QNotified
  *
  * This software is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,11 +18,11 @@
  */
 package nil.nadph.qnotified.script.api;
 
-import de.robv.android.xposed.XC_MethodHook;
-import nil.nadph.qnotified.util.DexMethodDescriptor;
-
 import java.lang.reflect.Method;
 import java.util.HashMap;
+
+import de.robv.android.xposed.XC_MethodHook;
+import nil.nadph.qnotified.util.DexMethodDescriptor;
 
 public class RestrictedProxyParamList {
 

@@ -1,6 +1,6 @@
 /* QNotified - An Xposed module for QQ/TIM
  * Copyright (C) 2019-2020 xenonhydride@gmail.com
- * https://github.com/cinit/QNotified
+ * https://github.com/ferredoxin/QNotified
  *
  * This software is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -24,7 +24,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import androidx.core.view.ViewCompat;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+
 import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.hook.SettingEntryHook;
 import nil.nadph.qnotified.step.Step;
@@ -33,10 +39,6 @@ import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.SimpleBgDrawable;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;

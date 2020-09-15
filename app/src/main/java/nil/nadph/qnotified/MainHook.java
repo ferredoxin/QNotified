@@ -1,6 +1,6 @@
 /* QNotified - An Xposed module for QQ/TIM
  * Copyright (C) 2019-2020 xenonhydride@gmail.com
- * https://github.com/cinit/QNotified
+ * https://github.com/ferredoxin/QNotified
  *
  * This software is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -38,6 +38,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
+
+import java.io.File;
+import java.lang.ref.WeakReference;
+import java.lang.reflect.*;
+import java.util.List;
+
 import dalvik.system.BaseDexClassLoader;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
@@ -51,11 +57,6 @@ import nil.nadph.qnotified.hook.rikka.CustomSplash;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.___WindowIsTranslucent;
 import nil.nadph.qnotified.util.*;
-
-import java.io.File;
-import java.lang.ref.WeakReference;
-import java.lang.reflect.*;
-import java.util.List;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_RESERVED;

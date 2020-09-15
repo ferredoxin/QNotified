@@ -1,6 +1,6 @@
 /* QNotified - An Xposed module for QQ/TIM
  * Copyright (C) 2019-2020 xenonhydride@gmail.com
- * https://github.com/cinit/QNotified
+ * https://github.com/ferredoxin/QNotified
  *
  * This software is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -33,16 +33,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 
 import androidx.core.view.ViewCompat;
 
@@ -65,15 +56,8 @@ import nil.nadph.qnotified.util.Utils;
 import static android.view.View.GONE;
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_CHAT_TAIL_TROOPS_ACTIVITY;
-import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_MUTE_AT_ALL;
-import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_MUTE_RED_PACKET;
-import static nil.nadph.qnotified.util.ActProxyMgr.ACTIVITY_PROXY_ACTION;
-import static nil.nadph.qnotified.util.Utils.dip2px;
-import static nil.nadph.qnotified.util.Utils.getTroopManager;
-import static nil.nadph.qnotified.util.Utils.iget_object_or_null;
-import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.strcmp;
+import static nil.nadph.qnotified.util.ActProxyMgr.*;
+import static nil.nadph.qnotified.util.Utils.*;
 
 
 @SuppressLint("Registered")

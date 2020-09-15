@@ -1,6 +1,6 @@
 /* QNotified - An Xposed module for QQ/TIM
  * Copyright (C) 2019-2020 xenonhydride@gmail.com
- * https://github.com/cinit/QNotified
+ * https://github.com/ferredoxin/QNotified
  *
  * This software is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,9 +19,6 @@
 package nil.nadph.qnotified.util;
 
 import android.view.View;
-import dalvik.system.DexClassLoader;
-import dalvik.system.PathClassLoader;
-import nil.nadph.qnotified.config.ConfigManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -35,6 +32,10 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.regex.Pattern;
+
+import dalvik.system.DexClassLoader;
+import dalvik.system.PathClassLoader;
+import nil.nadph.qnotified.config.ConfigManager;
 
 import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
 import static nil.nadph.qnotified.util.Initiator._QQAppInterface;

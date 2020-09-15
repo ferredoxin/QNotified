@@ -1,6 +1,6 @@
 /* QNotified - An Xposed module for QQ/TIM
  * Copyright (C) 2019-2020 xenonhydride@gmail.com
- * https://github.com/cinit/QNotified
+ * https://github.com/ferredoxin/QNotified
  *
  * This software is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -31,12 +31,12 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.util.HashSet;
+import java.util.Iterator;
+
 import nil.nadph.qnotified.util.IndexFrom;
 import nil.nadph.qnotified.util.Nullable;
 import nil.nadph.qnotified.util.Utils;
-
-import java.util.HashSet;
-import java.util.Iterator;
 
 
 public class MoleculeView extends View {

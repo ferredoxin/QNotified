@@ -1,6 +1,6 @@
 /* QNotified - An Xposed module for QQ/TIM
  * Copyright (C) 2019-2020 xenonhydride@gmail.com
- * https://github.com/cinit/QNotified
+ * https://github.com/ferredoxin/QNotified
  *
  * This software is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,14 +20,16 @@ package nil.nadph.qnotified.activity.stub;
 
 import android.os.Bundle;
 import android.os.PersistableBundle;
+
 import androidx.annotation.Nullable;
+
+import java.lang.reflect.UndeclaredThrowableException;
+import java.util.Map;
+
 import de.robv.android.xposed.XC_MethodHook;
 import nil.nadph.qnotified.activity.AppCompatTransferActivity;
 import nil.nadph.qnotified.script.gui.ActivityProxyHandlerStaticHolder;
 import nil.nadph.qnotified.util.internal.XMethodHookDispatchUtil;
-
-import java.lang.reflect.UndeclaredThrowableException;
-import java.util.Map;
 
 public class ScriptAppCompatProxyActivity extends AppCompatTransferActivity {
     private Map<String, XMethodHookDispatchUtil.HookHolder> mH;

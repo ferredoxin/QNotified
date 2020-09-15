@@ -1,6 +1,6 @@
 /* QNotified - An Xposed module for QQ/TIM
  * Copyright (C) 2019-2020 xenonhydride@gmail.com
- * https://github.com/cinit/QNotified
+ * https://github.com/ferredoxin/QNotified
  *
  * This software is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -24,14 +24,17 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatDelegate;
+
 import com.tencent.mobileqq.app.IphoneTitleBarActivity;
-import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.util.CliOper;
-import nil.nadph.qnotified.util.Utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+
+import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.util.CliOper;
+import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;

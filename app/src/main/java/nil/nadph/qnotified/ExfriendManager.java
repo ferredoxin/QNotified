@@ -1,6 +1,6 @@
 /* QNotified - An Xposed module for QQ/TIM
  * Copyright (C) 2019-2020 xenonhydride@gmail.com
- * https://github.com/cinit/QNotified
+ * https://github.com/ferredoxin/QNotified
  *
  * This software is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -28,16 +28,6 @@ import android.os.Build;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-import nil.nadph.qnotified.activity.ExfriendListActivity;
-import nil.nadph.qnotified.bridge.FriendChunk;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.config.EventRecord;
-import nil.nadph.qnotified.config.FriendRecord;
-import nil.nadph.qnotified.config.Table;
-import nil.nadph.qnotified.hook.DelDetectorHook;
-import nil.nadph.qnotified.remote.GetUserStatusResp;
-import nil.nadph.qnotified.remote.TransactionHelper;
-import nil.nadph.qnotified.util.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,6 +40,17 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import nil.nadph.qnotified.activity.ExfriendListActivity;
+import nil.nadph.qnotified.bridge.FriendChunk;
+import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.config.EventRecord;
+import nil.nadph.qnotified.config.FriendRecord;
+import nil.nadph.qnotified.config.Table;
+import nil.nadph.qnotified.hook.DelDetectorHook;
+import nil.nadph.qnotified.remote.GetUserStatusResp;
+import nil.nadph.qnotified.remote.TransactionHelper;
+import nil.nadph.qnotified.util.*;
 
 import static nil.nadph.qnotified.config.Table.*;
 import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_EXFRIEND_LIST;
