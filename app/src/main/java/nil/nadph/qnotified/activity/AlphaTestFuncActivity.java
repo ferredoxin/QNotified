@@ -1,6 +1,6 @@
 /* QNotified - An Xposed module for QQ/TIM
  * Copyright (C) 2019-2020 xenonhydride@gmail.com
- * https://github.com/cinit/QNotified
+ * https://github.com/ferredoxin/QNotified
  *
  * This software is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -26,7 +26,9 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.tencent.mobileqq.widget.BounceScrollView;
+
 import me.kyuubiran.dialog.RevokeMsgDialog;
 import me.kyuubiran.hook.RemovePokeGrayTips;
 import nil.nadph.qnotified.ui.ResUtils;

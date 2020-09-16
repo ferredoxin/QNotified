@@ -1,6 +1,6 @@
 /* QNotified - An Xposed module for QQ/TIM
  * Copyright (C) 2019-2020 xenonhydride@gmail.com
- * https://github.com/cinit/QNotified
+ * https://github.com/ferredoxin/QNotified
  *
  * This software is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,11 +19,12 @@
 package nil.nadph.qnotified.script.api;
 
 import android.annotation.SuppressLint;
+
+import java.lang.reflect.Member;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.callbacks.XCallback;
-
-import java.lang.reflect.Member;
 
 @SuppressLint("UnknownNullness")
 public class XMethodHookFactory {

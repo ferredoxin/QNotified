@@ -142,7 +142,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:autoLink="web"
-                    android:text="https://github.com/cinit/QNotified" />
+                    android:text="https://github.com/ferredoxin/QNotified" />
 
                 <TextView
 

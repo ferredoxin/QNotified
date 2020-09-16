@@ -1,6 +1,6 @@
 /* QNotified - An Xposed module for QQ/TIM
  * Copyright (C) 2019-2020 xenonhydride@gmail.com
- * https://github.com/cinit/QNotified
+ * https://github.com/ferredoxin/QNotified
  *
  * This software is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -32,11 +32,7 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 
 import androidx.core.view.ViewCompat;
 
@@ -61,28 +57,14 @@ import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.util.CustomMenu;
-import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.FaceImpl;
-import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.util.*;
 
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
-import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_SUCCESS;
-import static nil.nadph.qnotified.util.Utils.dip2px;
-import static nil.nadph.qnotified.util.Utils.dip2sp;
-import static nil.nadph.qnotified.util.Utils.findField;
-import static nil.nadph.qnotified.util.Utils.getApplication;
-import static nil.nadph.qnotified.util.Utils.getFirstNSFFieldByType;
-import static nil.nadph.qnotified.util.Utils.getQQAppInterface;
-import static nil.nadph.qnotified.util.Utils.invoke_virtual;
-import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.showToast;
+import static nil.nadph.qnotified.util.Utils.*;
 
 
 public class PttForwardHook extends BaseDelayableHook {

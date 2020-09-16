@@ -1,6 +1,6 @@
 /* QNotified - An Xposed module for QQ/TIM
  * Copyright (C) 2019-2020 xenonhydride@gmail.com
- * https://github.com/cinit/QNotified
+ * https://github.com/ferredoxin/QNotified
  *
  * This software is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,16 +18,7 @@
  */
 package nil.nadph.qnotified.util;
 
-import nil.nadph.qnotified.activity.AboutActivity;
-import nil.nadph.qnotified.activity.ChatTailActivity;
-import nil.nadph.qnotified.activity.DonateActivity;
-import nil.nadph.qnotified.activity.ExfriendListActivity;
-import nil.nadph.qnotified.activity.FakeBatCfgActivity;
-import nil.nadph.qnotified.activity.FriendSelectActivity;
-import nil.nadph.qnotified.activity.FriendlistExportActivity;
-import nil.nadph.qnotified.activity.SettingsActivity;
-import nil.nadph.qnotified.activity.TroopSelectActivity;
-import nil.nadph.qnotified.activity.TroubleshootActivity;
+import nil.nadph.qnotified.activity.*;
 
 public class ActProxyMgr {
     public static final String STUB_DEFAULT_ACTIVITY = "com.tencent.mobileqq.activity.photo.CameraPreviewActivity";

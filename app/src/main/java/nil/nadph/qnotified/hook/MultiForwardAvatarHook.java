@@ -1,6 +1,6 @@
 /* QNotified - An Xposed module for QQ/TIM
  * Copyright (C) 2019-2020 xenonhydride@gmail.com
- * https://github.com/cinit/QNotified
+ * https://github.com/ferredoxin/QNotified
  *
  * This software is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -38,22 +38,11 @@ import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ViewBuilder;
-import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.Nullable;
-import nil.nadph.qnotified.util.UiThread;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.util.*;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
-import static nil.nadph.qnotified.util.Utils.getApplication;
-import static nil.nadph.qnotified.util.Utils.getFirstNSFByType;
-import static nil.nadph.qnotified.util.Utils.getShort$Name;
-import static nil.nadph.qnotified.util.Utils.iget_object_or_null;
-import static nil.nadph.qnotified.util.Utils.invoke_static_any;
-import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.loge;
+import static nil.nadph.qnotified.util.Utils.*;
 
 public class MultiForwardAvatarHook extends BaseDelayableHook {
 

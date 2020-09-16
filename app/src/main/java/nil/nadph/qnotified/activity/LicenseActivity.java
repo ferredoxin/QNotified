@@ -1,6 +1,6 @@
 /* QNotified - An Xposed module for QQ/TIM
  * Copyright (C) 2019-2020 xenonhydride@gmail.com
- * https://github.com/cinit/QNotified
+ * https://github.com/ferredoxin/QNotified
  *
  * This software is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -25,7 +25,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
 import com.tencent.widget.XListView;
+
+import java.util.List;
+
 import de.psdev.licensesdialog.LicensesDialog;
 import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
 import de.psdev.licensesdialog.licenses.GnuLesserGeneralPublicLicense3;
@@ -35,8 +39,6 @@ import de.psdev.licensesdialog.model.Notices;
 import io.noties.markwon.Markwon;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.ui.ResUtils;
-
-import java.util.List;
 
 public class LicenseActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener {
 
