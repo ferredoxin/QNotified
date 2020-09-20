@@ -30,5 +30,5 @@ fun getBlackListExample(): String {
 }
 
 fun getBlackListFormGithub(): String {
-    return URL("https://raw.githubusercontent.com/cinit/QNotified/master/CardMsgBlackList.json").readText()
+    return URL("https://raw.githubusercontent.com/ferredoxin/QNotified/master/CardMsgBlackList.json").readText()
 }
