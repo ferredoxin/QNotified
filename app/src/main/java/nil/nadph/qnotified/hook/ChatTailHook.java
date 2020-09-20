@@ -99,16 +99,20 @@ public class ChatTailHook extends BaseDelayableHook {
                             // m.invoke(null, qqAppInterface, context, sessionInfo, msg, new ArrayList<>(), SendMsgParams.newInstance());
                             // final Parcelable session = getFirstNSFByType(param.thisObject, _SessionInfo());
                             // String text = input.getText().toString();
-                            Field field = null;
-                            for (Field f : session.getClass().getDeclaredFields()) {
-                                // 因为有多个同名变量，所以要判断返回类型
-                                if (f.getName().equalsIgnoreCase("a") && f.getType() == String.class) {
-                                    field = f;
-                                    //debug.append("变量反射成功！！！").append("\n");
+                            String uin="10000";
+                            if(!isGlobal()){
+                                Field field = null;
+                                for (Field f : session.getClass().getDeclaredFields()) {
+                                    // 因为有多个同名变量，所以要判断返回类型
+                                    if (f.getName().equalsIgnoreCase("a") && f.getType() == String.class) {
+                                        field = f;
+                                        //debug.append("变量反射成功！！！").append("\n");
+                                    }
                                 }
+                                if(null==field) field=session.getClass().getDeclaredField("curFriendUin");
+                                uin = (String) field.get(session);
+                                //String uin = "123321";
                             }
-                            String uin = (String) field.get(session);
-                            //String uin = "123321";
                             ChatTailHook ct = ChatTailHook.get();
                             // debug.append("当前小尾巴: ").append(ct.getTailCapacity().replace("\n", "\\n")).append("\n");
                             // debug.append("当前uin: ").append(uin).append("\n");
@@ -118,7 +122,7 @@ public class ChatTailHook extends BaseDelayableHook {
                             logi("getTailRegex:" + ChatTailHook.getTailRegex());
                             // debug.append("群列表: ").append(muted).append("\n");
                             if ((ct.isGlobal() || ct.containsTroop(uin) || ct.containsFriend(uin))
-                                && isRegex() && !isPassRegex(msg)) {
+                                &&(!isRegex()||!isPassRegex(msg))) {
                                 int battery = FakeBatteryHook.get().isEnabled() ? FakeBatteryHook.get().getFakeBatteryStatus() < 1 ? ChatTailActivity.getBattery() : FakeBatteryHook.get().getFakeBatteryCapacity() : ChatTailActivity.getBattery();
                                 text = ct.getTailCapacity().
                                         replace(ChatTailActivity.delimiter, msg)
