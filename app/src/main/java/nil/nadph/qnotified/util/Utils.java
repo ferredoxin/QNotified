@@ -1508,54 +1508,53 @@ public class Utils {
      * @param duration How long to display the message.  Either {@link android.widget.Toast#LENGTH_SHORT} or
      *                 {@link android.widget.Toast#LENGTH_LONG}
      */
-    public static Toast showToast(Context context, int type, CharSequence text, int duration) {
-        try {
-            if (clazz_QQToast == null) {
-                clazz_QQToast = load("com/tencent/mobileqq/widget/QQToast");
-            }
-            if (clazz_QQToast == null) {
-                Class clz = load("com/tencent/mobileqq/activity/aio/doodle/DoodleLayout");
-                assert clz != null;
-                Field[] fs = clz.getDeclaredFields();
-                for (Field f : fs) {
-                    if (View.class.isAssignableFrom(f.getType())) continue;
-                    if (f.getType().isPrimitive()) continue;
-                    if (f.getType().isInterface()) continue;
-                    clazz_QQToast = f.getType();
+    public static void showToast(Context context, int type, CharSequence text, int duration) {
+        runOnUiThread(() -> {
+            try {
+                if (clazz_QQToast == null) {
+                    clazz_QQToast = load("com/tencent/mobileqq/widget/QQToast");
                 }
-            }
-            if (method_Toast_show == null) {
-                Method[] ms = clazz_QQToast.getMethods();
-                for (Method m : ms) {
-                    if (Toast.class.equals(m.getReturnType()) && m.getParameterTypes().length == 0) {
-                        method_Toast_show = m;
-                        break;
+                if (clazz_QQToast == null) {
+                    Class clz = load("com/tencent/mobileqq/activity/aio/doodle/DoodleLayout");
+                    assert clz != null;
+                    Field[] fs = clz.getDeclaredFields();
+                    for (Field f : fs) {
+                        if (View.class.isAssignableFrom(f.getType())) continue;
+                        if (f.getType().isPrimitive()) continue;
+                        if (f.getType().isInterface()) continue;
+                        clazz_QQToast = f.getType();
                     }
                 }
-            }
-            if (method_Toast_makeText == null) {
-                try {
-                    method_Toast_makeText = clazz_QQToast.getMethod("a", Context.class, int.class, CharSequence.class, int.class);
-                } catch (NoSuchMethodException e) {
+                if (method_Toast_show == null) {
+                    Method[] ms = clazz_QQToast.getMethods();
+                    for (Method m : ms) {
+                        if (Toast.class.equals(m.getReturnType()) && m.getParameterTypes().length == 0) {
+                            method_Toast_show = m;
+                            break;
+                        }
+                    }
+                }
+                if (method_Toast_makeText == null) {
                     try {
-                        method_Toast_makeText = clazz_QQToast.getMethod("b", Context.class, int.class, CharSequence.class, int.class);
-                    } catch (NoSuchMethodException e2) {
-                        throw e;
+                        method_Toast_makeText = clazz_QQToast.getMethod("a", Context.class, int.class, CharSequence.class, int.class);
+                    } catch (NoSuchMethodException e) {
+                        try {
+                            method_Toast_makeText = clazz_QQToast.getMethod("b", Context.class, int.class, CharSequence.class, int.class);
+                        } catch (NoSuchMethodException e2) {
+                            throw e;
+                        }
                     }
                 }
+                ((Toast) method_Toast_makeText.invoke(null, context, type, text, duration)).show();
+            } catch (Exception e) {
+                log(e);
+                Toast.makeText(context, text, duration).show();
             }
-            Object qqToast = method_Toast_makeText.invoke(null, context, type, text, duration);
-            return (Toast) method_Toast_show.invoke(qqToast);
-        } catch (Exception e) {
-            log(e);
-            Toast t = Toast.makeText(context, text, duration);
-            t.show();
-            return t;
-        }
+        });
     }
 
-    public static Toast showToastShort(Context ctx, CharSequence str) {
-        return showToast(ctx, 0, str, 0);
+    public static void showToastShort(Context ctx, CharSequence str) {
+        showToast(ctx, 0, str, 0);
     }
 
     //@Deprecated
