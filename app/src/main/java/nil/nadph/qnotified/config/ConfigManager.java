@@ -18,17 +18,17 @@
  */
 package nil.nadph.qnotified.config;
 
+import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.util.NonNull;
+import nil.nadph.qnotified.util.Nullable;
+import nil.nadph.qnotified.util.Utils;
+
 import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.util.NonNull;
-import nil.nadph.qnotified.util.Nullable;
-import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.config.Table.*;
 import static nil.nadph.qnotified.util.Utils.log;
@@ -98,7 +98,9 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
             if (dirty) reload();
         } catch (Exception ignored) {
         }
-        if (!config.containsKey(key)) config.put(key, def);
+        if (!config.containsKey(key)) {
+            return def;
+        }
         return config.get(key);
     }
 
@@ -107,7 +109,9 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
             if (dirty) reload();
         } catch (Exception ignored) {
         }
-        if (!config.containsKey(key)) config.put(key, false);
+        if (!config.containsKey(key)) {
+            return false;
+        }
         try {
             return ((Boolean) config.get(key)).booleanValue();
         } catch (ClassCastException e) {
@@ -120,7 +124,9 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
             if (dirty) reload();
         } catch (Exception ignored) {
         }
-        if (!config.containsKey(key)) config.put(key, def);
+        if (!config.containsKey(key)) {
+            return def;
+        }
         try {
             return ((Boolean) config.get(key)).booleanValue();
         } catch (ClassCastException e) {
@@ -133,7 +139,9 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
             if (dirty) reload();
         } catch (Exception ignored) {
         }
-        if (!config.containsKey(key)) config.put(key, def);
+        if (!config.containsKey(key)) {
+            return def;
+        }
         try {
             return ((Integer) config.get(key)).intValue();
         } catch (ClassCastException e) {
@@ -324,7 +332,9 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
             if (dirty) reload();
         } catch (Exception ignored) {
         }
-        if (!config.containsKey(key)) config.put(key, i);
+        if (!config.containsKey(key)) {
+            return i;
+        }
         try {
             return ((Long) config.get(key)).longValue();
         } catch (ClassCastException e) {
