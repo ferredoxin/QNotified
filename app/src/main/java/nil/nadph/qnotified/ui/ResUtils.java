@@ -27,18 +27,17 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.widget.Button;
-
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
+import de.robv.android.xposed.XposedHelpers;
+import nil.nadph.qnotified.util.ArscKit;
+import nil.nadph.qnotified.util.Nullable;
+import nil.nadph.qnotified.util.Utils;
 
 import java.io.*;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-
-import de.robv.android.xposed.XposedHelpers;
-import nil.nadph.qnotified.util.ArscKit;
-import nil.nadph.qnotified.util.Nullable;
 
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
@@ -57,10 +56,16 @@ public class ResUtils {
     static public ColorStateList skin_color_button_blue;
     static public Drawable skin_common_btn_blue_pressed, skin_common_btn_blue_unpressed;
 
+    static private boolean inited = false;
     static private String cachedThemeId;
     static private final Map<String, Drawable> cachedDrawable = new HashMap<>();
 
-    public static void initTheme(Context ctx) throws Throwable {
+    public static void requireResourcesNonNull(Context ctx) {
+        if (ctx == null) ctx = Utils.getApplication();
+        if (!inited) initTheme(ctx);
+    }
+
+    public static void initTheme(Context ctx) {
         try {
             String themeId = (String) invoke_static(load("com/tencent/mobileqq/theme/ThemeUtil"), "getUserCurrentThemeId", null, load("mqq/app/AppRuntime"));
             if (themeId.equals(cachedThemeId)) return;
@@ -77,6 +82,7 @@ public class ResUtils {
         list_checkbox_selected_nopress = list_checkbox_selected = list_checkbox_multi = list_checkbox = null;
         loadThemeByArsc(ctx, true);
         initByFallback(ctx);
+        inited = true;
     }
 
     private static void initByFallback(Context ctx) {
