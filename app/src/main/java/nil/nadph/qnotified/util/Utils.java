@@ -33,16 +33,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import com.tencent.mobileqq.app.QQAppInterface;
-
-import java.io.*;
-import java.lang.reflect.*;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import dalvik.system.DexFile;
 import de.robv.android.xposed.XposedBridge;
 import me.singleneuron.qn_kernel.service.InterruptServiceRoutine;
@@ -52,6 +43,13 @@ import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.ResUtils;
+
+import java.io.*;
+import java.lang.reflect.*;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static me.singleneuron.util.KotlinUtilsKt.readFromBufferedReader;
 import static nil.nadph.qnotified.util.Initiator.load;
@@ -1545,7 +1543,10 @@ public class Utils {
                         }
                     }
                 }
-                ((Toast) method_Toast_makeText.invoke(null, context, type, text, duration)).show();
+                Object this_QQToast_does_NOT_extend_a_standard_Toast_so_please_do_NOT_cast_it_to_Toast
+                        = method_Toast_makeText.invoke(null, context, type, text, duration);
+                method_Toast_show.invoke(this_QQToast_does_NOT_extend_a_standard_Toast_so_please_do_NOT_cast_it_to_Toast);
+                // However, the return value of QQToast.show() is a standard Toast
             } catch (Exception e) {
                 log(e);
                 Toast.makeText(context, text, duration).show();
