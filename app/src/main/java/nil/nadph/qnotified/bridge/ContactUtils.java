@@ -2,11 +2,11 @@ package nil.nadph.qnotified.bridge;
 
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.Initiator;
 
 import java.lang.reflect.Modifier;
 
 import static nil.nadph.qnotified.util.Initiator._QQAppInterface;
-import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class ContactUtils {
@@ -15,8 +15,8 @@ public class ContactUtils {
         if (troopUin != null && troopUin.length() > 0) {
             try {
                 Object mTroopManager = getTroopManager();
-                Object troopMemberInfo = invoke_virtual_declared_ordinal(mTroopManager, 0, 3, false, troopUin, memberUin,
-                        String.class, String.class, load("com.tencent.mobileqq.data.TroopMemberInfo"));
+                Object troopMemberInfo = invoke_virtual_declared_ordinal(mTroopManager, 0, 3, false,
+                        troopUin, memberUin, String.class, String.class, Initiator._TroopMemberInfo());
                 if (troopMemberInfo != null) {
                     String troopnick = (String) XposedHelpers.getObjectField(troopMemberInfo, "troopnick");
                     if (troopnick != null) {
@@ -26,7 +26,7 @@ public class ContactUtils {
                         }
                     }
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 log(e);
             }
             try {

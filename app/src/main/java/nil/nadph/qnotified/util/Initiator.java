@@ -19,12 +19,10 @@
 package nil.nadph.qnotified.util;
 
 import android.os.Parcelable;
-
 import com.tencent.mobileqq.app.QQAppInterface;
+import de.robv.android.xposed.XposedBridge;
 
 import java.lang.reflect.Field;
-
-import de.robv.android.xposed.XposedBridge;
 
 import static nil.nadph.qnotified.util.Utils.log;
 import static nil.nadph.qnotified.util.Utils.loge;
@@ -453,6 +451,12 @@ public class Initiator {
     public static Class _BaseChatPie() {
         Class<?> clazz = load("com/tencent/mobileqq/activity/aio/core/BaseChatPie");
         if (clazz == null) clazz = load("com.tencent.mobileqq.activity.BaseChatPie");
+        return clazz;
+    }
+
+    public static Class _TroopMemberInfo() {
+        Class<?> clazz = load("com.tencent.mobileqq.data.troop.TroopMemberInfo");
+        if (clazz == null) clazz = load("com.tencent.mobileqq.data.TroopMemberInfo");
         return clazz;
     }
 
