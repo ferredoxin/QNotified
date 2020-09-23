@@ -31,15 +31,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.tencent.mobileqq.app.QQAppInterface;
-
-import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import me.singleneuron.hook.CopyCardMsg;
@@ -51,6 +43,12 @@ import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.ui.InterceptLayout;
 import nil.nadph.qnotified.ui.TouchEventToLongClickAdapter;
 import nil.nadph.qnotified.util.*;
+
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static nil.nadph.qnotified.util.Initiator._SessionInfo;
@@ -90,11 +88,21 @@ public class InputButtonHook extends BaseDelayableHook {
                     try {
                         Object chatPie = param.thisObject;
                         //Class cl_PatchedButton = load("com/tencent/widget/PatchedButton");
-                        final ViewGroup viewGroup = (ViewGroup) invoke_virtual_any(chatPie, ViewGroup.class);
-                        if (viewGroup == null) return;
-                        Context ctx = viewGroup.getContext();
+                        ViewGroup __aioRootView = null;
+                        for (Method m : Initiator._BaseChatPie().getDeclaredMethods()) {
+                            if (m.getReturnType() == ViewGroup.class && m.getParameterTypes().length == 0) {
+                                __aioRootView = (ViewGroup) m.invoke(chatPie);
+                                break;
+                            }
+                        }
+                        if (__aioRootView == null) {
+                            Utils.logw("AIO root view not found");
+                            return;
+                        }
+                        ViewGroup aioRootView = __aioRootView;
+                        Context ctx = aioRootView.getContext();
                         int fun_btn = ctx.getResources().getIdentifier("fun_btn", "id", ctx.getPackageName());
-                        View sendBtn = viewGroup.findViewById(fun_btn);
+                        View sendBtn = aioRootView.findViewById(fun_btn);
                         final QQAppInterface qqApp = getFirstNSFByType(param.thisObject, QQAppInterface.class);
                         final Parcelable session = getFirstNSFByType(param.thisObject, _SessionInfo());
                         if (!sendBtn.getParent().getClass().getName().equals(InterceptLayout.class.getName())) {
@@ -121,7 +129,7 @@ public class InputButtonHook extends BaseDelayableHook {
                                         ViewGroup vg = (ViewGroup) v;
                                         Context ctx = v.getContext();
                                         if (vg.getChildCount() != 0 && !vg.getChildAt(0).isEnabled()) {
-                                            EditText input = viewGroup.findViewById(ctx.getResources().getIdentifier("input", "id", ctx.getPackageName()));
+                                            EditText input = aioRootView.findViewById(ctx.getResources().getIdentifier("input", "id", ctx.getPackageName()));
                                             String text = input.getText().toString();
                                             if (text.length() == 0) {
                                                 showToast(ctx, TOAST_TYPE_ERROR, "请先输入卡片代码", Toast.LENGTH_SHORT);
@@ -140,7 +148,7 @@ public class InputButtonHook extends BaseDelayableHook {
                             public boolean onLongClick(View v) {
                                 if (LicenseStatus.sDisableCommonHooks) return false;
                                 Context ctx = v.getContext();
-                                EditText input = viewGroup.findViewById(ctx.getResources().getIdentifier("input", "id", ctx.getPackageName()));
+                                EditText input = aioRootView.findViewById(ctx.getResources().getIdentifier("input", "id", ctx.getPackageName()));
                                 String text = input.getText().toString();
                                 if (((TextView) v).length() == 0 || LicenseStatus.hasBlackFlags() || !CardMsgHook.get().isEnabled()) {
                                     return false;
@@ -149,7 +157,7 @@ public class InputButtonHook extends BaseDelayableHook {
                                         if (text.contains("<?xml")) {
                                             try {
                                                 if (CardMsgHook.ntSendCardMsg(qqApp, session, text)) {
-                                                    Utils.runOnUiThread(()->input.setText(""));
+                                                    Utils.runOnUiThread(() -> input.setText(""));
                                                     CliOper.sendCardMsg(Utils.getLongAccountUin(), text);
                                                 } else {
                                                     Utils.showToast(ctx, TOAST_TYPE_ERROR, "XML语法错误(代码有误)", Toast.LENGTH_SHORT);
@@ -165,7 +173,7 @@ public class InputButtonHook extends BaseDelayableHook {
                                             try {
                                                 // Object arkMsg = load("com.tencent.mobileqq.data.ArkAppMessage").newInstance();
                                                 if (CardMsgHook.ntSendCardMsg(qqApp, session, text)) {
-                                                    Utils.runOnUiThread(()->input.setText(""));
+                                                    Utils.runOnUiThread(() -> input.setText(""));
                                                     CliOper.sendCardMsg(Utils.getLongAccountUin(), text);
                                                 } else {
                                                     Utils.showToast(ctx, TOAST_TYPE_ERROR, "JSON语法错误(代码有误)", Toast.LENGTH_SHORT);
