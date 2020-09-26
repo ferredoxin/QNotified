@@ -17,7 +17,7 @@ import static nil.nadph.qnotified.util.Utils.getApplication;
 public class CliOper {
 
     private static boolean appCenterInit = false;
-    private final static String appCenterToken = BuildConfig.DEBUG?"530d3819-3543-46e3-8c59-5576604f3801":"ddf4b597-1833-45dd-af28-96ca504b8123";
+    private static final String appCenterToken = BuildConfig.DEBUG?"530d3819-3543-46e3-8c59-5576604f3801":"ddf4b597-1833-45dd-af28-96ca504b8123";
 
     public static void __init__(Application app) {
         if (app == null) return;
