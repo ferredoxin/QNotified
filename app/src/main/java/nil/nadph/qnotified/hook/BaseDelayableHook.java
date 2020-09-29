@@ -22,6 +22,8 @@ import me.kyuubiran.hook.*;
 import me.kyuubiran.hook.testhook.CutMessage;
 import me.singleneuron.hook.*;
 import me.singleneuron.hook.decorator.SimpleCheckIn;
+import me.singleneuron.qn_kernel.dispacher.ItemBuilderFactoryHook;
+import me.singleneuron.qn_kernel.dispacher.StartActivityHook;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.SwitchConfigItem;
 import nil.nadph.qnotified.hook.rikka.*;
