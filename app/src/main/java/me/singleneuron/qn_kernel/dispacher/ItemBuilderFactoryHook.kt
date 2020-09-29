@@ -1,4 +1,4 @@
-package me.singleneuron.hook
+package me.singleneuron.qn_kernel.dispacher
 
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
