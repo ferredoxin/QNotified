@@ -2,6 +2,17 @@ package nil.nadph.qnotified.script;
 
 import android.widget.CompoundButton;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
 import bsh.EvalError;
 import bsh.Interpreter;
 import nil.nadph.qnotified.config.ConfigItems;
@@ -9,11 +20,10 @@ import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Utils;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.getApplication;
+import static nil.nadph.qnotified.util.Utils.isNullOrEmpty;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.readByReader;
 
 public class QNScriptManager {
 
@@ -46,6 +56,31 @@ public class QNScriptManager {
         return "";
     }
 
+    public static String addScriptFD(FileDescriptor fileDescriptor, String scriptName) throws Throwable {
+//        if (hasScriptFD(fileDescriptor)) return "脚本已存在";
+        File dir = new File(scriptsPath);
+        if (!dir.exists()) dir.mkdirs();
+        FileInputStream fileInputStream = null;
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileInputStream = new FileInputStream(fileDescriptor);
+            fileOutputStream = new FileOutputStream(scriptsPath + scriptName);
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = fileInputStream.read(buf)) > 0) {
+                fileOutputStream.write(buf, 0, len);
+            }
+        } finally {
+            if (fileInputStream != null) fileInputStream.close();
+            if (fileOutputStream != null) fileOutputStream.close();
+        }
+        String code = readByReader(new FileReader(scriptsPath + scriptName));
+        if (!isNullOrEmpty(code)) {
+            scripts.add(execute(code));
+        }
+        return "";
+    }
+
     public static void addEnable() {
         enables++;
         if (enables > scripts.size() - 1) enables = scripts.size();
@@ -67,6 +102,17 @@ public class QNScriptManager {
         // to do
         // 判断文件
         QNScriptInfo info = QNScriptInfo.getInfo(Utils.readByReader(new FileReader(new File(file))));
+        if (info == null) throw new RuntimeException("不是有效的脚本文件");
+        for (QNScript q : getScripts()) {
+            if (info.label.equalsIgnoreCase(q.getLabel())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean hasScriptFD(FileDescriptor fileDescriptor) throws Exception {
+        QNScriptInfo info = QNScriptInfo.getInfo(Utils.readByReader(new FileReader(fileDescriptor)));
         if (info == null) throw new RuntimeException("不是有效的脚本文件");
         for (QNScript q : getScripts()) {
             if (info.label.equalsIgnoreCase(q.getLabel())) {
