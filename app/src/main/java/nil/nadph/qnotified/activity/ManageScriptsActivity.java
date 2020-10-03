@@ -99,8 +99,12 @@ public class ManageScriptsActivity extends IphoneTitleBarActivityCompat {
                             ParcelFileDescriptor parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "r");
                             if (parcelFileDescriptor != null) {
                                 FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-                                QNScriptManager.addScriptFD(fileDescriptor, scriptName);
-                                Utils.showToastShort(this, "添加完毕");
+                                String err = QNScriptManager.addScriptFD(fileDescriptor, scriptName);
+                                if (err.isEmpty()) {
+                                    Utils.showToastShort(this, "添加完毕");
+                                } else {
+                                    Utils.showToastShort(this, err);
+                                }
                             }
                         } catch (Throwable e) {
                             log(e);
