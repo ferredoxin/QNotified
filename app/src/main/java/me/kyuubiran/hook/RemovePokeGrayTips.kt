@@ -22,6 +22,8 @@ object RemovePokeGrayTips : BaseDelayableHook() {
         return arrayOfNulls(0)
     }
 
+    //Unknown bug(s) need to fix.
+    //Sometimes not work.
     override fun init(): Boolean {
         if (isInited) return true
         return try {

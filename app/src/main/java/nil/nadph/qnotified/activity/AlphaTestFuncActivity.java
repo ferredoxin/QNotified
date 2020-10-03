@@ -31,6 +31,7 @@ import com.tencent.mobileqq.widget.BounceScrollView;
 
 import me.kyuubiran.dialog.RevokeMsgDialog;
 import me.kyuubiran.hook.RemovePokeGrayTips;
+import me.kyuubiran.hook.testhook.*;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.LicenseStatus;
 
