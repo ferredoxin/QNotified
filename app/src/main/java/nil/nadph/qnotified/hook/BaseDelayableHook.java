@@ -19,7 +19,7 @@
 package nil.nadph.qnotified.hook;
 
 import me.kyuubiran.hook.*;
-import me.kyuubiran.hook.testhook.CutMessage;
+import me.kyuubiran.hook.testhook.*;
 import me.singleneuron.hook.*;
 import me.singleneuron.hook.decorator.SimpleCheckIn;
 import me.singleneuron.qn_kernel.dispacher.ItemBuilderFactoryHook;

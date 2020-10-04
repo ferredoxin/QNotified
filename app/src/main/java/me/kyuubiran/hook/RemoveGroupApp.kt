@@ -11,6 +11,7 @@ import nil.nadph.qnotified.hook.BaseDelayableHook
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.step.Step
 import nil.nadph.qnotified.util.DexKit
+import nil.nadph.qnotified.util.LicenseStatus
 import nil.nadph.qnotified.util.Utils
 import java.lang.reflect.Method
 
@@ -30,6 +31,8 @@ object RemoveGroupApp : BaseDelayableHook() {
                 if (m.name == "a" && m.returnType == View::class.java) {
                     XposedBridge.hookMethod(m, object : XC_MethodHook() {
                         override fun beforeHookedMethod(param: MethodHookParam?) {
+                            if (LicenseStatus.sDisableCommonHooks) return
+                            if (!isEnabled) return
                             param?.result = null
                         }
                     })
