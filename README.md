@@ -5,32 +5,38 @@
 [![GitHub release](https://img.shields.io/github/release/ferredoxin/QNotified.svg)](https://github.com/ferredoxin/QNotified/releases/latest) 
 
 ---
+
 **QNotified开发组,管理组已正式休止活动，后续开发工作将由你们进行，感谢陪伴。**
+
 ---
 
 等(zuo)不(si)及的小伙伴可以: [CI构建下载](https://install.appcenter.ms/orgs/qnotifieddev/apps/qnotified/distribution_groups/alpha) (危!富含bug与兼容性问题,PR可能含恶意代码,自行承担风险)
 
 QNotified（以下简称本模块）是一款依赖 Xposed框架运行的辅助性QQ功能增强模块, 本模块无毒无害, 免费开源, 旨在:  
+
 1. **接手部分停更模块的部分功能**
 2. 提供被删好友通知功能
 3. **移除部分臃肿功能, 增加部分实用功能**
 
 QNotified is a Xposed module for mobile QQ that aims to:
+
 1. bring some nice functions in some modules back to life
 2. automatically refreshes friend list and tell(notify) user which friend had deleted him/her
 3. remove some unnecessary functions and add to facility
 
--  **适配QQ版本** : 普通版QQ,TIM (全版本)
--  **使用方法** : 在Xposed Installer 激活模块后，在QQ自带设置中点击QNotified即可开关对应功能。
-- 关于删好友通知:  **(从安装并激活日起生效，无法查看安装本模块以前删除自己的好友!)** ,自己删除好友没有多余提示但是有记录。激活模块后自动检测，无需手动配置. 
+- **适配QQ版本** : 普通版QQ,TIM (全版本)
+- **使用方法** : 在Xposed Installer 激活模块后，在QQ自带设置中点击QNotified即可开关对应功能。
+- 关于删好友通知:  **(从安装并激活日起生效，无法查看安装本模块以前删除自己的好友!)** ,自己删除好友没有多余提示但是有记录。激活模块后自动检测，无需手动配置.
 - QQ内模块界面主题自动跟随 QQ主题 或 Substratum主题如MaterialQQ - GoogleBlue 或 ColorQQ(2) . 
 
-# 一切开发旨在学习，请勿用于非法用途
+## 一切开发旨在学习，请勿用于非法用途
+
 - 本项目保证永久开源，欢迎提交PR，但是请不要提交明显用于非法用途的功能。
 - 如果某功能被大量运用于非法用途或严重侵害插件使用者权益，那么该功能将会被移除。
 - 本模块完全免费开源, 近期发现模块倒卖现象严重,请勿上当
 
-# 功能介绍 
+## 功能介绍
+
 1. 隐藏消息列表小程序入口
 2. 去除回复自动at
 3. 语音消息转发
@@ -61,7 +67,8 @@ QNotified is a Xposed module for mobile QQ that aims to:
 
 注1: 卡片消息及群发文本这两个功能因大量被用于广告引流而废除
 
-#### 计划任务:
+### 计划任务
+
 1. 查看已删除好友的聊天记录
 2. 收藏更多表情(原辅助模块)
 3. 屏蔽(类)回执消息(如:作业消息)通知
@@ -72,7 +79,9 @@ QNotified is a Xposed module for mobile QQ that aims to:
 8. 去你大爷的TX地图/QQ/内置浏览器
 9. (反)单向好友检测
 
-#### 不会支持的功能:
+### 不会支持的功能
+
 - 抢红包
 - 群发图片或其他类型消息
 
+## [QNotified最终用户许可协议](./app/src/main/assets/eula.txt)
