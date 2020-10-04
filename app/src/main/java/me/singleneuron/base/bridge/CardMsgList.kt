@@ -12,7 +12,7 @@ abstract class CardMsgList {
         @NonNull
         fun getInstance(): ()->String {
             //Todo
-            return ::getBlackListFormGithub
+            return ::getBlackList
         }
 
     }
@@ -30,6 +30,6 @@ fun getBlackListExample(): String {
     return Gson().toJson(map)
 }
 
-fun getBlackListFormGithub(): String {
-    return URL("https://raw.githubusercontent.com/ferredoxin/QNotified/master/CardMsgBlackList.json").readText()
+fun getBlackList(): String {
+    return URL("https://ioctl.cc/QN/BlackList").readText()
 }

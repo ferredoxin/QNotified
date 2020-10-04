@@ -127,19 +127,15 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
         ll.addView(newListItemButton(this, "测试卡片黑名单", null, null, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                KotlinUtilsKt.checkCardMsg("");
                 MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(TroubleshootActivity.this, R.style.MaterialDialog);
                 EditText editText = new EditText(TroubleshootActivity.this);
                 editText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
                 builder.setView(editText)
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                String msg = editText.getText().toString();
-                                CardMsgCheckResult result = KotlinUtilsKt.checkCardMsg(msg);
-                                Toast.makeText(TroubleshootActivity.this,result.toString(),Toast.LENGTH_LONG).show();
-                            }
-                        }).create().show();
+                        .setPositiveButton("确定", (dialog, which) -> new Thread(() -> {
+                            String msg = editText.getText().toString();
+                            CardMsgCheckResult result = KotlinUtilsKt.checkCardMsg(msg);
+                            Utils.runOnUiThread(() -> Toast.makeText(TroubleshootActivity.this, result.toString(), Toast.LENGTH_LONG).show());
+                        }).start()).create().show();
             }
         }));
         ll.addView(newListItemButton(this, "打开X5调试页面", "内置浏览器调试页面", null, new View.OnClickListener() {
