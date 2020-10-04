@@ -2,6 +2,18 @@ package nil.nadph.qnotified.script;
 
 import android.widget.CompoundButton;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
+
 import bsh.EvalError;
 import bsh.Interpreter;
 import nil.nadph.qnotified.config.ConfigItems;
@@ -9,20 +21,19 @@ import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Utils;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.getApplication;
+import static nil.nadph.qnotified.util.Utils.isNullOrEmpty;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.readByReader;
 
 public class QNScriptManager {
 
-    private static List<QNScript> scripts = new ArrayList<>();
     public static int enables = 0;
     public static boolean enableall = false;
     public static String scriptsPath;
+    public static String error = "啥也没";
+    private static List<QNScript> scripts = new ArrayList<>();
     private static boolean init = false;
-
 
     /**
      * 添加一个脚本
@@ -43,6 +54,36 @@ public class QNScriptManager {
         String code = readByReader(new FileReader(f));
         if (!isNullOrEmpty(code))
             scripts.add(execute(code));
+        return "";
+    }
+
+    public static String addScriptFD(FileDescriptor fileDescriptor, String scriptName) throws Throwable {
+        File dir = new File(scriptsPath);
+        if (!dir.exists()) dir.mkdirs();
+        FileInputStream fileInputStream = null;
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileInputStream = new FileInputStream(fileDescriptor);
+            StringBuffer stringBuffer = new StringBuffer();
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = fileInputStream.read(buf)) > 0) {
+                stringBuffer.append(new String(buf, 0, len));
+            }
+            if (hasScriptStr(stringBuffer.toString())) return "脚本已存在";
+            fileOutputStream = new FileOutputStream(scriptsPath + scriptName);
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream);
+            outputStreamWriter.write(stringBuffer.toString());
+            outputStreamWriter.close();
+            fileOutputStream.flush();
+        } finally {
+            if (fileInputStream != null) fileInputStream.close();
+            if (fileOutputStream != null) fileOutputStream.close();
+        }
+        String code = readByReader(new FileReader(scriptsPath + scriptName));
+        if (!isNullOrEmpty(code)) {
+            scripts.add(execute(code));
+        }
         return "";
     }
 
@@ -67,6 +108,17 @@ public class QNScriptManager {
         // to do
         // 判断文件
         QNScriptInfo info = QNScriptInfo.getInfo(Utils.readByReader(new FileReader(new File(file))));
+        if (info == null) throw new RuntimeException("不是有效的脚本文件");
+        for (QNScript q : getScripts()) {
+            if (info.label.equalsIgnoreCase(q.getLabel())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean hasScriptStr(String code) throws Exception {
+        QNScriptInfo info = QNScriptInfo.getInfo(code);
         if (info == null) throw new RuntimeException("不是有效的脚本文件");
         for (QNScript q : getScripts()) {
             if (info.label.equalsIgnoreCase(q.getLabel())) {
@@ -110,8 +162,6 @@ public class QNScriptManager {
         }
         return false;
     }
-
-    public static String error = "啥也没";
 
     /**
      * 获取所有的脚本代码

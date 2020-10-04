@@ -19,12 +19,17 @@
 package nil.nadph.qnotified.activity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
+import android.provider.OpenableColumns;
 import android.widget.LinearLayout;
+
+import java.io.FileDescriptor;
 
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
@@ -69,42 +74,50 @@ public class ManageScriptsActivity extends IphoneTitleBarActivityCompat {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (data == null) {
-            // 用户未选择任何文件，直接返回
-            return;
-        }
-        Uri uri = data.getData(); // 获取用户选择文件的URI
-        if (uri != null) {
-            ContentResolver resolver = this.getContentResolver();
-            Cursor c = resolver.query(uri, null, null, null, null);
-            if (c == null) {
-                String path = uri.getPath();
-                try {
-                    QNScriptManager.addScript(path);
-                    Utils.showToastShort(this, "添加完毕");
-                } catch (Exception e) {
-                    log(e);
-                    Utils.showToastShort(this, "未知错误: " + e.getMessage());
-                }
-            } else {
-                if (c.moveToFirst()) {
-                    int da = c.getColumnIndex("_data");
-                    if (da < 0) {
-                        Utils.showToastShort(this, "请选择正确的文件");
-                    } else {
+        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            if (data == null) {
+                // 用户未选择任何文件，直接返回
+                return;
+            }
+            Uri uri = data.getData(); // 获取用户选择文件的URI
+            if (uri != null) {
+                ContentResolver resolver = this.getContentResolver();
+                Cursor c = resolver.query(uri, null, null, null, null);
+                if (c == null) {
+                    String path = uri.getPath();
+                    try {
+                        QNScriptManager.addScript(path);
+                        Utils.showToastShort(this, "添加完毕");
+                    } catch (Exception e) {
+                        log(e);
+                        Utils.showToastShort(this, "未知错误: " + e.getMessage());
+                    }
+                } else {
+                    if (c.moveToFirst()) {
+                        String scriptName = c.getString(c.getColumnIndex(OpenableColumns.DISPLAY_NAME));
                         try {
-                            QNScriptManager.addScript(c.getString(da));
-                            Utils.showToastShort(this, "添加完毕");
-                        } catch (Exception e) {
+                            ParcelFileDescriptor parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "r");
+                            if (parcelFileDescriptor != null) {
+                                FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+                                String err = QNScriptManager.addScriptFD(fileDescriptor, scriptName);
+                                if (err.isEmpty()) {
+                                    Utils.showToastShort(this, "添加完毕");
+                                } else {
+                                    Utils.showToastShort(this, err);
+                                }
+                            }
+                        } catch (Throwable e) {
                             log(e);
-                            Utils.showToastShort(this, "未知错误: " + e.getMessage());
+                            Utils.showToastShort(this, "未知错误：" + e.getMessage());
                         }
                     }
+                    c.close();
                 }
-                c.close();
+            } else {
+                Utils.showToastShort(this, "内部错误");
             }
         } else {
-            Utils.showToastShort(this, "内部错误");
+            Utils.showToastShort(this, "未知错误");
         }
         /*
         // 通过ContentProvider查询文件路径
