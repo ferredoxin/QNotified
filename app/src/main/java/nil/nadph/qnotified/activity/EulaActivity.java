@@ -91,7 +91,7 @@ public class EulaActivity extends IphoneTitleBarActivityCompat implements View.O
 
         SpannableStringBuilder sb = new SpannableStringBuilder();
         try {
-            sb.append(Utils.getFileContent(ResUtils.openAsset("EULA.txt")));
+            sb.append(Utils.getFileContent(ResUtils.openAsset("eula.txt")));
             sb.append("\n\n");
             sb.append(Utils.getFileContent(ResUtils.openAsset("privacy_license.txt")));
         } catch (IOException e) {
