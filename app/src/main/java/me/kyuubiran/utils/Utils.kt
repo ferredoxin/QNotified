@@ -27,24 +27,6 @@ fun setZeroHeightWeight(v: View) {
     v.layoutParams.height = 0
 }
 
-fun logd(msg: String) {
-    Utils.logd("好耶 $msg")
-}
-
-fun logd(i: Int, msg: String? = "") {
-    when (i) {
-        0 -> logd("找到类了 $msg")
-        1 -> logd("找到方法了 $msg")
-        2 -> logd("开始Hook了 $msg")
-        3 -> logd("开始搞事情了 $msg")
-        4 -> logd("搞完事情了 $msg")
-    }
-}
-
-fun logdt(t: Throwable) {
-    logd("搞出大事情了 \n$t")
-}
-
 fun log(t: Throwable) {
     Utils.log(t)
 }
@@ -70,6 +52,6 @@ fun getMethods(clz: Class<Any>): Array<Method> {
     return clz.declaredMethods
 }
 
-fun isStaticMethod(method: Method): Boolean {
-    return Modifier.isStatic(method.modifiers)
+fun Method.isStatic(): Boolean {
+    return Modifier.isStatic(this.modifiers)
 }

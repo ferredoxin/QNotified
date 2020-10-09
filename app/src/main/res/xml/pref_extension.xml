@@ -5,6 +5,9 @@
                 android:key="DisableScreenshotHelper"
                 android:title="隐藏截屏分享"/>
         <SwitchPreference
+                android:key="RemoveRedDot"
+                android:title="移除小红点"/>
+        <SwitchPreference
                 android:key="IgnoreDiyCard!"
                 android:title="屏蔽DIY名片"/>
     </PreferenceCategory>

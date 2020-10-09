@@ -85,7 +85,6 @@ public class AlphaTestFuncActivity extends IphoneTitleBarActivityCompat {
             v.setOnClickListener(v1 -> RevokeMsgDialog.INSTANCE.onShow(AlphaTestFuncActivity.this));
             ll.addView(v);
             ll.addView(newListItemHookSwitchInit(this, "屏蔽戳一戳灰字提示[暂不支持8.4.8+]", "仅屏蔽开启之后的提示", RemovePokeGrayTips.INSTANCE));
-
         }
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         this.setContentView(bounceScrollView);
