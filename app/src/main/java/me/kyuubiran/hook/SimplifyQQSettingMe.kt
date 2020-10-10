@@ -5,7 +5,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
-import me.kyuubiran.utils.setZeroHeightWeight
+import me.kyuubiran.utils.setViewZeroSize
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.step.Step
 import nil.nadph.qnotified.util.Initiator
@@ -67,13 +67,13 @@ object SimplifyQQSettingMe : BaseMultiConfigDelayableHook() {
                         val text = tv.text
                         when {
                             text.contains("间") && getBooleanConfig(HIDE_YE_JIAN) -> {
-                                setZeroHeightWeight(child)
+                                child.setViewZeroSize()
                             }
                             (text.contains("达") || text.contains("天")) && getBooleanConfig(HIDE_DA_REN) -> {
-                                setZeroHeightWeight(child)
+                                child.setViewZeroSize()
                             }
                             i == 3 && getBooleanConfig(HIDE_WEN_DU) -> {
-                                setZeroHeightWeight(child)
+                                child.setViewZeroSize()
                             }
                         }
                     }
@@ -85,49 +85,49 @@ object SimplifyQQSettingMe : BaseMultiConfigDelayableHook() {
                             val text = tv.text.toString()
                             when {
                                 text.contains("开播") && getBooleanConfig(HIDE_KAI_BO_LA_E) -> {
-                                    setZeroHeightWeight(child)
+                                    child.setViewZeroSize()
                                 }
                                 text.contains("世界") && getBooleanConfig(HIDE_XIAO_SHI_JIE) -> {
-                                    setZeroHeightWeight(child)
+                                    child.setViewZeroSize()
                                 }
                                 (text.contains("会员") || text.toLowerCase(Locale.ROOT).contains("vip")) && getBooleanConfig(HIDE_HUI_YUAN) -> {
-                                    setZeroHeightWeight(child)
+                                    child.setViewZeroSize()
                                 }
                                 text.contains("钱包") && getBooleanConfig(HIDE_QIAN_BAO) -> {
-                                    setZeroHeightWeight(child)
+                                    child.setViewZeroSize()
                                 }
                                 text.contains("装扮") && getBooleanConfig(HIDE_ZHUANG_BAN) -> {
-                                    setZeroHeightWeight(child)
+                                    child.setViewZeroSize()
                                 }
                                 text.contains("情侣") && getBooleanConfig(HIDE_QING_LV) -> {
-                                    setZeroHeightWeight(child)
+                                    child.setViewZeroSize()
                                 }
                                 text.contains("相册") && getBooleanConfig(HIDE_XIANG_CE) -> {
-                                    setZeroHeightWeight(child)
+                                    child.setViewZeroSize()
                                 }
                                 text.contains("收藏") && getBooleanConfig(HIDE_SHOU_CANG) -> {
-                                    setZeroHeightWeight(child)
+                                    child.setViewZeroSize()
                                 }
                                 text.contains("文件") && getBooleanConfig(HIDE_WEN_JIAN) -> {
-                                    setZeroHeightWeight(child)
+                                    child.setViewZeroSize()
                                 }
                                 text.contains("日程") && getBooleanConfig(HIDE_RI_CHENG) -> {
-                                    setZeroHeightWeight(child)
+                                    child.setViewZeroSize()
                                 }
                                 text.contains("视频") && getBooleanConfig(HIDE_SHI_PIN) -> {
-                                    setZeroHeightWeight(child)
+                                    child.setViewZeroSize()
                                 }
                                 text.contains("游戏") && getBooleanConfig(HIDE_XIAO_YOU_XI) -> {
-                                    setZeroHeightWeight(child)
+                                    child.setViewZeroSize()
                                 }
                                 text.contains("文档") && getBooleanConfig(HIDE_WEN_DANG) -> {
-                                    setZeroHeightWeight(child)
+                                    child.setViewZeroSize()
                                 }
                                 text.contains("打卡") && getBooleanConfig(HIDE_DA_KA) -> {
-                                    setZeroHeightWeight(child)
+                                    child.setViewZeroSize()
                                 }
                                 (text.contains("王卡") || text.contains("流量") || text.contains("送12个月")) && getBooleanConfig(HIDE_WANG_KA) -> {
-                                    setZeroHeightWeight(child)
+                                    child.setViewZeroSize()
                                 }
                             }
                         }

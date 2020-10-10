@@ -22,9 +22,9 @@ fun Context.showToastByTencent(text: CharSequence, type: Int = Utils.TOAST_TYPE_
     else Utils.runOnUiThread { showToastByTencent(text, duration) }
 }
 
-fun setZeroHeightWeight(v: View) {
-    v.layoutParams.width = 0
-    v.layoutParams.height = 0
+fun View.setViewZeroSize() {
+    this.layoutParams.height = 0
+    this.layoutParams.width = 0
 }
 
 fun log(t: Throwable) {
