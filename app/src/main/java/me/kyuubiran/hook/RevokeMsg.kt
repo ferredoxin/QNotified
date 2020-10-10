@@ -120,7 +120,11 @@ object RevokeMsg : BaseDelayableHook() {
                 var greyMsg = "\"" + revokerNick + "\u202d\""
                 if (msgObject != null) {
                     greyMsg += getMsgRevokedTipsText()
-                    val message = getMessageContentStripped(msgObject)
+                    val message = try {
+                        getMessageContentStripped(msgObject)
+                    } catch (e: java.lang.Exception) {
+                        ""
+                    }
                     val msgtype = getMessageType(msgObject)
                     if (msgtype == -1000 /*text msg*/) {
                         if (!TextUtils.isEmpty(message) && isShowMsgTextEnabled()) {
@@ -227,7 +231,11 @@ object RevokeMsg : BaseDelayableHook() {
     }
 
     private fun getMessageContentStripped(msgObject: Any): String? {
-        var msg = Utils.iget_object_or_null(msgObject, "msg") as String
+        var msg = try {
+            Utils.iget_object_or_null(msgObject, "msg") as String
+        } catch (e: java.lang.Exception) {
+            ""
+        }
         msg = msg.replace('\n', ' ').replace('\r', ' ').replace("\u202E", "")
         if (msg.length > 103) msg = msg.substring(0, 100) + "..."
         return msg
