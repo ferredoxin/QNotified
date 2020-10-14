@@ -5,8 +5,8 @@
                 android:key="SimplifyQQSettingMe$hide_dian_zan"
                 android:title="隐藏点赞提醒"/>
         <SwitchPreference
-                android:key="khjsdthiuwerfgho3i"
-                android:title="隐藏打卡"/>
+                android:key="RemoveDailySign!"
+                android:title="隐藏左上角打卡"/>
         <SwitchPreference
                 android:key="hideQrCode"
                 android:title="隐藏我的二维码"/>
