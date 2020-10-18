@@ -117,8 +117,7 @@ public class DonateActivity extends IphoneTitleBarActivityCompat {
         ll.addView(subtitle(this, "最后,谢谢你的支持"));
         ll.addView(subtitle(this, "by"));
         ll.addView(newListItemButton(this, "更新频道", null, "@QNotified", clickToUrl("https://t.me/QNotified")));
-        ll.addView(newListItemButton(this, "交流群", null, "@QNotifiedChat", clickToUrl("https://t.me/QNotifiedChat")));
-        ll.addView(newListItemButton(this, "Telegram", "点击私信", "Auride", clickToUrl("https://t.me/Auride")));
+        ll.addView(newListItemButton(this, "Telegram", "点击私信", "客服机器人", clickToUrl("https://t.me/QNotified_bot")));
         ll.addView(newListItemButton(this, "Mail", null, "xenonhydride@gmail.com", null));
         ll.addView(subtitle(this, "扶贫方式"));
         if (isNiceUser()) {
