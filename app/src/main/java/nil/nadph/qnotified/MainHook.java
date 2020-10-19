@@ -32,6 +32,7 @@ import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.os.*;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -43,6 +44,7 @@ import java.io.File;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.*;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import dalvik.system.BaseDexClassLoader;
 import de.robv.android.xposed.XC_MethodHook;
@@ -996,28 +998,42 @@ public class MainHook {
 
         @Override
         public void callActivityOnCreate(Activity activity, Bundle icicle) {
-            if (icicle != null) {
-                String className = activity.getClass().getName();
-                if (className.startsWith("me.zpp0196.qqpurify.activity.")
-                        || className.startsWith("me.singleneuron.")) {
-                    icicle.setClassLoader(MainHook.class.getClassLoader());
+            try {
+                if (icicle != null) {
+                    String className = activity.getClass().getName();
+                    if (className.startsWith("me.zpp0196.qqpurify.activity.")
+                            || className.startsWith("me.singleneuron.")) {
+                        icicle.setClassLoader(MainHook.class.getClassLoader());
+                    }
                 }
+                injectModuleResources(activity.getResources());
+                mBase.callActivityOnCreate(activity, icicle);
+            } catch (Exception e) {
+                if (Pattern.matches("[\\W]me\\.|nil\\.nadph", Log.getStackTraceString(e).replace("nil.nadph.qnotified.MainHook$MyInstrumentation.callActivityOnStart",""))) {
+                    throw e;
+                }
+                //else ignore
             }
-            injectModuleResources(activity.getResources());
-            mBase.callActivityOnCreate(activity, icicle);
         }
 
         @Override
         public void callActivityOnCreate(Activity activity, Bundle icicle, PersistableBundle persistentState) {
-            if (icicle != null) {
-                String className = activity.getClass().getName();
-                if (className.startsWith("me.zpp0196.qqpurify.activity.")
-                        || className.startsWith("me.singleneuron.")) {
-                    icicle.setClassLoader(MainHook.class.getClassLoader());
+            try {
+                if (icicle != null) {
+                    String className = activity.getClass().getName();
+                    if (className.startsWith("me.zpp0196.qqpurify.activity.")
+                            || className.startsWith("me.singleneuron.")) {
+                        icicle.setClassLoader(MainHook.class.getClassLoader());
+                    }
                 }
+                injectModuleResources(activity.getResources());
+                mBase.callActivityOnCreate(activity, icicle, persistentState);
+            } catch (Exception e) {
+                if (Pattern.matches("[\\W]me\\.|nil\\.nadph", Log.getStackTraceString(e).replace("nil.nadph.qnotified.MainHook$MyInstrumentation.callActivityOnStart",""))) {
+                    throw e;
+                }
+                //else ignore
             }
-            injectModuleResources(activity.getResources());
-            mBase.callActivityOnCreate(activity, icicle, persistentState);
         }
 
         @Override
