@@ -2114,6 +2114,9 @@ public class Utils {
     }
 
     public static String getFileContent(InputStream in) throws IOException {
+        if (in == null) {
+            throw new NullPointerException("InputStream is null");
+        }
         BufferedReader br = null;
         StringBuffer sb;
         try {
