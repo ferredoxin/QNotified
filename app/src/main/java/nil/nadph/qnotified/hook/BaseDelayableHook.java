@@ -114,7 +114,6 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 StartActivityHook.INSTANCE,
                 RemovePokeGrayTips.INSTANCE,
                 ArbitraryFrdSourceId.get(),
-//                RemoveRedDot.INSTANCE
                 RemoveDailySign.INSTANCE,
         };
         return sAllHooks;
