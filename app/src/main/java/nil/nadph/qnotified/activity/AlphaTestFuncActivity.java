@@ -30,6 +30,7 @@ import android.widget.TextView;
 import com.tencent.mobileqq.widget.BounceScrollView;
 
 import me.kyuubiran.dialog.RevokeMsgDialog;
+import me.kyuubiran.hook.RemoveFuckingDiyCard;
 import me.kyuubiran.hook.RemovePokeGrayTips;
 import me.kyuubiran.hook.testhook.*;
 import nil.nadph.qnotified.ui.ResUtils;
@@ -84,7 +85,8 @@ public class AlphaTestFuncActivity extends IphoneTitleBarActivityCompat {
             View v = subtitle(this, "狐狸狸测试功能");
             v.setOnClickListener(v1 -> RevokeMsgDialog.INSTANCE.onShow(AlphaTestFuncActivity.this));
             ll.addView(v);
-            ll.addView(newListItemHookSwitchInit(this, "屏蔽戳一戳灰字[8.4.8-]", "仅屏蔽开启之后的提示", RemovePokeGrayTips.INSTANCE));
+            ll.addView(newListItemHookSwitchInit(this, "[无效]屏蔽戳一戳灰字", "仅屏蔽开启之后的提示", RemovePokeGrayTips.INSTANCE));
+            ll.addView(newListItemHookSwitchInit(this, "[特供版]彻底屏蔽傻逼diy名片", "用闪退/zip炸弹名片的先死个妈", RemoveFuckingDiyCard.INSTANCE));
         }
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         this.setContentView(bounceScrollView);
