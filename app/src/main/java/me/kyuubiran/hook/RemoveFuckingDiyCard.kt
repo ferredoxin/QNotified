@@ -33,7 +33,6 @@ object RemoveFuckingDiyCard : BaseDelayableHook() {
                         override fun beforeHookedMethod(param: MethodHookParam) {
                             if (LicenseStatus.sDisableCommonHooks) return
                             if (!isEnabled) return
-                            logd(LOG_TYPE_FIND_METHOD, "$m")
                             param.result = null
                         }
                     })
