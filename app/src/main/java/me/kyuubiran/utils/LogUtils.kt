@@ -11,7 +11,7 @@ fun logd(msg: String) {
     Utils.logd("好耶 $msg")
 }
 
-fun logd(logType: Int, msg: String? = "") {
+fun logd(logType: Int, msg: String = "") {
     when (logType) {
         LOG_TYPE_FIND_CLASS -> logd("找到类了 $msg")
         LOG_TYPE_FIND_METHOD -> logd("找到方法了 $msg")

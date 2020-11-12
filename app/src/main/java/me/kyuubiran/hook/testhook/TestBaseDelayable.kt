@@ -24,7 +24,7 @@ object TestBaseDelayable : BaseDelayableHook() {
     }
 
     override fun init(): Boolean {
-        if (isInited) return true
+        if (isInit) return true
         return try {
             for (m: Method in getMethods("className")) {
                 val argt = m.parameterTypes
