@@ -36,7 +36,7 @@ fun getObjectOrNull(obj: Any?, objName: String, clz: Class<*>? = null): Any? {
     return Utils.iget_object_or_null(obj, objName, clz)
 }
 
-fun putObject(obj: Any?, name: String, value: Any, type: Class<*>? = null) {
+fun putObject(obj: Any?, name: String, value: Any?, type: Class<*>? = null) {
     Utils.iput_object(obj, name, type, value)
 }
 
@@ -54,4 +54,12 @@ fun getMethods(clz: Class<Any>): Array<Method> {
 
 fun Method.isStatic(): Boolean {
     return Modifier.isStatic(this.modifiers)
+}
+
+fun Method.isPrivate(): Boolean {
+    return Modifier.isPrivate(this.modifiers)
+}
+
+fun Method.isPublic(): Boolean {
+    return Modifier.isPublic(this.modifiers)
 }
