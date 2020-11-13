@@ -153,10 +153,26 @@ public class Utils {
     }
 
     public static Object getTroopManager() throws Exception {
-        Object mTroopManager = invoke_virtual(getQQAppInterface(), "getManager", 51, int.class);
-        if (!mTroopManager.getClass().getName().contains("TroopManager"))
-            mTroopManager = invoke_virtual(getQQAppInterface(), "getManager", 52, int.class);
-        return mTroopManager;
+        int troopMgrId = -1;
+        Class<?> cl_QQManagerFactory = load("com.tencent.mobileqq.app.QQManagerFactory");
+        try {
+            if (cl_QQManagerFactory != null) {
+                troopMgrId = (int) cl_QQManagerFactory.getField("TROOP_MANAGER").get(null);
+            }
+        } catch (Throwable e) {
+            log(e);
+        }
+        if (troopMgrId != -1) {
+            // >=8.4.10
+            return getManager(troopMgrId);
+        } else {
+            // 8.4.8 or earlier
+            Object mTroopManager = invoke_virtual(getQQAppInterface(), "getManager", 51, int.class);
+            if (!mTroopManager.getClass().getName().contains("TroopManager")) {
+                mTroopManager = invoke_virtual(getQQAppInterface(), "getManager", 52, int.class);
+            }
+            return mTroopManager;
+        }
     }
 
     public static Object getQQMessageFacade() throws Exception {
