@@ -29,6 +29,7 @@ import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Nullable;
+import me.singleneuron.util.QQVersion;
 
 import static nil.nadph.qnotified.util.Utils.*;
 
@@ -88,14 +89,10 @@ public class FileRecvRedirect extends BaseDelayableHook {
 
     public String getDefaultPath() {
         if (isTim(getApplication())) {
-            return Environment.getExternalStorageDirectory().getAbsolutePath() + "/Tencent/TIMfile_recv/";
+            return "/mnt/sdcard/Android/data/com.tencent.tim/Tencent/TIMfile_recv/";
         } else {
-            if (getHostVersionCode32() > 1334) {
-                return getApplication().getExternalFilesDir(null) + "/Tencent/QQfile_recv/";
-            } else {
-                return Environment.getExternalStorageDirectory().getAbsolutePath() + "/Tencent/QQfile_recv/";
+                return "/mnt/sdcard/Android/data/com.tencent.mobileqq/Tencent/QQfile_recv/";
             }
-        }
     }
 
     @Nullable
