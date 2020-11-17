@@ -89,7 +89,7 @@ public class FileRecvRedirect extends BaseDelayableHook {
 
     public String getDefaultPath() {
         if (isTim(getApplication())) {
-            return "/mnt/sdcard/Android/data/com.tencent.tim/Tencent/TIMfile_recv/";
+            return Environment.getExternalStorageDirectory().getAbsolutePath() + "/Tencent/TIMfile_recv/";
         } else {
                 return "/mnt/sdcard/Android/data/com.tencent.mobileqq/Tencent/QQfile_recv/";
             }
