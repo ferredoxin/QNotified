@@ -25,9 +25,9 @@ object AutoMosaicName : BaseDelayableHook() {
     override fun init(): Boolean {
         if (isInit) return true
         return try {
-            for (m: Method in Initiator.load("com.tencent.mobileqq.activity.BaseChatPie").declaredMethods) {
+            for (m: Method in Initiator.load("com.tencent.mobileqq.activity.aio.core.BaseChatPie").declaredMethods) {
                 val argt = m.parameterTypes
-                if (argt.size == 1 && argt[0] == Boolean::class.java && m.name == "t") {
+                if (argt.size == 1 && argt[0] == Boolean::class.java && m.name == "enableMosaicEffect") {
                     XposedBridge.hookMethod(m, object : XC_MethodHook() {
                         override fun beforeHookedMethod(param: MethodHookParam) {
                             if (LicenseStatus.sDisableCommonHooks) return
