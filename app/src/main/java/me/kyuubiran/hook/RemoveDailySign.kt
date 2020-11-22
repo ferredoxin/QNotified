@@ -6,9 +6,9 @@ import android.widget.Toast
 import de.robv.android.xposed.XC_MethodHook
 
 import de.robv.android.xposed.XposedBridge
-import me.kyuubiran.utils.getObjectOrNull
-import me.kyuubiran.utils.loadClass
-import me.kyuubiran.utils.setViewZeroSize
+import me.kyuubiran.util.getObjectOrNull
+import me.kyuubiran.util.loadClass
+import me.kyuubiran.util.setViewZeroSize
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.hook.BaseDelayableHook

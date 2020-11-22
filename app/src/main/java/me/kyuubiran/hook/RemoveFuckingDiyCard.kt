@@ -3,9 +3,9 @@ package me.kyuubiran.hook
 import android.os.Looper
 import android.widget.Toast
 import de.robv.android.xposed.XC_MethodHook
-
 import de.robv.android.xposed.XposedBridge
-import me.kyuubiran.utils.*
+import me.kyuubiran.util.getMethods
+import me.kyuubiran.util.isPublic
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.hook.BaseDelayableHook
@@ -28,7 +28,7 @@ object RemoveFuckingDiyCard : BaseDelayableHook() {
         return try {
             for (m: Method in getMethods("com.tencent.mobileqq.profilecard.vas.VasProfileTemplateController")) {
                 val argt = m.parameterTypes
-                if (m.name == "a" && argt.size == 2 && argt[1] == Int::class.java && m.isPublic()) {
+                if (m.name == "a" && argt.size == 2 && argt[1] == Int::class.java && m.isPublic) {
                     XposedBridge.hookMethod(m, object : XC_MethodHook() {
                         override fun beforeHookedMethod(param: MethodHookParam) {
                             if (LicenseStatus.sDisableCommonHooks) return

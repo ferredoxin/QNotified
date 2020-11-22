@@ -5,7 +5,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
-import me.kyuubiran.utils.setViewZeroSize
+import me.kyuubiran.util.setViewZeroSize
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.step.Step
 import nil.nadph.qnotified.util.Initiator

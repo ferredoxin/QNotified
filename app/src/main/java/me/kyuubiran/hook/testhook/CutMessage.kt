@@ -1,12 +1,10 @@
 package me.kyuubiran.hook.testhook
 
 import android.os.Looper
-import android.util.Log
 import android.widget.Toast
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
-import me.kyuubiran.hook.RemovePokeGrayTips
-import me.kyuubiran.utils.*
+import me.kyuubiran.util.*
 import me.singleneuron.data.MsgRecordData
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.config.ConfigManager
