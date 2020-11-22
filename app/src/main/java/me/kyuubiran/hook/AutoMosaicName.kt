@@ -9,6 +9,7 @@ import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.hook.BaseDelayableHook
 import nil.nadph.qnotified.step.Step
 import nil.nadph.qnotified.util.Initiator
+import nil.nadph.qnotified.util.Initiator._BaseChatPie
 import nil.nadph.qnotified.util.LicenseStatus
 import nil.nadph.qnotified.util.Utils
 import java.lang.reflect.Method
@@ -25,9 +26,9 @@ object AutoMosaicName : BaseDelayableHook() {
     override fun init(): Boolean {
         if (isInit) return true
         return try {
-            for (m: Method in Initiator.load("com.tencent.mobileqq.activity.BaseChatPie").declaredMethods) {
+            for (m: Method in _BaseChatPie().declaredMethods) {
                 val argt = m.parameterTypes
-                if (argt.size == 1 && argt[0] == Boolean::class.java && m.name == "t") {
+                if (argt.size == 1 && argt[0] == Boolean::class.java && (m.name == "enableMosaicEffect" || m.name == "t")) {
                     XposedBridge.hookMethod(m, object : XC_MethodHook() {
                         override fun beforeHookedMethod(param: MethodHookParam) {
                             if (LicenseStatus.sDisableCommonHooks) return

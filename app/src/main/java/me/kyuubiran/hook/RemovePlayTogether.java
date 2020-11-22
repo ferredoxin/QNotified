@@ -48,7 +48,29 @@ public class RemovePlayTogether extends BaseDelayableHook {
         if (isInit) return true;
         try {
             String method = "h";
-            if (Utils.getHostVersionCode() >= QQVersion.QQ_8_4_8) {
+            if (Utils.getHostVersionCode() == QQVersion.QQ_8_4_18 || Utils.getHostVersionCode() == QQVersion.QQ_8_4_17) {
+                //QQ 8.4.8 除了一起嗨按钮，同一个位置还有一个群打卡按钮。默认显示群打卡，如果已经打卡就显示一起嗨，两个按钮点击之后都会打开同一个界面，但是要同时hook两个
+                XposedHelpers.findAndHookMethod(load("agpr"), "d", new XC_MethodHook(43) {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        if (LicenseStatus.sDisableCommonHooks) return;
+                        if (!isEnabled()) return;
+                        param.setResult(false);
+                    }
+                });
+                method = "g";
+            } else if (Utils.getHostVersionCode() == QQVersion.QQ_8_4_10) {
+                //QQ 8.4.8 除了一起嗨按钮，同一个位置还有一个群打卡按钮。默认显示群打卡，如果已经打卡就显示一起嗨，两个按钮点击之后都会打开同一个界面，但是要同时hook两个
+                XposedHelpers.findAndHookMethod(load("aghe"), "d", new XC_MethodHook(43) {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        if (LicenseStatus.sDisableCommonHooks) return;
+                        if (!isEnabled()) return;
+                        param.setResult(false);
+                    }
+                });
+                method = "g";
+            } else if (Utils.getHostVersionCode() >= QQVersion.QQ_8_4_8) {
                 //QQ 8.4.8 除了一起嗨按钮，同一个位置还有一个群打卡按钮。默认显示群打卡，如果已经打卡就显示一起嗨，两个按钮点击之后都会打开同一个界面，但是要同时hook两个
                 XposedHelpers.findAndHookMethod(load("afqa"), "d", new XC_MethodHook(43) {
                     @Override

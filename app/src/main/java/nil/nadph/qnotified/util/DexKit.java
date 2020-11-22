@@ -359,7 +359,7 @@ public class DexKit {
                 break;
             case C_TogetherControlHelper:
                 //guess
-                ret = "com.tencent.mobileqq.together.TogetherControlHelper";
+                ret = "com.tencent.mobileqq.aio.helper.TogetherControlHelper";
                 break;
             case C_GroupAppActivity:
                 //unknown
