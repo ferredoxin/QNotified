@@ -1,4 +1,4 @@
-package me.kyuubiran.utils
+package me.kyuubiran.util
 
 import android.content.Context
 import android.os.Looper

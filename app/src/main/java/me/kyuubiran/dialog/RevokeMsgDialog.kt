@@ -8,7 +8,7 @@ import android.view.View
 import android.widget.CompoundButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import me.kyuubiran.hook.RevokeMsg
-import me.kyuubiran.utils.getDefaultCfg
+import me.kyuubiran.util.getDefaultCfg
 import nil.nadph.qnotified.R
 import nil.nadph.qnotified.databinding.KyuubiranRevokeMsgDialogBinding
 

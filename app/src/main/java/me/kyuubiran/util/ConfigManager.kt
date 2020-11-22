@@ -1,4 +1,4 @@
-package me.kyuubiran.utils
+package me.kyuubiran.util
 
 import nil.nadph.qnotified.config.ConfigManager
 

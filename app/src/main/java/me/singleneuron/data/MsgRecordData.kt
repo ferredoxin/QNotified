@@ -1,7 +1,7 @@
 package me.singleneuron.data
 
-import me.kyuubiran.utils.getObjectOrNull
-import me.kyuubiran.utils.putObject
+import me.kyuubiran.util.getObjectOrNull
+import me.kyuubiran.util.putObject
 import java.text.SimpleDateFormat
 import java.util.*
 
