@@ -33,6 +33,9 @@ object ForceSystemCamera : BaseDelayableConditionalHookAdapter("forceSystemCamer
             QQVersion.QQ_8_4_1 -> "bann"
             QQVersion.QQ_8_4_5 -> "bbgg"
             QQVersion.QQ_8_4_8 -> "babd"
+            QQVersion.QQ_8_4_10 -> "bbhm"
+            QQVersion.QQ_8_4_17 -> "bcmd"
+            QQVersion.QQ_8_4_18 -> "bcmd"
             else -> super.getClass()
         }
     }
