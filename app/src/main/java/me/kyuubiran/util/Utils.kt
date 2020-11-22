@@ -70,3 +70,17 @@ val Method.isPrivate: Boolean
 
 val Method.isPublic: Boolean
     get() = Modifier.isPublic(this.modifiers)
+
+
+fun makeKongeMsg(str: String): String {
+    val sb = StringBuilder()
+    if (str.length > 1) {
+        for (i in str.indices) {
+            sb.append(str[i])
+            if (i != str.length - 1) sb.append(" ")
+        }
+    } else {
+        sb.append(str)
+    }
+    return sb.toString()
+}
