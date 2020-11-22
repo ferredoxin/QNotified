@@ -29,7 +29,6 @@ import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Nullable;
-import me.singleneuron.util.QQVersion;
 
 import static nil.nadph.qnotified.util.Utils.*;
 
