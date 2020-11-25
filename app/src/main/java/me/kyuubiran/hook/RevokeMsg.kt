@@ -9,7 +9,7 @@ import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import me.kyuubiran.util.getDefaultCfg
-import me.kyuubiran.util.log
+import me.kyuubiran.util.logdt
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.bridge.ContactUtils
 import nil.nadph.qnotified.bridge.RevokeMsgInfoImpl
@@ -73,7 +73,7 @@ object RevokeMsg : BaseDelayableHook() {
                         try {
                             onRevokeMsg(revokeMsgInfo)
                         } catch (t: Throwable) {
-                            Utils.log(t)
+                            logdt(t)
                         }
                     }
                     list.clear()
@@ -82,12 +82,11 @@ object RevokeMsg : BaseDelayableHook() {
             isInit = true
             true
         } catch (t: Throwable) {
-            Utils.log(t)
+            logdt(t)
             false
         }
     }
 
-    @Throws(java.lang.Exception::class)
     private fun onRevokeMsg(revokeMsgInfo: Any) {
         val info = RevokeMsgInfoImpl(revokeMsgInfo as Parcelable)
         val entityUin = info.friendUin
@@ -122,7 +121,7 @@ object RevokeMsg : BaseDelayableHook() {
                     greyMsg += getMsgRevokedTipsText()
                     val message = try {
                         getMessageContentStripped(msgObject)
-                    } catch (e: java.lang.Exception) {
+                    } catch (e: Exception) {
                         ""
                     }
                     val msgtype = getMessageType(msgObject)
@@ -189,7 +188,7 @@ object RevokeMsg : BaseDelayableHook() {
         return bundle
     }
 
-    @Throws(java.lang.Exception::class)
+
     private fun createBareHighlightGreyTip(entityUin: String, istroop: Int, fromUin: String, time: Long, msg: String, msgUid: Long, shmsgseq: Long): Any {
         val msgtype = -2030 // MessageRecord.MSG_TYPE_TROOP_GAP_GRAY_TIPS
         val messageRecord = Utils.invoke_static_declared_ordinal_modifier(DexKit.doFindClass(DexKit.C_MSG_REC_FAC), 0, 1, true, Modifier.PUBLIC, 0, msgtype, Int::class.javaPrimitiveType)
@@ -200,7 +199,7 @@ object RevokeMsg : BaseDelayableHook() {
         return messageRecord
     }
 
-    @Throws(java.lang.Exception::class)
+
     private fun createBarePlainGreyTip(entityUin: String, istroop: Int, fromUin: String, time: Long, msg: String, msgUid: Long, shmsgseq: Long): Any {
         val msgtype = -2031 // MessageRecord.MSG_TYPE_REVOKE_GRAY_TIPS
         val messageRecord = Utils.invoke_static_declared_ordinal_modifier(DexKit.doFindClass(DexKit.C_MSG_REC_FAC), 0, 1, true, Modifier.PUBLIC, 0, msgtype, Int::class.javaPrimitiveType)
@@ -214,8 +213,8 @@ object RevokeMsg : BaseDelayableHook() {
     private fun addHightlightItem(msgForGreyTip: Any, start: Int, end: Int, bundle: Bundle) {
         try {
             Utils.invoke_virtual(msgForGreyTip, "addHightlightItem", start, end, bundle, Int::class.javaPrimitiveType, Int::class.javaPrimitiveType, Bundle::class.java)
-        } catch (e: java.lang.Exception) {
-            Utils.log(e)
+        } catch (e: Exception) {
+            logdt(e)
         }
     }
 
@@ -224,8 +223,8 @@ object RevokeMsg : BaseDelayableHook() {
         try {
             list = Utils.invoke_virtual_declared_ordinal(mQQMsgFacade, 0, 2, false,
                     uin, istroop, shmsgseq, msgUid, String::class.java, Int::class.javaPrimitiveType, Long::class.javaPrimitiveType, Long::class.javaPrimitiveType, MutableList::class.java) as List<*>
-        } catch (e: java.lang.Exception) {
-            Utils.log(e)
+        } catch (e: Exception) {
+            logdt(e)
         }
         return if (list == null || list.isEmpty()) null else list[0]
     }
@@ -233,7 +232,7 @@ object RevokeMsg : BaseDelayableHook() {
     private fun getMessageContentStripped(msgObject: Any): String? {
         var msg = try {
             Utils.iget_object_or_null(msgObject, "msg") as String
-        } catch (e: java.lang.Exception) {
+        } catch (e: Exception) {
             ""
         }
         msg = msg.replace('\n', ' ').replace('\r', ' ').replace("\u202E", "")
@@ -261,8 +260,8 @@ object RevokeMsg : BaseDelayableHook() {
     override fun isEnabled(): Boolean {
         return try {
             ConfigManager.getDefaultConfig().getBooleanOrFalse(kr_revoke_msg)
-        } catch (e: java.lang.Exception) {
-            Utils.log(e)
+        } catch (e: Exception) {
+            logdt(e)
             false
         }
     }
@@ -273,7 +272,7 @@ object RevokeMsg : BaseDelayableHook() {
             mgr.allConfig[kr_revoke_msg] = enabled
             mgr.save()
         } catch (e: Exception) {
-            Utils.log(e)
+            logdt(e)
             if (Looper.myLooper() == Looper.getMainLooper()) {
                 Utils.showToast(Utils.getApplication(), Utils.TOAST_TYPE_ERROR, e.toString() + "", Toast.LENGTH_SHORT)
             } else {
@@ -287,7 +286,7 @@ object RevokeMsg : BaseDelayableHook() {
         return try {
             getDefaultCfg().getBooleanOrFalse(kr_revoke_msg_show_msg_text_enabled)
         } catch (t: Throwable) {
-            log(t)
+            logdt(t)
             false
         }
     }
@@ -296,7 +295,7 @@ object RevokeMsg : BaseDelayableHook() {
         return try {
             getDefaultCfg().getString(kr_revoke_msg_tips_text)
         } catch (t: Throwable) {
-            log(t)
+            logdt(t)
             ""
         }
     }
@@ -305,7 +304,7 @@ object RevokeMsg : BaseDelayableHook() {
         return try {
             getDefaultCfg().getString(kr_revoke_unreceived_msg_tips_text)
         } catch (t: Throwable) {
-            log(t)
+            logdt(t)
             ""
         }
     }

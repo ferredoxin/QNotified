@@ -26,10 +26,6 @@ fun View.setViewZeroSize() {
     this.layoutParams.width = 0
 }
 
-fun log(t: Throwable) {
-    Utils.log(t)
-}
-
 fun getObjectOrNull(obj: Any?, objName: String, clz: Class<*>? = null): Any? {
     return Utils.iget_object_or_null(obj, objName, clz)
 }
