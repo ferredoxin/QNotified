@@ -8,8 +8,9 @@
                 android:key="RemoveRedDot"
                 android:title="移除小红点"/>
         <SwitchPreference
-                android:key="IgnoreDiyCard!"
-                android:title="屏蔽DIY名片"/>
+                android:key="RemoveFuckingDiyCard"
+                android:title="屏蔽DIY名片"
+                android:summary="抵制DIY从我做起"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="聊天">
         <SwitchPreference
