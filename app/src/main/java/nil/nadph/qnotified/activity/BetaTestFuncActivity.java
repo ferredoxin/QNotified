@@ -24,9 +24,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.tencent.mobileqq.widget.BounceScrollView;
-
 import me.kyuubiran.hook.testhook.CutMessage;
 import nil.nadph.qnotified.hook.ChatTailHook;
 import nil.nadph.qnotified.hook.MutePokePacket;

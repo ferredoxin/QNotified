@@ -26,20 +26,16 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.tencent.mobileqq.widget.BounceScrollView;
-
+import me.kyuubiran.dialog.AutoRenewFireDialog;
 import me.kyuubiran.dialog.RevokeMsgDialog;
 import me.kyuubiran.hook.RemoveFuckingDiyCard;
-import me.kyuubiran.hook.RemovePokeGrayTips;
-import me.kyuubiran.hook.testhook.*;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.LicenseStatus;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit;
-import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
+import static nil.nadph.qnotified.ui.ViewBuilder.*;
 import static nil.nadph.qnotified.util.Utils.dip2px;
 
 @SuppressLint("Registered")
@@ -82,11 +78,18 @@ public class AlphaTestFuncActivity extends IphoneTitleBarActivityCompat {
                 }
             }).start();
         } else {
-            View v = subtitle(this, "狐狸狸测试功能");
+            View v = subtitle(this, "阿巴阿巴阿巴");
             v.setOnClickListener(v1 -> RevokeMsgDialog.INSTANCE.onShow(AlphaTestFuncActivity.this));
             ll.addView(v);
-            ll.addView(newListItemHookSwitchInit(this, "[无效]屏蔽戳一戳灰字", "仅屏蔽开启之后的提示", RemovePokeGrayTips.INSTANCE));
-            ll.addView(newListItemHookSwitchInit(this, "[特供版]彻底屏蔽傻逼diy名片", "用闪退/zip炸弹名片的先死个妈", RemoveFuckingDiyCard.INSTANCE));
+//            ll.addView(newListItemHookSwitchInit(this, "[无效]屏蔽戳一戳灰字", "仅屏蔽开启之后的提示", RemovePokeGrayTips.INSTANCE));
+            ll.addView(newListItemHookSwitchInit(this, "[特供版]屏蔽diy名片", "88888", RemoveFuckingDiyCard.INSTANCE));
+
+            View autoRenewFire = newListItemButton(this, "[特供版]自动续火", "芜湖", null, view -> AutoRenewFireDialog.INSTANCE.shouMainDialog(this));
+            autoRenewFire.setOnLongClickListener(view -> {
+                AutoRenewFireDialog.INSTANCE.showSettingsDialog(this);
+                return true;
+            });
+            ll.addView(autoRenewFire);
         }
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         this.setContentView(bounceScrollView);

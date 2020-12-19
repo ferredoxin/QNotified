@@ -117,7 +117,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             log(e);
         }
         if (LicenseStatus.isAsserted()) {
-            ll.addView(newListItemButton(this, "狐狸狸测试功能", "不管你是什么人都别动这里的东西", null, clickToProxyActAction(AlphaTestFuncActivity.class)));
+            ll.addView(newListItemButton(this, "Alpha", "秘密", null, clickToProxyActAction(AlphaTestFuncActivity.class)));
         }
         if (!LicenseStatus.hasBlackFlags()) {
             ll.addView(newListItemButton(this, "Beta测试性功能", "仅用于测试稳定性", null, clickToProxyActAction(BetaTestFuncActivity.class)));

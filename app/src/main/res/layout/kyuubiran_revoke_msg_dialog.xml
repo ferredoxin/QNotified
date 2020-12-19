@@ -8,7 +8,7 @@
     <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="狐狸狸版防撤回[KT]"
+            android:text="防撤回[仅848-]"
             android:textSize="20sp"
             android:textColor="@color/theme_color_blp"
             android:paddingBottom="10dp"/>

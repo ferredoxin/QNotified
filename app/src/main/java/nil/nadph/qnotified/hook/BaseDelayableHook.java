@@ -116,6 +116,7 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 ArbitraryFrdSourceId.get(),
                 RemoveDailySign.INSTANCE,
                 RemoveFuckingDiyCard.INSTANCE,
+                AutoRenewFire.INSTANCE,
         };
         return sAllHooks;
     }
