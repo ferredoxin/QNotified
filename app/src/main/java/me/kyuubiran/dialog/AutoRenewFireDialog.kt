@@ -11,21 +11,20 @@ import android.widget.CompoundButton
 import android.widget.EditText
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import me.kyuubiran.util.AutoRenewFireMgr
-import me.kyuubiran.util.getDefaultCfg
+import me.kyuubiran.util.getExFriendCfg
 import me.kyuubiran.util.showToastByTencent
 import nil.nadph.qnotified.R
 import nil.nadph.qnotified.databinding.KyuubiranAutoRenewFireBinding
 import nil.nadph.qnotified.util.LicenseStatus
 
 object AutoRenewFireDialog {
-    val cfg = getDefaultCfg()
     private var currentEnable: Boolean? = null
     private lateinit var binding: KyuubiranAutoRenewFireBinding
-    var replyMsg: String = cfg.getStringOrDefault(AutoRenewFireMgr.MESSAGE, "火")
+    var replyMsg: String = getExFriendCfg().getStringOrDefault(AutoRenewFireMgr.MESSAGE, "火")
 
     fun shouMainDialog(ctx: Context) {
         binding = KyuubiranAutoRenewFireBinding.inflate(LayoutInflater.from(ctx))
-        val enable = cfg.getBooleanOrFalse(AutoRenewFireMgr.ENABLE)
+        val enable = getExFriendCfg().getBooleanOrFalse(AutoRenewFireMgr.ENABLE)
         currentEnable = enable
 
         val mDialog = MaterialAlertDialogBuilder(ctx, R.style.MaterialDialog)
@@ -63,12 +62,6 @@ object AutoRenewFireDialog {
         mDialog.show()
     }
 
-    fun save() {
-        currentEnable?.let { cfg.setBooleanConfig(AutoRenewFireMgr.ENABLE, it) }
-        cfg.putString(AutoRenewFireMgr.MESSAGE, replyMsg)
-        cfg.save()
-    }
-
     fun showSettingsDialog(ctx: Context) {
         MaterialAlertDialogBuilder(ctx, R.style.MaterialDialog)
             .setTitle("自动续火设置")
@@ -103,5 +96,12 @@ object AutoRenewFireDialog {
             .setNegativeButton("取消") { _, _ -> }
             .create()
             .show()
+    }
+
+    fun save() {
+        val cfg = getExFriendCfg()
+        currentEnable?.let { cfg.setBooleanConfig(AutoRenewFireMgr.ENABLE, it) }
+        cfg.putString(AutoRenewFireMgr.MESSAGE, replyMsg)
+        cfg.save()
     }
 }

@@ -12,7 +12,6 @@ import de.robv.android.xposed.XposedBridge
 import me.kyuubiran.dialog.AutoRenewFireDialog
 import me.kyuubiran.util.*
 import nil.nadph.qnotified.SyncUtils
-import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.hook.BaseDelayableHook
 import nil.nadph.qnotified.step.Step
 import nil.nadph.qnotified.util.LicenseStatus
@@ -108,7 +107,7 @@ object AutoRenewFire : BaseDelayableHook() {
 
     override fun isEnabled(): Boolean {
         return try {
-            ConfigManager.getDefaultConfig().getBooleanOrFalse(kr_auto_renew_fire)
+            getDefaultCfg().getBooleanOrFalse(kr_auto_renew_fire)
         } catch (e: java.lang.Exception) {
             Utils.log(e)
             false
@@ -121,7 +120,7 @@ object AutoRenewFire : BaseDelayableHook() {
 
     override fun setEnabled(enabled: Boolean) {
         try {
-            val mgr = ConfigManager.getDefaultConfig()
+            val mgr = getDefaultCfg()
             mgr.allConfig[kr_auto_renew_fire] = enabled
             mgr.save()
         } catch (e: Exception) {

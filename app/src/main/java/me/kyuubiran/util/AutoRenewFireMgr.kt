@@ -15,11 +15,9 @@ object AutoRenewFireMgr {
     const val LIST = "kr_auto_renew_fire_list"
     const val MESSAGE = "kr_auto_renew_fire_message"
     const val TIME = "kr_auto_renew_fire_time"
-    private val cfg = getDefaultCfg()
     private val mHandler = Handler(Looper.getMainLooper())
     private val mRunnable = object : Runnable {
         override fun run() {
-            if (!(getDefaultCfg().getBooleanOrFalse("kr_auto_renew_fire"))) return
             if (autoRenewList.isEmpty()) return
             if (needSend()) {
                 thread {
@@ -36,15 +34,29 @@ object AutoRenewFireMgr {
         }
     }
 
-    private var str = getDefaultCfg().getStringOrDefault(LIST, "")
-    private val autoRenewList: ArrayList<AutoRenewFireItem> = strToArr()
-    private var autoRenewMsg = getDefaultCfg().getStringOrDefault(MESSAGE, "火")
+    private val str: String
+        get() {
+            return getExFriendCfg().getStringOrDefault(LIST, "")
+        }
+
+    private val tempList: ArrayList<AutoRenewFireItem> = arrayListOf()
+    private val autoRenewList: ArrayList<AutoRenewFireItem>
+        get() {
+            return strToArr()
+        }
+    private var autoRenewMsg: String = "火"
         set(value) {
             field = value
-            getDefaultCfg().putString(MESSAGE, value)
+            val cfg = getExFriendCfg()
+            cfg.putString(MESSAGE, value)
+            cfg.save()
+        }
+        get() {
+            return getExFriendCfg().getStringOrDefault(MESSAGE, "火")
         }
 
     private fun strToArr(): ArrayList<AutoRenewFireItem> {
+        if (str.isEmpty()) return arrayListOf()
         val strList = ArrayList(str.split("[||]"))
         val arfItemList = ArrayList<AutoRenewFireItem>()
         for (item in strList) {
@@ -53,29 +65,31 @@ object AutoRenewFireMgr {
         return arfItemList
     }
 
-    private fun save() {
-        str = arrToString()
-        cfg.putString(LIST, str)
-        cfg.save()
-    }
-
-    private fun arrToString(): String {
-        if (autoRenewList.isEmpty()) return ""
+    private fun save(list: ArrayList<AutoRenewFireItem>) {
+        val cfg = getExFriendCfg()
+        if (list.isEmpty()) {
+            cfg.putString(LIST, "")
+            cfg.save()
+            return
+        }
         val sb = StringBuilder()
-        for (s in autoRenewList.withIndex()) {
-            if (s.index != autoRenewList.size - 1) {
+        for (s in list.withIndex()) {
+            if (s.index != list.size - 1) {
                 sb.append(s.value).append("[||]")
             } else {
                 sb.append(s.value)
             }
         }
-        return sb.toString()
+        cfg.putString(LIST, sb.toString())
+        cfg.save()
     }
 
     fun add(uin: String?, msg: String = "") {
         if (uin == null) return
-        autoRenewList.add(AutoRenewFireItem(uin, msg))
-        save()
+        tempList.clear()
+        tempList.addAll(autoRenewList)
+        tempList.add(AutoRenewFireItem(uin, msg))
+        save(tempList)
     }
 
     fun add(uin: Long) {
@@ -83,19 +97,21 @@ object AutoRenewFireMgr {
     }
 
     fun setMsg(uin: String, msg: String) {
-        for (u in autoRenewList) {
-            if (uin == u.uin) {
+        tempList.clear()
+        tempList.addAll(autoRenewList)
+        for (u in tempList) {
+            if (u.uin == uin) {
                 u.msg = msg
             }
         }
-        save()
+        save(tempList)
     }
 
     fun setMsg(uin: Long, msg: String) {
         setMsg(uin.toString(), msg)
     }
 
-    fun getUser(uin: String?): AutoRenewFireItem? {
+    private fun getUser(uin: String?): AutoRenewFireItem? {
         if (uin == null || uin.isEmpty()) return null
         for (u in autoRenewList) {
             if (uin == u.uin) return u
@@ -110,12 +126,14 @@ object AutoRenewFireMgr {
 
     fun remove(uin: String?) {
         if (uin == null) return
+        tempList.addAll(autoRenewList)
         val removeItemList = ArrayList<AutoRenewFireItem>()
-        for (u in autoRenewList) {
+        for (u in tempList) {
             if (u.uin == uin) removeItemList.add(u)
         }
-        autoRenewList.removeAll(removeItemList)
-        save()
+        tempList.removeAll(removeItemList)
+        save(tempList)
+        tempList.clear()
     }
 
     fun remove(uin: Long) {
@@ -134,6 +152,7 @@ object AutoRenewFireMgr {
     }
 
     private fun needSend(): Boolean {
+        val cfg = getExFriendCfg()
         val nextTime = cfg.getLongOrDefault(TIME, 0L)
         if (nextTime - System.currentTimeMillis() < 0) {
             val cal = Calendar.getInstance()
@@ -154,12 +173,13 @@ object AutoRenewFireMgr {
     }
 
     fun resetTime() {
+        val cfg = getExFriendCfg()
         cfg.putLong(TIME, 0L)
         cfg.save()
     }
 
     fun resetList() {
-        str = ""
+        val cfg = getExFriendCfg()
         autoRenewList.clear()
         cfg.putString(LIST, "")
         cfg.save()
