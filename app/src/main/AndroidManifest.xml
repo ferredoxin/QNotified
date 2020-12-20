@@ -13,9 +13,10 @@
             android:theme="@style/AppThemeDummy"
             tools:ignore="AllowBackup,GoogleAppIndexingWarning,UnusedAttribute">
         <activity
-            android:name=".activity.ConfigActivity"
-            android:icon="@drawable/icon"
-            android:label="@string/app_name">
+                android:name=".activity.ConfigV2Activity"
+                android:icon="@drawable/icon"
+                android:theme="@style/Theme.AppCompat.DayNight"
+                android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS"/>

@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:ignore="UseAppTint">
+
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical"
+                  android:padding="16dp">
+
+        <LinearLayout android:id="@+id/mainV2_activationStatusLinearLayout"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal"
+                      android:gravity="center_vertical"
+                      android:paddingTop="14dp"
+                      android:paddingBottom="14dp"
+                      android:paddingLeft="4dp"
+                      android:paddingRight="4dp"
+                      android:layout_marginBottom="12dp"
+                      android:background="@drawable/bg_yellow_solid">
+
+            <ImageView android:id="@+id/mainV2_activationStatusIcon"
+                       android:scaleType="fitXY"
+                       android:layout_marginLeft="16dp"
+                       android:layout_marginRight="16dp"
+                       android:src="@drawable/ic_warn_white"
+                       android:layout_width="26dp"
+                       android:layout_height="26dp"/>
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                <TextView
+                        android:id="@+id/mainV2_activationStatusTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="N/A"
+                        android:layout_margin="2dp"
+                        android:textColor="#FFFFFFFF"
+                        style="?android:attr/textAppearanceLarge"/>
+
+                <TextView
+                        android:id="@+id/mainV2_activationStatusDesc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Internal error"
+                        android:textColor="#FFFFFFFF"
+                        style="?android:attr/textAppearanceSmall"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="start|top"
+                android:paddingTop="14dp"
+                android:paddingBottom="14dp"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:layout_marginBottom="12dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="@drawable/bg_trans_border_ripple">
+
+            <ImageView
+                    android:scaleType="fitXY"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:src="@drawable/ic_info"
+                    android:tint="@color/colorAccent"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"/>
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="模块版本"
+                        android:layout_margin="1dp"
+                        android:textColor="?android:attr/textColorPrimary"
+                        style="?android:attr/textAppearanceMedium"/>
+                <TextView
+                        android:id="@+id/mainTextViewVersion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="N/A"
+                        android:textColor="?android:attr/textColorSecondary"
+                        style="?android:attr/textAppearanceSmall"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="更新模块后需要重启手机方可生效"
+                        android:textColor="?android:attr/textColorSecondary"
+                        style="?android:attr/textAppearanceSmall"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="start|top"
+                android:paddingTop="14dp"
+                android:paddingBottom="8dp"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:layout_marginBottom="12dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="@drawable/bg_trans_border_ripple">
+
+            <ImageView
+                    android:scaleType="fitXY"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:src="@drawable/ic_settings"
+                    android:tint="@color/colorAccent"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"/>
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="模块设置"
+                        android:layout_margin="1dp"
+                        android:textColor="?android:attr/textColorPrimary"
+                        style="?android:attr/textAppearanceMedium"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="请在 QQ / TIM 内进行操作"
+                        android:textColor="?android:attr/textColorSecondary"
+                        style="?android:attr/textAppearanceSmall"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="QQ侧滑>设置>QNotified 即可进入功能列表"
+                        android:textColor="?android:attr/textColorSecondary"
+                        style="?android:attr/textAppearanceSmall"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="暂不支持 轻聊版 / 国际版"
+                        android:textColor="?android:attr/textColorSecondary"
+                        style="?android:attr/textAppearanceSmall"/>
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="2dp"
+                        android:orientation="horizontal">
+
+                    <TextView
+                            android:id="@+id/mainRelativeLayoutButtonOpenQQ"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:gravity="center"
+                            android:onClick="openModuleSettingForHost"
+                            android:textColor="@color/colorAccent"
+                            android:background="?android:attr/selectableItemBackground"
+                            android:paddingTop="8dp"
+                            android:paddingBottom="8dp"
+                            android:paddingLeft="16dp"
+                            android:paddingRight="16dp"
+                            android:textSize="18sp"
+                            android:text="QQ"/>
+
+                    <TextView
+                            android:id="@+id/mainRelativeLayoutButtonOpenTIM"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:onClick="openModuleSettingForHost"
+                            android:textColor="@color/colorAccent"
+                            android:background="?android:attr/selectableItemBackground"
+                            android:paddingTop="8dp"
+                            android:paddingBottom="8dp"
+                            android:paddingLeft="16dp"
+                            android:paddingRight="16dp"
+                            android:textSize="18sp"
+                            android:text="TIM"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:id="@+id/mainV2_help"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="start|top"
+                android:paddingTop="14dp"
+                android:paddingBottom="14dp"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:layout_marginBottom="12dp"
+                android:shadowColor="#50000000"
+                android:clickable="true"
+                android:focusable="true"
+                android:onClick="handleClickEvent"
+                android:background="@drawable/bg_trans_border_ripple">
+
+            <ImageView
+                    android:scaleType="fitXY"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:src="@drawable/ic_help"
+                    android:tint="@color/colorAccent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="帮助"
+                        android:layout_margin="1dp"
+                        android:textColor="?android:attr/textColorPrimary"
+                        style="?android:attr/textAppearanceMedium"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="遇到了问题?"
+                        android:textColor="?android:attr/textColorSecondary"
+                        android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:id="@+id/mainV2_githubRepo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="start|top"
+                android:paddingTop="14dp"
+                android:paddingBottom="14dp"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:layout_marginBottom="12dp"
+                android:shadowColor="#50000000"
+                android:clickable="true"
+                android:focusable="true"
+                android:onClick="handleClickEvent"
+                android:background="@drawable/bg_trans_border_ripple">
+
+            <ImageView
+                    android:scaleType="fitXY"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:src="@drawable/ic_github"
+                    android:tint="@color/colorAccent"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"/>
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="GitHub"
+                        android:layout_margin="1dp"
+                        android:textColor="?android:attr/textColorPrimary"
+                        style="?android:attr/textAppearanceMedium"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textIsSelectable="true"
+                        android:text="@string/url_qn_github_repo"
+                        android:textColor="?android:attr/textColorLink"
+                        style="?android:attr/textAppearanceSmall"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="GNU GPL-3.0"
+                        android:textColor="?android:attr/textColorSecondary"
+                        style="?android:attr/textAppearanceSmall"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

@@ -12,4 +12,5 @@
     <string name="taichi_yin_activated">太极·阴 已激活</string>
     <string name="taichi_yang_not_activated">太极·阳 未激活</string>
     <string name="taichi_yang_activated">太极·阳 已激活</string>
+    <string name="url_qn_github_repo">https://github.com/ferredoxin/QNotified</string>
 </resources>
