@@ -6,8 +6,9 @@ import android.widget.Toast;
 import java.lang.reflect.Method;
 
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
+import me.singleneuron.util.QQVersion;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
@@ -16,12 +17,11 @@ import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
-import me.singleneuron.util.QQVersion;
 
+import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
 import static nil.nadph.qnotified.util.Utils.getApplication;
 import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Initiator.load;
 
 //屏蔽群聊界面一起嗨
 public class RemovePlayTogether extends BaseDelayableHook {
@@ -48,7 +48,18 @@ public class RemovePlayTogether extends BaseDelayableHook {
         if (isInit) return true;
         try {
             String method = "h";
-            if (Utils.getHostVersionCode() == QQVersion.QQ_8_4_18 || Utils.getHostVersionCode() == QQVersion.QQ_8_4_17) {
+            if (Utils.getHostVersionCode() == QQVersion.QQ_8_5_0) {
+                XposedHelpers.findAndHookMethod(load("com/tencent/mobileqq/activity/aio/helper" +
+                        "/ClockInEntryHelper"), "d", new XC_MethodHook(43) {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        if (LicenseStatus.sDisableCommonHooks) return;
+                        if (!isEnabled()) return;
+                        param.setResult(false);
+                    }
+                });
+                method = "g";
+            } else if (Utils.getHostVersionCode() == QQVersion.QQ_8_4_18 || Utils.getHostVersionCode() == QQVersion.QQ_8_4_17) {
                 //QQ 8.4.8 除了一起嗨按钮，同一个位置还有一个群打卡按钮。默认显示群打卡，如果已经打卡就显示一起嗨，两个按钮点击之后都会打开同一个界面，但是要同时hook两个
                 XposedHelpers.findAndHookMethod(load("agpr"), "d", new XC_MethodHook(43) {
                     @Override
@@ -114,7 +125,7 @@ public class RemovePlayTogether extends BaseDelayableHook {
             ConfigManager mgr = ConfigManager.getDefaultConfig();
             mgr.getAllConfig().put(kr_remove_play_together, enabled);
             mgr.save();
-        } catch (final Exception e) {
+        } catch (Exception e) {
             Utils.log(e);
             if (Looper.myLooper() == Looper.getMainLooper()) {
                 Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
@@ -122,7 +133,8 @@ public class RemovePlayTogether extends BaseDelayableHook {
                 SyncUtils.post(new Runnable() {
                     @Override
                     public void run() {
-                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "",
+                                Toast.LENGTH_SHORT);
                     }
                 });
             }

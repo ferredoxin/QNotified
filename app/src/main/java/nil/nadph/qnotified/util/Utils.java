@@ -33,7 +33,37 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import com.tencent.mobileqq.app.QQAppInterface;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import dalvik.system.DexFile;
 import de.robv.android.xposed.XposedBridge;
 import me.singleneuron.qn_kernel.service.InterruptServiceRoutine;
@@ -44,17 +74,9 @@ import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.ResUtils;
 
-import java.io.*;
-import java.lang.reflect.*;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import static me.singleneuron.util.KotlinUtilsKt.readFromBufferedReader;
 import static nil.nadph.qnotified.util.Initiator.load;
 
-@SuppressWarnings({"unchecked", "rawtypes"})
 @SuppressLint("SimpleDateFormat")
 public class Utils {
 
@@ -78,7 +100,6 @@ public class Utils {
         throw new AssertionError("No instance for you!");
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Nullable
     public static String getActiveModuleVersion() {
         Math.sqrt(1);
@@ -110,7 +131,6 @@ public class Utils {
             else return (Application) f.get(null);
         } catch (Exception e) {
             log(e);
-            //noinspection UnnecessaryInitCause
             throw (RuntimeException) new RuntimeException("FATAL: Utils.getApplication() failure!").initCause(e);
         }
     }
@@ -1000,7 +1020,6 @@ public class Utils {
         String viewStr = "android.view.View";
         Field field;
         try {
-            //noinspection JavaReflectionMemberAccess
             field = Class.forName(viewStr).getDeclaredField("mOnClickListener");
             retrievedListener = (View.OnClickListener) field.get(view);
         } catch (NoSuchFieldException ex) {
@@ -1014,7 +1033,6 @@ public class Utils {
     }
 
     //Used for new ListenerInfo class structure used beginning with API 14 (ICS)
-    @SuppressWarnings("JavaReflectionMemberAccess")
     @SuppressLint("PrivateApi")
     private static View.OnClickListener getOnClickListenerV14(View view) {
         View.OnClickListener retrievedListener = null;
@@ -1220,12 +1238,18 @@ public class Utils {
                 return invoke_virtual(appInterface, "a", type, int.class, cl_bh);
             } catch (NoSuchMethodException e) {
                 try {
-                    Method m = appInterface.getClass().getMethod("getBusinessHandler", int.class);
-                    m.setAccessible(true);
-                    return m.invoke(appInterface, type);
+                    return invoke_virtual(appInterface, "getBusinessHandler", type, String.class,
+                            cl_bh);
                 } catch (Exception e2) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        e.addSuppressed(e2);
+                    try {
+                        Method m = appInterface.getClass().getMethod("getBusinessHandler",
+                                int.class);
+                        m.setAccessible(true);
+                        return m.invoke(appInterface, type);
+                    } catch (Exception e3) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                            e.addSuppressed(e2);
+                        }
                     }
                 }
                 throw e;
@@ -1555,6 +1579,12 @@ public class Utils {
                         try {
                             method_Toast_makeText = clazz_QQToast.getMethod("b", Context.class, int.class, CharSequence.class, int.class);
                         } catch (NoSuchMethodException e2) {
+                            try {
+                                method_Toast_makeText = clazz_QQToast.getMethod("b",
+                                        Context.class, int.class, CharSequence.class, int.class);
+                            } catch (NoSuchMethodException e3) {
+                                throw e;
+                            }
                             throw e;
                         }
                     }
@@ -1575,7 +1605,7 @@ public class Utils {
     }
 
     //@Deprecated
-    public static void showErrorToastAnywhere(final String text) {
+    public static void showErrorToastAnywhere(String text) {
         try {
             if (Looper.myLooper() == Looper.getMainLooper()) {
                 Utils.showToast(getApplication(), TOAST_TYPE_ERROR, text, Toast.LENGTH_SHORT);
@@ -1609,7 +1639,6 @@ public class Utils {
         return getRelTimeStrMs(time_sec * 1000);
     }
 
-    @SuppressWarnings("deprecation")
     public static String getRelTimeStrMs(long time_ms) {
         SimpleDateFormat format;
         long curr = System.currentTimeMillis();
@@ -1798,7 +1827,6 @@ public class Utils {
      * 只是隐藏我的联系方式
      * 未必是完全正确的方法, but just do it.
      **/
-    @SuppressWarnings("deprecation")
     private static boolean isExp() {
         try {
             Object pathList = iget_object_or_null(XposedBridge.class.getClassLoader(), "pathList");
@@ -1905,12 +1933,12 @@ public class Utils {
      * 根据手机的分辨率从 dip 的单位 转成为 px(像素)
      */
     public static int dip2px(Context context, float dpValue) {
-        final float scale = context.getResources().getDisplayMetrics().density;
+        float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
 
     public static int dip2sp(Context context, float dpValue) {
-        final float scale = context.getResources().getDisplayMetrics().density /
+        float scale = context.getResources().getDisplayMetrics().density /
                 context.getResources().getDisplayMetrics().scaledDensity;
         return (int) (dpValue * scale + 0.5f);
     }
@@ -1919,7 +1947,7 @@ public class Utils {
      * 根据手机的分辨率从 px(像素) 的单位 转成为 dp
      */
     public static int px2dip(Context context, float pxValue) {
-        final float scale = context.getResources().getDisplayMetrics().density;
+        float scale = context.getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
     }
 
@@ -1927,7 +1955,7 @@ public class Utils {
      * 将px值转换为sp值，保证文字大小不变
      */
     public static int px2sp(Context context, float pxValue) {
-        final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
+        float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
         return (int) (pxValue / fontScale + 0.5f);
     }
 
@@ -1935,7 +1963,7 @@ public class Utils {
      * 将sp值转换为px值，保证文字大小不变
      */
     public static int sp2px(Context context, float spValue) {
-        final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
+        float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
         return (int) (spValue * fontScale + 0.5f);
     }
 

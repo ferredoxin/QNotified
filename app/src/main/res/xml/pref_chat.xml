@@ -24,8 +24,11 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="其它">
         <SwitchPreference
-                android:key="DisablePokeEffect"
-                android:title="隐藏戳一戳动画"/>
+            android:key="RemoveIntimateDrawer"
+            android:title="隐藏好友亲密抽屉" />
+        <SwitchPreference
+            android:key="DisablePokeEffect"
+            android:title="隐藏戳一戳动画" />
         <MultiSelectListPreference
                 android:entries="@array/chat_panel_icon_titles"
                 android:entryValues="@array/chat_panel_icon_titles"

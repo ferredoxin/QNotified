@@ -84,7 +84,7 @@ object SimplifyQQSettingMe : BaseMultiConfigDelayableHook() {
                             val tv = child.getChildAt(1) as TextView
                             val text = tv.text.toString()
                             when {
-                                text.contains("开播") && getBooleanConfig(HIDE_KAI_BO_LA_E) -> {
+                                text.contains("播") && getBooleanConfig(HIDE_KAI_BO_LA_E) -> {
                                     child.setViewZeroSize()
                                 }
                                 text.contains("世界") && getBooleanConfig(HIDE_XIAO_SHI_JIE) -> {

@@ -34,7 +34,6 @@ import nil.nadph.qnotified.ui.ResUtils;
 
 import static nil.nadph.qnotified.util.Initiator.load;
 
-@SuppressWarnings("rawtypes")
 public class FaceImpl implements InvocationHandler {
 
     public static final int TYPE_USER = 1;
@@ -81,9 +80,15 @@ public class FaceImpl implements InvocationHandler {
     }
 
     private Object createListener() {
-        clz_DecodeTaskCompletionListener = load("com/tencent/mobileqq/util/FaceDecoder$DecodeTaskCompletionListener");
+        clz_DecodeTaskCompletionListener = load("com/tencent/mobileqq/avatar/listener" +
+                "/DecodeTaskCompletionListener");
         if (clz_DecodeTaskCompletionListener == null) {
-            clz_DecodeTaskCompletionListener = load("com/tencent/mobileqq/app/face/FaceDecoder$DecodeTaskCompletionListener");
+            clz_DecodeTaskCompletionListener = load("com/tencent/mobileqq/util" +
+                    "/FaceDecoder$DecodeTaskCompletionListener");
+        }
+        if (clz_DecodeTaskCompletionListener == null) {
+            clz_DecodeTaskCompletionListener = load("com/tencent/mobileqq/app/face" +
+                    "/FaceDecoder$DecodeTaskCompletionListener");
         }
         if (clz_DecodeTaskCompletionListener == null) {
             Class[] argt;
@@ -108,15 +113,15 @@ public class FaceImpl implements InvocationHandler {
         }
         return null;
     }
-
-    public void onDecodeTaskCompleted(int code, int type, String uin, final Bitmap bitmap) {
+    
+    public void onDecodeTaskCompleted(int code, int type, String uin, Bitmap bitmap) {
         //Utils.log(code+","+type+","+uin+","+bitmap);
         if (bitmap != null) {
             if (type == TYPE_USER) cachedUserFace.put(uin, bitmap);
             if (type == TYPE_TROOP) cachedTroopFace.put(uin, bitmap);
             WeakReference<ImageView> ref;
             if ((ref = registeredView.remove(type + " " + uin)) != null) {
-                final ImageView v = ref.get();
+                ImageView v = ref.get();
                 if (v != null) ((Activity) Utils.getContext(v)).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
