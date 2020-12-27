@@ -17,4 +17,17 @@
     <color name="theme_color_ryb">#4169e1</color>
     <color name="theme_color_gap">#673ab7</color>
 
+    <color name="firstTextColor">#FF202124</color>
+    <color name="secondTextColor">#FF3C4043</color>
+    <color name="thirdTextColor">#FF5F6368</color>
+    <color name="whiteTextColor">#FFFFFFFF</color>
+    <color name="themeColor">#FF4285F4</color>
+    <color name="usableColor">#FF4CAF50</color>
+    <color name="unusableColor">#FFFF5252</color>
+    <color name="rippleColor">#143C4043</color>
+    <color name="lineColor">#ffdddddd</color>
+    <color name="warnColor">#ffFFC107</color>
+    <color name="nullColor">#00000000</color>
+    <color name="backgroundColor">#FFFFFFFF</color>
+
 </resources>
