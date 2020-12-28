@@ -42,7 +42,10 @@ import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.util.Initiator._SessionInfo;
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
+import static nil.nadph.qnotified.util.Utils.getApplication;
+import static nil.nadph.qnotified.util.Utils.isTim;
+import static nil.nadph.qnotified.util.Utils.log;
 
 public class CheatHook extends BaseDelayableHook {
 
@@ -91,32 +94,68 @@ public class CheatHook extends BaseDelayableHook {
                     }
                 }
             });
-            
+    
             String fuckingMethod = "a";
-            if (Utils.getHostVersionCode() >= QQVersion.QQ_8_4_8) fuckingMethod = "sendMagicEmoticon";
-            XposedHelpers.findAndHookMethod(DexKit.doFindClass(DexKit.C_PIC_EMOTICON_INFO), fuckingMethod, load("com.tencent.mobileqq.app.QQAppInterface"),
-                    Context.class, _SessionInfo(), load("com.tencent.mobileqq.data.Emoticon"),
-                    load("com.tencent.mobileqq.emoticon.EmojiStickerManager$StickerInfo"), new XC_MethodHook(43) {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            if (LicenseStatus.sDisableCommonHooks) return;
-                            try {
-                                if (!isEnabled()) return;
-                            } catch (Throwable e) {
-                                log(e);
+    
+            if (Utils.getHostVersionCode() >= QQVersion.QQ_8_4_8) {
+                fuckingMethod = "sendMagicEmoticon";
+            }
+            if (Utils.getHostVersionCode() >= QQVersion.QQ_8_5_0) {
+                XposedHelpers.findAndHookMethod(Class.forName("com.tencent.mobileqq.emoticonview" +
+                                ".sender.PicEmoticonInfoSender"),
+                        fuckingMethod, load("com.tencent.mobileqq.app.QQAppInterface"),
+                        Context.class, _SessionInfo(), load("com.tencent.mobileqq.data.Emoticon"),
+                        load("com.tencent.mobileqq.emoticon.EmojiStickerManager$StickerInfo"),
+                        new XC_MethodHook(43) {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                                if (LicenseStatus.sDisableCommonHooks) return;
+                                try {
+                                    if (!isEnabled()) return;
+                                } catch (Throwable e) {
+                                    log(e);
+                                }
+                                Context context = (Context) param.args[1];
+                                Object emoticon = param.args[3];
+                                String name = (String) XposedHelpers.getObjectField(emoticon,
+                                        "name");
+                                if ("随机骰子".equals(name) || "骰子".equals(name)) {
+                                    param.setResult(null);
+                                    showDiceDialog(context, param);
+                                } else if ("猜拳".equals(name)) {
+                                    param.setResult(null);
+                                    showMorraDialog(context, param);
+                                }
                             }
-                            Context context = (Context) param.args[1];
-                            Object emoticon = param.args[3];
-                            String name = (String) XposedHelpers.getObjectField(emoticon, "name");
-                            if ("随机骰子".equals(name) || "骰子".equals(name)) {
-                                param.setResult(null);
-                                showDiceDialog(context, param);
-                            } else if ("猜拳".equals(name)) {
-                                param.setResult(null);
-                                showMorraDialog(context, param);
+                        });
+            } else {
+                XposedHelpers.findAndHookMethod(DexKit.doFindClass(DexKit.C_PIC_EMOTICON_INFO),
+                        fuckingMethod, load("com.tencent.mobileqq.app.QQAppInterface"),
+                        Context.class, _SessionInfo(), load("com.tencent.mobileqq.data.Emoticon"),
+                        load("com.tencent.mobileqq.emoticon.EmojiStickerManager$StickerInfo"),
+                        new XC_MethodHook(43) {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                                if (LicenseStatus.sDisableCommonHooks) return;
+                                try {
+                                    if (!isEnabled()) return;
+                                } catch (Throwable e) {
+                                    log(e);
+                                }
+                                Context context = (Context) param.args[1];
+                                Object emoticon = param.args[3];
+                                String name = (String) XposedHelpers.getObjectField(emoticon,
+                                        "name");
+                                if ("随机骰子".equals(name) || "骰子".equals(name)) {
+                                    param.setResult(null);
+                                    showDiceDialog(context, param);
+                                } else if ("猜拳".equals(name)) {
+                                    param.setResult(null);
+                                    showMorraDialog(context, param);
+                                }
                             }
-                        }
-                    });
+                        });
+            }
             inited = true;
             return true;
         } catch (Throwable e) {
@@ -125,8 +164,8 @@ public class CheatHook extends BaseDelayableHook {
         }
 
     }
-
-    private void showDiceDialog(Context context, final XC_MethodHook.MethodHookParam param) {
+    
+    private void showDiceDialog(Context context, XC_MethodHook.MethodHookParam param) {
         AlertDialog alertDialog = new AlertDialog.Builder(context, CustomDialog.themeIdForDialog())
                 .setTitle("自定义骰子")
                 .setSingleChoiceItems(diceItem, diceNum, new DialogInterface.OnClickListener() {
@@ -160,8 +199,8 @@ public class CheatHook extends BaseDelayableHook {
                 .create();
         alertDialog.show();
     }
-
-    private void showMorraDialog(Context context, final XC_MethodHook.MethodHookParam param) {
+    
+    private void showMorraDialog(Context context, XC_MethodHook.MethodHookParam param) {
         AlertDialog alertDialog = new AlertDialog.Builder(context, CustomDialog.themeIdForDialog())
                 .setTitle("自定义猜拳")
                 .setSingleChoiceItems(morraItem, morraNum, new DialogInterface.OnClickListener() {
@@ -217,7 +256,7 @@ public class CheatHook extends BaseDelayableHook {
             ConfigManager mgr = ConfigManager.getDefaultConfig();
             mgr.getAllConfig().put(qh_random_cheat, enabled);
             mgr.save();
-        } catch (final Exception e) {
+        } catch (Exception e) {
             Utils.log(e);
             if (Looper.myLooper() == Looper.getMainLooper()) {
                 Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
@@ -225,7 +264,8 @@ public class CheatHook extends BaseDelayableHook {
                 SyncUtils.post(new Runnable() {
                     @Override
                     public void run() {
-                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "",
+                                Toast.LENGTH_SHORT);
                     }
                 });
             }

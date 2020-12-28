@@ -32,20 +32,23 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Date;
+
 import me.singleneuron.util.HookStatue;
 import nil.nadph.qnotified.HookEntry;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.util.Natives;
 import nil.nadph.qnotified.util.Utils;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Date;
 
 public class ConfigV2Activity extends AppCompatActivity {
     private final Looper mainLooper = Looper.getMainLooper();
@@ -86,7 +89,8 @@ public class ConfigV2Activity extends AppCompatActivity {
             Natives.load(this);
             long ts = Utils.getBuildTimestamp();
             delta = System.currentTimeMillis() - delta;
-            dbgInfo += "\nBuild Time: " + (ts > 0 ? new Date(ts).toString() : "unknown") + ", delta=" + delta + "ms\n" +
+            dbgInfo += "\nBuild Time: " + (ts > 0 ? new Date(ts).toString() : "unknown") + ", " +
+                    "delta=" + delta + "ms\n" +
                     "SUPPORTED_ABIS=" + Arrays.toString(Build.SUPPORTED_ABIS) + "\npageSize=" + Natives.getpagesize();
         } catch (Throwable e) {
             dbgInfo += "\n" + e.toString();
@@ -95,10 +99,12 @@ public class ConfigV2Activity extends AppCompatActivity {
         LinearLayout frameStatus = findViewById(R.id.mainV2_activationStatusLinearLayout);
         ImageView frameIcon = findViewById(R.id.mainV2_activationStatusIcon);
         TextView statusTitle = findViewById(R.id.mainV2_activationStatusTitle);
-        frameStatus.setBackgroundDrawable(getResources().getDrawable(
-                HookStatue.INSTANCE.isActive(statue) ? R.drawable.bg_green_solid : R.drawable.bg_red_solid, getTheme()));
-        frameIcon.setImageDrawable(getResources().getDrawable(
-                HookStatue.INSTANCE.isActive(statue) ? R.drawable.ic_success_white : R.drawable.ic_failure_white, getTheme()));
+        frameStatus.setBackground(ResourcesCompat.getDrawable(getResources(),
+                HookStatue.INSTANCE.isActive(statue) ? R.drawable.bg_green_solid :
+                        R.drawable.bg_red_solid, getTheme()));
+        frameIcon.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
+                HookStatue.INSTANCE.isActive(statue) ? R.drawable.ic_success_white :
+                        R.drawable.ic_failure_white, getTheme()));
         statusTitle.setText(HookStatue.INSTANCE.isActive(statue) ? "已激活" : "未激活");
         TextView tvStatus = findViewById(R.id.mainV2_activationStatusDesc);
         tvStatus.setText(getString(HookStatue.INSTANCE.getStatueName(statue)).split(" ")[0]);
