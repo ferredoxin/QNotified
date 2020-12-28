@@ -7,7 +7,7 @@
             tools:ignore="UseAppTint">
 
     <LinearLayout android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
+                  android:layout_height="match_parent"
                   android:orientation="vertical"
                   android:padding="16dp">
 
@@ -15,21 +15,22 @@
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:orientation="horizontal"
-                      android:gravity="center_vertical"
-                      android:paddingTop="14dp"
-                      android:paddingBottom="14dp"
-                      android:paddingLeft="4dp"
-                      android:paddingRight="4dp"
-                      android:layout_marginBottom="12dp"
+                      android:paddingTop="18dp"
+                      android:paddingBottom="18dp"
+                      android:paddingLeft="0dp"
+                      android:paddingRight="0dp"
+                      android:layout_marginBottom="16dp"
                       android:background="@drawable/bg_yellow_solid">
 
-            <ImageView android:id="@+id/mainV2_activationStatusIcon"
-                       android:scaleType="fitXY"
-                       android:layout_marginLeft="16dp"
-                       android:layout_marginRight="16dp"
-                       android:src="@drawable/ic_warn_white"
-                       android:layout_width="26dp"
-                       android:layout_height="26dp"/>
+            <ImageView
+                android:id="@+id/mainV2_activationStatusIcon"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="16dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_check_circle" />
 
             <LinearLayout
                     android:layout_width="match_parent"
@@ -37,21 +38,22 @@
                     android:orientation="vertical">
 
                 <TextView
-                        android:id="@+id/mainV2_activationStatusTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="N/A"
-                        android:layout_margin="2dp"
-                        android:textColor="#FFFFFFFF"
-                        style="?android:attr/textAppearanceLarge"/>
+                    android:id="@+id/mainV2_activationStatusTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="0dp"
+                    android:text="N/A"
+                    android:textColor="@color/whiteTextColor"
+                    android:textSize="18sp" />
 
                 <TextView
-                        android:id="@+id/mainV2_activationStatusDesc"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Internal error"
-                        android:textColor="#FFFFFFFF"
-                        style="?android:attr/textAppearanceSmall"/>
+                    android:id="@+id/mainV2_activationStatusDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="2dp"
+                    android:text="Internal error"
+                    android:textColor="@color/whiteTextColor"
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -62,11 +64,11 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="start|top"
-                android:paddingTop="14dp"
-                android:paddingBottom="14dp"
-                android:paddingLeft="4dp"
-                android:paddingRight="4dp"
-                android:layout_marginBottom="12dp"
+                android:paddingTop="18dp"
+                android:paddingBottom="18dp"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                android:layout_marginBottom="16dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:background="@drawable/bg_trans_border_ripple">
@@ -75,10 +77,10 @@
                     android:scaleType="fitXY"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginBottom="16dp"
                     android:src="@drawable/ic_info"
-                    android:tint="@color/colorAccent"
+                    android:tint="@color/themeColor"
                     android:layout_width="26dp"
                     android:layout_height="26dp"/>
 
@@ -88,177 +90,132 @@
                     android:orientation="vertical">
 
                 <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="模块版本"
-                        android:layout_margin="1dp"
-                        android:textColor="?android:attr/textColorPrimary"
-                        style="?android:attr/textAppearanceMedium"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="0dp"
+                    android:text="模块版本"
+                    android:textColor="@color/firstTextColor"
+                    android:textSize="18sp" />
                 <TextView
                         android:id="@+id/mainTextViewVersion"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:paddingTop="2dp"
                         android:text="N/A"
-                        android:textColor="?android:attr/textColorSecondary"
-                        style="?android:attr/textAppearanceSmall"/>
+                        android:textColor="@color/secondTextColor"
+                        android:textSize="14sp" />
 
                 <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:paddingTop="4dp"
                         android:text="更新模块后需要重启手机方可生效"
-                        android:textColor="?android:attr/textColorSecondary"
-                        style="?android:attr/textAppearanceSmall"/>
+                        android:textColor="@color/thirdTextColor"
+                        android:textSize="14sp" />
             </LinearLayout>
 
         </LinearLayout>
 
         <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="start|top"
-                android:paddingTop="14dp"
-                android:paddingBottom="8dp"
-                android:paddingLeft="4dp"
-                android:paddingRight="4dp"
-                android:layout_marginBottom="12dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:background="@drawable/bg_trans_border_ripple">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/bg_trans_border_ripple"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="start|top"
+            android:orientation="horizontal"
+            android:paddingLeft="0dp"
+            android:paddingTop="18dp"
+            android:paddingRight="0dp"
+            android:paddingBottom="18dp">
 
             <ImageView
-                    android:scaleType="fitXY"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:src="@drawable/ic_settings"
-                    android:tint="@color/colorAccent"
-                    android:layout_width="26dp"
-                    android:layout_height="26dp"/>
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="16dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_settings"
+                android:tint="@color/themeColor" />
 
             <LinearLayout
-                    android:layout_width="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_margin="0dp"
+                    android:text="模块设置"
+                    android:textSize="18sp"
+                    android:textColor="@color/firstTextColor" />
 
                 <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="模块设置"
-                        android:layout_margin="1dp"
-                        android:textColor="?android:attr/textColorPrimary"
-                        style="?android:attr/textAppearanceMedium"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="2dp"
+                    android:text="请在 QQ / TIM 内进行操作"
+                    android:textSize="14sp"
+                    android:textColor="@color/secondTextColor" />
 
                 <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="请在 QQ / TIM 内进行操作"
-                        android:textColor="?android:attr/textColorSecondary"
-                        style="?android:attr/textAppearanceSmall"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="4dp"
+                    android:text="QQ侧滑>设置>QNotified 即可进入功能列表"
+                    android:textSize="14sp"
+                    android:textColor="@color/thirdTextColor" />
+
                 <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="QQ侧滑>设置>QNotified 即可进入功能列表"
-                        android:textColor="?android:attr/textColorSecondary"
-                        style="?android:attr/textAppearanceSmall"/>
-                <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="暂不支持 轻聊版 / 国际版"
-                        android:textColor="?android:attr/textColorSecondary"
-                        style="?android:attr/textAppearanceSmall"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="4dp"
+                    android:text="暂不支持 轻聊版 / 国际版"
+                    android:textSize="14sp"
+                    android:textColor="@color/thirdTextColor" />
 
                 <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="2dp"
-                        android:orientation="horizontal">
-
-                    <TextView
-                            android:id="@+id/mainRelativeLayoutButtonOpenQQ"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="8dp"
-                            android:gravity="center"
-                            android:onClick="openModuleSettingForHost"
-                            android:textColor="@color/colorAccent"
-                            android:background="?android:attr/selectableItemBackground"
-                            android:paddingTop="8dp"
-                            android:paddingBottom="8dp"
-                            android:paddingLeft="16dp"
-                            android:paddingRight="16dp"
-                            android:textSize="18sp"
-                            android:text="QQ"/>
-
-                    <TextView
-                            android:id="@+id/mainRelativeLayoutButtonOpenTIM"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:onClick="openModuleSettingForHost"
-                            android:textColor="@color/colorAccent"
-                            android:background="?android:attr/selectableItemBackground"
-                            android:paddingTop="8dp"
-                            android:paddingBottom="8dp"
-                            android:paddingLeft="16dp"
-                            android:paddingRight="16dp"
-                            android:textSize="18sp"
-                            android:text="TIM"/>
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-                android:id="@+id/mainV2_help"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="start|top"
-                android:paddingTop="14dp"
-                android:paddingBottom="14dp"
-                android:paddingLeft="4dp"
-                android:paddingRight="4dp"
-                android:layout_marginBottom="12dp"
-                android:shadowColor="#50000000"
-                android:clickable="true"
-                android:focusable="true"
-                android:onClick="handleClickEvent"
-                android:background="@drawable/bg_trans_border_ripple">
-
-            <ImageView
-                    android:scaleType="fitXY"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:src="@drawable/ic_help"
-                    android:tint="@color/colorAccent"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-            <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="horizontal"
+                    android:paddingTop="16dp">
 
-                <TextView
+                    <TextView
+                        android:id="@+id/mainRelativeLayoutButtonOpenQQ"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="帮助"
-                        android:layout_margin="1dp"
-                        android:textColor="?android:attr/textColorPrimary"
-                        style="?android:attr/textAppearanceMedium"/>
+                        android:layout_marginEnd="8dp"
+                        android:background="@color/nullColor"
+                        android:gravity="center"
+                        android:onClick="openModuleSettingForHost"
+                        android:paddingLeft="0dp"
+                        android:paddingTop="2dp"
+                        android:paddingRight="0dp"
+                        android:paddingBottom="2dp"
+                        android:text="QQ"
+                        android:textColor="@color/themeColor"
+                        android:textSize="18sp" />
 
-                <TextView
+                    <TextView
+                        android:id="@+id/mainRelativeLayoutButtonOpenTIM"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="遇到了问题?"
-                        android:textColor="?android:attr/textColorSecondary"
-                        android:textAppearance="?android:attr/textAppearanceSmall"/>
+                        android:background="@color/nullColor"
+                        android:gravity="center"
+                        android:onClick="openModuleSettingForHost"
+                        android:paddingLeft="0dp"
+                        android:paddingTop="2dp"
+                        android:paddingRight="0dp"
+                        android:paddingBottom="2dp"
+                        android:layout_marginLeft="16dp"
+                        android:text="TIM"
+                        android:textColor="@color/themeColor"
+                        android:textSize="18sp" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -270,25 +227,23 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="start|top"
-                android:paddingTop="14dp"
-                android:paddingBottom="14dp"
-                android:paddingLeft="4dp"
-                android:paddingRight="4dp"
-                android:layout_marginBottom="12dp"
-                android:shadowColor="#50000000"
+                android:paddingTop="18dp"
+                android:paddingBottom="18dp"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                android:layout_marginBottom="16dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:onClick="handleClickEvent"
-                android:background="@drawable/bg_trans_border_ripple">
+                android:background="@drawable/bg_trans_border_null_ripple">
 
             <ImageView
                     android:scaleType="fitXY"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginTop="0dp"
                     android:src="@drawable/ic_github"
-                    android:tint="@color/colorAccent"
+                    android:tint="@color/secondTextColor"
                     android:layout_width="26dp"
                     android:layout_height="26dp"/>
 
@@ -298,27 +253,54 @@
                     android:orientation="vertical">
 
                 <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="GitHub"
-                        android:layout_margin="1dp"
-                        android:textColor="?android:attr/textColorPrimary"
-                        style="?android:attr/textAppearanceMedium"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Github"
+                    android:layout_margin="0dp"
+                    android:textColor="@color/firstTextColor"
+                    android:textSize="18sp"/>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/mainV2_help"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="start|top"
+            android:paddingTop="18dp"
+            android:paddingBottom="18dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="handleClickEvent"
+            android:background="@drawable/bg_trans_border_null_ripple">
+
+            <ImageView
+                android:scaleType="fitXY"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:src="@drawable/ic_help"
+                android:tint="@color/secondTextColor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textIsSelectable="true"
-                        android:text="@string/url_qn_github_repo"
-                        android:textColor="?android:attr/textColorLink"
-                        style="?android:attr/textAppearanceSmall"/>
-
-                <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="GNU GPL-3.0"
-                        android:textColor="?android:attr/textColorSecondary"
-                        style="?android:attr/textAppearanceSmall"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="帮助"
+                    android:layout_margin="0dp"
+                    android:textColor="@color/firstTextColor"
+                    android:textSize="18sp"/>
 
             </LinearLayout>
 
