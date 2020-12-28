@@ -67,6 +67,7 @@ import java.util.regex.Pattern;
 import dalvik.system.DexFile;
 import de.robv.android.xposed.XposedBridge;
 import me.singleneuron.qn_kernel.service.InterruptServiceRoutine;
+import me.singleneuron.util.QQVersion;
 import mqq.app.AppRuntime;
 import nil.nadph.qnotified.BuildConfig;
 import nil.nadph.qnotified.SyncUtils;
@@ -1219,11 +1220,55 @@ public class Utils {
             return null;
         }
     }
-
+    
     public static Object getFriendListHandler() {
-        return getBusinessHandler(1);
+        if (Utils.getHostVersionCode() >= QQVersion.QQ_8_5_0) {
+            try {
+                Class cl_bh = load("com/tencent/mobileqq/app/BusinessHandler");
+                Class cl_flh = load("com/tencent/mobileqq/app/FriendListHandler");
+                if (cl_bh == null) {
+                    assert cl_flh != null;
+                    cl_bh = cl_flh.getSuperclass();
+                }
+                //log("bh(" + type + ")=" + ret);
+                Object appInterface = getQQAppInterface();
+                return invoke_virtual(appInterface, "getBusinessHandler", cl_flh.getName(), String.class, cl_bh);
+            } catch (Exception e) {
+                log(e);
+                return null;
+            }
+        } else {
+            try {
+                Class cl_bh = load("com/tencent/mobileqq/app/BusinessHandler");
+                if (cl_bh == null) {
+                    Class cl_flh = load("com/tencent/mobileqq/app/FriendListHandler");
+                    assert cl_flh != null;
+                    cl_bh = cl_flh.getSuperclass();
+                }
+                //log("bh(" + type + ")=" + ret);
+                Object appInterface = getQQAppInterface();
+                try {
+                    return invoke_virtual(appInterface, "a", 1, int.class, cl_bh);
+                } catch (NoSuchMethodException e) {
+                    try {
+                        Method m = appInterface.getClass().getMethod("getBusinessHandler", int.class);
+                        m.setAccessible(true);
+                        return m.invoke(appInterface, 1);
+                    } catch (Exception e2) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                            e.addSuppressed(e2);
+                        }
+                    }
+                    throw e;
+                }
+            } catch (Exception e) {
+                log(e);
+                return null;
+            }
+        }
     }
-
+    
+    @Deprecated
     public static Object getBusinessHandler(int type) {
         try {
             Class cl_bh = load("com/tencent/mobileqq/app/BusinessHandler");
@@ -1238,18 +1283,12 @@ public class Utils {
                 return invoke_virtual(appInterface, "a", type, int.class, cl_bh);
             } catch (NoSuchMethodException e) {
                 try {
-                    return invoke_virtual(appInterface, "getBusinessHandler", type, String.class,
-                            cl_bh);
+                    Method m = appInterface.getClass().getMethod("getBusinessHandler", int.class);
+                    m.setAccessible(true);
+                    return m.invoke(appInterface, type);
                 } catch (Exception e2) {
-                    try {
-                        Method m = appInterface.getClass().getMethod("getBusinessHandler",
-                                int.class);
-                        m.setAccessible(true);
-                        return m.invoke(appInterface, type);
-                    } catch (Exception e3) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                            e.addSuppressed(e2);
-                        }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        e.addSuppressed(e2);
                     }
                 }
                 throw e;
@@ -1580,12 +1619,12 @@ public class Utils {
                             method_Toast_makeText = clazz_QQToast.getMethod("b", Context.class, int.class, CharSequence.class, int.class);
                         } catch (NoSuchMethodException e2) {
                             try {
-                                method_Toast_makeText = clazz_QQToast.getMethod("b",
-                                        Context.class, int.class, CharSequence.class, int.class);
-                            } catch (NoSuchMethodException e3) {
-                                throw e;
-                            }
-                            throw e;
+                                 method_Toast_makeText = clazz_QQToast.getMethod("makeText",
+                                         Context.class,
+                                         int.class, CharSequence.class, int.class);
+                             } catch (NoSuchMethodException e3) {
+                                 throw e;
+                             }
                         }
                     }
                 }
