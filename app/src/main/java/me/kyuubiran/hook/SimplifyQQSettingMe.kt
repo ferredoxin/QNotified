@@ -6,6 +6,7 @@ import android.widget.TextView
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import me.kyuubiran.util.setViewZeroSize
+import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.step.Step
 import nil.nadph.qnotified.util.Initiator
@@ -137,7 +138,7 @@ object SimplifyQQSettingMe : BaseMultiConfigDelayableHook() {
             if (getBooleanConfig(HIDE_DIAN_ZAN)) {
                 for (m: Method in clz.declaredMethods) {
                     val argt = m.parameterTypes
-                    if (m.name == "V" && !Modifier.isStatic(m.modifiers) && argt.isEmpty()) {
+                    if (m.name == getMethod() && !Modifier.isStatic(m.modifiers) && argt.isEmpty()) {
                         XposedBridge.hookMethod(m, object : XC_MethodHook() {
                             override fun beforeHookedMethod(param: MethodHookParam?) {
                                 param?.result = null
@@ -172,5 +173,20 @@ object SimplifyQQSettingMe : BaseMultiConfigDelayableHook() {
 
     override fun setEnabled(enabled: Boolean) {
         //not supported
+    }
+
+    fun getMethod(): String {
+        return when (Utils.getHostVersionCode()) {
+//            QQVersion.QQ_8_3_6 ->
+//            QQVersion.QQ_8_3_9 ->
+//            QQVersion.QQ_8_4_1 ->
+            QQVersion.QQ_8_4_5 -> "V"
+            QQVersion.QQ_8_4_8 -> "U"
+            QQVersion.QQ_8_4_10 -> "Y"
+            QQVersion.QQ_8_4_17 -> "Y"
+            QQVersion.QQ_8_4_18 -> "Y"
+            QQVersion.QQ_8_5_0 -> "Z"
+            else -> throw RuntimeException("$HIDE_DIAN_ZAN :Unsupported QQ Version")
+        }
     }
 }
