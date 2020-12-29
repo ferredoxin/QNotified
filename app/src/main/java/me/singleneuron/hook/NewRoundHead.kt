@@ -1,6 +1,7 @@
 package me.singleneuron.hook
 
 import de.robv.android.xposed.XposedHelpers
+import me.kyuubiran.util.loadClass
 import me.singleneuron.base.adapter.BaseDelayableHighPerformanceConditionalHookAdapter
 import me.singleneuron.data.PageFaultHighPerformanceFunctionCache
 import me.singleneuron.util.QQVersion
@@ -15,19 +16,31 @@ object NewRoundHead : BaseDelayableHighPerformanceConditionalHookAdapter("newrou
         val faceManagerClass = Class.forName(getClass())
         //参数和值都是byte类型
         //这个方法在QQ主界面初始化时会调用200+次，因此需要极高的性能
-        XposedHelpers.findAndHookMethod(faceManagerClass, "a", Byte::class.javaPrimitiveType, object : XposedMethodHookAdapter(){
-            override fun beforeMethod(param: MethodHookParam?) {
-                //Utils.logd("NewRoundHead Started");
-                param!!.result = param.args[0] as Byte
-            }
-        })
-        return true
+        var method = "a"
+        if (Utils.getHostVersionCode() >= QQVersion.QQ_8_5_0) {
+            method = "adjustFaceShape"
+            XposedHelpers.findAndHookMethod(loadClass(getClass()), method, Byte::class.javaPrimitiveType, object : XposedMethodHookAdapter() {
+                override fun beforeMethod(param: MethodHookParam?) {
+                    //Utils.logd("NewRoundHead Started");
+                    param!!.result = param.args[0] as Byte
+                }
+            })
+            return true
+        } else {
+            XposedHelpers.findAndHookMethod(faceManagerClass, method, Byte::class.javaPrimitiveType, object : XposedMethodHookAdapter() {
+                override fun beforeMethod(param: MethodHookParam?) {
+                    //Utils.logd("NewRoundHead Started");
+                    param!!.result = param.args[0] as Byte
+                }
+            })
+            return true
+        }
     }
 
-    override val conditionCache: PageFaultHighPerformanceFunctionCache<Boolean> = PageFaultHighPerformanceFunctionCache {Utils.getHostVersionCode()>=QQVersion.QQ_8_3_6}
+    override val conditionCache: PageFaultHighPerformanceFunctionCache<Boolean> = PageFaultHighPerformanceFunctionCache { Utils.getHostVersionCode() >= QQVersion.QQ_8_3_6 }
 
-    override fun getClass():String {
-        return when(Utils.getHostVersionCode()) {
+    override fun getClass(): String {
+        return when (Utils.getHostVersionCode()) {
             QQVersion.QQ_8_3_6 -> "beft"
             QQVersion.QQ_8_3_9 -> "bfsw"
             QQVersion.QQ_8_4_1 -> "aocs"
@@ -36,8 +49,8 @@ object NewRoundHead : BaseDelayableHighPerformanceConditionalHookAdapter("newrou
             QQVersion.QQ_8_4_10 -> "aoke"
             QQVersion.QQ_8_4_17 -> "aowc"
             QQVersion.QQ_8_4_18 -> "aowc"
+            QQVersion.QQ_8_5_0 -> "com.tencent.mobileqq.avatar.utils.AvatarUtil"
             else -> super.getClass()
         }
     }
-
 }
