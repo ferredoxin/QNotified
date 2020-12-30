@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="侧滑栏">
         <SwitchPreference
-                android:key="SimplifyQQSettingMe$hide_dian_zan"
+                android:key="HideProfileBubble"
                 android:title="隐藏点赞提醒"/>
         <SwitchPreference
                 android:key="RemoveDailySign!"
