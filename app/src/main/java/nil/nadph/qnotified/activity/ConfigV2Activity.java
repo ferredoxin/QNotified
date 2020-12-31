@@ -179,7 +179,7 @@ public class ConfigV2Activity extends AppCompatActivity {
             }
             case R.id.mainV2_help: {
                 new AlertDialog.Builder(this)
-                        .setMessage("如模块无法使用,EdXp可尝试取消优化+开启兼容模式, ROOT用户可尝试 用幸运破解器-工具箱-移除odex更改 移除QQ与本模块的优化, 太极尝试取消优化")
+                        .setMessage("如模块无法使用，EdXp可尝试取消优化+开启兼容模式  ROOT用户可尝试 用幸运破解器-工具箱-移除odex更改 移除QQ与本模块的优化, 太极尝试取消优化")
                         .setCancelable(true).setPositiveButton(android.R.string.ok, null).show();
                 break;
             }

@@ -23,6 +23,7 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/backgroundColor"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
@@ -187,7 +188,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingTop="4dp"
-                        android:text="QQ侧滑>设置>QNotified 即可进入功能列表"
+                        android:text="QQ侧滑 > 设置 > QNotified 即可进入模块设置"
                         android:textColor="@color/thirdTextColor"
                         android:textSize="14sp" />
 
@@ -321,7 +322,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="0dp"
-                        android:text="帮助"
+                        android:text="提示"
                         android:textColor="@color/firstTextColor"
                         android:textSize="18sp" />
 
