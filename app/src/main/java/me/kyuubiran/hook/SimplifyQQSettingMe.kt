@@ -11,8 +11,6 @@ import nil.nadph.qnotified.step.Step
 import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.LicenseStatus
 import nil.nadph.qnotified.util.Utils
-import java.lang.reflect.Method
-import java.lang.reflect.Modifier
 import java.util.*
 
 //侧滑栏精简
@@ -21,7 +19,6 @@ object SimplifyQQSettingMe : BaseMultiConfigDelayableHook() {
 
     //Form 8.4.1
     //Body = [0,1,0,0,0,1,4] || [0,1,0,0,0,1,4,0]
-    private const val HIDE_DIAN_ZAN = "hide_dian_zan"                 //点赞提示 [0,1,0,0,0,1,4,0,0] || [0,1,0,0,0,1,4,0,0,0,1]
     private const val HIDE_KAI_BO_LA_E = "hide_kai_bo_la_e"           //开播啦鹅 [0,1,0,0,0,1,4,0,1] || [0,1,0,0,0,1,4,0,1,1,1]
     private const val HIDE_XIAO_SHI_JIE = "hide_xiao_shi_jie"         //我小世界 [0,1,0,0,0,1,4,0,2] || [0,1,0,0,0,1,4,0,1,2,1]
     private const val HIDE_HUI_YUAN = "hide_hui_yuan"                 //开通会员 [0,1,0,0,0,1,4,0,3] || [0,1,0,0,0,1,4,0,1,3,1]
@@ -134,18 +131,6 @@ object SimplifyQQSettingMe : BaseMultiConfigDelayableHook() {
                     }
                 }
             })
-            if (getBooleanConfig(HIDE_DIAN_ZAN)) {
-                for (m: Method in clz.declaredMethods) {
-                    val argt = m.parameterTypes
-                    if (m.name == "V" && !Modifier.isStatic(m.modifiers) && argt.isEmpty()) {
-                        XposedBridge.hookMethod(m, object : XC_MethodHook() {
-                            override fun beforeHookedMethod(param: MethodHookParam?) {
-                                param?.result = null
-                            }
-                        })
-                    }
-                }
-            }
             isInit = true
             true
         } catch (t: Throwable) {
@@ -159,7 +144,7 @@ object SimplifyQQSettingMe : BaseMultiConfigDelayableHook() {
     }
 
     override fun isEnabled(): Boolean {
-        return getBooleanConfig(HIDE_DIAN_ZAN) || getBooleanConfig(HIDE_KAI_BO_LA_E) || getBooleanConfig(HIDE_HUI_YUAN) || getBooleanConfig(HIDE_XIAO_SHI_JIE)
+        return getBooleanConfig(HIDE_KAI_BO_LA_E) || getBooleanConfig(HIDE_HUI_YUAN) || getBooleanConfig(HIDE_XIAO_SHI_JIE)
                 || getBooleanConfig(HIDE_QIAN_BAO) || getBooleanConfig(HIDE_ZHUANG_BAN) || getBooleanConfig(HIDE_QING_LV) || getBooleanConfig(HIDE_SHOU_CANG)
                 || getBooleanConfig(HIDE_XIANG_CE) || getBooleanConfig(HIDE_WEN_JIAN) || getBooleanConfig(HIDE_RI_CHENG) || getBooleanConfig(HIDE_SHI_PIN)
                 || getBooleanConfig(HIDE_XIAO_YOU_XI) || getBooleanConfig(HIDE_WEN_DANG) || getBooleanConfig(HIDE_DA_KA) || getBooleanConfig(HIDE_WANG_KA)

@@ -36,6 +36,7 @@ import me.singleneuron.hook.DebugDump;
 import me.singleneuron.hook.ForceSystemAlbum;
 import me.singleneuron.hook.ForceSystemCamera;
 import me.singleneuron.hook.ForceSystemFile;
+import me.singleneuron.hook.HideProfileBubble;
 import me.singleneuron.hook.NewRoundHead;
 import me.singleneuron.hook.NoApplet;
 import me.singleneuron.hook.decorator.SimpleCheckIn;
@@ -125,6 +126,7 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 RemovePlayTogether.get(),
                 RemoveQbossAD.get(),
                 NoApplet.INSTANCE,
+                HideProfileBubble.INSTANCE,
                 NewRoundHead.INSTANCE,
                 ForceSystemCamera.INSTANCE,
                 AutoMosaicName.INSTANCE,
