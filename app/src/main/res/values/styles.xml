@@ -130,5 +130,31 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="Theme.LagrioDesign" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/mainThemeColor</item>
+        <item name="colorPrimaryVariant">@color/mainThemeColor</item>
+        <item name="colorOnPrimary">@color/firstTextColor</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/mainThemeColor</item>
+        <item name="colorSecondaryVariant">@color/mainThemeColor</item>
+        <item name="colorOnSecondary">@color/firstTextColor</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" >@color/background</item>
+        <!-- Customize your theme here. -->
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowLightStatusBar" >true</item>
+        <item name="colorControlNormal">@color/firstTextColor</item>
+    </style>
+
+    <style name="Toolbar" parent="Widget.MaterialComponents.Toolbar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="colorControlNormal">@color/firstTextColor</item>
+        <item name="android:background">@color/background</item>
+        <item name="elevation">0dp</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="titleTextColor">@color/firstTextColor</item>
+    </style>
 
 </resources>

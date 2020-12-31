@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="themeColor">#99FFFFFF</color>
+    <color name="mainThemeColor">#FF82A8E7</color>
+    <color name="firstTextColor">#FFFFFFFF</color>
+    <color name="secondTextColor">#99FFFFFF</color>
+    <color name="thirdTextColor">#DEFFFFFF</color>
+    <color name="chartTextColor">#FFB0B3BF</color>
+    <color name="textColor_1">#FF9AA0A6</color>
+    <color name="textColor_2">#FF00A956</color>
+    <color name="textColor_3">#FFBA000D</color>
+    <color name="iconColor_1">#FF00A956</color>
+    <color name="background">#FF202124</color>
+    <color name="shapeColor_1">#FF4F5355</color>
+    <color name="shapeColor_2">#FF414142</color>
+    <color name="shapeColor_3">#7800A596</color>
+    <color name="shapeColor_4">#78BA000D</color>
+    <color name="shapeColor_5">#99FFFFFF </color>
+    <color name="dividerColor">#1FFFFFFF</color>
+    <color name="rippleColor">#1AFFFFFF</color>
+    <color name="shapeColor_6">#0AFFFFFF</color>
+    <color name="unusableColor">#61FFFFFF</color>
+</resources>

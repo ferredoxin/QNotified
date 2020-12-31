@@ -14,9 +14,4 @@
     <item type="id" name="jefsRulesSaveButton"/>
     <item type="id" name="jefsRulesCancelButton"/>
     <item type="id" name="jefsRulesResetButton"/>
-
-    <item type="id" name="menu_item_switchTheme"/>
-    <item type="id" name="menu_item_debugInfo"/>
-    <item type="id" name="menu_item_about"/>
-
 </resources>

@@ -1,102 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="0dp"
+        android:stateListAnimator="@null">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:layout_height="wrap_content"
+            android:id="@+id/topAppBar"
+            style="@style/Toolbar"
+            app:menu="@menu/main_v2_toolbar"
+            app:title="@string/app_name" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:ignore="UseAppTint">
-
-    <LinearLayout android:layout_width="match_parent"
-                  android:layout_height="match_parent"
-                  android:orientation="vertical"
-                  android:padding="16dp">
-
-        <LinearLayout android:id="@+id/mainV2_activationStatusLinearLayout"
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:orientation="horizontal"
-                      android:paddingTop="18dp"
-                      android:paddingBottom="18dp"
-                      android:paddingLeft="0dp"
-                      android:paddingRight="0dp"
-                      android:layout_marginBottom="16dp"
-                      android:background="@drawable/bg_yellow_solid">
-
-            <ImageView
-                android:id="@+id/mainV2_activationStatusIcon"
-                android:layout_width="26dp"
-                android:layout_height="26dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="16dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/ic_check_circle" />
+            android:orientation="vertical"
+            android:padding="16dp">
 
             <LinearLayout
+                android:id="@+id/mainV2_activationStatusLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_yellow_solid"
+                android:orientation="horizontal"
+                android:paddingLeft="0dp"
+                android:paddingTop="18dp"
+                android:paddingRight="0dp"
+                android:paddingBottom="18dp">
+
+                <ImageView
+                    android:id="@+id/mainV2_activationStatusIcon"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="16dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_check_circle" />
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/mainV2_activationStatusTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="0dp"
-                    android:text="N/A"
-                    android:textColor="@color/whiteTextColor"
-                    android:textSize="18sp" />
+                    <TextView
+                        android:id="@+id/mainV2_activationStatusTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="0dp"
+                        android:text="N/A"
+                        android:textColor="@color/whiteTextColor"
+                        android:textSize="18sp" />
 
-                <TextView
-                    android:id="@+id/mainV2_activationStatusDesc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="2dp"
-                    android:text="Internal error"
-                    android:textColor="@color/whiteTextColor"
-                    android:textSize="14sp" />
+                    <TextView
+                        android:id="@+id/mainV2_activationStatusDesc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="2dp"
+                        android:text="Internal error"
+                        android:textColor="@color/whiteTextColor"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
-        </LinearLayout>
-
-        <LinearLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="start|top"
-                android:paddingTop="18dp"
-                android:paddingBottom="18dp"
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp"
                 android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_trans_border_ripple"
                 android:clickable="true"
                 android:focusable="true"
-                android:background="@drawable/bg_trans_border_ripple">
+                android:gravity="start|top"
+                android:orientation="horizontal"
+                android:paddingLeft="0dp"
+                android:paddingTop="18dp"
+                android:paddingRight="0dp"
+                android:paddingBottom="18dp">
 
-            <ImageView
-                    android:scaleType="fitXY"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="16dp"
-                    android:src="@drawable/ic_info"
-                    android:tint="@color/themeColor"
+                <ImageView
                     android:layout_width="26dp"
-                    android:layout_height="26dp"/>
+                    android:layout_height="26dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_info"
+                    app:tint="@color/themeColor" />
 
-            <LinearLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="0dp"
-                    android:text="模块版本"
-                    android:textColor="@color/firstTextColor"
-                    android:textSize="18sp" />
-                <TextView
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="0dp"
+                        android:text="模块版本"
+                        android:textColor="@color/firstTextColor"
+                        android:textSize="18sp" />
+
+                    <TextView
                         android:id="@+id/mainTextViewVersion"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -105,114 +127,202 @@
                         android:textColor="@color/secondTextColor"
                         android:textSize="14sp" />
 
-                <TextView
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingTop="4dp"
                         android:text="更新模块后需要重启手机方可生效"
                         android:textColor="@color/thirdTextColor"
                         android:textSize="14sp" />
+                </LinearLayout>
+
             </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/bg_trans_border_ripple"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="start|top"
-            android:orientation="horizontal"
-            android:paddingLeft="0dp"
-            android:paddingTop="18dp"
-            android:paddingRight="0dp"
-            android:paddingBottom="18dp">
-
-            <ImageView
-                android:layout_width="26dp"
-                android:layout_height="26dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="16dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/ic_settings"
-                android:tint="@color/themeColor" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_trans_border_ripple"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="start|top"
+                android:orientation="horizontal"
+                android:paddingLeft="0dp"
+                android:paddingTop="18dp"
+                android:paddingRight="0dp"
+                android:paddingBottom="18dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="0dp"
-                    android:text="模块设置"
-                    android:textSize="18sp"
-                    android:textColor="@color/firstTextColor" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="2dp"
-                    android:text="请在 QQ / TIM 内进行操作"
-                    android:textSize="14sp"
-                    android:textColor="@color/secondTextColor" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="4dp"
-                    android:text="QQ侧滑>设置>QNotified 即可进入功能列表"
-                    android:textSize="14sp"
-                    android:textColor="@color/thirdTextColor" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="4dp"
-                    android:text="暂不支持 轻聊版 / 国际版"
-                    android:textSize="14sp"
-                    android:textColor="@color/thirdTextColor" />
+                <ImageView
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="16dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_settings"
+                    app:tint="@color/themeColor" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingTop="16dp">
+                    android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/mainRelativeLayoutButtonOpenQQ"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
-                        android:background="@color/nullColor"
-                        android:gravity="center"
-                        android:onClick="openModuleSettingForHost"
-                        android:paddingLeft="0dp"
-                        android:paddingTop="2dp"
-                        android:paddingRight="0dp"
-                        android:paddingBottom="2dp"
-                        android:text="QQ"
-                        android:textColor="@color/themeColor"
+                        android:layout_margin="0dp"
+                        android:text="模块设置"
+                        android:textColor="@color/firstTextColor"
                         android:textSize="18sp" />
 
                     <TextView
-                        android:id="@+id/mainRelativeLayoutButtonOpenTIM"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@color/nullColor"
-                        android:gravity="center"
-                        android:onClick="openModuleSettingForHost"
-                        android:paddingLeft="0dp"
                         android:paddingTop="2dp"
-                        android:paddingRight="0dp"
-                        android:paddingBottom="2dp"
-                        android:layout_marginLeft="16dp"
-                        android:text="TIM"
-                        android:textColor="@color/themeColor"
+                        android:text="请在 QQ / TIM 内进行操作"
+                        android:textColor="@color/secondTextColor"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="4dp"
+                        android:text="QQ侧滑>设置>QNotified 即可进入功能列表"
+                        android:textColor="@color/thirdTextColor"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="4dp"
+                        android:text="暂不支持 轻聊版 / 国际版"
+                        android:textColor="@color/thirdTextColor"
+                        android:textSize="14sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingTop="16dp">
+
+                        <TextView
+                            android:id="@+id/mainRelativeLayoutButtonOpenQQ"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:background="@color/nullColor"
+                            android:gravity="center"
+                            android:onClick="openModuleSettingForHost"
+                            android:paddingLeft="0dp"
+                            android:paddingTop="2dp"
+                            android:paddingRight="0dp"
+                            android:paddingBottom="2dp"
+                            android:text="QQ"
+                            android:textColor="@color/themeColor"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:id="@+id/mainRelativeLayoutButtonOpenTIM"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
+                            android:background="@color/nullColor"
+                            android:gravity="center"
+                            android:onClick="openModuleSettingForHost"
+                            android:paddingLeft="0dp"
+                            android:paddingTop="2dp"
+                            android:paddingRight="0dp"
+                            android:paddingBottom="2dp"
+                            android:text="TIM"
+                            android:textColor="@color/themeColor"
+                            android:textSize="18sp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/mainV2_githubRepo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_trans_border_null_ripple"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="start|top"
+                android:onClick="handleClickEvent"
+                android:orientation="horizontal"
+                android:paddingLeft="0dp"
+                android:paddingTop="18dp"
+                android:paddingRight="0dp"
+                android:paddingBottom="18dp">
+
+                <ImageView
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginRight="16dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_github"
+                    app:tint="@color/secondTextColor" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="0dp"
+                        android:text="Github"
+                        android:textColor="@color/firstTextColor"
+                        android:textSize="18sp" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/mainV2_help"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_trans_border_null_ripple"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="start|top"
+                android:onClick="handleClickEvent"
+                android:orientation="horizontal"
+                android:paddingLeft="0dp"
+                android:paddingTop="18dp"
+                android:paddingRight="0dp"
+                android:paddingBottom="18dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_help"
+                    app:tint="@color/secondTextColor" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="0dp"
+                        android:text="帮助"
+                        android:textColor="@color/firstTextColor"
                         android:textSize="18sp" />
 
                 </LinearLayout>
@@ -221,91 +331,6 @@
 
         </LinearLayout>
 
-        <LinearLayout
-                android:id="@+id/mainV2_githubRepo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="start|top"
-                android:paddingTop="18dp"
-                android:paddingBottom="18dp"
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp"
-                android:layout_marginBottom="16dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:onClick="handleClickEvent"
-                android:background="@drawable/bg_trans_border_null_ripple">
+    </androidx.core.widget.NestedScrollView>
 
-            <ImageView
-                    android:scaleType="fitXY"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="0dp"
-                    android:src="@drawable/ic_github"
-                    android:tint="@color/secondTextColor"
-                    android:layout_width="26dp"
-                    android:layout_height="26dp"/>
-
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Github"
-                    android:layout_margin="0dp"
-                    android:textColor="@color/firstTextColor"
-                    android:textSize="18sp"/>
-
-
-            </LinearLayout>
-
-        </LinearLayout>
-        <LinearLayout
-            android:id="@+id/mainV2_help"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="start|top"
-            android:paddingTop="18dp"
-            android:paddingBottom="18dp"
-            android:paddingLeft="0dp"
-            android:paddingRight="0dp"
-            android:layout_marginBottom="16dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:onClick="handleClickEvent"
-            android:background="@drawable/bg_trans_border_null_ripple">
-
-            <ImageView
-                android:scaleType="fitXY"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:src="@drawable/ic_help"
-                android:tint="@color/secondTextColor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="帮助"
-                    android:layout_margin="0dp"
-                    android:textColor="@color/firstTextColor"
-                    android:textSize="18sp"/>
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-</ScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
