@@ -1,5 +1,6 @@
 package me.singleneuron.qn_kernel.tlb
 
+import me.nextalone.hook.ForcedSendOriginalPhoto
 import me.nextalone.hook.HideProfileBubble
 import me.singleneuron.hook.ChangeDrawerWidth
 import me.singleneuron.hook.ForceSystemCamera
@@ -69,6 +70,10 @@ object ConfigTable {
                     QQVersion.QQ_8_4_1 to "azfl",
                     QQVersion.QQ_8_4_5 to "azxy",
                     QQVersion.QQ_8_4_8 to "aymn"
+            ),
+
+            ForcedSendOriginalPhoto::class.java.simpleName to mapOf(
+                    QQVersion.QQ_8_5_0 to 2131375226
             )
     )
 

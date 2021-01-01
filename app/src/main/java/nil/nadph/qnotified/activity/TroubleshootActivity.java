@@ -46,6 +46,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
+import me.nextalone.hook.EnableQLog;
 import me.singleneuron.activity.BugReportActivity;
 import me.singleneuron.data.CardMsgCheckResult;
 import me.singleneuron.hook.DebugDump;
@@ -58,21 +59,36 @@ import nil.nadph.qnotified.config.FriendRecord;
 import nil.nadph.qnotified.remote.GetUserStatusResp;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.util.*;
+import nil.nadph.qnotified.util.ActProxyMgr;
+import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.DexMethodDescriptor;
+import nil.nadph.qnotified.util.Initiator;
+import nil.nadph.qnotified.util.Natives;
+import nil.nadph.qnotified.util.Utils;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.ui.ViewBuilder.*;
+import static nil.nadph.qnotified.ui.ViewBuilder.clickToProxyActAction;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemButton;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit;
+import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
 import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_EXFRIEND_LIST;
 import static nil.nadph.qnotified.util.ActProxyMgr.ACTIVITY_PROXY_ACTION;
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_SUCCESS;
+import static nil.nadph.qnotified.util.Utils.dip2px;
+import static nil.nadph.qnotified.util.Utils.getLongAccountUin;
+import static nil.nadph.qnotified.util.Utils.getShort$Name;
+import static nil.nadph.qnotified.util.Utils.iget_object_or_null;
+import static nil.nadph.qnotified.util.Utils.iput_object;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.showToast;
 
 @SuppressLint("Registered")
 public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
     @Override
     public boolean doOnCreate(Bundle savedInstanceState) {
         super.doOnCreate(savedInstanceState);
-        final LinearLayout ll = new LinearLayout(this);
+        LinearLayout ll = new LinearLayout(this);
         ll.setOrientation(LinearLayout.VERTICAL);
         ViewGroup.LayoutParams mmlp = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
         LinearLayout __ll = new LinearLayout(this);
@@ -104,6 +120,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
         ll.addView(subtitle(this, ""));
         ll.addView(subtitle(this, "反馈"));
         ll.addView(newListItemButton(this, "提交BUG反馈", null, null, clickToProxyActAction(BugReportActivity.class)));
+        ll.addView(newListItemHookSwitchInit(this, "记录QQ的log", "用完关闭，影响性能", EnableQLog.INSTANCE));
         ll.addView(subtitle(this, ""));
         ll.addView(subtitle(this, "以下内容基本上都没用，它们为了修复故障才留在这里。"));
         ll.addView(subtitle(this, "测试"));
@@ -275,7 +292,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
         }
 
         ll.addView(subtitle(this, "SystemClassLoader\n" + ClassLoader.getSystemClassLoader()
-                + "\nContext.getClassLoader()\n" + this.getClassLoader()
+                + "\nContext.getClassLoader()\n" + getClassLoader()
                 + "\nThread.getContextClassLoader()\n" + Thread.currentThread().getContextClassLoader()
                 + "\nInitiator.getHostClassLoader()\n" + Initiator.getHostClassLoader()));
         long ts = Utils.getBuildTimestamp();
@@ -291,7 +308,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
         }
         ll.addView(subtitle(this, info));
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-        this.setContentView(bounceScrollView);
+        setContentView(bounceScrollView);
         LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);
         _lp_fat.weight = 1;
         setTitle("故障排除");
@@ -302,8 +319,8 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
     public View.OnClickListener clickToRefreshUserStatus() {
         return new View.OnClickListener() {
             @Override
-            public void onClick(final View view) {
-                final long uin = Utils.getLongAccountUin();
+            public void onClick(View view) {
+                long uin = Utils.getLongAccountUin();
                 if (uin < 10000) return;
                 new Thread(new Runnable() {
                     @Override
@@ -330,8 +347,8 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                             msg = e.toString();
                             t = e;
                         }
-                        final Throwable finalT = t;
-                        final String finalMsg = msg;
+                        Throwable finalT = t;
+                        String finalMsg = msg;
                         view.post(new Runnable() {
                             @Override
                             public void run() {
