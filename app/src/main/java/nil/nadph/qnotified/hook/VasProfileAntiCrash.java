@@ -26,7 +26,7 @@ import java.lang.reflect.Modifier;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
-import me.singleneuron.util.QQVersion;
+import me.singleneuron.qn_kernel.tlb.ConfigTable;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.Initiator;
@@ -54,25 +54,13 @@ public class VasProfileAntiCrash extends BaseDelayableHook {
     public boolean init() {
         if (inited) return true;
         try {
-            int versionCode32 = (int) Utils.getHostVersionCode();
-            //switch only support int, not long
-            switch (versionCode32) {
-                case (int) QQVersion.QQ_8_4_1: {
-                    doHook("azfl");
-                    break;
-                }
-                case (int) QQVersion.QQ_8_4_5: {
-                    doHook("azxy");
-                    break;
-                }
-                case (int) QQVersion.QQ_8_4_8: {
-                     doHook("aymn");
-                     break;
-                 }
-                default: {
-                    doHook(null);
-                }
+            String className = null;
+            try {
+                className = ConfigTable.INSTANCE.getConfig(VasProfileAntiCrash.class.getSimpleName());
+            } catch (Exception e) {
+                Utils.log(e);
             }
+            doHook(className);
             inited = true;
             return true;
         } catch (Throwable e) {
