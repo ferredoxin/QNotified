@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:padding="20dp">
+    <CheckBox
+            android:id="@+id/auto_renew_fire_enable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#2196F3"
+            android:textSize="16sp"
+            android:text="启用自动续火"/>
+
+    <LinearLayout
+            android:id="@+id/auto_renew_fire_panel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="自动续火消息:"
+                android:textSize="16sp"/>
+        <EditText
+                android:id="@+id/auto_renew_fire_keyword_et"
+                android:hint="续火消息内容(仅文本 4个字以内)"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:inputType="textMultiLine"/>
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="说明:
+                \n启用后将会在每天0点之后给对方发一条消息
+                \n此处开关为总开关 请单独在好友的设置页面打开自动续火开关
+                \n无论你是否给TA发过消息 本功能都会发送续火消息
+                \n如果你在续火消息发送前添加了好友 那么之后将会发送给这个好友
+                \n如果今天已经发送过续火消息了 则再添加好友并不会发送续火消息"/>
+    </LinearLayout>
+</LinearLayout>
