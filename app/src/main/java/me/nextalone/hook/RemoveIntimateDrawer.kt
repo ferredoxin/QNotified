@@ -1,4 +1,4 @@
-package me.kyuubiran.hook
+package me.nextalone.hook
 
 import android.os.Looper
 import android.view.View
@@ -16,7 +16,6 @@ import nil.nadph.qnotified.util.Utils
 import nil.nadph.qnotified.util.Utils.logi
 import java.lang.reflect.Method
 
-//移除傻屌亲密关系抽屉
 object RemoveIntimateDrawer : BaseDelayableHook() {
     private const val kr_remove_intimate_drawer: String = "kr_remove_intimate_drawer"
     var isInit = false
