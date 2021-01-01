@@ -18,12 +18,4 @@ abstract class BaseDelayableConditionalHookAdapter @JvmOverloads constructor(str
         return condition&&super.checkEnabled()
     }
 
-    internal open fun getClass(): String {
-        throw RuntimeException("$cfgName :Unsupported QQ Version")
-    }
-
-    internal open fun getID(): Int {
-        throw RuntimeException("$cfgName :Unsupported QQ Version")
-    }
-
 }
