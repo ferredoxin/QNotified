@@ -11,7 +11,7 @@
     </item>
 
     <item>
-        <ripple android:color="#143C4043">
+        <ripple android:color="@color/rippleColor">
             <item android:id="@android:id/mask">
                 <shape android:shape="rectangle">
                     <solid android:color="#000000"/>
