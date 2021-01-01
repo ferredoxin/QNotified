@@ -51,6 +51,7 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
 import me.kyuubiran.hook.RemoveCameraButton;
+import me.kyuubiran.hook.RemoveRedDot;
 import nil.nadph.qnotified.activity.SettingsActivity;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
@@ -322,6 +323,7 @@ public class MainHook {
         BaseDelayableHook.allowEarlyInit(GagInfoDisclosure.get());
         BaseDelayableHook.allowEarlyInit(CustomSplash.get());
         BaseDelayableHook.allowEarlyInit(RemoveCameraButton.get());
+        BaseDelayableHook.allowEarlyInit(RemoveRedDot.INSTANCE);
         if (SyncUtils.isMainProcess()) {
             ConfigItems.removePreviousCacheIfNecessary();
             injectStartupHookForMain(ctx);
