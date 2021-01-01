@@ -18,13 +18,14 @@
  */
 package nil.nadph.qnotified.hook;
 
+import ltd.nextalone.hook.HideProfileBubble;
+import ltd.nextalone.hook.RemoveIntimateDrawer;
 import me.kyuubiran.hook.AutoMosaicName;
 import me.kyuubiran.hook.DisableScreenshotHelper;
 import me.kyuubiran.hook.RemoveCameraButton;
 import me.kyuubiran.hook.RemoveDailySign;
 import me.kyuubiran.hook.RemoveFuckingDiyCard;
 import me.kyuubiran.hook.RemoveGroupApp;
-import me.kyuubiran.hook.RemoveIntimateDrawer;
 import me.kyuubiran.hook.RemovePlayTogether;
 import me.kyuubiran.hook.RemoveQbossAD;
 import me.kyuubiran.hook.RevokeMsg;
@@ -36,7 +37,6 @@ import me.singleneuron.hook.DebugDump;
 import me.singleneuron.hook.ForceSystemAlbum;
 import me.singleneuron.hook.ForceSystemCamera;
 import me.singleneuron.hook.ForceSystemFile;
-import me.singleneuron.hook.HideProfileBubble;
 import me.singleneuron.hook.NewRoundHead;
 import me.singleneuron.hook.NoApplet;
 import me.singleneuron.hook.decorator.SimpleCheckIn;
