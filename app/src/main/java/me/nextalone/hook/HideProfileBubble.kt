@@ -1,4 +1,4 @@
-package me.singleneuron.hook
+package me.nextalone.hook
 
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
