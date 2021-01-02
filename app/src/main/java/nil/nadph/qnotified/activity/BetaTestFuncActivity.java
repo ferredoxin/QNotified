@@ -27,6 +27,7 @@ import android.widget.TextView;
 import com.tencent.mobileqq.widget.BounceScrollView;
 import me.kyuubiran.hook.RemoveRedDot;
 import me.kyuubiran.hook.testhook.CutMessage;
+import me.nextalone.hook.ForcedSendOriginalPhoto;
 import nil.nadph.qnotified.hook.ChatTailHook;
 import nil.nadph.qnotified.hook.MutePokePacket;
 import nil.nadph.qnotified.hook.PttForwardHook;
@@ -81,7 +82,7 @@ public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
                 public void run() {
                     try {
                         Thread.sleep(3000);
-                        BetaTestFuncActivity.this.finish();
+                        finish();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -91,6 +92,7 @@ public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
             ll.addView(subtitle(this, "Beta测试功能 仅用于测试稳定性[可能会存在BUG 包括但不限于功能不生效、" + _hostName + "出现卡顿乃至" + _hostName + "闪退 请酌情开启]"));
             ll.addView(newListItemSwitchConfig(this, "保存语音", "需要打开语音转发才能使用本功能", PttForwardHook.qn_enable_ptt_save, false));
             ll.addView(newListItemHookSwitchInit(this, "移除小红点", "仅供测试", RemoveRedDot.INSTANCE));
+            ll.addView(newListItemHookSwitchInit(this, "聊天自动发送原图", "仅供测试", ForcedSendOriginalPhoto.INSTANCE));
             ll.addView(_t = newListItemButton(this, "自定义聊天小尾巴", "回车发送不生效", "N/A", clickToProxyActAction(ACTION_CHAT_TAIL_CONFIG_ACTIVITY)));
             __tv_chat_tail_status = _t.findViewById(R_ID_VALUE);
             ll.addView(newListItemHookSwitchInit(this, "屏蔽戳一戳", "OvO", MutePokePacket.get()));
@@ -100,7 +102,7 @@ public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
             __js_status = __t.findViewById(R_ID_VALUE);
         }
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-        this.setContentView(bounceScrollView);
+        setContentView(bounceScrollView);
         LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);
         _lp_fat.weight = 1;
 
