@@ -69,6 +69,8 @@ QNotified is a Xposed module for mobile QQ that aims to:
 30. 使用系统相机
 31. 使用系统相册
 32. 使用系统文件
+33. 聊天自动发送原图
+34. 隐藏小红点
 
 注1: 卡片消息及群发文本这两个功能因大量被用于广告引流而废除
 
