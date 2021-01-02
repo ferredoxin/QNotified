@@ -20,6 +20,8 @@ package nil.nadph.qnotified.hook;
 
 import me.kyuubiran.hook.*;
 import me.kyuubiran.hook.testhook.CutMessage;
+import me.nextalone.hook.EnableQLog;
+import me.nextalone.hook.ForcedSendOriginalPhoto;
 import me.nextalone.hook.HideProfileBubble;
 import me.nextalone.hook.RemoveIntimateDrawer;
 import me.singleneuron.hook.*;
@@ -121,6 +123,8 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
                 RemoveDailySign.INSTANCE,
                 RemoveFuckingDiyCard.INSTANCE,
                 RemoveRedDot.INSTANCE,
+                EnableQLog.INSTANCE,
+                ForcedSendOriginalPhoto.INSTANCE
         };
         return sAllHooks;
     }
