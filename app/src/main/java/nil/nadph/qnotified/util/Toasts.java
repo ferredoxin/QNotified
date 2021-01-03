@@ -145,11 +145,11 @@ public class Toasts {
         showToast(ctx, TYPE_ERROR, text, LENGTH_SHORT);
     }
 
-    public static void plain(Context ctx, @NonNull CharSequence text, int duration) {
+    public static void show(Context ctx, @NonNull CharSequence text, int duration) {
         showToast(ctx, TYPE_PLAIN, text, duration);
     }
 
-    public static void plain(Context ctx, @NonNull CharSequence text) {
+    public static void show(Context ctx, @NonNull CharSequence text) {
         showToast(ctx, TYPE_PLAIN, text, LENGTH_SHORT);
     }
 }

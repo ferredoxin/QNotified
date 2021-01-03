@@ -22,7 +22,6 @@ import android.os.Looper;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
@@ -37,16 +36,18 @@ public abstract class CommonDelayableHook extends BaseDelayableHook {
 
     private boolean mInited = false;
     private final String mKeyName;
+    private final boolean mDefaultEnabled;
     private final int mTargetProcess;
     private final Step[] mPreconditions;
 
-    protected CommonDelayableHook(@NonNull String keyName, int targetProcess) {
-        this(keyName, targetProcess, null);
+    protected CommonDelayableHook(@NonNull String keyName, int targetProcess, @NonNull Step... preconditions) {
+        this(keyName, targetProcess, false, preconditions);
     }
 
-    protected CommonDelayableHook(@NonNull String keyName, int targetProcess, @Nullable Step[] preconditions) {
+    protected CommonDelayableHook(@NonNull String keyName, int targetProcess, boolean defEnabled, @NonNull Step... preconditions) {
         mKeyName = keyName;
         mTargetProcess = targetProcess;
+        mDefaultEnabled = defEnabled;
         if (preconditions == null) {
             preconditions = new Step[0];
         }
@@ -93,7 +94,7 @@ public abstract class CommonDelayableHook extends BaseDelayableHook {
     @Override
     public boolean isEnabled() {
         try {
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(mKeyName);
+            return ConfigManager.getDefaultConfig().getBooleanOrDefault(mKeyName, mDefaultEnabled);
         } catch (Exception e) {
             log(e);
             return false;

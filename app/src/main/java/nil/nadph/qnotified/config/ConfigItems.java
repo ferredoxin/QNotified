@@ -20,8 +20,11 @@ package nil.nadph.qnotified.config;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.util.MainProcess;
@@ -130,6 +133,34 @@ public class ConfigItems {
         }
     };
 
+    public static final SwitchConfigItem bug_unlock_msg_length = switchConfigAtDefault("bug_unlock_msg_length", false);
+
+    @NonNull
+    private static SwitchConfigItem switchConfigAtDefault(final @NonNull String name, final boolean defVal) {
+        Objects.requireNonNull(name, "name");
+        return new SwitchConfigItem() {
+
+            @Override
+            public boolean isValid() {
+                return true;
+            }
+
+            @Override
+            public boolean sync() {
+                return ConfigManager.getDefaultConfig().sync();
+            }
+
+            @Override
+            public boolean isEnabled() {
+                return ConfigManager.getDefaultConfig().getBooleanOrDefault(name, defVal);
+            }
+
+            @Override
+            public void setEnabled(boolean enabled) {
+                ConfigManager.getDefaultConfig().putBoolean(name, enabled);
+            }
+        };
+    }
 
     @MainProcess
     public static void removePreviousCacheIfNecessary() {

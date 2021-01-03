@@ -159,6 +159,7 @@ public abstract class AbsDelayableHook implements SwitchConfigItem {
                     RemoveRedDot.INSTANCE,
                     EnableQLog.INSTANCE,
                     ForcedSendOriginalPhoto.INSTANCE,
+                    InterceptZipBomb.INSTANCE,
             };
         }
         return sAllHooks;
