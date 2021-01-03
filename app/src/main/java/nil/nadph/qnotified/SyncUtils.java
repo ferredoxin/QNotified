@@ -30,7 +30,7 @@ import android.os.Looper;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import nil.nadph.qnotified.hook.BaseDelayableHook;
+import nil.nadph.qnotified.hook.AbsDelayableHook;
 
 import static nil.nadph.qnotified.util.Utils.*;
 
@@ -106,7 +106,7 @@ public class SyncUtils {
                     int targetType = intent.getIntExtra("process", 0);
                     int hookId = intent.getIntExtra("hook", -1);
                     if (hookId != -1 && (myType & targetType) != 0) {
-                        BaseDelayableHook hook = BaseDelayableHook.getHookByType(hookId);
+                        AbsDelayableHook hook = AbsDelayableHook.getHookByType(hookId);
                         //log("Remote: recv init " + hook);
                         if (hook != null) {
                             try {

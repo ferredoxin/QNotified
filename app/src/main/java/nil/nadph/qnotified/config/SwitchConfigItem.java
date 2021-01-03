@@ -19,6 +19,7 @@
 package nil.nadph.qnotified.config;
 
 public interface SwitchConfigItem extends AbstractConfigItem {
+    @Override
     boolean isValid();
 
     boolean isEnabled();

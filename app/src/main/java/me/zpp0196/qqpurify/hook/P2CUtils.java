@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import nil.nadph.qnotified.config.AbstractConfigItem;
 import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.hook.BaseDelayableHook;
+import nil.nadph.qnotified.hook.AbsDelayableHook;
 
 public class P2CUtils {
 
@@ -14,8 +14,8 @@ public class P2CUtils {
     }
 
     @Nullable
-    private static BaseDelayableHook doFindHookByName(String name) {
-        for (BaseDelayableHook h : BaseDelayableHook.queryDelayableHooks()) {
+    private static AbsDelayableHook doFindHookByName(String name) {
+        for (AbsDelayableHook h : AbsDelayableHook.queryDelayableHooks()) {
             if (h.getClass().getSimpleName().equals(name)) {
                 return h;
             }
