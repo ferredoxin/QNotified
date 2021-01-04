@@ -2,10 +2,10 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="标题栏">
         <SwitchPreference
-                android:key="hideTotalNumber"
+                android:key="HideTotalNumber"
                 android:title="隐藏总人数"/>
         <SwitchPreference
-                android:key="hideOnlineNumber"
+                android:key="HideOnlineNumber"
                 android:title="隐藏在线人数"/>
         <SwitchPreference
                 android:key="RemovePlayTogether"

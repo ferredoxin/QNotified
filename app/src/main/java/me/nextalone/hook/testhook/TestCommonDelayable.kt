@@ -1,38 +1,37 @@
-package me.nextalone.hook
+package me.nextalone.hook.testhook
 
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import me.kyuubiran.util.getMethods
+import me.nextalone.util.logd
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.LicenseStatus
 import nil.nadph.qnotified.util.Utils
 import java.lang.reflect.Method
 
-object EnableQLog : CommonDelayableHook("na_enable_qlog") {
+object TestCommonDelayable : CommonDelayableHook("na_test_base_delayable_kt") {
 
     override fun initOnce(): Boolean {
         return try {
-            for (m: Method in getMethods("com.tencent.qphone.base.util.QLog")) {
+            val hookSimpleName = this::class.java.simpleName
+            logd("S", hookSimpleName)
+            val className = ""
+            for (m: Method in getMethods(className)) {
+                logd("C", className)
                 val argt = m.parameterTypes
-                if (m.name == "isColorLevel" && argt.isEmpty()) {
+                if (m.name == "methodName" && argt.size == 1) {
+                    logd("M", m.name)
                     XposedBridge.hookMethod(m, object : XC_MethodHook() {
                         override fun beforeHookedMethod(param: MethodHookParam) {
                             if (LicenseStatus.sDisableCommonHooks) return
                             if (!isEnabled) return
-                            param.result = true
+                            logd("B", hookSimpleName)
                         }
-                    })
-                }
-            }
-            for (m: Method in getMethods("com.tencent.qphone.base.util.QLog")) {
-                val argt = m.parameterTypes
-                if (m.name == "getTag" && argt.size == 1 && argt[0] == String::class.java) {
-                    XposedBridge.hookMethod(m, object : XC_MethodHook() {
+
                         override fun afterHookedMethod(param: MethodHookParam) {
                             if (LicenseStatus.sDisableCommonHooks) return
                             if (!isEnabled) return
-                            val tag = param.args[0]
-                            param.result = "NAdump $tag"
+                            logd("A", hookSimpleName)
                         }
                     })
                 }
