@@ -1220,7 +1220,7 @@ public class Utils {
             return null;
         }
     }
-    
+
     public static Object getFriendListHandler() {
         if (Utils.getHostVersionCode() >= QQVersion.QQ_8_5_0) {
             try {
@@ -1267,7 +1267,7 @@ public class Utils {
             }
         }
     }
-    
+
     @Deprecated
     public static Object getBusinessHandler(int type) {
         try {
@@ -1571,94 +1571,21 @@ public class Utils {
         return "\"" + s.replace("\"", "\"\"") + "\"";
     }
 
-    private static Method method_Toast_show;
-    private static Method method_Toast_makeText;
-    private static Class clazz_QQToast;
-
     /**
-     * Make a QQ custom toast.
-     *
-     * @param context  The context to use.
-     * @param type     The type of toast, Either {@link #TOAST_TYPE_INFO}, {@link #TOAST_TYPE_ERROR}
-     *                 or {@link #TOAST_TYPE_SUCCESS}
-     * @param text     The text to show.
-     * @param duration How long to display the message.  Either {@link android.widget.Toast#LENGTH_SHORT} or
-     *                 {@link android.widget.Toast#LENGTH_LONG}
+     * @deprecated Use ${@link Toasts#showToast(Context, int, CharSequence, int)} instead.
      */
+    @Deprecated
     public static void showToast(Context context, int type, CharSequence text, int duration) {
-        runOnUiThread(() -> {
-            try {
-                if (clazz_QQToast == null) {
-                    clazz_QQToast = load("com/tencent/mobileqq/widget/QQToast");
-                }
-                if (clazz_QQToast == null) {
-                    Class clz = load("com/tencent/mobileqq/activity/aio/doodle/DoodleLayout");
-                    assert clz != null;
-                    Field[] fs = clz.getDeclaredFields();
-                    for (Field f : fs) {
-                        if (View.class.isAssignableFrom(f.getType())) continue;
-                        if (f.getType().isPrimitive()) continue;
-                        if (f.getType().isInterface()) continue;
-                        clazz_QQToast = f.getType();
-                    }
-                }
-                if (method_Toast_show == null) {
-                    Method[] ms = clazz_QQToast.getMethods();
-                    for (Method m : ms) {
-                        if (Toast.class.equals(m.getReturnType()) && m.getParameterTypes().length == 0) {
-                            method_Toast_show = m;
-                            break;
-                        }
-                    }
-                }
-                if (method_Toast_makeText == null) {
-                    try {
-                        method_Toast_makeText = clazz_QQToast.getMethod("a", Context.class, int.class, CharSequence.class, int.class);
-                    } catch (NoSuchMethodException e) {
-                        try {
-                            method_Toast_makeText = clazz_QQToast.getMethod("b", Context.class, int.class, CharSequence.class, int.class);
-                        } catch (NoSuchMethodException e2) {
-                            try {
-                                 method_Toast_makeText = clazz_QQToast.getMethod("makeText",
-                                         Context.class,
-                                         int.class, CharSequence.class, int.class);
-                             } catch (NoSuchMethodException e3) {
-                                 throw e;
-                             }
-                        }
-                    }
-                }
-                Object this_QQToast_does_NOT_extend_a_standard_Toast_so_please_do_NOT_cast_it_to_Toast
-                        = method_Toast_makeText.invoke(null, context, type, text, duration);
-                method_Toast_show.invoke(this_QQToast_does_NOT_extend_a_standard_Toast_so_please_do_NOT_cast_it_to_Toast);
-                // However, the return value of QQToast.show() is a standard Toast
-            } catch (Exception e) {
-                log(e);
-                Toast.makeText(context, text, duration).show();
-            }
-        });
+        Toasts.showToast(context, type, text, duration);
     }
 
     public static void showToastShort(Context ctx, CharSequence str) {
-        showToast(ctx, 0, str, 0);
+        Toasts.showToast(ctx, 0, str, 0);
     }
 
     //@Deprecated
     public static void showErrorToastAnywhere(String text) {
-        try {
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, text, Toast.LENGTH_SHORT);
-            } else {
-                SyncUtils.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, text, Toast.LENGTH_SHORT);
-                    }
-                });
-            }
-        } catch (Exception e) {
-            log(e);
-        }
+        Toasts.error(getApplication(), text, Toasts.LENGTH_SHORT);
     }
 
     public static void dumpTrace() {

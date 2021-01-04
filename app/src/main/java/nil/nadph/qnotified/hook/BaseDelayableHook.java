@@ -18,135 +18,24 @@
  */
 package nil.nadph.qnotified.hook;
 
-import me.kyuubiran.hook.*;
-import me.kyuubiran.hook.testhook.CutMessage;
-import me.nextalone.hook.EnableQLog;
-import me.nextalone.hook.ForcedSendOriginalPhoto;
-import me.nextalone.hook.HideProfileBubble;
-import me.nextalone.hook.RemoveIntimateDrawer;
-import me.singleneuron.hook.*;
-import me.singleneuron.hook.decorator.SimpleCheckIn;
-import me.singleneuron.qn_kernel.dispacher.ItemBuilderFactoryHook;
-import me.singleneuron.qn_kernel.dispacher.StartActivityHook;
 import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.config.SwitchConfigItem;
-import nil.nadph.qnotified.hook.rikka.*;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.NonNull;
-import nil.nadph.qnotified.util.Utils;
 
-public abstract class BaseDelayableHook implements SwitchConfigItem {
+public abstract class BaseDelayableHook extends AbsDelayableHook {
 
-    private static BaseDelayableHook[] sAllHooks;
-
-    private int myId = -1;
-
-    public static BaseDelayableHook getHookByType(int hookId) {
-        return queryDelayableHooks()[hookId];
-    }
-
-    public static BaseDelayableHook[] queryDelayableHooks() {
-        if (sAllHooks == null) sAllHooks = new BaseDelayableHook[]{
-                SettingEntryHook.get(),
-                DelDetectorHook.get(),
-                PttForwardHook.get(),
-                MuteAtAllAndRedPacket.get(),
-                CardMsgHook.get(),
-                ChatTailHook.get(),
-                FlashPicHook.get(),
-                RepeaterHook.get(),
-                EmoPicHook.get(),
-                //GalleryBgHook.get(),
-                FavMoreEmo.get(),
-                RevokeMsgHook.get(),
-                FakeVipHook.get(),
-                HideGiftAnim.get(),
-                PreUpgradeHook.get(),
-                CheatHook.get(),
-                RoundAvatarHook.get(),
-                $endGiftHook.get(),
-                MultiForwardAvatarHook.get(),
-                ReplyNoAtHook.get(),
-                MuteQZoneThumbsUp.get(),
-                FakeBatteryHook.get(),
-                FileRecvRedirect.get(),
-                ShowPicGagHook.get(),
-                DefaultBubbleHook.get(),
-                DarkOverlayHook.get(),
-                GagInfoDisclosure.get(),
-                PicMd5Hook.get(),
-                ShowMsgCount.get(),
-                IgnoreDiyCard.get(),
-                InspectMessage.get(),
-                DefaultFont.get(),
-                BaseApk.get(),
-                DisableScreenshotHelper.get(),
-                OneTapTwentyLikes.get(),
-                DisableEnterEffect.get(),
-                DisableColorNickName.get(),
-                CustomMsgTimeFormat.get(),
-                RemoveSendGiftAd.get(),
-                DisableDropSticker.get(),
-//                DisableShakeWindow.get(),
-                DisablePokeEffect.get(),
-                RemoveMiniProgramAd.get(),
-                JumpController.get(),
-                CustomDeviceModel.get(),
-                CustomSplash.get(),
-                DisableAvatarDecoration.get(),
-                RemoveCameraButton.get(),
-                RemovePlayTogether.get(),
-                RemoveQbossAD.get(),
-                NoApplet.INSTANCE,
-                HideProfileBubble.INSTANCE,
-                NewRoundHead.INSTANCE,
-                ForceSystemCamera.INSTANCE,
-                AutoMosaicName.INSTANCE,
-                ForceSystemAlbum.INSTANCE,
-                ForceSystemFile.INSTANCE,
-                ShowSelfMsgByLeft.INSTANCE,
-                RemoveGroupApp.INSTANCE,
-                RemoveIntimateDrawer.INSTANCE,
-                ScriptEventHook.get(),
-                InputButtonHook.get(),
-                SimplifyQQSettingMe.INSTANCE,
-                DebugDump.INSTANCE,
-                ChangeDrawerWidth.INSTANCE,
-                CutMessage.INSTANCE,
-                VasProfileAntiCrash.get(),
-                RevokeMsg.INSTANCE,
-                ItemBuilderFactoryHook.INSTANCE,
-                SimpleCheckIn.INSTANCE,
-                StartActivityHook.INSTANCE,
-//                RemovePokeGrayTips.INSTANCE,
-                ArbitraryFrdSourceId.get(),
-                RemoveDailySign.INSTANCE,
-                RemoveFuckingDiyCard.INSTANCE,
-                RemoveRedDot.INSTANCE,
-                EnableQLog.INSTANCE,
-                ForcedSendOriginalPhoto.INSTANCE
-        };
-        return sAllHooks;
-    }
-
-    public static void allowEarlyInit(BaseDelayableHook hook) {
-        if (hook == null) return;
-        try {
-            if (hook.isTargetProc() && hook.isEnabled() && hook.checkPreconditions() && !hook.isInited())
-                hook.init();
-        } catch (Throwable e) {
-            Utils.log(e);
-        }
-    }
-
+    @Override
     public boolean isTargetProc() {
         return (getEffectiveProc() & SyncUtils.getProcessType()) != 0;
     }
 
+    @Override
     public abstract int getEffectiveProc();
 
+    @Override
     public abstract boolean isInited();
 
+    @Override
     public abstract boolean init();
 
     @Override
@@ -155,6 +44,7 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
     }
 
     @NonNull
+    @Override
     public abstract Step[] getPreconditions();
 
     @Override
@@ -162,40 +52,15 @@ public abstract class BaseDelayableHook implements SwitchConfigItem {
         return true;
     }
 
+    @Override
     public boolean checkPreconditions() {
         for (Step i : getPreconditions()) {
-            if (!i.isDone()) return false;
+            if (!i.isDone()) {
+                return false;
+            }
         }
         return true;
     }
-
-    public int getId() {
-        if (myId != -1) return myId;
-        BaseDelayableHook[] hooks = queryDelayableHooks();
-        for (int i = 0; i < hooks.length; i++) {
-            if (hooks[i].getClass().equals(getClass())) {
-                myId = i;
-                return myId;
-            }
-        }
-        return -1;
-    }
-
-    /**
-     * safe to call, no Throwable allowed
-     *
-     * @return whether the config item is enabled
-     */
-    @Override
-    public abstract boolean isEnabled();
-
-    /**
-     * This method must be safe to call even if it is NOT inited
-     *
-     * @param enabled has no effect if isValid() returns false
-     */
-    @Override
-    public abstract void setEnabled(boolean enabled);
 
     @Override
     public String toString() {
