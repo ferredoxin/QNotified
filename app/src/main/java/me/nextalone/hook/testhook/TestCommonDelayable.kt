@@ -1,30 +1,37 @@
-package me.nextalone.hook
+package me.nextalone.hook.testhook
 
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import me.kyuubiran.util.getMethods
-import me.singleneuron.util.QQVersion
+import me.nextalone.util.logd
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.LicenseStatus
 import nil.nadph.qnotified.util.Utils
 import java.lang.reflect.Method
 
-object HideOnlineNumber : CommonDelayableHook("na_hide_online_number") {
+object TestCommonDelayable : CommonDelayableHook("na_test_base_delayable_kt") {
+
     override fun initOnce(): Boolean {
         return try {
-//            val classSimpleName = this::class.java.simpleName
-            var className = "com.tencent.mobileqq.activity.aio.core.TroopChatPie"
-            if (Utils.getHostVersionCode() <= QQVersion.QQ_8_4_8) {
-                className = "com.tencent.mobileqq.activity.aio.rebuild.TroopChatPie"
-            }
+            val hookSimpleName = this::class.java.simpleName
+            logd("S", hookSimpleName)
+            val className = ""
             for (m: Method in getMethods(className)) {
+                logd("C", className)
                 val argt = m.parameterTypes
-                if (m.name == "a" && argt.size == 2 && argt[0] == String::class.java && argt[1] == Boolean::class.java) {
+                if (m.name == "methodName" && argt.size == 1) {
+                    logd("M", m.name)
                     XposedBridge.hookMethod(m, object : XC_MethodHook() {
                         override fun beforeHookedMethod(param: MethodHookParam) {
                             if (LicenseStatus.sDisableCommonHooks) return
                             if (!isEnabled) return
-                            param.args[0] = ""
+                            logd("B", hookSimpleName)
+                        }
+
+                        override fun afterHookedMethod(param: MethodHookParam) {
+                            if (LicenseStatus.sDisableCommonHooks) return
+                            if (!isEnabled) return
+                            logd("A", hookSimpleName)
                         }
                     })
                 }
