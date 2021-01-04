@@ -21,6 +21,7 @@ package nil.nadph.qnotified.activity;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -49,6 +51,7 @@ import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.databinding.MainV2Binding;
 import nil.nadph.qnotified.util.Natives;
+import nil.nadph.qnotified.util.UiThread;
 import nil.nadph.qnotified.util.Utils;
 
 public class ConfigV2Activity extends AppCompatActivity {
@@ -134,6 +137,13 @@ public class ConfigV2Activity extends AppCompatActivity {
                 }
             }
         });
+        mainV2Binding.mainV2ShowLauncherIconSwitch.setChecked(isLauncherIconEnabled());
+        mainV2Binding.mainV2ShowLauncherIconSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                setLauncherIconEnabled(isChecked);
+            }
+        });
     }
 
     @Override
@@ -183,8 +193,34 @@ public class ConfigV2Activity extends AppCompatActivity {
                         .setCancelable(true).setPositiveButton(android.R.string.ok, null).show();
                 break;
             }
+            case R.id.mainV2_showLauncherIconLayout: {
+                mainV2Binding.mainV2ShowLauncherIconSwitch.toggle();
+            }
             default: {
             }
         }
+    }
+
+    private static final String ALIAS_ACTIVITY_NAME = "nil.nadph.qnotified.activity.ConfigV2ActivityAlias";
+
+    boolean isLauncherIconEnabled() {
+        try {
+            PackageManager packageManager = getPackageManager();
+            int state = packageManager.getComponentEnabledSetting(
+                    new ComponentName(this, ALIAS_ACTIVITY_NAME));
+            return state == PackageManager.COMPONENT_ENABLED_STATE_ENABLED ||
+                    state == PackageManager.COMPONENT_ENABLED_STATE_DEFAULT;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @UiThread
+    void setLauncherIconEnabled(boolean enabled) {
+        getPackageManager().setComponentEnabledSetting(
+                new ComponentName(this, ALIAS_ACTIVITY_NAME),
+                enabled ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED :
+                        PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP);
     }
 }

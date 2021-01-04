@@ -12,13 +12,47 @@
         android:stateListAnimator="@null">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:layout_height="wrap_content"
             android:id="@+id/topAppBar"
             style="@style/Toolbar"
+            android:layout_height="wrap_content"
             app:menu="@menu/main_v2_toolbar"
             app:title="@string/app_name" />
 
     </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginEnd="56dp"
+        android:gravity="center_vertical|end"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/mainV2_showLauncherIconLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_ripple_rect"
+            android:gravity="center_vertical"
+            android:onClick="handleClickEvent"
+            android:orientation="horizontal"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="显示桌面图标"
+                android:textColor="@color/firstTextColor"
+                android:textSize="16sp" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/mainV2_showLauncherIconSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"

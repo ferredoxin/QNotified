@@ -5,9 +5,10 @@
         <SwitchPreference
                 android:key="disableModule"
                 android:title="停用模块"/>
-        <SwitchPreference
-                android:key="displayDesktop"
-                android:title="显示桌面图标"/>
+        <Preference
+            android:key="displayDesktop"
+            android:title="显示/隐藏桌面图标"
+            app:summary="点此跳转" />
         <Preference
                 android:key="restoreDefault"
                 android:title="恢复默认设置"/>
