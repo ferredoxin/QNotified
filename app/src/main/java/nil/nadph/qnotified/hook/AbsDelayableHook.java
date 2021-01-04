@@ -35,7 +35,9 @@ import me.kyuubiran.hook.SimplifyQQSettingMe;
 import me.kyuubiran.hook.testhook.CutMessage;
 import me.nextalone.hook.EnableQLog;
 import me.nextalone.hook.ForcedSendOriginalPhoto;
+import me.nextalone.hook.HideOnlineNumber;
 import me.nextalone.hook.HideProfileBubble;
+import me.nextalone.hook.HideTotalNumber;
 import me.nextalone.hook.RemoveIntimateDrawer;
 import me.singleneuron.hook.ChangeDrawerWidth;
 import me.singleneuron.hook.DebugDump;
@@ -160,6 +162,8 @@ public abstract class AbsDelayableHook implements SwitchConfigItem {
                     EnableQLog.INSTANCE,
                     ForcedSendOriginalPhoto.INSTANCE,
                     InterceptZipBomb.INSTANCE,
+                    HideTotalNumber.INSTANCE,
+                    HideOnlineNumber.INSTANCE
             };
         }
         return sAllHooks;
