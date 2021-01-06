@@ -8,7 +8,7 @@
         <Preference
             android:key="displayDesktop"
             android:title="显示/隐藏桌面图标"
-            app:summary="点此跳转" />
+            app:summary="点此跳转后在右上角菜单中设置" />
         <Preference
             android:key="restoreDefault"
             android:title="恢复默认设置" />
