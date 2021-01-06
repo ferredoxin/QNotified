@@ -21,11 +21,13 @@ package nil.nadph.qnotified.activity;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -47,8 +49,10 @@ import me.singleneuron.util.HookStatue;
 import nil.nadph.qnotified.HookEntry;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
+import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.databinding.MainV2Binding;
 import nil.nadph.qnotified.util.Natives;
+import nil.nadph.qnotified.util.UiThread;
 import nil.nadph.qnotified.util.Utils;
 
 public class ConfigV2Activity extends AppCompatActivity {
@@ -128,6 +132,11 @@ public class ConfigV2Activity extends AppCompatActivity {
                         Toast.makeText(ConfigV2Activity.this, "暂不支持", Toast.LENGTH_SHORT).show();
                         return true;
                     }
+                    case R.id.mainV2_menuItem_toggleDesktopIcon: {
+                        setLauncherIconEnabled(!isLauncherIconEnabled());
+                        SyncUtils.postDelayed(() -> updateMenuItems(), 500);
+                        return true;
+                    }
                     default: {
                         return ConfigV2Activity.super.onOptionsItemSelected(item);
                     }
@@ -186,5 +195,43 @@ public class ConfigV2Activity extends AppCompatActivity {
             default: {
             }
         }
+    }
+
+    private static final String ALIAS_ACTIVITY_NAME = "nil.nadph.qnotified.activity.ConfigV2ActivityAlias";
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateMenuItems();
+    }
+
+    void updateMenuItems() {
+        Menu menu = mainV2Binding.topAppBar.getMenu();
+        if (menu != null) {
+            menu.removeItem(R.id.mainV2_menuItem_toggleDesktopIcon);
+            menu.add(Menu.CATEGORY_SYSTEM, R.id.mainV2_menuItem_toggleDesktopIcon, 0,
+                    isLauncherIconEnabled() ? "隐藏桌面图标" : "显示桌面图标");
+        }
+    }
+
+    boolean isLauncherIconEnabled() {
+        try {
+            PackageManager packageManager = getPackageManager();
+            int state = packageManager.getComponentEnabledSetting(
+                    new ComponentName(this, ALIAS_ACTIVITY_NAME));
+            return state == PackageManager.COMPONENT_ENABLED_STATE_ENABLED ||
+                    state == PackageManager.COMPONENT_ENABLED_STATE_DEFAULT;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @UiThread
+    void setLauncherIconEnabled(boolean enabled) {
+        getPackageManager().setComponentEnabledSetting(
+                new ComponentName(this, ALIAS_ACTIVITY_NAME),
+                enabled ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED :
+                        PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP);
     }
 }

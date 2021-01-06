@@ -13,26 +13,35 @@
             android:theme="@style/AppThemeDummy"
             tools:ignore="AllowBackup,GoogleAppIndexingWarning,UnusedAttribute">
         <activity
-                android:name=".activity.ConfigV2Activity"
-                android:icon="@drawable/icon"
-                android:theme="@style/Theme.MaiTungTMDesign"
-                android:label="@string/app_name">
+            android:name=".activity.ConfigV2Activity"
+            android:icon="@drawable/icon"
+            android:theme="@style/Theme.MaiTungTMDesign"
+            android:label="@string/app_name"
+            android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS" />
             </intent-filter>
+        </activity>
+
+        <activity-alias
+            android:name=".activity.ConfigV2ActivityAlias"
+            android:targetActivity=".activity.ConfigV2Activity"
+            android:icon="@drawable/icon"
+            android:theme="@style/Theme.MaiTungTMDesign"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity-alias>
 
         <activity
-                android:name="me.singleneuron.activity.QQPurifyAgentActivity"
-                android:label="@string/qqpurify_name"
-                android:icon="@drawable/qqpurify_launcher"
-                android:excludeFromRecents="true"
-                android:theme="@style/noDisplay">
+            android:name="me.singleneuron.activity.QQPurifyAgentActivity"
+            android:label="@string/qqpurify_name"
+            android:icon="@drawable/qqpurify_launcher"
+            android:excludeFromRecents="true"
+            android:theme="@style/noDisplay">
             <!-- <intent-filter>-->
             <!--     <action android:name="android.intent.action.MAIN" />-->
             <!--     <category android:name="android.intent.category.LAUNCHER" />-->
