@@ -1,7 +1,10 @@
 package me.zpp0196.qqpurify.fragment;
 
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.widget.Toast;
 
 import androidx.preference.Preference;
@@ -13,6 +16,7 @@ import me.zpp0196.qqpurify.fragment.base.AbstractPreferenceFragment;
 import me.zpp0196.qqpurify.fragment.custom.ColorPickerPreference;
 import me.zpp0196.qqpurify.utils.ThemeUtils;
 import nil.nadph.qnotified.R;
+import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
 /**
@@ -26,10 +30,11 @@ public class SettingPreferenceFragment extends AbstractPreferenceFragment
     protected void initPreferences() {
         super.initPreferences();
         findPreference("restoreDefault").setOnPreferenceClickListener(this);
+        findPreference("displayDesktop").setOnPreferenceClickListener(this);
 
-        SwitchPreference disPlayDesktop = findPreference("displayDesktop");
-        disPlayDesktop.setChecked(true);
-        disPlayDesktop.setOnPreferenceChangeListener(this);
+//        SwitchPreference disPlayDesktop = findPreference("displayDesktop");
+//        disPlayDesktop.setChecked(true);
+//        disPlayDesktop.setOnPreferenceChangeListener(this);
 
         ColorPickerPreference appThemeColor = findPreference("appThemeColor");
         appThemeColor.setPersistent(false);
@@ -63,16 +68,21 @@ public class SettingPreferenceFragment extends AbstractPreferenceFragment
                     })
                     .setNegativeButton("取消", null)
                     .show();
+        } else if ("displayDesktop".equals(preference.getKey())) {
+            try {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setComponent(new ComponentName("nil.nadph.qnotified", "nil.nadph.qnotified.activity.ConfigV2Activity"));
+                startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                Toasts.show(getActivity(), "拉起失败!\n注: 内置模块无法显示桌面图标\n" + e.toString());
+            }
+            return true;
         }
         return false;
     }
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
-        if ("displayDesktop".equals(preference.getKey())) {
-            Utils.showToastShort(mActivity, "对不起, 此功能暂不开放");
-            return false;
-        }
         return super.onPreferenceChange(preference, newValue);
     }
 

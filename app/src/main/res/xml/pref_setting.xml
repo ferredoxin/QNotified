@@ -3,14 +3,15 @@
                   xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory android:title="模块">
         <SwitchPreference
-                android:key="disableModule"
-                android:title="停用模块"/>
-        <SwitchPreference
-                android:key="displayDesktop"
-                android:title="显示桌面图标"/>
+            android:key="disableModule"
+            android:title="停用模块" />
         <Preference
-                android:key="restoreDefault"
-                android:title="恢复默认设置"/>
+            android:key="displayDesktop"
+            android:title="显示/隐藏桌面图标"
+            app:summary="点此跳转后在右上角菜单中设置" />
+        <Preference
+            android:key="restoreDefault"
+            android:title="恢复默认设置" />
     </PreferenceCategory>
     <PreferenceCategory android:title="主题">
         <me.zpp0196.qqpurify.fragment.custom.ColorPickerPreference

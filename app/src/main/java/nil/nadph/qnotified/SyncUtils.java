@@ -27,6 +27,8 @@ import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Looper;
 
+import androidx.annotation.NonNull;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -325,11 +327,21 @@ public class SyncUtils {
         return holder;
     }
 
-    public static void post(Runnable r) {
+    @SuppressLint("LambdaLast")
+    public static void postDelayed(@NonNull Runnable r, long ms) {
         if (sHandler == null) {
             sHandler = new Handler(Looper.getMainLooper());
         }
-        sHandler.post(r);
+        sHandler.postDelayed(r, ms);
+    }
+
+    //kotlin friendly?
+    public static void postDelayed(long ms, @NonNull Runnable r) {
+        postDelayed(r, ms);
+    }
+
+    public static void post(@NonNull Runnable r) {
+        postDelayed(r, 0L);
     }
 
     public static class EnumRequestHolder {
