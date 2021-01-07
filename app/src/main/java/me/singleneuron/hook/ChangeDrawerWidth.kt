@@ -7,11 +7,8 @@ import android.util.TypedValue
 import android.view.WindowManager
 import de.robv.android.xposed.XposedHelpers
 import me.singleneuron.base.adapter.BaseDelayableConditionalHookAdapter
-import me.singleneuron.data.PageFaultHighPerformanceFunctionCache
 import me.singleneuron.qn_kernel.tlb.ConfigTable
-import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.config.ConfigManager
-import nil.nadph.qnotified.util.Utils
 
 object ChangeDrawerWidth : BaseDelayableConditionalHookAdapter("changeDrawerWidth") {
 
@@ -31,8 +28,6 @@ object ChangeDrawerWidth : BaseDelayableConditionalHookAdapter("changeDrawerWidt
     override fun isEnabled(): Boolean {
         return width!=0
     }
-
-    override val conditionCache: PageFaultHighPerformanceFunctionCache<Boolean> = PageFaultHighPerformanceFunctionCache { Utils.getHostVersionCode() >= QQVersion.QQ_8_4_1 }
 
     private const val ChangeDrawerWidth_width = "ChangeDrawerWidth_width"
 

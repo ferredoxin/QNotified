@@ -1,7 +1,6 @@
 package me.singleneuron.qn_kernel.tlb
 
 import me.nextalone.hook.ForcedSendOriginalPhoto
-import me.nextalone.hook.HideOnlineNumber
 import me.nextalone.hook.HideProfileBubble
 import me.nextalone.hook.HideTotalNumber
 import me.singleneuron.hook.ChangeDrawerWidth
@@ -102,8 +101,19 @@ object ConfigTable {
             ),
     )
 
+    private val cacheMap: Map<String?, Any?> by lazy {
+        val map: HashMap<String?, Any?> = HashMap()
+        val versionCode = Utils.getHostVersionCode()
+        for (pair in configs) {
+            if (pair.value.containsKey(versionCode)) {
+                map[pair.key] = pair.value[versionCode]
+            }
+        }
+        map
+    }
+
     fun <T> getConfig(className: String?): T {
-        val config = configs[className]?.get(Utils.getHostVersionCode())
+        val config = cacheMap[className]
         return config as T
                 ?: throw RuntimeException("$className :Unsupported QQ Version")
     }
