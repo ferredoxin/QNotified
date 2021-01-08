@@ -4,7 +4,6 @@ import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 import me.kyuubiran.util.loadClass
 import me.singleneuron.base.adapter.BaseDelayableConditionalHookAdapter
-import me.singleneuron.data.PageFaultHighPerformanceFunctionCache
 import me.singleneuron.qn_kernel.tlb.ConfigTable
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.util.LicenseStatus
@@ -36,7 +35,5 @@ object ForceSystemCamera : BaseDelayableConditionalHookAdapter("forceSystemCamer
         }
         return true
     }
-
-    override val conditionCache: PageFaultHighPerformanceFunctionCache<Boolean> = PageFaultHighPerformanceFunctionCache {Utils.getHostVersionCode()>=QQVersion.QQ_8_3_6}
 
 }
