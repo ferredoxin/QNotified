@@ -67,7 +67,6 @@ public class PendingFuncActivity extends IphoneTitleBarActivityCompat {
         ll.addView(newListItemSwitchConfigStub(this, "屏蔽回执消息的通知", null, ConfigItems.qn_mute_talk_back, false));
 //        ll.addView(newListItemButton(this, "小尾巴", "请勿在多个模块同时开启小尾巴", "[无]", clickTheComing()));
         ll.addView(newListItemButton(this, "聊天图片自动接收原图", null, "禁用", clickTheComing()));
-        ll.addView(newListItemButton(this, "强制原图发送聊天图片", null, "禁用", clickTheComing()));
         ll.addView(newListItemButton(this, "隐藏联系人", "和自带的\"隐藏会话\"有所不同", "0人", clickTheComing()));
         ll.addView(newListItemButton(this, "自定义本地头像", "仅本机生效", "禁用", clickTheComing()));
         ll.addView(newListItemButton(this, "高级通知设置", "通知展开, channel等", null, clickTheComing()));
