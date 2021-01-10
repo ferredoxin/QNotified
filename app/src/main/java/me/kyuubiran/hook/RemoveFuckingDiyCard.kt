@@ -36,6 +36,14 @@ object RemoveFuckingDiyCard : BaseDelayableHook() {
                             param.result = null
                         }
                     })
+                } else if (m.name == "onCardUpdate" && argt.size == 2 && argt[1] == Int::class.java && m.isPublic) {
+                    XposedBridge.hookMethod(m, object : XC_MethodHook() {
+                        override fun beforeHookedMethod(param: MethodHookParam) {
+                            if (LicenseStatus.sDisableCommonHooks) return
+                            if (!isEnabled) return
+                            param.result = null
+                        }
+                    })
                 }
             }
             isInit = true
