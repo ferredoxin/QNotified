@@ -27,6 +27,7 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import com.tencent.mobileqq.widget.BounceScrollView
 import me.kyuubiran.hook.RemoveRedDot
+import nil.nadph.qnotified.hook.BlockFluxThief
 import nil.nadph.qnotified.hook.InterceptZipBomb
 import nil.nadph.qnotified.hook.PttForwardHook
 import nil.nadph.qnotified.ui.ResUtils
@@ -48,6 +49,7 @@ class AuxFuncActivity : IphoneTitleBarActivityCompat() {
         })
 
         ll.addView(newListItemHookSwitchInit(this, "拦截异常zip", null, InterceptZipBomb.INSTANCE))
+        ll.addView(newListItemHookSwitchInit(this, "拦截异常体积图片加载", null, BlockFluxThief.INSTANCE))
 
         setContentBackgroundDrawable(ResUtils.skin_background)
         title = "辅助功能"
