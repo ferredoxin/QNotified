@@ -82,10 +82,18 @@ public class BlockFluxThief extends CommonDelayableHook {
         HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
         conn.setRequestMethod("GET");
         int code = conn.getResponseCode();
-        long len = conn.getContentLength();
+        String lenStr = conn.getHeaderField("Content-Length");
         conn.getInputStream().close();
         conn.disconnect();
-        //Utils.logd(String.format("BlockFluxThief/Req [%d] %d %s", code, len, url));
-        return len;
+        if (lenStr == null) {
+            return -1L;
+        } else {
+            try {
+                return Long.parseLong(lenStr);
+            } catch (Throwable th) {
+                Utils.logd(String.format("BlockFluxThief/W [%d] %s %s", code, lenStr, url));
+                return -1;
+            }
+        }
     }
 }
