@@ -1,7 +1,6 @@
 package nil.nadph.qnotified.hook;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Looper;
@@ -12,6 +11,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.tencent.mobileqq.app.BaseActivity;
+
+import java.lang.reflect.Field;
 import java.util.List;
 
 import de.robv.android.xposed.XC_MethodHook;
@@ -22,6 +24,9 @@ import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.Utils;
 
+import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
+import static nil.nadph.qnotified.util.Initiator._ChatMessage;
+import static nil.nadph.qnotified.util.Initiator._QQAppInterface;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
 import static nil.nadph.qnotified.util.Utils.getApplication;
@@ -29,9 +34,14 @@ import static nil.nadph.qnotified.util.Utils.getQQAppInterface;
 import static nil.nadph.qnotified.util.Utils.iget_object_or_null;
 import static nil.nadph.qnotified.util.Utils.invoke_static;
 import static nil.nadph.qnotified.util.Utils.invoke_virtual;
+import static nil.nadph.qnotified.util.Utils.invoke_virtual_any;
 import static nil.nadph.qnotified.util.Utils.log;
 import static nil.nadph.qnotified.util.Utils.sget_object;
 
+/*
+It can't work on tim, it can be solved by positioning the confusion class.
+But I can't complete.
+ */
 public class MultiActionHook extends BaseDelayableHook {
     public static final String qn_mulit_action = "qn_multi_action";
     private static final MultiActionHook self = new MultiActionHook();
@@ -69,13 +79,13 @@ public class MultiActionHook extends BaseDelayableHook {
         if (inited) return true;
         try {
             Class clz = load("com.tencent.mobileqq.activity.aio.helper.AIOMultiActionHelper");
-            XposedHelpers.findAndHookMethod(clz, "a", load("com.tencent.mobileqq.data.ChatMessage"), new XC_MethodHook() {
+            XposedHelpers.findAndHookMethod(clz, "a", _ChatMessage(), new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     try {
-                        rootView = (LinearLayout) iget_object_or_null(param.thisObject, "a", load("android.widget.LinearLayout"));
-                        context = (Activity) iget_object_or_null(param.thisObject, "a", load("com.tencent.mobileqq.app.BaseActivity"));
-                        baseChatPie = iget_object_or_null(param.thisObject, "a", load("com.tencent.mobileqq.activity.aio.core.BaseChatPie"));
+                        rootView = iget_object_or_null(param.thisObject, "a", LinearLayout.class);
+                        context = iget_object_or_null(param.thisObject, "a", BaseActivity.class);
+                        baseChatPie = iget_object_or_null(param.thisObject, "a", _BaseChatPie());
                         int count = rootView.getChildCount();
                         rootView.addView(create(getRecallBitmap()), count - 1);
                         setMargin(rootView);
@@ -94,21 +104,30 @@ public class MultiActionHook extends BaseDelayableHook {
 
     private void recall() {
         Class clz_MultiMsgManager = load("com.tencent.mobileqq.multimsg.MultiMsgManager");
-        Class clz_message = load("com.tencent.mobileqq.data.ChatMessage");
         Class clz_revoke_helper = load("com.tencent.mobileqq.activity.aio.helper.AIORevokeMsgHelper");
+        Class clz_q_progress_dialog = load("com.tencent.mobileqq.widget.QQProgressDialog");
+        Class clz_troop_utils = load("com.tencent.mobileqq.troop.utils.TroopUtils");
         try {
-            Object manager = invoke_static(clz_MultiMsgManager,"a",clz_MultiMsgManager);
-            List list = (List) invoke_virtual(manager,"a",List.class);
+            Object manager = invoke_static(clz_MultiMsgManager, "a", clz_MultiMsgManager);
+            List list = (List) invoke_virtual(manager, "a", List.class);
             for (Object msg : list) {
-                Object helper = clz_revoke_helper.getConstructor(load("com.tencent.mobileqq.activity.aio.core.BaseChatPie")).newInstance(baseChatPie);
-                invoke_virtual(helper, "f", msg, clz_message);
+                Object helper = clz_revoke_helper.getConstructor(_BaseChatPie()).newInstance(baseChatPie);
+                invoke_virtual(helper, "f", msg, _ChatMessage());
                 String friendUin = (String) iget_object_or_null(msg, "frienduin");
-                boolean z = (boolean) invoke_static(load("com.tencent.mobileqq.troop.utils.TroopUtils"), "a", getQQAppInterface(),friendUin,getQQAppInterface().getAccount(),getQQAppInterface().getClass(),String.class,String.class);
+                boolean z = (boolean) invoke_static(clz_troop_utils, "a", getQQAppInterface(), friendUin, getQQAppInterface().getAccount(), _QQAppInterface(), String.class, String.class);
                 invoke_virtual(helper, "a", "0X800A7F6", z, String.class, boolean.class);
-                ((Dialog) iget_object_or_null(baseChatPie,"mProgressDialog")).cancel();
+
+                for (Field field : _BaseChatPie().getDeclaredFields()) {
+                    if (field.getType().equals(clz_q_progress_dialog)) {
+                        field.setAccessible(true);
+                        Object o = field.get(baseChatPie);
+                        if (o != null) {
+                            invoke_virtual(o, "dismiss");
+                        }
+                    }
+                }
             }
-            //((Dialog) iget_object_or_null(baseChatPie,"mProgressDialog")).cancel();
-            invoke_virtual(baseChatPie, "setLeftCheckBoxVisible",false, null, false, boolean.class, clz_message, boolean.class);
+            invoke_virtual_any(baseChatPie, false, null, false, boolean.class, _ChatMessage(), boolean.class);
         } catch (Exception e) {
             log(e);
         }
@@ -136,7 +155,12 @@ public class MultiActionHook extends BaseDelayableHook {
 
     private ImageView create(Bitmap bitmap) {
         ImageView imageView = new ImageView(context);
-        boolean enableTalkBack = (boolean) sget_object(load("com.tencent.common.config.AppSetting"),"enableTalkBack");
+        boolean enableTalkBack = true;
+        try {
+            enableTalkBack = (boolean) sget_object(load("com.tencent.common.config.AppSetting"), "enableTalkBack");
+        } catch (Exception e) {
+            //log(e);
+        }
         if (enableTalkBack) {
             imageView.setContentDescription("撤回");
         }
