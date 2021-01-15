@@ -1,5 +1,6 @@
 package me.singleneuron.qn_kernel.tlb
 
+import me.kyuubiran.hook.RemovePlayTogether
 import me.nextalone.hook.ForcedSendOriginalPhoto
 import me.nextalone.hook.HideProfileBubble
 import me.nextalone.hook.HideTotalNumber
@@ -111,6 +112,15 @@ object ConfigTable {
                     QQVersion.QQ_8_4_18 to "t",
                     QQVersion.QQ_8_5_0 to "s",
                     QQVersion.QQ_8_5_5 to "bz"
+            ),
+
+            RemovePlayTogether::class.java.simpleName to mapOf(
+                    QQVersion.QQ_8_4_8 to "agpr",
+                    QQVersion.QQ_8_4_10 to "aghe",
+                    QQVersion.QQ_8_4_17 to "agpr",
+                    QQVersion.QQ_8_4_18 to "agpr",
+                    QQVersion.QQ_8_5_0 to "com/tencent/mobileqq/activity/aio/helper/ClockInEntryHelper",
+                    QQVersion.QQ_8_5_5 to "com/tencent/mobileqq/activity/aio/helper/ClockInEntryHelper",
             ),
     )
 
