@@ -12,13 +12,12 @@ import nil.nadph.qnotified.util.Utils
 object ForceSystemCamera : BaseDelayableConditionalHookAdapter("forceSystemCamera") {
     override fun doInit(): Boolean {
         val className = ConfigTable.getConfig<String>(ForceSystemCamera::class.simpleName)
-        if (Utils.getHostVersionCode() == QQVersion.QQ_8_5_0) {
+        if (Utils.getHostVersionCode() >= QQVersion.QQ_8_5_0) {
             XposedHelpers.findAndHookMethod(loadClass(className), "a", object : XC_MethodHook() {
                 override fun afterHookedMethod(param: MethodHookParam?) {
                     if (LicenseStatus.sDisableCommonHooks) return
                     if (!isEnabled) return
-                    Utils.logd("ForceSystemCamera babq.a():" + (param!!.result as Boolean))
-                    param.result = false
+                    param!!.result = false
                 }
             })
         } else {
@@ -28,8 +27,7 @@ object ForceSystemCamera : BaseDelayableConditionalHookAdapter("forceSystemCamer
                 override fun afterHookedMethod(param: MethodHookParam?) {
                     if (LicenseStatus.sDisableCommonHooks) return
                     if (!isEnabled) return
-                    Utils.logd("ForceSystemCamera babq.a():" + (param!!.result as Boolean))
-                    param.result = false
+                    param!!.result = false
                 }
             })
         }

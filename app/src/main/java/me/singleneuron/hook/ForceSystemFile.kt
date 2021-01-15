@@ -8,7 +8,7 @@ import me.singleneuron.qn_kernel.tlb.ConfigTable
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.util.Utils
 
-object ForceSystemFile : BaseDelayableConditionalHookAdapter("forceSystemAlbum") {
+object ForceSystemFile : BaseDelayableConditionalHookAdapter("forceSystemFile") {
 
     override fun doInit(): Boolean {
         if (Utils.getHostVersionCode() >= QQVersion.QQ_8_4_8) {

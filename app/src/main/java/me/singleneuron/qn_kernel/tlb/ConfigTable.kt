@@ -24,7 +24,8 @@ object ConfigTable {
                     QQVersion.QQ_8_4_10 to 0x7f90886,
                     QQVersion.QQ_8_4_17 to 0x7f090896,
                     QQVersion.QQ_8_4_18 to 0x7f090896,
-                    QQVersion.QQ_8_5_0 to 0x7f090921
+                    QQVersion.QQ_8_5_0 to 0x7f090921,
+                    QQVersion.QQ_8_5_5 to 0x7f0908dc,
             ),
 
             //特征字符串："FaceManager"
@@ -37,7 +38,8 @@ object ConfigTable {
                     QQVersion.QQ_8_4_10 to "aoke",
                     QQVersion.QQ_8_4_17 to "aowc",
                     QQVersion.QQ_8_4_18 to "aowc",
-                    QQVersion.QQ_8_5_0 to "com.tencent.mobileqq.avatar.utils.AvatarUtil"
+                    QQVersion.QQ_8_5_0 to "com.tencent.mobileqq.avatar.utils.AvatarUtil",
+                    QQVersion.QQ_8_5_5 to "com.tencent.mobileqq.avatar.utils.AvatarUtil",
             ),
 
             //特征字符串："CaptureUtil"
@@ -50,7 +52,8 @@ object ConfigTable {
                     QQVersion.QQ_8_4_10 to "bbhm",
                     QQVersion.QQ_8_4_17 to "bcmd",
                     QQVersion.QQ_8_4_18 to "bcmd",
-                    QQVersion.QQ_8_5_0 to "com/tencent/mobileqq/richmedia/capture/util/CaptureUtil"
+                    QQVersion.QQ_8_5_0 to "com/tencent/mobileqq/richmedia/capture/util/CaptureUtil",
+                    QQVersion.QQ_8_5_5 to "com/tencent/mobileqq/richmedia/capture/util/CaptureUtil"
             ),
 
             //特征字符串:"SmartDeviceProxyMgr create"
@@ -58,9 +61,16 @@ object ConfigTable {
                     QQVersion.QQ_8_3_6 to "zyr",
                     QQVersion.QQ_8_3_9 to "aaxe",
                     QQVersion.QQ_8_4_1 to "abqn",
-                    QQVersion.QQ_8_4_5 to "abur"
+                    QQVersion.QQ_8_4_5 to "abur",
+                    QQVersion.QQ_8_4_8 to "aara",
+                    QQVersion.QQ_8_4_10 to "abgm",
+                    QQVersion.QQ_8_4_17 to "abpa",
+                    QQVersion.QQ_8_4_18 to "abpa",
+                    QQVersion.QQ_8_5_0 to "com/tencent/device/devicemgr/SmartDeviceProxyMgr",
+                    QQVersion.QQ_8_5_5 to "com/tencent/device/devicemgr/SmartDeviceProxyMgr",
             ),
 
+            // 字符串关键字 updateProfileBubbleMsgView
             HideProfileBubble::class.simpleName to mapOf(
                     QQVersion.QQ_8_3_9 to "S",
                     QQVersion.QQ_8_4_1 to "V",
@@ -69,7 +79,8 @@ object ConfigTable {
                     QQVersion.QQ_8_4_10 to "Y",
                     QQVersion.QQ_8_4_17 to "Y",
                     QQVersion.QQ_8_4_18 to "Y",
-                    QQVersion.QQ_8_5_0 to "Z"
+                    QQVersion.QQ_8_5_0 to "Z",
+                    QQVersion.QQ_8_5_5 to "Z"
             ),
 
             VasProfileAntiCrash::class.java.simpleName to mapOf(
@@ -86,7 +97,8 @@ object ConfigTable {
                     QQVersion.QQ_8_4_10 to 0x7f0a32f0,
                     QQVersion.QQ_8_4_17 to 0x7f0a33cc,
                     QQVersion.QQ_8_4_18 to 0x7f0a33cc,
-                    QQVersion.QQ_8_5_0 to 0x7f0a347a
+                    QQVersion.QQ_8_5_0 to 0x7f0a347a,
+                    QQVersion.QQ_8_5_5 to 0x7f0a3469
             ),
 
             //com.tencent.mobileqq.activity.aio.core.TroopChatPie中一般是包含R.id.blz的
@@ -97,7 +109,8 @@ object ConfigTable {
                     QQVersion.QQ_8_4_10 to "t",
                     QQVersion.QQ_8_4_17 to "t",
                     QQVersion.QQ_8_4_18 to "t",
-                    QQVersion.QQ_8_5_0 to "s"
+                    QQVersion.QQ_8_5_0 to "s",
+                    QQVersion.QQ_8_5_5 to "bz"
             ),
     )
 
