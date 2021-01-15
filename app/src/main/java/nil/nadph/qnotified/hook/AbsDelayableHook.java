@@ -165,7 +165,6 @@ public abstract class AbsDelayableHook implements SwitchConfigItem {
                     HideTotalNumber.INSTANCE,
                     HideOnlineNumber.INSTANCE,
                     BlockFluxThief.INSTANCE,
-                    MultiActionHook.get(),
             };
         }
         return sAllHooks;
