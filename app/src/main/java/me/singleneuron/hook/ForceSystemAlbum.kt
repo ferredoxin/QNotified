@@ -6,7 +6,7 @@ import me.singleneuron.activity.ChooseAlbumAgentActivity
 import me.singleneuron.base.adapter.BaseDelayableConditionalHookAdapter
 import nil.nadph.qnotified.util.Utils
 
-object ForceSystemAlbum : BaseDelayableConditionalHookAdapter("forceSystemFile") {
+object ForceSystemAlbum : BaseDelayableConditionalHookAdapter("forceSystemAlbum") {
 
     override fun doInit(): Boolean {
         //特征字符串:"onAlbumBtnClicked"
