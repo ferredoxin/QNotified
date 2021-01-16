@@ -23,6 +23,7 @@ import android.os.Looper;
 import android.widget.Toast;
 
 import de.robv.android.xposed.XC_MethodHook;
+import me.singleneuron.qn_kernel.tlb.ConfigTable;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.step.Step;
@@ -61,8 +62,8 @@ public class ReplyNoAtHook extends BaseDelayableHook {
     public boolean init() {
         if (inited) return true;
         try {
-            String method = null;
-            int ver = getHostVersionCode32();
+            String method = ConfigTable.INSTANCE.getConfig(ReplyNoAtHook.class.getSimpleName());
+            /*int ver = getHostVersionCode32();
             if (ver >= 1630) {
                 method = "l";
             } else if (ver >= 1492) {
@@ -75,7 +76,7 @@ public class ReplyNoAtHook extends BaseDelayableHook {
                 method = "l";
             } else if (ver >= 1246) {
                 method = "k";
-            }
+            }*/
             if (method == null) return false;
             findAndHookMethod(_BaseChatPie(), method, boolean.class, new XC_MethodHook(49) {
                 @Override
