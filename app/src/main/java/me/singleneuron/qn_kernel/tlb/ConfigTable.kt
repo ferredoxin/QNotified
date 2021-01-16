@@ -132,6 +132,9 @@ object ConfigTable {
                    QQ_8_2_6 to "m",
                    QQ_8_3_6 to "n",
                    QQ_8_4_8 to "createAtMsg",
+                   QQ_8_4_10 to "createAtMsg",
+                   QQ_8_4_17 to "createAtMsg",
+                   QQ_8_4_18 to "createAtMSg",
                    QQ_8_5_5 to "l"
            )
     )
