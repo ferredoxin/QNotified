@@ -132,9 +132,6 @@ object ConfigTable {
                    QQ_8_2_6 to "m",
                    QQ_8_3_6 to "n",
                    QQ_8_4_8 to "createAtMsg",
-                   QQ_8_4_10 to "createAtMsg",
-                   QQ_8_4_17 to "createAtMsg",
-                   QQ_8_4_18 to "createAtMSg",
                    QQ_8_5_5 to "l"
            )
     )
@@ -144,7 +141,7 @@ object ConfigTable {
         val versionCode = Utils.getHostVersionCode()
         for (pair in rangingConfigs) {
             for (i in versionCode downTo QQ_8_0_0) {
-                if (pair.value.containsKey(versionCode)) {
+                if (pair.value.containsKey(i)) {
                     map[pair.key] = pair.value[i]
                     break
                 }
