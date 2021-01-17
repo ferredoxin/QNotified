@@ -4,6 +4,7 @@ import nil.nadph.qnotified.hook.MultiActionHook
 import nil.nadph.qnotified.util.Utils
 import me.ketal.util.TIMVersion.*;
 import nil.nadph.qnotified.bridge.QQMessageFacade
+import nil.nadph.qnotified.hook.ReplyNoAtHook
 
 object TIMConfigTable {
 
@@ -27,7 +28,12 @@ object TIMConfigTable {
                     TIM_3_1_1 to "PK",
                     TIM_3_0_0 to "wa",
                     TIM_1_0_0 to "b"
-            )
+            ),
+
+            ReplyNoAtHook::class.java.simpleName to mapOf(
+                    TIM_3_1_1 to "wg",
+                    TIM_3_3_0 to "wk",
+            ),
     )
 
     private val cacheMap: Map<String?, Any?> by lazy {

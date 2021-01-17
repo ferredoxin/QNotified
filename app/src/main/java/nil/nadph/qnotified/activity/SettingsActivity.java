@@ -40,6 +40,7 @@ import com.tencent.mobileqq.widget.BounceScrollView;
 import java.io.File;
 import java.io.IOException;
 
+import me.ketal.util.TIMVersion;
 import me.kyuubiran.hook.AutoMosaicName;
 import me.kyuubiran.hook.ShowSelfMsgByLeft;
 import me.singleneuron.activity.ChangeDrawerWidthActivity;
@@ -158,11 +159,14 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(newListItemHookSwitchInit(this, " +1", "不是复读机", RepeaterHook.get()));
         ll.addView(newListItemButton(this, "自定义+1图标", null, null, RepeaterIconSettingDialog.OnClickListener_createDialog(this)));
         ll.addView(subtitle(this, "净化设置"));
-        if (!Utils.isTim(this)) {
-            ll.addView(newListItemSwitchConfigNext(this, "隐藏小程序入口", "隐藏消息列表下拉出现的小程序列表", ConfigItems.qn_hide_msg_list_miniapp, false));
-            if (getHostVersionCode32() >= QQ_8_1_3) {
-                ll.addView(newListItemHookSwitchInit(this, "禁止回复自动@", "[>=8.1.3]去除回复消息时自动@特性", ReplyNoAtHook.get()));
+        if (Utils.isTim(this)) {
+            if(getHostVersionCode32() >= TIMVersion.TIM_3_1_1) {
+                ll.addView(newListItemHookSwitchInit(this, "禁止回复自动@", "[TIM>=3.1.1]去除回复消息时自动@特性", ReplyNoAtHook.get()));
             }
+        } else {
+            ll.addView(newListItemSwitchConfigNext(this, "隐藏小程序入口", "隐藏消息列表下拉出现的小程序列表", ConfigItems.qn_hide_msg_list_miniapp, false));
+            if (getHostVersionCode32() >= QQ_8_1_3)
+                ll.addView(newListItemHookSwitchInit(this, "禁止回复自动@", "[QQ>=8.1.3]去除回复消息时自动@特性", ReplyNoAtHook.get()));
             ll.addView(newListItemHookSwitchInit(this, "禁用$打开送礼界面", "禁止聊天时输入$自动弹出[选择赠送对象]窗口", $endGiftHook.get()));
         }
         ll.addView(subtitle(this, "消息通知设置(不影响接收消息)屏蔽后可能仍有[橙字],但通知栏不会有通知,赞说说不提醒仅屏蔽通知栏的通知"));

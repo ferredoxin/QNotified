@@ -18,11 +18,11 @@
  */
 package nil.nadph.qnotified.hook;
 
-import android.app.Application;
 import android.os.Looper;
 import android.widget.Toast;
 
 import de.robv.android.xposed.XC_MethodHook;
+import me.ketal.util.TIMConfigTable;
 import me.singleneuron.qn_kernel.tlb.ConfigTable;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
@@ -62,7 +62,11 @@ public class ReplyNoAtHook extends BaseDelayableHook {
     public boolean init() {
         if (inited) return true;
         try {
-            String method = ConfigTable.INSTANCE.getConfig(ReplyNoAtHook.class.getSimpleName());
+            String method;
+            if (isTim(getApplication()))
+                method = TIMConfigTable.INSTANCE.getConfig(ReplyNoAtHook.class.getSimpleName());
+            else
+                method = ConfigTable.INSTANCE.getConfig(ReplyNoAtHook.class.getSimpleName());
             /*int ver = getHostVersionCode32();
             if (ver >= 1630) {
                 method = "l";
@@ -93,12 +97,6 @@ public class ReplyNoAtHook extends BaseDelayableHook {
             log(e);
             return false;
         }
-    }
-
-    @Override
-    public boolean isValid() {
-        Application app = getApplication();
-        return app == null || !isTim(app);
     }
 
     @Override
@@ -140,8 +138,6 @@ public class ReplyNoAtHook extends BaseDelayableHook {
     @Override
     public boolean isEnabled() {
         try {
-            Application app = getApplication();
-            if (app != null && isTim(app)) return false;
             return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_disable_auto_at);
         } catch (Exception e) {
             log(e);
