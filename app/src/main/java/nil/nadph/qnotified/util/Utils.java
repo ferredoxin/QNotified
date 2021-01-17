@@ -1299,6 +1299,25 @@ public class Utils {
         }
     }
 
+    public static <T> T getFirstByType(Object obj, Class<T> type) {
+        if (obj == null) throw new NullPointerException("obj == null");
+        if (type == null) throw new NullPointerException("type == null");
+        Class clz = obj.getClass();
+        while (clz != null && !clz.equals(Object.class)) {
+            for (Field f : clz.getDeclaredFields()) {
+                if (!f.getType().equals(type)) continue;
+                f.setAccessible(true);
+                try {
+                    return (T) f.get(obj);
+                } catch (IllegalAccessException ignored) {
+                    //should not happen
+                }
+            }
+            clz = clz.getSuperclass();
+        }
+        return null;
+    }
+
     /**
      * NSF: Neither Static nor Final
      *
