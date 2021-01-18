@@ -91,12 +91,6 @@ public class $endGiftHook extends BaseDelayableHook {
     }
 
     @Override
-    public boolean isValid() {
-        Application app = getApplication();
-        return app == null || !isTim(app);
-    }
-
-    @Override
     public void setEnabled(boolean enabled) {
         try {
             ConfigManager mgr = ConfigManager.getDefaultConfig();
@@ -120,8 +114,6 @@ public class $endGiftHook extends BaseDelayableHook {
     @Override
     public boolean isEnabled() {
         try {
-            Application app = getApplication();
-            if (app != null && isTim(app)) return false;
             return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_disable_$end_gift);
         } catch (Exception e) {
             log(e);
