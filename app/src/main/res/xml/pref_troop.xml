@@ -35,7 +35,7 @@
                 android:key="hideAssistantDynamic"
                 android:title="隐藏群助手顶部动态"/>
         <SwitchPreference
-                android:key="hideAssistantRemoveTips"
+                android:key="HideAssistantRemoveTips"
                 android:title="隐藏移出群助手提示"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="群通知">
