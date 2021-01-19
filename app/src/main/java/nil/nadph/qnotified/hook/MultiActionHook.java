@@ -59,7 +59,8 @@ public class MultiActionHook extends CommonDelayableHook {
                         baseChatPie = getFirstByType(param.thisObject, _BaseChatPie());
                         int count = rootView.getChildCount();
                         boolean enableTalkBack = rootView.getChildAt(0).getContentDescription() != null;
-                        rootView.addView(create(getRecallBitmap(), enableTalkBack), count - 1);
+                        if (isEnabled())
+                            rootView.addView(create(getRecallBitmap(), enableTalkBack), count - 1);
                         setMargin(rootView);
                     } catch (Exception e) {
                         log(e);

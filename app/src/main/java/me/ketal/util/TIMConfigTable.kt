@@ -1,5 +1,6 @@
 package me.ketal.util
 
+import me.ketal.hook.LeftSwipeReplyHook
 import nil.nadph.qnotified.hook.MultiActionHook
 import nil.nadph.qnotified.util.Utils
 import me.ketal.util.TIMVersion.*;
@@ -33,6 +34,12 @@ object TIMConfigTable {
             ReplyNoAtHook::class.java.simpleName to mapOf(
                     TIM_3_1_1 to "wg",
                     TIM_3_3_0 to "wk",
+            ),
+
+            LeftSwipeReplyHook::class.java.simpleName to mapOf(
+                    TIM_3_1_1 to "amqp",
+                    TIM_3_2_0 to "amqo",
+                    TIM_3_3_0 to "aebr"
             ),
     )
 

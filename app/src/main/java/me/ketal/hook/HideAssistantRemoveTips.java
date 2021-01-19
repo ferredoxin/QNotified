@@ -27,7 +27,8 @@ public class HideAssistantRemoveTips extends CommonDelayableHook {
             XposedHelpers.findAndHookMethod(clazz, "a", Context.class, String.class, View.OnClickListener.class, View.OnClickListener.class, new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    param.setResult(null);
+                    if (isEnabled())
+                        param.setResult(null);
                 }
             });
             return true;

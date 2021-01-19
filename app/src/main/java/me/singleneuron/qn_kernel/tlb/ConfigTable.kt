@@ -1,5 +1,6 @@
 package me.singleneuron.qn_kernel.tlb
 
+import me.ketal.hook.LeftSwipeReplyHook
 import me.kyuubiran.hook.RemovePlayTogether
 import me.nextalone.hook.ForcedSendOriginalPhoto
 import me.nextalone.hook.HideProfileBubble
@@ -122,6 +123,27 @@ object ConfigTable {
                     QQ_8_4_18 to "agpr",
                     QQ_8_5_0 to "com/tencent/mobileqq/activity/aio/helper/ClockInEntryHelper",
                     QQ_8_5_5 to "com/tencent/mobileqq/activity/aio/helper/ClockInEntryHelper",
+            ),
+
+            //LeftSwipeReplyHelper
+            LeftSwipeReplyHook::class.java.simpleName to mapOf(
+                    QQ_8_2_6 to "aloa",
+                    QQ_8_2_7 to "alob",
+                    QQ_8_2_7_2 to "alol",
+                    QQ_8_2_8 to "amcp",
+                    QQ_8_3_0 to "amco",
+                    QQ_8_3_3 to "antn",
+                    QQ_8_3_5 to "anxw",
+                    QQ_8_3_6 to "aopu",
+                    QQ_8_3_9 to "apsd",
+                    QQ_8_4_1 to "apyb",
+                    QQ_8_4_5 to "aqmb",
+                    QQ_8_4_8 to "apfm",
+                    QQ_8_4_10 to "aqiq",
+                    QQ_8_4_17 to "aqvd",
+                    QQ_8_4_18 to "aqvd",
+                    QQ_8_5_0 to "com.tencent.mobileqq.bubble.LeftSwipeReplyHelper",
+                    QQ_8_5_5 to "com.tencent.mobileqq.bubble.LeftSwipeReplyHelper",
             ),
     )
 
