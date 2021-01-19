@@ -1,6 +1,6 @@
 package nil.nadph.qnotified.bridge;
 
-import me.ketal.util.TIMConfigTable;
+import me.singleneuron.qn_kernel.tlb.ConfigTable;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Utils;
@@ -43,8 +43,8 @@ public class QQMessageFacade {
             iput_object(msg2, "time", t);
             Object msgCache = invoke_virtual_any(getQQAppInterface(), DexKit.doFindClass(DexKit.C_MessageCache));
             String methodName = "b"; //Default method name for QQ
-            if (isTim(getApplication())) {
-                methodName = TIMConfigTable.INSTANCE.getConfig(QQMessageFacade.class.getSimpleName());
+            if (isTim()) {
+                methodName = ConfigTable.INSTANCE.getConfig(QQMessageFacade.class.getSimpleName());
             }
             invoke_virtual(msgCache, methodName, true, boolean.class, void.class);
             invoke_virtual_declared_fixed_modifier_ordinal(mgr, Modifier.PUBLIC, 0, Initiator._BaseMessageManager(), 2, 4, true, msg2, Initiator._MessageRecord(), void.class);

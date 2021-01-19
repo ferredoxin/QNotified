@@ -2,7 +2,6 @@ package me.ketal.hook;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
-import me.ketal.util.TIMConfigTable;
 import me.singleneuron.qn_kernel.tlb.ConfigTable;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
@@ -20,13 +19,9 @@ public class LeftSwipeReplyHook extends CommonDelayableHook {
     protected boolean initOnce() {
         try {
             String methodName = "a";
-            String className;
-            if(isTim(getApplication())) {
+            String className = ConfigTable.INSTANCE.getConfig(LeftSwipeReplyHook.class.getSimpleName());
+            if(isTim())
                 methodName = "L";
-                className = TIMConfigTable.INSTANCE.getConfig(LeftSwipeReplyHook.class.getSimpleName());
-            } else {
-                className = ConfigTable.INSTANCE.getConfig(LeftSwipeReplyHook.class.getSimpleName());
-            }
             XposedHelpers.findAndHookMethod(load(className), methodName, float.class, float.class, new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {

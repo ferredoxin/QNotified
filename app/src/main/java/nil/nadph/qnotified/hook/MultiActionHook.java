@@ -14,7 +14,7 @@ import java.util.List;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
-import me.ketal.util.TIMConfigTable;
+import me.singleneuron.qn_kernel.tlb.ConfigTable;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.bridge.QQMessageFacade;
 import nil.nadph.qnotified.step.DexDeobfStep;
@@ -75,8 +75,8 @@ public class MultiActionHook extends CommonDelayableHook {
     }
 
     private void findClass() {
-        if (isTim(getApplication())) {
-            String[] methods = ((String) TIMConfigTable.INSTANCE.getConfig(MultiActionHook.class.getSimpleName())).split("\\|");
+        if (isTim()) {
+            String[] methods = ((String) ConfigTable.INSTANCE.getConfig(MultiActionHook.class.getSimpleName())).split("\\|");
             clz_AIO_MultiAction_Helper = load(methods[0]);
             clz_MultiMsgManager = load(methods[1]);
         } else {

@@ -1,4 +1,4 @@
-package me.ketal.util
+package me.singleneuron.qn_kernel.tlb
 
 import me.ketal.hook.LeftSwipeReplyHook
 import nil.nadph.qnotified.hook.MultiActionHook

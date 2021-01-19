@@ -67,6 +67,7 @@ import java.util.regex.Pattern;
 import dalvik.system.DexFile;
 import de.robv.android.xposed.XposedBridge;
 import me.singleneuron.qn_kernel.service.InterruptServiceRoutine;
+import me.singleneuron.qn_kernel.tlb.ConfigTable;
 import me.singleneuron.util.QQVersion;
 import mqq.app.AppRuntime;
 import nil.nadph.qnotified.BuildConfig;
@@ -1886,6 +1887,10 @@ public class Utils {
 
     public static boolean isTim(Context ctx) {
         return ctx.getPackageName().equals(PACKAGE_NAME_TIM);
+    }
+
+    public static boolean isTim() {
+        return ConfigTable.INSTANCE.isTim();
     }
 
     public static ContactDescriptor parseResultRec(Object a) {
