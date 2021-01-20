@@ -4,11 +4,12 @@ import android.os.Looper
 import android.widget.Toast
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
+import me.singleneuron.qn_kernel.tlb.ConfigTable
+import me.singleneuron.qn_kernel.tlb.QQConfigTable
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.hook.BaseDelayableHook
 import nil.nadph.qnotified.step.Step
-import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.Initiator._BaseChatPie
 import nil.nadph.qnotified.util.LicenseStatus
 import nil.nadph.qnotified.util.Utils
@@ -28,11 +29,12 @@ object AutoMosaicName : BaseDelayableHook() {
         return try {
             for (m: Method in _BaseChatPie().declaredMethods) {
                 val argt = m.parameterTypes
-                if (argt.size == 1 && argt[0] == Boolean::class.java && (m.name == "enableMosaicEffect" || m.name == "t")) {
+                if (argt.size == 1 && argt[0] == Boolean::class.java && m.name == ConfigTable.getConfig(AutoMosaicName::class.java.simpleName)) {
                     XposedBridge.hookMethod(m, object : XC_MethodHook() {
                         override fun beforeHookedMethod(param: MethodHookParam) {
                             if (LicenseStatus.sDisableCommonHooks) return
-                            param.args[0] = isEnabled
+                            if (!isEnabled) return
+                            param.args[0] = true
                         }
                     })
                 }

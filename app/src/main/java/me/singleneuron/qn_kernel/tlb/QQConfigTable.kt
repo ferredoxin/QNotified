@@ -1,6 +1,7 @@
 package me.singleneuron.qn_kernel.tlb
 
 import me.ketal.hook.LeftSwipeReplyHook
+import me.kyuubiran.hook.AutoMosaicName
 import me.kyuubiran.hook.RemovePlayTogether
 import me.nextalone.hook.ForcedSendOriginalPhoto
 import me.nextalone.hook.HideProfileBubble
@@ -123,6 +124,16 @@ object QQConfigTable {
                     QQ_8_4_18 to "agpr",
                     QQ_8_5_0 to "com/tencent/mobileqq/activity/aio/helper/ClockInEntryHelper",
                     QQ_8_5_5 to "com/tencent/mobileqq/activity/aio/helper/ClockInEntryHelper",
+            ),
+            AutoMosaicName::class.java.simpleName to mapOf(
+                    QQ_8_4_1 to "t",
+                    QQ_8_4_5 to "t",
+                    QQ_8_4_8 to "enableMosaicEffect",
+                    QQ_8_4_10 to "enableMosaicEffect",
+                    QQ_8_4_17 to "enableMosaicEffect",
+                    QQ_8_4_18 to "enableMosaicEffect",
+                    QQ_8_5_0 to "enableMosaicEffect",
+                    QQ_8_5_5 to "r",
             ),
 
             //LeftSwipeReplyHelper
