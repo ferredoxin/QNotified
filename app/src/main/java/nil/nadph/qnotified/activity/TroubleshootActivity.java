@@ -45,11 +45,13 @@ import com.tencent.mobileqq.widget.BounceScrollView;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import me.nextalone.hook.EnableQLog;
 import me.singleneuron.activity.BugReportActivity;
 import me.singleneuron.data.CardMsgCheckResult;
 import me.singleneuron.hook.DebugDump;
+import me.singleneuron.qn_kernel.tlb.ConfigTable;
 import me.singleneuron.util.KotlinUtilsKt;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.R;
@@ -59,29 +61,14 @@ import nil.nadph.qnotified.config.FriendRecord;
 import nil.nadph.qnotified.remote.GetUserStatusResp;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.util.ActProxyMgr;
-import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.DexMethodDescriptor;
-import nil.nadph.qnotified.util.Initiator;
-import nil.nadph.qnotified.util.Natives;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.util.*;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.ui.ViewBuilder.clickToProxyActAction;
-import static nil.nadph.qnotified.ui.ViewBuilder.newListItemButton;
-import static nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit;
-import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
+import static nil.nadph.qnotified.ui.ViewBuilder.*;
 import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_EXFRIEND_LIST;
 import static nil.nadph.qnotified.util.ActProxyMgr.ACTIVITY_PROXY_ACTION;
-import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_SUCCESS;
-import static nil.nadph.qnotified.util.Utils.dip2px;
-import static nil.nadph.qnotified.util.Utils.getLongAccountUin;
-import static nil.nadph.qnotified.util.Utils.getShort$Name;
-import static nil.nadph.qnotified.util.Utils.iget_object_or_null;
-import static nil.nadph.qnotified.util.Utils.iput_object;
-import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.showToast;
+import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressLint("Registered")
 public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
@@ -290,6 +277,19 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
             } catch (Throwable e) {
                 ll.addView(subtitle(this, "  [" + i + "]" + e.toString()));
             }
+        }
+
+        Set<Map.Entry<String,Object>> set = ConfigTable.INSTANCE.getCacheMap().entrySet();
+        int i = 40001;
+        for (Map.Entry<String,Object> entry : set) {
+            try {
+                String shortName = entry.getKey();
+                String currName = entry.getValue()+"";
+                ll.addView(subtitle(this, "  [" + i + "]" + shortName + "\n" + currName));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            i++;
         }
 
         ll.addView(subtitle(this, "SystemClassLoader\n" + ClassLoader.getSystemClassLoader()
