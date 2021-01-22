@@ -20,6 +20,8 @@ package nil.nadph.qnotified.hook;
 
 import androidx.annotation.NonNull;
 
+import me.ketal.hook.HideAssistantRemoveTips;
+import me.ketal.hook.LeftSwipeReplyHook;
 import me.kyuubiran.hook.AutoMosaicName;
 import me.kyuubiran.hook.DisableScreenshotHelper;
 import me.kyuubiran.hook.RemoveCameraButton;
@@ -165,7 +167,9 @@ public abstract class AbsDelayableHook implements SwitchConfigItem {
                     HideTotalNumber.INSTANCE,
                     HideOnlineNumber.INSTANCE,
                     BlockFluxThief.INSTANCE,
-                    MultiActionHook.get(),
+                    MultiActionHook.INSTANCE,
+                    HideAssistantRemoveTips.INSTANCE,
+                    LeftSwipeReplyHook.INSTANCE,
             };
         }
         return sAllHooks;

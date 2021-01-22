@@ -67,6 +67,7 @@ import java.util.regex.Pattern;
 import dalvik.system.DexFile;
 import de.robv.android.xposed.XposedBridge;
 import me.singleneuron.qn_kernel.service.InterruptServiceRoutine;
+import me.singleneuron.qn_kernel.tlb.ConfigTable;
 import me.singleneuron.util.QQVersion;
 import mqq.app.AppRuntime;
 import nil.nadph.qnotified.BuildConfig;
@@ -1299,6 +1300,25 @@ public class Utils {
         }
     }
 
+    public static <T> T getFirstByType(Object obj, Class<T> type) {
+        if (obj == null) throw new NullPointerException("obj == null");
+        if (type == null) throw new NullPointerException("type == null");
+        Class clz = obj.getClass();
+        while (clz != null && !clz.equals(Object.class)) {
+            for (Field f : clz.getDeclaredFields()) {
+                if (!f.getType().equals(type)) continue;
+                f.setAccessible(true);
+                try {
+                    return (T) f.get(obj);
+                } catch (IllegalAccessException ignored) {
+                    //should not happen
+                }
+            }
+            clz = clz.getSuperclass();
+        }
+        return null;
+    }
+
     /**
      * NSF: Neither Static nor Final
      *
@@ -1867,6 +1887,10 @@ public class Utils {
 
     public static boolean isTim(Context ctx) {
         return ctx.getPackageName().equals(PACKAGE_NAME_TIM);
+    }
+
+    public static boolean isTim() {
+        return ConfigTable.INSTANCE.isTim();
     }
 
     public static ContactDescriptor parseResultRec(Object a) {

@@ -18,11 +18,11 @@
  */
 package nil.nadph.qnotified.hook;
 
-import android.app.Application;
 import android.os.Looper;
 import android.widget.Toast;
 
 import de.robv.android.xposed.XC_MethodHook;
+import me.singleneuron.qn_kernel.tlb.TIMConfigTable;
 import me.singleneuron.qn_kernel.tlb.ConfigTable;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
@@ -96,12 +96,6 @@ public class ReplyNoAtHook extends BaseDelayableHook {
     }
 
     @Override
-    public boolean isValid() {
-        Application app = getApplication();
-        return app == null || !isTim(app);
-    }
-
-    @Override
     public Step[] getPreconditions() {
         return new Step[0];
     }
@@ -140,8 +134,6 @@ public class ReplyNoAtHook extends BaseDelayableHook {
     @Override
     public boolean isEnabled() {
         try {
-            Application app = getApplication();
-            if (app != null && isTim(app)) return false;
             return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_disable_auto_at);
         } catch (Exception e) {
             log(e);

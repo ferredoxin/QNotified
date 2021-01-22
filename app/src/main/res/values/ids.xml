@@ -14,6 +14,7 @@
     <item type="id" name="jefsRulesSaveButton" />
     <item type="id" name="jefsRulesCancelButton" />
     <item type="id" name="jefsRulesResetButton" />
+    <item type="id" name="ketalRecallImageView"/>
 
     <item type="id" name="mainV2_menuItem_toggleDesktopIcon" />
 </resources>

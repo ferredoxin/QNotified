@@ -1,9 +1,9 @@
 package nil.nadph.qnotified.bridge;
 
+import me.singleneuron.qn_kernel.tlb.ConfigTable;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Utils;
-import me.singleneuron.util.QQVersion;
 
 import java.lang.reflect.Modifier;
 
@@ -37,14 +37,16 @@ public class QQMessageFacade {
         //if (istroop != 0) throw new IllegalArgumentException("istroop(" + istroop + ") is not supported");
         Object mgr = getMessageManager(istroop);
         try {
-            Object msg2 = invoke_static(DexKit.doFindClass(DexKit.C_MSG_REC_FAC), "a", msg, Initiator._MessageRecord(), Initiator._MessageRecord());
+            Object msg2 = invoke_static_any(DexKit.doFindClass(DexKit.C_MSG_REC_FAC), msg, Initiator._MessageRecord(), Initiator._MessageRecord());
             long t = (long) iget_object_or_null(msg2, "time");
             t -= 1 + 10f * Math.random();
             iput_object(msg2, "time", t);
-            String fuckingMethod = "a";
-            if (Utils.getHostVersionCode() >= QQVersion.QQ_8_4_8) fuckingMethod = "getMsgCache";
-            Object msgCache = invoke_virtual(getQQAppInterface(), fuckingMethod, DexKit.doFindClass(DexKit.C_MessageCache));
-            invoke_virtual(msgCache, "b", true, boolean.class, void.class);
+            Object msgCache = invoke_virtual_any(getQQAppInterface(), DexKit.doFindClass(DexKit.C_MessageCache));
+            String methodName = "b"; //Default method name for QQ
+            if (isTim()) {
+                methodName = ConfigTable.INSTANCE.getConfig(QQMessageFacade.class.getSimpleName());
+            }
+            invoke_virtual(msgCache, methodName, true, boolean.class, void.class);
             invoke_virtual_declared_fixed_modifier_ordinal(mgr, Modifier.PUBLIC, 0, Initiator._BaseMessageManager(), 2, 4, true, msg2, Initiator._MessageRecord(), void.class);
         } catch (Exception e) {
             loge("revokeMessage failed: " + msg);
