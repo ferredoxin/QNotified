@@ -52,6 +52,7 @@ import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
 import me.kyuubiran.hook.RemoveCameraButton;
 import me.kyuubiran.hook.RemoveRedDot;
+import me.singleneuron.qn_kernel.tlb.ConfigTable;
 import nil.nadph.qnotified.activity.SettingsActivity;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
@@ -284,6 +285,7 @@ public class MainHook {
     }
 
     public void performHook(Context ctx, Object step) {
+        ConfigTable.INSTANCE.setTim(isTim(ctx));
         SyncUtils.initBroadcast(ctx);
 //        if (SyncUtils.getProcessType() == SyncUtils.PROC_MSF) {
 //            Debug.waitForDebugger();

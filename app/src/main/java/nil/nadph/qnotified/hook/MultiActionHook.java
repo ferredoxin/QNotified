@@ -33,7 +33,7 @@ This code has been tested in QQ8.0.0-8.5.5 and TIM all versions.
 public class MultiActionHook extends CommonDelayableHook {
     public static final MultiActionHook INSTANCE = new MultiActionHook();
     private static Bitmap img;
-    Class clz_MultiMsg_Manager = DexKit.doFindClass(DexKit.C_MultiMsg_Manager);
+    Class clz_MultiMsg_Manager;
     private final String fieldName = ConfigTable.INSTANCE.getConfig(MultiActionHook.class.getSimpleName());
     private Object baseChatPie;
 
@@ -50,6 +50,7 @@ public class MultiActionHook extends CommonDelayableHook {
                     try {
                         if (!isEnabled())
                             return;
+                        clz_MultiMsg_Manager = DexKit.doFindClass(DexKit.C_MultiMsg_Manager);
                         LinearLayout rootView = iget_object_or_null(param.thisObject, fieldName, LinearLayout.class);
                         BaseActivity context = (BaseActivity) rootView.getContext();
                         baseChatPie = getFirstByType(param.thisObject, _BaseChatPie());

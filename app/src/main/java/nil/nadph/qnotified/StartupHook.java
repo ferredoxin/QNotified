@@ -29,7 +29,6 @@ import java.lang.reflect.Method;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
-import me.singleneuron.qn_kernel.tlb.ConfigTable;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Natives;
 import nil.nadph.qnotified.util.Utils;
@@ -65,7 +64,6 @@ public class StartupHook {
                         final Field f = hasField(clz, "sApplication");
                         if (f == null) ctx = (Context) sget_object(clz, "a", clz);
                         else ctx = (Context) f.get(null);
-                        ConfigTable.INSTANCE.setTim(isTim(ctx));
                         ClassLoader classLoader = ctx.getClassLoader();
                         if (classLoader == null)
                             throw new AssertionError("ERROR: classLoader == null");
