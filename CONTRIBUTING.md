@@ -15,7 +15,7 @@
 
 ## 开发
 
-1. 在原则上代码风格建议遵循[Google Java Style](https://google.github.io/styleguide/javaguide.html)
+1. 在原则上代码风格建议遵循[Google Java Style](https://google.github.io/styleguide/javaguide.html)[中文翻译](https://github.com/fantasticmao/google-java-style-guide-zh_cn)
 
 2. 每位开发者的代码风格应保持一致
 
@@ -36,6 +36,8 @@
 9. 针对适配指定QQ/TIM版本的methods扔进[QQConfigTable.kt](app/src/main/java/me/singleneuron/qn_kernel/tlb/QQConfigTable.kt)或[TIMConfigTable.kt](app/src/main/java/me/singleneuron/qn_kernel/tlb/TIMConfigTable.kt)
 
 10. 原则上建议添加代码头
+
+11. **在任何时候，您都不应该随意更改[build.gradle](build.gradle)，特别是升级 `com.android.tools.build:gradle` 版本**
 
 ## 其他
 
