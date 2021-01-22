@@ -13,11 +13,10 @@ import me.singleneuron.util.QQVersion.*
 import nil.nadph.qnotified.hook.MultiActionHook
 import nil.nadph.qnotified.hook.ReplyNoAtHook
 import nil.nadph.qnotified.hook.VasProfileAntiCrash
-import nil.nadph.qnotified.util.Utils
 
 object QQConfigTable {
 
-    private val configs: Map<String?, Map<Long, Any>> = mapOf(
+    val configs: Map<String?, Map<Long, Any>> = mapOf(
 
             //去com.tencent.mobileqq.activity.recent.DrawerFrame类里面找一个奇怪的只有一行以一个ID从Resources获取DimensionPixelSize的方法（大概率在最末尾），然后把ID填过来
             //一般是R.dimen.akx
@@ -138,7 +137,7 @@ object QQConfigTable {
 
     )
 
-    private val rangingConfigs: Map<String?, Map<Long, Any>> = mapOf(
+    val rangingConfigs: Map<String?, Map<Long, Any>> = mapOf(
             ReplyNoAtHook::class.java.simpleName to mapOf(
                     QQ_8_1_3 to "k",
                     QQ_8_1_5 to "l",
@@ -152,30 +151,5 @@ object QQConfigTable {
                     QQ_8_0_0 to "a",
             )
     )
-
-    private val cacheMap: Map<String?, Any?> by lazy {
-        val map: HashMap<String?, Any?> = HashMap()
-        val versionCode = Utils.getHostVersionCode()
-        for (pair in rangingConfigs) {
-            for (i in versionCode downTo QQ_8_0_0) {
-                if (pair.value.containsKey(i)) {
-                    map[pair.key] = pair.value[i]
-                    break
-                }
-            }
-        }
-        for (pair in configs) {
-            if (pair.value.containsKey(versionCode)) {
-                map[pair.key] = pair.value[versionCode]
-            }
-        }
-        map
-    }
-
-    fun <T> getConfig(className: String?): T {
-        val config = cacheMap[className]
-        return config as T
-                ?: throw RuntimeException("$className :Unsupported QQ Version")
-    }
 
 }

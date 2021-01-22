@@ -32,42 +32,19 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.tencent.mobileqq.app.QQAppInterface;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.io.*;
+import java.lang.reflect.*;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import dalvik.system.DexFile;
 import de.robv.android.xposed.XposedBridge;
 import me.singleneuron.qn_kernel.service.InterruptServiceRoutine;
-import me.singleneuron.qn_kernel.tlb.ConfigTable;
 import me.singleneuron.util.QQVersion;
 import mqq.app.AppRuntime;
 import nil.nadph.qnotified.BuildConfig;
@@ -97,6 +74,7 @@ public class Utils {
     public static boolean DEBUG = true;
     public static boolean ENABLE_DUMP_LOG = false;
     private static Handler mHandler;
+    public static boolean IS_TIM = false;
 
     private Utils() {
         throw new AssertionError("No instance for you!");
@@ -1885,12 +1863,13 @@ public class Utils {
         return Double.compare(d, 0d);
     }
 
+    @Deprecated
     public static boolean isTim(Context ctx) {
         return ctx.getPackageName().equals(PACKAGE_NAME_TIM);
     }
 
     public static boolean isTim() {
-        return ConfigTable.INSTANCE.isTim();
+        return IS_TIM;
     }
 
     public static ContactDescriptor parseResultRec(Object a) {
