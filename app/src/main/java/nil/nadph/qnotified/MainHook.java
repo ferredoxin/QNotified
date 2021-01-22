@@ -736,9 +736,7 @@ public class MainHook {
                     //log("startActivity, rawIntent=" + raw);
                     if (hostApp != null && component != null
                             && hostApp.getPackageName().equals(component.getPackageName())
-                            && (component.getClassName().startsWith("nil.nadph.qnotified.")
-                            || component.getClassName().startsWith("me.zpp0196.qqpurify.activity.")
-                            || component.getClassName().startsWith("me.singleneuron."))) {
+                            && ActProxyMgr.isModuleProxyActivity(component.getClassName())) {
                         boolean isTranslucent = false;
                         try {
                             Class<?> targetActivity = Class.forName(component.getClassName());
@@ -779,9 +777,7 @@ public class MainHook {
                 //log("newActivity: " + className);
                 return mBase.newActivity(cl, className, intent);
             } catch (Exception e) {
-                if (className.startsWith("nil.nadph.qnotified.")
-                        || className.startsWith("me.zpp0196.qqpurify.activity.")
-                        || className.startsWith("me.singleneuron.")) {
+                if (ActProxyMgr.isModuleProxyActivity(className)) {
                     return (Activity) Initiator.class.getClassLoader().loadClass(className).newInstance();
                 }
                 throw e;
@@ -1004,8 +1000,7 @@ public class MainHook {
             try {
                 if (icicle != null) {
                     String className = activity.getClass().getName();
-                    if (className.startsWith("me.zpp0196.qqpurify.activity.")
-                            || className.startsWith("me.singleneuron.")) {
+                    if (ActProxyMgr.isResourceInjectionRequired(className)) {
                         icicle.setClassLoader(MainHook.class.getClassLoader());
                     }
                 }
@@ -1024,8 +1019,7 @@ public class MainHook {
             try {
                 if (icicle != null) {
                     String className = activity.getClass().getName();
-                    if (className.startsWith("me.zpp0196.qqpurify.activity.")
-                            || className.startsWith("me.singleneuron.")) {
+                    if (ActProxyMgr.isResourceInjectionRequired(className)) {
                         icicle.setClassLoader(MainHook.class.getClassLoader());
                     }
                 }

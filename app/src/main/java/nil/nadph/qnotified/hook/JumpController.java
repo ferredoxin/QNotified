@@ -99,7 +99,7 @@ public class JumpController extends BaseDelayableHook {
                         int result = checkIntent(ctx, intent);
                         ComponentName cmp = intent.getComponent();
                         if (cmp != null && ctx.getPackageName().equals(cmp.getPackageName()) &&
-                                cmp.getClassName().startsWith("nil.nadph.qnotified.activity.")) {
+                                ActProxyMgr.isModuleProxyActivity(cmp.getClassName())) {
                             result = JMP_ALLOW;
                         }
                         if (result != JMP_DEFAULT) {

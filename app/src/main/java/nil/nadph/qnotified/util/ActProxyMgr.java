@@ -18,6 +18,8 @@
  */
 package nil.nadph.qnotified.util;
 
+import androidx.annotation.NonNull;
+
 import nil.nadph.qnotified.activity.*;
 
 public class ActProxyMgr {
@@ -68,5 +70,22 @@ public class ActProxyMgr {
             default:
                 return null;
         }
+    }
+
+    public static boolean isModuleProxyActivity(@NonNull String className) {
+        if (className == null) {
+            return false;
+        }
+        return className.startsWith("nil.nadph.qnotified.")
+                || className.startsWith("me.zpp0196.qqpurify.activity.")
+                || className.startsWith("me.singleneuron.");
+    }
+
+    public static boolean isResourceInjectionRequired(@NonNull String className) {
+        if (className == null) {
+            return false;
+        }
+        return className.startsWith("me.zpp0196.qqpurify.activity.")
+                || className.startsWith("me.singleneuron.");
     }
 }
