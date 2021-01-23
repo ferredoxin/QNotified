@@ -85,15 +85,16 @@ public class DexKit {
     public static final int C_ZipUtils_biz = 28;
     public static final int C_HttpDownloader = 29;
     public static final int C_MultiMsg_Manager = 30;
-    public static final int C_LeftSwipeReply_Helper = 31;
     //the last index
-    public static final int DEOBF_NUM_C = 31;
+    public static final int DEOBF_NUM_C = 30;
 
     public static final int N_BASE_CHAT_PIE__INIT = 20001;
     public static final int N_BASE_CHAT_PIE__handleNightMask = 20002;
     public static final int N_BASE_CHAT_PIE__updateSession = 20003;
     public static final int N_BASE_CHAT_PIE__createMulti = 20004;
-    public static final int DEOBF_NUM_N = 4;
+    public static final int N_BASE_CHAT_PIE__chooseMsg = 20005;
+    public static final int N_LeftSwipeReply_Helper__reply = 20006;
+    public static final int DEOBF_NUM_N = 6;
 
 
     @Nullable
@@ -291,8 +292,6 @@ public class DexKit {
                 return "http_downloader";
             case C_MultiMsg_Manager:
                 return "multimsg_manager";
-            case C_LeftSwipeReply_Helper:
-                return "leftswipereply_helper";
             case N_BASE_CHAT_PIE__INIT:
                 return "base_chat_pie__init";
             case N_BASE_CHAT_PIE__handleNightMask:
@@ -301,6 +300,10 @@ public class DexKit {
                 return "base_chat_pie__updateSession";
             case N_BASE_CHAT_PIE__createMulti:
                 return "base_chat_pie__createMulti";
+            case N_BASE_CHAT_PIE__chooseMsg:
+                return "base_chat_pie__chooseMsg";
+            case N_LeftSwipeReply_Helper__reply:
+                return "leftswipereply_helper__reply";
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
@@ -400,13 +403,14 @@ public class DexKit {
             case C_MultiMsg_Manager:
                 ret = "com/tencent/mobileqq/multimsg/MultiMsgManager";
                 break;
-            case C_LeftSwipeReply_Helper:
+            case N_LeftSwipeReply_Helper__reply:
                 ret = "com/tencent/mobileqq/bubble/LeftSwipeReplyHelper";
                 break;
             case N_BASE_CHAT_PIE__INIT:
             case N_BASE_CHAT_PIE__handleNightMask:
             case N_BASE_CHAT_PIE__updateSession:
             case N_BASE_CHAT_PIE__createMulti:
+            case N_BASE_CHAT_PIE__chooseMsg:
                 ret = _BaseChatPie().getName();
                 break;
             default:
@@ -487,14 +491,16 @@ public class DexKit {
                 return new byte[][]{new byte[]{0x19, 0x41, 0x49, 0x4F, 0x54, 0x69, 0x6D, 0x65, 0x20, 0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6F, 0x6E, 0x20, 0x65, 0x6E, 0x64}};
             case N_BASE_CHAT_PIE__createMulti:
                 return new byte[][]{new byte[]{0x0B, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4D, 0x75, 0x6C, 0x74, 0x69}};
+            case N_BASE_CHAT_PIE__chooseMsg:
+                return new byte[][]{new byte[]{0x19, 0x73, 0x65, 0x74, 0x20, 0x6C, 0x65, 0x66, 0x74, 0x20, 0x74, 0x65, 0x78, 0x74, 0x20, 0x66, 0x72, 0x6F, 0x6D, 0x20, 0x63, 0x61, 0x6E, 0x63, 0x65, 0x6C}};
             case C_CustomWidgetUtil:
                 return new byte[][]{new byte[]{0x03, 0x4E, 0x45, 0x57, 0x00}};
             case C_HttpDownloader:
                 return new byte[][]{new byte[]{0x18, 0x5B, 0x72, 0x65, 0x70, 0x6F, 0x72, 0x74, 0x48, 0x74, 0x74, 0x70, 0x73, 0x52, 0x65, 0x73, 0x75, 0x6C, 0x74, 0x5D, 0x20, 0x75, 0x72, 0x6C, 0x3D}};
             case C_MultiMsg_Manager:
                 return new byte[][]{new byte[]{0x1C, 0x5B, 0x73, 0x65, 0x6E, 0x64, 0x4D, 0x75, 0x6C, 0x74, 0x69, 0x4D, 0x73, 0x67, 0x5D, 0x64, 0x61, 0x74, 0x61, 0x2E, 0x6C, 0x65, 0x6E, 0x67, 0x74, 0x68, 0x20, 0x3D, 0x20}};
-            case C_LeftSwipeReply_Helper:
-                return new byte[][]{new byte[]{0x27, 0x64, 0x65, 0x74, 0x65, 0x72, 0x6D, 0x69, 0x6E, 0x65, 0x57, 0x68, 0x65, 0x74, 0x68, 0x65, 0x72, 0x43, 0x6F, 0x6E, 0x73, 0x75, 0x6D, 0x65, 0x28, 0x29, 0x20, 0x69, 0x73, 0x20, 0x63, 0x61, 0x6C, 0x6C, 0x65, 0x64, 0x2E, 0x20, 0x65, 0x76}};
+            case N_LeftSwipeReply_Helper__reply:
+                return new byte[][]{new byte[]{0x09, 0x30, 0x58, 0x38, 0x30, 0x30, 0x41, 0x39, 0x32, 0x46}};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
@@ -555,11 +561,12 @@ public class DexKit {
                 return new int[]{4, 10, 7, 2};
             case C_MultiMsg_Manager:
                 return new int[]{9, 4, 3, 7};
-            case C_LeftSwipeReply_Helper:
+            case N_LeftSwipeReply_Helper__reply:
                 return new int[]{8, 3, 2};
             case N_BASE_CHAT_PIE__INIT:
             case N_BASE_CHAT_PIE__handleNightMask:
             case N_BASE_CHAT_PIE__updateSession:
+            case N_BASE_CHAT_PIE__chooseMsg:
                 return new int[]{7, 6, 3};
             case N_BASE_CHAT_PIE__createMulti:
                 return new int[]{6, 2, 7, 3};
@@ -709,6 +716,9 @@ public class DexKit {
                         return m;
                 }
                 break;
+            case N_LeftSwipeReply_Helper__reply:
+                //TODO: this must only has one result
+                return (DexMethodDescriptor) __methods.toArray()[0];
             case N_BASE_CHAT_PIE__createMulti:
                 for (DexMethodDescriptor m : __methods) {
                     String name = m.declaringClass.replace('/', '.');
@@ -758,7 +768,6 @@ public class DexKit {
             case C_IntimateDrawer:
             case C_HttpDownloader:
             case C_MultiMsg_Manager:
-            case C_LeftSwipeReply_Helper:
                 //has superclass
                 for (DexMethodDescriptor m : __methods) {
                     Class clz = Initiator.load(m.declaringClass);

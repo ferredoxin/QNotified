@@ -787,6 +787,10 @@ public class Utils {
         if (obj == null) throw new NullPointerException("obj/clazz == null");
         if (obj instanceof Class) clazz = (Class) obj;
         else clazz = obj.getClass();
+        return hasMethod(clazz, name, argsTypesAndReturnType);
+    }
+
+    public static Method hasMethod(Class clazz, String name, Object... argsTypesAndReturnType) throws IllegalArgumentException {
         int argc = argsTypesAndReturnType.length / 2;
         Class[] argt = new Class[argc];
         Object[] argv = new Object[argc];
