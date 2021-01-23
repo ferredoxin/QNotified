@@ -19,7 +19,7 @@ object ConfigTable {
         }
     }
 
-    private val cacheMap: Map<String?, Any?> by lazy {
+    public val cacheMap: Map<String?, Any?> by lazy {
         val map: HashMap<String?, Any?> = HashMap()
         val versionCode = Utils.getHostVersionCode()
         for (pair in presentRangeConfigMap) {
