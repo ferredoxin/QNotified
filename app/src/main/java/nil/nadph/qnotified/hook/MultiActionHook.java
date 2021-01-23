@@ -1,14 +1,13 @@
 package nil.nadph.qnotified.hook;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.tencent.mobileqq.app.BaseActivity;
 
@@ -26,19 +25,30 @@ import nil.nadph.qnotified.util.DexKit;
 
 import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
 import static nil.nadph.qnotified.util.Initiator._ChatMessage;
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.findMethodByTypes_1;
+import static nil.nadph.qnotified.util.Utils.getFirstByType;
+import static nil.nadph.qnotified.util.Utils.iget_object_or_null;
+import static nil.nadph.qnotified.util.Utils.invoke_virtual_any;
+import static nil.nadph.qnotified.util.Utils.log;
+
 /*
 This code has been tested in QQ8.0.0-8.5.5 and TIM all versions.
  */
 public class MultiActionHook extends CommonDelayableHook {
     public static final MultiActionHook INSTANCE = new MultiActionHook();
     private static Bitmap img;
-    Class clz_MultiMsg_Manager;
     private final String fieldName = ConfigTable.INSTANCE.getConfig(MultiActionHook.class.getSimpleName());
+    Class clz_MultiMsg_Manager;
     private Object baseChatPie;
 
     MultiActionHook() {
         super("qn_multi_action", SyncUtils.PROC_MAIN, false, new DexDeobfStep(DexKit.C_MessageCache), new DexDeobfStep(DexKit.C_MSG_REC_FAC), new DexDeobfStep(DexKit.N_BASE_CHAT_PIE__createMulti), new DexDeobfStep(DexKit.C_MultiMsg_Manager));
+    }
+
+    private static Bitmap getRecallBitmap() {
+        if (img == null || img.isRecycled())
+            img = BitmapFactory.decodeStream(ResUtils.openAsset("recall.png"));
+        return img;
     }
 
     @Override
@@ -52,13 +62,15 @@ public class MultiActionHook extends CommonDelayableHook {
                             return;
                         clz_MultiMsg_Manager = DexKit.doFindClass(DexKit.C_MultiMsg_Manager);
                         LinearLayout rootView = iget_object_or_null(param.thisObject, fieldName, LinearLayout.class);
+                        if (!check(rootView))
+                            return;
                         BaseActivity context = (BaseActivity) rootView.getContext();
                         baseChatPie = getFirstByType(param.thisObject, _BaseChatPie());
                         int count = rootView.getChildCount();
                         boolean enableTalkBack = rootView.getChildAt(0).getContentDescription() != null;
-                        if (rootView.findViewById(R.id.ketalRecallImageView) == null )
+                        if (rootView.findViewById(R.id.ketalRecallImageView) == null)
                             rootView.addView(create(context, getRecallBitmap(), enableTalkBack), count - 1);
-                        setMargin(context, rootView);
+                        setMargin(rootView);
                     } catch (Exception e) {
                         log(e);
                     }
@@ -84,10 +96,8 @@ public class MultiActionHook extends CommonDelayableHook {
         }
     }
 
-    private void setMargin(Activity activity, LinearLayout rootView) {
-        DisplayMetrics outMetrics = new DisplayMetrics();
-        activity.getWindowManager().getDefaultDisplay().getMetrics(outMetrics);
-        int width = outMetrics.widthPixels;
+    private void setMargin(LinearLayout rootView) {
+        int width = rootView.getResources().getDisplayMetrics().widthPixels;
         int count = rootView.getChildCount();
         int rootMargin = ((RelativeLayout.LayoutParams) rootView.getLayoutParams()).leftMargin;
         int w = ((LinearLayout.LayoutParams) rootView.getChildAt(0).getLayoutParams()).height;
@@ -101,6 +111,16 @@ public class MultiActionHook extends CommonDelayableHook {
         }
     }
 
+    private boolean check(LinearLayout rootView) {
+        int count = rootView.getChildCount();
+        for (int i = 0; i < count; i++) {
+            View view = rootView.getChildAt(i);
+            if (view instanceof TextView)
+                return false;
+        }
+        return true;
+    }
+
     private ImageView create(Context context, Bitmap bitmap, boolean enableTalkBack) {
         ImageView imageView = new ImageView(context);
         if (enableTalkBack) {
@@ -110,11 +130,5 @@ public class MultiActionHook extends CommonDelayableHook {
         imageView.setImageBitmap(bitmap);
         imageView.setId(R.id.ketalRecallImageView);
         return imageView;
-    }
-
-    private static Bitmap getRecallBitmap() {
-        if (img == null || img.isRecycled())
-            img = BitmapFactory.decodeStream(ResUtils.openAsset("recall.png"));
-        return img;
     }
 }
