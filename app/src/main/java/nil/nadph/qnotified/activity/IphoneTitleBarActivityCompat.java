@@ -20,11 +20,14 @@ package nil.nadph.qnotified.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.tencent.mobileqq.app.IphoneTitleBarActivity;
@@ -36,6 +39,7 @@ import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.CliOper;
 import nil.nadph.qnotified.util.Utils;
 
+import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTIVITY_PROXY_ACTION;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
@@ -89,8 +93,12 @@ public class IphoneTitleBarActivityCompat extends IphoneTitleBarActivity {
                 //WTF!!! it's 0202 now, still using QQ<6.5.5???
                 Field l = null, r = null;
                 for (Field fs : cl.getDeclaredFields()) {
-                    if (!Modifier.isPublic(fs.getModifiers())) continue;
-                    if (fs.getName().length() != 1) continue;
+                    if (!Modifier.isPublic(fs.getModifiers())) {
+                        continue;
+                    }
+                    if (fs.getName().length() != 1) {
+                        continue;
+                    }
                     if (l == null) {
                         l = fs;
                     } else {
@@ -122,8 +130,12 @@ public class IphoneTitleBarActivityCompat extends IphoneTitleBarActivity {
             //WTF!!! it's 0202 now, still using QQ<6.5.5???
             Field l = null, r = null;
             for (Field fs : cl.getDeclaredFields()) {
-                if (!Modifier.isPublic(fs.getModifiers())) continue;
-                if (fs.getName().length() != 1) continue;
+                if (!Modifier.isPublic(fs.getModifiers())) {
+                    continue;
+                }
+                if (fs.getName().length() != 1) {
+                    continue;
+                }
                 if (l == null) {
                     l = fs;
                 } else {
@@ -172,5 +184,18 @@ public class IphoneTitleBarActivityCompat extends IphoneTitleBarActivity {
     @Override
     public ClassLoader getClassLoader() {
         return IphoneTitleBarActivityCompat.class.getClassLoader();
+    }
+
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode, @Nullable Bundle options) {
+        if (intent != null && !intent.hasExtra("fling_action_key")) {
+            ComponentName cn = intent.getComponent();
+            if (cn != null && getPackageName().equals(cn.getPackageName())) {
+                //enable right swipe going back
+                intent.putExtra("fling_action_key", 2);
+                intent.putExtra("fling_code_key", hashCode());
+            }
+        }
+        super.startActivityForResult(intent, requestCode, options);
     }
 }

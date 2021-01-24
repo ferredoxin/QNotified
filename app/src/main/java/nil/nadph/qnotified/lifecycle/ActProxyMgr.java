@@ -45,7 +45,14 @@ public class ActProxyMgr {
     public static final int ACTION_CHAT_TAIL_TROOPS_ACTIVITY = 12;
     public static final int ACTION_CHAT_TAIL_FRIENDS_ACTIVITY = 13;
 
-    //@Deprecated
+    /**
+     * TODO: Refactor and remove this method, as well as there constants
+     * TODO: Cope with the notification proxy PendingIntent
+     *
+     * @param action activity number
+     * @return The XxxActivity.class object
+     * @deprecated Direct use {@code XxxActivity.class} instead.
+     */
     public static Class<?> getActivityByAction(int action) {
         switch (action) {
             case ACTION_EXFRIEND_LIST:
@@ -75,7 +82,7 @@ public class ActProxyMgr {
         }
     }
 
-    // TODO: 21-1-23 If you have created your own package, add it to proguard-rules.pro.
+    // NOTICE: ** If you have created your own package, add it to proguard-rules.pro.**
 
     public static boolean isModuleProxyActivity(@NonNull String className) {
         if (className == null) {

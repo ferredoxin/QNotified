@@ -14,6 +14,7 @@
 4. 请勿在Commit附上任何有关[skip ci]的字段
 
 ## 开发
+
 1. 请确认您的编辑器支持EditorConfig，否则请注意您的编码、行位序列及其其他事项。
 
 2. 在原则上代码风格建议遵循[Google Java Style](https://google.github.io/styleguide/javaguide.html)[中文翻译](https://github.com/fantasticmao/google-java-style-guide-zh_cn)
@@ -32,7 +33,7 @@
 
 8. 代码请务必格式化
 
-9. 原则上建议将自己的代码放在自己的包里，**强烈不建议放入nil.nadph.qnotified中**
+9. 原则上建议将自己的代码放在自己的包里，**强烈不建议放入nil.nadph.qnotified中**，另外，应注意的是，如果你创建了自己的包，**一定要记得修改proguard-rules.pro**
 
 10. 针对适配指定QQ/TIM版本的methods扔进[QQConfigTable.kt](app/src/main/java/me/singleneuron/qn_kernel/tlb/QQConfigTable.kt)或[TIMConfigTable.kt](app/src/main/java/me/singleneuron/qn_kernel/tlb/TIMConfigTable.kt)
 

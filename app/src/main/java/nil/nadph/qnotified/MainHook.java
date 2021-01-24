@@ -87,20 +87,18 @@ public class MainHook {
         }
     }
 
+    /**
+     * @deprecated Use {@link Activity#startActivity(Intent)} directly instead.
+     */
     public static void startProxyActivity(Context ctx, int action) {
-        Intent intent = new Intent(ctx, ActProxyMgr.getActivityByAction(action));
-        intent.putExtra(ACTIVITY_PROXY_ACTION, action);
-        intent.putExtra("fling_action_key", 2);
-        intent.putExtra("fling_code_key", ctx.hashCode());
-        ctx.startActivity(intent);
+        ctx.startActivity(new Intent(ctx, ActProxyMgr.getActivityByAction(action)));
     }
 
+    /**
+     * @deprecated Use {@link Activity#startActivity(Intent)} directly instead.
+     */
     public static void startProxyActivity(Context ctx, Class<?> clz) {
-        Intent intent = new Intent(ctx, clz);
-        intent.putExtra(ACTIVITY_PROXY_ACTION, ACTION_RESERVED);
-        intent.putExtra("fling_action_key", 2);
-        intent.putExtra("fling_code_key", ctx.hashCode());
-        ctx.startActivity(intent);
+        ctx.startActivity(new Intent(ctx, clz));
     }
 
     public static void openProfileCard(Context ctx, long uin) {
