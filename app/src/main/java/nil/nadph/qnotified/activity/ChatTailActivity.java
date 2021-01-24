@@ -53,8 +53,8 @@ import static android.text.InputType.TYPE_CLASS_TEXT;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.ui.ViewBuilder.*;
-import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_CHAT_TAIL_FRIENDS_ACTIVITY;
-import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_CHAT_TAIL_TROOPS_ACTIVITY;
+import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTION_CHAT_TAIL_FRIENDS_ACTIVITY;
+import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTION_CHAT_TAIL_TROOPS_ACTIVITY;
 import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressLint("Registered")

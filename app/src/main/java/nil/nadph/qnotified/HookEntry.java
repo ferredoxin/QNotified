@@ -25,6 +25,16 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import nil.nadph.qnotified.util.Utils;
 
+/**
+ * Xposed entry class
+ * DO NOT MODIFY ANY CODE HERE UNLESS NECESSARY.
+ * DO NOT INVOKE ANY METHOD THAT MAY GET IN TOUCH WITH KOTLIN HERE.
+ * DO NOT TOUCH ANDROIDX OR KOTLIN HERE, WHATEVER DIRECTLY OR INDIRECTLY.
+ * THIS CLASS SHOULD ONLY CALL {@code StartupHook.getInstance().doInit()} AND RETURN GRACEFULLY.
+ * OTHERWISE SHIT MAY HAPPEN BECAUSE OF A NON-STANDARD PLUGIN CLASSLOADER.
+ *
+ * @author kinit
+ */
 public class HookEntry implements IXposedHookLoadPackage {
     public static final String PACKAGE_NAME_QQ = "com.tencent.mobileqq";
     public static final String PACKAGE_NAME_QQ_INTERNATIONAL = "com.tencent.mobileqqi";
@@ -40,6 +50,7 @@ public class HookEntry implements IXposedHookLoadPackage {
             return;
         }
         //dumpProcessInfo(lpparam.isFirstApplication);
+        //noinspection AlibabaSwitchStatement
         switch (lpparam.packageName) {
             case PACKAGE_NAME_SELF:
                 XposedHelpers.findAndHookMethod("nil.nadph.qnotified.util.Utils", lpparam.classLoader, "getActiveModuleVersion", XC_MethodReplacement.returnConstant(Utils.QN_VERSION_NAME));
@@ -52,6 +63,9 @@ public class HookEntry implements IXposedHookLoadPackage {
             case PACKAGE_NAME_QQ_INTERNATIONAL:
             case PACKAGE_NAME_QQ_LITE:
                 //coming...
+                break;
+            default:
+                throw new IllegalStateException("Unexpected package: " + lpparam.packageName);
         }
     }
 

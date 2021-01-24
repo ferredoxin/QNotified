@@ -38,8 +38,8 @@ import java.util.Date;
 
 import me.singleneuron.util.HookStatue;
 import nil.nadph.qnotified.HookEntry;
-import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
+import nil.nadph.qnotified.lifecycle.JumpActivityEntryHook;
 import nil.nadph.qnotified.util.Natives;
 import nil.nadph.qnotified.util.Utils;
 
@@ -257,7 +257,7 @@ public class ConfigActivity extends Activity implements Runnable {
             Intent intent = new Intent();
             intent.setComponent(new ComponentName(pkg, "com.tencent.mobileqq.activity.JumpActivity"));
             intent.setAction(Intent.ACTION_VIEW);
-            intent.putExtra(MainHook.JUMP_ACTION_CMD, MainHook.JUMP_ACTION_SETTING_ACTIVITY);
+            intent.putExtra(JumpActivityEntryHook.JUMP_ACTION_CMD, JumpActivityEntryHook.JUMP_ACTION_SETTING_ACTIVITY);
             try {
                 startActivity(intent);
             } catch (ActivityNotFoundException e) {

@@ -31,6 +31,7 @@ import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.activity.EulaActivity;
+import nil.nadph.qnotified.lifecycle.ActProxyMgr;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.*;

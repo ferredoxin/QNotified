@@ -56,8 +56,8 @@ import nil.nadph.qnotified.util.Utils;
 import static android.view.View.GONE;
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_CHAT_TAIL_FRIENDS_ACTIVITY;
-import static nil.nadph.qnotified.util.ActProxyMgr.ACTIVITY_PROXY_ACTION;
+import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTION_CHAT_TAIL_FRIENDS_ACTIVITY;
+import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTIVITY_PROXY_ACTION;
 import static nil.nadph.qnotified.util.Utils.dip2px;
 import static nil.nadph.qnotified.util.Utils.log;
 

@@ -58,6 +58,7 @@ import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.config.EventRecord;
 import nil.nadph.qnotified.config.FriendRecord;
+import nil.nadph.qnotified.lifecycle.ActProxyMgr;
 import nil.nadph.qnotified.remote.GetUserStatusResp;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ResUtils;
@@ -66,8 +67,8 @@ import nil.nadph.qnotified.util.*;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.ui.ViewBuilder.*;
-import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_EXFRIEND_LIST;
-import static nil.nadph.qnotified.util.ActProxyMgr.ACTIVITY_PROXY_ACTION;
+import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTION_EXFRIEND_LIST;
+import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTIVITY_PROXY_ACTION;
 import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressLint("Registered")

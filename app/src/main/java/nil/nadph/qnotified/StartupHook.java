@@ -39,6 +39,10 @@ import static nil.nadph.qnotified.util.Utils.*;
  * Startup hook for QQ/TIM
  * They should act differently according to the process they belong to.
  * I don't want to cope with them any more, enjoy it as long as possible.
+ * DO NOT INVOKE ANY METHOD THAT MAY GET IN TOUCH WITH KOTLIN HERE.
+ * DO NOT MODIFY ANY CODE HERE UNLESS NECESSARY.
+ *
+ * @author cinit
  */
 public class StartupHook {
     public static final String QN_FULL_TAG = "qn_full_tag";
@@ -50,23 +54,31 @@ public class StartupHook {
     }
 
     public void doInit(ClassLoader rtLoader) throws Throwable {
-        if (first_stage_inited) return;
+        if (first_stage_inited) {
+            return;
+        }
         //checkClassLoaderIsolation();
         try {
             XC_MethodHook startup = new XC_MethodHook(51) {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     try {
-                        if (sec_stage_inited) return;
+                        if (sec_stage_inited) {
+                            return;
+                        }
                         Utils.checkLogFlag();
                         Context ctx;
                         Class<?> clz = param.thisObject.getClass().getClassLoader().loadClass("com.tencent.common.app.BaseApplicationImpl");
                         final Field f = hasField(clz, "sApplication");
-                        if (f == null) ctx = (Context) sget_object(clz, "a", clz);
-                        else ctx = (Context) f.get(null);
+                        if (f == null) {
+                            ctx = (Context) sget_object(clz, "a", clz);
+                        } else {
+                            ctx = (Context) f.get(null);
+                        }
                         ClassLoader classLoader = ctx.getClassLoader();
-                        if (classLoader == null)
+                        if (classLoader == null) {
                             throw new AssertionError("ERROR: classLoader == null");
+                        }
                         if ("true".equals(System.getProperty(QN_FULL_TAG))) {
                             logi("Err:QNotified reloaded??");
                             //I don't know... What happened?
@@ -81,7 +93,9 @@ public class StartupHook {
                         } catch (Throwable e3) {
                             Utils.log(e3);
                         }
-                        if (Utils.getBuildTimestamp() < 0) return;
+                        if (Utils.getBuildTimestamp() < 0) {
+                            return;
+                        }
                         MainHook.getInstance().performHook(ctx, param.thisObject);
                         sec_stage_inited = true;
                         deleteDirIfNecessary(ctx);
@@ -129,7 +143,9 @@ public class StartupHook {
     }
 
     public static StartupHook getInstance() {
-        if (SELF == null) SELF = new StartupHook();
+        if (SELF == null) {
+            SELF = new StartupHook();
+        }
         return SELF;
     }
 
