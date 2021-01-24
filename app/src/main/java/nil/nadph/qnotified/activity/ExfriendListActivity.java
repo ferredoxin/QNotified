@@ -46,7 +46,7 @@ import nil.nadph.qnotified.config.FriendRecord;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.ViewBuilder;
-import nil.nadph.qnotified.util.ActProxyMgr;
+import nil.nadph.qnotified.lifecycle.ActProxyMgr;
 import nil.nadph.qnotified.util.FaceImpl;
 import nil.nadph.qnotified.util.Utils;
 

@@ -16,12 +16,15 @@
  * along with this software.  If not, see
  * <https://www.gnu.org/licenses/>.
  */
-package nil.nadph.qnotified.util;
+package nil.nadph.qnotified.lifecycle;
 
 import androidx.annotation.NonNull;
 
 import nil.nadph.qnotified.activity.*;
 
+/**
+ * This class is used to cope with Activity
+ */
 public class ActProxyMgr {
     public static final String STUB_DEFAULT_ACTIVITY = "com.tencent.mobileqq.activity.photo.CameraPreviewActivity";
     public static final String STUB_TRANSLUCENT_ACTIVITY = "cooperation.qlink.QlinkStandardDialogActivity";
@@ -42,7 +45,14 @@ public class ActProxyMgr {
     public static final int ACTION_CHAT_TAIL_TROOPS_ACTIVITY = 12;
     public static final int ACTION_CHAT_TAIL_FRIENDS_ACTIVITY = 13;
 
-    //@Deprecated
+    /**
+     * TODO: Refactor and remove this method, as well as there constants
+     * TODO: Cope with the notification proxy PendingIntent
+     *
+     * @param action activity number
+     * @return The XxxActivity.class object
+     * @deprecated Direct use {@code XxxActivity.class} instead.
+     */
     public static Class<?> getActivityByAction(int action) {
         switch (action) {
             case ACTION_EXFRIEND_LIST:
@@ -72,14 +82,16 @@ public class ActProxyMgr {
         }
     }
 
+    // NOTICE: ** If you have created your own package, add it to proguard-rules.pro.**
+
     public static boolean isModuleProxyActivity(@NonNull String className) {
         if (className == null) {
             return false;
         }
         return className.startsWith("nil.nadph.qnotified.")
-                || className.startsWith("me.zpp0196.qqpurify.activity.")
-                || className.startsWith("me.singleneuron.")
-                || className.startsWith("me.ketal.activity");
+            || className.startsWith("me.zpp0196.qqpurify.activity.")
+            || className.startsWith("me.singleneuron.")
+            || className.startsWith("me.ketal.activity");
     }
 
     public static boolean isResourceInjectionRequired(@NonNull String className) {
@@ -87,6 +99,6 @@ public class ActProxyMgr {
             return false;
         }
         return className.startsWith("me.zpp0196.qqpurify.activity.")
-                || className.startsWith("me.singleneuron.");
+            || className.startsWith("me.singleneuron.");
     }
 }

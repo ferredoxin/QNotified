@@ -48,13 +48,15 @@ import nil.nadph.qnotified.config.EventRecord;
 import nil.nadph.qnotified.config.FriendRecord;
 import nil.nadph.qnotified.config.Table;
 import nil.nadph.qnotified.hook.DelDetectorHook;
+import nil.nadph.qnotified.lifecycle.ActProxyMgr;
+import nil.nadph.qnotified.lifecycle.Parasitics;
 import nil.nadph.qnotified.remote.GetUserStatusResp;
 import nil.nadph.qnotified.remote.TransactionHelper;
 import nil.nadph.qnotified.util.*;
 
 import static nil.nadph.qnotified.config.Table.*;
-import static nil.nadph.qnotified.util.ActProxyMgr.ACTION_EXFRIEND_LIST;
-import static nil.nadph.qnotified.util.ActProxyMgr.ACTIVITY_PROXY_ACTION;
+import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTION_EXFRIEND_LIST;
+import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTIVITY_PROXY_ACTION;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
@@ -693,7 +695,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
         synchronized (this) {
             FriendRecord fr = persons.get(uin);
             if (fr == null) {
-                showToast(MainHook.splashActivityRef.get(), TOAST_TYPE_ERROR, "onActDelResp:get(" + uin + ")==null", Toast.LENGTH_SHORT);
+                Toasts.error(null, "onActDelResp: get(" + uin + ")==null");
                 return;
             }
             EventRecord ev = new EventRecord();
@@ -765,7 +767,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
             builder = new Notification.Builder(app);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            MainHook.injectModuleResources(app.getResources());
+            Parasitics.injectModuleResources(app.getResources());
             //We have to createWithBitmap rather than with a ResId, otherwise RemoteServiceException
             builder.setSmallIcon(Icon.createWithBitmap(BitmapFactory.decodeResource(app.getResources(), R.drawable.ic_del_friend_top)));
         } else {

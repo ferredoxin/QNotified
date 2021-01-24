@@ -8,7 +8,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import nil.nadph.qnotified.HookEntry
-import nil.nadph.qnotified.MainHook
+import nil.nadph.qnotified.lifecycle.JumpActivityEntryHook
 
 class QQPurifyAgentActivity :AppCompatActivity() {
 
@@ -19,14 +19,17 @@ class QQPurifyAgentActivity :AppCompatActivity() {
         val intent = Intent()
         intent.component = ComponentName(pkg, "com.tencent.mobileqq.activity.JumpActivity")
         intent.action = Intent.ACTION_VIEW
-        intent.putExtra(MainHook.JUMP_ACTION_CMD, MainHook.JUMP_ACTION_START_ACTIVITY)
-        intent.putExtra(MainHook.JUMP_ACTION_TARGET, "me.zpp0196.qqpurify.activity.MainActivity")
+        intent.putExtra(
+            JumpActivityEntryHook.JUMP_ACTION_CMD,
+            JumpActivityEntryHook.JUMP_ACTION_START_ACTIVITY)
+        intent.putExtra(
+            JumpActivityEntryHook.JUMP_ACTION_TARGET, "me.zpp0196.qqpurify.activity.MainActivity")
         try {
             startActivity(intent)
         } catch (e: ActivityNotFoundException) {
             AlertDialog.Builder(this).setTitle("出错啦")
-                    .setMessage("拉起模块设置失败, 请确认 $pkg 已安装并启用(没有被关冰箱或被冻结停用)\n$e")
-                    .setCancelable(true).setPositiveButton(R.string.ok, null).show()
+                .setMessage("拉起模块设置失败, 请确认 $pkg 已安装并启用(没有被关冰箱或被冻结停用)\n$e")
+                .setCancelable(true).setPositiveButton(R.string.ok, null).show()
         }
         //finish()
     }
