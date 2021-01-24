@@ -1,5 +1,6 @@
 package me.singleneuron.qn_kernel.tlb
 
+import me.ketal.hook.LeftSwipeReplyHook
 import me.ketal.util.TIMVersion.*
 import nil.nadph.qnotified.bridge.QQMessageFacade
 import nil.nadph.qnotified.hook.MultiActionHook
@@ -33,6 +34,10 @@ object TIMConfigTable {
                     TIM_3_3_0 to "wk",
             ),
 
+            LeftSwipeReplyHook::class.java.simpleName to mapOf(
+                    TIM_3_1_1 to "Cg",
+                    TIM_3_3_0 to "Cn"
+            ),
     )
 
 }
