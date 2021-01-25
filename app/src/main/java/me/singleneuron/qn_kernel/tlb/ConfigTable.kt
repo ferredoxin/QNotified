@@ -5,14 +5,14 @@ import nil.nadph.qnotified.util.Utils
 object ConfigTable {
 
     private val presentConfigMap: Map<String?, Map<Long, Any>> by lazy {
-        return@lazy if (Utils.IS_TIM) {
+        return@lazy if (Utils.isTim()) {
             TIMConfigTable.configs
         } else {
             QQConfigTable.configs
         }
     }
     private val presentRangeConfigMap: Map<String?, Map<Long, Any>> by lazy {
-        return@lazy if (Utils.IS_TIM) {
+        return@lazy if (Utils.isTim()) {
             TIMConfigTable.rangingConfigs
         } else {
             QQConfigTable.rangingConfigs

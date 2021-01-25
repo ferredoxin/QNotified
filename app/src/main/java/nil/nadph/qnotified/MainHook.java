@@ -230,6 +230,7 @@ public class MainHook {
             loge("NewRuntime/E hook failed: " + e);
             Utils.$access$set$sAppRuntimeInit(true);
         }
+        injectLifecycleForProcess(ctx);
         BaseDelayableHook.allowEarlyInit(RevokeMsgHook.get());
         BaseDelayableHook.allowEarlyInit(MuteQZoneThumbsUp.get());
         BaseDelayableHook.allowEarlyInit(MuteAtAllAndRedPacket.get());
@@ -276,13 +277,24 @@ public class MainHook {
         }
     }
 
+    private static void injectLifecycleForProcess(Context ctx) {
+        if (SyncUtils.isMainProcess()) {
+            Parasitics.injectModuleResources(ctx.getApplicationContext().getResources());
+        }
+        if (SyncUtils.isTargetProcess(SyncUtils.PROC_MAIN | SyncUtils.PROC_PEAK)) {
+            Parasitics.initForStubActivity(ctx);
+        }
+    }
+
     @MainProcess
     private void injectStartupHookForMain(Context ctx) {
-        Parasitics.injectModuleResources(ctx.getApplicationContext().getResources());
-        Parasitics.initForStubActivity(ctx);
         JumpActivityEntryHook.initForJumpActivityEntry(ctx);
-        if (LicenseStatus.sDisableCommonHooks) return;
-        if (LicenseStatus.hasUserAcceptEula()) HideMiniAppPullEntry.hideMiniAppEntry();
+        if (LicenseStatus.sDisableCommonHooks) {
+            return;
+        }
+        if (LicenseStatus.hasUserAcceptEula()) {
+            HideMiniAppPullEntry.hideMiniAppEntry();
+        }
     }
 
     /**
