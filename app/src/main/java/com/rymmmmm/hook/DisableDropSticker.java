@@ -1,10 +1,10 @@
-package nil.nadph.qnotified.hook.rikka;
+package com.rymmmmm.hook;
 
 import android.os.Looper;
-import android.view.View;
 import android.widget.Toast;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -20,14 +20,13 @@ import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
 import static nil.nadph.qnotified.util.Utils.getApplication;
 import static nil.nadph.qnotified.util.Utils.log;
 
-//屏蔽头像挂件
-public class DisableAvatarDecoration extends BaseDelayableHook {
-    public static final String rq_disable_avatar_decoration = "rq_disable_avatar_decoration";
-    private static final DisableAvatarDecoration self = new DisableAvatarDecoration();
+//屏蔽掉落小表情
+public class DisableDropSticker extends BaseDelayableHook {
+    public static final String rq_disable_drop_sticker = "rq_disable_drop_sticker";
+    private static final DisableDropSticker self = new DisableDropSticker();
     private boolean isInit = false;
 
-
-    public static DisableAvatarDecoration get() {
+    public static DisableDropSticker get() {
         return self;
     }
 
@@ -46,15 +45,9 @@ public class DisableAvatarDecoration extends BaseDelayableHook {
     public boolean init() {
         if (isInit) return true;
         try {
-            for (Method m : Initiator.load("com.tencent.mobileqq.vas.PendantInfo").getDeclaredMethods()) {
-                if (m.getReturnType() == void.class) {
-                    Class<?>[] argt = m.getParameterTypes();
-                    if (argt.length != 5) continue;
-                    if (argt[0] != View.class) continue;
-                    if (argt[1] != int.class) continue;
-                    if (argt[2] != long.class) continue;
-                    if (argt[3] != String.class) continue;
-                    if (argt[4] != int.class) continue;
+            for (Method m : Initiator._ConfigHandler().getDeclaredMethods()) {
+                Class<?>[] argt = m.getParameterTypes();
+                if (m.getName().equals("f") && !Modifier.isStatic(m.getModifiers()) && argt.length == 1) {
                     XposedBridge.hookMethod(m, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -67,8 +60,8 @@ public class DisableAvatarDecoration extends BaseDelayableHook {
             }
             isInit = true;
             return true;
-        } catch (Throwable t) {
-            Utils.log(t);
+        } catch (Exception e) {
+            Utils.log(e);
             return false;
         }
     }
@@ -79,22 +72,12 @@ public class DisableAvatarDecoration extends BaseDelayableHook {
     }
 
     @Override
-    public boolean isEnabled() {
-        try {
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_disable_avatar_decoration);
-        } catch (Exception e) {
-            log(e);
-            return false;
-        }
-    }
-
-    @Override
     public void setEnabled(boolean enabled) {
         try {
             ConfigManager mgr = ConfigManager.getDefaultConfig();
-            mgr.getAllConfig().put(rq_disable_avatar_decoration, enabled);
+            mgr.getAllConfig().put(rq_disable_drop_sticker, enabled);
             mgr.save();
-        } catch (final Exception e) {
+        } catch (final Throwable e) {
             Utils.log(e);
             if (Looper.myLooper() == Looper.getMainLooper()) {
                 Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
@@ -106,6 +89,16 @@ public class DisableAvatarDecoration extends BaseDelayableHook {
                     }
                 });
             }
+        }
+    }
+
+    @Override
+    public boolean isEnabled() {
+        try {
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_disable_drop_sticker);
+        } catch (Exception e) {
+            log(e);
+            return false;
         }
     }
 }

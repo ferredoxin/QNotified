@@ -1,7 +1,6 @@
-package nil.nadph.qnotified.hook.rikka;
+package com.rymmmmm.hook;
 
 import android.os.Looper;
-import android.view.View;
 import android.widget.Toast;
 
 import java.lang.reflect.Method;
@@ -21,15 +20,16 @@ import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
 import static nil.nadph.qnotified.util.Utils.getApplication;
 import static nil.nadph.qnotified.util.Utils.log;
 
-//强制使用默认字体
-public class DefaultFont extends BaseDelayableHook {
-    public static final String rq_default_font = "rq_default_font";
-    private static final DefaultFont self = new DefaultFont();
+//去除群聊送礼物广告
+public class RemoveSendGiftAd extends BaseDelayableHook {
+    public static final String rq_remove_send_gift_ad = "rq_remove_send_gift_ad";
+    private static final RemoveSendGiftAd self = new RemoveSendGiftAd();
     private boolean isInit = false;
 
-    public static DefaultFont get() {
+    public static RemoveSendGiftAd get() {
         return self;
     }
+
 
     @Override
     public int getEffectiveProc() {
@@ -45,20 +45,18 @@ public class DefaultFont extends BaseDelayableHook {
     public boolean init() {
         if (isInit) return true;
         try {
-            Class<?> C_ChatMessage = Initiator.load("com.tencent.mobileqq.data.ChatMessage");
-            for (Method m : Initiator._TextItemBuilder().getDeclaredMethods()) {
-                if (m.getName().equals("a") && !Modifier.isStatic(m.getModifiers()) && m.getReturnType() == void.class) {
-                    Class<?>[] argt = m.getParameterTypes();
-                    if (argt.length == 2 && argt[0] != View.class && argt[1] == C_ChatMessage) {
-                        XposedBridge.hookMethod(m, new XC_MethodHook() {
-                            @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                                if (LicenseStatus.sDisableCommonHooks) return;
-                                if (!isEnabled()) return;
-                                param.setResult(null);
-                            }
-                        });
-                    }
+            final Class<?> _TroopGiftPanel = Initiator.load("com.tencent.biz.troopgift.TroopGiftPanel");
+            for (Method m : _TroopGiftPanel.getDeclaredMethods()) {
+                Class<?>[] argt = m.getParameterTypes();
+                if (m.getName().equals("onClick") && argt.length == 1 && !Modifier.isStatic(m.getModifiers())) {
+                    XposedBridge.hookMethod(m, new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            if (LicenseStatus.sDisableCommonHooks) return;
+                            if (!isEnabled()) return;
+                            Utils.iput_object(param.thisObject, "f", Boolean.TYPE, true);
+                        }
+                    });
                 }
             }
             isInit = true;
@@ -69,27 +67,16 @@ public class DefaultFont extends BaseDelayableHook {
         }
     }
 
-
     @Override
     public Step[] getPreconditions() {
         return new Step[0];
     }
 
     @Override
-    public boolean isEnabled() {
-        try {
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_default_font);
-        } catch (Exception e) {
-            log(e);
-            return false;
-        }
-    }
-
-    @Override
     public void setEnabled(boolean enabled) {
         try {
             ConfigManager mgr = ConfigManager.getDefaultConfig();
-            mgr.getAllConfig().put(rq_default_font, enabled);
+            mgr.getAllConfig().put(rq_remove_send_gift_ad, enabled);
             mgr.save();
         } catch (final Exception e) {
             Utils.log(e);
@@ -103,6 +90,16 @@ public class DefaultFont extends BaseDelayableHook {
                     }
                 });
             }
+        }
+    }
+
+    @Override
+    public boolean isEnabled() {
+        try {
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_remove_send_gift_ad);
+        } catch (Exception e) {
+            log(e);
+            return false;
         }
     }
 }

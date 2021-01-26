@@ -58,7 +58,7 @@ import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.dialog.RepeaterIconSettingDialog;
 import nil.nadph.qnotified.dialog.RikkaDialog;
 import nil.nadph.qnotified.hook.*;
-import nil.nadph.qnotified.hook.rikka.RemoveMiniProgramAd;
+import com.rymmmmm.hook.RemoveMiniProgramAd;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;

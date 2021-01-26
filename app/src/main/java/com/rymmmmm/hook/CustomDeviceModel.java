@@ -1,4 +1,4 @@
-package nil.nadph.qnotified.hook.rikka;
+package com.rymmmmm.hook;
 
 import java.lang.reflect.Field;
 
