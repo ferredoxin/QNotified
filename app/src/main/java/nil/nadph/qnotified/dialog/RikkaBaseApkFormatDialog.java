@@ -11,7 +11,7 @@ import android.widget.*;
 
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.hook.rikka.BaseApk;
+import com.rymmmmm.hook.BaseApk;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.util.NonNull;
 import nil.nadph.qnotified.util.Nullable;

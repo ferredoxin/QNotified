@@ -66,7 +66,7 @@ import static nil.nadph.qnotified.util.Utils.loge;
 import static nil.nadph.qnotified.util.Utils.logi;
 
 /**
- * Inject module Activitys into host process and resources injection.
+ * Inject module Activities into host process and resources injection.
  * Deprecated, private, internal or other restricted APIs will be used.
  *
  * @author cinit

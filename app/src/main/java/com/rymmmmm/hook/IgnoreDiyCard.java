@@ -16,7 +16,7 @@
  * along with this software.  If not, see
  * <https://www.gnu.org/licenses/>.
  */
-package nil.nadph.qnotified.hook.rikka;
+package com.rymmmmm.hook;
 
 import android.content.Intent;
 import android.os.Looper;

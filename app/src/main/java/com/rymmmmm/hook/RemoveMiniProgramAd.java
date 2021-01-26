@@ -1,10 +1,7 @@
-package nil.nadph.qnotified.hook.rikka;
+package com.rymmmmm.hook;
 
 import android.os.Looper;
 import android.widget.Toast;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -16,23 +13,24 @@ import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
-import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
-import static nil.nadph.qnotified.util.Utils.getApplication;
-import static nil.nadph.qnotified.util.Utils.log;
+import java.lang.reflect.Method;
 
-//屏蔽所有进场特效
-public class DisableEnterEffect extends BaseDelayableHook {
-    public static final String rq_disable_enter_effect = "rq_disable_enter_effect";
-    private static final DisableEnterEffect self = new DisableEnterEffect();
+import static nil.nadph.qnotified.util.Utils.*;
+
+//去除小程序广告 需要手动点关闭
+public class RemoveMiniProgramAd extends BaseDelayableHook {
+    public static final String rq_remove_mini_program_ad = "rq_remove_mini_program_ad";
+    private static final RemoveMiniProgramAd self = new RemoveMiniProgramAd();
     private boolean isInit = false;
 
-    public static DisableEnterEffect get() {
+    public static RemoveMiniProgramAd get() {
         return self;
     }
 
     @Override
     public int getEffectiveProc() {
-        return SyncUtils.PROC_MAIN;
+        return SyncUtils.PROC_ANY & ~(SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF | SyncUtils.PROC_QZONE
+                | SyncUtils.PROC_PEAK | SyncUtils.PROC_VIDEO);
     }
 
     @Override
@@ -44,14 +42,15 @@ public class DisableEnterEffect extends BaseDelayableHook {
     public boolean init() {
         if (isInit) return true;
         try {
-            for (Method m : Initiator._TroopEnterEffectController().getDeclaredMethods()) {
-                if (m.getName().equals("a") && !Modifier.isStatic(m.getModifiers()) && m.getReturnType() == void.class) {
+            for (Method m : Initiator._GdtMvViewController().getDeclaredMethods()) {
+                Class<?>[] argt = m.getParameterTypes();
+                if (m.getName().equals("x") && argt.length == 0) {
                     XposedBridge.hookMethod(m, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             if (LicenseStatus.sDisableCommonHooks) return;
                             if (!isEnabled()) return;
-                            param.setResult(null);
+                            Utils.iput_object(param.thisObject, "c", Boolean.TYPE, true);
                         }
                     });
                 }
@@ -59,7 +58,7 @@ public class DisableEnterEffect extends BaseDelayableHook {
             isInit = true;
             return true;
         } catch (Throwable e) {
-            log(e);
+            Utils.log(e);
             return false;
         }
     }
@@ -73,7 +72,7 @@ public class DisableEnterEffect extends BaseDelayableHook {
     public void setEnabled(boolean enabled) {
         try {
             ConfigManager mgr = ConfigManager.getDefaultConfig();
-            mgr.getAllConfig().put(rq_disable_enter_effect, enabled);
+            mgr.getAllConfig().put(rq_remove_mini_program_ad, enabled);
             mgr.save();
         } catch (final Exception e) {
             Utils.log(e);
@@ -93,7 +92,7 @@ public class DisableEnterEffect extends BaseDelayableHook {
     @Override
     public boolean isEnabled() {
         try {
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_disable_enter_effect);
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_remove_mini_program_ad);
         } catch (Exception e) {
             log(e);
             return false;
