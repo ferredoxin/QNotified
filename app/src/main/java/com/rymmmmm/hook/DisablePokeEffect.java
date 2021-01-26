@@ -1,4 +1,4 @@
-package nil.nadph.qnotified.hook.rikka;
+package com.rymmmmm.hook;
 
 import android.os.Looper;
 import android.widget.Toast;
@@ -20,13 +20,13 @@ import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
 import static nil.nadph.qnotified.util.Utils.getApplication;
 import static nil.nadph.qnotified.util.Utils.log;
 
-//屏蔽抖动窗口 作用暂时不明
-public class DisableShakeWindow extends BaseDelayableHook {
-    public final static String rq_disable_shake_window = "rq_disable_shake_window";
-    private final static DisableShakeWindow self = new DisableShakeWindow();
+//屏蔽戳一戳动画
+public class DisablePokeEffect extends BaseDelayableHook {
+    public static final String rq_disable_poke_effect = "rq_disable_poke_effect";
+    private static final DisablePokeEffect self = new DisablePokeEffect();
     private boolean isInit = false;
 
-    public static DisableShakeWindow get() {
+    public static DisablePokeEffect get() {
         return self;
     }
 
@@ -44,27 +44,38 @@ public class DisableShakeWindow extends BaseDelayableHook {
     public boolean init() {
         if (isInit) return true;
         try {
-            for (int i = 1; i < 4; i++) {
-                for (Method m : Initiator.load("com.tencent.mobileqq.activity.aio.helper.AIOShakeHelper$" + i).getDeclaredMethods()) {
-                    if (m.getName().equals("run") && !Modifier.isStatic(m.getModifiers())) {
-                        XposedBridge.hookMethod(m, new XC_MethodHook() {
-                            @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                                if (LicenseStatus.sDisableCommonHooks) return;
-                                if (!isEnabled()) return;
-                                param.setResult(null);
+            for (Method m : Initiator._GivingHeartItemBuilder().getDeclaredMethods()) {
+                Class<?>[] argt = m.getParameterTypes();
+                if (m.getName().equals("a") && argt.length == 3 && !Modifier.isStatic(m.getModifiers())) {
+                    XposedBridge.hookMethod(m, new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            if (LicenseStatus.sDisableCommonHooks) return;
+                            if (!isEnabled()) return;
+                            // param.setResult(null);// 此处不应为null
+                            if (param.getResult().getClass().isPrimitive()) {// 判断是boolean (基本类型)
+                                param.setResult(false);
                             }
-                        });
-                    }
+                        }
+                    });
                 }
+//                "fangdazhao" need to fix.
+//                if (m.getName().equals("b") && m.getParameterTypes().length == 2 && !Modifier.isStatic(m.getModifiers())) {
+//                    XposedBridge.hookMethod(m, new XC_MethodHook() {
+//                        @Override
+//                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+//                            if (LicenseStatus.sDisableCommonHooks) return;
+//                            if (!isEnabled()) return;
+//                            param.setResult(null);
+//                        }
+//                    });
+//                }
             }
             isInit = true;
             return true;
         } catch (Throwable e) {
-            Utils.log(e);
             return false;
         }
-
     }
 
     @Override
@@ -76,7 +87,7 @@ public class DisableShakeWindow extends BaseDelayableHook {
     public void setEnabled(boolean enabled) {
         try {
             ConfigManager mgr = ConfigManager.getDefaultConfig();
-            mgr.getAllConfig().put(rq_disable_shake_window, enabled);
+            mgr.getAllConfig().put(rq_disable_poke_effect, enabled);
             mgr.save();
         } catch (final Exception e) {
             Utils.log(e);
@@ -96,7 +107,7 @@ public class DisableShakeWindow extends BaseDelayableHook {
     @Override
     public boolean isEnabled() {
         try {
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_disable_shake_window);
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_disable_poke_effect);
         } catch (Exception e) {
             log(e);
             return false;

@@ -1,4 +1,4 @@
-package nil.nadph.qnotified.hook.rikka;
+package com.rymmmmm.hook;
 
 import android.annotation.SuppressLint;
 

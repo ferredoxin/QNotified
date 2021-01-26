@@ -34,7 +34,7 @@ import me.kyuubiran.hook.RemoveCameraButton;
 import me.kyuubiran.hook.RemoveRedDot;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.hook.*;
-import nil.nadph.qnotified.hook.rikka.CustomSplash;
+import com.rymmmmm.hook.CustomSplash;
 import nil.nadph.qnotified.lifecycle.ActProxyMgr;
 import nil.nadph.qnotified.lifecycle.JumpActivityEntryHook;
 import nil.nadph.qnotified.lifecycle.Parasitics;
@@ -42,8 +42,6 @@ import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.*;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTION_RESERVED;
-import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTIVITY_PROXY_ACTION;
 import static nil.nadph.qnotified.util.Initiator._StartupDirector;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;

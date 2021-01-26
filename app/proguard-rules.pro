@@ -5,6 +5,7 @@
 -keep class io.** { *; }
 -keep class org.** { *; }
 -keep class com.microsoft.** { *; }
+-keep class com.rymmmmm.** { *; }
 
 -keep public class * extends android.app.Activity
 -keep public class * extends android.app.Application
