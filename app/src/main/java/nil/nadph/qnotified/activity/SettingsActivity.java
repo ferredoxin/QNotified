@@ -22,6 +22,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -42,6 +43,7 @@ import java.io.IOException;
 
 import me.ketal.activity.ModifyLeftSwipeReplyActivity;
 import me.ketal.hook.LeftSwipeReplyHook;
+import me.ketal.hook.ModifyNativeAvatar;
 import me.ketal.util.TIMVersion;
 import me.kyuubiran.hook.AutoMosaicName;
 import me.kyuubiran.hook.ShowSelfMsgByLeft;
@@ -84,6 +86,16 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
     @Override
     public boolean doOnCreate(Bundle bundle) {
         super.doOnCreate(bundle);
+        Intent intent = getIntent();
+        if (intent.getIntExtra("fromWhereClick", -1) > 0) {
+            String path = intent.getStringExtra("PhotoConst.SINGLE_PHOTO_PATH");
+            switch (intent.getIntExtra("fromWhereClick", -1)) {
+                case ModifyNativeAvatar.FLAG_CHOOSE_PIC:
+                    if (ModifyNativeAvatar.setAvatar(path))
+                        Toasts.info(this,"重启QQ生效");
+                    else Toasts.info(this, "设置失败，检查是否赋予储存权限");
+            }
+        }
         String _hostName = Utils.getHostAppName();
         LinearLayout ll = new LinearLayout(this);
         ll.setId(R.id.rootMainLayout);
@@ -217,6 +229,8 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(newListItemHookSwitchInit(this, "批量撤回消息", "多选消息后撤回", MultiActionHook.INSTANCE));
         if (LeftSwipeReplyHook.INSTANCE.isValid())
             ll.addView(newListItemButton(this, "修改消息左滑动作", "", null, clickToProxyActAction(ModifyLeftSwipeReplyActivity.class)));
+        if (!isTim())
+            ll.addView(newListItemButton(this, "自定义本地头像（重启生效）", "仅本机生效", null, ModifyNativeAvatar.clickTheButton()));
 
         ll.addView(subtitle(this, "好友列表"));
         ll.addView(newListItemButton(this, "打开资料卡", "打开指定用户的资料卡", null, new View.OnClickListener() {
