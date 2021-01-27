@@ -18,53 +18,42 @@
  */
 package nil.nadph.qnotified.ui;
 
-import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.text.TextUtils;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.content.*;
+import android.net.*;
+import android.text.*;
+import android.view.*;
 import android.widget.*;
 
-import androidx.core.view.ViewCompat;
+import androidx.core.view.*;
 
-import nil.nadph.qnotified.ExfriendManager;
-import nil.nadph.qnotified.MainHook;
-import nil.nadph.qnotified.R;
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.config.SwitchConfigItem;
-import nil.nadph.qnotified.hook.BaseDelayableHook;
-import nil.nadph.qnotified.step.Step;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.hook.*;
+import nil.nadph.qnotified.step.*;
 import nil.nadph.qnotified.ui.widget.Switch;
-import nil.nadph.qnotified.util.NonUiThread;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.util.*;
 
-import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
-import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.util.Initiator.load;
+import static android.widget.LinearLayout.LayoutParams.*;
+import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class ViewBuilder {
-
+    
     public static final int R_ID_TITLE = 0x300AFF11;
     public static final int R_ID_DESCRIPTION = 0x300AFF12;
     public static final int R_ID_SWITCH = 0x300AFF13;
     public static final int R_ID_VALUE = 0x300AFF14;
     public static final int R_ID_ARROW = 0x300AFF15;
-
+    
     private static final int CONSTANT_LIST_ITEM_HEIGHT_DP = 48;
-
+    
     public static RelativeLayout newListItemSwitch(Context ctx, CharSequence title, CharSequence desc, boolean on, CompoundButton.OnCheckedChangeListener listener) {
         RelativeLayout root = new IsolatedStateRelativeLayout(ctx);
         root.setId((title == null ? "" : title).hashCode());
         root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx, CONSTANT_LIST_ITEM_HEIGHT_DP)));
         //root.setBackgroundDrawable(ResUtils.getListItemBackground());
-        ViewCompat.setBackground(root,ResUtils.getListItemBackground());
+        ViewCompat.setBackground(root, ResUtils.getListItemBackground());
         TextView tv = new TextView(ctx);
         tv.setText(title);
         tv.setId(R_ID_TITLE);
@@ -112,7 +101,7 @@ public class ViewBuilder {
         root.addView(sw, lp_sw);
         return root;
     }
-
+    
     public static RelativeLayout newListItemSwitchConfig(Context ctx, CharSequence title, CharSequence desc, final String key, boolean defVal) {
         boolean on = ConfigManager.getDefaultConfig().getBooleanOrDefault(key, defVal);
         RelativeLayout root = newListItemSwitch(ctx, title, desc, on, new CompoundButton.OnCheckedChangeListener() {
@@ -131,8 +120,8 @@ public class ViewBuilder {
         root.setId(key.hashCode());
         return root;
     }
-
-
+    
+    
     public static RelativeLayout newListItemSwitchConfigNext(Context ctx, CharSequence title, CharSequence desc, final String key, boolean defVal) {
         boolean on = ConfigManager.getDefaultConfig().getBooleanOrDefault(key, defVal);
         RelativeLayout root = newListItemSwitch(ctx, title, desc, on, new CompoundButton.OnCheckedChangeListener() {
@@ -152,7 +141,7 @@ public class ViewBuilder {
         root.setId(key.hashCode());
         return root;
     }
-
+    
     public static RelativeLayout newListItemSwitchFriendConfigNext(Context ctx, CharSequence title, CharSequence desc, final String key, boolean defVal) {
         ConfigManager mgr = ExfriendManager.getCurrent().getConfig();
         boolean on = mgr.getBooleanOrDefault(key, defVal);
@@ -160,7 +149,7 @@ public class ViewBuilder {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 try {
-
+                    
                     mgr.getAllConfig().put(key, isChecked);
                     mgr.save();
                     Utils.showToastShort(buttonView.getContext(), "设置成功");
@@ -173,7 +162,7 @@ public class ViewBuilder {
         root.setId(key.hashCode());
         return root;
     }
-
+    
     public static RelativeLayout newListItemSwitchConfigNext(Context ctx, CharSequence title, CharSequence desc, final SwitchConfigItem item) {
         boolean on = item.isEnabled();
         RelativeLayout root = newListItemSwitch(ctx, title, desc, on, new CompoundButton.OnCheckedChangeListener() {
@@ -191,7 +180,7 @@ public class ViewBuilder {
         root.setId(title.hashCode());
         return root;
     }
-
+    
     public static RelativeLayout newListItemHookSwitchInit(final Context ctx, CharSequence title, CharSequence desc, final BaseDelayableHook hook) {
         boolean on = hook.isEnabled();
         RelativeLayout root = newListItemSwitch(ctx, title, desc, on, new CompoundButton.OnCheckedChangeListener() {
@@ -213,7 +202,7 @@ public class ViewBuilder {
         root.setId(hook.getClass().getName().hashCode());
         return root;
     }
-
+    
     public static RelativeLayout newListItemConfigSwitchIfValid(final Context ctx, CharSequence title, CharSequence desc, final SwitchConfigItem item) {
         boolean on = item.isEnabled();
         RelativeLayout root = newListItemSwitch(ctx, title, desc, on, new CompoundButton.OnCheckedChangeListener() {
@@ -226,7 +215,7 @@ public class ViewBuilder {
         root.setId(item.hashCode());
         return root;
     }
-
+    
     @Deprecated
     public static RelativeLayout newListItemSwitchConfigInitByKey(final Context ctx, CharSequence title, CharSequence desc, final String key, boolean defVal, final BaseDelayableHook hook) {
         boolean on = ConfigManager.getDefaultConfig().getBooleanOrDefault(key, defVal);
@@ -265,14 +254,15 @@ public class ViewBuilder {
         });
         return root;
     }
-
+    
     @NonUiThread
     public static void doSetupAndInit(final Context ctx, BaseDelayableHook hook) {
         final CustomDialog[] pDialog = new CustomDialog[1];
         Throwable err = null;
         try {
             for (Step s : hook.getPreconditions()) {
-                if (s.isDone()) continue;
+                if (s.isDone())
+                    continue;
                 final String name = s.getDescription();
                 Utils.runOnUiThread(new Runnable() {
                     @Override
@@ -284,7 +274,7 @@ public class ViewBuilder {
                             pDialog[0].show();
                         }
                         pDialog[0].setMessage("QNotified正在初始化:\n" + name + "\n每个类一般不会超过一分钟");
-
+                        
                     }
                 });
                 s.step();
@@ -312,7 +302,7 @@ public class ViewBuilder {
             Throwable finalErr = err;
             Utils.runOnUiThread(() -> {
                 CustomDialog.createFailsafe(ctx).setTitle("发生错误").setMessage(finalErr.toString())
-                        .setCancelable(true).setPositiveButton(android.R.string.ok, null).show();
+                    .setCancelable(true).setPositiveButton(android.R.string.ok, null).show();
             });
         }
         if (pDialog[0] != null) {
@@ -324,14 +314,15 @@ public class ViewBuilder {
             });
         }
     }
-
+    
     @NonUiThread
     public static void doSetupForPrecondition(final Context ctx, BaseDelayableHook hook) {
         final CustomDialog[] pDialog = new CustomDialog[1];
         Throwable error = null;
         try {
             for (Step i : hook.getPreconditions()) {
-                if (i.isDone()) continue;
+                if (i.isDone())
+                    continue;
                 final String name = i.getDescription();
                 Utils.runOnUiThread(new Runnable() {
                     @Override
@@ -354,7 +345,7 @@ public class ViewBuilder {
             Throwable finalErr = error;
             Utils.runOnUiThread(() -> {
                 CustomDialog.createFailsafe(ctx).setTitle("发生错误").setMessage(finalErr.toString())
-                        .setCancelable(true).setPositiveButton(android.R.string.ok, null).show();
+                    .setCancelable(true).setPositiveButton(android.R.string.ok, null).show();
             });
         }
         if (pDialog[0] != null) {
@@ -366,7 +357,7 @@ public class ViewBuilder {
             });
         }
     }
-
+    
     public static RelativeLayout newListItemSwitchConfigStub(Context ctx, CharSequence title, CharSequence desc,
                                                              final String key, boolean defVal) {
         RelativeLayout root = newListItemSwitch(ctx, title, desc, false, new CompoundButton.OnCheckedChangeListener() {
@@ -378,7 +369,7 @@ public class ViewBuilder {
         });
         return root;
     }
-
+    
     public static RelativeLayout newListItemSwitchStub(Context ctx, CharSequence title, CharSequence desc, final boolean constVal) {
         RelativeLayout root = newListItemSwitch(ctx, title, desc, constVal, new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -389,13 +380,13 @@ public class ViewBuilder {
         });
         return root;
     }
-
+    
     public static RelativeLayout newListItemDummy(Context ctx, CharSequence title, CharSequence desc, CharSequence
-            value) {
+        value) {
         RelativeLayout root = new IsolatedStateRelativeLayout(ctx);
         root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx, CONSTANT_LIST_ITEM_HEIGHT_DP)));
         //root.setBackgroundDrawable(ResUtils.getListItemBackground());
-        ViewCompat.setBackground(root,ResUtils.getListItemBackground());
+        ViewCompat.setBackground(root, ResUtils.getListItemBackground());
         TextView tv = new TextView(ctx);
         tv.setText(title);
         tv.setId(R_ID_TITLE);
@@ -445,13 +436,13 @@ public class ViewBuilder {
         root.setId(title.toString().hashCode());
         return root;
     }
-
+    
     public static RelativeLayout newListItemButton(Context ctx, CharSequence title, CharSequence desc, CharSequence
-            value, View.OnClickListener listener) {
+        value, View.OnClickListener listener) {
         RelativeLayout root = new IsolatedStateRelativeLayout(ctx);
         root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx, CONSTANT_LIST_ITEM_HEIGHT_DP)));
         //root.setBackgroundDrawable(ResUtils.getListItemBackground());
-        ViewCompat.setBackground(root,ResUtils.getListItemBackground());
+        ViewCompat.setBackground(root, ResUtils.getListItemBackground());
         TextView tv = new TextView(ctx);
         tv.setText(title);
         tv.setId(R_ID_TITLE);
@@ -498,7 +489,8 @@ public class ViewBuilder {
         root.addView(img, lp_im);
         TextView st = new TextView(ctx);
         st.setId(R_ID_VALUE);
-        if (value != null) st.setText(value);
+        if (value != null)
+            st.setText(value);
         st.setTextColor(ResUtils.skin_gray3);
         st.setTextSize(dip2sp(ctx, 15));
         RelativeLayout.LayoutParams lp_st = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
@@ -514,7 +506,7 @@ public class ViewBuilder {
         root.setId(title.toString().hashCode());
         return root;
     }
-
+    
     public static LinearLayout subtitle(Context ctx, CharSequence title) {
         LinearLayout ll = new LinearLayout(ctx);
         ll.setOrientation(LinearLayout.HORIZONTAL);
@@ -535,7 +527,7 @@ public class ViewBuilder {
 		ll.addView(v);*/
         return ll;
     }
-
+    
     public static LinearLayout subtitle(Context ctx, CharSequence title, int color) {
         LinearLayout ll = new LinearLayout(ctx);
         ll.setOrientation(LinearLayout.HORIZONTAL);
@@ -556,7 +548,7 @@ public class ViewBuilder {
 		ll.addView(v);*/
         return ll;
     }
-
+    
     public static View.OnClickListener clickToProxyActAction(final int action) {
         return new View.OnClickListener() {
             @Override
@@ -565,7 +557,7 @@ public class ViewBuilder {
             }
         };
     }
-
+    
     public static View.OnClickListener clickToProxyActAction(final Class<?> clz) {
         return new View.OnClickListener() {
             @Override
@@ -574,7 +566,7 @@ public class ViewBuilder {
             }
         };
     }
-
+    
     public static View.OnClickListener clickToUrl(final String url) {
         return new View.OnClickListener() {
             @Override
@@ -585,7 +577,7 @@ public class ViewBuilder {
             }
         };
     }
-
+    
     public static View.OnClickListener clickToChat() {
         return new View.OnClickListener() {
             @Override
@@ -597,7 +589,7 @@ public class ViewBuilder {
             }
         };
     }
-
+    
     public static View.OnClickListener clickTheComing() {
         return new View.OnClickListener() {
             @Override
@@ -606,7 +598,7 @@ public class ViewBuilder {
             }
         };
     }
-
+    
     public static View.OnLongClickListener longClickToTest() {
         return new View.OnLongClickListener() {
             @Override
@@ -616,24 +608,24 @@ public class ViewBuilder {
             }
         };
     }
-
+    
     public static LinearLayout.LayoutParams newLinearLayoutParams(int width, int height, int left, int top, int right, int bottom) {
         LinearLayout.LayoutParams ret = new LinearLayout.LayoutParams(width, height);
         ret.setMargins(left, top, right, bottom);
         return ret;
     }
-
+    
     public static LinearLayout.LayoutParams newLinearLayoutParams(int width, int height, int gravity, int left, int top, int right, int bottom) {
         LinearLayout.LayoutParams ret = new LinearLayout.LayoutParams(width, height);
         ret.setMargins(left, top, right, bottom);
         ret.gravity = gravity;
         return ret;
     }
-
+    
     public static LinearLayout.LayoutParams newLinearLayoutParams(int width, int height, int margins) {
         return newLinearLayoutParams(width, height, margins, margins, margins, margins);
     }
-
+    
     public static RelativeLayout.LayoutParams newRelativeLayoutParamsM(int width, int height, int left, int top, int right, int bottom, int... verbArgv) {
         RelativeLayout.LayoutParams ret = new RelativeLayout.LayoutParams(width, height);
         ret.setMargins(left, top, right, bottom);
@@ -642,7 +634,7 @@ public class ViewBuilder {
         }
         return ret;
     }
-
+    
     public static RelativeLayout.LayoutParams newRelativeLayoutParams(int width, int height, int... verbArgv) {
         RelativeLayout.LayoutParams ret = new RelativeLayout.LayoutParams(width, height);
         for (int i = 0; i < verbArgv.length / 2; i++) {
@@ -650,7 +642,7 @@ public class ViewBuilder {
         }
         return ret;
     }
-
+    
     public static void listView_setAdapter(View v, ListAdapter adapter) {
         try {
             Class<?> clazz = v.getClass();
@@ -659,11 +651,11 @@ public class ViewBuilder {
             Utils.logi("tencent_ListView->setAdapter: " + e.toString());
         }
     }
-
+    
     public static CompoundButton switch_new(Context ctx) {
         return new Switch(ctx);
     }
-
+    
     public static LinearLayout newDialogClickableItemClickToCopy(final Context ctx, String title, String value, ViewGroup vg, boolean attach) {
         return newDialogClickableItem(ctx, title, value, new View.OnLongClickListener() {
             @Override
@@ -682,7 +674,7 @@ public class ViewBuilder {
             }
         }, vg, attach);
     }
-
+    
     public static LinearLayout newDialogClickableItem(final Context ctx, String title, String value, View.OnLongClickListener ll, ViewGroup vg, boolean attach) {
         LinearLayout root = (LinearLayout) LayoutInflater.from(ctx).inflate(R.layout.dialog_clickable_item, vg, false);
         TextView t = root.findViewById(R.id.dialogClickableItemTitle);
@@ -692,12 +684,12 @@ public class ViewBuilder {
         if (ll != null) {
             v.setOnLongClickListener(ll);
             //v.setBackgroundDrawable(ResUtils.getDialogClickableItemBackground());
-            ViewCompat.setBackground(v,ResUtils.getDialogClickableItemBackground());
+            ViewCompat.setBackground(v, ResUtils.getDialogClickableItemBackground());
         }
         if (attach) {
             vg.addView(root);
         }
         return root;
     }
-
+    
 }

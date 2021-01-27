@@ -76,7 +76,7 @@ fun checkCardMsg(originString: String): CardMsgCheckResult {
         Utils.logd(Gson().toJson(blackList))
         for (rule in blackList) {
             //Utils.logd("checking: $rule")
-            if (Regex(rule.value, setOf(RegexOption.IGNORE_CASE,RegexOption.DOT_MATCHES_ALL)).containsMatchIn(string)) {
+            if (Regex(rule.value, setOf(RegexOption.IGNORE_CASE, RegexOption.DOT_MATCHES_ALL)).containsMatchIn(string)) {
                 return CardMsgCheckResult(false, rule.key)
             }
         }
@@ -87,18 +87,18 @@ fun checkCardMsg(originString: String): CardMsgCheckResult {
     }
 }
 
-private fun decodePercent(string:String): String {
+private fun decodePercent(string: String): String {
     var produceString = string
-    val regex = Regex("""%[0-9a-fA-F]{2}""",RegexOption.IGNORE_CASE)
+    val regex = Regex("""%[0-9a-fA-F]{2}""", RegexOption.IGNORE_CASE)
     while (true) {
         if (!regex.containsMatchIn(produceString)) return produceString
-        produceString = regex.replace(produceString){matchResult ->
+        produceString = regex.replace(produceString) { matchResult ->
             val hex = matchResult.value.substring(1)
             try {
-                val char = Integer.valueOf(hex,16).toChar().toString()
+                val char = Integer.valueOf(hex, 16).toChar().toString()
                 Utils.logd("replace $hex -> $char")
                 return@replace char
-            } catch (e:Exception) {
+            } catch (e: Exception) {
                 Utils.log(e)
                 return@replace hex
             }
@@ -110,7 +110,7 @@ private fun decodePercent(string:String): String {
 
 fun showEulaDialog(activity: Activity) {
     if (BuildConfig.DEBUG) {
-        MainHook.startProxyActivity(activity,OmegaTestFuncActivity::class.java)
+        MainHook.startProxyActivity(activity, OmegaTestFuncActivity::class.java)
         return
     }
     val linearLayout = LinearLayout(activity)
@@ -124,17 +124,17 @@ fun showEulaDialog(activity: Activity) {
     linearLayout.addView(textView)
     linearLayout.addView(editText)
     val builder = MaterialAlertDialogBuilder(activity, R.style.MaterialDialog)
-            .setView(linearLayout)
-            .setCancelable(false)
-            .setPositiveButton("我已阅读并同意用户协议"){ _: DialogInterface, _: Int ->
-                MainHook.startProxyActivity(activity,OmegaTestFuncActivity::class.java)
-            }
-            .setNeutralButton("阅读用户协议"){ _: DialogInterface, _: Int ->
-                MainHook.startProxyActivity(activity,EulaActivity::class.java)
-                activity.finish()
-            }
-            .setNegativeButton("取消"){ _: DialogInterface, _: Int ->
-            }
+        .setView(linearLayout)
+        .setCancelable(false)
+        .setPositiveButton("我已阅读并同意用户协议") { _: DialogInterface, _: Int ->
+            MainHook.startProxyActivity(activity, OmegaTestFuncActivity::class.java)
+        }
+        .setNeutralButton("阅读用户协议") { _: DialogInterface, _: Int ->
+            MainHook.startProxyActivity(activity, EulaActivity::class.java)
+            activity.finish()
+        }
+        .setNegativeButton("取消") { _: DialogInterface, _: Int ->
+        }
     val dialog = builder.create()
     dialog.show()
     val button: Button = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
@@ -148,10 +148,10 @@ fun showEulaDialog(activity: Activity) {
     button.isEnabled = false
     Thread {
         var time = 30
-        if (LicenseStatus.getCurrentUserWhiteFlags()!=0) time = (Math.random()*10).toInt()
-        if (LicenseStatus.isInsider()) time = if (Math.random()<0.1) 86400 else 5
-        if (LicenseStatus.getCurrentUserBlackFlags()!=0) time = (Math.random()*82800+3600).toInt()
-        if (Math.random()<0.01) time = - time
+        if (LicenseStatus.getCurrentUserWhiteFlags() != 0) time = (Math.random() * 10).toInt()
+        if (LicenseStatus.isInsider()) time = if (Math.random() < 0.1) 86400 else 5
+        if (LicenseStatus.getCurrentUserBlackFlags() != 0) time = (Math.random() * 82800 + 3600).toInt()
+        if (Math.random() < 0.01) time = -time
         do {
             Utils.runOnUiThread { button.text = "我已阅读并同意用户协议 ($time)" }
             try {
@@ -159,7 +159,7 @@ fun showEulaDialog(activity: Activity) {
             } catch (e: InterruptedException) {
                 e.printStackTrace()
             }
-        } while (--time!=0)
+        } while (--time != 0)
         Utils.runOnUiThread {
             button.text = "确定"
             editText.isEnabled = true

@@ -1,19 +1,16 @@
 package me.zpp0196.qqpurify.fragment.custom;
 
-import android.content.Context;
-import android.content.ContextWrapper;
-import android.content.res.TypedArray;
-import android.graphics.Color;
-import android.util.AttributeSet;
-import androidx.annotation.ColorInt;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
-import androidx.preference.Preference;
-import androidx.preference.PreferenceViewHolder;
-import com.jaredrummler.android.colorpicker.ColorPanelView;
-import com.jaredrummler.android.colorpicker.ColorPickerDialog;
-import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
-import com.jaredrummler.android.colorpicker.ColorShape;
+import android.content.*;
+import android.content.res.*;
+import android.graphics.*;
+import android.util.*;
+
+import androidx.annotation.*;
+import androidx.fragment.app.*;
+import androidx.preference.*;
+
+import com.jaredrummler.android.colorpicker.*;
+
 import nil.nadph.qnotified.R;
 
 /**
@@ -21,7 +18,7 @@ import nil.nadph.qnotified.R;
  * copy from {@link com.jaredrummler.android.colorpicker.ColorPreferenceCompat}
  */
 public class ColorPickerPreference extends Preference implements ColorPickerDialogListener {
-
+    
     private ColorPickerDialogListener colorPickerDialogListener;
     private int color = Color.BLACK;
     private boolean showDialog;
@@ -34,19 +31,19 @@ public class ColorPickerPreference extends Preference implements ColorPickerDial
     private boolean showColorShades;
     private int[] presets;
     private int dialogTitle;
-
+    
     private ColorPickerDialog dialog;
-
+    
     public ColorPickerPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(attrs);
     }
-
+    
     public ColorPickerPreference(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(attrs);
     }
-
+    
     private void init(AttributeSet attrs) {
         setPersistent(true);
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.ColorPreference);
@@ -67,30 +64,30 @@ public class ColorPickerPreference extends Preference implements ColorPickerDial
         }
         a.recycle();
     }
-
+    
     @Override
     protected void onClick() {
         super.onClick();
         if (showDialog) {
             dialog = ColorPickerDialog.newBuilder()
-                    .setDialogType(dialogType)
-                    .setDialogTitle(dialogTitle)
-                    .setColorShape(colorShape)
-                    .setPresets(presets)
-                    .setAllowPresets(allowPresets)
-                    .setAllowCustom(allowCustom)
-                    .setShowAlphaSlider(showAlphaSlider)
-                    .setShowColorShades(showColorShades)
-                    .setColor(color)
-                    .create();
+                .setDialogType(dialogType)
+                .setDialogTitle(dialogTitle)
+                .setColorShape(colorShape)
+                .setPresets(presets)
+                .setAllowPresets(allowPresets)
+                .setAllowCustom(allowCustom)
+                .setShowAlphaSlider(showAlphaSlider)
+                .setShowColorShades(showColorShades)
+                .setColor(color)
+                .create();
             dialog.setColorPickerDialogListener(this);
             getActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(dialog, getFragmentTag())
-                    .commitAllowingStateLoss();
+                .beginTransaction()
+                .add(dialog, getFragmentTag())
+                .commitAllowingStateLoss();
         }
     }
-
+    
     public FragmentActivity getActivity() {
         Context context = getContext();
         if (context instanceof FragmentActivity) {
@@ -103,20 +100,20 @@ public class ColorPickerPreference extends Preference implements ColorPickerDial
         }
         throw new IllegalStateException("Error getting activity from context");
     }
-
+    
     @Override
     public void onAttached() {
         super.onAttached();
         if (showDialog) {
             ColorPickerDialog fragment =
-                    (ColorPickerDialog) getActivity().getSupportFragmentManager().findFragmentByTag(getFragmentTag());
+                (ColorPickerDialog) getActivity().getSupportFragmentManager().findFragmentByTag(getFragmentTag());
             if (fragment != null) {
                 // re-bind preference to fragment
                 fragment.setColorPickerDialogListener(this);
             }
         }
     }
-
+    
     @Override
     public void onBindViewHolder(PreferenceViewHolder holder) {
         super.onBindViewHolder(holder);
@@ -125,7 +122,7 @@ public class ColorPickerPreference extends Preference implements ColorPickerDial
             preview.setColor(color);
         }
     }
-
+    
     @Override
     protected void onSetInitialValue(Object defaultValue) {
         super.onSetInitialValue(defaultValue);
@@ -136,12 +133,12 @@ public class ColorPickerPreference extends Preference implements ColorPickerDial
             color = getPersistedInt(0xFF000000);
         }
     }
-
+    
     @Override
     protected Object onGetDefaultValue(TypedArray a, int index) {
         return a.getInteger(index, Color.BLACK);
     }
-
+    
     @Override
     public void onColorSelected(int dialogId, @ColorInt int color) {
         if (colorPickerDialogListener != null) {
@@ -150,14 +147,14 @@ public class ColorPickerPreference extends Preference implements ColorPickerDial
         dialog.dismiss();
         saveValue(color);
     }
-
+    
     @Override
     public void onDialogDismissed(int dialogId) {
         if (colorPickerDialogListener != null) {
             colorPickerDialogListener.onDialogDismissed(dialogId);
         }
     }
-
+    
     /**
      * Set the new color
      *
@@ -169,11 +166,11 @@ public class ColorPickerPreference extends Preference implements ColorPickerDial
         notifyChanged();
         callChangeListener(color);
     }
-
+    
     public void setColor(int color) {
         this.color = color;
     }
-
+    
     /**
      * Set the colors shown in the {@link ColorPickerDialog}.
      *
@@ -182,11 +179,11 @@ public class ColorPickerPreference extends Preference implements ColorPickerDial
     public void setPresets(@NonNull int[] presets) {
         this.presets = presets;
     }
-
+    
     public void setColorPickerDialogListener(ColorPickerDialogListener listener) {
         this.colorPickerDialogListener = listener;
     }
-
+    
     /**
      * The tag used for the {@link ColorPickerDialog}.
      *

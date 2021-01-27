@@ -18,57 +18,39 @@
  */
 package nil.nadph.qnotified.hook;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.os.Bundle;
-import android.os.Environment;
-import android.os.Looper;
-import android.os.Parcelable;
-import android.text.TextUtils;
-import android.view.Gravity;
-import android.view.View;
+import android.annotation.*;
+import android.app.*;
+import android.content.*;
+import android.graphics.*;
+import android.os.*;
+import android.text.*;
+import android.view.*;
 import android.widget.*;
 
-import androidx.core.view.ViewCompat;
+import androidx.core.view.*;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
+import java.io.*;
+import java.lang.reflect.*;
+import java.util.*;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.bridge.ChatActivityFacade;
-import nil.nadph.qnotified.bridge.SessionInfoImpl;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.step.DexDeobfStep;
-import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.ui.CustomDialog;
-import nil.nadph.qnotified.ui.HighContrastBorder;
-import nil.nadph.qnotified.ui.ResUtils;
+import de.robv.android.xposed.*;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.bridge.*;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.step.*;
+import nil.nadph.qnotified.ui.*;
 import nil.nadph.qnotified.util.*;
 
-import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
-import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
-import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
-import static nil.nadph.qnotified.util.Initiator.load;
+import static android.widget.LinearLayout.LayoutParams.*;
+import static de.robv.android.xposed.XposedHelpers.*;
+import static nil.nadph.qnotified.ui.ViewBuilder.*;
+import static nil.nadph.qnotified.util.Initiator.*;
+import static nil.nadph.qnotified.util.Utils.findField;
 import static nil.nadph.qnotified.util.Utils.*;
 
 
 public class PttForwardHook extends BaseDelayableHook {
-
+    
     public static final int R_ID_PTT_FORWARD = 0x30EE77CB;
     public static final int R_ID_PTT_SAVE = 0x30EE77CC;
     public static final String qn_enable_ptt_forward = "qn_enable_ptt_forward";
@@ -76,23 +58,122 @@ public class PttForwardHook extends BaseDelayableHook {
     public static final String qn_cache_ptt_save_last_parent_dir = "qn_cache_ptt_save_last_parent_dir";
     private static final PttForwardHook self = new PttForwardHook();
     private boolean inited = false;
-
+    
     private PttForwardHook() {
     }
-
+    
     public static PttForwardHook get() {
         return self;
     }
-
+    
+    private static void showSavePttFileDialog(Activity context, final File ptt) {
+        CustomDialog dialog = CustomDialog.createFailsafe(context);
+        final Context ctx = dialog.getContext();
+        final EditText editText = new EditText(ctx);
+        TextView tv = new TextView(ctx);
+        tv.setText("格式为.slk/.amr 一般无法直接打开slk格式 而且大多数语音均为slk格式(转发语音可以看到格式) 请自行寻找软件进行转码");
+        tv.setPadding(20, 10, 20, 10);
+        String lastSaveDir = ConfigManager.getCache().getString(qn_cache_ptt_save_last_parent_dir);
+        if (TextUtils.isEmpty(lastSaveDir)) {
+            File f = ctx.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+            if (f == null) {
+                f = Environment.getExternalStorageDirectory();
+            }
+            lastSaveDir = f.getPath();
+        }
+        editText.setText(new File(lastSaveDir, Utils.getPathTail(ptt)).getPath());
+        editText.setTextSize(16);
+        int _5 = dip2px(ctx, 5);
+        editText.setPadding(_5, _5, _5, _5);
+        //editText.setBackgroundDrawable(new HighContrastBorder());
+        ViewCompat.setBackground(editText, new HighContrastBorder());
+        LinearLayout linearLayout = new LinearLayout(ctx);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.addView(tv, MATCH_PARENT, WRAP_CONTENT);
+        linearLayout.addView(editText, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, _5 * 2));
+        final AlertDialog alertDialog = (AlertDialog) dialog
+            .setTitle("输入保存路径(请自行转码)")
+            .setView(linearLayout)
+            .setPositiveButton("保存", null)
+            .setNegativeButton("取消", null)
+            .create();
+        alertDialog.show();
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String path = editText.getText().toString();
+                if (path.equals("")) {
+                    showToast(ctx, TOAST_TYPE_ERROR, "请输入路径", Toast.LENGTH_SHORT);
+                    return;
+                }
+                if (!path.startsWith("/")) {
+                    showToast(ctx, TOAST_TYPE_ERROR, "请输入完整路径(以\"/\"开头)", Toast.LENGTH_SHORT);
+                    return;
+                }
+                File f = new File(path);
+                File dir = f.getParentFile();
+                if (dir == null || !dir.exists() || !dir.isDirectory()) {
+                    showToast(ctx, TOAST_TYPE_ERROR, "文件夹不存在", Toast.LENGTH_SHORT);
+                    return;
+                }
+                if (!dir.canWrite()) {
+                    showToast(ctx, TOAST_TYPE_ERROR, "文件夹无访问权限", Toast.LENGTH_SHORT);
+                    return;
+                }
+                FileOutputStream fout = null;
+                FileInputStream fin = null;
+                try {
+                    if (!f.exists()) {
+                        f.createNewFile();
+                    }
+                    fin = new FileInputStream(ptt);
+                    fout = new FileOutputStream(f);
+                    byte[] buf = new byte[1024];
+                    int i;
+                    while ((i = fin.read(buf)) > 0) {
+                        fout.write(buf, 0, i);
+                    }
+                    fout.flush();
+                    alertDialog.dismiss();
+                    ConfigManager cache = ConfigManager.getCache();
+                    String pdir = f.getParent();
+                    if (pdir != null) {
+                        cache.putString(qn_cache_ptt_save_last_parent_dir, pdir);
+                        cache.save();
+                    }
+                } catch (IOException e) {
+                    showToast(ctx, TOAST_TYPE_ERROR, "失败:" + e.toString().replace("java.io.", ""), Toast.LENGTH_SHORT);
+                } finally {
+                    if (fin != null) {
+                        try {
+                            fin.close();
+                        } catch (IOException ignored) {
+                        }
+                    }
+                    if (fout != null) {
+                        try {
+                            fout.close();
+                        } catch (IOException ignored) {
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
     @Override
     public boolean init() {
-        if (inited) return true;
+        if (inited) {
+            return true;
+        }
         try {
             Class clz_ForwardBaseOption = load("com/tencent/mobileqq/forward/ForwardBaseOption");
             if (clz_ForwardBaseOption == null) {
                 Class clz_DirectForwardActivity = load("com/tencent/mobileqq/activity/DirectForwardActivity");
                 for (Field f : clz_DirectForwardActivity.getDeclaredFields()) {
-                    if (Modifier.isStatic(f.getModifiers())) continue;
+                    if (Modifier.isStatic(f.getModifiers())) {
+                        continue;
+                    }
                     Class clz = f.getType();
                     if (Modifier.isAbstract(clz.getModifiers()) && !clz.getName().contains("android")) {
                         clz_ForwardBaseOption = clz;
@@ -102,9 +183,15 @@ public class PttForwardHook extends BaseDelayableHook {
             }
             Method buildConfirmDialog = null;
             for (Method m : clz_ForwardBaseOption.getDeclaredMethods()) {
-                if (!m.getReturnType().equals(void.class)) continue;
-                if (!Modifier.isFinal(m.getModifiers())) continue;
-                if (m.getParameterTypes().length != 0) continue;
+                if (!m.getReturnType().equals(void.class)) {
+                    continue;
+                }
+                if (!Modifier.isFinal(m.getModifiers())) {
+                    continue;
+                }
+                if (m.getParameterTypes().length != 0) {
+                    continue;
+                }
                 buildConfirmDialog = m;
                 break;
             }
@@ -118,12 +205,15 @@ public class PttForwardHook extends BaseDelayableHook {
                     }
                     f.setAccessible(true);
                     Bundle data = (Bundle) f.get(param.thisObject);
-                    if (!data.containsKey("ptt_forward_path")) return;
+                    if (!data.containsKey("ptt_forward_path")) {
+                        return;
+                    }
                     param.setResult(null);
                     final String path = data.getString("ptt_forward_path");
                     Activity ctx = Utils.iget_object_or_null(param.thisObject, "a", Activity.class);
-                    if (ctx == null)
+                    if (ctx == null) {
                         ctx = Utils.iget_object_or_null(param.thisObject, "mActivity", Activity.class);
+                    }
                     if (path == null || !new File(path).exists()) {
                         Utils.showToast(ctx, TOAST_TYPE_ERROR, "Error: Invalid ptt file!", Toast.LENGTH_SHORT);
                         return;
@@ -151,10 +241,14 @@ public class PttForwardHook extends BaseDelayableHook {
                         cd.uin = data.getString("uin");
                         cd.uinType = data.getInt("uintype", -1);
                         cd.nick = data.getString("uinname");
-                        if (cd.nick == null) cd.nick = data.getString("uin");
+                        if (cd.nick == null) {
+                            cd.nick = data.getString("uin");
+                        }
                         mTargets.add(cd);
                     }
-                    if (unsupport) Utils.showToastShort(ctx, "暂不支持我的设备/临时聊天/讨论组");
+                    if (unsupport) {
+                        Utils.showToastShort(ctx, "暂不支持我的设备/临时聊天/讨论组");
+                    }
                     LinearLayout main = new LinearLayout(ctx);
                     main.setOrientation(LinearLayout.VERTICAL);
                     LinearLayout heads = new LinearLayout(ctx);
@@ -176,16 +270,18 @@ public class PttForwardHook extends BaseDelayableHook {
                     imglp.setMargins(pd, pd, pd, pd);
                     FaceImpl face = FaceImpl.getInstance();
                     if (multi) {
-                        if (mTargets != null) for (Utils.ContactDescriptor cd : mTargets) {
-                            ImageView imgview = new ImageView(ctx);
-                            Bitmap bm = face.getBitmapFromCache(cd.uinType == 1 ? FaceImpl.TYPE_TROOP : FaceImpl.TYPE_USER, cd.uin);
-                            if (bm == null) {
-                                imgview.setImageDrawable(ResUtils.loadDrawableFromAsset("face.png", ctx));
-                                face.registerView(cd.uinType == 1 ? FaceImpl.TYPE_TROOP : FaceImpl.TYPE_USER, cd.uin, imgview);
-                            } else {
-                                imgview.setImageBitmap(bm);
+                        if (mTargets != null) {
+                            for (Utils.ContactDescriptor cd : mTargets) {
+                                ImageView imgview = new ImageView(ctx);
+                                Bitmap bm = face.getBitmapFromCache(cd.uinType == 1 ? FaceImpl.TYPE_TROOP : FaceImpl.TYPE_USER, cd.uin);
+                                if (bm == null) {
+                                    imgview.setImageDrawable(ResUtils.loadDrawableFromAsset("face.png", ctx));
+                                    face.registerView(cd.uinType == 1 ? FaceImpl.TYPE_TROOP : FaceImpl.TYPE_USER, cd.uin, imgview);
+                                } else {
+                                    imgview.setImageBitmap(bm);
+                                }
+                                heads.addView(imgview, imglp);
                             }
-                            heads.addView(imgview, imglp);
                         }
                     } else {
                         Utils.ContactDescriptor cd = mTargets.get(0);
@@ -282,16 +378,22 @@ public class PttForwardHook extends BaseDelayableHook {
                 }
             });
             for (Method m : cl_PttItemBuilder.getDeclaredMethods()) {
-                if (!m.getReturnType().isArray()) continue;
+                if (!m.getReturnType().isArray()) {
+                    continue;
+                }
                 Class<?>[] ps = m.getParameterTypes();
-                if (ps.length == 1 && ps[0].equals(View.class))
+                if (ps.length == 1 && ps[0].equals(View.class)) {
                     XposedBridge.hookMethod(m, new XC_MethodHook(60) {
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                            if (LicenseStatus.sDisableCommonHooks) return;
+                            if (LicenseStatus.sDisableCommonHooks) {
+                                return;
+                            }
                             try {
                                 ConfigManager cfg = ConfigManager.getDefaultConfig();
-                                if (!cfg.getBooleanOrFalse(qn_enable_ptt_forward)) return;
+                                if (!cfg.getBooleanOrFalse(qn_enable_ptt_forward)) {
+                                    return;
+                                }
                             } catch (Exception ignored) {
                             }
                             Object arr = param.getResult();
@@ -317,6 +419,7 @@ public class PttForwardHook extends BaseDelayableHook {
                             param.setResult(ret);
                         }
                     });
+                }
             }
             inited = true;
             return true;
@@ -325,22 +428,32 @@ public class PttForwardHook extends BaseDelayableHook {
             return false;
         }
     }
-
+    
     @Override
     public int getEffectiveProc() {
         return SyncUtils.PROC_MAIN;
     }
-
+    
     @Override
     public Step[] getPreconditions() {
         return new Step[]{new DexDeobfStep(DexKit.C_FACADE)};
     }
-
+    
     @Override
     public boolean isInited() {
         return inited;
     }
-
+    
+    @Override
+    public boolean isEnabled() {
+        try {
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_enable_ptt_forward);
+        } catch (Exception e) {
+            log(e);
+            return false;
+        }
+    }
+    
     @Override
     public void setEnabled(boolean enabled) {
         try {
@@ -361,111 +474,7 @@ public class PttForwardHook extends BaseDelayableHook {
             }
         }
     }
-
-    private static void showSavePttFileDialog(Activity context, final File ptt) {
-        CustomDialog dialog = CustomDialog.createFailsafe(context);
-        final Context ctx = dialog.getContext();
-        final EditText editText = new EditText(ctx);
-        TextView tv = new TextView(ctx);
-        tv.setText("格式为.slk/.amr 一般无法直接打开slk格式 而且大多数语音均为slk格式(转发语音可以看到格式) 请自行寻找软件进行转码");
-        tv.setPadding(20, 10, 20, 10);
-        String lastSaveDir = ConfigManager.getCache().getString(qn_cache_ptt_save_last_parent_dir);
-        if (TextUtils.isEmpty(lastSaveDir)) {
-            File f = ctx.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
-            if (f == null) {
-                f = Environment.getExternalStorageDirectory();
-            }
-            lastSaveDir = f.getPath();
-        }
-        editText.setText(new File(lastSaveDir, Utils.getPathTail(ptt)).getPath());
-        editText.setTextSize(16);
-        int _5 = dip2px(ctx, 5);
-        editText.setPadding(_5, _5, _5, _5);
-        //editText.setBackgroundDrawable(new HighContrastBorder());
-        ViewCompat.setBackground(editText, new HighContrastBorder());
-        LinearLayout linearLayout = new LinearLayout(ctx);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.addView(tv, MATCH_PARENT, WRAP_CONTENT);
-        linearLayout.addView(editText, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, _5 * 2));
-        final AlertDialog alertDialog = (AlertDialog) dialog
-                .setTitle("输入保存路径(请自行转码)")
-                .setView(linearLayout)
-                .setPositiveButton("保存", null)
-                .setNegativeButton("取消", null)
-                .create();
-        alertDialog.show();
-        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String path = editText.getText().toString();
-                if (path.equals("")) {
-                    showToast(ctx, TOAST_TYPE_ERROR, "请输入路径", Toast.LENGTH_SHORT);
-                    return;
-                }
-                if (!path.startsWith("/")) {
-                    showToast(ctx, TOAST_TYPE_ERROR, "请输入完整路径(以\"/\"开头)", Toast.LENGTH_SHORT);
-                    return;
-                }
-                File f = new File(path);
-                File dir = f.getParentFile();
-                if (dir == null || !dir.exists() || !dir.isDirectory()) {
-                    showToast(ctx, TOAST_TYPE_ERROR, "文件夹不存在", Toast.LENGTH_SHORT);
-                    return;
-                }
-                if (!dir.canWrite()) {
-                    showToast(ctx, TOAST_TYPE_ERROR, "文件夹无访问权限", Toast.LENGTH_SHORT);
-                    return;
-                }
-                FileOutputStream fout = null;
-                FileInputStream fin = null;
-                try {
-                    if (!f.exists()) f.createNewFile();
-                    fin = new FileInputStream(ptt);
-                    fout = new FileOutputStream(f);
-                    byte[] buf = new byte[1024];
-                    int i;
-                    while ((i = fin.read(buf)) > 0) {
-                        fout.write(buf, 0, i);
-                    }
-                    fout.flush();
-                    alertDialog.dismiss();
-                    ConfigManager cache = ConfigManager.getCache();
-                    String pdir = f.getParent();
-                    if (pdir != null) {
-                        cache.putString(qn_cache_ptt_save_last_parent_dir, pdir);
-                        cache.save();
-                    }
-                } catch (IOException e) {
-                    showToast(ctx, TOAST_TYPE_ERROR, "失败:" + e.toString().replace("java.io.", ""), Toast.LENGTH_SHORT);
-                } finally {
-                    if (fin != null) {
-                        try {
-                            fin.close();
-                        } catch (IOException ignored) {
-                        }
-                    }
-                    if (fout != null) {
-                        try {
-                            fout.close();
-                        } catch (IOException ignored) {
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    @Override
-    public boolean isEnabled() {
-        try {
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_enable_ptt_forward);
-        } catch (Exception e) {
-            log(e);
-            return false;
-        }
-    }
-
-
+    
     public boolean isSavePttEnabled() {
         try {
             return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_enable_ptt_save);

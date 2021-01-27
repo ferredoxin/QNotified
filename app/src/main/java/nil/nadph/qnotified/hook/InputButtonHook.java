@@ -19,40 +19,29 @@
 package nil.nadph.qnotified.hook;
 
 
-import android.app.Activity;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
-import android.os.Build;
-import android.os.Parcelable;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
-import com.tencent.mobileqq.app.QQAppInterface;
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import me.singleneuron.hook.CopyCardMsg;
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.activity.ChatTailActivity;
-import nil.nadph.qnotified.dialog.RikkaCustomMsgTimeFormatDialog;
-import nil.nadph.qnotified.step.DexDeobfStep;
-import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.ui.InterceptLayout;
-import nil.nadph.qnotified.ui.TouchEventToLongClickAdapter;
+import android.app.*;
+import android.content.*;
+import android.os.*;
+import android.view.*;
+import android.widget.*;
+
+import com.tencent.mobileqq.app.*;
+
+import java.lang.reflect.*;
+import java.text.*;
+import java.util.*;
+
+import de.robv.android.xposed.*;
+import me.singleneuron.hook.*;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.activity.*;
+import nil.nadph.qnotified.dialog.*;
+import nil.nadph.qnotified.step.*;
+import nil.nadph.qnotified.ui.*;
 import nil.nadph.qnotified.util.*;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static nil.nadph.qnotified.util.Initiator._SessionInfo;
-import static nil.nadph.qnotified.util.Initiator.load;
+import static de.robv.android.xposed.XposedHelpers.*;
+import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 
@@ -60,17 +49,19 @@ public class InputButtonHook extends BaseDelayableHook {
     public static final int R_ID_COPY_CODE = 0x00EE77CC;
     private static final InputButtonHook self = new InputButtonHook();
     private boolean inited = false;
-
+    
     private InputButtonHook() {
     }
-
+    
     public static InputButtonHook get() {
         return self;
     }
-
+    
     @Override
     public boolean init() {
-        if (inited) return true;
+        if (inited) {
+            return true;
+        }
         try {
             //Begin: send btn
 //            for (Method method : cl_BaseChatPie.getDeclaredMethods()) {
@@ -84,7 +75,9 @@ public class InputButtonHook extends BaseDelayableHook {
             XposedBridge.hookMethod(DexKit.doFindMethod(DexKit.N_BASE_CHAT_PIE__INIT), new XC_MethodHook(40) {
                 @Override
                 public void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.sDisableCommonHooks) return;
+                    if (LicenseStatus.sDisableCommonHooks) {
+                        return;
+                    }
                     try {
                         Object chatPie = param.thisObject;
                         //Class cl_PatchedButton = load("com/tencent/widget/PatchedButton");
@@ -110,22 +103,26 @@ public class InputButtonHook extends BaseDelayableHook {
                             layout.setTouchInterceptor(new TouchEventToLongClickAdapter() {
                                 @Override
                                 public boolean onTouch(View v, MotionEvent event) {
-                                    if (LicenseStatus.hasBlackFlags() || !CardMsgHook.get().isEnabled())
+                                    if (LicenseStatus.hasBlackFlags() || !CardMsgHook.get().isEnabled()) {
                                         return false;
+                                    }
                                     ViewGroup vg = (ViewGroup) v;
                                     if (event.getAction() == MotionEvent.ACTION_DOWN &&
-                                            vg.getChildCount() != 0 && vg.getChildAt(0).isEnabled()) {
+                                        vg.getChildCount() != 0 && vg.getChildAt(0).isEnabled()) {
                                         return false;
                                     }
                                     return super.onTouch(v, event);
                                 }
-
+                                
                                 @Override
                                 public boolean onLongClick(View v) {
                                     try {
-                                        if (LicenseStatus.sDisableCommonHooks) return false;
-                                        if (LicenseStatus.hasBlackFlags() || !CardMsgHook.get().isEnabled())
+                                        if (LicenseStatus.sDisableCommonHooks) {
                                             return false;
+                                        }
+                                        if (LicenseStatus.hasBlackFlags() || !CardMsgHook.get().isEnabled()) {
+                                            return false;
+                                        }
                                         ViewGroup vg = (ViewGroup) v;
                                         Context ctx = v.getContext();
                                         if (vg.getChildCount() != 0 && !vg.getChildAt(0).isEnabled()) {
@@ -146,7 +143,9 @@ public class InputButtonHook extends BaseDelayableHook {
                         sendBtn.setOnLongClickListener(new View.OnLongClickListener() {
                             @Override
                             public boolean onLongClick(View v) {
-                                if (LicenseStatus.sDisableCommonHooks) return false;
+                                if (LicenseStatus.sDisableCommonHooks) {
+                                    return false;
+                                }
                                 Context ctx = v.getContext();
                                 EditText input = aioRootView.findViewById(ctx.getResources().getIdentifier("input", "id", ctx.getPackageName()));
                                 String text = input.getText().toString();
@@ -188,17 +187,21 @@ public class InputButtonHook extends BaseDelayableHook {
                                         }
                                     }).start();
                                 } else {
-                                    if (LicenseStatus.hasBlackFlags()) return false;
-                                    if (!ChatTailHook.get().isEnabled()) return false;
+                                    if (LicenseStatus.hasBlackFlags()) {
+                                        return false;
+                                    }
+                                    if (!ChatTailHook.get().isEnabled()) {
+                                        return false;
+                                    }
                                     if (!Utils.isNullOrEmpty(ChatTailHook.get().getTailCapacity())) {
                                         int battery = FakeBatteryHook.get().isEnabled() ? FakeBatteryHook.get().getFakeBatteryStatus() < 1 ? ChatTailActivity.getBattery() : FakeBatteryHook.get().getFakeBatteryCapacity() : ChatTailActivity.getBattery();
                                         String tc = ChatTailHook.get().getTailCapacity().
-                                                replace(ChatTailActivity.delimiter, input.getText())
-                                                .replace("#model#", Build.MODEL)
-                                                .replace("#brand#", Build.BRAND)
-                                                .replace("#battery#", battery + "")
-                                                .replace("#power#", ChatTailActivity.getPower())
-                                                .replace("#time#", new SimpleDateFormat(RikkaCustomMsgTimeFormatDialog.getTimeFormat()).format(new Date()));
+                                            replace(ChatTailActivity.delimiter, input.getText())
+                                            .replace("#model#", Build.MODEL)
+                                            .replace("#brand#", Build.BRAND)
+                                            .replace("#battery#", battery + "")
+                                            .replace("#power#", ChatTailActivity.getPower())
+                                            .replace("#time#", new SimpleDateFormat(RikkaCustomMsgTimeFormatDialog.getTimeFormat()).format(new Date()));
                                         input.setText(tc);
                                         sendBtn.callOnClick();
                                     } else {
@@ -218,7 +221,9 @@ public class InputButtonHook extends BaseDelayableHook {
             Class cl_ArkAppItemBuilder = DexKit.doFindClass(DexKit.C_ARK_APP_ITEM_BUBBLE_BUILDER);
             findAndHookMethod(cl_ArkAppItemBuilder, "a", int.class, Context.class, load("com/tencent/mobileqq/data/ChatMessage"), new MenuItemClickCallback());
             for (Method m : cl_ArkAppItemBuilder.getDeclaredMethods()) {
-                if (!m.getReturnType().isArray()) continue;
+                if (!m.getReturnType().isArray()) {
+                    continue;
+                }
                 Class[] ps = m.getParameterTypes();
                 if (ps.length == 1 && ps[0].equals(View.class)) {
                     XposedBridge.hookMethod(m, new GetMenuItemCallBack());
@@ -230,7 +235,9 @@ public class InputButtonHook extends BaseDelayableHook {
             Class cl_StructingMsgItemBuilder = load("com/tencent/mobileqq/activity/aio/item/StructingMsgItemBuilder");
             findAndHookMethod(cl_StructingMsgItemBuilder, "a", int.class, Context.class, load("com/tencent/mobileqq/data/ChatMessage"), new MenuItemClickCallback());
             for (Method m : cl_StructingMsgItemBuilder.getDeclaredMethods()) {
-                if (!m.getReturnType().isArray()) continue;
+                if (!m.getReturnType().isArray()) {
+                    continue;
+                }
                 Class[] ps = m.getParameterTypes();
                 if (ps.length == 1 && ps[0].equals(View.class)) {
                     XposedBridge.hookMethod(m, new GetMenuItemCallBack());
@@ -260,16 +267,45 @@ public class InputButtonHook extends BaseDelayableHook {
             return false;
         }
     }
-
+    
+    @Override
+    public int getEffectiveProc() {
+        return SyncUtils.PROC_MAIN;
+    }
+    
+    @Override
+    public Step[] getPreconditions() {
+        return new Step[]{new DexDeobfStep(DexKit.C_ARK_APP_ITEM_BUBBLE_BUILDER), new DexDeobfStep(DexKit.C_FACADE),
+            new DexDeobfStep(DexKit.C_TEST_STRUCT_MSG), new DexDeobfStep(DexKit.N_BASE_CHAT_PIE__INIT)};
+    }
+    
+    @Override
+    public boolean isInited() {
+        return inited;
+    }
+    
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+    
+    @Override
+    public void setEnabled(boolean enabled) {
+    }
+    
     public static class GetMenuItemCallBack extends XC_MethodHook {
         public GetMenuItemCallBack() {
             super(60);
         }
-
+        
         @Override
         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-            if (LicenseStatus.sDisableCommonHooks) return;
-            if (LicenseStatus.hasBlackFlags() || !CopyCardMsg.INSTANCE.isEnabled()) return;
+            if (LicenseStatus.sDisableCommonHooks) {
+                return;
+            }
+            if (LicenseStatus.hasBlackFlags() || !CopyCardMsg.INSTANCE.isEnabled()) {
+                return;
+            }
             Object arr = param.getResult();
             Class<?> clQQCustomMenuItem = arr.getClass().getComponentType();
             Object item_copy = CustomMenu.createItem(clQQCustomMenuItem, R_ID_COPY_CODE, "复制代码");
@@ -281,15 +317,17 @@ public class InputButtonHook extends BaseDelayableHook {
             param.setResult(ret);
         }
     }
-
+    
     public static class MenuItemClickCallback extends XC_MethodHook {
         public MenuItemClickCallback() {
             super(60);
         }
-
+        
         @Override
         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-            if (LicenseStatus.hasBlackFlags() || !CopyCardMsg.INSTANCE.isEnabled()) return;
+            if (LicenseStatus.hasBlackFlags() || !CopyCardMsg.INSTANCE.isEnabled()) {
+                return;
+            }
             int id = (int) param.args[0];
             Activity ctx = (Activity) param.args[1];
             Object chatMessage = param.args[2];
@@ -313,30 +351,5 @@ public class InputButtonHook extends BaseDelayableHook {
                 }
             }
         }
-    }
-
-    @Override
-    public int getEffectiveProc() {
-        return SyncUtils.PROC_MAIN;
-    }
-
-    @Override
-    public Step[] getPreconditions() {
-        return new Step[]{new DexDeobfStep(DexKit.C_ARK_APP_ITEM_BUBBLE_BUILDER), new DexDeobfStep(DexKit.C_FACADE),
-                new DexDeobfStep(DexKit.C_TEST_STRUCT_MSG), new DexDeobfStep(DexKit.N_BASE_CHAT_PIE__INIT)};
-    }
-
-    @Override
-    public boolean isInited() {
-        return inited;
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
     }
 }

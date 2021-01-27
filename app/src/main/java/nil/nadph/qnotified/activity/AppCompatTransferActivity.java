@@ -18,20 +18,19 @@
  */
 package nil.nadph.qnotified.activity;
 
-import android.os.Bundle;
+import android.os.*;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.*;
 
-import nil.nadph.qnotified.util.CliOper;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.util.*;
 
 public class AppCompatTransferActivity extends AppCompatActivity {
     @Override
     public ClassLoader getClassLoader() {
         return AppCompatTransferActivity.class.getClassLoader();
     }
-
+    
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
@@ -42,7 +41,7 @@ public class AppCompatTransferActivity extends AppCompatActivity {
         }
         super.onRestoreInstanceState(savedInstanceState);
     }
-
+    
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

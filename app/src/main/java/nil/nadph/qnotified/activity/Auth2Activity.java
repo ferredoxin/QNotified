@@ -18,42 +18,33 @@
  */
 package nil.nadph.qnotified.activity;
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.os.Bundle;
-import android.os.Looper;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
+import android.annotation.*;
+import android.app.*;
+import android.content.*;
+import android.os.*;
+import android.view.*;
 import android.widget.*;
 
-import com.tencent.mobileqq.widget.BounceScrollView;
+import com.tencent.mobileqq.widget.*;
 
-import java.util.HashSet;
+import java.util.*;
 
-import nil.nadph.qnotified.chiral.ChiralCarbonHelper;
-import nil.nadph.qnotified.chiral.Molecule;
-import nil.nadph.qnotified.chiral.MoleculeView;
-import nil.nadph.qnotified.chiral.PubChemStealer;
-import nil.nadph.qnotified.ui.CustomDialog;
-import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.ui.ViewBuilder;
-import nil.nadph.qnotified.util.CliOper;
-import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.UserFlagConst;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.chiral.*;
+import nil.nadph.qnotified.ui.*;
+import nil.nadph.qnotified.util.*;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
-import static nil.nadph.qnotified.util.LicenseStatus.getCurrentUserWhiteFlags;
+import static android.view.ViewGroup.LayoutParams.*;
+import static nil.nadph.qnotified.ui.ViewBuilder.*;
+import static nil.nadph.qnotified.util.LicenseStatus.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressLint("Registered")
 public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.OnClickListener, DialogInterface.OnClickListener, Runnable {
-
+    
+    int pullMolMiss;
+    int lastReqMs;
+    int lastProcMs;
+    long pullStartTime;
     private MoleculeView moleculeView;
     private TextView tvSelectedCount, newOne, reset;
     private Button nextStep;
@@ -63,7 +54,7 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
     private HashSet<Integer> mChiralCarbons;
     private boolean bypassMode = false;
     private int validRetryCount = 0;
-
+    
     @Override
     public boolean doOnCreate(Bundle bundle) {
         super.doOnCreate(bundle);
@@ -75,7 +66,7 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
         bounceScrollView.addView(ll, new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
         LinearLayout.LayoutParams fixlp = new LinearLayout.LayoutParams(MATCH_PARENT, dip2px(this, 48));
         LinearLayout.LayoutParams lp_mw = new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
-
+        
         TextView tv = new TextView(this);
         tv.setTextSize(20);
         tv.setTextColor(ResUtils.skin_black);
@@ -86,20 +77,20 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
         tv2.setTextColor(ResUtils.skin_black);
         tv2.setText("请点击(或长按)以选出下方有机物中的所有手性碳原子, 然后点击下一步. 如果您觉得下方分子过于复杂, 您可以尝试点击 看不清,换一个 以重新生成有机物.");
         ll.addView(tv2, lp_mw);
-
+        
         moleculeView = new MoleculeView(this);
         moleculeView.setTextColor(ResUtils.skin_black.getDefaultColor());
         moleculeView.setMolecule(currMol);
         moleculeView.setOnClickListener(this);
         ll.addView(moleculeView, ViewBuilder.newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT,
-                dip2px(this, 5), dip2px(this, 20), dip2px(this, 5), 0));
+            dip2px(this, 5), dip2px(this, 20), dip2px(this, 5), 0));
         tvSelectedCount = new TextView(this);
         tvSelectedCount.setTextColor(ResUtils.skin_black);
         tvSelectedCount.setTextSize(16);
         tvSelectedCount.setGravity(Gravity.CENTER);
         tvSelectedCount.setText("未选择");
         ll.addView(tvSelectedCount, lp_mw);
-
+        
         int __10 = dip2px(this, 10);
         RelativeLayout hl = new RelativeLayout(this);
         reset = new TextView(this);
@@ -117,7 +108,7 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
             }
         });
         hl.addView(reset, ViewBuilder.newRelativeLayoutParams(WRAP_CONTENT, WRAP_CONTENT,
-                RelativeLayout.ALIGN_PARENT_LEFT, -1));
+            RelativeLayout.ALIGN_PARENT_LEFT, -1));
         newOne = new TextView(this);
         newOne.setTextColor(ResUtils.skin_black);
         newOne.setTextSize(16);
@@ -127,17 +118,17 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
         newOne.setTextColor(ResUtils.skin_blue);
         newOne.setOnClickListener(this);
         hl.addView(newOne, ViewBuilder.newRelativeLayoutParams(WRAP_CONTENT, WRAP_CONTENT,
-                RelativeLayout.ALIGN_PARENT_RIGHT, -1));
+            RelativeLayout.ALIGN_PARENT_RIGHT, -1));
         ll.addView(hl, ViewBuilder.newLinearLayoutParams(WRAP_CONTENT, WRAP_CONTENT,
-                0, 0, 0, __10 * 2));
-
+            0, 0, 0, __10 * 2));
+        
         nextStep = new Button(this);
         nextStep.setOnClickListener(this);
         ResUtils.applyStyleCommonBtnBlue(nextStep);
         nextStep.setText("下一步");
         ll.addView(nextStep, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, __10, __10 / 2, __10, __10 / 2));
-
-        this.setContentView(bounceScrollView);
+    
+        setContentView(bounceScrollView);
         setContentBackgroundDrawable(ResUtils.skin_background);
         setTitle("高级验证");
         TextView rightBtn = (TextView) getRightTextView();
@@ -148,17 +139,17 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
             public void onClick(View v) {
                 if (LicenseStatus.getAuth2Molecule() != null) {
                     CustomDialog.create(Auth2Activity.this).setTitle("解除验证").setMessage("此操作将会解除验证, 是否继续?")
-                            .setCancelable(true).setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                        .setCancelable(true).setPositiveButton("确认", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             LicenseStatus.clearAuth2Status();
                             Utils.showToast(Auth2Activity.this, TOAST_TYPE_SUCCESS, "操作成功", Toast.LENGTH_LONG);
-                            Auth2Activity.this.finish();
+                            finish();
                             CliOper.revokeAuth2Once();
                         }
                     }).setNegativeButton("取消", null).show();
                 } else {
-                    Auth2Activity.this.finish();
+                    finish();
                 }
             }
         });
@@ -216,8 +207,8 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
             if (makingMol == null) {
                 refreshId++;
                 makingMol = (AlertDialog) CustomDialog.createFailsafe(this).setCancelable(false).setTitle("正在加载")
-                        .setMessage("请稍候...(一般不会超过一分钟)")
-                        .setNegativeButton("取消", this).show();
+                    .setMessage("请稍候...(一般不会超过一分钟)")
+                    .setNegativeButton("取消", this).show();
                 new Thread(this).start();
             }
         } else if (v == nextStep) {
@@ -241,7 +232,9 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
                             break;
                         }
                     }
-                    if (tmp.size() > 0) pass = false;
+                    if (tmp.size() > 0) {
+                        pass = false;
+                    }
                     if (pass) {
                         LicenseStatus.setAuth2Status(moleculeView.getMolecule(), Utils.integerSetToArray(mChiralCarbons));
                         showToast(Auth2Activity.this, TOAST_TYPE_SUCCESS, "验证成功", 1);
@@ -263,12 +256,7 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
             }
         }
     }
-
-    int pullMolMiss;
-    int lastReqMs;
-    int lastProcMs;
-    long pullStartTime;
-
+    
     @SuppressLint("DefaultLocale")
     @Override
     public void run() {
@@ -284,7 +272,8 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
         HashSet<Integer> cc = null;
         pullMolMiss = -1;
         pullStartTime = System.currentTimeMillis();
-        do {
+        do
+        {
             try {
                 long t0 = System.currentTimeMillis();
                 mol = PubChemStealer.nextRandomMolecule();
@@ -302,21 +291,25 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
                     lastProcMs = -1;
                 }
                 lastReqMs = (int) (t1 - t0);
-                if (makingMol != null) runOnUiThread(this);
+                if (makingMol != null) {
+                    runOnUiThread(this);
+                }
             } catch (RuntimeException e) {
                 log(e);
             }
         } while (mol != null && curr == refreshId && cc != null && !(cc.size() > 3 || cc.size() * mol.atomCount() > 200));
-        final Molecule molecule = mol;
+        Molecule molecule = mol;
         if (makingMol != null) {
             makingMol.dismiss();
             makingMol = null;
         } else {
             return;
         }
-        if (curr != refreshId) return;
+        if (curr != refreshId) {
+            return;
+        }
         if (molecule != null) {
-            final HashSet<Integer> finalCc = cc;
+            HashSet<Integer> finalCc = cc;
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -335,14 +328,14 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
             });
         }
     }
-
+    
     @Override
     public void onClick(DialogInterface dialog, int which) {
         dialog.dismiss();
         makingMol = null;
         refreshId++;
     }
-
+    
     @Override
     public void doOnDestroy() {
         if (!LicenseStatus.getAuth2Status()) {
@@ -350,7 +343,7 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
         }
         super.doOnDestroy();
     }
-
+    
     @Override
     public boolean isWrapContent() {
         return LicenseStatus.getAuth2Molecule() != null || bypassMode;

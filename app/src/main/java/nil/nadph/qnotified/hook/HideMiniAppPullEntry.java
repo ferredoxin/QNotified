@@ -18,22 +18,15 @@
  */
 package nil.nadph.qnotified.hook;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XC_MethodReplacement;
-import de.robv.android.xposed.XposedBridge;
-import nil.nadph.qnotified.config.ConfigItems;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.util.Initiator;
-import nil.nadph.qnotified.util.Utils;
+import de.robv.android.xposed.*;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.util.*;
 
-import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.getApplication;
-import static nil.nadph.qnotified.util.Utils.getHostVersionCode32;
-import static nil.nadph.qnotified.util.Utils.log;
+import static de.robv.android.xposed.XposedHelpers.*;
+import static nil.nadph.qnotified.util.Initiator.*;
+import static nil.nadph.qnotified.util.Utils.*;
 
 public class HideMiniAppPullEntry {
     /**
@@ -41,7 +34,9 @@ public class HideMiniAppPullEntry {
      */
     public static void hideMiniAppEntry() {
         try {
-            if (Utils.isTim(getApplication())) return;
+            if (Utils.isTim(getApplication())) {
+                return;
+            }
         } catch (Throwable ignored) {
         }
         try {
@@ -55,12 +50,18 @@ public class HideMiniAppPullEntry {
                     Class<?> con = Initiator._Conversation();
                     for (Method m : con.getDeclaredMethods()) {
                         Class<?>[] ps = m.getParameterTypes();
-                        if (ps != null && ps.length > 0) continue;
-                        if (!m.getReturnType().equals(void.class)) continue;
+                        if (ps != null && ps.length > 0) {
+                            continue;
+                        }
+                        if (!m.getReturnType().equals(void.class)) {
+                            continue;
+                        }
                         String name = m.getName();
-                        if (name.length() > 1) continue;
+                        if (name.length() > 1) {
+                            continue;
+                        }
                         char c = name.charAt(0);
-                        if ('F' <= c && c < 'a')
+                        if ('F' <= c && c < 'a') {
                             XposedBridge.hookMethod(m, new XC_MethodReplacement(30) {
                                 @Override
                                 protected Object replaceHookedMethod(MethodHookParam param) {
@@ -78,6 +79,7 @@ public class HideMiniAppPullEntry {
                                     return null;
                                 }
                             });
+                        }
                     }
 					/*try {
 					 findAndHookMethod(load("com.tencent.mobileqq.app.FrameFragment"), "createTabContent", String.class, new XC_MethodReplacement(39) {
@@ -95,7 +97,7 @@ public class HideMiniAppPullEntry {
 					 }
 					 });
 					 } catch (Exception e) {}*/
-
+                    
                     Class<?> tmp;
                     Class<?> miniapp = null;
                     if (Utils.getHostVersionCode32() >= 1312) {
@@ -103,7 +105,9 @@ public class HideMiniAppPullEntry {
                         miniapp = load("com/tencent/mobileqq/mini/entry/MiniAppDesktop");
                         if (miniapp == null) {
                             tmp = load("com/tencent/mobileqq/mini/entry/MiniAppDesktop$1");
-                            if (tmp != null) miniapp = tmp.getDeclaredField("this$0").getType();
+                            if (tmp != null) {
+                                miniapp = tmp.getDeclaredField("this$0").getType();
+                            }
                         }
                     } else {
                         //for 818
@@ -111,19 +115,25 @@ public class HideMiniAppPullEntry {
                             miniapp = load("com.tencent.mobileqq.mini.entry.desktop.MiniAppDesktopLayout");
                             if (miniapp == null) {
                                 tmp = load("com.tencent.mobileqq.mini.entry.desktop.MiniAppDesktopLayout$1");
-                                if (tmp != null) miniapp = tmp.getDeclaredField("this$0").getType();
+                                if (tmp != null) {
+                                    miniapp = tmp.getDeclaredField("this$0").getType();
+                                }
                             }
                             if (miniapp == null) {
                                 tmp = load("com.tencent.mobileqq.mini.entry.desktop.MiniAppDesktopLayout$2");
-                                if (tmp != null) miniapp = tmp.getDeclaredField("this$0").getType();
+                                if (tmp != null) {
+                                    miniapp = tmp.getDeclaredField("this$0").getType();
+                                }
                             }
                         } catch (Exception ignored) {
                         }
                         //for older
-                        if (miniapp == null)
+                        if (miniapp == null) {
                             miniapp = load("com/tencent/mobileqq/mini/entry/MiniAppEntryAdapter");
-                        if (miniapp == null)
+                        }
+                        if (miniapp == null) {
                             miniapp = load("com/tencent/mobileqq/mini/entry/MiniAppEntryAdapter$1").getDeclaredField("this$0").getType();
+                        }
                     }
                     XposedBridge.hookAllConstructors(miniapp, new XC_MethodHook(60) {
                         @Override
@@ -136,8 +146,9 @@ public class HideMiniAppPullEntry {
                                     break;
                                 }
                             }
-                            if (methodName == null)
+                            if (methodName == null) {
                                 throw new NullPointerException("Failed to get Conversation.?() to hide MiniApp!");
+                            }
                             ConfigManager cache = ConfigManager.getCache();
                             cache.putString("qn_hide_msg_list_miniapp_method_name", methodName);
                             cache.getAllConfig().put("qn_hide_msg_list_miniapp_version_code", getHostVersionCode32());

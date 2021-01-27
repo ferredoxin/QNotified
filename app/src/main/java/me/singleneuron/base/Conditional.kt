@@ -1,5 +1,5 @@
 package me.singleneuron.base
 
 interface Conditional {
-    val condition : Boolean
+    val condition: Boolean
 }

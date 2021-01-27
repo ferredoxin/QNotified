@@ -177,7 +177,7 @@ object RevokeMsg : BaseDelayableHook() {
         val list: MutableList<Any> = ArrayList()
         list.add(revokeGreyTip)
         Utils.invoke_virtual_declared_ordinal_modifier(mQQMsgFacade, 0, 4, false, Modifier.PUBLIC, 0,
-                list, Utils.getAccount(), MutableList::class.java, String::class.java, Void.TYPE)
+            list, Utils.getAccount(), MutableList::class.java, String::class.java, Void.TYPE)
     }
 
     private fun createTroopMemberHighlightItem(memberUin: String): Bundle {
@@ -222,7 +222,7 @@ object RevokeMsg : BaseDelayableHook() {
         var list: List<*>? = null
         try {
             list = Utils.invoke_virtual_declared_ordinal(mQQMsgFacade, 0, 2, false,
-                    uin, istroop, shmsgseq, msgUid, String::class.java, Int::class.javaPrimitiveType, Long::class.javaPrimitiveType, Long::class.javaPrimitiveType, MutableList::class.java) as List<*>
+                uin, istroop, shmsgseq, msgUid, String::class.java, Int::class.javaPrimitiveType, Long::class.javaPrimitiveType, Long::class.javaPrimitiveType, MutableList::class.java) as List<*>
         } catch (e: Exception) {
             logdt(e)
         }

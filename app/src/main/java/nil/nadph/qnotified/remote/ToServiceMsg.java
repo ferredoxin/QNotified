@@ -1,11 +1,9 @@
 package nil.nadph.qnotified.remote;
 
-import com.qq.taf.jce.JceInputStream;
-import com.qq.taf.jce.JceOutputStream;
-import com.qq.taf.jce.JceStruct;
+import com.qq.taf.jce.*;
 
-import java.io.IOException;
-import java.util.Random;
+import java.io.*;
+import java.util.*;
 
 public class ToServiceMsg extends JceStruct {
     private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
@@ -15,11 +13,11 @@ public class ToServiceMsg extends JceStruct {
     private String serviceCmd = "";//2
     private long token;//3
     private byte[] body = EMPTY_BYTE_ARRAY;//4
-
+    
     public ToServiceMsg() {
         uniSeq = r.nextInt();
     }
-
+    
     public ToServiceMsg(String name, String cmd, JceStruct struct) throws IOException {
         uniSeq = r.nextInt();
         JceOutputStream jout = Utf8JceUtils.newOutputStream();
@@ -28,11 +26,11 @@ public class ToServiceMsg extends JceStruct {
         serviceName = name;
         serviceCmd = cmd;
     }
-
+    
     public ToServiceMsg(String name, String cmd, byte[] b) {
         this(name, cmd, b, 0L);
     }
-
+    
     public ToServiceMsg(String name, String cmd, byte[] b, long t) {
         uniSeq = r.nextInt();
         serviceName = name;
@@ -40,47 +38,47 @@ public class ToServiceMsg extends JceStruct {
         body = b;
         token = t;
     }
-
-    public void setBody(byte[] body) {
-        this.body = body;
-    }
-
+    
     public byte[] getBody() {
         return body;
     }
-
-    public void setToken(long token) {
-        this.token = token;
+    
+    public void setBody(byte[] body) {
+        this.body = body;
     }
-
+    
     public long getToken() {
         return token;
     }
-
-    public void setUniSeq(int uniSeq) {
-        this.uniSeq = uniSeq;
+    
+    public void setToken(long token) {
+        this.token = token;
     }
-
+    
     public int getUniSeq() {
         return uniSeq;
     }
-
-    public void setServiceCmd(String serviceCmd) {
-        this.serviceCmd = serviceCmd;
+    
+    public void setUniSeq(int uniSeq) {
+        this.uniSeq = uniSeq;
     }
-
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
-    }
-
+    
     public String getServiceCmd() {
         return serviceCmd;
     }
-
+    
+    public void setServiceCmd(String serviceCmd) {
+        this.serviceCmd = serviceCmd;
+    }
+    
     public String getServiceName() {
         return serviceName;
     }
-
+    
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+    
     @Override
     public void writeTo(JceOutputStream os) {
         os.write(uniSeq, 0);
@@ -89,7 +87,7 @@ public class ToServiceMsg extends JceStruct {
         os.write(token, 3);
         os.write(body, 4);
     }
-
+    
     @Override
     public void readFrom(JceInputStream is) {
         uniSeq = is.read(0, 0, true);
@@ -98,10 +96,16 @@ public class ToServiceMsg extends JceStruct {
         token = is.read(0L, 3, false);
         body = is.read(EMPTY_BYTE_ARRAY, 4, true);
     }
-
+    
     public void ensureNonNull() {
-        if (body == null) body = EMPTY_BYTE_ARRAY;
-        if (serviceCmd == null) serviceCmd = "";
-        if (serviceName == null) serviceName = "";
+        if (body == null) {
+            body = EMPTY_BYTE_ARRAY;
+        }
+        if (serviceCmd == null) {
+            serviceCmd = "";
+        }
+        if (serviceName == null) {
+            serviceName = "";
+        }
     }
 }

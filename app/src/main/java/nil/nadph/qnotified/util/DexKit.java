@@ -18,31 +18,19 @@
  */
 package nil.nadph.qnotified.util;
 
-import android.view.View;
+import android.view.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.regex.Pattern;
+import java.io.*;
+import java.lang.reflect.*;
+import java.net.*;
+import java.util.*;
+import java.util.regex.*;
 
-import dalvik.system.DexClassLoader;
-import dalvik.system.PathClassLoader;
-import nil.nadph.qnotified.config.ConfigManager;
+import dalvik.system.*;
+import nil.nadph.qnotified.config.*;
 
-import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
-import static nil.nadph.qnotified.util.Initiator._QQAppInterface;
-import static nil.nadph.qnotified.util.Utils.getHostVersionCode32;
-import static nil.nadph.qnotified.util.Utils.invoke_virtual;
-import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.logi;
+import static nil.nadph.qnotified.util.Initiator.*;
+import static nil.nadph.qnotified.util.Utils.*;
 
 /**
  * What the fuck?
@@ -426,7 +414,7 @@ public class DexKit {
             case C_GroupAppActivity:
                 //unknown
 //                ret = "com.tencent.mobileqq.activity.aio.drawer.TroopMultiCardDrawer";
-    
+                
                 ret = "com/tencent/mobileqq/activity/aio/drawer/TroopAppShortcutDrawer";
                 break;
             case C_IntimateDrawer:
@@ -860,7 +848,7 @@ public class DexKit {
             case N_LeftSwipeReply_Helper__reply:
 //			case N_TROOP_BASE_PIE__showNewTotalMemberCount:
                 //TODO: this must only has one result
-    
+                
                 return (DexMethodDescriptor) __methods.toArray()[0];
             case N_BASE_CHAT_PIE__createMulti:
                 for (DexMethodDescriptor m : __methods) {
@@ -954,10 +942,7 @@ public class DexKit {
     }
     
     public static boolean p(int i) {
-        if (i == C_CustomWidgetUtil || i == N_BASE_CHAT_PIE__INIT) {
-            return true;
-        }
-        return false;
+        return i == C_CustomWidgetUtil || i == N_BASE_CHAT_PIE__INIT;
     }
     
     @Nullable

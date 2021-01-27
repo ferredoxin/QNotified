@@ -18,42 +18,39 @@
  */
 package nil.nadph.qnotified.util;
 
-import android.app.Activity;
-import android.content.res.ColorStateList;
-import android.text.util.Linkify;
-import android.view.View;
-import android.widget.TextView;
+import android.app.*;
+import android.content.res.*;
+import android.text.util.*;
+import android.view.*;
+import android.widget.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.ref.WeakReference;
-import java.math.BigDecimal;
-import java.net.URL;
+import java.io.*;
+import java.lang.ref.*;
+import java.math.*;
+import java.net.*;
 
-import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.*;
 
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.ui.*;
 
-import static nil.nadph.qnotified.util.Utils.isEmpty;
-import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.*;
 
 @MainProcess
 public class NewsHelper implements Runnable {
-
+    
     public static final String NEWS_INFO_GET2 = "https://raw.githubusercontent.com/ferredoxin/QNotified/master/news.json";
     public static final String NEWS_INFO_GET1 = "https://gitee.com/kernelex/QNotified/raw/master/news.json";
     private static final String QN_CACHED_NEWS = "qn_cached_news";
     private static final int INTERVAL_SEC = 3600;
-
+    
     //-------------------------------------------
     private final WeakReference<TextView> ptv;
-
+    
     private NewsHelper(@Nullable WeakReference<TextView> p) {
         ptv = p;
     }
-
+    
     public static void asyncFetchNewsIfNeeded(@Nullable TextView tv) {
         boolean needUpdate = true;
         ConfigManager cfg = ConfigManager.getCache();
@@ -70,13 +67,16 @@ public class NewsHelper implements Runnable {
         } catch (Exception ignored) {
         }
         if (needUpdate) {
-            if (tv != null) new Thread(new NewsHelper(new WeakReference<>(tv))).start();
-            else new Thread(new NewsHelper(null)).start();
+            if (tv != null) {
+                new Thread(new NewsHelper(new WeakReference<>(tv))).start();
+            } else {
+                new Thread(new NewsHelper(null)).start();
+            }
         }
     }
-
+    
     //-------------------------------------------
-
+    
     @Nullable
     public static void getCachedNews(TextView tv) {
         ConfigManager cfg = ConfigManager.getCache();
@@ -114,7 +114,7 @@ public class NewsHelper implements Runnable {
             tv.setVisibility(View.GONE);
         }
     }
-
+    
     @Override
     public void run() {
         String content = null;
@@ -168,7 +168,7 @@ public class NewsHelper implements Runnable {
             });
         }
     }
-
+    
     private static class News {
         public String text = null;
         public String color = null;
@@ -177,7 +177,7 @@ public class NewsHelper implements Runnable {
         public boolean select = false;
         public boolean link = false;
         public boolean persist = false;
-
+        
         public static News formJson(String str) {
             @SuppressWarnings("deprecation") PHPArray json = PHPArray.fromJson(str);
             News ret = new News();

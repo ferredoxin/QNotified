@@ -18,16 +18,15 @@
  */
 package nil.nadph.qnotified.remote;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 import static java.lang.annotation.ElementType.*;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static java.lang.annotation.RetentionPolicy.*;
 
 @Retention(RUNTIME)
 @Target({METHOD, PARAMETER, FIELD})
 public @interface JceId {
     int value();
-
+    
     boolean required() default true;
 }

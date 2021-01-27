@@ -9,22 +9,22 @@ public class FriendMessageParam {
      * 消息内容
      */
     public String content;
-
+    
     public FriendMessageParam setUin(String uin) {
         this.uin = uin;
         return this;
     }
-
+    
     public FriendMessageParam setUin(long uin) {
         this.uin = uin + "";
         return this;
     }
-
+    
     public FriendMessageParam setContent(String content) {
         this.content = content;
         return this;
     }
-
+    
     public FriendMessageParam create() {
         return this;
     }

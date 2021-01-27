@@ -18,48 +18,45 @@
  */
 package nil.nadph.qnotified.hook;
 
-import android.os.Looper;
-import android.widget.Toast;
+import android.os.*;
+import android.widget.*;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.step.DexDeobfStep;
-import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.Utils;
+import de.robv.android.xposed.*;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.step.*;
+import nil.nadph.qnotified.util.*;
 
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class MuteQZoneThumbsUp extends BaseDelayableHook {
-
+    
     public static final String qn_mute_thumb_up = "qn_mute_thumb_up";
     private static final MuteQZoneThumbsUp self = new MuteQZoneThumbsUp();
+    protected int MSG_INFO_OFFSET = -1;
     private boolean inited = false;
-
+    
     private MuteQZoneThumbsUp() {
     }
-
+    
     public static MuteQZoneThumbsUp get() {
         return self;
     }
-
-    protected int MSG_INFO_OFFSET = -1;
-
+    
     @Override
     public boolean init() {
-        if (inited) return true;
+        if (inited) {
+            return true;
+        }
         try {
             Class<?> clz = DexKit.doFindClass(DexKit.C_QZONE_MSG_NOTIFY);
             Method showQZoneMsgNotification = null;
             for (Method m : clz.getDeclaredMethods()) {
                 if (m.getReturnType().equals(void.class)) {
                     if (showQZoneMsgNotification == null ||
-                            m.getParameterTypes().length > showQZoneMsgNotification.getParameterTypes().length) {
+                        m.getParameterTypes().length > showQZoneMsgNotification.getParameterTypes().length) {
                         showQZoneMsgNotification = m;
                     }
                 }
@@ -67,8 +64,12 @@ public class MuteQZoneThumbsUp extends BaseDelayableHook {
             XposedBridge.hookMethod(showQZoneMsgNotification, new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.sDisableCommonHooks) return;
-                    if (!isEnabled()) return;
+                    if (LicenseStatus.sDisableCommonHooks) {
+                        return;
+                    }
+                    if (!isEnabled()) {
+                        return;
+                    }
                     if (MSG_INFO_OFFSET < 0) {
                         Class<?>[] argt = ((Method) param.method).getParameterTypes();
                         int hit = 0;
@@ -96,22 +97,32 @@ public class MuteQZoneThumbsUp extends BaseDelayableHook {
             return false;
         }
     }
-
+    
     @Override
     public int getEffectiveProc() {
         return SyncUtils.PROC_MAIN;
     }
-
+    
     @Override
     public boolean isInited() {
         return inited;
     }
-
+    
     @Override
     public Step[] getPreconditions() {
         return new Step[]{new DexDeobfStep(DexKit.C_QZONE_MSG_NOTIFY)};
     }
-
+    
+    @Override
+    public boolean isEnabled() {
+        try {
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_mute_thumb_up);
+        } catch (Exception e) {
+            log(e);
+            return false;
+        }
+    }
+    
     @Override
     public void setEnabled(boolean enabled) {
         try {
@@ -130,16 +141,6 @@ public class MuteQZoneThumbsUp extends BaseDelayableHook {
                     }
                 });
             }
-        }
-    }
-
-    @Override
-    public boolean isEnabled() {
-        try {
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_mute_thumb_up);
-        } catch (Exception e) {
-            log(e);
-            return false;
         }
     }
 }

@@ -18,31 +18,107 @@
  */
 package nil.nadph.qnotified.util;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
+import android.annotation.*;
+import android.content.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
-import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.config.*;
 
-import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressWarnings("CharsetObjectCanBeUsed")
 public class ArscKit {
-
+    
+    public static final int NO_ENTRY = 0xFFFFFFFF;
+    public static final short
+        RES_NULL_TYPE = 0x0000,
+        RES_STRING_POOL_TYPE = 0x0001,
+        RES_TABLE_TYPE = 0x0002,
+        RES_XML_TYPE = 0x0003;
+    // Chunk types in RES_XML_TYPE
+    public static final short
+        RES_XML_FIRST_CHUNK_TYPE = 0x0100,
+        RES_XML_START_NAMESPACE_TYPE = 0x0100,
+        RES_XML_END_NAMESPACE_TYPE = 0x0101,
+        RES_XML_START_ELEMENT_TYPE = 0x0102,
+        RES_XML_END_ELEMENT_TYPE = 0x0103,
+        RES_XML_CDATA_TYPE = 0x0104,
+        RES_XML_LAST_CHUNK_TYPE = 0x017f;
+    // This contains a uint32_t array mapping strings in the string
+    // pool back to resource identifiers.  It is optional.
+    public static final short
+        RES_XML_RESOURCE_MAP_TYPE = 0x0180;
+    // Chunk types in RES_TABLE_TYPE
+    public static final short
+        RES_TABLE_PACKAGE_TYPE = 0x0200,
+        RES_TABLE_TYPE_TYPE = 0x0201,
+        RES_TABLE_TYPE_SPEC_TYPE = 0x0202,
+        RES_TABLE_LIBRARY_TYPE = 0x0203;
+    // Type of the data value.
+    public static final byte
+        // The 'data' is either 0 or 1, specifying this resource is either
+        // undefined or empty, respectively.
+        TYPE_NULL = 0x00,
+    // The 'data' holds a ResTable_ref, a reference to another resource
+    // table entry.
+    TYPE_REFERENCE = 0x01,
+    // The 'data' holds an attribute resource identifier.
+    TYPE_ATTRIBUTE = 0x02,
+    // The 'data' holds an index into the containing resource table's
+    // global value string pool.
+    TYPE_STRING = 0x03,
+    // The 'data' holds a single-precision floating point number.
+    TYPE_FLOAT = 0x04,
+    // The 'data' holds a complex number encoding a dimension value,
+    // such as "100in".
+    TYPE_DIMENSION = 0x05,
+    // The 'data' holds a complex number encoding a fraction of a
+    // container.
+    TYPE_FRACTION = 0x06,
+    // The 'data' holds a dynamic ResTable_ref, which needs to be
+    // resolved before it can be used like a TYPE_REFERENCE.
+    TYPE_DYNAMIC_REFERENCE = 0x07,
+    // The 'data' holds an attribute resource identifier, which needs to be resolved
+    // before it can be used like a TYPE_ATTRIBUTE.
+    TYPE_DYNAMIC_ATTRIBUTE = 0x08,
+    
+    // Beginning of integer flavors...
+    TYPE_FIRST_INT = 0x10,
+    
+    // The 'data' is a raw integer value of the form n..n.
+    TYPE_INT_DEC = 0x10,
+    // The 'data' is a raw integer value of the form 0xn..n.
+    TYPE_INT_HEX = 0x11,
+    // The 'data' is either 0 or 1, for input "false" or "true" respectively.
+    TYPE_INT_BOOLEAN = 0x12,
+    
+    // Beginning of color integer flavors...
+    TYPE_FIRST_COLOR_INT = 0x1c,
+    
+    // The 'data' is a raw integer value of the form #aarrggbb.
+    TYPE_INT_COLOR_ARGB8 = 0x1c,
+    // The 'data' is a raw integer value of the form #rrggbb.
+    TYPE_INT_COLOR_RGB8 = 0x1d,
+    // The 'data' is a raw integer value of the form #argb.
+    TYPE_INT_COLOR_ARGB4 = 0x1e,
+    // The 'data' is a raw integer value of the form #rgb.
+    TYPE_INT_COLOR_RGB4 = 0x1f,
+    
+    // ...end of integer flavors.
+    TYPE_LAST_COLOR_INT = 0x1f,
+    
+    // ...end of integer flavors.
+    TYPE_LAST_INT = 0x1f;
     private static final String CACHED_RES_ID_NAME_PREFIX = "cached_res_id_name_";
     private static final String CACHED_RES_ID_CODE_PREFIX = "cached_res_id_code_";
-
+    
     //FailureZero
     public static int getIdentifier(Context ctx, String type, String name, boolean allowSearch) {
-        if (name == null) return 0;
+        if (name == null)
+            return 0;
         if (name.contains("@")) {
             String[] arr = name.split("@");
             name = arr[arr.length - 1];
@@ -56,10 +132,12 @@ public class ArscKit {
             return Integer.parseInt(name);
         } catch (NumberFormatException ignored) {
         }
-        if (ctx == null) ctx = Utils.getApplication();
+        if (ctx == null)
+            ctx = Utils.getApplication();
         String pkg = ctx.getPackageName();
         int ret = ctx.getResources().getIdentifier(name, type, pkg);
-        if (ret != 0) return ret;
+        if (ret != 0)
+            return ret;
         //ResId is obfuscated, try to get it from cache.
         ConfigManager cache = ConfigManager.getCache();
         ret = cache.getIntOrDefault(CACHED_RES_ID_NAME_PREFIX + type + "/" + name, 0);
@@ -69,7 +147,8 @@ public class ArscKit {
             return ret;
         }
         //parse thr ARSC to find it.
-        if (!allowSearch) return 0;
+        if (!allowSearch)
+            return 0;
         ret = enumArsc(pkg, type, name);
         if (ret != 0) {
             cache.getAllConfig().put(CACHED_RES_ID_NAME_PREFIX + type + "/" + name, ret);
@@ -82,7 +161,7 @@ public class ArscKit {
         }
         return ret;
     }
-
+    
     private static int enumArsc(String pkgname, String type, String name) {
         Enumeration<URL> urls = null;
         try {
@@ -110,7 +189,8 @@ public class ArscKit {
                 in.close();
                 content = baos.toByteArray();
                 ret = seekInArscByFileName(content, pkgname, type, name);
-                if (ret != 0) return ret;
+                if (ret != 0)
+                    return ret;
             } catch (IOException e) {
                 log(e);
             }
@@ -118,18 +198,20 @@ public class ArscKit {
         //404
         return 0;
     }
-
+    
     //FailureZero
     private static int seekInArscByFileName(byte[] buf, String pkgName, String type, String name) {
         try {
             int p = 0, p2;
             int chunkSize = readLe32(buf, p + 4);
             int headerSize = readLe16(buf, p + 2);
-            if (buf.length < chunkSize) throw new IllegalArgumentException("Truncated data");
+            if (buf.length < chunkSize)
+                throw new IllegalArgumentException("Truncated data");
             //int packageCount = readLe32(buf, p + 8);
             p += headerSize;
             int targetStrIdx = findInterestedStringIndex(buf, p, "/" + name + ".");
-            if (targetStrIdx == -1) return 0;
+            if (targetStrIdx == -1)
+                return 0;
             p += getChunkSize(buf, p);
             if (readLe16(buf, p) != RES_TABLE_PACKAGE_TYPE) {
                 throw new IllegalArgumentException("Excepted RES_TABLE_PACKAGE_TYPE, got " + Integer.toHexString(readLe16(buf, p)));
@@ -172,7 +254,7 @@ public class ArscKit {
         }
         return 0;
     }
-
+    
     private static int parseSpec(byte[] buf, int p, HashMap<Integer, String> strPool) {
         int chunkType = readLe16(buf, p);
         int headerSize = readLe16(buf, p + 2);
@@ -185,7 +267,7 @@ public class ArscKit {
         System.out.printf("TypeId %d has %d entries.\n", typeId, entryCount);
         return chunkSize;
     }
-
+    
     private static int parseType(byte[] buf, int pp, int pt) {
         int p = pp + pt;
         int chunkType = readLe16(buf, p);
@@ -216,7 +298,7 @@ public class ArscKit {
         }
         return chunkSize;
     }
-
+    
     public static int getTypeChunkTypeId(byte[] buf, int p) {
         int chunkType = readLe16(buf, p);
         if (chunkType != RES_TABLE_TYPE_TYPE) {
@@ -224,7 +306,7 @@ public class ArscKit {
         }
         return buf[p + 8];
     }
-
+    
     private static int seekStrByIndex(byte[] buf, int pp, int pt, int strIndex) {
         int p = pp + pt;
         int chunkType = readLe16(buf, p);
@@ -257,11 +339,11 @@ public class ArscKit {
         }
         return -1;
     }
-
+    
     public static int getChunkSize(byte[] buf, int p) {
         return readLe32(buf, p + 4);
     }
-
+    
     public static int parseStringPool(byte[] buf, int p, HashMap<Integer, String> strPool) {
         int chunkType = readLe16(buf, p);
         if (chunkType != RES_STRING_POOL_TYPE) {
@@ -305,7 +387,7 @@ public class ArscKit {
         }
         return chunkSize;
     }
-
+    
     public static int findInterestedStringIndex(byte[] buf, int p, String target) {
         int chunkType = readLe16(buf, p);
         if (chunkType != RES_STRING_POOL_TYPE) {
@@ -383,91 +465,8 @@ public class ArscKit {
     public static short readLe16(byte[] xml, int pos) {
         return (short) ((xml[pos]) & 0xff | (xml[pos + 1] << 8) & 0xff00);
     }
-
+    
     public static void nop() {
     }
-
-    public static final int NO_ENTRY = 0xFFFFFFFF;
-    public static final short
-            RES_NULL_TYPE = 0x0000,
-            RES_STRING_POOL_TYPE = 0x0001,
-            RES_TABLE_TYPE = 0x0002,
-            RES_XML_TYPE = 0x0003;
-    // Chunk types in RES_XML_TYPE
-    public static final short
-            RES_XML_FIRST_CHUNK_TYPE = 0x0100,
-            RES_XML_START_NAMESPACE_TYPE = 0x0100,
-            RES_XML_END_NAMESPACE_TYPE = 0x0101,
-            RES_XML_START_ELEMENT_TYPE = 0x0102,
-            RES_XML_END_ELEMENT_TYPE = 0x0103,
-            RES_XML_CDATA_TYPE = 0x0104,
-            RES_XML_LAST_CHUNK_TYPE = 0x017f;
-    // This contains a uint32_t array mapping strings in the string
-    // pool back to resource identifiers.  It is optional.
-    public static final short
-            RES_XML_RESOURCE_MAP_TYPE = 0x0180;
-    // Chunk types in RES_TABLE_TYPE
-    public static final short
-            RES_TABLE_PACKAGE_TYPE = 0x0200,
-            RES_TABLE_TYPE_TYPE = 0x0201,
-            RES_TABLE_TYPE_SPEC_TYPE = 0x0202,
-            RES_TABLE_LIBRARY_TYPE = 0x0203;
-
-
-    // Type of the data value.
-    public static final byte
-            // The 'data' is either 0 or 1, specifying this resource is either
-            // undefined or empty, respectively.
-            TYPE_NULL = 0x00,
-    // The 'data' holds a ResTable_ref, a reference to another resource
-    // table entry.
-    TYPE_REFERENCE = 0x01,
-    // The 'data' holds an attribute resource identifier.
-    TYPE_ATTRIBUTE = 0x02,
-    // The 'data' holds an index into the containing resource table's
-    // global value string pool.
-    TYPE_STRING = 0x03,
-    // The 'data' holds a single-precision floating point number.
-    TYPE_FLOAT = 0x04,
-    // The 'data' holds a complex number encoding a dimension value,
-    // such as "100in".
-    TYPE_DIMENSION = 0x05,
-    // The 'data' holds a complex number encoding a fraction of a
-    // container.
-    TYPE_FRACTION = 0x06,
-    // The 'data' holds a dynamic ResTable_ref, which needs to be
-    // resolved before it can be used like a TYPE_REFERENCE.
-    TYPE_DYNAMIC_REFERENCE = 0x07,
-    // The 'data' holds an attribute resource identifier, which needs to be resolved
-    // before it can be used like a TYPE_ATTRIBUTE.
-    TYPE_DYNAMIC_ATTRIBUTE = 0x08,
-
-    // Beginning of integer flavors...
-    TYPE_FIRST_INT = 0x10,
-
-    // The 'data' is a raw integer value of the form n..n.
-    TYPE_INT_DEC = 0x10,
-    // The 'data' is a raw integer value of the form 0xn..n.
-    TYPE_INT_HEX = 0x11,
-    // The 'data' is either 0 or 1, for input "false" or "true" respectively.
-    TYPE_INT_BOOLEAN = 0x12,
-
-    // Beginning of color integer flavors...
-    TYPE_FIRST_COLOR_INT = 0x1c,
-
-    // The 'data' is a raw integer value of the form #aarrggbb.
-    TYPE_INT_COLOR_ARGB8 = 0x1c,
-    // The 'data' is a raw integer value of the form #rrggbb.
-    TYPE_INT_COLOR_RGB8 = 0x1d,
-    // The 'data' is a raw integer value of the form #argb.
-    TYPE_INT_COLOR_ARGB4 = 0x1e,
-    // The 'data' is a raw integer value of the form #rgb.
-    TYPE_INT_COLOR_RGB4 = 0x1f,
-
-    // ...end of integer flavors.
-    TYPE_LAST_COLOR_INT = 0x1f,
-
-    // ...end of integer flavors.
-    TYPE_LAST_INT = 0x1f;
-
+    
 }

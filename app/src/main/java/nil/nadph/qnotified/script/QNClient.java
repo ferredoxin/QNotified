@@ -1,16 +1,9 @@
 package nil.nadph.qnotified.script;
 
-import android.os.Parcelable;
-import bsh.util.Util;
-import com.tencent.mobileqq.app.QQAppInterface;
-import nil.nadph.qnotified.bridge.ChatActivityFacade;
-import nil.nadph.qnotified.bridge.SessionInfoImpl;
-import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.bridge.*;
+import nil.nadph.qnotified.util.*;
 
-import static nil.nadph.qnotified.util.Initiator._SessionInfo;
-import static nil.nadph.qnotified.util.Utils.getApplication;
-import static nil.nadph.qnotified.util.Utils.getFirstNSFByType;
+import static nil.nadph.qnotified.util.Utils.*;
 
 public class QNClient {
     /*
@@ -22,7 +15,7 @@ public class QNClient {
 	QNClient.mute(群号码,成员号码,禁言时间[分钟]);// 在某个群禁言一个人
 	QNClient.muteAll(群号码);// 开启一个群的全群禁言
      */
-
+    
     /**
      * 发送一条文字消息
      *
@@ -33,10 +26,10 @@ public class QNClient {
     public static void send(String uin, String content, int type) {
         // to do
         ChatActivityFacade.sendMessage(
-                Utils.getQQAppInterface(), getApplication(), SessionInfoImpl.createSessionInfo(uin, type), content
+            Utils.getQQAppInterface(), getApplication(), SessionInfoImpl.createSessionInfo(uin, type), content
         );
     }
-
+    
     /**
      * 发送一条图片消息
      *
@@ -51,7 +44,7 @@ public class QNClient {
         }
         // to do
     }
-
+    
     /**
      * 发送一条语音消息
      *
@@ -66,7 +59,7 @@ public class QNClient {
         }
         // to do
     }
-
+    
     /**
      * 发送卡片消息
      * ====================
@@ -77,10 +70,12 @@ public class QNClient {
      * @param content xml/json
      */
     public static void sendCard(long uin, String content) {
-        if (!LicenseStatus.isAsserted()) return;
+        if (!LicenseStatus.isAsserted()) {
+            return;
+        }
         // to do
     }
-
+    
     /**
      * 踢出一个人
      *
@@ -90,7 +85,7 @@ public class QNClient {
     public static void kick(long groupUin, long uin) {
         // to do
     }
-
+    
     /**
      * 禁言一个人
      *
@@ -101,7 +96,7 @@ public class QNClient {
     public static void mute(long groupUin, long uin, int time) {
         // to do
     }
-
+    
     /**
      * 开启全体禁言
      *

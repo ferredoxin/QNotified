@@ -18,23 +18,21 @@
  */
 package nil.nadph.qnotified.activity;
 
-import android.annotation.SuppressLint;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.os.Bundle;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
+import android.annotation.*;
+import android.content.res.*;
+import android.graphics.*;
+import android.os.*;
+import android.view.*;
+import android.widget.*;
 
-import com.tencent.mobileqq.widget.BounceScrollView;
+import com.tencent.mobileqq.widget.*;
 
-import nil.nadph.qnotified.script.QNScriptManager;
-import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.script.*;
+import nil.nadph.qnotified.ui.*;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
-import static nil.nadph.qnotified.util.Utils.dip2px;
+import static android.view.ViewGroup.LayoutParams.*;
+import static nil.nadph.qnotified.ui.ViewBuilder.*;
+import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressLint("Registered")
 public class ScriptGuideActivity extends IphoneTitleBarActivityCompat {
@@ -64,12 +62,12 @@ public class ScriptGuideActivity extends IphoneTitleBarActivityCompat {
         __lp_r.addRule(RelativeLayout.CENTER_VERTICAL);
         ColorStateList hiColor = ColorStateList.valueOf(Color.argb(255, 242, 140, 72));
         RelativeLayout _t;
-
+    
         ll.addView(subtitle(this, QNScriptManager.error));
         //bounceScrollView.setFocusable(true);
         //bounceScrollView.setFocusableInTouchMode(true);
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-        this.setContentView(bounceScrollView);
+        setContentView(bounceScrollView);
         LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);
         _lp_fat.weight = 1;
         //__ll.addView(bounceScrollView,_lp_fat);

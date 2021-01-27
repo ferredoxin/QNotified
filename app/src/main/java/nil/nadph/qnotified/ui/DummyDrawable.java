@@ -18,24 +18,23 @@
  */
 package nil.nadph.qnotified.ui;
 
-import android.graphics.Canvas;
-import android.graphics.ColorFilter;
-import android.graphics.drawable.Drawable;
+import android.graphics.*;
+import android.graphics.drawable.*;
 
 //dummy, don't use it
 public class DummyDrawable extends Drawable {
     @Override
     public void draw(Canvas canvas) {
     }
-
+    
     @Override
     public void setAlpha(int alpha) {
     }
-
+    
     @Override
     public void setColorFilter(ColorFilter colorFilter) {
     }
-
+    
     @Override
     @SuppressWarnings("deprecation")
     public int getOpacity() {

@@ -1,39 +1,37 @@
 package me.zpp0196.qqpurify.fragment.base;
 
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.widget.Toast;
-import androidx.fragment.app.Fragment;
-import androidx.preference.*;
-import me.zpp0196.qqpurify.activity.MainActivity;
-import me.zpp0196.qqpurify.hook.P2CUtils;
-import me.zpp0196.qqpurify.utils.Constants;
-import me.zpp0196.qqpurify.utils.SettingUtils;
-import nil.nadph.qnotified.config.AbstractConfigItem;
-import nil.nadph.qnotified.config.MultiConfigItem;
-import nil.nadph.qnotified.config.SwitchConfigItem;
-import nil.nadph.qnotified.hook.BaseDelayableHook;
-import nil.nadph.qnotified.ui.ViewBuilder;
-import nil.nadph.qnotified.util.Utils;
+import android.os.*;
+import android.text.*;
+import android.widget.*;
 
-import java.util.HashSet;
-import java.util.Set;
+import androidx.fragment.app.*;
+import androidx.preference.*;
+
+import java.util.*;
+
+import me.zpp0196.qqpurify.activity.*;
+import me.zpp0196.qqpurify.hook.*;
+import me.zpp0196.qqpurify.utils.*;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.hook.*;
+import nil.nadph.qnotified.ui.*;
+import nil.nadph.qnotified.util.Utils;
 
 /**
  * Created by zpp0196 on 2019/2/9.
  */
 public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompat implements Constants,
-        Preference.OnPreferenceChangeListener, MainActivity.TabFragment, SettingUtils.ISetting {
-
+    Preference.OnPreferenceChangeListener, MainActivity.TabFragment, SettingUtils.ISetting {
+    
     protected MainActivity mActivity;
-
+    
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(getPrefRes(), rootKey);
         mActivity = (MainActivity) getActivity();
         initPreferences();
     }
-
+    
     protected void initPreferences() {
         if (mActivity.mRefreshedFragment.contains(this)) {
             return;
@@ -45,7 +43,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
         }
         mActivity.mRefreshedFragment.add(this);
     }
-
+    
     private void initPreference(Preference preference) {
         // 图标预留空间
         preference.setIconSpaceReserved(false);
@@ -68,10 +66,12 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
             }
         }
     }
-
+    
     private void bindPreferenceSummary(Preference preference) {
         String pref_key = preference.getKey();
-        if (pref_key == null) return;
+        if (pref_key == null) {
+            return;
+        }
         pref_key = pref_key.replace("!", "");
         String[] __ = pref_key.split("\\$");
         String cfgName = __[0];
@@ -80,10 +80,10 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
             keyName = __[1];
         }
         AbstractConfigItem _item = P2CUtils.findConfigByName(cfgName);
-
+        
         // 排除空值、多选、开关
         if (preference instanceof MultiSelectListPreference ||
-                preference instanceof TwoStatePreference || _item == null) {
+            preference instanceof TwoStatePreference || _item == null) {
             return;
         }
         try {
@@ -104,11 +104,13 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
             preference.setSummary((e + "").replaceAll("java\\.[a-z]+\\.", ""));
         }
     }
-
+    
     @SuppressWarnings("unchecked")
     private void bindPreferenceValue(Preference preference) {
         String pref_key = preference.getKey();
-        if (pref_key == null) return;
+        if (pref_key == null) {
+            return;
+        }
         pref_key = pref_key.replace("!", "");
         String[] __ = pref_key.split("\\$");
         String cfgName = __[0];
@@ -118,8 +120,8 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
         }
         AbstractConfigItem _item = P2CUtils.findConfigByName(cfgName);
         if (_item == null && (preference instanceof TwoStatePreference
-                || preference instanceof ListPreference || preference instanceof MultiSelectListPreference
-                || preference instanceof EditTextPreference)) {
+            || preference instanceof ListPreference || preference instanceof MultiSelectListPreference
+            || preference instanceof EditTextPreference)) {
             preference.setEnabled(false);
             preference.setSummary("暂不开放");
         } else {
@@ -173,7 +175,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
             }
         }
     }
-
+    
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         try {
@@ -251,15 +253,15 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
             return false;
         }
     }
-
+    
     @Override
     public void onResume() {
         super.onResume();
         initPreferences();
     }
-
+    
     protected abstract int getPrefRes();
-
+    
     @Override
     public Fragment getFragment() {
         return this;

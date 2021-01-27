@@ -1,12 +1,9 @@
 package nil.nadph.qnotified.util.thunk.pcs;
 
-import nil.nadph.qnotified.util.Natives;
-import nil.nadph.qnotified.util.NonNull;
+import nil.nadph.qnotified.util.*;
 
 public abstract class Convention {
-
-    public abstract int getPointerSize();
-
+    
     @NonNull
     public static Convention getInstance() {
         //drop x86
@@ -16,4 +13,6 @@ public abstract class Convention {
             throw new RuntimeException("Stub!");
         }
     }
+    
+    public abstract int getPointerSize();
 }

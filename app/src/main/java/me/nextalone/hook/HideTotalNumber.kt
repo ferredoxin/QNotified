@@ -11,7 +11,7 @@ import nil.nadph.qnotified.util.Utils
 import java.lang.reflect.Method
 
 object HideTotalNumber : CommonDelayableHook("na_hide_total_number") {
-    
+
     override fun initOnce(): Boolean {
         return try {
 //            val classSimpleName = this::class.java.simpleName

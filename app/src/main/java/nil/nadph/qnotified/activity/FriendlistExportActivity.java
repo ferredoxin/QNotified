@@ -18,39 +18,30 @@
  */
 package nil.nadph.qnotified.activity;
 
-import android.annotation.SuppressLint;
-import android.os.Bundle;
-import android.os.Environment;
-import android.view.View;
-import android.view.ViewGroup;
+import android.annotation.*;
+import android.os.*;
+import android.view.*;
 import android.widget.*;
 
-import androidx.core.view.ViewCompat;
+import androidx.core.view.*;
 
-import com.tencent.mobileqq.widget.BounceScrollView;
+import com.tencent.mobileqq.widget.*;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Date;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
-import nil.nadph.qnotified.ExfriendManager;
-import nil.nadph.qnotified.R;
-import nil.nadph.qnotified.config.FriendRecord;
-import nil.nadph.qnotified.ui.HighContrastBorder;
-import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.ui.ViewBuilder;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.ui.*;
+import nil.nadph.qnotified.util.*;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
+import static android.view.ViewGroup.LayoutParams.*;
+import static nil.nadph.qnotified.ui.ViewBuilder.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressLint("Registered")
 public class FriendlistExportActivity extends IphoneTitleBarActivityCompat {
-
+    
     private static final int R_ID_CHECKBOX_CSV = 0x300AFF61;
     private static final int R_ID_CHECKBOX_JSON = 0x300AFF62;
     private static final int R_ID_RB_CRLF = 0x300AFF63;
@@ -58,7 +49,7 @@ public class FriendlistExportActivity extends IphoneTitleBarActivityCompat {
     private static final int R_ID_RB_LF = 0x300AFF64;
     private static final int R_ID_CB_FRIENDS = 0x300AFF66;
     private static final int R_ID_CB_EXFRIENDS = 0x300AFF67;
-
+    
     @Override
     public boolean doOnCreate(Bundle bundle) {
         super.doOnCreate(bundle);
@@ -67,7 +58,7 @@ public class FriendlistExportActivity extends IphoneTitleBarActivityCompat {
         ViewGroup.LayoutParams mmlp = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
         LinearLayout __ll = new LinearLayout(FriendlistExportActivity.this);
         __ll.setOrientation(LinearLayout.VERTICAL);
-        final ViewGroup bounceScrollView = new BounceScrollView(this, null);
+        ViewGroup bounceScrollView = new BounceScrollView(this, null);
         bounceScrollView.setLayoutParams(mmlp);
         bounceScrollView.setId(R.id.rootBounceScrollView);
         ll.setId(R.id.rootMainLayout);
@@ -83,51 +74,51 @@ public class FriendlistExportActivity extends IphoneTitleBarActivityCompat {
         __lp_r.setMargins(mar, 0, mar, 0);
         __lp_r.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         __lp_r.addRule(RelativeLayout.CENTER_VERTICAL);
-
+        
         LinearLayout.LayoutParams stdlp = new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
         stdlp.setMargins(mar, mar / 4, mar, mar / 4);
-
+        
         ll.addView(subtitle(FriendlistExportActivity.this, "导出范围"));
-
-        final CheckBox exfonly = new CheckBox(FriendlistExportActivity.this);
+        
+        CheckBox exfonly = new CheckBox(FriendlistExportActivity.this);
         exfonly.setText("历史好友");
         exfonly.setPadding(__3_, __3_, __3_, __3_);
         exfonly.setTextColor(ResUtils.skin_black);
         exfonly.setButtonDrawable(ResUtils.getCheckBoxBackground());
         exfonly.setId(R_ID_CB_EXFRIENDS);
         ll.addView(exfonly, stdlp);
-        final CheckBox frionly = new CheckBox(FriendlistExportActivity.this);
+        CheckBox frionly = new CheckBox(FriendlistExportActivity.this);
         frionly.setText("当前好友");
         frionly.setPadding(__3_, __3_, __3_, __3_);
         frionly.setTextColor(ResUtils.skin_black);
         frionly.setButtonDrawable(ResUtils.getCheckBoxBackground());
         frionly.setId(R_ID_CB_FRIENDS);
         ll.addView(frionly, stdlp);
-
+        
         frionly.setChecked(true);
-
+        
         ll.addView(subtitle(FriendlistExportActivity.this, "导出格式"));
-
-        final CheckBox cbCsv = new CheckBox(FriendlistExportActivity.this);
+        
+        CheckBox cbCsv = new CheckBox(FriendlistExportActivity.this);
         cbCsv.setButtonDrawable(ResUtils.getCheckBoxBackground());
         cbCsv.setText("CSV");
         cbCsv.setPadding(__3_, __3_, __3_, __3_);
         cbCsv.setTextColor(ResUtils.skin_black);
         cbCsv.setId(R_ID_CHECKBOX_CSV);
         ll.addView(cbCsv, stdlp);
-        final CheckBox cbJson = new CheckBox(FriendlistExportActivity.this);
+        CheckBox cbJson = new CheckBox(FriendlistExportActivity.this);
         cbJson.setButtonDrawable(ResUtils.getCheckBoxBackground());
         cbJson.setText("Json");
         cbJson.setPadding(__3_, __3_, __3_, __3_);
         cbJson.setTextColor(ResUtils.skin_black);
         cbJson.setId(R_ID_CHECKBOX_JSON);
         ll.addView(cbJson, stdlp);
-
+        
         LinearLayout llcsvopt = new LinearLayout(FriendlistExportActivity.this);
         llcsvopt.setOrientation(LinearLayout.VERTICAL);
         llcsvopt.addView(ViewBuilder.subtitle(FriendlistExportActivity.this, "CSV设定"));
-
-        final RadioGroup gcsvcrlf = new RadioGroup(FriendlistExportActivity.this);
+        
+        RadioGroup gcsvcrlf = new RadioGroup(FriendlistExportActivity.this);
         gcsvcrlf.setOrientation(RadioGroup.VERTICAL);
         ll.addView(gcsvcrlf, stdlp);
         gcsvcrlf.addView(subtitle(FriendlistExportActivity.this, "换行符"));
@@ -152,7 +143,7 @@ public class FriendlistExportActivity extends IphoneTitleBarActivityCompat {
         lf.setButtonDrawable(ResUtils.getCheckBoxBackground());
         lf.setId(R_ID_RB_LF);
         gcsvcrlf.addView(lf, stdlp);
-
+        
         View.OnClickListener formatListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -166,18 +157,18 @@ public class FriendlistExportActivity extends IphoneTitleBarActivityCompat {
                         cbCsv.setChecked(false);
                         cbJson.setChecked(true);
                         gcsvcrlf.setVisibility(View.GONE);
-
+    
                 }
             }
         };
         cbCsv.setOnClickListener(formatListener);
         cbJson.setOnClickListener(formatListener);
-
+        
         lf.setChecked(true);
         formatListener.onClick(cbCsv);
-
+        
         ll.addView(subtitle(FriendlistExportActivity.this, "请输入要导出列表的QQ号(默认为当前登录的QQ号):"));
-        final EditText etuin = new EditText(FriendlistExportActivity.this);
+        EditText etuin = new EditText(FriendlistExportActivity.this);
         //etuin.setBackgroundDrawable(new HighContrastBorder());
         ViewCompat.setBackground(etuin, new HighContrastBorder());
         etuin.setPadding(__3_, __3_, __3_, __3_);
@@ -191,10 +182,10 @@ public class FriendlistExportActivity extends IphoneTitleBarActivityCompat {
         } catch (Throwable e) {
             etuin.setHint("输入QQ号");
         }
-
+        
         ll.addView(subtitle(FriendlistExportActivity.this, "导出文件保存路径(默认在内置存储根目录下):"));
-        final EditText expath = new EditText(FriendlistExportActivity.this);
-       // expath.setBackgroundDrawable(new HighContrastBorder());
+        EditText expath = new EditText(FriendlistExportActivity.this);
+        // expath.setBackgroundDrawable(new HighContrastBorder());
         ViewCompat.setBackground(expath, new HighContrastBorder());
         expath.setPadding(__3_, __3_, __3_, __3_);
         expath.setTextSize(Utils.dip2sp(FriendlistExportActivity.this, 18));
@@ -202,13 +193,13 @@ public class FriendlistExportActivity extends IphoneTitleBarActivityCompat {
         String refpath = new File(Environment.getExternalStorageDirectory(), new Date().toString().replace(" ", "") + ".txt").getAbsolutePath();
         expath.setHint(refpath);
         ll.addView(expath, stdlp);
-
+        
         Button exportbtn = new Button(FriendlistExportActivity.this);
         ResUtils.applyStyleCommonBtnBlue(exportbtn);
         exportbtn.setText("导出");
-
-        final long refuin = currentUin;
-
+        
+        long refuin = currentUin;
+        
         exportbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -226,9 +217,9 @@ public class FriendlistExportActivity extends IphoneTitleBarActivityCompat {
             }
         });
         ll.addView(exportbtn, stdlp);
-
+        
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-        FriendlistExportActivity.this.setContentView(bounceScrollView);
+        setContentView(bounceScrollView);
         LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);
         _lp_fat.weight = 1;
         //__ll.addView(bounceScrollView,_lp_fat);
@@ -238,8 +229,8 @@ public class FriendlistExportActivity extends IphoneTitleBarActivityCompat {
         //log("Title:"+invoke_virtual(FriendlistExportActivity.this,"getTextTitle"));
         return true;
     }
-
-
+    
+    
     private void doExportFile(String suin, boolean fri, boolean exf, String output, int format, int crlf) {
         long luin;
         try {
@@ -249,7 +240,7 @@ public class FriendlistExportActivity extends IphoneTitleBarActivityCompat {
             return;
         }
         if (!new File(Utils.getApplication().getFilesDir().getAbsolutePath() + "/qnotified_" + luin + ".dat").exists()) {
-
+    
             Utils.showToast(FriendlistExportActivity.this, Utils.TOAST_TYPE_ERROR, "此QQ在本机没有记录", Toast.LENGTH_LONG);
             return;
         }
@@ -366,7 +357,7 @@ public class FriendlistExportActivity extends IphoneTitleBarActivityCompat {
                 return;
             }
         }
-
+        
     }
-
+    
 }

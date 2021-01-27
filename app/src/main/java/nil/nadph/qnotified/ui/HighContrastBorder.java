@@ -18,23 +18,20 @@
  */
 package nil.nadph.qnotified.ui;
 
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
+import android.graphics.*;
+import android.graphics.drawable.*;
 
 public class HighContrastBorder extends Drawable {
     private final Paint mPaint;
-
+    
     public HighContrastBorder() {
         mPaint = new Paint();
     }
-
+    
     public Paint getPaint() {
         return mPaint;
     }
-
+    
     @Override
     public void draw(Canvas canvas) {
         int w = getBounds().width();
@@ -58,17 +55,17 @@ public class HighContrastBorder extends Drawable {
         mPaint.setColor(Color.BLACK);
         canvas.drawLine(1.5f, h - 0.5f, w - 0.5f, h - 0.5f, mPaint);
     }
-
+    
     @Override
     public void setAlpha(int alpha) {
         //throw new UnsupportedOperationException("Stub!");
     }
-
+    
     @Override
     public void setColorFilter(ColorFilter colorFilter) {
         //throw new UnsupportedOperationException("Stub!");
     }
-
+    
     @Override
     @SuppressWarnings("deprecation")
     public int getOpacity() {

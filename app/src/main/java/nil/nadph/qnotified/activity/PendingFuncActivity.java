@@ -18,25 +18,23 @@
  */
 package nil.nadph.qnotified.activity;
 
-import android.annotation.SuppressLint;
-import android.os.Bundle;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
+import android.annotation.*;
+import android.os.*;
+import android.view.*;
+import android.widget.*;
 
-import com.tencent.mobileqq.widget.BounceScrollView;
+import com.tencent.mobileqq.widget.*;
 
-import nil.nadph.qnotified.config.ConfigItems;
-import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.ui.*;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static android.view.ViewGroup.LayoutParams.*;
 import static nil.nadph.qnotified.ui.ViewBuilder.*;
-import static nil.nadph.qnotified.util.Utils.dip2px;
+import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressLint("Registered")
 public class PendingFuncActivity extends IphoneTitleBarActivityCompat {
-
+    
     @Override
     public boolean doOnCreate(Bundle bundle) {
         super.doOnCreate(bundle);
@@ -58,7 +56,7 @@ public class PendingFuncActivity extends IphoneTitleBarActivityCompat {
         __lp_r.setMargins(mar, 0, mar, 0);
         __lp_r.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         __lp_r.addRule(RelativeLayout.CENTER_VERTICAL);
-
+        
         ll.addView(subtitle(this, "牙膏要一点一点挤, 显卡要一刀一刀切, PPT要一张一张放, 代码要一行一行写, 单个功能预计自出现在commit之日起, 三年内开发完毕"));
         ll.addView(newListItemSwitchStub(this, "无视QQ电话与语音冲突", "允许在QQ电话时播放语音和短视频", false));
         ll.addView(newListItemSwitchStub(this, "QQ电话关麦时解除占用", "再开麦时如麦被其他程序占用可能崩溃", false));
@@ -75,9 +73,9 @@ public class PendingFuncActivity extends IphoneTitleBarActivityCompat {
         ll.addView(newListItemButton(this, "AddFriendReq.sourceID", "自定义加好友来源", "[不改动]", clickTheComing()));
         ll.addView(newListItemButton(this, "DelFriendReq.delType", "只能为1或2", "[不改动]", clickTheComing()));
         ll.addView(newListItemSwitchStub(this, "隐藏聊天界面右侧滑条", "强迫症专用", false));
-
+        
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-        this.setContentView(bounceScrollView);
+        setContentView(bounceScrollView);
         LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);
         _lp_fat.weight = 1;
         //__ll.addView(bounceScrollView,_lp_fat);
@@ -86,6 +84,6 @@ public class PendingFuncActivity extends IphoneTitleBarActivityCompat {
         setContentBackgroundDrawable(ResUtils.skin_background);
         return true;
     }
-
-
+    
+    
 }

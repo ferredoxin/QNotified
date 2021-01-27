@@ -18,72 +18,60 @@
  */
 package nil.nadph.qnotified.activity;
 
-import android.annotation.SuppressLint;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.Build;
-import android.os.Bundle;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
+import android.annotation.*;
+import android.content.*;
+import android.os.*;
+import android.view.*;
 import android.widget.*;
 
-import androidx.core.view.ViewCompat;
+import androidx.core.view.*;
 
-import com.tencent.mobileqq.widget.BounceScrollView;
+import com.tencent.mobileqq.widget.*;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.text.*;
+import java.util.*;
 
-import me.kyuubiran.util.UtilsKt;
-import nil.nadph.qnotified.ExfriendManager;
-import nil.nadph.qnotified.R;
-import nil.nadph.qnotified.config.ConfigItems;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.dialog.RikkaCustomMsgTimeFormatDialog;
-import nil.nadph.qnotified.hook.ChatTailHook;
-import nil.nadph.qnotified.hook.FakeBatteryHook;
-import nil.nadph.qnotified.ui.HighContrastBorder;
-import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.util.Utils;
+import me.kyuubiran.util.*;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.dialog.*;
+import nil.nadph.qnotified.hook.*;
+import nil.nadph.qnotified.ui.*;
+import nil.nadph.qnotified.util.*;
 
-import static android.text.InputType.TYPE_CLASS_TEXT;
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static android.text.InputType.*;
+import static android.view.ViewGroup.LayoutParams.*;
+import static nil.nadph.qnotified.lifecycle.ActProxyMgr.*;
 import static nil.nadph.qnotified.ui.ViewBuilder.*;
-import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTION_CHAT_TAIL_FRIENDS_ACTIVITY;
-import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTION_CHAT_TAIL_TROOPS_ACTIVITY;
 import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressLint("Registered")
 public class ChatTailActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener {
-
+    
+    public static final String delimiter = "#msg#";
     private static final int R_ID_APPLY = 0x300AFF81;
     private static final int R_ID_DISABLE = 0x300AFF82;
     private static final int R_ID_PERCENT_VALUE = 0x300AFF83;
     private static final int R_ID_REGEX_VALUE = 0x300AFF84;
-    public static final String delimiter = "#msg#";
     private static int battery = 0;
     private static String power = "未充电";
-
+    
     TextView tvStatus;
-
-    private boolean mMsfResponsive = false;
+    
+    private final boolean mMsfResponsive = false;
     private TextView __tv_chat_tail_groups, __tv_chat_tail_friends, __tv_chat_tail_time_format;
-
+    
     public static int getBattery() {
         return battery;
     }
-
+    
     public static String getPower() {
         if (FakeBatteryHook.get().isEnabled()) {
             return FakeBatteryHook.get().isFakeBatteryCharging() ? "充电中" : "未充电";
         }
         return power;
     }
-
+    
     @Override
     public boolean doOnCreate(Bundle bundle) {
         super.doOnCreate(bundle);
@@ -115,7 +103,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         __lp_r.setMargins(mar, 0, mar, 0);
         __lp_r.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         __lp_r.addRule(RelativeLayout.CENTER_VERTICAL);
-
+        
         ll.addView(subtitle(ChatTailActivity.this, "在这里设置然后每次聊天自动添加"));
         ChatTailHook ct = ChatTailHook.get();
         boolean enabled = ct.isEnabled();
@@ -124,7 +112,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(_t = subtitle(ChatTailActivity.this, ""));
         tvStatus = (TextView) _t.getChildAt(0);
         ll.addView(subtitle(ChatTailActivity.this, "默认不换行，换行符号请输入\\n"));
-
+        
         ll.addView(_s = newListItemButton(this, "选择生效的群", "未选择的群将不展示小尾巴", "N/A", clickToProxyActAction(ACTION_CHAT_TAIL_TROOPS_ACTIVITY)));
         __tv_chat_tail_groups = _s.findViewById(R_ID_VALUE);
         ll.addView(_s = newListItemButton(this, "选择生效的好友", "未选择的好友将不展示小尾巴", "N/A", clickToProxyActAction(ACTION_CHAT_TAIL_FRIENDS_ACTIVITY)));
@@ -149,8 +137,8 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(_h = subtitle(ChatTailActivity.this, "\\n       : 换行"));
         int _5dp = dip2px(ChatTailActivity.this, 5);
         EditText pct = createEditText(R_ID_PERCENT_VALUE, _5dp,
-                ct.getTailCapacity().replace("\n", "\\n"),
-                ChatTailActivity.delimiter + " 将会被替换为消息");
+            ct.getTailCapacity().replace("\n", "\\n"),
+            ChatTailActivity.delimiter + " 将会被替换为消息");
         _a.setOnClickListener(v -> pct.setText(pct.getText() + delimiter));
         _b.setOnClickListener(v -> pct.setText(pct.getText() + "#model#"));
         _c.setOnClickListener(v -> pct.setText(pct.getText() + "#brand#"));
@@ -161,12 +149,12 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         _h.setOnClickListener(v -> pct.setText(pct.getText() + "\\n"));
         ll.addView(pct, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 2 * _5dp, _5dp, 2 * _5dp, _5dp));
         ll.addView(newListItemSwitchFriendConfigNext(this, "正则开关",
-                "通过正则表达式的消息不会携带小尾巴(无需重启" + Utils.getHostAppName() + ")",
-                ConfigItems.qn_chat_tail_regex, false));
+            "通过正则表达式的消息不会携带小尾巴(无需重启" + Utils.getHostAppName() + ")",
+            ConfigItems.qn_chat_tail_regex, false));
         ll.addView(createEditText(R_ID_REGEX_VALUE, _5dp, ChatTailHook.getTailRegex(),
-                "需要有正则表达式相关知识(部分匹配)"),
-                newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT,
-                        2 * _5dp, _5dp, 2 * _5dp, _5dp));
+            "需要有正则表达式相关知识(部分匹配)"),
+            newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT,
+                2 * _5dp, _5dp, 2 * _5dp, _5dp));
         ll.addView(newListItemSwitchFriendConfigNext(this, "全局开关", "开启将无视生效范围(无需重启" + Utils.getHostAppName() + ")", ConfigItems.qn_chat_tail_global, false));
         Button apply = new Button(ChatTailActivity.this);
         apply.setId(R_ID_APPLY);
@@ -186,7 +174,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         setTitle("聊天小尾巴");
         return true;
     }
-
+    
     private EditText createEditText(int id, int _5dp, String text, String hint) {
         EditText pct = new EditText(ChatTailActivity.this);
         pct.setId(id);
@@ -206,56 +194,38 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         //吐槽一下，如果返回为空的话，上一行代码是会报错的啊，Android本身在设置时有帮忙处理
         return pct;
     }
-
-    private class BatteryReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            switch (action) {
-                case Intent.ACTION_BATTERY_CHANGED: {
-                    int current = intent.getExtras().getInt("level");//获得当前电量
-                    int total = intent.getExtras().getInt("scale");//获得总电量
-                    int percent = current * 100 / total;
-                    ChatTailActivity.battery = percent;
-                }
-                case Intent.ACTION_POWER_DISCONNECTED: {
-                    ChatTailActivity.power = "未充电";
-                }
-                case Intent.ACTION_POWER_CONNECTED: {
-                    ChatTailActivity.power = "充电中";
-                }
-            }
-
-        }
-    }
-
+    
     @Override
     public void doOnResume() {
         super.doOnResume();
         ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
         String str = cfg.getString(ConfigItems.qn_chat_tail_troops);
         int n = 0;
-        if (str != null && str.length() > 4) n = str.split(",").length;
+        if (str != null && str.length() > 4) {
+            n = str.split(",").length;
+        }
         __tv_chat_tail_groups.setText(n + "个群");
         str = cfg.getString(ConfigItems.qn_chat_tail_friends);
         n = 0;
-        if (str != null && str.length() > 4) n = str.split(",").length;
+        if (str != null && str.length() > 4) {
+            n = str.split(",").length;
+        }
         __tv_chat_tail_friends.setText(n + "个好友");
     }
-
+    
     private void showStatus() {
         ChatTailHook ct = ChatTailHook.get();
         boolean enabled = ct.isEnabled();
         String desc = "当前状态: ";
         if (enabled) {
-            if (!ct.isRegex() || !ct.isPassRegex("示例消息")) {
+            if (!ChatTailHook.isRegex() || !ChatTailHook.isPassRegex("示例消息")) {
                 desc += "已开启: \n" + ct.getTailCapacity()
-                        .replace(ChatTailActivity.delimiter, "示例消息")
-                        .replace("#model#", Build.MODEL)
-                        .replace("#brand#", Build.BRAND)
-                        .replace("#battery#", battery + "")
-                        .replace("#power#", ChatTailActivity.getPower())
-                        .replace("#time#", new SimpleDateFormat(RikkaCustomMsgTimeFormatDialog.getTimeFormat()).format(new Date()));
+                    .replace(ChatTailActivity.delimiter, "示例消息")
+                    .replace("#model#", Build.MODEL)
+                    .replace("#brand#", Build.BRAND)
+                    .replace("#battery#", battery + "")
+                    .replace("#power#", ChatTailActivity.getPower())
+                    .replace("#time#", new SimpleDateFormat(RikkaCustomMsgTimeFormatDialog.getTimeFormat()).format(new Date()));
                 if (desc.contains("#kongemsg#")) {
                     desc = desc.replace("#kongemsg#", "");
                     desc = UtilsKt.makeKongeMsg(desc);
@@ -268,8 +238,8 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         }
         tvStatus.setText(desc);
         Button apply, disable;
-        apply = ChatTailActivity.this.findViewById(R_ID_APPLY);
-        disable = ChatTailActivity.this.findViewById(R_ID_DISABLE);
+        apply = findViewById(R_ID_APPLY);
+        disable = findViewById(R_ID_DISABLE);
         if (!enabled) {
             apply.setText("保存并启用");
         } else {
@@ -281,7 +251,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
             disable.setVisibility(View.VISIBLE);
         }
     }
-
+    
     @Override
     public void onClick(View v) {
         ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
@@ -289,8 +259,8 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
             case R_ID_APPLY:
                 //if (mMsfResponsive) {
                 doUpdateTailCfg();
-                logi("isRegex:" + String.valueOf(ChatTailHook.isRegex()));
-                logi("isPassRegex:" + String.valueOf(ChatTailHook.isPassRegex("示例消息")));
+                logi("isRegex:" + ChatTailHook.isRegex());
+                logi("isPassRegex:" + ChatTailHook.isPassRegex("示例消息"));
                 logi("getTailRegex:" + ChatTailHook.getTailRegex());
                /* } else {
                     final Dialog waitDialog = CustomDialog.create(this).setCancelable(true).setTitle("请稍候")
@@ -339,12 +309,12 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
                 showStatus();
         }
     }
-
+    
     private void doUpdateTailCfg() {
         ChatTailHook ct = ChatTailHook.get();
         ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
         EditText pct;
-        pct = ChatTailActivity.this.findViewById(R_ID_PERCENT_VALUE);
+        pct = findViewById(R_ID_PERCENT_VALUE);
         String val = pct.getText().toString();
         if (Utils.isNullOrEmpty(val)) {
             Utils.showToast(ChatTailActivity.this, TOAST_TYPE_ERROR, "请输入小尾巴", Toast.LENGTH_SHORT);
@@ -355,9 +325,9 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
             return;
         }
         ct.setTail(val);
-        val = ((EditText) ChatTailActivity.this.findViewById(R_ID_REGEX_VALUE)).getText().toString();
+        val = ((EditText) findViewById(R_ID_REGEX_VALUE)).getText().toString();
         if (!Utils.isNullOrEmpty(val)) {
-            ct.setTailRegex(val);
+            ChatTailHook.setTailRegex(val);
         }
         if (!ct.isEnabled()) {
             cfg.putBoolean(ChatTailHook.qn_chat_tail_enable, true);
@@ -375,5 +345,27 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         }
         showStatus();
     }
-
+    
+    private class BatteryReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            switch (action) {
+                case Intent.ACTION_BATTERY_CHANGED: {
+                    int current = intent.getExtras().getInt("level");//获得当前电量
+                    int total = intent.getExtras().getInt("scale");//获得总电量
+                    int percent = current * 100 / total;
+                    ChatTailActivity.battery = percent;
+                }
+                case Intent.ACTION_POWER_DISCONNECTED: {
+                    ChatTailActivity.power = "未充电";
+                }
+                case Intent.ACTION_POWER_CONNECTED: {
+                    ChatTailActivity.power = "充电中";
+                }
+            }
+            
+        }
+    }
+    
 }

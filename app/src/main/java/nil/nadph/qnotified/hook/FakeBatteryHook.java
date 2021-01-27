@@ -18,33 +18,22 @@
  */
 package nil.nadph.qnotified.hook;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.os.BatteryManager;
-import android.os.Build;
-import android.os.Looper;
-import android.os.Parcelable;
-import android.widget.Toast;
+import android.content.*;
+import android.os.*;
+import android.widget.*;
 
-import java.io.IOException;
-import java.lang.ref.WeakReference;
+import java.io.*;
+import java.lang.ref.*;
 import java.lang.reflect.*;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.*;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.XposedHelpers;
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.config.ConfigItems;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.util.Initiator;
-import nil.nadph.qnotified.util.Utils;
+import de.robv.android.xposed.*;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.step.*;
+import nil.nadph.qnotified.util.*;
 
-import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class FakeBatteryHook extends BaseDelayableHook implements InvocationHandler, SyncUtils.BroadcastListener {
@@ -60,18 +49,49 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
     private Object origStatus = null;
     private int lastFakeLevel = -1;
     private int lastFakeStatus = -1;
-
+    
     FakeBatteryHook() {
     }
-
+    
     public static FakeBatteryHook get() {
         return self;
     }
-
+    
+    private static void doPostReceiveEvent(final BroadcastReceiver recv, final Context ctx, final Intent intent) {
+        SyncUtils.post(new Runnable() {
+            @Override
+            public void run() {
+                SyncUtils.setTlsFlag(_FLAG_MANUAL_CALL);
+                try {
+                    recv.onReceive(ctx, intent);
+                } catch (Throwable e) {
+                    log(e);
+                }
+                SyncUtils.clearTlsFlag(_FLAG_MANUAL_CALL);
+            }
+        });
+    }
+    
+    private static void BatteryProperty_setLong(Parcelable prop, long val) {
+        if (prop == null) {
+            return;
+        }
+        try {
+            Field field;
+            field = prop.getClass().getDeclaredField("mValueLong");
+            field.setAccessible(true);
+            field.set(prop, val);
+        } catch (Throwable e) {
+            log(e);
+        }
+    }
+    
     @Override
     public boolean init() {
         //log("---> FakeBatteryHook called init!");
-        if (inited) return true;
+        if (inited) {
+            return true;
+        }
         try {
             //for :MSF
             Method mGetSendBatteryStatus = null;
@@ -85,7 +105,9 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     //log("--->getSendBatteryStatus isEnabled=" + isEnabled() + ", getFakeBatteryStatus=" + getFakeBatteryStatus());
-                    if (!isEnabled()) return;
+                    if (!isEnabled()) {
+                        return;
+                    }
                     param.setResult(getFakeBatteryStatus());
                 }
             });
@@ -94,11 +116,13 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
                 XposedHelpers.findAndHookMethod(cBatteryBroadcastReceiver, "onReceive", Context.class, Intent.class, new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        if (SyncUtils.hasTlsFlag(_FLAG_MANUAL_CALL)) return;
+                        if (SyncUtils.hasTlsFlag(_FLAG_MANUAL_CALL)) {
+                            return;
+                        }
                         Intent intent = (Intent) param.args[1];
                         String action = intent.getAction();
                         if (action.equals("android.intent.action.ACTION_POWER_CONNECTED")
-                                || action.equals("android.intent.action.ACTION_POWER_DISCONNECTED")) {
+                            || action.equals("android.intent.action.ACTION_POWER_DISCONNECTED")) {
                             if (mBatteryStatusRecvRef == null || mBatteryStatusRecvRef.get() != param.thisObject) {
                                 mBatteryStatusRecvRef = new WeakReference<>((BroadcastReceiver) param.thisObject);
                             }
@@ -107,9 +131,11 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
                                 mBatteryLevelRecvRef = new WeakReference<>((BroadcastReceiver) param.thisObject);
                             }
                         }
-                        if (!isEnabled()) return;
+                        if (!isEnabled()) {
+                            return;
+                        }
                         if (action.equals("android.intent.action.ACTION_POWER_CONNECTED")
-                                || action.equals("android.intent.action.ACTION_POWER_DISCONNECTED")) {
+                            || action.equals("android.intent.action.ACTION_POWER_DISCONNECTED")) {
                             if (isFakeBatteryCharging()) {
                                 lastFakeStatus = BatteryManager.BATTERY_STATUS_CHARGING;
                                 intent.setAction("android.intent.action.ACTION_POWER_CONNECTED");
@@ -185,7 +211,7 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
             return false;
         }
     }
-
+    
     private void scheduleReceiveBatteryLevel() {
         BroadcastReceiver recv;
         if (mBatteryLevelRecvRef == null || (recv = mBatteryLevelRecvRef.get()) == null) {
@@ -207,7 +233,7 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
         }
         doPostReceiveEvent(recv, getApplication(), intent);
     }
-
+    
     private void scheduleReceiveBatteryStatus() {
         BroadcastReceiver recv;
         if (mBatteryStatusRecvRef == null || (recv = mBatteryStatusRecvRef.get()) == null) {
@@ -216,7 +242,7 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
             }
         }
         String act = isFakeBatteryCharging() ? "android.intent.action.ACTION_POWER_CONNECTED"
-                : "android.intent.action.ACTION_POWER_DISCONNECTED";
+            : "android.intent.action.ACTION_POWER_DISCONNECTED";
         final Intent intent = new Intent(act);
         intent.putExtra(BatteryManager.EXTRA_LEVEL, getFakeBatteryCapacity());
         intent.putExtra(BatteryManager.EXTRA_SCALE, 100);
@@ -231,22 +257,7 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
         }
         doPostReceiveEvent(recv, getApplication(), intent);
     }
-
-    private static void doPostReceiveEvent(final BroadcastReceiver recv, final Context ctx, final Intent intent) {
-        SyncUtils.post(new Runnable() {
-            @Override
-            public void run() {
-                SyncUtils.setTlsFlag(_FLAG_MANUAL_CALL);
-                try {
-                    recv.onReceive(ctx, intent);
-                } catch (Throwable e) {
-                    log(e);
-                }
-                SyncUtils.clearTlsFlag(_FLAG_MANUAL_CALL);
-            }
-        });
-    }
-
+    
     @Override
     public boolean onReceive(Context context, Intent intent) {
         if (ACTION_UPDATE_BATTERY_STATUS.equals(intent.getAction())) {
@@ -255,7 +266,7 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
                     scheduleReceiveBatteryLevel();
                 }
                 if (lastFakeStatus == -1 ||
-                        lastFakeStatus == BatteryManager.BATTERY_STATUS_DISCHARGING == isFakeBatteryCharging()) {
+                    lastFakeStatus == BatteryManager.BATTERY_STATUS_DISCHARGING == isFakeBatteryCharging()) {
                     scheduleReceiveBatteryStatus();
                 }
             }
@@ -263,7 +274,7 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
         }
         return false;
     }
-
+    
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         try {
@@ -313,19 +324,7 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
             throw ite.getCause();
         }
     }
-
-    private static void BatteryProperty_setLong(Parcelable prop, long val) {
-        if (prop == null) return;
-        try {
-            Field field;
-            field = prop.getClass().getDeclaredField("mValueLong");
-            field.setAccessible(true);
-            field.set(prop, val);
-        } catch (Throwable e) {
-            log(e);
-        }
-    }
-
+    
     public void setFakeSendBatteryStatus(int val) {
         try {
             ConfigManager cfg = ConfigManager.getDefaultConfig();
@@ -337,7 +336,7 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
             log(e);
         }
     }
-
+    
     public int getFakeBatteryStatus() {
         int val = ConfigManager.getDefaultConfig().getIntOrDefault(ConfigItems.qn_fake_bat_expr, -1);
         if (val < 0) {
@@ -346,30 +345,40 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
         }
         return val;
     }
-
+    
     public boolean isFakeBatteryCharging() {
         return (getFakeBatteryStatus() & 128) > 0;
     }
-
+    
     public int getFakeBatteryCapacity() {
         return getFakeBatteryStatus() & 127;
     }
-
+    
     @Override
     public int getEffectiveProc() {
         return SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF;
     }
-
+    
     @Override
     public Step[] getPreconditions() {
         return new Step[0];
     }
-
+    
     @Override
     public boolean isInited() {
         return inited;
     }
-
+    
+    @Override
+    public boolean isEnabled() {
+        try {
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_fake_bat_enable);
+        } catch (Exception e) {
+            log(e);
+            return false;
+        }
+    }
+    
     @Override
     public void setEnabled(boolean enabled) {
         try {
@@ -388,16 +397,6 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
                     }
                 });
             }
-        }
-    }
-
-    @Override
-    public boolean isEnabled() {
-        try {
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_fake_bat_enable);
-        } catch (Exception e) {
-            log(e);
-            return false;
         }
     }
 }

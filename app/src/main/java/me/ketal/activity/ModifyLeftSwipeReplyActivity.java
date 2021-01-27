@@ -1,39 +1,28 @@
 package me.ketal.activity;
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.Toast;
+import android.annotation.*;
+import android.app.*;
+import android.content.*;
+import android.os.*;
+import android.view.*;
+import android.widget.*;
 
-import androidx.core.view.ViewCompat;
+import androidx.core.view.*;
 
-import com.tencent.mobileqq.widget.BounceScrollView;
+import com.tencent.mobileqq.widget.*;
 
-import me.ketal.hook.LeftSwipeReplyHook;
-import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat;
-import nil.nadph.qnotified.ui.CustomDialog;
-import nil.nadph.qnotified.ui.HighContrastBorder;
-import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.util.Toasts;
+import me.ketal.hook.*;
+import nil.nadph.qnotified.activity.*;
+import nil.nadph.qnotified.ui.*;
+import nil.nadph.qnotified.util.*;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
-import static nil.nadph.qnotified.ui.ViewBuilder.newListItemButton;
-import static nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit;
-import static nil.nadph.qnotified.ui.ViewBuilder.newListItemSwitch;
-import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
-import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
-import static nil.nadph.qnotified.util.Utils.dip2px;
+import static android.view.ViewGroup.LayoutParams.*;
+import static nil.nadph.qnotified.ui.ViewBuilder.*;
+import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressLint("Registered")
 public class ModifyLeftSwipeReplyActivity extends IphoneTitleBarActivityCompat {
-
+    
     @Override
     public boolean doOnCreate(Bundle bundle) {
         super.doOnCreate(bundle);
@@ -60,11 +49,11 @@ public class ModifyLeftSwipeReplyActivity extends IphoneTitleBarActivityCompat {
             linearLayout.addView(subtitle(this, "若显示为-1，代表为初始化，请先在消息界面使用一次消息左滑回复，即可获得初始阈值。\n当你修改出错时，输入一个小于0的值，即可使用默认值"));
             linearLayout.addView(editText, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, _5 * 2));
             final AlertDialog alertDialog = (AlertDialog) dialog.setTitle("输入响应消息左滑的距离")
-                    .setView(linearLayout)
-                    .setCancelable(true)
-                    .setPositiveButton("确认", null)
-                    .setNegativeButton("取消", null)
-                    .create();
+                .setView(linearLayout)
+                .setCancelable(true)
+                .setPositiveButton("确认", null)
+                .setNegativeButton("取消", null)
+                .create();
             alertDialog.show();
             alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -87,7 +76,7 @@ public class ModifyLeftSwipeReplyActivity extends IphoneTitleBarActivityCompat {
         }));
         ll.addView(newListItemSwitch(this, "左滑多选消息", "娱乐功能，用途未知", hook.isMultiChose(), (v, on) -> hook.setMultiChose(on)));
         setContentView(bounceScrollView);
-
+        
         setContentBackgroundDrawable(ResUtils.skin_background);
         setTitle("修改消息左滑动作");
         return true;

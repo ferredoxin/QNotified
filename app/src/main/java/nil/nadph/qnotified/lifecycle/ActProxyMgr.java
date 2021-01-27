@@ -18,7 +18,7 @@
  */
 package nil.nadph.qnotified.lifecycle;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.*;
 
 import nil.nadph.qnotified.activity.*;
 
@@ -44,7 +44,7 @@ public class ActProxyMgr {
     public static final int ACTION_CHAT_TAIL_CONFIG_ACTIVITY = 11;
     public static final int ACTION_CHAT_TAIL_TROOPS_ACTIVITY = 12;
     public static final int ACTION_CHAT_TAIL_FRIENDS_ACTIVITY = 13;
-
+    
     /**
      * TODO: Refactor and remove this method, as well as there constants
      * TODO: Cope with the notification proxy PendingIntent
@@ -81,9 +81,9 @@ public class ActProxyMgr {
                 return null;
         }
     }
-
+    
     // NOTICE: ** If you have created your own package, add it to proguard-rules.pro.**
-
+    
     public static boolean isModuleProxyActivity(@NonNull String className) {
         if (className == null) {
             return false;
@@ -94,7 +94,7 @@ public class ActProxyMgr {
             || className.startsWith("me.ketal.activity.")
             || className.startsWith("com.rymmmmm.activity.");
     }
-
+    
     public static boolean isResourceInjectionRequired(@NonNull String className) {
         if (className == null) {
             return false;

@@ -122,7 +122,8 @@ object AutoRenewFireMgr {
 
     fun getMsg(uin: String?): String {
         val u = getUser(uin)
-        return u?.msg ?: ""
+        return u?.msg
+            ?: ""
     }
 
     fun remove(uin: String?) {

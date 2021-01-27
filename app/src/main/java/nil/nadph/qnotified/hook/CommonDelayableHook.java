@@ -18,19 +18,17 @@
  */
 package nil.nadph.qnotified.hook;
 
-import android.os.Looper;
-import android.widget.Toast;
+import android.os.*;
+import android.widget.*;
 
 import androidx.annotation.NonNull;
 
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.step.*;
+import nil.nadph.qnotified.util.*;
 
-import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
-import static nil.nadph.qnotified.util.Utils.getApplication;
-import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.*;
 
 public abstract class CommonDelayableHook extends BaseDelayableHook {
     

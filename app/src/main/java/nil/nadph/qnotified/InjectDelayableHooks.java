@@ -18,47 +18,37 @@
  */
 package nil.nadph.qnotified;
 
-import android.app.Activity;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.app.*;
+import android.view.*;
+import android.widget.*;
 
-import androidx.core.view.ViewCompat;
+import androidx.core.view.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.*;
 
-import nil.nadph.qnotified.hook.AbsDelayableHook;
-import nil.nadph.qnotified.hook.SettingEntryHook;
-import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.ui.ProportionDrawable;
-import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.ui.SimpleBgDrawable;
-import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.hook.*;
+import nil.nadph.qnotified.step.*;
+import nil.nadph.qnotified.ui.*;
+import nil.nadph.qnotified.util.*;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.dip2px;
-import static nil.nadph.qnotified.util.Utils.iget_object_or_null;
-import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.loge;
+import static android.view.ViewGroup.LayoutParams.*;
+import static nil.nadph.qnotified.util.Initiator.*;
+import static nil.nadph.qnotified.util.Utils.*;
 
 public class InjectDelayableHooks {
-
+    
     private static boolean inited = false;
-
+    
     public static boolean step(Object director) {
-        if (inited) return true;
+        if (inited) {
+            return true;
+        }
         inited = true;
         Activity activity = (Activity) iget_object_or_null(director, "a", load("mqq/app/AppActivity"));
-        if (activity == null)
+        if (activity == null) {
             activity = (Activity) Utils.getFirstNSFByType(director, load("mqq/app/AppActivity"));
-        final Activity ctx = activity;
+        }
+        Activity ctx = activity;
         boolean needDeobf = false;
         AbsDelayableHook[] hooks = AbsDelayableHook.queryDelayableHooks();
         for (AbsDelayableHook h : hooks) {
@@ -67,28 +57,34 @@ public class InjectDelayableHooks {
                 break;
             }
         }
-        final LinearLayout[] overlay = new LinearLayout[1];
-        final LinearLayout[] main = new LinearLayout[1];
-        final ProportionDrawable[] prog = new ProportionDrawable[1];
-        final TextView[] text = new TextView[1];
+        LinearLayout[] overlay = new LinearLayout[1];
+        LinearLayout[] main = new LinearLayout[1];
+        ProportionDrawable[] prog = new ProportionDrawable[1];
+        TextView[] text = new TextView[1];
         if (needDeobf) {
             try {
-                if (ctx != null) ResUtils.initTheme(ctx);
+                if (ctx != null) {
+                    ResUtils.initTheme(ctx);
+                }
             } catch (Throwable e) {
                 log(e);
             }
-            final HashSet<Step> todos = new HashSet<>();
+            HashSet<Step> todos = new HashSet<>();
             for (AbsDelayableHook h : hooks) {
-                if (!h.isEnabled()) continue;
+                if (!h.isEnabled()) {
+                    continue;
+                }
                 for (Step i : h.getPreconditions()) {
-                    if (!i.isDone()) todos.add(i);
+                    if (!i.isDone()) {
+                        todos.add(i);
+                    }
                 }
             }
-            final ArrayList<Step> steps = new ArrayList<>(todos);
-            Collections.sort(steps, Collections.<Step>reverseOrder());
+            ArrayList<Step> steps = new ArrayList<>(todos);
+            Collections.sort(steps, Collections.reverseOrder());
             for (int idx = 0; idx < steps.size(); idx++) {
-                final int j = idx;
-                if (SyncUtils.isMainProcess() && ctx != null)
+                int j = idx;
+                if (SyncUtils.isMainProcess() && ctx != null) {
                     ctx.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -106,11 +102,11 @@ public class InjectDelayableHooks {
                                 main[0].setLayoutParams(llp);
                                 LinearLayout lprop = new LinearLayout(ctx);
                                 //lprop.setBackgroundDrawable(new SimpleBgDrawable(0, 0xA0808080, 2));
-                                ViewCompat.setBackground(lprop,new SimpleBgDrawable(0, 0xA0808080, 2));
-                                final View _v = new View(ctx);
+                                ViewCompat.setBackground(lprop, new SimpleBgDrawable(0, 0xA0808080, 2));
+                                View _v = new View(ctx);
                                 prog[0] = new ProportionDrawable(0xA0202020, 0x40FFFFFF, Gravity.LEFT, 0);
                                 //_v.setBackgroundDrawable(prog[0]);
-                                ViewCompat.setBackground(_v,prog[0]);
+                                ViewCompat.setBackground(_v, prog[0]);
                                 int __3_ = dip2px(ctx, 3);
                                 LinearLayout.LayoutParams _tmp_lllp = new LinearLayout.LayoutParams(MATCH_PARENT, dip2px(ctx, 4));
                                 _tmp_lllp.setMargins(__3_, __3_, __3_, __3_);
@@ -138,6 +134,7 @@ public class InjectDelayableHooks {
                             prog[0].setProportion(1.0f * j / steps.size());
                         }
                     });
+                }
                 try {
                     steps.get(idx).step();
                 } catch (Throwable e) {
@@ -173,7 +170,7 @@ public class InjectDelayableHooks {
         }
         return true;
     }
-
+    
     public static void doInitDelayableHooksMP() {
         for (AbsDelayableHook h : AbsDelayableHook.queryDelayableHooks()) {
             try {
@@ -186,5 +183,5 @@ public class InjectDelayableHooks {
             }
         }
     }
-
+    
 }

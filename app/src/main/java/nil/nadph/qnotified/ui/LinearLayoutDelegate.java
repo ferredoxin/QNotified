@@ -18,80 +18,23 @@
  */
 package nil.nadph.qnotified.ui;
 
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.content.*;
+import android.graphics.drawable.*;
+import android.view.*;
+import android.widget.*;
 
-import androidx.core.view.ViewCompat;
+import androidx.core.view.*;
 
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static android.view.ViewGroup.LayoutParams.*;
 
 public class LinearLayoutDelegate extends LinearLayout {
-
+    
     private View delegate;
-
-    public void setDelegate(View delegate) {
-        this.delegate = delegate;
+    
+    public LinearLayoutDelegate(Context context) {
+        super(context);
     }
-
-    public View getDelegate() {
-        return delegate;
-    }
-
-    @Override
-    public void setOnClickListener(OnClickListener l) {
-        if (delegate != null) delegate.setOnClickListener(l);
-    }
-
-    @Override
-    public void setOnLongClickListener(OnLongClickListener l) {
-        if (delegate != null) delegate.setOnLongClickListener(l);
-    }
-
-    @Override
-    public void setPadding(int left, int top, int right, int bottom) {
-        if (delegate != null)
-            delegate.setPadding(left, top, right, bottom);
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public void setBackgroundDrawable(Drawable background) {
-        if (delegate != null)
-            //delegate.setBackgroundDrawable(background);
-            ViewCompat.setBackground(delegate,background);
-    }
-
-    @Override
-    public int getPaddingLeft() {
-        if (delegate != null)
-            return delegate.getPaddingLeft();
-        return 0;
-    }
-
-    @Override
-    public int getPaddingRight() {
-        if (delegate != null)
-            return delegate.getPaddingRight();
-        return 0;
-    }
-
-    @Override
-    public int getPaddingTop() {
-        if (delegate != null)
-            return delegate.getPaddingTop();
-        return 0;
-    }
-
-    @Override
-    public int getPaddingBottom() {
-        if (delegate != null)
-            return delegate.getPaddingBottom();
-        return 0;
-    }
-
+    
     public static LinearLayoutDelegate setupRudely(View v) {
         ViewGroup parent = (ViewGroup) v.getParent();
         int index = 0;
@@ -117,7 +60,7 @@ public class LinearLayoutDelegate extends LinearLayout {
             lpInner.leftMargin = ((MarginLayoutParams) currlp).leftMargin;
             lpInner.rightMargin = ((MarginLayoutParams) currlp).rightMargin;
             ((MarginLayoutParams) currlp).bottomMargin = ((MarginLayoutParams) currlp).topMargin
-                    = ((MarginLayoutParams) currlp).leftMargin = ((MarginLayoutParams) currlp).rightMargin = 0;
+                = ((MarginLayoutParams) currlp).leftMargin = ((MarginLayoutParams) currlp).rightMargin = 0;
             lpOuter.height = lpOuter.width = WRAP_CONTENT;
         } else {
             lpOuter = new ViewGroup.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
@@ -128,10 +71,67 @@ public class LinearLayoutDelegate extends LinearLayout {
         layout.setDelegate(v);
         return layout;
     }
-
-
-    public LinearLayoutDelegate(Context context) {
-        super(context);
+    
+    public View getDelegate() {
+        return delegate;
     }
-
+    
+    public void setDelegate(View delegate) {
+        this.delegate = delegate;
+    }
+    
+    @Override
+    public void setOnClickListener(OnClickListener l) {
+        if (delegate != null)
+            delegate.setOnClickListener(l);
+    }
+    
+    @Override
+    public void setOnLongClickListener(OnLongClickListener l) {
+        if (delegate != null)
+            delegate.setOnLongClickListener(l);
+    }
+    
+    @Override
+    public void setPadding(int left, int top, int right, int bottom) {
+        if (delegate != null)
+            delegate.setPadding(left, top, right, bottom);
+    }
+    
+    @Override
+    @SuppressWarnings("deprecation")
+    public void setBackgroundDrawable(Drawable background) {
+        if (delegate != null)
+            //delegate.setBackgroundDrawable(background);
+            ViewCompat.setBackground(delegate, background);
+    }
+    
+    @Override
+    public int getPaddingLeft() {
+        if (delegate != null)
+            return delegate.getPaddingLeft();
+        return 0;
+    }
+    
+    @Override
+    public int getPaddingRight() {
+        if (delegate != null)
+            return delegate.getPaddingRight();
+        return 0;
+    }
+    
+    @Override
+    public int getPaddingTop() {
+        if (delegate != null)
+            return delegate.getPaddingTop();
+        return 0;
+    }
+    
+    @Override
+    public int getPaddingBottom() {
+        if (delegate != null)
+            return delegate.getPaddingBottom();
+        return 0;
+    }
+    
 }

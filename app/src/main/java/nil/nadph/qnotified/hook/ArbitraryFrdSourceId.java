@@ -18,42 +18,82 @@
  */
 package nil.nadph.qnotified.hook;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.ui.ViewBuilder;
-import nil.nadph.qnotified.util.Initiator;
-import nil.nadph.qnotified.util.UiThread;
-import nil.nadph.qnotified.util.Utils;
+import android.app.*;
+import android.content.*;
+import android.os.*;
+import android.view.*;
+import android.widget.*;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import de.robv.android.xposed.*;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.step.*;
+import nil.nadph.qnotified.ui.*;
+import nil.nadph.qnotified.util.*;
+
+import static android.view.ViewGroup.LayoutParams.*;
 
 public class ArbitraryFrdSourceId extends BaseDelayableHook {
     private static final ArbitraryFrdSourceId self = new ArbitraryFrdSourceId();
     private boolean inited = false;
-
+    
     private ArbitraryFrdSourceId() {
     }
-
+    
     public static ArbitraryFrdSourceId get() {
         return self;
     }
-
+    
+    @UiThread
+    static ViewGroup[] findRlRootAndParent(Activity activity) {
+        ResUtils.initTheme(activity);
+        ViewGroup content = activity.findViewById(android.R.id.content);
+        ViewGroup inner1 = (ViewGroup) content.getChildAt(0);
+        for (int i = 0; i < inner1.getChildCount(); i++) {
+            View v = inner1.getChildAt(i);
+            if (v.getClass().getName().contains("BounceScrollView")) {
+                ViewGroup bsv = (ViewGroup) v;
+                return new ViewGroup[]{(ViewGroup) bsv.getChildAt(0), bsv};
+            }
+        }
+        return null;
+    }
+    
+    @UiThread
+    static void initFunView(Activity ctx) {
+        Intent intent = ctx.getIntent();
+        ViewGroup[] tmp = findRlRootAndParent(ctx);
+        RelativeLayout rl_root = (RelativeLayout) tmp[0];
+        ViewGroup bsv = tmp[1];
+        Bundle argv = intent.getExtras();
+        assert argv != null : "Intent extra for AddFriendVerifyActivity should not be null";
+        int __10_ = Utils.dip2px(ctx, 10);
+        LinearLayout wrapper = new LinearLayout(ctx);
+        wrapper.setOrientation(LinearLayout.VERTICAL);
+        
+        LinearLayout sourceAttrLayout = new LinearLayout(ctx);
+        sourceAttrLayout.setOrientation(LinearLayout.VERTICAL);
+        sourceAttrLayout.addView(ViewBuilder.subtitle(ctx, "来源参数"));
+        sourceAttrLayout.addView(ViewBuilder.newListItemDummy(ctx, "SourceId", null, String.valueOf(argv.getInt("source_id", 3999))));
+        sourceAttrLayout.addView(ViewBuilder.newListItemDummy(ctx, "SubSourceId", null, String.valueOf(argv.getInt("sub_source_id", 0))));
+        sourceAttrLayout.addView(ViewBuilder.newListItemDummy(ctx, "Extra", null, String.valueOf(argv.getString("extra"))));
+        sourceAttrLayout.addView(ViewBuilder.newListItemDummy(ctx, "Msg", null, String.valueOf(argv.getString("msg"))));
+        sourceAttrLayout.setPadding(0, __10_, 0, __10_);
+        
+        ViewGroup.LayoutParams rl_root_lp = rl_root.getLayoutParams();
+        bsv.removeAllViews();
+        wrapper.addView(rl_root, MATCH_PARENT, WRAP_CONTENT);
+        wrapper.addView(sourceAttrLayout, MATCH_PARENT, WRAP_CONTENT);
+        
+        bsv.addView(wrapper, rl_root_lp);
+    }
+    
     @Override
     public boolean init() {
-        if (inited) return true;
+        if (inited) {
+            return true;
+        }
         try {
             Method AddFriendVerifyActivity_doOnCreate = null;
             for (Method m : Initiator.load("com.tencent.mobileqq.activity.AddFriendVerifyActivity").getDeclaredMethods()) {
@@ -75,72 +115,28 @@ public class ArbitraryFrdSourceId extends BaseDelayableHook {
         }
         return false;
     }
-
-    @UiThread
-    static ViewGroup[] findRlRootAndParent(Activity activity) {
-        ResUtils.initTheme(activity);
-        ViewGroup content = activity.findViewById(android.R.id.content);
-        ViewGroup inner1 = (ViewGroup) content.getChildAt(0);
-        for (int i = 0; i < inner1.getChildCount(); i++) {
-            View v = inner1.getChildAt(i);
-            if (v.getClass().getName().contains("BounceScrollView")) {
-                ViewGroup bsv = (ViewGroup) v;
-                return new ViewGroup[]{(ViewGroup) bsv.getChildAt(0), bsv};
-            }
-        }
-        return null;
-    }
-
-    @UiThread
-    static void initFunView(Activity ctx) {
-        Intent intent = ctx.getIntent();
-        ViewGroup[] tmp = findRlRootAndParent(ctx);
-        RelativeLayout rl_root = (RelativeLayout) tmp[0];
-        ViewGroup bsv = tmp[1];
-        Bundle argv = intent.getExtras();
-        assert argv != null : "Intent extra for AddFriendVerifyActivity should not be null";
-        int __10_ = Utils.dip2px(ctx, 10);
-        LinearLayout wrapper = new LinearLayout(ctx);
-        wrapper.setOrientation(LinearLayout.VERTICAL);
-
-        LinearLayout sourceAttrLayout = new LinearLayout(ctx);
-        sourceAttrLayout.setOrientation(LinearLayout.VERTICAL);
-        sourceAttrLayout.addView(ViewBuilder.subtitle(ctx, "来源参数"));
-        sourceAttrLayout.addView(ViewBuilder.newListItemDummy(ctx, "SourceId", null, String.valueOf(argv.getInt("source_id", 3999))));
-        sourceAttrLayout.addView(ViewBuilder.newListItemDummy(ctx, "SubSourceId", null, String.valueOf(argv.getInt("sub_source_id", 0))));
-        sourceAttrLayout.addView(ViewBuilder.newListItemDummy(ctx, "Extra", null, String.valueOf(argv.getString("extra"))));
-        sourceAttrLayout.addView(ViewBuilder.newListItemDummy(ctx, "Msg", null, String.valueOf(argv.getString("msg"))));
-        sourceAttrLayout.setPadding(0, __10_, 0, __10_);
-
-        ViewGroup.LayoutParams rl_root_lp = rl_root.getLayoutParams();
-        bsv.removeAllViews();
-        wrapper.addView(rl_root, MATCH_PARENT, WRAP_CONTENT);
-        wrapper.addView(sourceAttrLayout, MATCH_PARENT, WRAP_CONTENT);
-
-        bsv.addView(wrapper, rl_root_lp);
-    }
-
+    
     @Override
     public Step[] getPreconditions() {
         return new Step[0];
     }
-
+    
     @Override
     public int getEffectiveProc() {
         return SyncUtils.PROC_MAIN;
     }
-
+    
     @Override
     public boolean isInited() {
         return inited;
     }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-    }
-
+    
     @Override
     public boolean isEnabled() {
         return true;
+    }
+    
+    @Override
+    public void setEnabled(boolean enabled) {
     }
 }

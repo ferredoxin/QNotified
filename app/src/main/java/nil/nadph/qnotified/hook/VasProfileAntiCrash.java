@@ -18,41 +18,39 @@
  */
 package nil.nadph.qnotified.hook;
 
-import android.util.JsonReader;
-import android.util.Log;
+import android.util.*;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import me.singleneuron.qn_kernel.tlb.ConfigTable;
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.util.Initiator;
-import nil.nadph.qnotified.util.Utils;
+import de.robv.android.xposed.*;
+import me.singleneuron.qn_kernel.tlb.*;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.step.*;
+import nil.nadph.qnotified.util.*;
 
-import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.*;
 
 /**
  * Not an important hook.
  * Provide limited anti-crash feature for VasProfileCard, esp DIY card.
  */
 public class VasProfileAntiCrash extends BaseDelayableHook {
-
+    
     private static final VasProfileAntiCrash self = new VasProfileAntiCrash();
     private boolean inited = false;
-
+    
     private VasProfileAntiCrash() {
     }
-
+    
     public static VasProfileAntiCrash get() {
         return self;
     }
-
+    
     @Override
     public boolean init() {
-        if (inited) return true;
+        if (inited) {
+            return true;
+        }
         try {
             String className = null;
             try {
@@ -68,28 +66,34 @@ public class VasProfileAntiCrash extends BaseDelayableHook {
             return false;
         }
     }
-
+    
     private void doHook(String className) {
         try {
-
+            
             XposedBridge.hookAllMethods(JsonReader.class, "nextLong", new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    if (!param.hasThrowable()) return;
-                    if (!Log.getStackTraceString(param.getThrowable()).contains("FriendProfileCardActivity")) return;
+                    if (!param.hasThrowable()) {
+                        return;
+                    }
+                    if (!Log.getStackTraceString(param.getThrowable()).contains("FriendProfileCardActivity")) {
+                        return;
+                    }
                     param.setResult(0L);
                 }
             });
         } catch (Exception e) {
             //ignore
         }
-        if (className == null) return;
+        if (className == null) {
+            return;
+        }
         Class<?> Card = Initiator.load("com.tencent.mobileqq.data.Card");
         for (Method m : Initiator.load(className).getDeclaredMethods()) {
             Class<?>[] argt;
             if (Modifier.isStatic(m.getModifiers()) && m.getName().equals("a")
-                    && m.getReturnType() == long.class && (argt = m.getParameterTypes()).length == 1
-                    && argt[0] == Card) {
+                && m.getReturnType() == long.class && (argt = m.getParameterTypes()).length == 1
+                && argt[0] == Card) {
                 XposedBridge.hookMethod(m, new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -101,29 +105,29 @@ public class VasProfileAntiCrash extends BaseDelayableHook {
             }
         }
     }
-
+    
     @Override
     public int getEffectiveProc() {
         return SyncUtils.PROC_MAIN;
     }
-
+    
     @Override
     public boolean isInited() {
         return inited;
     }
-
+    
     @Override
     public Step[] getPreconditions() {
         return new Step[0];
     }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        //do nothing
-    }
-
+    
     @Override
     public boolean isEnabled() {
         return true;
+    }
+    
+    @Override
+    public void setEnabled(boolean enabled) {
+        //do nothing
     }
 }

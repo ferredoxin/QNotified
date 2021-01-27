@@ -18,41 +18,32 @@
  */
 package nil.nadph.qnotified.ui;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.os.Build;
-import android.view.View;
-import android.widget.TextView;
+import android.app.*;
+import android.content.*;
+import android.os.*;
+import android.view.*;
+import android.widget.*;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 
-import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.NonNull;
-import nil.nadph.qnotified.util.Nullable;
+import nil.nadph.qnotified.util.*;
 
-import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class CustomDialog {
     private static Class<?> clz_DialogUtil;
     private static Class<?> clz_CustomDialog;
     private static Method m_DialogUtil_a;
-
+    @SuppressWarnings("deprecation")
+    private static final int THEME_LIGHT = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1 ? android.R.style.Theme_DeviceDefault_Light_Dialog_Alert : AlertDialog.THEME_DEVICE_DEFAULT_LIGHT;
+    @SuppressWarnings("deprecation")
+    private static final int THEME_DARK = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1 ? android.R.style.Theme_DeviceDefault_Dialog_Alert : AlertDialog.THEME_DEVICE_DEFAULT_DARK;
     private Dialog mDialog = null;
     private AlertDialog mFailsafeDialog = null;
     private AlertDialog.Builder mBuilder = null;
     private boolean failsafe = false;
-
-    @SuppressWarnings("deprecation")
-    private static int THEME_LIGHT = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1 ? android.R.style.Theme_DeviceDefault_Light_Dialog_Alert : AlertDialog.THEME_DEVICE_DEFAULT_LIGHT;
-    @SuppressWarnings("deprecation")
-    private static int THEME_DARK = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1 ? android.R.style.Theme_DeviceDefault_Dialog_Alert : AlertDialog.THEME_DEVICE_DEFAULT_DARK;
-
-
+    
     public static CustomDialog create(Context ctx) {
         try {
             if (clz_DialogUtil == null) {
@@ -76,7 +67,8 @@ public class CustomDialog {
                 for (Method m : clz_DialogUtil.getDeclaredMethods()) {
                     if (m.getReturnType().equals(clz_CustomDialog) && (Modifier.isPublic(m.getModifiers()))) {
                         Class<?>[] argt = m.getParameterTypes();
-                        if (argt.length != 2) continue;
+                        if (argt.length != 2)
+                            continue;
                         if (argt[0].equals(Context.class) && argt[1].equals(int.class)) {
                             if (m.getName().equals("a")) {
                                 m_DialogUtil_a = m;
@@ -115,18 +107,18 @@ public class CustomDialog {
         }
         return ref;
     }
-
+    
     public static int themeIdForDialog() {
         return ResUtils.isInNightMode() ? THEME_DARK : THEME_LIGHT;
     }
-
+    
     public static CustomDialog createFailsafe(Context ctx) {
         CustomDialog ref = new CustomDialog();
         ref.failsafe = true;
         ref.mBuilder = new AlertDialog.Builder(ctx, ResUtils.isInNightMode() ? THEME_DARK : THEME_LIGHT);
         return ref;
     }
-
+    
     public CustomDialog setCancelable(boolean flag) {
         if (!failsafe) {
             mDialog.setCancelable(flag);
@@ -138,7 +130,7 @@ public class CustomDialog {
         }
         return this;
     }
-
+    
     public CustomDialog setTitle(String title) {
         if (!failsafe) {
             try {
@@ -149,11 +141,12 @@ public class CustomDialog {
         } else {
             if (mFailsafeDialog == null)
                 mBuilder.setTitle(title);
-            else mFailsafeDialog.setTitle(title);
+            else
+                mFailsafeDialog.setTitle(title);
         }
         return this;
     }
-
+    
     public CustomDialog setMessage(CharSequence msg) {
         if (!failsafe) {
             try {
@@ -164,21 +157,23 @@ public class CustomDialog {
         } else {
             if (mFailsafeDialog == null)
                 mBuilder.setMessage(msg);
-            else mFailsafeDialog.setMessage(msg);
+            else
+                mFailsafeDialog.setMessage(msg);
         }
         return this;
     }
-
+    
     public Context getContext() {
         if (!failsafe) {
             return mDialog.getContext();
         } else {
             if (mFailsafeDialog == null)
                 return mBuilder.getContext();
-            else return mFailsafeDialog.getContext();
+            else
+                return mFailsafeDialog.getContext();
         }
     }
-
+    
     public CustomDialog setView(View v) {
         if (!failsafe) {
             try {
@@ -189,11 +184,12 @@ public class CustomDialog {
         } else {
             if (mFailsafeDialog == null)
                 mBuilder.setView(v);
-            else mFailsafeDialog.setView(v);
+            else
+                mFailsafeDialog.setView(v);
         }
         return this;
     }
-
+    
     @NonNull
     public CustomDialog setPositiveButton(int text, @Nullable DialogInterface.OnClickListener listener) {
         Context ctx;
@@ -204,7 +200,7 @@ public class CustomDialog {
         }
         return setPositiveButton(ctx.getString(text), listener);
     }
-
+    
     @NonNull
     public CustomDialog setNegativeButton(int text, @Nullable DialogInterface.OnClickListener listener) {
         Context ctx;
@@ -215,7 +211,7 @@ public class CustomDialog {
         }
         return setNegativeButton(ctx.getString(text), listener);
     }
-
+    
     @NonNull
     public CustomDialog setPositiveButton(@NonNull String text, @Nullable DialogInterface.OnClickListener listener) {
         if (!failsafe) {
@@ -232,7 +228,7 @@ public class CustomDialog {
         }
         return this;
     }
-
+    
     @NonNull
     public CustomDialog setNeutralButton(@NonNull String text, @Nullable DialogInterface.OnClickListener listener) {
         if (!failsafe) {
@@ -242,7 +238,7 @@ public class CustomDialog {
         }
         return this;
     }
-
+    
     @NonNull
     public CustomDialog setNeutralButton(int text, @Nullable DialogInterface.OnClickListener listener) {
         if (!failsafe) {
@@ -252,7 +248,7 @@ public class CustomDialog {
         }
         return this;
     }
-
+    
     public CustomDialog setNegativeButton(String text, DialogInterface.OnClickListener listener) {
         if (!failsafe) {
             if (text != null && listener == null) {
@@ -268,7 +264,7 @@ public class CustomDialog {
         }
         return this;
     }
-
+    
     public Dialog create() {
         if (!failsafe) {
             return mDialog;
@@ -278,7 +274,7 @@ public class CustomDialog {
             return mFailsafeDialog;
         }
     }
-
+    
     public Dialog show() {
         if (!failsafe) {
             mDialog.show();
@@ -290,7 +286,7 @@ public class CustomDialog {
             return mFailsafeDialog;
         }
     }
-
+    
     public void dismiss() {
         if (!failsafe) {
             mDialog.dismiss();
@@ -300,13 +296,15 @@ public class CustomDialog {
             }
         }
     }
-
+    
     public boolean isShowing() {
-        if (mDialog != null) return mDialog.isShowing();
-        if (mFailsafeDialog != null) return mFailsafeDialog.isShowing();
+        if (mDialog != null)
+            return mDialog.isShowing();
+        if (mFailsafeDialog != null)
+            return mFailsafeDialog.isShowing();
         return false;
     }
-
+    
     @Nullable
     public TextView getMessageTextView() {
         if (!failsafe) {
@@ -315,5 +313,5 @@ public class CustomDialog {
             return null;
         }
     }
-
+    
 }

@@ -1,36 +1,24 @@
 package nil.nadph.qnotified.dialog;
 
-import android.app.Dialog;
-import android.content.Context;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.PixelFormat;
-import android.graphics.drawable.GradientDrawable;
-import android.os.Bundle;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
+import android.app.*;
+import android.content.*;
+import android.content.res.*;
+import android.graphics.*;
+import android.graphics.drawable.*;
+import android.os.*;
+import android.view.*;
+import android.widget.*;
 
-import androidx.core.view.ViewCompat;
+import androidx.core.view.*;
 
-import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat;
-import nil.nadph.qnotified.hook.BaseDelayableHook;
-import com.rymmmmm.hook.OneTapTwentyLikes;
-import com.rymmmmm.hook.RemoveSendGiftAd;
-import com.rymmmmm.hook.ShowMsgCount;
-import nil.nadph.qnotified.ui.DummyDrawable;
-import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.ui.ViewBuilder;
-import nil.nadph.qnotified.util.NonNull;
-import nil.nadph.qnotified.util.Utils;
+import com.rymmmmm.hook.*;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import nil.nadph.qnotified.activity.*;
+import nil.nadph.qnotified.hook.*;
+import nil.nadph.qnotified.ui.*;
+import nil.nadph.qnotified.util.*;
+
+import static android.view.ViewGroup.LayoutParams.*;
 
 public class RikkaDialog extends Dialog implements View.OnClickListener {
     private final Context mContext;
@@ -39,17 +27,17 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
     GradientDrawable dialogBgDrawable;
     private ColorStateList textColor;
     private ColorStateList dialogBgColor;
-
+    
     protected RikkaDialog(Context context) {
         super(context);
         mContext = context;
     }
-
+    
     public static void showRikkaFuncDialog(@NonNull Context ctx) {
         RikkaDialog dialog = new RikkaDialog(ctx);
         dialog.show();
     }
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,7 +79,7 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
         win.setBackgroundDrawable(new DummyDrawable());
         ScrollView outer = new ScrollView(mContext);
         //outer.setBackgroundDrawable(dialogBgDrawable);
-        ViewCompat.setBackground(outer,dialogBgDrawable);
+        ViewCompat.setBackground(outer, dialogBgDrawable);
         //outer.setVerticalScrollbarTrackDrawable(null);
         LinearLayout ll = new LinearLayout(mContext);
         ll.setClickable(true);
@@ -99,7 +87,7 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
         root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RikkaDialog.this.dismiss();
+                dismiss();
             }
         });
         int i = __5_dp * 2;
@@ -135,7 +123,7 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
         wlp.format = PixelFormat.RGBA_8888;
         win.setAttributes(wlp);
     }
-
+    
     @Override
     public void onClick(View v) {
         Object o = v.getTag();
@@ -144,46 +132,34 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
             ((RikkaConfigItem) o).onClick(v);
         }
     }
-
+    
     private RikkaConfigItem[] queryRikkaHooks() {
         return new RikkaConfigItem[]{
-                RikkaConfigItem.create(this, "显示具体消息数量", ShowMsgCount.get()),
-                new RikkaBaseApkFormatDialog(this),
+            RikkaConfigItem.create(this, "显示具体消息数量", ShowMsgCount.get()),
+            new RikkaBaseApkFormatDialog(this),
 //                RikkaConfigItem.create(this, "屏蔽抖动窗口", DisableShakeWindow.get()),
-                RikkaConfigItem.create(this, "回赞界面一键20赞", OneTapTwentyLikes.get()),
-                new RikkaCustomMsgTimeFormatDialog(this),
-                RikkaConfigItem.create(this, "免广告送免费礼物[仅限群聊送礼物]", RemoveSendGiftAd.get()),
-                new RikkaCustomDeviceModelDialog(this),
-                new RikkaCustomSplash(this),
-                new RikkaColorPickDialog(this),
+            RikkaConfigItem.create(this, "回赞界面一键20赞", OneTapTwentyLikes.get()),
+            new RikkaCustomMsgTimeFormatDialog(this),
+            RikkaConfigItem.create(this, "免广告送免费礼物[仅限群聊送礼物]", RemoveSendGiftAd.get()),
+            new RikkaCustomDeviceModelDialog(this),
+            new RikkaCustomSplash(this),
+            new RikkaColorPickDialog(this),
         };
     }
-
+    
     public abstract static class RikkaConfigItem implements View.OnClickListener {
         final protected RikkaDialog rikkaDialog;
-
+        public View view;
+        
         public RikkaConfigItem(RikkaDialog d) {
             rikkaDialog = d;
         }
-
-        public View view;
-
-        public abstract boolean isEnabled();
-
-        public abstract String getName();
-
-        public void invalidateStatus() {
-            View v = view;
-            if (v == null) return;
-            //v.setBackgroundDrawable(isEnabled() ? rikkaDialog.itemOnDrawable : rikkaDialog.itemOffDrawable);
-            ViewCompat.setBackground(v, isEnabled() ? rikkaDialog.itemOnDrawable : rikkaDialog.itemOffDrawable);
-        }
-
-        public static RikkaConfigItem create(RikkaDialog dialog, final String name, final BaseDelayableHook hook) {
+        
+        public static RikkaConfigItem create(RikkaDialog dialog, String name, BaseDelayableHook hook) {
             return new RikkaConfigItem(dialog) {
-
+                
                 @Override
-                public void onClick(final View v) {
+                public void onClick(View v) {
                     hook.setEnabled(!hook.isEnabled());
                     if (hook.isEnabled() && !hook.isInited()) {
                         new Thread(new Runnable() {
@@ -202,61 +178,74 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
                         invalidateStatus();
                     }
                 }
-
+                
                 @Override
                 public boolean isEnabled() {
                     return hook.isEnabled();
                 }
-
+                
                 @Override
                 public String getName() {
                     return name;
                 }
             };
         }
-
-        public static RikkaConfigItem createDummy(RikkaDialog dialog, final String name) {
+        
+        public static RikkaConfigItem createDummy(RikkaDialog dialog, String name) {
             return new RikkaConfigItem(dialog) {
                 boolean on;
-
+    
                 @Override
                 public void onClick(View v) {
                     on = !on;
                     invalidateStatus();
                 }
-
+    
                 @Override
                 public boolean isEnabled() {
                     return on;
                 }
-
+    
                 @Override
                 public String getName() {
                     return name;
                 }
             };
         }
-
-        public static RikkaConfigItem createStub(RikkaDialog dialog, final String name) {
+        
+        public static RikkaConfigItem createStub(RikkaDialog dialog, String name) {
             return new RikkaConfigItem(dialog) {
-
+    
                 @Override
                 public void onClick(View v) {
                     Utils.showToastShort(v.getContext(), "对不起,此功能尚在开发中");
                 }
-
+    
                 @Override
                 public boolean isEnabled() {
                     return false;
                 }
-
+    
                 @Override
                 public String getName() {
                     return name;
                 }
             };
         }
+        
+        public abstract boolean isEnabled();
+        
+        public abstract String getName();
+        
+        public void invalidateStatus() {
+            View v = view;
+            if (v == null) {
+                return;
+            }
+            //v.setBackgroundDrawable(isEnabled() ? rikkaDialog.itemOnDrawable : rikkaDialog.itemOffDrawable);
+            ViewCompat.setBackground(v, isEnabled() ? rikkaDialog.itemOnDrawable : rikkaDialog.itemOffDrawable);
+        }
     }
-
-
+    
+    
 }

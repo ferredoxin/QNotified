@@ -1,18 +1,17 @@
 package me.zpp0196.qqpurify.hook;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import nil.nadph.qnotified.config.AbstractConfigItem;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.hook.AbsDelayableHook;
+import androidx.annotation.*;
+
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.hook.*;
 
 public class P2CUtils {
-
+    
     @Nullable
     private static AbstractConfigItem doFindConfigByName(String name) {
         return null;
     }
-
+    
     @Nullable
     private static AbsDelayableHook doFindHookByName(String name) {
         for (AbsDelayableHook h : AbsDelayableHook.queryDelayableHooks()) {
@@ -22,15 +21,23 @@ public class P2CUtils {
         }
         return null;
     }
-
+    
     @Nullable
     public static AbstractConfigItem findConfigByName(@NonNull String name) {
         //noinspection Nullability failsafe, ok?
-        if (name == null) return null;
-        if (name.contains("$")) name = name.split("\\$")[0];
-        if (name.equals("")) return ConfigManager.getDefaultConfig();
+        if (name == null) {
+            return null;
+        }
+        if (name.contains("$")) {
+            name = name.split("\\$")[0];
+        }
+        if (name.equals("")) {
+            return ConfigManager.getDefaultConfig();
+        }
         AbstractConfigItem item = doFindConfigByName(name);
-        if (item == null) item = doFindHookByName(name);
+        if (item == null) {
+            item = doFindHookByName(name);
+        }
         return item;
     }
 }

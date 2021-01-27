@@ -18,43 +18,40 @@
  */
 package nil.nadph.qnotified.hook;
 
-import android.app.Application;
-import android.os.Looper;
-import android.view.View;
-import android.widget.Toast;
+import android.app.*;
+import android.os.*;
+import android.view.*;
+import android.widget.*;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.*;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedHelpers;
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.bridge.AIOUtilsImpl;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.step.DexDeobfStep;
-import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.Utils;
+import de.robv.android.xposed.*;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.bridge.*;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.step.*;
+import nil.nadph.qnotified.util.*;
 
-import static nil.nadph.qnotified.util.Initiator._PicItemBuilder;
+import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class EmoPicHook extends BaseDelayableHook {
-
+    
     public static final String qn_sticker_as_pic = "qn_sticker_as_pic";
     private static final EmoPicHook self = new EmoPicHook();
     private boolean inited = false;
-
+    
     private EmoPicHook() {
     }
-
+    
     public static EmoPicHook get() {
         return self;
     }
-
+    
     @Override
     public boolean init() {
-        if (inited) return true;
+        if (inited)
+            return true;
         try {
             final ConfigManager cfg = ConfigManager.getDefaultConfig();
             boolean canInit = checkPreconditions();
@@ -63,19 +60,23 @@ public class EmoPicHook extends BaseDelayableHook {
                     showToast(getApplication(), TOAST_TYPE_ERROR, "QNotified:表情转图片功能初始化错误", Toast.LENGTH_LONG);
                 }
             }
-            if (!canInit) return false;
+            if (!canInit)
+                return false;
             XposedHelpers.findAndHookMethod(_PicItemBuilder(), "onClick", View.class, new XC_MethodHook(51) {
-
+                
                 Field f_picExtraData = null;
                 Field f_imageBizType = null;
                 Field f_imageType = null;
-
+                
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.sDisableCommonHooks) return;
-                    if (!isEnabled()) return;
+                    if (LicenseStatus.sDisableCommonHooks)
+                        return;
+                    if (!isEnabled())
+                        return;
                     Object chatMsg = AIOUtilsImpl.getChatMessage((View) param.args[0]);
-                    if (chatMsg == null) return;
+                    if (chatMsg == null)
+                        return;
                     if (f_picExtraData == null) {
                         f_picExtraData = Utils.findField(chatMsg.getClass(), null, "picExtraData");
                         f_picExtraData.setAccessible(true);
@@ -102,22 +103,35 @@ public class EmoPicHook extends BaseDelayableHook {
             return false;
         }
     }
-
+    
     @Override
     public Step[] getPreconditions() {
         return new Step[]{new DexDeobfStep(DexKit.C_AIO_UTILS)};
     }
-
+    
     @Override
     public int getEffectiveProc() {
         return SyncUtils.PROC_MAIN;
     }
-
+    
     @Override
     public boolean isInited() {
         return inited;
     }
-
+    
+    @Override
+    public boolean isEnabled() {
+        try {
+            Application app = getApplication();
+            if (app != null && isTim(app))
+                return false;
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_sticker_as_pic);
+        } catch (Exception e) {
+            log(e);
+            return false;
+        }
+    }
+    
     @Override
     public void setEnabled(boolean enabled) {
         try {
@@ -136,18 +150,6 @@ public class EmoPicHook extends BaseDelayableHook {
                     }
                 });
             }
-        }
-    }
-
-    @Override
-    public boolean isEnabled() {
-        try {
-            Application app = getApplication();
-            if (app != null && isTim(app)) return false;
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_sticker_as_pic);
-        } catch (Exception e) {
-            log(e);
-            return false;
         }
     }
 }

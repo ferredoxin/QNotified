@@ -12,7 +12,7 @@ import me.kyuubiran.util.getDefaultCfg
 import nil.nadph.qnotified.R
 import nil.nadph.qnotified.databinding.KyuubiranRevokeMsgDialogBinding
 
-object RevokeMsgDialog{
+object RevokeMsgDialog {
     private var currentEnable: Boolean? = null
     private var currentMsgEnable: Boolean? = null
     private var currentRevokeTips = ""

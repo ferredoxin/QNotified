@@ -1,79 +1,103 @@
 package nil.nadph.qnotified.dialog;
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.annotation.*;
+import android.app.*;
+import android.content.*;
+import android.text.*;
+import android.view.*;
+import android.widget.*;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import com.rymmmmm.hook.*;
 
-import nil.nadph.qnotified.R;
-import nil.nadph.qnotified.config.ConfigManager;
-import com.rymmmmm.hook.CustomMsgTimeFormat;
-import nil.nadph.qnotified.ui.CustomDialog;
+import java.io.*;
+import java.text.*;
+import java.util.*;
+
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.ui.*;
 import nil.nadph.qnotified.util.NonNull;
 import nil.nadph.qnotified.util.Nullable;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.util.*;
 
-import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.*;
 
 public class RikkaCustomMsgTimeFormatDialog extends RikkaDialog.RikkaConfigItem {
     private static final String DEFAULT_MSG_TIME_FORMAT = "yyyy年MM月dd日 HH:mm:ss";
-
+    
     private static final String rq_msg_time_format = "rq_msg_time_format";
     private static final String rq_msg_time_enabled = "rq_msg_time_enabled";
-
+    
     @Nullable
     private AlertDialog dialog;
     @Nullable
     private LinearLayout vg;
-
+    
     private String currentFormat;
     private boolean enableMsgTimeFormat;
     private boolean currentFormatValid = false;
-
+    
     public RikkaCustomMsgTimeFormatDialog(@NonNull RikkaDialog d) {
         super(d);
     }
-
+    
+    public static boolean IsEnabled() {
+        return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_msg_time_enabled);
+    }
+    
+    @Nullable
+    public static String getCurrentMsgTimeFormat() {
+        ConfigManager cfg = ConfigManager.getDefaultConfig();
+        if (cfg.getBooleanOrFalse(rq_msg_time_enabled)) {
+            String val = cfg.getString(rq_msg_time_format);
+            if (val == null) {
+                val = DEFAULT_MSG_TIME_FORMAT;
+            }
+            return val;
+        }
+        return null;
+    }
+    
+    @Nullable
+    public static String getTimeFormat() {
+        ConfigManager cfg = ConfigManager.getDefaultConfig();
+        String val = cfg.getString(rq_msg_time_format);
+        if (val == null) {
+            val = DEFAULT_MSG_TIME_FORMAT;
+        }
+        return val;
+    }
+    
     @SuppressLint("InflateParams")
     @Override
     public void onClick(View v) {
         dialog = (AlertDialog) CustomDialog.createFailsafe(v.getContext()).setTitle("自定义时间格式").setNegativeButton("取消", null)
-                .setPositiveButton("保存", null).create();
+            .setPositiveButton("保存", null).create();
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(false);
-        final Context ctx = dialog.getContext();
+        Context ctx = dialog.getContext();
         vg = (LinearLayout) LayoutInflater.from(ctx).inflate(R.layout.rikka_msg_time_formart_dialog, null);
-        final TextView preview = vg.findViewById(R.id.textViewMsgTimeFormatPreview);
-        final TextView invalid = vg.findViewById(R.id.textViewInvalidMsgTimeFormat);
-        final TextView input = vg.findViewById(R.id.editTextMsgTimeFormat);
-        final CheckBox enable = vg.findViewById(R.id.checkBoxEnableMsgTimeFormat);
-        final LinearLayout panel = vg.findViewById(R.id.layoutMsgTimeFormatPanel);
+        TextView preview = vg.findViewById(R.id.textViewMsgTimeFormatPreview);
+        TextView invalid = vg.findViewById(R.id.textViewInvalidMsgTimeFormat);
+        TextView input = vg.findViewById(R.id.editTextMsgTimeFormat);
+        CheckBox enable = vg.findViewById(R.id.checkBoxEnableMsgTimeFormat);
+        LinearLayout panel = vg.findViewById(R.id.layoutMsgTimeFormatPanel);
         enableMsgTimeFormat = ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_msg_time_enabled);
         enable.setChecked(enableMsgTimeFormat);
         panel.setVisibility(enableMsgTimeFormat ? View.VISIBLE : View.GONE);
         currentFormat = ConfigManager.getDefaultConfig().getString(rq_msg_time_format);
-        if (currentFormat == null) currentFormat = DEFAULT_MSG_TIME_FORMAT;
+        if (currentFormat == null) {
+            currentFormat = DEFAULT_MSG_TIME_FORMAT;
+        }
         input.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
-
+            
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
-
+            
             @Override
             @SuppressLint("SimpleDateFormat")
             public void afterTextChanged(Editable s) {
@@ -130,43 +154,22 @@ public class RikkaCustomMsgTimeFormatDialog extends RikkaDialog.RikkaConfigItem 
                     invalidateStatus();
                     if (enableMsgTimeFormat) {
                         CustomMsgTimeFormat hook = CustomMsgTimeFormat.get();
-                        if (!hook.isInited()) hook.init();
+                        if (!hook.isInited()) {
+                            hook.init();
+                        }
                     }
                 }
             }
         });
     }
-
+    
     @Override
     public boolean isEnabled() {
         return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_msg_time_enabled);
     }
-
-    public static boolean IsEnabled() {
-        return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_msg_time_enabled);
-    }
-
+    
     @Override
     public String getName() {
         return "聊天页自定义时间格式";
-    }
-
-    @Nullable
-    public static String getCurrentMsgTimeFormat() {
-        ConfigManager cfg = ConfigManager.getDefaultConfig();
-        if (cfg.getBooleanOrFalse(rq_msg_time_enabled)) {
-            String val = cfg.getString(rq_msg_time_format);
-            if (val == null) val = DEFAULT_MSG_TIME_FORMAT;
-            return val;
-        }
-        return null;
-    }
-
-    @Nullable
-    public static String getTimeFormat() {
-        ConfigManager cfg = ConfigManager.getDefaultConfig();
-        String val = cfg.getString(rq_msg_time_format);
-        if (val == null) val = DEFAULT_MSG_TIME_FORMAT;
-        return val;
     }
 }

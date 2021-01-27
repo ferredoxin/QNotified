@@ -18,22 +18,21 @@
  */
 package nil.nadph.qnotified.activity.stub;
 
-import android.os.Bundle;
-import android.os.PersistableBundle;
+import android.os.*;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.*;
 
-import java.lang.reflect.UndeclaredThrowableException;
-import java.util.Map;
+import java.lang.reflect.*;
+import java.util.*;
 
-import de.robv.android.xposed.XC_MethodHook;
-import nil.nadph.qnotified.activity.AppCompatTransferActivity;
-import nil.nadph.qnotified.script.gui.ActivityProxyHandlerStaticHolder;
-import nil.nadph.qnotified.util.internal.XMethodHookDispatchUtil;
+import de.robv.android.xposed.*;
+import nil.nadph.qnotified.activity.*;
+import nil.nadph.qnotified.script.gui.*;
+import nil.nadph.qnotified.util.internal.*;
 
 public class ScriptAppCompatProxyActivity extends AppCompatTransferActivity {
     private Map<String, XMethodHookDispatchUtil.HookHolder> mH;
-
+    
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         String uuid = getIntent().getStringExtra(ActivityProxyHandlerStaticHolder.TAG_ACTIVITY_PROXY_HANDLER);
@@ -42,7 +41,9 @@ public class ScriptAppCompatProxyActivity extends AppCompatTransferActivity {
         }
         {
             Map<String, XMethodHookDispatchUtil.HookHolder> t = ActivityProxyHandlerStaticHolder.consume(uuid);
-            if (t != null) mH = t;
+            if (t != null) {
+                mH = t;
+            }
         }
         if (mH == null) {
             throw new IllegalStateException("proxy handler not found, not in the same process?");
@@ -70,7 +71,7 @@ public class ScriptAppCompatProxyActivity extends AppCompatTransferActivity {
             }
         }
     }
-
+    
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
         String uuid = getIntent().getStringExtra(ActivityProxyHandlerStaticHolder.TAG_ACTIVITY_PROXY_HANDLER);
@@ -79,12 +80,14 @@ public class ScriptAppCompatProxyActivity extends AppCompatTransferActivity {
         }
         {
             Map<String, XMethodHookDispatchUtil.HookHolder> t = ActivityProxyHandlerStaticHolder.consume(uuid);
-            if (t != null) mH = t;
+            if (t != null) {
+                mH = t;
+            }
         }
-
+        
         super.onCreate(savedInstanceState, persistentState);
     }
-
+    
     @Override
     protected void onResume() {
         XMethodHookDispatchUtil.HookHolder h = mH.get("onResume()V");

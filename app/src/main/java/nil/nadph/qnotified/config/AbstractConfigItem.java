@@ -23,6 +23,6 @@ package nil.nadph.qnotified.config;
  */
 public interface AbstractConfigItem {
     boolean isValid();
-
+    
     boolean sync();
 }

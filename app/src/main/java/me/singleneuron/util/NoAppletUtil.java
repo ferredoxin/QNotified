@@ -5,7 +5,7 @@
 
 package me.singleneuron.util;
 
-import android.text.TextUtils;
+import android.text.*;
 
 public class NoAppletUtil {
     public static String replace(String url, String key, String value) {
@@ -14,13 +14,13 @@ public class NoAppletUtil {
         }
         return url;
     }
-
+    
     public static String removeMiniProgramNode(String url) {
         if (!TextUtils.isEmpty(url)) {
             url = url.replaceAll("(mini_program.*?)=([^&]*)&", "");
         }
         return url;
     }
-
-
+    
+    
 }

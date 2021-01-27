@@ -18,36 +18,28 @@
  */
 package nil.nadph.qnotified.activity;
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.graphics.Typeface;
-import android.net.Uri;
-import android.os.Bundle;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.RelativeSizeSpan;
-import android.text.style.StyleSpan;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
+import android.annotation.*;
+import android.content.*;
+import android.graphics.*;
+import android.net.*;
+import android.os.*;
+import android.text.*;
+import android.text.style.*;
+import android.util.*;
+import android.view.*;
 import android.widget.*;
 
-import com.tencent.mobileqq.widget.BounceScrollView;
+import com.tencent.mobileqq.widget.*;
 
-import java.io.IOException;
+import java.io.*;
 
-import nil.nadph.qnotified.InjectDelayableHooks;
-import nil.nadph.qnotified.MainHook;
-import nil.nadph.qnotified.R;
-import nil.nadph.qnotified.hook.FakeBatteryHook;
-import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.hook.*;
+import nil.nadph.qnotified.ui.*;
+import nil.nadph.qnotified.util.*;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
+import static android.view.ViewGroup.LayoutParams.*;
+import static nil.nadph.qnotified.ui.ViewBuilder.*;
 
 @SuppressLint("Registered")
 public class EulaActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener {
@@ -55,7 +47,14 @@ public class EulaActivity extends IphoneTitleBarActivityCompat implements View.O
     private static final int R_ID_I_HAVE_READ = 0x300AFF91;
     private static final int R_ID_I_AGREE = 0x300AFF92;
     private static final int R_ID_I_DENY = 0x300AFF93;
-
+    
+    public static void appendEx2(SpannableStringBuilder sb, String text) {
+        int start = sb.length();
+        sb.append(text);
+        sb.setSpan(new StyleSpan(Typeface.BOLD), start, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        sb.setSpan(new RelativeSizeSpan(1.3f), start, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
+    
     @Override
     public boolean doOnCreate(Bundle bundle) {
         super.doOnCreate(bundle);
@@ -67,11 +66,11 @@ public class EulaActivity extends IphoneTitleBarActivityCompat implements View.O
         bounceScrollView.setId(R.id.rootBounceScrollView);
         ll.setId(R.id.rootMainLayout);
         bounceScrollView.addView(ll, new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-        this.setContentView(bounceScrollView);
+        setContentView(bounceScrollView);
         setContentBackgroundDrawable(ResUtils.skin_background);
         setTitle("EULA");
         LinearLayout.LayoutParams stdlp = new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
-
+        
         if (LicenseStatus.hasEulaUpdated()) {
             TextView tv_updated = new TextView(this);
             tv_updated.setTextSize(22);
@@ -88,7 +87,7 @@ public class EulaActivity extends IphoneTitleBarActivityCompat implements View.O
         tv.setTextColor(ResUtils.skin_black);
         tv.setText("QNotified 最终用户许可协议\n与《隐私条款》");
         ll.addView(tv, stdlp);
-
+        
         SpannableStringBuilder sb = new SpannableStringBuilder();
         try {
             sb.append(Utils.getFileContent(ResUtils.openAsset("eula.txt")));
@@ -97,22 +96,22 @@ public class EulaActivity extends IphoneTitleBarActivityCompat implements View.O
         } catch (IOException e) {
             sb.append(Log.getStackTraceString(e));
         }
-
+        
         tv = new TextView(this);
         tv.setTextSize(16);
         tv.setTextColor(ResUtils.skin_black);
         tv.setText(sb);
         ll.addView(tv, stdlp);
-
+        
         tv = new TextView(this);
         tv.setTextSize(23);
         tv.setGravity(Gravity.CENTER);
         tv.setTextColor(ResUtils.skin_black);
         tv.setText("\n注意: 本软件是免费软件!\nQNotified自始至终都是免费且非商业使用，如果有你发现有人在违反GPL和最终用户许可（主要为未明确指出本软件的作者以及免费获取的网址）的情况下商用本软件并牟取利润(群发,代发,引流,出售,贩卖等)，请拒绝并不遗余力地在一切平台举报投诉他！\n");
         ll.addView(tv, stdlp);
-
+        
         int _5dp = Utils.dip2px(this, 5);
-
+        
         if (!LicenseStatus.hasUserAcceptEula()) {
             CheckBox iHaveRead = new CheckBox(this);
             iHaveRead.setId(R_ID_I_HAVE_READ);
@@ -123,14 +122,14 @@ public class EulaActivity extends IphoneTitleBarActivityCompat implements View.O
             iHaveRead.setPadding(_5dp, _5dp, _5dp, _5dp);
             iHaveRead.setChecked(FakeBatteryHook.get().isFakeBatteryCharging());
             ll.addView(iHaveRead, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 3 * _5dp, _5dp, 2 * _5dp, _5dp));
-
+            
             Button agree = new Button(this);
             agree.setId(R_ID_I_AGREE);
             agree.setOnClickListener(this);
             ResUtils.applyStyleCommonBtnBlue(agree);
             agree.setText("我同意并继续");
             ll.addView(agree, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 2 * _5dp, _5dp, 2 * _5dp, _5dp));
-
+            
             Button deny = new Button(this);
             deny.setId(R_ID_I_DENY);
             deny.setOnClickListener(this);
@@ -148,7 +147,7 @@ public class EulaActivity extends IphoneTitleBarActivityCompat implements View.O
         }
         return true;
     }
-
+    
     @Override
     public void onClick(View v) {
         CheckBox iHaveRead = findViewById(R_ID_I_HAVE_READ);
@@ -176,12 +175,5 @@ public class EulaActivity extends IphoneTitleBarActivityCompat implements View.O
                 Utils.showToast(this, Utils.TOAST_TYPE_ERROR, "请立即卸载QNotified", Toast.LENGTH_LONG);
                 break;
         }
-    }
-
-    public static void appendEx2(SpannableStringBuilder sb, String text) {
-        int start = sb.length();
-        sb.append(text);
-        sb.setSpan(new StyleSpan(Typeface.BOLD), start, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        sb.setSpan(new RelativeSizeSpan(1.3f), start, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 }

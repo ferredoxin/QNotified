@@ -18,110 +18,61 @@
  */
 package nil.nadph.qnotified.activity;
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.pm.PackageInfo;
-import android.content.res.ColorStateList;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.os.Bundle;
-import android.os.Looper;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.annotation.*;
+import android.app.*;
+import android.content.*;
+import android.content.pm.*;
+import android.content.res.*;
+import android.graphics.*;
+import android.os.*;
+import android.view.*;
+import android.widget.*;
 
-import androidx.core.text.HtmlCompat;
-import androidx.core.view.ViewCompat;
+import androidx.core.text.*;
+import androidx.core.view.*;
 
-import com.tencent.mobileqq.widget.BounceScrollView;
+import com.rymmmmm.hook.*;
+import com.tencent.mobileqq.widget.*;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
-import me.ketal.activity.ModifyLeftSwipeReplyActivity;
-import me.ketal.hook.LeftSwipeReplyHook;
-import me.ketal.util.TIMVersion;
-import me.kyuubiran.hook.AutoMosaicName;
-import me.kyuubiran.hook.ShowSelfMsgByLeft;
-import me.singleneuron.activity.ChangeDrawerWidthActivity;
-import me.singleneuron.hook.ForceSystemAlbum;
-import me.singleneuron.hook.ForceSystemCamera;
-import me.singleneuron.hook.ForceSystemFile;
-import me.singleneuron.hook.NewRoundHead;
-import me.singleneuron.hook.NoApplet;
-import me.singleneuron.hook.decorator.DisableQzoneSlideCamera;
-import me.singleneuron.hook.decorator.SimpleReceiptMessage;
-import me.singleneuron.util.KotlinUtilsKt;
-import nil.nadph.qnotified.ExfriendManager;
-import nil.nadph.qnotified.MainHook;
-import nil.nadph.qnotified.R;
-import nil.nadph.qnotified.config.ConfigItems;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.dialog.RepeaterIconSettingDialog;
-import nil.nadph.qnotified.dialog.RikkaDialog;
+import me.ketal.activity.*;
+import me.ketal.hook.*;
+import me.ketal.util.*;
+import me.kyuubiran.hook.*;
+import me.singleneuron.activity.*;
+import me.singleneuron.hook.*;
+import me.singleneuron.hook.decorator.*;
+import me.singleneuron.util.*;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.dialog.*;
 import nil.nadph.qnotified.hook.*;
-import com.rymmmmm.hook.RemoveMiniProgramAd;
-import nil.nadph.qnotified.ui.CustomDialog;
-import nil.nadph.qnotified.ui.HighContrastBorder;
-import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.util.Initiator;
-import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.NewsHelper;
-import nil.nadph.qnotified.util.UpdateCheck;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.ui.*;
+import nil.nadph.qnotified.util.*;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static androidx.core.text.HtmlCompat.FROM_HTML_MODE_LEGACY;
-import static me.singleneuron.util.KotlinUtilsKt.addViewConditionally;
-import static me.singleneuron.util.QQVersion.QQ_8_1_3;
-import static me.singleneuron.util.QQVersion.QQ_8_2_0;
-import static me.singleneuron.util.QQVersion.QQ_8_2_6;
-import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTION_ABOUT;
-import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTION_DONATE_ACTIVITY;
-import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTION_EXFRIEND_LIST;
-import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTION_FAKE_BAT_CONFIG_ACTIVITY;
-import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTION_FRIENDLIST_EXPORT_ACTIVITY;
-import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTION_MUTE_AT_ALL;
-import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTION_MUTE_RED_PACKET;
-import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTION_TROUBLESHOOT_ACTIVITY;
-import static nil.nadph.qnotified.ui.ViewBuilder.R_ID_DESCRIPTION;
-import static nil.nadph.qnotified.ui.ViewBuilder.R_ID_TITLE;
-import static nil.nadph.qnotified.ui.ViewBuilder.R_ID_VALUE;
-import static nil.nadph.qnotified.ui.ViewBuilder.clickTheComing;
-import static nil.nadph.qnotified.ui.ViewBuilder.clickToProxyActAction;
-import static nil.nadph.qnotified.ui.ViewBuilder.clickToUrl;
-import static nil.nadph.qnotified.ui.ViewBuilder.doSetupForPrecondition;
-import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
-import static nil.nadph.qnotified.ui.ViewBuilder.newListItemButton;
-import static nil.nadph.qnotified.ui.ViewBuilder.newListItemConfigSwitchIfValid;
-import static nil.nadph.qnotified.ui.ViewBuilder.newListItemDummy;
-import static nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit;
-import static nil.nadph.qnotified.ui.ViewBuilder.newListItemSwitchConfigNext;
-import static nil.nadph.qnotified.ui.ViewBuilder.newListItemSwitchStub;
-import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
-import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
-import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_INFO;
-import static nil.nadph.qnotified.util.Utils.dip2px;
-import static nil.nadph.qnotified.util.Utils.getHostVersionCode32;
-import static nil.nadph.qnotified.util.Utils.get_RGB;
-import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.showToast;
+import static android.view.ViewGroup.LayoutParams.*;
+import static androidx.core.text.HtmlCompat.*;
+import static me.singleneuron.util.KotlinUtilsKt.*;
+import static me.singleneuron.util.QQVersion.*;
+import static nil.nadph.qnotified.lifecycle.ActProxyMgr.*;
+import static nil.nadph.qnotified.ui.ViewBuilder.*;
+import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressLint("Registered")
 public class SettingsActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener, Runnable {
-
+    
     private static final int R_ID_BTN_FILE_RECV = 0x300AFF91;
     private static final String qn_enable_fancy_rgb = "qn_enable_fancy_rgb";
-
+    int color;
+    int step;//(0-255)
+    int stage;//0-5
     private TextView __tv_muted_atall, __tv_muted_redpacket, __tv_fake_bat_status, __recv_status, __recv_desc, __jmp_ctl_cnt;
-
+    private boolean isVisible = false;
+    private boolean rgbEnabled = false;
+    private TextView mRikkaTitle, mRikkaDesc;
+    private final Looper mainLooper = Looper.getMainLooper();
+    
     @Override
     public boolean doOnCreate(Bundle bundle) {
         super.doOnCreate(bundle);
@@ -203,7 +154,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(newListItemButton(this, "自定义+1图标", null, null, RepeaterIconSettingDialog.OnClickListener_createDialog(this)));
         ll.addView(subtitle(this, "净化设置"));
         if (Utils.isTim(this)) {
-            if(getHostVersionCode32() >= TIMVersion.TIM_3_1_1) {
+            if (getHostVersionCode32() >= TIMVersion.TIM_3_1_1) {
                 ll.addView(newListItemHookSwitchInit(this, "禁止回复自动@", "[TIM>=3.1.1]去除回复消息时自动@特性", ReplyNoAtHook.get()));
             }
         } else {
@@ -259,7 +210,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         if (LeftSwipeReplyHook.INSTANCE.isValid()) {
             ll.addView(newListItemButton(this, "修改消息左滑动作", "", null, clickToProxyActAction(ModifyLeftSwipeReplyActivity.class)));
         }
-    
+        
         ll.addView(subtitle(this, "好友列表"));
         ll.addView(newListItemButton(this, "打开资料卡", "打开指定用户的资料卡", null, new View.OnClickListener() {
             @Override
@@ -363,15 +314,15 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             getString(R.string.res_inject_success);
         } catch (Resources.NotFoundException e) {
             CustomDialog.createFailsafe(this).setTitle("FATAL Exception").setCancelable(true).setPositiveButton(getString(android.R.string.yes), null)
-                    .setNeutralButton("重启" + Utils.getHostAppName(), (dialog, which) -> {
-                        try {
-                            android.os.Process.killProcess(android.os.Process.myPid());
-                        } catch (Throwable e1) {
-                            log(e1);
-                        }
-                    })
-                    .setMessage("Resources injection failure!\nApplication may misbehave.\n" + e.toString()
-                            + "\n如果您刚刚更新了插件, 您可能需要重启" + Utils.getHostAppName() + "(太/无极阴,应用转生,天鉴等虚拟框架)或者重启手机(EdXp, Xposed, 太极阳), 如果重启手机后问题仍然存在, 请向作者反馈, 并提供详细日志").show();
+                .setNeutralButton("重启" + Utils.getHostAppName(), (dialog, which) -> {
+                    try {
+                        android.os.Process.killProcess(android.os.Process.myPid());
+                    } catch (Throwable e1) {
+                        log(e1);
+                    }
+                })
+                .setMessage("Resources injection failure!\nApplication may misbehave.\n" + e.toString()
+                    + "\n如果您刚刚更新了插件, 您可能需要重启" + Utils.getHostAppName() + "(太/无极阴,应用转生,天鉴等虚拟框架)或者重启手机(EdXp, Xposed, 太极阳), 如果重启手机后问题仍然存在, 请向作者反馈, 并提供详细日志").show();
         }
         return true;
     }
@@ -384,11 +335,15 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         rgbEnabled = cfg.getBooleanOrFalse(qn_enable_fancy_rgb);
         String str = ExfriendManager.getCurrent().getConfig().getString(ConfigItems.qn_muted_at_all);
         int n = 0;
-        if (str != null && str.length() > 4) n = str.split(",").length;
+        if (str != null && str.length() > 4) {
+            n = str.split(",").length;
+        }
         __tv_muted_atall.setText(n + "个群");
         str = ExfriendManager.getCurrent().getConfig().getString(ConfigItems.qn_muted_red_packet);
         n = 0;
-        if (str != null && str.length() > 4) n = str.split(",").length;
+        if (str != null && str.length() > 4) {
+            n = str.split(",").length;
+        }
         __tv_muted_redpacket.setText(n + "个群");
         if (__tv_fake_bat_status != null) {
             FakeBatteryHook bat = FakeBatteryHook.get();
@@ -420,7 +375,9 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
     }
 
     private void startRgbIfEnabled() {
-        if (!rgbEnabled || !isVisible) return;
+        if (!rgbEnabled || !isVisible) {
+            return;
+        }
         mRikkaTitle.setText("花Q[狐狸狸魔改版]");
         new Thread(this).start();
     }
@@ -450,16 +407,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             }
         }
     }
-
-    int color;
-    int step;//(0-255)
-    int stage;//0-5
-    private boolean isVisible = false;
-    private boolean rgbEnabled = false;
-    private TextView mRikkaTitle, mRikkaDesc;
-    private Looper mainLooper = Looper.getMainLooper();
-
-
+    
     /**
      * 没良心的method
      */
@@ -508,12 +456,14 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         }
         runOnUiThread(this);
     }
-
-
+    
+    
     private void showChangeRecvPathDialog() {
         FileRecvRedirect recv = FileRecvRedirect.get();
         String currPath = recv.getRedirectPath();
-        if (currPath == null) currPath = recv.getDefaultPath();
+        if (currPath == null) {
+            currPath = recv.getDefaultPath();
+        }
         CustomDialog dialog = CustomDialog.createFailsafe(this);
         Context ctx = dialog.getContext();
         EditText editText = new EditText(ctx);
@@ -536,8 +486,8 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
                     recv.setEnabled(false);
                     updateRecvRedirectStatus();
                 }
-                })
-                .create();
+            })
+            .create();
         alertDialog.show();
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -560,14 +510,16 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
                     showToast(SettingsActivity.this, TOAST_TYPE_ERROR, "文件夹无访问权限", Toast.LENGTH_SHORT);
                     return;
                 }
-                if (!path.endsWith("/")) path += "/";
+                if (!path.endsWith("/")) {
+                    path += "/";
+                }
                 recv.setRedirectPathAndEnable(path);
                 updateRecvRedirectStatus();
                 alertDialog.dismiss();
             }
         });
     }
-
+    
     private void updateRecvRedirectStatus() {
         FileRecvRedirect recv = FileRecvRedirect.get();
         if (recv.isEnabled()) {
@@ -578,9 +530,9 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             __recv_desc.setText(recv.getDefaultPath());
         }
     }
-
+    
     private void showOverflowPopupMenu() {
         Utils.showToast(this, TOAST_TYPE_INFO, "没有更多了", Toast.LENGTH_SHORT);
     }
-
+    
 }

@@ -145,10 +145,10 @@ object SimplifyQQSettingMe : BaseMultiConfigDelayableHook() {
 
     override fun isEnabled(): Boolean {
         return getBooleanConfig(HIDE_KAI_BO_LA_E) || getBooleanConfig(HIDE_HUI_YUAN) || getBooleanConfig(HIDE_XIAO_SHI_JIE)
-                || getBooleanConfig(HIDE_QIAN_BAO) || getBooleanConfig(HIDE_ZHUANG_BAN) || getBooleanConfig(HIDE_QING_LV) || getBooleanConfig(HIDE_SHOU_CANG)
-                || getBooleanConfig(HIDE_XIANG_CE) || getBooleanConfig(HIDE_WEN_JIAN) || getBooleanConfig(HIDE_RI_CHENG) || getBooleanConfig(HIDE_SHI_PIN)
-                || getBooleanConfig(HIDE_XIAO_YOU_XI) || getBooleanConfig(HIDE_WEN_DANG) || getBooleanConfig(HIDE_DA_KA) || getBooleanConfig(HIDE_WANG_KA)
-                || getBooleanConfig(HIDE_YE_JIAN) || getBooleanConfig(HIDE_DA_REN) || getBooleanConfig(HIDE_WEN_DU)
+            || getBooleanConfig(HIDE_QIAN_BAO) || getBooleanConfig(HIDE_ZHUANG_BAN) || getBooleanConfig(HIDE_QING_LV) || getBooleanConfig(HIDE_SHOU_CANG)
+            || getBooleanConfig(HIDE_XIANG_CE) || getBooleanConfig(HIDE_WEN_JIAN) || getBooleanConfig(HIDE_RI_CHENG) || getBooleanConfig(HIDE_SHI_PIN)
+            || getBooleanConfig(HIDE_XIAO_YOU_XI) || getBooleanConfig(HIDE_WEN_DANG) || getBooleanConfig(HIDE_DA_KA) || getBooleanConfig(HIDE_WANG_KA)
+            || getBooleanConfig(HIDE_YE_JIAN) || getBooleanConfig(HIDE_DA_REN) || getBooleanConfig(HIDE_WEN_DU)
     }
 
     override fun getEffectiveProc(): Int {

@@ -18,33 +18,32 @@
  */
 package nil.nadph.qnotified.hook;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.step.DexDeobfStep;
-import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.util.DexKit;
+import de.robv.android.xposed.*;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.step.*;
+import nil.nadph.qnotified.util.*;
 
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Initiator.*;
+import static nil.nadph.qnotified.util.Utils.*;
 
 public class FakeVipHook extends BaseDelayableHook {
-
+    
     private static final FakeVipHook self = new FakeVipHook();
     private boolean inited = false;
-
+    
     private FakeVipHook() {
     }
-
+    
     public static FakeVipHook get() {
         return self;
     }
-
+    
     @Override
     public boolean init() {
-        if (inited) return true;
+        if (inited)
+            return true;
         try {
             Class clz = DexKit.doFindClass(DexKit.C_VIP_UTILS);
             Method getPrivilegeFlags = null;
@@ -75,29 +74,29 @@ public class FakeVipHook extends BaseDelayableHook {
             return false;
         }
     }
-
+    
     @Override
     public int getEffectiveProc() {
         return SyncUtils.PROC_MAIN;
     }
-
+    
     @Override
     public boolean isInited() {
         return inited;
     }
-
+    
     @Override
     public Step[] getPreconditions() {
         return new Step[]{new DexDeobfStep(DexKit.C_VIP_UTILS)};
     }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        //do nothing
-    }
-
+    
     @Override
     public boolean isEnabled() {
         return true;
+    }
+    
+    @Override
+    public void setEnabled(boolean enabled) {
+        //do nothing
     }
 }

@@ -18,25 +18,18 @@
  */
 package nil.nadph.qnotified.hook;
 
-import android.os.Looper;
-import android.text.TextUtils;
-import android.view.View;
-import android.widget.Toast;
+import android.os.*;
+import android.text.*;
+import android.view.*;
+import android.widget.*;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.XposedHelpers;
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.step.DexDeobfStep;
-import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.Utils;
+import de.robv.android.xposed.*;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.step.*;
+import nil.nadph.qnotified.util.*;
 
 import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
@@ -44,18 +37,40 @@ import static nil.nadph.qnotified.util.Utils.*;
 public class FlashPicHook extends BaseDelayableHook {
     public static final String qn_flash_as_pic = "qn_flash_as_pic";
     private static final FlashPicHook self = new FlashPicHook();
+    private static Field MsgRecord_msgtype = null;
+    private static Method MsgRecord_getExtInfoFromExtStr = null;
     private boolean inited = false;
-
+    
     private FlashPicHook() {
     }
-
+    
     public static FlashPicHook get() {
         return self;
     }
 
+    public static boolean isFlashPic(Object msgRecord) {
+        try {
+            if (MsgRecord_msgtype == null) {
+                MsgRecord_msgtype = _MessageRecord().getField("msgtype");
+                MsgRecord_msgtype.setAccessible(true);
+            }
+            if (MsgRecord_getExtInfoFromExtStr == null) {
+                MsgRecord_getExtInfoFromExtStr = _MessageRecord().getMethod("getExtInfoFromExtStr", String.class);
+                MsgRecord_getExtInfoFromExtStr.setAccessible(true);
+            }
+            int msgtype = (int) MsgRecord_msgtype.get(msgRecord);
+            return (msgtype == -2000 || msgtype == -2006)
+                && !TextUtils.isEmpty((String) MsgRecord_getExtInfoFromExtStr.invoke(msgRecord, "commen_flash_pic"));
+        } catch (Exception e) {
+            log(e);
+            return false;
+        }
+    }
+    
     @Override
     public boolean init() {
-        if (inited) return true;
+        if (inited)
+            return true;
         try {
             final ConfigManager cfg = ConfigManager.getDefaultConfig();
             boolean canInit = checkPreconditions();
@@ -64,7 +79,8 @@ public class FlashPicHook extends BaseDelayableHook {
                     showToast(getApplication(), TOAST_TYPE_ERROR, "QNotified:闪照功能初始化错误", Toast.LENGTH_LONG);
                 }
             }
-            if (!canInit) return false;
+            if (!canInit)
+                return false;
             Class clz = DexKit.loadClassFromCache(DexKit.C_FLASH_PIC_HELPER);
             Method isFlashPic = null;
             for (Method mi : clz.getDeclaredMethods()) {
@@ -79,7 +95,7 @@ public class FlashPicHook extends BaseDelayableHook {
             XposedBridge.hookMethod(isFlashPic, new XC_MethodHook(52) {
                 String sn_ItemBuilderFactory = null;
                 String sn_BasePicDownloadProcessor = null;
-
+                
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     try {
@@ -122,13 +138,16 @@ public class FlashPicHook extends BaseDelayableHook {
             XposedBridge.hookMethod(m, new XC_MethodHook() {
                 private Field fBaseChatItemLayout = null;
                 private Method setTailMessage = null;
-
+                
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.sDisableCommonHooks) return;
-                    if (!cfg.getBooleanOrFalse(qn_flash_as_pic)) return;
+                    if (LicenseStatus.sDisableCommonHooks)
+                        return;
+                    if (!cfg.getBooleanOrFalse(qn_flash_as_pic))
+                        return;
                     Object viewHolder = param.args[1];
-                    if (viewHolder == null) return;
+                    if (viewHolder == null)
+                        return;
                     if (fBaseChatItemLayout == null) {
                         fBaseChatItemLayout = Utils.findField(viewHolder.getClass(), load("com.tencent.mobileqq.activity.aio.BaseChatItemLayout"), "a");
                         if (fBaseChatItemLayout == null) {
@@ -138,7 +157,7 @@ public class FlashPicHook extends BaseDelayableHook {
                     }
                     if (setTailMessage == null) {
                         setTailMessage = XposedHelpers.findMethodExact(load("com.tencent.mobileqq.activity.aio.BaseChatItemLayout"),
-                                "setTailMessage", boolean.class, CharSequence.class, View.OnClickListener.class);
+                            "setTailMessage", boolean.class, CharSequence.class, View.OnClickListener.class);
                         setTailMessage.setAccessible(true);
                     }
                     if (setTailMessage != null) {
@@ -154,44 +173,32 @@ public class FlashPicHook extends BaseDelayableHook {
             return false;
         }
     }
-
-    private static Field MsgRecord_msgtype = null;
-    private static Method MsgRecord_getExtInfoFromExtStr = null;
-
-    public static boolean isFlashPic(Object msgRecord) {
+    
+    @Override
+    public int getEffectiveProc() {
+        return SyncUtils.PROC_MAIN;
+    }
+    
+    @Override
+    public Step[] getPreconditions() {
+        return new Step[]{new DexDeobfStep(DexKit.C_FLASH_PIC_HELPER), new DexDeobfStep(DexKit.C_BASE_PIC_DL_PROC), new DexDeobfStep(DexKit.C_ITEM_BUILDER_FAC)};
+    }
+    
+    @Override
+    public boolean isInited() {
+        return inited;
+    }
+    
+    @Override
+    public boolean isEnabled() {
         try {
-            if (MsgRecord_msgtype == null) {
-                MsgRecord_msgtype = _MessageRecord().getField("msgtype");
-                MsgRecord_msgtype.setAccessible(true);
-            }
-            if (MsgRecord_getExtInfoFromExtStr == null) {
-                MsgRecord_getExtInfoFromExtStr = _MessageRecord().getMethod("getExtInfoFromExtStr", String.class);
-                MsgRecord_getExtInfoFromExtStr.setAccessible(true);
-            }
-            int msgtype = (int) MsgRecord_msgtype.get(msgRecord);
-            return (msgtype == -2000 || msgtype == -2006)
-                    && !TextUtils.isEmpty((String) MsgRecord_getExtInfoFromExtStr.invoke(msgRecord, "commen_flash_pic"));
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_flash_as_pic);
         } catch (Exception e) {
             log(e);
             return false;
         }
     }
-
-    @Override
-    public int getEffectiveProc() {
-        return SyncUtils.PROC_MAIN;
-    }
-
-    @Override
-    public Step[] getPreconditions() {
-        return new Step[]{new DexDeobfStep(DexKit.C_FLASH_PIC_HELPER), new DexDeobfStep(DexKit.C_BASE_PIC_DL_PROC), new DexDeobfStep(DexKit.C_ITEM_BUILDER_FAC)};
-    }
-
-    @Override
-    public boolean isInited() {
-        return inited;
-    }
-
+    
     @Override
     public void setEnabled(boolean enabled) {
         try {
@@ -212,15 +219,5 @@ public class FlashPicHook extends BaseDelayableHook {
             }
         }
     }
-
-    @Override
-    public boolean isEnabled() {
-        try {
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_flash_as_pic);
-        } catch (Exception e) {
-            log(e);
-            return false;
-        }
-    }
-
+    
 }

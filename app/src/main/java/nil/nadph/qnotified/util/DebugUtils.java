@@ -18,14 +18,11 @@
  */
 package nil.nadph.qnotified.util;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 
-import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.*;
 
-import static nil.nadph.qnotified.util.Utils.logi;
+import static nil.nadph.qnotified.util.Utils.*;
 
 /**
  * Handy utils used for debug/development env, not to use in production.
@@ -36,7 +33,7 @@ public class DebugUtils {
         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
             super.beforeHookedMethod(param);
         }
-
+        
         @Override
         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
             super.afterHookedMethod(param);
@@ -48,13 +45,17 @@ public class DebugUtils {
             Member m = param.method;
             StringBuilder ret = new StringBuilder(m.getDeclaringClass().getSimpleName() + "->" + ((m instanceof Method) ? m.getName() : "<init>") + "(");
             Class[] argt;
-            if (m instanceof Method)
+            if (m instanceof Method) {
                 argt = ((Method) m).getParameterTypes();
-            else if (m instanceof Constructor)
+            } else if (m instanceof Constructor) {
                 argt = ((Constructor) m).getParameterTypes();
-            else argt = new Class[0];
+            } else {
+                argt = new Class[0];
+            }
             for (int i = 0; i < argt.length; i++) {
-                if (i != 0) ret.append(",\n");
+                if (i != 0) {
+                    ret.append(",\n");
+                }
                 ret.append(param.args[i]);
             }
             ret.append(")=").append(param.getResult());
@@ -75,13 +76,17 @@ public class DebugUtils {
             Member m = param.method;
             StringBuilder ret = new StringBuilder(m.getDeclaringClass().getSimpleName() + "->" + ((m instanceof Method) ? m.getName() : "<init>") + "(");
             Class[] argt;
-            if (m instanceof Method)
+            if (m instanceof Method) {
                 argt = ((Method) m).getParameterTypes();
-            else if (m instanceof Constructor)
+            } else if (m instanceof Constructor) {
                 argt = ((Constructor) m).getParameterTypes();
-            else argt = new Class[0];
+            } else {
+                argt = new Class[0];
+            }
             for (int i = 0; i < argt.length; i++) {
-                if (i != 0) ret.append(",\n");
+                if (i != 0) {
+                    ret.append(",\n");
+                }
                 ret.append(param.args[i]);
             }
             ret.append(")=").append(param.getResult());
@@ -96,8 +101,8 @@ public class DebugUtils {
             Utils.dumpTrace();
         }
     };
-
-
+    
+    
     //    public static ClassLoader targetLoader = null;
 //
 //    public static void startFakeString() {

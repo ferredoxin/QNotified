@@ -18,50 +18,36 @@
  */
 package nil.nadph.qnotified.activity;
 
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
-import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.os.Build;
-import android.os.Bundle;
-import android.view.Gravity;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
+import android.annotation.*;
+import android.content.*;
+import android.graphics.*;
+import android.os.*;
+import android.view.*;
+import android.view.View.*;
 import android.widget.*;
 
-import com.tencent.widget.XListView;
+import com.tencent.widget.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
+import java.util.concurrent.*;
 
-import nil.nadph.qnotified.ExfriendManager;
-import nil.nadph.qnotified.MainHook;
-import nil.nadph.qnotified.R;
-import nil.nadph.qnotified.config.EventRecord;
-import nil.nadph.qnotified.config.FriendRecord;
-import nil.nadph.qnotified.ui.CustomDialog;
-import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.ui.ViewBuilder;
-import nil.nadph.qnotified.lifecycle.ActProxyMgr;
-import nil.nadph.qnotified.util.FaceImpl;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.lifecycle.*;
+import nil.nadph.qnotified.ui.*;
+import nil.nadph.qnotified.util.*;
 
-import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
-import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.util.Utils.log;
+import static android.widget.LinearLayout.LayoutParams.*;
+import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressLint("Registered")
 public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
-
+    
     private static final int R_ID_EXL_TITLE = 0x300AFF01;
     private static final int R_ID_EXL_SUBTITLE = 0x300AFF02;
     private static final int R_ID_EXL_FACE = 0x300AFF03;
     private static final int R_ID_EXL_STATUS = 0x300AFF04;
-
+    
     //private View mListView;
     private FaceImpl face;
     private ExfriendManager exm;
@@ -71,23 +57,23 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
         public int getCount() {
             return ExfriendListActivity.this.getCount();
         }
-
+    
         @Override
         public Object getItem(int position) {
             return ExfriendListActivity.this.getItem(position);
         }
-
+    
         @Override
         public long getItemId(int position) {
             return ExfriendListActivity.this.getItemId(position);
         }
-
+    
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             return ExfriendListActivity.this.getView(position, convertView, parent);
         }
     };
-
+    
     @Override
     public boolean doOnCreate(Bundle bundle) {
         super.doOnCreate(bundle);
@@ -98,7 +84,7 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
         }
         exm = ExfriendManager.getCurrent();
         reload();
-
+        
         XListView sdlv = new XListView(this, null);
         sdlv.setFocusable(true);
         ViewGroup.LayoutParams mmlp = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
@@ -111,7 +97,7 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
         //iput_object(rl,"
         mwllp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         mwllp.addRule(RelativeLayout.CENTER_VERTICAL);
-
+        
         TextView tv = new TextView(ExfriendListActivity.this);
         tv.setGravity(Gravity.CENTER);
         tv.setTextColor(ResUtils.skin_gray3);
@@ -120,7 +106,7 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
         rl.addView(sdlv, mmlp);
         setContentView(rl);
         setTitle("历史好友");
-
+        
         TextView rightBtn = (TextView) getRightTextView();
         //log("Title:"+invoke_virtual(ExfriendListActivity.this,"getTextTitle"));
         rightBtn.setVisibility(View.VISIBLE);
@@ -166,15 +152,20 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
         ViewBuilder.listView_setAdapter(sdlv, adapter);
         setContentBackgroundDrawable(ResUtils.skin_background);
         //invoke_virtual(sdlv,"setOnScrollGroupFloatingListener",true,load("com/tencent/widget/AbsListView$OnScrollListener"));
-        ExfriendListActivity.this.getWindow().getDecorView().setTag(this);
+        getWindow().getDecorView().setTag(this);
         return true;
     }
-
+    
     public void reload() {
         ConcurrentHashMap<Integer, EventRecord> eventsMap = exm.getEvents();
-        if (evs == null) evs = new ArrayList<>();
-        else evs.clear();
-        if (eventsMap == null) return;
+        if (evs == null) {
+            evs = new ArrayList<>();
+        } else {
+            evs.clear();
+        }
+        if (eventsMap == null) {
+            return;
+        }
         Iterator<Map.Entry<Integer, EventRecord>> it = eventsMap.entrySet().iterator();
         EventRecord ev;
         while (it.hasNext()) {
@@ -190,19 +181,19 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
 		 log(e);
 		 }*/
     }
-
+    
     public int getCount() {
         return evs.size();
     }
-
+    
     public Object getItem(int position) {
         return null;
     }
-
+    
     public long getItemId(int position) {
         return 0;
     }
-
+    
     public View getView(int position, View convertView, ViewGroup parent) {
         EventRecord ev = evs.get(position);
         if (convertView == null) {
@@ -224,14 +215,14 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
         TextView title = convertView.findViewById(R_ID_EXL_TITLE);
         title.setText(ev.getShowStr());
         boolean isfri = false;
-
+        
         TextView stat = convertView.findViewById(R_ID_EXL_STATUS);
         try {
             if (exm.getPersons().get(ev.operand).friendStatus == FriendRecord.STATUS_FRIEND_MUTUAL)
                 isfri = true;
         } catch (Exception e) {
         }
-
+        
         if (isfri) {
             stat.setTextColor(ResUtils.cloneColor(ResUtils.skin_gray3));
             stat.setText("已恢复");
@@ -249,11 +240,11 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
         } else {
             imgview.setImageBitmap(bm);
         }
-
+        
         return convertView;
     }
-
-
+    
+    
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private View inflateItemView(EventRecord ev) {
         int tmp;
@@ -261,19 +252,19 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
         LinearLayout llayout = new LinearLayout(ExfriendListActivity.this);
         llayout.setGravity(Gravity.CENTER_VERTICAL);
         llayout.setOrientation(LinearLayout.HORIZONTAL);
-
+        
         LinearLayout textlayout = new LinearLayout(ExfriendListActivity.this);
         textlayout.setOrientation(LinearLayout.VERTICAL);
         rlayout.setBackground(ResUtils.getListItemBackground());
-
+        
         LinearLayout.LayoutParams imglp = new LinearLayout.LayoutParams(Utils.dip2px(ExfriendListActivity.this, 50), Utils.dip2px(ExfriendListActivity.this, 50));
         imglp.setMargins(tmp = Utils.dip2px(ExfriendListActivity.this, 6), tmp, tmp, tmp);
         ImageView imgview = new ImageView(ExfriendListActivity.this);
         imgview.setFocusable(false);
         imgview.setClickable(false);
         imgview.setId(R_ID_EXL_FACE);
-
-
+        
+        
         imgview.setScaleType(ImageView.ScaleType.FIT_XY);
         llayout.addView(imgview, imglp);
         LinearLayout.LayoutParams ltxtlp = new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
@@ -281,8 +272,8 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
         ltxtlp.setMargins(tmp = Utils.dip2px(ExfriendListActivity.this, 2), tmp, tmp, tmp);
         textlp.setMargins(tmp = Utils.dip2px(ExfriendListActivity.this, 1), tmp, tmp, tmp);
         llayout.addView(textlayout, ltxtlp);
-
-
+        
+        
         TextView title = new TextView(ExfriendListActivity.this);
         title.setId(R_ID_EXL_TITLE);
         title.setSingleLine();
@@ -291,7 +282,7 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
         title.setTextColor(ResUtils.cloneColor(ResUtils.skin_black));
         title.setTextSize(Utils.px2sp(ExfriendListActivity.this, Utils.dip2px(ExfriendListActivity.this, 16)));
         //title.setPadding(tmp=Utils.dip2px(ctx,8),tmp,0,tmp);
-
+        
         TextView subtitle = new TextView(ExfriendListActivity.this);
         subtitle.setId(R_ID_EXL_SUBTITLE);
         subtitle.setSingleLine();
@@ -299,12 +290,12 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
         subtitle.setTextColor(ResUtils.cloneColor(ResUtils.skin_gray3));
         subtitle.setTextSize(Utils.px2sp(ExfriendListActivity.this, Utils.dip2px(ExfriendListActivity.this, 14)));
         //subtitle.setPadding(tmp,0,0,tmp);
-
+        
         textlayout.addView(title, textlp);
         textlayout.addView(subtitle, textlp);
-
+        
         RelativeLayout.LayoutParams statlp = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-
+        
         TextView stat = new TextView(ExfriendListActivity.this);
         stat.setId(R_ID_EXL_STATUS);
         stat.setSingleLine();
@@ -313,24 +304,24 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
         statlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         statlp.addRule(RelativeLayout.CENTER_VERTICAL);
         statlp.rightMargin = Utils.dip2px(ExfriendListActivity.this, 16);
-
-
+        
+        
         rlayout.addView(llayout);
         rlayout.addView(stat, statlp);
-
-
+        
+        
         rlayout.setClickable(true);
         rlayout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-
+    
                 long uin = ((EventRecord) v.getTag()).operand;
                 MainHook.openProfileCard(v.getContext(), uin);
             }
         });
         rlayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public boolean onLongClick(final View v) {
+            public boolean onLongClick(View v) {
                 try {
                     CustomDialog dialog = CustomDialog.create(ExfriendListActivity.this);
                     dialog.setTitle("删除记录");
@@ -360,5 +351,5 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
         });
         return rlayout;
     }
-
+    
 }

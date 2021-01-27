@@ -1,14 +1,13 @@
 package me.singleneuron.data;
 
-import androidx.annotation.NonNull;
-import com.qq.taf.jce.JceInputStream;
-import com.qq.taf.jce.JceOutputStream;
-import com.qq.taf.jce.JceStruct;
-import nil.nadph.qnotified.remote.JceId;
-import nil.nadph.qnotified.remote.Utf8JceUtils;
+import androidx.annotation.*;
+
+import com.qq.taf.jce.*;
+
+import nil.nadph.qnotified.remote.*;
 
 public class BugReportArguments extends JceStruct {
-
+    
     @NonNull
     @JceId(0)
     public String key = ""; //must be [a-zA-Z0-9_]{1,63}
@@ -22,7 +21,7 @@ public class BugReportArguments extends JceStruct {
     @JceId(3)
     public String[] choices = Utf8JceUtils.DUMMY_STRING_ARRAY;
 //    @JceId(4)  public boolean multiple;
-
+    
     @Override
     public void writeTo(JceOutputStream os) {
         os.write(key, 0);
@@ -30,7 +29,7 @@ public class BugReportArguments extends JceStruct {
         os.write(description, 2);
         os.write(choices, 3);
     }
-
+    
     @Override
     public void readFrom(JceInputStream is) {
         key = is.read("", 0, true);

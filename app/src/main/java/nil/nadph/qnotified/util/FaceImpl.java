@@ -18,24 +18,21 @@
  */
 package nil.nadph.qnotified.util;
 
-import android.app.Activity;
-import android.graphics.Bitmap;
-import android.view.View;
-import android.widget.ImageView;
+import android.app.*;
+import android.graphics.*;
+import android.view.*;
+import android.widget.*;
 
-import java.lang.ref.WeakReference;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.HashMap;
+import java.lang.ref.*;
+import java.lang.reflect.*;
+import java.util.*;
 
-import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.ui.*;
 
-import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Initiator.*;
 
 public class FaceImpl implements InvocationHandler {
-
+    
     public static final int TYPE_USER = 1;
     public static final int TYPE_TROOP = 4;
     static private WeakReference<FaceImpl> self;
@@ -45,7 +42,7 @@ public class FaceImpl implements InvocationHandler {
     private final HashMap<String, Bitmap> cachedTroopFace;
     private final HashMap<String, WeakReference<ImageView>> registeredView;
     private final Object mFaceDecoder;
-
+    
     private FaceImpl() throws Throwable {
         //private Object faceMgr;
         Object qqAppInterface = Utils.getAppRuntime();
@@ -57,8 +54,12 @@ public class FaceImpl implements InvocationHandler {
             Class cl_rxMsg = load("com/tencent/mobileqq/receipt/ReceiptMessageReadMemberListFragment");
             Field[] fs = cl_rxMsg.getDeclaredFields();
             for (Field f : fs) {
-                if (f.getType().equals(View.class)) continue;
-                if (f.getType().equals(load("com/tencent/mobileqq/app/QQAppInterface"))) continue;
+                if (f.getType().equals(View.class)) {
+                    continue;
+                }
+                if (f.getType().equals(load("com/tencent/mobileqq/app/QQAppInterface"))) {
+                    continue;
+                }
                 class_FaceDecoder = f.getType();
             }
         }
@@ -68,46 +69,56 @@ public class FaceImpl implements InvocationHandler {
         cachedTroopFace = new HashMap<>();
         registeredView = new HashMap<>();
     }
-
+    
     public static FaceImpl getInstance() throws Throwable {
         FaceImpl ret = null;
-        if (self != null) ret = self.get();
+        if (self != null) {
+            ret = self.get();
+        }
         if (ret == null) {
             ret = new FaceImpl();
             self = new WeakReference(ret);
         }
         return ret;
     }
-
+    
     private Object createListener() {
         clz_DecodeTaskCompletionListener = load("com/tencent/mobileqq/avatar/listener" +
-                "/DecodeTaskCompletionListener");
+            "/DecodeTaskCompletionListener");
         if (clz_DecodeTaskCompletionListener == null) {
             clz_DecodeTaskCompletionListener = load("com/tencent/mobileqq/util" +
-                    "/FaceDecoder$DecodeTaskCompletionListener");
+                "/FaceDecoder$DecodeTaskCompletionListener");
         }
         if (clz_DecodeTaskCompletionListener == null) {
             clz_DecodeTaskCompletionListener = load("com/tencent/mobileqq/app/face" +
-                    "/FaceDecoder$DecodeTaskCompletionListener");
+                "/FaceDecoder$DecodeTaskCompletionListener");
         }
         if (clz_DecodeTaskCompletionListener == null) {
             Class[] argt;
             Method[] ms = class_FaceDecoder.getDeclaredMethods();
             for (Method m : ms) {
-                if (!m.getReturnType().equals(void.class)) continue;
+                if (!m.getReturnType().equals(void.class)) {
+                    continue;
+                }
                 argt = m.getParameterTypes();
-                if (argt.length != 1) continue;
-                if (argt[0].equals(load("com/tencent/common/app/AppInterface"))) continue;
+                if (argt.length != 1) {
+                    continue;
+                }
+                if (argt[0].equals(load("com/tencent/common/app/AppInterface"))) {
+                    continue;
+                }
                 clz_DecodeTaskCompletionListener = argt[0];
             }
         }
         return Proxy.newProxyInstance(clz_DecodeTaskCompletionListener.getClassLoader(), new Class[]{clz_DecodeTaskCompletionListener}, this);
     }
-
+    
     @Override
     public Object invoke(Object obj, Method method, Object[] args) throws Throwable {
         Class[] argt = method.getParameterTypes();
-        if (argt.length != 4) return null;
+        if (argt.length != 4) {
+            return null;
+        }
         if (argt[0].equals(int.class) && argt[1].equals(int.class) && argt[2].equals(String.class) && argt[3].equals(Bitmap.class)) {
             onDecodeTaskCompleted((int) args[0], (int) args[1], (String) args[2], (Bitmap) args[3]);
         }
@@ -117,28 +128,38 @@ public class FaceImpl implements InvocationHandler {
     public void onDecodeTaskCompleted(int code, int type, String uin, Bitmap bitmap) {
         //Utils.log(code+","+type+","+uin+","+bitmap);
         if (bitmap != null) {
-            if (type == TYPE_USER) cachedUserFace.put(uin, bitmap);
-            if (type == TYPE_TROOP) cachedTroopFace.put(uin, bitmap);
+            if (type == TYPE_USER) {
+                cachedUserFace.put(uin, bitmap);
+            }
+            if (type == TYPE_TROOP) {
+                cachedTroopFace.put(uin, bitmap);
+            }
             WeakReference<ImageView> ref;
             if ((ref = registeredView.remove(type + " " + uin)) != null) {
                 ImageView v = ref.get();
-                if (v != null) ((Activity) Utils.getContext(v)).runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        v.setImageBitmap(bitmap);
-                    }
-                });
+                if (v != null) {
+                    ((Activity) Utils.getContext(v)).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            v.setImageBitmap(bitmap);
+                        }
+                    });
+                }
             }
         }
     }
-
+    
     public @Nullable
     Bitmap getBitmapFromCache(int type, String uin) {
-        if (type == TYPE_TROOP) return cachedTroopFace.get(uin);
-        if (type == TYPE_USER) return cachedUserFace.get(uin);
+        if (type == TYPE_TROOP) {
+            return cachedTroopFace.get(uin);
+        }
+        if (type == TYPE_USER) {
+            return cachedUserFace.get(uin);
+        }
         return null;
     }
-
+    
     public boolean requestDecodeFace(int type, String uin) {
         try {
             return (boolean) Utils.invoke_virtual_any(mFaceDecoder, uin, type, true, (byte) 0, String.class, int.class, boolean.class, byte.class, boolean.class);
@@ -147,18 +168,19 @@ public class FaceImpl implements InvocationHandler {
             return false;
         }
     }
-
+    
     public boolean registerView(int type, String uin, ImageView v) {
         boolean ret;
-        if (ret = requestDecodeFace(type, uin))
+        if (ret = requestDecodeFace(type, uin)) {
             registeredView.put(type + " " + uin, new WeakReference<>(v));
+        }
         return ret;
     }
-
+    
     public boolean setImageOrRegister(Utils.ContactDescriptor cd, ImageView imgview) {
         return setImageOrRegister(cd.uinType == 1 ? TYPE_TROOP : TYPE_USER, cd.uin, imgview);
     }
-
+    
     public boolean setImageOrRegister(int type, String uin, ImageView imgview) {
         Bitmap bm = getBitmapFromCache(type, uin);
         if (bm == null) {

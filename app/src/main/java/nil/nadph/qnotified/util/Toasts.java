@@ -18,19 +18,18 @@
  */
 package nil.nadph.qnotified.util;
 
-import android.content.Context;
-import android.view.View;
-import android.widget.Toast;
+import android.content.*;
+import android.view.*;
+import android.widget.*;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.Objects;
+import java.lang.reflect.*;
+import java.util.*;
 
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Initiator.*;
+import static nil.nadph.qnotified.util.Utils.*;
 
 /**
  * Use custom toast anywhere
@@ -40,14 +39,14 @@ public class Toasts {
     public static final int TYPE_INFO = 0;
     public static final int TYPE_ERROR = 1;
     public static final int TYPE_SUCCESS = 2;
-
+    
     public static final int LENGTH_SHORT = 0;
     public static final int LENGTH_LONG = 1;
-
+    
     private static Method method_Toast_show;
     private static Method method_Toast_makeText;
     private static Class<?> clazz_QQToast;
-
+    
     /**
      * Make a QQ custom toast.
      *
@@ -77,9 +76,12 @@ public class Toasts {
                         assert clz != null;
                         Field[] fs = clz.getDeclaredFields();
                         for (Field f : fs) {
-                            if (View.class.isAssignableFrom(f.getType())) continue;
-                            if (f.getType().isPrimitive()) continue;
-                            if (f.getType().isInterface()) continue;
+                            if (View.class.isAssignableFrom(f.getType()))
+                                continue;
+                            if (f.getType().isPrimitive())
+                                continue;
+                            if (f.getType().isInterface())
+                                continue;
                             clazz_QQToast = f.getType();
                         }
                     }
@@ -101,8 +103,8 @@ public class Toasts {
                             } catch (NoSuchMethodException e2) {
                                 try {
                                     method_Toast_makeText = clazz_QQToast.getMethod("makeText",
-                                            Context.class,
-                                            int.class, CharSequence.class, int.class);
+                                        Context.class,
+                                        int.class, CharSequence.class, int.class);
                                 } catch (NoSuchMethodException e3) {
                                     throw e;
                                 }
@@ -110,7 +112,7 @@ public class Toasts {
                         }
                     }
                     Object this_QQToast_does_NOT_extend_a_standard_Toast_so_please_do_NOT_cast_it_to_Toast
-                            = method_Toast_makeText.invoke(null, ctx, type, text, duration);
+                        = method_Toast_makeText.invoke(null, ctx, type, text, duration);
                     method_Toast_show.invoke(this_QQToast_does_NOT_extend_a_standard_Toast_so_please_do_NOT_cast_it_to_Toast);
                     // However, the return value of QQToast.show() is a standard Toast
                 } catch (Exception e) {
@@ -120,35 +122,35 @@ public class Toasts {
             }
         });
     }
-
+    
     public static void info(Context ctx, @NonNull CharSequence text, int duration) {
         showToast(ctx, TYPE_INFO, text, duration);
     }
-
+    
     public static void info(Context ctx, @NonNull CharSequence text) {
         showToast(ctx, TYPE_INFO, text, LENGTH_SHORT);
     }
-
+    
     public static void success(Context ctx, @NonNull CharSequence text, int duration) {
         showToast(ctx, TYPE_SUCCESS, text, duration);
     }
-
+    
     public static void success(Context ctx, @NonNull CharSequence text) {
         showToast(ctx, TYPE_SUCCESS, text, LENGTH_SHORT);
     }
-
+    
     public static void error(Context ctx, @NonNull CharSequence text, int duration) {
         showToast(ctx, TYPE_ERROR, text, duration);
     }
-
+    
     public static void error(Context ctx, @NonNull CharSequence text) {
         showToast(ctx, TYPE_ERROR, text, LENGTH_SHORT);
     }
-
+    
     public static void show(Context ctx, @NonNull CharSequence text, int duration) {
         showToast(ctx, TYPE_PLAIN, text, duration);
     }
-
+    
     public static void show(Context ctx, @NonNull CharSequence text) {
         showToast(ctx, TYPE_PLAIN, text, LENGTH_SHORT);
     }

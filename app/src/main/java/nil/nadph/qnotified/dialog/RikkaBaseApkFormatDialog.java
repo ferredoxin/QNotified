@@ -1,80 +1,98 @@
 package nil.nadph.qnotified.dialog;
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.LayoutInflater;
-import android.view.View;
+import android.annotation.*;
+import android.app.*;
+import android.content.*;
+import android.text.*;
+import android.view.*;
 import android.widget.*;
 
-import nil.nadph.qnotified.R;
-import nil.nadph.qnotified.config.ConfigManager;
-import com.rymmmmm.hook.BaseApk;
-import nil.nadph.qnotified.ui.CustomDialog;
+import com.rymmmmm.hook.*;
+
+import java.io.*;
+
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.ui.*;
 import nil.nadph.qnotified.util.NonNull;
 import nil.nadph.qnotified.util.Nullable;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.util.*;
 
-import java.io.IOException;
-
-import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.*;
 
 public class RikkaBaseApkFormatDialog extends RikkaDialog.RikkaConfigItem {
     private static final String DEFAULT_BASE_APK_FORMAT = "%n_%v.apk";
-
+    
     private static final String rq_base_apk_format = "rq_base_apk_format";
     private static final String rq_base_apk_enabled = "rq_base_apk_enabled";
-
+    
     @Nullable
     private AlertDialog dialog;
     @Nullable
     private LinearLayout vg;
-
+    
     private String currentFormat;
     private boolean enableBaseApk;
-
+    
     public RikkaBaseApkFormatDialog(@NonNull RikkaDialog d) {
         super(d);
     }
-
+    
+    public static boolean IsEnabled() {
+        return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_base_apk_enabled);
+    }
+    
+    @Nullable
+    public static String getCurrentBaseApkFormat() {
+        ConfigManager cfg = ConfigManager.getDefaultConfig();
+        if (cfg.getBooleanOrFalse(rq_base_apk_enabled)) {
+            String val = cfg.getString(rq_base_apk_format);
+            if (val == null) {
+                val = DEFAULT_BASE_APK_FORMAT;
+            }
+            return val;
+        }
+        return null;
+    }
+    
     @SuppressLint("InflateParams")
     @Override
     public void onClick(View v) {
         dialog = (AlertDialog) CustomDialog.createFailsafe(v.getContext()).setTitle("BaseApk").setNegativeButton("取消", null)
-                .setPositiveButton("保存", null).create();
+            .setPositiveButton("保存", null).create();
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(false);
-        final Context ctx = dialog.getContext();
+        Context ctx = dialog.getContext();
         vg = (LinearLayout) LayoutInflater.from(ctx).inflate(R.layout.rikka_base_apk_dialog, null);
-        final TextView preview = vg.findViewById(R.id.textViewBaseApkPreview);
-        final TextView input = vg.findViewById(R.id.editTextBaseApkFormat);
-        final CheckBox enable = vg.findViewById(R.id.checkBoxEnableBaseApk);
-        final LinearLayout panel = vg.findViewById(R.id.layoutBaseApkPanel);
+        TextView preview = vg.findViewById(R.id.textViewBaseApkPreview);
+        TextView input = vg.findViewById(R.id.editTextBaseApkFormat);
+        CheckBox enable = vg.findViewById(R.id.checkBoxEnableBaseApk);
+        LinearLayout panel = vg.findViewById(R.id.layoutBaseApkPanel);
         enableBaseApk = ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_base_apk_enabled);
         enable.setChecked(enableBaseApk);
         panel.setVisibility(enableBaseApk ? View.VISIBLE : View.GONE);
         currentFormat = ConfigManager.getDefaultConfig().getString(rq_base_apk_format);
-        if (currentFormat == null) currentFormat = DEFAULT_BASE_APK_FORMAT;
+        if (currentFormat == null) {
+            currentFormat = DEFAULT_BASE_APK_FORMAT;
+        }
         input.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
-
+            
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
-
+            
             @Override
             public void afterTextChanged(Editable s) {
                 String format = s.toString();
                 currentFormat = format;
                 String result = format
-                        .replace("%n", "QNotified")
-                        .replace("%p", Utils.PACKAGE_NAME_SELF)
-                        .replace("%v", Utils.QN_VERSION_NAME)
-                        .replace("%c", String.valueOf(Utils.QN_VERSION_CODE));
+                    .replace("%n", "QNotified")
+                    .replace("%p", Utils.PACKAGE_NAME_SELF)
+                    .replace("%v", Utils.QN_VERSION_NAME)
+                    .replace("%c", String.valueOf(Utils.QN_VERSION_CODE));
                 if (!format.toLowerCase().contains(".apk")) {
                     result += "\n提示:你还没有输入.apk后缀哦";
                 }
@@ -118,35 +136,22 @@ public class RikkaBaseApkFormatDialog extends RikkaDialog.RikkaConfigItem {
                     invalidateStatus();
                     if (enableBaseApk) {
                         BaseApk hook = BaseApk.get();
-                        if (!hook.isInited()) hook.init();
+                        if (!hook.isInited()) {
+                            hook.init();
+                        }
                     }
                 }
             }
         });
     }
-
+    
     @Override
     public boolean isEnabled() {
         return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_base_apk_enabled);
     }
-
-    public static boolean IsEnabled() {
-        return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_base_apk_enabled);
-    }
-
+    
     @Override
     public String getName() {
         return "群上传重命名base.apk";
-    }
-
-    @Nullable
-    public static String getCurrentBaseApkFormat() {
-        ConfigManager cfg = ConfigManager.getDefaultConfig();
-        if (cfg.getBooleanOrFalse(rq_base_apk_enabled)) {
-            String val = cfg.getString(rq_base_apk_format);
-            if (val == null) val = DEFAULT_BASE_APK_FORMAT;
-            return val;
-        }
-        return null;
     }
 }

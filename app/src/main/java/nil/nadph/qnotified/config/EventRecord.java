@@ -18,7 +18,7 @@
  */
 package nil.nadph.qnotified.config;
 
-import java.io.Serializable;
+import java.io.*;
 
 
 public class EventRecord implements Serializable, Cloneable, Comparable {
@@ -44,24 +44,32 @@ public class EventRecord implements Serializable, Cloneable, Comparable {
     public int _friendStatus;
     public String _remark;
     public String _nick;
-
-
+    
+    
     public String getShowStr() {
-        if (_remark != null && _remark.length() > 0) return _remark;
-        else if (_nick != null && _nick.length() > 0) return _nick;
-        else return "" + operand;
+        if (_remark != null && _remark.length() > 0) {
+            return _remark;
+        } else if (_nick != null && _nick.length() > 0) {
+            return _nick;
+        } else {
+            return "" + operand;
+        }
     }
-
+    
     public String getShowStrWithUin() {
-        if (_remark != null && _remark.length() > 0) return _remark + "(" + operand + ")";
-        else if (_nick != null && _nick.length() > 0) return _nick + "(" + operand + ")";
-        else return "" + operand;
+        if (_remark != null && _remark.length() > 0) {
+            return _remark + "(" + operand + ")";
+        } else if (_nick != null && _nick.length() > 0) {
+            return _nick + "(" + operand + ")";
+        } else {
+            return "" + operand;
+        }
     }
-
+    
     @Override
     public int compareTo(Object obj) {
         EventRecord ev = (EventRecord) obj;
-        return (int) (ev.timeRangeEnd - this.timeRangeEnd);
+        return (int) (ev.timeRangeEnd - timeRangeEnd);
     }
 }
 	

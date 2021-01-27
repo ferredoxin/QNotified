@@ -18,25 +18,20 @@
  */
 package com.rymmmmm.hook;
 
-import android.content.Intent;
-import android.os.Looper;
-import android.widget.Toast;
+import android.content.*;
+import android.os.*;
+import android.widget.*;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.hook.BaseDelayableHook;
-import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.NonNull;
-import nil.nadph.qnotified.util.Utils;
+import de.robv.android.xposed.*;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.hook.*;
+import nil.nadph.qnotified.step.*;
+import nil.nadph.qnotified.util.*;
 
-import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 //屏蔽Diy卡片
@@ -44,39 +39,61 @@ public class IgnoreDiyCard extends BaseDelayableHook {
     public static final String rq_ignore_diy_card = "rq_ignore_diy_card";
     private static final IgnoreDiyCard self = new IgnoreDiyCard();
     private boolean isInit = false;
-
+    
     private IgnoreDiyCard() {
     }
-
+    
     @NonNull
     public static IgnoreDiyCard get() {
         return self;
     }
-
+    
     @Override
     public boolean init() {
-        if (isInit) return true;
+        if (isInit) {
+            return true;
+        }
         try {
             for (Method m : load("com.tencent.mobileqq.activity.FriendProfileCardActivity").getDeclaredMethods()) {
                 Class<?>[] argt = m.getParameterTypes();
                 if (Utils.getHostVersionCode32() <= 1406) {
                     if (m.getName().equals("a") && !Modifier.isStatic(m.getModifiers()) && m.getReturnType().equals(void.class)) {
-                        if (argt.length != 2) continue;
-                        if (argt[1] != boolean.class) continue;
-                        if (argt[0].getSuperclass() != Object.class) continue;
-                    } else continue;
+                        if (argt.length != 2) {
+                            continue;
+                        }
+                        if (argt[1] != boolean.class) {
+                            continue;
+                        }
+                        if (argt[0].getSuperclass() != Object.class) {
+                            continue;
+                        }
+                    } else {
+                        continue;
+                    }
                 } else {
                     if (m.getName().equals("b") && !Modifier.isStatic(m.getModifiers()) && m.getReturnType().equals(void.class)) {
-                        if (argt.length != 1) continue;
-                        if (argt[0].getSuperclass() == Intent.class) continue;
-                        if (argt[0].getSuperclass() != Object.class) continue;
-                    } else continue;
+                        if (argt.length != 1) {
+                            continue;
+                        }
+                        if (argt[0].getSuperclass() == Intent.class) {
+                            continue;
+                        }
+                        if (argt[0].getSuperclass() != Object.class) {
+                            continue;
+                        }
+                    } else {
+                        continue;
+                    }
                 }
                 XposedBridge.hookMethod(m, new XC_MethodHook(49) {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        if (LicenseStatus.sDisableCommonHooks) return;
-                        if (!isEnabled()) return;
+                        if (LicenseStatus.sDisableCommonHooks) {
+                            return;
+                        }
+                        if (!isEnabled()) {
+                            return;
+                        }
                         Class<?> _ProfileCardInfo = ((Method) param.method).getParameterTypes()[0];
                         Object info = Utils.iget_object_or_null(param.thisObject, "a", _ProfileCardInfo);
                         if (info != null) {
@@ -103,22 +120,32 @@ public class IgnoreDiyCard extends BaseDelayableHook {
             return false;
         }
     }
-
+    
     @Override
     public Step[] getPreconditions() {
         return new Step[0];
     }
-
+    
     @Override
     public int getEffectiveProc() {
         return SyncUtils.PROC_MAIN;
     }
-
+    
     @Override
     public boolean isInited() {
         return isInit;
     }
-
+    
+    @Override
+    public boolean isEnabled() {
+        try {
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_ignore_diy_card);
+        } catch (Exception e) {
+            log(e);
+            return false;
+        }
+    }
+    
     @Override
     public void setEnabled(boolean enabled) {
         try {
@@ -137,16 +164,6 @@ public class IgnoreDiyCard extends BaseDelayableHook {
                     }
                 });
             }
-        }
-    }
-
-    @Override
-    public boolean isEnabled() {
-        try {
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_ignore_diy_card);
-        } catch (Exception e) {
-            log(e);
-            return false;
         }
     }
 }

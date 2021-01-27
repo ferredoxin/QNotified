@@ -13,32 +13,32 @@ public class GroupMessageParam {
      * 消息内容
      */
     public String content;
-
+    
     public GroupMessageParam setSenderUin(String uin) {
-        this.senderuin = uin;
+        senderuin = uin;
         return this;
     }
-
+    
     public GroupMessageParam setSenderUin(long uin) {
-        this.senderuin = uin + "";
+        senderuin = uin + "";
         return this;
     }
-
+    
     public GroupMessageParam setUin(String uin) {
         this.uin = uin;
         return this;
     }
-
+    
     public GroupMessageParam setUin(long uin) {
         this.uin = uin + "";
         return this;
     }
-
+    
     public GroupMessageParam setContent(String content) {
         this.content = content;
         return this;
     }
-
+    
     public GroupMessageParam create() {
         return this;
     }

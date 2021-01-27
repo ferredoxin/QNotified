@@ -18,61 +18,49 @@
  */
 package nil.nadph.qnotified.activity;
 
-import android.annotation.SuppressLint;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.os.Bundle;
-import android.os.Looper;
-import android.os.MessageQueue;
-import android.text.InputType;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
+import android.annotation.*;
+import android.app.*;
+import android.content.*;
+import android.content.res.*;
+import android.graphics.*;
+import android.os.*;
+import android.text.*;
+import android.util.*;
+import android.view.*;
+import android.widget.*;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.tencent.mobileqq.widget.BounceScrollView;
+import com.google.android.material.dialog.*;
+import com.tencent.mobileqq.widget.*;
 
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import me.nextalone.hook.EnableQLog;
-import me.singleneuron.activity.BugReportActivity;
-import me.singleneuron.data.CardMsgCheckResult;
-import me.singleneuron.hook.DebugDump;
-import me.singleneuron.qn_kernel.tlb.ConfigTable;
-import me.singleneuron.util.KotlinUtilsKt;
-import nil.nadph.qnotified.ExfriendManager;
-import nil.nadph.qnotified.R;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.config.EventRecord;
-import nil.nadph.qnotified.config.FriendRecord;
-import nil.nadph.qnotified.lifecycle.ActProxyMgr;
-import nil.nadph.qnotified.remote.GetUserStatusResp;
-import nil.nadph.qnotified.ui.CustomDialog;
-import nil.nadph.qnotified.ui.ResUtils;
+import me.nextalone.hook.*;
+import me.singleneuron.activity.*;
+import me.singleneuron.data.*;
+import me.singleneuron.hook.*;
+import me.singleneuron.qn_kernel.tlb.*;
+import me.singleneuron.util.*;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.lifecycle.*;
+import nil.nadph.qnotified.remote.*;
+import nil.nadph.qnotified.ui.*;
 import nil.nadph.qnotified.util.*;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static android.view.ViewGroup.LayoutParams.*;
+import static nil.nadph.qnotified.lifecycle.ActProxyMgr.*;
 import static nil.nadph.qnotified.ui.ViewBuilder.*;
-import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTION_EXFRIEND_LIST;
-import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTIVITY_PROXY_ACTION;
 import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressLint("Registered")
 public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
+    public static void quitLooper() throws Exception {
+        Looper looper = Looper.getMainLooper();
+        MessageQueue queue = (MessageQueue) iget_object_or_null(looper, "mQueue");
+        iput_object(queue, "mQuitAllowed", true);
+        looper.quit();
+    }
+    
     @Override
     public boolean doOnCreate(Bundle savedInstanceState) {
         super.doOnCreate(savedInstanceState);
@@ -116,7 +104,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
         ll.addView(newListItemButton(this, "强制重新生成日志历史记录", null, null, new View.OnClickListener() {
             final String LAST_TRACE_HASHCODE_CONFIG = "lastTraceHashcode";
             final String LAST_TRACE_DATA_CONFIG = "lastTraceDate";
-        
+    
             @Override
             public void onClick(View v) {
                 try {
@@ -125,7 +113,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                     configManager.remove(LAST_TRACE_HASHCODE_CONFIG);
                     configManager.save();
                 } catch (Exception e) {
-                    Utils.runOnUiThread(() -> Toast.makeText(Utils.getApplication(),e.toString(),Toast.LENGTH_LONG).show());
+                    Utils.runOnUiThread(() -> Toast.makeText(Utils.getApplication(), e.toString(), Toast.LENGTH_LONG).show());
                     Utils.log(e);
                 }
             }
@@ -137,11 +125,11 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                 EditText editText = new EditText(TroubleshootActivity.this);
                 editText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
                 builder.setView(editText)
-                        .setPositiveButton("确定", (dialog, which) -> new Thread(() -> {
-                            String msg = editText.getText().toString();
-                            CardMsgCheckResult result = KotlinUtilsKt.checkCardMsg(msg);
-                            Utils.runOnUiThread(() -> Toast.makeText(TroubleshootActivity.this, result.toString(), Toast.LENGTH_LONG).show());
-                        }).start()).create().show();
+                    .setPositiveButton("确定", (dialog, which) -> new Thread(() -> {
+                        String msg = editText.getText().toString();
+                        CardMsgCheckResult result = KotlinUtilsKt.checkCardMsg(msg);
+                        Utils.runOnUiThread(() -> Toast.makeText(TroubleshootActivity.this, result.toString(), Toast.LENGTH_LONG).show());
+                    }).start()).create().show();
             }
         }));
         ll.addView(newListItemButton(this, "打开X5调试页面", "内置浏览器调试页面", null, new View.OnClickListener() {
@@ -231,18 +219,20 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                     nm.notify(ExfriendManager.ID_EX_NOTIFY, n);
                 } catch (Throwable e) {
                     CustomDialog.createFailsafe(TroubleshootActivity.this).setCancelable(true).setPositiveButton(getString(android.R.string.ok), null)
-                            .setTitle(getShort$Name(e)).setMessage(Log.getStackTraceString(e)).show();
+                        .setTitle(getShort$Name(e)).setMessage(Log.getStackTraceString(e)).show();
                 }
             }
         }));
         ll.addView(subtitle(this, ""));
-
+        
         ll.addView(subtitle(this, "反混淆信息"));
         for (int i = 1; i <= DexKit.DEOBF_NUM_C; i++) {
             try {
                 String tag = DexKit.a(i);
                 String orig = DexKit.c(i);
-                if (orig == null) continue;
+                if (orig == null) {
+                    continue;
+                }
                 orig = orig.replace("/", ".");
                 String shortName = Utils.getShort$Name(orig);
                 String currName = "(void*)0";
@@ -251,7 +241,9 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                     currName = md.toString();
                 } else {
                     Class<?> c = DexKit.loadClassFromCache(i);
-                    if (c != null) currName = c.getName();
+                    if (c != null) {
+                        currName = c.getName();
+                    }
                 }
                 ll.addView(subtitle(this, "  [" + i + "]" + shortName + "\n" + orig + "\n= " + currName));
             } catch (Throwable e) {
@@ -263,7 +255,9 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
             try {
                 String tag = DexKit.a(i);
                 String orig = DexKit.c(i);
-                if (orig == null) continue;
+                if (orig == null) {
+                    continue;
+                }
                 orig = orig.replace("/", ".");
                 String shortName = Utils.getShort$Name(orig);
                 String currName = "(void*)0";
@@ -272,38 +266,40 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                     currName = md.toString();
                 } else {
                     Class<?> c = DexKit.loadClassFromCache(i);
-                    if (c != null) currName = c.getName();
+                    if (c != null) {
+                        currName = c.getName();
+                    }
                 }
                 ll.addView(subtitle(this, "  [" + i + "]" + shortName + "\n" + orig + "\n= " + currName));
             } catch (Throwable e) {
                 ll.addView(subtitle(this, "  [" + i + "]" + e.toString()));
             }
         }
-
-        Set<Map.Entry<String,Object>> set = ConfigTable.INSTANCE.getCacheMap().entrySet();
+        
+        Set<Map.Entry<String, Object>> set = ConfigTable.INSTANCE.getCacheMap().entrySet();
         int i = 40001;
-        for (Map.Entry<String,Object> entry : set) {
+        for (Map.Entry<String, Object> entry : set) {
             try {
                 String shortName = entry.getKey();
-                String currName = entry.getValue()+"";
+                String currName = entry.getValue() + "";
                 ll.addView(subtitle(this, "  [" + i + "]" + shortName + "\n" + currName));
             } catch (Exception e) {
                 e.printStackTrace();
             }
             i++;
         }
-
+        
         ll.addView(subtitle(this, "SystemClassLoader\n" + ClassLoader.getSystemClassLoader()
-                + "\nContext.getClassLoader()\n" + getClassLoader()
-                + "\nThread.getContextClassLoader()\n" + Thread.currentThread().getContextClassLoader()
-                + "\nInitiator.getHostClassLoader()\n" + Initiator.getHostClassLoader()));
+            + "\nContext.getClassLoader()\n" + getClassLoader()
+            + "\nThread.getContextClassLoader()\n" + Thread.currentThread().getContextClassLoader()
+            + "\nInitiator.getHostClassLoader()\n" + Initiator.getHostClassLoader()));
         long ts = Utils.getBuildTimestamp();
         ll.addView(subtitle(this, "Build Time: " + (ts > 0 ? new Date(ts).toString() : "unknown")));
         String info;
         try {
             Natives.load(this);
             info = "pagesize=" + Natives.getpagesize() + ", sizeof(void*)=" + Natives.sizeofptr() + ", addr="
-                    + Long.toHexString(Natives.dlopen("libnatives.so", Natives.RTLD_NOLOAD));
+                + Long.toHexString(Natives.dlopen("libnatives.so", Natives.RTLD_NOLOAD));
         } catch (Throwable e3) {
             log(e3);
             info = e3.toString();
@@ -317,7 +313,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
         setContentBackgroundDrawable(ResUtils.skin_background);
         return true;
     }
-
+    
     public View.OnClickListener clickToRefreshUserStatus() {
         return new View.OnClickListener() {
             @Override
@@ -357,7 +353,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                             @Override
                             public void run() {
                                 CustomDialog.createFailsafe(view.getContext()).setTitle(finalT == null ? "状态" : "失败")
-                                        .setCancelable(true).setMessage(finalMsg).setPositiveButton("确认", null).show();
+                                    .setCancelable(true).setMessage(finalMsg).setPositiveButton("确认", null).show();
                             }
                         });
                     }
@@ -365,7 +361,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
             }
         };
     }
-
+    
     public View.OnClickListener clickToWipeDeletedFriends() {
         return new View.OnClickListener() {
             @Override
@@ -396,14 +392,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
             }
         };
     }
-
-    public static void quitLooper() throws Exception {
-        Looper looper = Looper.getMainLooper();
-        MessageQueue queue = (MessageQueue) iget_object_or_null(looper, "mQueue");
-        iput_object(queue, "mQuitAllowed", true);
-        looper.quit();
-    }
-
+    
     public View.OnClickListener clickToWipeAllFriends() {
         return new View.OnClickListener() {
             @Override
@@ -430,7 +419,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
             }
         };
     }
-
+    
     public View.OnClickListener clickToCleanCache() {
         return new View.OnClickListener() {
             @Override
@@ -457,7 +446,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
             }
         };
     }
-
+    
     public View.OnClickListener clickToReset() {
         return new View.OnClickListener() {
             @Override
@@ -484,5 +473,5 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
             }
         };
     }
-
+    
 }

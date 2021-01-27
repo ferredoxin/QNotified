@@ -18,41 +18,36 @@
  */
 package nil.nadph.qnotified.activity;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.ParcelFileDescriptor;
-import android.provider.OpenableColumns;
-import android.widget.LinearLayout;
+import android.annotation.*;
+import android.app.*;
+import android.content.*;
+import android.database.*;
+import android.net.*;
+import android.os.*;
+import android.provider.*;
+import android.widget.*;
 
-import java.io.FileDescriptor;
+import java.io.*;
 
-import nil.nadph.qnotified.config.ConfigItems;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.dialog.ScriptSettingDialog;
-import nil.nadph.qnotified.script.QNScript;
-import nil.nadph.qnotified.script.QNScriptManager;
-import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.ui.ViewBuilder;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.dialog.*;
+import nil.nadph.qnotified.script.*;
+import nil.nadph.qnotified.ui.*;
+import nil.nadph.qnotified.util.*;
 
-import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressLint("Registered")
 public class ManageScriptsActivity extends IphoneTitleBarActivityCompat {
-
+    
     private final int REQUEST_CODE = 114514;
-
+    
     @Override
     public boolean doOnCreate(Bundle bundle) {
         super.doOnCreate(bundle);
         LinearLayout main = new LinearLayout(this);
         main.setOrientation(LinearLayout.VERTICAL);
-
+        
         main.addView(ViewBuilder.newListItemSwitch(this, "总开关(关闭后所有脚本均不生效)", null, ConfigManager.getDefaultConfig().getBooleanOrDefault(ConfigItems.qn_script_global, false), QNScriptManager::changeGlobal));
         main.addView(ViewBuilder.newListItemButton(this, "导入 ...", null, null, v -> {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -70,7 +65,7 @@ public class ManageScriptsActivity extends IphoneTitleBarActivityCompat {
         setContentBackgroundDrawable(ResUtils.skin_background);
         return true;
     }
-
+    
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -81,7 +76,7 @@ public class ManageScriptsActivity extends IphoneTitleBarActivityCompat {
             }
             Uri uri = data.getData(); // 获取用户选择文件的URI
             if (uri != null) {
-                ContentResolver resolver = this.getContentResolver();
+                ContentResolver resolver = getContentResolver();
                 Cursor c = resolver.query(uri, null, null, null, null);
                 if (c == null) {
                     String path = uri.getPath();
@@ -152,8 +147,8 @@ public class ManageScriptsActivity extends IphoneTitleBarActivityCompat {
         }
         cursor.close();*/
     }
-
-
+    
+    
     private void addAllScript(LinearLayout main) {
         for (QNScript qs : QNScriptManager.getScripts()) {
             String name = qs.getName() == null ? "出错" : qs.getName();

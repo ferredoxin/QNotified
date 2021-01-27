@@ -18,36 +18,32 @@
  */
 package nil.nadph.qnotified.activity;
 
-import android.annotation.SuppressLint;
-import android.os.Bundle;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import com.tencent.mobileqq.widget.BounceScrollView;
-import me.kyuubiran.hook.RemoveRedDot;
-import me.kyuubiran.hook.testhook.CutMessage;
-import me.nextalone.hook.ForcedSendOriginalPhoto;
-import nil.nadph.qnotified.hook.ChatTailHook;
-import nil.nadph.qnotified.hook.MutePokePacket;
-import nil.nadph.qnotified.hook.PttForwardHook;
-import nil.nadph.qnotified.script.QNScriptManager;
-import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.Utils;
+import android.annotation.*;
+import android.os.*;
+import android.view.*;
+import android.widget.*;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import com.tencent.mobileqq.widget.*;
+
+import me.kyuubiran.hook.*;
+import me.kyuubiran.hook.testhook.*;
+import me.nextalone.hook.*;
+import nil.nadph.qnotified.hook.*;
+import nil.nadph.qnotified.script.*;
+import nil.nadph.qnotified.ui.*;
+import nil.nadph.qnotified.util.*;
+
+import static android.view.ViewGroup.LayoutParams.*;
+import static nil.nadph.qnotified.lifecycle.ActProxyMgr.*;
 import static nil.nadph.qnotified.ui.ViewBuilder.*;
-import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTION_CHAT_TAIL_CONFIG_ACTIVITY;
-import static nil.nadph.qnotified.util.Utils.dip2px;
+import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressLint("Registered")
 public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
-
+    
     TextView __tv_chat_tail_status;
     TextView __js_status;
-
+    
     @Override
     public boolean doOnCreate(Bundle bundle) {
         super.doOnCreate(bundle);
@@ -105,12 +101,12 @@ public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
         setContentView(bounceScrollView);
         LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);
         _lp_fat.weight = 1;
-
+        
         setContentBackgroundDrawable(ResUtils.skin_background);
         setTitle("Beta测试性功能");
         return true;
     }
-
+    
     @Override
     protected void onResume() {
         super.onResume();
@@ -119,7 +115,9 @@ public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
             // 避免过长影响美观
             text = "..." + text.substring(text.length() - 3);
         }
-        if (text == null) text = "[未启用]";
+        if (text == null) {
+            text = "[未启用]";
+        }
         __tv_chat_tail_status.setText(text);
         if (__js_status != null) {
             __js_status.setText(QNScriptManager.getEnableCount() + "/" + QNScriptManager.getAllCount());

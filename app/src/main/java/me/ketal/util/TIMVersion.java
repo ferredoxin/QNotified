@@ -1,7 +1,7 @@
 package me.ketal.util;
 
 public class TIMVersion {
-
+    
     public static final long TIM_1_0_0 = 664;
     public static final long TIM_1_0_5 = 910;
     public static final long TIM_1_1_0 = 920;

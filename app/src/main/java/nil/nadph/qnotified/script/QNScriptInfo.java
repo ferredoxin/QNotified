@@ -1,8 +1,7 @@
 package nil.nadph.qnotified.script;
 
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class QNScriptInfo {
     /**
@@ -25,7 +24,7 @@ public class QNScriptInfo {
      * 脚本简介
      */
     public final String decs;
-
+    
     public QNScriptInfo(String name, String label, String author, String version, String decs) {
         this.name = name;
         this.label = label;
@@ -33,7 +32,7 @@ public class QNScriptInfo {
         this.version = version;
         this.decs = decs;
     }
-
+    
     public static QNScriptInfo getInfo(String code) {
         String execute = code.replace(" ", "");
         if (!execute.startsWith("//InfoStart") && !execute.contains("//InfoEnd")) {
@@ -73,46 +72,46 @@ public class QNScriptInfo {
         }
         return builder.build();
     }
-
+    
     public static class Builder {
         private String author;
         private String name;
         private String label;
         private String version;
         private String decs;
-
+        
         public static Builder builder() {
             return new Builder();
         }
-
+        
         public Builder setAuthor(String value) {
-            this.author = value;
+            author = value;
             return this;
         }
-
+        
         public Builder setName(String value) {
-            this.name = value;
+            name = value;
             return this;
         }
-
+        
         public Builder setLabel(String value) {
-            this.label = value;
+            label = value;
             return this;
         }
-
+        
         public Builder setVersion(String value) {
-            this.version = value;
+            version = value;
             return this;
         }
-
+        
         public Builder setDecs(String value) {
-            this.decs = value;
+            decs = value;
             return this;
         }
-
+        
         public QNScriptInfo build() {
             return new QNScriptInfo(name, label, author, version, decs);
         }
-
+        
     }
 }

@@ -18,54 +18,69 @@
  */
 package nil.nadph.qnotified.hook;
 
-import android.app.Application;
-import android.os.Looper;
-import android.widget.Toast;
+import android.app.*;
+import android.os.*;
+import android.widget.*;
 
-import java.io.File;
+import java.io.*;
 
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.step.*;
+import nil.nadph.qnotified.util.*;
 
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class DefaultBubbleHook extends BaseDelayableHook {
     private static final DefaultBubbleHook self = new DefaultBubbleHook();
-
+    
     private DefaultBubbleHook() {
     }
-
+    
     public static DefaultBubbleHook get() {
         return self;
     }
-
+    
     @Override
     public boolean init() {
         return true;
     }
-
+    
     @Override
     public Step[] getPreconditions() {
         return new Step[0];
     }
-
+    
     @Override
     public int getEffectiveProc() {
         return SyncUtils.PROC_MAIN;
     }
-
+    
     @Override
     public boolean isInited() {
         return true;
     }
-
+    
     @Override
     public boolean isValid() {
         Application app = getApplication();
         return app == null || !isTim(app);
     }
-
+    
+    @Override
+    public boolean isEnabled() {
+        try {
+            Application app = getApplication();
+            if (app != null && isTim(app)) {
+                return false;
+            }
+            File dir = new File(app.getFilesDir().getAbsolutePath() + "/bubble_info");
+            return !dir.exists() || !dir.canRead();
+        } catch (Exception e) {
+            log(e);
+            return false;
+        }
+    }
+    
     @Override
     public void setEnabled(boolean enabled) {
         try {
@@ -95,19 +110,6 @@ public class DefaultBubbleHook extends BaseDelayableHook {
                     }
                 });
             }
-        }
-    }
-
-    @Override
-    public boolean isEnabled() {
-        try {
-            Application app = getApplication();
-            if (app != null && isTim(app)) return false;
-            File dir = new File(app.getFilesDir().getAbsolutePath() + "/bubble_info");
-            return !dir.exists() || !dir.canRead();
-        } catch (Exception e) {
-            log(e);
-            return false;
         }
     }
 }

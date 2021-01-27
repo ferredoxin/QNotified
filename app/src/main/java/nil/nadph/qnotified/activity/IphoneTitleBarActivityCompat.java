@@ -18,35 +18,30 @@
  */
 package nil.nadph.qnotified.activity;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.ComponentName;
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.TextView;
+import android.annotation.*;
+import android.app.*;
+import android.content.*;
+import android.graphics.drawable.*;
+import android.os.*;
+import android.view.*;
+import android.widget.*;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.app.*;
 
-import com.tencent.mobileqq.app.IphoneTitleBarActivity;
+import com.tencent.mobileqq.app.*;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 
-import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.util.CliOper;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.ui.*;
+import nil.nadph.qnotified.util.*;
 
-import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTIVITY_PROXY_ACTION;
-import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
-@SuppressWarnings("deprecation")
 @SuppressLint("Registered")
 public class IphoneTitleBarActivityCompat extends IphoneTitleBarActivity {
-
+    
     @Override
     public boolean doOnCreate(Bundle bundle) {
         boolean ret = super.doOnCreate(bundle);
@@ -65,12 +60,12 @@ public class IphoneTitleBarActivityCompat extends IphoneTitleBarActivity {
         CliOper.enterModuleActivity(Utils.getShort$Name(this));
         return ret;
     }
-
+    
     //@Override actually
     public boolean isWrapContent() {
         return true;
     }
-
+    
     @SuppressLint("ResourceType")
     public void setContentBackgroundDrawable(Drawable d) {
         try {
@@ -79,7 +74,7 @@ public class IphoneTitleBarActivityCompat extends IphoneTitleBarActivity {
             log(e);
         }
     }
-
+    
     @Override
     public View getRightTextView() {
         try {
@@ -120,7 +115,7 @@ public class IphoneTitleBarActivityCompat extends IphoneTitleBarActivity {
             return null;
         }
     }
-
+    
     public View getLeftTextView() {
         Class<IphoneTitleBarActivity> cl = IphoneTitleBarActivity.class;
         Field f;
@@ -156,7 +151,7 @@ public class IphoneTitleBarActivityCompat extends IphoneTitleBarActivity {
         }
         return null;
     }
-
+    
     public void setRightButton(String text, View.OnClickListener l) {
         TextView btn = (TextView) getRightTextView();
         if (btn != null) {
@@ -169,7 +164,7 @@ public class IphoneTitleBarActivityCompat extends IphoneTitleBarActivity {
             }
         }
     }
-
+    
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
@@ -180,12 +175,12 @@ public class IphoneTitleBarActivityCompat extends IphoneTitleBarActivity {
         }
         super.onRestoreInstanceState(savedInstanceState);
     }
-
+    
     @Override
     public ClassLoader getClassLoader() {
         return IphoneTitleBarActivityCompat.class.getClassLoader();
     }
-
+    
     @Override
     public void startActivityForResult(Intent intent, int requestCode, @Nullable Bundle options) {
         if (intent != null && !intent.hasExtra("fling_action_key")) {

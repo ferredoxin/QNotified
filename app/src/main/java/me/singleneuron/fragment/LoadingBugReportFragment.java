@@ -1,20 +1,20 @@
 package me.singleneuron.fragment;
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.os.*;
+import android.view.*;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import nil.nadph.qnotified.databinding.FragmentLoadingBugReportBinding;
-import nil.nadph.qnotified.util.Utils;
+import androidx.fragment.app.*;
+
+import nil.nadph.qnotified.databinding.*;
+import nil.nadph.qnotified.util.*;
 
 public class LoadingBugReportFragment extends Fragment {
-
+    
     FragmentLoadingBugReportBinding binding;
     Runnable mRunnable;
-
+    
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -31,7 +31,7 @@ public class LoadingBugReportFragment extends Fragment {
         });
         return binding.getRoot();
     }
-
+    
     public void onError(String string) {
         Utils.runOnUiThread(new Runnable() {
             @Override
@@ -43,7 +43,7 @@ public class LoadingBugReportFragment extends Fragment {
             }
         });
     }
-
+    
     public void setOnRetry(Runnable runnable) {
         mRunnable = runnable;
     }

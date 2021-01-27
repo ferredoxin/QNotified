@@ -18,35 +18,33 @@
  */
 package nil.nadph.qnotified.hook;
 
-import android.os.Looper;
-import android.widget.Toast;
+import android.os.*;
+import android.widget.*;
 
-import de.robv.android.xposed.XC_MethodHook;
-import me.singleneuron.qn_kernel.tlb.TIMConfigTable;
-import me.singleneuron.qn_kernel.tlb.ConfigTable;
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.Utils;
+import de.robv.android.xposed.*;
+import me.singleneuron.qn_kernel.tlb.*;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.step.*;
+import nil.nadph.qnotified.util.*;
 
-import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
+import static de.robv.android.xposed.XposedHelpers.*;
+import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class ReplyNoAtHook extends BaseDelayableHook {
-
+    
     public static final String qn_disable_auto_at = "qn_disable_auto_at";
     private static final ReplyNoAtHook self = new ReplyNoAtHook();
     private boolean inited = false;
-
+    
     private ReplyNoAtHook() {
     }
-
+    
     public static ReplyNoAtHook get() {
         return self;
     }
-
+    
     /**
      * 813 1246 k
      * 815 1258 l
@@ -60,7 +58,8 @@ public class ReplyNoAtHook extends BaseDelayableHook {
      */
     @Override
     public boolean init() {
-        if (inited) return true;
+        if (inited)
+            return true;
         try {
             String method = ConfigTable.INSTANCE.getConfig(ReplyNoAtHook.class.getSimpleName());
             /*int ver = getHostVersionCode32();
@@ -77,14 +76,18 @@ public class ReplyNoAtHook extends BaseDelayableHook {
             } else if (ver >= 1246) {
                 method = "k";
             }*/
-            if (method == null) return false;
+            if (method == null)
+                return false;
             findAndHookMethod(_BaseChatPie(), method, boolean.class, new XC_MethodHook(49) {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.sDisableCommonHooks) return;
-                    if (!isEnabled()) return;
+                    if (LicenseStatus.sDisableCommonHooks)
+                        return;
+                    if (!isEnabled())
+                        return;
                     boolean p0 = (boolean) param.args[0];
-                    if (!p0) param.setResult(null);
+                    if (!p0)
+                        param.setResult(null);
                 }
             });
             inited = true;
@@ -94,22 +97,32 @@ public class ReplyNoAtHook extends BaseDelayableHook {
             return false;
         }
     }
-
+    
     @Override
     public Step[] getPreconditions() {
         return new Step[0];
     }
-
+    
     @Override
     public int getEffectiveProc() {
         return SyncUtils.PROC_MAIN;
     }
-
+    
     @Override
     public boolean isInited() {
         return inited;
     }
-
+    
+    @Override
+    public boolean isEnabled() {
+        try {
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_disable_auto_at);
+        } catch (Exception e) {
+            log(e);
+            return false;
+        }
+    }
+    
     @Override
     public void setEnabled(boolean enabled) {
         try {
@@ -128,16 +141,6 @@ public class ReplyNoAtHook extends BaseDelayableHook {
                     }
                 });
             }
-        }
-    }
-
-    @Override
-    public boolean isEnabled() {
-        try {
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_disable_auto_at);
-        } catch (Exception e) {
-            log(e);
-            return false;
         }
     }
 }

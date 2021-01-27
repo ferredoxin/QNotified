@@ -2,8 +2,7 @@ package nil.nadph.qnotified.util;
 
 import androidx.annotation.NonNull;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Utils stolen from com.bug.zqq
@@ -11,7 +10,7 @@ import java.util.Map;
  * @author BUG
  */
 public class BugUtils {
-
+    
     /**
      * @param size in bytes
      * @return A human readable string for the size
@@ -32,8 +31,8 @@ public class BugUtils {
         map.put(1048576L, "MB");
         map.put(1024L, "KB");
         for (Map.Entry<Long, String> entry : map.entrySet()) {
-            long longValue = (Long) entry.getKey();
-            String str = (String) entry.getValue();
+            long longValue = entry.getKey();
+            String str = entry.getValue();
             if (size >= longValue) {
                 String format = String.format("%.2f", ((double) size) / ((double) longValue));
                 int indexOf = format.indexOf(".00");

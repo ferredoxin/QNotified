@@ -18,49 +18,33 @@
  */
 package nil.nadph.qnotified.activity;
 
-import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Looper;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.content.*;
+import android.content.pm.*;
+import android.net.*;
+import android.os.*;
+import android.view.*;
+import android.widget.*;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.*;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.res.ResourcesCompat;
+import androidx.core.content.res.*;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Date;
+import java.io.*;
+import java.util.*;
 
-import me.singleneuron.util.HookStatue;
-import nil.nadph.qnotified.HookEntry;
-import nil.nadph.qnotified.R;
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.databinding.MainV2Binding;
-import nil.nadph.qnotified.lifecycle.JumpActivityEntryHook;
-import nil.nadph.qnotified.util.Natives;
-import nil.nadph.qnotified.util.UiThread;
-import nil.nadph.qnotified.util.Utils;
+import me.singleneuron.util.*;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.databinding.*;
+import nil.nadph.qnotified.lifecycle.*;
+import nil.nadph.qnotified.util.*;
 
 public class ConfigV2Activity extends AppCompatActivity {
-
+    
+    private static final String ALIAS_ACTIVITY_NAME = "nil.nadph.qnotified.activity.ConfigV2ActivityAlias";
     private final Looper mainLooper = Looper.getMainLooper();
     private String dbgInfo = "";
     private MainV2Binding mainV2Binding = null;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,8 +54,8 @@ public class ConfigV2Activity extends AppCompatActivity {
         String str = "";
         try {
             str += "SystemClassLoader:" + ClassLoader.getSystemClassLoader() +
-                    "\nActiveModuleVersion:" + Utils.getActiveModuleVersion()
-                    + "\nThisVersion:" + Utils.QN_VERSION_NAME + "";
+                "\nActiveModuleVersion:" + Utils.getActiveModuleVersion()
+                + "\nThisVersion:" + Utils.QN_VERSION_NAME + "";
         } catch (Throwable r) {
             str += r;
         }
@@ -97,8 +81,8 @@ public class ConfigV2Activity extends AppCompatActivity {
             long ts = Utils.getBuildTimestamp();
             delta = System.currentTimeMillis() - delta;
             dbgInfo += "\nBuild Time: " + (ts > 0 ? new Date(ts).toString() : "unknown") + ", " +
-                    "delta=" + delta + "ms\n" +
-                    "SUPPORTED_ABIS=" + Arrays.toString(Build.SUPPORTED_ABIS) + "\npageSize=" + Natives.getpagesize();
+                "delta=" + delta + "ms\n" +
+                "SUPPORTED_ABIS=" + Arrays.toString(Build.SUPPORTED_ABIS) + "\npageSize=" + Natives.getpagesize();
         } catch (Throwable e) {
             dbgInfo += "\n" + e.toString();
         }
@@ -108,11 +92,11 @@ public class ConfigV2Activity extends AppCompatActivity {
         ImageView frameIcon = mainV2Binding.mainV2ActivationStatusIcon;
         TextView statusTitle = mainV2Binding.mainV2ActivationStatusTitle;
         frameStatus.setBackground(ResourcesCompat.getDrawable(getResources(),
-                HookStatue.INSTANCE.isActive(statue) ? R.drawable.bg_green_solid :
-                        R.drawable.bg_red_solid, getTheme()));
+            HookStatue.INSTANCE.isActive(statue) ? R.drawable.bg_green_solid :
+                R.drawable.bg_red_solid, getTheme()));
         frameIcon.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-                HookStatue.INSTANCE.isActive(statue) ? R.drawable.ic_success_white :
-                        R.drawable.ic_failure_white, getTheme()));
+            HookStatue.INSTANCE.isActive(statue) ? R.drawable.ic_success_white :
+                R.drawable.ic_failure_white, getTheme()));
         statusTitle.setText(HookStatue.INSTANCE.isActive(statue) ? "已激活" : "未激活");
         TextView tvStatus = mainV2Binding.mainV2ActivationStatusDesc;
         tvStatus.setText(getString(HookStatue.INSTANCE.getStatueName(statue)).split(" ")[0]);
@@ -124,7 +108,7 @@ public class ConfigV2Activity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.menu_item_debugInfo: {
                         new androidx.appcompat.app.AlertDialog.Builder(ConfigV2Activity.this)
-                                .setTitle("调试信息").setPositiveButton(android.R.string.ok, null).setMessage(dbgInfo).show();
+                            .setTitle("调试信息").setPositiveButton(android.R.string.ok, null).setMessage(dbgInfo).show();
                         return true;
                     }
                     case R.id.menu_item_switchTheme:
@@ -144,11 +128,11 @@ public class ConfigV2Activity extends AppCompatActivity {
             }
         });
     }
-
+    
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
     }
-
+    
     public void openModuleSettingForHost(View view) {
         String pkg = null;
         switch (view.getId()) {
@@ -172,12 +156,12 @@ public class ConfigV2Activity extends AppCompatActivity {
                 startActivity(intent);
             } catch (ActivityNotFoundException e) {
                 new AlertDialog.Builder(this).setTitle("出错啦")
-                        .setMessage("拉起模块设置失败, 请确认 " + pkg + " 已安装并启用(没有被关冰箱或被冻结停用)\n" + e.toString())
-                        .setCancelable(true).setPositiveButton(android.R.string.ok, null).show();
+                    .setMessage("拉起模块设置失败, 请确认 " + pkg + " 已安装并启用(没有被关冰箱或被冻结停用)\n" + e.toString())
+                    .setCancelable(true).setPositiveButton(android.R.string.ok, null).show();
             }
         }
     }
-
+    
     public void handleClickEvent(View v) {
         switch (v.getId()) {
             case R.id.mainV2_githubRepo: {
@@ -188,50 +172,48 @@ public class ConfigV2Activity extends AppCompatActivity {
             }
             case R.id.mainV2_help: {
                 new AlertDialog.Builder(this)
-                        .setMessage("如模块无法使用，EdXp可尝试取消优化+开启兼容模式  ROOT用户可尝试 用幸运破解器-工具箱-移除odex更改 移除QQ与本模块的优化, 太极尝试取消优化")
-                        .setCancelable(true).setPositiveButton(android.R.string.ok, null).show();
+                    .setMessage("如模块无法使用，EdXp可尝试取消优化+开启兼容模式  ROOT用户可尝试 用幸运破解器-工具箱-移除odex更改 移除QQ与本模块的优化, 太极尝试取消优化")
+                    .setCancelable(true).setPositiveButton(android.R.string.ok, null).show();
                 break;
             }
             default: {
             }
         }
     }
-
-    private static final String ALIAS_ACTIVITY_NAME = "nil.nadph.qnotified.activity.ConfigV2ActivityAlias";
-
+    
     @Override
     protected void onResume() {
         super.onResume();
         updateMenuItems();
     }
-
+    
     void updateMenuItems() {
         Menu menu = mainV2Binding.topAppBar.getMenu();
         if (menu != null) {
             menu.removeItem(R.id.mainV2_menuItem_toggleDesktopIcon);
             menu.add(Menu.CATEGORY_SYSTEM, R.id.mainV2_menuItem_toggleDesktopIcon, 0,
-                    isLauncherIconEnabled() ? "隐藏桌面图标" : "显示桌面图标");
+                isLauncherIconEnabled() ? "隐藏桌面图标" : "显示桌面图标");
         }
     }
-
+    
     boolean isLauncherIconEnabled() {
         try {
             PackageManager packageManager = getPackageManager();
             int state = packageManager.getComponentEnabledSetting(
-                    new ComponentName(this, ALIAS_ACTIVITY_NAME));
+                new ComponentName(this, ALIAS_ACTIVITY_NAME));
             return state == PackageManager.COMPONENT_ENABLED_STATE_ENABLED ||
-                    state == PackageManager.COMPONENT_ENABLED_STATE_DEFAULT;
+                state == PackageManager.COMPONENT_ENABLED_STATE_DEFAULT;
         } catch (Exception e) {
             return false;
         }
     }
-
+    
     @UiThread
     void setLauncherIconEnabled(boolean enabled) {
         getPackageManager().setComponentEnabledSetting(
-                new ComponentName(this, ALIAS_ACTIVITY_NAME),
-                enabled ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED :
-                        PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                PackageManager.DONT_KILL_APP);
+            new ComponentName(this, ALIAS_ACTIVITY_NAME),
+            enabled ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED :
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+            PackageManager.DONT_KILL_APP);
     }
 }

@@ -33,10 +33,10 @@ object InterruptServiceRoutine {
         interruptVectorTable[GET_VERSION_CODE] = getHostVersionCodeService
     }
 
-    fun <T> interrupt(systemCallNumber: Int): T{
+    fun <T> interrupt(systemCallNumber: Int): T {
         try {
             return interruptVectorTable[systemCallNumber]!!.SYSTEM_CALL.get() as T
-        } catch (e:Exception) {
+        } catch (e: Exception) {
             throw RuntimeException("QN Kernel error: ${e.message}")
         }
     }

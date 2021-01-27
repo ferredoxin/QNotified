@@ -18,20 +18,15 @@
  */
 package nil.nadph.qnotified;
 
-import android.content.Context;
-import android.os.Build;
-import android.util.Log;
+import android.content.*;
+import android.os.*;
+import android.util.*;
 
-import java.io.File;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import java.io.*;
+import java.lang.reflect.*;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.XposedHelpers;
-import nil.nadph.qnotified.util.Initiator;
-import nil.nadph.qnotified.util.Natives;
-import nil.nadph.qnotified.util.Utils;
+import de.robv.android.xposed.*;
+import nil.nadph.qnotified.util.*;
 
 import static nil.nadph.qnotified.util.Utils.*;
 
@@ -47,12 +42,68 @@ import static nil.nadph.qnotified.util.Utils.*;
 public class StartupHook {
     public static final String QN_FULL_TAG = "qn_full_tag";
     public static StartupHook SELF;
-    private boolean first_stage_inited = false;
     boolean sec_stage_inited = false;
-
+    private boolean first_stage_inited = false;
+    
     private StartupHook() {
     }
-
+    
+    static void deleteDirIfNecessary(Context ctx) {
+        try {
+            if (Build.VERSION.SDK_INT >= 24) {
+                deleteFile(new File(ctx.getDataDir(), "app_qqprotect"));
+            }
+            if (new File(ctx.getFilesDir(), "qn_disable_hot_patch").exists()) {
+                deleteFile(ctx.getFileStreamPath("hotpatch"));
+            }
+        } catch (Throwable e) {
+            log(e);
+        }
+    }
+    
+    public static StartupHook getInstance() {
+        if (SELF == null) {
+            SELF = new StartupHook();
+        }
+        return SELF;
+    }
+    
+    private static boolean deleteFile(File file) {
+        if (!file.exists()) {
+            return false;
+        }
+        if (file.isFile()) {
+            file.delete();
+        } else if (file.isDirectory()) {
+            File[] listFiles = file.listFiles();
+            if (listFiles != null) {
+                for (File deleteFile : listFiles) {
+                    deleteFile(deleteFile);
+                }
+            }
+            file.delete();
+        }
+        return !file.exists();
+    }
+    
+    private static void checkClassLoaderIsolation() {
+        Class<?> stub;
+        try {
+            stub = Class.forName("com.tencent.common.app.BaseApplicationImpl");
+        } catch (ClassNotFoundException e) {
+            Log.d("QNdump", "checkClassLoaderIsolation success");
+            return;
+        }
+        Log.e("QNdump", "checkClassLoaderIsolation failure!");
+        Log.e("QNdump", "HostApp: " + stub.getClassLoader());
+        Log.e("QNdump", "Module: " + StartupHook.class.getClassLoader());
+        Log.e("QNdump", "Module.parent: " + StartupHook.class.getClassLoader().getParent());
+        Log.e("QNdump", "XposedBridge: " + XposedBridge.class.getClassLoader());
+        Log.e("QNdump", "SystemClassLoader: " + ClassLoader.getSystemClassLoader());
+        Log.e("QNdump", "currentThread.getContextClassLoader(): " + Thread.currentThread().getContextClassLoader());
+        Log.e("QNdump", "Context.class: " + Context.class.getClassLoader());
+    }
+    
     public void doInit(ClassLoader rtLoader) throws Throwable {
         if (first_stage_inited) {
             return;
@@ -69,7 +120,7 @@ public class StartupHook {
                         Utils.checkLogFlag();
                         Context ctx;
                         Class<?> clz = param.thisObject.getClass().getClassLoader().loadClass("com.tencent.common.app.BaseApplicationImpl");
-                        final Field f = hasField(clz, "sApplication");
+                        Field f = hasField(clz, "sApplication");
                         if (f == null) {
                             ctx = (Context) sget_object(clz, "a", clz);
                         } else {
@@ -117,72 +168,20 @@ public class StartupHook {
             XposedBridge.hookMethod(m, startup);
             first_stage_inited = true;
         } catch (Throwable e) {
-            if ((e + "").contains("com.bug.zqq")) return;
-            if ((e + "").contains("com.google.android.webview")) return;
+            if ((e + "").contains("com.bug.zqq")) {
+                return;
+            }
+            if ((e + "").contains("com.google.android.webview")) {
+                return;
+            }
             log(e);
             throw e;
         }
         XposedHelpers.findAndHookMethod("com.tencent.mobileqq.qfix.QFixApplication", rtLoader, "attachBaseContext", Context.class, new XC_MethodHook() {
+            @Override
             public void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 deleteDirIfNecessary((Context) param.args[0]);
             }
         });
-    }
-
-    static void deleteDirIfNecessary(Context ctx) {
-        try {
-            if (Build.VERSION.SDK_INT >= 24) {
-                deleteFile(new File(ctx.getDataDir(), "app_qqprotect"));
-            }
-            if (new File(ctx.getFilesDir(), "qn_disable_hot_patch").exists()) {
-                deleteFile(ctx.getFileStreamPath("hotpatch"));
-            }
-        } catch (Throwable e) {
-            log(e);
-        }
-    }
-
-    public static StartupHook getInstance() {
-        if (SELF == null) {
-            SELF = new StartupHook();
-        }
-        return SELF;
-    }
-
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    private static boolean deleteFile(File file) {
-        if (!file.exists()) {
-            return false;
-        }
-        if (file.isFile()) {
-            file.delete();
-        } else if (file.isDirectory()) {
-            File[] listFiles = file.listFiles();
-            if (listFiles != null) {
-                for (File deleteFile : listFiles) {
-                    deleteFile(deleteFile);
-                }
-            }
-            file.delete();
-        }
-        return !file.exists();
-    }
-
-    private static void checkClassLoaderIsolation() {
-        Class<?> stub;
-        try {
-            stub = Class.forName("com.tencent.common.app.BaseApplicationImpl");
-        } catch (ClassNotFoundException e) {
-            Log.d("QNdump", "checkClassLoaderIsolation success");
-            return;
-        }
-        Log.e("QNdump", "checkClassLoaderIsolation failure!");
-        Log.e("QNdump", "HostApp: " + stub.getClassLoader());
-        Log.e("QNdump", "Module: " + StartupHook.class.getClassLoader());
-        Log.e("QNdump", "Module.parent: " + StartupHook.class.getClassLoader().getParent());
-        Log.e("QNdump", "XposedBridge: " + XposedBridge.class.getClassLoader());
-        Log.e("QNdump", "SystemClassLoader: " + ClassLoader.getSystemClassLoader());
-        Log.e("QNdump", "currentThread.getContextClassLoader(): " + Thread.currentThread().getContextClassLoader());
-        Log.e("QNdump", "Context.class: " + Context.class.getClassLoader());
     }
 }

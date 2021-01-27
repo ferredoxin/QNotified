@@ -10,37 +10,37 @@ import nil.nadph.qnotified.util.DexKit
 import nil.nadph.qnotified.util.Initiator
 import java.lang.reflect.Method
 
-object ItemBuilderFactoryHook : BaseDelayableHookAdapter(cfgName = "itemBuilderFactoryHook",cond = arrayOf(DexDeobfStep(DexKit.C_ITEM_BUILDER_FAC))) {
+object ItemBuilderFactoryHook : BaseDelayableHookAdapter(cfgName = "itemBuilderFactoryHook", cond = arrayOf(DexDeobfStep(DexKit.C_ITEM_BUILDER_FAC))) {
 
     val decorators = arrayOf(
-            SimpleCheckIn,
-            SimpleReceiptMessage
+        SimpleCheckIn,
+        SimpleReceiptMessage
     )
 
     override fun doInit(): Boolean {
-            var getMsgType: Method? = null
-            for (m in DexKit.doFindClass(DexKit.C_ITEM_BUILDER_FAC).methods) {
-                if (m.returnType == Int::class.javaPrimitiveType) {
-                    val argt = m.parameterTypes
-                    if (argt.isNotEmpty() && argt[argt.size - 1] == Initiator.load("com.tencent.mobileqq.data.ChatMessage")) {
-                        getMsgType = m
-                        break
+        var getMsgType: Method? = null
+        for (m in DexKit.doFindClass(DexKit.C_ITEM_BUILDER_FAC).methods) {
+            if (m.returnType == Int::class.javaPrimitiveType) {
+                val argt = m.parameterTypes
+                if (argt.isNotEmpty() && argt[argt.size - 1] == Initiator.load("com.tencent.mobileqq.data.ChatMessage")) {
+                    getMsgType = m
+                    break
+                }
+            }
+        }
+        XposedBridge.hookMethod(getMsgType, object : XC_MethodHook(39) {
+            @Throws(Throwable::class)
+            override fun afterHookedMethod(param: MethodHookParam) {
+                val result = param.result as Int
+                val chatMessage = param.args[param.args.size - 1]
+                for (decorator in decorators) {
+                    if (decorator.decorate(result, chatMessage, param)) {
+                        return
                     }
                 }
             }
-            XposedBridge.hookMethod(getMsgType, object : XC_MethodHook(39) {
-                @Throws(Throwable::class)
-                override fun afterHookedMethod(param: MethodHookParam) {
-                    val result = param.result as Int
-                    val chatMessage = param.args[param.args.size - 1]
-                    for (decorator in decorators) {
-                        if (decorator.decorate(result,chatMessage,param)) {
-                            return
-                        }
-                    }
-                }
-            })
-            return true
+        })
+        return true
 
     }
 

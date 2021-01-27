@@ -19,66 +19,60 @@
 package nil.nadph.qnotified.hook;
 
 
-import android.app.Activity;
-import android.content.Intent;
-import android.graphics.Color;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ExpandableListAdapter;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.app.*;
+import android.content.*;
+import android.graphics.*;
+import android.view.*;
+import android.widget.*;
 
-import java.lang.ref.WeakReference;
-import java.util.HashSet;
+import java.lang.ref.*;
+import java.util.*;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedHelpers;
-import me.singleneuron.hook.AppCenterHookKt;
-import nil.nadph.qnotified.ExfriendManager;
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.activity.ExfriendListActivity;
-import nil.nadph.qnotified.activity.TroubleshootActivity;
-import nil.nadph.qnotified.bridge.FriendChunk;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.util.CliOper;
-import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.Utils;
+import de.robv.android.xposed.*;
+import me.singleneuron.hook.*;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.activity.*;
+import nil.nadph.qnotified.bridge.*;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.step.*;
+import nil.nadph.qnotified.ui.*;
+import nil.nadph.qnotified.util.*;
 
-import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
-import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
-import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTION_EXFRIEND_LIST;
-import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTIVITY_PROXY_ACTION;
-import static nil.nadph.qnotified.util.Initiator.load;
+import static android.widget.LinearLayout.LayoutParams.*;
+import static de.robv.android.xposed.XposedHelpers.*;
+import static nil.nadph.qnotified.lifecycle.ActProxyMgr.*;
+import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class DelDetectorHook extends BaseDelayableHook {
-
+    
     public static final int VIEW_ID_DELETED_FRIEND = 0x00EE77AA;
     private static final DelDetectorHook self = new DelDetectorHook();
     public HashSet addedListView = new HashSet();
     public WeakReference<TextView> exfriendRef;
     public WeakReference<TextView> redDotRef;
-    private boolean inited = false;
     private final XC_MethodHook exfriendEntryHook = new XC_MethodHook(1200) {
         @Override
         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
             try {
-                if (LicenseStatus.sDisableCommonHooks) return;
+                if (LicenseStatus.sDisableCommonHooks) {
+                    return;
+                }
                 boolean hide = false;
                 try {
                     hide = ConfigManager.getDefaultConfig().getBooleanOrFalse("qn_hide_ex_entry_group");
-                    if (LicenseStatus.isSilentGone()) return;
+                    if (LicenseStatus.isSilentGone()) {
+                        return;
+                    }
                 } catch (Throwable e) {
                     log(e);
                 }
-                if (hide) return;
-                if (!param.thisObject.getClass().getName().contains("ContactsFPSPinnedHeaderExpandableListView"))
+                if (hide) {
                     return;
+                }
+                if (!param.thisObject.getClass().getName().contains("ContactsFPSPinnedHeaderExpandableListView")) {
+                    return;
+                }
                 LinearLayout layout_entrance;
                 //android.widget.FrameLayout frameView;
                 View lv = (View) param.thisObject;
@@ -97,11 +91,11 @@ public class DelDetectorHook extends BaseDelayableHook {
 				 return;
 				 }*/
                 //unusualContacts=(TextView)frameView.getChildAt(0);
-
+                
                 layout_entrance = new LinearLayout(splashActivity);
                 RelativeLayout rell = new RelativeLayout(splashActivity);
                 //rell.setLayoutParams(new LinearLayout.LayoutParams(MATCH_PARENT,WRAP_CONTENT));
-
+                
                 //Object adapter=invoke_virtual(lv,"getAdapter",ListAdapter.class);
                 //invoke_virtual(lv,"setAdapter",null,BaseAdapter.class);
 				/*try{
@@ -115,11 +109,11 @@ public class DelDetectorHook extends BaseDelayableHook {
                     //invoke_static(XposedBridge.class,"dumpObjectNative",lv,Object.class);
                     //lv.setVisibility(View.GONE);
                 }
-
+                
                 //invoke_virtual(lv,"setAdapter",adapter,BaseAdapter.class);
-
+                
                 layout_entrance.setOrientation(LinearLayout.VERTICAL);
-
+                
                 //StateListDrawable background=(StateListDrawable)unusualContacts.getBackground();
                 TextView exfriend = null;
                 if (exfriendRef == null || (exfriend = exfriendRef.get()) == null) {
@@ -136,11 +130,11 @@ public class DelDetectorHook extends BaseDelayableHook {
                 //exfriend.setTranslationY(-Utils.dip2px(splashActivity,1f));
                 //unusualContacts.setVisibility(frameView.getVisibility()==View.GONE?View.GONE:View.VISIBLE);
                 //frameView.setVisibility(View.VISIBLE);
-
+                
                 TextView redDot = new TextView(splashActivity);
                 redDotRef = new WeakReference<>(redDot);
                 redDot.setTextColor(0xFFFF0000);
-
+                
                 redDot.setGravity(Gravity.CENTER);
                 //redDot.setBackground(ResUtils.skin_tips_newmessage);
                 redDot.getPaint().setFakeBoldText(true);
@@ -153,8 +147,8 @@ public class DelDetectorHook extends BaseDelayableHook {
                     redDot.setTextColor(Color.RED);
                 }
                 ExfriendManager.get(Utils.getLongAccountUin()).setRedDot();
-
-
+                
+                
                 //frameView.removeAllViews();
                 int height = dip2px(splashActivity, 48);//unusualContacts.getLayoutParams().height;
                 //layout.addView(unusualContacts);
@@ -188,7 +182,9 @@ public class DelDetectorHook extends BaseDelayableHook {
                 exfriend.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (LicenseStatus.sDisableCommonHooks) return;
+                        if (LicenseStatus.sDisableCommonHooks) {
+                            return;
+                        }
                         Intent intent = new Intent(splashActivity, ExfriendListActivity.class);
                         intent.putExtra(ACTIVITY_PROXY_ACTION, ACTION_EXFRIEND_LIST);
                         splashActivity.startActivity(intent);
@@ -213,34 +209,37 @@ public class DelDetectorHook extends BaseDelayableHook {
 				 unusual.postInvalidate();
 				 }
 				 }).start();*/
-
+                
                 //log("[End of putting entrance]");
             } catch (Throwable e) {
                 log(e);
                 throw e;
             }
         }
-
+        
     };
-
+    private boolean inited = false;
+    
     private DelDetectorHook() {
     }
-
+    
     public static DelDetectorHook get() {
         return self;
     }
-
+    
     @Override
     public boolean init() {
-        if (inited) return true;
+        if (inited) {
+            return true;
+        }
         findAndHookMethod(load("com/tencent/widget/PinnedHeaderExpandableListView"), "setAdapter", ExpandableListAdapter.class, exfriendEntryHook);
         AppCenterHookKt.initAppCenterHook();
         XposedHelpers.findAndHookMethod(load("com/tencent/mobileqq/activity/SplashActivity"), "doOnResume", new XC_MethodHook(700) {
             boolean z = false;
-
+            
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-
+                
                 try {
                     if (Utils.getLongAccountUin() > 10000) {
                         ExfriendManager ex = ExfriendManager.getCurrent();
@@ -253,7 +252,9 @@ public class DelDetectorHook extends BaseDelayableHook {
                 if (Utils.getBuildTimestamp() < 0 && (Math.random() < 0.25)) {
                     TroubleshootActivity.quitLooper();
                 } else {
-                    if (z) return;
+                    if (z) {
+                        return;
+                    }
                     CliOper.onLoad();
                     z = true;
                 }
@@ -307,7 +308,7 @@ public class DelDetectorHook extends BaseDelayableHook {
                 }
             }
         });
-
+        
         findAndHookMethod(load("friendlist/DelFriendResp"), "readFrom", load("com/qq/taf/jce/JceInputStream"), new XC_MethodHook(200) {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -316,8 +317,9 @@ public class DelDetectorHook extends BaseDelayableHook {
                     long deluin = (Long) iget_object_or_null(param.thisObject, "deluin");
                     int result = (Integer) iget_object_or_null(param.thisObject, "result");
                     short errorCode = (Short) iget_object_or_null(param.thisObject, "errorCode");
-                    if (result == 0 && errorCode == 0)
+                    if (result == 0 && errorCode == 0) {
                         ExfriendManager.get(uin).markActiveDelete(deluin);
+                    }
 						/*String ret="dump object:"+param.thisObject.getClass().getCanonicalName()+"\n";
 						 Field[] fs=param.thisObject.getClass().getDeclaredFields();
 						 for(int i=0;i<fs.length;i++){
@@ -365,34 +367,34 @@ public class DelDetectorHook extends BaseDelayableHook {
 
 		 }
 		 });//*/
-
+    
     @Override
     public int getEffectiveProc() {
         return SyncUtils.PROC_MAIN;
     }
-
+    
     @Override
     public boolean checkPreconditions() {
         return true;
     }
-
+    
     @Override
     public Step[] getPreconditions() {
         return new Step[0];
     }
-
+    
     @Override
     public boolean isInited() {
         return inited;
     }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        //do nothing
-    }
-
+    
     @Override
     public boolean isEnabled() {
         return true;
+    }
+    
+    @Override
+    public void setEnabled(boolean enabled) {
+        //do nothing
     }
 }

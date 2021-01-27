@@ -18,56 +18,86 @@
  */
 package nil.nadph.qnotified.chiral;
 
-import android.annotation.TargetApi;
-import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.os.Build;
-import android.util.AttributeSet;
-import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.MotionEvent;
-import android.view.View;
+import android.annotation.*;
+import android.content.*;
+import android.content.res.*;
+import android.graphics.*;
+import android.os.*;
+import android.util.*;
+import android.view.*;
 
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 
-import nil.nadph.qnotified.util.IndexFrom;
 import nil.nadph.qnotified.util.Nullable;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.util.*;
 
 
 public class MoleculeView extends View {
-
+    
+    private final Rect mViewRect = new Rect();
+    private final Rect mDrawRect = new Rect();
+    private final Rect mTmpRect = new Rect();
     protected Molecule molecule;
     protected int mGravity = Gravity.CENTER;
     protected float fontSize;
     protected boolean mAutoTextSize = true;
-    private int textColor = 0xFF000000;
     protected Paint paint = new Paint();
     protected float scaleFactor = 1;
-    private final Rect mViewRect = new Rect();
-    private final Rect mDrawRect = new Rect();
     protected HashSet<Integer> selectedChiral = new HashSet<>();
-
+    private int textColor = 0xFF000000;
     private float[] labelTop;
     private float[] labelLeft;
     private float[] labelRight;
     private float[] labelBottom;
-    private final Rect mTmpRect = new Rect();
-
-
+    
+    
+    public MoleculeView(Context context) {
+        super(context);
+        initInternal(context);
+    }
+    
+    public MoleculeView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        initInternal(context);
+    }
+    
+    public MoleculeView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        initInternal(context);
+    }
+    
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public MoleculeView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        initInternal(context);
+    }
+    
+    public static void calcLinePointConfined(float x, float y, float x2, float y2, float left, float right, float top, float bottom, float[] out) {
+        float w = x2 > x ? right : left;
+        float h = y2 < y ? top : bottom;
+        float k = (float) Math.atan2(h, w);
+        float sigx = Math.signum(x2 - x);
+        float sigy = Math.signum(y2 - y);
+        float absRad = (float) Math.atan2(Math.abs(y2 - y), Math.abs(x2 - x));
+        if (absRad > k) {
+            out[0] = (float) (x + sigx * h / Math.tan(absRad));
+            out[1] = y + sigy * h;
+        } else {
+            out[0] = x + sigx * w;
+            out[1] = (float) (y + sigy * w * Math.tan(absRad));
+        }
+    }
+    
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (molecule != null && molecule.atomCount() > 0) {
             long begin = System.currentTimeMillis();
-            if (scaleFactor == 0) calcScaleFactor(getWidth(), getHeight());
+            if (scaleFactor == 0)
+                calcScaleFactor(getWidth(), getHeight());
             mViewRect.set(0, 0, getWidth(), getHeight());
             Gravity.apply(mGravity, (int) (scaleFactor * molecule.rangeX() + fontSize * 2),
-                    (int) (scaleFactor * molecule.rangeY() + fontSize * 2), mViewRect, mDrawRect);
+                (int) (scaleFactor * molecule.rangeY() + fontSize * 2), mViewRect, mDrawRect);
             float dx = mDrawRect.left + fontSize;
             float dy = mDrawRect.bottom - fontSize;
             float mx = molecule.minX();
@@ -89,7 +119,7 @@ public class MoleculeView extends View {
                 atom = molecule.getAtom(i + 1);
                 paint.setTextSize(fontSize);
                 if (atom.element.equals("C") && atom.charge == 0 && atom.unpaired == 0 &&
-                        (atom.showFlag & Molecule.SHOW_FLAG_EXPLICIT) == 0) {
+                    (atom.showFlag & Molecule.SHOW_FLAG_EXPLICIT) == 0) {
                     labelLeft[i] = labelRight[i] = 0;
                     labelTop[i] = labelBottom[i] = 0;
                     if (selectedChiral.contains(i + 1)) {
@@ -125,18 +155,22 @@ public class MoleculeView extends View {
                         int c = atom.charge;
                         String text;
                         if (c > 0) {
-                            if (c == 1) text = "+";
-                            else text = c + "+";
+                            if (c == 1)
+                                text = "+";
+                            else
+                                text = c + "+";
                         } else {
-                            if (c == -1) text = "-";
-                            else text = -c + "-";
+                            if (c == -1)
+                                text = "-";
+                            else
+                                text = -c + "-";
                         }
                         paint.setTextSize(fontSize / 2);
                         float chgwidth = paint.measureText(text);
                         Paint.FontMetrics chgFontMetrics = paint.getFontMetrics();
                         float chgdis = (chgFontMetrics.bottom - chgFontMetrics.top) / 2 - chgFontMetrics.bottom;
                         canvas.drawText(text, dx + scaleFactor * (atom.x - mx) + labelRight[i] + chgwidth / 2,
-                                dy - scaleFactor * (atom.y - my) + fontMetrics.top / 3 + chgdis, paint);
+                            dy - scaleFactor * (atom.y - my) + fontMetrics.top / 3 + chgdis, paint);
                     }
                     if (atom.hydrogenCount > 0) {
                         int hCount = atom.hydrogenCount;
@@ -178,7 +212,7 @@ public class MoleculeView extends View {
                 p1 = molecule.getAtom(bond.from);
                 p2 = molecule.getAtom(bond.to);
                 drawBond(canvas, dx + scaleFactor * (p1.x - mx), dy - scaleFactor * (p1.y - my), dx + scaleFactor * (p2.x - mx),
-                        dy - scaleFactor * (p2.y - my), bond.type, bond.from - 1, bond.to - 1);
+                    dy - scaleFactor * (p2.y - my), bond.type, bond.from - 1, bond.to - 1);
             }
 //            long delta = System.currentTimeMillis() - begin;
 //            paint.setTextAlign(Paint.Align.LEFT);
@@ -187,7 +221,7 @@ public class MoleculeView extends View {
 //            paint.setTextSize(fontSize);
         }
     }
-
+    
     private void drawBond(Canvas canvas, float x1, float y1, float x2, float y2, int type, @IndexFrom(0) int idx1, @IndexFrom(0) int idx2) {
         float[] ret = new float[2];
         float rad = (float) Math.atan2(y2 - y1, x2 - x1);
@@ -215,7 +249,7 @@ public class MoleculeView extends View {
                 break;
         }
     }
-
+    
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (isClickable() && event.getAction() == MotionEvent.ACTION_UP && isPressed()) {
@@ -228,7 +262,7 @@ public class MoleculeView extends View {
         }
         return super.onTouchEvent(event);
     }
-
+    
     public boolean switchChiral(@IndexFrom(1) int N) {
         boolean z;
         if (selectedChiral.contains(N)) {
@@ -241,31 +275,34 @@ public class MoleculeView extends View {
         invalidate();
         return z;
     }
-
+    
     public int getSelectedChiralCount() {
         return selectedChiral.size();
     }
-
+    
     public void unselectedAllChiral() {
         selectedChiral.clear();
         invalidate();
     }
-
+    
     public void selectChiral(int N, boolean selected) {
-        if (selected) selectedChiral.add(N);
-        else selectedChiral.remove(N);
+        if (selected)
+            selectedChiral.add(N);
+        else
+            selectedChiral.remove(N);
         invalidate();
     }
-
+    
     public int[] getSelectedChiral() {
         int[] ret = new int[selectedChiral.size()];
         Iterator<Integer> it = selectedChiral.iterator();
         for (int i = 0; i < ret.length; i++) {
-            if (it.hasNext()) ret[i] = it.next();
+            if (it.hasNext())
+                ret[i] = it.next();
         }
         return ret;
     }
-
+    
     public void setSelectedChiral(@Nullable int[] chiral) {
         selectedChiral.clear();
         if (chiral != null) {
@@ -275,27 +312,7 @@ public class MoleculeView extends View {
         }
         invalidate();
     }
-
-    public static void calcLinePointConfined(float x, float y, float x2, float y2, float left, float right, float top, float bottom, float[] out) {
-        float w = x2 > x ? right : left;
-        float h = y2 < y ? top : bottom;
-        float k = (float) Math.atan2(h, w);
-        float sigx = Math.signum(x2 - x);
-        float sigy = Math.signum(y2 - y);
-        float absRad = (float) Math.atan2(Math.abs(y2 - y), Math.abs(x2 - x));
-        if (absRad > k) {
-            out[0] = (float) (x + sigx * h / Math.tan(absRad));
-            out[1] = y + sigy * h;
-        } else {
-            out[0] = x + sigx * w;
-            out[1] = (float) (y + sigy * w * Math.tan(absRad));
-        }
-    }
-
-    public void setTextSize(float size) {
-        setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
-    }
-
+    
     public void setTextSize(int unit, float size) {
         Context c = getContext();
         Resources r;
@@ -309,21 +326,29 @@ public class MoleculeView extends View {
         mAutoTextSize = false;
         invalidate();
     }
-
+    
     public float getTextSize() {
         return fontSize;
     }
-
+    
+    public void setTextSize(float size) {
+        setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
+    }
+    
     public void setAutoTextSize() {
         mAutoTextSize = true;
         calcScaleFactor(getWidth(), getHeight());
         invalidate();
     }
-
+    
     public boolean isAutoTextSize() {
         return mAutoTextSize;
     }
-
+    
+    public Molecule getMolecule() {
+        return molecule;
+    }
+    
     public void setMolecule(@Nullable Molecule molecule) {
         this.molecule = molecule;
         selectedChiral.clear();
@@ -331,13 +356,10 @@ public class MoleculeView extends View {
         requestLayout();
         invalidate();
     }
-
-    public Molecule getMolecule() {
-        return molecule;
-    }
-
+    
     private void calcScaleFactor(int width, int height) {
-        if (width * height == 0) return;
+        if (width * height == 0)
+            return;
         if (molecule == null) {
             scaleFactor = 0;
             return;
@@ -346,7 +368,7 @@ public class MoleculeView extends View {
         float ry = molecule.rangeY();
         if (mAutoTextSize) {
             fontSize = molecule.getAverageBondLength() / 1.8f * ((rx + ry == 0) ? 1 : (rx * ry == 0 ? (ry == 0 ? width / rx :
-                    height / ry) : Math.min(width / rx, height / ry)));
+                height / ry) : Math.min(width / rx, height / ry)));
             paint.setTextSize(fontSize);
         }
         width -= getPaddingLeft() + getPaddingRight() + fontSize * 2;
@@ -363,7 +385,7 @@ public class MoleculeView extends View {
             scaleFactor = Math.min(width / rx, height / ry);
         }
     }
-
+    
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
@@ -373,9 +395,9 @@ public class MoleculeView extends View {
         int width;
         int height;
         final float widthLimit = (widthMode == MeasureSpec.AT_MOST || widthMode == MeasureSpec.EXACTLY)
-                ? (float) widthSize : Float.MAX_VALUE;
+            ? (float) widthSize : Float.MAX_VALUE;
         final float heightLimit = (heightMode == MeasureSpec.AT_MOST || heightMode == MeasureSpec.EXACTLY)
-                ? (float) heightSize : Float.MAX_VALUE;
+            ? (float) heightSize : Float.MAX_VALUE;
         float rx = 0, ry = 0;
         if (molecule != null) {
             rx = molecule.rangeX();
@@ -400,7 +422,8 @@ public class MoleculeView extends View {
                 }
             }
         }
-        if (scale == -1) scale = 1;//sigh
+        if (scale == -1)
+            scale = 1;//sigh
         if (widthMode == MeasureSpec.EXACTLY) {
             width = widthSize;
         } else {
@@ -414,22 +437,26 @@ public class MoleculeView extends View {
         calcScaleFactor(width, height);
         setMeasuredDimension(width, height);
     }
-
+    
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         calcScaleFactor(w, h);
     }
-
+    
+    public int getTextColor() {
+        return textColor;
+    }
+    
     public void setTextColor(int textColor) {
         this.textColor = textColor;
         invalidate();
     }
-
-    public int getTextColor() {
-        return textColor;
+    
+    public int getGravity() {
+        return mGravity;
     }
-
+    
     public void setGravity(int gravity) {
         if ((gravity & Gravity.RELATIVE_HORIZONTAL_GRAVITY_MASK) == 0) {
             gravity |= Gravity.START;
@@ -442,34 +469,9 @@ public class MoleculeView extends View {
         }
         mGravity = gravity;
     }
-
-    public int getGravity() {
-        return mGravity;
-    }
-
+    
     private void initInternal(Context ctx) {
         setClickable(true);
         paint.setAntiAlias(true);
-    }
-
-    public MoleculeView(Context context) {
-        super(context);
-        initInternal(context);
-    }
-
-    public MoleculeView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        initInternal(context);
-    }
-
-    public MoleculeView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        initInternal(context);
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public MoleculeView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        initInternal(context);
     }
 }

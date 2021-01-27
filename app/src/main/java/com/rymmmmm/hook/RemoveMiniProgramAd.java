@@ -1,19 +1,16 @@
 package com.rymmmmm.hook;
 
-import android.os.Looper;
-import android.widget.Toast;
+import android.os.*;
+import android.widget.*;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.hook.BaseDelayableHook;
-import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.util.Initiator;
-import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.Utils;
+import java.lang.reflect.*;
 
-import java.lang.reflect.Method;
+import de.robv.android.xposed.*;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.hook.*;
+import nil.nadph.qnotified.step.*;
+import nil.nadph.qnotified.util.*;
 
 import static nil.nadph.qnotified.util.Utils.*;
 
@@ -22,25 +19,27 @@ public class RemoveMiniProgramAd extends BaseDelayableHook {
     public static final String rq_remove_mini_program_ad = "rq_remove_mini_program_ad";
     private static final RemoveMiniProgramAd self = new RemoveMiniProgramAd();
     private boolean isInit = false;
-
+    
     public static RemoveMiniProgramAd get() {
         return self;
     }
-
+    
     @Override
     public int getEffectiveProc() {
         return SyncUtils.PROC_ANY & ~(SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF | SyncUtils.PROC_QZONE
-                | SyncUtils.PROC_PEAK | SyncUtils.PROC_VIDEO);
+            | SyncUtils.PROC_PEAK | SyncUtils.PROC_VIDEO);
     }
-
+    
     @Override
     public boolean isInited() {
         return isInit;
     }
-
+    
     @Override
     public boolean init() {
-        if (isInit) return true;
+        if (isInit) {
+            return true;
+        }
         try {
             for (Method m : Initiator._GdtMvViewController().getDeclaredMethods()) {
                 Class<?>[] argt = m.getParameterTypes();
@@ -48,8 +47,12 @@ public class RemoveMiniProgramAd extends BaseDelayableHook {
                     XposedBridge.hookMethod(m, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            if (LicenseStatus.sDisableCommonHooks) return;
-                            if (!isEnabled()) return;
+                            if (LicenseStatus.sDisableCommonHooks) {
+                                return;
+                            }
+                            if (!isEnabled()) {
+                                return;
+                            }
                             Utils.iput_object(param.thisObject, "c", Boolean.TYPE, true);
                         }
                     });
@@ -62,12 +65,22 @@ public class RemoveMiniProgramAd extends BaseDelayableHook {
             return false;
         }
     }
-
+    
     @Override
     public Step[] getPreconditions() {
         return new Step[0];
     }
-
+    
+    @Override
+    public boolean isEnabled() {
+        try {
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_remove_mini_program_ad);
+        } catch (Exception e) {
+            log(e);
+            return false;
+        }
+    }
+    
     @Override
     public void setEnabled(boolean enabled) {
         try {
@@ -86,16 +99,6 @@ public class RemoveMiniProgramAd extends BaseDelayableHook {
                     }
                 });
             }
-        }
-    }
-
-    @Override
-    public boolean isEnabled() {
-        try {
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_remove_mini_program_ad);
-        } catch (Exception e) {
-            log(e);
-            return false;
         }
     }
 }

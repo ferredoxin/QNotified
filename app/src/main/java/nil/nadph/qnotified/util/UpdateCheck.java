@@ -18,38 +18,28 @@
  */
 package nil.nadph.qnotified.util;
 
-import android.app.Activity;
-import android.graphics.Color;
-import android.os.Build;
-import android.os.Handler;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.RelativeSizeSpan;
-import android.text.style.URLSpan;
-import android.text.util.Linkify;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.app.*;
+import android.graphics.*;
+import android.os.*;
+import android.text.*;
+import android.text.style.*;
+import android.text.util.*;
+import android.view.*;
+import android.widget.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Calendar;
-import java.util.TimeZone;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
-import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.*;
 
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.ui.CustomDialog;
-import nil.nadph.qnotified.ui.ViewBuilder;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.ui.*;
 
-import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.*;
 
 public class UpdateCheck implements View.OnClickListener, Runnable {
-
+    
     public static final String UPDATE_INFO_GET1 = "https://api.appcenter.ms/v0.1/public/sdk/apps/ddf4b597-1833-45dd-af28-96ca504b8123/releases/latest";
     public static final String qn_update_info = "qn_update_info";
     public static final String qn_update_time = "qn_update_time";
@@ -61,10 +51,30 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
     private boolean clicked = false;
     private PHPArray result;
     private int runlevel;
-
+    
     public UpdateCheck() {
     }
-
+    
+    public static long iso8601ToTimestampMs(String expr) {
+        if (!expr.endsWith("Z")) {
+            throw new IllegalArgumentException("reject, not UTC");
+        }
+        String[] arr = expr.replace("Z", "").split("T");
+        String[] p1 = arr[0].split("-");
+        int yyyy = Integer.parseInt(p1[0]);
+        int MM = Integer.parseInt(p1[1]);
+        int dd = Integer.parseInt(p1[2]);
+        String[] p2 = arr[1].split("[:.]");
+        int HH = Integer.parseInt(p2[0]);
+        int mm = Integer.parseInt(p2[1]);
+        int ss = Integer.parseInt(p2[2]);
+        int ms = Integer.parseInt(p2[3]);
+        //return Date.UTC(yyyy - 1900, MM - 1, dd, HH, mm, ss) + ms;
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        calendar.set(yyyy, MM - 1, dd, HH, mm, ss);
+        return calendar.getTime().getTime() + ms;
+    }
+    
     public String doRefreshInfo() {
         String content = null;
         int failed = 0;
@@ -89,17 +99,18 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
         } catch (IOException e) {
             final IOException e2 = e;
             runlevel = 0;
-            if (content == null)
+            if (content == null) {
                 new Handler(viewGroup.getContext().getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
                         Toast.makeText(viewGroup.getContext(), "检查更新失败:" + e2, Toast.LENGTH_SHORT).show();
                     }
                 });
+            }
         }
         return null;
     }
-
+    
     private String getCachedUpdateInfoOrNull() {
         try {
             ConfigManager cache = ConfigManager.getCache();
@@ -110,16 +121,16 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
             log(e);
             return null;
         }
-
+        
     }
-
+    
     public void setVersionTip(ViewGroup vg) {
         String str = getCachedUpdateInfoOrNull();
         if (str != null) {
             doSetVersionTip(vg, PHPArray.fromJson(str));
         }
     }
-
+    
     public void doSetVersionTip(ViewGroup vg, PHPArray json) {
         viewGroup = vg;
         try {
@@ -145,13 +156,15 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
             log(e);
         }
     }
-
+    
     @Override
     public void run() {
         switch (runlevel) {
             case RL_LOAD:
                 String ret = doRefreshInfo();
-                if (ret == null) return;
+                if (ret == null) {
+                    return;
+                }
                 runlevel = 2;
                 result = PHPArray.fromJson(ret);
                 new Handler(viewGroup.getContext().getMainLooper()).post(this);
@@ -159,12 +172,13 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
             case RL_SHOW_RET:
                 doSetVersionTip(viewGroup, result);
                 runlevel = 0;
-                if (clicked) doShowUpdateInfo();
+                if (clicked) {
+                    doShowUpdateInfo();
+                }
                 return;
         }
     }
-
-
+    
     private void doShowUpdateInfo() {
         try {
             clicked = false;
@@ -188,8 +202,8 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
             //TextView list = new TextView(ctx);
             //main.addView(list, WRAP_CONTENT, WRAP_CONTENT);
             //list.setAutoLinkMask(Linkify.WEB_URLS);
-
-            PHPArray ver = (PHPArray) result;
+            
+            PHPArray ver = result;
             String vn = (String) ver.__("short_version")._$();
             int vc = Integer.parseInt((String) ver.__("version")._$());
             String desc = "" + ver.__("release_notes")._$();
@@ -197,11 +211,11 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
             String download_url = (String) ver.__("download_url")._$();
             long time = iso8601ToTimestampMs((String) ver.__("uploaded_at")._$());
             String date = Utils.getRelTimeStrSec(time / 1000L);
-
+            
             SpannableString tmp = new SpannableString(vn + " (" + vc + ")");
             tmp.setSpan(new RelativeSizeSpan(1.8f), 0, tmp.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             sb.append(tmp);
-
+            
             if (currVerName.equals(vn)) {
                 sb.append("当前版本");
             } else if (time - Utils.getBuildTimestamp() > 10 * 60 * 1000) {
@@ -209,18 +223,18 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
             } else if (time - Utils.getBuildTimestamp() < -10 * 60 * 1000) {
                 sb.append("旧版本");
             }
-
+            
             sb.append("\n发布于").append(date);
-
+            
             sb.append("\nmd5:").append(md5).append("\n");
             sb.append(desc);
             sb.append("\n下载地址:\n");
-            tmp = new SpannableString((String) download_url);
-            tmp.setSpan(new URLSpan((String) download_url), 0, tmp.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            tmp = new SpannableString(download_url);
+            tmp.setSpan(new URLSpan(download_url), 0, tmp.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             sb.append(tmp);
             sb.append("\n");
             sb.append("\n");
-
+            
             //list.setText(sb);
             dialog.setMessage(sb);
             TextView tv = dialog.getMessageTextView();
@@ -242,7 +256,7 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
             log(e);
         }
     }
-
+    
     @Override
     public void onClick(View v) {
         viewGroup = (ViewGroup) v;
@@ -253,25 +267,5 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
         } else {
             doShowUpdateInfo();
         }
-    }
-
-    public static long iso8601ToTimestampMs(String expr) {
-        if (!expr.endsWith("Z")) {
-            throw new IllegalArgumentException("reject, not UTC");
-        }
-        String[] arr = expr.replace("Z", "").split("T");
-        String[] p1 = arr[0].split("-");
-        int yyyy = Integer.parseInt(p1[0]);
-        int MM = Integer.parseInt(p1[1]);
-        int dd = Integer.parseInt(p1[2]);
-        String[] p2 = arr[1].split("[:.]");
-        int HH = Integer.parseInt(p2[0]);
-        int mm = Integer.parseInt(p2[1]);
-        int ss = Integer.parseInt(p2[2]);
-        int ms = Integer.parseInt(p2[3]);
-        //return Date.UTC(yyyy - 1900, MM - 1, dd, HH, mm, ss) + ms;
-        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-        calendar.set(yyyy, MM - 1, dd, HH, mm, ss);
-        return calendar.getTime().getTime() + ms;
     }
 }

@@ -18,53 +18,38 @@
  */
 package nil.nadph.qnotified.activity;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.res.ColorStateList;
-import android.graphics.Bitmap;
-import android.os.Bundle;
-import android.text.Editable;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.TextWatcher;
-import android.text.style.ForegroundColorSpan;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
+import android.annotation.*;
+import android.content.*;
+import android.content.res.*;
+import android.graphics.*;
+import android.os.*;
+import android.text.*;
+import android.text.style.*;
+import android.util.*;
+import android.view.*;
+import android.view.inputmethod.*;
 import android.widget.*;
 
-import androidx.core.view.ViewCompat;
+import androidx.core.view.*;
 
-import com.tencent.widget.XListView;
+import com.tencent.widget.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
-import nil.nadph.qnotified.ExfriendManager;
-import nil.nadph.qnotified.R;
-import nil.nadph.qnotified.config.ConfigItems;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.config.FriendRecord;
-import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.util.FaceImpl;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.ui.*;
+import nil.nadph.qnotified.util.*;
 
-import static android.view.View.GONE;
-import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
-import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTION_CHAT_TAIL_FRIENDS_ACTIVITY;
-import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTIVITY_PROXY_ACTION;
-import static nil.nadph.qnotified.util.Utils.dip2px;
-import static nil.nadph.qnotified.util.Utils.log;
+import static android.view.View.*;
+import static android.widget.LinearLayout.LayoutParams.*;
+import static nil.nadph.qnotified.lifecycle.ActProxyMgr.*;
+import static nil.nadph.qnotified.util.Utils.*;
 
 
 @SuppressLint("Registered")
 public class FriendSelectActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
-
+    
     private static final int R_ID_TRP_LAYOUT = 0x300AFF30;
     private static final int R_ID_TRP_TITLE = 0x300AFF31;
     private static final int R_ID_TRP_SUBTITLE = 0x300AFF32;
@@ -77,34 +62,34 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
     public static int HIGHLIGHT_COLOR = 0xFF20B0FF;
     private int hits;
     private boolean searchMode = false;
-    private final BaseAdapter mAdapter = new BaseAdapter() {
-        @Override
-        public int getCount() {
-            return FriendSelectActivity.this.getCount();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return FriendSelectActivity.this.getItem(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return FriendSelectActivity.this.getItemId(position);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            return FriendSelectActivity.this.getView(position, convertView, parent);
-        }
-    };
     private int mActionInt;
     private FaceImpl face;
     private EditText search;
     private TextView rightBtn, cancel, reverse, selectAll;
     private HashSet<String> muted;
     private List<FriendInfo> mFriendList = getFriendList();
-
+    private final BaseAdapter mAdapter = new BaseAdapter() {
+        @Override
+        public int getCount() {
+            return FriendSelectActivity.this.getCount();
+        }
+        
+        @Override
+        public Object getItem(int position) {
+            return FriendSelectActivity.this.getItem(position);
+        }
+        
+        @Override
+        public long getItemId(int position) {
+            return FriendSelectActivity.this.getItemId(position);
+        }
+        
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            return FriendSelectActivity.this.getView(position, convertView, parent);
+        }
+    };
+    
     public static ArrayList<FriendInfo> getFriendList() {
         ArrayList<FriendInfo> ret = new ArrayList<FriendInfo>();
         for (FriendRecord fr : ExfriendManager.getCurrent().getPersons().values()) {
@@ -112,15 +97,15 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
         }
         return ret;
     }
-
+    
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
     }
-
+    
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
     }
-
+    
     @Override
     public void afterTextChanged(Editable s) {
         String str = s.toString();
@@ -129,11 +114,13 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
             s.delete(i, i + 1);
         }
         str = s.toString();
-        if (s.length() == 0) return;
+        if (s.length() == 0) {
+            return;
+        }
         searchMode = true;
         parseKeyword(str);
     }
-
+    
     @Override
     public void onClick(View v) {
         if (v.getId() == R_ID_TRP_LAYOUT) {
@@ -145,8 +132,8 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
             searchMode = false;
             search.setFocusable(false);
             search.setText("");
-            InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-            View v2 = this.getWindow().peekDecorView();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            View v2 = getWindow().peekDecorView();
             if (null != v) {
                 imm.hideSoftInputFromWindow(v2.getWindowToken(), 0);
             }
@@ -162,7 +149,7 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
             search.setFocusable(true);
             search.setFocusableInTouchMode(true);
             search.requestFocus();
-            InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT);
             cancel.setVisibility(View.VISIBLE);
             selectAll.setVisibility(GONE);
@@ -176,14 +163,16 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
             String ret;
             if (sb.length() < 4) {
                 ret = "";
-            } else ret = sb.substring(1);
+            } else {
+                ret = sb.substring(1);
+            }
             try {
                 ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
                 if (mActionInt == ACTION_CHAT_TAIL_FRIENDS_ACTIVITY) {
                     cfg.putString(ConfigItems.qn_chat_tail_friends, ret);
                     cfg.save();
                 }
-                this.finish();
+                finish();
             } catch (Exception e) {
                 try {
                     log(e);
@@ -208,29 +197,35 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
             mAdapter.notifyDataSetInvalidated();
         }
     }
-
+    
     public int getCount() {
         if (searchMode && hits > 0) {
             return hits;
-        } else return mFriendList == null ? 0 : mFriendList.size();
+        } else {
+            return mFriendList == null ? 0 : mFriendList.size();
+        }
     }
-
+    
     public FriendInfo getItem(int position) {
         if (searchMode && hits > 0) {
             return mFriendList.get(position);
-        } else return mFriendList == null ? null : mFriendList.get(position);
+        } else {
+            return mFriendList == null ? null : mFriendList.get(position);
+        }
     }
-
+    
     public long getItemId(int position) {
         FriendInfo info = getItem(position);
-        return info == null ? -1 : Long.parseLong(info.uin.toString());
+        return info == null ? -1 : Long.parseLong(info.uin);
     }
-
+    
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null) convertView = createItemView();
+        if (convertView == null) {
+            convertView = createItemView();
+        }
         FriendInfo info = mFriendList.get(position);
         convertView.setTag(info.uin + "");
-        String nick = Utils.isNullOrEmpty(info.remark) ? info.nick : info.remark;;
+        String nick = Utils.isNullOrEmpty(info.remark) ? info.nick : info.remark;
         if (searchMode) {
             TextView title = convertView.findViewById(R_ID_TRP_TITLE);
             title.setText(nick);
@@ -242,7 +237,7 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
             TextView subtitle = convertView.findViewById(R_ID_TRP_SUBTITLE);
             subtitle.setText(info.uin + "");
         }
-
+        
         ImageView imgview = convertView.findViewById(R_ID_TRP_FACE);
         Bitmap bm = face.getBitmapFromCache(FaceImpl.TYPE_USER, info.uin + "");
         if (bm == null) {
@@ -256,7 +251,7 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
         check.setChecked(selected);
         return convertView;
     }
-
+    
     @Override
     public boolean doOnCreate(Bundle savedInstanceState) {
         super.doOnCreate(savedInstanceState);
@@ -288,7 +283,7 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
         search.addTextChangedListener(this);
         search.setTextColor(cTitle);
         //search.setBackgroundDrawable(null);
-        ViewCompat.setBackground(search,null);
+        ViewCompat.setBackground(search, null);
         LinearLayout.LayoutParams btnlp = new LinearLayout.LayoutParams(WRAP_CONTENT, bar_hi);
         LinearLayout.LayoutParams searchlp = new LinearLayout.LayoutParams(WRAP_CONTENT, bar_hi);
         searchlp.weight = 1;
@@ -297,21 +292,21 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
         reverse.setId(R_ID_TRP_REVERSE);
         reverse.setTextColor(cTitle);
         //reverse.setBackgroundDrawable(null);
-        ViewCompat.setBackground(reverse,null);
+        ViewCompat.setBackground(reverse, null);
         reverse.setOnClickListener(this);
         selectAll = new Button(this);
         selectAll.setText("全选");
         selectAll.setId(R_ID_TRP_SELECT_ALL);
         selectAll.setTextColor(cTitle);
         //selectAll.setBackgroundDrawable(null);
-        ViewCompat.setBackground(selectAll,null);
+        ViewCompat.setBackground(selectAll, null);
         selectAll.setOnClickListener(this);
         cancel = new Button(this);
         cancel.setText("取消");
         cancel.setTextColor(cTitle);
         cancel.setId(R_ID_TRP_CANCEL);
         //cancel.setBackgroundDrawable(null);
-        ViewCompat.setBackground(cancel,null);
+        ViewCompat.setBackground(cancel, null);
         cancel.setOnClickListener(this);
         cancel.setVisibility(GONE);
         bar.addView(search, searchlp);
@@ -339,7 +334,7 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
         f.addView(tv, flp);
         f.addView(sdlv, new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         main.addView(f, new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-        this.setContentView(main);
+        setContentView(main);
         String title = "Fatal error!";
         if (mActionInt == ACTION_CHAT_TAIL_FRIENDS_ACTIVITY)
             title = "选择小尾巴生效好友";
@@ -358,7 +353,7 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
         String list = null;
         if (mActionInt == ACTION_CHAT_TAIL_FRIENDS_ACTIVITY)
             list = ExfriendManager.getCurrent().getConfig().getString(ConfigItems.qn_chat_tail_friends);
-
+        
         if (list != null) {
             for (String s : list.split(",")) {
                 if (s.length() > 4) {
@@ -370,10 +365,10 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
             rightBtn.setText("完成(" + muted.size() + ")");
         }
         setContentBackgroundDrawable(ResUtils.skin_background);
-        this.getWindow().getDecorView().setTag(this);
+        getWindow().getDecorView().setTag(this);
         return true;
     }
-
+    
     private LinearLayout createItemView() {
         int std_mg = dip2px(this, 16), tmp;
         LinearLayout llayout = new LinearLayout(this);
@@ -382,7 +377,7 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
         llayout.setOrientation(LinearLayout.HORIZONTAL);
         llayout.setPadding(std_mg, std_mg / 2, 0, std_mg / 2);
         //llayout.setBackgroundDrawable(ResUtils.getListItemBackground());
-        ViewCompat.setBackground(llayout,ResUtils.getListItemBackground());
+        ViewCompat.setBackground(llayout, ResUtils.getListItemBackground());
         llayout.setOnClickListener(this);
         llayout.setId(R_ID_TRP_LAYOUT);
         CheckBox checkBox = new CheckBox(this);
@@ -390,7 +385,7 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
         checkBox.setOnCheckedChangeListener(this);
         checkBox.setButtonDrawable(null);
         //checkBox.setBackgroundDrawable(ResUtils.getCheckBoxBackground());
-        ViewCompat.setBackground(checkBox,ResUtils.getCheckBoxBackground());
+        ViewCompat.setBackground(checkBox, ResUtils.getCheckBoxBackground());
         LinearLayout.LayoutParams imglp = new LinearLayout.LayoutParams(Utils.dip2px(this, 50), Utils.dip2px(this, 50));
         imglp.setMargins(tmp = Utils.dip2px(this, 12), tmp / 2, tmp / 2, tmp / 2);
         ImageView imgview = new ImageView(this);
@@ -407,7 +402,7 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
         ltxtlp.setMargins(tmp = Utils.dip2px(this, 2), tmp, tmp, tmp);
         textlp.setMargins(tmp = Utils.dip2px(this, 1), tmp, tmp, tmp);
         llayout.addView(textlayout, ltxtlp);
-
+        
         TextView title = new TextView(this);
         title.setId(R_ID_TRP_TITLE);
         title.setSingleLine();
@@ -416,7 +411,7 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
         title.setTextColor(ResUtils.cloneColor(ResUtils.skin_black));
         title.setTextSize(Utils.px2sp(this, Utils.dip2px(this, 16)));
         //title.setPadding(tmp=Utils.dip2px(ctx,8),tmp,0,tmp);
-
+        
         TextView subtitle = new TextView(this);
         subtitle.setId(R_ID_TRP_SUBTITLE);
         subtitle.setSingleLine();
@@ -424,13 +419,13 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
         subtitle.setTextColor(ResUtils.cloneColor(ResUtils.skin_gray3));
         subtitle.setTextSize(Utils.px2sp(this, Utils.dip2px(this, 14)));
         //subtitle.setPadding(tmp,0,0,tmp);
-
+        
         textlayout.addView(title, textlp);
         textlayout.addView(subtitle, textlp);
-
+        
         return llayout;
     }
-
+    
     public void parseKeyword(String keyword) {
         //if(hits == null)hits=new ArrayList<>();
         hits = 0;
@@ -446,7 +441,9 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
                 info._uin = ret;
                 info.hit += 10;
                 y = true;
-            } else info._uin = info.uin;
+            } else {
+                info._uin = info.uin;
+            }
             // 备注搜索
             if (!Utils.isNullOrEmpty(info.remark)) {// 判断是否为空(是否有备注)
                 start = info.remark.indexOf(keyword);
@@ -456,7 +453,9 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
                     info._remark = ret;
                     info.hit += 10;
                     y = true;
-                } else info._remark = info.remark;
+                } else {
+                    info._remark = info.remark;
+                }
             }
             // 昵称搜索
             start = info.nick.indexOf(keyword);
@@ -466,20 +465,26 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
                 info._nick = ret;
                 info.hit += 10;
                 y = true;
-            } else info._nick = info.nick;
-            if (y) hits++;
+            } else {
+                info._nick = info.nick;
+            }
+            if (y) {
+                hits++;
+            }
         }
-
-
+        
+        
         Collections.sort(mFriendList);
         mAdapter.notifyDataSetChanged();
     }
-
+    
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         LinearLayout ll = (LinearLayout) buttonView.getParent();
         String guin = (String) ll.getTag();
-        if (guin == null) return;
+        if (guin == null) {
+            return;
+        }
         if (isChecked) {
             muted.add(guin);
         } else {
@@ -487,7 +492,7 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
         }
         rightBtn.setText("完成(" + muted.size() + ")");
     }
-
+    
     public static class FriendInfo implements Comparable {
         public FriendRecord info;
         public String nick;
@@ -497,20 +502,20 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
         public CharSequence _remark;
         public CharSequence _uin;
         public int hit;
-
+        
         FriendInfo(FriendRecord i) {
-            this.info = i;
-            this._uin = this.uin = info.uin + "";
-            this._nick = this.nick = info.nick;
-            this._remark = this.remark = Utils.isNullOrEmpty(info.remark) ? "" : info.remark;
-            this.hit = 0;
+            info = i;
+            _uin = uin = info.uin + "";
+            _nick = nick = info.nick;
+            _remark = remark = Utils.isNullOrEmpty(info.remark) ? "" : info.remark;
+            hit = 0;
         }
-
+        
         @Override
         public int compareTo(Object o) {
             FriendInfo t = (FriendInfo) o;
             return t.hit - hit;
         }
     }
-
+    
 }

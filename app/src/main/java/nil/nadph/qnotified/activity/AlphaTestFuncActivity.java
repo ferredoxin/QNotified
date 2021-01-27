@@ -18,34 +18,26 @@
  */
 package nil.nadph.qnotified.activity;
 
-import android.annotation.SuppressLint;
-import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.annotation.*;
+import android.os.*;
+import android.view.*;
+import android.widget.*;
 
-import com.tencent.mobileqq.widget.BounceScrollView;
+import com.tencent.mobileqq.widget.*;
 
-import me.kyuubiran.dialog.RevokeMsgDialog;
-import me.kyuubiran.hook.RemoveFuckingDiyCard;
-import me.kyuubiran.hook.RemovePokeGrayTips;
-import me.kyuubiran.hook.testhook.*;
-import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.util.LicenseStatus;
+import me.kyuubiran.dialog.*;
+import me.kyuubiran.hook.*;
+import nil.nadph.qnotified.ui.*;
+import nil.nadph.qnotified.util.*;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit;
-import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
-import static nil.nadph.qnotified.util.Utils.dip2px;
+import static android.view.ViewGroup.LayoutParams.*;
+import static nil.nadph.qnotified.ui.ViewBuilder.*;
+import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressLint("Registered")
 public class AlphaTestFuncActivity extends IphoneTitleBarActivityCompat {
-
-
+    
+    
     @Override
     public boolean doOnCreate(Bundle bundle) {
         super.doOnCreate(bundle);
@@ -76,7 +68,7 @@ public class AlphaTestFuncActivity extends IphoneTitleBarActivityCompat {
             new Thread(() -> {
                 try {
                     Thread.sleep(3000);
-                    AlphaTestFuncActivity.this.finish();
+                    finish();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -89,16 +81,16 @@ public class AlphaTestFuncActivity extends IphoneTitleBarActivityCompat {
             ll.addView(newListItemHookSwitchInit(this, "[特供版]彻底屏蔽傻逼diy名片", "用闪退/zip炸弹名片的先死个妈", RemoveFuckingDiyCard.INSTANCE));
         }
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-        this.setContentView(bounceScrollView);
+        setContentView(bounceScrollView);
         LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);
         _lp_fat.weight = 1;
-
+        
         setContentBackgroundDrawable(ResUtils.skin_background);
         setTitle("请勿改动");
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         return true;
     }
-
+    
     @Override
     public void doOnResume() {
         super.doOnResume();

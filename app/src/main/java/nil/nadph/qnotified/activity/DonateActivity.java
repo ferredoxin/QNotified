@@ -18,41 +18,47 @@
  */
 package nil.nadph.qnotified.activity;
 
-import android.annotation.SuppressLint;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.net.Uri;
-import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
+import android.annotation.*;
+import android.content.*;
+import android.content.pm.*;
+import android.content.res.*;
+import android.graphics.*;
+import android.net.*;
+import android.os.*;
+import android.view.*;
+import android.widget.*;
 
-import com.tencent.mobileqq.widget.BounceScrollView;
+import com.tencent.mobileqq.widget.*;
 
-import java.net.URLEncoder;
+import java.net.*;
 
-import nil.nadph.qnotified.R;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.ui.CustomDialog;
-import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.ui.*;
+import nil.nadph.qnotified.util.*;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static android.view.ViewGroup.LayoutParams.*;
 import static nil.nadph.qnotified.ui.ViewBuilder.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressLint("Registered")
 public class DonateActivity extends IphoneTitleBarActivityCompat {
-
+    
     public static final String qn_donated_choice = "qn_donated_choice";
-
+    
+    private static String payUrl() {
+        String urlCode;
+        try {
+            urlCode = URLEncoder.encode("https://qr.alipay.com/fkx06007ngjbx8qoonajyff", "utf-8");
+            String alipayqr = "alipayqr://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=" + urlCode;
+            return alipayqr + "%3F_s%3Dweb-other&_t=" + System.currentTimeMillis();
+        } catch (Exception e) {
+            log(e);
+            //should not happen
+            return null;
+        }
+    }
+    
     @Override
     public boolean doOnCreate(Bundle bundle) {
         super.doOnCreate(bundle);
@@ -80,14 +86,14 @@ public class DonateActivity extends IphoneTitleBarActivityCompat {
         __lp_r.addRule(RelativeLayout.CENTER_VERTICAL);
         ColorStateList hiColor = ColorStateList.valueOf(Color.argb(255, 242, 140, 72));
         RelativeLayout _t;
-
+        
         ll.addView(subtitle(this, "QNotified是开源软件,完全免费,无需任何授权/卡密/加群即可使用全部功能,没有卡密或者授权这类的东西,请勿上当受骗!!!"));
         ll.addView(subtitle(this, "如果你希望支持作者, 保持更新的动力, 可请使用以下方式捐赠, 完成后手动打开 [我已捐赠] 即可"));
         ll.addView(subtitle(this, "免费开发不易, 需要花费很多个人精力, 且回报甚微, 甚至被人盗卖, 感谢理解"));
         RelativeLayout iHaveDonated = newListItemSwitchConfig(this, "我已捐赠", null, qn_donated_choice, false);
         ((CompoundButton) iHaveDonated.findViewById(R_ID_SWITCH)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(final CompoundButton buttonView, boolean isChecked) {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 try {
                     ConfigManager cfg = ConfigManager.getDefaultConfig();
                     cfg.putBoolean(qn_donated_choice, isChecked);
@@ -125,7 +131,7 @@ public class DonateActivity extends IphoneTitleBarActivityCompat {
             ll.addView(newListItemButton(this, "微信支付", null, null, clickToFxxkWxpay()));
         }
         ll.addView(newListItemButton(this, "Bitcoin", null, null, clickToBtc()));
-
+        
         ll.addView(subtitle(this, "FAQ1:"));
         ll.addView(subtitle(this, "Q: 捐赠后能解锁隐藏功能吗?"));
         ll.addView(subtitle(this, "A: 不能. 所有功能全部都是可以白嫖的"));
@@ -138,11 +144,11 @@ public class DonateActivity extends IphoneTitleBarActivityCompat {
         ll.addView(subtitle(this, "FAQ4:"));
         ll.addView(subtitle(this, "Q: 为什么不加个付费验证,然后收费?"));
         ll.addView(subtitle(this, "A: 开源软件搞什么付费验证"));
-
+        
         //bounceScrollView.setFocusable(true);
         //bounceScrollView.setFocusableInTouchMode(true);
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-        this.setContentView(bounceScrollView);
+        setContentView(bounceScrollView);
         LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);
         _lp_fat.weight = 1;
         //__ll.addView(bounceScrollView,_lp_fat);
@@ -153,55 +159,54 @@ public class DonateActivity extends IphoneTitleBarActivityCompat {
         //log("Title:"+invoke_virtual(this,"getTextTitle"));
         return true;
     }
-
-
+    
     private View.OnClickListener clickToAlipay() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 CustomDialog.create(DonateActivity.this).setTitle("提示")
-                        .setMessage("捐赠是自愿行为!\n如果你希望支持作者, 保持更新的动力, 您可以捐赠3-5元.\n本软件是开源软件, 全部功能都无需付费即可使用!\n\"QNotified\"请求打开支付宝\n捐赠完成后请手动打开上方 我已捐赠 开关.").setNegativeButton("取消", null)
-                        .setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                if (!hasAlipay()) {
-                                    showToastShort(DonateActivity.this, "拉起支付宝失败");
-                                } else {
-                                    jumpToAlipay();
-                                }
+                    .setMessage("捐赠是自愿行为!\n如果你希望支持作者, 保持更新的动力, 您可以捐赠3-5元.\n本软件是开源软件, 全部功能都无需付费即可使用!\n\"QNotified\"请求打开支付宝\n捐赠完成后请手动打开上方 我已捐赠 开关.").setNegativeButton("取消", null)
+                    .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (!hasAlipay()) {
+                                showToastShort(DonateActivity.this, "拉起支付宝失败");
+                            } else {
+                                jumpToAlipay();
                             }
-                        }).setCancelable(true).create().show();
+                        }
+                    }).setCancelable(true).create().show();
             }
         };
     }
-
+    
     private View.OnClickListener clickToFxxkWxpay() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 CustomDialog.createFailsafe(DonateActivity.this).setTitle("为什么不支持微信支付")
-                        .setMessage("微信支付收款0.01很容易导致账户被冻结, 故不提供微信支付.")
-                        .setPositiveButton("确认", null).setCancelable(true).create().show();
+                    .setMessage("微信支付收款0.01很容易导致账户被冻结, 故不提供微信支付.")
+                    .setPositiveButton("确认", null).setCancelable(true).create().show();
             }
         };
     }
-
+    
     private View.OnClickListener clickToBtc() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 CustomDialog.createFailsafe(DonateActivity.this).setTitle("BTC")
-                        .setMessage("即将开放...")
-                        .setPositiveButton("确认", null).setCancelable(true).create().show();
+                    .setMessage("即将开放...")
+                    .setPositiveButton("确认", null).setCancelable(true).create().show();
             }
         };
     }
-
+    
     private void jumpToAlipay() {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(payUrl()));
         startActivity(intent);
     }
-
+    
     private boolean hasAlipay() {
         PackageManager pm = getPackageManager();
         try {
@@ -209,19 +214,6 @@ public class DonateActivity extends IphoneTitleBarActivityCompat {
             return true;
         } catch (PackageManager.NameNotFoundException e) {
             return false;
-        }
-    }
-
-    private static String payUrl() {
-        String urlCode;
-        try {
-            urlCode = URLEncoder.encode("https://qr.alipay.com/fkx06007ngjbx8qoonajyff", "utf-8");
-            final String alipayqr = "alipayqr://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=" + urlCode;
-            return alipayqr + "%3F_s%3Dweb-other&_t=" + System.currentTimeMillis();
-        } catch (Exception e) {
-            log(e);
-            //should not happen
-            return null;
         }
     }
 }

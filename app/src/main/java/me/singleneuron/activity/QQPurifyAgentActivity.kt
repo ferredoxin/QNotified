@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import nil.nadph.qnotified.HookEntry
 import nil.nadph.qnotified.lifecycle.JumpActivityEntryHook
 
-class QQPurifyAgentActivity :AppCompatActivity() {
+class QQPurifyAgentActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

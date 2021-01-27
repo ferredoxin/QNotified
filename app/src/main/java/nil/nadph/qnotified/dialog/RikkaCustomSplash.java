@@ -1,69 +1,79 @@
 package nil.nadph.qnotified.dialog;
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.annotation.*;
+import android.app.*;
+import android.content.*;
+import android.graphics.*;
+import android.view.*;
+import android.widget.*;
 
-import java.io.File;
-import java.io.IOException;
+import com.rymmmmm.hook.*;
 
-import nil.nadph.qnotified.R;
-import nil.nadph.qnotified.config.ConfigManager;
-import com.rymmmmm.hook.CustomMsgTimeFormat;
-import nil.nadph.qnotified.ui.CustomDialog;
+import java.io.*;
+
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.ui.*;
 import nil.nadph.qnotified.util.NonNull;
 import nil.nadph.qnotified.util.Nullable;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.util.*;
 
-import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
-import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.showToast;
+import static nil.nadph.qnotified.util.Utils.*;
 
 public class RikkaCustomSplash extends RikkaDialog.RikkaConfigItem {
     private static final String DEFAULT_SPLASH_PATH = "";
-
+    
     private static final String rq_splash_path = "rq_splash_path";
     private static final String rq_splash_enabled = "rq_splash_enabled";
-
+    
     @Nullable
     private AlertDialog dialog;
     @Nullable
     private LinearLayout vg;
-
+    
     private String currentPath;
     private boolean enableSplash;
-
+    
     public RikkaCustomSplash(@NonNull RikkaDialog d) {
         super(d);
     }
-
+    
+    public static boolean IsEnabled() {
+        return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_splash_enabled);
+    }
+    
+    @Nullable
+    public static String getCurrentSplashPath() {
+        ConfigManager cfg = ConfigManager.getDefaultConfig();
+        if (cfg.getBooleanOrFalse(rq_splash_enabled)) {
+            String val = cfg.getString(rq_splash_path);
+            if (val == null) {
+                val = DEFAULT_SPLASH_PATH;
+            }
+            return val;
+        }
+        return null;
+    }
+    
     @SuppressLint("InflateParams")
     @Override
     public void onClick(View v) {
         dialog = (AlertDialog) CustomDialog.createFailsafe(v.getContext()).setTitle("自定义启动图").setNegativeButton("取消", null)
-                .setPositiveButton("保存", null).create();
+            .setPositiveButton("保存", null).create();
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(false);
-        final Context ctx = dialog.getContext();
+        Context ctx = dialog.getContext();
         vg = (LinearLayout) LayoutInflater.from(ctx).inflate(R.layout.rikka_select_splash_dialog, null);
-        final TextView input = vg.findViewById(R.id.selectSplash_editTextPicLocation);
-        final CheckBox enable = vg.findViewById(R.id.checkBoxEnableCustomStartupPic);
-        final RelativeLayout panel = vg.findViewById(R.id.layoutSplashPanel);
+        TextView input = vg.findViewById(R.id.selectSplash_editTextPicLocation);
+        CheckBox enable = vg.findViewById(R.id.checkBoxEnableCustomStartupPic);
+        RelativeLayout panel = vg.findViewById(R.id.layoutSplashPanel);
         enableSplash = ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_splash_enabled);
         enable.setChecked(enableSplash);
         panel.setVisibility(enableSplash ? View.VISIBLE : View.GONE);
         currentPath = ConfigManager.getDefaultConfig().getString(rq_splash_path);
-        if (currentPath == null) currentPath = DEFAULT_SPLASH_PATH;
+        if (currentPath == null) {
+            currentPath = DEFAULT_SPLASH_PATH;
+        }
         input.setText(currentPath);
         enable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -112,34 +122,21 @@ public class RikkaCustomSplash extends RikkaDialog.RikkaConfigItem {
                 invalidateStatus();
                 if (enableSplash) {
                     CustomMsgTimeFormat hook = CustomMsgTimeFormat.get();
-                    if (!hook.isInited()) hook.init();
+                    if (!hook.isInited()) {
+                        hook.init();
+                    }
                 }
             }
         });
     }
-
+    
     @Override
     public boolean isEnabled() {
         return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_splash_enabled);
     }
-
-    public static boolean IsEnabled() {
-        return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_splash_enabled);
-    }
-
+    
     @Override
     public String getName() {
         return "自定义启动图";
-    }
-
-    @Nullable
-    public static String getCurrentSplashPath() {
-        ConfigManager cfg = ConfigManager.getDefaultConfig();
-        if (cfg.getBooleanOrFalse(rq_splash_enabled)) {
-            String val = cfg.getString(rq_splash_path);
-            if (val == null) val = DEFAULT_SPLASH_PATH;
-            return val;
-        }
-        return null;
     }
 }

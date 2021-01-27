@@ -8,7 +8,7 @@ public interface Constants {
     String INTENT_BUILD_NUM = "buildNum";
     String INTENT_LAUNCH = "isLaunchFromQQ";
     String APP_NAME = "QQPurify";
-
+    
     String KEY_GROUPS = "groups";
     String KEY_DISABLE_MODULE = "disableModule";
     String KEY_HIDE_NEW_FRIEND = "hideNewFriend";

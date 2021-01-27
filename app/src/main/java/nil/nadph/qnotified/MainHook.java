@@ -18,53 +18,46 @@
  */
 package nil.nadph.qnotified;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
+import android.app.*;
+import android.content.*;
 import android.os.*;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.view.*;
+import android.widget.*;
+
+import com.rymmmmm.hook.*;
 
 import java.lang.reflect.*;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import me.kyuubiran.hook.RemoveCameraButton;
-import me.kyuubiran.hook.RemoveRedDot;
-import nil.nadph.qnotified.config.ConfigItems;
+import de.robv.android.xposed.*;
+import me.kyuubiran.hook.*;
+import nil.nadph.qnotified.config.*;
 import nil.nadph.qnotified.hook.*;
-import com.rymmmmm.hook.CustomSplash;
-import nil.nadph.qnotified.lifecycle.ActProxyMgr;
-import nil.nadph.qnotified.lifecycle.JumpActivityEntryHook;
-import nil.nadph.qnotified.lifecycle.Parasitics;
-import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.lifecycle.*;
+import nil.nadph.qnotified.ui.*;
 import nil.nadph.qnotified.util.*;
 
-import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static nil.nadph.qnotified.util.Initiator._StartupDirector;
-import static nil.nadph.qnotified.util.Initiator.load;
+import static de.robv.android.xposed.XposedHelpers.*;
+import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 /*TitleKit:Lcom/tencent/mobileqq/widget/navbar/NavBarCommon*/
 
-@SuppressWarnings("rawtypes")
 public class MainHook {
-
+    
     private static MainHook SELF;
-
+    
     boolean third_stage_inited = false;
-
+    
     private MainHook() {
     }
-
+    
     public static MainHook getInstance() {
         if (SELF == null) {
             SELF = new MainHook();
         }
         return SELF;
     }
-
+    
     public static XC_MethodHook.Unhook findAndHookMethodIfExists(Class<?> clazz, String methodName, Object...
         parameterTypesAndCallback) {
         try {
@@ -74,7 +67,7 @@ public class MainHook {
             return null;
         }
     }
-
+    
     public static XC_MethodHook.Unhook findAndHookMethodIfExists(String clazzName, ClassLoader cl, String
         methodName, Object... parameterTypesAndCallback) {
         try {
@@ -84,21 +77,21 @@ public class MainHook {
             return null;
         }
     }
-
+    
     /**
      * @deprecated Use {@link Activity#startActivity(Intent)} directly instead.
      */
     public static void startProxyActivity(Context ctx, int action) {
         ctx.startActivity(new Intent(ctx, ActProxyMgr.getActivityByAction(action)));
     }
-
+    
     /**
      * @deprecated Use {@link Activity#startActivity(Intent)} directly instead.
      */
     public static void startProxyActivity(Context ctx, Class<?> clz) {
         ctx.startActivity(new Intent(ctx, clz));
     }
-
+    
     public static void openProfileCard(Context ctx, long uin) {
         try {
             Parcelable allInOne = (Parcelable) new_instance(load("com/tencent/mobileqq/activity/ProfileActivity$AllInOne"), "" + uin, 35, String.class, int.class);
@@ -109,19 +102,23 @@ public class MainHook {
             log(e);
         }
     }
-
+    
     /**
      * A屏黑主题,自用
      */
     public static void deepDarkTheme() {
-        if (!SyncUtils.isMainProcess()) return;
-        if (getLongAccountUin() != 1041703712) return;
+        if (!SyncUtils.isMainProcess()) {
+            return;
+        }
+        if (getLongAccountUin() != 1041703712) {
+            return;
+        }
         try {
             Class clz = load("com/tencent/mobileqq/activity/FriendProfileCardActivity");
             findAndHookMethod(clz, "doOnCreate", Bundle.class, new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    final Activity ctx = (Activity) param.thisObject;
+                    Activity ctx = (Activity) param.thisObject;
                     FrameLayout frame = ctx.findViewById(android.R.id.content);
                     frame.getChildAt(0).setBackgroundColor(0xFF000000);
                     new Thread(new Runnable() {
@@ -138,7 +135,9 @@ public class MainHook {
                                         View frame = ctx.findViewById(android.R.id.content);
                                         frame.setBackgroundColor(0xFF000000);
                                         View dk0 = ctx.findViewById(ctx.getResources().getIdentifier("dk0", "id", ctx.getPackageName()));
-                                        if (dk0 != null) dk0.setBackgroundColor(0x00000000);
+                                        if (dk0 != null) {
+                                            dk0.setBackgroundColor(0x00000000);
+                                        }
                                     } catch (Exception e) {
                                         log(e);
                                     }
@@ -152,7 +151,7 @@ public class MainHook {
             findAndHookMethod(clz, "doOnCreate", Bundle.class, new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    final Activity ctx = (Activity) param.thisObject;
+                    Activity ctx = (Activity) param.thisObject;
                     FrameLayout frame = ctx.findViewById(android.R.id.content);
                     frame.getChildAt(0).setBackgroundColor(0xFF000000);
                     new Thread(new Runnable() {
@@ -183,7 +182,7 @@ public class MainHook {
             findAndHookMethod(clz, "doOnCreate", Bundle.class, new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    final Activity ctx = (Activity) param.thisObject;
+                    Activity ctx = (Activity) param.thisObject;
                     FrameLayout frame = ctx.findViewById(android.R.id.content);
                     frame.getChildAt(0)/*.getChildAt(0)*/.setBackgroundColor(0xFF000000);
                 }
@@ -192,7 +191,26 @@ public class MainHook {
             log(e);
         }
     }
-
+    
+    private static void injectLifecycleForProcess(Context ctx) {
+        if (SyncUtils.isMainProcess()) {
+            Parasitics.injectModuleResources(ctx.getApplicationContext().getResources());
+        }
+        if (SyncUtils.isTargetProcess(SyncUtils.PROC_MAIN | SyncUtils.PROC_PEAK)) {
+            Parasitics.initForStubActivity(ctx);
+        }
+    }
+    
+    /**
+     * dummy method, for development and test only
+     */
+    public static void onAppStartupForMain() {
+        if (!isAlphaVersion()) {
+            return;
+        }
+        deepDarkTheme();
+    }
+    
     public void performHook(Context ctx, Object step) {
         //ConfigTable.INSTANCE.setTim(isTim(ctx));
         SyncUtils.initBroadcast(ctx);
@@ -250,11 +268,17 @@ public class MainHook {
             XposedBridge.hookMethod(doStep, new XC_MethodHook(51) {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    if (third_stage_inited) return;
+                    if (third_stage_inited) {
+                        return;
+                    }
                     Class director = _StartupDirector();
                     Object dir = iget_object_or_null(param.thisObject, "mDirector", director);
-                    if (dir == null) dir = iget_object_or_null(param.thisObject, "a", director);
-                    if (dir == null) dir = getFirstNSFByType(param.thisObject, director);
+                    if (dir == null) {
+                        dir = iget_object_or_null(param.thisObject, "a", director);
+                    }
+                    if (dir == null) {
+                        dir = getFirstNSFByType(param.thisObject, director);
+                    }
                     if (SyncUtils.isMainProcess()) {
                         ResUtils.loadThemeByArsc(getApplication(), false);
                     }
@@ -268,22 +292,17 @@ public class MainHook {
             if (LicenseStatus.hasUserAcceptEula()) {
                 Class director = _StartupDirector();
                 Object dir = iget_object_or_null(step, "mDirector", director);
-                if (dir == null) dir = iget_object_or_null(step, "a", director);
-                if (dir == null) dir = getFirstNSFByType(step, director);
+                if (dir == null) {
+                    dir = iget_object_or_null(step, "a", director);
+                }
+                if (dir == null) {
+                    dir = getFirstNSFByType(step, director);
+                }
                 InjectDelayableHooks.step(dir);
             }
         }
     }
-
-    private static void injectLifecycleForProcess(Context ctx) {
-        if (SyncUtils.isMainProcess()) {
-            Parasitics.injectModuleResources(ctx.getApplicationContext().getResources());
-        }
-        if (SyncUtils.isTargetProcess(SyncUtils.PROC_MAIN | SyncUtils.PROC_PEAK)) {
-            Parasitics.initForStubActivity(ctx);
-        }
-    }
-
+    
     @MainProcess
     private void injectStartupHookForMain(Context ctx) {
         JumpActivityEntryHook.initForJumpActivityEntry(ctx);
@@ -294,13 +313,5 @@ public class MainHook {
             HideMiniAppPullEntry.hideMiniAppEntry();
         }
     }
-
-    /**
-     * dummy method, for development and test only
-     */
-    public static void onAppStartupForMain() {
-        if (!isAlphaVersion()) return;
-        deepDarkTheme();
-    }
-
+    
 }

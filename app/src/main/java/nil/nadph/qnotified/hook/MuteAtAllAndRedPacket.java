@@ -18,17 +18,13 @@
  */
 package nil.nadph.qnotified.hook;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.XposedHelpers;
-import nil.nadph.qnotified.ExfriendManager;
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.config.ConfigItems;
-import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.Utils;
+import de.robv.android.xposed.*;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.step.*;
+import nil.nadph.qnotified.util.*;
 
 import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
@@ -36,17 +32,19 @@ import static nil.nadph.qnotified.util.Utils.*;
 public class MuteAtAllAndRedPacket extends BaseDelayableHook {
     private static final MuteAtAllAndRedPacket self = new MuteAtAllAndRedPacket();
     private boolean inited = false;
-
+    
     private MuteAtAllAndRedPacket() {
     }
-
+    
     public static MuteAtAllAndRedPacket get() {
         return self;
     }
-
+    
     @Override
     public boolean init() {
-        if (inited) return true;
+        if (inited) {
+            return true;
+        }
         try {
             Class<?> cl_MessageInfo = load("com/tencent/mobileqq/troop/data/MessageInfo");
             if (cl_MessageInfo == null) {
@@ -63,10 +61,14 @@ public class MuteAtAllAndRedPacket extends BaseDelayableHook {
                             XposedBridge.hookMethod(m, new XC_MethodHook(60) {
                                 @Override
                                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                                    if (LicenseStatus.sDisableCommonHooks) return;
+                                    if (LicenseStatus.sDisableCommonHooks) {
+                                        return;
+                                    }
                                     int ret = (int) param.getResult();
                                     String troopuin = (String) param.args[2];
-                                    if (ret != at_all_type) return;
+                                    if (ret != at_all_type) {
+                                        return;
+                                    }
                                     String muted = "," + ExfriendManager.getCurrent().getConfig().getString(ConfigItems.qn_muted_at_all) + ",";
                                     if (muted.contains("," + troopuin + ",")) {
                                         param.setResult(0);
@@ -85,14 +87,22 @@ public class MuteAtAllAndRedPacket extends BaseDelayableHook {
             XposedHelpers.findAndHookMethod(load("com.tencent.mobileqq.data.MessageForQQWalletMsg"), "doParse", new XC_MethodHook(200) {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.sDisableCommonHooks) return;
+                    if (LicenseStatus.sDisableCommonHooks) {
+                        return;
+                    }
                     boolean mute = false;
                     int istroop = (Integer) iget_object_or_null(param.thisObject, "istroop");
-                    if (istroop != 1) return;
+                    if (istroop != 1) {
+                        return;
+                    }
                     String troopuin = (String) iget_object_or_null(param.thisObject, "frienduin");
                     String muted = "," + ExfriendManager.getCurrent().getConfig().getString(ConfigItems.qn_muted_red_packet) + ",";
-                    if (muted.contains("," + troopuin + ",")) mute = true;
-                    if (mute) XposedHelpers.setObjectField(param.thisObject, "isread", true);
+                    if (muted.contains("," + troopuin + ",")) {
+                        mute = true;
+                    }
+                    if (mute) {
+                        XposedHelpers.setObjectField(param.thisObject, "isread", true);
+                    }
                 }
             });
             inited = true;
@@ -102,34 +112,34 @@ public class MuteAtAllAndRedPacket extends BaseDelayableHook {
             return false;
         }
     }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        //do nothing
-    }
-
+    
     @Override
     public boolean checkPreconditions() {
         return true;
     }
-
+    
     @Override
     public int getEffectiveProc() {
         return SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF;
     }
-
+    
     @Override
     public Step[] getPreconditions() {
         return new Step[0];
     }
-
+    
     @Override
     public boolean isInited() {
         return inited;
     }
-
+    
     @Override
     public boolean isEnabled() {
         return true;
+    }
+    
+    @Override
+    public void setEnabled(boolean enabled) {
+        //do nothing
     }
 }

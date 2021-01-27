@@ -18,18 +18,17 @@
  */
 package nil.nadph.qnotified.bridge;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.os.*;
 
-import java.lang.reflect.Constructor;
+import java.lang.reflect.*;
 
-import nil.nadph.qnotified.util.Initiator;
+import nil.nadph.qnotified.util.*;
 
-import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.*;
 
 public class SessionInfoImpl {
-
-
+    
+    
     public static Parcelable createSessionInfo(String uin, int uinType) {
         Parcel parcel = Parcel.obtain();
         parcel.writeInt(uinType);
@@ -52,5 +51,5 @@ public class SessionInfoImpl {
         parcel.recycle();
         return ret;
     }
-
+    
 }

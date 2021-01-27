@@ -4,7 +4,9 @@ import android.os.Looper
 import android.widget.Toast
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
-import me.kyuubiran.util.*
+import me.kyuubiran.util.LOG_TYPE_FIND_METHOD
+import me.kyuubiran.util.getObjectOrNull
+import me.kyuubiran.util.logd
 import me.singleneuron.data.MsgRecordData
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.config.ConfigManager
@@ -36,7 +38,8 @@ object CutMessage : BaseDelayableHook() {
                         override fun beforeHookedMethod(param: MethodHookParam?) {
                             if (LicenseStatus.sDisableCommonHooks) return
                             if (!isEnabled) return
-                            val msgRecord = param?.args?.get(0) ?: return
+                            val msgRecord = param?.args?.get(0)
+                                ?: return
                             if (msgRecord::class.java.name != "com.tencent.imcore.message.QQMessageFacade${'$'}Message") return
                             val msgRecordData = MsgRecordData(msgRecord)
                             try {

@@ -18,21 +18,21 @@
  */
 package nil.nadph.qnotified.util;
 
-import android.content.Context;
+import android.content.*;
 
-import java.net.URL;
+import java.net.*;
 
 public class HybridClassLoader extends ClassLoader {
-
+    
+    private static final ClassLoader sBootClassLoader = Context.class.getClassLoader();
     private final ClassLoader clPreload;
     private final ClassLoader clBase;
-    private static final ClassLoader sBootClassLoader = Context.class.getClassLoader();
-
+    
     public HybridClassLoader(ClassLoader x, ClassLoader ctx) {
         clPreload = x;
         clBase = ctx;
     }
-
+    
     @Override
     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
         try {
@@ -40,7 +40,7 @@ public class HybridClassLoader extends ClassLoader {
         } catch (ClassNotFoundException ignored) {
         }
         if (name != null && (name.startsWith("androidx.") || name.startsWith("android.support.v4.")
-                || name.startsWith("kotlin.") || name.startsWith("kotlinx."))) {
+            || name.startsWith("kotlin.") || name.startsWith("kotlinx."))) {
             //Nevertheless, this will not interfere with the host application,
             //classes in host application SHOULD find with their own ClassLoader, eg Class.forName()
             //use shipped androidx and kotlin lib.
@@ -62,11 +62,13 @@ public class HybridClassLoader extends ClassLoader {
         }
         throw new ClassNotFoundException(name);
     }
-
+    
     @Override
     public URL getResource(String name) {
         URL ret = clPreload.getResource(name);
-        if (ret != null) return ret;
+        if (ret != null) {
+            return ret;
+        }
         return clBase.getResource(name);
     }
 }

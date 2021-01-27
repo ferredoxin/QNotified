@@ -18,13 +18,12 @@
  */
 package nil.nadph.qnotified.util;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
+import java.lang.reflect.*;
 
-import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.*;
 
 public class CustomMenu {
-
+    
     public static Object createItem(Class<?> clazz, int id, String title, int icon) {
         try {
             try {
@@ -35,7 +34,9 @@ public class CustomMenu {
                 Object item = createItem(clazz, id, title);
                 Field f;
                 f = Utils.findField(clazz, int.class, "b");
-                if (f == null) f = Utils.findField(clazz, int.class, "icon");
+                if (f == null) {
+                    f = Utils.findField(clazz, int.class, "icon");
+                }
                 f.setAccessible(true);
                 f.set(item, icon);
                 return item;
@@ -46,7 +47,7 @@ public class CustomMenu {
             return createItem(clazz, id, title);
         }
     }
-
+    
     public static Object createItem(Class<?> clazz, int id, String title) {
         try {
             Object item;
@@ -58,11 +59,15 @@ public class CustomMenu {
             item = clazz.newInstance();
             Field f;
             f = Utils.findField(clazz, int.class, "id");
-            if (f == null) f = Utils.findField(clazz, int.class, "a");
+            if (f == null) {
+                f = Utils.findField(clazz, int.class, "a");
+            }
             f.setAccessible(true);
             f.set(item, id);
             f = Utils.findField(clazz, String.class, "title");
-            if (f == null) f = Utils.findField(clazz, String.class, "a");
+            if (f == null) {
+                f = Utils.findField(clazz, String.class, "a");
+            }
             f.setAccessible(true);
             f.set(item, title);
             return item;

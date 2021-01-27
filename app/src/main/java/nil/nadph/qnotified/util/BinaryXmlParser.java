@@ -18,13 +18,8 @@
  */
 package nil.nadph.qnotified.util;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
+import java.io.*;
+import java.util.*;
 
 /**
  * @author cinit
@@ -32,32 +27,32 @@ import java.util.Stack;
  */
 @SuppressWarnings("CharsetObjectCanBeUsed")
 public class BinaryXmlParser {
-
+    
     public static final short
-            RES_NULL_TYPE = 0x0000,
-            RES_STRING_POOL_TYPE = 0x0001,
-            RES_TABLE_TYPE = 0x0002,
-
+        RES_NULL_TYPE = 0x0000,
+        RES_STRING_POOL_TYPE = 0x0001,
+        RES_TABLE_TYPE = 0x0002,
+    
     // Chunk types in RES_XML_TYPE
     RES_XML_TYPE = 0x0003,
-            RES_XML_FIRST_CHUNK_TYPE = 0x0100,
-            RES_XML_START_NAMESPACE_TYPE = 0x0100,
-            RES_XML_END_NAMESPACE_TYPE = 0x0101,
-            RES_XML_START_ELEMENT_TYPE = 0x0102,
-            RES_XML_END_ELEMENT_TYPE = 0x0103,
-            RES_XML_CDATA_TYPE = 0x0104,
-            RES_XML_LAST_CHUNK_TYPE = 0x017f,
-
+        RES_XML_FIRST_CHUNK_TYPE = 0x0100,
+        RES_XML_START_NAMESPACE_TYPE = 0x0100,
+        RES_XML_END_NAMESPACE_TYPE = 0x0101,
+        RES_XML_START_ELEMENT_TYPE = 0x0102,
+        RES_XML_END_ELEMENT_TYPE = 0x0103,
+        RES_XML_CDATA_TYPE = 0x0104,
+        RES_XML_LAST_CHUNK_TYPE = 0x017f,
+    
     // This contains a uint32_t array mapping strings in the string
     // pool back to resource identifiers.  It is optional.
     RES_XML_RESOURCE_MAP_TYPE = 0x0180,
-
+    
     // Chunk types in RES_TABLE_TYPE
     RES_TABLE_PACKAGE_TYPE = 0x0200,
-            RES_TABLE_TYPE_TYPE = 0x0201,
-            RES_TABLE_TYPE_SPEC_TYPE = 0x0202;
+        RES_TABLE_TYPE_TYPE = 0x0201,
+        RES_TABLE_TYPE_SPEC_TYPE = 0x0202;
     public static final int NULL = 0xFFFFFFFF;
-
+    
     public static XmlNode parseXml(String filePath) {
         FileInputStream fis = null;
         try {
@@ -69,7 +64,7 @@ public class BinaryXmlParser {
                 bos.write(buffer, 0, len);
             }
             return parseXml(bos.toByteArray());
-
+            
         } catch (Exception e) {
             Utils.loge("parse xml error:" + e.toString());
         } finally {
@@ -82,7 +77,7 @@ public class BinaryXmlParser {
         }
         return null;
     }
-
+    
     public static XmlNode parseXml(byte[] xml) {
         XmlNode root = new XmlNode();
         int[] pos = {0};
@@ -100,7 +95,9 @@ public class BinaryXmlParser {
             s:
             switch (type) {
                 case RES_XML_TYPE:
-                    if (size > xml.length) throw new RuntimeException("Corrupted AXML data");
+                    if (size > xml.length) {
+                        throw new RuntimeException("Corrupted AXML data");
+                    }
                     xmlSize = size;
                     pos[0] += headerSize;
                     break s;
@@ -143,16 +140,20 @@ public class BinaryXmlParser {
                     pos[0] += size;
                     break loop;
                 case RES_XML_START_ELEMENT_TYPE:
-                    if (stack.empty()) node = root;
-                    else node = new XmlNode();
+                    if (stack.empty()) {
+                        node = root;
+                    } else {
+                        node = new XmlNode();
+                    }
                     node.lineNumber = readLe32(xml, pos[0] + 8);
                     int comm_index = readLe32(xml, pos[0] + 12);
                     if (comm_index != NULL) {
                         node.comment = stringPool.get(comm_index);
                     }
                     int ns_index = readLe32(xml, pos[0] + 16);
-                    if (ns_index != NULL)
+                    if (ns_index != NULL) {
                         node.namespace = stringPool.get(ns_index);
+                    }
                     int name_index = readLe32(xml, pos[0] + 20);
                     node.name = stringPool.get(name_index);
                     short attributeStart = readLe16(xml, pos[0] + 24);
@@ -163,7 +164,9 @@ public class BinaryXmlParser {
                     int consumed = 0;
                     short ressize;
                     String name;
-                    if (attributeCount > 0) node.attributes = new HashMap<>();
+                    if (attributeCount > 0) {
+                        node.attributes = new HashMap<>();
+                    }
                     for (int i = 0; i < attributeCount; i++) {
                         //4nsi
                         ni = readLe32(xml, pos[0] + 16 + attributeStart + consumed + 4);
@@ -173,8 +176,9 @@ public class BinaryXmlParser {
                         XmlNode.Res r = new XmlNode.Res();
                         r.dataType = xml[pos[0] + 16 + attributeStart + consumed + 15];
                         r.data = readLe32(xml, pos[0] + 16 + attributeStart + consumed + 16);
-                        if (r.dataType == XmlNode.Res.TYPE_STRING)
+                        if (r.dataType == XmlNode.Res.TYPE_STRING) {
                             r.str = stringPool.get(r.data);
+                        }
                         consumed += ressize + 12;
                         node.attributes.put(name, r);
                     }
@@ -182,13 +186,17 @@ public class BinaryXmlParser {
                     pos[0] += size;
                     break s;
                 case RES_XML_CDATA_TYPE:
-                    if (stack.isEmpty()) node = root;
-                    else node = stack.peek();
+                    if (stack.isEmpty()) {
+                        node = root;
+                    } else {
+                        node = stack.peek();
+                    }
                     XmlNode.Res r = node.cdata = new XmlNode.Res();
                     r.dataType = xml[pos[0] + 16 + 3];
                     r.data = readLe16(xml, pos[0] + 16 + 4);
-                    if (r.dataType == XmlNode.Res.TYPE_STRING)
+                    if (r.dataType == XmlNode.Res.TYPE_STRING) {
                         r.str = stringPool.get(r.data);
+                    }
                     pos[0] += size;
                     break s;
                 case RES_XML_END_ELEMENT_TYPE:
@@ -197,8 +205,9 @@ public class BinaryXmlParser {
                         XmlNode parent;
                         if (!stack.empty()) {
                             parent = stack.peek();
-                            if (parent.elements == null)
+                            if (parent.elements == null) {
                                 parent.elements = new ArrayList<>();
+                            }
                             parent.elements.add(node);
                         }
                     }
@@ -211,16 +220,16 @@ public class BinaryXmlParser {
         }
         return root;
     }
-
+    
     public static int readLe32(byte[] xml, int pos) {
         int i = (xml[pos]) & 0xff | (xml[pos + 1] << 8) & 0x0000ff00 | (xml[pos + 2] << 16) & 0x00ff0000 | ((xml[pos + 3] << 24) & 0xff000000);
         return i;
     }
-
+    
     public static short readLe16(byte[] xml, int pos) {
         return (short) ((xml[pos]) & 0xff | (xml[pos + 1] << 8) & 0xff00);
     }
-
+    
     public static class XmlNode {
         public String name;
         public Map<String, Res> attributes;
@@ -229,10 +238,10 @@ public class BinaryXmlParser {
         public String comment;
         public String namespace;
         public Res cdata;
-
+        
         public static class Res {
             public static final byte
-                    TYPE_NULL = 0x00,
+                TYPE_NULL = 0x00,
             // The 'data' holds a ResTable_ref, a reference to another resource
             // table entry.
             TYPE_REFERENCE = 0x01,
@@ -272,8 +281,8 @@ public class BinaryXmlParser {
             // ...end of integer flavors.
             TYPE_LAST_INT = 0x1f;
             public static final int
-                    COMPLEX_UNIT_SHIFT = 0,
-                    COMPLEX_UNIT_MASK = 0xf,
+                COMPLEX_UNIT_SHIFT = 0,
+                COMPLEX_UNIT_MASK = 0xf,
             // TYPE_DIMENSION: Value is raw pixels.
             COMPLEX_UNIT_PX = 0,
             // TYPE_DIMENSION: Value is Device Independent Pixels.
@@ -294,7 +303,7 @@ public class BinaryXmlParser {
             // appears in the mantissa.  This give us 4 possible fixed point
             // representations as defined below.
             COMPLEX_RADIX_SHIFT = 4,
-                    COMPLEX_RADIX_MASK = 0x3,
+                COMPLEX_RADIX_MASK = 0x3,
             // The mantissa is an integral number -- i.e., 0xnnnnnn.0
             COMPLEX_RADIX_23p0 = 0,
             // The mantissa magnitude is 16 bits -- i.e, 0xnnnn.nn
@@ -306,7 +315,7 @@ public class BinaryXmlParser {
             // Where the actual value is.  This gives us 23 bits of
             // precision.  The top bit is the sign.
             COMPLEX_MANTISSA_SHIFT = 8,
-                    COMPLEX_MANTISSA_MASK = 0xffffff;
+                COMPLEX_MANTISSA_MASK = 0xffffff;
             public byte dataType;
             public int data;
             public String str;

@@ -19,7 +19,7 @@ object ConfigTable {
         }
     }
 
-    public val cacheMap: Map<String?, Any?> by lazy {
+    val cacheMap: Map<String?, Any?> by lazy {
         val map: HashMap<String?, Any?> = HashMap()
         val versionCode = Utils.getHostVersionCode()
         for (pair in presentRangeConfigMap) {
@@ -41,7 +41,7 @@ object ConfigTable {
     fun <T> getConfig(className: String?): T {
         val config = cacheMap[className]
         return config as T
-                ?: throw RuntimeException("$className :Unsupported Version: "+Utils.getHostVersionCode())
+            ?: throw RuntimeException("$className :Unsupported Version: " + Utils.getHostVersionCode())
     }
 
 }

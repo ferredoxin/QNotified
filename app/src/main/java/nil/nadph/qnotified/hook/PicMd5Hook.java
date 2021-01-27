@@ -18,54 +18,47 @@
  */
 package nil.nadph.qnotified.hook;
 
-import android.app.Activity;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.view.View;
-import android.widget.Toast;
+import android.app.*;
+import android.content.*;
+import android.view.*;
+import android.widget.*;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import nil.nadph.qnotified.MainHook;
-import nil.nadph.qnotified.R;
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.ui.CustomDialog;
-import nil.nadph.qnotified.util.CustomMenu;
-import nil.nadph.qnotified.util.Initiator;
-import nil.nadph.qnotified.util.LicenseStatus;
+import de.robv.android.xposed.*;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.step.*;
+import nil.nadph.qnotified.ui.*;
+import nil.nadph.qnotified.util.*;
 
-import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class PicMd5Hook extends BaseDelayableHook {
     public static final String qn_show_pic_md5 = "qn_show_pic_md5";
     private static final PicMd5Hook self = new PicMd5Hook();
     private boolean inited = false;
-
+    
     PicMd5Hook() {
     }
-
+    
     public static PicMd5Hook get() {
         return self;
     }
-
+    
     @Override
     public boolean init() {
-        if (inited) return true;
+        if (inited)
+            return true;
         try {
             Class cl_PicItemBuilder = Initiator._PicItemBuilder();
             Class cl_BasePicItemBuilder = cl_PicItemBuilder.getSuperclass();
             MainHook.findAndHookMethodIfExists(cl_PicItemBuilder, "a", int.class, Context.class, load("com/tencent/mobileqq/data/ChatMessage"), new MenuItemClickCallback());
             MainHook.findAndHookMethodIfExists(cl_BasePicItemBuilder, "a", int.class, Context.class, load("com/tencent/mobileqq/data/ChatMessage"), new MenuItemClickCallback());
             for (Method m : cl_PicItemBuilder.getDeclaredMethods()) {
-                if (!m.getReturnType().isArray()) continue;
+                if (!m.getReturnType().isArray())
+                    continue;
                 Class[] ps = m.getParameterTypes();
                 if (ps.length == 1 && ps[0].equals(View.class)) {
                     XposedBridge.hookMethod(m, new GetMenuItemCallBack());
@@ -73,7 +66,8 @@ public class PicMd5Hook extends BaseDelayableHook {
                 }
             }
             for (Method m : cl_BasePicItemBuilder.getDeclaredMethods()) {
-                if (!m.getReturnType().isArray()) continue;
+                if (!m.getReturnType().isArray())
+                    continue;
                 Class[] ps = m.getParameterTypes();
                 if (ps.length == 1 && ps[0].equals(View.class)) {
                     XposedBridge.hookMethod(m, new GetMenuItemCallBack());
@@ -87,18 +81,67 @@ public class PicMd5Hook extends BaseDelayableHook {
             return false;
         }
     }
-
+    
+    @Override
+    public int getEffectiveProc() {
+        return SyncUtils.PROC_MAIN;
+    }
+    
+    @Override
+    public Step[] getPreconditions() {
+        return new Step[]{};
+    }
+    
+    @Override
+    public boolean isInited() {
+        return inited;
+    }
+    
+    @Override
+    public boolean isEnabled() {
+        return true;
+//        try {
+//            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_show_pic_md5);
+//        } catch (Exception e) {
+//            log(e);
+//            return false;
+//        }
+    }
+    
+    @Override
+    public void setEnabled(boolean enabled) {
+//        try {
+//            ConfigManager mgr = ConfigManager.getDefaultConfig();
+//            mgr.getAllConfig().put(qn_show_pic_md5, enabled);
+//            mgr.save();
+//        } catch (final Exception e) {
+//            Utils.log(e);
+//            if (Looper.myLooper() == Looper.getMainLooper()) {
+//                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+//            } else {
+//                SyncUtils.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+//                    }
+//                });
+//            }
+//        }
+    }
+    
     public static class GetMenuItemCallBack extends XC_MethodHook {
         public GetMenuItemCallBack() {
             super(60);
         }
-
+        
         @Override
         protected void afterHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
-            if (LicenseStatus.sDisableCommonHooks) return;
+            if (LicenseStatus.sDisableCommonHooks)
+                return;
             try {
                 ConfigManager cfg = ConfigManager.getDefaultConfig();
-                if (!PicMd5Hook.get().isEnabled()) return;
+                if (!PicMd5Hook.get().isEnabled())
+                    return;
             } catch (Exception ignored) {
             }
             Object arr = param.getResult();
@@ -111,12 +154,12 @@ public class PicMd5Hook extends BaseDelayableHook {
             param.setResult(ret);
         }
     }
-
+    
     public static class MenuItemClickCallback extends XC_MethodHook {
         public MenuItemClickCallback() {
             super(60);
         }
-
+        
         @Override
         protected void beforeHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
             int id = (int) param.args[0];
@@ -143,52 +186,5 @@ public class PicMd5Hook extends BaseDelayableHook {
                 }
             }
         }
-    }
-
-    @Override
-    public int getEffectiveProc() {
-        return SyncUtils.PROC_MAIN;
-    }
-
-    @Override
-    public Step[] getPreconditions() {
-        return new Step[]{};
-    }
-
-    @Override
-    public boolean isInited() {
-        return inited;
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-//        try {
-//            ConfigManager mgr = ConfigManager.getDefaultConfig();
-//            mgr.getAllConfig().put(qn_show_pic_md5, enabled);
-//            mgr.save();
-//        } catch (final Exception e) {
-//            Utils.log(e);
-//            if (Looper.myLooper() == Looper.getMainLooper()) {
-//                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-//            } else {
-//                SyncUtils.post(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-//                    }
-//                });
-//            }
-//        }
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-//        try {
-//            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_show_pic_md5);
-//        } catch (Exception e) {
-//            log(e);
-//            return false;
-//        }
     }
 }

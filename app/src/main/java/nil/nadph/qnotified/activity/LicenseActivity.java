@@ -18,35 +18,29 @@
  */
 package nil.nadph.qnotified.activity;
 
-import android.graphics.Typeface;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.TextView;
+import android.graphics.*;
+import android.os.*;
+import android.view.*;
+import android.widget.*;
 
-import com.tencent.widget.XListView;
+import com.tencent.widget.*;
 
-import java.util.List;
+import java.util.*;
 
-import de.psdev.licensesdialog.LicensesDialog;
-import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
-import de.psdev.licensesdialog.licenses.GnuLesserGeneralPublicLicense3;
-import de.psdev.licensesdialog.licenses.MITLicense;
-import de.psdev.licensesdialog.model.Notice;
-import de.psdev.licensesdialog.model.Notices;
-import io.noties.markwon.Markwon;
+import de.psdev.licensesdialog.*;
+import de.psdev.licensesdialog.licenses.*;
+import de.psdev.licensesdialog.model.*;
+import io.noties.markwon.*;
 import nil.nadph.qnotified.R;
-import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.ui.*;
 
 public class LicenseActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener {
-
+    
     @Override
     public boolean doOnCreate(Bundle bundle) {
         super.doOnCreate(bundle);
-
-        final Notices notices = new Notices();
+        
+        Notices notices = new Notices();
 //        Notice commonsIo = new Notice("Apache Commons IO", "https://github.com/apache/commons-io", "Copyright 2002-2019 The Apache Software Foundation", new ApacheSoftwareLicense20());
         Notice flycoTabLayout = new Notice("FlycoTabLayout", "https://github.com/H07000223/FlycoTabLayout", "Copyright (c) 2015 H07000223", new MITLicense());
         Notice markwon = new Notice("Markwon", "https://github.com/noties/Markwon", "Copyright 2017 Dimitry Ivanov (mail@dimitryivanov.ru)", new ApacheSoftwareLicense20());
@@ -59,27 +53,27 @@ public class LicenseActivity extends IphoneTitleBarActivityCompat implements Vie
         notices.addNotice(markwon);
         notices.addNotice(colorPicker);
         notices.addNotice(LicensesDialog.LICENSES_DIALOG_NOTICE);
-
+        
         BaseAdapter mAdapter = new BaseAdapter() {
             final List<Notice> mNotices = notices.getNotices();
             final LayoutInflater inflater = LayoutInflater.from(LicenseActivity.this);
             final Markwon markwon = Markwon.create(LicenseActivity.this);
-
+            
             @Override
             public int getCount() {
                 return mNotices.size();
             }
-
+            
             @Override
             public Object getItem(int position) {
                 return mNotices.get(position);
             }
-
+            
             @Override
             public long getItemId(int position) {
                 return position;
             }
-
+            
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 TextView title;
@@ -102,19 +96,19 @@ public class LicenseActivity extends IphoneTitleBarActivityCompat implements Vie
                 return convertView;
             }
         };
-
+        
         XListView licenseListView = new XListView(this, null);
         licenseListView.setId(R.id.rootMainList);
         licenseListView.setDivider(null);
         licenseListView.setAdapter(mAdapter);
-
-        this.setContentView(licenseListView);
+    
+        setContentView(licenseListView);
         setContentBackgroundDrawable(ResUtils.skin_background);
         setTitle(getString(de.psdev.licensesdialog.R.string.notices_title));
         setRightButton(de.psdev.licensesdialog.R.string.notices_close, this);
         return true;
     }
-
+    
     @Override
     public void onClick(View v) {
         finish();

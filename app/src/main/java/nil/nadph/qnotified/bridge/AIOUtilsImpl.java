@@ -18,21 +18,20 @@
  */
 package nil.nadph.qnotified.bridge;
 
-import android.view.View;
+import android.view.*;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.*;
 
-import nil.nadph.qnotified.util.Initiator;
-import nil.nadph.qnotified.util.Nullable;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.util.*;
 
 public class AIOUtilsImpl {
     private static Class<?> c_tx_ListView = null;
     private static Field f_BaseHolder_ChatMsg = null;
-
+    
     @Nullable
     public static Object getBaseHolder(View v) {
-        if (v == null) return null;
+        if (v == null)
+            return null;
         if (c_tx_ListView == null) {
             c_tx_ListView = Initiator.load("com.tencent.widget.ListView");
         }
@@ -41,11 +40,12 @@ public class AIOUtilsImpl {
         }
         return getBaseHolder((View) v.getParent());
     }
-
+    
     @Nullable
     public static Object getChatMessage(View v) {
         Object holder = getBaseHolder(v);
-        if (holder == null) return null;
+        if (holder == null)
+            return null;
         if (f_BaseHolder_ChatMsg == null) {
             Class<?> c_BaseHolder = holder.getClass();
             while (c_BaseHolder.getSuperclass() != Object.class) {

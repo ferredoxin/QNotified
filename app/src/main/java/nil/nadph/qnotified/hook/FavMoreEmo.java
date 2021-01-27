@@ -18,40 +18,37 @@
  */
 package nil.nadph.qnotified.hook;
 
-import android.os.Looper;
-import android.widget.Toast;
+import android.os.*;
+import android.widget.*;
 
-import java.lang.reflect.Method;
-import java.util.List;
+import java.lang.reflect.*;
+import java.util.*;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedHelpers;
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.step.DexDeobfStep;
-import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.Utils;
+import de.robv.android.xposed.*;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.step.*;
+import nil.nadph.qnotified.util.*;
 
-import static nil.nadph.qnotified.util.Initiator._EmoAddedAuthCallback;
-import static nil.nadph.qnotified.util.Initiator._FavEmoRoamingHandler;
+import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class FavMoreEmo extends BaseDelayableHook {
     public static final String qqhelper_fav_more_emo = "qqhelper_fav_more_emo";
     private static final FavMoreEmo self = new FavMoreEmo();
     private boolean inited = false;
-
+    
     FavMoreEmo() {
     }
-
+    
     public static FavMoreEmo get() {
         return self;
     }
-
+    
     @Override
     public boolean init() {
-        if (inited) return true;
+        if (inited)
+            return true;
         try {
             final Class mEmoAddedAuthCallback = _EmoAddedAuthCallback();
             final Class mFavEmoRoamingHandler = _FavEmoRoamingHandler();
@@ -95,28 +92,38 @@ public class FavMoreEmo extends BaseDelayableHook {
             return false;
         }
     }
-
+    
     private void setEmoNum() {
         Class mFavEmoConstant = DexKit.doFindClass(DexKit.C_FAV_EMO_CONST);
         sput_object(mFavEmoConstant, "a", 800);
         sput_object(mFavEmoConstant, "b", 800);
     }
-
+    
     @Override
     public int getEffectiveProc() {
         return SyncUtils.PROC_MAIN;
     }
-
+    
     @Override
     public Step[] getPreconditions() {
         return new Step[]{new DexDeobfStep(DexKit.C_FAV_EMO_CONST)};
     }
-
+    
     @Override
     public boolean isInited() {
         return inited;
     }
-
+    
+    @Override
+    public boolean isEnabled() {
+        try {
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qqhelper_fav_more_emo);
+        } catch (Exception e) {
+            log(e);
+            return false;
+        }
+    }
+    
     @Override
     public void setEnabled(boolean enabled) {
         try {
@@ -135,16 +142,6 @@ public class FavMoreEmo extends BaseDelayableHook {
                     }
                 });
             }
-        }
-    }
-
-    @Override
-    public boolean isEnabled() {
-        try {
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qqhelper_fav_more_emo);
-        } catch (Exception e) {
-            log(e);
-            return false;
         }
     }
 }

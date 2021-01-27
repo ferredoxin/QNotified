@@ -18,47 +18,37 @@
  */
 package nil.nadph.qnotified.util;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.Application;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.os.Build;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
+import android.annotation.*;
+import android.app.*;
+import android.content.*;
+import android.content.pm.*;
+import android.os.*;
+import android.util.*;
+import android.view.*;
 
-import com.tencent.mobileqq.app.QQAppInterface;
+import com.tencent.mobileqq.app.*;
 
 import java.io.*;
 import java.lang.reflect.*;
-import java.text.SimpleDateFormat;
+import java.text.*;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.regex.*;
 
-import dalvik.system.DexFile;
-import de.robv.android.xposed.XposedBridge;
-import me.singleneuron.qn_kernel.service.InterruptServiceRoutine;
-import me.singleneuron.util.QQVersion;
-import mqq.app.AppRuntime;
-import nil.nadph.qnotified.BuildConfig;
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.config.ConfigItems;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.ui.ResUtils;
+import dalvik.system.*;
+import de.robv.android.xposed.*;
+import me.singleneuron.qn_kernel.service.*;
+import me.singleneuron.util.*;
+import mqq.app.*;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.ui.*;
 
-import static me.singleneuron.util.KotlinUtilsKt.readFromBufferedReader;
-import static nil.nadph.qnotified.util.Initiator.load;
+import static me.singleneuron.util.KotlinUtilsKt.*;
+import static nil.nadph.qnotified.util.Initiator.*;
 
 @SuppressLint("SimpleDateFormat")
 public class Utils {
-
+    
     public static final String QN_VERSION_NAME = BuildConfig.VERSION_NAME;
     public static final int QN_VERSION_CODE = BuildConfig.VERSION_CODE;
     public static final boolean __REMOVE_PREVIOUS_CACHE = false;
@@ -73,13 +63,15 @@ public class Utils {
     public static final int TOAST_TYPE_SUCCESS = 2;
     public static boolean DEBUG = true;
     public static boolean ENABLE_DUMP_LOG = false;
-    private static Handler mHandler;
     public static boolean IS_TIM = false;
-
+    private static Handler mHandler;
+    private static boolean sAppRuntimeInit = false;
+    private static Field f_mAppRuntime = null;
+    
     private Utils() {
         throw new AssertionError("No instance for you!");
     }
-
+    
     @Nullable
     public static String getActiveModuleVersion() {
         Math.sqrt(1);
@@ -88,33 +80,36 @@ public class Utils {
         //Just make the function longer,so that it will get hooked by Epic
         return null;
     }
-
+    
     public static boolean isNullOrEmpty(String str) {
         return str == null || str.replace(" ", "").equalsIgnoreCase("");
     }
-
+    
     public static void runOnUiThread(Runnable r) {
         if (Looper.myLooper() == Looper.getMainLooper()) {
             r.run();
         } else {
-            if (mHandler == null) mHandler = new Handler(Looper.getMainLooper());
+            if (mHandler == null)
+                mHandler = new Handler(Looper.getMainLooper());
             mHandler.post(r);
         }
     }
-
+    
     public static Application getApplication() {
         Field f;
         try {
             Class clz = load("com/tencent/common/app/BaseApplicationImpl");
             f = hasField(clz, "sApplication");
-            if (f == null) return (Application) sget_object(clz, "a", clz);
-            else return (Application) f.get(null);
+            if (f == null)
+                return (Application) sget_object(clz, "a", clz);
+            else
+                return (Application) f.get(null);
         } catch (Exception e) {
             log(e);
-            throw (RuntimeException) new RuntimeException("FATAL: Utils.getApplication() failure!").initCause(e);
+            throw (RuntimeException) new RuntimeException("FATAL: Utils.getApplication() failure!", e);
         }
     }
-
+    
     public static String readByReader(Reader r) throws IOException {
 
         /*StringBuilder str = new StringBuilder();
@@ -129,7 +124,7 @@ public class Utils {
          */
         return readFromBufferedReader(new BufferedReader(r));
     }
-
+    
     public static boolean isCallingFrom(String classname) {
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
         for (StackTraceElement element : stackTraceElements) {
@@ -139,7 +134,7 @@ public class Utils {
         }
         return false;
     }
-
+    
     public static boolean isCallingFromEither(String... classname) {
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
         for (StackTraceElement element : stackTraceElements) {
@@ -151,7 +146,7 @@ public class Utils {
         }
         return false;
     }
-
+    
     public static Object getTroopManager() throws Exception {
         int troopMgrId = -1;
         Class<?> cl_QQManagerFactory = load("com.tencent.mobileqq.app.QQManagerFactory");
@@ -174,20 +169,20 @@ public class Utils {
             return mTroopManager;
         }
     }
-
+    
     public static Object getQQMessageFacade() throws Exception {
         QQAppInterface app = getQQAppInterface();
         return invoke_virtual_any(app, Initiator._QQMessageFacade());
     }
-
+    
     public static Object getManager(int index) throws Exception {
         return invoke_virtual(getQQAppInterface(), "getManager", index, int.class);
     }
-
+    
     public static PackageInfo getHostInfo() {
         return getHostInfo(getApplication());
     }
-
+    
     public static PackageInfo getHostInfo(Context context) {
         try {
             return context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
@@ -196,18 +191,27 @@ public class Utils {
             throw new AssertionError("Can not get PackageInfo!");
         }
     }
-
+    
     public static PackageManager getPackageManager() {
         return getApplication().getPackageManager();
     }
 
+	/*public static Object invoke_virtual(Object obj,String method,Object...args) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException{
+	 Class clazz=obj.getClass();
+	 Method m=findMethodByArgs(clazz,method,args);
+	 m.setAccessible(true);
+	 return m.invoke(obj,args);
+	 }*/
+    
     public static boolean checkHostVersionCode(long versionCode) {
         return versionCode == getHostVersionCode();
     }
-
+    
     public static String paramsTypesToString(Class... c) {
-        if (c == null) return null;
-        if (c.length == 0) return "()";
+        if (c == null)
+            return null;
+        if (c.length == 0)
+            return "()";
         StringBuilder sb = new StringBuilder("(");
         for (int i = 0; i < c.length; i++) {
             sb.append(c[i] == null ? "[null]" : c[i].getName());
@@ -218,26 +222,19 @@ public class Utils {
         sb.append(")");
         return sb.toString();
     }
-
-	/*public static Object invoke_virtual(Object obj,String method,Object...args) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException{
-	 Class clazz=obj.getClass();
-	 Method m=findMethodByArgs(clazz,method,args);
-	 m.setAccessible(true);
-	 return m.invoke(obj,args);
-	 }*/
-
+    
     public static int getHostVersionCode32() {
         return (int) getHostVersionCode();
     }
-
+    
     public static long getHostVersionCode() {
         return InterruptServiceRoutine.INSTANCE.interrupt(InterruptServiceRoutine.GET_VERSION_CODE);
     }
-
+    
     public static String getHostAppName() {
         return InterruptServiceRoutine.INSTANCE.interrupt(InterruptServiceRoutine.GET_APP_NAME);
     }
-
+    
     public static long getLongAccountUin() {
         try {
             AppRuntime rt = getAppRuntime();
@@ -251,7 +248,7 @@ public class Utils {
         }
         return -1;
     }
-
+    
     public static void ref_setText(View obj, CharSequence str) {
         try {
             Method m = obj.getClass().getMethod("setText", CharSequence.class);
@@ -261,7 +258,7 @@ public class Utils {
             log(e);
         }
     }
-
+    
     public static View.OnClickListener getOnClickListener(View v) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             return getOnClickListenerV14(v);
@@ -269,7 +266,7 @@ public class Utils {
             return getOnClickListenerV(v);
         }
     }
-
+    
     //@Deprecated
     public static Object invoke_virtual_any(Object obj, Object... argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException {
         Class clazz = obj.getClass();
@@ -288,16 +285,19 @@ public class Utils {
             argv[i] = argsTypesAndReturnType[i];
         }
         loop_main:
-        do {
+        do
+        {
             m = clazz.getDeclaredMethods();
             loop:
             for (i = 0; i < m.length; i++) {
                 _argt = m[i].getParameterTypes();
                 if (_argt.length == argt.length) {
                     for (ii = 0; ii < argt.length; ii++) {
-                        if (!argt[ii].equals(_argt[ii])) continue loop;
+                        if (!argt[ii].equals(_argt[ii]))
+                            continue loop;
                     }
-                    if (returnType != null && !returnType.equals(m[i].getReturnType())) continue;
+                    if (returnType != null && !returnType.equals(m[i].getReturnType()))
+                        continue;
                     if (method == null) {
                         method = m[i];
                         //here we go through this class
@@ -312,7 +312,7 @@ public class Utils {
         method.setAccessible(true);
         return method.invoke(obj, argv);
     }
-
+    
     //@Deprecated
     public static Object invoke_static_any(Class<?> clazz, Object... argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException {
         int argc = argsTypesAndReturnType.length / 2;
@@ -330,16 +330,19 @@ public class Utils {
             argv[i] = argsTypesAndReturnType[i];
         }
         loop_main:
-        do {
+        do
+        {
             m = clazz.getDeclaredMethods();
             loop:
             for (i = 0; i < m.length; i++) {
                 _argt = m[i].getParameterTypes();
                 if (_argt.length == argt.length) {
                     for (ii = 0; ii < argt.length; ii++) {
-                        if (!argt[ii].equals(_argt[ii])) continue loop;
+                        if (!argt[ii].equals(_argt[ii]))
+                            continue loop;
                     }
-                    if (returnType != null && !returnType.equals(m[i].getReturnType())) continue;
+                    if (returnType != null && !returnType.equals(m[i].getReturnType()))
+                        continue;
                     if (method == null) {
                         method = m[i];
                         //here we go through this class
@@ -354,7 +357,7 @@ public class Utils {
         method.setAccessible(true);
         return method.invoke(null, argv);
     }
-
+    
     //@Deprecated
     public static Object invoke_virtual_declared_modifier_any(Object obj, int requiredMask, int excludedMask, Object... argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException {
         Class clazz = obj.getClass();
@@ -378,11 +381,15 @@ public class Utils {
             _argt = m[i].getParameterTypes();
             if (_argt.length == argt.length) {
                 for (ii = 0; ii < argt.length; ii++) {
-                    if (!argt[ii].equals(_argt[ii])) continue loop;
+                    if (!argt[ii].equals(_argt[ii]))
+                        continue loop;
                 }
-                if (returnType != null && !returnType.equals(m[i].getReturnType())) continue;
-                if ((m[i].getModifiers() & requiredMask) != requiredMask) continue;
-                if ((m[i].getModifiers() & excludedMask) != 0) continue;
+                if (returnType != null && !returnType.equals(m[i].getReturnType()))
+                    continue;
+                if ((m[i].getModifiers() & requiredMask) != requiredMask)
+                    continue;
+                if ((m[i].getModifiers() & excludedMask) != 0)
+                    continue;
                 if (method == null) {
                     method = m[i];
                     //here we go through this class
@@ -396,7 +403,7 @@ public class Utils {
         method.setAccessible(true);
         return method.invoke(obj, argv);
     }
-
+    
     /**
      * DO NOT USE, it's fragile
      * instance methods are counted, both public/private,
@@ -437,14 +444,18 @@ public class Utils {
             _argt = m[i].getParameterTypes();
             if (_argt.length == argt.length) {
                 for (ii = 0; ii < argt.length; ii++) {
-                    if (!argt[ii].equals(_argt[ii])) continue loop;
+                    if (!argt[ii].equals(_argt[ii]))
+                        continue loop;
                 }
-                if (returnType != null && !returnType.equals(m[i].getReturnType())) continue;
-                if (Modifier.isStatic(m[i].getModifiers())) continue;
+                if (returnType != null && !returnType.equals(m[i].getReturnType()))
+                    continue;
+                if (Modifier.isStatic(m[i].getModifiers()))
+                    continue;
                 if (count < expected) {
                     candidates[count++] = m[i];
                 } else {
-                    if (!strict) break;
+                    if (!strict)
+                        break;
                     throw new NoSuchMethodException("More methods than expected(" + expected + ") at " + paramsTypesToString(argt) + " in " + obj.getClass().getName());
                 }
             }
@@ -455,16 +466,19 @@ public class Utils {
         Arrays.sort(candidates, new Comparator<Method>() {
             @Override
             public int compare(Method o1, Method o2) {
-                if (o1 == null && o2 == null) return 0;
-                if (o1 == null) return 1;
-                if (o2 == null) return -1;
+                if (o1 == null && o2 == null)
+                    return 0;
+                if (o1 == null)
+                    return 1;
+                if (o2 == null)
+                    return -1;
                 return strcmp(o1.getName(), o2.getName());
             }
         });
         candidates[ordinal].setAccessible(true);
         return candidates[ordinal].invoke(obj, argv);
     }
-
+    
     /**
      * DO NOT USE, it's fragile
      * instance methods are counted, both public/private,
@@ -505,16 +519,22 @@ public class Utils {
             _argt = m[i].getParameterTypes();
             if (_argt.length == argt.length) {
                 for (ii = 0; ii < argt.length; ii++) {
-                    if (!argt[ii].equals(_argt[ii])) continue loop;
+                    if (!argt[ii].equals(_argt[ii]))
+                        continue loop;
                 }
-                if (returnType != null && !returnType.equals(m[i].getReturnType())) continue;
-                if (Modifier.isStatic(m[i].getModifiers())) continue;
-                if ((m[i].getModifiers() & requiredMask) != requiredMask) continue;
-                if ((m[i].getModifiers() & excludedMask) != 0) continue;
+                if (returnType != null && !returnType.equals(m[i].getReturnType()))
+                    continue;
+                if (Modifier.isStatic(m[i].getModifiers()))
+                    continue;
+                if ((m[i].getModifiers() & requiredMask) != requiredMask)
+                    continue;
+                if ((m[i].getModifiers() & excludedMask) != 0)
+                    continue;
                 if (count < expected) {
                     candidates[count++] = m[i];
                 } else {
-                    if (!strict) break;
+                    if (!strict)
+                        break;
                     throw new NoSuchMethodException("More methods than expected(" + expected + ") at " + paramsTypesToString(argt) + " in " + obj.getClass().getName());
                 }
             }
@@ -525,16 +545,19 @@ public class Utils {
         Arrays.sort(candidates, new Comparator<Method>() {
             @Override
             public int compare(Method o1, Method o2) {
-                if (o1 == null && o2 == null) return 0;
-                if (o1 == null) return 1;
-                if (o2 == null) return -1;
+                if (o1 == null && o2 == null)
+                    return 0;
+                if (o1 == null)
+                    return 1;
+                if (o2 == null)
+                    return -1;
                 return strcmp(o1.getName(), o2.getName());
             }
         });
         candidates[ordinal].setAccessible(true);
         return candidates[ordinal].invoke(obj, argv);
     }
-
+    
     /**
      * DO NOT USE, it's fragile
      * instance methods are counted, both public/private,
@@ -575,16 +598,22 @@ public class Utils {
             _argt = m[i].getParameterTypes();
             if (_argt.length == argt.length) {
                 for (ii = 0; ii < argt.length; ii++) {
-                    if (!argt[ii].equals(_argt[ii])) continue loop;
+                    if (!argt[ii].equals(_argt[ii]))
+                        continue loop;
                 }
-                if (returnType != null && !returnType.equals(m[i].getReturnType())) continue;
-                if (Modifier.isStatic(m[i].getModifiers())) continue;
-                if ((m[i].getModifiers() & requiredMask) != requiredMask) continue;
-                if ((m[i].getModifiers() & excludedMask) != 0) continue;
+                if (returnType != null && !returnType.equals(m[i].getReturnType()))
+                    continue;
+                if (Modifier.isStatic(m[i].getModifiers()))
+                    continue;
+                if ((m[i].getModifiers() & requiredMask) != requiredMask)
+                    continue;
+                if ((m[i].getModifiers() & excludedMask) != 0)
+                    continue;
                 if (count < expected) {
                     candidates[count++] = m[i];
                 } else {
-                    if (!strict) break;
+                    if (!strict)
+                        break;
                     throw new NoSuchMethodException("More methods than expected(" + expected + ") at " + paramsTypesToString(argt) + " in " + obj.getClass().getName());
                 }
             }
@@ -595,16 +624,19 @@ public class Utils {
         Arrays.sort(candidates, new Comparator<Method>() {
             @Override
             public int compare(Method o1, Method o2) {
-                if (o1 == null && o2 == null) return 0;
-                if (o1 == null) return 1;
-                if (o2 == null) return -1;
+                if (o1 == null && o2 == null)
+                    return 0;
+                if (o1 == null)
+                    return 1;
+                if (o2 == null)
+                    return -1;
                 return strcmp(o1.getName(), o2.getName());
             }
         });
         candidates[ordinal].setAccessible(true);
         return candidates[ordinal].invoke(obj, argv);
     }
-
+    
     /**
      * DO NOT USE, it's fragile
      * static methods are counted, both public/private,
@@ -644,16 +676,22 @@ public class Utils {
             _argt = m[i].getParameterTypes();
             if (_argt.length == argt.length) {
                 for (ii = 0; ii < argt.length; ii++) {
-                    if (!argt[ii].equals(_argt[ii])) continue loop;
+                    if (!argt[ii].equals(_argt[ii]))
+                        continue loop;
                 }
-                if (returnType != null && !returnType.equals(m[i].getReturnType())) continue;
-                if (!Modifier.isStatic(m[i].getModifiers())) continue;
-                if ((m[i].getModifiers() & requiredMask) != requiredMask) continue;
-                if ((m[i].getModifiers() & excludedMask) != 0) continue;
+                if (returnType != null && !returnType.equals(m[i].getReturnType()))
+                    continue;
+                if (!Modifier.isStatic(m[i].getModifiers()))
+                    continue;
+                if ((m[i].getModifiers() & requiredMask) != requiredMask)
+                    continue;
+                if ((m[i].getModifiers() & excludedMask) != 0)
+                    continue;
                 if (count < expected) {
                     candidates[count++] = m[i];
                 } else {
-                    if (!strict) break;
+                    if (!strict)
+                        break;
                     throw new NoSuchMethodException("More methods than expected(" + expected + ") at " + paramsTypesToString(argt) + " in " + clazz.getName());
                 }
             }
@@ -664,16 +702,19 @@ public class Utils {
         Arrays.sort(candidates, new Comparator<Method>() {
             @Override
             public int compare(Method o1, Method o2) {
-                if (o1 == null && o2 == null) return 0;
-                if (o1 == null) return 1;
-                if (o2 == null) return -1;
+                if (o1 == null && o2 == null)
+                    return 0;
+                if (o1 == null)
+                    return 1;
+                if (o2 == null)
+                    return -1;
                 return strcmp(o1.getName(), o2.getName());
             }
         });
         candidates[ordinal].setAccessible(true);
         return candidates[ordinal].invoke(null, argv);
     }
-
+    
     /**
      * DO NOT USE, it's fragile
      * static methods are counted, both public/private,
@@ -713,14 +754,18 @@ public class Utils {
             _argt = m[i].getParameterTypes();
             if (_argt.length == argt.length) {
                 for (ii = 0; ii < argt.length; ii++) {
-                    if (!argt[ii].equals(_argt[ii])) continue loop;
+                    if (!argt[ii].equals(_argt[ii]))
+                        continue loop;
                 }
-                if (returnType != null && !returnType.equals(m[i].getReturnType())) continue;
-                if (!Modifier.isStatic(m[i].getModifiers())) continue;
+                if (returnType != null && !returnType.equals(m[i].getReturnType()))
+                    continue;
+                if (!Modifier.isStatic(m[i].getModifiers()))
+                    continue;
                 if (count < expected) {
                     candidates[count++] = m[i];
                 } else {
-                    if (!strict) break;
+                    if (!strict)
+                        break;
                     throw new NoSuchMethodException("More methods than expected(" + expected + ") at " + paramsTypesToString(argt) + " in " + clazz.getName());
                 }
             }
@@ -731,16 +776,19 @@ public class Utils {
         Arrays.sort(candidates, new Comparator<Method>() {
             @Override
             public int compare(Method o1, Method o2) {
-                if (o1 == null && o2 == null) return 0;
-                if (o1 == null) return 1;
-                if (o2 == null) return -1;
+                if (o1 == null && o2 == null)
+                    return 0;
+                if (o1 == null)
+                    return 1;
+                if (o2 == null)
+                    return -1;
                 return strcmp(o1.getName(), o2.getName());
             }
         });
         candidates[ordinal].setAccessible(true);
         return candidates[ordinal].invoke(null, argv);
     }
-
+    
     public static Object invoke_virtual(Object obj, String name, Object... argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException {
         Class clazz = obj.getClass();
         int argc = argsTypesAndReturnType.length / 2;
@@ -758,7 +806,8 @@ public class Utils {
             argv[i] = argsTypesAndReturnType[i];
         }
         loop_main:
-        do {
+        do
+        {
             m = clazz.getDeclaredMethods();
             loop:
             for (i = 0; i < m.length; i++) {
@@ -766,7 +815,8 @@ public class Utils {
                     _argt = m[i].getParameterTypes();
                     if (_argt.length == argt.length) {
                         for (ii = 0; ii < argt.length; ii++) {
-                            if (!argt[ii].equals(_argt[ii])) continue loop;
+                            if (!argt[ii].equals(_argt[ii]))
+                                continue loop;
                         }
                         if (returnType != null && !returnType.equals(m[i].getReturnType()))
                             continue;
@@ -781,15 +831,18 @@ public class Utils {
         method.setAccessible(true);
         return method.invoke(obj, argv);
     }
-
+    
     public static Method hasMethod(Object obj, String name, Object... argsTypesAndReturnType) throws IllegalArgumentException {
         Class clazz;
-        if (obj == null) throw new NullPointerException("obj/clazz == null");
-        if (obj instanceof Class) clazz = (Class) obj;
-        else clazz = obj.getClass();
+        if (obj == null)
+            throw new NullPointerException("obj/clazz == null");
+        if (obj instanceof Class)
+            clazz = (Class) obj;
+        else
+            clazz = obj.getClass();
         return hasMethod(clazz, name, argsTypesAndReturnType);
     }
-
+    
     public static Method hasMethod(Class clazz, String name, Object... argsTypesAndReturnType) throws IllegalArgumentException {
         int argc = argsTypesAndReturnType.length / 2;
         Class[] argt = new Class[argc];
@@ -806,7 +859,8 @@ public class Utils {
             argv[i] = argsTypesAndReturnType[i];
         }
         loop_main:
-        do {
+        do
+        {
             m = clazz.getDeclaredMethods();
             loop:
             for (i = 0; i < m.length; i++) {
@@ -814,7 +868,8 @@ public class Utils {
                     _argt = m[i].getParameterTypes();
                     if (_argt.length == argt.length) {
                         for (ii = 0; ii < argt.length; ii++) {
-                            if (!argt[ii].equals(_argt[ii])) continue loop;
+                            if (!argt[ii].equals(_argt[ii]))
+                                continue loop;
                         }
                         if (returnType != null && !returnType.equals(m[i].getReturnType()))
                             continue;
@@ -824,10 +879,11 @@ public class Utils {
                 }
             }
         } while (!Object.class.equals(clazz = clazz.getSuperclass()));
-        if (method != null) method.setAccessible(true);
+        if (method != null)
+            method.setAccessible(true);
         return method;
     }
-
+    
     public static Object invoke_virtual_original(Object obj, String name, Object... argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException {
         Class clazz = obj.getClass();
         int argc = argsTypesAndReturnType.length / 2;
@@ -845,7 +901,8 @@ public class Utils {
             argv[i] = argsTypesAndReturnType[i];
         }
         loop_main:
-        do {
+        do
+        {
             m = clazz.getDeclaredMethods();
             loop:
             for (i = 0; i < m.length; i++) {
@@ -853,7 +910,8 @@ public class Utils {
                     _argt = m[i].getParameterTypes();
                     if (_argt.length == argt.length) {
                         for (ii = 0; ii < argt.length; ii++) {
-                            if (!argt[ii].equals(_argt[ii])) continue loop;
+                            if (!argt[ii].equals(_argt[ii]))
+                                continue loop;
                         }
                         if (returnType != null && !returnType.equals(m[i].getReturnType()))
                             continue;
@@ -880,16 +938,17 @@ public class Utils {
             if (cause instanceof NullPointerException) {
                 String tr = android.util.Log.getStackTraceString(cause);
                 if (tr.indexOf("ExposedBridge.invokeOriginalMethod") != 0
-                        || Pattern.compile("me\\.[.a-zA-Z]+\\.invokeOriginalMethod").matcher(tr).find())
+                    || Pattern.compile("me\\.[.a-zA-Z]+\\.invokeOriginalMethod").matcher(tr).find())
                     needPatch = true;
             }
-            if (!needPatch) throw e;
+            if (!needPatch)
+                throw e;
         }
         //here needPatch is always true
         ret = method.invoke(obj, argv);
         return ret;
     }
-
+    
     public static Object invoke_static(Class staticClass, String name, Object... argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException {
         Class clazz = staticClass;
         int argc = argsTypesAndReturnType.length / 2;
@@ -907,7 +966,8 @@ public class Utils {
             argv[i] = argsTypesAndReturnType[i];
         }
         loop_main:
-        do {
+        do
+        {
             m = clazz.getDeclaredMethods();
             loop:
             for (i = 0; i < m.length; i++) {
@@ -915,7 +975,8 @@ public class Utils {
                     _argt = m[i].getParameterTypes();
                     if (_argt.length == argt.length) {
                         for (ii = 0; ii < argt.length; ii++) {
-                            if (!argt[ii].equals(_argt[ii])) continue loop;
+                            if (!argt[ii].equals(_argt[ii]))
+                                continue loop;
                         }
                         if (returnType != null && !returnType.equals(m[i].getReturnType()))
                             continue;
@@ -925,34 +986,10 @@ public class Utils {
                 }
             }
         } while (!Object.class.equals(clazz = clazz.getSuperclass()));
-        if (method == null) throw new NoSuchMethodException(name + paramsTypesToString(argt));
+        if (method == null)
+            throw new NoSuchMethodException(name + paramsTypesToString(argt));
         method.setAccessible(true);
         return method.invoke(null, argv);
-    }
-
-    public static Object new_instance(Class clazz, Object... argsAndTypes) throws InvocationTargetException, InstantiationException, NoSuchMethodException {
-        int argc = argsAndTypes.length / 2;
-        Class[] argt = new Class[argc];
-        Object[] argv = new Object[argc];
-        int i;
-        Constructor m;
-        for (i = 0; i < argc; i++) {
-            argt[i] = (Class) argsAndTypes[argc + i];
-            argv[i] = argsAndTypes[i];
-        }
-        m = clazz.getDeclaredConstructor(argt);
-        m.setAccessible(true);
-        try {
-            return m.newInstance(argv);
-        } catch (IllegalAccessException e) {
-            log(e);
-            //should NOT happen
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static QQAppInterface getQQAppInterface() {
-        return (QQAppInterface) getAppRuntime();
     }
 
 	/*
@@ -980,24 +1017,51 @@ public class Utils {
 	 }while(!Object.class.equals(clazz=clazz.getSuperclass()));
 	 throw new NoSuchMethodException(name+"@"+mclazz);
 	 }*/
-
+    
+    public static Object new_instance(Class clazz, Object... argsAndTypes) throws InvocationTargetException, InstantiationException, NoSuchMethodException {
+        int argc = argsAndTypes.length / 2;
+        Class[] argt = new Class[argc];
+        Object[] argv = new Object[argc];
+        int i;
+        Constructor m;
+        for (i = 0; i < argc; i++) {
+            argt[i] = (Class) argsAndTypes[argc + i];
+            argv[i] = argsAndTypes[i];
+        }
+        m = clazz.getDeclaredConstructor(argt);
+        m.setAccessible(true);
+        try {
+            return m.newInstance(argv);
+        } catch (IllegalAccessException e) {
+            log(e);
+            //should NOT happen
+            throw new RuntimeException(e);
+        }
+    }
+    
+    public static QQAppInterface getQQAppInterface() {
+        return (QQAppInterface) getAppRuntime();
+    }
+    
     public static Object getMobileQQService() {
         return iget_object_or_null(getQQAppInterface(), "a", load("com/tencent/mobileqq/service/MobileQQService"));
     }
-
+    
     public static String get_RGB(int color) {
         int r = 0xff & (color >> 16);
         int g = 0xff & (color >> 8);
         int b = 0xff & color;
         return "#" + byteStr(r) + byteStr(g) + byteStr(b);
     }
-
+    
     public static String byteStr(int i) {
         String ret = Integer.toHexString(i);
-        if (ret.length() == 1) return "0" + ret;
-        else return ret;
+        if (ret.length() == 1)
+            return "0" + ret;
+        else
+            return ret;
     }
-
+    
     //Used for APIs lower than ICS (API 14)
     private static View.OnClickListener getOnClickListenerV(View view) {
         View.OnClickListener retrievedListener = null;
@@ -1015,7 +1079,7 @@ public class Utils {
         }
         return retrievedListener;
     }
-
+    
     //Used for new ListenerInfo class structure used beginning with API 14 (ICS)
     @SuppressLint("PrivateApi")
     private static View.OnClickListener getOnClickListenerV14(View view) {
@@ -1042,7 +1106,7 @@ public class Utils {
         }
         return retrievedListener;
     }
-
+    
     public static <T> T _obj_clone(T obj) {
         try {
             Class<T> clazz = (Class<T>) obj.getClass();
@@ -1063,7 +1127,7 @@ public class Utils {
         }
         return null;
     }
-
+    
     public static <T extends View> T _view_clone(T obj) {
         try {
             Class<T> clazz = (Class<T>) obj.getClass();
@@ -1084,11 +1148,11 @@ public class Utils {
         }
         return null;
     }
-
+    
     public static Object sget_object(Class clazz, String name) {
         return sget_object(clazz, name, null);
     }
-
+    
     public static Object sget_object(Class clazz, String name, Class type) {
         try {
             Field f = findField(clazz, type, name);
@@ -1099,11 +1163,11 @@ public class Utils {
         }
         return null;
     }
-
+    
     public static Object iget_object_or_null(Object obj, String name) {
         return iget_object_or_null(obj, name, null);
     }
-
+    
     public static <T> T iget_object_or_null(Object obj, String name, Class<T> type) {
         Class clazz = obj.getClass();
         try {
@@ -1114,11 +1178,11 @@ public class Utils {
         }
         return null;
     }
-
+    
     public static void iput_object(Object obj, String name, Object value) {
         iput_object(obj, name, null, value);
     }
-
+    
     public static void iput_object(Object obj, String name, Class type, Object value) {
         Class clazz = obj.getClass();
         try {
@@ -1129,11 +1193,11 @@ public class Utils {
             log(e);
         }
     }
-
+    
     public static void sput_object(Class clz, String name, Object value) {
         sput_object(clz, name, null, value);
     }
-
+    
     public static void sput_object(Class clazz, String name, Class type, Object value) {
         try {
             Field f = findField(clazz, type, name);
@@ -1143,7 +1207,7 @@ public class Utils {
             log(e);
         }
     }
-
+    
     public static String getCurrentNickname() {
         try {
             return (String) invoke_virtual(getQQAppInterface(), "getCurrentNickname");
@@ -1152,15 +1216,11 @@ public class Utils {
         }
         return null;
     }
-
-    private static boolean sAppRuntimeInit = false;
-
+    
     public static void $access$set$sAppRuntimeInit(boolean z) {
         sAppRuntimeInit = z;
     }
-
-    private static Field f_mAppRuntime = null;
-
+    
     @Nullable
     @MainProcess
     public static AppRuntime getAppRuntime() {
@@ -1193,7 +1253,7 @@ public class Utils {
             return null;
         }
     }
-
+    
     public static String getAccount() {
         Object rt = getAppRuntime();
         try {
@@ -1203,7 +1263,7 @@ public class Utils {
             return null;
         }
     }
-
+    
     public static Object getFriendListHandler() {
         if (Utils.getHostVersionCode() >= QQVersion.QQ_8_5_0) {
             try {
@@ -1250,7 +1310,7 @@ public class Utils {
             }
         }
     }
-
+    
     @Deprecated
     public static Object getBusinessHandler(int type) {
         try {
@@ -1281,14 +1341,17 @@ public class Utils {
             return null;
         }
     }
-
+    
     public static <T> T getFirstByType(Object obj, Class<T> type) {
-        if (obj == null) throw new NullPointerException("obj == null");
-        if (type == null) throw new NullPointerException("type == null");
+        if (obj == null)
+            throw new NullPointerException("obj == null");
+        if (type == null)
+            throw new NullPointerException("type == null");
         Class clz = obj.getClass();
         while (clz != null && !clz.equals(Object.class)) {
             for (Field f : clz.getDeclaredFields()) {
-                if (!f.getType().equals(type)) continue;
+                if (!f.getType().equals(type))
+                    continue;
                 f.setAccessible(true);
                 try {
                     return (T) f.get(obj);
@@ -1300,7 +1363,7 @@ public class Utils {
         }
         return null;
     }
-
+    
     /**
      * NSF: Neither Static nor Final
      *
@@ -1310,14 +1373,18 @@ public class Utils {
      */
     //@Deprecated
     public static <T> T getFirstNSFByType(Object obj, Class<T> type) {
-        if (obj == null) throw new NullPointerException("obj == null");
-        if (type == null) throw new NullPointerException("type == null");
+        if (obj == null)
+            throw new NullPointerException("obj == null");
+        if (type == null)
+            throw new NullPointerException("type == null");
         Class clz = obj.getClass();
         while (clz != null && !clz.equals(Object.class)) {
             for (Field f : clz.getDeclaredFields()) {
-                if (!f.getType().equals(type)) continue;
+                if (!f.getType().equals(type))
+                    continue;
                 int m = f.getModifiers();
-                if (Modifier.isStatic(m) || Modifier.isFinal(m)) continue;
+                if (Modifier.isStatic(m) || Modifier.isFinal(m))
+                    continue;
                 f.setAccessible(true);
                 try {
                     return (T) f.get(obj);
@@ -1329,7 +1396,7 @@ public class Utils {
         }
         return null;
     }
-
+    
     /**
      * NSF: Neither Static nor Final
      *
@@ -1339,13 +1406,17 @@ public class Utils {
      */
     //@Deprecated
     public static Field getFirstNSFFieldByType(Class clz, Class type) {
-        if (clz == null) throw new NullPointerException("clz == null");
-        if (type == null) throw new NullPointerException("type == null");
+        if (clz == null)
+            throw new NullPointerException("clz == null");
+        if (type == null)
+            throw new NullPointerException("type == null");
         while (clz != null && !clz.equals(Object.class)) {
             for (Field f : clz.getDeclaredFields()) {
-                if (!f.getType().equals(type)) continue;
+                if (!f.getType().equals(type))
+                    continue;
                 int m = f.getModifiers();
-                if (Modifier.isStatic(m) || Modifier.isFinal(m)) continue;
+                if (Modifier.isStatic(m) || Modifier.isFinal(m))
+                    continue;
                 f.setAccessible(true);
                 return f;
             }
@@ -1353,7 +1424,7 @@ public class Utils {
         }
         return null;
     }
-
+    
     public static <T> T getObject(Class clazz, Class<?> type, String name, Object obj) {
         try {
             Field field = findField(clazz, type, name);
@@ -1362,26 +1433,30 @@ public class Utils {
             return null;
         }
     }
-
+    
     public static Field hasField(Object obj, String name) {
         return hasField(obj, name, null);
     }
-
+    
     public static Field hasField(Object obj, String name, Class type) {
-        if (obj == null) throw new NullPointerException("obj/class == null");
+        if (obj == null)
+            throw new NullPointerException("obj/class == null");
         Class clazz;
-        if (obj instanceof Class) clazz = (Class) obj;
-        else clazz = obj.getClass();
+        if (obj instanceof Class)
+            clazz = (Class) obj;
+        else
+            clazz = obj.getClass();
         return findField(clazz, type, name);
     }
-
+    
     public static Field findField(Class<?> clazz, Class<?> type, String name) {
         if (clazz != null && name.length() > 0) {
             Class<?> clz = clazz;
-            do {
+            do
+            {
                 for (Field field : clz.getDeclaredFields()) {
                     if ((type == null || field.getType().equals(type)) && field.getName()
-                            .equals(name)) {
+                        .equals(name)) {
                         field.setAccessible(true);
                         return field;
                     }
@@ -1391,7 +1466,7 @@ public class Utils {
         }
         return null;
     }
-
+    
     public static boolean isEmpty(String str) {
         return str == null || str.length() == 0;
     }
@@ -1415,7 +1490,7 @@ public class Utils {
             }
         }
     }*/
-
+    
     public static void loge(String str) {
         Log.e("QNdump", str);
         try {
@@ -1429,32 +1504,35 @@ public class Utils {
             String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/qn_log.txt";
             File f = new File(path);
             try {
-                if (!f.exists()) f.createNewFile();
+                if (!f.exists())
+                    f.createNewFile();
                 appendToFile(path, "[" + System.currentTimeMillis() + "-" + android.os.Process.myPid() + "] " + str + "\n");
             } catch (IOException e) {
             }
         }
     }
-
+    
     public static void logd(String str) {
-        if (DEBUG) try {
-            Log.d("QNdump", str);
-            XposedBridge.log(str);
-        } catch (NoClassDefFoundError e) {
-            Log.d("Xposed", str);
-            Log.d("EdXposed-Bridge", str);
-        }
+        if (DEBUG)
+            try {
+                Log.d("QNdump", str);
+                XposedBridge.log(str);
+            } catch (NoClassDefFoundError e) {
+                Log.d("Xposed", str);
+                Log.d("EdXposed-Bridge", str);
+            }
         if (ENABLE_DUMP_LOG) {
             String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/qn_log.txt";
             File f = new File(path);
             try {
-                if (!f.exists()) f.createNewFile();
+                if (!f.exists())
+                    f.createNewFile();
                 appendToFile(path, "[" + System.currentTimeMillis() + "-" + android.os.Process.myPid() + "] " + str + "\n");
             } catch (IOException e) {
             }
         }
     }
-
+    
     public static void logi(String str) {
         try {
             Log.i("QNdump", str);
@@ -1467,13 +1545,14 @@ public class Utils {
             String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/qn_log.txt";
             File f = new File(path);
             try {
-                if (!f.exists()) f.createNewFile();
+                if (!f.exists())
+                    f.createNewFile();
                 appendToFile(path, "[" + System.currentTimeMillis() + "-" + android.os.Process.myPid() + "] " + str + "\n");
             } catch (IOException e) {
             }
         }
     }
-
+    
     public static void logw(String str) {
         Log.i("QNdump", str);
         try {
@@ -1486,15 +1565,17 @@ public class Utils {
             String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/qn_log.txt";
             File f = new File(path);
             try {
-                if (!f.exists()) f.createNewFile();
+                if (!f.exists())
+                    f.createNewFile();
                 appendToFile(path, "[" + System.currentTimeMillis() + "-" + android.os.Process.myPid() + "] " + str + "\n");
             } catch (IOException e) {
             }
         }
     }
-
+    
     public static void log(Throwable th) {
-        if (th == null) return;
+        if (th == null)
+            return;
         String msg = Log.getStackTraceString(th);
         Log.e("QNdump", msg);
         try {
@@ -1511,21 +1592,23 @@ public class Utils {
             String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/qn_log.txt";
             File f = new File(path);
             try {
-                if (!f.exists()) f.createNewFile();
+                if (!f.exists())
+                    f.createNewFile();
                 appendToFile(path, "[" + System.currentTimeMillis() + "-" + android.os.Process.myPid() + "] " + msg + "\n");
             } catch (IOException e) {
             }
         }
     }
-
+    
     public static void checkLogFlag() {
         try {
             File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.qn_log_flag");
-            if (f.exists()) ENABLE_DUMP_LOG = true;
+            if (f.exists())
+                ENABLE_DUMP_LOG = true;
         } catch (Exception ignored) {
         }
     }
-
+    
     /**
      * 追加文件：使用FileWriter
      * 不能{@link #log(Throwable)},防止死递归
@@ -1550,29 +1633,34 @@ public class Utils {
             }
         }
     }
-
+    
     public static String en(String str) {
-        if (str == null) return "null";
+        if (str == null)
+            return "null";
         return "\"" + str.replace("\\", "\\\\").replace("\"", "\\\"")
-                .replace("\n", "\\n").replace("\r", "\\r") + "\"";
+            .replace("\n", "\\n").replace("\r", "\\r") + "\"";
     }
-
+    
     public static String de(String str) {
-        if (str == null) return null;
-        if (str.equals("null")) return null;
-        if (str.startsWith("\"")) str = str.substring(1);
-        if (str.endsWith("\"") && !str.endsWith("\\\"")) str = str.substring(0, str.length() - 1);
+        if (str == null)
+            return null;
+        if (str.equals("null"))
+            return null;
+        if (str.startsWith("\""))
+            str = str.substring(1);
+        if (str.endsWith("\"") && !str.endsWith("\\\""))
+            str = str.substring(0, str.length() - 1);
         return str.replace("\\\"", "\"").replace("\\\n", "\n")
-                .replace("\\\r", "\r").replace("\\\\", "\\");
+            .replace("\\\r", "\r").replace("\\\\", "\\");
     }
-
+    
     public static String csvenc(String s) {
         if (!s.contains("\"") && !s.contains(" ") && !s.contains(",") && !s.contains("\r") && !s.contains("\n") && !s.contains("\t")) {
             return s;
         }
         return "\"" + s.replace("\"", "\"\"") + "\"";
     }
-
+    
     /**
      * @deprecated Use ${@link Toasts#showToast(Context, int, CharSequence, int)} instead.
      */
@@ -1580,33 +1668,33 @@ public class Utils {
     public static void showToast(Context context, int type, CharSequence text, int duration) {
         Toasts.showToast(context, type, text, duration);
     }
-
+    
     public static void showToastShort(Context ctx, CharSequence str) {
         Toasts.showToast(ctx, 0, str, 0);
     }
-
+    
     //@Deprecated
     public static void showErrorToastAnywhere(String text) {
         Toasts.error(getApplication(), text, Toasts.LENGTH_SHORT);
     }
-
+    
     public static void dumpTrace() {
         Throwable t = new Throwable("Trace dump");
         log(t);
     }
-
+    
     public static int getLineNo() {
         return Thread.currentThread().getStackTrace()[3].getLineNumber();
     }
-
+    
     public static int getLineNo(int depth) {
         return Thread.currentThread().getStackTrace()[3 + depth].getLineNumber();
     }
-
+    
     public static String getRelTimeStrSec(long time_sec) {
         return getRelTimeStrMs(time_sec * 1000);
     }
-
+    
     public static String getRelTimeStrMs(long time_ms) {
         SimpleDateFormat format;
         long curr = System.currentTimeMillis();
@@ -1627,7 +1715,7 @@ public class Utils {
         format = new SimpleDateFormat("MM-dd HH:mm");
         return format.format(t);
     }
-
+    
     public static String getIntervalDspMs(long ms1, long ms2) {
         Date t1 = new Date(Math.min(ms1, ms2));
         Date t2 = new Date(Math.max(ms1, ms2));
@@ -1666,7 +1754,7 @@ public class Utils {
         ret = ret + " 至 " + format.format(t2);
         return ret;
     }
-
+    
     public static String filterEmoji(String source) {
         if (source != null) {
             Pattern emoji = Pattern.compile("[\ud83c\udc00-\ud83c\udfff]|[\ud83d\udc00-\ud83d\udfff]|[\u2600-\u27ff]", Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE);
@@ -1679,7 +1767,7 @@ public class Utils {
         }
         return null;
     }
-
+    
     /**
      * same: t0 d1 w2 m3 y4
      */
@@ -1688,13 +1776,17 @@ public class Utils {
         c1.setTime(t1);
         Calendar c2 = Calendar.getInstance();
         c2.setTime(t2);
-        if (c1.get(Calendar.YEAR) != c2.get(Calendar.YEAR)) return 5;
-        if (c1.get(Calendar.MONTH) != c2.get(Calendar.MONTH)) return 4;
-        if (c1.get(Calendar.DATE) != c2.get(Calendar.DATE)) return 3;
-        if (t1.equals(t2)) return 0;
+        if (c1.get(Calendar.YEAR) != c2.get(Calendar.YEAR))
+            return 5;
+        if (c1.get(Calendar.MONTH) != c2.get(Calendar.MONTH))
+            return 4;
+        if (c1.get(Calendar.DATE) != c2.get(Calendar.DATE))
+            return 3;
+        if (t1.equals(t2))
+            return 0;
         return 1;
     }
-
+    
     public static boolean isNiceUser() {
         if ((LicenseStatus.getCurrentUserWhiteFlags() & UserFlagConst.WF_NICE_USER) != 0)
             return true;
@@ -1722,13 +1814,16 @@ public class Utils {
             return true;
         }
     }
-
+    
     private static boolean doEvalNiceUser() {
-        if (!isExp()) return true;
+        if (!isExp())
+            return true;
         long uin = getLongAccountUin();
         String nick = getCurrentNickname();
-        if (nick != null && nick.length() > 0 && isBadNick(nick)) return false;
-        if (Utils.isTim(getApplication())) return true;
+        if (nick != null && nick.length() > 0 && isBadNick(nick))
+            return false;
+        if (Utils.isTim(getApplication()))
+            return true;
         if (uin > 2_0000_0000L && uin < 30_0000_0000L) {
             return true;
         }
@@ -1742,15 +1837,19 @@ public class Utils {
         }
         return true;
     }
-
+    
     private static boolean isSymbol(char c) {
-        if (c == '\u3000') return true;
-        if (c < '0') return true;
-        if (c > '9' && c < 'A') return true;
-        if (c > 'Z' && c < 'a') return true;
+        if (c == '\u3000')
+            return true;
+        if (c < '0')
+            return true;
+        if (c > '9' && c < 'A')
+            return true;
+        if (c > 'Z' && c < 'a')
+            return true;
         return (c <= 0xD7FF);
     }
-
+    
     /**
      * 特征
      * A/a+sp/'/^   && lenth>2
@@ -1761,19 +1860,22 @@ public class Utils {
      * IDSP/3000"　"
      */
     private static boolean isBadNick(String nick) {
-        if (nick == null) throw new NullPointerException("nick == null");
-        if (nick.length() == 0) throw new IllegalArgumentException("nick length == 0");
+        if (nick == null)
+            throw new NullPointerException("nick == null");
+        if (nick.length() == 0)
+            throw new IllegalArgumentException("nick length == 0");
         nick = filterEmoji(nick);
         if (nick.contains("\u4e36") || nick.contains("\u309e") || nick.contains("双封") || nick.contains("群发")
-                || nick.contains("代发") || nick.contains("赚") || nick.contains("换群") || nick.contains("加我")
-                || nick.contains("加盟") || nick.contains("中介") || nick.contains("兼职") || nick.contains("客服")
-                || nick.contains("招聘") || nick.contains("换钱") || nick.contains("接单") || nick.contains("承接")
-                || nick.contains("解封") || nick.contains("保号") || nick.contains("业务") || nick.contains("互拉")
-                || nick.contains("刷单") || nick.contains("代打") || nick.contains("总创") || nick.contains("在线接")
-                || nick.contains("引流") || nick.contains("mzmp")
-                || nick.matches(".*[\u53f8\u6b7b][\u9a6c\u5417\u5988\u3000].*"))
+            || nick.contains("代发") || nick.contains("赚") || nick.contains("换群") || nick.contains("加我")
+            || nick.contains("加盟") || nick.contains("中介") || nick.contains("兼职") || nick.contains("客服")
+            || nick.contains("招聘") || nick.contains("换钱") || nick.contains("接单") || nick.contains("承接")
+            || nick.contains("解封") || nick.contains("保号") || nick.contains("业务") || nick.contains("互拉")
+            || nick.contains("刷单") || nick.contains("代打") || nick.contains("总创") || nick.contains("在线接")
+            || nick.contains("引流") || nick.contains("mzmp")
+            || nick.matches(".*[\u53f8\u6b7b][\u9a6c\u5417\u5988\u3000].*"))
             return true;
-        if (nick.equalsIgnoreCase("A")) return true;
+        if (nick.equalsIgnoreCase("A"))
+            return true;
         if (nick.length() < 2) {
             return isSymbol(nick.charAt(0));
         }
@@ -1786,7 +1888,7 @@ public class Utils {
         }
         return false;
     }
-
+    
     /**
      * 仅仅为群发器而使用本模块的用户往往有两个鲜明的特征
      * 1.使用某个虚拟框架
@@ -1811,13 +1913,13 @@ public class Utils {
             }
         } catch (Throwable e) {
             if (!(e instanceof NullPointerException) &&
-                    !(e instanceof NoClassDefFoundError)) {
+                !(e instanceof NoClassDefFoundError)) {
                 log(e);
             }
         }
         return false;
     }
-
+    
     /**
      * 通过view暴力获取getContext()(Android不支持view.getContext()了)
      *
@@ -1841,41 +1943,44 @@ public class Utils {
         }
         return ctx;
     }
-
+    
     public static <T> T dump(T obj) {
         logd("dump:" + obj);
         return obj;
     }
-
-
+    
+    
     public static String getShort$Name(Object obj) {
         String name;
-        if (obj == null) return "null";
+        if (obj == null)
+            return "null";
         if (obj instanceof String) {
             name = ((String) obj).replace("/", ".");
         } else if (obj instanceof Class) {
             name = ((Class) obj).getName();
         } else if (obj instanceof Field) {
             name = ((Field) obj).getType().getName();
-        } else name = obj.getClass().getName();
-        if (!name.contains(".")) return name;
+        } else
+            name = obj.getClass().getName();
+        if (!name.contains("."))
+            return name;
         int p = name.lastIndexOf('.');
         return name.substring(p + 1);
     }
-
+    
     public static int sign(double d) {
         return Double.compare(d, 0d);
     }
-
+    
     @Deprecated
     public static boolean isTim(Context ctx) {
         return ctx.getPackageName().equals(PACKAGE_NAME_TIM);
     }
-
+    
     public static boolean isTim() {
         return IS_TIM;
     }
-
+    
     public static ContactDescriptor parseResultRec(Object a) {
         ContactDescriptor cd = new ContactDescriptor();
         cd.uin = iget_object_or_null(a, "a", String.class);
@@ -1883,11 +1988,11 @@ public class Utils {
         cd.uinType = iget_object_or_null(a, "b", int.class);
         return cd;
     }
-
+    
     public static boolean isAlphaVersion() {
         return QN_VERSION_NAME.contains("-") || QN_VERSION_NAME.contains("es") || QN_VERSION_NAME.contains("a") || QN_VERSION_NAME.length() > 10;
     }
-
+    
     //FIXME: this may not work properly after obfuscation
     public static boolean isRecursion() {
         StackTraceElement[] stacks = new Exception().getStackTrace();
@@ -1901,7 +2006,7 @@ public class Utils {
         }
         return false;
     }
-
+    
     /**
      * 根据手机的分辨率从 dip 的单位 转成为 px(像素)
      */
@@ -1909,13 +2014,13 @@ public class Utils {
         float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
-
+    
     public static int dip2sp(Context context, float dpValue) {
         float scale = context.getResources().getDisplayMetrics().density /
-                context.getResources().getDisplayMetrics().scaledDensity;
+            context.getResources().getDisplayMetrics().scaledDensity;
         return (int) (dpValue * scale + 0.5f);
     }
-
+    
     /**
      * 根据手机的分辨率从 px(像素) 的单位 转成为 dp
      */
@@ -1923,7 +2028,7 @@ public class Utils {
         float scale = context.getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
     }
-
+    
     /**
      * 将px值转换为sp值，保证文字大小不变
      */
@@ -1931,7 +2036,7 @@ public class Utils {
         float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
         return (int) (pxValue / fontScale + 0.5f);
     }
-
+    
     /**
      * 将sp值转换为px值，保证文字大小不变
      */
@@ -1939,22 +2044,25 @@ public class Utils {
         float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
         return (int) (spValue * fontScale + 0.5f);
     }
-
+    
     public static Method findMethodByTypes_1(Class<?> clazz, Class returnType, Class... argt) throws NoSuchMethodException {
         Method method = null;
         Method[] m;
         Class[] _argt;
         loop_main:
-        do {
+        do
+        {
             m = clazz.getDeclaredMethods();
             loop:
             for (Method value : m) {
                 _argt = value.getParameterTypes();
                 if (_argt.length == argt.length) {
                     for (int ii = 0; ii < argt.length; ii++) {
-                        if (!argt[ii].equals(_argt[ii])) continue loop;
+                        if (!argt[ii].equals(_argt[ii]))
+                            continue loop;
                     }
-                    if (returnType != null && !returnType.equals(value.getReturnType())) continue;
+                    if (returnType != null && !returnType.equals(value.getReturnType()))
+                        continue;
                     if (method == null) {
                         method = value;
                         //here we go through this class
@@ -1969,14 +2077,16 @@ public class Utils {
         method.setAccessible(true);
         return method;
     }
-
+    
     public static InputStream toInputStream(String name) {
         return ResUtils.openAsset(name);
     }
-
+    
     public static void copy(File s, File f) throws Exception {
-        if (!s.exists()) throw new FileNotFoundException("源文件不存在");
-        if (!f.exists()) f.createNewFile();
+        if (!s.exists())
+            throw new FileNotFoundException("源文件不存在");
+        if (!f.exists())
+            f.createNewFile();
         FileReader fr = new FileReader(s);
         FileWriter fw = new FileWriter(f);
         char[] buff = new char[1024];
@@ -1986,34 +2096,31 @@ public class Utils {
         fw.close();
         fr.close();
     }
-
-    public static class DummyCallback implements DialogInterface.OnClickListener {
-        public DummyCallback() {
-        }
-
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-        }
-
-    }
-
+    
     public static String en_toStr(Object obj) {
-        if (obj == null) return null;
+        if (obj == null)
+            return null;
         String str;
-        if (obj instanceof CharSequence) str = Utils.en(obj.toString());
-        else str = "" + obj;
+        if (obj instanceof CharSequence)
+            str = Utils.en(obj.toString());
+        else
+            str = "" + obj;
         return str;
     }
-
+    
     public static String nomorethan100(Object obj) {
-        if (obj == null) return null;
+        if (obj == null)
+            return null;
         String str;
-        if (obj instanceof CharSequence) str = "\"" + obj + "\"";
-        else str = "" + obj;
-        if (str.length() > 110) return str.substring(0, 100);
+        if (obj instanceof CharSequence)
+            str = "\"" + obj + "\"";
+        else
+            str = "" + obj;
+        if (str.length() > 110)
+            return str.substring(0, 100);
         return str;
     }
-
+    
     public static Activity getCurrentActivity() {
         try {
             Class activityThreadClass = Class.forName("android.app.ActivityThread");
@@ -2036,27 +2143,9 @@ public class Utils {
         }
         return null;
     }
-
-    public static class ContactDescriptor {
-        public String uin;
-        public int uinType;
-        @Nullable
-        public String nick;
-
-        public String getId() {
-            StringBuilder msg = new StringBuilder();
-            if (uin.length() < 10) {
-                for (int i = 0; i < 10 - uin.length(); i++) {
-                    msg.append("0");
-                }
-            }
-            return msg + uin + uinType;
-        }
-
-    }
-
+    
     private static native long ntGetBuildTimestamp();
-
+    
     public static long getBuildTimestamp() {
         Context ctx = null;
         try {
@@ -2073,10 +2162,11 @@ public class Utils {
             return -3;
         }
     }
-
+    
     @Nullable
     public static Object defaultShadowClone(Object orig) {
-        if (orig == null) return null;
+        if (orig == null)
+            return null;
         Class cl = orig.getClass();
         Object clone;
         try {
@@ -2094,7 +2184,7 @@ public class Utils {
             return null;
         }
     }
-
+    
     //@Deprecated
     public static int strcmp(String stra, String strb) {
         int len = Math.min(stra.length(), strb.length());
@@ -2107,29 +2197,31 @@ public class Utils {
         }
         return stra.length() - strb.length();
     }
-
+    
     public static void nop() {
-        if (Math.random() > 1) nop();
+        if (Math.random() > 1)
+            nop();
     }
-
+    
     public static int[] integerSetToArray(Set<Integer> is) {
         int[] ret = new int[is.size()];
         Iterator<Integer> it = is.iterator();
         for (int i = 0; i < ret.length; i++) {
-            if (it.hasNext()) ret[i] = it.next();
+            if (it.hasNext())
+                ret[i] = it.next();
         }
         return ret;
     }
-
+    
     public static String getPathTail(File path) {
         return getPathTail(path.getPath());
     }
-
+    
     public static String getPathTail(String path) {
         String[] arr = path.split("/");
         return arr[arr.length - 1];
     }
-
+    
     public static String getFileContent(InputStream in) throws IOException {
         if (in == null) {
             throw new NullPointerException("InputStream is null");
@@ -2146,23 +2238,24 @@ public class Utils {
             return sb.toString();
         } finally {
             try {
-                if (br != null) br.close();
+                if (br != null)
+                    br.close();
             } catch (Exception ignored) {
             }
         }
     }
-
+    
     public static String getFileContent(String path) throws IOException {
         return getFileContent(new FileInputStream(path));
     }
-
+    
     public static void saveFileContent(String path, String content) throws IOException {
         FileOutputStream fout = new FileOutputStream(path);
         fout.write(content.getBytes());
         fout.flush();
         fout.close();
     }
-
+    
     public static View getChildAtRecursive(ViewGroup vg, int... index) {
         View v = vg;
         for (int i1 = 0, indexLength = index.length; i1 < indexLength; i1++) {
@@ -2173,5 +2266,33 @@ public class Utils {
             }
         }
         return v;
+    }
+    
+    public static class DummyCallback implements DialogInterface.OnClickListener {
+        public DummyCallback() {
+        }
+        
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+        }
+        
+    }
+    
+    public static class ContactDescriptor {
+        public String uin;
+        public int uinType;
+        @Nullable
+        public String nick;
+        
+        public String getId() {
+            StringBuilder msg = new StringBuilder();
+            if (uin.length() < 10) {
+                for (int i = 0; i < 10 - uin.length(); i++) {
+                    msg.append("0");
+                }
+            }
+            return msg + uin + uinType;
+        }
+        
     }
 }

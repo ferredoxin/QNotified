@@ -19,13 +19,7 @@
 package nil.nadph.qnotified.chiral;
 
 public class MdlMolParser {
-
-    public static class BadMolFormatException extends Exception {
-        public BadMolFormatException(String msg) {
-            super(msg);
-        }
-    }
-
+    
     public static Molecule parseString(String str) throws BadMolFormatException {
         int start = -1;
         Molecule.Atom[] atoms;
@@ -166,5 +160,11 @@ public class MdlMolParser {
         }
         molecule.initOnce();
         return molecule;
+    }
+    
+    public static class BadMolFormatException extends Exception {
+        public BadMolFormatException(String msg) {
+            super(msg);
+        }
     }
 }

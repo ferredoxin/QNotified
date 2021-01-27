@@ -18,38 +18,43 @@
  */
 package nil.nadph.qnotified.bridge;
 
-import android.content.Context;
-import android.os.Parcelable;
-import android.widget.Toast;
+import android.content.*;
+import android.os.*;
+import android.widget.*;
 
-import com.tencent.mobileqq.app.QQAppInterface;
+import com.tencent.mobileqq.app.*;
 
-import java.io.Externalizable;
-import java.io.File;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
+import java.io.*;
+import java.lang.reflect.*;
+import java.util.*;
 
-import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.util.*;
 
-import static nil.nadph.qnotified.util.Initiator._SessionInfo;
-import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class ChatActivityFacade {
     public static long[] sendMessage(QQAppInterface qqAppInterface, Context context, Parcelable sessionInfo, String msg,
                                      ArrayList<?> atInfo, Object sendMsgParams) {
-        if (qqAppInterface == null) throw new NullPointerException("qqAppInterface == null");
-        if (sessionInfo == null) throw new NullPointerException("sessionInfo == null");
+        if (qqAppInterface == null) {
+            throw new NullPointerException("qqAppInterface == null");
+        }
+        if (sessionInfo == null) {
+            throw new NullPointerException("sessionInfo == null");
+        }
         Class facade = DexKit.doFindClass(DexKit.C_FACADE);
         Class SendMsgParams = null;
         Method m = null;
         for (Method mi : facade.getDeclaredMethods()) {
-            if (!mi.getReturnType().equals(long[].class)) continue;
+            if (!mi.getReturnType().equals(long[].class)) {
+                continue;
+            }
             Class[] argt = mi.getParameterTypes();
-            if (argt.length != 6) continue;
+            if (argt.length != 6) {
+                continue;
+            }
             if (argt[1].equals(Context.class) && argt[2].equals(_SessionInfo())
-                    && argt[3].equals(String.class) && argt[4].equals(ArrayList.class)) {
+                && argt[3].equals(String.class) && argt[4].equals(ArrayList.class)) {
                 m = mi;
                 m.setAccessible(true);
                 SendMsgParams = argt[5];
@@ -63,20 +68,30 @@ public class ChatActivityFacade {
             return null;
         }
     }
-
+    
     public static long[] sendMessage(QQAppInterface qqAppInterface, Context context, Parcelable sessionInfo, String msg) {
-        if (qqAppInterface == null) throw new NullPointerException("qqAppInterface == null");
-        if (sessionInfo == null) throw new NullPointerException("sessionInfo == null");
-        if (msg == null) throw new NullPointerException("msg == null");
+        if (qqAppInterface == null) {
+            throw new NullPointerException("qqAppInterface == null");
+        }
+        if (sessionInfo == null) {
+            throw new NullPointerException("sessionInfo == null");
+        }
+        if (msg == null) {
+            throw new NullPointerException("msg == null");
+        }
         Class facade = DexKit.doFindClass(DexKit.C_FACADE);
         Class SendMsgParams = null;
         Method m = null;
         for (Method mi : facade.getDeclaredMethods()) {
-            if (!mi.getReturnType().equals(long[].class)) continue;
+            if (!mi.getReturnType().equals(long[].class)) {
+                continue;
+            }
             Class[] argt = mi.getParameterTypes();
-            if (argt.length != 6) continue;
+            if (argt.length != 6) {
+                continue;
+            }
             if (argt[1].equals(Context.class) && argt[2].equals(_SessionInfo())
-                    && argt[3].equals(String.class) && argt[4].equals(ArrayList.class)) {
+                && argt[3].equals(String.class) && argt[4].equals(ArrayList.class)) {
                 m = mi;
                 m.setAccessible(true);
                 SendMsgParams = argt[5];
@@ -90,16 +105,24 @@ public class ChatActivityFacade {
             return null;
         }
     }
-
+    
     public static long sendPttMessage(QQAppInterface qqAppInterface, Parcelable sessionInfo, String pttPath) {
-        if (qqAppInterface == null) throw new NullPointerException("qqAppInterface == null");
-        if (sessionInfo == null) throw new NullPointerException("sessionInfo == null");
-        if (pttPath == null) throw new NullPointerException("pttPath == null");
+        if (qqAppInterface == null) {
+            throw new NullPointerException("qqAppInterface == null");
+        }
+        if (sessionInfo == null) {
+            throw new NullPointerException("sessionInfo == null");
+        }
+        if (pttPath == null) {
+            throw new NullPointerException("pttPath == null");
+        }
         Method send = null;
         for (Method m : DexKit.doFindClass(DexKit.C_FACADE).getMethods()) {
             if (m.getReturnType().equals(long.class)) {
                 Class<?>[] clz = m.getParameterTypes();
-                if (clz.length != 3) continue;
+                if (clz.length != 3) {
+                    continue;
+                }
                 if (clz[0].equals(QQAppInterface.class) && clz[1].equals(_SessionInfo()) && clz[2].equals(String.class)) {
                     send = m;
                     break;
@@ -113,16 +136,24 @@ public class ChatActivityFacade {
             return 0;
         }
     }
-
+    
     public static boolean sendArkAppMessage(QQAppInterface qqAppInterface, Parcelable sessionInfo, Object arkAppMsg) {
-        if (qqAppInterface == null) throw new NullPointerException("qqAppInterface == null");
-        if (sessionInfo == null) throw new NullPointerException("sessionInfo == null");
-        if (arkAppMsg == null) throw new NullPointerException("arkAppMsg == null");
+        if (qqAppInterface == null) {
+            throw new NullPointerException("qqAppInterface == null");
+        }
+        if (sessionInfo == null) {
+            throw new NullPointerException("sessionInfo == null");
+        }
+        if (arkAppMsg == null) {
+            throw new NullPointerException("arkAppMsg == null");
+        }
         Method send = null;
         for (Method m : DexKit.doFindClass(DexKit.C_FACADE).getMethods()) {
             if (m.getReturnType().equals(boolean.class)) {
                 Class<?>[] clz = m.getParameterTypes();
-                if (clz.length != 3) continue;
+                if (clz.length != 3) {
+                    continue;
+                }
                 if (clz[0].equals(QQAppInterface.class) && clz[1].equals(_SessionInfo()) && clz[2].isInstance(arkAppMsg)) {
                     send = m;
                     break;
@@ -136,16 +167,24 @@ public class ChatActivityFacade {
             return false;
         }
     }
-
+    
     public static void sendAbsStructMsg(QQAppInterface qqAppInterface, Parcelable sessionInfo, Externalizable absStructMsg) {
-        if (qqAppInterface == null) throw new NullPointerException("qqAppInterface == null");
-        if (sessionInfo == null) throw new NullPointerException("sessionInfo == null");
-        if (absStructMsg == null) throw new NullPointerException("absStructMsg == null");
+        if (qqAppInterface == null) {
+            throw new NullPointerException("qqAppInterface == null");
+        }
+        if (sessionInfo == null) {
+            throw new NullPointerException("sessionInfo == null");
+        }
+        if (absStructMsg == null) {
+            throw new NullPointerException("absStructMsg == null");
+        }
         Method send = null;
         for (Method m : DexKit.doFindClass(DexKit.C_FACADE).getMethods()) {
             if (m.getReturnType().equals(void.class)) {
                 Class<?>[] clz = m.getParameterTypes();
-                if (clz.length != 3) continue;
+                if (clz.length != 3) {
+                    continue;
+                }
                 if (clz[0].equals(QQAppInterface.class) && clz[1].equals(_SessionInfo()) && clz[2].isInstance(absStructMsg)) {
                     send = m;
                     break;
@@ -158,11 +197,17 @@ public class ChatActivityFacade {
             log(e);
         }
     }
-
+    
     public static void repeatMessage(QQAppInterface app, Parcelable session, Object msg) {
-        if (app == null) throw new NullPointerException("app == null");
-        if (session == null) throw new NullPointerException("session == null");
-        if (msg == null) throw new NullPointerException("msg == null");
+        if (app == null) {
+            throw new NullPointerException("app == null");
+        }
+        if (session == null) {
+            throw new NullPointerException("session == null");
+        }
+        if (msg == null) {
+            throw new NullPointerException("msg == null");
+        }
         String msgText;
         Class[] argt = null;
         Method m = null;
@@ -175,17 +220,24 @@ public class ChatActivityFacade {
             case "MessageForPic":
                 try {
                     for (Method mi : DexKit.doFindClass(DexKit.C_FACADE).getMethods()) {
-                        if (!mi.getName().equals("a") && !mi.getName().equals("b")) continue;
+                        if (!mi.getName().equals("a") && !mi.getName().equals("b")) {
+                            continue;
+                        }
                         argt = mi.getParameterTypes();
-                        if (argt.length < 3) continue;
+                        if (argt.length < 3) {
+                            continue;
+                        }
                         if (argt[0].equals(load("com/tencent/mobileqq/app/QQAppInterface")) && argt[1].equals(_SessionInfo())
-                                && argt[2].isAssignableFrom(msg.getClass()) && mi.getReturnType().equals(void.class)) {
+                            && argt[2].isAssignableFrom(msg.getClass()) && mi.getReturnType().equals(void.class)) {
                             m = mi;
                             break;
                         }
                     }
-                    if (argt.length == 3) m.invoke(null, app, session, msg);
-                    else m.invoke(null, app, session, msg, 0);
+                    if (argt.length == 3) {
+                        m.invoke(null, app, session, msg);
+                    } else {
+                        m.invoke(null, app, session, msg, 0);
+                    }
                 } catch (Exception e) {
                     Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), 0);
                     log(e);

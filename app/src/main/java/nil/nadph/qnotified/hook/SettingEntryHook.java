@@ -18,60 +18,60 @@
  */
 package nil.nadph.qnotified.hook;
 
-import android.app.Activity;
-import android.content.Context;
-import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
+import android.app.*;
+import android.content.*;
+import android.os.*;
+import android.view.*;
+import android.widget.*;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedHelpers;
-import nil.nadph.qnotified.ExfriendManager;
-import nil.nadph.qnotified.MainHook;
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.activity.EulaActivity;
-import nil.nadph.qnotified.lifecycle.ActProxyMgr;
-import nil.nadph.qnotified.step.DexDeobfStep;
-import nil.nadph.qnotified.step.Step;
+import de.robv.android.xposed.*;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.activity.*;
+import nil.nadph.qnotified.lifecycle.*;
+import nil.nadph.qnotified.step.*;
 import nil.nadph.qnotified.util.*;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.util.Initiator.load;
+import static android.view.ViewGroup.LayoutParams.*;
+import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class SettingEntryHook extends BaseDelayableHook {
     public static final int R_ID_SETTING_ENTRY = 0x300AFF71;
     private static final SettingEntryHook self = new SettingEntryHook();
     private boolean inited = false;
-
+    
     private SettingEntryHook() {
     }
-
+    
     @NonNull
     public static SettingEntryHook get() {
         return self;
     }
-
+    
     @Override
     public boolean init() {
-        if (inited) return true;
+        if (inited) {
+            return true;
+        }
         try {
             XposedHelpers.findAndHookMethod(load("com.tencent.mobileqq.activity.QQSettingSettingActivity"), "doOnCreate", Bundle.class, new XC_MethodHook(52) {
                 @Override
                 protected void afterHookedMethod(final MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.isLoadingDisabled() || LicenseStatus.isSilentGone()) return;
+                    if (LicenseStatus.isLoadingDisabled() || LicenseStatus.isSilentGone()) {
+                        return;
+                    }
                     try {
                         Class<?> itemClass = null;
                         View itemRef = null;
                         itemRef = (View) Utils.iget_object_or_null(param.thisObject, "a", load("com/tencent/mobileqq/widget/FormSimpleItem"));
-                        if (itemRef == null && (itemClass = load("com/tencent/mobileqq/widget/FormCommonSingleLineItem")) != null)
+                        if (itemRef == null && (itemClass = load("com/tencent/mobileqq/widget/FormCommonSingleLineItem")) != null) {
                             itemRef = (View) Utils.iget_object_or_null(param.thisObject, "a", itemClass);
+                        }
                         if (itemRef == null) {
                             Class<?> clz = load("com/tencent/mobileqq/widget/FormCommonSingleLineItem");
-                            if (clz == null)
+                            if (clz == null) {
                                 clz = load("com/tencent/mobileqq/widget/FormSimpleItem");
+                            }
                             itemRef = (View) Utils.getFirstNSFByType(param.thisObject, clz);
                         }
                         View item = (View) new_instance(itemRef.getClass(), param.thisObject, Context.class);
@@ -83,7 +83,9 @@ public class SettingEntryHook extends BaseDelayableHook {
                             item.setOnLongClickListener(new View.OnLongClickListener() {
                                 @Override
                                 public boolean onLongClick(final View v) {
-                                    if (!LicenseStatus.isBlacklisted()) return false;
+                                    if (!LicenseStatus.isBlacklisted()) {
+                                        return false;
+                                    }
                                     Toast.makeText((Context) param.thisObject, "正在重新检验授权", Toast.LENGTH_SHORT).show();
                                     new Thread(new Runnable() {
                                         @Override
@@ -152,7 +154,9 @@ public class SettingEntryHook extends BaseDelayableHook {
                                     }
                                 }
                             }
-                            if (index > list.getChildCount()) index = 0;
+                            if (index > list.getChildCount()) {
+                                index = 0;
+                            }
                         } catch (NullPointerException ignored) {
                         }
                         list.addView(item, index, lp);
@@ -169,35 +173,35 @@ public class SettingEntryHook extends BaseDelayableHook {
             return false;
         }
     }
-
+    
     @Override
     public boolean checkPreconditions() {
         return true;
     }
-
+    
     @Override
     public int getEffectiveProc() {
         return SyncUtils.PROC_MAIN;
     }
-
+    
     @Override
     public Step[] getPreconditions() {
         return new Step[]{new DexDeobfStep(DexKit.C_DIALOG_UTIL)};
     }
-
+    
     @Override
     public boolean isInited() {
         return inited;
     }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        //do nothing
-    }
-
+    
     @Override
     public boolean isEnabled() {
         return true;
     }
-
+    
+    @Override
+    public void setEnabled(boolean enabled) {
+        //do nothing
+    }
+    
 }

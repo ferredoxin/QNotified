@@ -18,34 +18,22 @@
  */
 package nil.nadph.qnotified.hook;
 
-import android.os.Bundle;
-import android.os.Looper;
-import android.os.Parcelable;
-import android.text.TextUtils;
-import android.widget.Toast;
+import android.os.*;
+import android.text.*;
+import android.widget.*;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.lang.reflect.*;
+import java.util.*;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.bridge.ContactUtils;
-import nil.nadph.qnotified.bridge.RevokeMsgInfoImpl;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.step.DexDeobfStep;
-import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.Utils;
+import de.robv.android.xposed.*;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.bridge.*;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.step.*;
+import nil.nadph.qnotified.util.*;
 
-import static de.robv.android.xposed.XposedHelpers.callMethod;
-import static de.robv.android.xposed.XposedHelpers.setObjectField;
-import static nil.nadph.qnotified.util.Initiator._C2CMessageProcessor;
-import static nil.nadph.qnotified.util.Initiator._QQMessageFacade;
+import static de.robv.android.xposed.XposedHelpers.*;
+import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 /**
@@ -60,17 +48,18 @@ public class RevokeMsgHook extends BaseDelayableHook {
     private static final RevokeMsgHook self = new RevokeMsgHook();
     private Object mQQMsgFacade = null;
     private boolean inited = false;
-
+    
     private RevokeMsgHook() {
     }
-
+    
     public static RevokeMsgHook get() {
         return self;
     }
-
+    
     @Override
     public boolean init() {
-        if (inited) return true;
+        if (inited)
+            return true;
         try {
             Method revokeMsg = null;
             for (Method m : _QQMessageFacade().getDeclaredMethods()) {
@@ -86,11 +75,14 @@ public class RevokeMsgHook extends BaseDelayableHook {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     mQQMsgFacade = param.thisObject;
-                    if (LicenseStatus.sDisableCommonHooks) return;
-                    if (!isEnabled()) return;
+                    if (LicenseStatus.sDisableCommonHooks)
+                        return;
+                    if (!isEnabled())
+                        return;
                     ArrayList list = (ArrayList) param.args[0];
                     param.setResult(null);
-                    if (list == null || list.isEmpty()) return;
+                    if (list == null || list.isEmpty())
+                        return;
                     for (Object revokeMsgInfo : list) {
                         try {
                             onRevokeMsg(revokeMsgInfo);
@@ -108,7 +100,7 @@ public class RevokeMsgHook extends BaseDelayableHook {
             return false;
         }
     }
-
+    
     private void onRevokeMsg(Object revokeMsgInfo) throws Exception {
         RevokeMsgInfoImpl info = new RevokeMsgInfoImpl((Parcelable) revokeMsgInfo);
         String entityUin = info.friendUin;
@@ -125,7 +117,8 @@ public class RevokeMsgHook extends BaseDelayableHook {
         String uin = istroop == 0 ? revokerUin : entityUin;
         Object msgObject = getMessage(uin, istroop, shmsgseq, msgUid);
         long id = getMessageUid(msgObject);
-        if (isCallingFrom(_C2CMessageProcessor().getName())) return;
+        if (isCallingFrom(_C2CMessageProcessor().getName()))
+            return;
         boolean isGroupChat = istroop != 0;
         long newMsgUid;
         if (msgUid != 0) {
@@ -195,9 +188,9 @@ public class RevokeMsgHook extends BaseDelayableHook {
         List<Object> list = new ArrayList<>();
         list.add(revokeGreyTip);
         invoke_virtual_declared_ordinal_modifier(mQQMsgFacade, 0, 4, false, Modifier.PUBLIC, 0,
-                list, Utils.getAccount(), List.class, String.class, void.class);
+            list, Utils.getAccount(), List.class, String.class, void.class);
     }
-
+    
     private Bundle createTroopMemberHighlightItem(String memberUin) {
         Bundle bundle = new Bundle();
         bundle.putInt("key_action", 5);
@@ -205,7 +198,7 @@ public class RevokeMsgHook extends BaseDelayableHook {
         bundle.putBoolean("need_update_nick", true);
         return bundle;
     }
-
+    
     private Object createBareHighlightGreyTip(String entityUin, int istroop, String fromUin, long time, String msg, long msgUid, long shmsgseq) throws Exception {
         int msgtype = -2030;// MessageRecord.MSG_TYPE_TROOP_GAP_GRAY_TIPS
         Object messageRecord = invoke_static_declared_ordinal_modifier(DexKit.doFindClass(DexKit.C_MSG_REC_FAC), 0, 1, true, Modifier.PUBLIC, 0, msgtype, int.class);
@@ -215,7 +208,7 @@ public class RevokeMsgHook extends BaseDelayableHook {
         setObjectField(messageRecord, "isread", true);
         return messageRecord;
     }
-
+    
     private Object createBarePlainGreyTip(String entityUin, int istroop, String fromUin, long time, String msg, long msgUid, long shmsgseq) throws Exception {
         int msgtype = -2031;// MessageRecord.MSG_TYPE_REVOKE_GRAY_TIPS
         Object messageRecord = invoke_static_declared_ordinal_modifier(DexKit.doFindClass(DexKit.C_MSG_REC_FAC), 0, 1, true, Modifier.PUBLIC, 0, msgtype, int.class);
@@ -225,7 +218,7 @@ public class RevokeMsgHook extends BaseDelayableHook {
         setObjectField(messageRecord, "isread", true);
         return messageRecord;
     }
-
+    
     private void addHightlightItem(Object msgForGreyTip, int start, int end, Bundle bundle) {
         try {
             invoke_virtual(msgForGreyTip, "addHightlightItem", start, end, bundle, int.class, int.class, Bundle.class);
@@ -233,12 +226,12 @@ public class RevokeMsgHook extends BaseDelayableHook {
             log(e);
         }
     }
-
+    
     private Object getMessage(String uin, int istroop, long shmsgseq, long msgUid) {
         List list = null;
         try {
             list = (List) invoke_virtual_declared_ordinal(mQQMsgFacade, 0, 2, false,
-                    uin, istroop, shmsgseq, msgUid, String.class, int.class, long.class, long.class, List.class);
+                uin, istroop, shmsgseq, msgUid, String.class, int.class, long.class, long.class, List.class);
         } catch (Exception e) {
             log(e);
         }
@@ -246,44 +239,55 @@ public class RevokeMsgHook extends BaseDelayableHook {
             return null;
         return list.get(0);
     }
-
+    
     private String getMessageContentStripped(Object msgObject) {
         String msg = (String) iget_object_or_null(msgObject, "msg");
         if (msg != null) {
             msg = msg.replace('\n', ' ').replace('\r', ' ').replace("\u202E", "");
-            if (msg.length() > 103) msg = msg.substring(0, 100) + "...";
+            if (msg.length() > 103)
+                msg = msg.substring(0, 100) + "...";
         }
         return msg;
     }
-
+    
     private long getMessageUid(Object msgObject) {
         if (msgObject == null)
             return 0;
         return (long) iget_object_or_null(msgObject, "msgUid");
     }
-
+    
     private int getMessageType(Object msgObject) {
         if (msgObject == null)
             return -1;
         return (int) iget_object_or_null(msgObject, "msgtype");
     }
-
+    
     @Override
     public int getEffectiveProc() {
         //FIXME: is MSF really necessary?
         return SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF;
     }
-
+    
     @Override
     public Step[] getPreconditions() {
         return new Step[]{new DexDeobfStep(DexKit.C_MSG_REC_FAC), new DexDeobfStep(DexKit.C_CONTACT_UTILS)};
     }
-
+    
     @Override
     public boolean isInited() {
         return inited;
     }
-
+    
+    @Override
+    public boolean isEnabled() {
+        try {
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_anti_revoke_msg);
+        } catch (Exception e) {
+            log(e);
+            return false;
+        }
+    }
+    
     @Override
     public void setEnabled(boolean enabled) {
         try {
@@ -302,16 +306,6 @@ public class RevokeMsgHook extends BaseDelayableHook {
                     }
                 });
             }
-        }
-    }
-
-    @Override
-    public boolean isEnabled() {
-        try {
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_anti_revoke_msg);
-        } catch (Exception e) {
-            log(e);
-            return false;
         }
     }
 }

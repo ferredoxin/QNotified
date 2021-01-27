@@ -18,37 +18,31 @@
  */
 package nil.nadph.qnotified.util;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
+import android.app.*;
+import android.content.*;
+import android.graphics.*;
+import android.graphics.drawable.*;
+import android.os.*;
+import android.text.*;
+import android.view.*;
 import android.widget.*;
 
-import com.tencent.mobileqq.app.QQAppInterface;
+import com.tencent.mobileqq.app.*;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.lang.reflect.*;
+import java.util.*;
 
-import nil.nadph.qnotified.ExfriendManager;
-import nil.nadph.qnotified.activity.TroopSelectActivity;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.activity.*;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static android.view.ViewGroup.LayoutParams.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class SendBatchMsg {
-
+    
     public static final int R_ID_SELECT_FRIEND = 0x300AFF51;
     public static final int R_ID_SELECT_GROUP = 0x300AFF52;
-
+    
     private static LinearLayout getEditView(Context context) {
         int padding = dip2px(context, 20.0f);
         //去除editView焦点
@@ -66,7 +60,7 @@ public class SendBatchMsg {
         linearLayout.addView(editText);
         return linearLayout;
     }
-
+    
     private static void setEditDialogStyle(AlertDialog alertDialog) {
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextSize(16.0f);
         alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextSize(16.0f);
@@ -85,23 +79,25 @@ public class SendBatchMsg {
             log(e);
         }
     }
-
+    
     @SuppressWarnings("deprecation")
     public static View.OnClickListener clickToBatchMsg() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (LicenseStatus.sDisableCommonHooks) return;
+                if (LicenseStatus.sDisableCommonHooks) {
+                    return;
+                }
                 try {
                     final Context exactCtx = v.getContext();
                     LinearLayout linearLayout = getEditView(exactCtx);
                     final EditText editText = (EditText) linearLayout.getChildAt(0);
                     final AlertDialog alertDialog = new AlertDialog.Builder(exactCtx, Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1 ? android.R.style.Theme_DeviceDefault_Light_Dialog_Alert : AlertDialog.THEME_DEVICE_DEFAULT_LIGHT)
-                            .setTitle("输入群发文本")
-                            .setView(linearLayout)
-                            .setPositiveButton("选择群发对象", null)
-                            .setNegativeButton("取消", null)
-                            .create();
+                        .setTitle("输入群发文本")
+                        .setView(linearLayout)
+                        .setPositiveButton("选择群发对象", null)
+                        .setNegativeButton("取消", null)
+                        .create();
                     alertDialog.show();
                     setEditDialogStyle(alertDialog);
                     alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
@@ -129,43 +125,43 @@ public class SendBatchMsg {
             }
         };
     }
-
-
+    
+    
     @SuppressWarnings("deprecation")
     private static void showSelectDialog(final Context context, final String msg) throws Throwable {
         final TroopAndFriendSelectAdpter troopAndFriendSelectAdpter = new TroopAndFriendSelectAdpter(context);
         final AlertDialog alertDialog = new AlertDialog.Builder(context, Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1 ? android.R.style.Theme_DeviceDefault_Light_Dialog_Alert : AlertDialog.THEME_DEVICE_DEFAULT_LIGHT)
-                .setTitle("发送到")
-                .setView(getListView(context, msg, troopAndFriendSelectAdpter))
-                .setPositiveButton("发送", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        HashSet<ContactDescriptor> arrayList = troopAndFriendSelectAdpter.mTargets;
-                        if (!arrayList.isEmpty()) {
-                            int size = arrayList.size();
-                            int[] type = new int[size];
-                            long[] uins = new long[size];
-                            int i = 0;
-                            for (ContactDescriptor target : arrayList) {
-                                if (i < size) {
-                                    type[i] = target.uinType;
-                                    uins[i] = Long.parseLong(target.uin);
-                                }
-                                i++;
+            .setTitle("发送到")
+            .setView(getListView(context, msg, troopAndFriendSelectAdpter))
+            .setPositiveButton("发送", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    HashSet<ContactDescriptor> arrayList = troopAndFriendSelectAdpter.mTargets;
+                    if (!arrayList.isEmpty()) {
+                        int size = arrayList.size();
+                        int[] type = new int[size];
+                        long[] uins = new long[size];
+                        int i = 0;
+                        for (ContactDescriptor target : arrayList) {
+                            if (i < size) {
+                                type[i] = target.uinType;
+                                uins[i] = Long.parseLong(target.uin);
                             }
-                            boolean isSuccess = ntSendBatchMessages(getQQAppInterface(), context, msg, type, uins);
-                            CliOper.batchSendMsg(Utils.getLongAccountUin(), msg, arrayList.size());
-                            try {
-                                showToast(context, TOAST_TYPE_INFO, "发送" + (isSuccess ? "成功" : "失败"), Toast.LENGTH_SHORT);
-                            } catch (Throwable throwable) {
-                                Toast.makeText(context, "发送" + (isSuccess ? "成功" : "失败"), Toast.LENGTH_SHORT).show();
-                            }
+                            i++;
+                        }
+                        boolean isSuccess = ntSendBatchMessages(getQQAppInterface(), context, msg, type, uins);
+                        CliOper.batchSendMsg(Utils.getLongAccountUin(), msg, arrayList.size());
+                        try {
+                            showToast(context, TOAST_TYPE_INFO, "发送" + (isSuccess ? "成功" : "失败"), Toast.LENGTH_SHORT);
+                        } catch (Throwable throwable) {
+                            Toast.makeText(context, "发送" + (isSuccess ? "成功" : "失败"), Toast.LENGTH_SHORT).show();
                         }
                     }
-                })
-                .setNegativeButton("取消", null)
-                .setNeutralButton("全选", null)
-                .create();
+                }
+            })
+            .setNegativeButton("取消", null)
+            .setNeutralButton("全选", null)
+            .create();
         alertDialog.show();
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextSize(16.0f);
         alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextSize(16.0f);
@@ -187,9 +183,9 @@ public class SendBatchMsg {
             }
         }, 1000);
     }
-
+    
     static native boolean ntSendBatchMessages(QQAppInterface rt, Context ctx, String msg, int[] type, long[] uin);
-
+    
     private static View getListView(Context context, String sendMsg,
                                     final TroopAndFriendSelectAdpter troopAndFriendSelectAdpter) {
         final EditText editText = new EditText(context);
@@ -236,17 +232,17 @@ public class SendBatchMsg {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
-
+            
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 troopAndFriendSelectAdpter.setData(s.toString());
             }
-
+            
             @Override
             public void afterTextChanged(Editable s) {
             }
         });
-
+        
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -261,27 +257,27 @@ public class SendBatchMsg {
         linearLayout.addView(listView);
         return linearLayout;
     }
-
+    
     /**
      * Created by Deng on 2018/8/1.
      */
-
+    
     public static class TroopAndFriendSelectAdpter extends BaseAdapter {
+        final HashSet<ContactDescriptor> mTargets = new HashSet<>();
+        private final ArrayList<ContactDescriptor> mHits = new ArrayList<>();
+        private final Context context;
+        private final FaceImpl face = FaceImpl.getInstance();
         public Button sendBtn = null;
         private ArrayList<ContactDescriptor> mFriends;
         private ArrayList<ContactDescriptor> mGroups;
-        private final ArrayList<ContactDescriptor> mHits = new ArrayList<>();
-        final HashSet<ContactDescriptor> mTargets = new HashSet<>();
         private boolean showFriends = true, showGtoups = false;
         private String searchMsg = "";
-        private final Context context;
-        private final FaceImpl face = FaceImpl.getInstance();
-
+        
         public TroopAndFriendSelectAdpter(Context context) throws Throwable {
             this.context = context;
             init();
         }
-
+        
         private void init() throws Exception {
             mFriends = ExfriendManager.getCurrent().getFriendsRemark();
             ArrayList tx = TroopSelectActivity.getTroopInfoListRaw();
@@ -295,22 +291,22 @@ public class SendBatchMsg {
             }
             mHits.addAll(mFriends);
         }
-
+        
         @Override
         public int getCount() {
             return mHits.size();
         }
-
+        
         @Override
         public Object getItem(int position) {
             return null;
         }
-
+        
         @Override
         public long getItemId(int position) {
             return 0;
         }
-
+        
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
             ViewHolder viewHolder = null;
@@ -326,12 +322,18 @@ public class SendBatchMsg {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         ContactDescriptor cd = ((ViewHolder) ((View) buttonView.getParent()).getTag()).mUin;
-                        if (isChecked) mTargets.add(cd);
-                        else mTargets.remove(cd);
+                        if (isChecked) {
+                            mTargets.add(cd);
+                        } else {
+                            mTargets.remove(cd);
+                        }
                         if (sendBtn != null) {
                             int size = mTargets.size();
-                            if (size != 0) sendBtn.setText("发送(" + size + ")");
-                            else sendBtn.setText("发送");
+                            if (size != 0) {
+                                sendBtn.setText("发送(" + size + ")");
+                            } else {
+                                sendBtn.setText("发送");
+                            }
                         }
                     }
                 });
@@ -345,7 +347,7 @@ public class SendBatchMsg {
             viewHolder.cBox.setChecked(mTargets.contains(mHits.get(position)));
             return convertView;
         }
-
+        
         private LinearLayout getListItem(Context context) {
             int padding = dip2px(context, 20.0f);
             int imgPadding = dip2px(context, 10.0f);
@@ -373,49 +375,55 @@ public class SendBatchMsg {
             linearLayout.addView(textView, layoutParams1);
             return linearLayout;
         }
-
+        
         public void setData(String searchMsg) {
             this.searchMsg = searchMsg;
             mHits.clear();
             if (searchMsg.equals("") || searchMsg.isEmpty()) {
-                if (showGtoups) mHits.addAll(mGroups);
-                if (showFriends) mHits.addAll(mFriends);
+                if (showGtoups) {
+                    mHits.addAll(mGroups);
+                }
+                if (showFriends) {
+                    mHits.addAll(mFriends);
+                }
             } else {
                 if (showFriends) {
                     for (ContactDescriptor cd : mFriends) {
-                        if (cd.nick.contains(searchMsg) || cd.uin.contains(searchMsg))
+                        if (cd.nick.contains(searchMsg) || cd.uin.contains(searchMsg)) {
                             mHits.add(cd);
+                        }
                     }
                 }
                 if (showGtoups) {
                     for (ContactDescriptor cd : mGroups) {
-                        if (cd.nick.contains(searchMsg) || cd.uin.contains(searchMsg))
+                        if (cd.nick.contains(searchMsg) || cd.uin.contains(searchMsg)) {
                             mHits.add(cd);
+                        }
                     }
                 }
             }
             notifyDataSetChanged();
         }
-
+        
         public void setAllSelect() {
             mTargets.addAll(mHits);
             notifyDataSetChanged();
         }
-
+        
         public void toggleFriends() {
             showFriends = true;
             showGtoups = false;
             setData("");
             notifyDataSetChanged();
         }
-
+        
         public void toggleGroups() {
             showGtoups = true;
             showFriends = false;
             setData("");
             notifyDataSetChanged();
         }
-
+        
         public static class ViewHolder {
             public ImageView img;
             public TextView title;

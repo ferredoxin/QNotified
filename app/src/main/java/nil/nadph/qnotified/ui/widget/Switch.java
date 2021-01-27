@@ -18,44 +18,42 @@
  */
 package nil.nadph.qnotified.ui.widget;
 
-import android.content.Context;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.Paint;
-import android.util.AttributeSet;
-import android.view.View;
+import android.content.*;
+import android.graphics.*;
+import android.util.*;
+import android.view.*;
 
 public class Switch extends com.tencent.widget.Switch {
-
+    
     private boolean mGreyState = false;
-
+    
     public Switch(Context context) {
         super(context);
         if (!isEnabled()) {
             setGreyEffectEnabled(true);
         }
     }
-
+    
     public Switch(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
         if (!isEnabled()) {
             setGreyEffectEnabled(true);
         }
     }
-
+    
     public Switch(Context context, AttributeSet attributeSet, int i) {
         super(context, attributeSet, i);
         if (!isEnabled()) {
             setGreyEffectEnabled(true);
         }
     }
-
+    
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
         setGreyEffectEnabled(!enabled);
     }
-
+    
     private void setGreyEffectEnabled(boolean grey) {
         if (grey != mGreyState) {
             mGreyState = grey;

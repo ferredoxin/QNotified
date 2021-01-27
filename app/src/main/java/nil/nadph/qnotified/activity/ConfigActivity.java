@@ -18,33 +18,24 @@
  */
 package nil.nadph.qnotified.activity;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
-import android.content.Intent;
-import android.graphics.Color;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Looper;
-import android.view.View;
-import android.widget.TextView;
+import android.app.*;
+import android.content.*;
+import android.graphics.*;
+import android.net.*;
+import android.os.*;
+import android.view.*;
+import android.widget.*;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Date;
+import java.io.*;
+import java.util.*;
 
-import me.singleneuron.util.HookStatue;
-import nil.nadph.qnotified.HookEntry;
-import nil.nadph.qnotified.R;
-import nil.nadph.qnotified.lifecycle.JumpActivityEntryHook;
-import nil.nadph.qnotified.util.Natives;
-import nil.nadph.qnotified.util.Utils;
+import me.singleneuron.util.*;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.lifecycle.*;
+import nil.nadph.qnotified.util.*;
 
 public class ConfigActivity extends Activity implements Runnable {
-
+    
     int color;
     int step;//(0-255)
     int stage;//0-5
@@ -53,7 +44,7 @@ public class ConfigActivity extends Activity implements Runnable {
     private TextView statusTv;
     private TextView statusTvB;
     private Looper mainLooper;
-
+    
     /**
      * 没良心的method
      */
@@ -94,7 +85,7 @@ public class ConfigActivity extends Activity implements Runnable {
             runOnUiThread(this);
         }
     }
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,28 +97,28 @@ public class ConfigActivity extends Activity implements Runnable {
         mainLooper = Looper.getMainLooper();
         try {
             str += "SystemClassLoader:" + ClassLoader.getSystemClassLoader() +
-                    "\nActiveModuleVersion:" + Utils.getActiveModuleVersion()
-                    + "\nThisVersion:" + Utils.QN_VERSION_NAME;
+                "\nActiveModuleVersion:" + Utils.getActiveModuleVersion()
+                + "\nThisVersion:" + Utils.QN_VERSION_NAME;
         } catch (Throwable r) {
             str += r;
         }
         ((TextView) findViewById(R.id.mainTextView)).setText(str);
         statusTv = findViewById(R.id.mainTextViewStatusA);
         statusTvB = findViewById(R.id.mainTextViewStatusB);
-
+        
         HookStatue.Statue statue = HookStatue.INSTANCE.getStatue(this, false);
-
+        
         if (!HookStatue.INSTANCE.isActive(statue)) {
             statusTv.setText("免费软件-请勿倒卖");
             statusTvB.setText(getString(HookStatue.INSTANCE.getStatueName(statue))
-                    + "，请在正确安装Xposed框架后,在Xposed Installer中(重新)勾选QNotified以激活本模块(太极/无极请无视提示)");
+                + "，请在正确安装Xposed框架后,在Xposed Installer中(重新)勾选QNotified以激活本模块(太极/无极请无视提示)");
             needRun = true;
         } else {
             statusTv.setText(HookStatue.INSTANCE.getStatueName(statue));
             statusTv.setTextColor(0xB000FF00);
             statusTvB.setText("更新模块后需要重启手机方可生效\n当前生效版本号见下方ActiveModuleVersion");
         }
-
+        
         InputStream in = ConfigActivity.class.getClassLoader().getResourceAsStream("assets/xposed_init");
         byte[] buf = new byte[64];
         String start;
@@ -156,7 +147,7 @@ public class ConfigActivity extends Activity implements Runnable {
             long ts = Utils.getBuildTimestamp();
             delta = System.currentTimeMillis() - delta;
             text = "Build Time: " + (ts > 0 ? new Date(ts).toString() : "unknown") + ", delta=" + delta + "ms\n" +
-                    "SUPPORTED_ABIS=" + Arrays.toString(Build.SUPPORTED_ABIS) + "\npageSize=" + Natives.getpagesize();
+                "SUPPORTED_ABIS=" + Arrays.toString(Build.SUPPORTED_ABIS) + "\npageSize=" + Natives.getpagesize();
         } catch (Throwable e) {
             text = e.toString();
         }
@@ -211,26 +202,26 @@ public class ConfigActivity extends Activity implements Runnable {
 //        ll.removeAllViews();
 //        ll.addView(moleculeView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
-
-
+    
+    
     public void onAddQqClick(View v) {
         Uri uri = Uri.parse("http://wpa.qq.com/msgrd?v=3&uin=1041703712&site=qq&menu=yes");
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(intent);
     }
-
+    
     @Override
     protected void onPause() {
         isVisible = false;
         super.onPause();
     }
-
+    
     @Override
     protected void onStop() {
         isVisible = false;
         super.onStop();
     }
-
+    
     @Override
     protected void onResume() {
         isVisible = true;
@@ -239,10 +230,11 @@ public class ConfigActivity extends Activity implements Runnable {
         }
         super.onResume();
     }
-
+    
+    @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
     }
-
+    
     public void openModuleSettingForHost(View view) {
         String pkg = null;
         switch (view.getId()) {
@@ -262,8 +254,8 @@ public class ConfigActivity extends Activity implements Runnable {
                 startActivity(intent);
             } catch (ActivityNotFoundException e) {
                 new AlertDialog.Builder(this).setTitle("出错啦")
-                        .setMessage("拉起模块设置失败, 请确认 " + pkg + " 已安装并启用(没有被关冰箱或被冻结停用)\n" + e.toString())
-                        .setCancelable(true).setPositiveButton(android.R.string.ok, null).show();
+                    .setMessage("拉起模块设置失败, 请确认 " + pkg + " 已安装并启用(没有被关冰箱或被冻结停用)\n" + e.toString())
+                    .setCancelable(true).setPositiveButton(android.R.string.ok, null).show();
             }
         }
     }

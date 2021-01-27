@@ -1,16 +1,14 @@
 package nil.nadph.qnotified.bridge;
 
-import me.singleneuron.qn_kernel.tlb.ConfigTable;
-import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.Initiator;
-import nil.nadph.qnotified.util.Utils;
+import java.lang.reflect.*;
 
-import java.lang.reflect.Modifier;
+import me.singleneuron.qn_kernel.tlb.*;
+import nil.nadph.qnotified.util.*;
 
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class QQMessageFacade {
-
+    
     public static Object get() {
         try {
             return Utils.invoke_virtual_any(Utils.getQQAppInterface(), Initiator._QQMessageFacade());
@@ -20,7 +18,7 @@ public class QQMessageFacade {
             return null;
         }
     }
-
+    
     public static Object getMessageManager(int istroop) {
         try {
             return Utils.invoke_virtual_declared_modifier_any(get(), Modifier.PUBLIC, 0, istroop, int.class, Initiator._BaseMessageManager());
@@ -30,9 +28,11 @@ public class QQMessageFacade {
             return null;
         }
     }
-
+    
     public static void revokeMessage(Object msg) throws Exception {
-        if (msg == null) throw new NullPointerException("msg == null");
+        if (msg == null) {
+            throw new NullPointerException("msg == null");
+        }
         int istroop = (int) iget_object_or_null(msg, "istroop");
         //if (istroop != 0) throw new IllegalArgumentException("istroop(" + istroop + ") is not supported");
         Object mgr = getMessageManager(istroop);

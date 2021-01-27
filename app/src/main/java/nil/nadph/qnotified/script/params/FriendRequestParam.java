@@ -9,28 +9,28 @@ public class FriendRequestParam {
      * 验证消息
      */
     public String content;
-
+    
     public FriendRequestParam setUin(long uin) {
         this.uin = uin;
         return this;
     }
-
+    
     public FriendRequestParam setContent(String content) {
         this.content = content;
         return this;
     }
-
+    
     public FriendRequestParam create() {
         return this;
     }
-
+    
     /**
      * 接受请求
      */
     public void accept() {
         // to do
     }
-
+    
     /**
      * 拒绝请求
      */

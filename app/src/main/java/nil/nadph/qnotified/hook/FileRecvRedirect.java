@@ -18,38 +18,39 @@
  */
 package nil.nadph.qnotified.hook;
 
-import android.os.Environment;
+import android.os.*;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.*;
 
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.config.ConfigItems;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.step.DexDeobfStep;
-import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.Nullable;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.step.*;
+import nil.nadph.qnotified.util.*;
 
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class FileRecvRedirect extends BaseDelayableHook {
     private static final FileRecvRedirect self = new FileRecvRedirect();
     private boolean inited = false;
-
+    
     private Field TARGET_FIELD = null;
-
+    
     FileRecvRedirect() {
     }
-
+    
     public static FileRecvRedirect get() {
         return self;
     }
-
+    
     @Override
     public boolean init() {
-        if (inited) return true;
+        if (inited) {
+            return true;
+        }
         try {
-            if (!isEnabled()) return false;
+            if (!isEnabled()) {
+                return false;
+            }
             String redirectPath = getRedirectPath();
             if (redirectPath != null) {
                 inited = doSetPath(redirectPath);
@@ -62,7 +63,7 @@ public class FileRecvRedirect extends BaseDelayableHook {
             return false;
         }
     }
-
+    
     private boolean doSetPath(String str) {
         Field[] fields = DexKit.doFindClass(DexKit.C_APP_CONSTANTS).getFields();
         try {
@@ -85,7 +86,7 @@ public class FileRecvRedirect extends BaseDelayableHook {
             return false;
         }
     }
-
+    
     public String getDefaultPath() {
         if (isTim(getApplication())) {
             return Environment.getExternalStorageDirectory().getAbsolutePath() + "/Tencent/TIMfile_recv/";
@@ -97,12 +98,49 @@ public class FileRecvRedirect extends BaseDelayableHook {
             }
         }
     }
-
+    
     @Nullable
     public String getRedirectPath() {
         return ConfigManager.getDefaultConfig().getString(ConfigItems.qn_file_recv_redirect_path);
     }
-
+    
+    public void setRedirectPathAndEnable(String path) {
+        try {
+            ConfigManager cfg = ConfigManager.getDefaultConfig();
+            cfg.putString(ConfigItems.qn_file_recv_redirect_path, path);
+            cfg.putBoolean(ConfigItems.qn_file_recv_redirect_enable, true);
+            cfg.save();
+            inited = doSetPath(path);
+        } catch (Exception e) {
+            log(e);
+        }
+    }
+    
+    @Override
+    public int getEffectiveProc() {
+        return SyncUtils.PROC_MAIN;
+    }
+    
+    @Override
+    public Step[] getPreconditions() {
+        return new Step[]{new DexDeobfStep(DexKit.C_APP_CONSTANTS)};
+    }
+    
+    @Override
+    public boolean isInited() {
+        return inited;
+    }
+    
+    @Override
+    public boolean isEnabled() {
+        try {
+            return ConfigManager.getDefaultConfig().getBooleanOrFalse(ConfigItems.qn_file_recv_redirect_enable);
+        } catch (Exception e) {
+            log(e);
+            return false;
+        }
+    }
+    
     /**
      * Still follow the rule
      * only apply if it is already inited.
@@ -127,43 +165,6 @@ public class FileRecvRedirect extends BaseDelayableHook {
             }
         } catch (Exception e) {
             log(e);
-        }
-    }
-
-    public void setRedirectPathAndEnable(String path) {
-        try {
-            ConfigManager cfg = ConfigManager.getDefaultConfig();
-            cfg.putString(ConfigItems.qn_file_recv_redirect_path, path);
-            cfg.putBoolean(ConfigItems.qn_file_recv_redirect_enable, true);
-            cfg.save();
-            inited = doSetPath(path);
-        } catch (Exception e) {
-            log(e);
-        }
-    }
-
-    @Override
-    public int getEffectiveProc() {
-        return SyncUtils.PROC_MAIN;
-    }
-
-    @Override
-    public Step[] getPreconditions() {
-        return new Step[]{new DexDeobfStep(DexKit.C_APP_CONSTANTS)};
-    }
-
-    @Override
-    public boolean isInited() {
-        return inited;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        try {
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(ConfigItems.qn_file_recv_redirect_enable);
-        } catch (Exception e) {
-            log(e);
-            return false;
         }
     }
 }

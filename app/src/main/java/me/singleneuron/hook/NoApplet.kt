@@ -12,7 +12,7 @@ import nil.nadph.qnotified.util.Utils
 
 object NoApplet : BaseDelayableConditionalHookAdapter("noapplet") {
 
-    override val conditionCache: PageFaultHighPerformanceFunctionCache<Boolean> = PageFaultHighPerformanceFunctionCache {Utils.getHostVersionCode()>=QQVersion.QQ_8_0_0}
+    override val conditionCache: PageFaultHighPerformanceFunctionCache<Boolean> = PageFaultHighPerformanceFunctionCache { Utils.getHostVersionCode() >= QQVersion.QQ_8_0_0 }
 
     override fun doInit(): Boolean {
         try {

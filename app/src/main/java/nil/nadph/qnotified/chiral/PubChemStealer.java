@@ -1,20 +1,16 @@
 package nil.nadph.qnotified.chiral;
 
-import nil.nadph.qnotified.util.NonUiThread;
-import nil.nadph.qnotified.util.Nullable;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Random;
+import nil.nadph.qnotified.util.*;
 
 public class PubChemStealer {
-
+    
     private static final String PUB_CHEM_SITE = "http://127.0.0.1:8081";
     private static final String FAKE_PUB_CHEM_SITE = "https://ioctl.cc";//reserved proxy...
-
+    
     @NonUiThread
     @Nullable
     public static Molecule nextRandomMolecule() {
@@ -30,7 +26,7 @@ public class PubChemStealer {
         }
         return null;
     }
-
+    
     @NonUiThread
     public static Molecule getMoleculeByCid(long cid) throws IOException, MdlMolParser.BadMolFormatException {
         HttpURLConnection conn = (HttpURLConnection) new URL(PUB_CHEM_SITE + "/rest/pug/compound/CID/" + cid + "/record/SDF/?record_type=2d&response_type=display").openConnection();

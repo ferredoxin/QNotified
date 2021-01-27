@@ -18,47 +18,40 @@
  */
 package nil.nadph.qnotified.activity;
 
-import android.annotation.SuppressLint;
-import android.app.Dialog;
-import android.os.Bundle;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
+import android.annotation.*;
+import android.app.*;
+import android.os.*;
+import android.view.*;
 import android.widget.*;
 
-import androidx.core.view.ViewCompat;
+import androidx.core.view.*;
 
-import com.tencent.mobileqq.widget.BounceScrollView;
+import com.tencent.mobileqq.widget.*;
 
-import nil.nadph.qnotified.R;
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.hook.FakeBatteryHook;
-import nil.nadph.qnotified.ui.CustomDialog;
-import nil.nadph.qnotified.ui.HighContrastBorder;
-import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.hook.*;
+import nil.nadph.qnotified.ui.*;
+import nil.nadph.qnotified.util.*;
 
-import static android.text.InputType.TYPE_CLASS_NUMBER;
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
-import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
+import static android.text.InputType.*;
+import static android.view.ViewGroup.LayoutParams.*;
+import static nil.nadph.qnotified.ui.ViewBuilder.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressLint("Registered")
 public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener {
-
+    
     private static final int R_ID_APPLY = 0x300AFF81;
     private static final int R_ID_DISABLE = 0x300AFF82;
     private static final int R_ID_PERCENT_VALUE = 0x300AFF83;
     private static final int R_ID_CHARGING = 0x300AFF84;
     private static final int R_ID_FAK_BAT_STATUS = 0x300AFF85;
-
+    
     TextView tvStatus;
-
+    
     private boolean mMsfResponsive = false;
-
+    
     @Override
     public boolean doOnCreate(Bundle bundle) {
         super.doOnCreate(bundle);
@@ -84,7 +77,7 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
         __lp_r.setMargins(mar, 0, mar, 0);
         __lp_r.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         __lp_r.addRule(RelativeLayout.CENTER_VERTICAL);
-
+        
         ll.addView(subtitle(FakeBatCfgActivity.this, "!!! 此功能仅在 QQ>=8.2.6 且在线状态为 我的电量 时生效"));
         ll.addView(subtitle(FakeBatCfgActivity.this, "服务器的电量数据有6分钟的延迟属于正常情况"));
         ll.addView(subtitle(FakeBatCfgActivity.this, "请不要把电量设置为 0 ,因为 0 会被TX和谐掉"));
@@ -101,11 +94,11 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
         pct.setTextColor(ResUtils.skin_black);
         pct.setTextSize(dip2sp(FakeBatCfgActivity.this, 18));
         //pct.setBackgroundDrawable(null);
-        ViewCompat.setBackground(pct,null);
+        ViewCompat.setBackground(pct, null);
         pct.setGravity(Gravity.CENTER);
         pct.setPadding(_5dp, _5dp / 2, _5dp, _5dp / 2);
         //pct.setBackgroundDrawable(new HighContrastBorder());
-        ViewCompat.setBackground(pct,new HighContrastBorder());
+        ViewCompat.setBackground(pct, new HighContrastBorder());
         pct.setHint("电量百分比, 取值范围 [1,100]");
         pct.setText(bat.getFakeBatteryCapacity() + "");
         pct.setSelection(pct.getText().length());
@@ -137,21 +130,23 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
         setTitle("自定义电量");
         return true;
     }
-
+    
     private void showStatus() {
         FakeBatteryHook bat = FakeBatteryHook.get();
         boolean enabled = bat.isEnabled();
         String desc = "当前状态: ";
         if (enabled) {
             desc += "已开启 " + bat.getFakeBatteryCapacity() + "%";
-            if (bat.isFakeBatteryCharging()) desc += "+";
+            if (bat.isFakeBatteryCharging()) {
+                desc += "+";
+            }
         } else {
             desc += "禁用";
         }
         tvStatus.setText(desc);
         Button apply, disable;
-        apply = FakeBatCfgActivity.this.findViewById(R_ID_APPLY);
-        disable = FakeBatCfgActivity.this.findViewById(R_ID_DISABLE);
+        apply = findViewById(R_ID_APPLY);
+        disable = findViewById(R_ID_DISABLE);
         if (!enabled) {
             apply.setText("保存并启用");
         } else {
@@ -163,7 +158,7 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
             disable.setVisibility(View.VISIBLE);
         }
     }
-
+    
     @Override
     public void onClick(View v) {
         ConfigManager cfg = ConfigManager.getDefaultConfig();
@@ -172,23 +167,27 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
                 if (mMsfResponsive) {
                     doUpdateBatCfg();
                 } else {
-                    final Dialog waitDialog = CustomDialog.create(this).setCancelable(true).setTitle("请稍候")
-                            .setMessage("等待 :MSF 进程响应").show();
+                    Dialog waitDialog = CustomDialog.create(this).setCancelable(true).setTitle("请稍候")
+                        .setMessage("等待 :MSF 进程响应").show();
                     SyncUtils.enumerateProc(this, SyncUtils.PROC_MSF, 3000, new SyncUtils.EnumCallback() {
                         private boolean mFinished = false;
-
+    
                         @Override
                         public void onResponse(SyncUtils.EnumRequestHolder holder, SyncUtils.ProcessInfo process) {
-                            if (mFinished) return;
+                            if (mFinished) {
+                                return;
+                            }
                             mFinished = true;
                             mMsfResponsive = true;
                             waitDialog.dismiss();
                             doUpdateBatCfg();
                         }
-
+    
                         @Override
                         public void onEnumResult(SyncUtils.EnumRequestHolder holder) {
-                            if (mFinished) return;
+                            if (mFinished) {
+                                return;
+                            }
                             mFinished = true;
                             mMsfResponsive = holder.result.size() > 0;
                             waitDialog.dismiss();
@@ -196,10 +195,10 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
                                 doUpdateBatCfg();
                             } else {
                                 CustomDialog.create(FakeBatCfgActivity.this).setTitle("操作失败")
-                                        .setCancelable(true).setPositiveButton("确认", null)
-                                        .setMessage("发生错误:\n" + getApplication().getPackageName() + ":MSF 进程响应超时\n" +
-                                                "如果您的" + Utils.getHostAppName() + "刚刚启动,您可以在十几秒后再试一次\n" +
-                                                "如果您是太极(含无极)用户,请确认您的太极版本至少为 湛泸-6.0.2(1907) ,如低于此版本,请尽快升级").show();
+                                    .setCancelable(true).setPositiveButton("确认", null)
+                                    .setMessage("发生错误:\n" + getApplication().getPackageName() + ":MSF 进程响应超时\n" +
+                                        "如果您的" + Utils.getHostAppName() + "刚刚启动,您可以在十几秒后再试一次\n" +
+                                        "如果您是太极(含无极)用户,请确认您的太极版本至少为 湛泸-6.0.2(1907) ,如低于此版本,请尽快升级").show();
                             }
                         }
                     });
@@ -216,15 +215,15 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
                 showStatus();
         }
     }
-
+    
     private void doUpdateBatCfg() {
         FakeBatteryHook bat = FakeBatteryHook.get();
         ConfigManager cfg = ConfigManager.getDefaultConfig();
         EditText pct;
         CheckBox charging;
         int val;
-        pct = FakeBatCfgActivity.this.findViewById(R_ID_PERCENT_VALUE);
-        charging = FakeBatCfgActivity.this.findViewById(R_ID_CHARGING);
+        pct = findViewById(R_ID_PERCENT_VALUE);
+        charging = findViewById(R_ID_CHARGING);
         try {
             val = Integer.parseInt(pct.getText().toString());
         } catch (NumberFormatException e) {
@@ -235,17 +234,22 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
             Utils.showToast(FakeBatCfgActivity.this, TOAST_TYPE_ERROR, "电量取值范围: [1,100]", Toast.LENGTH_SHORT);
             return;
         }
-        if (charging.isChecked()) val |= 128;
+        if (charging.isChecked()) {
+            val |= 128;
+        }
         bat.setFakeSendBatteryStatus(val);
         if (!bat.isEnabled()) {
             cfg.putBoolean(FakeBatteryHook.qn_fake_bat_enable, true);
             try {
                 cfg.save();
                 boolean success = true;
-                if (!bat.isInited()) success = bat.init();
+                if (!bat.isInited()) {
+                    success = bat.init();
+                }
                 SyncUtils.requestInitHook(bat.getId(), bat.getEffectiveProc());
-                if (!success)
+                if (!success) {
                     Utils.showToast(FakeBatCfgActivity.this, TOAST_TYPE_ERROR, "初始化错误: 可能是版本不支持", Toast.LENGTH_SHORT);
+                }
             } catch (Exception e) {
                 Utils.showToast(FakeBatCfgActivity.this, TOAST_TYPE_ERROR, "错误:" + e.toString(), Toast.LENGTH_LONG);
                 log(e);
@@ -253,5 +257,5 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
         }
         showStatus();
     }
-
+    
 }

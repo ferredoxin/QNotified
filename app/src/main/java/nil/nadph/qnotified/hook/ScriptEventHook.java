@@ -18,26 +18,28 @@
  */
 package nil.nadph.qnotified.hook;
 
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.script.QNScriptManager;
-import nil.nadph.qnotified.step.Step;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.script.*;
+import nil.nadph.qnotified.step.*;
 
-import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.*;
 
 public class ScriptEventHook extends BaseDelayableHook {
     private static final ScriptEventHook self = new ScriptEventHook();
     private boolean inited = false;
-
+    
     private ScriptEventHook() {
     }
-
+    
     public static ScriptEventHook get() {
         return self;
     }
-
+    
     @Override
     public boolean init() {
-        if (inited) return true;
+        if (inited) {
+            return true;
+        }
         QNScriptManager.init();
         try {
         /*
@@ -73,34 +75,34 @@ public class ScriptEventHook extends BaseDelayableHook {
             return false;
         }
     }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        //do nothing
-    }
-
+    
     @Override
     public boolean checkPreconditions() {
         return true;
     }
-
+    
     @Override
     public int getEffectiveProc() {
         return SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF;
     }
-
+    
     @Override
     public Step[] getPreconditions() {
         return new Step[0];
     }
-
+    
     @Override
     public boolean isInited() {
         return inited;
     }
-
+    
     @Override
     public boolean isEnabled() {
         return true;
+    }
+    
+    @Override
+    public void setEnabled(boolean enabled) {
+        //do nothing
     }
 }
