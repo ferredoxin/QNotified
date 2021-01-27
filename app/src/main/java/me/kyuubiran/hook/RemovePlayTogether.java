@@ -51,18 +51,24 @@ public class RemovePlayTogether extends BaseDelayableHook {
             String method = "h";
             if (Utils.getHostVersionCode() >= QQVersion.QQ_8_4_8) {
                 //QQ 8.4.8 除了一起嗨按钮，同一个位置还有一个群打卡按钮。默认显示群打卡，如果已经打卡就显示一起嗨，两个按钮点击之后都会打开同一个界面，但是要同时hook两个
-                XposedHelpers.findAndHookMethod(load(ConfigTable.INSTANCE.getConfig(RemovePlayTogether.class.getSimpleName())), "d", new XC_MethodHook(43) {
-                    @Override
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                        if (LicenseStatus.sDisableCommonHooks) {
-                            return;
-                        }
-                        if (!isEnabled()) {
-                            return;
-                        }
-                        param.setResult(false);
+                String entryMethod = "d";
+                for (Method m : DexKit.doFindClass(DexKit.C_ClockInEntryHelper).getDeclaredMethods()) {
+                    Class<?>[] argt = m.getParameterTypes();
+                    if (entryMethod.equals(m.getName()) && m.getReturnType() == boolean.class && argt.length == 0) {
+                        XposedBridge.hookMethod(m, new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                                if (LicenseStatus.sDisableCommonHooks) {
+                                    return;
+                                }
+                                if (!isEnabled()) {
+                                    return;
+                                }
+                                param.setResult(false);
+                            }
+                        });
                     }
-                });
+                }
                 method = "g";
             }
             for (Method m : DexKit.doFindClass(DexKit.C_TogetherControlHelper).getDeclaredMethods()) {
@@ -88,7 +94,7 @@ public class RemovePlayTogether extends BaseDelayableHook {
 
     @Override
     public Step[] getPreconditions() {
-        return new Step[]{new DexDeobfStep(DexKit.C_TogetherControlHelper)};
+        return new Step[]{new DexDeobfStep(DexKit.C_TogetherControlHelper), new DexDeobfStep(DexKit.C_ClockInEntryHelper)};
     }
 
     @Override
