@@ -40,6 +40,7 @@ import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.config.SwitchConfigItem;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.step.Step;
+import nil.nadph.qnotified.ui.widget.Switch;
 import nil.nadph.qnotified.util.NonUiThread;
 import nil.nadph.qnotified.util.Utils;
 
@@ -660,13 +661,7 @@ public class ViewBuilder {
     }
 
     public static CompoundButton switch_new(Context ctx) {
-        try {
-            Class<?> clazz = load("com/tencent/widget/Switch");
-            return (CompoundButton) clazz.getConstructor(Context.class).newInstance(ctx);
-        } catch (Exception e) {
-            Utils.logi("Switch->new: " + e.toString());
-        }
-        return null;
+        return new Switch(ctx);
     }
 
     public static LinearLayout newDialogClickableItemClickToCopy(final Context ctx, String title, String value, ViewGroup vg, boolean attach) {
