@@ -2055,6 +2055,7 @@ public class Utils {
 
     }
 
+    @SuppressWarnings("JavaJniMissingFunction")
     private static native long ntGetBuildTimestamp();
 
     public static long getBuildTimestamp() {

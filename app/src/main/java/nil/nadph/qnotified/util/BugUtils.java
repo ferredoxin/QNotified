@@ -1,5 +1,7 @@
 package nil.nadph.qnotified.util;
 
+import android.annotation.SuppressLint;
+
 import androidx.annotation.NonNull;
 
 import java.util.LinkedHashMap;
@@ -19,22 +21,23 @@ public class BugUtils {
     @NonNull
     public static String getSizeString(long size) {
         if (size < 0) {
-            return "0B";
+            return "-1";
         }
         if (size < 1024) {
             return size + "B";
         }
         LinkedHashMap<Long, String> map = new LinkedHashMap<>();
-        map.put(1152921504606846976L, "EB");
-        map.put(1125899906842624L, "PB");
-        map.put(1099511627776L, "TB");
-        map.put(1073741824L, "GB");
-        map.put(1048576L, "MB");
-        map.put(1024L, "KB");
+        map.put(1152921504606846976L, "EiB");
+        map.put(1125899906842624L, "PiB");
+        map.put(1099511627776L, "TiB");
+        map.put(1073741824L, "GiB");
+        map.put(1048576L, "MiB");
+        map.put(1024L, "KiB");
         for (Map.Entry<Long, String> entry : map.entrySet()) {
             long longValue = (Long) entry.getKey();
             String str = (String) entry.getValue();
             if (size >= longValue) {
+                @SuppressLint("DefaultLocale")
                 String format = String.format("%.2f", ((double) size) / ((double) longValue));
                 int indexOf = format.indexOf(".00");
                 if (indexOf != -1) {

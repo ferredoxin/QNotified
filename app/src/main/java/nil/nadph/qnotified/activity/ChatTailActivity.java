@@ -207,7 +207,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         return pct;
     }
 
-    private class BatteryReceiver extends BroadcastReceiver {
+    private static class BatteryReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();

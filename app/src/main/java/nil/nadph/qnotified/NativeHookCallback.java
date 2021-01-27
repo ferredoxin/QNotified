@@ -21,6 +21,7 @@ package nil.nadph.qnotified;
 import de.robv.android.xposed.XC_MethodHook;
 import nil.nadph.qnotified.util.NonNull;
 
+@SuppressWarnings("JavaJniMissingFunction")
 public final class NativeHookCallback extends XC_MethodHook {
     public final long a;
 
