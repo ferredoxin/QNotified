@@ -30,7 +30,11 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.text.HtmlCompat;
 import androidx.core.view.ViewCompat;
@@ -46,7 +50,11 @@ import me.ketal.util.TIMVersion;
 import me.kyuubiran.hook.AutoMosaicName;
 import me.kyuubiran.hook.ShowSelfMsgByLeft;
 import me.singleneuron.activity.ChangeDrawerWidthActivity;
-import me.singleneuron.hook.*;
+import me.singleneuron.hook.ForceSystemAlbum;
+import me.singleneuron.hook.ForceSystemCamera;
+import me.singleneuron.hook.ForceSystemFile;
+import me.singleneuron.hook.NewRoundHead;
+import me.singleneuron.hook.NoApplet;
 import me.singleneuron.hook.decorator.DisableQzoneSlideCamera;
 import me.singleneuron.hook.decorator.SimpleReceiptMessage;
 import me.singleneuron.util.KotlinUtilsKt;
@@ -62,16 +70,49 @@ import com.rymmmmm.hook.RemoveMiniProgramAd;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.util.*;
+import nil.nadph.qnotified.util.Initiator;
+import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.NewsHelper;
+import nil.nadph.qnotified.util.UpdateCheck;
+import nil.nadph.qnotified.util.Utils;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static androidx.core.text.HtmlCompat.FROM_HTML_MODE_LEGACY;
 import static me.singleneuron.util.KotlinUtilsKt.addViewConditionally;
-import static me.singleneuron.util.QQVersion.*;
-import static nil.nadph.qnotified.ui.ViewBuilder.*;
-import static nil.nadph.qnotified.lifecycle.ActProxyMgr.*;
-import static nil.nadph.qnotified.util.Utils.*;
+import static me.singleneuron.util.QQVersion.QQ_8_1_3;
+import static me.singleneuron.util.QQVersion.QQ_8_2_0;
+import static me.singleneuron.util.QQVersion.QQ_8_2_6;
+import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTION_ABOUT;
+import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTION_DONATE_ACTIVITY;
+import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTION_EXFRIEND_LIST;
+import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTION_FAKE_BAT_CONFIG_ACTIVITY;
+import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTION_FRIENDLIST_EXPORT_ACTIVITY;
+import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTION_MUTE_AT_ALL;
+import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTION_MUTE_RED_PACKET;
+import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTION_TROUBLESHOOT_ACTIVITY;
+import static nil.nadph.qnotified.ui.ViewBuilder.R_ID_DESCRIPTION;
+import static nil.nadph.qnotified.ui.ViewBuilder.R_ID_TITLE;
+import static nil.nadph.qnotified.ui.ViewBuilder.R_ID_VALUE;
+import static nil.nadph.qnotified.ui.ViewBuilder.clickTheComing;
+import static nil.nadph.qnotified.ui.ViewBuilder.clickToProxyActAction;
+import static nil.nadph.qnotified.ui.ViewBuilder.clickToUrl;
+import static nil.nadph.qnotified.ui.ViewBuilder.doSetupForPrecondition;
+import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemButton;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemConfigSwitchIfValid;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemDummy;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemSwitchConfigNext;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemSwitchStub;
+import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
+import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
+import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_INFO;
+import static nil.nadph.qnotified.util.Utils.dip2px;
+import static nil.nadph.qnotified.util.Utils.getHostVersionCode32;
+import static nil.nadph.qnotified.util.Utils.get_RGB;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.showToast;
 
 @SuppressLint("Registered")
 public class SettingsActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener, Runnable {
@@ -207,24 +248,25 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             ll.addView(newListItemHookSwitchInit(this, "自定义猜拳骰子", null, CheatHook.get()));
             ll.addView(newListItemHookSwitchInit(this, "简洁模式圆头像", "From Rikka", RoundAvatarHook.get()));
         }
-        addViewConditionally(ll, this, "新版简洁模式圆头像", "From Rikka, 支持8.3.6及更高，重启后生效", NewRoundHead.INSTANCE);
-        addViewConditionally(ll, this, "强制使用系统相机", "仅能录像，支持8.3.6及更高", ForceSystemCamera.INSTANCE);
+        ll.addView(newListItemHookSwitchInit(this, "新版简洁模式圆头像", "From Rikka, 支持8.3.6及更高，重启后生效", NewRoundHead.INSTANCE));
+        ll.addView(newListItemHookSwitchInit(this, "强制使用系统相机", "仅能录像，支持8.3.6及更高", ForceSystemCamera.INSTANCE));
         addViewConditionally(ll, this, "强制使用系统相册", "支持8.3.6及更高", ForceSystemAlbum.INSTANCE);
-        addViewConditionally(ll, this, "强制使用系统文件", "支持8.3.6及更高", ForceSystemFile.INSTANCE);
-        addViewConditionally(ll, newListItemButton(this, "修改侧滑边距", "感谢祈无，支持8.4.1及更高，重启后生效", "", clickToProxyActAction(ChangeDrawerWidthActivity.class)), ChangeDrawerWidth.INSTANCE.getCondition());
+        ll.addView(newListItemHookSwitchInit(this, "强制使用系统文件", "支持8.3.6及更高", ForceSystemFile.INSTANCE));
+        ll.addView(newListItemButton(this, "修改侧滑边距", "感谢祈无，支持8.4.1及更高，重启后生效", "", clickToProxyActAction(ChangeDrawerWidthActivity.class)));
         ll.addView(newListItemHookSwitchInit(this, "屏蔽QQ空间滑动相机", null, DisableQzoneSlideCamera.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "回执消息文本化", null, SimpleReceiptMessage.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "批量撤回消息", "多选消息后撤回", MultiActionHook.INSTANCE));
-        if (LeftSwipeReplyHook.INSTANCE.isValid())
+        if (LeftSwipeReplyHook.INSTANCE.isValid()) {
             ll.addView(newListItemButton(this, "修改消息左滑动作", "", null, clickToProxyActAction(ModifyLeftSwipeReplyActivity.class)));
-
+        }
+    
         ll.addView(subtitle(this, "好友列表"));
         ll.addView(newListItemButton(this, "打开资料卡", "打开指定用户的资料卡", null, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 CustomDialog dialog = CustomDialog.createFailsafe(SettingsActivity.this);
                 Context ctx = dialog.getContext();
-                final EditText editText = new EditText(ctx);
+                EditText editText = new EditText(ctx);
                 editText.setTextSize(16);
                 int _5 = dip2px(SettingsActivity.this, 5);
                 editText.setPadding(_5, _5, _5, _5);
@@ -232,12 +274,12 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
                 ViewCompat.setBackground(editText, new HighContrastBorder());
                 LinearLayout linearLayout = new LinearLayout(ctx);
                 linearLayout.addView(editText, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, _5 * 2));
-                final AlertDialog alertDialog = (AlertDialog) dialog.setTitle("输入对方QQ号")
-                        .setView(linearLayout)
-                        .setCancelable(true)
-                        .setPositiveButton("确认", null)
-                        .setNegativeButton("取消", null)
-                        .create();
+                AlertDialog alertDialog = (AlertDialog) dialog.setTitle("输入对方QQ号")
+                    .setView(linearLayout)
+                    .setCancelable(true)
+                    .setPositiveButton("确认", null)
+                    .setNegativeButton("取消", null)
+                    .create();
                 alertDialog.show();
                 alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -284,7 +326,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(newListItemSwitchStub(this, "禁用特别关心长震动", "他女朋友都没了他也没开发这个功能", false));
         ll.addView(subtitle(this, "关于"));
         PackageInfo pi = Utils.getHostInfo(this);
-        ll.addView(newListItemDummy(this, pi.applicationInfo.loadLabel(this.getPackageManager()), null, pi.versionName + "(" + Utils.getHostVersionCode() + ")"));
+        ll.addView(newListItemDummy(this, pi.applicationInfo.loadLabel(getPackageManager()), null, pi.versionName + "(" + Utils.getHostVersionCode() + ")"));
         ll.addView(newListItemDummy(this, "模块版本", null, Utils.QN_VERSION_NAME));
         UpdateCheck uc = new UpdateCheck();
         ll.addView(_t = newListItemButton(this, "检查更新", null, "点击检查", uc));
@@ -303,7 +345,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         //bounceScrollView.setFocusable(true);
         //bounceScrollView.setFocusableInTouchMode(true);
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-        this.setContentView(bounceScrollView);
+        setContentView(bounceScrollView);
         LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);
         _lp_fat.weight = 1;
         //__ll.addView(bounceScrollView,_lp_fat);
@@ -469,12 +511,12 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
 
 
     private void showChangeRecvPathDialog() {
-        final FileRecvRedirect recv = FileRecvRedirect.get();
+        FileRecvRedirect recv = FileRecvRedirect.get();
         String currPath = recv.getRedirectPath();
         if (currPath == null) currPath = recv.getDefaultPath();
         CustomDialog dialog = CustomDialog.createFailsafe(this);
         Context ctx = dialog.getContext();
-        final EditText editText = new EditText(ctx);
+        EditText editText = new EditText(ctx);
         editText.setText(currPath);
         editText.setTextSize(16);
         int _5 = dip2px(SettingsActivity.this, 5);
@@ -483,17 +525,17 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ViewCompat.setBackground(editText, new HighContrastBorder());
         LinearLayout linearLayout = new LinearLayout(ctx);
         linearLayout.addView(editText, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, _5 * 2));
-        final AlertDialog alertDialog = (AlertDialog) dialog
-                .setTitle("输入重定向文件夹路径")
-                .setView(linearLayout)
-                .setPositiveButton("确认并激活", null)
-                .setNegativeButton("取消", null)
-                .setNeutralButton("使用默认值", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        recv.setEnabled(false);
-                        updateRecvRedirectStatus();
-                    }
+        AlertDialog alertDialog = (AlertDialog) dialog
+            .setTitle("输入重定向文件夹路径")
+            .setView(linearLayout)
+            .setPositiveButton("确认并激活", null)
+            .setNegativeButton("取消", null)
+            .setNeutralButton("使用默认值", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    recv.setEnabled(false);
+                    updateRecvRedirectStatus();
+                }
                 })
                 .create();
         alertDialog.show();

@@ -43,7 +43,6 @@ import static nil.nadph.qnotified.util.Utils.getHostVersionCode32;
 import static nil.nadph.qnotified.util.Utils.invoke_virtual;
 import static nil.nadph.qnotified.util.Utils.log;
 import static nil.nadph.qnotified.util.Utils.logi;
-import static nil.nadph.qnotified.util.Utils.readByReader;
 
 /**
  * What the fuck?
@@ -52,7 +51,7 @@ import static nil.nadph.qnotified.util.Utils.readByReader;
  * leaving it a()
  */
 public class DexKit {
-
+    
     //WARN: NEVER change the index!
     public static final int C_DIALOG_UTIL = 1;
     public static final int C_FACADE = 2;
@@ -85,18 +84,27 @@ public class DexKit {
     public static final int C_ZipUtils_biz = 28;
     public static final int C_HttpDownloader = 29;
     public static final int C_MultiMsg_Manager = 30;
+    public static final int C_ClockInEntryHelper = 31;
+    public static final int C_CaptureUtil = 32;
+    public static final int C_AvatarUtil = 33;
+    //for old version qq NewRoundHead
+    public static final int C_FaceManager = 34;
+    public static final int C_SmartDeviceProxyMgr = 35;
     //the last index
-    public static final int DEOBF_NUM_C = 30;
-
+    public static final int DEOBF_NUM_C = 35;
+    
     public static final int N_BASE_CHAT_PIE__INIT = 20001;
     public static final int N_BASE_CHAT_PIE__handleNightMask = 20002;
     public static final int N_BASE_CHAT_PIE__updateSession = 20003;
     public static final int N_BASE_CHAT_PIE__createMulti = 20004;
     public static final int N_BASE_CHAT_PIE__chooseMsg = 20005;
     public static final int N_LeftSwipeReply_Helper__reply = 20006;
+    // fixme
+    //public static final int N_TROOP_BASE_PIE__showNewTotalMemberCount = 20007;
+    
     public static final int DEOBF_NUM_N = 6;
-
-
+    
+    
     @Nullable
     public static boolean prepareFor(int i) {
         if (i / 10000 == 0) {
@@ -105,7 +113,7 @@ public class DexKit {
             return doFindMethod(i) != null;
         }
     }
-
+    
     @Nullable
     public static boolean checkFor(int i) {
         if (i / 10000 == 0) {
@@ -114,32 +122,45 @@ public class DexKit {
             return getMethodDescFromCache(i) != null;
         }
     }
-
+    
     @Nullable
     public static Class loadClassFromCache(int i) {
         Class ret = Initiator.load(c(i));
-        if (ret != null) return ret;
+        if (ret != null) {
+            return ret;
+        }
         DexMethodDescriptor m = getMethodDescFromCache(i);
-        if (m == null) return null;
+        if (m == null) {
+            return null;
+        }
         return Initiator.load(m.declaringClass);
     }
-
+    
     @Nullable
     public static Class doFindClass(int i) {
         Class ret = Initiator.load(c(i));
-        if (ret != null) return ret;
+        if (ret != null) {
+            return ret;
+        }
         DexMethodDescriptor m = getMethodDescFromCache(i);
-        if (m == null) m = doFindMethodDesc(i);
-        if (m == null) return null;
+        if (m == null) {
+            m = doFindMethodDesc(i);
+        }
+        if (m == null) {
+            return null;
+        }
         return Initiator.load(m.declaringClass);
     }
-
+    
     @Nullable
     public static Method getMethodFromCache(int i) {
-        if (i / 10000 == 0)
+        if (i / 10000 == 0) {
             throw new IllegalStateException("Index " + i + " attempted to access method!");
+        }
         DexMethodDescriptor m = getMethodDescFromCache(i);
-        if (m == null) return null;
+        if (m == null) {
+            return null;
+        }
         if (m.name.equals("<init>") || m.name.equals("<clinit>")) {
             logi("getMethodFromCache(" + i + ") methodName == " + m.name + " , return null");
             return null;
@@ -151,13 +172,16 @@ public class DexKit {
             return null;
         }
     }
-
+    
     @Nullable
     public static Method doFindMethod(int i) {
-        if (i / 10000 == 0)
+        if (i / 10000 == 0) {
             throw new IllegalStateException("Index " + i + " attempted to access method!");
+        }
         DexMethodDescriptor m = doFindMethodDesc(i);
-        if (m == null) return null;
+        if (m == null) {
+            return null;
+        }
         if (m.name.equals("<init>") || m.name.equals("<clinit>")) {
             logi("doFindMethod(" + i + ") methodName == " + m.name + " , return null");
             return null;
@@ -169,7 +193,7 @@ public class DexKit {
             return null;
         }
     }
-
+    
     @Nullable
     public static DexMethodDescriptor getMethodDescFromCache(int i) {
         try {
@@ -188,11 +212,13 @@ public class DexKit {
             return null;
         }
     }
-
+    
     @Nullable
     public static DexMethodDescriptor doFindMethodDesc(int i) {
         DexMethodDescriptor ret = getMethodDescFromCache(i);
-        if (ret != null) return ret;
+        if (ret != null) {
+            return ret;
+        }
         int ver = -1;
         try {
             ver = getHostVersionCode32();
@@ -230,8 +256,8 @@ public class DexKit {
         }
         return ret;
     }
-
-
+    
+    
     public static String a(int i) {
         switch (i) {
             case C_DIALOG_UTIL:
@@ -292,6 +318,16 @@ public class DexKit {
                 return "http_downloader";
             case C_MultiMsg_Manager:
                 return "multimsg_manager";
+            case C_ClockInEntryHelper:
+                return "clockinentryhelper";
+            case C_CaptureUtil:
+                return "captureutil";
+            case C_AvatarUtil:
+                return "avatarutil";
+            case C_FaceManager:
+                return "facemanager";
+            case C_SmartDeviceProxyMgr:
+                return "smartdeviceproxymgr";
             case N_BASE_CHAT_PIE__INIT:
                 return "base_chat_pie__init";
             case N_BASE_CHAT_PIE__handleNightMask:
@@ -304,10 +340,12 @@ public class DexKit {
                 return "base_chat_pie__chooseMsg";
             case N_LeftSwipeReply_Helper__reply:
                 return "leftswipereply_helper__reply";
+//            case N_TROOP_BASE_PIE__showNewTotalMemberCount:
+//                return "troop_base_pie__showTotalMemberCount";
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
-
+    
     public static String c(int i) {
         String ret;
         switch (i) {
@@ -388,7 +426,7 @@ public class DexKit {
             case C_GroupAppActivity:
                 //unknown
 //                ret = "com.tencent.mobileqq.activity.aio.drawer.TroopMultiCardDrawer";
-
+    
                 ret = "com/tencent/mobileqq/activity/aio/drawer/TroopAppShortcutDrawer";
                 break;
             case C_IntimateDrawer:
@@ -403,9 +441,27 @@ public class DexKit {
             case C_MultiMsg_Manager:
                 ret = "com/tencent/mobileqq/multimsg/MultiMsgManager";
                 break;
+            case C_ClockInEntryHelper:
+                ret = "com/tencent/mobileqq/activity/aio/helper/ClockInEntryHelper";
+                break;
+            case C_CaptureUtil:
+                ret = "com.tencent.mobileqq.richmedia.capture.util.CaptureUtil";
+                break;
+            case C_AvatarUtil:
+                ret = "com.tencent.mobileqq.avatar.utils.AvatarUtil";
+                break;
+            case C_SmartDeviceProxyMgr:
+                ret = "com.tencent.device.devicemgr.SmartDeviceProxyMgr";
+                break;
             case N_LeftSwipeReply_Helper__reply:
                 ret = "com/tencent/mobileqq/bubble/LeftSwipeReplyHelper";
                 break;
+            case C_FaceManager:
+                ret = "com.tencent.mobileqq.app.face.FaceManager";
+                break;
+//            case N_TROOP_BASE_PIE__showNewTotalMemberCount:
+//                ret = "com.tencent.mobileqq.activity.aio.core.TroopChatPie";
+//                break;
             case N_BASE_CHAT_PIE__INIT:
             case N_BASE_CHAT_PIE__handleNightMask:
             case N_BASE_CHAT_PIE__updateSession:
@@ -421,7 +477,7 @@ public class DexKit {
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
-
+    
     public static byte[][] b(int i) {
         switch (i) {
             case C_DIALOG_UTIL:
@@ -434,8 +490,8 @@ public class DexKit {
                 return new byte[][]{new byte[]{0x2C, 0x42, 0x61, 0x73, 0x65, 0x50, 0x69, 0x63, 0x44, 0x6F, 0x77, 0x6E, 0x6C}};
             case C_ITEM_BUILDER_FAC:
                 return new byte[][]{
-                        new byte[]{0x24, 0x49, 0x74, 0x65, 0x6D, 0x42, 0x75, 0x69, 0x6C, 0x64, 0x65, 0x72, 0x20, 0x69, 0x73, 0x3A, 0x20, 0x44},
-                        new byte[]{0x2A, 0x66, 0x69, 0x6E, 0x64, 0x49, 0x74, 0x65, 0x6D, 0x42, 0x75, 0x69, 0x6C, 0x64, 0x65, 0x72, 0x3A, 0x20, 0x69, 0x6E, 0x76, 0x6F, 0x6B, 0x65, 0x64, 0x2E}
+                    new byte[]{0x24, 0x49, 0x74, 0x65, 0x6D, 0x42, 0x75, 0x69, 0x6C, 0x64, 0x65, 0x72, 0x20, 0x69, 0x73, 0x3A, 0x20, 0x44},
+                    new byte[]{0x2A, 0x66, 0x69, 0x6E, 0x64, 0x49, 0x74, 0x65, 0x6D, 0x42, 0x75, 0x69, 0x6C, 0x64, 0x65, 0x72, 0x3A, 0x20, 0x69, 0x6E, 0x76, 0x6F, 0x6B, 0x65, 0x64, 0x2E}
                 };
             case C_AIO_UTILS:
                 return new byte[][]{new byte[]{0x0D, 0x6F, 0x70, 0x65, 0x6E, 0x41, 0x49, 0x4F, 0x20, 0x62, 0x79, 0x20, 0x4D, 0x54}};
@@ -443,8 +499,8 @@ public class DexKit {
                 return new byte[][]{new byte[]{0x16, 0x67, 0x61, 0x6C, 0x6C, 0x65, 0x72, 0x79, 0x20, 0x73, 0x65, 0x74, 0x43, 0x6F, 0x6C, 0x6F, 0x72, 0x20, 0x62, 0x6C}};
             case C_FAV_EMO_CONST:
                 return new byte[][]{
-                        new byte[]{0x11, 0x68, 0x74, 0x74, 0x70, 0x3A, 0x2F, 0x2F, 0x70, 0x2E, 0x71, 0x70, 0x69, 0x63, 0x2E},
-                        new byte[]{0x12, 0x68, 0x74, 0x74, 0x70, 0x73, 0x3A, 0x2F, 0x2F, 0x70, 0x2E, 0x71, 0x70, 0x69, 0x63, 0x2E},
+                    new byte[]{0x11, 0x68, 0x74, 0x74, 0x70, 0x3A, 0x2F, 0x2F, 0x70, 0x2E, 0x71, 0x70, 0x69, 0x63, 0x2E},
+                    new byte[]{0x12, 0x68, 0x74, 0x74, 0x70, 0x73, 0x3A, 0x2F, 0x2F, 0x70, 0x2E, 0x71, 0x70, 0x69, 0x63, 0x2E},
                 };
             case C_MSG_REC_FAC:
                 return new byte[][]{new byte[]{0x2C, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50, 0x69, 0x63, 0x4D, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65}};
@@ -479,7 +535,7 @@ public class DexKit {
             case C_GroupAppActivity:
                 return new byte[][]{new byte[]{0x11, 0x6F, 0x6E, 0x44, 0x72, 0x61, 0x77, 0x65, 0x72, 0x53, 0x74, 0x61, 0x72, 0x74, 0x4F, 0x70, 0x65, 0x6E}};
             case C_IntimateDrawer:
-                return new byte[][]{new byte[]{0x49, 0x6e, 0x74, 0x69, 0x6d, 0x61, 0x74, 0x65, 0x44, 0x72, 0x61, 0x77, 0x65, 0x72}};
+                return new byte[][]{new byte[]{0x15, 0x69, 0x6E, 0x74, 0x69, 0x6D, 0x61, 0x74, 0x65, 0x5F, 0x72, 0x65, 0x6C, 0x61, 0x74, 0x69, 0x6F, 0x6E, 0x73, 0x68, 0x69, 0x70}};
             case C_ZipUtils_biz: {
                 return new byte[][]{new byte[]{0x10, 0x2C, 0x5A, 0x69, 0x70, 0x45, 0x6E, 0x74, 0x72, 0x79, 0x20, 0x6E, 0x61, 0x6D, 0x65, 0x3A, 0x20}};
             }
@@ -501,10 +557,24 @@ public class DexKit {
                 return new byte[][]{new byte[]{0x1C, 0x5B, 0x73, 0x65, 0x6E, 0x64, 0x4D, 0x75, 0x6C, 0x74, 0x69, 0x4D, 0x73, 0x67, 0x5D, 0x64, 0x61, 0x74, 0x61, 0x2E, 0x6C, 0x65, 0x6E, 0x67, 0x74, 0x68, 0x20, 0x3D, 0x20}};
             case N_LeftSwipeReply_Helper__reply:
                 return new byte[][]{new byte[]{0x09, 0x30, 0x58, 0x38, 0x30, 0x30, 0x41, 0x39, 0x32, 0x46}};
+//            case N_TROOP_BASE_PIE__showNewTotalMemberCount:
+//                return new byte[][]{new byte[]{0x17, 0x73, 0x68, 0x6f, 0x77, 0x4e, 0x65, 0x77, 0x54, 0x72, 0x6f, 0x6f, 0x70, 0x4d, 0x65, 0x6d, 0x62, 0x65, 0x72, 0x43, 0x6f, 0x75, 0x6e, 0x74}};
+            case C_ClockInEntryHelper:
+                return new byte[][]{
+                    new byte[]{0x1f, 0x69, 0x73, 0x53, 0x68, 0x6f, 0x77, 0x54, 0x6f, 0x67, 0x65, 0x74, 0x68, 0x65, 0x72, 0x45, 0x6e, 0x74, 0x72, 0x79},
+                    new byte[]{0x19, 0x43, 0x6c, 0x6f, 0x63, 0x6b, 0x49, 0x6e, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x48, 0x65, 0x6c, 0x70, 0x65, 0x72, 0x2e, 0x68, 0x65, 0x6c, 0x70, 0x65, 0x72}};
+            case C_CaptureUtil:
+                return new byte[][]{new byte[]{0x1f, 0x6d, 0x65, 0x64, 0x69, 0x61, 0x63, 0x6f, 0x64, 0x65, 0x63}};
+            case C_AvatarUtil:
+                return new byte[][]{new byte[]{0x0a, 0x41, 0x76, 0x61, 0x74, 0x61, 0x72, 0x55, 0x74, 0x69, 0x6c}};
+            case C_FaceManager:
+                return new byte[][]{new byte[]{0x0b, 0x46, 0x61, 0x63, 0x65, 0x4d, 0x61, 0x6e, 0x61, 0x67, 0x65, 0x72}};
+            case C_SmartDeviceProxyMgr:
+                return new byte[][]{new byte[]{0x1a, 0x53, 0x6d, 0x61, 0x72, 0x74, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x50, 0x72, 0x6f, 0x78, 0x79, 0x4d, 0x67, 0x72, 0x20, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65}};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
-
+    
     public static int[] d(int i) {
         switch (i) {
             case C_DIALOG_UTIL:
@@ -555,6 +625,8 @@ public class DexKit {
                 return new int[]{2, 11, 6};
             case C_GroupAppActivity:
                 return new int[]{2, 11, 6};
+            case C_IntimateDrawer:
+                return new int[]{6};
             case C_ZipUtils_biz:
                 return new int[]{1, 9, 5};
             case C_HttpDownloader:
@@ -572,10 +644,22 @@ public class DexKit {
                 return new int[]{6, 2, 7, 3};
             case C_CustomWidgetUtil:
                 return new int[]{5, 4, 9};
+//            case N_TROOP_BASE_PIE__showNewTotalMemberCount:
+//                return new int[]{6, 8};
+            case C_ClockInEntryHelper:
+                return new int[]{6, 2};
+            case C_CaptureUtil:
+                return new int[]{10, 4};
+            case C_AvatarUtil:
+                return new int[]{8};
+            case C_FaceManager:
+                return new int[]{3};
+            case C_SmartDeviceProxyMgr:
+                return new int[]{5, 2};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
-
+    
     private static DexMethodDescriptor a(int i, HashSet<DexMethodDescriptor> __methods, DexDeobfReport report) {
         switch (i) {
             case C_DIALOG_UTIL:
@@ -589,25 +673,37 @@ public class DexKit {
             case C_TEST_STRUCT_MSG:
             case C_TimeFormatterUtils:
             case C_ZipUtils_biz:
+            case C_SmartDeviceProxyMgr:
                 a:
                 for (DexMethodDescriptor m : __methods) {
                     Class clz = Initiator.load(m.declaringClass);
-                    if (Modifier.isAbstract(clz.getModifiers())) continue;
+                    if (Modifier.isAbstract(clz.getModifiers())) {
+                        continue;
+                    }
                     for (Field f : clz.getDeclaredFields()) {
-                        if (!Modifier.isStatic(f.getModifiers())) continue a;
+                        if (!Modifier.isStatic(f.getModifiers())) {
+                            continue a;
+                        }
                     }
                     return m;
                 }
                 break;
             case C_FLASH_PIC_HELPER:
+            case C_CaptureUtil:
                 a:
                 for (DexMethodDescriptor m : __methods) {
                     Class clz = Initiator.load(m.declaringClass);
-                    if (Modifier.isAbstract(clz.getModifiers())) continue;
-                    for (Field f : clz.getDeclaredFields()) {
-                        if (!Modifier.isStatic(f.getModifiers())) continue a;
+                    if (Modifier.isAbstract(clz.getModifiers())) {
+                        continue;
                     }
-                    if (clz.getDeclaredMethods().length > 8) continue;
+                    for (Field f : clz.getDeclaredFields()) {
+                        if (!Modifier.isStatic(f.getModifiers())) {
+                            continue a;
+                        }
+                    }
+                    if (clz.getDeclaredMethods().length > 8) {
+                        continue;
+                    }
                     return m;
                 }
                 break;
@@ -624,16 +720,21 @@ public class DexKit {
             case C_ITEM_BUILDER_FAC:
                 for (DexMethodDescriptor m : __methods) {
                     Class clz = Initiator.load(m.declaringClass);
-                    if (clz.getDeclaredFields().length > 30) return m;
+                    if (clz.getDeclaredFields().length > 30) {
+                        return m;
+                    }
                 }
                 break;
             case C_ABS_GAL_SCENE:
                 for (DexMethodDescriptor m : __methods) {
                     Class clz = Initiator.load(m.declaringClass);
-                    if (!Modifier.isAbstract(clz.getModifiers())) continue;
+                    if (!Modifier.isAbstract(clz.getModifiers())) {
+                        continue;
+                    }
                     for (Field f : clz.getDeclaredFields()) {
-                        if (f.getType().equals(View.class))
+                        if (f.getType().equals(View.class)) {
                             return m;
+                        }
                     }
                 }
                 break;
@@ -641,22 +742,36 @@ public class DexKit {
                 a:
                 for (DexMethodDescriptor m : __methods) {
                     Class clz = Initiator.load(m.declaringClass);
-                    if (Modifier.isAbstract(clz.getModifiers())) continue;
-                    for (Field f : clz.getDeclaredFields()) {
-                        if (!Modifier.isStatic(f.getModifiers())) continue a;
+                    if (Modifier.isAbstract(clz.getModifiers())) {
+                        continue;
                     }
-                    if (clz.getDeclaredMethods().length > 3) continue;
+                    for (Field f : clz.getDeclaredFields()) {
+                        if (!Modifier.isStatic(f.getModifiers())) {
+                            continue a;
+                        }
+                    }
+                    if (clz.getDeclaredMethods().length > 3) {
+                        continue;
+                    }
                     return m;
                 }
                 break;
             case C_ARK_APP_ITEM_BUBBLE_BUILDER:
                 for (DexMethodDescriptor m : __methods) {
                     Class clz = Initiator.load(m.declaringClass);
-                    if (Modifier.isAbstract(clz.getModifiers())) continue;
+                    if (Modifier.isAbstract(clz.getModifiers())) {
+                        continue;
+                    }
                     Class sp = clz.getSuperclass();
-                    if (Object.class.equals(sp)) continue;
-                    if (!Modifier.isAbstract(sp.getModifiers())) continue;
-                    if (sp.getName().contains("Builder")) return m;
+                    if (Object.class.equals(sp)) {
+                        continue;
+                    }
+                    if (!Modifier.isAbstract(sp.getModifiers())) {
+                        continue;
+                    }
+                    if (sp.getName().contains("Builder")) {
+                        return m;
+                    }
                     return m;
                 }
                 break;
@@ -664,11 +779,19 @@ public class DexKit {
                 for (DexMethodDescriptor md : __methods) {
                     Class clz = Initiator.load(md.declaringClass);
                     for (Method m : clz.getMethods()) {
-                        if (m.getName().equals("b")) continue;
-                        if (!m.getReturnType().equals(int.class)) continue;
-                        if (!Modifier.isStatic(m.getModifiers())) continue;
+                        if (m.getName().equals("b")) {
+                            continue;
+                        }
+                        if (!m.getReturnType().equals(int.class)) {
+                            continue;
+                        }
+                        if (!Modifier.isStatic(m.getModifiers())) {
+                            continue;
+                        }
                         Class[] argt = m.getParameterTypes();
-                        if (argt.length == 1 && int.class.equals(argt[0])) return md;
+                        if (argt.length == 1 && int.class.equals(argt[0])) {
+                            return md;
+                        }
                     }
                     return md;
                 }
@@ -676,23 +799,37 @@ public class DexKit {
             case C_PIC_EMOTICON_INFO:
                 for (DexMethodDescriptor m : __methods) {
                     Class clz = Initiator.load(m.declaringClass);
-                    if (Modifier.isAbstract(clz.getModifiers())) continue;
+                    if (Modifier.isAbstract(clz.getModifiers())) {
+                        continue;
+                    }
                     Class s = clz.getSuperclass();
-                    if (Object.class.equals(s)) continue;
+                    if (Object.class.equals(s)) {
+                        continue;
+                    }
                     s = s.getSuperclass();
-                    if (Object.class.equals(s)) continue;
+                    if (Object.class.equals(s)) {
+                        continue;
+                    }
                     s = s.getSuperclass();
-                    if (Object.class.equals(s)) return m;
+                    if (Object.class.equals(s)) {
+                        return m;
+                    }
                 }
                 break;
             case C_QZONE_MSG_NOTIFY:
                 for (DexMethodDescriptor md : __methods) {
                     Class clz = Initiator.load(md.declaringClass);
-                    if (Modifier.isAbstract(clz.getModifiers())) continue;
+                    if (Modifier.isAbstract(clz.getModifiers())) {
+                        continue;
+                    }
                     Class s = clz.getSuperclass();
-                    if (!Object.class.equals(s)) continue;
+                    if (!Object.class.equals(s)) {
+                        continue;
+                    }
                     for (Method m : clz.getDeclaredMethods()) {
-                        if (!m.getReturnType().equals(void.class)) continue;
+                        if (!m.getReturnType().equals(void.class)) {
+                            continue;
+                        }
                         Class<?>[] argt = m.getParameterTypes();
                         if (argt.length > 7 && argt[0].equals(_QQAppInterface())) {
                             return md;
@@ -703,8 +840,12 @@ public class DexKit {
             case C_APP_CONSTANTS:
                 for (DexMethodDescriptor m : __methods) {
                     Class clz = Initiator.load(m.declaringClass);
-                    if (!Modifier.isInterface(clz.getModifiers())) continue;
-                    if (clz.getDeclaredFields().length < 50) continue;
+                    if (!Modifier.isInterface(clz.getModifiers())) {
+                        continue;
+                    }
+                    if (clz.getDeclaredFields().length < 50) {
+                        continue;
+                    }
                     return m;
                 }
                 break;
@@ -717,7 +858,9 @@ public class DexKit {
                 }
                 break;
             case N_LeftSwipeReply_Helper__reply:
+//			case N_TROOP_BASE_PIE__showNewTotalMemberCount:
                 //TODO: this must only has one result
+    
                 return (DexMethodDescriptor) __methods.toArray()[0];
             case N_BASE_CHAT_PIE__createMulti:
                 for (DexMethodDescriptor m : __methods) {
@@ -730,11 +873,19 @@ public class DexKit {
                 a:
                 for (DexMethodDescriptor m : __methods) {
                     Class clz = Initiator.load(m.declaringClass);
-                    if (clz.isEnum()) continue;
-                    if (Modifier.isAbstract(clz.getModifiers())) continue;
-                    if (Object.class != clz.getSuperclass()) continue;
+                    if (clz.isEnum()) {
+                        continue;
+                    }
+                    if (Modifier.isAbstract(clz.getModifiers())) {
+                        continue;
+                    }
+                    if (Object.class != clz.getSuperclass()) {
+                        continue;
+                    }
                     for (Field f : clz.getDeclaredFields()) {
-                        if (!Modifier.isStatic(f.getModifiers())) continue a;
+                        if (!Modifier.isStatic(f.getModifiers())) {
+                            continue a;
+                        }
                     }
                     return m;
                 }
@@ -749,18 +900,33 @@ public class DexKit {
             case C_ScreenShotHelper:
                 for (DexMethodDescriptor m : __methods) {
                     Class clz = Initiator.load(m.declaringClass);
-                    if (clz.isEnum()) continue;
-                    if (Modifier.isAbstract(clz.getModifiers())) continue;
-                    if (Object.class != clz.getSuperclass()) continue;
+                    if (clz.isEnum()) {
+                        continue;
+                    }
+                    if (Modifier.isAbstract(clz.getModifiers())) {
+                        continue;
+                    }
+                    if (Object.class != clz.getSuperclass()) {
+                        continue;
+                    }
                     return m;
                 }
                 break;
             case C_TogetherControlHelper:
+            case C_ClockInEntryHelper:
+            case C_FaceManager:
+            case C_AvatarUtil:
                 for (DexMethodDescriptor m : __methods) {
                     Class clz = Initiator.load(m.declaringClass);
-                    if (clz.isEnum()) continue;
-                    if (Modifier.isAbstract(clz.getModifiers())) continue;
-                    if (Object.class != clz.getSuperclass()) continue;
+                    if (clz.isEnum()) {
+                        continue;
+                    }
+                    if (Modifier.isAbstract(clz.getModifiers())) {
+                        continue;
+                    }
+                    if (Object.class != clz.getSuperclass()) {
+                        continue;
+                    }
                     return m;
                 }
                 break;
@@ -771,23 +937,29 @@ public class DexKit {
                 //has superclass
                 for (DexMethodDescriptor m : __methods) {
                     Class clz = Initiator.load(m.declaringClass);
-                    if (clz.isEnum()) continue;
-                    if (Modifier.isAbstract(clz.getModifiers())) continue;
-                    if (clz.getSuperclass() == Object.class) continue;
+                    if (clz.isEnum()) {
+                        continue;
+                    }
+                    if (Modifier.isAbstract(clz.getModifiers())) {
+                        continue;
+                    }
+                    if (clz.getSuperclass() == Object.class) {
+                        continue;
+                    }
                     return m;
                 }
                 break;
         }
         return null;
     }
-
+    
     public static boolean p(int i) {
         if (i == C_CustomWidgetUtil || i == N_BASE_CHAT_PIE__INIT) {
             return true;
         }
         return false;
     }
-
+    
     @Nullable
     private static HashSet<DexMethodDescriptor> e(int i, DexDeobfReport rep) {
         ClassLoader loader = Initiator.getHostClassLoader();
@@ -795,25 +967,27 @@ public class DexKit {
         int[] qf = d(i);
         byte[][] keys = b(i);
         boolean check = p(i);
-        if (qf != null) for (int dexi : qf) {
-            record |= 1 << dexi;
-            try {
-                for (byte[] k : keys) {
-                    HashSet<DexMethodDescriptor> ret = findMethodsByConstString(k, dexi, loader);
-                    if (ret != null && ret.size() > 0) {
-                        if (check) {
-                            DexMethodDescriptor m = a(i, ret, rep);
-                            if (m != null) {
-                                ret.clear();
-                                ret.add(m);
+        if (qf != null) {
+            for (int dexi : qf) {
+                record |= 1 << dexi;
+                try {
+                    for (byte[] k : keys) {
+                        HashSet<DexMethodDescriptor> ret = findMethodsByConstString(k, dexi, loader);
+                        if (ret != null && ret.size() > 0) {
+                            if (check) {
+                                DexMethodDescriptor m = a(i, ret, rep);
+                                if (m != null) {
+                                    ret.clear();
+                                    ret.add(m);
+                                    return ret;
+                                }
+                            } else {
                                 return ret;
                             }
-                        } else {
-                            return ret;
                         }
                     }
+                } catch (FileNotFoundException ignored) {
                 }
-            } catch (FileNotFoundException ignored) {
             }
         }
         int dexi = 1;
@@ -844,36 +1018,27 @@ public class DexKit {
             dexi++;
         }
     }
-
+    
     @Nullable
     public static byte[] getClassDeclaringDex(String klass, @Nullable int[] qf) {
         ClassLoader loader = Initiator.getHostClassLoader();
         int record = 0;
-        if (qf != null) for (int dexi : qf) {
-            record |= 1 << dexi;
-            try {
-                String name;
-                byte[] buf = new byte[4096];
-                byte[] content;
-                if (dexi == 1) name = "classes.dex";
-                else name = "classes" + dexi + ".dex";
-                HashSet<URL> urls = new HashSet<>(3);
+        if (qf != null) {
+            for (int dexi : qf) {
+                record |= 1 << dexi;
                 try {
-                    Enumeration<URL> eu;
-                    eu = (Enumeration<URL>) invoke_virtual(loader, "findResources", name, String.class);
-                    if (eu != null) {
-                        while (eu.hasMoreElements()) {
-                            urls.add(eu.nextElement());
-                        }
+                    String name;
+                    byte[] buf = new byte[4096];
+                    byte[] content;
+                    if (dexi == 1) {
+                        name = "classes.dex";
+                    } else {
+                        name = "classes" + dexi + ".dex";
                     }
-                } catch (Throwable e) {
-                    log(e);
-                }
-                if (!loader.getClass().equals(PathClassLoader.class) && !loader.getClass().equals(DexClassLoader.class)
-                        && loader.getParent() != null) {
+                    HashSet<URL> urls = new HashSet<>(3);
                     try {
                         Enumeration<URL> eu;
-                        eu = (Enumeration<URL>) invoke_virtual(loader.getParent(), "findResources", name, String.class);
+                        eu = (Enumeration<URL>) invoke_virtual(loader, "findResources", name, String.class);
                         if (eu != null) {
                             while (eu.hasMoreElements()) {
                                 urls.add(eu.nextElement());
@@ -882,28 +1047,44 @@ public class DexKit {
                     } catch (Throwable e) {
                         log(e);
                     }
-                }
-                if (urls.size() == 0) throw new FileNotFoundException(name);
-                InputStream in;
-                try {
-                    for (URL url : urls) {
-                        in = url.openStream();
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        int ii;
-                        while ((ii = in.read(buf)) != -1) {
-                            baos.write(buf, 0, ii);
-                        }
-                        in.close();
-                        content = baos.toByteArray();
-                        if (DexFlow.hasClassInDex(content, klass)) {
-                            return content;
+                    if (!loader.getClass().equals(PathClassLoader.class) && !loader.getClass().equals(DexClassLoader.class)
+                        && loader.getParent() != null) {
+                        try {
+                            Enumeration<URL> eu;
+                            eu = (Enumeration<URL>) invoke_virtual(loader.getParent(), "findResources", name, String.class);
+                            if (eu != null) {
+                                while (eu.hasMoreElements()) {
+                                    urls.add(eu.nextElement());
+                                }
+                            }
+                        } catch (Throwable e) {
+                            log(e);
                         }
                     }
-                } catch (IOException e) {
-                    log(e);
-                    return null;
+                    if (urls.size() == 0) {
+                        throw new FileNotFoundException(name);
+                    }
+                    InputStream in;
+                    try {
+                        for (URL url : urls) {
+                            in = url.openStream();
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            int ii;
+                            while ((ii = in.read(buf)) != -1) {
+                                baos.write(buf, 0, ii);
+                            }
+                            in.close();
+                            content = baos.toByteArray();
+                            if (DexFlow.hasClassInDex(content, klass)) {
+                                return content;
+                            }
+                        }
+                    } catch (IOException e) {
+                        log(e);
+                        return null;
+                    }
+                } catch (FileNotFoundException ignored) {
                 }
-            } catch (FileNotFoundException ignored) {
             }
         }
         int dexi = 1;
@@ -916,8 +1097,11 @@ public class DexKit {
                 String name;
                 byte[] buf = new byte[4096];
                 byte[] content;
-                if (dexi == 1) name = "classes.dex";
-                else name = "classes" + dexi + ".dex";
+                if (dexi == 1) {
+                    name = "classes.dex";
+                } else {
+                    name = "classes" + dexi + ".dex";
+                }
                 HashSet<URL> urls = new HashSet<>(3);
                 try {
                     Enumeration<URL> eu;
@@ -931,7 +1115,7 @@ public class DexKit {
                     log(e);
                 }
                 if (!loader.getClass().equals(PathClassLoader.class) && !loader.getClass().equals(DexClassLoader.class)
-                        && loader.getParent() != null) {
+                    && loader.getParent() != null) {
                     try {
                         Enumeration<URL> eu;
                         eu = (Enumeration<URL>) invoke_virtual(loader.getParent(), "findResources", name, String.class);
@@ -944,7 +1128,9 @@ public class DexKit {
                         log(e);
                     }
                 }
-                if (urls.size() == 0) throw new FileNotFoundException(name);
+                if (urls.size() == 0) {
+                    throw new FileNotFoundException(name);
+                }
                 InputStream in;
                 try {
                     for (URL url : urls) {
@@ -970,7 +1156,7 @@ public class DexKit {
             dexi++;
         }
     }
-
+    
     public static ArrayList<Integer> a(byte[] buf, byte[] target) {
         ArrayList<Integer> rets = new ArrayList<>();
         int[] ret = new int[1];
@@ -980,24 +1166,30 @@ public class DexKit {
         int strIdx = (ret[0] - DexFlow.readLe32(buf, 0x3c)) / 4;
         if (strIdx > 0xFFFF) {
             target = DexFlow.int2u4le(strIdx);
-        } else target = DexFlow.int2u2le(strIdx);
+        } else {
+            target = DexFlow.int2u2le(strIdx);
+        }
         int off = 0;
         while (true) {
             off = DexFlow.arrayIndexOf(buf, target, off + 1, buf.length);
-            if (off == -1) break;
+            if (off == -1) {
+                break;
+            }
             if (buf[off - 2] == (byte) 26/*Opcodes.OP_CONST_STRING*/
-                    || buf[off - 2] == (byte) 27)/* Opcodes.OP_CONST_STRING_JUMBO*/ {
+                || buf[off - 2] == (byte) 27)/* Opcodes.OP_CONST_STRING_JUMBO*/ {
                 ret[0] = off - 2;
                 int opcodeOffset = ret[0];
                 if (buf[off - 2] == (byte) 27 && strIdx < 0x10000) {
-                    if (DexFlow.readLe32(buf, opcodeOffset + 2) != strIdx) continue;
+                    if (DexFlow.readLe32(buf, opcodeOffset + 2) != strIdx) {
+                        continue;
+                    }
                 }
                 rets.add(opcodeOffset);
             }
         }
         return rets;
     }
-
+    
     /**
      * get ALL the possible class names
      *
@@ -1011,8 +1203,11 @@ public class DexKit {
         String name;
         byte[] buf = new byte[4096];
         byte[] content;
-        if (i == 1) name = "classes.dex";
-        else name = "classes" + i + ".dex";
+        if (i == 1) {
+            name = "classes.dex";
+        } else {
+            name = "classes" + i + ".dex";
+        }
         HashSet<URL> urls = new HashSet<>(3);
         try {
             Enumeration<URL> eu;
@@ -1026,7 +1221,7 @@ public class DexKit {
             log(e);
         }
         if (!loader.getClass().equals(PathClassLoader.class) && !loader.getClass().equals(DexClassLoader.class)
-                && loader.getParent() != null) {
+            && loader.getParent() != null) {
             try {
                 Enumeration<URL> eu;
                 eu = (Enumeration<URL>) invoke_virtual(loader.getParent(), "findResources", name, String.class);
@@ -1040,7 +1235,9 @@ public class DexKit {
             }
         }
         //log("dex" + i + ":" + url);
-        if (urls.size() == 0) throw new FileNotFoundException(name);
+        if (urls.size() == 0) {
+            throw new FileNotFoundException(name);
+        }
         InputStream in;
         try {
             HashSet<DexMethodDescriptor> rets = new HashSet<>();
@@ -1060,7 +1257,9 @@ public class DexKit {
                 for (int j = 0; j < opcodeOffsets.size(); j++) {
                     try {
                         DexMethodDescriptor desc = DexFlow.getDexMethodByOpOffset(content, opcodeOffsets.get(j), true);
-                        if (desc != null) rets.add(desc);
+                        if (desc != null) {
+                            rets.add(desc);
+                        }
                     } catch (InternalError ignored) {
                     }
                 }
@@ -1071,31 +1270,34 @@ public class DexKit {
             return null;
         }
     }
-
+    
     public static class DexDeobfReport {
         int target;
         int version;
         String result;
         String log;
         long time;
-
+        
         public DexDeobfReport() {
             time = System.currentTimeMillis();
         }
-
+        
         public void v(String str) {
-            if (log == null) log = str + "\n";
-            else log = log + str + "\n";
+            if (log == null) {
+                log = str + "\n";
+            } else {
+                log = log + str + "\n";
+            }
         }
-
+        
         @Override
         public String toString() {
             return "Deobf target: " + target + '\n' +
-                    "Time: " + time + '\n' +
-                    "Version code: " + version + '\n' +
-                    "Result: " + result + '\n' +
-                    log;
+                "Time: " + time + '\n' +
+                "Version code: " + version + '\n' +
+                "Result: " + result + '\n' +
+                log;
         }
     }
-
+    
 }
