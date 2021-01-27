@@ -18,29 +18,22 @@
  */
 package nil.nadph.qnotified.hook;
 
-import android.os.Looper;
-import android.widget.Toast;
-
 import de.robv.android.xposed.XC_MethodHook;
-import me.singleneuron.qn_kernel.tlb.TIMConfigTable;
 import me.singleneuron.qn_kernel.tlb.ConfigTable;
 import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.Utils;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
+import static me.ketal.util.TIMVersion.TIM_3_1_1;
+import static me.singleneuron.util.QQVersion.QQ_8_1_3;
 import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
 import static nil.nadph.qnotified.util.Utils.*;
 
-public class ReplyNoAtHook extends BaseDelayableHook {
-
-    public static final String qn_disable_auto_at = "qn_disable_auto_at";
+public class ReplyNoAtHook extends CommonDelayableHook {
     private static final ReplyNoAtHook self = new ReplyNoAtHook();
-    private boolean inited = false;
 
     private ReplyNoAtHook() {
+        super("qn_disable_auto_at", SyncUtils.PROC_MAIN, false);
     }
 
     public static ReplyNoAtHook get() {
@@ -59,8 +52,7 @@ public class ReplyNoAtHook extends BaseDelayableHook {
      * 848 1492 createAtMsg
      */
     @Override
-    public boolean init() {
-        if (inited) return true;
+    public boolean initOnce() {
         try {
             String method = ConfigTable.INSTANCE.getConfig(ReplyNoAtHook.class.getSimpleName());
             /*int ver = getHostVersionCode32();
@@ -87,7 +79,6 @@ public class ReplyNoAtHook extends BaseDelayableHook {
                     if (!p0) param.setResult(null);
                 }
             });
-            inited = true;
             return true;
         } catch (Throwable e) {
             log(e);
@@ -96,48 +87,9 @@ public class ReplyNoAtHook extends BaseDelayableHook {
     }
 
     @Override
-    public Step[] getPreconditions() {
-        return new Step[0];
-    }
-
-    @Override
-    public int getEffectiveProc() {
-        return SyncUtils.PROC_MAIN;
-    }
-
-    @Override
-    public boolean isInited() {
-        return inited;
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        try {
-            ConfigManager mgr = ConfigManager.getDefaultConfig();
-            mgr.getAllConfig().put(qn_disable_auto_at, enabled);
-            mgr.save();
-        } catch (final Exception e) {
-            Utils.log(e);
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-            } else {
-                SyncUtils.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-                    }
-                });
-            }
-        }
-    }
-
-    @Override
-    public boolean isEnabled() {
-        try {
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_disable_auto_at);
-        } catch (Exception e) {
-            log(e);
-            return false;
-        }
+    public boolean isValid() {
+        if (isTim() && getHostVersionCode() >= TIM_3_1_1)
+            return true;
+        else return !isTim() && getHostVersionCode() >= QQ_8_1_3;
     }
 }

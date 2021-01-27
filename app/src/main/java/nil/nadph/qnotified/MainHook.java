@@ -287,12 +287,6 @@ public class MainHook {
     @MainProcess
     private void injectStartupHookForMain(Context ctx) {
         JumpActivityEntryHook.initForJumpActivityEntry(ctx);
-        if (LicenseStatus.sDisableCommonHooks) {
-            return;
-        }
-        if (LicenseStatus.hasUserAcceptEula()) {
-            HideMiniAppPullEntry.hideMiniAppEntry();
-        }
     }
 
     /**
