@@ -45,7 +45,7 @@ public class LeftSwipeReplyHook extends CommonDelayableHook {
     private static Bitmap img;
 
     protected LeftSwipeReplyHook() {
-        super("ketal_left_swipe_action", SyncUtils.PROC_MAIN, true, new DexDeobfStep(DexKit.N_LeftSwipeReply_Helper__reply), new DexDeobfStep(DexKit.N_BASE_CHAT_PIE__chooseMsg));
+        super("ketal_left_swipe_action", SyncUtils.PROC_MAIN, false, new DexDeobfStep(DexKit.N_LeftSwipeReply_Helper__reply), new DexDeobfStep(DexKit.N_BASE_CHAT_PIE__chooseMsg));
     }
 
     private static Bitmap getMultiBitmap() {

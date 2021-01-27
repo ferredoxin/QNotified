@@ -20,6 +20,7 @@ package nil.nadph.qnotified.hook;
 
 import androidx.annotation.NonNull;
 
+import me.ketal.hook.SortAtPanel;
 import me.ketal.hook.HideAssistantRemoveTips;
 import me.ketal.hook.LeftSwipeReplyHook;
 import me.kyuubiran.hook.AutoMosaicName;
@@ -170,6 +171,8 @@ public abstract class AbsDelayableHook implements SwitchConfigItem {
                     MultiActionHook.INSTANCE,
                     HideAssistantRemoveTips.INSTANCE,
                     LeftSwipeReplyHook.INSTANCE,
+                    HideMiniAppPullEntry.INSTANCE,
+                    SortAtPanel.INSTANCE,
             };
         }
         return sAllHooks;

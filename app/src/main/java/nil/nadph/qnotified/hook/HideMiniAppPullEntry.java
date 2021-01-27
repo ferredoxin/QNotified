@@ -24,29 +24,31 @@ import java.lang.reflect.Method;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
+import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Utils;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
+import static me.singleneuron.util.QQVersion.QQ_8_2_6;
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.getApplication;
 import static nil.nadph.qnotified.util.Utils.getHostVersionCode32;
 import static nil.nadph.qnotified.util.Utils.log;
 
-public class HideMiniAppPullEntry {
-    /**
-     * This should only be called in startup routine, after which useless.
-     */
-    public static void hideMiniAppEntry() {
+public class HideMiniAppPullEntry extends CommonDelayableHook {
+    public static final HideMiniAppPullEntry INSTANCE = new HideMiniAppPullEntry();
+
+    protected HideMiniAppPullEntry() {
+        super(ConfigItems.qn_hide_msg_list_miniapp, SyncUtils.PROC_MAIN, false);
+    }
+
+    @Override
+    protected boolean initOnce() {
         try {
-            if (Utils.isTim(getApplication())) return;
-        } catch (Throwable ignored) {
-        }
-        try {
+            if (Utils.isTim()) return false;
             ConfigManager cache = ConfigManager.getCache();
-            if (ConfigManager.getDefaultConfig().getBooleanOrFalse(ConfigItems.qn_hide_msg_list_miniapp)) {
+            if (isEnabled()) {
                 int lastVersion = cache.getIntOrDefault("qn_hide_msg_list_miniapp_version_code", 0);
                 if (getHostVersionCode32() == lastVersion) {
                     String methodName = cache.getString("qn_hide_msg_list_miniapp_method_name");
@@ -98,7 +100,7 @@ public class HideMiniAppPullEntry {
 
                     Class<?> tmp;
                     Class<?> miniapp = null;
-                    if (Utils.getHostVersionCode32() >= 1312) {
+                    if (Utils.getHostVersionCode32() >= QQ_8_2_6) {
                         //for 8.2.6
                         miniapp = load("com/tencent/mobileqq/mini/entry/MiniAppDesktop");
                         if (miniapp == null) {
@@ -147,8 +149,10 @@ public class HideMiniAppPullEntry {
                     });
                 }
             }
-        } catch (Throwable e) {
+            return true;
+        } catch (Exception e) {
             log(e);
         }
+        return false;
     }
 }

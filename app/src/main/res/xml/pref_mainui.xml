@@ -16,7 +16,7 @@
                 android:key="hideVipNameplate"
                 android:title="隐藏会员铭牌"/>
         <SwitchPreference
-                android:key="hideMiniAppEntry"
+                android:key="HideMiniAppPullEntry!"
                 android:title="隐藏小程序入口"/>
         <MultiSelectListPreference
                 android:entries="@array/mainui_conversation_pmi_titles"
