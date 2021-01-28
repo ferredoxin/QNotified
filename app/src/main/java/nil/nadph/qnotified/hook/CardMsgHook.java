@@ -302,6 +302,7 @@ public class CardMsgHook extends BaseDelayableHook {
 
 
      */
+    @SuppressWarnings("JavaJniMissingFunction")
     static native boolean ntSendCardMsg(QQAppInterface rt, Parcelable session, String msg) throws Exception;
 
     @Override
