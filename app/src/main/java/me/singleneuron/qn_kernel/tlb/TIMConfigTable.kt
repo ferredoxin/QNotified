@@ -21,7 +21,7 @@ package me.singleneuron.qn_kernel.tlb
 import me.ketal.hook.LeftSwipeReplyHook
 import me.ketal.util.TIMVersion.*
 import nil.nadph.qnotified.bridge.QQMessageFacade
-import nil.nadph.qnotified.hook.MultiActionHook
+import me.ketal.hook.MultiActionHook
 import nil.nadph.qnotified.hook.ReplyNoAtHook
 
 object TIMConfigTable {

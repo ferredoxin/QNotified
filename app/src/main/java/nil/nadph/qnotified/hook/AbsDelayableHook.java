@@ -20,6 +20,7 @@ package nil.nadph.qnotified.hook;
 
 import androidx.annotation.NonNull;
 
+import me.ketal.hook.MultiActionHook;
 import me.ketal.hook.SortAtPanel;
 import me.ketal.hook.HideAssistantRemoveTips;
 import me.ketal.hook.LeftSwipeReplyHook;

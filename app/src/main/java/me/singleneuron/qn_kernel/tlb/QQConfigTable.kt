@@ -22,7 +22,7 @@ import me.kyuubiran.hook.AutoMosaicName
 import me.nextalone.hook.HideProfileBubble
 import me.nextalone.hook.HideTotalNumber
 import me.singleneuron.util.QQVersion.*
-import nil.nadph.qnotified.hook.MultiActionHook
+import me.ketal.hook.MultiActionHook
 import nil.nadph.qnotified.hook.ReplyNoAtHook
 import nil.nadph.qnotified.hook.VasProfileAntiCrash
 

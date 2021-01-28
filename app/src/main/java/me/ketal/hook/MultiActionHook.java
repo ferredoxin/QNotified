@@ -16,7 +16,7 @@
  * along with this software.  If not, see
  * <https://www.gnu.org/licenses/>.
  */
-package nil.nadph.qnotified.hook;
+package me.ketal.hook;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -37,6 +37,7 @@ import me.singleneuron.qn_kernel.tlb.ConfigTable;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.bridge.QQMessageFacade;
+import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.DexKit;

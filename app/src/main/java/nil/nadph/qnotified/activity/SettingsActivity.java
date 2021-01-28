@@ -45,6 +45,7 @@ import java.io.File;
 import java.io.IOException;
 
 import me.ketal.activity.ModifyLeftSwipeReplyActivity;
+import me.ketal.hook.MultiActionHook;
 import me.ketal.hook.SortAtPanel;
 import me.ketal.hook.LeftSwipeReplyHook;
 import me.kyuubiran.hook.AutoMosaicName;
