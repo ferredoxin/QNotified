@@ -48,6 +48,7 @@ import static nil.nadph.qnotified.util.Utils.findMethodByTypes_1;
 import static nil.nadph.qnotified.util.Utils.getFirstByType;
 import static nil.nadph.qnotified.util.Utils.iget_object_or_null;
 import static nil.nadph.qnotified.util.Utils.invoke_virtual_any;
+import static nil.nadph.qnotified.util.Utils.isTim;
 import static nil.nadph.qnotified.util.Utils.log;
 
 /*
@@ -56,12 +57,12 @@ This code has been tested in QQ8.0.0-8.5.5 and TIM all versions.
 public class MultiActionHook extends CommonDelayableHook {
     public static final MultiActionHook INSTANCE = new MultiActionHook();
     private static Bitmap img;
-    private final String fieldName = ConfigTable.INSTANCE.getConfig(MultiActionHook.class.getSimpleName());
+    private final String fieldName = isTim() ? ConfigTable.INSTANCE.getConfig(MultiActionHook.class.getSimpleName()) : "a";
     Class clz_MultiMsg_Manager;
     private Object baseChatPie;
 
     MultiActionHook() {
-        super("qn_multi_action", SyncUtils.PROC_MAIN, false, new DexDeobfStep(DexKit.C_MessageCache), new DexDeobfStep(DexKit.C_MSG_REC_FAC), new DexDeobfStep(DexKit.N_BASE_CHAT_PIE__createMulti), new DexDeobfStep(DexKit.C_MultiMsg_Manager));
+        super("qn_multi_action", new DexDeobfStep(DexKit.C_MessageCache), new DexDeobfStep(DexKit.C_MSG_REC_FAC), new DexDeobfStep(DexKit.N_BASE_CHAT_PIE__createMulti), new DexDeobfStep(DexKit.C_MultiMsg_Manager));
     }
 
     private static Bitmap getRecallBitmap() {

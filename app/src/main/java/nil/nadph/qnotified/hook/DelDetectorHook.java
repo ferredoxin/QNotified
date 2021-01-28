@@ -37,12 +37,10 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import me.singleneuron.hook.AppCenterHookKt;
 import nil.nadph.qnotified.ExfriendManager;
-import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.activity.ExfriendListActivity;
 import nil.nadph.qnotified.activity.TroubleshootActivity;
 import nil.nadph.qnotified.bridge.FriendChunk;
 import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.CliOper;
 import nil.nadph.qnotified.util.LicenseStatus;
@@ -56,14 +54,13 @@ import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTIVITY_PROXY_ACTION;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
-public class DelDetectorHook extends BaseDelayableHook {
+public class DelDetectorHook extends CommonDelayableHook {
 
     public static final int VIEW_ID_DELETED_FRIEND = 0x00EE77AA;
     private static final DelDetectorHook self = new DelDetectorHook();
     public HashSet addedListView = new HashSet();
     public WeakReference<TextView> exfriendRef;
     public WeakReference<TextView> redDotRef;
-    private boolean inited = false;
     private final XC_MethodHook exfriendEntryHook = new XC_MethodHook(1200) {
         @Override
         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -224,6 +221,7 @@ public class DelDetectorHook extends BaseDelayableHook {
     };
 
     private DelDetectorHook() {
+        super("__NOT_USED__");
     }
 
     public static DelDetectorHook get() {
@@ -231,8 +229,7 @@ public class DelDetectorHook extends BaseDelayableHook {
     }
 
     @Override
-    public boolean init() {
-        if (inited) return true;
+    public boolean initOnce() {
         findAndHookMethod(load("com/tencent/widget/PinnedHeaderExpandableListView"), "setAdapter", ExpandableListAdapter.class, exfriendEntryHook);
         AppCenterHookKt.initAppCenterHook();
         XposedHelpers.findAndHookMethod(load("com/tencent/mobileqq/activity/SplashActivity"), "doOnResume", new XC_MethodHook(700) {
@@ -332,7 +329,6 @@ public class DelDetectorHook extends BaseDelayableHook {
                 }
             }
         });
-        inited = true;
         return true;
     }
 
@@ -365,26 +361,6 @@ public class DelDetectorHook extends BaseDelayableHook {
 
 		 }
 		 });//*/
-
-    @Override
-    public int getEffectiveProc() {
-        return SyncUtils.PROC_MAIN;
-    }
-
-    @Override
-    public boolean checkPreconditions() {
-        return true;
-    }
-
-    @Override
-    public Step[] getPreconditions() {
-        return new Step[0];
-    }
-
-    @Override
-    public boolean isInited() {
-        return inited;
-    }
 
     @Override
     public void setEnabled(boolean enabled) {

@@ -18,9 +18,6 @@
  */
 package nil.nadph.qnotified.hook;
 
-import android.os.Looper;
-import android.widget.Toast;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -31,9 +28,7 @@ import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.bridge.ContactUtils;
 import nil.nadph.qnotified.bridge.GreyTipBuilder;
-import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.step.DexDeobfStep;
-import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
@@ -42,12 +37,12 @@ import nil.nadph.qnotified.util.Utils;
 import static nil.nadph.qnotified.bridge.GreyTipBuilder.MSG_TYPE_TROOP_GAP_GRAY_TIPS;
 import static nil.nadph.qnotified.util.Utils.*;
 
-public class GagInfoDisclosure extends BaseDelayableHook {
-    public static final String qn_disclose_gag_info = "qn_disclose_gag_info";
+public class GagInfoDisclosure extends CommonDelayableHook {
     private static final GagInfoDisclosure self = new GagInfoDisclosure();
-    private boolean inited = false;
 
     GagInfoDisclosure() {
+        // TODO: 2020/6/12 Figure out whether MSF is really needed
+        super("qn_disclose_gag_info", SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF, new DexDeobfStep(DexKit.C_MSG_REC_FAC));
     }
 
     public static GagInfoDisclosure get() {
@@ -55,8 +50,7 @@ public class GagInfoDisclosure extends BaseDelayableHook {
     }
 
     @Override
-    public boolean init() {
-        if (inited) return true;
+    public boolean initOnce() {
         try {
             Class<?> clzGagMgr = Initiator._TroopGagMgr();
             Method m1 = Utils.findMethodByTypes_1(clzGagMgr, void.class, String.class, long.class, long.class, int.class, String.class, String.class, boolean.class);
@@ -137,7 +131,6 @@ public class GagInfoDisclosure extends BaseDelayableHook {
                     param.setResult(null);
                 }
             });
-            inited = true;
             return true;
         } catch (Throwable e) {
             log(e);
@@ -167,52 +160,5 @@ public class GagInfoDisclosure extends BaseDelayableHook {
             return ret + m + _min;
         }
         return ret;
-    }
-
-    @Override
-    public int getEffectiveProc() {
-        // TODO: 2020/6/12 Figure out whether MSF is really needed
-        return SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF;
-    }
-
-    @Override
-    public Step[] getPreconditions() {
-        return new Step[]{new DexDeobfStep(DexKit.C_MSG_REC_FAC)};
-    }
-
-    @Override
-    public boolean isInited() {
-        return inited;
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        try {
-            ConfigManager mgr = ConfigManager.getDefaultConfig();
-            mgr.getAllConfig().put(qn_disclose_gag_info, enabled);
-            mgr.save();
-        } catch (final Exception e) {
-            Utils.log(e);
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-            } else {
-                SyncUtils.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-                    }
-                });
-            }
-        }
-    }
-
-    @Override
-    public boolean isEnabled() {
-        try {
-            return ConfigManager.getDefaultConfig().getBooleanOrDefault(qn_disclose_gag_info, true);
-        } catch (Exception e) {
-            log(e);
-            return false;
-        }
     }
 }

@@ -35,7 +35,7 @@ public class HideAssistantRemoveTips extends CommonDelayableHook {
     public static final HideAssistantRemoveTips INSTANCE = new HideAssistantRemoveTips();
 
     protected HideAssistantRemoveTips() {
-        super("ketal_hide_assistant_removetips", SyncUtils.PROC_MAIN, false);
+        super("ketal_hide_assistant_removetips");
     }
 
     @Override

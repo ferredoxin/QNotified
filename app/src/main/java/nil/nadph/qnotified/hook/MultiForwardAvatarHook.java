@@ -20,22 +20,17 @@ package nil.nadph.qnotified.hook;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Looper;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import de.robv.android.xposed.XC_MethodHook;
 import nil.nadph.qnotified.MainHook;
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.step.DexDeobfStep;
-import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ViewBuilder;
 import nil.nadph.qnotified.util.*;
@@ -44,14 +39,13 @@ import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
-public class MultiForwardAvatarHook extends BaseDelayableHook {
+public class MultiForwardAvatarHook extends CommonDelayableHook {
 
-    public static final String qn_multi_forward_avatar_profile = "qn_multi_forward_avatar_profile";
     private static final MultiForwardAvatarHook self = new MultiForwardAvatarHook();
-    private boolean inited = false;
     private static Field mLeftCheckBoxVisible = null;
 
     private MultiForwardAvatarHook() {
+        super("qn_multi_forward_avatar_profile", new DexDeobfStep(DexKit.C_AIO_UTILS)/*, new FindAvatarLongClickListener()*/);
     }
 
     public static MultiForwardAvatarHook get() {
@@ -81,8 +75,7 @@ public class MultiForwardAvatarHook extends BaseDelayableHook {
     }
 
     @Override
-    public boolean init() {
-        if (inited) return true;
+    public boolean initOnce() {
         try {
             findAndHookMethod(load("com/tencent/mobileqq/activity/aio/BaseBubbleBuilder"), "onClick", View.class, new XC_MethodHook(49) {
                 @Override
@@ -166,7 +159,6 @@ public class MultiForwardAvatarHook extends BaseDelayableHook {
 //                    }
 //                }
 //            });
-            inited = true;
             return true;
         } catch (Throwable e) {
             log(e);
@@ -263,12 +255,6 @@ public class MultiForwardAvatarHook extends BaseDelayableHook {
         CustomDialog.createFailsafe(ctx).setTitle(Utils.getShort$Name(msg)).setMessage(msg.toString())
                 .setCancelable(true).setPositiveButton("确定", null).show();
     }
-
-    @Override
-    public Step[] getPreconditions() {
-        return new Step[]{new DexDeobfStep(DexKit.C_AIO_UTILS)/*, new FindAvatarLongClickListener()*/};
-    }
-
 //    private static final String cache_avatar_long_click_listener_class = "cache_avatar_long_click_listener_class";
 //    private static final String cache_avatar_long_click_listener_version_code = "cache_avatar_long_click_listener_version_code";
 //
@@ -361,47 +347,6 @@ public class MultiForwardAvatarHook extends BaseDelayableHook {
 //            return "定位com/tencent/mobileqq/activity/aio/BaseBubbleBuilder$3";
 //        }
 //    }
-
-    @Override
-    public int getEffectiveProc() {
-        return SyncUtils.PROC_MAIN;
-    }
-
-    @Override
-    public boolean isInited() {
-        return inited;
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        try {
-            ConfigManager mgr = ConfigManager.getDefaultConfig();
-            mgr.getAllConfig().put(qn_multi_forward_avatar_profile, enabled);
-            mgr.save();
-        } catch (final Exception e) {
-            Utils.log(e);
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-            } else {
-                SyncUtils.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-                    }
-                });
-            }
-        }
-    }
-
-    @Override
-    public boolean isEnabled() {
-        try {
-            return ConfigManager.getDefaultConfig().getBooleanOrDefault(qn_multi_forward_avatar_profile, true);
-        } catch (Exception e) {
-            log(e);
-            return true;
-        }
-    }
 
     public static boolean isLeftCheckBoxVisible() {
         Field a = null, b = null;

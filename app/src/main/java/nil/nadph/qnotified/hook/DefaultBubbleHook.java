@@ -25,15 +25,15 @@ import android.widget.Toast;
 import java.io.File;
 
 import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.util.Utils.*;
 
-public class DefaultBubbleHook extends BaseDelayableHook {
+public class DefaultBubbleHook extends CommonDelayableHook {
     private static final DefaultBubbleHook self = new DefaultBubbleHook();
 
     private DefaultBubbleHook() {
+        super("__NOT_USED__");
     }
 
     public static DefaultBubbleHook get() {
@@ -41,22 +41,7 @@ public class DefaultBubbleHook extends BaseDelayableHook {
     }
 
     @Override
-    public boolean init() {
-        return true;
-    }
-
-    @Override
-    public Step[] getPreconditions() {
-        return new Step[0];
-    }
-
-    @Override
-    public int getEffectiveProc() {
-        return SyncUtils.PROC_MAIN;
-    }
-
-    @Override
-    public boolean isInited() {
+    public boolean initOnce() {
         return true;
     }
 

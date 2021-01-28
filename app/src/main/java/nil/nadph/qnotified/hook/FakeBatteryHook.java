@@ -23,9 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.BatteryManager;
 import android.os.Build;
-import android.os.Looper;
 import android.os.Parcelable;
-import android.widget.Toast;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -40,14 +38,12 @@ import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.Initiator;
-import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
-public class FakeBatteryHook extends BaseDelayableHook implements InvocationHandler, SyncUtils.BroadcastListener {
+public class FakeBatteryHook extends CommonDelayableHook implements InvocationHandler, SyncUtils.BroadcastListener {
     public static final String qn_fake_bat_enable = "qn_fake_bat_enable";
     private static final String ACTION_UPDATE_BATTERY_STATUS = "nil.nadph.qnotified.ACTION_UPDATE_BATTERY_STATUS";
     private static final String _FLAG_MANUAL_CALL = "flag_manual_call";
@@ -55,13 +51,13 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
     private static final FakeBatteryHook self = new FakeBatteryHook();
     private WeakReference<BroadcastReceiver> mBatteryLevelRecvRef = null;
     private WeakReference<BroadcastReceiver> mBatteryStatusRecvRef = null;
-    private boolean inited = false;
     private Object origRegistrar = null;
     private Object origStatus = null;
     private int lastFakeLevel = -1;
     private int lastFakeStatus = -1;
 
     FakeBatteryHook() {
+        super(qn_fake_bat_enable, SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF);
     }
 
     public static FakeBatteryHook get() {
@@ -69,9 +65,8 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
     }
 
     @Override
-    public boolean init() {
+    public boolean initOnce() {
         //log("---> FakeBatteryHook called init!");
-        if (inited) return true;
         try {
             //for :MSF
             Method mGetSendBatteryStatus = null;
@@ -178,7 +173,6 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
                 }
             }
             SyncUtils.addBroadcastListener(this);
-            inited = true;
             return true;
         } catch (Exception e) {
             log(e);
@@ -250,7 +244,7 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
     @Override
     public boolean onReceive(Context context, Intent intent) {
         if (ACTION_UPDATE_BATTERY_STATUS.equals(intent.getAction())) {
-            if (inited && isEnabled()) {
+            if (isInited() && isEnabled()) {
                 if (lastFakeLevel != getFakeBatteryCapacity()) {
                     scheduleReceiveBatteryLevel();
                 }
@@ -353,51 +347,5 @@ public class FakeBatteryHook extends BaseDelayableHook implements InvocationHand
 
     public int getFakeBatteryCapacity() {
         return getFakeBatteryStatus() & 127;
-    }
-
-    @Override
-    public int getEffectiveProc() {
-        return SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF;
-    }
-
-    @Override
-    public Step[] getPreconditions() {
-        return new Step[0];
-    }
-
-    @Override
-    public boolean isInited() {
-        return inited;
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        try {
-            ConfigManager mgr = ConfigManager.getDefaultConfig();
-            mgr.getAllConfig().put(qn_fake_bat_enable, enabled);
-            mgr.save();
-        } catch (final Exception e) {
-            Utils.log(e);
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-            } else {
-                SyncUtils.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-                    }
-                });
-            }
-        }
-    }
-
-    @Override
-    public boolean isEnabled() {
-        try {
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_fake_bat_enable);
-        } catch (Exception e) {
-            log(e);
-            return false;
-        }
     }
 }

@@ -40,7 +40,7 @@ public class SortAtPanel extends CommonDelayableHook {
     boolean isSort = false;
 
     protected SortAtPanel() {
-        super("ketal_At_Panel_Hook", SyncUtils.PROC_MAIN, false, new DexDeobfStep(DexKit.N_AtPanel__refreshUI), new DexDeobfStep(DexKit.N_AtPanel__showDialogAtView));
+        super("ketal_At_Panel_Hook", new DexDeobfStep(DexKit.N_AtPanel__refreshUI), new DexDeobfStep(DexKit.N_AtPanel__showDialogAtView));
     }
 
     @Override

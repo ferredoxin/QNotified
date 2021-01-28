@@ -24,7 +24,6 @@ import java.lang.reflect.Method;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
-import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.util.Initiator;
@@ -40,7 +39,7 @@ public class HideMiniAppPullEntry extends CommonDelayableHook {
     public static final HideMiniAppPullEntry INSTANCE = new HideMiniAppPullEntry();
 
     protected HideMiniAppPullEntry() {
-        super(ConfigItems.qn_hide_msg_list_miniapp, SyncUtils.PROC_MAIN, false);
+        super(ConfigItems.qn_hide_msg_list_miniapp);
     }
 
     @Override

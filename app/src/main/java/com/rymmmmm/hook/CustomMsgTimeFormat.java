@@ -27,37 +27,27 @@ import java.util.Date;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
-import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.dialog.RikkaCustomMsgTimeFormatDialog;
-import nil.nadph.qnotified.hook.BaseDelayableHook;
+import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
-import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
 //自定义聊天页面时间格式
-public class CustomMsgTimeFormat extends BaseDelayableHook {
+public class CustomMsgTimeFormat extends CommonDelayableHook {
     private static final CustomMsgTimeFormat self = new CustomMsgTimeFormat();
-    private boolean isInit = false;
 
     public static CustomMsgTimeFormat get() {
         return self;
     }
 
-    @Override
-    public int getEffectiveProc() {
-        return SyncUtils.PROC_MAIN;
+    protected CustomMsgTimeFormat() {
+        super("__NOT_USED__", new DexDeobfStep(DexKit.C_TimeFormatterUtils));
     }
 
     @Override
-    public boolean isInited() {
-        return isInit;
-    }
-
-    @Override
-    public boolean init() {
-        if (isInit) return true;
+    public boolean initOnce() {
         try {
             for (Method m : DexKit.doFindClass(DexKit.C_TimeFormatterUtils).getDeclaredMethods()) {
                 Class<?>[] argt = m.getParameterTypes();
@@ -76,17 +66,11 @@ public class CustomMsgTimeFormat extends BaseDelayableHook {
                     });
                 }
             }
-            isInit = true;
             return true;
         } catch (Throwable e) {
             Utils.log(e);
             return false;
         }
-    }
-
-    @Override
-    public Step[] getPreconditions() {
-        return new Step[]{new DexDeobfStep(DexKit.C_TimeFormatterUtils)};
     }
 
     @Override

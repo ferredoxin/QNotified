@@ -41,12 +41,11 @@ import nil.nadph.qnotified.util.Utils;
 import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
-public class FlashPicHook extends BaseDelayableHook {
-    public static final String qn_flash_as_pic = "qn_flash_as_pic";
+public class FlashPicHook extends CommonDelayableHook {
     private static final FlashPicHook self = new FlashPicHook();
-    private boolean inited = false;
 
     private FlashPicHook() {
+        super("qn_flash_as_pic", new DexDeobfStep(DexKit.C_FLASH_PIC_HELPER), new DexDeobfStep(DexKit.C_BASE_PIC_DL_PROC), new DexDeobfStep(DexKit.C_ITEM_BUILDER_FAC));
     }
 
     public static FlashPicHook get() {
@@ -54,12 +53,10 @@ public class FlashPicHook extends BaseDelayableHook {
     }
 
     @Override
-    public boolean init() {
-        if (inited) return true;
+    public boolean initOnce() {
         try {
-            final ConfigManager cfg = ConfigManager.getDefaultConfig();
             boolean canInit = checkPreconditions();
-            if (!canInit && ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_flash_as_pic)) {
+            if (!canInit && isEnabled()) {
                 if (Looper.myLooper() != null) {
                     showToast(getApplication(), TOAST_TYPE_ERROR, "QNotified:闪照功能初始化错误", Toast.LENGTH_LONG);
                 }
@@ -82,12 +79,7 @@ public class FlashPicHook extends BaseDelayableHook {
 
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    try {
-                        if (!ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_flash_as_pic))
-                            return;
-                    } catch (Exception e) {
-                        log(e);
-                    }
+                    if (!isEnabled()) return;
                     if (sn_BasePicDownloadProcessor == null) {
                         sn_BasePicDownloadProcessor = getShort$Name(DexKit.doFindClass(DexKit.C_BASE_PIC_DL_PROC));
                     }
@@ -126,7 +118,7 @@ public class FlashPicHook extends BaseDelayableHook {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     if (LicenseStatus.sDisableCommonHooks) return;
-                    if (!cfg.getBooleanOrFalse(qn_flash_as_pic)) return;
+                    if (!isEnabled()) return;
                     Object viewHolder = param.args[1];
                     if (viewHolder == null) return;
                     if (fBaseChatItemLayout == null) {
@@ -147,7 +139,6 @@ public class FlashPicHook extends BaseDelayableHook {
                     }
                 }
             });
-            inited = true;
             return true;
         } catch (Throwable e) {
             log(e);
@@ -176,51 +167,4 @@ public class FlashPicHook extends BaseDelayableHook {
             return false;
         }
     }
-
-    @Override
-    public int getEffectiveProc() {
-        return SyncUtils.PROC_MAIN;
-    }
-
-    @Override
-    public Step[] getPreconditions() {
-        return new Step[]{new DexDeobfStep(DexKit.C_FLASH_PIC_HELPER), new DexDeobfStep(DexKit.C_BASE_PIC_DL_PROC), new DexDeobfStep(DexKit.C_ITEM_BUILDER_FAC)};
-    }
-
-    @Override
-    public boolean isInited() {
-        return inited;
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        try {
-            ConfigManager mgr = ConfigManager.getDefaultConfig();
-            mgr.getAllConfig().put(qn_flash_as_pic, enabled);
-            mgr.save();
-        } catch (final Exception e) {
-            Utils.log(e);
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-            } else {
-                SyncUtils.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-                    }
-                });
-            }
-        }
-    }
-
-    @Override
-    public boolean isEnabled() {
-        try {
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_flash_as_pic);
-        } catch (Exception e) {
-            log(e);
-            return false;
-        }
-    }
-
 }
