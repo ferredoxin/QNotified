@@ -27,7 +27,7 @@ import me.kyuubiran.hook.AutoMosaicName;
 import me.kyuubiran.hook.DisableScreenshotHelper;
 import me.kyuubiran.hook.RemoveCameraButton;
 import me.kyuubiran.hook.RemoveDailySign;
-import me.kyuubiran.hook.RemoveFuckingDiyCard;
+import me.kyuubiran.hook.RemoveDiyCard;
 import me.kyuubiran.hook.RemoveGroupApp;
 import me.kyuubiran.hook.RemovePlayTogether;
 import me.kyuubiran.hook.RemoveQbossAD;
@@ -160,7 +160,7 @@ public abstract class AbsDelayableHook implements SwitchConfigItem {
                     //RemovePokeGrayTips.INSTANCE,
                     ArbitraryFrdSourceId.get(),
                     RemoveDailySign.INSTANCE,
-                    RemoveFuckingDiyCard.INSTANCE,
+                    RemoveDiyCard.INSTANCE,
                     RemoveRedDot.INSTANCE,
                     EnableQLog.INSTANCE,
                     ForcedSendOriginalPhoto.INSTANCE,
