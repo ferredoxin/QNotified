@@ -1,5 +1,5 @@
 /* QNotified - An Xposed module for QQ/TIM
- * Copyright (C) 2019-2020 xenonhydride@gmail.com
+ * Copyright (C) 2019-2021 xenonhydride@gmail.com
  * https://github.com/ferredoxin/QNotified
  *
  * This software is free software: you can redistribute it and/or
@@ -20,6 +20,7 @@ package nil.nadph.qnotified.hook;
 
 import androidx.annotation.NonNull;
 
+import me.ketal.hook.MultiActionHook;
 import me.ketal.hook.SortAtPanel;
 import me.ketal.hook.HideAssistantRemoveTips;
 import me.ketal.hook.LeftSwipeReplyHook;
@@ -27,7 +28,7 @@ import me.kyuubiran.hook.AutoMosaicName;
 import me.kyuubiran.hook.DisableScreenshotHelper;
 import me.kyuubiran.hook.RemoveCameraButton;
 import me.kyuubiran.hook.RemoveDailySign;
-import me.kyuubiran.hook.RemoveFuckingDiyCard;
+import me.kyuubiran.hook.RemoveDiyCard;
 import me.kyuubiran.hook.RemoveGroupApp;
 import me.kyuubiran.hook.RemovePlayTogether;
 import me.kyuubiran.hook.RemoveQbossAD;
@@ -160,7 +161,7 @@ public abstract class AbsDelayableHook implements SwitchConfigItem {
                     //RemovePokeGrayTips.INSTANCE,
                     ArbitraryFrdSourceId.get(),
                     RemoveDailySign.INSTANCE,
-                    RemoveFuckingDiyCard.INSTANCE,
+                    RemoveDiyCard.INSTANCE,
                     RemoveRedDot.INSTANCE,
                     EnableQLog.INSTANCE,
                     ForcedSendOriginalPhoto.INSTANCE,

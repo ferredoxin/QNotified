@@ -1,5 +1,5 @@
 /* QNotified - An Xposed module for QQ/TIM
- * Copyright (C) 2019-2020 xenonhydride@gmail.com
+ * Copyright (C) 2019-2021 xenonhydride@gmail.com
  * https://github.com/ferredoxin/QNotified
  *
  * This software is free software: you can redistribute it and/or
@@ -30,7 +30,7 @@ import android.widget.TextView;
 import com.tencent.mobileqq.widget.BounceScrollView;
 
 import me.kyuubiran.dialog.RevokeMsgDialog;
-import me.kyuubiran.hook.RemoveFuckingDiyCard;
+import me.kyuubiran.hook.RemoveDiyCard;
 import me.kyuubiran.hook.RemovePokeGrayTips;
 import me.kyuubiran.hook.testhook.*;
 import nil.nadph.qnotified.ui.ResUtils;
@@ -86,7 +86,7 @@ public class AlphaTestFuncActivity extends IphoneTitleBarActivityCompat {
             v.setOnClickListener(v1 -> RevokeMsgDialog.INSTANCE.onShow(AlphaTestFuncActivity.this));
             ll.addView(v);
             ll.addView(newListItemHookSwitchInit(this, "[无效]屏蔽戳一戳灰字", "仅屏蔽开启之后的提示", RemovePokeGrayTips.INSTANCE));
-            ll.addView(newListItemHookSwitchInit(this, "[特供版]彻底屏蔽傻逼diy名片", "用闪退/zip炸弹名片的先死个妈", RemoveFuckingDiyCard.INSTANCE));
+            ll.addView(newListItemHookSwitchInit(this, "[特供版]彻底屏蔽傻逼diy名片", "用闪退/zip炸弹名片的先死个妈", RemoveDiyCard.INSTANCE));
         }
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         this.setContentView(bounceScrollView);

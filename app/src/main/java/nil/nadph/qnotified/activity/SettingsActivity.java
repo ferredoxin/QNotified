@@ -1,5 +1,5 @@
 /* QNotified - An Xposed module for QQ/TIM
- * Copyright (C) 2019-2020 xenonhydride@gmail.com
+ * Copyright (C) 2019-2021 xenonhydride@gmail.com
  * https://github.com/ferredoxin/QNotified
  *
  * This software is free software: you can redistribute it and/or
@@ -45,6 +45,7 @@ import java.io.File;
 import java.io.IOException;
 
 import me.ketal.activity.ModifyLeftSwipeReplyActivity;
+import me.ketal.hook.MultiActionHook;
 import me.ketal.hook.SortAtPanel;
 import me.ketal.hook.LeftSwipeReplyHook;
 import me.kyuubiran.hook.AutoMosaicName;
