@@ -35,11 +35,9 @@ import com.tencent.mobileqq.app.QQAppInterface;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import me.singleneuron.hook.CopyCardMsg;
-import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.activity.ChatTailActivity;
 import nil.nadph.qnotified.dialog.RikkaCustomMsgTimeFormatDialog;
 import nil.nadph.qnotified.step.DexDeobfStep;
-import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.ui.InterceptLayout;
 import nil.nadph.qnotified.ui.TouchEventToLongClickAdapter;
 import nil.nadph.qnotified.util.*;
@@ -56,12 +54,13 @@ import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
 
-public class InputButtonHook extends BaseDelayableHook {
+public class InputButtonHook extends CommonDelayableHook {
     public static final int R_ID_COPY_CODE = 0x00EE77CC;
     private static final InputButtonHook self = new InputButtonHook();
-    private boolean inited = false;
 
     private InputButtonHook() {
+        super("__NOT_USED__", new DexDeobfStep(DexKit.C_ARK_APP_ITEM_BUBBLE_BUILDER), new DexDeobfStep(DexKit.C_FACADE),
+            new DexDeobfStep(DexKit.C_TEST_STRUCT_MSG), new DexDeobfStep(DexKit.N_BASE_CHAT_PIE__INIT));
     }
 
     public static InputButtonHook get() {
@@ -69,8 +68,7 @@ public class InputButtonHook extends BaseDelayableHook {
     }
 
     @Override
-    public boolean init() {
-        if (inited) return true;
+    public boolean initOnce() {
         try {
             //Begin: send btn
 //            for (Method method : cl_BaseChatPie.getDeclaredMethods()) {
@@ -253,7 +251,6 @@ public class InputButtonHook extends BaseDelayableHook {
 //                    break;
 //                }
 //            }
-            inited = true;
             return true;
         } catch (Throwable throwable) {
             log(throwable);
@@ -313,22 +310,6 @@ public class InputButtonHook extends BaseDelayableHook {
                 }
             }
         }
-    }
-
-    @Override
-    public int getEffectiveProc() {
-        return SyncUtils.PROC_MAIN;
-    }
-
-    @Override
-    public Step[] getPreconditions() {
-        return new Step[]{new DexDeobfStep(DexKit.C_ARK_APP_ITEM_BUBBLE_BUILDER), new DexDeobfStep(DexKit.C_FACADE),
-                new DexDeobfStep(DexKit.C_TEST_STRUCT_MSG), new DexDeobfStep(DexKit.N_BASE_CHAT_PIE__INIT)};
-    }
-
-    @Override
-    public boolean isInited() {
-        return inited;
     }
 
     @Override

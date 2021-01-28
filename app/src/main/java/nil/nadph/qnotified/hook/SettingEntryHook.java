@@ -29,11 +29,9 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.MainHook;
-import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.activity.EulaActivity;
 import nil.nadph.qnotified.lifecycle.ActProxyMgr;
 import nil.nadph.qnotified.step.DexDeobfStep;
-import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.*;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -41,12 +39,12 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
-public class SettingEntryHook extends BaseDelayableHook {
+public class SettingEntryHook extends CommonDelayableHook {
     public static final int R_ID_SETTING_ENTRY = 0x300AFF71;
     private static final SettingEntryHook self = new SettingEntryHook();
-    private boolean inited = false;
 
     private SettingEntryHook() {
+        super("__NOT_USED__", new DexDeobfStep(DexKit.C_DIALOG_UTIL));
     }
 
     @NonNull
@@ -55,8 +53,7 @@ public class SettingEntryHook extends BaseDelayableHook {
     }
 
     @Override
-    public boolean init() {
-        if (inited) return true;
+    public boolean initOnce() {
         try {
             XposedHelpers.findAndHookMethod(load("com.tencent.mobileqq.activity.QQSettingSettingActivity"), "doOnCreate", Bundle.class, new XC_MethodHook(52) {
                 @Override
@@ -162,7 +159,6 @@ public class SettingEntryHook extends BaseDelayableHook {
                     }
                 }
             });
-            inited = true;
             return true;
         } catch (Throwable e) {
             log(e);
@@ -171,28 +167,13 @@ public class SettingEntryHook extends BaseDelayableHook {
     }
 
     @Override
-    public boolean checkPreconditions() {
-        return true;
-    }
-
-    @Override
-    public int getEffectiveProc() {
-        return SyncUtils.PROC_MAIN;
-    }
-
-    @Override
-    public Step[] getPreconditions() {
-        return new Step[]{new DexDeobfStep(DexKit.C_DIALOG_UTIL)};
-    }
-
-    @Override
-    public boolean isInited() {
-        return inited;
-    }
-
-    @Override
     public void setEnabled(boolean enabled) {
         //do nothing
+    }
+
+    @Override
+    public boolean checkPreconditions() {
+        return true;
     }
 
     @Override

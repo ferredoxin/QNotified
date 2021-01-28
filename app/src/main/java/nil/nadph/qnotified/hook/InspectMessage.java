@@ -20,7 +20,6 @@ package nil.nadph.qnotified.hook;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -31,11 +30,8 @@ import java.lang.reflect.Modifier;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
-import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.bridge.QQMessageFacade;
-import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.step.DexDeobfStep;
-import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
@@ -45,14 +41,13 @@ import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
-public class InspectMessage extends BaseDelayableHook implements View.OnLongClickListener {
-    private static final String qn_inspect_msg = "qn_inspect_msg";
+public class InspectMessage extends CommonDelayableHook implements View.OnLongClickListener {
     private static final InspectMessage self = new InspectMessage();
-    private boolean inited = false;
     static Field f_panel;
     boolean bInspectMode = false;
 
     private InspectMessage() {
+        super("qn_inspect_msg", new DexDeobfStep(DexKit.C_AIO_UTILS), new DexDeobfStep(DexKit.C_MessageCache), new DexDeobfStep(DexKit.C_MSG_REC_FAC));
     }
 
     public static InspectMessage get() {
@@ -60,8 +55,7 @@ public class InspectMessage extends BaseDelayableHook implements View.OnLongClic
     }
 
     @Override
-    public boolean init() {
-        if (inited) return true;
+    public boolean initOnce() {
         try {
             findAndHookMethod(load("com/tencent/mobileqq/activity/aio/BaseBubbleBuilder"), "onClick", View.class, new XC_MethodHook(49) {
                 @Override
@@ -159,7 +153,6 @@ public class InspectMessage extends BaseDelayableHook implements View.OnLongClic
                 }
             });
             //end tweak
-            inited = true;
             return true;
         } catch (Throwable e) {
             log(e);
@@ -177,51 +170,5 @@ public class InspectMessage extends BaseDelayableHook implements View.OnLongClic
             Utils.showToastShort(ctx, "已关闭检查消息");
         }
         return true;
-    }
-
-    @Override
-    public int getEffectiveProc() {
-        return SyncUtils.PROC_MAIN;
-    }
-
-    @Override
-    public boolean isInited() {
-        return inited;
-    }
-
-    @Override
-    public Step[] getPreconditions() {
-        return new Step[]{new DexDeobfStep(DexKit.C_AIO_UTILS), new DexDeobfStep(DexKit.C_MessageCache), new DexDeobfStep(DexKit.C_MSG_REC_FAC)};
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        try {
-            ConfigManager mgr = ConfigManager.getDefaultConfig();
-            mgr.getAllConfig().put(qn_inspect_msg, enabled);
-            mgr.save();
-        } catch (final Exception e) {
-            Utils.log(e);
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-            } else {
-                SyncUtils.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-                    }
-                });
-            }
-        }
-    }
-
-    @Override
-    public boolean isEnabled() {
-        try {
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_inspect_msg);
-        } catch (Exception e) {
-            log(e);
-            return false;
-        }
     }
 }

@@ -27,8 +27,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.ViewBuilder;
 import nil.nadph.qnotified.util.Initiator;
@@ -40,11 +38,11 @@ import java.lang.reflect.Method;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
-public class ArbitraryFrdSourceId extends BaseDelayableHook {
+public class ArbitraryFrdSourceId extends CommonDelayableHook {
     private static final ArbitraryFrdSourceId self = new ArbitraryFrdSourceId();
-    private boolean inited = false;
 
     private ArbitraryFrdSourceId() {
+        super("__NOT_USED__");
     }
 
     public static ArbitraryFrdSourceId get() {
@@ -52,8 +50,7 @@ public class ArbitraryFrdSourceId extends BaseDelayableHook {
     }
 
     @Override
-    public boolean init() {
-        if (inited) return true;
+    public boolean initOnce() {
         try {
             Method AddFriendVerifyActivity_doOnCreate = null;
             for (Method m : Initiator.load("com.tencent.mobileqq.activity.AddFriendVerifyActivity").getDeclaredMethods()) {
@@ -69,7 +66,6 @@ public class ArbitraryFrdSourceId extends BaseDelayableHook {
                     initFunView(ctx);
                 }
             });
-            inited = true;
         } catch (Throwable e) {
             Utils.log(e);
         }
@@ -118,21 +114,6 @@ public class ArbitraryFrdSourceId extends BaseDelayableHook {
         wrapper.addView(sourceAttrLayout, MATCH_PARENT, WRAP_CONTENT);
 
         bsv.addView(wrapper, rl_root_lp);
-    }
-
-    @Override
-    public Step[] getPreconditions() {
-        return new Step[0];
-    }
-
-    @Override
-    public int getEffectiveProc() {
-        return SyncUtils.PROC_MAIN;
-    }
-
-    @Override
-    public boolean isInited() {
-        return inited;
     }
 
     @Override

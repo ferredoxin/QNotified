@@ -37,12 +37,11 @@ import static nil.nadph.qnotified.util.Initiator._EmoAddedAuthCallback;
 import static nil.nadph.qnotified.util.Initiator._FavEmoRoamingHandler;
 import static nil.nadph.qnotified.util.Utils.*;
 
-public class FavMoreEmo extends BaseDelayableHook {
-    public static final String qqhelper_fav_more_emo = "qqhelper_fav_more_emo";
+public class FavMoreEmo extends CommonDelayableHook {
     private static final FavMoreEmo self = new FavMoreEmo();
-    private boolean inited = false;
 
     FavMoreEmo() {
+        super("qqhelper_fav_more_emo", new DexDeobfStep(DexKit.C_FAV_EMO_CONST));
     }
 
     public static FavMoreEmo get() {
@@ -50,8 +49,7 @@ public class FavMoreEmo extends BaseDelayableHook {
     }
 
     @Override
-    public boolean init() {
-        if (inited) return true;
+    public boolean initOnce() {
         try {
             final Class mEmoAddedAuthCallback = _EmoAddedAuthCallback();
             final Class mFavEmoRoamingHandler = _FavEmoRoamingHandler();
@@ -88,7 +86,6 @@ public class FavMoreEmo extends BaseDelayableHook {
                     }
                 });
             }
-            inited = true;
             return true;
         } catch (Throwable e) {
             log(e);
@@ -100,51 +97,5 @@ public class FavMoreEmo extends BaseDelayableHook {
         Class mFavEmoConstant = DexKit.doFindClass(DexKit.C_FAV_EMO_CONST);
         sput_object(mFavEmoConstant, "a", 800);
         sput_object(mFavEmoConstant, "b", 800);
-    }
-
-    @Override
-    public int getEffectiveProc() {
-        return SyncUtils.PROC_MAIN;
-    }
-
-    @Override
-    public Step[] getPreconditions() {
-        return new Step[]{new DexDeobfStep(DexKit.C_FAV_EMO_CONST)};
-    }
-
-    @Override
-    public boolean isInited() {
-        return inited;
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        try {
-            ConfigManager mgr = ConfigManager.getDefaultConfig();
-            mgr.getAllConfig().put(qqhelper_fav_more_emo, enabled);
-            mgr.save();
-        } catch (final Exception e) {
-            Utils.log(e);
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-            } else {
-                SyncUtils.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-                    }
-                });
-            }
-        }
-    }
-
-    @Override
-    public boolean isEnabled() {
-        try {
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qqhelper_fav_more_emo);
-        } catch (Exception e) {
-            log(e);
-            return false;
-        }
     }
 }

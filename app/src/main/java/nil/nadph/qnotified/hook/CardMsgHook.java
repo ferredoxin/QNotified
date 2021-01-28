@@ -18,30 +18,23 @@
  */
 package nil.nadph.qnotified.hook;
 
-
-import android.os.Looper;
 import android.os.Parcelable;
-import android.widget.Toast;
 
 import com.tencent.mobileqq.app.QQAppInterface;
 
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.config.ConfigManager;
+import org.jetbrains.annotations.NotNull;
+
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.Utils;
-
-import static nil.nadph.qnotified.util.Utils.*;
 
 
-public class CardMsgHook extends BaseDelayableHook {
+public class CardMsgHook extends CommonDelayableHook {
     public static final int R_ID_COPY_CODE = 0x00EE77CC;
-    public static final String qn_send_card_msg = "qn_send_card_msg";
     private static final CardMsgHook self = new CardMsgHook();
-    private boolean inited = false;
 
     private CardMsgHook() {
+        super("qn_send_card_msg");
     }
 
     public static CardMsgHook get() {
@@ -49,8 +42,7 @@ public class CardMsgHook extends BaseDelayableHook {
     }
 
     @Override
-    public boolean init() {
-        if (inited) return true;
+    public boolean initOnce() {
 
         /*
         try {
@@ -232,7 +224,6 @@ public class CardMsgHook extends BaseDelayableHook {
 //            }
 
          */
-        inited = true;
         return true;
         // } catch (Throwable throwable) {
         //   log(throwable);
@@ -306,50 +297,8 @@ public class CardMsgHook extends BaseDelayableHook {
     static native boolean ntSendCardMsg(QQAppInterface rt, Parcelable session, String msg) throws Exception;
 
     @Override
-    public int getEffectiveProc() {
-        return SyncUtils.PROC_MAIN;
-    }
-
-    @Override
     public Step[] getPreconditions() {
         return new Step[]{new DexDeobfStep(DexKit.C_ARK_APP_ITEM_BUBBLE_BUILDER), new DexDeobfStep(DexKit.C_FACADE),
                 new DexDeobfStep(DexKit.C_TEST_STRUCT_MSG), new DexDeobfStep(DexKit.N_BASE_CHAT_PIE__INIT)};
     }
-
-    @Override
-    public boolean isInited() {
-        return inited;
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        try {
-            ConfigManager mgr = ConfigManager.getDefaultConfig();
-            mgr.getAllConfig().put(qn_send_card_msg, enabled);
-            mgr.save();
-        } catch (final Exception e) {
-            Utils.log(e);
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-            } else {
-                SyncUtils.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-                    }
-                });
-            }
-        }
-    }
-
-    @Override
-    public boolean isEnabled() {
-        try {
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_send_card_msg);
-        } catch (Exception e) {
-            log(e);
-            return false;
-        }
-    }
-
 }

@@ -22,7 +22,6 @@ import me.kyuubiran.hook.AutoMosaicName
 import me.nextalone.hook.HideProfileBubble
 import me.nextalone.hook.HideTotalNumber
 import me.singleneuron.util.QQVersion.*
-import me.ketal.hook.MultiActionHook
 import nil.nadph.qnotified.hook.ReplyNoAtHook
 import nil.nadph.qnotified.hook.VasProfileAntiCrash
 
@@ -138,10 +137,6 @@ object QQConfigTable {
             QQ_8_4_8 to "createAtMsg",
             QQ_8_5_5 to "l"
         ),
-
-        MultiActionHook::class.java.simpleName to mapOf(
-            QQ_8_0_0 to "a",
-        )
     )
 
 }

@@ -21,7 +21,6 @@ package nil.nadph.qnotified.hook;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.Looper;
 import android.os.Parcelable;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,11 +35,8 @@ import java.lang.reflect.Method;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
-import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.bridge.ChatActivityFacade;
-import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.dialog.RepeaterIconSettingDialog;
-import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.ui.LinearLayoutDelegate;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
@@ -48,12 +44,11 @@ import nil.nadph.qnotified.util.Utils;
 import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
-public class RepeaterHook extends BaseDelayableHook {
-    public static final String bug_repeater = "bug_repeater";
+public class RepeaterHook extends CommonDelayableHook {
     private static final RepeaterHook self = new RepeaterHook();
-    private boolean inited = false;
 
     private RepeaterHook() {
+        super("bug_repeater");
     }
 
     public static RepeaterHook get() {
@@ -62,8 +57,7 @@ public class RepeaterHook extends BaseDelayableHook {
 
     @Override
     @SuppressLint({"WrongConstant", "ResourceType"})
-    public boolean init() {
-        if (inited) return true;
+    public boolean initOnce() {
         try {
             Method getView = null;
             Class listener2 = null;
@@ -244,7 +238,7 @@ public class RepeaterHook extends BaseDelayableHook {
             });
             //end: pic
             //begin: text
-            if (Utils.isTim(getApplication())) {
+            if (Utils.isTim()) {
                 // TODO: 2020/5/17 Add MsgForText +1 for TIM
                 XposedHelpers.findAndHookMethod(_TextItemBuilder(), "a", ChatMessage, itemHolder, View.class, BaseChatItemLayout, listener2,
                         new XC_MethodHook(51) {
@@ -420,60 +414,8 @@ public class RepeaterHook extends BaseDelayableHook {
                         }
                     });
             //end: ptt
-            inited = true;
             return true;
         } catch (Throwable e) {
-            log(e);
-            return false;
-        }
-    }
-
-    @Override
-    public int getEffectiveProc() {
-        return SyncUtils.PROC_MAIN;
-    }
-
-    @Override
-    public boolean checkPreconditions() {
-        return true;
-    }
-
-    @Override
-    public Step[] getPreconditions() {
-        return new Step[0];
-    }
-
-    @Override
-    public boolean isInited() {
-        return inited;
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        try {
-            ConfigManager mgr = ConfigManager.getDefaultConfig();
-            mgr.getAllConfig().put(bug_repeater, enabled);
-            mgr.save();
-        } catch (final Exception e) {
-            Utils.log(e);
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-            } else {
-                SyncUtils.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-                    }
-                });
-            }
-        }
-    }
-
-    @Override
-    public boolean isEnabled() {
-        try {
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(bug_repeater);
-        } catch (Exception e) {
             log(e);
             return false;
         }

@@ -23,7 +23,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Looper;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -34,17 +33,14 @@ import java.util.regex.Pattern;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
-import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.lifecycle.ActProxyMgr;
-import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.util.*;
 
 import static nil.nadph.qnotified.util.Utils.*;
 
-public class JumpController extends BaseDelayableHook {
-    private static final String qn_jmp_ctl_enable = "qn_jmp_ctl_enable";
+public class JumpController extends CommonDelayableHook {
     private static final String qn_jmp_ctl_rules = "qn_jmp_ctl_rules";
 
     public static final String DEFAULT_RULES = "A,P:me.singleneuron.locknotification;\n" +
@@ -62,8 +58,7 @@ public class JumpController extends BaseDelayableHook {
     private ArrayList<Rule> rules = null;
 
     @Override
-    public boolean init() {
-        if (inited) return true;
+    public boolean initOnce() {
         try {
             Class<?> JefsClass = Initiator.load("com.tencent.mobileqq.haoliyou.JefsClass");
             if (JefsClass == null) return false;
@@ -164,7 +159,6 @@ public class JumpController extends BaseDelayableHook {
                     }
                 }
             });
-            inited = true;
             return true;
         } catch (Throwable e) {
             Utils.log(e);
@@ -172,58 +166,14 @@ public class JumpController extends BaseDelayableHook {
         }
     }
 
-    private boolean inited = false;
-
     private static final JumpController self = new JumpController();
 
     public static JumpController get() {
         return self;
     }
 
-    @Override
-    public int getEffectiveProc() {
-        return SyncUtils.PROC_MAIN;
-    }
-
-    @Override
-    public boolean isInited() {
-        return inited;
-    }
-
-    @Override
-    public Step[] getPreconditions() {
-        return new Step[0];
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        try {
-            ConfigManager mgr = ConfigManager.getDefaultConfig();
-            mgr.getAllConfig().put(qn_jmp_ctl_enable, enabled);
-            mgr.save();
-        } catch (final Exception e) {
-            Utils.log(e);
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-            } else {
-                SyncUtils.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-                    }
-                });
-            }
-        }
-    }
-
-    @Override
-    public boolean isEnabled() {
-        try {
-            return ConfigManager.getDefaultConfig().getBooleanOrDefault(qn_jmp_ctl_enable, true);
-        } catch (Exception e) {
-            log(e);
-            return false;
-        }
+    protected JumpController() {
+        super("qn_jmp_ctl_enable");
     }
 
     public int checkIntent(Context ctx, Intent intent) {

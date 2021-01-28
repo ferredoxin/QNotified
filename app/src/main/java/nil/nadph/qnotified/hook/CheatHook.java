@@ -19,11 +19,8 @@
 package nil.nadph.qnotified.hook;
 
 import android.app.AlertDialog;
-import android.app.Application;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Looper;
-import android.widget.Toast;
 
 import java.util.Random;
 
@@ -31,10 +28,7 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import me.singleneuron.util.QQVersion;
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.step.DexDeobfStep;
-import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
@@ -42,23 +36,18 @@ import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.util.Initiator._SessionInfo;
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
-import static nil.nadph.qnotified.util.Utils.getApplication;
-import static nil.nadph.qnotified.util.Utils.isTim;
 import static nil.nadph.qnotified.util.Utils.log;
 
-public class CheatHook extends BaseDelayableHook {
-
-    public static final String qh_random_cheat = "qh_random_cheat";
+public class  CheatHook extends CommonDelayableHook {
     private static final CheatHook self = new CheatHook();
     private final String[] diceItem = {"1", "2", "3", "4", "5", "6"};
     private final String[] morraItem = {"石头", "剪刀", "布"};
-    private boolean inited = false;
 
     private int diceNum = -1;
     private int morraNum = -1;
 
     private CheatHook() {
+        super("qh_random_cheat", new DexDeobfStep(DexKit.C_PNG_FRAME_UTIL), new DexDeobfStep(DexKit.C_PIC_EMOTICON_INFO));
     }
 
     public static CheatHook get() {
@@ -66,8 +55,7 @@ public class CheatHook extends BaseDelayableHook {
     }
 
     @Override
-    public boolean init() {
-        if (inited) return true;
+    public boolean initOnce() {
         try {
             XposedHelpers.findAndHookMethod(DexKit.doFindClass(DexKit.C_PNG_FRAME_UTIL), "a", int.class, new XC_MethodHook(43) {
                 @Override
@@ -156,7 +144,6 @@ public class CheatHook extends BaseDelayableHook {
                             }
                         });
             }
-            inited = true;
             return true;
         } catch (Throwable e) {
             log(e);
@@ -233,54 +220,5 @@ public class CheatHook extends BaseDelayableHook {
                 })
                 .create();
         alertDialog.show();
-    }
-
-    @Override
-    public Step[] getPreconditions() {
-        return new Step[]{new DexDeobfStep(DexKit.C_PNG_FRAME_UTIL), new DexDeobfStep(DexKit.C_PIC_EMOTICON_INFO)};
-    }
-
-    @Override
-    public int getEffectiveProc() {
-        return SyncUtils.PROC_MAIN;
-    }
-
-    @Override
-    public boolean isInited() {
-        return inited;
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        try {
-            ConfigManager mgr = ConfigManager.getDefaultConfig();
-            mgr.getAllConfig().put(qh_random_cheat, enabled);
-            mgr.save();
-        } catch (Exception e) {
-            Utils.log(e);
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-            } else {
-                SyncUtils.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "",
-                                Toast.LENGTH_SHORT);
-                    }
-                });
-            }
-        }
-    }
-
-    @Override
-    public boolean isEnabled() {
-        try {
-            Application app = getApplication();
-            if (app != null && isTim(app)) return false;
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qh_random_cheat);
-        } catch (Exception e) {
-            log(e);
-            return false;
-        }
     }
 }

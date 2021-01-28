@@ -27,7 +27,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Looper;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -48,12 +47,10 @@ import java.util.ArrayList;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
-import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.bridge.ChatActivityFacade;
 import nil.nadph.qnotified.bridge.SessionInfoImpl;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.step.DexDeobfStep;
-import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
@@ -67,17 +64,16 @@ import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
 
-public class PttForwardHook extends BaseDelayableHook {
+public class PttForwardHook extends CommonDelayableHook {
 
     public static final int R_ID_PTT_FORWARD = 0x30EE77CB;
     public static final int R_ID_PTT_SAVE = 0x30EE77CC;
-    public static final String qn_enable_ptt_forward = "qn_enable_ptt_forward";
     public static final String qn_enable_ptt_save = "qn_enable_ptt_save";
     public static final String qn_cache_ptt_save_last_parent_dir = "qn_cache_ptt_save_last_parent_dir";
     private static final PttForwardHook self = new PttForwardHook();
-    private boolean inited = false;
 
     private PttForwardHook() {
+        super("qn_enable_ptt_forward", new DexDeobfStep(DexKit.C_FACADE));
     }
 
     public static PttForwardHook get() {
@@ -85,8 +81,7 @@ public class PttForwardHook extends BaseDelayableHook {
     }
 
     @Override
-    public boolean init() {
-        if (inited) return true;
+    public boolean initOnce() {
         try {
             Class clz_ForwardBaseOption = load("com/tencent/mobileqq/forward/ForwardBaseOption");
             if (clz_ForwardBaseOption == null) {
@@ -289,11 +284,7 @@ public class PttForwardHook extends BaseDelayableHook {
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                             if (LicenseStatus.sDisableCommonHooks) return;
-                            try {
-                                ConfigManager cfg = ConfigManager.getDefaultConfig();
-                                if (!cfg.getBooleanOrFalse(qn_enable_ptt_forward)) return;
-                            } catch (Exception ignored) {
-                            }
+                            if (!isEnabled()) return;
                             Object arr = param.getResult();
                             Class<?> clQQCustomMenuItem = arr.getClass().getComponentType();
                             Object ret;
@@ -318,47 +309,10 @@ public class PttForwardHook extends BaseDelayableHook {
                         }
                     });
             }
-            inited = true;
             return true;
         } catch (Throwable e) {
             log(e);
             return false;
-        }
-    }
-
-    @Override
-    public int getEffectiveProc() {
-        return SyncUtils.PROC_MAIN;
-    }
-
-    @Override
-    public Step[] getPreconditions() {
-        return new Step[]{new DexDeobfStep(DexKit.C_FACADE)};
-    }
-
-    @Override
-    public boolean isInited() {
-        return inited;
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        try {
-            ConfigManager mgr = ConfigManager.getDefaultConfig();
-            mgr.getAllConfig().put(qn_enable_ptt_forward, enabled);
-            mgr.save();
-        } catch (final Exception e) {
-            Utils.log(e);
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-            } else {
-                SyncUtils.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-                    }
-                });
-            }
         }
     }
 
@@ -454,17 +408,6 @@ public class PttForwardHook extends BaseDelayableHook {
             }
         });
     }
-
-    @Override
-    public boolean isEnabled() {
-        try {
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_enable_ptt_forward);
-        } catch (Exception e) {
-            log(e);
-            return false;
-        }
-    }
-
 
     public boolean isSavePttEnabled() {
         try {

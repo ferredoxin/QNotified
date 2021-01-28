@@ -27,8 +27,6 @@ import java.lang.reflect.Modifier;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import me.singleneuron.qn_kernel.tlb.ConfigTable;
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Utils;
 
@@ -38,12 +36,12 @@ import static nil.nadph.qnotified.util.Utils.log;
  * Not an important hook.
  * Provide limited anti-crash feature for VasProfileCard, esp DIY card.
  */
-public class VasProfileAntiCrash extends BaseDelayableHook {
+public class VasProfileAntiCrash extends CommonDelayableHook {
 
     private static final VasProfileAntiCrash self = new VasProfileAntiCrash();
-    private boolean inited = false;
 
     private VasProfileAntiCrash() {
+        super("__NOT_USED__");
     }
 
     public static VasProfileAntiCrash get() {
@@ -51,8 +49,7 @@ public class VasProfileAntiCrash extends BaseDelayableHook {
     }
 
     @Override
-    public boolean init() {
-        if (inited) return true;
+    public boolean initOnce() {
         try {
             String className = null;
             try {
@@ -61,7 +58,6 @@ public class VasProfileAntiCrash extends BaseDelayableHook {
                 Utils.log(e);
             }
             doHook(className);
-            inited = true;
             return true;
         } catch (Throwable e) {
             log(e);
@@ -100,21 +96,6 @@ public class VasProfileAntiCrash extends BaseDelayableHook {
                 });
             }
         }
-    }
-
-    @Override
-    public int getEffectiveProc() {
-        return SyncUtils.PROC_MAIN;
-    }
-
-    @Override
-    public boolean isInited() {
-        return inited;
-    }
-
-    @Override
-    public Step[] getPreconditions() {
-        return new Step[0];
     }
 
     @Override

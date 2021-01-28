@@ -20,15 +20,14 @@ package nil.nadph.qnotified.hook;
 
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.script.QNScriptManager;
-import nil.nadph.qnotified.step.Step;
 
 import static nil.nadph.qnotified.util.Utils.log;
 
-public class ScriptEventHook extends BaseDelayableHook {
+public class ScriptEventHook extends CommonDelayableHook {
     private static final ScriptEventHook self = new ScriptEventHook();
-    private boolean inited = false;
 
     private ScriptEventHook() {
+        super("__NOT_USED__", SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF);
     }
 
     public static ScriptEventHook get() {
@@ -36,8 +35,7 @@ public class ScriptEventHook extends BaseDelayableHook {
     }
 
     @Override
-    public boolean init() {
-        if (inited) return true;
+    public boolean initOnce() {
         QNScriptManager.init();
         try {
         /*
@@ -66,7 +64,6 @@ public class ScriptEventHook extends BaseDelayableHook {
             });
 
          */
-            inited = true;
             return true;
         } catch (Throwable e) {
             log(e);
@@ -77,26 +74,6 @@ public class ScriptEventHook extends BaseDelayableHook {
     @Override
     public void setEnabled(boolean enabled) {
         //do nothing
-    }
-
-    @Override
-    public boolean checkPreconditions() {
-        return true;
-    }
-
-    @Override
-    public int getEffectiveProc() {
-        return SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF;
-    }
-
-    @Override
-    public Step[] getPreconditions() {
-        return new Step[0];
-    }
-
-    @Override
-    public boolean isInited() {
-        return inited;
     }
 
     @Override

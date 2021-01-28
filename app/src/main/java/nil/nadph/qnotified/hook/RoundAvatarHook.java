@@ -19,28 +19,21 @@
 package nil.nadph.qnotified.hook;
 
 import android.app.Application;
-import android.os.Looper;
-import android.widget.Toast;
 
 import java.lang.reflect.Method;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.step.DexDeobfStep;
-import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.util.Utils.*;
 
-public class RoundAvatarHook extends BaseDelayableHook {
-    public static final String qn_round_avatar = "qn_round_avatar";
+public class RoundAvatarHook extends CommonDelayableHook {
     private static final RoundAvatarHook self = new RoundAvatarHook();
-    private boolean inited = false;
 
     RoundAvatarHook() {
+        super("qn_round_avatar", new DexDeobfStep(DexKit.C_SIMPLE_UI_UTIL));
     }
 
     public static RoundAvatarHook get() {
@@ -48,8 +41,7 @@ public class RoundAvatarHook extends BaseDelayableHook {
     }
 
     @Override
-    public boolean init() {
-        if (inited) return true;
+    public boolean initOnce() {
         try {
             Method a = null, b = null;
             Class clz = DexKit.doFindClass(DexKit.C_SIMPLE_UI_UTIL);
@@ -65,12 +57,7 @@ public class RoundAvatarHook extends BaseDelayableHook {
             XC_MethodHook hook = new XC_MethodHook(43) {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    try {
-                        if (!ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_round_avatar))
-                            return;
-                    } catch (Throwable e) {
-                        log(e);
-                    }
+                    if (!isEnabled()) return;
                     param.setResult(false);
                 }
             };
@@ -79,7 +66,6 @@ public class RoundAvatarHook extends BaseDelayableHook {
             } else {
                 XposedBridge.hookMethod(a, hook);
             }
-            inited = true;
             return true;
         } catch (Throwable e) {
             log(e);
@@ -88,56 +74,8 @@ public class RoundAvatarHook extends BaseDelayableHook {
     }
 
     @Override
-    public int getEffectiveProc() {
-        return SyncUtils.PROC_MAIN;
-    }
-
-    @Override
-    public Step[] getPreconditions() {
-        return new Step[]{new DexDeobfStep(DexKit.C_SIMPLE_UI_UTIL)};
-    }
-
-    @Override
-    public boolean isInited() {
-        return inited;
-    }
-
-    @Override
     public boolean isValid() {
         Application app = getApplication();
         return app == null || !isTim(app);
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        try {
-            ConfigManager mgr = ConfigManager.getDefaultConfig();
-            mgr.getAllConfig().put(qn_round_avatar, enabled);
-            mgr.save();
-        } catch (final Exception e) {
-            Utils.log(e);
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-            } else {
-                SyncUtils.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-                    }
-                });
-            }
-        }
-    }
-
-    @Override
-    public boolean isEnabled() {
-        try {
-            Application app = getApplication();
-            if (app != null && isTim(app)) return false;
-            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_round_avatar);
-        } catch (Exception e) {
-            log(e);
-            return false;
-        }
     }
 }

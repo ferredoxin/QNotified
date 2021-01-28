@@ -42,7 +42,6 @@ import nil.nadph.qnotified.activity.ChatTailActivity;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.dialog.RikkaCustomMsgTimeFormatDialog;
-import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
@@ -50,14 +49,14 @@ import nil.nadph.qnotified.util.Utils;
 import static nil.nadph.qnotified.util.Initiator._SessionInfo;
 import static nil.nadph.qnotified.util.Utils.*;
 
-public class ChatTailHook extends BaseDelayableHook {
+public class ChatTailHook extends CommonDelayableHook {
     public static final String qn_chat_tail_enable = "qn_chat_tail_enable";
     private static final String ACTION_UPDATE_CHAT_TAIL = "nil.nadph.qnotified.ACTION_UPDATE_CHAT_TAIL";
     private static final ChatTailHook self = new ChatTailHook();
-    private boolean inited = false;
 
 
     ChatTailHook() {
+        super(qn_chat_tail_enable);
     }
 
     public static ChatTailHook get() {
@@ -65,8 +64,7 @@ public class ChatTailHook extends BaseDelayableHook {
     }
 
     @Override
-    public boolean init() {
-        if (inited) return true;
+    public boolean initOnce() {
         try {
             Class facade = DexKit.doFindClass(DexKit.C_FACADE);
             //Class SendMsgParams = null;
@@ -209,7 +207,6 @@ public class ChatTailHook extends BaseDelayableHook {
 
              */
             //End: send btn
-            inited = true;
             return true;
         } catch (Throwable throwable) {
             log(throwable);
@@ -287,21 +284,6 @@ public class ChatTailHook extends BaseDelayableHook {
     }
 
     @Override
-    public int getEffectiveProc() {
-        return SyncUtils.PROC_MAIN;
-    }
-
-    @Override
-    public Step[] getPreconditions() {
-        return new Step[0];
-    }
-
-    @Override
-    public boolean isInited() {
-        return inited;
-    }
-
-    @Override
     public void setEnabled(boolean enabled) {
         try {
             ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
@@ -333,6 +315,4 @@ public class ChatTailHook extends BaseDelayableHook {
             return false;
         }
     }
-
-
 }
