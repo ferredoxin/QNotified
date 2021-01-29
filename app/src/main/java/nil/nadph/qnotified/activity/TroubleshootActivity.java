@@ -59,6 +59,7 @@ import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.config.EventRecord;
 import nil.nadph.qnotified.config.FriendRecord;
 import nil.nadph.qnotified.lifecycle.ActProxyMgr;
+import nil.nadph.qnotified.lifecycle.Parasitics;
 import nil.nadph.qnotified.remote.GetUserStatusResp;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ResUtils;
@@ -116,7 +117,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
         ll.addView(newListItemButton(this, "强制重新生成日志历史记录", null, null, new View.OnClickListener() {
             final String LAST_TRACE_HASHCODE_CONFIG = "lastTraceHashcode";
             final String LAST_TRACE_DATA_CONFIG = "lastTraceDate";
-        
+
             @Override
             public void onClick(View v) {
                 try {
@@ -285,7 +286,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
         for (Map.Entry<String,Object> entry : set) {
             try {
                 String shortName = entry.getKey();
-                String currName = entry.getValue()+"";
+                String currName = entry.getValue() + "";
                 ll.addView(subtitle(this, "  [" + i + "]" + shortName + "\n" + currName));
             } catch (Exception e) {
                 e.printStackTrace();
@@ -293,10 +294,18 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
             i++;
         }
 
+        {
+            int cost;
+            cost = Parasitics.getResourceInjectionCost();
+            ll.addView(subtitle(this, "ResourceInjectionCost: " + (cost < 0 ? "FAILED" : cost + "ms")));
+            cost = Parasitics.getActivityStubHookCost();
+            ll.addView(subtitle(this, "ActivityStubHookCost: " + (cost < 0 ? "FAILED" : cost + "ms")));
+        }
+
         ll.addView(subtitle(this, "SystemClassLoader\n" + ClassLoader.getSystemClassLoader()
-                + "\nContext.getClassLoader()\n" + getClassLoader()
-                + "\nThread.getContextClassLoader()\n" + Thread.currentThread().getContextClassLoader()
-                + "\nInitiator.getHostClassLoader()\n" + Initiator.getHostClassLoader()));
+            + "\nContext.getClassLoader()\n" + getClassLoader()
+            + "\nThread.getContextClassLoader()\n" + Thread.currentThread().getContextClassLoader()
+            + "\nInitiator.getHostClassLoader()\n" + Initiator.getHostClassLoader()));
         long ts = Utils.getBuildTimestamp();
         ll.addView(subtitle(this, "Build Time: " + (ts > 0 ? new Date(ts).toString() : "unknown")));
         String info;

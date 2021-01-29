@@ -102,13 +102,24 @@ public class Utils {
         }
     }
 
+    /**
+     * NOTICE: This only works if this module is running in the host process, if not {@code null} will be teturned.
+     *
+     * @return host application
+     */
     public static Application getApplication() {
         Field f;
         try {
-            Class clz = load("com/tencent/common/app/BaseApplicationImpl");
+            Class<?> clz = Class.forName("com.tencent.common.app.BaseApplicationImpl");
             f = hasField(clz, "sApplication");
-            if (f == null) return (Application) sget_object(clz, "a", clz);
-            else return (Application) f.get(null);
+            if (f == null) {
+                return (Application) sget_object(clz, "a", clz);
+            } else {
+                return (Application) f.get(null);
+            }
+        } catch (ClassNotFoundException unused) {
+            //not in host process, just return null
+            return null;
         } catch (Exception e) {
             log(e);
             throw (RuntimeException) new RuntimeException("FATAL: Utils.getApplication() failure!").initCause(e);
@@ -880,7 +891,7 @@ public class Utils {
             if (cause instanceof NullPointerException) {
                 String tr = android.util.Log.getStackTraceString(cause);
                 if (tr.indexOf("ExposedBridge.invokeOriginalMethod") != 0
-                        || Pattern.compile("me\\.[.a-zA-Z]+\\.invokeOriginalMethod").matcher(tr).find())
+                    || Pattern.compile("me\\.[.a-zA-Z]+\\.invokeOriginalMethod").matcher(tr).find())
                     needPatch = true;
             }
             if (!needPatch) throw e;
@@ -1381,7 +1392,7 @@ public class Utils {
             do {
                 for (Field field : clz.getDeclaredFields()) {
                     if ((type == null || field.getType().equals(type)) && field.getName()
-                            .equals(name)) {
+                        .equals(name)) {
                         field.setAccessible(true);
                         return field;
                     }
@@ -1554,7 +1565,7 @@ public class Utils {
     public static String en(String str) {
         if (str == null) return "null";
         return "\"" + str.replace("\\", "\\\\").replace("\"", "\\\"")
-                .replace("\n", "\\n").replace("\r", "\\r") + "\"";
+            .replace("\n", "\\n").replace("\r", "\\r") + "\"";
     }
 
     public static String de(String str) {
@@ -1563,7 +1574,7 @@ public class Utils {
         if (str.startsWith("\"")) str = str.substring(1);
         if (str.endsWith("\"") && !str.endsWith("\\\"")) str = str.substring(0, str.length() - 1);
         return str.replace("\\\"", "\"").replace("\\\n", "\n")
-                .replace("\\\r", "\r").replace("\\\\", "\\");
+            .replace("\\\r", "\r").replace("\\\\", "\\");
     }
 
     public static String csvenc(String s) {
@@ -1765,13 +1776,13 @@ public class Utils {
         if (nick.length() == 0) throw new IllegalArgumentException("nick length == 0");
         nick = filterEmoji(nick);
         if (nick.contains("\u4e36") || nick.contains("\u309e") || nick.contains("双封") || nick.contains("群发")
-                || nick.contains("代发") || nick.contains("赚") || nick.contains("换群") || nick.contains("加我")
-                || nick.contains("加盟") || nick.contains("中介") || nick.contains("兼职") || nick.contains("客服")
-                || nick.contains("招聘") || nick.contains("换钱") || nick.contains("接单") || nick.contains("承接")
-                || nick.contains("解封") || nick.contains("保号") || nick.contains("业务") || nick.contains("互拉")
-                || nick.contains("刷单") || nick.contains("代打") || nick.contains("总创") || nick.contains("在线接")
-                || nick.contains("引流") || nick.contains("mzmp")
-                || nick.matches(".*[\u53f8\u6b7b][\u9a6c\u5417\u5988\u3000].*"))
+            || nick.contains("代发") || nick.contains("赚") || nick.contains("换群") || nick.contains("加我")
+            || nick.contains("加盟") || nick.contains("中介") || nick.contains("兼职") || nick.contains("客服")
+            || nick.contains("招聘") || nick.contains("换钱") || nick.contains("接单") || nick.contains("承接")
+            || nick.contains("解封") || nick.contains("保号") || nick.contains("业务") || nick.contains("互拉")
+            || nick.contains("刷单") || nick.contains("代打") || nick.contains("总创") || nick.contains("在线接")
+            || nick.contains("引流") || nick.contains("mzmp")
+            || nick.matches(".*[\u53f8\u6b7b][\u9a6c\u5417\u5988\u3000].*"))
             return true;
         if (nick.equalsIgnoreCase("A")) return true;
         if (nick.length() < 2) {
@@ -1811,7 +1822,7 @@ public class Utils {
             }
         } catch (Throwable e) {
             if (!(e instanceof NullPointerException) &&
-                    !(e instanceof NoClassDefFoundError)) {
+                !(e instanceof NoClassDefFoundError)) {
                 log(e);
             }
         }
@@ -1912,7 +1923,7 @@ public class Utils {
 
     public static int dip2sp(Context context, float dpValue) {
         float scale = context.getResources().getDisplayMetrics().density /
-                context.getResources().getDisplayMetrics().scaledDensity;
+            context.getResources().getDisplayMetrics().scaledDensity;
         return (int) (dpValue * scale + 0.5f);
     }
 
