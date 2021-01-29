@@ -133,6 +133,7 @@ public class MultiActionHook extends CommonDelayableHook {
 
     private boolean check(LinearLayout rootView) {
         int count = rootView.getChildCount();
+        if (count == 1) return false;
         for (int i = 0; i < count; i++) {
             View view = rootView.getChildAt(i);
             if (view instanceof TextView)
