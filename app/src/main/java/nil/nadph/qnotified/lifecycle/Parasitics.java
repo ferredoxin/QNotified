@@ -75,11 +75,31 @@ public class Parasitics {
 
     private static String sModulePath = null;
     private static boolean __stub_hooked = false;
+    private static long sResInjectBeginTime = 0;
+    private static long sResInjectEndTime = 0;
+    private static long sActStubHookBeginTime = 0;
+    private static long sActStubHookEndTime = 0;
+
+    public static int getResourceInjectionCost() {
+        if (sResInjectEndTime > 0) {
+            return (int) (sResInjectEndTime - sResInjectBeginTime);
+        }
+        return -1;
+    }
+
+    public static int getActivityStubHookCost() {
+        if (sActStubHookEndTime > 0) {
+            return (int) (sActStubHookEndTime - sActStubHookBeginTime);
+        }
+        return -1;
+    }
 
     @MainProcess
     @SuppressLint("PrivateApi")
     public static void injectModuleResources(Resources res) {
-        if (res == null) return;
+        if (res == null) {
+            return;
+        }
         try {
             res.getString(R.string.res_inject_success);
             return;
@@ -87,16 +107,21 @@ public class Parasitics {
         }
         try {
             if (sModulePath == null) {
+                if (sResInjectBeginTime == 0) {
+                    sResInjectBeginTime = System.currentTimeMillis();
+                }
                 String modulePath = null;
                 BaseDexClassLoader pcl = (BaseDexClassLoader) MainHook.class.getClassLoader();
                 Object pathList = iget_object_or_null(pcl, "pathList");
                 Object[] dexElements = (Object[]) iget_object_or_null(pathList, "dexElements");
                 for (Object element : dexElements) {
                     File file = (File) iget_object_or_null(element, "path");
-                    if (file == null || file.isDirectory())
+                    if (file == null || file.isDirectory()) {
                         file = (File) iget_object_or_null(element, "zip");
-                    if (file == null || file.isDirectory())
+                    }
+                    if (file == null || file.isDirectory()) {
                         file = (File) iget_object_or_null(element, "file");
+                    }
                     if (file != null && !file.isDirectory()) {
                         String path = file.getPath();
                         if (modulePath == null || !modulePath.contains("nil.nadph.qnotified")) {
@@ -116,6 +141,9 @@ public class Parasitics {
             int cookie = (int) addAssetPath.invoke(assets, sModulePath);
             try {
                 logd("injectModuleResources: " + res.getString(R.string.res_inject_success));
+                if (sResInjectEndTime == 0) {
+                    sResInjectEndTime = System.currentTimeMillis();
+                }
             } catch (Resources.NotFoundException e) {
                 loge("Fatal: injectModuleResources: test injection failure!");
                 loge("injectModuleResources: cookie=" + cookie + ", path=" + sModulePath + ", loader=" + MainHook.class.getClassLoader());
@@ -142,8 +170,11 @@ public class Parasitics {
     @MainProcess
     @SuppressLint("PrivateApi")
     public static void initForStubActivity(Context ctx) {
-        if (__stub_hooked) return;
+        if (__stub_hooked) {
+            return;
+        }
         try {
+            sActStubHookBeginTime = System.currentTimeMillis();
             Class<?> clazz_ActivityThread = Class.forName("android.app.ActivityThread");
             Method currentActivityThread = clazz_ActivityThread.getDeclaredMethod("currentActivityThread");
             currentActivityThread.setAccessible(true);
@@ -208,6 +239,7 @@ public class Parasitics {
                 //ignore
             }
             //End of IActivityTaskManager
+            sActStubHookEndTime = System.currentTimeMillis();
             __stub_hooked = true;
         } catch (Exception e) {
             log(e);
