@@ -37,7 +37,6 @@ public class ActProxyMgr {
     public static final int ACTION_SHELL = 4;
     public static final int ACTION_MUTE_AT_ALL = 5;
     public static final int ACTION_MUTE_RED_PACKET = 6;
-    public static final int ACTION_DONATE_ACTIVITY = 7;
     public static final int ACTION_TROUBLESHOOT_ACTIVITY = 8;
     public static final int ACTION_FRIENDLIST_EXPORT_ACTIVITY = 9;
     public static final int ACTION_FAKE_BAT_CONFIG_ACTIVITY = 10;
@@ -67,8 +66,6 @@ public class ActProxyMgr {
                 return FriendSelectActivity.class;
             case ACTION_ABOUT:
                 return AboutActivity.class;
-            case ACTION_DONATE_ACTIVITY:
-                return DonateActivity.class;
             case ACTION_TROUBLESHOOT_ACTIVITY:
                 return TroubleshootActivity.class;
             case ACTION_FRIENDLIST_EXPORT_ACTIVITY:

@@ -75,7 +75,7 @@ public class AboutActivity extends IphoneTitleBarActivityCompat {
         ll.addView(subtitle(this, "原生Xposed, Epic(太极), SandHook, YAHFA ,BugHook(应用转生), etc"));
 
         ll.addView(subtitle(this, "声明:"));
-        ll.addView(subtitle(this, "此软件是捐赠软件 个人可以免费使用 请勿以任何方式商用本软件 如果喜欢我的作品请打赏支持我维护和开发! 任何形式或渠道包括预装手机售卖此软件​都是非法贩卖, 别上当受骗！欢迎举报贩卖者! ", Color.RED));
+        ll.addView(subtitle(this, "此软件是开源免费软件，个人可以免费使用，请勿以任何方式商用本软件，如果喜欢我的作品请登录Github协助我们维护和开发! 任何形式或渠道包括预装手机售卖此软件​都是非法贩卖, 别上当受骗！欢迎举报贩卖者! ", Color.RED));
 
         ll.addView(subtitle(this, "特别声明:"));
         ll.addView(subtitle(this, "QNotified模块属于个人作品! 没有售后! 没有客服! 您可以与我反馈和讨论问题, 但请文明交流尊重彼此!"));
