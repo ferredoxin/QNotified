@@ -103,7 +103,7 @@ public class Utils {
     }
 
     /**
-     * NOTICE: This only works if this module is running in the host process, if not {@code null} will be teturned.
+     * NOTICE: This only works if this module is running in the host process, if not {@code null} will be returned.
      *
      * @return host application
      */
