@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="xposedscope">
+        <item>com.tencent.mobileqq</item>
+        <item>com.tencent.tim</item>
+    </string-array>
+</resources>
