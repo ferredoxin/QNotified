@@ -22,25 +22,11 @@ import nil.nadph.qnotified.util.Utils
 
 object ConfigTable {
 
-    private val presentConfigMap: Map<String?, Map<Long, Any>> by lazy {
-        return@lazy if (Utils.isTim()) {
-            TIMConfigTable.configs
-        } else {
-            QQConfigTable.configs
-        }
-    }
-    private val presentRangeConfigMap: Map<String?, Map<Long, Any>> by lazy {
-        return@lazy if (Utils.isTim()) {
-            TIMConfigTable.rangingConfigs
-        } else {
-            QQConfigTable.rangingConfigs
-        }
-    }
-
     public val cacheMap: Map<String?, Any?> by lazy {
         val map: HashMap<String?, Any?> = HashMap()
         val versionCode = Utils.getHostVersionCode()
-        for (pair in presentRangeConfigMap) {
+        val table: ConfigTableInterface = if (Utils.isTim()) TIMConfigTable() else QQConfigTable()
+        for (pair in table.rangingConfigs) {
             for (i in versionCode downTo 1) {
                 if (pair.value.containsKey(i)) {
                     map[pair.key] = pair.value[i]
@@ -48,7 +34,7 @@ object ConfigTable {
                 }
             }
         }
-        for (pair in presentConfigMap) {
+        for (pair in table.configs) {
             if (pair.value.containsKey(versionCode)) {
                 map[pair.key] = pair.value[versionCode]
             }

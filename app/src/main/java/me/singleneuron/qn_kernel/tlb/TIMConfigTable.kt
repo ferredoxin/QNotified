@@ -19,18 +19,18 @@
 package me.singleneuron.qn_kernel.tlb
 
 import me.ketal.hook.LeftSwipeReplyHook
+import me.ketal.hook.MultiActionHook
 import me.ketal.util.TIMVersion.*
 import nil.nadph.qnotified.bridge.QQMessageFacade
-import me.ketal.hook.MultiActionHook
 import nil.nadph.qnotified.hook.ReplyNoAtHook
 
-object TIMConfigTable {
+class TIMConfigTable: ConfigTableInterface {
 
-    val configs: Map<String?, Map<Long, Any>> = mapOf(
+    override val configs: Map<String?, Map<Long, Any>> = mapOf(
 
     )
 
-    val rangingConfigs: Map<String?, Map<Long, Any>> = mapOf(
+    override val rangingConfigs: Map<String?, Map<Long, Any>> = mapOf(
 
             MultiActionHook::class.java.simpleName to mapOf(
                     TIM_1_0_0 to "a",

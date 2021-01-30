@@ -25,9 +25,9 @@ import me.singleneuron.util.QQVersion.*
 import nil.nadph.qnotified.hook.ReplyNoAtHook
 import nil.nadph.qnotified.hook.VasProfileAntiCrash
 
-object QQConfigTable {
+class QQConfigTable: ConfigTableInterface {
 
-    val configs: Map<String?, Map<Long, Any>> = mapOf(
+    override val configs: Map<String?, Map<Long, Any>> = mapOf(
 
 //        //特征字符串："FaceManager"/"AvatarUtil"
 //        NewRoundHead::class.simpleName to mapOf(
@@ -128,7 +128,7 @@ object QQConfigTable {
 
         )
 
-    val rangingConfigs: Map<String?, Map<Long, Any>> = mapOf(
+    override val rangingConfigs: Map<String?, Map<Long, Any>> = mapOf(
         ReplyNoAtHook::class.java.simpleName to mapOf(
             QQ_8_1_3 to "k",
             QQ_8_1_5 to "l",
