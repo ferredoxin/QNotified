@@ -46,10 +46,9 @@ public class SortAtPanel extends CommonDelayableHook {
     @Override
     protected boolean initOnce() {
         try {
-            Class clazz = load("com.tencent.mobileqq.troop.quickat.ui.AtPanel");
             XposedBridge.hookMethod(DexKit.doFindMethod(DexKit.N_AtPanel__showDialogAtView), new XC_MethodHook() {
                 @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                protected void afterHookedMethod(MethodHookParam param) {
                     if (!isEnabled())
                         return;
                     String key = (String) param.args[1];
@@ -67,21 +66,23 @@ public class SortAtPanel extends CommonDelayableHook {
                         String troopUin = iget_object_or_null(sessionInfo, "troopUin", String.class);
                         if (troopUin == null)
                             troopUin = iget_object_or_null(sessionInfo, "a", String.class);
-                        Class clz_TroopInfo = load("com.tencent.mobileqq.data.troop.TroopInfo");
-                        if (clz_TroopInfo == null)
-                            clz_TroopInfo = load("com.tencent.mobileqq.data.TroopInfo");
-                        Object troopInfo = invoke_virtual(getTroopManager(), "b", troopUin, String.class, clz_TroopInfo);
+                        Class<?> clzTroopInfo = load("com.tencent.mobileqq.data.troop.TroopInfo");
+                        if (clzTroopInfo == null)
+                            clzTroopInfo = load("com.tencent.mobileqq.data.TroopInfo");
+                        Object troopInfo = invoke_virtual(getTroopManager(), "b", troopUin, String.class, clzTroopInfo);
                         String ownerUin = iget_object_or_null(troopInfo, "troopowneruin", String.class);
-                        String[] Administrator = iget_object_or_null(troopInfo, "Administrator", String.class).split("\\|");
-                        List<String> admin = Arrays.asList(Administrator);
-                        List list = getFirstByType(result, List.class);
+                        String[] administrator = iget_object_or_null(troopInfo, "Administrator", String.class).split("\\|");
+                        List<String> admin = Arrays.asList(administrator);
+                        List<Object> list = getFirstByType(result, List.class);
                         String uin = getUin(list.get(0));
-                        //logd("群号：" + troopUin + ",群主：" + ownerUin + "管理：" + admin);
-                        boolean isAdmin = uin.equals("0");
+                        boolean isAdmin = "0".equals(uin);
                         Object temp;
                         for (int i = 1; i < list.size(); i++) {
                             Object member = list.get(i);
                             uin = getUin(member);
+                            if (uin == null) {
+                                throw new NullPointerException("uin == null");
+                            }
                             if (uin.equals(ownerUin)) {
                                 temp = member;
                                 list.remove(member);

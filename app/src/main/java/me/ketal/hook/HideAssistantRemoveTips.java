@@ -23,7 +23,6 @@ import android.view.View;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
-import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 
 import static nil.nadph.qnotified.util.Initiator.load;
@@ -41,10 +40,10 @@ public class HideAssistantRemoveTips extends CommonDelayableHook {
     @Override
     protected boolean initOnce() {
         try {
-            Class clazz = load("com.tencent.mobileqq.activity.ChatActivityUtils");
+            Class<?> clazz = load("com.tencent.mobileqq.activity.ChatActivityUtils");
             XposedHelpers.findAndHookMethod(clazz, "a", Context.class, String.class, View.OnClickListener.class, View.OnClickListener.class, new XC_MethodHook() {
                 @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                protected void beforeHookedMethod(MethodHookParam param) {
                     if (isEnabled())
                         param.setResult(null);
                 }

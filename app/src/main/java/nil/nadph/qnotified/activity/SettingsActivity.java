@@ -214,7 +214,9 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         if (LeftSwipeReplyHook.INSTANCE.isValid()) {
             ll.addView(newListItemButton(this, "修改消息左滑动作", "", null, clickToProxyActAction(ModifyLeftSwipeReplyActivity.class)));
         }
-        ll.addView(newListItemHookSwitchInit(this, "修改@界面排序", "排序由群主管理员至正常人员", SortAtPanel.INSTANCE));
+        if (SortAtPanel.INSTANCE.isValid()) {
+            ll.addView(newListItemHookSwitchInit(this, "修改@界面排序", "排序由群主管理员至正常人员", SortAtPanel.INSTANCE));
+        }
     
         ll.addView(subtitle(this, "好友列表"));
         ll.addView(newListItemButton(this, "打开资料卡", "打开指定用户的资料卡", null, new View.OnClickListener() {

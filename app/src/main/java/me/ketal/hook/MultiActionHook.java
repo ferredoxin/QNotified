@@ -35,7 +35,6 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import me.singleneuron.qn_kernel.tlb.ConfigTable;
 import nil.nadph.qnotified.R;
-import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.bridge.QQMessageFacade;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
@@ -58,7 +57,6 @@ public class MultiActionHook extends CommonDelayableHook {
     public static final MultiActionHook INSTANCE = new MultiActionHook();
     private static Bitmap img;
     private final String fieldName = isTim() ? ConfigTable.INSTANCE.getConfig(MultiActionHook.class.getSimpleName()) : "a";
-    Class clz_MultiMsg_Manager;
     private Object baseChatPie;
 
     MultiActionHook() {
@@ -76,16 +74,14 @@ public class MultiActionHook extends CommonDelayableHook {
         try {
             XposedBridge.hookMethod(DexKit.doFindMethod(DexKit.N_BASE_CHAT_PIE__createMulti), new XC_MethodHook() {
                 @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                protected void afterHookedMethod(MethodHookParam param) {
                     try {
                         if (!isEnabled())
                             return;
-                        clz_MultiMsg_Manager = DexKit.doFindClass(DexKit.C_MultiMsg_Manager);
                         LinearLayout rootView = iget_object_or_null(param.thisObject, fieldName, LinearLayout.class);
-                        if (!check(rootView))
-                            return;
+                        if (rootView == null || !check(rootView)) return;
                         BaseActivity context = (BaseActivity) rootView.getContext();
-                        baseChatPie = getFirstByType(param.thisObject, _BaseChatPie());
+                        baseChatPie = getFirstByType(param.thisObject, (Class<?>) _BaseChatPie());
                         int count = rootView.getChildCount();
                         boolean enableTalkBack = rootView.getChildAt(0).getContentDescription() != null;
                         if (rootView.findViewById(R.id.ketalRecallImageView) == null)
@@ -97,7 +93,7 @@ public class MultiActionHook extends CommonDelayableHook {
                 }
             });
             return true;
-        } catch (Throwable e) {
+        } catch (Exception e) {
             log(e);
             return false;
         }
@@ -105,10 +101,13 @@ public class MultiActionHook extends CommonDelayableHook {
 
     private void recall() {
         try {
-            Object manager = findMethodByTypes_1(clz_MultiMsg_Manager, clz_MultiMsg_Manager).invoke(null);
-            List list = (List) findMethodByTypes_1(clz_MultiMsg_Manager, List.class).invoke(manager);
-            for (Object msg : list)
-                QQMessageFacade.revokeMessage(msg);
+            Class<?> clazz = DexKit.doFindClass(DexKit.C_MultiMsg_Manager);
+            Object manager = findMethodByTypes_1(clazz, clazz).invoke(null);
+            List<?> list = (List<?>) findMethodByTypes_1(clazz, List.class).invoke(manager);
+            if (list != null) {
+                for (Object msg : list)
+                    QQMessageFacade.revokeMessage(msg);
+            }
             invoke_virtual_any(baseChatPie, false, null, false, boolean.class, _ChatMessage(), boolean.class);
             baseChatPie = null;
         } catch (Exception e) {

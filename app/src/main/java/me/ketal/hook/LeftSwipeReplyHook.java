@@ -23,7 +23,6 @@ import android.graphics.BitmapFactory;
 import android.os.Looper;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import java.lang.reflect.Method;
 
@@ -44,7 +43,6 @@ import static me.ketal.util.TIMVersion.TIM_3_1_1;
 import static me.singleneuron.util.QQVersion.QQ_8_2_6;
 import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
 import static nil.nadph.qnotified.util.Initiator._ChatMessage;
-import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
 import static nil.nadph.qnotified.util.Utils.findMethodByTypes_1;
 import static nil.nadph.qnotified.util.Utils.getApplication;
 import static nil.nadph.qnotified.util.Utils.getFirstByType;
@@ -56,9 +54,9 @@ import static nil.nadph.qnotified.util.Utils.log;
 
 public class LeftSwipeReplyHook extends CommonDelayableHook {
     public static final LeftSwipeReplyHook INSTANCE = new LeftSwipeReplyHook();
-    public static final String LEFT_SWIPE_NOACTION = "ketal_left_swipe_noAction";
-    public static final String LEFT_SWIPE_MULTICHOOSE = "ketal_left_swipe_multiChoose";
-    public static final String LEFT_SWIPE_REPLYDISTANCE = "ketal_left_swipe_replyDistance";
+    public static final String LEFT_SWIPE_NO_ACTION = "ketal_left_swipe_noAction";
+    public static final String LEFT_SWIPE_MULTI_CHOOSE = "ketal_left_swipe_multiChoose";
+    public static final String LEFT_SWIPE_REPLY_DISTANCE = "ketal_left_swipe_replyDistance";
     public static final int FLAG_REPLACE_PIC = 10001;
     private static Bitmap img;
 
@@ -83,11 +81,12 @@ public class LeftSwipeReplyHook extends CommonDelayableHook {
     protected boolean initOnce() {
         try {
             Method replyMethod = DexKit.doFindMethod(DexKit.N_LeftSwipeReply_Helper__reply);
-            Class hookClass = replyMethod.getDeclaringClass();
+            if (replyMethod == null) return false;
+            Class<?> hookClass = replyMethod.getDeclaringClass();
             String methodName = isTim() ? "L" : "a";
             XposedHelpers.findAndHookMethod(hookClass, methodName, float.class, float.class, new XC_MethodHook() {
                 @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                protected void beforeHookedMethod(MethodHookParam param) {
                     if (!isEnabled())
                         return;
                     if (isNoAction())
@@ -97,7 +96,7 @@ public class LeftSwipeReplyHook extends CommonDelayableHook {
 
             XposedBridge.hookMethod(findMethodByTypes_1(hookClass, void.class, View.class, int.class), new XC_MethodHook() {
                 @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                protected void beforeHookedMethod(MethodHookParam param) {
                     if (!isEnabled() || !isMultiChose())
                         return;
                     ImageView iv = (ImageView) param.args[0];
@@ -114,7 +113,7 @@ public class LeftSwipeReplyHook extends CommonDelayableHook {
                     if (!isEnabled() || !isMultiChose())
                         return;
                     Object message = invoke_virtual_any(param.thisObject, _ChatMessage());
-                    Object baseChatPie = getFirstByType(param.thisObject, _BaseChatPie());
+                    Object baseChatPie = getFirstByType(param.thisObject, (Class<?>) _BaseChatPie());
                     DexKit.doFindMethod(DexKit.N_BASE_CHAT_PIE__chooseMsg).invoke(baseChatPie, message);
                     param.setResult(null);
                 }
@@ -123,7 +122,7 @@ public class LeftSwipeReplyHook extends CommonDelayableHook {
             methodName = isTim() ? ConfigTable.INSTANCE.getConfig(LeftSwipeReplyHook.class.getSimpleName()) : "a";
             XposedBridge.hookMethod(hasMethod(hookClass, methodName, int.class), new XC_MethodHook() {
                 @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                protected void afterHookedMethod(MethodHookParam param) {
                     if (!isEnabled())
                         return;
                     if (getReplyDistance() <= 0)
@@ -140,27 +139,27 @@ public class LeftSwipeReplyHook extends CommonDelayableHook {
     }
 
     public boolean isNoAction() {
-        return ConfigManager.getDefaultConfig().getBooleanOrDefault(LEFT_SWIPE_NOACTION, false);
+        return ConfigManager.getDefaultConfig().getBooleanOrDefault(LEFT_SWIPE_NO_ACTION, false);
     }
 
     public void setNoAction(boolean on) {
-        putValue(LEFT_SWIPE_NOACTION, on);
+        putValue(LEFT_SWIPE_NO_ACTION, on);
     }
 
     public boolean isMultiChose() {
-        return ConfigManager.getDefaultConfig().getBooleanOrDefault(LEFT_SWIPE_MULTICHOOSE, false);
+        return ConfigManager.getDefaultConfig().getBooleanOrDefault(LEFT_SWIPE_MULTI_CHOOSE, false);
     }
 
     public void setMultiChose(boolean on) {
-        putValue(LEFT_SWIPE_MULTICHOOSE, on);
+        putValue(LEFT_SWIPE_MULTI_CHOOSE, on);
     }
 
     public int getReplyDistance() {
-        return (int) ConfigManager.getDefaultConfig().getOrDefault(LEFT_SWIPE_REPLYDISTANCE, -1);
+        return (int) ConfigManager.getDefaultConfig().getOrDefault(LEFT_SWIPE_REPLY_DISTANCE, -1);
     }
 
     public void setReplyDistance(int replyDistance) {
-        putValue(LEFT_SWIPE_REPLYDISTANCE, replyDistance);
+        putValue(LEFT_SWIPE_REPLY_DISTANCE, replyDistance);
     }
 
     private void putValue(String keyName, Object object) {
@@ -171,14 +170,9 @@ public class LeftSwipeReplyHook extends CommonDelayableHook {
         } catch (Exception e) {
             Utils.log(e);
             if (Looper.myLooper() == Looper.getMainLooper()) {
-                Toasts.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+                Toasts.error(getApplication(), e + "");
             } else {
-                SyncUtils.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toasts.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-                    }
-                });
+                SyncUtils.post(() -> Toasts.error(getApplication(), e + ""));
             }
         }
     }
