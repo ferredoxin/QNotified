@@ -11,8 +11,8 @@ android {
         applicationId "nil.nadph.qnotified"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 41
-        versionName "0.8.10" + (getBuildIdSuffix.call() as String) + (getGitHeadRefsSuffix.call() as String)
+        versionCode 42
+        versionName "0.8.11" + (getBuildIdSuffix.call() as String) + (getGitHeadRefsSuffix.call() as String)
         //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled false
         ndk {
