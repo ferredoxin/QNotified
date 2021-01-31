@@ -32,8 +32,7 @@ import nil.nadph.qnotified.util.Utils;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static me.singleneuron.util.QQVersion.QQ_8_2_6;
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.getHostVersionCode32;
-import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.*;
 
 public class HideMiniAppPullEntry extends CommonDelayableHook {
     public static final HideMiniAppPullEntry INSTANCE = new HideMiniAppPullEntry();
@@ -45,7 +44,7 @@ public class HideMiniAppPullEntry extends CommonDelayableHook {
     @Override
     protected boolean initOnce() {
         try {
-            if (Utils.isTim()) return false;
+            if (IS_TIM) return false;
             ConfigManager cache = ConfigManager.getCache();
             if (isEnabled()) {
                 int lastVersion = cache.getIntOrDefault("qn_hide_msg_list_miniapp_version_code", 0);

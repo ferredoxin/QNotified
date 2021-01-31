@@ -48,7 +48,7 @@ public class DefaultBubbleHook extends CommonDelayableHook {
     @Override
     public boolean isValid() {
         Application app = getApplication();
-        return app == null || !isTim(app);
+        return app == null || !IS_TIM;
     }
 
     @Override
@@ -87,7 +87,7 @@ public class DefaultBubbleHook extends CommonDelayableHook {
     public boolean isEnabled() {
         try {
             Application app = getApplication();
-            if (app != null && isTim(app)) return false;
+            if (app != null && IS_TIM) return false;
             File dir = new File(app.getFilesDir().getAbsolutePath() + "/bubble_info");
             return !dir.exists() || !dir.canRead();
         } catch (Exception e) {

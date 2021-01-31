@@ -116,8 +116,8 @@ public class SortAtPanel extends CommonDelayableHook {
 
     @Override
     public boolean isValid() {
-        if (isTim() && getHostVersionCode() >= TIM_3_1_1)
+        if (IS_TIM && getHostVersionCode() >= TIM_3_1_1)
             return true;
-        else return !isTim() && getHostVersionCode() >= QQ_8_1_3;
+        else return !IS_TIM && getHostVersionCode() >= QQ_8_1_3;
     }
 }

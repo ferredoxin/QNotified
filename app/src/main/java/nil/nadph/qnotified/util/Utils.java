@@ -1739,7 +1739,7 @@ public class Utils {
         long uin = getLongAccountUin();
         String nick = getCurrentNickname();
         if (nick != null && nick.length() > 0 && isBadNick(nick)) return false;
-        if (Utils.isTim(getApplication())) return true;
+        if (Utils.IS_TIM) return true;
         if (uin > 2_0000_0000L && uin < 30_0000_0000L) {
             return true;
         }
@@ -1876,15 +1876,6 @@ public class Utils {
 
     public static int sign(double d) {
         return Double.compare(d, 0d);
-    }
-
-    @Deprecated
-    public static boolean isTim(Context ctx) {
-        return ctx.getPackageName().equals(PACKAGE_NAME_TIM);
-    }
-
-    public static boolean isTim() {
-        return IS_TIM;
     }
 
     public static ContactDescriptor parseResultRec(Object a) {

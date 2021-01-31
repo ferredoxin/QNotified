@@ -27,17 +27,19 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.widget.Button;
+
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
-import de.robv.android.xposed.XposedHelpers;
-import nil.nadph.qnotified.util.ArscKit;
-import nil.nadph.qnotified.util.Nullable;
-import nil.nadph.qnotified.util.Utils;
 
 import java.io.*;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+
+import de.robv.android.xposed.XposedHelpers;
+import nil.nadph.qnotified.util.ArscKit;
+import nil.nadph.qnotified.util.Nullable;
+import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
@@ -315,7 +317,7 @@ public class ResUtils {
             String themeId = (String) invoke_static(load("com/tencent/mobileqq/theme/ThemeUtil"), "getUserCurrentThemeId", getAppRuntime(), load("mqq/app/AppRuntime"));
             return "1103".endsWith(themeId) || "2920".endsWith(themeId);
         } catch (Exception e) {
-            if (isTim(getApplication())) {
+            if (IS_TIM) {
                 return false;
             }
             log(e);
