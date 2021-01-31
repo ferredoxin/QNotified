@@ -50,20 +50,21 @@ public class HookEntry implements IXposedHookLoadPackage {
             return;
         }
         //dumpProcessInfo(lpparam.isFirstApplication);
-        //noinspection AlibabaSwitchStatement
         switch (lpparam.packageName) {
-            case PACKAGE_NAME_SELF:
+            case PACKAGE_NAME_SELF: {
                 XposedHelpers.findAndHookMethod("nil.nadph.qnotified.util.Utils", lpparam.classLoader, "getActiveModuleVersion", XC_MethodReplacement.returnConstant(Utils.QN_VERSION_NAME));
                 break;
+            }
             case PACKAGE_NAME_TIM:
-                Utils.IS_TIM = true;
-            case PACKAGE_NAME_QQ:
+            case PACKAGE_NAME_QQ: {
                 StartupHook.getInstance().doInit(lpparam.classLoader);
                 break;
+            }
             case PACKAGE_NAME_QQ_INTERNATIONAL:
-            case PACKAGE_NAME_QQ_LITE:
+            case PACKAGE_NAME_QQ_LITE: {
                 //coming...
                 break;
+            }
             default:
                 break;
         }
