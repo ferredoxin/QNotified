@@ -1,3 +1,4 @@
+
 /* QNotified - An Xposed module for QQ/TIM
  * Copyright (C) 2019-2021 xenonhydride@gmail.com
  * https://github.com/ferredoxin/QNotified
@@ -16,20 +17,10 @@
  * along with this software.  If not, see
  * <https://www.gnu.org/licenses/>.
  */
-package nil.nadph.qnotified.script.params;
+package cn.lliiooll.hook;
 
-public class FriendAddedParam {
-    /**
-     * 好友id
-     */
-    public long uin;
+import de.robv.android.xposed.XC_MethodHook;
 
-    public FriendAddedParam setUin(long uin) {
-        this.uin = uin;
-        return this;
-    }
-
-    public FriendAddedParam create() {
-        return this;
-    }
+public interface QNHookAfter extends QNHook {
+    void afterHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable;
 }

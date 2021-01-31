@@ -24,8 +24,10 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.*;
+import bsh.EvalError;
+import cn.lliiooll.script.QNScript;
+import cn.lliiooll.script.QNScriptFactory;
 import nil.nadph.qnotified.R;
-import nil.nadph.qnotified.script.QNScript;
 import nil.nadph.qnotified.script.QNScriptManager;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.util.Utils;
@@ -45,8 +47,8 @@ public class ScriptSettingDialog implements CompoundButton.OnCheckedChangeListen
 
     public ScriptSettingDialog(Context context, QNScript qs) {
         this.script = qs;
-        dialog = (AlertDialog) CustomDialog.createFailsafe(context).setTitle(qs.getName())
-                .setCancelable(true).create();
+        dialog = (AlertDialog) CustomDialog.createFailsafe(context).setTitle(qs.getInfo().getName())
+            .setCancelable(true).create();
         ctx = dialog.getContext();
         dialog.setCanceledOnTouchOutside(false);
         View v = LayoutInflater.from(ctx).inflate(R.layout.script_setting_dialog, null);
@@ -66,9 +68,9 @@ public class ScriptSettingDialog implements CompoundButton.OnCheckedChangeListen
         delBtn.setOnClickListener(this);
         enable.setChecked(script.isEnable());
         enable.setOnCheckedChangeListener(this);
-        version.setText("版本: " + script.getVersion());
-        author.setText("作者: " + script.getAuthor());
-        decs.setText("简介: " + script.getDecs());
+        version.setText("版本: " + script.getInfo().getVersion());
+        author.setText("作者: " + script.getInfo().getAuthor());
+        decs.setText("简介: " + script.getInfo().getDecs());
         code.setText(script.getCode());
         return dialog;
     }
@@ -87,7 +89,15 @@ public class ScriptSettingDialog implements CompoundButton.OnCheckedChangeListen
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        script.setEnable(isChecked);
+        if (isChecked){
+            try {
+                QNScriptFactory.enable(script);
+            } catch (EvalError evalError) {
+                Utils.log(evalError);
+            }
+        }else {
+            QNScriptFactory.disable(script);
+        }
         Utils.showToast(ctx, Utils.TOAST_TYPE_ERROR, "重启" + Utils.getHostAppName() + "生效", Toast.LENGTH_SHORT);
     }
 

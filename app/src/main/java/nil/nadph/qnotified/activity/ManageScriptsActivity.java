@@ -31,10 +31,10 @@ import android.widget.LinearLayout;
 
 import java.io.FileDescriptor;
 
+import cn.lliiooll.script.QNScript;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.dialog.ScriptSettingDialog;
-import nil.nadph.qnotified.script.QNScript;
 import nil.nadph.qnotified.script.QNScriptManager;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.ViewBuilder;
@@ -156,8 +156,8 @@ public class ManageScriptsActivity extends IphoneTitleBarActivityCompat {
 
     private void addAllScript(LinearLayout main) {
         for (QNScript qs : QNScriptManager.getScripts()) {
-            String name = qs.getName() == null ? "出错" : qs.getName();
-            String decs = qs.getDecs() == null ? "出错" : qs.getDecs();
+            String name = qs.getInfo().getName() == null ? "出错" : qs.getInfo().getName();
+            String decs = qs.getInfo().getDecs() == null ? "出错" : qs.getInfo().getDecs();
             main.addView(ViewBuilder.newListItemButton(this, name, decs, qs.getEnable(), view -> ScriptSettingDialog.OnClickListener_createDialog(view.getContext(), qs)));
         }
     }

@@ -20,8 +20,8 @@ package me.kyuubiran.util
 
 import android.os.Handler
 import android.os.Looper
+import cn.lliiooll.QNClient
 import com.topjohnwu.superuser.internal.UiThreadHandler.handler
-import nil.nadph.qnotified.script.QNClient
 import nil.nadph.qnotified.util.Utils
 import java.util.*
 import kotlin.collections.ArrayList
@@ -41,8 +41,8 @@ object AutoRenewFireMgr {
                 thread {
                     Utils.getApplication().applicationContext.showToastBySystem("好耶 开始自动续火了 请不要关闭QQ哦")
                     for (u in autoRenewList) {
-                        if (u.isGlobalMode) QNClient.send(u.uin, autoRenewMsg, 0)
-                        else QNClient.send(u.uin, u.msg, 0)
+                        if (u.isGlobalMode) QNClient.sendFriendMsg(u.uin, autoRenewMsg)
+                        else QNClient.sendFriendMsg(u.uin, u.msg)
                         Thread.sleep(5000)
                     }
                     Utils.getApplication().applicationContext.showToastBySystem("好耶 续火完毕了")

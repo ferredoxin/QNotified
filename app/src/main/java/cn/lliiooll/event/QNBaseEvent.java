@@ -16,52 +16,28 @@
  * along with this software.  If not, see
  * <https://www.gnu.org/licenses/>.
  */
-package nil.nadph.qnotified.script.params;
+package cn.lliiooll.event;
 
-public class GroupRequestParam {
-    /**
-     * 请求id
-     */
-    public long senderuin;
-    /**
-     * 群id
-     */
-    public long uin;
-    /**
-     * 验证消息
-     */
-    public String content;
+import cn.lliiooll.params.BaseParams;
 
-    public GroupRequestParam setUin(long uin) {
-        this.uin = uin;
-        return this;
+public abstract class QNBaseEvent {
+
+    private final String method;
+    private final String param;
+
+    public QNBaseEvent(String methodName, String paramName) {
+        this.method = methodName;
+        this.param = paramName;
     }
 
-    public GroupRequestParam setSenderUin(long uin) {
-        this.senderuin = uin;
-        return this;
+    public abstract BaseParams doParse();
+
+
+    public String getParamName() {
+        return this.param;
     }
 
-    public GroupRequestParam setContent(String content) {
-        this.content = content;
-        return this;
-    }
-
-    public GroupRequestParam create() {
-        return this;
-    }
-
-    /**
-     * 接受请求
-     */
-    public void accept() {
-        // to do
-    }
-
-    /**
-     * 拒绝请求
-     */
-    public void refuse() {
-        // to do
+    public String getMethodName() {
+        return this.method;
     }
 }

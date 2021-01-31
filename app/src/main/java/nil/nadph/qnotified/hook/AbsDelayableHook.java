@@ -71,6 +71,7 @@ import com.rymmmmm.hook.RemoveSendGiftAd;
 import com.rymmmmm.hook.ShowMsgCount;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.Utils;
+import cn.lliiooll.hook.ScriptEventHook;
 
 public abstract class AbsDelayableHook implements SwitchConfigItem {
 
@@ -147,7 +148,6 @@ public abstract class AbsDelayableHook implements SwitchConfigItem {
                     ShowSelfMsgByLeft.INSTANCE,
                     RemoveGroupApp.INSTANCE,
                     RemoveIntimateDrawer.INSTANCE,
-                    ScriptEventHook.get(),
                     InputButtonHook.get(),
                     SimplifyQQSettingMe.INSTANCE,
                     DebugDump.INSTANCE,
@@ -174,6 +174,7 @@ public abstract class AbsDelayableHook implements SwitchConfigItem {
                     LeftSwipeReplyHook.INSTANCE,
                     HideMiniAppPullEntry.INSTANCE,
                     SortAtPanel.INSTANCE,
+                    ScriptEventHook.get(),
             };
         }
         return sAllHooks;
