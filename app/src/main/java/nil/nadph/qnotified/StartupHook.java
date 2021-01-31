@@ -88,6 +88,7 @@ public class StartupHook {
                         }
                         System.setProperty(QN_FULL_TAG, "true");
                         Initiator.init(classLoader);
+                        Utils.sInit(ctx);
                         try {
                             Natives.load(ctx);
                         } catch (Throwable e3) {

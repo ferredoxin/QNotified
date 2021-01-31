@@ -74,10 +74,22 @@ public class Utils {
     public static boolean DEBUG = true;
     public static boolean ENABLE_DUMP_LOG = false;
     private static Handler mHandler;
+    public static String sHostPackageName = null;
     public static boolean IS_TIM = false;
+    public static boolean IS_QQ = false;
 
     private Utils() {
         throw new AssertionError("No instance for you!");
+    }
+
+    public static void sInit(@NonNull Context ctx) {
+        if (sHostPackageName != null) {
+            throw new IllegalStateException("re-init Utils");
+        } else {
+            sHostPackageName = ctx.getPackageName();
+            IS_QQ = PACKAGE_NAME_QQ.equals(sHostPackageName);
+            IS_TIM = PACKAGE_NAME_TIM.equals(sHostPackageName);
+        }
     }
 
     @Nullable
