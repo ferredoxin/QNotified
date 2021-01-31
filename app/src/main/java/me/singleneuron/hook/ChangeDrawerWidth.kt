@@ -34,7 +34,7 @@ object ChangeDrawerWidth : BaseDelayableConditionalHookAdapter("changeDrawerWidt
     override fun doInit(): Boolean {
         XposedHelpers.findAndHookMethod(Resources::class.java, "getDimensionPixelSize", Int::class.javaPrimitiveType, object : XposedMethodHookAdapter() {
             override fun beforeMethod(param: MethodHookParam?) {
-                if (param!!.args[0] == Utils.getApplication().resources.getIdentifier("akx", "id", PACKAGE_NAME_QQ)) {
+                if (param!!.args[0] == Utils.getApplication().resources.getIdentifier("akx", "dimen", PACKAGE_NAME_QQ)) {
                     param.result = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, width.toFloat(), (param.thisObject as Resources).displayMetrics).toInt()
                 }
             }
