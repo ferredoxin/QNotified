@@ -25,8 +25,10 @@ import android.view.ViewGroup;
 import android.widget.*;
 import cn.lliiooll.hook.MuteAllMsgHook;
 import cn.lliiooll.hook.MuteCardMsgHook;
+import cn.lliiooll.hook.MuteRedBagMsgHook;
 import com.tencent.mobileqq.widget.BounceScrollView;
 import nil.nadph.qnotified.R;
+import nil.nadph.qnotified.activity.FakeBatCfgActivity;
 import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.ResUtils;
@@ -66,20 +68,17 @@ public class MuteCfgActivity extends IphoneTitleBarActivityCompat implements Vie
         __lp_r.setMargins(mar, 0, mar, 0);
         __lp_r.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         __lp_r.addRule(RelativeLayout.CENTER_VERTICAL);
-
-        ll.addView(newListItemSwitchConfig(this, "开关", "关闭后以下功能都不生效", "qn_mute_enable", true));
+        ll.addView(subtitle(this, "以下所有功能重启后生效!!!"));
+        ll.addView(subtitle(this, "以下所有功能重启后生效!!!"));
+        ll.addView(subtitle(this, "以下所有功能重启后生效!!!"));
         ll.addView(newListItemHookSwitchInit(this, "屏蔽全部消息", "请谨慎开启", MuteAllMsgHook.get()));
         ll.addView(newListItemHookSwitchInit(this, "屏蔽卡片消息", "去死吧!烦人的卡片!", MuteCardMsgHook.get()));
-        ll.addView(newListItemHookSwitchInit(this, "发送窗口抖动", "只是一个测试功能", SendShakeMsgHook.get()));
+        ll.addView(newListItemHookSwitchInit(this, "屏蔽红包消息", "红包?不存在的!", MuteRedBagMsgHook.get()));
 
         setContentView(bounceScrollView);
         setContentBackgroundDrawable(ResUtils.skin_background);
         setTitle("自定义电量");
         return true;
-    }
-
-    public static boolean isEnable() {
-        return ConfigManager.getDefaultConfig().getBooleanOrDefault("qn_mute_enable", true);
     }
 
 

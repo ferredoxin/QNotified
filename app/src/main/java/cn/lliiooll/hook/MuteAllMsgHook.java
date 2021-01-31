@@ -51,7 +51,7 @@ public class MuteAllMsgHook extends CommonDelayableHook {
                 XposedBridge.hookMethod(m, new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                        if (LicenseStatus.sDisableCommonHooks || !isEnabled() || !MuteCfgActivity.isEnable()) return;
+                        if (LicenseStatus.sDisableCommonHooks || !isEnabled()) return;
                         Object msgRecord = param.args[0];
                         if (isEnabled()) XposedHelpers.setBooleanField(msgRecord, "isread", true);
                     }

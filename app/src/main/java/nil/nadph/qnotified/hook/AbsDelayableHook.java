@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 
 import cn.lliiooll.hook.MuteAllMsgHook;
 import cn.lliiooll.hook.MuteCardMsgHook;
+import cn.lliiooll.hook.MuteRedBagMsgHook;
 import cn.lliiooll.hook.ScriptEventHook;
 import me.ketal.hook.MultiActionHook;
 import me.ketal.hook.SortAtPanel;
@@ -180,7 +181,7 @@ public abstract class AbsDelayableHook implements SwitchConfigItem {
                 SortAtPanel.INSTANCE,
                 MuteAllMsgHook.get(),
                 MuteCardMsgHook.get(),
-                SendShakeMsgHook.get(),
+                MuteRedBagMsgHook.get(),
             };
         }
         return sAllHooks;
