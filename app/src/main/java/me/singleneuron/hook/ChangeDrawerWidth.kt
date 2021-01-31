@@ -58,10 +58,13 @@ object ChangeDrawerWidth : BaseDelayableConditionalHookAdapter("changeDrawerWidt
             ConfigManager.getDefaultConfig().apply { putInt(ChangeDrawerWidth_width, value); save() }
         }
 
-    fun getMaxWidth(context: Context) :Float {
+    fun getMaxWidth(context: Context): Float {
         val dm = DisplayMetrics()
         val windowManager: WindowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         windowManager.defaultDisplay.getMetrics(dm)
-        return (dm.widthPixels/dm.density)
+        return (dm.widthPixels / dm.density)
     }
+
+    override val condition: Boolean
+        get() = true
 }

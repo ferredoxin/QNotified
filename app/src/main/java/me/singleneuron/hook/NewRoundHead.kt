@@ -91,4 +91,7 @@ object NewRoundHead : BaseDelayableHighPerformanceConditionalHookAdapter("newrou
             arrayOf(DexDeobfStep(DexKit.C_FaceManager))
         }
     }
+
+    override val condition: Boolean
+        get() = true
 }
