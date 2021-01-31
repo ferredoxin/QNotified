@@ -49,6 +49,7 @@ import java.util.Set;
 
 import me.nextalone.hook.EnableQLog;
 import me.singleneuron.activity.BugReportActivity;
+import me.singleneuron.activity.DatabaseTestActivity;
 import me.singleneuron.data.CardMsgCheckResult;
 import me.singleneuron.hook.DebugDump;
 import me.singleneuron.qn_kernel.tlb.ConfigTable;
@@ -67,9 +68,9 @@ import nil.nadph.qnotified.util.*;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.ui.ViewBuilder.*;
 import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTION_EXFRIEND_LIST;
 import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTIVITY_PROXY_ACTION;
+import static nil.nadph.qnotified.ui.ViewBuilder.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressLint("Registered")
@@ -236,6 +237,9 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                 }
             }
         }));
+        ll.addView(newListItemButton(this,"测试数据库","",null,clickToProxyActAction(DatabaseTestActivity.class)));
+
+
         ll.addView(subtitle(this, ""));
 
         ll.addView(subtitle(this, "反混淆信息"));
