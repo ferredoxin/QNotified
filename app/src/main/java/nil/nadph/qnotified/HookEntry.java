@@ -65,7 +65,7 @@ public class HookEntry implements IXposedHookLoadPackage {
                 //coming...
                 break;
             default:
-                throw new IllegalStateException("Unexpected package: " + lpparam.packageName);
+                break;
         }
     }
 
