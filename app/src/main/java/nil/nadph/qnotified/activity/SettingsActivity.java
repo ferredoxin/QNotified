@@ -155,6 +155,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
                 return true;
             }
         });
+        ll.addView(newListItemButton(this, "屏蔽消息", "安静一点!", "N/A", clickToProxyActAction(ACTION_MUTE_MSG_CONFIG_ACTIVITY)));
         mRikkaTitle = _tmp_vg.findViewById(R_ID_TITLE);
         mRikkaDesc = _tmp_vg.findViewById(R_ID_DESCRIPTION);
         ll.addView(_tmp_vg);

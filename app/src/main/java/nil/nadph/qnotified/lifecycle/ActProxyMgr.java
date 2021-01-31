@@ -20,6 +20,7 @@ package nil.nadph.qnotified.lifecycle;
 
 import androidx.annotation.NonNull;
 
+import cn.lliiooll.activity.MuteCfgActivity;
 import nil.nadph.qnotified.activity.*;
 
 /**
@@ -43,6 +44,7 @@ public class ActProxyMgr {
     public static final int ACTION_CHAT_TAIL_CONFIG_ACTIVITY = 11;
     public static final int ACTION_CHAT_TAIL_TROOPS_ACTIVITY = 12;
     public static final int ACTION_CHAT_TAIL_FRIENDS_ACTIVITY = 13;
+    public static final int ACTION_MUTE_MSG_CONFIG_ACTIVITY = 14;
 
     /**
      * TODO: Refactor and remove this method, as well as there constants
@@ -74,6 +76,8 @@ public class ActProxyMgr {
                 return FakeBatCfgActivity.class;
             case ACTION_CHAT_TAIL_CONFIG_ACTIVITY:
                 return ChatTailActivity.class;
+            case ACTION_MUTE_MSG_CONFIG_ACTIVITY:
+                return MuteCfgActivity.class;
             default:
                 return null;
         }
@@ -89,6 +93,7 @@ public class ActProxyMgr {
             || className.startsWith("me.zpp0196.qqpurify.activity.")
             || className.startsWith("me.singleneuron.")
             || className.startsWith("me.ketal.activity.")
+            || className.startsWith("cn.lliiooll.activity.")
             || className.startsWith("com.rymmmmm.activity.");
     }
 
