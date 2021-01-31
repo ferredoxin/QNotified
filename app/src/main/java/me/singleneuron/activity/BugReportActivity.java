@@ -48,7 +48,6 @@ public class BugReportActivity extends AppCompatTransferActivity {
         loadingBugReportFragment = new LoadingBugReportFragment();
         loadingBugReportFragment.setOnRetry(() -> new Thread(new runnable()).start());
         changeFragment(loadingBugReportFragment);
-        new Thread(new runnable()).start();
         setContentView(binding.getRoot());
     }
 
