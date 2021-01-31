@@ -62,4 +62,7 @@ object ForceSystemFile : BaseDelayableConditionalHookAdapter("forceSystemFile") 
     override fun getPreconditions(): Array<Step> {
         return arrayOf(DexDeobfStep(DexKit.C_SmartDeviceProxyMgr))
     }
+
+    override val condition: Boolean
+        get() = true
 }
