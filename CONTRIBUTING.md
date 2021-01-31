@@ -29,17 +29,19 @@
     2. 使用大写字母分隔单词
 6. 使用4个空格缩进
 
-7. 大括号放应同一行上
+7. 弃用或注释的代码应删除，若需重复使用请翻阅git log
 
-8. 代码请务必格式化
+8. 大括号放应同一行上
 
-9. 原则上建议将自己的代码放在自己的包里，**强烈不建议放入nil.nadph.qnotified中**，另外，应注意的是，如果你创建了自己的包，**一定要记得修改proguard-rules.pro**
+9. 代码请务必格式化
 
-10. 针对适配指定QQ/TIM版本的methods扔进[QQConfigTable.kt](app/src/main/java/me/singleneuron/qn_kernel/tlb/QQConfigTable.kt)或[TIMConfigTable.kt](app/src/main/java/me/singleneuron/qn_kernel/tlb/TIMConfigTable.kt)
+10. 原则上建议将自己的代码放在自己的包里，**强烈不建议放入nil.nadph.qnotified中**，另外，应注意的是，如果你创建了自己的包，**一定要记得修改proguard-rules.pro**
 
-11. 原则上建议添加代码头
+11. 针对适配指定QQ/TIM版本的methods扔进[QQConfigTable.kt](app/src/main/java/me/singleneuron/qn_kernel/tlb/QQConfigTable.kt)或[TIMConfigTable.kt](app/src/main/java/me/singleneuron/qn_kernel/tlb/TIMConfigTable.kt)
 
-12. **在任何时候，您都不应该随意更改[build.gradle](build.gradle)，特别是升级 `com.android.tools.build:gradle` 版本**
+12. 除个别情况，需添加代码头
+
+13. **在任何时候，您都不应该随意更改[build.gradle](build.gradle)，特别是升级 `com.android.tools.build:gradle` 版本**
 
 ## 其他
 
