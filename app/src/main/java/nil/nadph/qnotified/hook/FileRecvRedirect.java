@@ -87,7 +87,7 @@ public class FileRecvRedirect extends BaseDelayableHook {
     }
 
     public String getDefaultPath() {
-        if (isTim(getApplication())) {
+        if (IS_TIM) {
             return Environment.getExternalStorageDirectory().getAbsolutePath() + "/Tencent/TIMfile_recv/";
         } else {
             if (getHostVersionCode32() > 1334) {

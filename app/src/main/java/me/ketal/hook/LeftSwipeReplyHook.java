@@ -43,14 +43,7 @@ import static me.ketal.util.TIMVersion.TIM_3_1_1;
 import static me.singleneuron.util.QQVersion.QQ_8_2_6;
 import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
 import static nil.nadph.qnotified.util.Initiator._ChatMessage;
-import static nil.nadph.qnotified.util.Utils.findMethodByTypes_1;
-import static nil.nadph.qnotified.util.Utils.getApplication;
-import static nil.nadph.qnotified.util.Utils.getFirstByType;
-import static nil.nadph.qnotified.util.Utils.getHostVersionCode;
-import static nil.nadph.qnotified.util.Utils.hasMethod;
-import static nil.nadph.qnotified.util.Utils.invoke_virtual_any;
-import static nil.nadph.qnotified.util.Utils.isTim;
-import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.*;
 
 public class LeftSwipeReplyHook extends CommonDelayableHook {
     public static final LeftSwipeReplyHook INSTANCE = new LeftSwipeReplyHook();
@@ -72,9 +65,9 @@ public class LeftSwipeReplyHook extends CommonDelayableHook {
 
     @Override
     public boolean isValid() {
-        if (isTim() && getHostVersionCode() >= TIM_3_1_1)
+        if (Utils.IS_TIM && getHostVersionCode() >= TIM_3_1_1)
             return true;
-        else return !isTim() && getHostVersionCode() >= QQ_8_2_6;
+        else return !Utils.IS_TIM && getHostVersionCode() >= QQ_8_2_6;
     }
 
     @Override
@@ -83,7 +76,7 @@ public class LeftSwipeReplyHook extends CommonDelayableHook {
             Method replyMethod = DexKit.doFindMethod(DexKit.N_LeftSwipeReply_Helper__reply);
             if (replyMethod == null) return false;
             Class<?> hookClass = replyMethod.getDeclaringClass();
-            String methodName = isTim() ? "L" : "a";
+            String methodName = Utils.IS_TIM ? "L" : "a";
             XposedHelpers.findAndHookMethod(hookClass, methodName, float.class, float.class, new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) {
@@ -119,7 +112,7 @@ public class LeftSwipeReplyHook extends CommonDelayableHook {
                 }
             });
 
-            methodName = isTim() ? ConfigTable.INSTANCE.getConfig(LeftSwipeReplyHook.class.getSimpleName()) : "a";
+            methodName = Utils.IS_TIM ? ConfigTable.INSTANCE.getConfig(LeftSwipeReplyHook.class.getSimpleName()) : "a";
             XposedBridge.hookMethod(hasMethod(hookClass, methodName, int.class), new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) {

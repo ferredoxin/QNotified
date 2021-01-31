@@ -18,12 +18,12 @@
  */
 package nil.nadph.qnotified.bridge;
 
+import java.lang.reflect.Modifier;
+
 import me.singleneuron.qn_kernel.tlb.ConfigTable;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Utils;
-
-import java.lang.reflect.Modifier;
 
 import static nil.nadph.qnotified.util.Utils.*;
 
@@ -61,7 +61,7 @@ public class QQMessageFacade {
             iput_object(msg2, "time", t);
             Object msgCache = invoke_virtual_any(getQQAppInterface(), DexKit.doFindClass(DexKit.C_MessageCache));
             String methodName = "b"; //Default method name for QQ
-            if (isTim()) {
+            if (IS_TIM) {
                 methodName = ConfigTable.INSTANCE.getConfig(QQMessageFacade.class.getSimpleName());
             }
             invoke_virtual(msgCache, methodName, true, boolean.class, void.class);

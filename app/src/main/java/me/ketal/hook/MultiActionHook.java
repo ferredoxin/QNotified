@@ -40,15 +40,11 @@ import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
 import static nil.nadph.qnotified.util.Initiator._ChatMessage;
-import static nil.nadph.qnotified.util.Utils.findMethodByTypes_1;
-import static nil.nadph.qnotified.util.Utils.getFirstByType;
-import static nil.nadph.qnotified.util.Utils.iget_object_or_null;
-import static nil.nadph.qnotified.util.Utils.invoke_virtual_any;
-import static nil.nadph.qnotified.util.Utils.isTim;
-import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.*;
 
 /*
 This code has been tested in QQ8.0.0-8.5.5 and TIM all versions.
@@ -56,7 +52,7 @@ This code has been tested in QQ8.0.0-8.5.5 and TIM all versions.
 public class MultiActionHook extends CommonDelayableHook {
     public static final MultiActionHook INSTANCE = new MultiActionHook();
     private static Bitmap img;
-    private final String fieldName = isTim() ? ConfigTable.INSTANCE.getConfig(MultiActionHook.class.getSimpleName()) : "a";
+    private final String fieldName = Utils.IS_TIM ? ConfigTable.INSTANCE.getConfig(MultiActionHook.class.getSimpleName()) : "a";
     private Object baseChatPie;
 
     MultiActionHook() {

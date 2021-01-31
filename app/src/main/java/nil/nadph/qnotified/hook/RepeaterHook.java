@@ -238,7 +238,7 @@ public class RepeaterHook extends CommonDelayableHook {
             });
             //end: pic
             //begin: text
-            if (Utils.isTim()) {
+            if (IS_TIM) {
                 // TODO: 2020/5/17 Add MsgForText +1 for TIM
                 XposedHelpers.findAndHookMethod(_TextItemBuilder(), "a", ChatMessage, itemHolder, View.class, BaseChatItemLayout, listener2,
                         new XC_MethodHook(51) {

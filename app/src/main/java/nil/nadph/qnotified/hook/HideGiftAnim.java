@@ -61,6 +61,6 @@ public class HideGiftAnim extends CommonDelayableHook {
     @Override
     public boolean isValid() {
         Application app = getApplication();
-        return app == null || !isTim(app);
+        return app == null || !IS_TIM;
     }
 }
