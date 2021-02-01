@@ -130,9 +130,9 @@ public class ChatTailHook extends CommonDelayableHook {
                                         .replace("#battery#", battery + "")
                                         .replace("#power#", ChatTailActivity.getPower())
                                         .replace("#time#", new SimpleDateFormat(RikkaCustomMsgTimeFormatDialog.getTimeFormat()).format(new Date()));
-                                if (ct.getTailCapacity().contains("#kongemsg#")) {
-                                    text = text.replace("#kongemsg#", "");
-                                    text = UtilsKt.makeKongeMsg(text);
+                                if (ct.getTailCapacity().contains("#Spacemsg#")) {
+                                    text = text.replace("#Spacemsg#", "");
+                                    text = UtilsKt.makeSpaceMsg(text);
                                 }
                             }
                         } catch (Throwable e) {

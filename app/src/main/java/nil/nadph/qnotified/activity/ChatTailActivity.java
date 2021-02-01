@@ -145,7 +145,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(_d = subtitle(ChatTailActivity.this, "#battery# : 当前电量"));
         ll.addView(_e = subtitle(ChatTailActivity.this, "#power#   : 是否正在充电"));
         ll.addView(_f = subtitle(ChatTailActivity.this, "#time#    : 当前时间"));
-        ll.addView(_g = subtitle(ChatTailActivity.this, "#kongemsg#    : 空格消息"));
+        ll.addView(_g = subtitle(ChatTailActivity.this, "#Spacemsg#    : 空格消息"));
         ll.addView(_h = subtitle(ChatTailActivity.this, "\\n       : 换行"));
         int _5dp = dip2px(ChatTailActivity.this, 5);
         EditText pct = createEditText(R_ID_PERCENT_VALUE, _5dp,
@@ -157,7 +157,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         _d.setOnClickListener(v -> pct.setText(pct.getText() + "#battery#"));
         _e.setOnClickListener(v -> pct.setText(pct.getText() + "#power#"));
         _f.setOnClickListener(v -> pct.setText(pct.getText() + "#time#"));
-        _g.setOnClickListener(v -> pct.setText(pct.getText() + "#kongemsg#"));
+        _g.setOnClickListener(v -> pct.setText(pct.getText() + "#Spacemsg#"));
         _h.setOnClickListener(v -> pct.setText(pct.getText() + "\\n"));
         ll.addView(pct, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 2 * _5dp, _5dp, 2 * _5dp, _5dp));
         ll.addView(newListItemSwitchFriendConfigNext(this, "正则开关",
@@ -256,9 +256,9 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
                         .replace("#battery#", battery + "")
                         .replace("#power#", ChatTailActivity.getPower())
                         .replace("#time#", new SimpleDateFormat(RikkaCustomMsgTimeFormatDialog.getTimeFormat()).format(new Date()));
-                if (desc.contains("#kongemsg#")) {
-                    desc = desc.replace("#kongemsg#", "");
-                    desc = UtilsKt.makeKongeMsg(desc);
+                if (desc.contains("#Spacemsg#")) {
+                    desc = desc.replace("#Spacemsg#", "");
+                    desc = UtilsKt.makeSpaceMsg(desc);
                 }
             } else {
                 desc += "已开启: \n示例消息";

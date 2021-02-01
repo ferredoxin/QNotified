@@ -86,7 +86,7 @@ val Method.isPublic: Boolean
     get() = Modifier.isPublic(this.modifiers)
 
 
-fun makeKongeMsg(str: String): String {
+fun makeSpaceMsg(str: String): String {
     val sb = StringBuilder()
     if (str.length > 1) {
         for (i in str.indices) {
