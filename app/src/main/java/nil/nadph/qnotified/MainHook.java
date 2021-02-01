@@ -194,11 +194,7 @@ public class MainHook {
     }
 
     public void performHook(Context ctx, Object step) {
-        //ConfigTable.INSTANCE.setTim(isTim(ctx));
         SyncUtils.initBroadcast(ctx);
-//        if (SyncUtils.getProcessType() == SyncUtils.PROC_MSF) {
-//            Debug.waitForDebugger();
-//        }
         try {
             Class<?> _NewRuntime = Initiator.load("com.tencent.mobileqq.startup.step.NewRuntime");
             Method[] methods = _NewRuntime.getDeclaredMethods();
@@ -217,7 +213,6 @@ public class MainHook {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     Utils.$access$set$sAppRuntimeInit(true);
-                    //logi("NewRuntime/I after doStep");
                     if (SyncUtils.isMainProcess()) {
                         // fix error in :video, and QZone启动失败
                         LicenseStatus.sDisableCommonHooks = LicenseStatus.isLoadingDisabled() || LicenseStatus.isBlacklisted() || LicenseStatus.isSilentGone();
@@ -261,7 +256,6 @@ public class MainHook {
                     InjectDelayableHooks.step(dir);
                     onAppStartupForMain();
                     third_stage_inited = true;
-                    //startFakeString();
                 }
             });
         } else {

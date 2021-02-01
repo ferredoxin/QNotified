@@ -36,14 +36,10 @@ public class RevokeMsgInfoImpl {
     public int istroop;
     public long shmsgseq;
     public String friendUin;
-    //@Deprecated
-    //public int longmsgid;
     public long msgUid;
     public String fromUin;
-    //public int f89926c;longMsgCount
     public long time;
     public String sendUin;
-    //public int d;longMsgIndex
     @Nullable
     public String authorUin = null;
     @Nullable

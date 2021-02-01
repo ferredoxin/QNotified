@@ -172,22 +172,8 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
             CustomDialog dialog = CustomDialog.create(ctx);
             dialog.setTitle("当前" + currVerName + " (" + currVerCode + ")");
             dialog.setCancelable(true);
-            //dialog.setNegativeButton("关闭", null);
             dialog.setNegativeButton("关闭", new Utils.DummyCallback());
-			/*PopupWindow pop=new PopupWindow();
-			 pop.setWidth(WRAP_CONTENT);
-			 pop.setHeight(WRAP_CONTENT);*/
-            //LinearLayout main = new LinearLayout(ctx);
-            //pop.setContentView(main);
-            //main.setOrientation(LinearLayout.VERTICAL);
-            //ScrollView scrollView = new ScrollView(ctx);
-            //.setView(scrollView);
-            //scrollView.addView(main, WRAP_CONTENT, WRAP_CONTENT);
             SpannableStringBuilder sb = new SpannableStringBuilder();
-            //StringBuilder sb=new StringBuilder();
-            //TextView list = new TextView(ctx);
-            //main.addView(list, WRAP_CONTENT, WRAP_CONTENT);
-            //list.setAutoLinkMask(Linkify.WEB_URLS);
 
             PHPArray ver = (PHPArray) result;
             String vn = (String) ver.__("short_version")._$();
@@ -221,7 +207,6 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
             sb.append("\n");
             sb.append("\n");
 
-            //list.setText(sb);
             dialog.setMessage(sb);
             TextView tv = dialog.getMessageTextView();
             if (tv != null) {
@@ -269,7 +254,6 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
         int mm = Integer.parseInt(p2[1]);
         int ss = Integer.parseInt(p2[2]);
         int ms = Integer.parseInt(p2[3]);
-        //return Date.UTC(yyyy - 1900, MM - 1, dd, HH, mm, ss) + ms;
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         calendar.set(yyyy, MM - 1, dd, HH, mm, ss);
         return calendar.getTime().getTime() + ms;

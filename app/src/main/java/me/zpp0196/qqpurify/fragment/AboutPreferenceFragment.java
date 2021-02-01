@@ -17,14 +17,6 @@ public class AboutPreferenceFragment extends AbstractPreferenceFragment {
 
         findPreference("version_module").setSummary(Utils.QN_VERSION_NAME);
         findPreference("version_qq").setSummary(qqVersion);
-//moved to LicenseActivity
-//        findPreference("licenses").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-//            @Override
-//            public boolean onPreferenceClick(Preference preference) {
-//                AboutPreferenceFragment.this.showLicensesDialog();
-//                return false;
-//            }
-//        });
     }
 
     @Override

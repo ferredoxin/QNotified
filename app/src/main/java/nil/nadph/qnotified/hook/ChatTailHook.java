@@ -67,7 +67,6 @@ public class ChatTailHook extends CommonDelayableHook {
     public boolean initOnce() {
         try {
             Class facade = DexKit.doFindClass(DexKit.C_FACADE);
-            //Class SendMsgParams = null;
             Method m = null;
             for (Method mi : facade.getDeclaredMethods()) {
                 if (!mi.getReturnType().equals(long[].class)) continue;
@@ -77,7 +76,6 @@ public class ChatTailHook extends CommonDelayableHook {
                         && argt[3].equals(String.class) && argt[4].equals(ArrayList.class)) {
                     m = mi;
                     m.setAccessible(true);
-                    //SendMsgParams = argt[5];
                     break;
                 }
             }
@@ -89,15 +87,9 @@ public class ChatTailHook extends CommonDelayableHook {
                         if (LicenseStatus.sDisableCommonHooks) return;
                         if (LicenseStatus.hasBlackFlags()) return;
                         String msg = (String) param.args[3];
-                        // StringBuilder debug = new StringBuilder();
-                        //  debug.append("当前消息: ").append(msg).append("\n");
                         String text = msg;
                         final Parcelable session = (Parcelable) param.args[2];
                         try {
-                            // Object chatPie = param.thisObject;
-                            // m.invoke(null, qqAppInterface, context, sessionInfo, msg, new ArrayList<>(), SendMsgParams.newInstance());
-                            // final Parcelable session = getFirstNSFByType(param.thisObject, _SessionInfo());
-                            // String text = input.getText().toString();
                             String uin = "10000";
                             if (!isGlobal()) {
                                 Field field = null;
@@ -105,21 +97,15 @@ public class ChatTailHook extends CommonDelayableHook {
                                     // 因为有多个同名变量，所以要判断返回类型
                                     if (f.getName().equalsIgnoreCase("a") && f.getType() == String.class) {
                                         field = f;
-                                        //debug.append("变量反射成功！！！").append("\n");
                                     }
                                 }
                                 if (null == field) field = session.getClass().getDeclaredField("curFriendUin");
                                 uin = (String) field.get(session);
-                                //String uin = "123321";
                             }
                             ChatTailHook ct = ChatTailHook.get();
-                            // debug.append("当前小尾巴: ").append(ct.getTailCapacity().replace("\n", "\\n")).append("\n");
-                            // debug.append("当前uin: ").append(uin).append("\n");
-
                             logi("isRegex:" + String.valueOf(ChatTailHook.isRegex()));
                             logi("isPassRegex:" + String.valueOf(ChatTailHook.isPassRegex(msg)));
                             logi("getTailRegex:" + ChatTailHook.getTailRegex());
-                            // debug.append("群列表: ").append(muted).append("\n");
                             if ((ct.isGlobal() || ct.containsTroop(uin) || ct.containsFriend(uin))
                                     && (!isRegex() || !isPassRegex(msg))) {
                                 int battery = FakeBatteryHook.get().isEnabled() ? FakeBatteryHook.get().getFakeBatteryStatus() < 1 ? ChatTailActivity.getBattery() : FakeBatteryHook.get().getFakeBatteryCapacity() : ChatTailActivity.getBattery();
@@ -138,75 +124,11 @@ public class ChatTailHook extends CommonDelayableHook {
                         } catch (Throwable e) {
                             log(e);
                         } finally {
-                            //   debug.append("最终消息: ").append(text.replace("\n", "\\n")).append("\n");
                             param.args[3] = text;
-                            //param.args[3] = debug.toString();
                         }
                     }
                 }
             });
-            /*
-            XposedBridge.hookMethod(DexKit.doFindMethod(DexKit.N_BASE_CHAT_PIE__INIT), new XC_MethodHook(40) {
-                @Override
-                public void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    if (isEnabled()) {
-                        if (LicenseStatus.sDisableCommonHooks) return;
-                        try {
-                            Object chatPie = param.thisObject;
-                            //Class cl_PatchedButton = load("com/tencent/widget/PatchedButton");
-                            final ViewGroup viewGroup = (ViewGroup) invoke_virtual_any(chatPie, ViewGroup.class);
-                            if (viewGroup == null) return;
-                            Context ctx = viewGroup.getContext();
-                            int fun_btn = ctx.getResources().getIdentifier("fun_btn", "id", ctx.getPackageName());
-                            View sendBtn = viewGroup.findViewById(fun_btn);
-                            final QQAppInterface qqApp = getFirstNSFByType(param.thisObject, QQAppInterface.class);
-                            final Parcelable session = getFirstNSFByType(param.thisObject, _SessionInfo());
-                            sendBtn.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    if (LicenseStatus.sDisableCommonHooks) return;
-                                    Context ctx = v.getContext();
-                                    EditText input = viewGroup.findViewById(ctx.getResources().getIdentifier("input", "id", ctx.getPackageName()));
-                                    StringBuilder debug = new StringBuilder();
-                                    String text = input.getText().toString();
-                                    ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
-
-                                    Field field = null;
-                                    for (Field f : session.getClass().getDeclaredFields()) {
-                                        if (f.getName().equalsIgnoreCase("a") && f.getType() == String.class) {
-                                            field = f;
-                                        }
-                                    }
-                                    if (((TextView) v).length() != 0) {
-                                        String uin = "";
-                                        ChatTailHook ct = ChatTailHook.get();
-                                        try {
-                                            uin = (String) field.get(session);
-                                            String muted = "," + cfg.getString(ConfigItems.qn_chat_tail_troops) + ",";
-                                            if (muted.contains("," + uin + ",") || cfg.getBooleanOrFalse(ConfigItems.qn_chat_tail_global)) {
-                                                text = ct.getTailCapacity().replace(ChatTailActivity.delimiter, text);
-                                            } else {
-                                                muted = "," + cfg.getString(ConfigItems.qn_chat_tail_friends) + ",";
-                                                if (muted.contains("," + uin + ",")) {
-                                                    text = ct.getTailCapacity().replace(ChatTailActivity.delimiter, text);
-                                                }
-                                            }
-                                        } catch (IllegalAccessException e) {
-                                        }
-                                        ChatActivityFacade.sendMessage(qqApp, ctx, session, text);
-                                        input.setText("");
-                                    }
-                                }
-                            });
-                        } catch (Throwable e) {
-                            log(e);
-                        }
-                    }
-                }
-            });
-
-             */
-            //End: send btn
             return true;
         } catch (Throwable throwable) {
             log(throwable);

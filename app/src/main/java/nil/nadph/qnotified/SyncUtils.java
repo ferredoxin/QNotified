@@ -99,7 +99,6 @@ public class SyncUtils {
                     long uin = intent.getLongExtra("uin", 0);
                     int what = intent.getIntExtra("file", 0);
                     if (id != -1 && id != myId) {
-                        //log("Rx: FILE_DEFAULT_CONFIG changed, setDirtyFlag");
                         onRecvFileChanged(file, uin, what);
                     }
                     break;
@@ -109,7 +108,6 @@ public class SyncUtils {
                     int hookId = intent.getIntExtra("hook", -1);
                     if (hookId != -1 && (myType & targetType) != 0) {
                         AbsDelayableHook hook = AbsDelayableHook.getHookByType(hookId);
-                        //log("Remote: recv init " + hook);
                         if (hook != null) {
                             try {
                                 hook.init();
@@ -168,10 +166,9 @@ public class SyncUtils {
         filter.addAction(GENERIC_WRAPPER);
         ctx.registerReceiver(recv, filter);
         inited = true;
-        //log("Proc:  " + android.os.Process.myPid() + "/" + getProcessType() + "/" + getProcessName());
     }
 
-    //@Deprecated
+    @Deprecated
     public static void sendGenericBroadcast(Intent intent) {
         sendGenericBroadcast(null, intent);
     }
@@ -203,7 +200,6 @@ public class SyncUtils {
         changed.putExtra("uin", uin);
         changed.putExtra("what", what);
         ctx.sendBroadcast(changed);
-        //log("Tx: file changed " + file);
     }
 
     public static void requestInitHook(int hookId, int process) {
@@ -213,7 +209,6 @@ public class SyncUtils {
         initId();
         changed.putExtra("process", process);
         changed.putExtra("hook", hookId);
-        //log("Tx: " + hookId);
         ctx.sendBroadcast(changed);
     }
 
@@ -281,12 +276,6 @@ public class SyncUtils {
                         }
                     }
                 }
-				/*FileInputStream fin = new FileInputStream("/proc/" + android.os.Process.myPid() + "/cmdline");
-				 byte[] b = new byte[64];
-				 int len = fin.read(b, 0, b.length);
-				 fin.close();
-				 String procName = new String(b, 0, len).trim();
-				 //XposedBridge.log(procName);*/
             } catch (Throwable e) {
                 loge("getProcessName error " + e);
             }
@@ -402,40 +391,6 @@ public class SyncUtils {
     public static int randomInt32Bits() {
         return new Random().nextInt();
     }
-    /*
-     public static synchronized String getSocketUuid() {
-     Context ctx = getApplication();
-     File f = new File(ctx.getFilesDir(), "nil_nadph_uuid");
-     try {
-     if (f.exists()) {
-     FileInputStream fin = new FileInputStream(f);
-     byte[] buf = new byte[20];
-     int l = fin.read(buf);
-     fin.close();
-     String str = new String(buf, 0, l)
-     .replace("\r", "").replace("\n", "").replace(" ", "").replace("\t", "");
-     if (str.length() > 4) return str;
-     }
-     String uuid = UUID.randomUUID().toString().replace("\r", "").replace("\n", "").replace(" ", "").replace("\t", "");
-     if (!f.exists()) f.createNewFile();
-     FileOutputStream fout = new FileOutputStream(f);
-     fout.write(uuid.getBytes());
-     fout.flush();
-     fout.close();
-     return uuid;
-     } catch (IOException e) {
-     throw new RuntimeException("Unable to allocate uuid");
-     }
-     }
-     */
-
-//    public static int getUid() {
-//        try {
-//            return Libcore.os.getuid();
-//        } catch (Throwable e) {
-//            return android.os.Process.myUid();
-//        }
-//    }
 
     public static void initId() {
         if (myId == 0) {

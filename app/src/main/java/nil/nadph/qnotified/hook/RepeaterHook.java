@@ -96,7 +96,6 @@ public class RepeaterHook extends CommonDelayableHook {
                         viewGroup.removeView(childAt);
                         int __id = childAt.getId();
                         LinearLayout linearLayout = new LinearLayout(ctx);
-                        //linearLayout.setId(Integer.parseInt((String) Hook.config.get("Item_id"), 16));
                         if (__id != -1) linearLayout.setId(__id);
                         linearLayout.setOrientation(0);
                         linearLayout.setGravity(17);
@@ -109,7 +108,6 @@ public class RepeaterHook extends CommonDelayableHook {
                         linearLayout.addView(childAt, childAt.getLayoutParams());
                         ImageView imageView2 = new ImageView(ctx);
                         imageView2.setId(102);
-                        //imageView2.setImageResource(Integer.parseInt((String) Hook.config.get("+1_icon"), 16));
                         imageView2.setImageBitmap(RepeaterIconSettingDialog.getRepeaterIcon());
                         LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(-2, -2);
                         layoutParams2.leftMargin = dip2px(ctx, (float) 10);
@@ -138,102 +136,6 @@ public class RepeaterHook extends CommonDelayableHook {
                     };
                     imageView3.setOnClickListener(r0);
                     imageView4.setOnClickListener(r0);
-//                    View.OnLongClickListener r4 = new View.OnLongClickListener() {
-//                        @Override
-//                        public boolean onLongClick(View view) {
-//                            try {
-//                                Class loadClass = this.val$loader.loadClass((String) Hook.config.get("DialogUtils"));
-//                                String str = "a";
-//                                Class[] clsArr = new Class[2];
-//                                clsArr[0] = Class.forName("android.app.Activity");
-//                                clsArr[1] = Integer.TYPE;
-//                                Dialog dialog = (Dialog) MethodUtils.callStaticMethod(loadClass, str, (Class<?>[]) clsArr, this.val$context, new Integer(2131501443));
-//                                ((View) ((View) FieldUtils.getField(dialog, "lBtn")).getParent()).setVisibility(8);
-//                                String str2 = "setItems";
-//                                Class[] clsArr2 = new Class[2];
-//                                clsArr2[0] = Class.forName("[Ljava.lang.String;");
-//                                clsArr2[1] = Class.forName("android.content.DialogInterface$OnClickListener");
-//                                MethodUtils.callMethod((Object) dialog, str2, (Class<?>[]) clsArr2, new String[]{"秀图", "幻影", "抖动", "生日", "爱你", "征友"}, new DialogInterface.OnClickListener(this, this.val$param, this.val$qqAppInterface, this.val$loader) {
-//                                    @Override
-//                                    public void onClick(DialogInterface dialogInterface, int i) {
-//                                        try {
-//                                            Object obj = this.val$param.args[0];
-//                                            String str = (String) MethodUtils.callMethod(this.val$qqAppInterface, "getCurrentAccountUin", new Object[0]);
-//                                            String str2 = (String) FieldUtils.getField(obj, "frienduin", Class.forName("java.lang.String"));
-//                                            String str3 = (String) FieldUtils.getField(obj, "senderuin", Class.forName("java.lang.String"));
-//                                            int intValue = ((Integer) FieldUtils.getField(obj, "istroop", Integer.TYPE)).intValue();
-//                                            long longValue = ((Long) FieldUtils.getField(obj, "time", Long.TYPE)).longValue();
-//                                            Object callConstructor = ConstructorUtils.callConstructor(this.val$loader.loadClass("com.tencent.mobileqq.activity.aio.SessionInfo"), new Object[0]);
-//                                            FieldUtils.setField(callConstructor, "a", str2, Class.forName("java.lang.String"));
-//                                            FieldUtils.setField(callConstructor, "a", new Integer(intValue), Integer.TYPE);
-//                                            String str4 = "";
-//                                            if (intValue == 1) {
-//                                                String str5 = "@%s ";
-//                                                Object[] objArr = new Object[1];
-//                                                Class loadClass = this.val$loader.loadClass((String) Hook.config.get("NickManager"));
-//                                                String str6 = "a";
-//                                                Object[] objArr2 = new Object[5];
-//                                                objArr2[0] = this.val$qqAppInterface;
-//                                                objArr2[1] = str3;
-//                                                objArr2[2] = str2;
-//                                                Integer num = new Integer(intValue == 1 ? 1 : 2);
-//                                                objArr2[3] = num;
-//                                                Integer num2 = new Integer(0);
-//                                                objArr2[4] = num2;
-//                                                objArr[0] = (String) MethodUtils.callStaticMethod(loadClass, str6, objArr2);
-//                                                String.format(str5, objArr);
-//                                            }
-//                                            byte[] bArr = (byte[]) FieldUtils.getField(obj, "msgData");
-//                                            Object callConstructor2 = ConstructorUtils.callConstructor(this.val$loader.loadClass("localpb.richMsg.RichMsg$PicRec"), new Object[0]);
-//                                            MethodUtils.callMethod(callConstructor2, "mergeFrom", bArr);
-//                                            Object callConstructor3 = ConstructorUtils.callConstructor(this.val$loader.loadClass("tencent.im.msg.hummer.resv3.CustomFaceExtPb$ResvAttr"), new Object[0]);
-//                                            Object field = FieldUtils.getField(callConstructor3, "msg_image_show");
-//                                            Object field2 = FieldUtils.getField(field, "int32_effect_id");
-//                                            String str7 = "set";
-//                                            Integer num3 = new Integer(40000 + i);
-//                                            MethodUtils.callMethod(field2, str7, num3);
-//                                            String str8 = "setHasFlag";
-//                                            Boolean bool = new Boolean(true);
-//                                            MethodUtils.callMethod(field, str8, bool);
-//                                            MethodUtils.callMethod(FieldUtils.getField(callConstructor2, "bytes_pb_reserved"), "set", ConstructorUtils.callConstructor(this.val$loader.loadClass("com.tencent.mobileqq.pb.ByteStringMicro"), (byte[]) MethodUtils.callMethod(callConstructor3, "toByteArray", new Object[0])));
-//                                            byte[] bArr2 = (byte[]) MethodUtils.callMethod(callConstructor2, "toByteArray", new Object[0]);
-//                                            Object callConstructor4 = ConstructorUtils.callConstructor(this.val$loader.loadClass("com.tencent.mobileqq.data.MessageForTroopEffectPic"), new Object[0]);
-//                                            String str9 = "init";
-//                                            Object[] objArr3 = new Object[8];
-//                                            objArr3[0] = str;
-//                                            if (intValue == 0) {
-//                                                str2 = str3;
-//                                            }
-//                                            objArr3[1] = str2;
-//                                            objArr3[2] = str3;
-//                                            objArr3[3] = "QQ复读机";
-//                                            objArr3[4] = new Long(longValue);
-//                                            objArr3[5] = new Integer(-5015);
-//                                            objArr3[6] = new Integer(intValue);
-//                                            objArr3[7] = new Long(longValue);
-//                                            MethodUtils.callMethod(callConstructor4, str9, objArr3);
-//                                            FieldUtils.setField(callConstructor4, "msgUid", new Long(((Long) FieldUtils.getField(obj, "msgUid")).longValue() + ((long) new Random().nextInt())));
-//                                            FieldUtils.setField(callConstructor4, "shmsgseq", new Long(((Long) FieldUtils.getField(obj, "shmsgseq")).longValue()));
-//                                            FieldUtils.setField(callConstructor4, "isread", new Boolean(true));
-//                                            FieldUtils.setField(callConstructor4, "msgData", bArr2);
-//                                            MethodUtils.callMethod(callConstructor4, "doParse", new Object[0]);
-//                                            FieldUtils.setField(callConstructor4, "msgtype", new Integer(-5015));
-//                                            MethodUtils.callStaticMethod(this.val$loader.loadClass((String) Hook.config.get("MessageManager")), "a", this.val$qqAppInterface, callConstructor, callConstructor4);
-//                                        } catch (Throwable th) {
-//                                            log(th);
-//                                        }
-//                                    }
-//                                });
-//                                dialog.create();
-//                                dialog.show();
-//                            } catch (Throwable th) {
-//                                XposedBridge.log(th);
-//                            }
-//                            return true;
-//                        }
-//                    };
-//                    imageView3.setOnLongClickListener(r4);
-//                    imageView4.setOnLongClickListener(r4);
                 }
             });
             //end: pic

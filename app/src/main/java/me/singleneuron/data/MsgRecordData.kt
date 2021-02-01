@@ -153,7 +153,6 @@ data class MsgRecordData(val msgRecord: Any?) {
         stringBuilder.apply {
             append("消息文本: $msg\n")
             msg2?.let { append("也是消息文本: $msg2\n") }
-//            msgId?.let{append("消息id: $msgId\n")}
             msgUid?.let { append("消息uid: $msgUid\n") }
             friendUin?.let { append("好友/群号:$friendUin\n") }
             senderUin?.let { append("发送人QQ: $senderUin\n") }

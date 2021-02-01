@@ -112,7 +112,6 @@ public class ChiralCarbonHelper {
         }
         if (hcnt1 != hcnt2 || bondnh1.size() != bondnh2.size()) return false;
         if (ttl < 0) {
-            //Utils.log(new IllegalArgumentException("ttl must > 0"));
             return true;
         }
         --ttl;

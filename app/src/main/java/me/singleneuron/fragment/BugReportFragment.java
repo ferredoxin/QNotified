@@ -58,16 +58,10 @@ public class BugReportFragment extends PreferenceFragmentCompat {
         preferenceCategory.removeAll();
         for (BugReportArguments bugReportArguments : bugReportArgumentsList) {
             Preference preference;
-            /*if (bugReportArguments.multiple) {
-                MultiSelectListPreference multiSelectListPreference = new MultiSelectListPreference(getContext());
-                multiSelectListPreference.setEntries(bugReportArguments.choices);
-                preference = multiSelectListPreference;
-            } else {*/
             ListPreference listPreference = new ListPreference(getContext());
             listPreference.setEntryValues(bugReportArguments.choices);
             listPreference.setEntries(bugReportArguments.choices);
             preference = listPreference;
-            //}
             preference.setKey(bugReportArguments.key);
             preference.setTitle(bugReportArguments.name);
             preference.setSummary(bugReportArguments.description);

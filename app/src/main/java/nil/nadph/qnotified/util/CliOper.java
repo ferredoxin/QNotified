@@ -39,7 +39,6 @@ public class CliOper {
 
     public static void __init__(Application app) {
         if (app == null) return;
-        //if (BuildConfig.DEBUG) return;
         if (appCenterInit) return;
 
         long longAccount = Utils.getLongAccountUin();
@@ -95,17 +94,9 @@ public class CliOper {
     }
 
     public static void abortAuth2Once(int retryCount) {
-        /*__init__(Utils.getApplication());
-        Map<String, String> prop = new HashMap<>();
-        prop.put("retryCount", String.valueOf(retryCount));
-        Analytics.trackEvent("abortAuth2Once", prop);*/
     }
 
     public static void revokeAuth2Once() {
-        /*__init__(Utils.getApplication());
-        Map<String, String> prop = new HashMap<>();
-        prop.put("isAuth2Whitelist", String.valueOf(LicenseStatus.isBypassAuth2()));
-        Analytics.trackEvent("revokeAuth2Once", prop);*/
     }
 
     public static void copyCardMsg(String msg) {

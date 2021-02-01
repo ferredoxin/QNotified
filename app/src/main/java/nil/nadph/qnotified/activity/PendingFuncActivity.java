@@ -65,7 +65,6 @@ public class PendingFuncActivity extends IphoneTitleBarActivityCompat {
         ll.addView(newListItemSwitchStub(this, "QQ视频通话旋转锁定", "可在通话界面设置旋转方向", false));
         ll.addView(newListItemSwitchStub(this, "屏蔽好友热播", "隐藏动态里的好友热播", false));
         ll.addView(newListItemSwitchConfigStub(this, "屏蔽回执消息的通知", null, ConfigItems.qn_mute_talk_back, false));
-//        ll.addView(newListItemButton(this, "小尾巴", "请勿在多个模块同时开启小尾巴", "[无]", clickTheComing()));
         ll.addView(newListItemButton(this, "聊天图片自动接收原图", null, "禁用", clickTheComing()));
         ll.addView(newListItemButton(this, "隐藏联系人", "和自带的\"隐藏会话\"有所不同", "0人", clickTheComing()));
         ll.addView(newListItemButton(this, "自定义本地头像", "仅本机生效", "禁用", clickTheComing()));
@@ -80,8 +79,6 @@ public class PendingFuncActivity extends IphoneTitleBarActivityCompat {
         this.setContentView(bounceScrollView);
         LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);
         _lp_fat.weight = 1;
-        //__ll.addView(bounceScrollView,_lp_fat);
-        //sdlv.setBackgroundColor(0xFFAA0000)
         setTitle("咕咕咕");
         setContentBackgroundDrawable(ResUtils.skin_background);
         return true;

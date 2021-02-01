@@ -47,7 +47,6 @@ public class FaceImpl implements InvocationHandler {
     private final Object mFaceDecoder;
 
     private FaceImpl() throws Throwable {
-        //private Object faceMgr;
         Object qqAppInterface = Utils.getAppRuntime();
         class_FaceDecoder = load("com/tencent/mobileqq/util/FaceDecoder");
         if (class_FaceDecoder == null) {
@@ -115,7 +114,6 @@ public class FaceImpl implements InvocationHandler {
     }
     
     public void onDecodeTaskCompleted(int code, int type, String uin, Bitmap bitmap) {
-        //Utils.log(code+","+type+","+uin+","+bitmap);
         if (bitmap != null) {
             if (type == TYPE_USER) cachedUserFace.put(uin, bitmap);
             if (type == TYPE_TROOP) cachedTroopFace.put(uin, bitmap);

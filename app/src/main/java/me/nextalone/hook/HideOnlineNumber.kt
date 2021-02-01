@@ -30,7 +30,6 @@ import java.lang.reflect.Method
 object HideOnlineNumber : CommonDelayableHook("na_hide_online_number") {
     override fun initOnce(): Boolean {
         return try {
-//            val classSimpleName = this::class.java.simpleName
             var className = "com.tencent.mobileqq.activity.aio.core.TroopChatPie"
             if (Utils.getHostVersionCode() <= QQVersion.QQ_8_4_8) {
                 className = "com.tencent.mobileqq.activity.aio.rebuild.TroopChatPie"

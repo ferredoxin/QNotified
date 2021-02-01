@@ -27,7 +27,6 @@ class PageFaultHighPerformanceFunctionCache<T:Any>(function: () -> T) {
         return try {
             mValue
         } catch (e:UninitializedPropertyAccessException) {
-            //Utils.log(e)
             mValue = mFunction()
             mValue
         }

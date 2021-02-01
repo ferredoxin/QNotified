@@ -212,7 +212,6 @@ public class ResUtils {
     }
 
     public static void applyStyleCommonBtnBlue(Button btn) {
-        //btn.setBackgroundDrawable(getCommonBtnBlueBackground());
         ViewCompat.setBackground(btn,getCommonBtnBlueBackground());
         btn.setTextColor(skin_color_button_blue);
         btn.setTextSize(17);
@@ -222,7 +221,6 @@ public class ResUtils {
     public static StateListDrawable getListItemBackground() {
         StateListDrawable sd = new StateListDrawable();
         sd.addState(new int[]{android.R.attr.state_pressed}, skin_list_item_pressed);
-        //sd.addState(new int[]{android.R.attr.state_focused}, skin_list_item_unread);
         sd.addState(new int[]{android.R.attr.state_selected}, skin_list_item_pressed);
         sd.addState(new int[]{}, skin_list_item_normal);
         return sd;
@@ -252,9 +250,7 @@ public class ResUtils {
         try {
             Bitmap bitmap = BitmapFactory.decodeStream(in);
             bitmap.setDensity(320);// qq has xhdpi
-            //log(name+"BiHeight:"+bitmap.getHeight());
             byte[] chunk = bitmap.getNinePatchChunk();
-            //log("Res == "+res);
             if (NinePatch.isNinePatchChunk(chunk)) {
                 Class clz = load("com/tencent/theme/SkinnableNinePatchDrawable");
                 ret = (Drawable) XposedHelpers.findConstructorBestMatch(clz, Resources.class, Bitmap.class, byte[].class, Rect.class, String.class)
@@ -262,7 +258,6 @@ public class ResUtils {
             } else {
                 ret = new BitmapDrawable(res, bitmap);
             }
-            //log(name+"DrHiMin="+ret.getMinimumHeight());
             return ret.mutate();
         } catch (Exception e) {
             log(e);
@@ -275,7 +270,6 @@ public class ResUtils {
         if ((ret = cachedDrawable.get(name)) != null) return ret;
         try {
             if (res == null && mContext != null) res = mContext.getResources();
-            //log(res + "is not null");
             InputStream fin = openAsset(name);
             ret = loadDrawableFromStream(fin, name, res);
             cachedDrawable.put(name, ret);

@@ -66,7 +66,6 @@ public class FakeBatteryHook extends CommonDelayableHook implements InvocationHa
 
     @Override
     public boolean initOnce() {
-        //log("---> FakeBatteryHook called init!");
         try {
             //for :MSF
             Method mGetSendBatteryStatus = null;
@@ -79,7 +78,6 @@ public class FakeBatteryHook extends CommonDelayableHook implements InvocationHa
             XposedBridge.hookMethod(mGetSendBatteryStatus, new XC_MethodHook(49) {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    //log("--->getSendBatteryStatus isEnabled=" + isEnabled() + ", getFakeBatteryStatus=" + getFakeBatteryStatus());
                     if (!isEnabled()) return;
                     param.setResult(getFakeBatteryStatus());
                 }
@@ -335,7 +333,6 @@ public class FakeBatteryHook extends CommonDelayableHook implements InvocationHa
     public int getFakeBatteryStatus() {
         int val = ConfigManager.getDefaultConfig().getIntOrDefault(ConfigItems.qn_fake_bat_expr, -1);
         if (val < 0) {
-            //log("getFakeBatteryStatus: qn_fake_bat_expr = " + val);
             return 0;//safe value
         }
         return val;

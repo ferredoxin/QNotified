@@ -69,7 +69,6 @@ public class DexFlow {
                 methodIdx += readUleb128(buf, p);
                 int accessFlags = readUleb128(buf, p);
                 int codeOff = co[0] = readUleb128(buf, p);
-                //if (codeOff == 0) continue;
                 int pMethodId = methodIdsOff + 8 * methodIdx;
                 String name = readString(buf, readLe32(buf, pMethodId + 4));
                 String sig = readProto(buf, readLe16(buf, pMethodId + 2));
@@ -80,7 +79,6 @@ public class DexFlow {
                 methodIdx += readUleb128(buf, p);
                 int accessFlags = readUleb128(buf, p);
                 int codeOff = co[0] = readUleb128(buf, p);
-                //if (codeOff == 0) continue;
                 int pMethodId = methodIdsOff + 8 * methodIdx;
                 String name = readString(buf, readLe32(buf, pMethodId + 4));
                 String sig = readProto(buf, readLe16(buf, pMethodId + 2));
@@ -186,7 +184,6 @@ public class DexFlow {
     }
 
     @NonUiThread
-    //@Deprecated
     public static DexFieldDescriptor guessFieldByNewInstance(byte[] buf, DexMethodDescriptor method, Class<?> instanceClass) throws NoSuchMethodException {
         if (instanceClass == null) throw new NullPointerException("instanceClass == null");
         return guessFieldByNewInstance(buf, method, "L" + instanceClass.getName().replace('.', '/') + ";");
@@ -423,7 +420,6 @@ public class DexFlow {
 
     public static String readProto(byte[] buf, int idx) {
         int protoIdsOff = readLe32(buf, 0x4c);
-        //int shortyStrIdx = readLe32(buf, protoIdsOff + 12 * idx);
         int returnTypeIdx = readLe32(buf, protoIdsOff + 12 * idx + 4);
         int parametersOff = readLe32(buf, protoIdsOff + 12 * idx + 8);
         StringBuilder sb = new StringBuilder("(");

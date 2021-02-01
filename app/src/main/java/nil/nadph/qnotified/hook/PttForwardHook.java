@@ -201,7 +201,6 @@ public class PttForwardHook extends CommonDelayableHook {
                         heads.addView(imgview, imglp);
                         heads.addView(ni);
                     }
-                    //String ret = "" +/*ctx.getIntent().getExtras();//*/iget_object(param.thisObject, "a", Bundle.class);
                     CustomDialog dialog = CustomDialog.create(ctx);
                     final Activity finalCtx = ctx;
                     dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {

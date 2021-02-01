@@ -142,33 +142,10 @@ public class PicMd5Hook extends CommonDelayableHook {
 
     @Override
     public void setEnabled(boolean enabled) {
-//        try {
-//            ConfigManager mgr = ConfigManager.getDefaultConfig();
-//            mgr.getAllConfig().put(qn_show_pic_md5, enabled);
-//            mgr.save();
-//        } catch (final Exception e) {
-//            Utils.log(e);
-//            if (Looper.myLooper() == Looper.getMainLooper()) {
-//                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-//            } else {
-//                SyncUtils.post(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-//                    }
-//                });
-//            }
-//        }
     }
 
     @Override
     public boolean isEnabled() {
         return true;
-//        try {
-//            return ConfigManager.getDefaultConfig().getBooleanOrFalse(qn_show_pic_md5);
-//        } catch (Exception e) {
-//            log(e);
-//            return false;
-//        }
     }
 }

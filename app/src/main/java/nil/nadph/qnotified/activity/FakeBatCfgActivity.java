@@ -68,12 +68,10 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
         LinearLayout __ll = new LinearLayout(FakeBatCfgActivity.this);
         __ll.setOrientation(LinearLayout.VERTICAL);
         ViewGroup bounceScrollView = new BounceScrollView(this, null);
-        //invoke_virtual(bounceScrollView,"a",true,500,500,boolean.class,int.class,int.class);
         bounceScrollView.setLayoutParams(mmlp);
         bounceScrollView.setId(R.id.rootBounceScrollView);
         ll.setId(R.id.rootMainLayout);
         bounceScrollView.addView(ll, new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-        //invoke_virtual(bounceScrollView,"setNeedHorizontalGesture",true,boolean.class);
         LinearLayout.LayoutParams fixlp = new LinearLayout.LayoutParams(MATCH_PARENT, dip2px(FakeBatCfgActivity.this, 48));
         RelativeLayout.LayoutParams __lp_l = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
         int mar = (int) (dip2px(FakeBatCfgActivity.this, 12) + 0.5f);
@@ -100,11 +98,9 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
         pct.setInputType(TYPE_CLASS_NUMBER);
         pct.setTextColor(ResUtils.skin_black);
         pct.setTextSize(dip2sp(FakeBatCfgActivity.this, 18));
-        //pct.setBackgroundDrawable(null);
         ViewCompat.setBackground(pct,null);
         pct.setGravity(Gravity.CENTER);
         pct.setPadding(_5dp, _5dp / 2, _5dp, _5dp / 2);
-        //pct.setBackgroundDrawable(new HighContrastBorder());
         ViewCompat.setBackground(pct,new HighContrastBorder());
         pct.setHint("电量百分比, 取值范围 [1,100]");
         pct.setText(bat.getFakeBatteryCapacity() + "");

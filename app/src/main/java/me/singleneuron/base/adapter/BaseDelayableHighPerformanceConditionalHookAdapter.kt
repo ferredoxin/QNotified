@@ -33,13 +33,6 @@ abstract class BaseDelayableHighPerformanceConditionalHookAdapter @JvmOverloads 
 
     override fun checkEnabled(): Boolean {
         return highPerformanceEnabledCache.getValue()
-        /*return try {
-            highPerformanceEnabled
-        } catch (e:IllegalStateException) {
-            //Utils.log(e)
-            highPerformanceEnabled = super.checkEnabled()
-            highPerformanceEnabled
-        }*/
     }
 
 }

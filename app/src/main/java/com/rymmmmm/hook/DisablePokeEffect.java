@@ -57,17 +57,6 @@ public class DisablePokeEffect extends CommonDelayableHook {;
                         }
                     });
                 }
-//                "fangdazhao" need to fix.
-//                if (m.getName().equals("b") && m.getParameterTypes().length == 2 && !Modifier.isStatic(m.getModifiers())) {
-//                    XposedBridge.hookMethod(m, new XC_MethodHook() {
-//                        @Override
-//                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-//                            if (LicenseStatus.sDisableCommonHooks) return;
-//                            if (!isEnabled()) return;
-//                            param.setResult(null);
-//                        }
-//                    });
-//                }
             }
             return true;
         } catch (Throwable e) {

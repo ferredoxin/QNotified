@@ -47,11 +47,9 @@ public class LicenseActivity extends IphoneTitleBarActivityCompat implements Vie
         super.doOnCreate(bundle);
 
         final Notices notices = new Notices();
-//        Notice commonsIo = new Notice("Apache Commons IO", "https://github.com/apache/commons-io", "Copyright 2002-2019 The Apache Software Foundation", new ApacheSoftwareLicense20());
         Notice flycoTabLayout = new Notice("FlycoTabLayout", "https://github.com/H07000223/FlycoTabLayout", "Copyright (c) 2015 H07000223", new MITLicense());
         Notice markwon = new Notice("Markwon", "https://github.com/noties/Markwon", "Copyright 2017 Dimitry Ivanov (mail@dimitryivanov.ru)", new ApacheSoftwareLicense20());
         Notice colorPicker = new Notice("ColorPicker", "https://github.com/jaredrummler/ColorPicker", "Copyright 2016 Jared Rummler\nCopyright 2015 Daniel Nilsson", new ApacheSoftwareLicense20());
-//        notices.addNotice(commonsIo);
         notices.addNotice(new Notice("QQ净化", "https://github.com/zpp0196/QQPurify", "zpp0196", new ApacheSoftwareLicense20()));
         notices.addNotice(new Notice("NoApplet", "https://github.com/Alcatraz323/noapplet", "Alcatraz323", new MITLicense()));
         notices.addNotice(new Notice("原生音乐通知", "https://github.com/singleNeuron/XposedMusicNotify", "singleNeuron", new GnuLesserGeneralPublicLicense3()));

@@ -78,11 +78,6 @@ public class DarkOverlayHook extends CommonDelayableHook {
         }
     }
 
-    /*@Override
-    public int getEffectiveProc() {
-        //NOTICE: does qzone also has?
-        return SyncUtils.PROC_MAIN;
-    }*/
 
     private static final String cache_night_mask_field = "cache_night_mask_field";
     private static final String cache_night_mask_field_version_code = "cache_night_mask_field_version_code";

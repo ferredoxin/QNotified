@@ -73,25 +73,6 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
 
     static private final HashMap<Long, ExfriendManager> instances = new HashMap<>();
     static private ExecutorService tp;
-    //    private static final Runnable asyncUpdateAwaitingTask = new Runnable() {
-//        @Override
-//        public void run() {
-//            long cuin;
-//            try {
-//                while (true) {
-//                    Thread.sleep(1000L * FL_UPDATE_INT_MAX);
-//                    cuin = Utils.getLongAccountUin();
-//                    if (cuin > 10000) {
-//                        //log("try post task for " + cuin);
-//                        ExfriendManager mgr = getCurrent();
-//                        mgr.timeToUpdateFl();
-//                    }
-//                }
-//            } catch (Exception e) {
-//                log(e);
-//            }
-//        }
-//    };
     public long lastUpdateTimeSec;
     private long mUin;
     private ConcurrentHashMap<Long, FriendRecord> persons;
@@ -109,7 +90,6 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
             int pt = SyncUtils.getProcessType();
             if (pt != 0 && (pt & (SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF)) != 0) {
                 tp = Executors.newCachedThreadPool();
-                //tp.execute(asyncUpdateAwaitingTask);
             }
         }
         initForUin(uin);
@@ -158,7 +138,6 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
     }
 
     public static void onGetFriendListResp(FriendChunk fc) {
-        //log("onGetFriendListResp");
         get(fc.uin).recordFriendChunk(fc);
     }
 
@@ -391,7 +370,6 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
                 log(e);
                 //shouldn't happen
             }
-            //log("addEx,"+ev.operand);
         }
     }
 
@@ -426,7 +404,6 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
             try {
                 entry = it.next();
                 EventRecord ev = new EventRecord();
-                //e=entry.getKey();
                 rec = entry.getValue();
                 ev._nick = (String) rec[__nick];
                 ev._remark = (String) rec[__remark];
@@ -469,7 +446,6 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
     public void saveConfigure() {
         synchronized (this) {
             try {
-                //log("save: persons.size()="+persons.size()+"event.size="+events.size());
                 if (persons == null) {
                     persons = new ConcurrentHashMap<Long, FriendRecord>();
                 }
@@ -528,13 +504,11 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
     }
 
     public synchronized void recordFriendChunk(FriendChunk fc) {
-        //log("recordFriendChunk");
         if (fc.getfriendCount == 0) {
-            //ignore it;
+            //ignore it
         } else {
             if (fc.startIndex == 0) cachedFriendChunks.clear();
             cachedFriendChunks.add(fc);
-            //log(fc.friend_count+","+fc.startIndex+","+fc.totoal_friend_count);
             if (fc.friend_count + fc.startIndex == fc.totoal_friend_count) {
                 final FriendChunk[] update = new FriendChunk[cachedFriendChunks.size()];
                 cachedFriendChunks.toArray(update);
@@ -576,7 +550,6 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
     }
 
     public void reportEventWithoutSave(EventRecord ev, Object[] out) {
-        //log("Report event,uin="+ev.operand);
         int k = events.size();
         while (events.containsKey(k)) {
             k++;
@@ -591,7 +564,6 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
         unread++;
         fileData.getAllConfig().put("unread", unread);
         String title, ticker, tag, c;
-        //Notification.Builder nb=Notification.Builder();
         if (ev._remark != null && ev._remark.length() > 0)
             tag = ev._remark + "(" + ev.operand + ")";
         else if (ev._nick != null && ev._nick.length() > 0) tag = ev._nick + "(" + ev.operand + ")";
@@ -681,7 +653,6 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
                     reportEventWithoutSave(ev, ptr);
                     fr.friendStatus = FriendRecord.STATUS_EXFRIEND;
                 }
-                //requestIndividual(fr.uin);
             }
         }
         lastUpdateTimeSec = fcs[0].serverTime;
@@ -717,7 +688,6 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
     public void doNotifyDelFlAndSave(Object[] ptr) {
         dirtySerializedFlag = true;
         fileData.putLong("lastUpdateFl", lastUpdateTimeSec);
-        //log("Friendlist updated @" + lastUpdateTimeSec);
         saveConfigure();
         try {
             if (isNotifyWhenDeleted() && ((int) ptr[0]) > 0) {
@@ -786,15 +756,6 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
         }
     }
 
-	/*public static int getResourceId(Context context,String name,String type,String packageName){
-	 Resources themeResources=null;
-	 PackageManager pm=context.getPackageManager();
-	 try{
-	 themeResources=pm.getResourcesForApplication(packageName);
-	 return themeResources.getIdentifier(name,type,packageName);
-	 }catch(PackageManager.NameNotFoundException e){}
-	 return 0;
-	 }*/
 
     public void doRequestFlRefresh() {
         boolean inLogin;
@@ -804,7 +765,6 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
             return;
         }
         try {
-            //log("Request friendlist update for " + mUin + " ...");
             invoke_virtual_any(Utils.getFriendListHandler(), true, true, boolean.class, boolean.class, void.class);
         } catch (Exception e) {
             log(e);
@@ -813,7 +773,6 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
 
     public void timeToUpdateFl() {
         long t = System.currentTimeMillis() / 1000;
-        //log(t+"/"+lastUpdateTimeSec);
         if (t - lastUpdateTimeSec > FL_UPDATE_INT_MIN) {
             tp.execute(new Runnable() {
                 @Override

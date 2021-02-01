@@ -56,7 +56,6 @@ public class ThemeUtils {
 
     public static int getThemeColor(Context context) {
         return ContextCompat.getColor(context,mTheme.colorId);
-        //return context.getResources().getColor(mTheme.colorId);
     }
 
     public static String getThemeTitle() {
@@ -71,11 +70,9 @@ public class ThemeUtils {
 
     public static int[] getColors(Context context) {
         Themes[] themes = Themes.values();
-        //Resources res = context.getResources();
         int[] colors = new int[themes.length];
         for (int i = 0; i < colors.length; i++) {
             colors[i] = ContextCompat.getColor(context,themes[i].colorId);
-            //colors[i] = res.getColor(themes[i].colorId);
         }
         return colors;
     }

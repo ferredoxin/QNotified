@@ -52,7 +52,6 @@ public class QQMessageFacade {
     public static void revokeMessage(Object msg) throws Exception {
         if (msg == null) throw new NullPointerException("msg == null");
         int istroop = (int) iget_object_or_null(msg, "istroop");
-        //if (istroop != 0) throw new IllegalArgumentException("istroop(" + istroop + ") is not supported");
         Object mgr = getMessageManager(istroop);
         try {
             Object msg2 = invoke_static_any(DexKit.doFindClass(DexKit.C_MSG_REC_FAC), msg, Initiator._MessageRecord(), Initiator._MessageRecord());
@@ -72,94 +71,4 @@ public class QQMessageFacade {
             throw e;
         }
     }
-//
-//    private static class FindMessageRecordClass extends Step {
-//
-//        public static Class<?> getMessageRecordClass() {
-//            String klass = null;
-//            ConfigManager cache = ConfigManager.getCache();
-//            int lastVersion = cache.getIntOrDefault(cache_avatar_long_click_listener_version_code, 0);
-//            int version = getHostInfo(getApplication()).versionCode;
-//            if (version == lastVersion) {
-//                String name = cache.getString(cache_avatar_long_click_listener_class);
-//                if (name != null && name.length() > 0) {
-//                    klass = name;
-//                }
-//            }
-//            Class<?> c = Initiator.load(klass);
-//            if (c != null) return c;
-//            Class<?> decl = Initiator.load("com/tencent/mobileqq/activity/aio/BaseBubbleBuilder");
-//            if (decl == null) return null;
-//            String fname = null;
-//            for (Field f : decl.getDeclaredFields()) {
-//                if (f.getType().equals(View.OnLongClickListener.class)) {
-//                    fname = f.getName();
-//                    break;
-//                }
-//            }
-//            if (fname == null) {
-//                log("getLongClickListenerClass: field name is null");
-//                return null;
-//            }
-//            DexMethodDescriptor _init_ = null;
-//            byte[] dex = DexKit.getClassDeclaringDex("Lcom/tencent/mobileqq/activity/aio/BaseBubbleBuilder;", new int[]{7, 11, 6});
-//            for (DexMethodDescriptor m : DexFlow.getDeclaredDexMethods(dex, "Lcom/tencent/mobileqq/activity/aio/BaseBubbleBuilder;")) {
-//                if ("<init>".equals(m.name)) {
-//                    _init_ = m;
-//                    break;
-//                }
-//            }
-//            DexFieldDescriptor f = new DexFieldDescriptor("Lcom/tencent/mobileqq/activity/aio/BaseBubbleBuilder;",
-//                    fname, DexMethodDescriptor.getTypeSig(View.OnLongClickListener.class));
-//            try {
-//                klass = DexFlow.guessNewInstanceType(dex, _init_, f);
-//            } catch (Exception e) {
-//                log(e);
-//                return null;
-//            }
-//            if (klass != null && klass.startsWith("L")) {
-//                klass = klass.replace('/', '.').substring(1, klass.length() - 1);
-//                cache.putString(cache_avatar_long_click_listener_class, klass);
-//                cache.putInt(cache_avatar_long_click_listener_version_code, version);
-//                try {
-//                    cache.save();
-//                } catch (IOException e) {
-//                    log(e);
-//                }
-//                return Initiator.load(klass);
-//            }
-//            return null;
-//        }
-//
-//        @Override
-//        public boolean step() {
-//            return getLongClickListenerClass() != null;
-//        }
-//
-//        @Override
-//        public boolean isDone() {
-//            try {
-//                ConfigManager cache = ConfigManager.getCache();
-//                int lastVersion = cache.getIntOrDefault(cache_avatar_long_click_listener_version_code, 0);
-//                if (getHostInfo(getApplication()).versionCode != lastVersion) {
-//                    return false;
-//                }
-//                String name = cache.getString(cache_avatar_long_click_listener_class);
-//                return name != null && name.length() > 0;
-//            } catch (Exception e) {
-//                log(e);
-//                return false;
-//            }
-//        }
-//
-//        @Override
-//        public int getPriority() {
-//            return 20;
-//        }
-//
-//        @Override
-//        public String getDescription() {
-//            return "定位com/tencent/mobileqq/activity/aio/BaseBubbleBuilder$3";
-//        }
-//    }
 }

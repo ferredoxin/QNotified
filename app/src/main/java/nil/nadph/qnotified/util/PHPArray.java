@@ -68,7 +68,6 @@ public class PHPArray implements Iterable<HashMap.Entry> {
         }
     }
 
-    //@Deprecated
     public static PHPArray fromJson(String json) {
         int off = 0;
         Stack<Integer> types = new Stack<>();
@@ -497,30 +496,4 @@ public class PHPArray implements Iterable<HashMap.Entry> {
         }
     }
 
-    /*public static class KVIterator implements Iterator{
-        KVPair[] pairs;
-        KVIterator(HashMap map){
-            pairs=new KVPair[map.size()];
-            for ()
-        }
-
-        @Override
-        public b
-    public static class KVPair{
-        public Object k;
-        public Object v;
-    }oolean hasNext() {
-            return false;
-        }
-
-        @Override
-        public Object next() {
-            return null;
-        }
-    }
-
-    public static class KVPair{
-        public Object k;
-        public Object v;
-    }*/
 }

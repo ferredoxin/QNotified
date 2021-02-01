@@ -38,8 +38,6 @@ object HookStatue {
 
     fun isEnabled(): Boolean {
         return Utils.getActiveModuleVersion() != null
-//        Log.d("singleNeuronUI", "模块未激活")
-//        return false
     }
 
     fun Context.getStatue(useSu: Boolean): Statue {

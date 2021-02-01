@@ -49,7 +49,6 @@ class QQPurifyAgentActivity :AppCompatActivity() {
                 .setMessage("拉起模块设置失败, 请确认 $pkg 已安装并启用(没有被关冰箱或被冻结停用)\n$e")
                 .setCancelable(true).setPositiveButton(R.string.ok, null).show()
         }
-        //finish()
     }
 
     override fun onStart() {

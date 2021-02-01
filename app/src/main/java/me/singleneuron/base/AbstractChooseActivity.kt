@@ -73,7 +73,6 @@ abstract class AbstractChooseActivity : AppCompatTransferActivity(), ___WindowIs
                 } else {
                     uri = data.data!!
                     intent.apply {
-                        //Utils.logd("NoApplet getType: "+contentResolver.getType(uri))
                         action = Intent.ACTION_SEND
                         type = contentResolver.getType(uri)
                         putExtra(Intent.EXTRA_STREAM,uri)

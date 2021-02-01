@@ -140,16 +140,6 @@ public class Utils {
 
     public static String readByReader(Reader r) throws IOException {
 
-        /*StringBuilder str = new StringBuilder();
-        BufferedReader br = new BufferedReader(r);
-        char[] buff = new char[1024];
-        for (int len = 0; len != -1; len = br.read(buff)) {
-            str.append(buff, 0, len);
-        }
-        br.close();
-        return str.toString();
-
-         */
         return readFromBufferedReader(new BufferedReader(r));
     }
 
@@ -242,12 +232,6 @@ public class Utils {
         return sb.toString();
     }
 
-	/*public static Object invoke_virtual(Object obj,String method,Object...args) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException{
-	 Class clazz=obj.getClass();
-	 Method m=findMethodByArgs(clazz,method,args);
-	 m.setAccessible(true);
-	 return m.invoke(obj,args);
-	 }*/
 
     public static int getHostVersionCode32() {
         return (int) getHostVersionCode();
@@ -293,7 +277,6 @@ public class Utils {
         }
     }
 
-    //@Deprecated
     public static Object invoke_virtual_any(Object obj, Object... argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException {
         Class clazz = obj.getClass();
         int argc = argsTypesAndReturnType.length / 2;
@@ -336,7 +319,6 @@ public class Utils {
         return method.invoke(obj, argv);
     }
 
-    //@Deprecated
     public static Object invoke_static_any(Class<?> clazz, Object... argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException {
         int argc = argsTypesAndReturnType.length / 2;
         Class[] argt = new Class[argc];
@@ -574,7 +556,7 @@ public class Utils {
      * @throws IllegalAccessException
      * @throws IllegalArgumentException
      */
-    //@Deprecated
+    @Deprecated
     public static Object invoke_virtual_declared_ordinal_modifier(Object obj, int ordinal, int expected, boolean strict, int requiredMask, int excludedMask, Object... argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException {
         Class clazz = obj.getClass();
         int argc = argsTypesAndReturnType.length / 2;
@@ -644,7 +626,7 @@ public class Utils {
      * @throws IllegalAccessException
      * @throws IllegalArgumentException
      */
-    //@Deprecated
+    @Deprecated
     public static Object invoke_static_declared_ordinal_modifier(Class clazz, int ordinal, int expected, boolean strict, int requiredMask, int excludedMask, Object... argsTypesAndReturnType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IllegalArgumentException {
         int argc = argsTypesAndReturnType.length / 2;
         Class[] argt = new Class[argc];
@@ -978,31 +960,6 @@ public class Utils {
         return (QQAppInterface) getAppRuntime();
     }
 
-	/*
-	 public static Method findMethodByArgs(Class mclazz,String name,Object...argv)throws NoSuchMethodException{
-	 Method ret=null;
-	 Method[] m;?
-
-	 int i=0,ii=0;
-	 Class clazz=mclazz;
-	 Class argt[];
-	 do{
-	 m=clazz.getDeclaredMethods();
-	 loop:for(i=0;i<m.length;i++){
-	 if(m[i].getName().equals(name)){
-	 argt=m[i].getParameterTypes();
-	 if(argt.length==argv.length){
-	 for(ii=0;ii<argt.length;ii++){
-	 if(
-	 argv[ii]==null&&argt[ii].isPrimitive())continue loop;
-	 if(
-	 }
-	 }
-	 }
-	 }
-	 }while(!Object.class.equals(clazz=clazz.getSuperclass()));
-	 throw new NoSuchMethodException(name+"@"+mclazz);
-	 }*/
 
     public static Object getMobileQQService() {
         return iget_object_or_null(getQQAppInterface(), "a", load("com/tencent/mobileqq/service/MobileQQService"));
@@ -1192,19 +1149,6 @@ public class Utils {
             return null;
         }
         Object baseApplicationImpl = getApplication();
-//        if (!SyncUtils.isMainProcess()) {
-//            loge("getAppRuntime/W invoked but not in main process!");
-//            return null;
-//        }
-//        try {
-//            Method m;
-//            m = hasMethod(baseApplicationImpl, "getRuntime");
-//            if (m == null)
-//                return (AppRuntime) invoke_virtual(baseApplicationImpl, "a", load("mqq/app/AppRuntime"));
-//            else return (AppRuntime) m.invoke(baseApplicationImpl);
-//        } catch (Exception e) {
-//            throw new AssertionError(e);
-//        }
         try {
             if (f_mAppRuntime == null) {
                 f_mAppRuntime = Class.forName("mqq.app.MobileQQ").getDeclaredField("mAppRuntime");
@@ -1236,7 +1180,6 @@ public class Utils {
                     assert cl_flh != null;
                     cl_bh = cl_flh.getSuperclass();
                 }
-                //log("bh(" + type + ")=" + ret);
                 Object appInterface = getQQAppInterface();
                 return invoke_virtual(appInterface, "getBusinessHandler", cl_flh.getName(), String.class, cl_bh);
             } catch (Exception e) {
@@ -1251,7 +1194,6 @@ public class Utils {
                     assert cl_flh != null;
                     cl_bh = cl_flh.getSuperclass();
                 }
-                //log("bh(" + type + ")=" + ret);
                 Object appInterface = getQQAppInterface();
                 try {
                     return invoke_virtual(appInterface, "a", 1, int.class, cl_bh);
@@ -1283,7 +1225,6 @@ public class Utils {
                 assert cl_flh != null;
                 cl_bh = cl_flh.getSuperclass();
             }
-            //log("bh(" + type + ")=" + ret);
             Object appInterface = getQQAppInterface();
             try {
                 return invoke_virtual(appInterface, "a", type, int.class, cl_bh);
@@ -1410,7 +1351,6 @@ public class Utils {
                     }
                 }
             } while ((clz = clz.getSuperclass()) != null);
-            //log(String.format("Can't find the field of type: %s and name: %s in class: %s!",type==null?"[any]":type.getName(),name,clazz.getName()));
         }
         return null;
     }
@@ -1419,25 +1359,6 @@ public class Utils {
         return str == null || str.length() == 0;
     }
 
-    /*@Deprecated
-    public static void log(String str) {
-        Log.i("QNdump", str);
-        if (DEBUG) try {
-            XposedBridge.log(str);
-        } catch (NoClassDefFoundError e) {
-            Log.i("Xposed", str);
-            Log.i("EdXposed-Bridge", str);
-        }
-        if (ENABLE_DUMP_LOG) {
-            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/qn_log.txt";
-            File f = new File(path);
-            try {
-                if (!f.exists()) f.createNewFile();
-                appendToFile(path, "[" + System.currentTimeMillis() + "-" + android.os.Process.myPid() + "] " + str + "\n");
-            } catch (IOException e) {
-            }
-        }
-    }*/
 
     public static void loge(String str) {
         Log.e("QNdump", str);

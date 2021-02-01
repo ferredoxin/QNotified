@@ -132,7 +132,6 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
                 } else if (preference instanceof MultiSelectListPreference) {
                     Set<String> selected = new HashSet<String>(((MultiSelectListPreference) preference).getValues());
                     MultiConfigItem item = (MultiConfigItem) _item;
-                    //CharSequence[] texts=((MultiSelectListPreference) preference).getEntries();
                     CharSequence[] vals = ((MultiSelectListPreference) preference).getEntryValues();
                     for (CharSequence val : vals) {
                         String kval = val.toString();
@@ -145,10 +144,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
                             } else {
                                 selected.remove(kval);
                             }
-                            //Utils.logd(String.format("Load/D \"%s\"->%s", __fullName, "" + z));
-                        } /*else {
-                            Utils.logd(String.format("Load/D \"%s\"->%s", __fullName, "null"));
-                        }*/
+                        } 
                     }
                     ((MultiSelectListPreference) preference).setValues(selected);
                 } else if (preference instanceof TwoStatePreference) {
@@ -212,17 +208,11 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
                 } else if (newValue instanceof Set && preference instanceof MultiSelectListPreference) {
                     //handle String only
                     Set<String> selected = (Set<String>) newValue;
-                    //CharSequence[] texts=((MultiSelectListPreference) preference).getEntries();
                     CharSequence[] vals = ((MultiSelectListPreference) preference).getEntryValues();
-                    //CharSequence[] ents = ((MultiSelectListPreference) preference).getEntries();
-//                    Utils.logd(String.format("Save/D selected=%s", selected));
-//                    Utils.logd(String.format("Save/D val=%s", Arrays.toString(vals) ));
-//                    Utils.logd(String.format("Save/D ent=%s", Arrays.toString(ents) ));
                     for (CharSequence val : vals) {
                         String __fullName = (keyName == null ? "" : keyName.concat("$")).concat(val.toString());
                         String kval = val.toString();
                         item.setBooleanConfig(__fullName, selected.contains(kval));
-                        //Utils.logd(String.format("Save/D \"%s\"->%s", __fullName, selected.contains(kval)));
                     }
                 } else {
                     throw new UnsupportedOperationException("" + newValue);

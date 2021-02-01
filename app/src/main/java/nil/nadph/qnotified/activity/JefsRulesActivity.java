@@ -129,7 +129,6 @@ public class JefsRulesActivity extends IphoneTitleBarActivityCompat implements V
             rulesEt.setHorizontallyScrolling(true);
             rulesEt.setTextSize(16);
             rulesEt.setPadding(__5, __5, __5, __5);
-            //rulesEt.setBackgroundDrawable(new HighContrastBorder());
             ViewCompat.setBackground(rulesEt,new HighContrastBorder());
             rulesEt.setTextColor(ResUtils.skin_black);
             rulesEt.setTypeface(Typeface.MONOSPACE);

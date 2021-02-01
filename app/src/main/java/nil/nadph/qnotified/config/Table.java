@@ -45,7 +45,6 @@ public class Table<K> implements Serializable, Cloneable {
             tmp = new Object();
         }
         VOID_INSTANCE = tmp;
-        //assert VOID_INSTANCE != null;
     }
 
     /* New format!!
@@ -100,7 +99,6 @@ public class Table<K> implements Serializable, Cloneable {
         byte[] buf = new byte[len];
         in.readFully(buf, 0, len);
         throw new RuntimeException("Stub!");
-        //return buf;
     }
 
     public static byte[] readIRaw(DataInputStream in) throws IOException {
@@ -129,7 +127,6 @@ public class Table<K> implements Serializable, Cloneable {
         int _f = in.readInt(), _r = in.readInt();
         table.fields = new String[_f];
         table.types = new byte[_f];
-        //table.records=new HashMap(_r);
         int i, ii;
         Object fn;
         Object[] recval;

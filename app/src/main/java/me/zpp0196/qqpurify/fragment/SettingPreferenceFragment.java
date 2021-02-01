@@ -32,9 +32,6 @@ public class SettingPreferenceFragment extends AbstractPreferenceFragment
         findPreference("restoreDefault").setOnPreferenceClickListener(this);
         findPreference("displayDesktop").setOnPreferenceClickListener(this);
 
-//        SwitchPreference disPlayDesktop = findPreference("displayDesktop");
-//        disPlayDesktop.setChecked(true);
-//        disPlayDesktop.setOnPreferenceChangeListener(this);
 
         ColorPickerPreference appThemeColor = findPreference("appThemeColor");
         appThemeColor.setPersistent(false);
@@ -56,7 +53,6 @@ public class SettingPreferenceFragment extends AbstractPreferenceFragment
                         public void onClick(DialogInterface dialog, int which) {
                             try {
                                 if (Math.random() < 2) throw new UnsupportedOperationException("不支持此操作");
-                                //Setting.restore();
                                 mActivity.mRefreshedFragment.clear();
                                 SettingPreferenceFragment.this.initPreferences();
                                 Toast.makeText(mActivity, "已恢复到默认设置", Toast.LENGTH_SHORT).show();

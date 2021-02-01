@@ -64,23 +64,14 @@ fun getMethods(clz: Class<Any>): Array<Method> {
     return clz.declaredMethods
 }
 
-//fun Method.isStatic(): Boolean {
-//    return Modifier.isStatic(this.modifiers)
-//}
 
 val Method.isStatic: Boolean
     get() = Modifier.isStatic(this.modifiers)
 
-//fun Method.isPrivate(): Boolean {
-//    return Modifier.isPrivate(this.modifiers)
-//}
 
 val Method.isPrivate: Boolean
     get() = Modifier.isPrivate(this.modifiers)
 
-//fun Method.isPublic(): Boolean {
-//    return Modifier.isPublic(this.modifiers)
-//}
 
 val Method.isPublic: Boolean
     get() = Modifier.isPublic(this.modifiers)

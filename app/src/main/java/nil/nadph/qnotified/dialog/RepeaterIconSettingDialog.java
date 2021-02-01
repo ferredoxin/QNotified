@@ -92,7 +92,6 @@ public class RepeaterIconSettingDialog implements View.OnClickListener, DialogIn
         restoreDefBtn.setOnClickListener(this);
         prevImgView = v.findViewById(R.id.selectRepeaterIcon_imageViewPreview);
         prevImgView.setPadding(1, 1, 1, 1);
-        //prevImgView.setBackgroundDrawable(new DebugDrawable(ctx));
         ViewCompat.setBackground(prevImgView, new DebugDrawable(ctx));
         specDpi = v.findViewById(R.id.selectRepeaterIcon_checkBoxSpecifyDpi);
         specDpi.setOnCheckedChangeListener(this);

@@ -71,7 +71,6 @@ public class RemoveQbossAD extends BaseDelayableHook {
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             if (LicenseStatus.sDisableCommonHooks) return;
                             if (!isEnabled()) return;
-//                            Toast.makeText(getApplication(), "屏蔽消息列表横幅广告成功!", android.widget.Toast.LENGTH_SHORT).show();
                             param.setResult(null);
                         }
                     });

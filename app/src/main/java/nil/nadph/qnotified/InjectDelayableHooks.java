@@ -105,11 +105,9 @@ public class InjectDelayableHooks {
                                 llp.bottomMargin = dip2px(ctx, 55);
                                 main[0].setLayoutParams(llp);
                                 LinearLayout lprop = new LinearLayout(ctx);
-                                //lprop.setBackgroundDrawable(new SimpleBgDrawable(0, 0xA0808080, 2));
                                 ViewCompat.setBackground(lprop,new SimpleBgDrawable(0, 0xA0808080, 2));
                                 final View _v = new View(ctx);
                                 prog[0] = new ProportionDrawable(0xA0202020, 0x40FFFFFF, Gravity.LEFT, 0);
-                                //_v.setBackgroundDrawable(prog[0]);
                                 ViewCompat.setBackground(_v,prog[0]);
                                 int __3_ = dip2px(ctx, 3);
                                 LinearLayout.LayoutParams _tmp_lllp = new LinearLayout.LayoutParams(MATCH_PARENT, dip2px(ctx, 4));

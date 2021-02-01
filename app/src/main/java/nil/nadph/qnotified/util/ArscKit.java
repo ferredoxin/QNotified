@@ -126,7 +126,6 @@ public class ArscKit {
             int chunkSize = readLe32(buf, p + 4);
             int headerSize = readLe16(buf, p + 2);
             if (buf.length < chunkSize) throw new IllegalArgumentException("Truncated data");
-            //int packageCount = readLe32(buf, p + 8);
             p += headerSize;
             int targetStrIdx = findInterestedStringIndex(buf, p, "/" + name + ".");
             if (targetStrIdx == -1) return 0;
@@ -134,8 +133,6 @@ public class ArscKit {
             if (readLe16(buf, p) != RES_TABLE_PACKAGE_TYPE) {
                 throw new IllegalArgumentException("Excepted RES_TABLE_PACKAGE_TYPE, got " + Integer.toHexString(readLe16(buf, p)));
             }
-            //headerSize = readLe16(buf, p + 2);
-            //chunkSize = readLe32(buf, p + 4);
             int pkgId = readLe32(buf, p + 8);
             String currPkgName;
             try {
@@ -150,7 +147,6 @@ public class ArscKit {
             int lastPublicKey = readLe32(buf, p2 + 12);
             @SuppressLint("UseSparseArrays") HashMap<Integer, String> typeStrPool = new HashMap<>();
             parseStringPool(buf, p + typeStrOff, typeStrPool);
-            //HashMap<Integer, String> keyStrPool = new HashMap<>();
             p2 = p + keyStrOff + getChunkSize(buf, p + keyStrOff);
             while (p2 < buf.length) {
                 int chunkType = readLe16(buf, p2);
@@ -237,13 +233,11 @@ public class ArscKit {
         int flags = buf[p + 9];
         int entryCount = readLe32(buf, p + 12);
         int entriesStart = readLe32(buf, p + 16);
-        //System.out.printf("TypeId %d has %d entries with flag %x.\n", typeId, entryCount, flags);
         int cfgSize = readLe32(buf, p + 20);
         int entryOffStart = p + 20 + cfgSize;
         for (int i = 0; i < entryCount; i++) {
             int off = readLe32(buf, entryOffStart + 4 * i);
             if (off != -1) {
-                //System.out.printf("Type %d entry %d has entry offset at %d\n", typeId, i, off);
                 int entrySize = readLe16(buf, p + entriesStart + off);
                 int entryFlags = readLe16(buf, p + entriesStart + off + 2);
                 int keyIndex = readLe32(buf, p + entriesStart + off + 4);
@@ -275,7 +269,6 @@ public class ArscKit {
         int stringsStart = readLe32(buf, p + 20);
         int stylesStart = readLe32(buf, p + 24);
         boolean UTF8_FLAG = 0 != ((1 << 8) & stringFlags);
-        //p = p + 28;
         //start string offset array
         for (int i = 0; i < stringCount; i++) {
             int strpos = readLe32(buf, p + 28 + i * 4);
@@ -319,7 +312,6 @@ public class ArscKit {
         int stringsStart = readLe32(buf, p + 20);
         int stylesStart = readLe32(buf, p + 24);
         boolean UTF8_FLAG = 0 != ((1 << 8) & stringFlags);
-        //p = p + 28;
         //start string offset array
         for (int i = 0; i < stringCount; i++) {
             int strpos = readLe32(buf, p + 28 + i * 4);

@@ -62,7 +62,6 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
     private static final int R_ID_EXL_FACE = 0x300AFF03;
     private static final int R_ID_EXL_STATUS = 0x300AFF04;
 
-    //private View mListView;
     private FaceImpl face;
     private ExfriendManager exm;
     private ArrayList<EventRecord> evs;
@@ -103,12 +102,9 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
         sdlv.setFocusable(true);
         ViewGroup.LayoutParams mmlp = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
         RelativeLayout.LayoutParams mwllp = new RelativeLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
-        RelativeLayout rl = new RelativeLayout(ExfriendListActivity.this);//)new_instance(load("com/tencent/mobileqq/activity/fling/TopGestureLayout"),ExfriendListActivity.this,Context.class);
+        RelativeLayout rl = new RelativeLayout(ExfriendListActivity.this);
         rl.setId(R.id.rootMainLayout);
         sdlv.setId(R.id.rootMainList);
-        //invoke_virtual(rl,"setInterceptScrollLRFlag",true,boolean.class);
-        //invoke_virtual(rl,"setInterceptTouchFlag",true,boolean.class);
-        //iput_object(rl,"
         mwllp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         mwllp.addRule(RelativeLayout.CENTER_VERTICAL);
 
@@ -122,7 +118,6 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
         setTitle("历史好友");
 
         TextView rightBtn = (TextView) getRightTextView();
-        //log("Title:"+invoke_virtual(ExfriendListActivity.this,"getTextTitle"));
         rightBtn.setVisibility(View.VISIBLE);
         rightBtn.setText("高级");
         rightBtn.setEnabled(true);
@@ -130,34 +125,11 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
             @Override
             public void onClick(View v) {
                 try {
-                    //ExfriendListActivity.this.onBackPressed();
-                    //ExfriendManager.getCurrent().doRequestFlRefresh();
-                    //Utils.showToastShort(v.getContext(),"即将开放(没啥好设置的)...");
-                    MainHook.startProxyActivity(ExfriendListActivity.this, ActProxyMgr.ACTION_ADV_SETTINGS);
-                    //Intent intent=new Intent(v.getContext(),load(ActProxyMgr.DUMMY_ACTIVITY));
-                    //int id=ActProxyMgr.next();
-                    //intent.putExtra(ACTIVITY_PROXY_ID_TAG,id);
-                    //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-						/*v.getContext().startActivity(intent);/*
-						 new Thread(new Runnable(){
-						 @Override
-						 public void run(){
-						 /*try{
-						 Thread.sleep(10000);
-						 }catch(InterruptedException e){}
-						 EventRecord ev=new EventRecord();
-						 ev.operand=10000;
-						 ev._remark=ev._nick="麻花藤";
-						 *
-						 ExfriendManager.getCurrent().doNotifyDelFl(new Object[]{1,"ticker","title","content"});
-						 }
-						 }).start();*/
                 } catch (Throwable e) {
                     log(e);
                 }
             }
         });
-        //.addView(sdlv,lp);
         sdlv.setDivider(null);
         long uin = Utils.getLongAccountUin();
         ExfriendManager exm = ExfriendManager.get(uin);
@@ -165,7 +137,6 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
         tv.setText("最后更新: " + Utils.getRelTimeStrSec(exm.lastUpdateTimeSec) + "\n长按列表可删除");
         ViewBuilder.listView_setAdapter(sdlv, adapter);
         setContentBackgroundDrawable(ResUtils.skin_background);
-        //invoke_virtual(sdlv,"setOnScrollGroupFloatingListener",true,load("com/tencent/widget/AbsListView$OnScrollListener"));
         ExfriendListActivity.this.getWindow().getDecorView().setTag(this);
         return true;
     }
@@ -182,13 +153,6 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
             evs.add(ev);
         }
         Collections.sort(evs);
-        //log("ev size="+evs.size());
-		/*try{
-		 theme=ResUtils.getCurrentTheme((Activity)ctx);
-		 }catch(Throwable e){
-		 theme=ResUtils.getDefaultTheme();
-		 log(e);
-		 }*/
     }
 
     public int getCount() {
@@ -206,20 +170,8 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
     public View getView(int position, View convertView, ViewGroup parent) {
         EventRecord ev = evs.get(position);
         if (convertView == null) {
-			/*TextView tv=new TextView(ctx);
-			 //tv.setText("李王凯(1084515740)");
-			 tv.setText("这是第"+position+"个");
-			 tv.setPadding(32,32,32,32);
-			 tv.setGravity(Gravity.CENTER_VERTICAL);
-			 tv.setBackground(ResUtils.getListItemBackground());
-			 //tv.setBackgroundResource(0x7f020435);
-			 //Utils.log("Decoded:"+Integer.toHexString(theme.skin_text_black.getDefaultColor()));
-			 //tv.setBackgroundTintList(theme.qq_setting_item_bg_nor);
-			 tv.setTextColor((position%2==1)?ResUtils.skin_black:ResUtils.skin_gray3);
-			 */
             convertView = inflateItemView(ev);//tv;
         }
-        //log(position+"/"+getCount());
         convertView.setTag(ev);
         TextView title = convertView.findViewById(R_ID_EXL_TITLE);
         title.setText(ev.getShowStr());
@@ -286,11 +238,9 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
         TextView title = new TextView(ExfriendListActivity.this);
         title.setId(R_ID_EXL_TITLE);
         title.setSingleLine();
-        //title.setText(ev.getShowStr());
         title.setGravity(Gravity.CENTER_VERTICAL);
         title.setTextColor(ResUtils.cloneColor(ResUtils.skin_black));
         title.setTextSize(Utils.px2sp(ExfriendListActivity.this, Utils.dip2px(ExfriendListActivity.this, 16)));
-        //title.setPadding(tmp=Utils.dip2px(ctx,8),tmp,0,tmp);
 
         TextView subtitle = new TextView(ExfriendListActivity.this);
         subtitle.setId(R_ID_EXL_SUBTITLE);
@@ -298,7 +248,6 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
         subtitle.setGravity(Gravity.CENTER_VERTICAL);
         subtitle.setTextColor(ResUtils.cloneColor(ResUtils.skin_gray3));
         subtitle.setTextSize(Utils.px2sp(ExfriendListActivity.this, Utils.dip2px(ExfriendListActivity.this, 14)));
-        //subtitle.setPadding(tmp,0,0,tmp);
 
         textlayout.addView(title, textlp);
         textlayout.addView(subtitle, textlp);

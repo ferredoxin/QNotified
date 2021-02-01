@@ -95,11 +95,8 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         __ll.setOrientation(LinearLayout.VERTICAL);
         ViewGroup bounceScrollView = new BounceScrollView(this, null);
         bounceScrollView.setId(R.id.rootBounceScrollView);
-        //invoke_virtual(bounceScrollView,"a",true,500,500,boolean.class,int.class,int.class);
         bounceScrollView.setLayoutParams(mmlp);
         bounceScrollView.addView(ll, new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-        //bounceScrollView.setBackgroundDrawable(ResUtils.qq_setting_item_bg_nor);
-        //invoke_virtual(bounceScrollView,"setNeedHorizontalGesture",true,boolean.class);
         LinearLayout.LayoutParams fixlp = new LinearLayout.LayoutParams(MATCH_PARENT, dip2px(this, 48));
         RelativeLayout.LayoutParams __lp_l = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
         int mar = (int) (dip2px(this, 12) + 0.5f);
@@ -182,10 +179,8 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         }
         ll.addView(newListItemButton(this, "辅助功能", null, null, clickToProxyActAction(AuxFuncActivity.class)));
         ll.addView(newListItemHookSwitchInit(this, "防撤回", "自带撤回灰字提示", RevokeMsgHook.get()));
-        //ll.addView(newListItemSwitchConfigInit(this, "聊天图片背景透明", null, qn_gallery_bg, false, GalleryBgHook.get()));
         ll.addView(newListItemHookSwitchInit(this, "显示设置禁言的管理", "即使你只是普通群成员", GagInfoDisclosure.get()));
         addViewConditionally(ll, this, "小程序分享转链接", "感谢Alcatraz323开发远离小程序,感谢神经元移植到Xposed", NoApplet.INSTANCE);
-        //ll.addView(newListItemHookSwitchInit(this, "小程序分享转链接", "感谢Alcatraz323开发远离小程序,感谢神经元移植到Xposed", adNoApplet.INSTANCE));
         ll.addView(subtitle(this, "实验性功能(未必有效)"));
         ll.addView(_t = newListItemButton(this, "下载重定向", "N/A", "N/A", this));
         _t.setId(R_ID_BTN_FILE_RECV);
@@ -228,7 +223,6 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
                 editText.setTextSize(16);
                 int _5 = dip2px(SettingsActivity.this, 5);
                 editText.setPadding(_5, _5, _5, _5);
-                //editText.setBackgroundDrawable(new HighContrastBorder());
                 ViewCompat.setBackground(editText, new HighContrastBorder());
                 LinearLayout linearLayout = new LinearLayout(ctx);
                 linearLayout.addView(editText, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, _5 * 2));
@@ -291,7 +285,6 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         uc.setVersionTip(_t);
         ll.addView(newListItemButton(this, "关于模块", null, null, clickToProxyActAction(ACTION_ABOUT)));
         ll.addView(newListItemButton(this, "用户协议", "《QNotified 最终用户许可协议》与《隐私条款》", null, clickToProxyActAction(EulaActivity.class)));
-//        ll.addView(newListItemButton(this, "高级验证", "手性碳验证码", null, clickToProxyActAction(Auth2Activity.class)));
         ll.addView(newListItemButton(this, "展望未来", "其实都还没写", null, clickToProxyActAction(PendingFuncActivity.class)));
         ll.addView(newListItemButton(this, "特别鸣谢", "感谢卖动绘制图标", null, clickToProxyActAction(LicenseActivity.class)));
         ll.addView(subtitle(this, "调试"));
@@ -299,13 +292,10 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(newListItemButton(this, "Shell.exec", "正常情况下无需使用此功能", null, clickTheComing()));
         ll.addView(newListItemButton(this, "Github", "获取源代码 Bug -> Issue (star)", "ferredoxin/QNotified", clickToUrl("https://github.com/ferredoxin/QNotified")));
         ll.addView(subtitle(this, "本软件为免费软件,请尊重个人劳动成果,严禁倒卖\nLife feeds on negative entropy."));
-        //bounceScrollView.setFocusable(true);
-        //bounceScrollView.setFocusableInTouchMode(true);
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         setContentView(bounceScrollView);
         LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);
         _lp_fat.weight = 1;
-        //__ll.addView(bounceScrollView,_lp_fat);
         setContentBackgroundDrawable(ResUtils.skin_background);
         setRightButton("更多", new View.OnClickListener() {
             @Override
@@ -314,8 +304,6 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
             }
         });
         setTitle("高级");
-        //TextView rightBtn=(TextView)invoke_virtual(this,"getRightTextView");
-        //log("Title:"+invoke_virtual(this,"getTextTitle"));
         try {
             getString(R.string.res_inject_success);
         } catch (Resources.NotFoundException e) {
@@ -478,7 +466,6 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         editText.setTextSize(16);
         int _5 = dip2px(SettingsActivity.this, 5);
         editText.setPadding(_5, _5, _5, _5);
-        //editText.setBackgroundDrawable(new HighContrastBorder());
         ViewCompat.setBackground(editText, new HighContrastBorder());
         LinearLayout linearLayout = new LinearLayout(ctx);
         linearLayout.addView(editText, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, _5 * 2));
