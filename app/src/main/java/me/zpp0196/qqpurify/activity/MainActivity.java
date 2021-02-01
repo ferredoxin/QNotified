@@ -42,14 +42,6 @@ public class MainActivity extends AppCompatTransferActivity implements ViewPager
         setContentView(R.layout.activity_main);
         initTabLayout();
         initToolbar();
-//        boolean z = hasAppCompatAttr(this);
-//        Utils.logi("hasAppCompatAttr = " + z);
-//        //int defStyleWebView = (int) Utils.sget_object(Initiator.load("com.android.internal.R$attr"), "webViewStyle");
-//        // LinearLayout ll = new LinearLayout(this, null, defStyleWebView, 0);
-//        new WebView(this);
-//        MainHook.injectModuleResources(getResources());
-//        z = hasAppCompatAttr(this);
-//        Utils.logi("hasAppCompatAttr = " + z);
     }
 
     public static boolean hasAppCompatAttr(Context ctx) {
@@ -60,15 +52,12 @@ public class MainActivity extends AppCompatTransferActivity implements ViewPager
     }
 
     private void initTabLayout() {
-        //if (getIntent().getBooleanExtra(INTENT_LAUNCH, false)) {
         mFragments.add(new MainuiPreferenceFragment());
         mFragments.add(new SidebarPreferenceFragment());
         mFragments.add(new ChatPreferenceFragment());
         mFragments.add(new TroopPreferenceFragment());
         mFragments.add(new ExtensionPreferenceFragment());
-        //} else {
         mFragments.add(new ReadmeFragment());
-        //}
         mFragments.add(new SettingPreferenceFragment());
         mFragments.add(new AboutPreferenceFragment());
 

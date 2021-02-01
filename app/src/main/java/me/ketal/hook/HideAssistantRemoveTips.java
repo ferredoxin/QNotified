@@ -27,9 +27,7 @@ import nil.nadph.qnotified.hook.CommonDelayableHook;
 
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
-/*
-This code has been tested in QQ8.0.0-8.5.5 and TIM all versions.
- */
+
 public class HideAssistantRemoveTips extends CommonDelayableHook {
     public static final HideAssistantRemoveTips INSTANCE = new HideAssistantRemoveTips();
 

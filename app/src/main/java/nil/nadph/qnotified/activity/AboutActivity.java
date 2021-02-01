@@ -47,10 +47,8 @@ public class AboutActivity extends IphoneTitleBarActivityCompat {
         LinearLayout __ll = new LinearLayout(this);
         __ll.setOrientation(LinearLayout.VERTICAL);
         ViewGroup bounceScrollView = new BounceScrollView(this, null);
-        //invoke_virtual(bounceScrollView,"a",true,500,500,boolean.class,int.class,int.class);
         bounceScrollView.setLayoutParams(mmlp);
         bounceScrollView.addView(ll, new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-        //invoke_virtual(bounceScrollView,"setNeedHorizontalGesture",true,boolean.class);
         LinearLayout.LayoutParams fixlp = new LinearLayout.LayoutParams(MATCH_PARENT, dip2px(this, 48));
         RelativeLayout.LayoutParams __lp_l = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
         int mar = (int) (dip2px(this, 12) + 0.5f);
@@ -88,13 +86,10 @@ public class AboutActivity extends IphoneTitleBarActivityCompat {
 
         ll.addView(subtitle(this, "请尊重我的劳动成果 请勿用于商业用途 严禁盗版贩卖", Color.RED));
         ll.addView(subtitle(this, "遇到 免费软件(包括但不限于本软件) 倒卖者请直接举报, 谢谢您的配合!"));
-        //bounceScrollView.setFocusable(true);
-        //bounceScrollView.setFocusableInTouchMode(true);
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         this.setContentView(bounceScrollView);
         LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);
         _lp_fat.weight = 1;
-        //__ll.addView(bounceScrollView,_lp_fat);
         setContentBackgroundDrawable(ResUtils.skin_background);
         setTitle("关于");
         return true;

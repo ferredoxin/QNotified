@@ -38,32 +38,6 @@ public class ScriptEventHook extends CommonDelayableHook {
     public boolean initOnce() {
         QNScriptManager.init();
         try {
-        /*
-
-            XposedHelpers.findAndHookMethod(load("com.tencent.mobileqq.data.MessageForText"), "doParse", new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.sDisableCommonHooks) return;
-                    int istroop = (Integer) iget_object_or_null(param.thisObject, "istroop");
-                    String uin = (String) iget_object_or_null(param.thisObject, "frienduin");
-                    String msg = (String) iget_object_or_null(param.thisObject, "mMessageSource");
-                    if (istroop != 1) {
-                        QNScriptEventBus.onFriendMessage(ParamFactory.friendMessage()
-                                .setContent(msg)
-                                .setUin(uin)
-                                .create());
-                    } else {
-                        String senderuin = (String) iget_object_or_null(param.thisObject, "senderuin");
-                        QNScriptEventBus.onGroupMessage(ParamFactory.groupMessage()
-                                .setContent(msg)
-                                .setSenderUin(senderuin)
-                                .setUin(uin)
-                                .create());
-                    }
-                }
-            });
-
-         */
             return true;
         } catch (Throwable e) {
             log(e);

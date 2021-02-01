@@ -87,9 +87,7 @@ public class QNClient {
 
     /**
      * 发送卡片消息
-     * ====================
-     * 警告：需要高级白名单
-     * ====================
+     * NOTICE：需要高级白名单
      *
      * @param uin     要发送的 群/好友
      * @param content xml/json

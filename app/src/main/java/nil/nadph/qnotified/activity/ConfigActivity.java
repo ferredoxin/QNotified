@@ -144,7 +144,6 @@ public class ConfigActivity extends Activity implements Runnable {
             vtv.setTextColor(Color.BLUE);
         } else if (start.equals("nil.nadph.qnotified.HookEntry")) {
             vtv.setText("静态");
-            //vtv.setTextColor(Color.BLUE);
         } else {
             vtv.setText(start);
             vtv.setTextColor(Color.RED);
@@ -162,54 +161,6 @@ public class ConfigActivity extends Activity implements Runnable {
         }
         TextView tvbt = findViewById(R.id.mainTextViewBuildTime);
         tvbt.setText(text);
-/*
-		new Thread(new Runnable(){
-				@Override
-				public void run(){
-					final ColorStateList color_=ResUtils.getStateColorInXml("/tmp/hyc.xml");
-					/*try{
-					 FileInputStream is = new FileInputStream("/tmp/skin_black.xml");
-					 /*byte[] buf = new byte[is.available()];
-					 int bytesRead = is.read(buf);       
-					 is.close();*
-					 AXmlResourceParser axml=new AXmlResourceParser();
-					 axml.open(is);
-					 final ColorStateList color=ResInflater.inflateColorFromXml(getResources(),axml,null);
-					 }catch(XmlPullParserException e){}catch(IOException e){}*
-					runOnUiThread(new Runnable(){
-							@Override
-							public void run(){
-								TextView t=findViewById(R.id.mainTextViewStatusB);
-								t.setEnabled(true);
-								t.setClickable(true);
-								t.setTextColor(color_);
-							}
-						});
-				}
-			}).start();*/
-//        Molecule mol = null;
-//        try {
-//            String molstr = new String(ResUtils.readAll(ResUtils.openAsset("9280425.mol")));
-//            mol = MdlMolParser.parseString(molstr);
-//        } catch (Exception e) {
-//            Utils.log(e);
-//        }
-//        MoleculeView moleculeView = new MoleculeView(this);
-//        moleculeView.setTextColor(0xFFFFFFFF);
-//        moleculeView.setGravity(Gravity.CENTER);
-//        moleculeView.setMolecule(mol);
-//        try {
-//            long begin = System.currentTimeMillis();
-//            HashSet<Integer> chiral = ChiralCarbonHelper.getMoleculeChiralCarbons(mol);
-//            long delta = System.currentTimeMillis() - begin;
-//            Log.i("QNdump", "getMoleculeChiralCarbons took " + delta + "ms");
-//            moleculeView.setSelectedChiral(Utils.integerSetToArray(chiral));
-//        } catch (Exception e) {
-//            Log.e("QNdump", "onCreate: getMoleculeChiralCarbons", e);
-//        }
-//        LinearLayout ll = findViewById(R.id.mainLinearLayout2);
-//        ll.removeAllViews();
-//        ll.addView(moleculeView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
 

@@ -63,7 +63,6 @@ public class ViewBuilder {
         RelativeLayout root = new IsolatedStateRelativeLayout(ctx);
         root.setId((title == null ? "" : title).hashCode());
         root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx, CONSTANT_LIST_ITEM_HEIGHT_DP)));
-        //root.setBackgroundDrawable(ResUtils.getListItemBackground());
         ViewCompat.setBackground(root,ResUtils.getListItemBackground());
         TextView tv = new TextView(ctx);
         tv.setText(title);
@@ -101,7 +100,6 @@ public class ViewBuilder {
             des.setSingleLine();
             des.setEllipsize(TextUtils.TruncateAt.END);
             RelativeLayout.LayoutParams lp_d = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-            //m=(int)dip2px(ctx,6);
             lp_d.setMargins(m, 0, 0, 0);
             lp_d.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
             lp_d.addRule(RelativeLayout.BELOW, R_ID_TITLE);
@@ -394,7 +392,6 @@ public class ViewBuilder {
             value) {
         RelativeLayout root = new IsolatedStateRelativeLayout(ctx);
         root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx, CONSTANT_LIST_ITEM_HEIGHT_DP)));
-        //root.setBackgroundDrawable(ResUtils.getListItemBackground());
         ViewCompat.setBackground(root,ResUtils.getListItemBackground());
         TextView tv = new TextView(ctx);
         tv.setText(title);
@@ -450,7 +447,6 @@ public class ViewBuilder {
             value, View.OnClickListener listener) {
         RelativeLayout root = new IsolatedStateRelativeLayout(ctx);
         root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx, CONSTANT_LIST_ITEM_HEIGHT_DP)));
-        //root.setBackgroundDrawable(ResUtils.getListItemBackground());
         ViewCompat.setBackground(root,ResUtils.getListItemBackground());
         TextView tv = new TextView(ctx);
         tv.setText(title);
@@ -487,7 +483,6 @@ public class ViewBuilder {
             des.setSingleLine();
             des.setEllipsize(TextUtils.TruncateAt.END);
             RelativeLayout.LayoutParams lp_d = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-            //m=(int)dip2px(ctx,6);
             lp_d.setMargins(m, 0, 0, 0);
             lp_d.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
             lp_d.addRule(RelativeLayout.BELOW, R_ID_TITLE);
@@ -528,11 +523,6 @@ public class ViewBuilder {
         int m = dip2px(ctx, 14);
         tv.setPadding(m, m / 5, m / 5, m / 5);
         ll.addView(tv);
-		/*View v=new View(ctx);
-		int th=dip2px(ctx,3);
-		v.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT,th*2));
-		v.setBackground(new DivDrawable(DivDrawable.TYPE_HORIZONTAL,th));
-		ll.addView(v);*/
         return ll;
     }
 
@@ -549,11 +539,6 @@ public class ViewBuilder {
         int m = dip2px(ctx, 14);
         tv.setPadding(m, m / 5, m / 5, m / 5);
         ll.addView(tv);
-		/*View v=new View(ctx);
-		int th=dip2px(ctx,3);
-		v.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT,th*2));
-		v.setBackground(new DivDrawable(DivDrawable.TYPE_HORIZONTAL,th));
-		ll.addView(v);*/
         return ll;
     }
 
@@ -673,7 +658,6 @@ public class ViewBuilder {
                 if (msg.length() > 0) {
                     ClipboardManager cm = (ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);
                     if (cm != null) {
-                        //cm.setText(msg);
                         cm.setPrimaryClip(ClipData.newPlainText(null, msg));
                         Utils.showToastShort(c, "已复制文本");
                     }
@@ -691,7 +675,6 @@ public class ViewBuilder {
         v.setText(value);
         if (ll != null) {
             v.setOnLongClickListener(ll);
-            //v.setBackgroundDrawable(ResUtils.getDialogClickableItemBackground());
             ViewCompat.setBackground(v,ResUtils.getDialogClickableItemBackground());
         }
         if (attach) {

@@ -55,15 +55,6 @@ public class PreUpgradeHook extends CommonDelayableHook {
                     break;
                 }
             }
-            /*Method method1 = getMethod(_BannerManager(), "n", View.class);
-            if (method1 != null) {
-                XposedBridge.hookMethod(method1, new XC_MethodHook() {
-                    @Override
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                        param.setResult(null);
-                    }
-                });
-            }*/
             return true;
         } catch (Throwable e) {
             log(e);

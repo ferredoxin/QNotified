@@ -39,7 +39,6 @@ public class BugReportArguments extends JceStruct {
     @NonNull
     @JceId(3)
     public String[] choices = Utf8JceUtils.DUMMY_STRING_ARRAY;
-//    @JceId(4)  public boolean multiple;
 
     @Override
     public void writeTo(JceOutputStream os) {

@@ -83,9 +83,7 @@ fun dumpIntent(intent: Intent) {
 }
 
 fun checkCardMsg(originString: String): CardMsgCheckResult {
-    //if (BuildConfig.DEBUG||LicenseStatus.isInsider()) return CardMsgCheckResult(true)
     try {
-        //Utils.logd("trying: $string")
         Utils.logd("origin string: $originString")
         val string = decodePercent(originString)
         Utils.logd("decode string: $string")
@@ -93,7 +91,6 @@ fun checkCardMsg(originString: String): CardMsgCheckResult {
         val blackList = Gson().fromJson<HashMap<String, String>>(blackListString, object : TypeToken<HashMap<String, String>>() {}.type)
         Utils.logd(Gson().toJson(blackList))
         for (rule in blackList) {
-            //Utils.logd("checking: $rule")
             if (Regex(rule.value, setOf(RegexOption.IGNORE_CASE,RegexOption.DOT_MATCHES_ALL)).containsMatchIn(string)) {
                 return CardMsgCheckResult(false, rule.key)
             }
@@ -122,7 +119,6 @@ private fun decodePercent(string:String): String {
             }
         }
         Utils.logd("processing string: $produceString")
-        //Thread.sleep(1000)
     }
 }
 

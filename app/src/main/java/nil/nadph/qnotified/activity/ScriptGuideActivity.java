@@ -48,10 +48,8 @@ public class ScriptGuideActivity extends IphoneTitleBarActivityCompat {
         __ll.setOrientation(LinearLayout.VERTICAL);
         ViewGroup bounceScrollView = null;
         bounceScrollView = new BounceScrollView(this, null);
-        //invoke_virtual(bounceScrollView,"a",true,500,500,boolean.class,int.class,int.class);
         bounceScrollView.setLayoutParams(mmlp);
         bounceScrollView.addView(ll, new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-        //invoke_virtual(bounceScrollView,"setNeedHorizontalGesture",true,boolean.class);
         LinearLayout.LayoutParams fixlp = new LinearLayout.LayoutParams(MATCH_PARENT, dip2px(this, 48));
         RelativeLayout.LayoutParams __lp_l = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
         int mar = (int) (dip2px(this, 12) + 0.5f);
@@ -66,13 +64,10 @@ public class ScriptGuideActivity extends IphoneTitleBarActivityCompat {
         RelativeLayout _t;
 
         ll.addView(subtitle(this, QNScriptManager.error));
-        //bounceScrollView.setFocusable(true);
-        //bounceScrollView.setFocusableInTouchMode(true);
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         this.setContentView(bounceScrollView);
         LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);
         _lp_fat.weight = 1;
-        //__ll.addView(bounceScrollView,_lp_fat);
         setContentBackgroundDrawable(ResUtils.skin_background);
         setTitle("脚本帮助");
         return true;

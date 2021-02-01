@@ -57,7 +57,6 @@ public class StartupHook {
         if (first_stage_inited) {
             return;
         }
-        //checkClassLoaderIsolation();
         try {
             XC_MethodHook startup = new XC_MethodHook(51) {
                 @Override
@@ -83,8 +82,6 @@ public class StartupHook {
                             logi("Err:QNotified reloaded??");
                             //I don't know... What happened?
                             return;
-                            //System.exit(-1);
-                            //QNotified updated(in HookLoader mode),kill QQ to make user restart it.
                         }
                         System.setProperty(QN_FULL_TAG, "true");
                         Initiator.init(classLoader);

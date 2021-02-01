@@ -84,10 +84,8 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
         LinearLayout __ll = new LinearLayout(this);
         __ll.setOrientation(LinearLayout.VERTICAL);
         ViewGroup bounceScrollView = new BounceScrollView(this, null);
-        //invoke_virtual(bounceScrollView,"a",true,500,500,boolean.class,int.class,int.class);
         bounceScrollView.setLayoutParams(mmlp);
         bounceScrollView.addView(ll, new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-        //invoke_virtual(bounceScrollView,"setNeedHorizontalGesture",true,boolean.class);
         LinearLayout.LayoutParams fixlp = new LinearLayout.LayoutParams(MATCH_PARENT, dip2px(this, 48));
         RelativeLayout.LayoutParams __lp_l = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
         int mar = (int) (dip2px(this, 12) + 0.5f);

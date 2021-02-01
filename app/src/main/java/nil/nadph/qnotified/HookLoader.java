@@ -107,8 +107,6 @@ public class HookLoader implements IXposedHookLoadPackage {
      * @throws Throwable 抛出各种异常,包括具体hook逻辑的异常,寻找apk文件异常,反射加载Class异常等
      */
     private void invokeHandleHookMethod(Context context, String modulePackageName, String handleHookClass, String handleHookMethod, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
-//        File apkFile = findApkFileBySDK(modulePackageName);//会受其它Xposed模块hook 当前宿主程序的SDK_INT的影响
-//        File apkFile = findApkFile(modulePackageName);
         //原来的两种方式不是很好,改用这种新的方式
         File apkFile = findApkFile(context, modulePackageName);
         if (apkFile == null) {
@@ -117,11 +115,7 @@ public class HookLoader implements IXposedHookLoadPackage {
         //加载指定的hook逻辑处理类，并调用它的handleHook方法
         PathClassLoader pathClassLoader = new PathClassLoader(apkFile.getAbsolutePath(), XposedBridge.class.getClassLoader());
         Class<?> cls = Class.forName(handleHookClass, true, pathClassLoader);
-		/*Utils.log(apkFile.getAbsolutePath());
-		 Utils.log(cls.toString());
-		 Utils.log(pathClassLoader.toString());*/
         Object instance = cls.newInstance();
-        //instance.handleLoadPackage(loadPackageParam);
         Method method = cls.getDeclaredMethod(handleHookMethod, XC_LoadPackage.LoadPackageParam.class);
         method.invoke(instance, loadPackageParam);
     }

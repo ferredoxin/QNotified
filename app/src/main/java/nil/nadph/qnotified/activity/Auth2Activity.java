@@ -297,7 +297,6 @@ public class Auth2Activity extends IphoneTitleBarActivityCompat implements View.
                     cc = ChiralCarbonHelper.getMoleculeChiralCarbons(mol);
                     long t2 = System.currentTimeMillis();
                     lastProcMs = (int) (t2 - t1);
-//                    log("getMoleculeChiralCarbons(" + mol.atomCount() + "atoms," + mol.bondCount() + "bonds) took " + (t2 - t1) + "ms");
                 } else {
                     lastProcMs = -1;
                 }

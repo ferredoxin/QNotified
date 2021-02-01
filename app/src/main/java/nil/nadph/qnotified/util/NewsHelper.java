@@ -47,7 +47,6 @@ public class NewsHelper implements Runnable {
     private static final String QN_CACHED_NEWS = "qn_cached_news";
     private static final int INTERVAL_SEC = 3600;
 
-    //-------------------------------------------
     private final WeakReference<TextView> ptv;
 
     private NewsHelper(@Nullable WeakReference<TextView> p) {
@@ -75,7 +74,6 @@ public class NewsHelper implements Runnable {
         }
     }
 
-    //-------------------------------------------
 
     @Nullable
     public static void getCachedNews(TextView tv) {
@@ -136,7 +134,7 @@ public class NewsHelper implements Runnable {
             cfg.putString(QN_CACHED_NEWS, content);
             cfg.save();
         } catch (IOException e) {
-            //fuck,try another
+            //try another
         }
         if (content == null) {
             try {

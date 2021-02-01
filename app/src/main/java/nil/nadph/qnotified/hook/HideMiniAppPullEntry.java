@@ -79,22 +79,6 @@ public class HideMiniAppPullEntry extends CommonDelayableHook {
                                 }
                             });
                     }
-					/*try {
-					 findAndHookMethod(load("com.tencent.mobileqq.app.FrameFragment"), "createTabContent", String.class, new XC_MethodReplacement(39) {
-					 @Override
-					 protected Object replaceHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
-					 try {
-					 Method m = (Method) param.method;
-					 m.setAccessible(true);
-					 XposedBridge.invokeOriginalMethod(m, param.thisObject, param.args);
-					 } catch (UnsupportedOperationException e) {
-					 } catch (Throwable t) {
-					 log(t);
-					 }
-					 return null;
-					 }
-					 });
-					 } catch (Exception e) {}*/
 
                     Class<?> tmp;
                     Class<?> miniapp = null;

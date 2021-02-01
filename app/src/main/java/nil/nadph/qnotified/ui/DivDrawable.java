@@ -53,12 +53,10 @@ public class DivDrawable extends Drawable {
 
     @Override
     public void setAlpha(int alpha) {
-        //throw new RuntimeException("Unsupported operation");
     }
 
     @Override
     public void setColorFilter(ColorFilter colorFilter) {
-        //throw new RuntimeException("Unsupported operation");
     }
 
     @Override

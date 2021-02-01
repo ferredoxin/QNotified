@@ -60,7 +60,6 @@ public class LinearLayoutDelegate extends LinearLayout {
     @SuppressWarnings("deprecation")
     public void setBackgroundDrawable(Drawable background) {
         if (delegate != null)
-            //delegate.setBackgroundDrawable(background);
             ViewCompat.setBackground(delegate,background);
     }
 

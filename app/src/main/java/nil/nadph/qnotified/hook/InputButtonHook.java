@@ -71,14 +71,6 @@ public class InputButtonHook extends CommonDelayableHook {
     public boolean initOnce() {
         try {
             //Begin: send btn
-//            for (Method method : cl_BaseChatPie.getDeclaredMethods()) {
-//                if (method.getParameterTypes().length != 0
-//                        || !method.getReturnType().equals(void.class)) continue;
-//                if (method.getName().equals(_BaseChatPie_init_name)) {
-//                    _BaseChatPie_init = method;
-//                    break;
-//                }
-//            }
             XposedBridge.hookMethod(DexKit.doFindMethod(DexKit.N_BASE_CHAT_PIE__INIT), new XC_MethodHook(40) {
                 @Override
                 public void afterHookedMethod(MethodHookParam param) throws Throwable {

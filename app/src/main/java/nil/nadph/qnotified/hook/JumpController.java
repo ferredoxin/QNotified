@@ -89,7 +89,6 @@ public class JumpController extends CommonDelayableHook {
                         final Intent intent = (Intent) param.args[1];
                         final Runnable runnable = (Runnable) param.args[2];
                         Object interceptor = param.args[3];
-                        //Utils.logi("JumpController/I intercept: ctx=" + ctx + ", intent=" + intent + ", r=" + runnable + ", interceptor=" + interceptor);
                         if (ctx == null || intent == null || runnable == null || interceptor == null)
                             return;
                         int result = checkIntent(ctx, intent);
@@ -122,9 +121,6 @@ public class JumpController extends CommonDelayableHook {
                                     });
                                     return;
                                 }
-//                                PackageManager pm = ctx.getPackageManager();
-//                                List<ResolveInfo> activities = pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-//                                final String desc = (activities.size() == 1 ? ('"' + activities.get(0).loadLabel(pm).toString() + '"') : intent.toString());
                                 final String desc = intent.toString();
                                 Utils.runOnUiThread(new Runnable() {
                                     @Override

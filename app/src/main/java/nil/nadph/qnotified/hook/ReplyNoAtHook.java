@@ -55,20 +55,6 @@ public class ReplyNoAtHook extends CommonDelayableHook {
     public boolean initOnce() {
         try {
             String method = ConfigTable.INSTANCE.getConfig(ReplyNoAtHook.class.getSimpleName());
-            /*int ver = getHostVersionCode32();
-            if (ver >= 1630) {
-                method = "l";
-            } else if (ver >= 1492) {
-                method = "createAtMsg";
-            } else if (ver >= 1406) {
-                method = "n";
-            } else if (ver > 1296) {
-                method = "m";
-            } else if (ver > 1246) {
-                method = "l";
-            } else if (ver >= 1246) {
-                method = "k";
-            }*/
             if (method == null) return false;
             findAndHookMethod(_BaseChatPie(), method, boolean.class, new XC_MethodHook(49) {
                 @Override

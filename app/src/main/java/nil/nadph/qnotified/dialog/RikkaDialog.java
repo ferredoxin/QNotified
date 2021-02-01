@@ -108,9 +108,7 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
         Window win = getWindow();
         win.setBackgroundDrawable(new DummyDrawable());
         ScrollView outer = new ScrollView(mContext);
-        //outer.setBackgroundDrawable(dialogBgDrawable);
         ViewCompat.setBackground(outer,dialogBgDrawable);
-        //outer.setVerticalScrollbarTrackDrawable(null);
         LinearLayout ll = new LinearLayout(mContext);
         ll.setClickable(true);
         LinearLayout root = new LinearLayout(mContext);
@@ -167,7 +165,6 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
         return new RikkaConfigItem[]{
                 RikkaConfigItem.create(this, "显示具体消息数量", ShowMsgCount.get()),
                 new RikkaBaseApkFormatDialog(this),
-//                RikkaConfigItem.create(this, "屏蔽抖动窗口", DisableShakeWindow.get()),
                 RikkaConfigItem.create(this, "回赞界面一键20赞", OneTapTwentyLikes.get()),
                 new RikkaCustomMsgTimeFormatDialog(this),
                 RikkaConfigItem.create(this, "免广告送免费礼物[仅限群聊送礼物]", RemoveSendGiftAd.get()),
@@ -193,7 +190,6 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
         public void invalidateStatus() {
             View v = view;
             if (v == null) return;
-            //v.setBackgroundDrawable(isEnabled() ? rikkaDialog.itemOnDrawable : rikkaDialog.itemOffDrawable);
             ViewCompat.setBackground(v, isEnabled() ? rikkaDialog.itemOnDrawable : rikkaDialog.itemOffDrawable);
         }
 

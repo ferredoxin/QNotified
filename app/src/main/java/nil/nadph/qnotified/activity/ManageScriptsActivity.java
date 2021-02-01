@@ -61,8 +61,6 @@ public class ManageScriptsActivity extends IphoneTitleBarActivityCompat {
             startActivityForResult(intent, REQUEST_CODE);
         }));
         main.addView(ViewBuilder.newListItemSwitch(this, "全部启用", null, QNScriptManager.isEnableAll(), QNScriptManager::enableAll));
-        //main.addView(ViewBuilder.newListItemDummy(this, "demo.java (禁用)", null, null));
-        //main.addView(ViewBuilder.newListItemSwitch(this, "总开关", null, true, null));
         addAllScript(main);
         setContentView(main);
         setTitle("脚本");
@@ -119,38 +117,6 @@ public class ManageScriptsActivity extends IphoneTitleBarActivityCompat {
         } else {
             Utils.showToastShort(this, "未知错误");
         }
-        /*
-        // 通过ContentProvider查询文件路径
-        ContentResolver resolver = this.getContentResolver();
-        Cursor cursor = resolver.query(uri, null, null, null, null);
-        if (cursor == null) {
-            // 未查询到，说明为普通文件，可直接通过URI获取文件路径
-            String path = uri.getPath();
-            try {
-                String msg = QNScriptManager.addScript(path);
-                if (Utils.isNullOrEmpty(msg)) {
-                    Utils.showToastShort(this, "添加完毕");
-                } else {
-                    Utils.showToastShort(this, "添加失败: " + msg);
-                }
-            } catch (Exception e) {
-                log(e);
-                Utils.showToastShort(this, "未知错误: " + e.getMessage());
-            }
-            return;
-        }
-        if (cursor.moveToFirst()) {
-            // 多媒体文件，从数据库中获取文件的真实路径
-            String path = cursor.getString(cursor.getColumnIndex("_data"));
-            try {
-                QNScriptManager.addScript(path);
-                Utils.showToastShort(this, "添加完毕");
-            } catch (Exception e) {
-                log(e);
-                Utils.showToastShort(this, "未知错误: " + e.getMessage());
-            }
-        }
-        cursor.close();*/
     }
 
 

@@ -77,26 +77,6 @@ public class DebugDrawable extends Drawable {
         paint.setColor(Color.RED);
         paint.setStyle(Paint.Style.STROKE);
         drawRect(canvas, paint, 0, 0, getBounds().width() - 1, getBounds().height() - 1);
-		/*
-		 for (int i = 0; i < getChildCount(); i++) {
-		 View c = getChildAt(i);
-		 if (c.getVisibility() != View.GONE) {
-		 Insets insets = c.getOpticalInsets();
-		 *
-		 drawRect(canvas, paint,
-		 c.getLeft() + insets.left,
-		 c.getTop() + insets.top,
-		 c.getRight() - insets.right - 1,
-		 c.getBottom() - insets.bottom - 1);
-		 }
-		 }
-		 *
-		 // Draw margins
-
-		 paint.setColor(Color.argb(63, 255, 0, 255));
-		 paint.setStyle(Paint.Style.FILL);
-
-		 onDebugDrawMargins(canvas, paint);*/
 
         // Draw clip bounds
 

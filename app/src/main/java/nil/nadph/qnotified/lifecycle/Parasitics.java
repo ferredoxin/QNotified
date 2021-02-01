@@ -235,8 +235,6 @@ public class Parasitics {
                     new IActivityManagerHandler(mDefaultTaskMgr));
                 mInstanceField.set(singleton, proxy2);
             } catch (Exception err3) {
-                //log(err3);
-                //ignore
             }
             //End of IActivityTaskManager
             sActStubHookEndTime = System.currentTimeMillis();
@@ -267,7 +265,6 @@ public class Parasitics {
                     Intent raw = (Intent) args[index];
                     ComponentName component = raw.getComponent();
                     Context hostApp = Utils.getApplication();
-                    //log("startActivity, rawIntent=" + raw);
                     if (hostApp != null && component != null
                         && hostApp.getPackageName().equals(component.getPackageName())
                         && ActProxyMgr.isModuleProxyActivity(component.getClassName())) {
@@ -284,7 +281,6 @@ public class Parasitics {
                             isTranslucent ? ActProxyMgr.STUB_TRANSLUCENT_ACTIVITY : ActProxyMgr.STUB_DEFAULT_ACTIVITY);
                         wrapper.putExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT, raw);
                         args[index] = wrapper;
-                        //log("startActivity, wrap intent with " + wrapper);
                     }
                 }
             }
@@ -311,7 +307,6 @@ public class Parasitics {
                     Field field_intent = record.getClass().getDeclaredField("intent");
                     field_intent.setAccessible(true);
                     Intent intent = (Intent) field_intent.get(record);
-                    //log("handleMessage/100: " + intent);
                     Bundle bundle = null;
                     try {
                         Field fExtras = Intent.class.getDeclaredField("mExtras");
@@ -326,7 +321,6 @@ public class Parasitics {
                         if (intent.hasExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT)) {
                             Intent realIntent = intent.getParcelableExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT);
                             field_intent.set(record, realIntent);
-                            //log("unwrap, real=" + realIntent);
                         }
                     }
                 } catch (Exception e) {
@@ -360,7 +354,6 @@ public class Parasitics {
                                         if (wrapper.hasExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT)) {
                                             Intent realIntent = wrapper.getParcelableExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT);
                                             fmIntent.set(item, realIntent);
-                                            //log("unwrap, real=" + realIntent);
                                         }
                                     }
                                 }
@@ -390,7 +383,6 @@ public class Parasitics {
         @Override
         public Activity newActivity(ClassLoader cl, String className, Intent intent) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
             try {
-                //log("newActivity: " + className);
                 return mBase.newActivity(cl, className, intent);
             } catch (Exception e) {
                 if (ActProxyMgr.isModuleProxyActivity(className)) {

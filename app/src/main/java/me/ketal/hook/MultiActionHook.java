@@ -46,9 +46,6 @@ import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
 import static nil.nadph.qnotified.util.Initiator._ChatMessage;
 import static nil.nadph.qnotified.util.Utils.*;
 
-/*
-This code has been tested in QQ8.0.0-8.5.5 and TIM all versions.
- */
 public class MultiActionHook extends CommonDelayableHook {
     public static final MultiActionHook INSTANCE = new MultiActionHook();
     private static Bitmap img;

@@ -73,8 +73,6 @@ public class InspectMessage extends CommonDelayableHook implements View.OnLongCl
                     }
                     final Object msg = MultiForwardAvatarHook.getChatMessageByView(view);
                     if (msg == null) return;
-                    //判断私聊或群聊  istroop = 0 为私聊 ，1 为群聊
-                    //int istroop = (int) iget_object_or_null(msg, "istroop");
                     //取消istroop判断，在群里也可以撤回部分消息
                     CustomDialog dialog = CustomDialog.createFailsafe(ctx);
                     dialog.setTitle(Utils.getShort$Name(msg));

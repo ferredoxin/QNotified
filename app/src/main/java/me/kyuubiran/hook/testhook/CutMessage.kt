@@ -60,16 +60,7 @@ object CutMessage : BaseDelayableHook() {
                             try {
                                 logd(LOG_TYPE_FIND_METHOD, "->$m")
                                 logd("收到一份消息: \n$msgRecordData")
-                                //logd(msgRecord::class.java.name)
-                                /*val msg = getMsg(msgRecord)
-                                val senderUin = getSenderUin(msgRecord)
-                                val msgType = getMsgType(msgRecord)
-                                val friendUin = getFriendUin(msgRecord)
-                                val selfUin = getSelfUin(msgRecord)
-                                val time = getTime(msgRecord)
-                                logd("收到一份来自${senderUin}的消息:\n${msg}\n消息类型是${msgType}\n好友QQ是${friendUin}\n自己QQ是${selfUin}\n时间戳${time}")*/
                             } catch (t: Throwable) {
-                                //log(t)
                             }
                         }
                     })
