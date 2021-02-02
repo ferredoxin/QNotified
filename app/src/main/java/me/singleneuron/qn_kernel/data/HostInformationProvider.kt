@@ -30,7 +30,7 @@ fun init(applicationContext: Application) {
         packageName,
         applicationContext.applicationInfo.loadLabel(applicationContext.packageManager).toString(),
         PackageInfoCompat.getLongVersionCode(packageInfo),
-        PackageInfoCompat.getLongVersionCode(packageInfo) as Int,
+        PackageInfoCompat.getLongVersionCode(packageInfo).toInt(),
         packageInfo.versionName,
         Utils.PACKAGE_NAME_TIM == packageName
     )
