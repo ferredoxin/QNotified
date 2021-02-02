@@ -18,19 +18,19 @@
  */
 package nil.nadph.qnotified.dialog;
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
+import android.annotation.*;
+import android.app.*;
+import android.content.*;
+import android.view.*;
 import android.widget.*;
 
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
-import nil.nadph.qnotified.R;
-import nil.nadph.qnotified.script.QNScript;
-import nil.nadph.qnotified.script.QNScriptManager;
-import nil.nadph.qnotified.ui.CustomDialog;
-import nil.nadph.qnotified.util.Utils;
+import bsh.*;
+import cn.lliiooll.script.*;
+import me.singleneuron.qn_kernel.data.*;
+import nil.nadph.qnotified.*;
+import nil.nadph.qnotified.script.*;
+import nil.nadph.qnotified.ui.*;
+import nil.nadph.qnotified.util.*;
 
 public class ScriptSettingDialog implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
@@ -46,9 +46,9 @@ public class ScriptSettingDialog implements CompoundButton.OnCheckedChangeListen
     private final Switch enable;
 
     public ScriptSettingDialog(Context context, QNScript qs) {
-        this.script = qs;
-        dialog = (AlertDialog) CustomDialog.createFailsafe(context).setTitle(qs.getName())
-                .setCancelable(true).create();
+        script = qs;
+        dialog = (AlertDialog) CustomDialog.createFailsafe(context).setTitle(qs.getInfo().getName())
+            .setCancelable(true).create();
         ctx = dialog.getContext();
         dialog.setCanceledOnTouchOutside(false);
         View v = LayoutInflater.from(ctx).inflate(R.layout.script_setting_dialog, null);
@@ -68,9 +68,9 @@ public class ScriptSettingDialog implements CompoundButton.OnCheckedChangeListen
         delBtn.setOnClickListener(this);
         enable.setChecked(script.isEnable());
         enable.setOnCheckedChangeListener(this);
-        version.setText("版本: " + script.getVersion());
-        author.setText("作者: " + script.getAuthor());
-        decs.setText("简介: " + script.getDecs());
+        version.setText("版本: " + script.getInfo().getVersion());
+        author.setText("作者: " + script.getInfo().getAuthor());
+        decs.setText("简介: " + script.getInfo().getDecs());
         code.setText(script.getCode());
         return dialog;
     }
@@ -89,15 +89,24 @@ public class ScriptSettingDialog implements CompoundButton.OnCheckedChangeListen
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        script.setEnable(isChecked);
-        Utils.showToast(ctx, Utils.TOAST_TYPE_ERROR, "重启" + HostInformationProviderKt.getHostInformationProvider().getHostName() + "生效", Toast.LENGTH_SHORT);
+        if (isChecked) {
+            try {
+                QNScriptFactory.enable(script);
+            } catch (EvalError evalError) {
+                Utils.log(evalError);
+            }
+        } else {
+            QNScriptFactory.disable(script);
+        }
+        Utils.showToast(ctx, Utils.TOAST_TYPE_ERROR,
+            "重启" + HostInformationProviderKt.getHostInformationProvider().getHostName() + "生效", Toast.LENGTH_SHORT);
     }
-
+    
     public static void createAndShowDialog(Context ctx, QNScript qs) {
         new ScriptSettingDialog(ctx, qs).show();
     }
-
-    public static void OnClickListener_createDialog(final Context ctx, QNScript qs) {
+    
+    public static void OnClickListener_createDialog(Context ctx, QNScript qs) {
         createAndShowDialog(ctx, qs);
     }
 }

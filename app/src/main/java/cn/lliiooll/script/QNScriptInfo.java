@@ -21,6 +21,8 @@ package cn.lliiooll.script;
 
 import java.util.*;
 
+import cn.lliiooll.utils.*;
+
 public class QNScriptInfo {
     
     private String decs;// 简介

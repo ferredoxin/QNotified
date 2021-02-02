@@ -23,8 +23,6 @@ import android.os.Looper
 import cn.lliiooll.QNClient
 import com.topjohnwu.superuser.internal.UiThreadHandler.handler
 import me.singleneuron.qn_kernel.data.hostInformationProvider
-import nil.nadph.qnotified.script.QNClient
-import nil.nadph.qnotified.util.Utils
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.concurrent.thread

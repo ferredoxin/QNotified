@@ -18,29 +18,25 @@
  */
 package nil.nadph.qnotified.activity;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.ParcelFileDescriptor;
-import android.provider.OpenableColumns;
-import android.widget.LinearLayout;
+import android.annotation.*;
+import android.app.*;
+import android.content.*;
+import android.database.*;
+import android.net.*;
+import android.os.*;
+import android.provider.*;
+import android.widget.*;
 
-import java.io.FileDescriptor;
+import java.io.*;
 
-import nil.nadph.qnotified.config.ConfigItems;
-import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.dialog.ScriptSettingDialog;
-import nil.nadph.qnotified.script.QNScript;
-import nil.nadph.qnotified.script.QNScriptManager;
-import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.ui.ViewBuilder;
-import nil.nadph.qnotified.util.Utils;
+import cn.lliiooll.script.*;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.dialog.*;
+import nil.nadph.qnotified.script.*;
+import nil.nadph.qnotified.ui.*;
+import nil.nadph.qnotified.util.*;
 
-import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressLint("Registered")
 public class ManageScriptsActivity extends IphoneTitleBarActivityCompat {
@@ -79,7 +75,7 @@ public class ManageScriptsActivity extends IphoneTitleBarActivityCompat {
             }
             Uri uri = data.getData(); // 获取用户选择文件的URI
             if (uri != null) {
-                ContentResolver resolver = this.getContentResolver();
+                ContentResolver resolver = getContentResolver();
                 Cursor c = resolver.query(uri, null, null, null, null);
                 if (c == null) {
                     String path = uri.getPath();
@@ -122,9 +118,10 @@ public class ManageScriptsActivity extends IphoneTitleBarActivityCompat {
 
     private void addAllScript(LinearLayout main) {
         for (QNScript qs : QNScriptManager.getScripts()) {
-            String name = qs.getName() == null ? "出错" : qs.getName();
-            String decs = qs.getDecs() == null ? "出错" : qs.getDecs();
-            main.addView(ViewBuilder.newListItemButton(this, name, decs, qs.getEnable(), view -> ScriptSettingDialog.OnClickListener_createDialog(view.getContext(), qs)));
+            String name = qs.getInfo().getName() == null ? "出错" : qs.getInfo().getName();
+            String decs = qs.getInfo().getDecs() == null ? "出错" : qs.getInfo().getDecs();
+            main.addView(ViewBuilder.newListItemButton(this, name, decs, qs.getEnable(),
+                view -> ScriptSettingDialog.OnClickListener_createDialog(view.getContext(), qs)));
         }
     }
 }

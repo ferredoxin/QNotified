@@ -18,13 +18,14 @@
  */
 package cn.lliiooll;
 
+import android.widget.*;
+
 import java.lang.reflect.*;
 
 import cn.lliiooll.hook.*;
+import me.singleneuron.qn_kernel.data.*;
 import nil.nadph.qnotified.bridge.*;
 import nil.nadph.qnotified.util.*;
-
-import static nil.nadph.qnotified.util.Utils.*;
 
 public class QNClient {
     
@@ -58,7 +59,8 @@ public class QNClient {
     public static void send(String uin, String content, int type) {
         // to do
         ChatActivityFacade.sendMessage(
-            Utils.getQQAppInterface(), getApplication(), SessionInfoImpl.createSessionInfo(uin, type), content
+            Utils.getQQAppInterface(), HostInformationProviderKt.getHostInformationProvider().getApplicationContext(),
+            SessionInfoImpl.createSessionInfo(uin, type), content
         );
     }
     
@@ -68,8 +70,8 @@ public class QNClient {
      * @param msg 要显示的消息
      */
     public static void toast(String msg) {
-        //Utils.showToast(getApplication(), TOAST_TYPE_INFO, msg, Toasts.LENGTH_LONG);
-        //Toast.makeText(getApplication(), msg, Toast.LENGTH_LONG).show();
+        Toast.makeText(HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), msg,
+            Toast.LENGTH_LONG).show();
     }
     
     public void hook(Member member, QNHook hook) {
