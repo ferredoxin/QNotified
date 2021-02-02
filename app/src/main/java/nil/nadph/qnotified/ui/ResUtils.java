@@ -41,9 +41,9 @@ import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.util.ArscKit;
 import nil.nadph.qnotified.util.Nullable;
 
-import static nil.nadph.qnotified.startup.Initiator.load;
-import static nil.nadph.qnotified.startup.ReflexUtil.iget_object_or_null;
-import static nil.nadph.qnotified.startup.ReflexUtil.invoke_static;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_static;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class ResUtils {

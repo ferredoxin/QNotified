@@ -22,7 +22,7 @@ import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import me.singleneuron.qn_kernel.tlb.ConfigTable
 import nil.nadph.qnotified.hook.CommonDelayableHook
-import nil.nadph.qnotified.startup.Initiator._BaseChatPie
+import nil.nadph.qnotified.util.Initiator._BaseChatPie
 import nil.nadph.qnotified.util.LicenseStatus
 import nil.nadph.qnotified.util.Utils
 import java.lang.reflect.Method

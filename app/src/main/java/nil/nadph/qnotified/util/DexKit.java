@@ -37,11 +37,10 @@ import dalvik.system.DexClassLoader;
 import dalvik.system.PathClassLoader;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.startup.Initiator;
 
-import static nil.nadph.qnotified.startup.Initiator._BaseChatPie;
-import static nil.nadph.qnotified.startup.Initiator._QQAppInterface;
-import static nil.nadph.qnotified.startup.ReflexUtil.invoke_virtual;
+import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
+import static nil.nadph.qnotified.util.Initiator._QQAppInterface;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
 import static nil.nadph.qnotified.util.Utils.log;
 import static nil.nadph.qnotified.util.Utils.logi;
 

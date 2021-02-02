@@ -11,7 +11,6 @@ class LogUtil {
     static void loge(String str) {
         Log.e("QNdump", str);
         try {
-            BugCollector.onThrowable(new Throwable(str));
             XposedBridge.log(str);
         } catch (NoClassDefFoundError e) {
             Log.e("Xposed", str);

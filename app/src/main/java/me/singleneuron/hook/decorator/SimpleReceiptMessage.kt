@@ -21,7 +21,7 @@ package me.singleneuron.hook.decorator
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 import me.singleneuron.base.decorator.BaseItemBuilderFactoryHookDecorator
-import nil.nadph.qnotified.startup.ReflexUtil.iget_object_or_null
+import nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null
 
 object SimpleReceiptMessage: BaseItemBuilderFactoryHookDecorator("simpleReceiptMessage") {
 

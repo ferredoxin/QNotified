@@ -31,7 +31,7 @@ import java.util.Objects;
 
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 
-import static nil.nadph.qnotified.startup.Initiator.load;
+import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.log;
 
 /**

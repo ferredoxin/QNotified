@@ -18,7 +18,7 @@
  */
 package nil.nadph.qnotified.util.thunk.pcs;
 
-import nil.nadph.qnotified.startup.Natives;
+import nil.nadph.qnotified.util.Natives;
 import nil.nadph.qnotified.util.NonNull;
 
 public abstract class Convention {

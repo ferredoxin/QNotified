@@ -16,7 +16,7 @@
  * along with this software.  If not, see
  * <https://www.gnu.org/licenses/>.
  */
-package nil.nadph.qnotified.startup;
+package nil.nadph.qnotified.util;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

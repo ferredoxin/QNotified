@@ -1,4 +1,4 @@
-package nil.nadph.qnotified.startup;
+package nil.nadph.qnotified.util;
 
 import android.app.Application;
 

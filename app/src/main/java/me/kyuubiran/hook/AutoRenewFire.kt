@@ -28,8 +28,8 @@ import de.robv.android.xposed.XposedBridge
 import me.kyuubiran.dialog.AutoRenewFireDialog
 import me.kyuubiran.util.*
 import nil.nadph.qnotified.hook.CommonDelayableHook
-import nil.nadph.qnotified.startup.ReflexUtil.invoke_virtual
-import nil.nadph.qnotified.startup.ReflexUtil.new_instance
+import nil.nadph.qnotified.util.ReflexUtil.invoke_virtual
+import nil.nadph.qnotified.util.ReflexUtil.new_instance
 import nil.nadph.qnotified.util.LicenseStatus
 import java.lang.reflect.Method
 

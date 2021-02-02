@@ -29,6 +29,7 @@ import java.lang.reflect.Method;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
+import nil.nadph.qnotified.util.Initiator;
 
 /**
  * Startup hook for QQ/TIM

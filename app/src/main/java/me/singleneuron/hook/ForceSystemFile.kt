@@ -24,7 +24,7 @@ import me.singleneuron.activity.ChooseFileAgentActivity
 import me.singleneuron.base.adapter.BaseDelayableConditionalHookAdapter
 import me.singleneuron.qn_kernel.data.hostInformationProvider
 import me.singleneuron.util.QQVersion
-import nil.nadph.qnotified.startup.Initiator
+import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.step.Step
 import nil.nadph.qnotified.util.DexKit

@@ -21,12 +21,12 @@ package nil.nadph.qnotified.bridge;
 import java.lang.reflect.Modifier;
 
 import de.robv.android.xposed.XposedHelpers;
-import nil.nadph.qnotified.startup.Initiator;
+import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.DexKit;
 
-import static nil.nadph.qnotified.startup.Initiator._QQAppInterface;
-import static nil.nadph.qnotified.startup.ReflexUtil.invoke_static_declared_ordinal_modifier;
-import static nil.nadph.qnotified.startup.ReflexUtil.invoke_virtual_declared_ordinal;
+import static nil.nadph.qnotified.util.Initiator._QQAppInterface;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_static_declared_ordinal_modifier;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_declared_ordinal;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class ContactUtils {

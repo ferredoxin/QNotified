@@ -26,10 +26,10 @@ import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
 
-import static nil.nadph.qnotified.startup.Initiator._EmoAddedAuthCallback;
-import static nil.nadph.qnotified.startup.Initiator._FavEmoRoamingHandler;
-import static nil.nadph.qnotified.startup.ReflexUtil.iput_object;
-import static nil.nadph.qnotified.startup.ReflexUtil.sput_object;
+import static nil.nadph.qnotified.util.Initiator._EmoAddedAuthCallback;
+import static nil.nadph.qnotified.util.Initiator._FavEmoRoamingHandler;
+import static nil.nadph.qnotified.util.ReflexUtil.iput_object;
+import static nil.nadph.qnotified.util.ReflexUtil.sput_object;
 import static nil.nadph.qnotified.util.Utils.log;
 
 public class FavMoreEmo extends CommonDelayableHook {

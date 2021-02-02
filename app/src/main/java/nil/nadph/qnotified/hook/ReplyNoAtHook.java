@@ -27,7 +27,7 @@ import nil.nadph.qnotified.util.LicenseStatus;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static me.ketal.util.TIMVersion.TIM_3_1_1;
 import static me.singleneuron.util.QQVersion.QQ_8_1_3;
-import static nil.nadph.qnotified.startup.Initiator._BaseChatPie;
+import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
 import static nil.nadph.qnotified.util.Utils.log;
 
 public class ReplyNoAtHook extends CommonDelayableHook {

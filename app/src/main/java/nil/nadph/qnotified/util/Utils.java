@@ -46,13 +46,11 @@ import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import me.singleneuron.util.QQVersion;
 import mqq.app.AppRuntime;
 import nil.nadph.qnotified.BuildConfig;
-import nil.nadph.qnotified.startup.Initiator;
-import nil.nadph.qnotified.startup.Natives;
 import nil.nadph.qnotified.ui.ResUtils;
 
 import static me.singleneuron.util.KotlinUtilsKt.readFromBufferedReader;
-import static nil.nadph.qnotified.startup.Initiator.load;
-import static nil.nadph.qnotified.startup.ReflexUtil.*;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.ReflexUtil.*;
 
 @SuppressLint("SimpleDateFormat")
 public class Utils {

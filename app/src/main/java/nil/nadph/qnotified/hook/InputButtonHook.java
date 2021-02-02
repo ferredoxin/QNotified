@@ -45,17 +45,17 @@ import de.robv.android.xposed.XposedBridge;
 import me.singleneuron.hook.CopyCardMsg;
 import nil.nadph.qnotified.activity.ChatTailActivity;
 import nil.nadph.qnotified.dialog.RikkaCustomMsgTimeFormatDialog;
-import nil.nadph.qnotified.startup.Initiator;
+import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.ui.InterceptLayout;
 import nil.nadph.qnotified.ui.TouchEventToLongClickAdapter;
 import nil.nadph.qnotified.util.*;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static nil.nadph.qnotified.startup.Initiator._SessionInfo;
-import static nil.nadph.qnotified.startup.Initiator.load;
-import static nil.nadph.qnotified.startup.ReflexUtil.iget_object_or_null;
-import static nil.nadph.qnotified.startup.ReflexUtil.invoke_virtual;
+import static nil.nadph.qnotified.util.Initiator._SessionInfo;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
 import static nil.nadph.qnotified.util.Utils.*;
 
 

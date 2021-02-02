@@ -35,7 +35,7 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.lifecycle.ActProxyMgr;
-import nil.nadph.qnotified.startup.Initiator;
+import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.NonNull;

@@ -36,8 +36,8 @@ import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
-import static nil.nadph.qnotified.startup.Initiator.*;
-import static nil.nadph.qnotified.startup.ReflexUtil.findField;
+import static nil.nadph.qnotified.util.Initiator.*;
+import static nil.nadph.qnotified.util.ReflexUtil.findField;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class FlashPicHook extends CommonDelayableHook {

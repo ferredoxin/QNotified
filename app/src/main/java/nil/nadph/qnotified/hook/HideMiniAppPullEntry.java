@@ -27,11 +27,11 @@ import de.robv.android.xposed.XposedBridge;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.startup.Initiator;
+import nil.nadph.qnotified.util.Initiator;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static me.singleneuron.util.QQVersion.QQ_8_2_6;
-import static nil.nadph.qnotified.startup.Initiator.load;
+import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.log;
 
 public class HideMiniAppPullEntry extends CommonDelayableHook {

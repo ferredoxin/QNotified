@@ -28,7 +28,7 @@ import de.robv.android.xposed.XposedBridge;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.util.LicenseStatus;
 
-import static nil.nadph.qnotified.startup.Initiator._TroopPicEffectsController;
+import static nil.nadph.qnotified.util.Initiator._TroopPicEffectsController;
 import static nil.nadph.qnotified.util.Utils.log;
 
 public class ShowPicGagHook extends CommonDelayableHook {

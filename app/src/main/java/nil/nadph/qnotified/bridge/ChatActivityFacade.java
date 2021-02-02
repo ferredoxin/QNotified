@@ -33,10 +33,10 @@ import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Utils;
 
-import static nil.nadph.qnotified.startup.Initiator._SessionInfo;
-import static nil.nadph.qnotified.startup.Initiator.load;
-import static nil.nadph.qnotified.startup.ReflexUtil.iget_object_or_null;
-import static nil.nadph.qnotified.startup.ReflexUtil.invoke_virtual;
+import static nil.nadph.qnotified.util.Initiator._SessionInfo;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class ChatActivityFacade {

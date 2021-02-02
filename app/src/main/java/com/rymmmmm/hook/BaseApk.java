@@ -33,7 +33,7 @@ import de.robv.android.xposed.XposedHelpers;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.dialog.RikkaBaseApkFormatDialog;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
-import nil.nadph.qnotified.startup.Initiator;
+import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 
 import static nil.nadph.qnotified.util.Utils.log;

@@ -23,7 +23,7 @@ import de.robv.android.xposed.XposedBridge
 import me.singleneuron.base.adapter.BaseDelayableHookAdapter
 import me.singleneuron.hook.decorator.SimpleCheckIn
 import me.singleneuron.hook.decorator.SimpleReceiptMessage
-import nil.nadph.qnotified.startup.Initiator
+import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.util.DexKit
 import java.lang.reflect.Method

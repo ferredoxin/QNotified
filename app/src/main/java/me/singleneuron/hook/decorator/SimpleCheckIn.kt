@@ -20,8 +20,8 @@ package me.singleneuron.hook.decorator
 
 import de.robv.android.xposed.XC_MethodHook
 import me.singleneuron.base.decorator.BaseItemBuilderFactoryHookDecorator
-import nil.nadph.qnotified.startup.ReflexUtil.iget_object_or_null
-import nil.nadph.qnotified.startup.ReflexUtil.invoke_virtual
+import nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null
+import nil.nadph.qnotified.util.ReflexUtil.invoke_virtual
 
 object SimpleCheckIn: BaseItemBuilderFactoryHookDecorator("qn_sign_in_as_text") {
 

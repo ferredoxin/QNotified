@@ -42,8 +42,8 @@ import nil.nadph.qnotified.ui.LinearLayoutDelegate;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
-import static nil.nadph.qnotified.startup.Initiator.*;
-import static nil.nadph.qnotified.startup.ReflexUtil.*;
+import static nil.nadph.qnotified.util.Initiator.*;
+import static nil.nadph.qnotified.util.ReflexUtil.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class RepeaterHook extends CommonDelayableHook {

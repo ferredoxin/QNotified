@@ -56,9 +56,9 @@ import nil.nadph.qnotified.util.*;
 
 import static nil.nadph.qnotified.config.Table.*;
 import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTIVITY_PROXY_ACTION;
-import static nil.nadph.qnotified.startup.Initiator.load;
-import static nil.nadph.qnotified.startup.ReflexUtil.invoke_virtual;
-import static nil.nadph.qnotified.startup.ReflexUtil.invoke_virtual_any;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_any;
 import static nil.nadph.qnotified.util.DateTimeUtil.getRelTimeStrSec;
 import static nil.nadph.qnotified.util.Utils.*;
 

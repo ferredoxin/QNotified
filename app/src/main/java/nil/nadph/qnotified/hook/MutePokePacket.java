@@ -22,7 +22,7 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.util.LicenseStatus;
 
-import static nil.nadph.qnotified.startup.Initiator.load;
+import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.log;
 
 public class MutePokePacket extends CommonDelayableHook {

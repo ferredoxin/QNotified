@@ -32,8 +32,8 @@ import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
 
-import static nil.nadph.qnotified.startup.Initiator._PicItemBuilder;
-import static nil.nadph.qnotified.startup.ReflexUtil.findField;
+import static nil.nadph.qnotified.util.Initiator._PicItemBuilder;
+import static nil.nadph.qnotified.util.ReflexUtil.findField;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class EmoPicHook extends CommonDelayableHook {

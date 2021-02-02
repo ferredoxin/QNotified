@@ -18,10 +18,13 @@
  */
 package nil.nadph.qnotified.startup;
 
+import android.app.Application;
 import android.content.Context;
 
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.MainHook;
+import nil.nadph.qnotified.util.Natives;
+import nil.nadph.qnotified.util.ReflexUtil;
 
 import static nil.nadph.qnotified.startup.LogUtil.log;
 import static nil.nadph.qnotified.util.Utils.checkLogFlag;
@@ -43,16 +46,16 @@ public class StartupRoutine {
      * @param bReserved   false, not used
      */
     public static void execPostStartupInit(Context ctx, Object step, String lpwReserved, boolean bReserved) {
+        checkLogFlag();
         try {
             Natives.load(ctx);
         } catch (Throwable e3) {
             log(e3);
         }
-        checkLogFlag();
-        HostInformationProviderKt.init(ReflexUtil.getApplication());
         if (getBuildTimestamp() < 0) {
             return;
         }
+        HostInformationProviderKt.init((Application) ctx);
         MainHook.getInstance().performHook(ctx, step);
     }
 }

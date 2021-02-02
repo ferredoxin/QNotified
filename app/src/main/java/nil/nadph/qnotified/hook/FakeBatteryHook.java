@@ -39,9 +39,9 @@ import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.startup.Initiator;
+import nil.nadph.qnotified.util.Initiator;
 
-import static nil.nadph.qnotified.startup.Initiator.load;
+import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class FakeBatteryHook extends CommonDelayableHook implements InvocationHandler, SyncUtils.BroadcastListener {

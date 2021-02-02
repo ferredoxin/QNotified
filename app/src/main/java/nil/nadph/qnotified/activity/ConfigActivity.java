@@ -41,7 +41,7 @@ import nil.nadph.qnotified.BuildConfig;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.lifecycle.JumpActivityEntryHook;
 import nil.nadph.qnotified.startup.HookEntry;
-import nil.nadph.qnotified.startup.Natives;
+import nil.nadph.qnotified.util.Natives;
 import nil.nadph.qnotified.util.Utils;
 
 public class ConfigActivity extends Activity implements Runnable {

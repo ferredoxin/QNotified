@@ -22,7 +22,7 @@ import android.view.View;
 
 import java.lang.reflect.Field;
 
-import nil.nadph.qnotified.startup.Initiator;
+import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Nullable;
 import nil.nadph.qnotified.util.Utils;
 

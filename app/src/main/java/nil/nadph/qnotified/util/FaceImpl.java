@@ -32,8 +32,8 @@ import java.util.HashMap;
 
 import nil.nadph.qnotified.ui.ResUtils;
 
-import static nil.nadph.qnotified.startup.Initiator.load;
-import static nil.nadph.qnotified.startup.ReflexUtil.invoke_virtual_any;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_any;
 
 public class FaceImpl implements InvocationHandler {
 

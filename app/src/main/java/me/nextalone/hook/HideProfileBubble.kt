@@ -25,7 +25,7 @@ import me.singleneuron.data.PageFaultHighPerformanceFunctionCache
 import me.singleneuron.qn_kernel.data.hostInformationProvider
 import me.singleneuron.qn_kernel.tlb.ConfigTable
 import me.singleneuron.util.QQVersion
-import nil.nadph.qnotified.startup.Initiator
+import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.Utils
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier

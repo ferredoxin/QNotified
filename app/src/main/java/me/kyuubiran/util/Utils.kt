@@ -22,9 +22,9 @@ import android.content.Context
 import android.os.Looper
 import android.view.View
 import android.widget.Toast
-import nil.nadph.qnotified.startup.Initiator
-import nil.nadph.qnotified.startup.ReflexUtil.iget_object_or_null
-import nil.nadph.qnotified.startup.ReflexUtil.iput_object
+import nil.nadph.qnotified.util.Initiator
+import nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null
+import nil.nadph.qnotified.util.ReflexUtil.iput_object
 import nil.nadph.qnotified.util.Utils
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier

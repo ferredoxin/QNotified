@@ -16,13 +16,13 @@
  * along with this software.  If not, see
  * <https://www.gnu.org/licenses/>.
  */
-package nil.nadph.qnotified.startup;
+package nil.nadph.qnotified.util;
 
 import android.os.Parcelable;
 
 import com.tencent.mobileqq.app.QQAppInterface;
 
-import static nil.nadph.qnotified.startup.LogUtil.loge;
+import static nil.nadph.qnotified.util.Utils.loge;
 import static nil.nadph.qnotified.util.Utils.PACKAGE_NAME_QQ;
 
 @SuppressWarnings("rawtypes")

@@ -44,12 +44,12 @@ import dalvik.system.BaseDexClassLoader;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
-import nil.nadph.qnotified.startup.Initiator;
+import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.ui.___WindowIsTranslucent;
 import nil.nadph.qnotified.util.MainProcess;
 import nil.nadph.qnotified.util.Nullable;
 
-import static nil.nadph.qnotified.startup.ReflexUtil.iget_object_or_null;
+import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
 import static nil.nadph.qnotified.util.Utils.*;
 
 /**

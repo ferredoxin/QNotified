@@ -21,7 +21,7 @@ package nil.nadph.qnotified.util;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 
-import static nil.nadph.qnotified.startup.ReflexUtil.findField;
+import static nil.nadph.qnotified.util.ReflexUtil.findField;
 import static nil.nadph.qnotified.util.Utils.log;
 
 public class CustomMenu {

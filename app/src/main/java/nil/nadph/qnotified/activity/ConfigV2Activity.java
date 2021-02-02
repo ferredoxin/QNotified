@@ -52,7 +52,7 @@ import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.databinding.MainV2Binding;
 import nil.nadph.qnotified.lifecycle.JumpActivityEntryHook;
 import nil.nadph.qnotified.startup.HookEntry;
-import nil.nadph.qnotified.startup.Natives;
+import nil.nadph.qnotified.util.Natives;
 import nil.nadph.qnotified.util.UiThread;
 import nil.nadph.qnotified.util.Utils;
 

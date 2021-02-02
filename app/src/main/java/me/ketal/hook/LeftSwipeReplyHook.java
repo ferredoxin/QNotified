@@ -42,10 +42,10 @@ import nil.nadph.qnotified.util.Utils;
 
 import static me.ketal.util.TIMVersion.TIM_3_1_1;
 import static me.singleneuron.util.QQVersion.QQ_8_2_6;
-import static nil.nadph.qnotified.startup.Initiator._BaseChatPie;
-import static nil.nadph.qnotified.startup.Initiator._ChatMessage;
-import static nil.nadph.qnotified.startup.ReflexUtil.findMethodByTypes_1;
-import static nil.nadph.qnotified.startup.ReflexUtil.invoke_virtual_any;
+import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
+import static nil.nadph.qnotified.util.Initiator._ChatMessage;
+import static nil.nadph.qnotified.util.ReflexUtil.findMethodByTypes_1;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_any;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class LeftSwipeReplyHook extends CommonDelayableHook {

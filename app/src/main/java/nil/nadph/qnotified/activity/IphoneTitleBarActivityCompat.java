@@ -39,9 +39,9 @@ import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.CliOper;
 import nil.nadph.qnotified.util.Utils;
 
-import static nil.nadph.qnotified.startup.Initiator.load;
-import static nil.nadph.qnotified.startup.ReflexUtil.iput_object;
-import static nil.nadph.qnotified.startup.ReflexUtil.new_instance;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.ReflexUtil.iput_object;
+import static nil.nadph.qnotified.util.ReflexUtil.new_instance;
 import static nil.nadph.qnotified.util.Utils.log;
 
 @SuppressWarnings("deprecation")

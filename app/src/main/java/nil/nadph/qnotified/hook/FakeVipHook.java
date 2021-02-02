@@ -25,7 +25,7 @@ import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
 
-import static nil.nadph.qnotified.startup.Initiator.load;
+import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.log;
 
 public class FakeVipHook extends CommonDelayableHook {

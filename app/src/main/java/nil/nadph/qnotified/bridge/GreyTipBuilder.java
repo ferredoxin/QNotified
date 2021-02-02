@@ -28,8 +28,8 @@ import nil.nadph.qnotified.util.Utils;
 
 import static de.robv.android.xposed.XposedHelpers.callMethod;
 import static de.robv.android.xposed.XposedHelpers.setObjectField;
-import static nil.nadph.qnotified.startup.ReflexUtil.invoke_static_declared_ordinal_modifier;
-import static nil.nadph.qnotified.startup.ReflexUtil.invoke_virtual;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_static_declared_ordinal_modifier;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
 import static nil.nadph.qnotified.util.Utils.log;
 
 public class GreyTipBuilder implements Appendable, CharSequence {
