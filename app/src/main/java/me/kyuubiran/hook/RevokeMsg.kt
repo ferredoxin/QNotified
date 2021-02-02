@@ -19,10 +19,8 @@
 package me.kyuubiran.hook
 
 import android.os.Bundle
-import android.os.Looper
 import android.os.Parcelable
 import android.text.TextUtils
-import android.widget.Toast
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
@@ -31,8 +29,7 @@ import me.kyuubiran.util.logdt
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.bridge.ContactUtils
 import nil.nadph.qnotified.bridge.RevokeMsgInfoImpl
-import nil.nadph.qnotified.config.ConfigManager
-import nil.nadph.qnotified.hook.BaseDelayableHook
+import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.step.Step
 import nil.nadph.qnotified.util.DexKit
@@ -44,8 +41,7 @@ import java.lang.reflect.Modifier
 import java.util.*
 
 //防撤回狐狸狸版
-object RevokeMsg : BaseDelayableHook() {
-    var isInit = false
+object RevokeMsg : CommonDelayableHook("kr_revoke_msg", SyncUtils.PROC_MAIN or SyncUtils.PROC_MSF, DexDeobfStep(DexKit.C_MSG_REC_FAC), DexDeobfStep(DexKit.C_CONTACT_UTILS)) {
     var mQQMsgFacade: Any? = null
 
     //总开关 b
@@ -60,13 +56,7 @@ object RevokeMsg : BaseDelayableHook() {
     //自定义未收到消息提示文本 str
     const val kr_revoke_unreceived_msg_tips_text = "kr_revoke_unreceived_msg_tips_text"
 
-
-    override fun getPreconditions(): Array<Step> {
-        return arrayOf(DexDeobfStep(DexKit.C_MSG_REC_FAC), DexDeobfStep(DexKit.C_CONTACT_UTILS))
-    }
-
-    override fun init(): Boolean {
-        if (isInited) return true
+    override fun initOnce(): Boolean {
         return try {
             var doRevokeMsg: Method? = null
             for (m: Method in Initiator._QQMessageFacade().declaredMethods) {
@@ -97,7 +87,6 @@ object RevokeMsg : BaseDelayableHook() {
                     list.clear()
                 }
             })
-            isInit = true
             true
         } catch (t: Throwable) {
             logdt(t)
@@ -265,40 +254,6 @@ object RevokeMsg : BaseDelayableHook() {
     private fun getMessageType(msgObject: Any?): Int {
         return if (msgObject == null) -1 else Utils.iget_object_or_null(msgObject, "msgtype") as Int
     }
-
-
-    override fun isInited(): Boolean {
-        return isInit
-    }
-
-    override fun getEffectiveProc(): Int {
-        return SyncUtils.PROC_MAIN or SyncUtils.PROC_MSF
-    }
-
-    override fun isEnabled(): Boolean {
-        return try {
-            ConfigManager.getDefaultConfig().getBooleanOrFalse(kr_revoke_msg)
-        } catch (e: Exception) {
-            logdt(e)
-            false
-        }
-    }
-
-    override fun setEnabled(enabled: Boolean) {
-        try {
-            val mgr = ConfigManager.getDefaultConfig()
-            mgr.allConfig[kr_revoke_msg] = enabled
-            mgr.save()
-        } catch (e: Exception) {
-            logdt(e)
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                Utils.showToast(Utils.getApplication(), Utils.TOAST_TYPE_ERROR, e.toString() + "", Toast.LENGTH_SHORT)
-            } else {
-                SyncUtils.post { Utils.showToast(Utils.getApplication(), Utils.TOAST_TYPE_ERROR, e.toString() + "", Toast.LENGTH_SHORT) }
-            }
-        }
-    }
-
 
     private fun isShowMsgTextEnabled(): Boolean {
         return try {
