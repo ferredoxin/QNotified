@@ -16,14 +16,15 @@
  * along with this software.  If not, see
  * <https://www.gnu.org/licenses/>.
  */
-package nil.nadph.qnotified;
+package nil.nadph.qnotified.startup;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.BuildConfig;
+import nil.nadph.qnotified.R;
 
 /**
  * Xposed entry class
@@ -49,10 +50,9 @@ public class HookEntry implements IXposedHookLoadPackage {
             XposedBridge.log("package id must NOT be 0x7f, reject loading...");
             return;
         }
-        //dumpProcessInfo(lpparam.isFirstApplication);
         switch (lpparam.packageName) {
             case PACKAGE_NAME_SELF: {
-                XposedHelpers.findAndHookMethod("nil.nadph.qnotified.util.Utils", lpparam.classLoader, "getActiveModuleVersion", XC_MethodReplacement.returnConstant(Utils.QN_VERSION_NAME));
+                XposedHelpers.findAndHookMethod("nil.nadph.qnotified.util.Utils", lpparam.classLoader, "getActiveModuleVersion", XC_MethodReplacement.returnConstant(BuildConfig.VERSION_NAME));
                 break;
             }
             case PACKAGE_NAME_TIM:
@@ -69,5 +69,4 @@ public class HookEntry implements IXposedHookLoadPackage {
                 break;
         }
     }
-
 }

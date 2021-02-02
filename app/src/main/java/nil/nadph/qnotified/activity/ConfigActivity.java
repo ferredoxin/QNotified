@@ -37,7 +37,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 import me.singleneuron.util.HookStatue;
-import nil.nadph.qnotified.HookEntry;
+import nil.nadph.qnotified.startup.HookEntry;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.lifecycle.JumpActivityEntryHook;
 import nil.nadph.qnotified.util.Natives;
@@ -139,10 +139,10 @@ public class ConfigActivity extends Activity implements Runnable {
             start = e.toString();
         }
         TextView vtv = findViewById(R.id.mainTextViewVersion);
-        if (start.equals("nil.nadph.qnotified.HookLoader")) {
+        if (start.equals("nil.nadph.qnotified.startup.HookLoader")) {
             vtv.setText("动态加载");
             vtv.setTextColor(Color.BLUE);
-        } else if (start.equals("nil.nadph.qnotified.HookEntry")) {
+        } else if (start.equals("nil.nadph.qnotified.startup.HookEntry")) {
             vtv.setText("静态");
         } else {
             vtv.setText(start);

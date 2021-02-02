@@ -16,12 +16,15 @@
  * along with this software.  If not, see
  * <https://www.gnu.org/licenses/>.
  */
-package nil.nadph.qnotified.util;
+package nil.nadph.qnotified.startup;
 
 import android.content.Context;
 
 import java.net.URL;
 
+/**
+ * NOTICE: Do NOT use any androidx annotations here.
+ */
 public class HybridClassLoader extends ClassLoader {
 
     private final ClassLoader clPreload;
@@ -39,15 +42,14 @@ public class HybridClassLoader extends ClassLoader {
             return sBootClassLoader.loadClass(name);
         } catch (ClassNotFoundException ignored) {
         }
-        if (name != null && (name.startsWith("androidx.") || name.startsWith("android.support.v4.")
-                || name.startsWith("kotlin.") || name.startsWith("kotlinx."))) {
+        if (name != null && isConflictingClass(name)) {
             //Nevertheless, this will not interfere with the host application,
             //classes in host application SHOULD find with their own ClassLoader, eg Class.forName()
             //use shipped androidx and kotlin lib.
             throw new ClassNotFoundException(name);
         }
-        //The ClassLoader for XPatch is terrible, XposedBridge.class.getClassLoader() == Context.getClassLoader(),
-        //which mess up with my kotlin lib.
+        // The ClassLoader for some apk-modifying frameworks are terrible, XposedBridge.class.getClassLoader()
+        // is the sane as Context.getClassLoader(), which mess up with 3rd lib, can cause the ART to crash.
         if (clPreload != null) {
             try {
                 return clPreload.loadClass(name);
@@ -68,5 +70,16 @@ public class HybridClassLoader extends ClassLoader {
         URL ret = clPreload.getResource(name);
         if (ret != null) return ret;
         return clBase.getResource(name);
+    }
+
+    /**
+     * 把宿主和模块共有的 package 扔这里.
+     *
+     * @param name NonNull, class name
+     * @return true if conflicting
+     */
+    public static boolean isConflictingClass(String name) {
+        return name.startsWith("androidx.") || name.startsWith("android.support.v4.")
+            || name.startsWith("kotlin.") || name.startsWith("kotlinx.");
     }
 }
