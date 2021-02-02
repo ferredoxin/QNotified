@@ -16,43 +16,17 @@
  * along with this software.  If not, see
  * <https://www.gnu.org/licenses/>.
  */
-package nil.nadph.qnotified.script.params;
+package cn.lliiooll.event;
 
-public class FriendRequestParam {
-    /**
-     * 好友id
-     */
-    public long uin;
-    /**
-     * 验证消息
-     */
-    public String content;
+import bsh.EvalError;
+import cn.lliiooll.script.QNScript;
+import cn.lliiooll.script.QNScriptFactory;
 
-    public FriendRequestParam setUin(long uin) {
-        this.uin = uin;
-        return this;
-    }
-
-    public FriendRequestParam setContent(String content) {
-        this.content = content;
-        return this;
-    }
-
-    public FriendRequestParam create() {
-        return this;
-    }
-
-    /**
-     * 接受请求
-     */
-    public void accept() {
-        // to do
-    }
-
-    /**
-     * 拒绝请求
-     */
-    public void refuse() {
-        // to do
+public class QNEventBus {
+    public static void broadcast(QNBaseEvent event) throws EvalError {
+        for (QNScript script : QNScriptFactory.enables.values()) {
+            script.execute(event.getParamName(), event.doParse());
+            script.execute(event.getMethodName() + "()");
+        }
     }
 }

@@ -18,9 +18,10 @@
  */
 package nil.nadph.qnotified.script;
 
-import android.widget.CompoundButton;
-import android.widget.Toast;
+import android.widget.*;
 
+import java.io.*;
+import java.util.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,10 @@ import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Utils;
+import bsh.*;
+import cn.lliiooll.script.*;
+import nil.nadph.qnotified.config.*;
+import nil.nadph.qnotified.util.*;
 
 import static nil.nadph.qnotified.util.Utils.*;
 

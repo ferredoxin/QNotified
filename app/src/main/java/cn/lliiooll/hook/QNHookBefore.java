@@ -16,34 +16,10 @@
  * along with this software.  If not, see
  * <https://www.gnu.org/licenses/>.
  */
-package nil.nadph.qnotified.script.params;
+package cn.lliiooll.hook;
 
-public class FriendMessageParam {
-    /**
-     * 好友id
-     */
-    public String uin;
-    /**
-     * 消息内容
-     */
-    public String content;
+import de.robv.android.xposed.XC_MethodHook;
 
-    public FriendMessageParam setUin(String uin) {
-        this.uin = uin;
-        return this;
-    }
-
-    public FriendMessageParam setUin(long uin) {
-        this.uin = uin + "";
-        return this;
-    }
-
-    public FriendMessageParam setContent(String content) {
-        this.content = content;
-        return this;
-    }
-
-    public FriendMessageParam create() {
-        return this;
-    }
+public interface QNHookBefore extends QNHook {
+    void beforeHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable;
 }

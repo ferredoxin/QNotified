@@ -16,29 +16,28 @@
  * along with this software.  If not, see
  * <https://www.gnu.org/licenses/>.
  */
-package nil.nadph.qnotified.script.params;
+package cn.lliiooll.event;
 
-public class GroupJoinedParam {
-    /**
-     * 群id
-     */
-    public long uin;
-    /**
-     * 群员id
-     */
-    public long senderuin;
+import cn.lliiooll.params.*;
 
-    public GroupJoinedParam setUin(long uin) {
-        this.uin = uin;
-        return this;
+public abstract class QNBaseEvent {
+    
+    private final String method;
+    private final String param;
+    
+    public QNBaseEvent(String methodName, String paramName) {
+        method = methodName;
+        param = paramName;
     }
-
-    public GroupJoinedParam setSenderUin(long uin) {
-        this.senderuin = uin;
-        return this;
+    
+    public abstract BaseParams doParse();
+    
+    
+    public String getParamName() {
+        return param;
     }
-
-    public GroupJoinedParam create() {
-        return this;
+    
+    public String getMethodName() {
+        return method;
     }
 }
