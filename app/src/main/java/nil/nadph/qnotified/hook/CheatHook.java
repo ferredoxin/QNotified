@@ -27,6 +27,7 @@ import java.util.Random;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import me.singleneuron.util.QQVersion;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.ui.CustomDialog;
@@ -85,10 +86,10 @@ public class  CheatHook extends CommonDelayableHook {
     
             String fuckingMethod = "a";
     
-            if (Utils.getHostVersionCode() >= QQVersion.QQ_8_4_8) {
+            if (HostInformationProviderKt.getHostInformationProvider().getVersionCode() >= QQVersion.QQ_8_4_8) {
                 fuckingMethod = "sendMagicEmoticon";
             }
-            if (Utils.getHostVersionCode() >= QQVersion.QQ_8_5_0) {
+            if (HostInformationProviderKt.getHostInformationProvider().getVersionCode() >= QQVersion.QQ_8_5_0) {
                 XposedHelpers.findAndHookMethod(Class.forName("com.tencent.mobileqq.emoticonview" +
                                 ".sender.PicEmoticonInfoSender"),
                         fuckingMethod, load("com.tencent.mobileqq.app.QQAppInterface"),

@@ -35,10 +35,14 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.lifecycle.ActProxyMgr;
+import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.ui.CustomDialog;
-import nil.nadph.qnotified.util.*;
+import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.NonNull;
+import nil.nadph.qnotified.util.Nullable;
+import nil.nadph.qnotified.util.Utils;
 
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.log;
 
 public class JumpController extends CommonDelayableHook {
     private static final String qn_jmp_ctl_rules = "qn_jmp_ctl_rules";

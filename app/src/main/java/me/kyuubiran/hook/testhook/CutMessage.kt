@@ -22,13 +22,16 @@ import android.os.Looper
 import android.widget.Toast
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
-import me.kyuubiran.util.*
+import me.kyuubiran.util.LOG_TYPE_FIND_METHOD
+import me.kyuubiran.util.getObjectOrNull
+import me.kyuubiran.util.logd
 import me.singleneuron.data.MsgRecordData
+import me.singleneuron.qn_kernel.data.hostInformationProvider
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.hook.BaseDelayableHook
-import nil.nadph.qnotified.step.Step
 import nil.nadph.qnotified.util.Initiator
+import nil.nadph.qnotified.step.Step
 import nil.nadph.qnotified.util.LicenseStatus
 import nil.nadph.qnotified.util.Utils
 import java.lang.reflect.Method
@@ -95,9 +98,9 @@ object CutMessage : BaseDelayableHook() {
         } catch (e: Exception) {
             Utils.log(e)
             if (Looper.myLooper() == Looper.getMainLooper()) {
-                Utils.showToast(Utils.getApplication(), Utils.TOAST_TYPE_ERROR, e.toString() + "", Toast.LENGTH_SHORT)
+                Utils.showToast(hostInformationProvider.applicationContext, Utils.TOAST_TYPE_ERROR, e.toString() + "", Toast.LENGTH_SHORT)
             } else {
-                SyncUtils.post { Utils.showToast(Utils.getApplication(), Utils.TOAST_TYPE_ERROR, e.toString() + "", Toast.LENGTH_SHORT) }
+                SyncUtils.post { Utils.showToast(hostInformationProvider.applicationContext, Utils.TOAST_TYPE_ERROR, e.toString() + "", Toast.LENGTH_SHORT) }
             }
         }
     }

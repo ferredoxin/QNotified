@@ -13,19 +13,18 @@ android {
         targetSdkVersion 29
         versionCode 42
         versionName "0.8.11" + (getBuildIdSuffix.call() as String) + (getGitHeadRefsSuffix.call() as String)
-        //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled false
         ndk {
             abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
             //drop "mips" , 'armeabi',
         }
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
     }
     buildTypes {
-//        debug {
-//            shrinkResources false
-//            minifyEnabled false
-//            //proguardFiles 'proguard-rules.pro'
-//        }
         release {
             shrinkResources true
             minifyEnabled true

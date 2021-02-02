@@ -36,10 +36,6 @@ object HookStatue {
     const val TAICHI_NOT_ACTIVE = 1
     const val TAICHI_ACTIVE = 2
 
-    fun isEnabled(): Boolean {
-        return Utils.getActiveModuleVersion() != null
-    }
-
     fun Context.getStatue(useSu: Boolean): Statue {
         val isInstall = IsInstall(this)
         val getMagiskModule: BaseGetMagiskModule = if (useSu) {
@@ -48,7 +44,7 @@ object HookStatue {
             BaseGetMagiskModule()
         }
         val isExp = isExpModuleActive(this)
-        return if (isEnabled()) {
+        return if (Utils.isModuleEnable()) {
             if (edxp) Statue.Edxp_Active else if (isExp == TAICHI_ACTIVE) Statue.taichi_magisk_active else if (isInstall.isEdxpManagerInstall || getMagiskModule.edxpModule) Statue.Edxp_Active else if (isInstall.isXposedInstall) Statue.xposed_active else Statue.xposed_active
         } else {
             if (isExp == TAICHI_ACTIVE) {

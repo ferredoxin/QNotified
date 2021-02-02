@@ -18,24 +18,19 @@
  */
 package nil.nadph.qnotified.hook;
 
-import android.os.Looper;
-import android.widget.Toast;
-
 import java.lang.reflect.Method;
 import java.util.List;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.step.DexDeobfStep;
-import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.util.Initiator._EmoAddedAuthCallback;
 import static nil.nadph.qnotified.util.Initiator._FavEmoRoamingHandler;
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.ReflexUtil.iput_object;
+import static nil.nadph.qnotified.util.ReflexUtil.sput_object;
+import static nil.nadph.qnotified.util.Utils.log;
 
 public class FavMoreEmo extends CommonDelayableHook {
     private static final FavMoreEmo self = new FavMoreEmo();

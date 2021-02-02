@@ -30,11 +30,11 @@ import java.lang.reflect.Modifier;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.dialog.RikkaBaseApkFormatDialog;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.util.Utils.log;
 
@@ -67,7 +67,7 @@ public class BaseApk extends CommonDelayableHook {
                                 Field localFile = XposedHelpers.findField(_ItemManagerClz, "LocalFile");
                                 Field fileName = XposedHelpers.findField(_ItemManagerClz, "FileName");
                                 if (fileName.get(item).equals("base.apk")) {
-                                    PackageManager packageManager = Utils.getApplication().getPackageManager();
+                                    PackageManager packageManager = HostInformationProviderKt.getHostInformationProvider().getApplicationContext().getPackageManager();
                                     PackageInfo packageArchiveInfo = packageManager.getPackageArchiveInfo((String) localFile.get(item), PackageManager.GET_ACTIVITIES);
                                     ApplicationInfo applicationInfo = packageArchiveInfo.applicationInfo;
                                     applicationInfo.sourceDir = (String) localFile.get(item);
@@ -78,7 +78,7 @@ public class BaseApk extends CommonDelayableHook {
                                                 .replace("%n", applicationInfo.loadLabel(packageManager).toString())
                                                 .replace("%p", applicationInfo.packageName)
                                                 .replace("%v", packageArchiveInfo.versionName)
-                                                .replace("%c", String.valueOf(Utils.getHostVersionCode()));
+                                                .replace("%c", String.valueOf(HostInformationProviderKt.getHostInformationProvider().getApplicationContext()));
                                         fileName.set(item, result);
                                     }
                                 }

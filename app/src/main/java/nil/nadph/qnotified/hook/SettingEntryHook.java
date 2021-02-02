@@ -30,14 +30,19 @@ import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.activity.EulaActivity;
-import nil.nadph.qnotified.lifecycle.ActProxyMgr;
+import nil.nadph.qnotified.activity.SettingsActivity;
 import nil.nadph.qnotified.step.DexDeobfStep;
-import nil.nadph.qnotified.util.*;
+import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.NonNull;
+import nil.nadph.qnotified.util.Utils;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.ReflexUtil.*;
+import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
+import static nil.nadph.qnotified.util.Utils.log;
 
 public class SettingEntryHook extends CommonDelayableHook {
     public static final int R_ID_SETTING_ENTRY = 0x300AFF71;
@@ -62,9 +67,9 @@ public class SettingEntryHook extends CommonDelayableHook {
                     try {
                         Class<?> itemClass = null;
                         View itemRef = null;
-                        itemRef = (View) Utils.iget_object_or_null(param.thisObject, "a", load("com/tencent/mobileqq/widget/FormSimpleItem"));
+                        itemRef = (View) iget_object_or_null(param.thisObject, "a", load("com/tencent/mobileqq/widget/FormSimpleItem"));
                         if (itemRef == null && (itemClass = load("com/tencent/mobileqq/widget/FormCommonSingleLineItem")) != null)
-                            itemRef = (View) Utils.iget_object_or_null(param.thisObject, "a", itemClass);
+                            itemRef = (View) iget_object_or_null(param.thisObject, "a", itemClass);
                         if (itemRef == null) {
                             Class<?> clz = load("com/tencent/mobileqq/widget/FormCommonSingleLineItem");
                             if (clz == null)
@@ -114,7 +119,7 @@ public class SettingEntryHook extends CommonDelayableHook {
                                     Utils.showToast((Context) param.thisObject, TOAST_TYPE_ERROR, "无法使用本模块因为您已被拉黑", Toast.LENGTH_LONG);
                                 } else {
                                     if (LicenseStatus.hasUserAcceptEula()) {
-                                        MainHook.startProxyActivity((Context) param.thisObject, ActProxyMgr.ACTION_ADV_SETTINGS);
+                                        MainHook.startProxyActivity((Context) param.thisObject, SettingsActivity.class);
                                     } else {
                                         MainHook.startProxyActivity((Context) param.thisObject, EulaActivity.class);
                                         if (param.thisObject instanceof Activity) {

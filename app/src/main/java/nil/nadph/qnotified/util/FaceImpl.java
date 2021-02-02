@@ -33,6 +33,7 @@ import java.util.HashMap;
 import nil.nadph.qnotified.ui.ResUtils;
 
 import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_any;
 
 public class FaceImpl implements InvocationHandler {
 
@@ -62,7 +63,7 @@ public class FaceImpl implements InvocationHandler {
             }
         }
         mFaceDecoder = class_FaceDecoder.getConstructor(load("com/tencent/common/app/AppInterface")).newInstance(qqAppInterface);
-        Utils.invoke_virtual_any(mFaceDecoder, createListener(), clz_DecodeTaskCompletionListener);
+        invoke_virtual_any(mFaceDecoder, createListener(), clz_DecodeTaskCompletionListener);
         cachedUserFace = new HashMap<>();
         cachedTroopFace = new HashMap<>();
         registeredView = new HashMap<>();
@@ -139,7 +140,7 @@ public class FaceImpl implements InvocationHandler {
 
     public boolean requestDecodeFace(int type, String uin) {
         try {
-            return (boolean) Utils.invoke_virtual_any(mFaceDecoder, uin, type, true, (byte) 0, String.class, int.class, boolean.class, byte.class, boolean.class);
+            return (boolean) invoke_virtual_any(mFaceDecoder, uin, type, true, (byte) 0, String.class, int.class, boolean.class, byte.class, boolean.class);
         } catch (Exception e) {
             Utils.log(e);
             return false;

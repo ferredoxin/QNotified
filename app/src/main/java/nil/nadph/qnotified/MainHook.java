@@ -21,29 +21,37 @@ package nil.nadph.qnotified;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.*;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import java.lang.reflect.*;
+import com.rymmmmm.hook.CustomSplash;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import me.kyuubiran.hook.RemoveCameraButton;
 import me.kyuubiran.hook.RemoveRedDot;
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.hook.*;
-import com.rymmmmm.hook.CustomSplash;
-import nil.nadph.qnotified.lifecycle.ActProxyMgr;
 import nil.nadph.qnotified.lifecycle.JumpActivityEntryHook;
 import nil.nadph.qnotified.lifecycle.Parasitics;
+import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.util.*;
+import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.MainProcess;
+import nil.nadph.qnotified.util.Utils;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static nil.nadph.qnotified.util.Initiator._StartupDirector;
 import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
+import static nil.nadph.qnotified.util.ReflexUtil.new_instance;
 import static nil.nadph.qnotified.util.Utils.*;
 
 /*TitleKit:Lcom/tencent/mobileqq/widget/navbar/NavBarCommon*/
@@ -83,13 +91,6 @@ public class MainHook {
             log(e);
             return null;
         }
-    }
-
-    /**
-     * @deprecated Use {@link Activity#startActivity(Intent)} directly instead.
-     */
-    public static void startProxyActivity(Context ctx, int action) {
-        ctx.startActivity(new Intent(ctx, ActProxyMgr.getActivityByAction(action)));
     }
 
     /**
@@ -251,7 +252,7 @@ public class MainHook {
                     if (dir == null) dir = iget_object_or_null(param.thisObject, "a", director);
                     if (dir == null) dir = getFirstNSFByType(param.thisObject, director);
                     if (SyncUtils.isMainProcess()) {
-                        ResUtils.loadThemeByArsc(getApplication(), false);
+                        ResUtils.loadThemeByArsc(HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), false);
                     }
                     InjectDelayableHooks.step(dir);
                     onAppStartupForMain();

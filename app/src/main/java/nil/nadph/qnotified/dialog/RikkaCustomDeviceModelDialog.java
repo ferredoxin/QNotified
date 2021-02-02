@@ -25,17 +25,15 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
+
+import com.rymmmmm.hook.CustomMsgTimeFormat;
 
 import java.io.IOException;
 
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigManager;
-import com.rymmmmm.hook.CustomMsgTimeFormat;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.util.NonNull;
 import nil.nadph.qnotified.util.Nullable;
@@ -164,7 +162,7 @@ public class RikkaCustomDeviceModelDialog extends RikkaDialog.RikkaConfigItem {
                 }
                 try {
                     cfg.save();
-                    Utils.showToast(ctx, Utils.TOAST_TYPE_SUCCESS, "重启" + Utils.getHostAppName() + "生效!", Toast.LENGTH_SHORT);
+                    Utils.showToast(ctx, Utils.TOAST_TYPE_SUCCESS, "重启" + HostInformationProviderKt.getHostInformationProvider().getHostName() + "生效!", Toast.LENGTH_SHORT);
                 } catch (IOException e) {
                     log(e);
                 }
@@ -189,7 +187,7 @@ public class RikkaCustomDeviceModelDialog extends RikkaDialog.RikkaConfigItem {
 
     @Override
     public String getName() {
-        return "自定义机型[需要重启" + Utils.getHostAppName() + "]";
+        return "自定义机型[需要重启" + HostInformationProviderKt.getHostInformationProvider().getHostName() + "]";
     }
 
     @Nullable

@@ -23,6 +23,7 @@ import android.os.Parcelable;
 import com.tencent.mobileqq.app.QQAppInterface;
 
 import static nil.nadph.qnotified.util.Utils.loge;
+import static nil.nadph.qnotified.util.Utils.PACKAGE_NAME_QQ;
 
 @SuppressWarnings("rawtypes")
 public class Initiator {
@@ -48,7 +49,6 @@ public class Initiator {
         return sHostClassLoader;
     }
 
-    @Nullable
     public static Class<?> load(String className) {
         if (sPluginParentClassLoader == null || className == null || className.isEmpty()) {
             return null;
@@ -60,7 +60,7 @@ public class Initiator {
             else className = className.substring(0, className.length() - 1);
         }
         if (className.startsWith(".")) {
-            className = Utils.PACKAGE_NAME_QQ + className;
+            className = PACKAGE_NAME_QQ + className;
         }
         try {
             return sPluginParentClassLoader.loadClass(className);
@@ -489,7 +489,6 @@ public class Initiator {
         return clz;
     }
 
-    @Nullable
     public static Class _EmoAddedAuthCallback() {
         try {
             Class clz = load("com/tencent/mobileqq/emosm/favroaming/EmoAddedAuthCallback");
@@ -513,7 +512,6 @@ public class Initiator {
         }
     }
 
-    @Nullable
     public static Class _C2CMessageProcessor() {
         Class<?> ret, cref;
         for (String clzName : new String[]{"com/tencent/mobileqq/app/message/C2CMessageProcessor",

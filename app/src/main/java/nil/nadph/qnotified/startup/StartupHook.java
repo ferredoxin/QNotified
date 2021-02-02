@@ -29,7 +29,6 @@ import java.lang.reflect.Method;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
-import nil.nadph.qnotified.util.Initiator;
 
 /**
  * Startup hook for QQ/TIM
@@ -127,7 +126,6 @@ public class StartupHook {
         }
         System.setProperty(QN_FULL_TAG, "true");
         injectClassLoader(classLoader);
-        Initiator.init(classLoader);
         StartupRoutine.execPostStartupInit(ctx, step, lpwReserved, bReserved);
         sec_static_stage_inited = true;
         deleteDirIfNecessaryNoThrow(ctx);

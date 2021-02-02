@@ -30,7 +30,7 @@ import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
 
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.log;
 
 public class $endGiftHook extends CommonDelayableHook {
     private static final $endGiftHook self = new $endGiftHook();

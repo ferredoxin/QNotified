@@ -23,6 +23,8 @@ import android.os.Looper
 import android.view.View
 import android.widget.Toast
 import nil.nadph.qnotified.util.Initiator
+import nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null
+import nil.nadph.qnotified.util.ReflexUtil.iput_object
 import nil.nadph.qnotified.util.Utils
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
@@ -45,11 +47,11 @@ fun View.setViewZeroSize() {
 }
 
 fun getObjectOrNull(obj: Any?, objName: String, clz: Class<*>? = null): Any? {
-    return Utils.iget_object_or_null(obj, objName, clz)
+    return iget_object_or_null(obj, objName, clz)
 }
 
 fun putObject(obj: Any?, name: String, value: Any?, type: Class<*>? = null) {
-    Utils.iput_object(obj, name, type, value)
+    iput_object(obj, name, type, value)
 }
 
 fun loadClass(clzName: String): Class<*> {

@@ -32,6 +32,7 @@ import android.widget.*;
 
 import androidx.core.view.ViewCompat;
 
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
@@ -140,7 +141,7 @@ public class ViewBuilder {
                     ConfigManager mgr = ConfigManager.getDefaultConfig();
                     mgr.getAllConfig().put(key, isChecked);
                     mgr.save();
-                    Utils.showToastShort(buttonView.getContext(), "重启" + Utils.getHostAppName() + "生效");
+                    Utils.showToastShort(buttonView.getContext(), "重启" + HostInformationProviderKt.getHostInformationProvider().getHostName() + "生效");
                 } catch (Throwable e) {
                     Utils.log(e);
                     Utils.showToastShort(buttonView.getContext(), e.toString());
@@ -179,7 +180,7 @@ public class ViewBuilder {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 try {
                     item.setEnabled(isChecked);
-                    Utils.showToastShort(buttonView.getContext(), "重启" + Utils.getHostAppName() + "生效");
+                    Utils.showToastShort(buttonView.getContext(), "重启" + HostInformationProviderKt.getHostInformationProvider().getHostName() + "生效");
                 } catch (Throwable e) {
                     Utils.log(e);
                     Utils.showToastShort(buttonView.getContext(), e.toString());
@@ -540,15 +541,6 @@ public class ViewBuilder {
         tv.setPadding(m, m / 5, m / 5, m / 5);
         ll.addView(tv);
         return ll;
-    }
-
-    public static View.OnClickListener clickToProxyActAction(final int action) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MainHook.startProxyActivity(v.getContext(), action);
-            }
-        };
     }
 
     public static View.OnClickListener clickToProxyActAction(final Class<?> clz) {

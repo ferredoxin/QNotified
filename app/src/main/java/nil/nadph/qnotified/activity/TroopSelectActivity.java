@@ -20,6 +20,7 @@ package nil.nadph.qnotified.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -35,6 +36,8 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
 
 import com.tencent.widget.XListView;
@@ -44,6 +47,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.R;
@@ -51,17 +55,21 @@ import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.FaceImpl;
+import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
 import static android.view.View.GONE;
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.lifecycle.ActProxyMgr.*;
+import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
 import static nil.nadph.qnotified.util.Utils.*;
 
 
 @SuppressLint("Registered")
 public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
+
+    private static final String TRP_SELECT_EXFMGR_KEY_NAME = "TRP_SELECT_EXFMGR_KEY_NAME";
+    private static final String TRP_SELECT_TITLE = "TRP_SELECT_TITLE";
 
     private static final int R_ID_TRP_LAYOUT = 0x300AFF30;
     private static final int R_ID_TRP_TITLE = 0x300AFF31;
@@ -97,11 +105,12 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
             return TroopSelectActivity.this.getView(position, convertView, parent);
         }
     };
-    private int mActionInt;
     private FaceImpl face;
     private EditText search;
     private TextView rightBtn, cancel, reverse, selectAll;
     private HashSet<String> muted;
+
+    String targetDataSaveKey, lpwTitle;
 
     public static ArrayList<TroopInfo> getTroopInfoList() throws Exception {
         Object mTroopManager = getTroopManager();
@@ -203,18 +212,8 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
             } else ret = sb.substring(1);
             try {
                 ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
-                if (mActionInt == ACTION_MUTE_AT_ALL) {
-                    cfg.putString(ConfigItems.qn_muted_at_all, ret);
-                    cfg.save();
-                }
-                if (mActionInt == ACTION_MUTE_RED_PACKET) {
-                    cfg.putString(ConfigItems.qn_muted_red_packet, ret);
-                    cfg.save();
-                }
-                if (mActionInt == ACTION_CHAT_TAIL_TROOPS_ACTIVITY) {
-                    cfg.putString(ConfigItems.qn_chat_tail_troops, ret);
-                    cfg.save();
-                }
+                cfg.putString(targetDataSaveKey, ret);
+                cfg.save();
                 this.finish();
             } catch (Exception e) {
                 try {
@@ -290,10 +289,15 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
     @Override
     public boolean doOnCreate(Bundle savedInstanceState) {
         super.doOnCreate(savedInstanceState);
-        mActionInt = getIntent().getIntExtra(ACTIVITY_PROXY_ACTION, -1);
-        if (mActionInt == -1) {
+        targetDataSaveKey = getIntent().getStringExtra(TRP_SELECT_EXFMGR_KEY_NAME);
+        if (targetDataSaveKey == null) {
+            Toasts.error(this, "TRP_SELECT_EXFMGR_KEY_NAME is null!");
             finish();
             return true;
+        }
+        lpwTitle = getIntent().getStringExtra(TRP_SELECT_TITLE);
+        if (lpwTitle == null) {
+            lpwTitle = "选择群";
         }
         try {
             face = FaceImpl.getInstance();
@@ -317,7 +321,7 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
         search.setId(R_ID_TRP_SEARCH_EDIT);
         search.addTextChangedListener(this);
         search.setTextColor(cTitle);
-        ViewCompat.setBackground(search,null);
+        ViewCompat.setBackground(search, null);
         LinearLayout.LayoutParams btnlp = new LinearLayout.LayoutParams(WRAP_CONTENT, bar_hi);
         LinearLayout.LayoutParams searchlp = new LinearLayout.LayoutParams(WRAP_CONTENT, bar_hi);
         searchlp.weight = 1;
@@ -325,19 +329,19 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
         reverse.setText("反选");
         reverse.setId(R_ID_TRP_REVERSE);
         reverse.setTextColor(cTitle);
-        ViewCompat.setBackground(reverse,null);
+        ViewCompat.setBackground(reverse, null);
         reverse.setOnClickListener(this);
         selectAll = new Button(this);
         selectAll.setText("全选");
         selectAll.setId(R_ID_TRP_SELECT_ALL);
         selectAll.setTextColor(cTitle);
-        ViewCompat.setBackground(selectAll,null);
+        ViewCompat.setBackground(selectAll, null);
         selectAll.setOnClickListener(this);
         cancel = new Button(this);
         cancel.setText("取消");
         cancel.setTextColor(cTitle);
         cancel.setId(R_ID_TRP_CANCEL);
-        ViewCompat.setBackground(cancel,null);
+        ViewCompat.setBackground(cancel, null);
         cancel.setOnClickListener(this);
         cancel.setVisibility(GONE);
         bar.addView(search, searchlp);
@@ -364,14 +368,7 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
         f.addView(sdlv, new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         main.addView(f, new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         this.setContentView(main);
-        String title = "Fatal error!";
-        if (mActionInt == ACTION_MUTE_AT_ALL)
-            title = "屏蔽@全体成员";
-        else if (mActionInt == ACTION_MUTE_RED_PACKET)
-            title = "屏蔽群红包";
-        else if (mActionInt == ACTION_CHAT_TAIL_TROOPS_ACTIVITY)
-            title = "选择小尾巴生效群";
-        setTitle(title);
+        setTitle(lpwTitle);
         rightBtn = (TextView) getRightTextView();
         rightBtn.setVisibility(View.VISIBLE);
         rightBtn.setText("完成");
@@ -381,12 +378,7 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
         sdlv.setAdapter(mAdapter);
         muted = new HashSet<>();
         String list = null;
-        if (mActionInt == ACTION_MUTE_AT_ALL)
-            list = ExfriendManager.getCurrent().getConfig().getString(ConfigItems.qn_muted_at_all);
-        if (mActionInt == ACTION_MUTE_RED_PACKET)
-            list = ExfriendManager.getCurrent().getConfig().getString(ConfigItems.qn_muted_red_packet);
-        if (mActionInt == ACTION_CHAT_TAIL_TROOPS_ACTIVITY)
-            list = ExfriendManager.getCurrent().getConfig().getString(ConfigItems.qn_chat_tail_troops);
+        list = ExfriendManager.getCurrent().getConfig().getString(targetDataSaveKey);
         if (list != null) {
             for (String s : list.split(",")) {
                 if (s.length() > 4) {
@@ -408,14 +400,14 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
         llayout.setGravity(Gravity.CENTER_VERTICAL);
         llayout.setOrientation(LinearLayout.HORIZONTAL);
         llayout.setPadding(std_mg, std_mg / 2, 0, std_mg / 2);
-        ViewCompat.setBackground(llayout,ResUtils.getListItemBackground());
+        ViewCompat.setBackground(llayout, ResUtils.getListItemBackground());
         llayout.setOnClickListener(this);
         llayout.setId(R_ID_TRP_LAYOUT);
         CheckBox checkBox = new CheckBox(this);
         checkBox.setId(R_ID_TRP_CHECKBOX);
         checkBox.setOnCheckedChangeListener(this);
         checkBox.setButtonDrawable(null);
-        ViewCompat.setBackground(checkBox,ResUtils.getCheckBoxBackground());
+        ViewCompat.setBackground(checkBox, ResUtils.getCheckBoxBackground());
         LinearLayout.LayoutParams imglp = new LinearLayout.LayoutParams(Utils.dip2px(this, 50), Utils.dip2px(this, 50));
         imglp.setMargins(tmp = Utils.dip2px(this, 12), tmp / 2, tmp / 2, tmp / 2);
         ImageView imgview = new ImageView(this);
@@ -519,5 +511,19 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
             TroopInfo t = (TroopInfo) o;
             return t.hit - hit;
         }
+    }
+
+    public static void startToSelectTroopsAndSaveToExfMgr(@NonNull Context ctx, @NonNull String keyName) {
+        startToSelectTroopsAndSaveToExfMgr(ctx, keyName, null);
+    }
+
+    public static void startToSelectTroopsAndSaveToExfMgr(@NonNull Context ctx, @NonNull String keyName, @Nullable String title) {
+        Objects.requireNonNull(keyName, "keyName == null");
+        Intent intent = new Intent(ctx, TroopSelectActivity.class);
+        intent.putExtra(TRP_SELECT_EXFMGR_KEY_NAME, keyName);
+        if (title != null) {
+            intent.putExtra(TRP_SELECT_TITLE, title);
+        }
+        ctx.startActivity(intent);
     }
 }

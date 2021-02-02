@@ -23,9 +23,9 @@ import de.robv.android.xposed.XposedBridge
 import me.singleneuron.base.adapter.BaseDelayableHookAdapter
 import me.singleneuron.hook.decorator.SimpleCheckIn
 import me.singleneuron.hook.decorator.SimpleReceiptMessage
+import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.util.DexKit
-import nil.nadph.qnotified.util.Initiator
 import java.lang.reflect.Method
 
 object ItemBuilderFactoryHook : BaseDelayableHookAdapter(cfgName = "itemBuilderFactoryHook",cond = arrayOf(DexDeobfStep(DexKit.C_ITEM_BUILDER_FAC))) {

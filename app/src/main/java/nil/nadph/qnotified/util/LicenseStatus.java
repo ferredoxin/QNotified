@@ -28,6 +28,7 @@ import nil.nadph.qnotified.chiral.Molecule;
 import nil.nadph.qnotified.config.ConfigManager;
 
 import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.showErrorToastAnywhere;
 
 public class LicenseStatus {
     public static final String qn_eula_status = "qh_eula_status";//typo, ignore it
@@ -47,7 +48,7 @@ public class LicenseStatus {
             ConfigManager.getDefaultConfig().save();
         } catch (IOException e) {
             log(e);
-            Utils.showErrorToastAnywhere(e.toString());
+            showErrorToastAnywhere(e.toString());
         }
     }
 
@@ -100,7 +101,7 @@ public class LicenseStatus {
             cfg.save();
         } catch (IOException e) {
             log(e);
-            Utils.showErrorToastAnywhere(e.toString());
+            showErrorToastAnywhere(e.toString());
         }
     }
 
@@ -119,7 +120,7 @@ public class LicenseStatus {
             cfg.save();
         } catch (IOException e) {
             log(e);
-            Utils.showErrorToastAnywhere(e.toString());
+            showErrorToastAnywhere(e.toString());
         }
     }
 

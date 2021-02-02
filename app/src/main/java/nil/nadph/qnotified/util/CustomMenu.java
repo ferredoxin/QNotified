@@ -21,6 +21,7 @@ package nil.nadph.qnotified.util;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 
+import static nil.nadph.qnotified.util.ReflexUtil.findField;
 import static nil.nadph.qnotified.util.Utils.log;
 
 public class CustomMenu {
@@ -34,8 +35,8 @@ public class CustomMenu {
                 //no direct constructor, reflex
                 Object item = createItem(clazz, id, title);
                 Field f;
-                f = Utils.findField(clazz, int.class, "b");
-                if (f == null) f = Utils.findField(clazz, int.class, "icon");
+                f = findField(clazz, int.class, "b");
+                if (f == null) f = findField(clazz, int.class, "icon");
                 f.setAccessible(true);
                 f.set(item, icon);
                 return item;
@@ -57,12 +58,12 @@ public class CustomMenu {
             }
             item = clazz.newInstance();
             Field f;
-            f = Utils.findField(clazz, int.class, "id");
-            if (f == null) f = Utils.findField(clazz, int.class, "a");
+            f = findField(clazz, int.class, "id");
+            if (f == null) f = findField(clazz, int.class, "a");
             f.setAccessible(true);
             f.set(item, id);
-            f = Utils.findField(clazz, String.class, "title");
-            if (f == null) f = Utils.findField(clazz, String.class, "a");
+            f = findField(clazz, String.class, "title");
+            if (f == null) f = findField(clazz, String.class, "a");
             f.setAccessible(true);
             f.set(item, title);
             return item;

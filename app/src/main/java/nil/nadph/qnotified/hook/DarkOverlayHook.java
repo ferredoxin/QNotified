@@ -26,7 +26,9 @@ import java.lang.reflect.Method;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.*;
@@ -88,7 +90,7 @@ public class DarkOverlayHook extends CommonDelayableHook {
             String fieldName = null;
             ConfigManager cache = ConfigManager.getCache();
             int lastVersion = cache.getIntOrDefault(cache_night_mask_field_version_code, 0);
-            int version = Utils.getHostVersionCode32();
+            int version = HostInformationProviderKt.getHostInformationProvider().getVersionCode32();
             if (version == lastVersion) {
                 String name = cache.getString(cache_night_mask_field);
                 if (name != null && name.length() > 0) {
@@ -135,7 +137,7 @@ public class DarkOverlayHook extends CommonDelayableHook {
             try {
                 ConfigManager cache = ConfigManager.getCache();
                 int lastVersion = cache.getIntOrDefault(cache_night_mask_field_version_code, 0);
-                if (getHostVersionCode32() != lastVersion) {
+                if (HostInformationProviderKt.getHostInformationProvider().getVersionCode32() != lastVersion) {
                     return false;
                 }
                 String name = cache.getString(cache_night_mask_field);

@@ -19,6 +19,7 @@
 package nil.nadph.qnotified.hook;
 
 import de.robv.android.xposed.XC_MethodHook;
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import me.singleneuron.qn_kernel.tlb.ConfigTable;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.util.LicenseStatus;
@@ -27,7 +28,7 @@ import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static me.ketal.util.TIMVersion.TIM_3_1_1;
 import static me.singleneuron.util.QQVersion.QQ_8_1_3;
 import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.log;
 
 public class ReplyNoAtHook extends CommonDelayableHook {
     private static final ReplyNoAtHook self = new ReplyNoAtHook();
@@ -74,8 +75,8 @@ public class ReplyNoAtHook extends CommonDelayableHook {
 
     @Override
     public boolean isValid() {
-        if (IS_TIM && getHostVersionCode() >= TIM_3_1_1)
+        if (HostInformationProviderKt.getHostInformationProvider().isTim() && HostInformationProviderKt.getHostInformationProvider().getVersionCode() >= TIM_3_1_1)
             return true;
-        else return !IS_TIM && getHostVersionCode() >= QQ_8_1_3;
+        else return !HostInformationProviderKt.getHostInformationProvider().isTim() && HostInformationProviderKt.getHostInformationProvider().getVersionCode() >= QQ_8_1_3;
     }
 }

@@ -42,6 +42,7 @@ import static de.robv.android.xposed.XposedHelpers.callMethod;
 import static de.robv.android.xposed.XposedHelpers.setObjectField;
 import static nil.nadph.qnotified.util.Initiator._C2CMessageProcessor;
 import static nil.nadph.qnotified.util.Initiator._QQMessageFacade;
+import static nil.nadph.qnotified.util.ReflexUtil.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 /**

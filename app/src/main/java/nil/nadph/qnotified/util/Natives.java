@@ -26,6 +26,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
+import nil.nadph.qnotified.BuildConfig;
+
 public class Natives {
     public static final int RTLD_LAZY = 0x00001;    /* Lazy function call binding.  */
     public static final int RTLD_NOW = 0x00002;    /* Immediate function call binding.  */
@@ -104,7 +106,7 @@ public class Natives {
         } catch (UnsatisfiedLinkError ignored) {
         }
         String abi = Build.CPU_ABI;
-        String soName = "libnatives_" + abi + "_" + Utils.QN_VERSION_NAME + ".so";
+        String soName = "libnatives_" + abi + "_" + BuildConfig.VERSION_NAME + ".so";
         File dir = new File(ctx.getFilesDir(), "qn_dyn_lib");
         if (!dir.isDirectory()) {
             if (dir.isFile()) {

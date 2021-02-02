@@ -46,6 +46,7 @@ import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ViewBuilder;
 
+import static nil.nadph.qnotified.util.DateTimeUtil.getRelTimeStrSec;
 import static nil.nadph.qnotified.util.Utils.log;
 
 public class UpdateCheck implements View.OnClickListener, Runnable {
@@ -182,7 +183,7 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
             String md5 = (String) ver.__("fingerprint")._$();
             String download_url = (String) ver.__("download_url")._$();
             long time = iso8601ToTimestampMs((String) ver.__("uploaded_at")._$());
-            String date = Utils.getRelTimeStrSec(time / 1000L);
+            String date = getRelTimeStrSec(time / 1000L);
 
             SpannableString tmp = new SpannableString(vn + " (" + vc + ")");
             tmp.setSpan(new RelativeSizeSpan(1.8f), 0, tmp.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

@@ -28,8 +28,8 @@ import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.Utils;
 
+import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
 import static nil.nadph.qnotified.util.Utils.log;
 
 //回赞界面一键20赞
@@ -56,7 +56,7 @@ public class OneTapTwentyLikes extends CommonDelayableHook {
                             if (!isEnabled()) return;
                             View view = (View) param.args[0];
                             Object tag = view.getTag();
-                            Object likeClickListener = Utils.iget_object_or_null(param.thisObject, "a", Initiator._VoteHelper());
+                            Object likeClickListener = iget_object_or_null(param.thisObject, "a", Initiator._VoteHelper());
                             Method onClick = likeClickListener.getClass().getDeclaredMethod("a", tag.getClass(), ImageView.class);
                             for (int i = 0; i < 20; i++) {
                                 onClick.invoke(likeClickListener, tag, (ImageView) view);

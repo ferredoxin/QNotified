@@ -26,13 +26,14 @@ import java.lang.reflect.Field;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.bridge.AIOUtilsImpl;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.util.Initiator._PicItemBuilder;
+import static nil.nadph.qnotified.util.ReflexUtil.findField;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class EmoPicHook extends CommonDelayableHook {
@@ -53,7 +54,7 @@ public class EmoPicHook extends CommonDelayableHook {
             boolean canInit = checkPreconditions();
             if (!canInit && isEnabled()) {
                 if (Looper.myLooper() != null) {
-                    showToast(getApplication(), TOAST_TYPE_ERROR, "QNotified:表情转图片功能初始化错误", Toast.LENGTH_LONG);
+                    showToast(HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), TOAST_TYPE_ERROR, "QNotified:表情转图片功能初始化错误", Toast.LENGTH_LONG);
                 }
             }
             if (!canInit) return false;
@@ -70,18 +71,18 @@ public class EmoPicHook extends CommonDelayableHook {
                     Object chatMsg = AIOUtilsImpl.getChatMessage((View) param.args[0]);
                     if (chatMsg == null) return;
                     if (f_picExtraData == null) {
-                        f_picExtraData = Utils.findField(chatMsg.getClass(), null, "picExtraData");
+                        f_picExtraData = findField(chatMsg.getClass(), null, "picExtraData");
                         f_picExtraData.setAccessible(true);
                     }
                     Object picMessageExtraData = f_picExtraData.get(chatMsg);
                     if (f_imageType == null) {
-                        f_imageType = Utils.findField(chatMsg.getClass(), null, "imageType");
+                        f_imageType = findField(chatMsg.getClass(), null, "imageType");
                         f_imageType.setAccessible(true);
                     }
                     f_imageType.setInt(chatMsg, 0);
                     if (picMessageExtraData != null) {
                         if (f_imageBizType == null) {
-                            f_imageBizType = Utils.findField(picMessageExtraData.getClass(), null, "imageBizType");
+                            f_imageBizType = findField(picMessageExtraData.getClass(), null, "imageBizType");
                             f_imageBizType.setAccessible(true);
                         }
                         f_imageBizType.setInt(picMessageExtraData, 0);

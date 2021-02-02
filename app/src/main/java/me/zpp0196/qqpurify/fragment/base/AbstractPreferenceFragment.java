@@ -3,8 +3,14 @@ package me.zpp0196.qqpurify.fragment.base;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Toast;
+
 import androidx.fragment.app.Fragment;
 import androidx.preference.*;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import me.zpp0196.qqpurify.activity.MainActivity;
 import me.zpp0196.qqpurify.hook.P2CUtils;
 import me.zpp0196.qqpurify.utils.Constants;
@@ -15,9 +21,6 @@ import nil.nadph.qnotified.config.SwitchConfigItem;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.ui.ViewBuilder;
 import nil.nadph.qnotified.util.Utils;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by zpp0196 on 2019/2/9.
@@ -232,7 +235,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
             }
             _item.sync();
             if (restartRequired) {
-                Utils.showToastShort(mActivity, "重启" + Utils.getHostAppName() + "生效");
+                Utils.showToastShort(mActivity, "重启" + HostInformationProviderKt.getHostInformationProvider().getHostName() + "生效");
             }
             return true;
         } catch (Exception e) {

@@ -34,6 +34,7 @@ import com.tencent.mobileqq.widget.BounceScrollView;
 import java.text.ParseException;
 import java.util.ArrayList;
 
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.hook.JumpController;
 import nil.nadph.qnotified.ui.CustomDialog;
@@ -41,7 +42,6 @@ import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.ViewBuilder;
 import nil.nadph.qnotified.util.UiThread;
-import nil.nadph.qnotified.util.Utils;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -84,7 +84,7 @@ public class JefsRulesActivity extends IphoneTitleBarActivityCompat implements V
             layoutDisplay.setOrientation(LinearLayout.VERTICAL);
             layoutDisplay.setId(R.id.jefsRulesDisplayLayout);
             {
-                String appLabel = Utils.getHostAppName();
+                String appLabel = HostInformationProviderKt.getHostInformationProvider().getHostName();
                 TextView _tmp_1 = new TextView(this);
                 _tmp_1.setTextColor(ResUtils.skin_gray3);
                 _tmp_1.setText("本功能用于去除恼人的 \"即将离开" + appLabel + " 前往其他应用\" 对话框, " +

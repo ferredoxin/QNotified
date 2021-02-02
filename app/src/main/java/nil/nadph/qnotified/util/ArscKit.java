@@ -30,8 +30,10 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.config.ConfigManager;
 
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
 import static nil.nadph.qnotified.util.Utils.log;
 
 @SuppressWarnings("CharsetObjectCanBeUsed")
@@ -56,7 +58,7 @@ public class ArscKit {
             return Integer.parseInt(name);
         } catch (NumberFormatException ignored) {
         }
-        if (ctx == null) ctx = Utils.getApplication();
+        if (ctx == null) ctx = HostInformationProviderKt.getHostInformationProvider().getApplicationContext();
         String pkg = ctx.getPackageName();
         int ret = ctx.getResources().getIdentifier(name, type, pkg);
         if (ret != 0) return ret;
@@ -64,7 +66,7 @@ public class ArscKit {
         ConfigManager cache = ConfigManager.getCache();
         ret = cache.getIntOrDefault(CACHED_RES_ID_NAME_PREFIX + type + "/" + name, 0);
         int oldcode = cache.getIntOrDefault(CACHED_RES_ID_CODE_PREFIX + type + "/" + name, -1);
-        int currcode = Utils.getHostVersionCode32();
+        int currcode = HostInformationProviderKt.getHostInformationProvider().getVersionCode32();
         if (ret != 0 && (oldcode == currcode)) {
             return ret;
         }
@@ -86,7 +88,7 @@ public class ArscKit {
     private static int enumArsc(String pkgname, String type, String name) {
         Enumeration<URL> urls = null;
         try {
-            urls = (Enumeration<URL>) Utils.invoke_virtual(Initiator.getHostClassLoader(), "findResources", "resources.arsc", String.class);
+            urls = (Enumeration<URL>) invoke_virtual(Initiator.getHostClassLoader(), "findResources", "resources.arsc", String.class);
         } catch (Throwable e) {
             log(e);
         }

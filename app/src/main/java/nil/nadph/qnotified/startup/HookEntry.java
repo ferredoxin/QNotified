@@ -23,7 +23,6 @@ import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
-import nil.nadph.qnotified.BuildConfig;
 import nil.nadph.qnotified.R;
 
 /**
@@ -52,7 +51,7 @@ public class HookEntry implements IXposedHookLoadPackage {
         }
         switch (lpparam.packageName) {
             case PACKAGE_NAME_SELF: {
-                XposedHelpers.findAndHookMethod("nil.nadph.qnotified.util.Utils", lpparam.classLoader, "getActiveModuleVersion", XC_MethodReplacement.returnConstant(BuildConfig.VERSION_NAME));
+                XposedHelpers.findAndHookMethod("nil.nadph.qnotified.util.Utils", lpparam.classLoader, "isModuleEnable", XC_MethodReplacement.returnConstant(true));
                 break;
             }
             case PACKAGE_NAME_TIM:

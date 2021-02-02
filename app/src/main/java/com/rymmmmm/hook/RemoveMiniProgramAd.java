@@ -18,6 +18,8 @@
  */
 package com.rymmmmm.hook;
 
+import java.lang.reflect.Method;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
@@ -26,7 +28,7 @@ import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
-import java.lang.reflect.Method;
+import static nil.nadph.qnotified.util.ReflexUtil.iput_object;
 
 //去除小程序广告 需要手动点关闭
 public class RemoveMiniProgramAd extends CommonDelayableHook {
@@ -52,7 +54,7 @@ public class RemoveMiniProgramAd extends CommonDelayableHook {
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             if (LicenseStatus.sDisableCommonHooks) return;
                             if (!isEnabled()) return;
-                            Utils.iput_object(param.thisObject, "c", Boolean.TYPE, true);
+                            iput_object(param.thisObject, "c", Boolean.TYPE, true);
                         }
                     });
                 }

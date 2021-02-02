@@ -25,7 +25,7 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 
 import static nil.nadph.qnotified.util.Initiator._UpgradeController;
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.log;
 
 public class PreUpgradeHook extends CommonDelayableHook {
     private static final PreUpgradeHook self = new PreUpgradeHook();

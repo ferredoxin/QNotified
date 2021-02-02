@@ -37,11 +37,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.robv.android.xposed.XposedHelpers;
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.util.ArscKit;
 import nil.nadph.qnotified.util.Nullable;
-import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_static;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class ResUtils {
@@ -63,7 +65,7 @@ public class ResUtils {
     static private final Map<String, Drawable> cachedDrawable = new HashMap<>();
 
     public static void requireResourcesNonNull(Context ctx) {
-        if (ctx == null) ctx = Utils.getApplication();
+        if (ctx == null) ctx = HostInformationProviderKt.getHostInformationProvider().getApplicationContext();
         if (!inited) initTheme(ctx);
     }
 
@@ -311,7 +313,7 @@ public class ResUtils {
             String themeId = (String) invoke_static(load("com/tencent/mobileqq/theme/ThemeUtil"), "getUserCurrentThemeId", getAppRuntime(), load("mqq/app/AppRuntime"));
             return "1103".endsWith(themeId) || "2920".endsWith(themeId);
         } catch (Exception e) {
-            if (IS_TIM) {
+            if (HostInformationProviderKt.getHostInformationProvider().isTim()) {
                 return false;
             }
             log(e);

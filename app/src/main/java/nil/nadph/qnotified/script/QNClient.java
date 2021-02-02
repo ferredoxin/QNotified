@@ -18,17 +18,11 @@
  */
 package nil.nadph.qnotified.script;
 
-import android.os.Parcelable;
-import bsh.util.Util;
-import com.tencent.mobileqq.app.QQAppInterface;
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.bridge.ChatActivityFacade;
 import nil.nadph.qnotified.bridge.SessionInfoImpl;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
-
-import static nil.nadph.qnotified.util.Initiator._SessionInfo;
-import static nil.nadph.qnotified.util.Utils.getApplication;
-import static nil.nadph.qnotified.util.Utils.getFirstNSFByType;
 
 public class QNClient {
     /*
@@ -51,7 +45,7 @@ public class QNClient {
     public static void send(String uin, String content, int type) {
         // to do
         ChatActivityFacade.sendMessage(
-                Utils.getQQAppInterface(), getApplication(), SessionInfoImpl.createSessionInfo(uin, type), content
+                Utils.getQQAppInterface(), HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), SessionInfoImpl.createSessionInfo(uin, type), content
         );
     }
 

@@ -28,6 +28,8 @@ import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
+import static nil.nadph.qnotified.util.ReflexUtil.iput_object;
+
 //去除群聊送礼物广告
 public class RemoveSendGiftAd extends CommonDelayableHook {
     private static final RemoveSendGiftAd self = new RemoveSendGiftAd();
@@ -53,7 +55,7 @@ public class RemoveSendGiftAd extends CommonDelayableHook {
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             if (LicenseStatus.sDisableCommonHooks) return;
                             if (!isEnabled()) return;
-                            Utils.iput_object(param.thisObject, "f", Boolean.TYPE, true);
+                            iput_object(param.thisObject, "f", Boolean.TYPE, true);
                         }
                     });
                 }

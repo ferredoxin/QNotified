@@ -26,13 +26,15 @@ import java.lang.reflect.Modifier;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.NonNull;
-import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.loge;
 
 //屏蔽Diy卡片
 public class IgnoreDiyCard extends CommonDelayableHook {
@@ -52,7 +54,7 @@ public class IgnoreDiyCard extends CommonDelayableHook {
         try {
             for (Method m : load("com.tencent.mobileqq.activity.FriendProfileCardActivity").getDeclaredMethods()) {
                 Class<?>[] argt = m.getParameterTypes();
-                if (Utils.getHostVersionCode32() <= 1406) {
+                if (HostInformationProviderKt.getHostInformationProvider().getVersionCode32() <= 1406) {
                     if (m.getName().equals("a") && !Modifier.isStatic(m.getModifiers()) && m.getReturnType().equals(void.class)) {
                         if (argt.length != 2) continue;
                         if (argt[1] != boolean.class) continue;
@@ -71,10 +73,10 @@ public class IgnoreDiyCard extends CommonDelayableHook {
                         if (LicenseStatus.sDisableCommonHooks) return;
                         if (!isEnabled()) return;
                         Class<?> _ProfileCardInfo = ((Method) param.method).getParameterTypes()[0];
-                        Object info = Utils.iget_object_or_null(param.thisObject, "a", _ProfileCardInfo);
+                        Object info = iget_object_or_null(param.thisObject, "a", _ProfileCardInfo);
                         if (info != null) {
                             Class<?> _Card = load("com.tencent.mobileqq.data.Card");
-                            Object card = Utils.iget_object_or_null(info, "a", _Card);
+                            Object card = iget_object_or_null(info, "a", _Card);
                             if (card != null) {
                                 Field f = _Card.getField("lCurrentStyleId");
                                 if (f.getLong(card) == 22 || f.getLong(card) == 21) {
