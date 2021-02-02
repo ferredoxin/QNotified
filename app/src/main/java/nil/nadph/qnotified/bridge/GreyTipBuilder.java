@@ -20,15 +20,17 @@ package nil.nadph.qnotified.bridge;
 
 import android.os.Bundle;
 
-import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.Utils;
-
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 
+import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.Utils;
+
 import static de.robv.android.xposed.XposedHelpers.callMethod;
 import static de.robv.android.xposed.XposedHelpers.setObjectField;
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.startup.ReflexUtil.invoke_static_declared_ordinal_modifier;
+import static nil.nadph.qnotified.startup.ReflexUtil.invoke_virtual;
+import static nil.nadph.qnotified.util.Utils.log;
 
 public class GreyTipBuilder implements Appendable, CharSequence {
 

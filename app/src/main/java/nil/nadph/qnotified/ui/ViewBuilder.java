@@ -32,6 +32,7 @@ import android.widget.*;
 
 import androidx.core.view.ViewCompat;
 
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
@@ -46,7 +47,7 @@ import nil.nadph.qnotified.util.Utils;
 
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.startup.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class ViewBuilder {
@@ -140,7 +141,7 @@ public class ViewBuilder {
                     ConfigManager mgr = ConfigManager.getDefaultConfig();
                     mgr.getAllConfig().put(key, isChecked);
                     mgr.save();
-                    Utils.showToastShort(buttonView.getContext(), "重启" + Utils.getHostAppName() + "生效");
+                    Utils.showToastShort(buttonView.getContext(), "重启" + HostInformationProviderKt.getHostInformationProvider().getHostName() + "生效");
                 } catch (Throwable e) {
                     Utils.log(e);
                     Utils.showToastShort(buttonView.getContext(), e.toString());
@@ -179,7 +180,7 @@ public class ViewBuilder {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 try {
                     item.setEnabled(isChecked);
-                    Utils.showToastShort(buttonView.getContext(), "重启" + Utils.getHostAppName() + "生效");
+                    Utils.showToastShort(buttonView.getContext(), "重启" + HostInformationProviderKt.getHostInformationProvider().getHostName() + "生效");
                 } catch (Throwable e) {
                     Utils.log(e);
                     Utils.showToastShort(buttonView.getContext(), e.toString());

@@ -32,9 +32,11 @@ import androidx.annotation.NonNull;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.hook.AbsDelayableHook;
 
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.loge;
 
 //import libcore.io.Libcore;
 
@@ -174,7 +176,7 @@ public class SyncUtils {
     }
 
     public static void sendGenericBroadcast(Context ctx, Intent intent) {
-        if (ctx == null) ctx = getApplication();
+        if (ctx == null) ctx = HostInformationProviderKt.getHostInformationProvider().getApplicationContext();
         intent.putExtra(_REAL_INTENT, intent.getAction());
         intent.setAction(GENERIC_WRAPPER);
         intent.setPackage(ctx.getPackageName());
@@ -191,7 +193,7 @@ public class SyncUtils {
      * @param what 0 for unspecified
      */
     public static void onFileChanged(int file, long uin, int what) {
-        Context ctx = getApplication();
+        Context ctx = HostInformationProviderKt.getHostInformationProvider().getApplicationContext();
         Intent changed = new Intent(SYNC_FILE_CHANGED);
         changed.setPackage(ctx.getPackageName());
         initId();
@@ -203,7 +205,7 @@ public class SyncUtils {
     }
 
     public static void requestInitHook(int hookId, int process) {
-        Context ctx = getApplication();
+        Context ctx = HostInformationProviderKt.getHostInformationProvider().getApplicationContext();
         Intent changed = new Intent(HOOK_DO_INIT);
         changed.setPackage(ctx.getPackageName());
         initId();
@@ -267,7 +269,7 @@ public class SyncUtils {
         int retry = 0;
         do {
             try {
-                List<ActivityManager.RunningAppProcessInfo> runningAppProcesses = ((ActivityManager) getApplication().getSystemService(Context.ACTIVITY_SERVICE)).getRunningAppProcesses();
+                List<ActivityManager.RunningAppProcessInfo> runningAppProcesses = ((ActivityManager) HostInformationProviderKt.getHostInformationProvider().getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE)).getRunningAppProcesses();
                 if (runningAppProcesses != null) {
                     for (ActivityManager.RunningAppProcessInfo runningAppProcessInfo : runningAppProcesses) {
                         if (runningAppProcessInfo != null && runningAppProcessInfo.pid == android.os.Process.myPid()) {

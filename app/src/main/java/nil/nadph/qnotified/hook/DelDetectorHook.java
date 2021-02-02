@@ -49,9 +49,9 @@ import nil.nadph.qnotified.util.Utils;
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTION_EXFRIEND_LIST;
 import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTIVITY_PROXY_ACTION;
-import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.startup.Initiator.load;
+import static nil.nadph.qnotified.startup.ReflexUtil.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class DelDetectorHook extends CommonDelayableHook {
@@ -140,7 +140,7 @@ public class DelDetectorHook extends CommonDelayableHook {
                     public void onClick(View v) {
                         if (LicenseStatus.sDisableCommonHooks) return;
                         Intent intent = new Intent(splashActivity, ExfriendListActivity.class);
-                        intent.putExtra(ACTIVITY_PROXY_ACTION, ACTION_EXFRIEND_LIST);
+                        intent.putExtra(ACTIVITY_PROXY_ACTION, ExfriendListActivity.class);
                         splashActivity.startActivity(intent);
                     }
                 });

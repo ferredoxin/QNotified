@@ -56,7 +56,8 @@ import nil.nadph.qnotified.util.Utils;
 import static android.view.View.GONE;
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.lifecycle.ActProxyMgr.*;
+import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTIVITY_PROXY_ACTION;
+import static nil.nadph.qnotified.startup.ReflexUtil.iget_object_or_null;
 import static nil.nadph.qnotified.util.Utils.*;
 
 
@@ -97,7 +98,7 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
             return TroopSelectActivity.this.getView(position, convertView, parent);
         }
     };
-    private int mActionInt;
+    private Class mActionInt;
     private FaceImpl face;
     private EditText search;
     private TextView rightBtn, cancel, reverse, selectAll;
@@ -203,15 +204,15 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
             } else ret = sb.substring(1);
             try {
                 ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
-                if (mActionInt == ACTION_MUTE_AT_ALL) {
+                if (mActionInt == TroopSelectActivity.class) {
                     cfg.putString(ConfigItems.qn_muted_at_all, ret);
                     cfg.save();
                 }
-                if (mActionInt == ACTION_MUTE_RED_PACKET) {
+                if (mActionInt == TroopSelectActivity.class) {
                     cfg.putString(ConfigItems.qn_muted_red_packet, ret);
                     cfg.save();
                 }
-                if (mActionInt == ACTION_CHAT_TAIL_TROOPS_ACTIVITY) {
+                if (mActionInt == TroopSelectActivity.class) {
                     cfg.putString(ConfigItems.qn_chat_tail_troops, ret);
                     cfg.save();
                 }
@@ -290,8 +291,8 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
     @Override
     public boolean doOnCreate(Bundle savedInstanceState) {
         super.doOnCreate(savedInstanceState);
-        mActionInt = getIntent().getIntExtra(ACTIVITY_PROXY_ACTION, -1);
-        if (mActionInt == -1) {
+        mActionInt = (Class) getIntent().getSerializableExtra(ACTIVITY_PROXY_ACTION);
+        if (mActionInt == null) {
             finish();
             return true;
         }
@@ -365,11 +366,11 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
         main.addView(f, new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         this.setContentView(main);
         String title = "Fatal error!";
-        if (mActionInt == ACTION_MUTE_AT_ALL)
+        if (mActionInt == TroopSelectActivity.class)
             title = "屏蔽@全体成员";
-        else if (mActionInt == ACTION_MUTE_RED_PACKET)
+        else if (mActionInt == TroopSelectActivity.class)
             title = "屏蔽群红包";
-        else if (mActionInt == ACTION_CHAT_TAIL_TROOPS_ACTIVITY)
+        else if (mActionInt == TroopSelectActivity.class)
             title = "选择小尾巴生效群";
         setTitle(title);
         rightBtn = (TextView) getRightTextView();
@@ -381,11 +382,11 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
         sdlv.setAdapter(mAdapter);
         muted = new HashSet<>();
         String list = null;
-        if (mActionInt == ACTION_MUTE_AT_ALL)
+        if (mActionInt == TroopSelectActivity.class)
             list = ExfriendManager.getCurrent().getConfig().getString(ConfigItems.qn_muted_at_all);
-        if (mActionInt == ACTION_MUTE_RED_PACKET)
+        if (mActionInt == TroopSelectActivity.class)
             list = ExfriendManager.getCurrent().getConfig().getString(ConfigItems.qn_muted_red_packet);
-        if (mActionInt == ACTION_CHAT_TAIL_TROOPS_ACTIVITY)
+        if (mActionInt == TroopSelectActivity.class)
             list = ExfriendManager.getCurrent().getConfig().getString(ConfigItems.qn_chat_tail_troops);
         if (list != null) {
             for (String s : list.split(",")) {

@@ -37,7 +37,7 @@ import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.MainProcess;
 import nil.nadph.qnotified.util.Utils;
 
-import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.startup.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.log;
 import static nil.nadph.qnotified.util.Utils.logi;
 

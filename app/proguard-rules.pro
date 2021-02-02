@@ -44,3 +44,7 @@
 
 -dontwarn javax.**
 -dontwarn java.awt.**
+-dontwarn java.lang.instrument.ClassFileTransformer
+-dontwarn sun.misc.SignalHandler
+-dontwarn org.apache.bsf.util.BSFEngineImpl
+-dontwarn java.applet.Applet

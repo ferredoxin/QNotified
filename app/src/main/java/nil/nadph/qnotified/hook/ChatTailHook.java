@@ -36,6 +36,7 @@ import java.util.regex.PatternSyntaxException;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import me.kyuubiran.util.UtilsKt;
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.activity.ChatTailActivity;
@@ -46,7 +47,7 @@ import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
-import static nil.nadph.qnotified.util.Initiator._SessionInfo;
+import static nil.nadph.qnotified.startup.Initiator._SessionInfo;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class ChatTailHook extends CommonDelayableHook {
@@ -214,14 +215,9 @@ public class ChatTailHook extends CommonDelayableHook {
         } catch (final Exception e) {
             Utils.log(e);
             if (Looper.myLooper() == Looper.getMainLooper()) {
-                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+                Utils.showToast(HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
             } else {
-                SyncUtils.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
-                    }
-                });
+                SyncUtils.post(() -> Utils.showToast(HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT));
             }
         }
     }

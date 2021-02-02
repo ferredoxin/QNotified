@@ -23,7 +23,7 @@ import android.os.Parcelable;
 import android.util.SparseArray;
 import android.view.View;
 
-import nil.nadph.qnotified.util.Initiator;
+import nil.nadph.qnotified.startup.Initiator;
 
 public class IsolatedLayoutSaveState extends View.BaseSavedState {
     public static final Parcelable.Creator<IsolatedLayoutSaveState> CREATOR

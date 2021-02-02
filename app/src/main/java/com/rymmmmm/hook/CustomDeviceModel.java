@@ -24,7 +24,7 @@ import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.dialog.RikkaCustomDeviceModelDialog;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
-import nil.nadph.qnotified.util.Initiator;
+import nil.nadph.qnotified.startup.Initiator;
 import nil.nadph.qnotified.util.Utils;
 
 //自定义机型

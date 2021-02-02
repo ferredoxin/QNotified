@@ -36,7 +36,9 @@ import nil.nadph.qnotified.ui.ViewBuilder;
 import nil.nadph.qnotified.util.*;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.startup.Initiator.load;
+import static nil.nadph.qnotified.startup.ReflexUtil.iget_object_or_null;
+import static nil.nadph.qnotified.startup.ReflexUtil.invoke_static_any;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class MultiForwardAvatarHook extends CommonDelayableHook {

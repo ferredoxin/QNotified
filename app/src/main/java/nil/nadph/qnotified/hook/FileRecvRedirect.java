@@ -22,6 +22,8 @@ import android.os.Environment;
 
 import java.lang.reflect.Field;
 
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import me.singleneuron.util.QQVersion;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
@@ -30,7 +32,7 @@ import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Nullable;
 
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.log;
 
 public class FileRecvRedirect extends BaseDelayableHook {
     private static final FileRecvRedirect self = new FileRecvRedirect();
@@ -87,11 +89,11 @@ public class FileRecvRedirect extends BaseDelayableHook {
     }
 
     public String getDefaultPath() {
-        if (IS_TIM) {
+        if (HostInformationProviderKt.getHostInformationProvider().isTim()) {
             return Environment.getExternalStorageDirectory().getAbsolutePath() + "/Tencent/TIMfile_recv/";
         } else {
-            if (getHostVersionCode32() > 1334) {
-                return getApplication().getExternalFilesDir(null) + "/Tencent/QQfile_recv/";
+            if (HostInformationProviderKt.getHostInformationProvider().getVersionCode() > QQVersion.QQ_8_2_7_2) {
+                return HostInformationProviderKt.getHostInformationProvider().getApplicationContext().getExternalFilesDir(null) + "/Tencent/QQfile_recv/";
             } else {
                 return Environment.getExternalStorageDirectory().getAbsolutePath() + "/Tencent/QQfile_recv/";
             }

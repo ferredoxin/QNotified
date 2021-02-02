@@ -28,14 +28,16 @@ import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.bridge.ContactUtils;
 import nil.nadph.qnotified.bridge.GreyTipBuilder;
+import nil.nadph.qnotified.startup.Initiator;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.bridge.GreyTipBuilder.MSG_TYPE_TROOP_GAP_GRAY_TIPS;
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.startup.ReflexUtil.findMethodByTypes_1;
+import static nil.nadph.qnotified.startup.ReflexUtil.invoke_virtual_declared_ordinal_modifier;
+import static nil.nadph.qnotified.util.Utils.log;
 
 public class GagInfoDisclosure extends CommonDelayableHook {
     private static final GagInfoDisclosure self = new GagInfoDisclosure();
@@ -53,7 +55,7 @@ public class GagInfoDisclosure extends CommonDelayableHook {
     public boolean initOnce() {
         try {
             Class<?> clzGagMgr = Initiator._TroopGagMgr();
-            Method m1 = Utils.findMethodByTypes_1(clzGagMgr, void.class, String.class, long.class, long.class, int.class, String.class, String.class, boolean.class);
+            Method m1 = findMethodByTypes_1(clzGagMgr, void.class, String.class, long.class, long.class, int.class, String.class, String.class, boolean.class);
             XposedBridge.hookMethod(m1, new XC_MethodHook(48) {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -93,7 +95,7 @@ public class GagInfoDisclosure extends CommonDelayableHook {
                     param.setResult(null);
                 }
             });
-            Method m2 = Utils.findMethodByTypes_1(clzGagMgr, void.class, String.class, String.class, long.class, long.class, int.class, boolean.class, boolean.class);
+            Method m2 = findMethodByTypes_1(clzGagMgr, void.class, String.class, String.class, long.class, long.class, int.class, boolean.class, boolean.class);
             XposedBridge.hookMethod(m2, new XC_MethodHook(48) {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {

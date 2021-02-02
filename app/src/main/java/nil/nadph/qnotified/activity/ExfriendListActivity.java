@@ -46,12 +46,13 @@ import nil.nadph.qnotified.config.FriendRecord;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.ViewBuilder;
-import nil.nadph.qnotified.lifecycle.ActProxyMgr;
 import nil.nadph.qnotified.util.FaceImpl;
 import nil.nadph.qnotified.util.Utils;
 
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
+import static nil.nadph.qnotified.util.DateTimeUtil.getIntervalDspMs;
+import static nil.nadph.qnotified.util.DateTimeUtil.getRelTimeStrSec;
 import static nil.nadph.qnotified.util.Utils.log;
 
 @SuppressLint("Registered")
@@ -134,7 +135,7 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
         long uin = Utils.getLongAccountUin();
         ExfriendManager exm = ExfriendManager.get(uin);
         exm.clearUnreadFlag();
-        tv.setText("最后更新: " + Utils.getRelTimeStrSec(exm.lastUpdateTimeSec) + "\n长按列表可删除");
+        tv.setText("最后更新: " + getRelTimeStrSec(exm.lastUpdateTimeSec) + "\n长按列表可删除");
         ViewBuilder.listView_setAdapter(sdlv, adapter);
         setContentBackgroundDrawable(ResUtils.skin_background);
         ExfriendListActivity.this.getWindow().getDecorView().setTag(this);
@@ -192,7 +193,7 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
             stat.setText("已删除");
         }
         TextView subtitle = convertView.findViewById(R_ID_EXL_SUBTITLE);
-        subtitle.setText(Utils.getIntervalDspMs(ev.timeRangeBegin * 1000, ev.timeRangeEnd * 1000));
+        subtitle.setText(getIntervalDspMs(ev.timeRangeBegin * 1000, ev.timeRangeEnd * 1000));
         ImageView imgview = convertView.findViewById(R_ID_EXL_FACE);
         Bitmap bm = face.getBitmapFromCache(FaceImpl.TYPE_USER, "" + ev.operand);
         if (bm == null) {

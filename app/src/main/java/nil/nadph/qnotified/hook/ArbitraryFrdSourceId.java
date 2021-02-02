@@ -25,15 +25,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.ui.ViewBuilder;
-import nil.nadph.qnotified.util.Initiator;
-import nil.nadph.qnotified.util.UiThread;
-import nil.nadph.qnotified.util.Utils;
 
 import java.lang.reflect.Method;
+
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
+import nil.nadph.qnotified.startup.Initiator;
+import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.ui.ViewBuilder;
+import nil.nadph.qnotified.util.UiThread;
+import nil.nadph.qnotified.util.Utils;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;

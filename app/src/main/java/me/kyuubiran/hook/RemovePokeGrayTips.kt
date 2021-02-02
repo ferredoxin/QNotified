@@ -22,12 +22,11 @@ import de.robv.android.xposed.XC_MethodHook
 
 import de.robv.android.xposed.XposedBridge
 import me.kyuubiran.util.*
-import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.LicenseStatus
 
 //屏蔽戳一戳灰字提示
-object RemovePokeGrayTips : CommonDelayableHook("kr_remove_poke_tips", SyncUtils.PROC_ANY) {
+object RemovePokeGrayTips : CommonDelayableHook("kr_remove_poke_tips") {
     val keys = listOf("拍了拍", "戳了戳", "亲了亲", "抱了抱", "揉了揉", "喷了喷", "踢了踢", "舔了舔", "捏了捏", "摸了摸")
 
     override fun initOnce(): Boolean {

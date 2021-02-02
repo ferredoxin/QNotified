@@ -24,9 +24,11 @@ import java.lang.reflect.Modifier;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
-import nil.nadph.qnotified.util.Initiator;
+import nil.nadph.qnotified.startup.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
+
+import static nil.nadph.qnotified.startup.ReflexUtil.iput_object;
 
 //去除群聊送礼物广告
 public class RemoveSendGiftAd extends CommonDelayableHook {
@@ -53,7 +55,7 @@ public class RemoveSendGiftAd extends CommonDelayableHook {
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             if (LicenseStatus.sDisableCommonHooks) return;
                             if (!isEnabled()) return;
-                            Utils.iput_object(param.thisObject, "f", Boolean.TYPE, true);
+                            iput_object(param.thisObject, "f", Boolean.TYPE, true);
                         }
                     });
                 }

@@ -56,7 +56,6 @@ import nil.nadph.qnotified.util.Utils;
 import static android.view.View.GONE;
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTION_CHAT_TAIL_FRIENDS_ACTIVITY;
 import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTIVITY_PROXY_ACTION;
 import static nil.nadph.qnotified.util.Utils.dip2px;
 import static nil.nadph.qnotified.util.Utils.log;
@@ -98,7 +97,7 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
             return FriendSelectActivity.this.getView(position, convertView, parent);
         }
     };
-    private int mActionInt;
+    private Class mActionInt;
     private FaceImpl face;
     private EditText search;
     private TextView rightBtn, cancel, reverse, selectAll;
@@ -176,7 +175,7 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
             } else ret = sb.substring(1);
             try {
                 ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
-                if (mActionInt == ACTION_CHAT_TAIL_FRIENDS_ACTIVITY) {
+                if (mActionInt == FriendSelectActivity.class) {
                     cfg.putString(ConfigItems.qn_chat_tail_friends, ret);
                     cfg.save();
                 }
@@ -257,8 +256,8 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
     @Override
     public boolean doOnCreate(Bundle savedInstanceState) {
         super.doOnCreate(savedInstanceState);
-        mActionInt = getIntent().getIntExtra(ACTIVITY_PROXY_ACTION, -1);
-        if (mActionInt == -1) {
+        mActionInt = (Class) getIntent().getSerializableExtra(ACTIVITY_PROXY_ACTION);
+        if (mActionInt == null) {
             finish();
             return true;
         }
@@ -332,7 +331,7 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
         main.addView(f, new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         this.setContentView(main);
         String title = "Fatal error!";
-        if (mActionInt == ACTION_CHAT_TAIL_FRIENDS_ACTIVITY)
+        if (mActionInt == FriendSelectActivity.class)
             title = "选择小尾巴生效好友";
         setTitle(title);
         rightBtn = (TextView) getRightTextView();
@@ -344,7 +343,7 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
         sdlv.setAdapter(mAdapter);
         muted = new HashSet<>();
         String list = null;
-        if (mActionInt == ACTION_CHAT_TAIL_FRIENDS_ACTIVITY)
+        if (mActionInt == FriendSelectActivity.class)
             list = ExfriendManager.getCurrent().getConfig().getString(ConfigItems.qn_chat_tail_friends);
 
         if (list != null) {

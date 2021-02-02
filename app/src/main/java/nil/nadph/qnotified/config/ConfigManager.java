@@ -18,17 +18,18 @@
  */
 package nil.nadph.qnotified.config;
 
-import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.util.NonNull;
-import nil.nadph.qnotified.util.Nullable;
-import nil.nadph.qnotified.util.Utils;
-
 import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.util.NonNull;
+import nil.nadph.qnotified.util.Nullable;
+import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.config.Table.*;
 import static nil.nadph.qnotified.util.Utils.log;
@@ -54,7 +55,7 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
     public static ConfigManager getDefaultConfig() {
         try {
             if (sDefConfig == null) {
-                sDefConfig = new ConfigManager(new File(Utils.getApplication().getFilesDir().getAbsolutePath() + "/qnotified_config.dat"), SyncUtils.FILE_DEFAULT_CONFIG, 0);
+                sDefConfig = new ConfigManager(new File(HostInformationProviderKt.getHostInformationProvider().getApplicationContext().getFilesDir().getAbsolutePath() + "/qnotified_config.dat"), SyncUtils.FILE_DEFAULT_CONFIG, 0);
                 SyncUtils.addOnFileChangedListener(sDefConfig);
             }
             return sDefConfig;
@@ -66,7 +67,7 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
     public static ConfigManager getCache() {
         try {
             if (sCache == null)
-                sCache = new ConfigManager(new File(Utils.getApplication().getFilesDir().getAbsolutePath() + "/qnotified_cache.dat"), SyncUtils.FILE_CACHE, 0);
+                sCache = new ConfigManager(new File(HostInformationProviderKt.getHostInformationProvider().getApplicationContext().getFilesDir().getAbsolutePath() + "/qnotified_cache.dat"), SyncUtils.FILE_CACHE, 0);
             SyncUtils.addOnFileChangedListener(sCache);
             return sCache;
         } catch (IOException e) {

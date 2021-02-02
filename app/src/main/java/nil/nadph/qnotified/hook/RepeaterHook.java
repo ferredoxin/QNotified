@@ -35,13 +35,15 @@ import java.lang.reflect.Method;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.bridge.ChatActivityFacade;
 import nil.nadph.qnotified.dialog.RepeaterIconSettingDialog;
 import nil.nadph.qnotified.ui.LinearLayoutDelegate;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
-import static nil.nadph.qnotified.util.Initiator.*;
+import static nil.nadph.qnotified.startup.Initiator.*;
+import static nil.nadph.qnotified.startup.ReflexUtil.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class RepeaterHook extends CommonDelayableHook {
@@ -130,7 +132,7 @@ public class RepeaterHook extends CommonDelayableHook {
                                 ChatActivityFacade.repeatMessage(app, session, param.args[0]);
                             } catch (Throwable e) {
                                 log(e);
-                                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e.toString(), Toast.LENGTH_SHORT);
+                                Utils.showToast(HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), TOAST_TYPE_ERROR, e.toString(), Toast.LENGTH_SHORT);
                             }
                         }
                     };
@@ -140,7 +142,7 @@ public class RepeaterHook extends CommonDelayableHook {
             });
             //end: pic
             //begin: text
-            if (IS_TIM) {
+            if (HostInformationProviderKt.getHostInformationProvider().isTim()) {
                 // TODO: 2020/5/17 Add MsgForText +1 for TIM
                 XposedHelpers.findAndHookMethod(_TextItemBuilder(), "a", ChatMessage, itemHolder, View.class, BaseChatItemLayout, listener2,
                         new XC_MethodHook(51) {
@@ -200,7 +202,7 @@ public class RepeaterHook extends CommonDelayableHook {
                                             ChatActivityFacade.repeatMessage(app, session, param.args[0]);
                                         } catch (Throwable e) {
                                             log(e);
-                                            Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e.toString(), Toast.LENGTH_SHORT);
+                                            Utils.showToast(HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), TOAST_TYPE_ERROR, e.toString(), Toast.LENGTH_SHORT);
                                         }
                                     }
                                 };
@@ -244,7 +246,7 @@ public class RepeaterHook extends CommonDelayableHook {
                                     ChatActivityFacade.repeatMessage(app, session, msg);
                                 } catch (Throwable e) {
                                     log(e);
-                                    Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e.toString(), Toast.LENGTH_SHORT);
+                                    Utils.showToast(HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), TOAST_TYPE_ERROR, e.toString(), Toast.LENGTH_SHORT);
                                 }
                             }
                         };
@@ -307,7 +309,7 @@ public class RepeaterHook extends CommonDelayableHook {
                                         ChatActivityFacade.repeatMessage(app, session, param.args[0]);
                                     } catch (Throwable e) {
                                         log(e);
-                                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e.toString(), Toast.LENGTH_SHORT);
+                                        Utils.showToast(HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), TOAST_TYPE_ERROR, e.toString(), Toast.LENGTH_SHORT);
                                     }
                                 }
                             };

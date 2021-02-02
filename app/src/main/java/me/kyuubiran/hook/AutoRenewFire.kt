@@ -28,8 +28,9 @@ import de.robv.android.xposed.XposedBridge
 import me.kyuubiran.dialog.AutoRenewFireDialog
 import me.kyuubiran.util.*
 import nil.nadph.qnotified.hook.CommonDelayableHook
+import nil.nadph.qnotified.startup.ReflexUtil.invoke_virtual
+import nil.nadph.qnotified.startup.ReflexUtil.new_instance
 import nil.nadph.qnotified.util.LicenseStatus
-import nil.nadph.qnotified.util.Utils
 import java.lang.reflect.Method
 
 //自动续火
@@ -57,11 +58,11 @@ object AutoRenewFire : CommonDelayableHook("kr_auto_renew_fire") {
                             if (setToTopItem != null) {
                                 //创建SwitchItem对象
                                 val autoRenewFireItem =
-                                    Utils.new_instance(FormSimpleItem, param.thisObject, Context::class.java)
+                                    new_instance(FormSimpleItem, param.thisObject, Context::class.java)
                                 //拿到ViewGroup
                                 val listView = (setToTopItem as View).parent as ViewGroup
                                 //设置开关文本
-                                Utils.invoke_virtual(autoRenewFireItem, "setText", "自动续火", CharSequence::class.java)
+                                invoke_virtual(autoRenewFireItem, "setText", "自动续火", CharSequence::class.java)
                                 //添加View
                                 listView.addView(autoRenewFireItem as View, 7)
                                 //拿到好友相关信息
@@ -72,14 +73,14 @@ object AutoRenewFire : CommonDelayableHook("kr_auto_renew_fire") {
                                 //昵称
                                 val uinName = intent.getStringExtra("uinname")
                                 //设置按钮是否启用
-                                Utils.invoke_virtual(
+                                invoke_virtual(
                                     autoRenewFireItem,
                                     "setChecked",
                                     AutoRenewFireMgr.hasEnabled(uin),
                                     Boolean::class.java
                                 )
                                 //设置监听事件
-                                Utils.invoke_virtual(
+                                invoke_virtual(
                                     autoRenewFireItem,
                                     "setOnCheckedChangeListener",
                                     object : CompoundButton.OnCheckedChangeListener {

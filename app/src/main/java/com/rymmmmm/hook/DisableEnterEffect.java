@@ -24,8 +24,9 @@ import java.lang.reflect.Modifier;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
-import nil.nadph.qnotified.util.Initiator;
+import nil.nadph.qnotified.startup.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
+
 import static nil.nadph.qnotified.util.Utils.log;
 
 //屏蔽所有进场特效

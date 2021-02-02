@@ -59,8 +59,9 @@ import nil.nadph.qnotified.util.*;
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
+import static nil.nadph.qnotified.startup.Initiator.load;
+import static nil.nadph.qnotified.startup.ReflexUtil.*;
 import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
-import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
 
@@ -116,9 +117,9 @@ public class PttForwardHook extends CommonDelayableHook {
                     if (!data.containsKey("ptt_forward_path")) return;
                     param.setResult(null);
                     final String path = data.getString("ptt_forward_path");
-                    Activity ctx = Utils.iget_object_or_null(param.thisObject, "a", Activity.class);
+                    Activity ctx = iget_object_or_null(param.thisObject, "a", Activity.class);
                     if (ctx == null)
-                        ctx = Utils.iget_object_or_null(param.thisObject, "mActivity", Activity.class);
+                        ctx = iget_object_or_null(param.thisObject, "mActivity", Activity.class);
                     if (path == null || !new File(path).exists()) {
                         Utils.showToast(ctx, TOAST_TYPE_ERROR, "Error: Invalid ptt file!", Toast.LENGTH_SHORT);
                         return;

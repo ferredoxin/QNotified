@@ -20,8 +20,6 @@ package nil.nadph.qnotified.lifecycle;
 
 import androidx.annotation.NonNull;
 
-import nil.nadph.qnotified.activity.*;
-
 /**
  * This class is used to cope with Activity
  */
@@ -30,7 +28,7 @@ public class ActProxyMgr {
     public static final String STUB_TRANSLUCENT_ACTIVITY = "cooperation.qlink.QlinkStandardDialogActivity";
     public static final String ACTIVITY_PROXY_ACTION = "qn_act_proxy_action";
     public static final String ACTIVITY_PROXY_INTENT = "qn_act_proxy_intent";
-    public static final int ACTION_RESERVED = 0;
+    /*public static final int ACTION_RESERVED = 0;
     public static final int ACTION_EXFRIEND_LIST = 1;
     public static final int ACTION_ADV_SETTINGS = 2;
     public static final int ACTION_ABOUT = 3;
@@ -40,7 +38,7 @@ public class ActProxyMgr {
     public static final int ACTION_TROUBLESHOOT_ACTIVITY = 8;
     public static final int ACTION_FRIENDLIST_EXPORT_ACTIVITY = 9;
     public static final int ACTION_FAKE_BAT_CONFIG_ACTIVITY = 10;
-    public static final int ACTION_CHAT_TAIL_CONFIG_ACTIVITY = 11;
+    public static final int ACTION_CHcAT_TAIL_CONFIG_ACTIVITY = 11;
     public static final int ACTION_CHAT_TAIL_TROOPS_ACTIVITY = 12;
     public static final int ACTION_CHAT_TAIL_FRIENDS_ACTIVITY = 13;
 
@@ -52,7 +50,7 @@ public class ActProxyMgr {
      * @return The XxxActivity.class object
      * @deprecated Direct use {@code XxxActivity.class} instead.
      */
-    public static Class<?> getActivityByAction(int action) {
+    /*public static Class<?> getActivityByAction(int action) {
         switch (action) {
             case ACTION_EXFRIEND_LIST:
                 return ExfriendListActivity.class;
@@ -77,7 +75,7 @@ public class ActProxyMgr {
             default:
                 return null;
         }
-    }
+    }*/
 
     // NOTICE: ** If you have created your own package, add it to proguard-rules.pro.**
 

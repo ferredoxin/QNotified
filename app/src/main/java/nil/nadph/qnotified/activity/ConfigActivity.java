@@ -37,10 +37,11 @@ import java.util.Arrays;
 import java.util.Date;
 
 import me.singleneuron.util.HookStatue;
-import nil.nadph.qnotified.startup.HookEntry;
+import nil.nadph.qnotified.BuildConfig;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.lifecycle.JumpActivityEntryHook;
-import nil.nadph.qnotified.util.Natives;
+import nil.nadph.qnotified.startup.HookEntry;
+import nil.nadph.qnotified.startup.Natives;
 import nil.nadph.qnotified.util.Utils;
 
 public class ConfigActivity extends Activity implements Runnable {
@@ -106,7 +107,7 @@ public class ConfigActivity extends Activity implements Runnable {
         mainLooper = Looper.getMainLooper();
         try {
             str += "SystemClassLoader:" + ClassLoader.getSystemClassLoader() +
-                    "\nActiveModuleVersion:" + Utils.getActiveModuleVersion()
+                    "\nActiveModuleVersion:" + BuildConfig.VERSION_NAME
                     + "\nThisVersion:" + Utils.QN_VERSION_NAME;
         } catch (Throwable r) {
             str += r;

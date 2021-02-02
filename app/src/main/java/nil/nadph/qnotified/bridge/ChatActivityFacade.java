@@ -29,11 +29,14 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Utils;
 
-import static nil.nadph.qnotified.util.Initiator._SessionInfo;
-import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.startup.Initiator._SessionInfo;
+import static nil.nadph.qnotified.startup.Initiator.load;
+import static nil.nadph.qnotified.startup.ReflexUtil.iget_object_or_null;
+import static nil.nadph.qnotified.startup.ReflexUtil.invoke_virtual;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class ChatActivityFacade {
@@ -170,7 +173,7 @@ public class ChatActivityFacade {
             case "MessageForText":
             case "MessageForFoldMsg":
                 msgText = (String) iget_object_or_null(msg, "msg");
-                sendMessage(app, getApplication(), session, msgText);
+                sendMessage(app, HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), session, msgText);
                 break;
             case "MessageForPic":
                 try {
@@ -187,7 +190,7 @@ public class ChatActivityFacade {
                     if (argt.length == 3) m.invoke(null, app, session, msg);
                     else m.invoke(null, app, session, msg, 0);
                 } catch (Exception e) {
-                    Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), 0);
+                    Utils.showToast(HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), 0);
                     log(e);
                 }
                 break;
@@ -196,17 +199,17 @@ public class ChatActivityFacade {
                     String url = (String) invoke_virtual(msg, "getLocalFilePath");
                     File file = new File(url);
                     if (!file.exists()) {
-                        Utils.showToast(getApplication(), TOAST_TYPE_ERROR, "未找到语音文件", Toast.LENGTH_SHORT);
+                        Utils.showToast(HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), TOAST_TYPE_ERROR, "未找到语音文件", Toast.LENGTH_SHORT);
                         return;
                     }
                     sendPttMessage(getQQAppInterface(), session, url);
                 } catch (Exception e) {
-                    Utils.showToast(getApplication(), TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), 0);
+                    Utils.showToast(HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), 0);
                     log(e);
                 }
                 break;
             default:
-                Utils.showToast(getApplication(), TOAST_TYPE_ERROR, "Unsupported msg type: " + getShort$Name(msg), 0);
+                Utils.showToast(HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), TOAST_TYPE_ERROR, "Unsupported msg type: " + getShort$Name(msg), 0);
         }
     }
 }

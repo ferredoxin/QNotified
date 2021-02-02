@@ -29,7 +29,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Objects;
 
-import static nil.nadph.qnotified.util.Initiator.load;
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+
+import static nil.nadph.qnotified.startup.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.log;
 
 /**
@@ -61,7 +63,7 @@ public class Toasts {
     public static void showToast(@Nullable Context context, int type, @NonNull final CharSequence text, int duration) {
         Objects.requireNonNull(text, "text");
         if (context == null) {
-            context = Utils.getApplication();
+            context = HostInformationProviderKt.getHostInformationProvider().getApplicationContext();
         }
         final Context ctx = context;
         Utils.runOnUiThread(() -> {

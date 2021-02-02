@@ -24,6 +24,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.*;
+
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.script.QNScript;
 import nil.nadph.qnotified.script.QNScriptManager;
@@ -88,7 +90,7 @@ public class ScriptSettingDialog implements CompoundButton.OnCheckedChangeListen
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         script.setEnable(isChecked);
-        Utils.showToast(ctx, Utils.TOAST_TYPE_ERROR, "重启" + Utils.getHostAppName() + "生效", Toast.LENGTH_SHORT);
+        Utils.showToast(ctx, Utils.TOAST_TYPE_ERROR, "重启" + HostInformationProviderKt.getHostInformationProvider().getHostName() + "生效", Toast.LENGTH_SHORT);
     }
 
     public static void createAndShowDialog(Context ctx, QNScript qs) {

@@ -23,7 +23,7 @@ import android.os.Parcelable;
 
 import java.lang.reflect.Constructor;
 
-import nil.nadph.qnotified.util.Initiator;
+import nil.nadph.qnotified.startup.Initiator;
 
 import static nil.nadph.qnotified.util.Utils.log;
 

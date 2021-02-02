@@ -30,11 +30,9 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.step.DexDeobfStep;
-import nil.nadph.qnotified.util.BugUtils;
-import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.Toasts;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.util.*;
+
+import static nil.nadph.qnotified.startup.ReflexUtil.iget_object_or_null;
 
 public class BlockFluxThief extends CommonDelayableHook {
     public static final BlockFluxThief INSTANCE = new BlockFluxThief();
@@ -65,7 +63,7 @@ public class BlockFluxThief extends CommonDelayableHook {
                         return;
                     }
                     long maxSize = 32 * 1024 * 1024;//32MiB
-                    String url = (String) Utils.iget_object_or_null(param.args[1], "urlStr");
+                    String url = (String) iget_object_or_null(param.args[1], "urlStr");
                     Class<?> cHttpDownloader = param.method.getDeclaringClass();
                     Method mGetFilePath = cHttpDownloader.getMethod("getFilePath", String.class);
                     if (mGetFilePath == null) {

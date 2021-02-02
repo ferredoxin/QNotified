@@ -25,8 +25,8 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.startup.Initiator.load;
+import static nil.nadph.qnotified.util.Utils.log;
 
 public class HideAssistantRemoveTips extends CommonDelayableHook {
     public static final HideAssistantRemoveTips INSTANCE = new HideAssistantRemoveTips();

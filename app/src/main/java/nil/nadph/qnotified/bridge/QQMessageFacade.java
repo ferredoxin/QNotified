@@ -20,18 +20,20 @@ package nil.nadph.qnotified.bridge;
 
 import java.lang.reflect.Modifier;
 
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import me.singleneuron.qn_kernel.tlb.ConfigTable;
+import nil.nadph.qnotified.startup.Initiator;
 import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Utils;
 
+import static nil.nadph.qnotified.startup.ReflexUtil.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class QQMessageFacade {
 
     public static Object get() {
         try {
-            return Utils.invoke_virtual_any(Utils.getQQAppInterface(), Initiator._QQMessageFacade());
+            return invoke_virtual_any(Utils.getQQAppInterface(), Initiator._QQMessageFacade());
         } catch (Exception e) {
             loge("QQMessageFacade.get() failed!");
             log(e);
@@ -41,7 +43,7 @@ public class QQMessageFacade {
 
     public static Object getMessageManager(int istroop) {
         try {
-            return Utils.invoke_virtual_declared_modifier_any(get(), Modifier.PUBLIC, 0, istroop, int.class, Initiator._BaseMessageManager());
+            return invoke_virtual_declared_modifier_any(get(), Modifier.PUBLIC, 0, istroop, int.class, Initiator._BaseMessageManager());
         } catch (Exception e) {
             loge("QQMessageFacade.getMessageManager() failed!");
             log(e);
@@ -60,7 +62,7 @@ public class QQMessageFacade {
             iput_object(msg2, "time", t);
             Object msgCache = invoke_virtual_any(getQQAppInterface(), DexKit.doFindClass(DexKit.C_MessageCache));
             String methodName = "b"; //Default method name for QQ
-            if (IS_TIM) {
+            if (HostInformationProviderKt.getHostInformationProvider().isTim()) {
                 methodName = ConfigTable.INSTANCE.getConfig(QQMessageFacade.class.getSimpleName());
             }
             invoke_virtual(msgCache, methodName, true, boolean.class, void.class);

@@ -30,10 +30,10 @@ import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.bridge.ContactUtils
 import nil.nadph.qnotified.bridge.RevokeMsgInfoImpl
 import nil.nadph.qnotified.hook.CommonDelayableHook
+import nil.nadph.qnotified.startup.Initiator
+import nil.nadph.qnotified.startup.ReflexUtil.*
 import nil.nadph.qnotified.step.DexDeobfStep
-import nil.nadph.qnotified.step.Step
 import nil.nadph.qnotified.util.DexKit
-import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.LicenseStatus
 import nil.nadph.qnotified.util.Utils
 import java.lang.reflect.Method
@@ -183,7 +183,7 @@ object RevokeMsg : CommonDelayableHook("kr_revoke_msg", SyncUtils.PROC_MAIN or S
         }
         val list: MutableList<Any> = ArrayList()
         list.add(revokeGreyTip)
-        Utils.invoke_virtual_declared_ordinal_modifier(mQQMsgFacade, 0, 4, false, Modifier.PUBLIC, 0,
+        invoke_virtual_declared_ordinal_modifier(mQQMsgFacade, 0, 4, false, Modifier.PUBLIC, 0,
                 list, Utils.getAccount(), MutableList::class.java, String::class.java, Void.TYPE)
     }
 
@@ -198,7 +198,7 @@ object RevokeMsg : CommonDelayableHook("kr_revoke_msg", SyncUtils.PROC_MAIN or S
 
     private fun createBareHighlightGreyTip(entityUin: String, istroop: Int, fromUin: String, time: Long, msg: String, msgUid: Long, shmsgseq: Long): Any {
         val msgtype = -2030 // MessageRecord.MSG_TYPE_TROOP_GAP_GRAY_TIPS
-        val messageRecord = Utils.invoke_static_declared_ordinal_modifier(DexKit.doFindClass(DexKit.C_MSG_REC_FAC), 0, 1, true, Modifier.PUBLIC, 0, msgtype, Int::class.javaPrimitiveType)
+        val messageRecord = invoke_static_declared_ordinal_modifier(DexKit.doFindClass(DexKit.C_MSG_REC_FAC), 0, 1, true, Modifier.PUBLIC, 0, msgtype, Int::class.javaPrimitiveType)
         XposedHelpers.callMethod(messageRecord, "init", Utils.getAccount(), entityUin, fromUin, msg, time, msgtype, istroop, time)
         XposedHelpers.setObjectField(messageRecord, "msgUid", msgUid)
         XposedHelpers.setObjectField(messageRecord, "shmsgseq", shmsgseq)
@@ -209,7 +209,7 @@ object RevokeMsg : CommonDelayableHook("kr_revoke_msg", SyncUtils.PROC_MAIN or S
 
     private fun createBarePlainGreyTip(entityUin: String, istroop: Int, fromUin: String, time: Long, msg: String, msgUid: Long, shmsgseq: Long): Any {
         val msgtype = -2031 // MessageRecord.MSG_TYPE_REVOKE_GRAY_TIPS
-        val messageRecord = Utils.invoke_static_declared_ordinal_modifier(DexKit.doFindClass(DexKit.C_MSG_REC_FAC), 0, 1, true, Modifier.PUBLIC, 0, msgtype, Int::class.javaPrimitiveType)
+        val messageRecord = invoke_static_declared_ordinal_modifier(DexKit.doFindClass(DexKit.C_MSG_REC_FAC), 0, 1, true, Modifier.PUBLIC, 0, msgtype, Int::class.javaPrimitiveType)
         XposedHelpers.callMethod(messageRecord, "init", Utils.getAccount(), entityUin, fromUin, msg, time, msgtype, istroop, time)
         XposedHelpers.setObjectField(messageRecord, "msgUid", msgUid)
         XposedHelpers.setObjectField(messageRecord, "shmsgseq", shmsgseq)
@@ -219,7 +219,7 @@ object RevokeMsg : CommonDelayableHook("kr_revoke_msg", SyncUtils.PROC_MAIN or S
 
     private fun addHightlightItem(msgForGreyTip: Any, start: Int, end: Int, bundle: Bundle) {
         try {
-            Utils.invoke_virtual(msgForGreyTip, "addHightlightItem", start, end, bundle, Int::class.javaPrimitiveType, Int::class.javaPrimitiveType, Bundle::class.java)
+            invoke_virtual(msgForGreyTip, "addHightlightItem", start, end, bundle, Int::class.javaPrimitiveType, Int::class.javaPrimitiveType, Bundle::class.java)
         } catch (e: Exception) {
             logdt(e)
         }
@@ -228,7 +228,7 @@ object RevokeMsg : CommonDelayableHook("kr_revoke_msg", SyncUtils.PROC_MAIN or S
     private fun getMessage(uin: String, istroop: Int, shmsgseq: Long, msgUid: Long): Any? {
         var list: List<*>? = null
         try {
-            list = Utils.invoke_virtual_declared_ordinal(mQQMsgFacade, 0, 2, false,
+            list = invoke_virtual_declared_ordinal(mQQMsgFacade, 0, 2, false,
                     uin, istroop, shmsgseq, msgUid, String::class.java, Int::class.javaPrimitiveType, Long::class.javaPrimitiveType, Long::class.javaPrimitiveType, MutableList::class.java) as List<*>
         } catch (e: Exception) {
             logdt(e)
@@ -238,7 +238,7 @@ object RevokeMsg : CommonDelayableHook("kr_revoke_msg", SyncUtils.PROC_MAIN or S
 
     private fun getMessageContentStripped(msgObject: Any): String? {
         var msg = try {
-            Utils.iget_object_or_null(msgObject, "msg") as String
+            iget_object_or_null(msgObject, "msg") as String
         } catch (e: Exception) {
             ""
         }
@@ -248,11 +248,11 @@ object RevokeMsg : CommonDelayableHook("kr_revoke_msg", SyncUtils.PROC_MAIN or S
     }
 
     private fun getMessageUid(msgObject: Any?): Long {
-        return if (msgObject == null) 0 else Utils.iget_object_or_null(msgObject, "msgUid") as Long
+        return if (msgObject == null) 0 else iget_object_or_null(msgObject, "msgUid") as Long
     }
 
     private fun getMessageType(msgObject: Any?): Int {
-        return if (msgObject == null) -1 else Utils.iget_object_or_null(msgObject, "msgtype") as Int
+        return if (msgObject == null) -1 else iget_object_or_null(msgObject, "msgtype") as Int
     }
 
     private fun isShowMsgTextEnabled(): Boolean {

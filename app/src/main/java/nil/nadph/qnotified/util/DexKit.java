@@ -35,12 +35,13 @@ import java.util.regex.Pattern;
 
 import dalvik.system.DexClassLoader;
 import dalvik.system.PathClassLoader;
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.startup.Initiator;
 
-import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
-import static nil.nadph.qnotified.util.Initiator._QQAppInterface;
-import static nil.nadph.qnotified.util.Utils.getHostVersionCode32;
-import static nil.nadph.qnotified.util.Utils.invoke_virtual;
+import static nil.nadph.qnotified.startup.Initiator._BaseChatPie;
+import static nil.nadph.qnotified.startup.Initiator._QQAppInterface;
+import static nil.nadph.qnotified.startup.ReflexUtil.invoke_virtual;
 import static nil.nadph.qnotified.util.Utils.log;
 import static nil.nadph.qnotified.util.Utils.logi;
 
@@ -199,7 +200,7 @@ public class DexKit {
         try {
             ConfigManager cache = ConfigManager.getCache();
             int lastVersion = cache.getIntOrDefault("cache_" + a(i) + "_code", 0);
-            if (getHostVersionCode32() != lastVersion) {
+            if (HostInformationProviderKt.getHostInformationProvider().getVersionCode32() != lastVersion) {
                 return null;
             }
             String name = cache.getString("cache_" + a(i) + "_method");
@@ -221,7 +222,7 @@ public class DexKit {
         }
         int ver = -1;
         try {
-            ver = getHostVersionCode32();
+            ver = HostInformationProviderKt.getHostInformationProvider().getVersionCode32();
         } catch (Throwable ignored) {
         }
         try {
@@ -249,7 +250,7 @@ public class DexKit {
                 return null;
             }
             cache.putString("cache_" + a(i) + "_method", ret.toString());
-            cache.getAllConfig().put("cache_" + a(i) + "_code", getHostVersionCode32());
+            cache.getAllConfig().put("cache_" + a(i) + "_code", HostInformationProviderKt.getHostInformationProvider().getVersionCode32());
             cache.save();
         } catch (Exception e) {
             log(e);

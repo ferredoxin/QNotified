@@ -35,12 +35,13 @@ import java.util.HashSet;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.util.Initiator;
+import nil.nadph.qnotified.startup.Initiator;
 
-import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.startup.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class FakeBatteryHook extends CommonDelayableHook implements InvocationHandler, SyncUtils.BroadcastListener {
@@ -128,7 +129,7 @@ public class FakeBatteryHook extends CommonDelayableHook implements InvocationHa
             //接下去是UI stuff, 给自己看的
             //本来还想用反射魔改Binder/ActivityThread$ApplicationThread实现Xposed-less拦截广播onReceive的,太肝了,就不搞了
             if (Build.VERSION.SDK_INT >= 21) {
-                BatteryManager batmgr = (BatteryManager) getApplication().getSystemService(Context.BATTERY_SERVICE);
+                BatteryManager batmgr = (BatteryManager) HostInformationProviderKt.getHostInformationProvider().getApplicationContext().getSystemService(Context.BATTERY_SERVICE);
                 if (batmgr == null) {
                     logi("Wtf, init FakeBatteryHook but BatteryManager is null!");
                     return false;
@@ -197,7 +198,7 @@ public class FakeBatteryHook extends CommonDelayableHook implements InvocationHa
             intent.putExtra(BatteryManager.EXTRA_STATUS, BatteryManager.BATTERY_STATUS_DISCHARGING);
             intent.putExtra(BatteryManager.EXTRA_PLUGGED, 0);
         }
-        doPostReceiveEvent(recv, getApplication(), intent);
+        doPostReceiveEvent(recv, HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), intent);
     }
 
     private void scheduleReceiveBatteryStatus() {
@@ -221,7 +222,7 @@ public class FakeBatteryHook extends CommonDelayableHook implements InvocationHa
             intent.putExtra(BatteryManager.EXTRA_STATUS, BatteryManager.BATTERY_STATUS_DISCHARGING);
             intent.putExtra(BatteryManager.EXTRA_PLUGGED, 0);
         }
-        doPostReceiveEvent(recv, getApplication(), intent);
+        doPostReceiveEvent(recv, HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), intent);
     }
 
     private static void doPostReceiveEvent(final BroadcastReceiver recv, final Context ctx, final Intent intent) {
