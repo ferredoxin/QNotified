@@ -46,7 +46,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 import me.singleneuron.util.HookStatue;
-import nil.nadph.qnotified.HookEntry;
+import nil.nadph.qnotified.startup.HookEntry;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.databinding.MainV2Binding;
@@ -88,7 +88,7 @@ public class ConfigV2Activity extends AppCompatActivity {
         } catch (IOException e) {
             start = e.toString();
         }
-        if ("nil.nadph.qnotified.HookLoader".equals(start)) {
+        if ("nil.nadph.qnotified.startup.HookLoader".equals(start)) {
             isDynLoad = true;
         }
         try {

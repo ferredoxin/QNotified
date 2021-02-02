@@ -25,7 +25,7 @@ import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import nil.nadph.qnotified.HookEntry
+import nil.nadph.qnotified.startup.HookEntry
 import nil.nadph.qnotified.lifecycle.JumpActivityEntryHook
 
 class QQPurifyAgentActivity :AppCompatActivity() {

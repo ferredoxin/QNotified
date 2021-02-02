@@ -16,7 +16,7 @@
  * along with this software.  If not, see
  * <https://www.gnu.org/licenses/>.
  */
-package nil.nadph.qnotified;
+package nil.nadph.qnotified.startup;
 
 import android.content.Context;
 import android.os.Build;
@@ -30,10 +30,6 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.util.Initiator;
-import nil.nadph.qnotified.util.Natives;
-import nil.nadph.qnotified.util.Utils;
-
-import static nil.nadph.qnotified.util.Utils.*;
 
 /**
  * Startup hook for QQ/TIM
@@ -48,7 +44,6 @@ public class StartupHook {
     public static final String QN_FULL_TAG = "qn_full_tag";
     public static StartupHook SELF;
     private boolean first_stage_inited = false;
-    boolean sec_stage_inited = false;
 
     private StartupHook() {
     }
@@ -62,43 +57,22 @@ public class StartupHook {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     try {
-                        if (sec_stage_inited) {
-                            return;
-                        }
-                        Utils.checkLogFlag();
-                        Context ctx;
+                        Context app;
                         Class<?> clz = param.thisObject.getClass().getClassLoader().loadClass("com.tencent.common.app.BaseApplicationImpl");
-                        final Field f = hasField(clz, "sApplication");
-                        if (f == null) {
-                            ctx = (Context) sget_object(clz, "a", clz);
-                        } else {
-                            ctx = (Context) f.get(null);
+                        Field fsApp = null;
+                        for (Field f : clz.getDeclaredFields()) {
+                            if (f.getType() == clz) {
+                                fsApp = f;
+                                break;
+                            }
                         }
-                        ClassLoader classLoader = ctx.getClassLoader();
-                        if (classLoader == null) {
-                            throw new AssertionError("ERROR: classLoader == null");
+                        if (fsApp == null) {
+                            throw new NoSuchFieldException("field BaseApplicationImpl.sApplication not found");
                         }
-                        if ("true".equals(System.getProperty(QN_FULL_TAG))) {
-                            logi("Err:QNotified reloaded??");
-                            //I don't know... What happened?
-                            return;
-                        }
-                        System.setProperty(QN_FULL_TAG, "true");
-                        Initiator.init(classLoader);
-                        Utils.sInit(ctx);
-                        try {
-                            Natives.load(ctx);
-                        } catch (Throwable e3) {
-                            Utils.log(e3);
-                        }
-                        if (Utils.getBuildTimestamp() < 0) {
-                            return;
-                        }
-                        MainHook.getInstance().performHook(ctx, param.thisObject);
-                        sec_stage_inited = true;
-                        deleteDirIfNecessary(ctx);
+                        app = (Context) fsApp.get(null);
+                        execStartupInit(app, param.thisObject, null, false);
                     } catch (Throwable e) {
-                        log(e);
+                        log_e(e);
                         throw e;
                     }
                 }
@@ -117,17 +91,69 @@ public class StartupHook {
         } catch (Throwable e) {
             if ((e + "").contains("com.bug.zqq")) return;
             if ((e + "").contains("com.google.android.webview")) return;
-            log(e);
+            log_e(e);
             throw e;
         }
         XposedHelpers.findAndHookMethod("com.tencent.mobileqq.qfix.QFixApplication", rtLoader, "attachBaseContext", Context.class, new XC_MethodHook() {
             public void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                deleteDirIfNecessary((Context) param.args[0]);
+                deleteDirIfNecessaryNoThrow((Context) param.args[0]);
             }
         });
     }
 
-    static void deleteDirIfNecessary(Context ctx) {
+    static boolean sec_static_stage_inited = false;
+
+    /**
+     * Entry point for static or dynamic initialization.
+     * NOTICE: Do NOT change the method name or signature.
+     *
+     * @param ctx         Application context for host
+     * @param step        Step instance
+     * @param lpwReserved null, not used
+     * @param bReserved   false, not used
+     */
+    public static void execStartupInit(Context ctx, Object step, String lpwReserved, boolean bReserved) {
+        if (sec_static_stage_inited) {
+            return;
+        }
+        ClassLoader classLoader = ctx.getClassLoader();
+        if (classLoader == null) {
+            throw new AssertionError("ERROR: classLoader == null");
+        }
+        if ("true".equals(System.getProperty(QN_FULL_TAG))) {
+            XposedBridge.log("Err:QNotified reloaded??");
+            //I don't know... What happened?
+            return;
+        }
+        System.setProperty(QN_FULL_TAG, "true");
+        injectClassLoader(classLoader);
+        Initiator.init(classLoader);
+        StartupRoutine.execPostStartupInit(ctx, step, lpwReserved, bReserved);
+        sec_static_stage_inited = true;
+        deleteDirIfNecessaryNoThrow(ctx);
+    }
+
+    public static void injectClassLoader(ClassLoader classLoader) {
+        if (classLoader == null) {
+            throw new NullPointerException("classLoader == null");
+        }
+        try {
+            Field fParent = ClassLoader.class.getDeclaredField("parent");
+            fParent.setAccessible(true);
+            ClassLoader mine = StartupHook.class.getClassLoader();
+            ClassLoader curr = (ClassLoader) fParent.get(mine);
+            if (curr == null) {
+                curr = XposedBridge.class.getClassLoader();
+            }
+            if (!curr.getClass().getName().equals(HybridClassLoader.class.getName())) {
+                fParent.set(mine, new HybridClassLoader(curr, classLoader));
+            }
+        } catch (Exception e) {
+            log_e(e);
+        }
+    }
+
+    static void deleteDirIfNecessaryNoThrow(Context ctx) {
         try {
             if (Build.VERSION.SDK_INT >= 24) {
                 deleteFile(new File(ctx.getDataDir(), "app_qqprotect"));
@@ -136,7 +162,7 @@ public class StartupHook {
                 deleteFile(ctx.getFileStreamPath("hotpatch"));
             }
         } catch (Throwable e) {
-            log(e);
+            log_e(e);
         }
     }
 
@@ -166,6 +192,18 @@ public class StartupHook {
         return !file.exists();
     }
 
+    public static void log_e(Throwable th) {
+        if (th == null) return;
+        String msg = Log.getStackTraceString(th);
+        Log.e("QNdump", msg);
+        try {
+            XposedBridge.log(th);
+        } catch (NoClassDefFoundError e) {
+            Log.e("Xposed", msg);
+            Log.e("EdXposed-Bridge", msg);
+        }
+    }
+
     private static void checkClassLoaderIsolation() {
         Class<?> stub;
         try {
@@ -183,4 +221,6 @@ public class StartupHook {
         Log.e("QNdump", "currentThread.getContextClassLoader(): " + Thread.currentThread().getContextClassLoader());
         Log.e("QNdump", "Context.class: " + Context.class.getClassLoader());
     }
+
+
 }

@@ -19,37 +19,24 @@
 package nil.nadph.qnotified.util;
 
 import android.os.Parcelable;
+
 import com.tencent.mobileqq.app.QQAppInterface;
-import de.robv.android.xposed.XposedBridge;
 
-import java.lang.reflect.Field;
-
-import static nil.nadph.qnotified.util.Utils.log;
 import static nil.nadph.qnotified.util.Utils.loge;
 
 @SuppressWarnings("rawtypes")
 public class Initiator {
 
+    private Initiator() {
+        throw new AssertionError("No instance for you!");
+    }
+
     private static ClassLoader sHostClassLoader;
     private static ClassLoader sPluginParentClassLoader;
 
     public static void init(ClassLoader classLoader) {
-        if (classLoader == null) throw new NullPointerException("classLoader == null");
-        try {
-            sHostClassLoader = classLoader;
-            Field fParent = ClassLoader.class.getDeclaredField("parent");
-            fParent.setAccessible(true);
-            ClassLoader mine = Initiator.class.getClassLoader();
-            ClassLoader curr = (ClassLoader) fParent.get(mine);
-            if (curr == null) {
-                curr = XposedBridge.class.getClassLoader();
-            }
-            if (!curr.getClass().getName().equals(HybridClassLoader.class.getName())) {
-                fParent.set(mine, sPluginParentClassLoader = new HybridClassLoader(curr, classLoader));
-            }
-        } catch (Exception e) {
-            log(e);
-        }
+        sHostClassLoader = classLoader;
+        sPluginParentClassLoader = Initiator.class.getClassLoader();
     }
 
     public static ClassLoader getPluginClassLoader() {
@@ -88,7 +75,8 @@ public class Initiator {
         if (mQbossADImmersionBannerManager == null) {
             try {
                 tmp = load("cooperation.vip.qqbanner.QbossADImmersionBannerManager$1");
-                if (tmp == null) tmp = load("cooperation.vip.qqbanner.QbossADImmersionBannerManager$2");
+                if (tmp == null)
+                    tmp = load("cooperation.vip.qqbanner.QbossADImmersionBannerManager$2");
                 mQbossADImmersionBannerManager = tmp.getDeclaredField("this$0").getType();
             } catch (Exception ignored) {
             }
@@ -529,7 +517,7 @@ public class Initiator {
     public static Class _C2CMessageProcessor() {
         Class<?> ret, cref;
         for (String clzName : new String[]{"com/tencent/mobileqq/app/message/C2CMessageProcessor",
-                "com/tencent/imcore/message/C2CMessageProcessor"}) {
+            "com/tencent/imcore/message/C2CMessageProcessor"}) {
             ret = load(clzName);
             if (ret != null) return ret;
             for (int i : new int[]{4, 6, 1, 5, 7}) {
