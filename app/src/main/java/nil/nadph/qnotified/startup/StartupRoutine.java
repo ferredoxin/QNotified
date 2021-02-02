@@ -46,6 +46,7 @@ public class StartupRoutine {
      * @param bReserved   false, not used
      */
     public static void execPostStartupInit(Context ctx, Object step, String lpwReserved, boolean bReserved) {
+        HostInformationProviderKt.init((Application) ctx);
         Initiator.init(ctx.getClassLoader());
         checkLogFlag();
         try {
@@ -56,7 +57,6 @@ public class StartupRoutine {
         if (getBuildTimestamp() < 0) {
             return;
         }
-        HostInformationProviderKt.init((Application) ctx);
         MainHook.getInstance().performHook(ctx, step);
     }
 }
