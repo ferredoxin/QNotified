@@ -73,7 +73,6 @@ import nil.nadph.qnotified.util.Utils;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTIVITY_PROXY_ACTION;
 import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
 import static nil.nadph.qnotified.util.ReflexUtil.iput_object;
 import static nil.nadph.qnotified.ui.ViewBuilder.*;
@@ -227,7 +226,6 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
             public void onClick(View v) {
                 try {
                     Intent inner = new Intent(getApplication(), ExfriendListActivity.class);
-                    inner.putExtra(ACTIVITY_PROXY_ACTION, ExfriendListActivity.class);
                     Intent wrapper = new Intent();
                     wrapper.setClassName(getApplication().getPackageName(), ActProxyMgr.STUB_DEFAULT_ACTIVITY);
                     wrapper.putExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT, inner);

@@ -96,15 +96,6 @@ public class MainHook {
     /**
      * @deprecated Use {@link Activity#startActivity(Intent)} directly instead.
      */
-    @Deprecated
-    public static void startProxyActivity(Context ctx, int action) {
-        throw new RuntimeException("You Should Not use the method anymore");
-        //ctx.startActivity(new Intent(ctx, ActProxyMgr.getActivityByAction(action)));
-    }
-
-    /**
-     * @deprecated Use {@link Activity#startActivity(Intent)} directly instead.
-     */
     public static void startProxyActivity(Context ctx, Class<?> clz) {
         ctx.startActivity(new Intent(ctx, clz));
     }

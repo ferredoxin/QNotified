@@ -121,16 +121,14 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         tvStatus = (TextView) _t.getChildAt(0);
         ll.addView(subtitle(ChatTailActivity.this, "默认不换行，换行符号请输入\\n"));
 
-        ll.addView(_s = newListItemButton(this, "选择生效的群", "未选择的群将不展示小尾巴", "N/A", clickToProxyActAction(TroopSelectActivity.class)));
+        ll.addView(_s = newListItemButton(this, "选择生效的群", "未选择的群将不展示小尾巴", "N/A",
+            v -> TroopSelectActivity.startToSelectTroopsAndSaveToExfMgr(ChatTailActivity.this, ConfigItems.qn_chat_tail_troops, "选择小尾巴生效群")));
         __tv_chat_tail_groups = _s.findViewById(R_ID_VALUE);
-        ll.addView(_s = newListItemButton(this, "选择生效的好友", "未选择的好友将不展示小尾巴", "N/A", clickToProxyActAction(FriendSelectActivity.class)));
+        ll.addView(_s = newListItemButton(this, "选择生效的好友", "未选择的好友将不展示小尾巴", "N/A",
+            v -> FriendSelectActivity.startToSelectFriendsAndSaveToExfMgr(ChatTailActivity.this, ConfigItems.qn_chat_tail_friends, "选择小尾巴生效好友")));
         __tv_chat_tail_friends = _s.findViewById(R_ID_VALUE);
-        ll.addView(_s = newListItemButton(this, "设置日期格式", "请在QN内置花Q的\"聊天页自定义时间格式\"中设置", RikkaCustomMsgTimeFormatDialog.getTimeFormat(), new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Utils.showToastShort(ChatTailActivity.this, "请在QN内置花Q的\"聊天页自定义时间格式\"中设置");
-            }
-        }));
+        ll.addView(_s = newListItemButton(this, "设置日期格式", "请在QN内置花Q的\"聊天页自定义时间格式\"中设置", RikkaCustomMsgTimeFormatDialog.getTimeFormat(),
+            view -> Utils.showToastShort(ChatTailActivity.this, "请在QN内置花Q的\"聊天页自定义时间格式\"中设置")));
         __tv_chat_tail_time_format = _s.findViewById(R_ID_VALUE);
         ll.addView(subtitle(ChatTailActivity.this, "设置小尾巴"));
         ll.addView(subtitle(ChatTailActivity.this, "可用变量(点击自动输入): "));

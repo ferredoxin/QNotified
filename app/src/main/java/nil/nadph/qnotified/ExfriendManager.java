@@ -55,7 +55,6 @@ import nil.nadph.qnotified.remote.TransactionHelper;
 import nil.nadph.qnotified.util.*;
 
 import static nil.nadph.qnotified.config.Table.*;
-import static nil.nadph.qnotified.lifecycle.ActProxyMgr.ACTIVITY_PROXY_ACTION;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
 import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_any;
@@ -694,7 +693,6 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
         try {
             if (isNotifyWhenDeleted() && ((int) ptr[0]) > 0) {
                 Intent inner = new Intent(HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), ExfriendListActivity.class);
-                inner.putExtra(ACTIVITY_PROXY_ACTION, ExfriendListActivity.class);
                 Intent wrapper = new Intent();
                 wrapper.setClassName(HostInformationProviderKt.getHostInformationProvider().getApplicationContext().getPackageName(), ActProxyMgr.STUB_DEFAULT_ACTIVITY);
                 wrapper.putExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT, inner);
