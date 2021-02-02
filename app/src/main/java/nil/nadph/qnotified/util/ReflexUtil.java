@@ -1,35 +1,17 @@
 package nil.nadph.qnotified.util;
 
-import android.app.Application;
-
 import java.lang.reflect.*;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
 import de.robv.android.xposed.XposedBridge;
 
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.paramsTypesToString;
+import static nil.nadph.qnotified.util.Utils.strcmp;
 
 public class ReflexUtil {
 
-    static Application getApplication() {
-        Field f;
-        try {
-            Class<?> clz = Class.forName("com.tencent.common.app.BaseApplicationImpl");
-            f = hasField(clz, "sApplication");
-            if (f == null) {
-                return (Application) sget_object(clz, "a", clz);
-            } else {
-                return (Application) f.get(null);
-            }
-        } catch (ClassNotFoundException unused) {
-            //not in host process, just return null
-            return null;
-        } catch (Exception e) {
-            log(e);
-            throw (RuntimeException) new RuntimeException("FATAL: Utils.getApplication() failure!").initCause(e);
-        }
-    }
     public static Object sget_object(Class clazz, String name) {
         return sget_object(clazz, name, null);
     }

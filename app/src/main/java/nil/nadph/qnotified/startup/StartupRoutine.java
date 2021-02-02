@@ -23,8 +23,8 @@ import android.content.Context;
 
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.MainHook;
+import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Natives;
-import nil.nadph.qnotified.util.ReflexUtil;
 
 import static nil.nadph.qnotified.startup.LogUtil.log;
 import static nil.nadph.qnotified.util.Utils.checkLogFlag;
@@ -46,6 +46,7 @@ public class StartupRoutine {
      * @param bReserved   false, not used
      */
     public static void execPostStartupInit(Context ctx, Object step, String lpwReserved, boolean bReserved) {
+        Initiator.init(ctx.getClassLoader());
         checkLogFlag();
         try {
             Natives.load(ctx);
