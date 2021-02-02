@@ -193,10 +193,6 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
                 ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
                 cfg.putString(targetKeyName, ret);
                 cfg.save();
-//                }     if (mActionInt == FriendSelectActivity.class) {
-//                    cfg.putString(ConfigItems.qn_chat_tail_friends, ret);
-//                    cfg.save();
-//                }
                 this.finish();
             } catch (Exception e) {
                 try {
