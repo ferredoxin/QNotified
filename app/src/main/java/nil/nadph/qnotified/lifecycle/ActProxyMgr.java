@@ -45,7 +45,8 @@ public class ActProxyMgr {
             || className.startsWith("me.zpp0196.qqpurify.activity.")
             || className.startsWith("me.singleneuron.")
             || className.startsWith("me.ketal.activity.")
-            || className.startsWith("com.rymmmmm.activity.");
+            || className.startsWith("com.rymmmmm.activity.")
+            || className.startsWith("cn.lliiooll.activity.");
     }
 
     public static boolean isResourceInjectionRequired(@NonNull String className) {

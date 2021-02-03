@@ -29,7 +29,11 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.text.HtmlCompat;
 import androidx.core.view.ViewCompat;
@@ -40,6 +44,7 @@ import com.tencent.mobileqq.widget.BounceScrollView;
 import java.io.File;
 import java.io.IOException;
 
+import cn.lliiooll.activity.MuteCfgActivity;
 import me.ketal.activity.ModifyLeftSwipeReplyActivity;
 import me.ketal.hook.LeftSwipeReplyHook;
 import me.ketal.hook.MultiActionHook;
@@ -47,7 +52,11 @@ import me.ketal.hook.SortAtPanel;
 import me.kyuubiran.hook.AutoMosaicName;
 import me.kyuubiran.hook.ShowSelfMsgByLeft;
 import me.singleneuron.activity.ChangeDrawerWidthActivity;
-import me.singleneuron.hook.*;
+import me.singleneuron.hook.ForceSystemAlbum;
+import me.singleneuron.hook.ForceSystemCamera;
+import me.singleneuron.hook.ForceSystemFile;
+import me.singleneuron.hook.NewRoundHead;
+import me.singleneuron.hook.NoApplet;
 import me.singleneuron.hook.decorator.DisableQzoneSlideCamera;
 import me.singleneuron.hook.decorator.SimpleReceiptMessage;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
@@ -59,11 +68,28 @@ import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.dialog.RepeaterIconSettingDialog;
 import nil.nadph.qnotified.dialog.RikkaDialog;
-import nil.nadph.qnotified.hook.*;
-import nil.nadph.qnotified.util.Initiator;
+import nil.nadph.qnotified.hook.$endGiftHook;
+import nil.nadph.qnotified.hook.CheatHook;
+import nil.nadph.qnotified.hook.DarkOverlayHook;
+import nil.nadph.qnotified.hook.FakeBatteryHook;
+import nil.nadph.qnotified.hook.FavMoreEmo;
+import nil.nadph.qnotified.hook.FileRecvRedirect;
+import nil.nadph.qnotified.hook.GagInfoDisclosure;
+import nil.nadph.qnotified.hook.InspectMessage;
+import nil.nadph.qnotified.hook.JumpController;
+import nil.nadph.qnotified.hook.MultiForwardAvatarHook;
+import nil.nadph.qnotified.hook.MuteQZoneThumbsUp;
+import nil.nadph.qnotified.hook.PreUpgradeHook;
+import nil.nadph.qnotified.hook.PttForwardHook;
+import nil.nadph.qnotified.hook.RepeaterHook;
+import nil.nadph.qnotified.hook.ReplyNoAtHook;
+import nil.nadph.qnotified.hook.RevokeMsgHook;
+import nil.nadph.qnotified.hook.RoundAvatarHook;
+import nil.nadph.qnotified.hook.ShowPicGagHook;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.NewsHelper;
 import nil.nadph.qnotified.util.UpdateCheck;
@@ -75,8 +101,27 @@ import static androidx.core.text.HtmlCompat.FROM_HTML_MODE_LEGACY;
 import static me.singleneuron.util.KotlinUtilsKt.addViewConditionally;
 import static me.singleneuron.util.QQVersion.QQ_8_2_0;
 import static me.singleneuron.util.QQVersion.QQ_8_2_6;
-import static nil.nadph.qnotified.ui.ViewBuilder.*;
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.ui.ViewBuilder.R_ID_DESCRIPTION;
+import static nil.nadph.qnotified.ui.ViewBuilder.R_ID_TITLE;
+import static nil.nadph.qnotified.ui.ViewBuilder.R_ID_VALUE;
+import static nil.nadph.qnotified.ui.ViewBuilder.clickTheComing;
+import static nil.nadph.qnotified.ui.ViewBuilder.clickToProxyActAction;
+import static nil.nadph.qnotified.ui.ViewBuilder.clickToUrl;
+import static nil.nadph.qnotified.ui.ViewBuilder.doSetupForPrecondition;
+import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemButton;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemConfigSwitchIfValid;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemDummy;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemSwitchConfigNext;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemSwitchStub;
+import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
+import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
+import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_INFO;
+import static nil.nadph.qnotified.util.Utils.dip2px;
+import static nil.nadph.qnotified.util.Utils.get_RGB;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.showToast;
 
 @SuppressLint("Registered")
 public class SettingsActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener, Runnable {
@@ -155,13 +200,17 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
                 return true;
             }
         });
+        ll.addView(newListItemButton(this, "屏蔽消息", "安静一点!", "",
+            clickToProxyActAction(MuteCfgActivity.class)));
         mRikkaTitle = _tmp_vg.findViewById(R_ID_TITLE);
         mRikkaDesc = _tmp_vg.findViewById(R_ID_DESCRIPTION);
         ll.addView(_tmp_vg);
-        ll.addView(newListItemButton(this, "QQ净化[WIP]", "开发中...", null, clickToProxyActAction(me.zpp0196.qqpurify.activity.MainActivity.class)));
+        ll.addView(newListItemButton(this, "QQ净化[WIP]", "开发中...", null,
+            clickToProxyActAction(me.zpp0196.qqpurify.activity.MainActivity.class)));
         ll.addView(newListItemHookSwitchInit(this, "语音转发", "长按语音消息", PttForwardHook.get()));
         ll.addView(newListItemHookSwitchInit(this, " +1", "不是复读机", RepeaterHook.get()));
-        ll.addView(newListItemButton(this, "自定义+1图标", null, null, RepeaterIconSettingDialog.OnClickListener_createDialog(this)));
+        ll.addView(newListItemButton(this, "自定义+1图标", null, null,
+            RepeaterIconSettingDialog.OnClickListener_createDialog(this)));
         ll.addView(subtitle(this, "净化设置"));
         if (ReplyNoAtHook.get().isValid()) {
             ll.addView(newListItemHookSwitchInit(this, "禁止回复自动@", "去除回复消息时自动@特性", ReplyNoAtHook.get()));
@@ -171,7 +220,8 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(subtitle(this, "    注:屏蔽后可能仍有[橙字],但不会有通知"));
         ll.addView(_t = newListItemButton(this, "屏蔽指定群@全体成员通知", HtmlCompat.fromHtml("<font color='"
                 + get_RGB(hiColor.getDefaultColor()) + "'>[@全体成员]</font>就这点破事", FROM_HTML_MODE_LEGACY), "%d个群",
-            v -> TroopSelectActivity.startToSelectTroopsAndSaveToExfMgr(SettingsActivity.this, ConfigItems.qn_muted_at_all, "屏蔽@全体成员")));
+            v -> TroopSelectActivity.startToSelectTroopsAndSaveToExfMgr(SettingsActivity.this,
+                ConfigItems.qn_muted_at_all, "屏蔽@全体成员")));
         __tv_muted_atall = _t.findViewById(R_ID_VALUE);
         ll.addView(_t = newListItemButton(this, "屏蔽指定群的红包通知", HtmlCompat.fromHtml("<font color='"
                 + get_RGB(hiColor.getDefaultColor()) + "'>[QQ红包][有红包]</font>恭喜发财", FROM_HTML_MODE_LEGACY), "%d个群",
