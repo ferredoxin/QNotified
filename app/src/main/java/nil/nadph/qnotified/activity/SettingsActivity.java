@@ -66,6 +66,7 @@ import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.NewsHelper;
+import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.UpdateCheck;
 import nil.nadph.qnotified.util.Utils;
 
@@ -79,7 +80,7 @@ import static nil.nadph.qnotified.ui.ViewBuilder.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressLint("Registered")
-public class SettingsActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener, Runnable {
+public class SettingsActivity extends IphoneTitleBarActivityCompat implements Runnable {
 
     private static final int R_ID_BTN_FILE_RECV = 0x300AFF91;
     private static final String qn_enable_fancy_rgb = "qn_enable_fancy_rgb";
@@ -189,10 +190,11 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(newListItemHookSwitchInit(this, "显示设置禁言的管理", "即使你只是普通群成员", GagInfoDisclosure.get()));
         addViewConditionally(ll, this, "小程序分享转链接", "感谢Alcatraz323开发远离小程序,感谢神经元移植到Xposed", NoApplet.INSTANCE);
         ll.addView(subtitle(this, "实验性功能(未必有效)"));
-        ll.addView(_t = newListItemButton(this, "下载重定向", "N/A", "N/A", this));
+        ll.addView(_t = newListItemButton(this, "下载重定向", "N/A", "N/A", this::onFileRecvRedirectClick));
         _t.setId(R_ID_BTN_FILE_RECV);
         __recv_desc = _t.findViewById(R_ID_DESCRIPTION);
         __recv_status = _t.findViewById(R_ID_VALUE);
+        ll.addView(newListItemButton(this, "添加账号", "需要手动登录, 核心代码由 JamGmilk 提供", null, this::onAddAccountClick));
         ll.addView(newListItemHookSwitchInit(this, "屏蔽小程序广告", "需要手动关闭广告, 请勿反馈此功能无效", RemoveMiniProgramAd.get()));
         ll.addView(newListItemHookSwitchInit(this, "昵称/群名字打码", "娱乐功能 不进行维护", AutoMosaicName.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "自己的消息和头像居左显示", "娱乐功能 不进行维护", ShowSelfMsgByLeft.INSTANCE));
@@ -219,7 +221,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         if (SortAtPanel.INSTANCE.isValid()) {
             ll.addView(newListItemHookSwitchInit(this, "修改@界面排序", "排序由群主管理员至正常人员", SortAtPanel.INSTANCE));
         }
-    
+
         ll.addView(subtitle(this, "好友列表"));
         ll.addView(newListItemButton(this, "打开资料卡", "打开指定用户的资料卡", null, new View.OnClickListener() {
             @Override
@@ -380,23 +382,60 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Vi
         isVisible = false;
     }
 
-    @Override
-    public void onClick(View v) {
+    public void onAddAccountClick(View v) {
+        CustomDialog dialog = CustomDialog.createFailsafe(this);
+        Context ctx = dialog.getContext();
+        EditText editText = new EditText(ctx);
+        editText.setTextSize(16);
+        int _5 = dip2px(SettingsActivity.this, 5);
+        editText.setPadding(_5, _5, _5, _5);
+        ViewCompat.setBackground(editText, new HighContrastBorder());
+        LinearLayout linearLayout = new LinearLayout(ctx);
+        linearLayout.addView(editText, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, _5 * 2));
+        AlertDialog alertDialog = (AlertDialog) dialog
+            .setTitle("输入要添加的QQ号")
+            .setView(linearLayout)
+            .setPositiveButton("添加", null)
+            .setNegativeButton("取消", null)
+            .create();
+        alertDialog.show();
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v1 -> {
+            String uinText = editText.getText().toString();
+            long uin = -1;
+            try {
+                uin = Long.parseLong(uinText);
+            } catch (NumberFormatException ignored) {
+            }
+            if (uin < 10000) {
+                Toasts.error(SettingsActivity.this, "QQ号无效");
+                return;
+            }
+            boolean success;
+            File f = new File(getFilesDir(), "user/u_" + uin + "_t");
+            try {
+                success = f.createNewFile();
+            } catch (IOException e) {
+                Toasts.error(SettingsActivity.this, e.toString().replaceAll("java\\.(lang|io)\\.", ""));
+                return;
+            }
+            if (success) {
+                Toasts.success(SettingsActivity.this, "已添加");
+            } else {
+                Toasts.info(SettingsActivity.this, "该账号已存在");
+                return;
+            }
+            alertDialog.dismiss();
+        });
+    }
+
+    public void onFileRecvRedirectClick(View v) {
         if (v.getId() == R_ID_BTN_FILE_RECV) {
             if (FileRecvRedirect.get().checkPreconditions()) {
                 showChangeRecvPathDialog();
             } else {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        doSetupForPrecondition(SettingsActivity.this, FileRecvRedirect.get());
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                showChangeRecvPathDialog();
-                            }
-                        });
-                    }
+                new Thread(() -> {
+                    doSetupForPrecondition(SettingsActivity.this, FileRecvRedirect.get());
+                    runOnUiThread(this::showChangeRecvPathDialog);
                 }).start();
             }
         }
