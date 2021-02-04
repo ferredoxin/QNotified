@@ -21,7 +21,7 @@ package nil.nadph.qnotified.base;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import nil.nadph.qnotified.mvc.InterfaceConfiguration;
+import nil.nadph.qnotified.mvc.base.AbsConfigSection;
 import nil.nadph.qnotified.util.Const;
 
 /**
@@ -50,26 +50,27 @@ public interface AbsFunctionItem {
     /**
      * Under most circumstances, you just want to {@code return null;}.
      *
-     * @return optional search keywords if you are afraid that user cannot find it with name or description.
+     * @return optional search keywords if you are afraid user cannot find it with a name or description.
      */
     @Nullable
     String[] getExtraSearchKeywords();
 
     /**
-     * 这个选项用来表示该功能是不是已经写完了, 请不要用于显示是否兼容此版本QQ/TIM!
-     * 还没开始写的功能 return false, 写完了 return true, 写完了不能用也 true.
+     * Whether function is compatible with current version QQ/TIM.
      *
-     * @return whether this function is available. If false, this function UI will turn grey and auto switch off.
+     * @return true if this function is compatible with the current version of QQ/TIM
      */
-    boolean isAvailable();
+    boolean isCompatible();
 
     /**
-     * See {@link #isAvailable()}.
+     * A HUMAN-READABLE String meaning which versions are compatible(NOT FOR NLP).
+     * Keep it short.
+     * See {@link #isCompatible()}.
      *
-     * @return A human-readable CharSequence that represents why this function is unavailable. May be null.
+     * @return human-readable, eg."QQ7.6.0-8.5.10, TIM>=2.3.0". May be null.
      */
     @Nullable
-    CharSequence getUnavailableReason();
+    String getCompatibleVersions();
 
     /**
      * @return Hook tasks which this function relies on. If no hook task is required,
@@ -85,6 +86,13 @@ public interface AbsFunctionItem {
      * @return whether this hook supports runtime dynamic hook init.
      */
     boolean isRuntimeHookSupported();
+
+    /**
+     * Please return false
+     *
+     * @return false
+     */
+    boolean isTodo();
 
     /**
      * For an average hook, return false if it works.
@@ -112,24 +120,57 @@ public interface AbsFunctionItem {
      */
     boolean isEnabled();
 
+    /**
+     * If you this function instance is not Proxy, just {@code return getClass().getName();},
+     * otherwise return a constant unique string from your InvocationHandler.
+     *
+     * @return a unique but constant string id for this function
+     */
+    @NonNull
+    String getUniqueIdentifier();
+
     // User Interface Stuff ----------------------------------
 
     /**
-     * Retrieve the UI configuration that control what will be displayed to user for this function.
+     * False if you want to hide the main switch, or its main switch is controlled by some other condition.
      *
-     * @return may be null, If null, a simplest list item with a enable/disable switch will be used.
+     * @return whether a main switch for this function should be shown to user
+     */
+    boolean isShowMainSwitch();
+
+    /**
+     * Optional SHORT text to show a status for current function.
+     *
+     * @return eg "1/4" or "3个群", may be null
      */
     @Nullable
-    InterfaceConfiguration getInterfaceConfiguration();
+    CharSequence getSummaryText();
+
+    /**
+     * This return value should correspond with {@link #createConfigSection()}.
+     * If false, a simplest list item with an enable-disable switch will be used.
+     *
+     * @return whether this function has a detailed config section(user interface)
+     */
+    boolean hasConfigSection();
+
+    /**
+     * Create the detailed config user interface
+     * Retrieve the UI configuration that control what will be displayed to user for this function.
+     *
+     * @return must NOT be null if {@link #hasConfigSection()} returns true, otherwise return null
+     */
+    @Nullable
+    AbsConfigSection createConfigSection();
 
     // SMART Stuff -------------------------------------------
 
     /**
-     * Retrieve a status for current hook to tell framework controller whether this function is
-     * working properly. This status usually comes from it's hook task, but not always the case.
+     * Retrieve a status for the current hook to tell framework controller whether this function is
+     * working properly. This status usually comes from its hook task, but not always the case.
      *
      * @return current status for this function
      */
     @NonNull
-    BaseStatus getFunctionStatus();
+    ErrorStatus getFunctionStatus();
 }

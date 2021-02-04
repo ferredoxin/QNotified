@@ -16,14 +16,11 @@
  * along with this software.  If not, see
  * <https://www.gnu.org/licenses/>.
  */
-package nil.nadph.qnotified.mvc;
+package nil.nadph.qnotified.base;
 
 /**
- * UI Configuration that will be used to generate function-config screen to user.
+ * This class is reserved for BeanShell script use only.
+ * Do not use it for other purpose.
  */
-public interface InterfaceConfiguration {
-
-    boolean shouldShowMasterSwitch();
-
-
+public interface FunctionWithHookInterface extends AbsFunctionItem, AbsHookTask {
 }
