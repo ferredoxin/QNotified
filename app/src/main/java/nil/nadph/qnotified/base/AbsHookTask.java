@@ -27,24 +27,24 @@ import nil.nadph.qnotified.util.NoThrow;
 
 /**
  * The hook task which will get executed once at most, when plugin
- * starts up or when user switch a function on.
- * NOTICE: A hook task will executed at most ONCE, if user
+ * starts up or when user switches a function on.
+ * NOTICE: A hook task will be executed at most ONCE, if user
  * enable-disable-enable a function, the task will only get
  * executed ONCE then the function is enable at the first time.
  * This hook task is meant for lazy-init hook so that application
  * won't run too slowly, and this task MUST NOT be time-consuming because
  * it will be executed on the UI Thread, if you want to execute
- * time-consuming task, see {@link Step}.
+ * a time-consuming task, see {@link Step}.
  */
 public interface AbsHookTask {
 
     /**
-     * If this task have not been executed, {@link BaseStatus#INACTIVE} will be returned.
+     * If this task has not been executed, {@link ErrorStatus#INACTIVE} will be returned.
      *
      * @return current status for this task.
      */
     @NonNull
-    BaseStatus getTaskStatus();
+    ErrorStatus getTaskStatus();
 
     /**
      * Execute this task now, wait it to finish, ang get the result.
@@ -54,7 +54,7 @@ public interface AbsHookTask {
      */
     @NonNull
     @NoThrow
-    BaseStatus execute();
+    ErrorStatus execute();
 
     /**
      * @return whether this task has been executed
@@ -63,7 +63,7 @@ public interface AbsHookTask {
 
     /**
      * Sth related to {@link nil.nadph.qnotified.util.DexKit}. <br/>
-     * if there is no steps, return {@link BaseHookTask#EMPTY_STEPS}.
+     * if there are no steps, return {@link BaseHookTask#EMPTY_STEPS}.
      *
      * @return time-consuming steps that should be done BEFORE this task is executed.
      */

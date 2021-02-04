@@ -24,7 +24,7 @@ import androidx.annotation.Nullable;
 /**
  * Status representing {@link AbsFunctionItem}, or {@link AbsHookTask}.
  */
-public class BaseStatus {
+public class ErrorStatus {
 
     /**
      * For {@link AbsFunctionItem}: This function is turned off, or is unavailable.<br/>
@@ -33,7 +33,7 @@ public class BaseStatus {
     public static final int STATUS_INACTIVE = 0;
 
     /**
-     * For {@link AbsFunctionItem}: Rising edge when user turn on.<br/>
+     * For {@link AbsFunctionItem}: Rising edge when user turns on.<br/>
      * For {@link AbsHookTask}: The hook task is being executed.
      */
     public static final int STATUS_INITIALIZATION = 1;
@@ -64,38 +64,38 @@ public class BaseStatus {
     @Nullable
     public final String message;
 
-    public BaseStatus(int status, @Nullable String msg) {
+    public ErrorStatus(int status, @Nullable String msg) {
         this.status = status;
         this.message = msg;
     }
 
     @NonNull
-    public static final BaseStatus INACTIVE = new BaseStatus(STATUS_INACTIVE, null);
+    public static final ErrorStatus INACTIVE = new ErrorStatus(STATUS_INACTIVE, null);
 
     @NonNull
-    public static final BaseStatus INITIALIZATION = new BaseStatus(STATUS_INITIALIZATION, null);
+    public static final ErrorStatus INITIALIZATION = new ErrorStatus(STATUS_INITIALIZATION, null);
 
     @NonNull
-    public static final BaseStatus SUCCESS = new BaseStatus(STATUS_SUCCESS, null);
+    public static final ErrorStatus SUCCESS = new ErrorStatus(STATUS_SUCCESS, null);
 
     @NonNull
-    public static BaseStatus SUCCESS(@Nullable String msg) {
-        return new BaseStatus(STATUS_SUCCESS, msg);
+    public static ErrorStatus SUCCESS(@Nullable String msg) {
+        return new ErrorStatus(STATUS_SUCCESS, msg);
     }
 
     @NonNull
-    public static final BaseStatus WARNING = new BaseStatus(STATUS_WARNING, null);
+    public static final ErrorStatus WARNING = new ErrorStatus(STATUS_WARNING, null);
 
     @NonNull
-    public static BaseStatus WARNING(@Nullable String msg) {
-        return new BaseStatus(STATUS_WARNING, msg);
+    public static ErrorStatus WARNING(@Nullable String msg) {
+        return new ErrorStatus(STATUS_WARNING, msg);
     }
 
     @NonNull
-    public static final BaseStatus FAILED = new BaseStatus(STATUS_FAILED, null);
+    public static final ErrorStatus FAILED = new ErrorStatus(STATUS_FAILED, null);
 
     @NonNull
-    public static BaseStatus FAILED(@Nullable String msg) {
-        return new BaseStatus(STATUS_FAILED, msg);
+    public static ErrorStatus FAILED(@Nullable String msg) {
+        return new ErrorStatus(STATUS_FAILED, msg);
     }
 }

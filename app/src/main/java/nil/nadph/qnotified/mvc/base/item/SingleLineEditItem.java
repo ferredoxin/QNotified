@@ -1,5 +1,5 @@
 /* QNotified - An Xposed module for QQ/TIM
- * Copyright (C) 2019-2021 xenonhydride@gmail.com
+ * Copyright (C) 2019-2020 xenonhydride@gmail.com
  * https://github.com/ferredoxin/QNotified
  *
  * This software is free software: you can redistribute it and/or
@@ -16,7 +16,21 @@
  * along with this software.  If not, see
  * <https://www.gnu.org/licenses/>.
  */
-package nil.nadph.qnotified.base;
+package nil.nadph.qnotified.mvc.base.item;
 
-public interface AbsConfigSection {
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+public interface SingleLineEditItem extends BaseStatefulItem {
+
+    void setOnTextChangeListener(@Nullable OnTextChangeListener listener);
+
+    @NonNull
+    String getText();
+
+    void setText(@NonNull String text);
+
+    interface OnTextChangeListener {
+        void onTextChanged(@NonNull SingleLineEditItem item, @NonNull String text);
+    }
 }
