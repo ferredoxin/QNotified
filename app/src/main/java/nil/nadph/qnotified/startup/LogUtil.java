@@ -4,7 +4,6 @@ import android.util.Log;
 
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.BuildConfig;
-import nil.nadph.qnotified.util.BugCollector;
 
 class LogUtil {
 
