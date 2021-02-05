@@ -2,11 +2,16 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
+def signingFilePath = 'signing.gradle'
+def performSigning = file(signingFilePath).exists()
+if (performSigning) {
+    apply from: signingFilePath
+}
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
     ndkVersion "21.3.6528147"
-    
     defaultConfig {
         applicationId "nil.nadph.qnotified"
         minSdkVersion 21
@@ -56,6 +61,18 @@ android {
     buildFeatures {
         viewBinding true
     }
+    if (performSigning) {
+        signingConfigs {
+            release {
+                storeFile file(project.signing.storeFilePath)
+                storePassword project.signing.storePassword
+                keyAlias project.signing.keyAlias
+                keyPassword project.signing.keyPassword
+                v1SigningEnabled true
+                v2SigningEnabled true
+            }
+        }
+    }   
 }
 
 dependencies {
