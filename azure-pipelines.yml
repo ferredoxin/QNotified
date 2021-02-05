@@ -4,10 +4,10 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/android
 
 trigger:
-- main
+- master
 
 pool:
-  vmImage: 'macos-latest'
+  vmImage: 'ubuntu-latest'
 
 steps:
 - task: Gradle@2
@@ -17,4 +17,23 @@ steps:
     gradleOptions: '-Xmx3072m'
     publishJUnitResults: false
     testResultsFiles: '**/TEST-*.xml'
-    tasks: 'assembleDebug'
+    tasks: 'assembleRelease'
+
+- task: AndroidSigning@3
+  inputs:
+    apkFiles: '**/*.apk'
+    apksignerKeystoreFile: 'en-YCH.jks'
+    apksignerKeystorePassword: '$(keyStorePassword)'
+    apksignerKeystoreAlias: '$(keyAlias)'
+    apksignerKeyPassword: '$(keyPassword)'
+
+- task: AppCenterDistribute@3
+  inputs:
+    serverEndpoint: 'QNotified'
+    appSlug: 'QNotifiedDev/QNotified'
+    appFile: '**/*.apk'
+    symbolsOption: 'Android'
+    releaseNotesOption: 'input'
+    releaseNotesInput: '$(Build.SourceVersionMessage)'
+    destinationType: 'groups'
+    distributionGroupId: 'c7a5954e-6861-438f-ad02-fb765d4d889f'
