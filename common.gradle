@@ -31,4 +31,8 @@ gradle.allprojects {
         }
         return ""
     }
+
+    ext.getTimeStamp = {
+        return System.currentTimeSeconds()
+    }
 }
