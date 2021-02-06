@@ -1,11 +1,13 @@
 ---
 name: Bug report
-about: 错误反馈/Bug report / 不使用此模板提交BUG会被close / Will close without this template to report a Bug
+about: 错误反馈/Bug report / 不使用此模板提交BUG会被close
 title: "[此处填写QQ或TIM版本号] 简要概况问题"
 labels: bug
 assignees: ''
 
 ---
+
+- [ ] 是否阅读[提问的智慧](https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way/blob/main/README-zh_CN.md)
 
 **QQ(TIM)版本/QQ(TIM) Version**
 
@@ -30,3 +32,4 @@ assignees: ''
 （此处贴日志）
 
 </code></pre></details>
+
