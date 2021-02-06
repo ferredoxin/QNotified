@@ -1,13 +1,14 @@
 ---
 name: Bug report
-about: 错误反馈/Bug report / 不使用此模板提交BUG会被close
+about: 错误反馈/Bug report \n 不使用此模板提交BUG会被close/Will close without this template to report a Bug
 title: "[此处填写QQ或TIM版本号] 简要概况问题"
 labels: bug
 assignees: ''
 
 ---
 
-- [ ] 是否阅读[提问的智慧](https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way/blob/main/README-zh_CN.md)
+<!--- 在你提交该issue之前，请浏览：https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way/blob/main/README-zh_CN.md -->
+<!--- Befor you submit this issuse,please visit：http://www.catb.org/~esr/faqs/smart-questions.html -->
 
 **QQ(TIM)版本/QQ(TIM) Version**
 
