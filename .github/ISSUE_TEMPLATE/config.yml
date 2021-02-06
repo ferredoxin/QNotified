@@ -3,3 +3,6 @@ contact_links:
   - name: QNotified Telegram Bot
     url: https://t.me/QNotified_bot
     about: Our Telegram Bot 
+  - name: 提问的智慧
+    url: https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way/blob/main/README-zh_CN.md
+    about: 反馈任何问题前请务必阅读
