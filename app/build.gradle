@@ -16,7 +16,7 @@ android {
         applicationId "nil.nadph.qnotified"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode (getTimeStamp.call() as int)
+        versionCode(getTimeStamp.call() as int)
         versionName "0.8.11" + (getGitHeadRefsSuffix.call() as String)
         multiDexEnabled false
         ndk {
@@ -29,11 +29,26 @@ android {
             }
         }
     }
+    if (performSigning) {
+        signingConfigs {
+            release {
+                storeFile file(project.signing.storeFilePath)
+                storePassword project.signing.storePassword
+                keyAlias project.signing.keyAlias
+                keyPassword project.signing.keyPassword
+                v1SigningEnabled true
+                v2SigningEnabled true
+            }
+        }
+    }
     buildTypes {
         release {
             shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            if (performSigning) {
+                signingConfig signingConfigs.release
+            }
         }
         debug {
             shrinkResources true
@@ -61,18 +76,6 @@ android {
     buildFeatures {
         viewBinding true
     }
-    if (performSigning) {
-        signingConfigs {
-            release {
-                storeFile file(project.signing.storeFilePath)
-                storePassword project.signing.storePassword
-                keyAlias project.signing.keyAlias
-                keyPassword project.signing.keyPassword
-                v1SigningEnabled true
-                v2SigningEnabled true
-            }
-        }
-    }   
 }
 
 dependencies {
