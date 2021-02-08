@@ -76,7 +76,6 @@ public class LeftSwipeReplyHook extends CommonDelayableHook {
     protected boolean initOnce() {
         try {
             Method replyMethod = DexKit.doFindMethod(DexKit.N_LeftSwipeReply_Helper__reply);
-            if (replyMethod == null) return false;
             Class<?> hookClass = replyMethod.getDeclaringClass();
             String methodName = H.isTIM() ? "L" : "a";
             XposedHelpers.findAndHookMethod(hookClass, methodName, float.class, float.class, new XC_MethodHook() {
