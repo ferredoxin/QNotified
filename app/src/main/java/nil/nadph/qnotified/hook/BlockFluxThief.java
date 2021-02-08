@@ -67,7 +67,7 @@ public class BlockFluxThief extends CommonDelayableHook {
                     Class<?> cHttpDownloader = param.method.getDeclaringClass();
                     Method mGetFilePath = cHttpDownloader.getMethod("getFilePath", String.class);
                     if (mGetFilePath == null) {
-                        mGetFilePath = Utils.hasMethod(mGetFilePath, "d", null, String.class, String.class);
+                        mGetFilePath = ReflexUtil.hasMethod(mGetFilePath, "d", null, String.class, String.class);
                     }
                     String savePath = (String) mGetFilePath.invoke(null, url);
                     if (!new File(savePath).exists()) {

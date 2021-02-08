@@ -38,6 +38,7 @@ import nil.nadph.qnotified.ui.ProportionDrawable;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.SimpleBgDrawable;
 import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.ReflexUtil;
 import nil.nadph.qnotified.util.Utils;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -55,7 +56,7 @@ public class InjectDelayableHooks {
         inited = true;
         Activity activity = (Activity) iget_object_or_null(director, "a", load("mqq/app/AppActivity"));
         if (activity == null)
-            activity = (Activity) Utils.getFirstNSFByType(director, load("mqq/app/AppActivity"));
+            activity = (Activity) ReflexUtil.getFirstNSFByType(director, load("mqq/app/AppActivity"));
         final Activity ctx = activity;
         boolean needDeobf = false;
         AbsDelayableHook[] hooks = AbsDelayableHook.queryDelayableHooks();

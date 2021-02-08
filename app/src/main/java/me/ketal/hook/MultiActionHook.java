@@ -45,7 +45,6 @@ import nil.nadph.qnotified.util.DexKit;
 import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
 import static nil.nadph.qnotified.util.Initiator._ChatMessage;
 import static nil.nadph.qnotified.util.ReflexUtil.*;
-import static nil.nadph.qnotified.util.Utils.getFirstByType;
 import static nil.nadph.qnotified.util.Utils.log;
 
 public class MultiActionHook extends CommonDelayableHook {

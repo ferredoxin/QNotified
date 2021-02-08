@@ -35,6 +35,7 @@ import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.NonNull;
+import nil.nadph.qnotified.util.ReflexUtil;
 import nil.nadph.qnotified.util.Utils;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -74,7 +75,7 @@ public class SettingEntryHook extends CommonDelayableHook {
                             Class<?> clz = load("com/tencent/mobileqq/widget/FormCommonSingleLineItem");
                             if (clz == null)
                                 clz = load("com/tencent/mobileqq/widget/FormSimpleItem");
-                            itemRef = (View) Utils.getFirstNSFByType(param.thisObject, clz);
+                            itemRef = (View) ReflexUtil.getFirstNSFByType(param.thisObject, clz);
                         }
                         View item = (View) new_instance(itemRef.getClass(), param.thisObject, Context.class);
                         item.setId(R_ID_SETTING_ENTRY);
