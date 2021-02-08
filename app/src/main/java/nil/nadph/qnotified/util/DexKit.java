@@ -101,8 +101,9 @@ public class DexKit {
     public static final int N_LeftSwipeReply_Helper__reply = 20006;
     public static final int N_AtPanel__showDialogAtView = 20007;
     public static final int N_AtPanel__refreshUI = 20008;
+    public static final int N_PluginProxyActivity__initPlugin = 20009;
     
-    public static final int DEOBF_NUM_N = 8;
+    public static final int DEOBF_NUM_N = 9;
     
     
     @Nullable
@@ -344,6 +345,8 @@ public class DexKit {
                 return "atpanel__showDialogAtView";
             case N_AtPanel__refreshUI:
                 return "atpanel__refreshUI";
+            case N_PluginProxyActivity__initPlugin:
+                return "pluginproxyact__initplugin";
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
@@ -469,6 +472,9 @@ public class DexKit {
             case N_AtPanel__showDialogAtView:
                 ret = "com/tencent/mobileqq/troop/quickat/ui/AtPanel";
                 break;
+            case N_PluginProxyActivity__initPlugin:
+                ret = "com/tencent/mobileqq/pluginsdk/PluginProxyActivity";
+                break;
             default:
                 ret = null;
         }
@@ -573,6 +579,8 @@ public class DexKit {
                 return new byte[][]{new byte[]{0x11, 0x72, 0x65, 0x73, 0x75, 0x6C, 0x74, 0x4C, 0x69, 0x73, 0x74, 0x20, 0x3D, 0x20, 0x6E, 0x75, 0x6C, 0x6C}};
             case N_AtPanel__showDialogAtView:
                 return new byte[][]{new byte[]{0x1b, 0x73, 0x68, 0x6F, 0x77, 0x44, 0x69, 0x61, 0x6C, 0x6F, 0x67, 0x41, 0x74, 0x56, 0x69, 0x65, 0x77}};
+            case N_PluginProxyActivity__initPlugin:
+                return new byte[][]{new byte[]{0x33, 0x50, 0x6C, 0x75, 0x67, 0x69, 0x6E, 0x50, 0x72, 0x6F, 0x78, 0x79, 0x41, 0x63, 0x74, 0x69, 0x76, 0x69, 0x74, 0x79, 0x2E, 0x69}};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
@@ -647,6 +655,8 @@ public class DexKit {
             case N_AtPanel__refreshUI:
             case N_AtPanel__showDialogAtView:
                 return new int[]{10, 4};
+            case N_PluginProxyActivity__initPlugin:
+                return new int[]{1};
             case C_CustomWidgetUtil:
                 return new int[]{5, 4, 9};
             case C_ClockInEntryHelper:
@@ -857,6 +867,12 @@ public class DexKit {
             case N_BASE_CHAT_PIE__updateSession:
                 for (DexMethodDescriptor m : __methods) {
                     if (m.declaringClass.replace('/', '.').contains(_BaseChatPie().getName()))
+                        return m;
+                }
+                break;
+            case N_PluginProxyActivity__initPlugin:
+                for (DexMethodDescriptor m : __methods) {
+                    if (m.declaringClass.replace('/', '.').contains("com.tencent.mobileqq.pluginsdk.PluginProxyActivity"))
                         return m;
                 }
                 break;
