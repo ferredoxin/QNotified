@@ -43,6 +43,7 @@ import java.io.IOException;
 import me.ketal.activity.ModifyLeftSwipeReplyActivity;
 import me.ketal.hook.LeftSwipeReplyHook;
 import me.ketal.hook.MultiActionHook;
+import me.ketal.hook.SendFavoriteHook;
 import me.ketal.hook.SortAtPanel;
 import me.kyuubiran.hook.AutoMosaicName;
 import me.kyuubiran.hook.ShowSelfMsgByLeft;
@@ -220,6 +221,9 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         }
         if (SortAtPanel.INSTANCE.isValid()) {
             ll.addView(newListItemHookSwitchInit(this, "修改@界面排序", "排序由群主管理员至正常人员", SortAtPanel.INSTANCE));
+        }
+        if (SendFavoriteHook.INSTANCE.isValid()) {
+            ll.addView(newListItemHookSwitchInit(this, "发送收藏消息添加分组", "", SendFavoriteHook.INSTANCE));
         }
 
         ll.addView(subtitle(this, "好友列表"));
