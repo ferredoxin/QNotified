@@ -223,7 +223,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
             ll.addView(newListItemHookSwitchInit(this, "修改@界面排序", "排序由群主管理员至正常人员", SortAtPanel.INSTANCE));
         }
         if (SendFavoriteHook.INSTANCE.isValid()) {
-            ll.addView(newListItemHookSwitchInit(this, "发送收藏消息添加分组", "", SendFavoriteHook.INSTANCE));
+            ll.addView(newListItemSwitchConfigNext(this, "发送收藏消息添加分组", "", SendFavoriteHook.INSTANCE));
         }
 
         ll.addView(subtitle(this, "好友列表"));
