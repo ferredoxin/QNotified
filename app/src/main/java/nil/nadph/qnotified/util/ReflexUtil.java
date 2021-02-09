@@ -790,4 +790,76 @@ public class ReflexUtil {
         return findField(clazz, type, name);
     }
 
+
+    public static <T> T getFirstByType(Object obj, Class<T> type) {
+        if (obj == null) throw new NullPointerException("obj == null");
+        if (type == null) throw new NullPointerException("type == null");
+        Class clz = obj.getClass();
+        while (clz != null && !clz.equals(Object.class)) {
+            for (Field f : clz.getDeclaredFields()) {
+                if (!f.getType().equals(type)) continue;
+                f.setAccessible(true);
+                try {
+                    return (T) f.get(obj);
+                } catch (IllegalAccessException ignored) {
+                    //should not happen
+                }
+            }
+            clz = clz.getSuperclass();
+        }
+        return null;
+    }
+
+    /**
+     * NSF: Neither Static nor Final
+     *
+     * @param obj  thisObj
+     * @param type Field type
+     * @return the FIRST(as declared seq in dex) field value meeting the type
+     */
+    //@Deprecated
+    public static <T> T getFirstNSFByType(Object obj, Class<T> type) {
+        if (obj == null) throw new NullPointerException("obj == null");
+        if (type == null) throw new NullPointerException("type == null");
+        Class clz = obj.getClass();
+        while (clz != null && !clz.equals(Object.class)) {
+            for (Field f : clz.getDeclaredFields()) {
+                if (!f.getType().equals(type)) continue;
+                int m = f.getModifiers();
+                if (Modifier.isStatic(m) || Modifier.isFinal(m)) continue;
+                f.setAccessible(true);
+                try {
+                    return (T) f.get(obj);
+                } catch (IllegalAccessException ignored) {
+                    //should not happen
+                }
+            }
+            clz = clz.getSuperclass();
+        }
+        return null;
+    }
+
+    /**
+     * NSF: Neither Static nor Final
+     *
+     * @param clz  Obj class
+     * @param type Field type
+     * @return the FIRST(as declared seq in dex) field value meeting the type
+     */
+    //@Deprecated
+    public static Field getFirstNSFFieldByType(Class clz, Class type) {
+        if (clz == null) throw new NullPointerException("clz == null");
+        if (type == null) throw new NullPointerException("type == null");
+        while (clz != null && !clz.equals(Object.class)) {
+            for (Field f : clz.getDeclaredFields()) {
+                if (!f.getType().equals(type)) continue;
+                int m = f.getModifiers();
+                if (Modifier.isStatic(m) || Modifier.isFinal(m)) continue;
+                f.setAccessible(true);
+                return f;
+            }
+            clz = clz.getSuperclass();
+        }
+        return null;
+    }
 }

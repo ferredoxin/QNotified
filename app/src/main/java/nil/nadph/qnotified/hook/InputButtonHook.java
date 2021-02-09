@@ -54,8 +54,7 @@ import nil.nadph.qnotified.util.*;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static nil.nadph.qnotified.util.Initiator._SessionInfo;
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
-import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
+import static nil.nadph.qnotified.util.ReflexUtil.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 

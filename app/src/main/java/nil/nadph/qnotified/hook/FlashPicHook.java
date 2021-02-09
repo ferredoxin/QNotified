@@ -34,6 +34,7 @@ import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.ReflexUtil;
 import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.util.Initiator.*;
@@ -123,7 +124,7 @@ public class FlashPicHook extends CommonDelayableHook {
                     if (fBaseChatItemLayout == null) {
                         fBaseChatItemLayout = findField(viewHolder.getClass(), load("com.tencent.mobileqq.activity.aio.BaseChatItemLayout"), "a");
                         if (fBaseChatItemLayout == null) {
-                            fBaseChatItemLayout = Utils.getFirstNSFFieldByType(viewHolder.getClass(), load("com.tencent.mobileqq.activity.aio.BaseChatItemLayout"));
+                            fBaseChatItemLayout = ReflexUtil.getFirstNSFFieldByType(viewHolder.getClass(), load("com.tencent.mobileqq.activity.aio.BaseChatItemLayout"));
                         }
                         fBaseChatItemLayout.setAccessible(true);
                     }

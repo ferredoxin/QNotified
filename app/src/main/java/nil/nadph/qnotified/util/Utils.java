@@ -182,52 +182,6 @@ public class Utils {
         return -1;
     }
 
-    public static Method hasMethod(Object obj, String name, Object... argsTypesAndReturnType) throws IllegalArgumentException {
-        Class clazz;
-        if (obj == null) throw new NullPointerException("obj/clazz == null");
-        if (obj instanceof Class) clazz = (Class) obj;
-        else clazz = obj.getClass();
-        return hasMethod(clazz, name, argsTypesAndReturnType);
-    }
-
-    public static Method hasMethod(Class clazz, String name, Object... argsTypesAndReturnType) throws IllegalArgumentException {
-        int argc = argsTypesAndReturnType.length / 2;
-        Class[] argt = new Class[argc];
-        Object[] argv = new Object[argc];
-        Class returnType = null;
-        if (argc * 2 + 1 == argsTypesAndReturnType.length)
-            returnType = (Class) argsTypesAndReturnType[argsTypesAndReturnType.length - 1];
-        int i, ii;
-        Method[] m;
-        Method method = null;
-        Class[] _argt;
-        for (i = 0; i < argc; i++) {
-            argt[i] = (Class) argsTypesAndReturnType[argc + i];
-            argv[i] = argsTypesAndReturnType[i];
-        }
-        loop_main:
-        do {
-            m = clazz.getDeclaredMethods();
-            loop:
-            for (i = 0; i < m.length; i++) {
-                if (m[i].getName().equals(name)) {
-                    _argt = m[i].getParameterTypes();
-                    if (_argt.length == argt.length) {
-                        for (ii = 0; ii < argt.length; ii++) {
-                            if (!argt[ii].equals(_argt[ii])) continue loop;
-                        }
-                        if (returnType != null && !returnType.equals(m[i].getReturnType()))
-                            continue;
-                        method = m[i];
-                        break loop_main;
-                    }
-                }
-            }
-        } while (!Object.class.equals(clazz = clazz.getSuperclass()));
-        if (method != null) method.setAccessible(true);
-        return method;
-    }
-
     public static QQAppInterface getQQAppInterface() {
         return (QQAppInterface) getAppRuntime();
     }
@@ -356,78 +310,6 @@ public class Utils {
             log(e);
             return null;
         }
-    }
-
-    public static <T> T getFirstByType(Object obj, Class<T> type) {
-        if (obj == null) throw new NullPointerException("obj == null");
-        if (type == null) throw new NullPointerException("type == null");
-        Class clz = obj.getClass();
-        while (clz != null && !clz.equals(Object.class)) {
-            for (Field f : clz.getDeclaredFields()) {
-                if (!f.getType().equals(type)) continue;
-                f.setAccessible(true);
-                try {
-                    return (T) f.get(obj);
-                } catch (IllegalAccessException ignored) {
-                    //should not happen
-                }
-            }
-            clz = clz.getSuperclass();
-        }
-        return null;
-    }
-
-    /**
-     * NSF: Neither Static nor Final
-     *
-     * @param obj  thisObj
-     * @param type Field type
-     * @return the FIRST(as declared seq in dex) field value meeting the type
-     */
-    //@Deprecated
-    public static <T> T getFirstNSFByType(Object obj, Class<T> type) {
-        if (obj == null) throw new NullPointerException("obj == null");
-        if (type == null) throw new NullPointerException("type == null");
-        Class clz = obj.getClass();
-        while (clz != null && !clz.equals(Object.class)) {
-            for (Field f : clz.getDeclaredFields()) {
-                if (!f.getType().equals(type)) continue;
-                int m = f.getModifiers();
-                if (Modifier.isStatic(m) || Modifier.isFinal(m)) continue;
-                f.setAccessible(true);
-                try {
-                    return (T) f.get(obj);
-                } catch (IllegalAccessException ignored) {
-                    //should not happen
-                }
-            }
-            clz = clz.getSuperclass();
-        }
-        return null;
-    }
-
-    /**
-     * NSF: Neither Static nor Final
-     *
-     * @param clz  Obj class
-     * @param type Field type
-     * @return the FIRST(as declared seq in dex) field value meeting the type
-     */
-    //@Deprecated
-    public static Field getFirstNSFFieldByType(Class clz, Class type) {
-        if (clz == null) throw new NullPointerException("clz == null");
-        if (type == null) throw new NullPointerException("type == null");
-        while (clz != null && !clz.equals(Object.class)) {
-            for (Field f : clz.getDeclaredFields()) {
-                if (!f.getType().equals(type)) continue;
-                int m = f.getModifiers();
-                if (Modifier.isStatic(m) || Modifier.isFinal(m)) continue;
-                f.setAccessible(true);
-                return f;
-            }
-            clz = clz.getSuperclass();
-        }
-        return null;
     }
 
     public static boolean isEmpty(String str) {

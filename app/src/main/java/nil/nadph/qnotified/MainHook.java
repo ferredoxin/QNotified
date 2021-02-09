@@ -50,8 +50,7 @@ import nil.nadph.qnotified.util.Utils;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static nil.nadph.qnotified.util.Initiator._StartupDirector;
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
-import static nil.nadph.qnotified.util.ReflexUtil.new_instance;
+import static nil.nadph.qnotified.util.ReflexUtil.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 /*TitleKit:Lcom/tencent/mobileqq/widget/navbar/NavBarCommon*/

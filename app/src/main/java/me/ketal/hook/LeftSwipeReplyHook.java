@@ -44,8 +44,7 @@ import static me.ketal.util.TIMVersion.TIM_3_1_1;
 import static me.singleneuron.util.QQVersion.QQ_8_2_6;
 import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
 import static nil.nadph.qnotified.util.Initiator._ChatMessage;
-import static nil.nadph.qnotified.util.ReflexUtil.findMethodByTypes_1;
-import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_any;
+import static nil.nadph.qnotified.util.ReflexUtil.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class LeftSwipeReplyHook extends CommonDelayableHook {
@@ -77,7 +76,6 @@ public class LeftSwipeReplyHook extends CommonDelayableHook {
     protected boolean initOnce() {
         try {
             Method replyMethod = DexKit.doFindMethod(DexKit.N_LeftSwipeReply_Helper__reply);
-            if (replyMethod == null) return false;
             Class<?> hookClass = replyMethod.getDeclaringClass();
             String methodName = H.isTIM() ? "L" : "a";
             XposedHelpers.findAndHookMethod(hookClass, methodName, float.class, float.class, new XC_MethodHook() {
