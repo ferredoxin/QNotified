@@ -47,6 +47,7 @@ import me.ketal.hook.SendFavoriteHook;
 import me.ketal.hook.SortAtPanel;
 import me.kyuubiran.hook.AutoMosaicName;
 import me.kyuubiran.hook.ShowSelfMsgByLeft;
+import me.nextalone.hook.SimplifyChatLongItem;
 import me.singleneuron.activity.ChangeDrawerWidthActivity;
 import me.singleneuron.hook.*;
 import me.singleneuron.hook.decorator.DisableQzoneSlideCamera;
@@ -65,6 +66,7 @@ import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.NewsHelper;
 import nil.nadph.qnotified.util.Toasts;
@@ -215,6 +217,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         ll.addView(newListItemButton(this, "修改侧滑边距", "感谢祈无，支持8.4.1及更高，重启后生效", "", clickToProxyActAction(ChangeDrawerWidthActivity.class)));
         ll.addView(newListItemHookSwitchInit(this, "屏蔽QQ空间滑动相机", null, DisableQzoneSlideCamera.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "回执消息文本化", null, SimpleReceiptMessage.INSTANCE));
+        ll.addView(newListItemHookSwitchInit(this, "精简聊天气泡长按菜单", null, SimplifyChatLongItem.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "批量撤回消息", "多选消息后撤回", MultiActionHook.INSTANCE));
         if (LeftSwipeReplyHook.INSTANCE.isValid()) {
             ll.addView(newListItemButton(this, "修改消息左滑动作", "", null, clickToProxyActAction(ModifyLeftSwipeReplyActivity.class)));

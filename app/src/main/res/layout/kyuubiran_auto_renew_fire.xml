@@ -23,11 +23,11 @@
                 android:text="自动续火消息:"
                 android:textSize="16sp"/>
         <EditText
-                android:id="@+id/auto_renew_fire_keyword_et"
-                android:hint="续火消息内容(仅文本 4个字以内)"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:inputType="textMultiLine"/>
+            android:id="@+id/auto_renew_fire_keyword_et"
+            android:hint="续火消息内容（不可更改)"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:inputType="textMultiLine" />
         <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

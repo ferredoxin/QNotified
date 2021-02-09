@@ -38,9 +38,9 @@ import nil.nadph.qnotified.util.LicenseStatus
 object AutoRenewFireDialog {
     private var currentEnable: Boolean? = null
     private lateinit var binding: KyuubiranAutoRenewFireBinding
-    var replyMsg: String = getExFriendCfg().getStringOrDefault(AutoRenewFireMgr.MESSAGE, "火")
+    var replyMsg: String = getExFriendCfg().getStringOrDefault(AutoRenewFireMgr.MESSAGE, "[续火]")
 
-    fun shouMainDialog(ctx: Context) {
+    fun showMainDialog(ctx: Context) {
         binding = KyuubiranAutoRenewFireBinding.inflate(LayoutInflater.from(ctx))
         val enable = getExFriendCfg().getBooleanOrFalse(AutoRenewFireMgr.ENABLE)
         currentEnable = enable
@@ -61,15 +61,15 @@ object AutoRenewFireDialog {
         }
 
         binding.autoRenewFireKeywordEt.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) =
+                Unit
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                replyMsg = s.toString()
+                if (LicenseStatus.isInsider()) replyMsg = s.toString()
             }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
+            override fun afterTextChanged(s: Editable?) =
+                Unit
         })
 
 
