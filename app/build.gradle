@@ -80,6 +80,7 @@ android {
 
 dependencies {
     compileOnly fileTree(include: ['*.jar'], dir: 'lib')
+    compileOnly project(":stub")
     implementation 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2'
     implementation 'com.jaredrummler:colorpicker:1.1.0'
     implementation 'de.psdev.licensesdialog:licensesdialog:2.1.0'
