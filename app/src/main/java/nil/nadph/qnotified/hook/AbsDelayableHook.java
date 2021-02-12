@@ -61,6 +61,7 @@ import me.nextalone.hook.HideOnlineNumber;
 import me.nextalone.hook.HideProfileBubble;
 import me.nextalone.hook.HideTotalNumber;
 import me.nextalone.hook.RemoveIntimateDrawer;
+import me.nextalone.hook.SimplifyChatLongItem;
 import me.singleneuron.hook.ChangeDrawerWidth;
 import me.singleneuron.hook.DebugDump;
 import me.singleneuron.hook.ForceSystemAlbum;
@@ -176,6 +177,7 @@ public abstract class AbsDelayableHook implements SwitchConfigItem {
                 SortAtPanel.INSTANCE,
                 SendFavoriteHook.INSTANCE,
                 AutoRenewFire.INSTANCE,
+                SimplifyChatLongItem.INSTANCE,
             };
         }
         return sAllHooks;
