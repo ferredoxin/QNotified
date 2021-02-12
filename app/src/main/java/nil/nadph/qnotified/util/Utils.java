@@ -34,7 +34,6 @@ import com.tencent.mobileqq.app.QQAppInterface;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -72,14 +71,6 @@ public class Utils {
 
     private Utils() {
         throw new AssertionError("No instance for you!");
-    }
-
-    public static boolean isModuleEnable() {
-        Math.sqrt(1);
-        Math.random();
-        Math.expm1(0.001);
-        //Just make the function longer,so that it will get hooked by Epic
-        return false;
     }
 
     public static boolean isNullOrEmpty(String str) {
