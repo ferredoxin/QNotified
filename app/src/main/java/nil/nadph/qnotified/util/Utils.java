@@ -34,7 +34,6 @@ import com.tencent.mobileqq.app.QQAppInterface;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -183,7 +182,10 @@ public class Utils {
     }
 
     public static QQAppInterface getQQAppInterface() {
-        return (QQAppInterface) getAppRuntime();
+        if (HostInformationProviderKt.getHostInformationProvider().getQqAppInterface()!=null)
+            return HostInformationProviderKt.getHostInformationProvider().getQqAppInterface();
+        else
+            return (QQAppInterface) getAppRuntime();
     }
 
     public static String get_RGB(int color) {

@@ -5,6 +5,9 @@ import android.content.Context
 import android.content.pm.PackageInfo
 import android.util.Log
 import androidx.core.content.pm.PackageInfoCompat
+import com.tencent.mobileqq.app.QQAppInterface
+import de.robv.android.xposed.XC_MethodHook
+import de.robv.android.xposed.XposedHelpers
 import nil.nadph.qnotified.util.Utils
 
 
@@ -15,7 +18,9 @@ data class HostInformationProvider(
     val versionCode: Long,
     val versionCode32: Int,
     val versionName: String,
-    val isTim: Boolean)
+    val isTim: Boolean,
+    var qqAppInterface: QQAppInterface? = null
+)
 
 
 
@@ -34,6 +39,11 @@ fun init(applicationContext: Application) {
         packageInfo.versionName,
         Utils.PACKAGE_NAME_TIM == packageName
     )
+    XposedHelpers.findAndHookMethod(QQAppInterface::class.java,"onCreate",object : XC_MethodHook() {
+        override fun beforeHookedMethod(param: MethodHookParam?) {
+            hostInformationProvider.qqAppInterface = param?.thisObject as QQAppInterface
+        }
+    })
 }
 
 private fun getHostInfo(context: Context): PackageInfo {
