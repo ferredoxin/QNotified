@@ -20,9 +20,8 @@ package me.nextalone.hook
 
 import android.view.View
 import android.widget.CheckBox
-import de.robv.android.xposed.XC_MethodHook
 import me.kyuubiran.util.getMethods
-import me.nextalone.util.Utils.hook
+import me.nextalone.util.hookAfter
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.Utils
 import nil.nadph.qnotified.util.Utils.PACKAGE_NAME_QQ
@@ -35,14 +34,12 @@ object ForcedSendOriginalPhoto : CommonDelayableHook("na_test_forced_original") 
             for (m: Method in getMethods("com.tencent.mobileqq.activity.aio.photo.PhotoListPanel")) {
                 val argt = m.parameterTypes
                 if (m.name == "a" && argt.size == 1 && argt[0] == Boolean::class.java) {
-                    m.hook(object : XC_MethodHook() {
-                        override fun afterHookedMethod(param: MethodHookParam?) {
-                            val ctx = param!!.thisObject as View
-                            val id = ctx.resources.getIdentifier("h1y", "id", PACKAGE_NAME_QQ)
-                            val sendOriginPhotoCheckbox: CheckBox = ctx.findViewById(id)
-                            sendOriginPhotoCheckbox.isChecked = true
-                        }
-                    })
+                    m.hookAfter(this) {
+                        val ctx = it.thisObject as View
+                        val id = ctx.resources.getIdentifier("h1y", "id", PACKAGE_NAME_QQ)
+                        val sendOriginPhotoCheckbox: CheckBox = ctx.findViewById(id)
+                        sendOriginPhotoCheckbox.isChecked = true
+                    }
                 }
             }
             true

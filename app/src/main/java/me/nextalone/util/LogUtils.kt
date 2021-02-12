@@ -20,43 +20,34 @@ package me.nextalone.util
 
 import nil.nadph.qnotified.util.Utils
 
-const val LOG_TYPE_FIND_CLASS = "c"
-const val LOG_TYPE_FIND_METHOD = "m"
-const val LOG_TYPE_START_HOOK = "s"
-const val LOG_TYPE_BEFORE_HOOK = "b"
-const val LOG_TYPE_AFTER_HOOK = "a"
-fun logd(msg: String) {
+internal fun logd(msg: String) {
     Utils.logd("NA: $msg")
 }
 
-fun logd(msg: Exception) {
-    Utils.logd("NA: $msg")
+internal fun logThrowable(msg: Throwable) {
+    logd("Throwable: $msg")
 }
 
-fun logd(type: String, msg: String = "") {
-    logd("$type--$msg")
+internal fun logDetail(info: String, msg: String = "") {
+    logd("$info--$msg")
 }
 
-fun logdc(msg: String = "") {
+internal fun logClass(msg: String = "") {
     logd("Class--$msg")
 }
 
-fun logdm(msg: String = "") {
+internal fun logMethod(msg: String = "") {
     logd("Method--$msg")
 }
 
-fun logds(msg: String = "") {
+internal fun logStart(msg: String = "") {
     logd("Start--$msg")
 }
 
-fun logdb(msg: String = "") {
+internal fun logBefore(msg: String = "") {
     logd("Before--$msg")
 }
 
-fun logda(msg: String = "") {
+internal fun logAfter(msg: String = "") {
     logd("After--$msg")
-}
-
-fun logdt(t: Throwable) {
-    logd("Throwable: \n$t")
 }

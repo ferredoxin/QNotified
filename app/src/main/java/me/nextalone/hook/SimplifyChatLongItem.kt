@@ -25,8 +25,8 @@ import android.os.Build
 import android.os.Looper
 import android.view.View
 import de.robv.android.xposed.XC_MethodHook
-import me.nextalone.util.Utils.hook
-import me.nextalone.util.Utils.method
+import me.nextalone.util.hookBefore
+import me.nextalone.util.method
 import nil.nadph.qnotified.H
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.config.ConfigManager
@@ -42,13 +42,13 @@ object SimplifyChatLongItem : CommonDelayableHook("__NOT_USED__") {
     private val allItems = "复制|转发|收藏|回复|多选|撤回|删除|一起写|设为精华|待办|私聊|截图|存表情|相关表情".split("|")
     private const val defaultItems = "一起写|私聊|相关表情|待办"
     var activeItems
-    get() = ConfigManager.getDefaultConfig().getStringOrDefault(na_simplify_chat_long_item, defaultItems).split("|")
-    set(value) {
-        var ret = ""
-        for (item in value)
-            ret += "|$item"
-        putValue(na_simplify_chat_long_item, ret.substring(1))
-    }
+        get() = ConfigManager.getDefaultConfig().getStringOrDefault(na_simplify_chat_long_item, defaultItems).split("|")
+        set(value) {
+            var ret = ""
+            for (item in value)
+                ret += "|$item"
+            putValue(na_simplify_chat_long_item, ret.substring(1))
+        }
 
     fun simplifyChatLongItemClick(): View.OnClickListener {
         return View.OnClickListener {
@@ -56,7 +56,7 @@ object SimplifyChatLongItem : CommonDelayableHook("__NOT_USED__") {
                 val cache = activeItems as MutableList
                 Utils.logd("list:$cache,class:${cache::class.java}")
                 val ctx = it.context
-                AlertDialog.Builder(ctx, if (ResUtils.isInNightMode())  THEME_DARK else THEME_LIGHT)
+                AlertDialog.Builder(ctx, if (ResUtils.isInNightMode()) THEME_DARK else THEME_LIGHT)
                     .setTitle("精简聊天气泡长按菜单")
                     .setMultiChoiceItems(allItems.toTypedArray(), getBoolAry()) { _: DialogInterface, i: Int, _: Boolean ->
                         val item = allItems[i]
@@ -76,20 +76,19 @@ object SimplifyChatLongItem : CommonDelayableHook("__NOT_USED__") {
 
     override fun initOnce(): Boolean {
         return try {
-            val callback = object : XC_MethodHook() {
-                override fun beforeHookedMethod(param: MethodHookParam) {
-                    if (!isEnabled) return
-                    val str = param.args[1] as String
-                    if (activeItems.contains(str))
-                        param.result = null
-                }
+            val callback: (XC_MethodHook.MethodHookParam) -> Unit = callback@{
+                if (!isEnabled) return@callback
+                val str = it.args[1] as String
+                if (activeItems.contains(str))
+                    it.result = null
+
             }
             "Lcom/tencent/mobileqq/utils/dialogutils/QQCustomMenu;->a(ILjava/lang/String;II)V"
                 .method
-                .hook(callback)
+                .hookBefore(this, callback)
             "Lcom/tencent/mobileqq/utils/dialogutils/QQCustomMenu;->a(ILjava/lang/String;I)V"
                 .method
-                .hook(callback)
+                .hookBefore(this, callback)
             true
         } catch (t: Throwable) {
             Utils.log(t)
