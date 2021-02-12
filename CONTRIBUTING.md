@@ -42,7 +42,7 @@
 
 11. 针对适配指定QQ/TIM版本的methods扔进[QQConfigTable.kt](app/src/main/java/me/singleneuron/qn_kernel/tlb/QQConfigTable.kt)或[TIMConfigTable.kt](app/src/main/java/me/singleneuron/qn_kernel/tlb/TIMConfigTable.kt)
 
-12. 除个别情况，需添加代码头
+12. 除个别情况，必须添加代码头
 
 13. **在任何时候，您都不应该随意更改[build.gradle](build.gradle)，特别是升级 `com.android.tools.build:gradle` 版本**
 
