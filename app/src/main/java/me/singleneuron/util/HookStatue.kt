@@ -1,6 +1,5 @@
-/* QNotified - An Xposed module for QQ/TIM
- * Copyright (C) 2019-2021 xenonhydride@gmail.com
- * https://github.com/ferredoxin/QNotified
+/* Copyright (C) 2019-2021 Cryolitia@gmail.com
+ * https://github.com/singleNeuron
  *
  * This software is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,6 +15,7 @@
  * along with this software.  If not, see
  * <https://www.gnu.org/licenses/>.
  */
+
 package me.singleneuron.util
 
 import android.content.Context
