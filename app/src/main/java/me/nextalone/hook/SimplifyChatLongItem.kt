@@ -25,6 +25,7 @@ import android.os.Build
 import android.os.Looper
 import android.view.View
 import de.robv.android.xposed.XC_MethodHook
+import me.nextalone.util.Utils.clazz
 import me.nextalone.util.Utils.hook
 import me.nextalone.util.Utils.method
 import me.singleneuron.util.QQVersion
@@ -84,12 +85,19 @@ object SimplifyChatLongItem : CommonDelayableHook("__NOT_USED__") {
                         param.result = null
                 }
             }
-            "Lcom/tencent/mobileqq/utils/dialogutils/QQCustomMenu;->a(ILjava/lang/String;II)V"
-                .method
-                .hook(callback)
-            "Lcom/tencent/mobileqq/utils/dialogutils/QQCustomMenu;->a(ILjava/lang/String;I)V"
-                .method
-                .hook(callback)
+            "com.tencent.mobileqq.utils.dialogutils.QQCustomMenuImageLayout".clazz.declaredMethods.run {
+                this.forEach { method ->
+                    if (method.name == "setMenu") {
+                        val customMenu = method.parameterTypes[0].name.replace(".", "/")
+                        "L$customMenu;->a(ILjava/lang/String;II)V"
+                            .method
+                            .hook(callback)
+                        "L$customMenu;->a(ILjava/lang/String;I)V"
+                            .method
+                            .hook(callback)
+                    }
+                }
+            }
             true
         } catch (t: Throwable) {
             Utils.log(t)
@@ -98,7 +106,7 @@ object SimplifyChatLongItem : CommonDelayableHook("__NOT_USED__") {
     }
 
     override fun isValid(): Boolean {
-        return H.isQQ() && H.getVersionCode() >= QQVersion.QQ_8_5_0
+        return H.isQQ() && H.getVersionCode() >= QQVersion.QQ_8_0_0
     }
 
     override fun isEnabled(): Boolean = activeItems.isNotEmpty()
