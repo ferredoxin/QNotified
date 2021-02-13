@@ -28,9 +28,9 @@ import de.robv.android.xposed.XposedBridge
 import me.kyuubiran.dialog.AutoRenewFireDialog
 import me.kyuubiran.util.*
 import nil.nadph.qnotified.hook.CommonDelayableHook
+import nil.nadph.qnotified.util.LicenseStatus
 import nil.nadph.qnotified.util.ReflexUtil.invoke_virtual
 import nil.nadph.qnotified.util.ReflexUtil.new_instance
-import nil.nadph.qnotified.util.LicenseStatus
 import java.lang.reflect.Method
 
 //自动续火
@@ -110,6 +110,14 @@ object AutoRenewFire : CommonDelayableHook("kr_auto_renew_fire") {
             true
         } catch (t: Throwable) {
             logdt(t)
+            false
+        }
+    }
+
+    override fun isEnabled(): Boolean {
+        return try {
+            getExFriendCfg().getBooleanOrDefault("kr_auto_renew_fire", false)
+        } catch (e: Exception) {
             false
         }
     }
