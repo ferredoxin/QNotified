@@ -180,6 +180,7 @@ public abstract class AbsDelayableHook implements SwitchConfigItem {
                 SendFavoriteHook.INSTANCE,
                 AutoRenewFire.INSTANCE,
                 SimplifyChatLongItem.INSTANCE,
+                HideOnlineStatus.INSTANCE,
                 HideChatVipImage.INSTANCE,
             };
         }
