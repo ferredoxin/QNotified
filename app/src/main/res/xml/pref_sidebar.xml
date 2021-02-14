@@ -32,6 +32,9 @@
                 android:title="隐藏侧滑栏列表"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="设置界面">
+        <SwitchPreference
+            android:key="HideFreeTraffic!"
+            android:title="隐藏免流量"/>
         <MultiSelectListPreference
                 android:entries="@array/sidebar_setting_list_titles"
                 android:entryValues="@array/sidebar_setting_list_titles"
