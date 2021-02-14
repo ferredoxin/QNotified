@@ -511,6 +511,151 @@ public class ViewBuilder {
         return root;
     }
 
+    public static RelativeLayout newListItemButtonIfValid(Context ctx, CharSequence title, CharSequence desc,
+        CharSequence value, BaseDelayableHook hook, Class<?> activity) {
+        if (!hook.isValid()) {
+            return null;
+        }
+        View.OnClickListener listener = clickToProxyActAction(activity);
+        RelativeLayout root = new IsolatedStateRelativeLayout(ctx);
+        root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx, CONSTANT_LIST_ITEM_HEIGHT_DP)));
+        ViewCompat.setBackground(root, ResUtils.getListItemBackground());
+        TextView tv = new TextView(ctx);
+        tv.setText(title);
+        tv.setId(R_ID_TITLE);
+        tv.setTextColor(ResUtils.skin_black);
+        tv.setTextSize(dip2sp(ctx, 18));
+        ImageView img = new ImageView(ctx);
+        img.setImageDrawable(ResUtils.skin_icon_arrow_right_normal);
+        img.setId(R_ID_ARROW);
+        RelativeLayout.LayoutParams lp_im = new RelativeLayout.LayoutParams(dip2px(ctx, 9), dip2px(ctx, 15));
+        int m = dip2px(ctx, 14);
+        lp_im.setMargins(0, m, m, 0);
+        lp_im.addRule(RelativeLayout.CENTER_VERTICAL);
+        lp_im.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        if (desc == null) {
+            RelativeLayout.LayoutParams lp_t = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+            m = dip2px(ctx, 14);
+            lp_t.setMargins(m, m, 0, 0);
+            lp_t.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            lp_t.addRule(RelativeLayout.CENTER_VERTICAL);
+            lp_t.addRule(RelativeLayout.LEFT_OF, R_ID_VALUE);
+            root.addView(tv, lp_t);
+        } else {
+            RelativeLayout.LayoutParams lp_t = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+            m = dip2px(ctx, 14);
+            lp_t.setMargins(m, m / 2, 0, 0);
+            lp_t.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            lp_t.addRule(RelativeLayout.LEFT_OF, R_ID_VALUE);
+            TextView des = new TextView(ctx);
+            des.setText(desc);
+            des.setId(R_ID_DESCRIPTION);
+            des.setTextColor(ResUtils.skin_gray3);
+            des.setTextSize(dip2sp(ctx, 13));
+            des.setSingleLine();
+            des.setEllipsize(TextUtils.TruncateAt.END);
+            RelativeLayout.LayoutParams lp_d = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+            lp_d.setMargins(m, 0, 0, 0);
+            lp_d.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            lp_d.addRule(RelativeLayout.BELOW, R_ID_TITLE);
+            lp_d.addRule(RelativeLayout.LEFT_OF, R_ID_VALUE);
+            root.addView(des, lp_d);
+            root.addView(tv, lp_t);
+        }
+        root.addView(img, lp_im);
+        TextView st = new TextView(ctx);
+        st.setId(R_ID_VALUE);
+        if (value != null) {
+            st.setText(value);
+        }
+        st.setTextColor(ResUtils.skin_gray3);
+        st.setTextSize(dip2sp(ctx, 15));
+        RelativeLayout.LayoutParams lp_st = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+        m = dip2px(ctx, 14);
+        lp_st.setMargins(m / 4, m, m / 4, 0);
+        lp_st.addRule(RelativeLayout.CENTER_VERTICAL);
+        lp_st.addRule(RelativeLayout.LEFT_OF, R_ID_ARROW);
+        root.addView(st, lp_st);
+        root.setClickable(true);
+        if (listener != null) {
+            root.setOnClickListener(listener);
+        }
+        root.setId(title.toString().hashCode());
+        return root;
+    }
+
+    public static RelativeLayout newListItemButtonIfValid(Context ctx, CharSequence title, CharSequence desc,
+        CharSequence value, BaseDelayableHook hook, View.OnClickListener listener) {
+        if (!hook.isValid()) {
+            return null;
+        }
+        RelativeLayout root = new IsolatedStateRelativeLayout(ctx);
+        root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx, CONSTANT_LIST_ITEM_HEIGHT_DP)));
+        ViewCompat.setBackground(root, ResUtils.getListItemBackground());
+        TextView tv = new TextView(ctx);
+        tv.setText(title);
+        tv.setId(R_ID_TITLE);
+        tv.setTextColor(ResUtils.skin_black);
+        tv.setTextSize(dip2sp(ctx, 18));
+        ImageView img = new ImageView(ctx);
+        img.setImageDrawable(ResUtils.skin_icon_arrow_right_normal);
+        img.setId(R_ID_ARROW);
+        RelativeLayout.LayoutParams lp_im = new RelativeLayout.LayoutParams(dip2px(ctx, 9), dip2px(ctx, 15));
+        int m = dip2px(ctx, 14);
+        lp_im.setMargins(0, m, m, 0);
+        lp_im.addRule(RelativeLayout.CENTER_VERTICAL);
+        lp_im.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        if (desc == null) {
+            RelativeLayout.LayoutParams lp_t = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+            m = dip2px(ctx, 14);
+            lp_t.setMargins(m, m, 0, 0);
+            lp_t.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            lp_t.addRule(RelativeLayout.CENTER_VERTICAL);
+            lp_t.addRule(RelativeLayout.LEFT_OF, R_ID_VALUE);
+            root.addView(tv, lp_t);
+        } else {
+            RelativeLayout.LayoutParams lp_t = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+            m = dip2px(ctx, 14);
+            lp_t.setMargins(m, m / 2, 0, 0);
+            lp_t.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            lp_t.addRule(RelativeLayout.LEFT_OF, R_ID_VALUE);
+            TextView des = new TextView(ctx);
+            des.setText(desc);
+            des.setId(R_ID_DESCRIPTION);
+            des.setTextColor(ResUtils.skin_gray3);
+            des.setTextSize(dip2sp(ctx, 13));
+            des.setSingleLine();
+            des.setEllipsize(TextUtils.TruncateAt.END);
+            RelativeLayout.LayoutParams lp_d = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+            lp_d.setMargins(m, 0, 0, 0);
+            lp_d.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            lp_d.addRule(RelativeLayout.BELOW, R_ID_TITLE);
+            lp_d.addRule(RelativeLayout.LEFT_OF, R_ID_VALUE);
+            root.addView(des, lp_d);
+            root.addView(tv, lp_t);
+        }
+        root.addView(img, lp_im);
+        TextView st = new TextView(ctx);
+        st.setId(R_ID_VALUE);
+        if (value != null) {
+            st.setText(value);
+        }
+        st.setTextColor(ResUtils.skin_gray3);
+        st.setTextSize(dip2sp(ctx, 15));
+        RelativeLayout.LayoutParams lp_st = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+        m = dip2px(ctx, 14);
+        lp_st.setMargins(m / 4, m, m / 4, 0);
+        lp_st.addRule(RelativeLayout.CENTER_VERTICAL);
+        lp_st.addRule(RelativeLayout.LEFT_OF, R_ID_ARROW);
+        root.addView(st, lp_st);
+        root.setClickable(true);
+        if (listener != null) {
+            root.setOnClickListener(listener);
+        }
+        root.setId(title.toString().hashCode());
+        return root;
+    }
+
     public static LinearLayout subtitle(Context ctx, CharSequence title) {
         LinearLayout ll = new LinearLayout(ctx);
         ll.setOrientation(LinearLayout.HORIZONTAL);

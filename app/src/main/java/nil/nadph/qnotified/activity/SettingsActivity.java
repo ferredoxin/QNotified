@@ -181,9 +181,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         ll.addView(newListItemHookSwitchInit(this, " +1", "不是复读机", RepeaterHook.get()));
         ll.addView(newListItemButton(this, "自定义+1图标", null, null, RepeaterIconSettingDialog.OnClickListener_createDialog(this)));
         ll.addView(subtitle(this, "净化设置"));
-        if (ReplyNoAtHook.get().isValid()) {
-            ll.addView(newListItemHookSwitchInit(this, "禁止回复自动@", "去除回复消息时自动@特性", ReplyNoAtHook.get()));
-        }
+        ll.addView(newListItemConfigSwitchIfValid(this, "禁止回复自动@", "去除回复消息时自动@特性", ReplyNoAtHook.get()));
         ll.addView(newListItemHookSwitchInit(this, "禁用$打开送礼界面", "禁止聊天时输入$自动弹出[选择赠送对象]窗口", $endGiftHook.get()));
         ll.addView(subtitle(this, "消息通知设置(不影响接收消息)屏蔽后可能仍有[橙字],但通知栏不会有通知,赞说说不提醒仅屏蔽通知栏的通知"));
         ll.addView(subtitle(this, "    注:屏蔽后可能仍有[橙字],但不会有通知"));
@@ -215,9 +213,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         ll.addView(newListItemHookSwitchInit(this, "屏蔽小程序广告", "需要手动关闭广告, 请勿反馈此功能无效", RemoveMiniProgramAd.get()));
         ll.addView(newListItemHookSwitchInit(this, "昵称/群名字打码", "娱乐功能 不进行维护", AutoMosaicName.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "自己的消息和头像居左显示", "娱乐功能 不进行维护", ShowSelfMsgByLeft.INSTANCE));
-        if (HostInformationProviderKt.getHostInfo().getVersionCode() < QQ_8_2_0) {
-            ll.addView(newListItemHookSwitchInit(this, "收藏更多表情", "[暂不支持>=8.2.0]保存在本地", FavMoreEmo.get()));
-        }
+        ll.addView(newListItemConfigSwitchIfValid(this, "收藏更多表情", "[暂不支持>=8.2.0]保存在本地", FavMoreEmo.get()));
         ll.addView(newListItemHookSwitchInit(this, "屏蔽更新提醒", null, PreUpgradeHook.get()));
         ll.addView(newListItemHookSwitchInit(this, "检查消息", "暂时有点用（聊天界面长按+号后点击头像）", InspectMessage.get()));
         if (!HostInformationProviderKt.getHostInfo().isTim()) {
@@ -231,21 +227,12 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         ll.addView(newListItemButton(this, "修改侧滑边距", "感谢祈无，支持8.4.1及更高，重启后生效", "", clickToProxyActAction(ChangeDrawerWidthActivity.class)));
         ll.addView(newListItemHookSwitchInit(this, "屏蔽QQ空间滑动相机", null, DisableQzoneSlideCamera.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "回执消息文本化", null, SimpleReceiptMessage.INSTANCE));
-        if (SimplifyChatLongItem.INSTANCE.isValid()) {
-            ll.addView(newListItemButton(this, "精简聊天气泡长按菜单", null, null, SimplifyChatLongItem.INSTANCE.simplifyChatLongItemClick()));
-        }
+        ll.addView(newListItemButtonIfValid(this, "精简聊天气泡长按菜单", null, null, SimplifyChatLongItem.INSTANCE, SimplifyChatLongItem.INSTANCE.simplifyChatLongItemClick()));
         ll.addView(newListItemButton(this, "精简设置菜单", null, null, SimplifyQQSettings.INSTANCE.simplifyQQSettingsClick()));
         ll.addView(newListItemHookSwitchInit(this, "批量撤回消息", "多选消息后撤回", MultiActionHook.INSTANCE));
-        if (LeftSwipeReplyHook.INSTANCE.isValid()) {
-            ll.addView(newListItemButton(this, "修改消息左滑动作", "", null, clickToProxyActAction(ModifyLeftSwipeReplyActivity.class)));
-        }
-        if (SortAtPanel.INSTANCE.isValid()) {
-            ll.addView(newListItemHookSwitchInit(this, "修改@界面排序", "排序由群主管理员至正常人员", SortAtPanel.INSTANCE));
-        }
-        if (SendFavoriteHook.INSTANCE.isValid()) {
-            ll.addView(newListItemSwitchConfigNext(this, "发送收藏消息添加分组", "", SendFavoriteHook.INSTANCE));
-        }
-
+        ll.addView(newListItemButtonIfValid(this, "修改消息左滑动作", "", null, LeftSwipeReplyHook.INSTANCE, ModifyLeftSwipeReplyActivity.class));
+        ll.addView(newListItemConfigSwitchIfValid(this, "修改@界面排序", "排序由群主管理员至正常人员", SortAtPanel.INSTANCE));
+        ll.addView(newListItemConfigSwitchIfValid(this, "发送收藏消息添加分组", "", SendFavoriteHook.INSTANCE));
         ll.addView(subtitle(this, "好友列表"));
         ll.addView(newListItemButton(this, "打开资料卡", "打开指定用户的资料卡", null, new View.OnClickListener() {
             @Override
