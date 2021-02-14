@@ -2,7 +2,7 @@
 name: Feature request
 about: 功能建议/Feature request
 title: "[功能需求] 简要概述需要的功能"
-labels: feature
+labels: Feature
 assignees: ''
 
 ---

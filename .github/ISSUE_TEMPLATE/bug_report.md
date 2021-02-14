@@ -2,7 +2,7 @@
 name: Bug report
 about: 错误反馈/Bug report / 不使用此模板提交BUG会被close
 title: "[此处填写QQ或TIM版本号] 简要概况问题"
-labels: bug
+labels: Bug
 assignees: ''
 
 ---
