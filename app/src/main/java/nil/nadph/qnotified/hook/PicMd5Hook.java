@@ -92,11 +92,7 @@ public class PicMd5Hook extends CommonDelayableHook {
         @Override
         protected void afterHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
             if (LicenseStatus.sDisableCommonHooks) return;
-            try {
-                ConfigManager cfg = ConfigManager.getDefaultConfig();
-                if (!PicMd5Hook.get().isEnabled()) return;
-            } catch (Exception ignored) {
-            }
+            if (!PicMd5Hook.get().isEnabled()) return;
             Object arr = param.getResult();
             Class<?> clQQCustomMenuItem = arr.getClass().getComponentType();
             Object item_copy = CustomMenu.createItem(clQQCustomMenuItem, R.id.item_showPicMd5, "MD5");
@@ -126,12 +122,9 @@ public class PicMd5Hook extends CommonDelayableHook {
                         showToast(ctx, TOAST_TYPE_ERROR, "获取图片MD5失败", Toast.LENGTH_SHORT);
                         return;
                     }
-                    CustomDialog.createFailsafe(ctx).setTitle("MD5").setCancelable(true).setMessage(md5).setPositiveButton("复制", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            ClipboardManager clipboardManager = (ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);
-                            clipboardManager.setPrimaryClip(ClipData.newPlainText(null, md5));
-                        }
+                    CustomDialog.createFailsafe(ctx).setTitle("MD5").setCancelable(true).setMessage(md5).setPositiveButton("复制", (dialog, which) -> {
+                        ClipboardManager clipboardManager = (ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);
+                        clipboardManager.setPrimaryClip(ClipData.newPlainText(null, md5));
                     }).setNegativeButton("关闭", null).show();
                 } catch (Throwable e) {
                     log(e);
@@ -139,14 +132,5 @@ public class PicMd5Hook extends CommonDelayableHook {
                 }
             }
         }
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
     }
 }
