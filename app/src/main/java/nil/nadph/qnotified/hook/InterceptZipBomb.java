@@ -56,7 +56,7 @@ public class InterceptZipBomb extends CommonDelayableHook {
                     zipFile.close();
                     if (sizeSum >= 104550400) {
                         param.setResult(null);
-                        Toasts.show(HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), String.format("已拦截 %s ,解压后大小异常: %s",
+                        Toasts.show(HostInformationProviderKt.getHostInfo().getApplication(), String.format("已拦截 %s ,解压后大小异常: %s",
                                 file.getPath(), BugUtils.getSizeString(sizeSum)));
                     }
                 }

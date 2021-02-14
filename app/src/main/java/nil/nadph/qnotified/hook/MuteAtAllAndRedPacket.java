@@ -54,7 +54,7 @@ public class MuteAtAllAndRedPacket extends CommonDelayableHook {
                 cl_MessageInfo = c.getDeclaredField("mMessageInfo").getType();
             }
             /* @author qiwu */
-            final int at_all_type = (HostInformationProviderKt.getHostInformationProvider().getVersionCode()> QQVersion.QQ_7_8_0) ? 13 : 12;
+            final int at_all_type = (HostInformationProviderKt.getHostInfo().getVersionCode()> QQVersion.QQ_7_8_0) ? 13 : 12;
             for (Method m : cl_MessageInfo.getDeclaredMethods()) {
                 if (m.getReturnType().equals(int.class)) {
                     Class<?>[] argt = m.getParameterTypes();

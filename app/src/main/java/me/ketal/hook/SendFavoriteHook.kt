@@ -24,8 +24,8 @@ import android.view.View
 import android.widget.TextView
 import me.ketal.util.HookUtil.getMethod
 import me.nextalone.util.hookAfter
+import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
-import nil.nadph.qnotified.H
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.step.DexDeobfStep
@@ -37,9 +37,7 @@ import nil.nadph.qnotified.util.Utils
 object SendFavoriteHook: CommonDelayableHook("ketal_send_favorite", SyncUtils.PROC_ANY, DexDeobfStep(DexKit.N_PluginProxyActivity__initPlugin)) {
     var isHooked: Boolean = false
 
-    override fun isValid(): Boolean {
-        return H.isQQ() && H.getVersionCode() >= QQVersion.QQ_8_0_0
-    }
+    override fun isValid(): Boolean = requireMinQQVersion(QQVersion.QQ_8_0_0)
 
     override fun initOnce(): Boolean {
         return try {

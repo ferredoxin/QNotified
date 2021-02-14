@@ -65,7 +65,7 @@ public class ResUtils {
     static private final Map<String, Drawable> cachedDrawable = new HashMap<>();
 
     public static void requireResourcesNonNull(Context ctx) {
-        if (ctx == null) ctx = HostInformationProviderKt.getHostInformationProvider().getApplicationContext();
+        if (ctx == null) ctx = HostInformationProviderKt.getHostInfo().getApplication();
         if (!inited) initTheme(ctx);
     }
 
@@ -313,7 +313,7 @@ public class ResUtils {
             String themeId = (String) invoke_static(load("com/tencent/mobileqq/theme/ThemeUtil"), "getUserCurrentThemeId", getAppRuntime(), load("mqq/app/AppRuntime"));
             return "1103".endsWith(themeId) || "2920".endsWith(themeId);
         } catch (Exception e) {
-            if (HostInformationProviderKt.getHostInformationProvider().isTim()) {
+            if (HostInformationProviderKt.getHostInfo().isTim()) {
                 return false;
             }
             log(e);

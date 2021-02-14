@@ -235,7 +235,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
             }
             _item.sync();
             if (restartRequired) {
-                Utils.showToastShort(mActivity, "重启" + HostInformationProviderKt.getHostInformationProvider().getHostName() + "生效");
+                Utils.showToastShort(mActivity, "重启" + HostInformationProviderKt.getHostInfo().getHostName() + "生效");
             }
             return true;
         } catch (Exception e) {

@@ -54,7 +54,7 @@ public class IgnoreDiyCard extends CommonDelayableHook {
         try {
             for (Method m : load("com.tencent.mobileqq.activity.FriendProfileCardActivity").getDeclaredMethods()) {
                 Class<?>[] argt = m.getParameterTypes();
-                if (HostInformationProviderKt.getHostInformationProvider().getVersionCode32() <= 1406) {
+                if (HostInformationProviderKt.getHostInfo().getVersionCode32() <= 1406) {
                     if (m.getName().equals("a") && !Modifier.isStatic(m.getModifiers()) && m.getReturnType().equals(void.class)) {
                         if (argt.length != 2) continue;
                         if (argt[1] != boolean.class) continue;

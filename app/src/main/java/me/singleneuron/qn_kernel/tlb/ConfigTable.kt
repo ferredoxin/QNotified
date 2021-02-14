@@ -18,14 +18,14 @@
  */
 package me.singleneuron.qn_kernel.tlb
 
-import me.singleneuron.qn_kernel.data.hostInformationProvider
+import me.singleneuron.qn_kernel.data.hostInfo
 
 object ConfigTable {
 
     public val cacheMap: Map<String?, Any?> by lazy {
         val map: HashMap<String?, Any?> = HashMap()
-        val versionCode = hostInformationProvider.versionCode
-        val table: ConfigTableInterface = if (hostInformationProvider.isTim) TIMConfigTable() else QQConfigTable()
+        val versionCode = hostInfo.versionCode
+        val table: ConfigTableInterface = if (hostInfo.isTim) TIMConfigTable() else QQConfigTable()
         for (pair in table.rangingConfigs) {
             for (i in versionCode downTo 1) {
                 if (pair.value.containsKey(i)) {
@@ -45,7 +45,7 @@ object ConfigTable {
     fun <T> getConfig(className: String?): T {
         val config = cacheMap[className]
         return config as T
-                ?: throw RuntimeException("$className :Unsupported Version: "+ hostInformationProvider.versionName)
+                ?: throw RuntimeException("$className :Unsupported Version: "+ hostInfo.versionName)
     }
 
 }

@@ -195,7 +195,7 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
                                 CustomDialog.create(FakeBatCfgActivity.this).setTitle("操作失败")
                                         .setCancelable(true).setPositiveButton("确认", null)
                                         .setMessage("发生错误:\n" + getApplication().getPackageName() + ":MSF 进程响应超时\n" +
-                                                "如果您的" + HostInformationProviderKt.getHostInformationProvider().getHostName() + "刚刚启动,您可以在十几秒后再试一次\n" +
+                                                "如果您的" + HostInformationProviderKt.getHostInfo().getHostName() + "刚刚启动,您可以在十几秒后再试一次\n" +
                                                 "如果您是太极(含无极)用户,请确认您的太极版本至少为 湛泸-6.0.2(1907) ,如低于此版本,请尽快升级").show();
                             }
                         }

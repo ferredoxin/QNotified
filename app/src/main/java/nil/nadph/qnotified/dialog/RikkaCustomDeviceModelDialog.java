@@ -162,7 +162,7 @@ public class RikkaCustomDeviceModelDialog extends RikkaDialog.RikkaConfigItem {
                 }
                 try {
                     cfg.save();
-                    Utils.showToast(ctx, Utils.TOAST_TYPE_SUCCESS, "重启" + HostInformationProviderKt.getHostInformationProvider().getHostName() + "生效!", Toast.LENGTH_SHORT);
+                    Utils.showToast(ctx, Utils.TOAST_TYPE_SUCCESS, "重启" + HostInformationProviderKt.getHostInfo().getHostName() + "生效!", Toast.LENGTH_SHORT);
                 } catch (IOException e) {
                     log(e);
                 }
@@ -187,7 +187,7 @@ public class RikkaCustomDeviceModelDialog extends RikkaDialog.RikkaConfigItem {
 
     @Override
     public String getName() {
-        return "自定义机型[需要重启" + HostInformationProviderKt.getHostInformationProvider().getHostName() + "]";
+        return "自定义机型[需要重启" + HostInformationProviderKt.getHostInfo().getHostName() + "]";
     }
 
     @Nullable

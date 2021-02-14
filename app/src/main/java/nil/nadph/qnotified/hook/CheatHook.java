@@ -86,10 +86,10 @@ public class  CheatHook extends CommonDelayableHook {
     
             String fuckingMethod = "a";
     
-            if (HostInformationProviderKt.getHostInformationProvider().getVersionCode() >= QQVersion.QQ_8_4_8) {
+            if (HostInformationProviderKt.getHostInfo().getVersionCode() >= QQVersion.QQ_8_4_8) {
                 fuckingMethod = "sendMagicEmoticon";
             }
-            if (HostInformationProviderKt.getHostInformationProvider().getVersionCode() >= QQVersion.QQ_8_5_0) {
+            if (HostInformationProviderKt.getHostInfo().getVersionCode() >= QQVersion.QQ_8_5_0) {
                 XposedHelpers.findAndHookMethod(Class.forName("com.tencent.mobileqq.emoticonview" +
                                 ".sender.PicEmoticonInfoSender"),
                         fuckingMethod, load("com.tencent.mobileqq.app.QQAppInterface"),

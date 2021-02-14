@@ -129,7 +129,7 @@ public class FakeBatteryHook extends CommonDelayableHook implements InvocationHa
             //接下去是UI stuff, 给自己看的
             //本来还想用反射魔改Binder/ActivityThread$ApplicationThread实现Xposed-less拦截广播onReceive的,太肝了,就不搞了
             if (Build.VERSION.SDK_INT >= 21) {
-                BatteryManager batmgr = (BatteryManager) HostInformationProviderKt.getHostInformationProvider().getApplicationContext().getSystemService(Context.BATTERY_SERVICE);
+                BatteryManager batmgr = (BatteryManager) HostInformationProviderKt.getHostInfo().getApplication().getSystemService(Context.BATTERY_SERVICE);
                 if (batmgr == null) {
                     logi("Wtf, init FakeBatteryHook but BatteryManager is null!");
                     return false;
@@ -198,7 +198,7 @@ public class FakeBatteryHook extends CommonDelayableHook implements InvocationHa
             intent.putExtra(BatteryManager.EXTRA_STATUS, BatteryManager.BATTERY_STATUS_DISCHARGING);
             intent.putExtra(BatteryManager.EXTRA_PLUGGED, 0);
         }
-        doPostReceiveEvent(recv, HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), intent);
+        doPostReceiveEvent(recv, HostInformationProviderKt.getHostInfo().getApplication(), intent);
     }
 
     private void scheduleReceiveBatteryStatus() {
@@ -222,7 +222,7 @@ public class FakeBatteryHook extends CommonDelayableHook implements InvocationHa
             intent.putExtra(BatteryManager.EXTRA_STATUS, BatteryManager.BATTERY_STATUS_DISCHARGING);
             intent.putExtra(BatteryManager.EXTRA_PLUGGED, 0);
         }
-        doPostReceiveEvent(recv, HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), intent);
+        doPostReceiveEvent(recv, HostInformationProviderKt.getHostInfo().getApplication(), intent);
     }
 
     private static void doPostReceiveEvent(final BroadcastReceiver recv, final Context ctx, final Intent intent) {

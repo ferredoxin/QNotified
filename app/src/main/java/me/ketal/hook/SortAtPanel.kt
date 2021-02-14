@@ -22,8 +22,8 @@ import android.text.TextUtils
 import me.ketal.util.TIMVersion
 import me.nextalone.util.hookAfter
 import me.nextalone.util.hookBefore
+import me.singleneuron.qn_kernel.data.requireMinVersion
 import me.singleneuron.util.QQVersion
-import nil.nadph.qnotified.H
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.util.DexKit
@@ -84,7 +84,5 @@ object SortAtPanel: CommonDelayableHook("ketal_At_Panel_Hook", DexDeobfStep(DexK
         return uin
     }
 
-    override fun isValid(): Boolean {
-        return (H.isTIM() && H.getVersionCode() >= TIMVersion.TIM_3_1_1) or !H.isTIM() && H.getVersionCode() >= QQVersion.QQ_8_1_3
-    }
+    override fun isValid(): Boolean = requireMinVersion(QQVersion.QQ_8_1_3, TIMVersion.TIM_3_1_1)
 }

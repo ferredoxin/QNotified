@@ -29,7 +29,7 @@ public class BugCollector {
     public static void onThrowable(Throwable th) {
         try {
             if (Utils.isCallingFrom("BugCollector")) return;
-            Application ctx = HostInformationProviderKt.getHostInformationProvider().getApplicationContext();
+            Application ctx = HostInformationProviderKt.getHostInfo().getApplication();
             if (ctx != null) {
                 CliOper.__init__(ctx);
                 Crashes.trackError(th);

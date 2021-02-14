@@ -26,9 +26,10 @@ import android.widget.ImageView
 import me.ketal.util.TIMVersion
 import me.nextalone.util.hookAfter
 import me.nextalone.util.hookBefore
+import me.singleneuron.qn_kernel.data.hostInfo
+import me.singleneuron.qn_kernel.data.requireMinVersion
 import me.singleneuron.qn_kernel.tlb.ConfigTable.getConfig
 import me.singleneuron.util.QQVersion
-import nil.nadph.qnotified.H
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.hook.CommonDelayableHook
@@ -48,15 +49,13 @@ object LeftSwipeReplyHook: CommonDelayableHook("ketal_left_swipe_action", DexDeo
             return img
         }
 
-    override fun isValid(): Boolean {
-        return (H.isTIM() && H.getVersionCode() >= TIMVersion.TIM_3_1_1) or !H.isTIM() && H.getVersionCode() >= QQVersion.QQ_8_2_6
-    }
+    override fun isValid(): Boolean = requireMinVersion(QQVersion.QQ_8_2_6,TIMVersion.TIM_3_1_1)
 
     override fun initOnce(): Boolean {
         return try {
             val replyMethod = DexKit.doFindMethod(DexKit.N_LeftSwipeReply_Helper__reply)
             val hookClass = replyMethod.declaringClass
-            var methodName = if (H.isTIM()) "L" else "a"
+            var methodName = if (hostInfo.isTim) "L" else "a"
             ReflexUtil.hasMethod(hookClass, methodName, Float::class.java, Float::class.java)
                 .hookBefore(this) {
                     if (isNoAction) it.result = null
@@ -77,7 +76,7 @@ object LeftSwipeReplyHook: CommonDelayableHook("ketal_left_swipe_action", DexDeo
                 DexKit.doFindMethod(DexKit.N_BASE_CHAT_PIE__chooseMsg).invoke(baseChatPie, message)
                 it.result = null
             }
-            methodName = if (H.isTIM()) getConfig(LeftSwipeReplyHook::class.java.simpleName) else "a"
+            methodName = if (hostInfo.isTim) getConfig(LeftSwipeReplyHook::class.java.simpleName) else "a"
             ReflexUtil.hasMethod(hookClass, methodName, Int::class.java)
                 .hookAfter(this) {
                     if (replyDistance <= 0) {
@@ -117,9 +116,9 @@ object LeftSwipeReplyHook: CommonDelayableHook("ketal_left_swipe_action", DexDeo
         } catch (e: Exception) {
             Utils.log(e)
             if (Looper.myLooper() == Looper.getMainLooper()) {
-                Toasts.error(H.getApplication(), e.toString() + "")
+                Toasts.error(hostInfo.application, e.toString() + "")
             } else {
-                SyncUtils.post { Toasts.error(H.getApplication(), e.toString() + "") }
+                SyncUtils.post { Toasts.error(hostInfo.application, e.toString() + "") }
             }
         }
     }

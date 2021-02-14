@@ -217,7 +217,7 @@ public class QNScriptManager {
 
     public static void init() {
         if (init) return;
-        scriptsPath = HostInformationProviderKt.getHostInformationProvider().getApplicationContext().getFilesDir().getAbsolutePath() + "/qn_script/";
+        scriptsPath = HostInformationProviderKt.getHostInfo().getApplication().getFilesDir().getAbsolutePath() + "/qn_script/";
         for (String code : getScriptCodes()) {
             try {
                 QNScript qs = execute(code);
@@ -280,7 +280,7 @@ public class QNScriptManager {
     public static void enableAll(CompoundButton compoundButton, boolean b) {
         if (b) enableAll();
         else disableAll();
-        Utils.showToast(compoundButton.getContext(), Utils.TOAST_TYPE_ERROR, "重启" + HostInformationProviderKt.getHostInformationProvider().getHostName() + "生效", Toast.LENGTH_SHORT);
+        Utils.showToast(compoundButton.getContext(), Utils.TOAST_TYPE_ERROR, "重启" + HostInformationProviderKt.getHostInfo().getHostName() + "生效", Toast.LENGTH_SHORT);
     }
 
     public static boolean isEnableAll() {
