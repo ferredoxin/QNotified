@@ -1,0 +1,43 @@
+# Android
+# Build your Android project with Gradle.
+# Add steps that test, sign, and distribute the APK, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/android
+
+trigger:
+    branches:
+        include:
+            - master
+
+pr: none
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: Gradle@2
+  inputs:
+    workingDirectory: ''
+    gradleWrapperFile: 'gradlew'
+    gradleOptions: '-Xmx3072m'
+    publishJUnitResults: false
+    testResultsFiles: '**/TEST-*.xml'
+    tasks: 'assembleRelease'
+
+- task: AndroidSigning@3
+  inputs:
+    apkFiles: '**/*.apk'
+    apksignerKeystoreFile: 'en-YCH.jks'
+    apksignerKeystorePassword: '$(keyStorePassword)'
+    apksignerKeystoreAlias: '$(keyAlias)'
+    apksignerKeyPassword: '$(keyPassword)'
+
+- task: AppCenterDistribute@3
+  inputs:
+    serverEndpoint: 'QNotified'
+    appSlug: 'QNotifiedDev/QNotified'
+    appFile: '**/*.apk'
+    symbolsOption: 'Android'
+    releaseNotesOption: 'input'
+    releaseNotesInput: '$(Build.SourceVersionMessage)'
+    destinationType: 'groups'
+    distributionGroupId: 'c7a5954e-6861-438f-ad02-fb765d4d889f'
