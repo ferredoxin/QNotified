@@ -25,12 +25,12 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import me.singleneuron.util.QQVersion;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.util.Initiator;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static me.singleneuron.util.QQVersion.QQ_8_2_6;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.log;
 
@@ -44,11 +44,11 @@ public class HideMiniAppPullEntry extends CommonDelayableHook {
     @Override
     protected boolean initOnce() {
         try {
-            if (HostInformationProviderKt.getHostInformationProvider().isTim()) return false;
+            if (HostInformationProviderKt.getHostInfo().isTim()) return false;
             ConfigManager cache = ConfigManager.getCache();
             if (isEnabled()) {
                 int lastVersion = cache.getIntOrDefault("qn_hide_msg_list_miniapp_version_code", 0);
-                if (HostInformationProviderKt.getHostInformationProvider().getVersionCode32() == lastVersion) {
+                if (HostInformationProviderKt.getHostInfo().getVersionCode32() == lastVersion) {
                     String methodName = cache.getString("qn_hide_msg_list_miniapp_method_name");
                     findAndHookMethod(Initiator._Conversation(), methodName, XC_MethodReplacement.returnConstant(null));
                 } else {
@@ -82,7 +82,7 @@ public class HideMiniAppPullEntry extends CommonDelayableHook {
 
                     Class<?> tmp;
                     Class<?> miniapp = null;
-                    if (HostInformationProviderKt.getHostInformationProvider().getVersionCode() >= QQ_8_2_6) {
+                    if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_2_6)) {
                         //for 8.2.6
                         miniapp = load("com/tencent/mobileqq/mini/entry/MiniAppDesktop");
                         if (miniapp == null) {
@@ -124,7 +124,7 @@ public class HideMiniAppPullEntry extends CommonDelayableHook {
                                 throw new NullPointerException("Failed to get Conversation.?() to hide MiniApp!");
                             ConfigManager cache = ConfigManager.getCache();
                             cache.putString("qn_hide_msg_list_miniapp_method_name", methodName);
-                            cache.getAllConfig().put("qn_hide_msg_list_miniapp_version_code", HostInformationProviderKt.getHostInformationProvider().getVersionCode32());
+                            cache.getAllConfig().put("qn_hide_msg_list_miniapp_version_code", HostInformationProviderKt.getHostInfo().getVersionCode32());
                             cache.save();
                             param.setThrowable(new UnsupportedOperationException("MiniAppEntry disabled"));
                         }

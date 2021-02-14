@@ -23,7 +23,7 @@ import android.widget.Toast
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedBridge
-import me.singleneuron.qn_kernel.data.hostInformationProvider
+import me.singleneuron.qn_kernel.data.hostInfo
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.hook.BaseDelayableHook
@@ -70,9 +70,9 @@ abstract class BaseDelayableHookAdapter @JvmOverloads protected constructor(prot
         } catch (e: Exception) {
             Utils.log(e)
             if (Looper.myLooper() == Looper.getMainLooper()) {
-                Utils.showToast(hostInformationProvider.applicationContext, Utils.TOAST_TYPE_ERROR, e.toString() + "", Toast.LENGTH_SHORT)
+                Utils.showToast(hostInfo.application, Utils.TOAST_TYPE_ERROR, e.toString() + "", Toast.LENGTH_SHORT)
             } else {
-                SyncUtils.post { Utils.showToast(hostInformationProvider.applicationContext, Utils.TOAST_TYPE_ERROR, e.toString() + "", Toast.LENGTH_SHORT) }
+                SyncUtils.post { Utils.showToast(hostInfo.application, Utils.TOAST_TYPE_ERROR, e.toString() + "", Toast.LENGTH_SHORT) }
             }
         }
     }

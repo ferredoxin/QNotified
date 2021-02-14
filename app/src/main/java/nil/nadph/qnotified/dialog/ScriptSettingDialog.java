@@ -90,7 +90,7 @@ public class ScriptSettingDialog implements CompoundButton.OnCheckedChangeListen
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         script.setEnable(isChecked);
-        Utils.showToast(ctx, Utils.TOAST_TYPE_ERROR, "重启" + HostInformationProviderKt.getHostInformationProvider().getHostName() + "生效", Toast.LENGTH_SHORT);
+        Utils.showToast(ctx, Utils.TOAST_TYPE_ERROR, "重启" + HostInformationProviderKt.getHostInfo().getHostName() + "生效", Toast.LENGTH_SHORT);
     }
 
     public static void createAndShowDialog(Context ctx, QNScript qs) {

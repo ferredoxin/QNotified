@@ -16,34 +16,23 @@
  * along with this software.  If not, see
  * <https://www.gnu.org/licenses/>.
  */
-package me.nextalone.hook
+package me.ketal.hook
 
+import me.ketal.util.HookUtil.getMethod
 import me.nextalone.util.hookBefore
-import me.nextalone.util.methods
-import me.singleneuron.qn_kernel.data.hostInfo
-import me.singleneuron.util.QQVersion
+import me.nextalone.util.hookNull
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.Utils
-import java.lang.reflect.Method
 
-object HideOnlineNumber : CommonDelayableHook("na_hide_online_number") {
+object HideAssistantRemoveTips: CommonDelayableHook("ketal_hide_assistant_removetips") {
     override fun initOnce(): Boolean {
         return try {
-            var className = "com.tencent.mobileqq.activity.aio.core.TroopChatPie"
-            if (hostInfo.versionCode <= QQVersion.QQ_8_4_8) {
-                className = "com.tencent.mobileqq.activity.aio.rebuild.TroopChatPie"
-            }
-            for (m: Method in className.methods) {
-                val argt = m.parameterTypes
-                if (m.name == "a" && argt.size == 2 && argt[0] == String::class.java && argt[1] == Boolean::class.java) {
-                    m.hookBefore(this) {
-                        it.args[0] = ""
-                    }
-                }
-            }
+            "Lcom/tencent/mobileqq/activity/ChatActivityUtils;->a(Landroid/content/Context;Ljava/lang/String;Landroid/view/View\$OnClickListener;Landroid/view/View\$OnClickListener;)Landroid/view/View;"
+                .getMethod()
+                ?.hookBefore(this, hookNull)
             true
-        } catch (t: Throwable) {
-            Utils.log(t)
+        } catch (e: Exception) {
+            Utils.log(e)
             false
         }
     }

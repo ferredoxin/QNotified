@@ -53,7 +53,7 @@ public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
     public boolean doOnCreate(Bundle bundle) {
         super.doOnCreate(bundle);
         RelativeLayout _t;
-        String _hostName = HostInformationProviderKt.getHostInformationProvider().getHostName();
+        String _hostName = HostInformationProviderKt.getHostInfo().getHostName();
         LinearLayout ll = new LinearLayout(this);
         ll.setOrientation(LinearLayout.VERTICAL);
         ViewGroup.LayoutParams mmlp = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);

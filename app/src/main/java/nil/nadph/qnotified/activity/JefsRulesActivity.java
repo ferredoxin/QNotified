@@ -84,7 +84,7 @@ public class JefsRulesActivity extends IphoneTitleBarActivityCompat implements V
             layoutDisplay.setOrientation(LinearLayout.VERTICAL);
             layoutDisplay.setId(R.id.jefsRulesDisplayLayout);
             {
-                String appLabel = HostInformationProviderKt.getHostInformationProvider().getHostName();
+                String appLabel = HostInformationProviderKt.getHostInfo().getHostName();
                 TextView _tmp_1 = new TextView(this);
                 _tmp_1.setTextColor(ResUtils.skin_gray3);
                 _tmp_1.setText("本功能用于去除恼人的 \"即将离开" + appLabel + " 前往其他应用\" 对话框, " +

@@ -27,6 +27,7 @@ import java.lang.reflect.Modifier;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import me.singleneuron.util.QQVersion;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.NonNull;
@@ -54,7 +55,7 @@ public class IgnoreDiyCard extends CommonDelayableHook {
         try {
             for (Method m : load("com.tencent.mobileqq.activity.FriendProfileCardActivity").getDeclaredMethods()) {
                 Class<?>[] argt = m.getParameterTypes();
-                if (HostInformationProviderKt.getHostInformationProvider().getVersionCode32() <= 1406) {
+                if (HostInformationProviderKt.getHostInfo().getVersionCode32() <= QQVersion.QQ_8_3_6) {
                     if (m.getName().equals("a") && !Modifier.isStatic(m.getModifiers()) && m.getReturnType().equals(void.class)) {
                         if (argt.length != 2) continue;
                         if (argt[1] != boolean.class) continue;

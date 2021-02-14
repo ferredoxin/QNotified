@@ -44,8 +44,8 @@ import dalvik.system.BaseDexClassLoader;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
-import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.ui.___WindowIsTranslucent;
+import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.MainProcess;
 import nil.nadph.qnotified.util.Nullable;
 
@@ -251,7 +251,7 @@ public class Parasitics {
                 if (index != -1) {
                     Intent raw = (Intent) args[index];
                     ComponentName component = raw.getComponent();
-                    Context hostApp = HostInformationProviderKt.getHostInformationProvider().getApplicationContext();
+                    Context hostApp = HostInformationProviderKt.getHostInfo().getApplication();
                     if (hostApp != null && component != null
                         && hostApp.getPackageName().equals(component.getPackageName())
                         && ActProxyMgr.isModuleProxyActivity(component.getClassName())) {

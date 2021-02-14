@@ -22,8 +22,8 @@ import java.lang.reflect.Modifier;
 
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import me.singleneuron.qn_kernel.tlb.ConfigTable;
-import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.util.ReflexUtil.*;
@@ -62,7 +62,7 @@ public class QQMessageFacade {
             iput_object(msg2, "time", t);
             Object msgCache = invoke_virtual_any(getQQAppInterface(), DexKit.doFindClass(DexKit.C_MessageCache));
             String methodName = "b"; //Default method name for QQ
-            if (HostInformationProviderKt.getHostInformationProvider().isTim()) {
+            if (HostInformationProviderKt.getHostInfo().isTim()) {
                 methodName = ConfigTable.INSTANCE.getConfig(QQMessageFacade.class.getSimpleName());
             }
             invoke_virtual(msgCache, methodName, true, boolean.class, void.class);

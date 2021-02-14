@@ -49,14 +49,14 @@ public class DefaultBubbleHook extends CommonDelayableHook {
 
     @Override
     public boolean isValid() {
-        Application app = HostInformationProviderKt.getHostInformationProvider().getApplicationContext();
-        return app == null || !HostInformationProviderKt.getHostInformationProvider().isTim();
+        Application app = HostInformationProviderKt.getHostInfo().getApplication();
+        return app == null || !HostInformationProviderKt.getHostInfo().isTim();
     }
 
     @Override
     public void setEnabled(boolean enabled) {
         try {
-            File dir = new File(HostInformationProviderKt.getHostInformationProvider().getApplicationContext().getFilesDir().getAbsolutePath() + "/bubble_info");
+            File dir = new File(HostInformationProviderKt.getHostInfo().getApplication().getFilesDir().getAbsolutePath() + "/bubble_info");
             boolean curr = !dir.exists() || !dir.canRead();
             if (dir.exists()) {
                 if (enabled && !curr) {
@@ -73,12 +73,12 @@ public class DefaultBubbleHook extends CommonDelayableHook {
         } catch (final Exception e) {
             Utils.log(e);
             if (Looper.myLooper() == Looper.getMainLooper()) {
-                Utils.showToast(HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+                Utils.showToast(HostInformationProviderKt.getHostInfo().getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
             } else {
                 SyncUtils.post(new Runnable() {
                     @Override
                     public void run() {
-                        Utils.showToast(HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+                        Utils.showToast(HostInformationProviderKt.getHostInfo().getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
                     }
                 });
             }
@@ -88,8 +88,8 @@ public class DefaultBubbleHook extends CommonDelayableHook {
     @Override
     public boolean isEnabled() {
         try {
-            Application app = HostInformationProviderKt.getHostInformationProvider().getApplicationContext();
-            if (app != null && HostInformationProviderKt.getHostInformationProvider().isTim()) return false;
+            Application app = HostInformationProviderKt.getHostInfo().getApplication();
+            if (app != null && HostInformationProviderKt.getHostInfo().isTim()) return false;
             File dir = new File(app.getFilesDir().getAbsolutePath() + "/bubble_info");
             return !dir.exists() || !dir.canRead();
         } catch (Exception e) {

@@ -75,8 +75,6 @@ public class ReplyNoAtHook extends CommonDelayableHook {
 
     @Override
     public boolean isValid() {
-        if (HostInformationProviderKt.getHostInformationProvider().isTim() && HostInformationProviderKt.getHostInformationProvider().getVersionCode() >= TIM_3_1_1)
-            return true;
-        else return !HostInformationProviderKt.getHostInformationProvider().isTim() && HostInformationProviderKt.getHostInformationProvider().getVersionCode() >= QQ_8_1_3;
+        return HostInformationProviderKt.requireMinVersion(QQ_8_1_3,TIM_3_1_1);
     }
 }

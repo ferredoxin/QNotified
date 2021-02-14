@@ -14,7 +14,7 @@ public class AboutPreferenceFragment extends AbstractPreferenceFragment {
     @SuppressWarnings("ConstantConditions")
     protected void initPreferences() {
         super.initPreferences();
-        String qqVersion = HostInformationProviderKt.getHostInformationProvider().getVersionName();
+        String qqVersion = HostInformationProviderKt.getHostInfo().getVersionName();
 
         findPreference("version_module").setSummary(Utils.QN_VERSION_NAME);
         findPreference("version_qq").setSummary(qqVersion);

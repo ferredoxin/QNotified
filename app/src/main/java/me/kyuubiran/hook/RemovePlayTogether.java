@@ -46,7 +46,7 @@ public class RemovePlayTogether extends CommonDelayableHook {
     public boolean initOnce() {
         try {
             String method = "h";
-            if (HostInformationProviderKt.getHostInformationProvider().getVersionCode() >= QQVersion.QQ_8_4_8) {
+            if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_4_8)) {
                 //QQ 8.4.8 除了一起嗨按钮，同一个位置还有一个群打卡按钮。默认显示群打卡，如果已经打卡就显示一起嗨，两个按钮点击之后都会打开同一个界面，但是要同时hook两个
                 String entryMethod = "d";
                 for (Method m : DexKit.doFindClass(DexKit.C_ClockInEntryHelper).getDeclaredMethods()) {

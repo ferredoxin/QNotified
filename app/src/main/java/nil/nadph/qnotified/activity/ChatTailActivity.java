@@ -155,13 +155,13 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         _h.setOnClickListener(v -> pct.setText(pct.getText() + "\\n"));
         ll.addView(pct, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 2 * _5dp, _5dp, 2 * _5dp, _5dp));
         ll.addView(newListItemSwitchFriendConfigNext(this, "正则开关",
-                "通过正则表达式的消息不会携带小尾巴(无需重启" + HostInformationProviderKt.getHostInformationProvider().getHostName() + ")",
+                "通过正则表达式的消息不会携带小尾巴(无需重启" + HostInformationProviderKt.getHostInfo().getHostName() + ")",
                 ConfigItems.qn_chat_tail_regex, false));
         ll.addView(createEditText(R_ID_REGEX_VALUE, _5dp, ChatTailHook.getTailRegex(),
                 "需要有正则表达式相关知识(部分匹配)"),
                 newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT,
                         2 * _5dp, _5dp, 2 * _5dp, _5dp));
-        ll.addView(newListItemSwitchFriendConfigNext(this, "全局开关", "开启将无视生效范围(无需重启" + HostInformationProviderKt.getHostInformationProvider().getHostName() + ")", ConfigItems.qn_chat_tail_global, false));
+        ll.addView(newListItemSwitchFriendConfigNext(this, "全局开关", "开启将无视生效范围(无需重启" + HostInformationProviderKt.getHostInfo().getHostName() + ")", ConfigItems.qn_chat_tail_global, false));
         Button apply = new Button(ChatTailActivity.this);
         apply.setId(R_ID_APPLY);
         apply.setOnClickListener(this);

@@ -132,7 +132,7 @@ public class RepeaterHook extends CommonDelayableHook {
                                 ChatActivityFacade.repeatMessage(app, session, param.args[0]);
                             } catch (Throwable e) {
                                 log(e);
-                                Utils.showToast(HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), TOAST_TYPE_ERROR, e.toString(), Toast.LENGTH_SHORT);
+                                Utils.showToast(HostInformationProviderKt.getHostInfo().getApplication(), TOAST_TYPE_ERROR, e.toString(), Toast.LENGTH_SHORT);
                             }
                         }
                     };
@@ -142,7 +142,7 @@ public class RepeaterHook extends CommonDelayableHook {
             });
             //end: pic
             //begin: text
-            if (HostInformationProviderKt.getHostInformationProvider().isTim()) {
+            if (HostInformationProviderKt.getHostInfo().isTim()) {
                 // TODO: 2020/5/17 Add MsgForText +1 for TIM
                 XposedHelpers.findAndHookMethod(_TextItemBuilder(), "a", ChatMessage, itemHolder, View.class, BaseChatItemLayout, listener2,
                         new XC_MethodHook(51) {
@@ -202,7 +202,7 @@ public class RepeaterHook extends CommonDelayableHook {
                                             ChatActivityFacade.repeatMessage(app, session, param.args[0]);
                                         } catch (Throwable e) {
                                             log(e);
-                                            Utils.showToast(HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), TOAST_TYPE_ERROR, e.toString(), Toast.LENGTH_SHORT);
+                                            Utils.showToast(HostInformationProviderKt.getHostInfo().getApplication(), TOAST_TYPE_ERROR, e.toString(), Toast.LENGTH_SHORT);
                                         }
                                     }
                                 };
@@ -246,7 +246,7 @@ public class RepeaterHook extends CommonDelayableHook {
                                     ChatActivityFacade.repeatMessage(app, session, msg);
                                 } catch (Throwable e) {
                                     log(e);
-                                    Utils.showToast(HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), TOAST_TYPE_ERROR, e.toString(), Toast.LENGTH_SHORT);
+                                    Utils.showToast(HostInformationProviderKt.getHostInfo().getApplication(), TOAST_TYPE_ERROR, e.toString(), Toast.LENGTH_SHORT);
                                 }
                             }
                         };
@@ -309,7 +309,7 @@ public class RepeaterHook extends CommonDelayableHook {
                                         ChatActivityFacade.repeatMessage(app, session, param.args[0]);
                                     } catch (Throwable e) {
                                         log(e);
-                                        Utils.showToast(HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), TOAST_TYPE_ERROR, e.toString(), Toast.LENGTH_SHORT);
+                                        Utils.showToast(HostInformationProviderKt.getHostInfo().getApplication(), TOAST_TYPE_ERROR, e.toString(), Toast.LENGTH_SHORT);
                                     }
                                 }
                             };
