@@ -18,33 +18,20 @@
  */
 package me.nextalone.hook.testhook
 
-import de.robv.android.xposed.XC_MethodHook
-import me.kyuubiran.util.getMethods
-import me.nextalone.util.Utils.hook
-import me.nextalone.util.logd
+import me.nextalone.util.*
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.Utils
-import java.lang.reflect.Method
 
 object TestCommonDelayable : CommonDelayableHook("na_test_base_delayable_kt") {
 
     override fun initOnce(): Boolean {
         return try {
             val hookSimpleName = this::class.java.simpleName
-            val className = ""
-            for (m: Method in getMethods(className)) {
-                val argt = m.parameterTypes
-                if (m.name == "methodName" && argt.size == 1) {
-                    m.hook(object : XC_MethodHook() {
-                        override fun beforeHookedMethod(param: MethodHookParam) {
-                            logd("B", hookSimpleName)
-                        }
-
-                        override fun afterHookedMethod(param: MethodHookParam) {
-                            logd("A", hookSimpleName)
-                        }
-                    })
-                }
+            "".method.hookBefore(this) {
+                logBefore(hookSimpleName)
+            }
+            "".method.hookAfter(this) {
+                logAfter(hookSimpleName)
             }
             true
         } catch (t: Throwable) {

@@ -18,9 +18,8 @@
  */
 package me.nextalone.hook
 
-import de.robv.android.xposed.XC_MethodHook
-import me.nextalone.util.Utils.hook
-import me.nextalone.util.Utils.methods
+import me.nextalone.util.hookBefore
+import me.nextalone.util.methods
 import me.singleneuron.qn_kernel.data.hostInformationProvider
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.hook.CommonDelayableHook
@@ -37,11 +36,9 @@ object HideOnlineNumber : CommonDelayableHook("na_hide_online_number") {
             for (m: Method in className.methods) {
                 val argt = m.parameterTypes
                 if (m.name == "a" && argt.size == 2 && argt[0] == String::class.java && argt[1] == Boolean::class.java) {
-                    m.hook(object : XC_MethodHook() {
-                        override fun beforeHookedMethod(param: MethodHookParam) {
-                            param.args[0] = ""
-                        }
-                    })
+                    m.hookBefore(this) {
+                        it.args[0] = ""
+                    }
                 }
             }
             true

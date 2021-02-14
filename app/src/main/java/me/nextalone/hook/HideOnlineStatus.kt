@@ -18,22 +18,22 @@
  */
 package me.nextalone.hook
 
-import android.view.View
-import me.nextalone.util.hookBefore
-import me.nextalone.util.hookNull
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import me.nextalone.util.clazz
+import me.nextalone.util.hookAfterAllConstructors
+import me.nextalone.util.setViewZeroSize
 import nil.nadph.qnotified.hook.CommonDelayableHook
-import nil.nadph.qnotified.util.DexKit
 import nil.nadph.qnotified.util.Utils
-import java.lang.reflect.Method
 
-object RemoveIntimateDrawer : CommonDelayableHook("kr_remove_intimate_drawer") {
+object HideOnlineStatus : CommonDelayableHook("na_hide_online_status_kt") {
 
     override fun initOnce(): Boolean {
         return try {
-            for (m: Method in DexKit.doFindClass(DexKit.C_IntimateDrawer).declaredMethods) {
-                if (m.name == "a" && m.returnType == View::class.java) {
-                    m.hookBefore(this, hookNull)
-                }
+            "com.tencent.mobileqq.widget.navbar.NavBarAIO".clazz.hookAfterAllConstructors {
+                val ctx = it.thisObject as RelativeLayout
+                val subTitleLinearLayoutId = ctx.resources.getIdentifier("j65", "id", Utils.PACKAGE_NAME_QQ)
+                ctx.findViewById<LinearLayout>(subTitleLinearLayoutId).setViewZeroSize()
             }
             true
         } catch (t: Throwable) {

@@ -24,6 +24,12 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="其它">
         <SwitchPreference
+            android:key="HideChatVipImage!"
+            android:title="隐藏会员徽标" />
+        <SwitchPreference
+            android:key="HideOnlineStatus!"
+            android:title="隐藏在线状态" />
+        <SwitchPreference
             android:key="RemoveIntimateDrawer"
             android:title="隐藏好友亲密抽屉" />
         <SwitchPreference

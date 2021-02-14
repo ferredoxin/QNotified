@@ -57,7 +57,9 @@ import me.kyuubiran.hook.SimplifyQQSettingMe;
 import me.kyuubiran.hook.testhook.CutMessage;
 import me.nextalone.hook.EnableQLog;
 import me.nextalone.hook.ForcedSendOriginalPhoto;
+import me.nextalone.hook.HideChatVipImage;
 import me.nextalone.hook.HideOnlineNumber;
+import me.nextalone.hook.HideOnlineStatus;
 import me.nextalone.hook.HideProfileBubble;
 import me.nextalone.hook.HideTotalNumber;
 import me.nextalone.hook.RemoveIntimateDrawer;
@@ -178,6 +180,8 @@ public abstract class AbsDelayableHook implements SwitchConfigItem {
                 SendFavoriteHook.INSTANCE,
                 AutoRenewFire.INSTANCE,
                 SimplifyChatLongItem.INSTANCE,
+                HideOnlineStatus.INSTANCE,
+                HideChatVipImage.INSTANCE,
             };
         }
         return sAllHooks;

@@ -18,22 +18,21 @@
  */
 package me.nextalone.hook
 
-import android.view.View
-import me.nextalone.util.hookBefore
-import me.nextalone.util.hookNull
+import android.widget.ImageView
+import android.widget.RelativeLayout
+import me.nextalone.util.clazz
+import me.nextalone.util.hookAfterAllConstructors
 import nil.nadph.qnotified.hook.CommonDelayableHook
-import nil.nadph.qnotified.util.DexKit
 import nil.nadph.qnotified.util.Utils
-import java.lang.reflect.Method
 
-object RemoveIntimateDrawer : CommonDelayableHook("kr_remove_intimate_drawer") {
+object HideChatVipImage : CommonDelayableHook("na_hide_chat_vip_image_kt") {
 
     override fun initOnce(): Boolean {
         return try {
-            for (m: Method in DexKit.doFindClass(DexKit.C_IntimateDrawer).declaredMethods) {
-                if (m.name == "a" && m.returnType == View::class.java) {
-                    m.hookBefore(this, hookNull)
-                }
+            "com.tencent.mobileqq.widget.navbar.NavBarAIO".clazz.hookAfterAllConstructors {
+                val ctx = it.thisObject as RelativeLayout
+                val titleImageId = ctx.resources.getIdentifier("jp0", "id", Utils.PACKAGE_NAME_QQ)
+                ctx.findViewById<ImageView>(titleImageId).alpha = 0F
             }
             true
         } catch (t: Throwable) {

@@ -18,9 +18,9 @@
  */
 package me.nextalone.hook
 
-import de.robv.android.xposed.XC_MethodHook
 import me.kyuubiran.util.isStatic
-import me.nextalone.util.Utils.hook
+import me.nextalone.util.hookBefore
+import me.nextalone.util.hookNull
 import me.singleneuron.base.adapter.BaseDelayableHighPerformanceConditionalHookAdapter
 import me.singleneuron.data.PageFaultHighPerformanceFunctionCache
 import me.singleneuron.qn_kernel.data.hostInformationProvider
@@ -40,11 +40,7 @@ object HideProfileBubble : BaseDelayableHighPerformanceConditionalHookAdapter("h
             for (m: Method in clz.declaredMethods) {
                 val argt = m.parameterTypes
                 if (m.name == ConfigTable.getConfig(HideProfileBubble::class.simpleName) && !m.isStatic && argt.isEmpty()) {
-                    m.hook(object : XC_MethodHook() {
-                        override fun beforeHookedMethod(param: MethodHookParam?) {
-                            param?.result = null
-                        }
-                    })
+                    m.hookBefore(this, hookNull)
                 }
             }
             true
