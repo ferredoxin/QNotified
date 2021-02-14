@@ -24,10 +24,12 @@ import java.util.List;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
 
+import static me.singleneuron.util.QQVersion.QQ_8_2_0;
 import static nil.nadph.qnotified.util.Initiator._EmoAddedAuthCallback;
 import static nil.nadph.qnotified.util.Initiator._FavEmoRoamingHandler;
 import static nil.nadph.qnotified.util.ReflexUtil.iput_object;
@@ -94,5 +96,11 @@ public class FavMoreEmo extends CommonDelayableHook {
         Class mFavEmoConstant = DexKit.doFindClass(DexKit.C_FAV_EMO_CONST);
         sput_object(mFavEmoConstant, "a", 800);
         sput_object(mFavEmoConstant, "b", 800);
+    }
+
+    @Override
+    public boolean isValid() {
+        return !HostInformationProviderKt.hostInfo.isTim()
+            && HostInformationProviderKt.hostInfo.getVersionCode() < QQ_8_2_0;
     }
 }
