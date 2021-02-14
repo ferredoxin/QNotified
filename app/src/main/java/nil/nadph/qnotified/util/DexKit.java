@@ -200,7 +200,7 @@ public class DexKit {
         try {
             ConfigManager cache = ConfigManager.getCache();
             int lastVersion = cache.getIntOrDefault("cache_" + a(i) + "_code", 0);
-            if (HostInformationProviderKt.getHostInformationProvider().getVersionCode32() != lastVersion) {
+            if (HostInformationProviderKt.getHostInfo().getVersionCode32() != lastVersion) {
                 return null;
             }
             String name = cache.getString("cache_" + a(i) + "_method");
@@ -222,7 +222,7 @@ public class DexKit {
         }
         int ver = -1;
         try {
-            ver = HostInformationProviderKt.getHostInformationProvider().getVersionCode32();
+            ver = HostInformationProviderKt.getHostInfo().getVersionCode32();
         } catch (Throwable ignored) {
         }
         try {
@@ -250,7 +250,7 @@ public class DexKit {
                 return null;
             }
             cache.putString("cache_" + a(i) + "_method", ret.toString());
-            cache.getAllConfig().put("cache_" + a(i) + "_code", HostInformationProviderKt.getHostInformationProvider().getVersionCode32());
+            cache.getAllConfig().put("cache_" + a(i) + "_code", HostInformationProviderKt.getHostInfo().getVersionCode32());
             cache.save();
         } catch (Exception e) {
             log(e);

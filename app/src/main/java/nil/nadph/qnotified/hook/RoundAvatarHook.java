@@ -76,7 +76,7 @@ public class RoundAvatarHook extends CommonDelayableHook {
 
     @Override
     public boolean isValid() {
-        Application app = HostInformationProviderKt.getHostInformationProvider().getApplicationContext();
-        return app == null || !HostInformationProviderKt.getHostInformationProvider().isTim();
+        Application app = HostInformationProviderKt.getHostInfo().getApplication();
+        return app == null || !HostInformationProviderKt.getHostInfo().isTim();
     }
 }

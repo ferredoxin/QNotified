@@ -24,14 +24,14 @@ import android.net.Uri
 import de.robv.android.xposed.XposedBridge
 import me.singleneuron.base.adapter.BaseDelayableConditionalHookAdapter
 import me.singleneuron.data.PageFaultHighPerformanceFunctionCache
-import me.singleneuron.qn_kernel.data.hostInformationProvider
+import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.NoAppletUtil
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.util.Utils
 
 object NoApplet : BaseDelayableConditionalHookAdapter("noapplet") {
 
-    override val conditionCache: PageFaultHighPerformanceFunctionCache<Boolean> = PageFaultHighPerformanceFunctionCache { hostInformationProvider.versionCode>=QQVersion.QQ_8_0_0}
+    override val conditionCache: PageFaultHighPerformanceFunctionCache<Boolean> = PageFaultHighPerformanceFunctionCache { requireMinQQVersion(QQVersion.QQ_8_0_0) }
 
     override fun doInit(): Boolean {
         try {

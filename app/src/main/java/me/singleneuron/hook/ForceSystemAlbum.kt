@@ -22,7 +22,7 @@ import android.content.Intent
 import de.robv.android.xposed.XposedBridge
 import me.singleneuron.activity.ChooseAlbumAgentActivity
 import me.singleneuron.base.adapter.BaseDelayableConditionalHookAdapter
-import me.singleneuron.qn_kernel.data.hostInformationProvider
+import me.singleneuron.qn_kernel.data.hostInfo
 
 object ForceSystemAlbum : BaseDelayableConditionalHookAdapter("forceSystemAlbum") {
 
@@ -31,7 +31,7 @@ object ForceSystemAlbum : BaseDelayableConditionalHookAdapter("forceSystemAlbum"
         val photoListPanelClass = Class.forName("com.tencent.mobileqq.activity.aio.photo.PhotoListPanel")
         XposedBridge.hookAllMethods(photoListPanelClass,"e",object : XposedMethodHookAdapter() {
             override fun beforeMethod(param: MethodHookParam?) {
-                val context = hostInformationProvider.applicationContext
+                val context = hostInfo.application
                 context.startActivity(Intent(context,ChooseAlbumAgentActivity::class.java))
                 param!!.result = null
             }

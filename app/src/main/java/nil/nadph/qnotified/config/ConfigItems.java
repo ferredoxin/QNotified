@@ -65,7 +65,7 @@ public class ConfigItems {
         @Override
         public boolean isEnabled() {
             try {
-                Context ctx = HostInformationProviderKt.getHostInformationProvider().getApplicationContext();
+                Context ctx = HostInformationProviderKt.getHostInfo().getApplication();
                 return new File(ctx.getFilesDir(), "qn_disable_hot_patch").exists();
             } catch (Throwable e) {
                 Utils.showErrorToastAnywhere(e.toString());
@@ -76,7 +76,7 @@ public class ConfigItems {
         @Override
         public void setEnabled(boolean enabled) {
             try {
-                Context ctx = HostInformationProviderKt.getHostInformationProvider().getApplicationContext();
+                Context ctx = HostInformationProviderKt.getHostInfo().getApplication();
                 File f = new File(ctx.getFilesDir(), "qn_disable_hot_patch");
                 if (enabled != f.exists()) {
                     if (enabled) {

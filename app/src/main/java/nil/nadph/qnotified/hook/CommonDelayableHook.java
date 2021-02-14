@@ -92,12 +92,12 @@ public abstract class CommonDelayableHook extends BaseDelayableHook {
         } catch (Exception e) {
             Utils.log(e);
             if (Looper.myLooper() == Looper.getMainLooper()) {
-                Toasts.error(HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), e + "");
+                Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(), e + "");
             } else {
                 SyncUtils.post(new Runnable() {
                     @Override
                     public void run() {
-                        Toasts.error(HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), e + "");
+                        Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(), e + "");
                     }
                 });
             }

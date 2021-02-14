@@ -215,9 +215,9 @@ public class ChatTailHook extends CommonDelayableHook {
         } catch (final Exception e) {
             Utils.log(e);
             if (Looper.myLooper() == Looper.getMainLooper()) {
-                Utils.showToast(HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+                Utils.showToast(HostInformationProviderKt.getHostInfo().getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
             } else {
-                SyncUtils.post(() -> Utils.showToast(HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT));
+                SyncUtils.post(() -> Utils.showToast(HostInformationProviderKt.getHostInfo().getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT));
             }
         }
     }

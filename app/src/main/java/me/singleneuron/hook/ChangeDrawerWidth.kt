@@ -25,7 +25,7 @@ import android.util.TypedValue
 import android.view.WindowManager
 import de.robv.android.xposed.XposedHelpers
 import me.singleneuron.base.adapter.BaseDelayableConditionalHookAdapter
-import me.singleneuron.qn_kernel.data.hostInformationProvider
+import me.singleneuron.qn_kernel.data.hostInfo
 import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.util.Utils.PACKAGE_NAME_QQ
 
@@ -34,7 +34,7 @@ object ChangeDrawerWidth : BaseDelayableConditionalHookAdapter("changeDrawerWidt
     override fun doInit(): Boolean {
         XposedHelpers.findAndHookMethod(Resources::class.java, "getDimensionPixelSize", Int::class.javaPrimitiveType, object : XposedMethodHookAdapter() {
             override fun beforeMethod(param: MethodHookParam?) {
-                if (param!!.args[0] == hostInformationProvider.applicationContext.resources.getIdentifier("akx", "dimen", PACKAGE_NAME_QQ)) {
+                if (param!!.args[0] == hostInfo.application.resources.getIdentifier("akx", "dimen", PACKAGE_NAME_QQ)) {
                     param.result = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, width.toFloat(), (param.thisObject as Resources).displayMetrics).toInt()
                 }
             }

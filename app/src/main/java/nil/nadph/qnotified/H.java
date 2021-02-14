@@ -36,38 +36,38 @@ public class H {
 
     @NonNull
     public static Application getApplication() {
-        return HostInformationProviderKt.getHostInformationProvider().getApplicationContext();
+        return HostInformationProviderKt.getHostInfo().getApplication();
     }
 
     @NonNull
     public static String getPackageName() {
-        return HostInformationProviderKt.getHostInformationProvider().getPackageName();
+        return HostInformationProviderKt.getHostInfo().getPackageName();
     }
 
     @NonNull
     public static String getAppName() {
-        return HostInformationProviderKt.getHostInformationProvider().getHostName();
+        return HostInformationProviderKt.getHostInfo().getHostName();
     }
 
     @NonNull
     public static String getVersionName() {
-        return HostInformationProviderKt.getHostInformationProvider().getVersionName();
+        return HostInformationProviderKt.getHostInfo().getVersionName();
     }
 
     public static int getVersionCode() {
-        return HostInformationProviderKt.getHostInformationProvider().getVersionCode32();
+        return HostInformationProviderKt.getHostInfo().getVersionCode32();
     }
 
     public static long getLongVersionCode() {
-        return HostInformationProviderKt.getHostInformationProvider().getVersionCode();
+        return HostInformationProviderKt.getHostInfo().getVersionCode();
     }
 
     public static boolean isTIM() {
-        return HostInformationProviderKt.getHostInformationProvider().isTim();
+        return HostInformationProviderKt.getHostInfo().isTim();
     }
 
     public static boolean isQQ() {
         //Improve this method when supporting more clients.
-        return !HostInformationProviderKt.getHostInformationProvider().isTim();
+        return !HostInformationProviderKt.getHostInfo().isTim();
     }
 }

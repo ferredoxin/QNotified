@@ -41,8 +41,8 @@ import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.hook.*;
 import nil.nadph.qnotified.lifecycle.JumpActivityEntryHook;
 import nil.nadph.qnotified.lifecycle.Parasitics;
-import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.MainProcess;
 import nil.nadph.qnotified.util.Utils;
@@ -251,7 +251,7 @@ public class MainHook {
                     if (dir == null) dir = iget_object_or_null(param.thisObject, "a", director);
                     if (dir == null) dir = getFirstNSFByType(param.thisObject, director);
                     if (SyncUtils.isMainProcess()) {
-                        ResUtils.loadThemeByArsc(HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), false);
+                        ResUtils.loadThemeByArsc(HostInformationProviderKt.getHostInfo().getApplication(), false);
                     }
                     InjectDelayableHooks.step(dir);
                     onAppStartupForMain();

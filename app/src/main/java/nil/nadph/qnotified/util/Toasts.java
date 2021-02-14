@@ -63,7 +63,7 @@ public class Toasts {
     public static void showToast(@Nullable Context context, int type, @NonNull final CharSequence text, int duration) {
         Objects.requireNonNull(text, "text");
         if (context == null) {
-            context = HostInformationProviderKt.getHostInformationProvider().getApplicationContext();
+            context = HostInformationProviderKt.getHostInfo().getApplication();
         }
         final Context ctx = context;
         Utils.runOnUiThread(() -> {

@@ -23,9 +23,10 @@ import android.content.DialogInterface
 import android.os.Looper
 import android.view.View
 import de.robv.android.xposed.XC_MethodHook
+import me.nextalone.util.clazz
 import me.nextalone.util.hookBefore
 import me.nextalone.util.method
-import me.nextalone.util.clazz
+import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.H
 import nil.nadph.qnotified.SyncUtils
@@ -100,9 +101,7 @@ object SimplifyChatLongItem : CommonDelayableHook("__NOT_USED__") {
         }
     }
 
-    override fun isValid(): Boolean {
-        return H.isQQ() && H.getVersionCode() >= QQVersion.QQ_8_0_0
-    }
+    override fun isValid(): Boolean = requireMinQQVersion(QQVersion.QQ_8_0_0)
 
     override fun isEnabled(): Boolean = activeItems.isNotEmpty()
 

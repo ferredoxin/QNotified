@@ -21,7 +21,7 @@ package me.kyuubiran.util
 import android.os.Handler
 import android.os.Looper
 import com.topjohnwu.superuser.internal.UiThreadHandler.handler
-import me.singleneuron.qn_kernel.data.hostInformationProvider
+import me.singleneuron.qn_kernel.data.hostInfo
 import nil.nadph.qnotified.script.QNClient
 import java.util.*
 import kotlin.collections.ArrayList
@@ -39,13 +39,13 @@ object AutoRenewFireMgr {
             if (autoRenewList.isEmpty()) return
             if (needSend()) {
                 thread {
-                    hostInformationProvider.applicationContext.showToastBySystem("好耶 开始自动续火了 请不要关闭QQ哦")
+                    hostInfo.application.showToastBySystem("好耶 开始自动续火了 请不要关闭QQ哦")
                     for (u in autoRenewList) {
                         if (u.isGlobalMode) QNClient.send(u.uin, autoRenewMsg, 0)
                         else QNClient.send(u.uin, u.msg, 0)
                         Thread.sleep(5000)
                     }
-                    hostInformationProvider.applicationContext.showToastBySystem("好耶 续火完毕了")
+                    hostInfo.application.showToastBySystem("好耶 续火完毕了")
                 }
             }
             handler.postDelayed(this, 600000L)

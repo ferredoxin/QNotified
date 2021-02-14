@@ -50,7 +50,7 @@ public class CliOper {
     }
 
     public static void onLoad() {
-        CliOper.__init__(HostInformationProviderKt.getHostInformationProvider().getApplicationContext());
+        CliOper.__init__(HostInformationProviderKt.getHostInfo().getApplication());
         final String LAST_TRACE_HASHCODE_CONFIG = "lastTraceHashcode";
         ConfigManager configManager = ConfigManager.getDefaultConfig();
         Integer oldHashCode = null;
@@ -79,13 +79,13 @@ public class CliOper {
         } catch (Exception e) {
             //ignored
         }
-        __init__(HostInformationProviderKt.getHostInformationProvider().getApplicationContext());
+        __init__(HostInformationProviderKt.getHostInfo().getApplication());
         Analytics.trackEvent("onLoad", properties);
         Utils.logd("start App Center Trace OnLoad:" + properties.toString());
     }
 
     public static void passAuth2Once(int retryCount, int chiralCount) {
-        __init__(HostInformationProviderKt.getHostInformationProvider().getApplicationContext());
+        __init__(HostInformationProviderKt.getHostInfo().getApplication());
         Map<String, String> prop = new HashMap<>();
         prop.put("retryCount", String.valueOf(retryCount));
         prop.put("chiralCount", String.valueOf(chiralCount));
@@ -100,7 +100,7 @@ public class CliOper {
 
     public static void copyCardMsg(String msg) {
         if (msg == null) return;
-        __init__(HostInformationProviderKt.getHostInformationProvider().getApplicationContext());
+        __init__(HostInformationProviderKt.getHostInfo().getApplication());
         try {
             Analytics.trackEvent("copyCardMsg", digestCardMsg(msg));
         } catch (Throwable e) {
@@ -110,7 +110,7 @@ public class CliOper {
 
     public static void sendCardMsg(long uin, String msg) {
         if (msg == null) return;
-        __init__(HostInformationProviderKt.getHostInformationProvider().getApplicationContext());
+        __init__(HostInformationProviderKt.getHostInfo().getApplication());
         try {
             Map<String, String> prop = digestCardMsg(msg);
             prop.put("uin", String.valueOf(uin));
@@ -129,7 +129,7 @@ public class CliOper {
         properties.put("msg", msg);
         properties.put("uin", String.valueOf(uin));
         properties.put("count", String.valueOf(count));
-        __init__(HostInformationProviderKt.getHostInformationProvider().getApplicationContext());
+        __init__(HostInformationProviderKt.getHostInfo().getApplication());
         Analytics.trackEvent("batchSendMsg", properties);
     }
 
@@ -220,7 +220,7 @@ public class CliOper {
 
     public static void enterModuleActivity(String shortName) {
         try {
-            __init__(HostInformationProviderKt.getHostInformationProvider().getApplicationContext());
+            __init__(HostInformationProviderKt.getHostInfo().getApplication());
             Map<String, String> prop = new HashMap<>();
             prop.put("name", shortName);
             Analytics.trackEvent("enterModuleActivity", prop);

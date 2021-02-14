@@ -45,7 +45,7 @@ public class QNClient {
     public static void send(String uin, String content, int type) {
         // to do
         ChatActivityFacade.sendMessage(
-                Utils.getQQAppInterface(), HostInformationProviderKt.getHostInformationProvider().getApplicationContext(), SessionInfoImpl.createSessionInfo(uin, type), content
+                Utils.getQQAppInterface(), HostInformationProviderKt.getHostInfo().getApplication(), SessionInfoImpl.createSessionInfo(uin, type), content
         );
     }
 

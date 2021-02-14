@@ -39,9 +39,7 @@ import nil.nadph.qnotified.util.LicenseStatus;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.ui.ViewBuilder.newListItemButton;
-import static nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit;
-import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
+import static nil.nadph.qnotified.ui.ViewBuilder.*;
 import static nil.nadph.qnotified.util.SendBatchMsg.clickToBatchMsg;
 import static nil.nadph.qnotified.util.Utils.dip2px;
 
@@ -54,7 +52,7 @@ public class OmegaTestFuncActivity extends IphoneTitleBarActivityCompat {
     public boolean doOnCreate(Bundle bundle) {
         super.doOnCreate(bundle);
         RelativeLayout _t;
-        String _hostName = HostInformationProviderKt.getHostInformationProvider().getHostName();
+        String _hostName = HostInformationProviderKt.getHostInfo().getHostName();
         LinearLayout ll = new LinearLayout(this);
         ll.setOrientation(LinearLayout.VERTICAL);
         ViewGroup.LayoutParams mmlp = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);

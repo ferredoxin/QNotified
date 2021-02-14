@@ -9,7 +9,7 @@ import nil.nadph.qnotified.util.Utils
 
 
 data class HostInformationProvider(
-    val applicationContext: Application,
+    val application: Application,
     val packageName: String,
     val hostName: String,
     val versionCode: Long,
@@ -19,13 +19,13 @@ data class HostInformationProvider(
 
 
 
-lateinit var hostInformationProvider: HostInformationProvider
+lateinit var hostInfo: HostInformationProvider
 
 fun init(applicationContext: Application) {
-    if (::hostInformationProvider.isInitialized) throw IllegalStateException("Host Information Provider has been already initialized")
+    if (::hostInfo.isInitialized) throw IllegalStateException("Host Information Provider has been already initialized")
     val packageInfo = getHostInfo(applicationContext)
     val packageName = applicationContext.packageName
-    hostInformationProvider = HostInformationProvider(
+    hostInfo = HostInformationProvider(
         applicationContext,
         packageName,
         applicationContext.applicationInfo.loadLabel(applicationContext.packageManager).toString(),
@@ -43,4 +43,16 @@ private fun getHostInfo(context: Context): PackageInfo {
         Log.e("Utils", "Can not get PackageInfo!")
         throw AssertionError("Can not get PackageInfo!")
     }
+}
+
+fun requireMinQQVersion(versionCode: Long): Boolean {
+    return  !hostInfo.isTim && hostInfo.versionCode>=versionCode
+}
+
+fun requireMinTimVersion(versionCode: Long): Boolean {
+    return  hostInfo.isTim && hostInfo.versionCode>=versionCode
+}
+
+fun requireMinVersion(QQVersionCode: Long = Long.MAX_VALUE, TimVersionCode: Long = Long.MAX_VALUE): Boolean {
+    return requireMinQQVersion(QQVersionCode) or requireMinTimVersion(TimVersionCode)
 }

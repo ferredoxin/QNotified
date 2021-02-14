@@ -89,11 +89,11 @@ public class FileRecvRedirect extends BaseDelayableHook {
     }
 
     public String getDefaultPath() {
-        if (HostInformationProviderKt.getHostInformationProvider().isTim()) {
+        if (HostInformationProviderKt.getHostInfo().isTim()) {
             return Environment.getExternalStorageDirectory().getAbsolutePath() + "/Tencent/TIMfile_recv/";
         } else {
-            if (HostInformationProviderKt.getHostInformationProvider().getVersionCode() > QQVersion.QQ_8_2_7_2) {
-                return HostInformationProviderKt.getHostInformationProvider().getApplicationContext().getExternalFilesDir(null) + "/Tencent/QQfile_recv/";
+            if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_2_8)) {
+                return HostInformationProviderKt.getHostInfo().getApplication().getExternalFilesDir(null) + "/Tencent/QQfile_recv/";
             } else {
                 return Environment.getExternalStorageDirectory().getAbsolutePath() + "/Tencent/QQfile_recv/";
             }

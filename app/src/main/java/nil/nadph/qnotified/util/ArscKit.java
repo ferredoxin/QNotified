@@ -58,7 +58,7 @@ public class ArscKit {
             return Integer.parseInt(name);
         } catch (NumberFormatException ignored) {
         }
-        if (ctx == null) ctx = HostInformationProviderKt.getHostInformationProvider().getApplicationContext();
+        if (ctx == null) ctx = HostInformationProviderKt.getHostInfo().getApplication();
         String pkg = ctx.getPackageName();
         int ret = ctx.getResources().getIdentifier(name, type, pkg);
         if (ret != 0) return ret;
@@ -66,7 +66,7 @@ public class ArscKit {
         ConfigManager cache = ConfigManager.getCache();
         ret = cache.getIntOrDefault(CACHED_RES_ID_NAME_PREFIX + type + "/" + name, 0);
         int oldcode = cache.getIntOrDefault(CACHED_RES_ID_CODE_PREFIX + type + "/" + name, -1);
-        int currcode = HostInformationProviderKt.getHostInformationProvider().getVersionCode32();
+        int currcode = HostInformationProviderKt.getHostInfo().getVersionCode32();
         if (ret != 0 && (oldcode == currcode)) {
             return ret;
         }
