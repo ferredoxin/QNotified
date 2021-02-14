@@ -45,6 +45,7 @@ import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import me.singleneuron.util.QQVersion;
 import mqq.app.AppRuntime;
 import nil.nadph.qnotified.BuildConfig;
+import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.ui.ResUtils;
 
 import static me.singleneuron.util.KotlinUtilsKt.readFromBufferedReader;
@@ -173,8 +174,17 @@ public class Utils {
         return -1;
     }
 
+    @MainProcess
     public static QQAppInterface getQQAppInterface() {
-        return (QQAppInterface) getAppRuntime();
+        AppRuntime art = getAppRuntime();
+        if (art == null) {
+            return null;
+        }
+        if (art instanceof QQAppInterface) {
+            return (QQAppInterface) art;
+        } else {
+            throw new IllegalStateException("QQAppInterface is not available in current process");
+        }
     }
 
     public static String get_RGB(int color) {
