@@ -43,6 +43,11 @@ public class RemovePlayTogether extends CommonDelayableHook {
     }
 
     @Override
+    public boolean checkPreconditions() {
+        return !HostInformationProviderKt.getHostInfo().isPlayQQ() && super.checkPreconditions();
+    }
+
+    @Override
     public boolean initOnce() {
         try {
             String method = "h";

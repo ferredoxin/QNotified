@@ -3,6 +3,7 @@ package me.singleneuron.qn_kernel.data
 import android.app.Application
 import android.content.Context
 import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
 import android.util.Log
 import androidx.core.content.pm.PackageInfoCompat
 import nil.nadph.qnotified.util.Utils
@@ -15,7 +16,8 @@ data class HostInformationProvider(
     val versionCode: Long,
     val versionCode32: Int,
     val versionName: String,
-    val isTim: Boolean)
+    val isTim: Boolean,
+    val isPlayQQ: Boolean)
 
 
 
@@ -32,13 +34,14 @@ fun init(applicationContext: Application) {
         PackageInfoCompat.getLongVersionCode(packageInfo),
         PackageInfoCompat.getLongVersionCode(packageInfo).toInt(),
         packageInfo.versionName,
-        Utils.PACKAGE_NAME_TIM == packageName
+        Utils.PACKAGE_NAME_TIM == packageName,
+        "GoogleMarket" in (packageInfo.applicationInfo.metaData["AppSetting_params"] ?: "") as String
     )
 }
 
 private fun getHostInfo(context: Context): PackageInfo {
     return try {
-        context.packageManager.getPackageInfo(context.packageName, 0)
+        context.packageManager.getPackageInfo(context.packageName, PackageManager.GET_META_DATA)
     } catch (e: Throwable) {
         Log.e("Utils", "Can not get PackageInfo!")
         throw AssertionError("Can not get PackageInfo!")

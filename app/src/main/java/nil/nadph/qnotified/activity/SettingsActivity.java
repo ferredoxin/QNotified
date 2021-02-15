@@ -22,6 +22,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -94,7 +95,6 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static androidx.core.text.HtmlCompat.FROM_HTML_MODE_LEGACY;
 import static me.singleneuron.util.KotlinUtilsKt.addViewConditionally;
-import static me.singleneuron.util.QQVersion.QQ_8_2_0;
 import static me.singleneuron.util.QQVersion.QQ_8_2_6;
 import static nil.nadph.qnotified.ui.ViewBuilder.*;
 import static nil.nadph.qnotified.util.Utils.*;
@@ -338,6 +338,19 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
                     })
                     .setMessage("Resources injection failure!\nApplication may misbehave.\n" + e.toString()
                             + "\n如果您刚刚更新了插件, 您可能需要重启" + HostInformationProviderKt.getHostInfo().getHostName() + "(太/无极阴,应用转生,天鉴等虚拟框架)或者重启手机(EdXp, Xposed, 太极阳), 如果重启手机后问题仍然存在, 请向作者反馈, 并提供详细日志").show();
+        }
+        ConfigManager cfg = ConfigManager.getDefaultConfig();
+        if (HostInformationProviderKt.getHostInfo().isPlayQQ() && !cfg.getBooleanOrFalse("isShowPlayQQTip")) {
+            CustomDialog.createFailsafe(this).setTitle("警告")
+                .setPositiveButton("我已了解后果并愿意继续使用", (dialog, which) -> {
+                    cfg.putBoolean("isShowPlayQQTip", true);
+                    try {
+                        cfg.save();
+                    } catch (IOException ignored) {
+                    }
+                })
+                .setMessage("你正在使用Play版QQ，该版本QQ版本号与国内版有很大区别，QNotified的部分功能的版本适配依赖软件版本号，可能会出现预想不到的情况，且任何play版本都未进行测试。").show();
+
         }
         return true;
     }
