@@ -40,6 +40,28 @@ import com.tencent.mobileqq.widget.BounceScrollView;
 import java.io.File;
 import java.io.IOException;
 
+import cc.ioctl.activity.ExfriendListActivity;
+import cc.ioctl.activity.FakeBatCfgActivity;
+import cc.ioctl.activity.FriendlistExportActivity;
+import cc.ioctl.activity.JefsRulesActivity;
+import cc.ioctl.hook.$endGiftHook;
+import cc.ioctl.hook.CheatHook;
+import cc.ioctl.hook.DarkOverlayHook;
+import cc.ioctl.hook.FakeBatteryHook;
+import cc.ioctl.hook.FavMoreEmo;
+import cc.ioctl.hook.FileRecvRedirect;
+import cc.ioctl.hook.GagInfoDisclosure;
+import cc.ioctl.hook.InspectMessage;
+import cc.ioctl.hook.JumpController;
+import cc.ioctl.hook.MultiForwardAvatarHook;
+import cc.ioctl.hook.MuteQZoneThumbsUp;
+import cc.ioctl.hook.PreUpgradeHook;
+import cc.ioctl.hook.PttForwardHook;
+import cc.ioctl.hook.RepeaterHook;
+import cc.ioctl.hook.ReplyNoAtHook;
+import cc.ioctl.hook.RevokeMsgHook;
+import cc.ioctl.hook.RoundAvatarHook;
+import cc.ioctl.hook.ShowPicGagHook;
 import me.ketal.activity.ModifyLeftSwipeReplyActivity;
 import me.ketal.hook.LeftSwipeReplyHook;
 import me.ketal.hook.MultiActionHook;
@@ -59,9 +81,8 @@ import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.dialog.RepeaterIconSettingDialog;
-import nil.nadph.qnotified.dialog.RikkaDialog;
-import nil.nadph.qnotified.hook.*;
+import cc.ioctl.dialog.RepeaterIconSettingDialog;
+import cc.ioctl.dialog.RikkaDialog;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
@@ -122,10 +143,8 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         if (LicenseStatus.isAsserted()) {
             ll.addView(newListItemButton(this, "狐狸狸测试功能", "不管你是什么人都别动这里的东西", null, clickToProxyActAction(AlphaTestFuncActivity.class)));
         }
-        if (!LicenseStatus.hasBlackFlags()) {
-            ll.addView(newListItemButton(this, "Beta测试性功能", "仅用于测试稳定性", null, clickToProxyActAction(BetaTestFuncActivity.class)));
-            ll.addView(newListItemButton(this, "Omega测试性功能", "这是个不存在的功能", null, v -> KotlinUtilsKt.showEulaDialog(SettingsActivity.this)));
-        }
+        ll.addView(newListItemButton(this, "Beta测试性功能", "仅用于测试稳定性", null, clickToProxyActAction(BetaTestFuncActivity.class)));
+        ll.addView(newListItemButton(this, "Omega测试性功能", "这是个不存在的功能", null, v -> KotlinUtilsKt.showEulaDialog(SettingsActivity.this)));
         ll.addView(subtitle(this, "基本功能"));
         if (HostInformationProviderKt.requireMinQQVersion(QQ_8_2_6)) {
             ll.addView(_t = newListItemButton(this, "自定义电量", "[QQ>=8.2.6]在线模式为我的电量时生效", "N/A", clickToProxyActAction(FakeBatCfgActivity.class)));

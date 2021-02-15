@@ -161,10 +161,8 @@ fun showEulaDialog(activity: Activity) {
     })
     button.isEnabled = false
     Thread {
-        var time = 30
-        if (LicenseStatus.getCurrentUserWhiteFlags()!=0) time = (Math.random()*10).toInt()
+        var time = 15
         if (LicenseStatus.isInsider()) time = if (Math.random()<0.1) 86400 else 5
-        if (LicenseStatus.getCurrentUserBlackFlags()!=0) time = (Math.random()*82800+3600).toInt()
         if (Math.random()<0.01) time = - time
         do {
             Utils.runOnUiThread { button.text = "我已阅读并同意用户协议 ($time)" }

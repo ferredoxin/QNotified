@@ -75,24 +75,6 @@ public class JumpActivityEntryHook {
                         return;
                     if (JUMP_ACTION_SETTING_ACTIVITY.equals(cmd)) {
                         if (LicenseStatus.sDisableCommonHooks) {
-                            long uin = Utils.getLongAccountUin();
-                            if (uin > 10000) {
-                                new Thread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        try {
-                                            ExfriendManager.getCurrent().doUpdateUserStatusFlags();
-                                        } catch (final Exception e) {
-                                            activity.runOnUiThread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    Toast.makeText(activity, e.toString(), Toast.LENGTH_LONG).show();
-                                                }
-                                            });
-                                        }
-                                    }
-                                }).start();
-                            }
                         } else {
                             Intent realIntent = new Intent(intent);
                             realIntent.setComponent(new ComponentName(activity, SettingsActivity.class));

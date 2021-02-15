@@ -22,8 +22,8 @@ import me.kyuubiran.hook.AutoMosaicName
 import me.nextalone.hook.HideProfileBubble
 import me.nextalone.hook.HideTotalNumber
 import me.singleneuron.util.QQVersion.*
-import nil.nadph.qnotified.hook.ReplyNoAtHook
-import nil.nadph.qnotified.hook.VasProfileAntiCrash
+import cc.ioctl.hook.ReplyNoAtHook
+import cc.ioctl.hook.VasProfileAntiCrash
 
 class QQConfigTable: ConfigTableInterface {
 

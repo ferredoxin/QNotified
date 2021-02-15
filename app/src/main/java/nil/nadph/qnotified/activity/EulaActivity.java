@@ -40,7 +40,7 @@ import java.io.IOException;
 import nil.nadph.qnotified.InjectDelayableHooks;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
-import nil.nadph.qnotified.hook.FakeBatteryHook;
+import cc.ioctl.hook.FakeBatteryHook;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;

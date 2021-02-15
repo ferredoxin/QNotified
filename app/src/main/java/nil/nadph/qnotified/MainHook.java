@@ -32,6 +32,10 @@ import com.rymmmmm.hook.CustomSplash;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import cc.ioctl.hook.GagInfoDisclosure;
+import cc.ioctl.hook.MuteAtAllAndRedPacket;
+import cc.ioctl.hook.MuteQZoneThumbsUp;
+import cc.ioctl.hook.RevokeMsgHook;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import me.kyuubiran.hook.RemoveCameraButton;
@@ -211,12 +215,9 @@ public class MainHook {
             }
             XposedBridge.hookMethod(doStep, new XC_MethodHook(52) {
                 @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                protected void afterHookedMethod(MethodHookParam param) {
+                    // fix error in :video, and QZone启动失败
                     Utils.$access$set$sAppRuntimeInit(true);
-                    if (SyncUtils.isMainProcess()) {
-                        // fix error in :video, and QZone启动失败
-                        LicenseStatus.sDisableCommonHooks = LicenseStatus.isLoadingDisabled() || LicenseStatus.isBlacklisted() || LicenseStatus.isSilentGone();
-                    }
                 }
             });
         } catch (Throwable e) {

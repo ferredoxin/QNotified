@@ -23,6 +23,8 @@ import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.ImageView;
 
+import androidx.annotation.Nullable;
+
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
@@ -131,8 +133,8 @@ public class FaceImpl implements InvocationHandler {
         }
     }
 
-    public @Nullable
-    Bitmap getBitmapFromCache(int type, String uin) {
+    @Nullable
+    public Bitmap getBitmapFromCache(int type, String uin) {
         if (type == TYPE_TROOP) return cachedTroopFace.get(uin);
         if (type == TYPE_USER) return cachedUserFace.get(uin);
         return null;

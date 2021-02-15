@@ -22,7 +22,8 @@ import com.qq.taf.jce.JceInputStream;
 import com.qq.taf.jce.JceOutputStream;
 import com.qq.taf.jce.JceStruct;
 import me.singleneuron.data.BugReportArguments;
-import nil.nadph.qnotified.util.NonNull;
+
+import androidx.annotation.NonNull;
 
 public class GetBugReportArgsResp extends JceStruct {
 

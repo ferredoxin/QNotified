@@ -27,7 +27,7 @@ import java.util.Date;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
-import nil.nadph.qnotified.dialog.RikkaCustomMsgTimeFormatDialog;
+import cc.ioctl.dialog.RikkaCustomMsgTimeFormatDialog;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;

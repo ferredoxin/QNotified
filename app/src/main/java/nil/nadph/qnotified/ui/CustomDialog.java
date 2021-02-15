@@ -31,8 +31,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.NonNull;
-import nil.nadph.qnotified.util.Nullable;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;

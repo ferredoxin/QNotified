@@ -6,7 +6,7 @@
 //@decs:            用于QN脚本开发的入门示例
 //InfoEnd
 
-import nil.nadph.qnotified.script.QNClient;
+import cc.ioctl.script.QNClient;
 
 public void onLoad(){
 // 将会在脚本加载时调用

@@ -30,7 +30,7 @@ object RemoveIntimateDrawer : CommonDelayableHook("kr_remove_intimate_drawer") {
 
     override fun initOnce(): Boolean {
         return try {
-            for (m: Method in DexKit.doFindClass(DexKit.C_IntimateDrawer).declaredMethods) {
+            for (m: Method in DexKit.doFindClass(DexKit.C_IntimateDrawer)!!.declaredMethods) {
                 if (m.name == "a" && m.returnType == View::class.java) {
                     m.hookBefore(this, hookNull)
                 }

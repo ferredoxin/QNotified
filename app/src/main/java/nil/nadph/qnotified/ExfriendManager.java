@@ -28,6 +28,8 @@ import android.os.Build;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -41,21 +43,19 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
-import nil.nadph.qnotified.activity.ExfriendListActivity;
+import cc.ioctl.activity.ExfriendListActivity;
 import nil.nadph.qnotified.bridge.FriendChunk;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.config.EventRecord;
 import nil.nadph.qnotified.config.FriendRecord;
 import nil.nadph.qnotified.config.Table;
-import nil.nadph.qnotified.hook.DelDetectorHook;
+import cc.ioctl.hook.DelDetectorHook;
 import nil.nadph.qnotified.lifecycle.ActProxyMgr;
 import nil.nadph.qnotified.lifecycle.Parasitics;
-import nil.nadph.qnotified.remote.GetUserStatusResp;
-import nil.nadph.qnotified.remote.TransactionHelper;
 import nil.nadph.qnotified.util.*;
 
 import static nil.nadph.qnotified.config.Table.*;
-import static nil.nadph.qnotified.util.DateTimeUtil.getRelTimeStrSec;
+import static cc.ioctl.util.DateTimeUtil.getRelTimeStrSec;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
 import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_any;
@@ -774,13 +774,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
     public void timeToUpdateFl() {
         long t = System.currentTimeMillis() / 1000;
         if (t - lastUpdateTimeSec > FL_UPDATE_INT_MIN) {
-            tp.execute(new Runnable() {
-                @Override
-                public void run() {
-                    doRequestFlRefresh();
-                    doTryToUpdateUserStatusFlags();
-                }
-            });
+            tp.execute(this::doRequestFlRefresh);
         }
     }
 
@@ -804,41 +798,4 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
         fileData.putObject(key, val);
     }
 
-    public void doTryToUpdateUserStatusFlags() {
-        try {
-            doUpdateUserStatusFlags();
-        } catch (Exception ignored) {
-        }
-    }
-
-    public GetUserStatusResp doUpdateUserStatusFlags() throws Exception {
-        GetUserStatusResp resp = TransactionHelper.doQueryUserStatus(getUin());
-        putObject(LicenseStatus.qn_auth_uin_white_flags, resp.whitelistFlags);
-        putObject(LicenseStatus.qn_auth_uin_black_flags, resp.blacklistFlags);
-        putObject(LicenseStatus.qn_auth_uin_update_time, System.currentTimeMillis());
-        saveConfigure();
-        ConfigManager cfg = ConfigManager.getDefaultConfig();
-        boolean changed = false;
-        if ((resp.whitelistFlags & UserFlagConst.WF_FUNC_STICKY) != 0) {
-            int old = cfg.getIntOrDefault(LicenseStatus.qn_sticky_white_flags, 0);
-            int curr = old | resp.whitelistFlags;
-            if (curr != old) {
-                changed = true;
-                cfg.putInt(LicenseStatus.qn_sticky_white_flags, curr);
-            }
-        }
-        if ((resp.blacklistFlags & UserFlagConst.BF_FUNC_STICKY) != 0) {
-            int old = cfg.getIntOrDefault(LicenseStatus.qn_sticky_black_flags, 0);
-            int curr = old | resp.blacklistFlags;
-            if (curr != old) {
-                changed = true;
-                cfg.putInt(LicenseStatus.qn_sticky_black_flags, curr);
-            }
-        }
-        LicenseStatus.sDisableCommonHooks = LicenseStatus.isBlacklisted() || LicenseStatus.isSilentGone();
-        if (changed) {
-            cfg.save();
-        }
-        return resp;
-    }
 }

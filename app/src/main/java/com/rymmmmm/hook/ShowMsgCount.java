@@ -18,6 +18,8 @@
  */
 package com.rymmmmm.hook;
 
+import androidx.annotation.NonNull;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
@@ -28,7 +30,6 @@ import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.NonNull;
 
 import static nil.nadph.qnotified.util.Utils.*;
 

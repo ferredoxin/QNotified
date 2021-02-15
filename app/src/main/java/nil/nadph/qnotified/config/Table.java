@@ -18,6 +18,8 @@
  */
 package nil.nadph.qnotified.config;
 
+import androidx.annotation.Nullable;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -26,7 +28,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.*;
 
-import nil.nadph.qnotified.util.Nullable;
 
 public class Table<K> implements Serializable, Cloneable {
 

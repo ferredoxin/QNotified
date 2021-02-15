@@ -32,14 +32,13 @@ import java.util.Collections;
 import java.util.HashSet;
 
 import nil.nadph.qnotified.hook.AbsDelayableHook;
-import nil.nadph.qnotified.hook.SettingEntryHook;
+import cc.ioctl.hook.SettingEntryHook;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.ui.ProportionDrawable;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.SimpleBgDrawable;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.ReflexUtil;
-import nil.nadph.qnotified.util.Utils;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;

@@ -57,22 +57,6 @@ public class TransactionHelper {
         }
     }
 
-    public static GetUserStatusResp doQueryUserStatus(long uin) throws Exception {
-        GetUserStatusReq req = new GetUserStatusReq(uin);
-        JceOutputStream body = Utf8JceUtils.newOutputStream();
-        req.writeTo(body);
-        ToServiceMsg toServiceMsg = new ToServiceMsg("NAuth.QNotified", "GetUserStatus", body.toByteArray());
-        JceOutputStream jceout = Utf8JceUtils.newOutputStream();
-        toServiceMsg.writeTo(jceout);
-        FromServiceMsg reply = doSendMsg(toServiceMsg);
-        if (reply.getResultCode() != 0) {
-            throw new IOException("RemoteError: " + reply.getResultCode() + ": " + reply.getErrorMsg());
-        }
-        GetUserStatusResp resp = new GetUserStatusResp();
-        resp.readFrom(Utf8JceUtils.newInputStream(reply.getBody()));
-        return resp;
-    }
-
     public static GetBugReportArgsResp doGetBugReportArgs() throws IOException {
         ToServiceMsg toServiceMsg = new ToServiceMsg("NAuth.QNotified", "GetBugReportArgs", Utf8JceUtils.NO_DATA);
         JceOutputStream jceout = Utf8JceUtils.newOutputStream();

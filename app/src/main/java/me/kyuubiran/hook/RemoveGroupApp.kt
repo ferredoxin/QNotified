@@ -33,7 +33,7 @@ object RemoveGroupApp : CommonDelayableHook("kr_remove_group_app", DexDeobfStep(
 
     override fun initOnce(): Boolean {
         return try {
-            for (m: Method in DexKit.doFindClass(DexKit.C_GroupAppActivity).declaredMethods) {
+            for (m: Method in DexKit.doFindClass(DexKit.C_GroupAppActivity)!!.declaredMethods) {
                 if (m.name == "a" && m.returnType == View::class.java) {
                     XposedBridge.hookMethod(m, object : XC_MethodHook() {
                         override fun beforeHookedMethod(param: MethodHookParam?) {
