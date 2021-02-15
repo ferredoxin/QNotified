@@ -40,65 +40,61 @@ object SimplifyChatLongItem : CommonDelayableHook("__NOT_USED__") {
     private const val na_simplify_chat_long_item = "na_simplify_chat_long_item"
     private val allItems = "复制|转发|收藏|回复|多选|撤回|删除|一起写|设为精华|待办|私聊|截图|存表情|相关表情|复制链接".split("|")
     private const val defaultItems = "一起写|私聊|相关表情|待办"
-    var activeItems
-        get() = ConfigManager.getDefaultConfig().getStringOrDefault(na_simplify_chat_long_item, defaultItems).split("|")
+    private var activeItems
+        get() = ConfigManager.getDefaultConfig().getStringOrDefault(na_simplify_chat_long_item, defaultItems).split("|").toMutableList()
         set(value) {
             var ret = ""
             for (item in value)
                 ret += "|$item"
-            putValue(na_simplify_chat_long_item, ret.substring(1))
+            putValue(na_simplify_chat_long_item, if (ret.isEmpty()) ret else ret.substring(1))
         }
 
-    fun simplifyChatLongItemClick(): View.OnClickListener {
-        return View.OnClickListener {
-            try {
-                val cache = activeItems as MutableList
-                val ctx = it.context
-                AlertDialog.Builder(ctx, CustomDialog.themeIdForDialog())
-                    .setTitle("选择要屏蔽的条目")
-                    .setMultiChoiceItems(allItems.toTypedArray(), getBoolAry()) { _: DialogInterface, i: Int, _: Boolean ->
-                        val item = allItems[i]
-                        if (!cache.contains(item)) cache.add(item)
-                        else cache.remove(item)
-                    }
-                    .setNegativeButton("取消", null)
-                    .setPositiveButton("确定") { _: DialogInterface, _: Int ->
-                        activeItems = cache
-                    }
-                    .show()
-            } catch (e: Exception) {
-                Utils.log(e)
-            }
+    fun simplifyChatLongItemClick() = View.OnClickListener {
+        try {
+            val cache = activeItems
+            val ctx = it.context
+            AlertDialog.Builder(ctx, CustomDialog.themeIdForDialog())
+                .setTitle("选择要屏蔽的条目")
+                .setMultiChoiceItems(allItems.toTypedArray(), getBoolAry()) { _: DialogInterface, i: Int, _: Boolean ->
+                    val item = allItems[i]
+                    if (!cache.contains(item)) cache.add(item)
+                    else cache.remove(item)
+                }
+                .setNegativeButton("取消", null)
+                .setPositiveButton("确定") { _: DialogInterface, _: Int ->
+                    activeItems = cache
+                }
+                .show()
+        } catch (e: Exception) {
+            Utils.log(e)
         }
     }
 
-    override fun initOnce(): Boolean {
-        return try {
-            val callback: (XC_MethodHook.MethodHookParam) -> Unit = callback@{
-                if (!isEnabled) return@callback
-                val str = it.args[1] as String
-                if (activeItems.contains(str))
-                    it.result = null
+    override fun initOnce() = try {
+        val callback: (XC_MethodHook.MethodHookParam) -> Unit = callback@{
+            if (!isEnabled) return@callback
+            val str = it.args[1] as String
+            if (activeItems.contains(str))
+                it.result = null
 
-            }
-            "com.tencent.mobileqq.utils.dialogutils.QQCustomMenuImageLayout".clazz.declaredMethods.run {
-                this.forEach { method ->
-                    if (method.name == "setMenu") {
-                        val customMenu = method.parameterTypes[0].name.replace(".", "/")
-                        "L$customMenu;->a(ILjava/lang/String;II)V"
-                            .method
-                            .hookBefore(this@SimplifyChatLongItem, callback)
-                        "L$customMenu;->a(ILjava/lang/String;I)V"
-                            .method
-                            .hookBefore(this@SimplifyChatLongItem, callback)
-                    }
+        }
+        "com.tencent.mobileqq.utils.dialogutils.QQCustomMenuImageLayout".clazz.declaredMethods.run {
+            this.forEach { method ->
+                if (method.name == "setMenu") {
+                    val customMenu = method.parameterTypes[0].name.replace(".", "/")
+                    "L$customMenu;->a(ILjava/lang/String;II)V"
+                        .method
+                        .hookBefore(this@SimplifyChatLongItem, callback)
+                    "L$customMenu;->a(ILjava/lang/String;I)V"
+                        .method
+                        .hookBefore(this@SimplifyChatLongItem, callback)
                 }
             }
-            true
-        } catch (t: Throwable) {
-            Utils.log(t)
-            false
         }
+        true
+    } catch (t: Throwable) {
+        Utils.log(t)
+        false
     }
 
     override fun isValid(): Boolean = requireMinQQVersion(QQVersion.QQ_8_0_0)
