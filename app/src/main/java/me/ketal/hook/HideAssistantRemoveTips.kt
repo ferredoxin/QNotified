@@ -19,8 +19,8 @@
 package me.ketal.hook
 
 import me.ketal.util.HookUtil.getMethod
-import me.nextalone.util.hookBefore
-import me.nextalone.util.hookNull
+import ltd.nextalone.util.hookBefore
+import ltd.nextalone.util.hookNull
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.Utils
 

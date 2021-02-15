@@ -27,7 +27,7 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.tencent.mobileqq.app.BaseActivity
-import me.nextalone.util.hookAfter
+import ltd.nextalone.util.hookAfter
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.tlb.ConfigTable.getConfig
 import nil.nadph.qnotified.R

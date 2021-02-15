@@ -48,7 +48,7 @@ import java.util.Map;
 import java.util.Set;
 
 import cc.ioctl.activity.ExfriendListActivity;
-import me.nextalone.hook.EnableQLog;
+import ltd.nextalone.hook.EnableQLog;
 import me.singleneuron.activity.BugReportActivity;
 import me.singleneuron.activity.DatabaseTestActivity;
 import me.singleneuron.data.CardMsgCheckResult;

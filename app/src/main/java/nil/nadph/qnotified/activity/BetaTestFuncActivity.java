@@ -31,14 +31,13 @@ import cc.ioctl.activity.ChatTailActivity;
 import cc.ioctl.activity.ManageScriptsActivity;
 import me.kyuubiran.hook.RemoveRedDot;
 import me.kyuubiran.hook.testhook.CutMessage;
-import me.nextalone.hook.ForcedSendOriginalPhoto;
+import ltd.nextalone.hook.ForcedSendOriginalPhoto;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import cc.ioctl.hook.ChatTailHook;
 import cc.ioctl.hook.MutePokePacket;
 import cc.ioctl.hook.PttForwardHook;
 import cc.ioctl.script.QNScriptManager;
 import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.util.LicenseStatus;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;

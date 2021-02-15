@@ -16,31 +16,22 @@
  * along with this software.  If not, see
  * <https://www.gnu.org/licenses/>.
  */
-package me.nextalone.hook
+package ltd.nextalone.hook.testhook
 
-import android.view.View
-import android.widget.CheckBox
-import me.kyuubiran.util.getMethods
-import me.nextalone.util.hookAfter
+import ltd.nextalone.util.*
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.Utils
-import nil.nadph.qnotified.util.Utils.PACKAGE_NAME_QQ
-import java.lang.reflect.Method
 
-object ForcedSendOriginalPhoto : CommonDelayableHook("na_test_forced_original") {
+object TestCommonDelayable : CommonDelayableHook("na_test_base_delayable_kt") {
 
     override fun initOnce(): Boolean {
         return try {
-            for (m: Method in getMethods("com.tencent.mobileqq.activity.aio.photo.PhotoListPanel")) {
-                val argt = m.parameterTypes
-                if (m.name == "a" && argt.size == 1 && argt[0] == Boolean::class.java) {
-                    m.hookAfter(this) {
-                        val ctx = it.thisObject as View
-                        val id = ctx.resources.getIdentifier("h1y", "id", PACKAGE_NAME_QQ)
-                        val sendOriginPhotoCheckbox: CheckBox = ctx.findViewById(id)
-                        sendOriginPhotoCheckbox.isChecked = true
-                    }
-                }
+            val hookSimpleName = this::class.java.simpleName
+            "".method.hookBefore(this) {
+                logBefore(hookSimpleName)
+            }
+            "".method.hookAfter(this) {
+                logAfter(hookSimpleName)
             }
             true
         } catch (t: Throwable) {

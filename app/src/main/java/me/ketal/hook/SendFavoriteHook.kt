@@ -22,8 +22,8 @@ import android.app.Activity
 import android.content.Intent
 import android.view.View
 import android.widget.TextView
+import ltd.nextalone.util.hookAfter
 import me.ketal.util.HookUtil.getMethod
-import me.nextalone.util.hookAfter
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.SyncUtils

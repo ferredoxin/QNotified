@@ -16,13 +16,13 @@
  * along with this software.  If not, see
  * <https://www.gnu.org/licenses/>.
  */
-package me.nextalone.hook
+package ltd.nextalone.hook
 
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
-import me.nextalone.util.clazz
-import me.nextalone.util.hookAfterAllConstructors
-import me.nextalone.util.setViewZeroSize
+import ltd.nextalone.util.clazz
+import ltd.nextalone.util.hookAfterAllConstructors
+import ltd.nextalone.util.setViewZeroSize
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.Utils
 

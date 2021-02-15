@@ -17,12 +17,12 @@
  * along with this software.  If not, see
  * <https://www.gnu.org/licenses/>.
  */
-package me.nextalone.hook
+package ltd.nextalone.hook
 
 import de.robv.android.xposed.XC_MethodHook
-import me.nextalone.hook.base.MultiItemDelayableHook
-import me.nextalone.util.hookBefore
-import me.nextalone.util.method
+import ltd.nextalone.base.MultiItemDelayableHook
+import ltd.nextalone.util.hookBefore
+import ltd.nextalone.util.method
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion

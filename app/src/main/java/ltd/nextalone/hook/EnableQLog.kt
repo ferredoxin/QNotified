@@ -16,31 +16,33 @@
  * along with this software.  If not, see
  * <https://www.gnu.org/licenses/>.
  */
-package me.nextalone.hook
+package ltd.nextalone.hook
 
-import me.kyuubiran.util.isStatic
-import me.nextalone.util.hookBefore
-import me.nextalone.util.hookNull
-import me.singleneuron.base.adapter.BaseDelayableHighPerformanceConditionalHookAdapter
-import me.singleneuron.data.PageFaultHighPerformanceFunctionCache
-import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import me.singleneuron.qn_kernel.tlb.ConfigTable
-import me.singleneuron.util.QQVersion
-import nil.nadph.qnotified.util.Initiator
+import ltd.nextalone.util.hookAfter
+import ltd.nextalone.util.hookBefore
+import ltd.nextalone.util.hookNull
+import me.kyuubiran.util.getMethods
+import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.Utils
 import java.lang.reflect.Method
 
-object HideProfileBubble : BaseDelayableHighPerformanceConditionalHookAdapter("hideProfileBubble") {
+object EnableQLog : CommonDelayableHook("na_enable_qlog") {
 
-    override val recordTime: Boolean = false
-
-    override fun doInit(): Boolean {
+    override fun initOnce(): Boolean {
         return try {
-            val clz = Initiator.load("com.tencent.mobileqq.activity.QQSettingMe")
-            for (m: Method in clz.declaredMethods) {
+            for (m: Method in getMethods("com.tencent.qphone.base.util.QLog")) {
                 val argt = m.parameterTypes
-                if (m.name == ConfigTable.getConfig(HideProfileBubble::class.simpleName) && !m.isStatic && argt.isEmpty()) {
+                if (m.name == "isColorLevel" && argt.isEmpty()) {
                     m.hookBefore(this, hookNull)
+                }
+            }
+            for (m: Method in getMethods("com.tencent.qphone.base.util.QLog")) {
+                val argt = m.parameterTypes
+                if (m.name == "getTag" && argt.size == 1 && argt[0] == String::class.java) {
+                    m.hookAfter(this) {
+                        val tag = it.args[0]
+                        it.result = "NAdump:$tag"
+                    }
                 }
             }
             true
@@ -49,7 +51,4 @@ object HideProfileBubble : BaseDelayableHighPerformanceConditionalHookAdapter("h
             false
         }
     }
-
-    override val conditionCache: PageFaultHighPerformanceFunctionCache<Boolean> = PageFaultHighPerformanceFunctionCache { requireMinQQVersion(QQVersion.QQ_8_3_6) }
-
 }

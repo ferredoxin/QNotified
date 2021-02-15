@@ -16,7 +16,7 @@
  * along with this software.  If not, see
  * <https://www.gnu.org/licenses/>.
  */
-package me.nextalone.util
+package ltd.nextalone.util
 
 import nil.nadph.qnotified.util.Utils
 

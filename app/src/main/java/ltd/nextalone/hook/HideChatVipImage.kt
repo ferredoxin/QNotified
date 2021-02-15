@@ -16,30 +16,23 @@
  * along with this software.  If not, see
  * <https://www.gnu.org/licenses/>.
  */
-package me.nextalone.hook
+package ltd.nextalone.hook
 
-import me.nextalone.util.hookBefore
-import me.nextalone.util.methods
-import me.singleneuron.qn_kernel.data.hostInfo
-import me.singleneuron.util.QQVersion
+import android.widget.ImageView
+import android.widget.RelativeLayout
+import ltd.nextalone.util.clazz
+import ltd.nextalone.util.hookAfterAllConstructors
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.Utils
-import java.lang.reflect.Method
 
-object HideOnlineNumber : CommonDelayableHook("na_hide_online_number") {
+object HideChatVipImage : CommonDelayableHook("na_hide_chat_vip_image_kt") {
+
     override fun initOnce(): Boolean {
         return try {
-            var className = "com.tencent.mobileqq.activity.aio.core.TroopChatPie"
-            if (hostInfo.versionCode <= QQVersion.QQ_8_4_8) {
-                className = "com.tencent.mobileqq.activity.aio.rebuild.TroopChatPie"
-            }
-            for (m: Method in className.methods) {
-                val argt = m.parameterTypes
-                if (m.name == "a" && argt.size == 2 && argt[0] == String::class.java && argt[1] == Boolean::class.java) {
-                    m.hookBefore(this) {
-                        it.args[0] = ""
-                    }
-                }
+            "com.tencent.mobileqq.widget.navbar.NavBarAIO".clazz.hookAfterAllConstructors {
+                val ctx = it.thisObject as RelativeLayout
+                val titleImageId = ctx.resources.getIdentifier("jp0", "id", Utils.PACKAGE_NAME_QQ)
+                ctx.findViewById<ImageView>(titleImageId).alpha = 0F
             }
             true
         } catch (t: Throwable) {

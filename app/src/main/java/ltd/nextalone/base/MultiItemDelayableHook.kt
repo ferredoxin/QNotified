@@ -16,7 +16,7 @@
  * along with this software.  If not, see
  * <https://www.gnu.org/licenses/>.
  */
-package me.nextalone.hook.base
+package ltd.nextalone.base
 
 import android.app.AlertDialog
 import android.content.DialogInterface

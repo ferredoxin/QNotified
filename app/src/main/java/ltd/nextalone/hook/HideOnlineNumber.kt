@@ -16,23 +16,29 @@
  * along with this software.  If not, see
  * <https://www.gnu.org/licenses/>.
  */
-package me.nextalone.hook
+package ltd.nextalone.hook
 
-import android.view.View
-import me.nextalone.util.hookBefore
-import me.nextalone.util.hookNull
+import ltd.nextalone.util.hookBefore
+import ltd.nextalone.util.methods
+import me.singleneuron.qn_kernel.data.hostInfo
+import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.hook.CommonDelayableHook
-import nil.nadph.qnotified.util.DexKit
 import nil.nadph.qnotified.util.Utils
 import java.lang.reflect.Method
 
-object RemoveIntimateDrawer : CommonDelayableHook("kr_remove_intimate_drawer") {
-
+object HideOnlineNumber : CommonDelayableHook("na_hide_online_number") {
     override fun initOnce(): Boolean {
         return try {
-            for (m: Method in DexKit.doFindClass(DexKit.C_IntimateDrawer)!!.declaredMethods) {
-                if (m.name == "a" && m.returnType == View::class.java) {
-                    m.hookBefore(this, hookNull)
+            var className = "com.tencent.mobileqq.activity.aio.core.TroopChatPie"
+            if (hostInfo.versionCode <= QQVersion.QQ_8_4_8) {
+                className = "com.tencent.mobileqq.activity.aio.rebuild.TroopChatPie"
+            }
+            for (m: Method in className.methods) {
+                val argt = m.parameterTypes
+                if (m.name == "a" && argt.size == 2 && argt[0] == String::class.java && argt[1] == Boolean::class.java) {
+                    m.hookBefore(this) {
+                        it.args[0] = ""
+                    }
                 }
             }
             true

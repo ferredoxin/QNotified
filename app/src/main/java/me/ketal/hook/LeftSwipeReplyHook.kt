@@ -24,8 +24,8 @@ import android.os.Looper
 import android.view.View
 import android.widget.ImageView
 import me.ketal.util.TIMVersion
-import me.nextalone.util.hookAfter
-import me.nextalone.util.hookBefore
+import ltd.nextalone.util.hookAfter
+import ltd.nextalone.util.hookBefore
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.data.requireMinVersion
 import me.singleneuron.qn_kernel.tlb.ConfigTable.getConfig
