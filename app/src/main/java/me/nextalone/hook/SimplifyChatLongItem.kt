@@ -18,57 +18,18 @@
  */
 package me.nextalone.hook
 
-import android.app.AlertDialog
-import android.content.DialogInterface
-import android.os.Looper
-import android.view.View
 import de.robv.android.xposed.XC_MethodHook
+import me.nextalone.hook.base.MultiItemDelayableHook
 import me.nextalone.util.clazz
 import me.nextalone.util.hookBefore
 import me.nextalone.util.method
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
-import cc.ioctl.H
-import nil.nadph.qnotified.SyncUtils
-import nil.nadph.qnotified.config.ConfigManager
-import nil.nadph.qnotified.hook.CommonDelayableHook
-import nil.nadph.qnotified.ui.CustomDialog
-import nil.nadph.qnotified.util.Toasts
 import nil.nadph.qnotified.util.Utils
 
-object SimplifyChatLongItem : CommonDelayableHook("__NOT_USED__") {
-    private const val na_simplify_chat_long_item = "na_simplify_chat_long_item"
-    private val allItems = "复制|转发|收藏|回复|多选|撤回|删除|一起写|设为精华|待办|私聊|截图|存表情|相关表情|复制链接".split("|")
-    private const val defaultItems = "一起写|私聊|相关表情|待办"
-    private var activeItems
-        get() = ConfigManager.getDefaultConfig().getStringOrDefault(na_simplify_chat_long_item, defaultItems).split("|").toMutableList()
-        set(value) {
-            var ret = ""
-            for (item in value)
-                ret += "|$item"
-            putValue(na_simplify_chat_long_item, if (ret.isEmpty()) ret else ret.substring(1))
-        }
-
-    fun simplifyChatLongItemClick() = View.OnClickListener {
-        try {
-            val cache = activeItems
-            val ctx = it.context
-            AlertDialog.Builder(ctx, CustomDialog.themeIdForDialog())
-                .setTitle("选择要屏蔽的条目")
-                .setMultiChoiceItems(allItems.toTypedArray(), getBoolAry()) { _: DialogInterface, i: Int, _: Boolean ->
-                    val item = allItems[i]
-                    if (!cache.contains(item)) cache.add(item)
-                    else cache.remove(item)
-                }
-                .setNegativeButton("取消", null)
-                .setPositiveButton("确定") { _: DialogInterface, _: Int ->
-                    activeItems = cache
-                }
-                .show()
-        } catch (e: Exception) {
-            Utils.log(e)
-        }
-    }
+object SimplifyChatLongItem : MultiItemDelayableHook("na_simplify_chat_long_item", "屏蔽") {
+    override val allItems = "复制|转发|收藏|回复|多选|撤回|删除|一起写|设为精华|待办|私聊|截图|存表情|相关表情|复制链接|存微云|发给电脑".split("|").toMutableList()
+    override val defaultItems = "一起写|私聊|相关表情|待办"
 
     override fun initOnce() = try {
         val callback: (XC_MethodHook.MethodHookParam) -> Unit = callback@{
@@ -76,7 +37,6 @@ object SimplifyChatLongItem : CommonDelayableHook("__NOT_USED__") {
             val str = it.args[1] as String
             if (activeItems.contains(str))
                 it.result = null
-
         }
         "com.tencent.mobileqq.utils.dialogutils.QQCustomMenuImageLayout".clazz.declaredMethods.run {
             this.forEach { method ->
@@ -98,31 +58,4 @@ object SimplifyChatLongItem : CommonDelayableHook("__NOT_USED__") {
     }
 
     override fun isValid(): Boolean = requireMinQQVersion(QQVersion.QQ_8_0_0)
-
-    override fun isEnabled(): Boolean = activeItems.isNotEmpty()
-
-    private fun getBoolAry(): BooleanArray {
-        val ret = BooleanArray(allItems.size)
-        for ((i, item) in allItems.withIndex()) {
-            ret[i] = activeItems.contains(item)
-        }
-        return ret
-    }
-
-    private fun putValue(keyName: String, obj: Any) {
-        try {
-            val mgr = ConfigManager.getDefaultConfig()
-            mgr.allConfig[keyName] = obj
-            mgr.save()
-        } catch (e: Exception) {
-            Utils.log(e)
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                Toasts.error(H.getApplication(), e.toString() + "")
-            } else {
-                SyncUtils.post { Toasts.error(H.getApplication(), e.toString() + "") }
-            }
-        }
-    }
-
-    override fun setEnabled(enabled: Boolean) {}
 }
