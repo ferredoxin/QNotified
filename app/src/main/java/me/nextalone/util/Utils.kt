@@ -1,6 +1,9 @@
 package me.nextalone.util
 
 import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedBridge
@@ -13,6 +16,8 @@ import java.lang.reflect.Member
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 
+internal val linearParams = LinearLayout.LayoutParams(0, 0)
+internal val relativeParams = RelativeLayout.LayoutParams(0, 0)
 internal val String.clazz: Class<*>
     get() = Initiator.load(this)
 
@@ -206,4 +211,15 @@ internal inline fun Class<*>.hookAfterAllConstructors(crossinline hooker: (XC_Me
 fun View.setViewZeroSize() {
     this.layoutParams.height = 0
     this.layoutParams.width = 0
+}
+
+
+fun View.hide() {
+    this.visibility = View.GONE
+    val viewGroup = this.parent as ViewGroup
+    if (viewGroup is LinearLayout) {
+        this.layoutParams = linearParams
+    } else if (viewGroup is RelativeLayout) {
+        this.layoutParams = relativeParams
+    }
 }

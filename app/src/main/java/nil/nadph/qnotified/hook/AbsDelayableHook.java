@@ -100,6 +100,7 @@ import me.nextalone.hook.HideProfileBubble;
 import me.nextalone.hook.HideTotalNumber;
 import me.nextalone.hook.RemoveIntimateDrawer;
 import me.nextalone.hook.SimplifyChatLongItem;
+import me.nextalone.hook.SimplifyQQSettings;
 import me.singleneuron.hook.ChangeDrawerWidth;
 import me.singleneuron.hook.DebugDump;
 import me.singleneuron.hook.ForceSystemAlbum;
@@ -218,6 +219,7 @@ public abstract class AbsDelayableHook implements SwitchConfigItem {
                 SimplifyChatLongItem.INSTANCE,
                 HideOnlineStatus.INSTANCE,
                 HideChatVipImage.INSTANCE,
+                SimplifyQQSettings.INSTANCE,
             };
         }
         return sAllHooks;
