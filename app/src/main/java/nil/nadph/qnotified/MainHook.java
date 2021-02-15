@@ -211,12 +211,9 @@ public class MainHook {
             }
             XposedBridge.hookMethod(doStep, new XC_MethodHook(52) {
                 @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                protected void afterHookedMethod(MethodHookParam param) {
+                    // fix error in :video, and QZone启动失败
                     Utils.$access$set$sAppRuntimeInit(true);
-                    if (SyncUtils.isMainProcess()) {
-                        // fix error in :video, and QZone启动失败
-                        LicenseStatus.sDisableCommonHooks = LicenseStatus.isLoadingDisabled() || LicenseStatus.isBlacklisted() || LicenseStatus.isSilentGone();
-                    }
                 }
             });
         } catch (Throwable e) {

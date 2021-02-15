@@ -81,7 +81,6 @@ public class JumpActivityEntryHook {
                                     @Override
                                     public void run() {
                                         try {
-                                            ExfriendManager.getCurrent().doUpdateUserStatusFlags();
                                         } catch (final Exception e) {
                                             activity.runOnUiThread(new Runnable() {
                                                 @Override

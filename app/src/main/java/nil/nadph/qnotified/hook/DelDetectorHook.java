@@ -68,7 +68,6 @@ public class DelDetectorHook extends CommonDelayableHook {
                 boolean hide = false;
                 try {
                     hide = ConfigManager.getDefaultConfig().getBooleanOrFalse("qn_hide_ex_entry_group");
-                    if (LicenseStatus.isSilentGone()) return;
                 } catch (Throwable e) {
                     log(e);
                 }

@@ -122,10 +122,8 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         if (LicenseStatus.isAsserted()) {
             ll.addView(newListItemButton(this, "狐狸狸测试功能", "不管你是什么人都别动这里的东西", null, clickToProxyActAction(AlphaTestFuncActivity.class)));
         }
-        if (!LicenseStatus.hasBlackFlags()) {
-            ll.addView(newListItemButton(this, "Beta测试性功能", "仅用于测试稳定性", null, clickToProxyActAction(BetaTestFuncActivity.class)));
-            ll.addView(newListItemButton(this, "Omega测试性功能", "这是个不存在的功能", null, v -> KotlinUtilsKt.showEulaDialog(SettingsActivity.this)));
-        }
+        ll.addView(newListItemButton(this, "Beta测试性功能", "仅用于测试稳定性", null, clickToProxyActAction(BetaTestFuncActivity.class)));
+        ll.addView(newListItemButton(this, "Omega测试性功能", "这是个不存在的功能", null, v -> KotlinUtilsKt.showEulaDialog(SettingsActivity.this)));
         ll.addView(subtitle(this, "基本功能"));
         if (HostInformationProviderKt.requireMinQQVersion(QQ_8_2_6)) {
             ll.addView(_t = newListItemButton(this, "自定义电量", "[QQ>=8.2.6]在线模式为我的电量时生效", "N/A", clickToProxyActAction(FakeBatCfgActivity.class)));

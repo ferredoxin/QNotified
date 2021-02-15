@@ -86,7 +86,6 @@ public class ChatTailHook extends CommonDelayableHook {
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     if (isEnabled()) {
                         if (LicenseStatus.sDisableCommonHooks) return;
-                        if (LicenseStatus.hasBlackFlags()) return;
                         String msg = (String) param.args[3];
                         String text = msg;
                         final Parcelable session = (Parcelable) param.args[2];

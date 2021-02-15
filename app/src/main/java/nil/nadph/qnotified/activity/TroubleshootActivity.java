@@ -62,7 +62,6 @@ import nil.nadph.qnotified.config.EventRecord;
 import nil.nadph.qnotified.config.FriendRecord;
 import nil.nadph.qnotified.lifecycle.ActProxyMgr;
 import nil.nadph.qnotified.lifecycle.Parasitics;
-import nil.nadph.qnotified.remote.GetUserStatusResp;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.*;
@@ -330,81 +329,38 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
     }
 
     public View.OnClickListener clickToRefreshUserStatus() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                long uin = Utils.getLongAccountUin();
-                if (uin < 10000) {
-                    return;
-                }
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        StringBuilder sb;
-                        String msg;
-                        Throwable t = null;
-                        try {
-                            GetUserStatusResp resp = ExfriendManager.get(uin).doUpdateUserStatusFlags();
-                            sb = new StringBuilder();
-                            sb.append(resp.uin).append(": ");
-                            if (resp.whitelistFlags == 0 && resp.blacklistFlags == 0) {
-                                sb.append("Everything is ok");
-                            } else {
-                                if (resp.whitelistFlags != 0) {
-                                    sb.append("\nWhite: 0x").append(Integer.toHexString(resp.whitelistFlags));
-                                }
-                                if (resp.blacklistFlags != 0) {
-                                    sb.append("\nBlack: 0x").append(Integer.toHexString(resp.blacklistFlags));
-                                }
-                            }
-                            msg = sb.toString();
-                        } catch (Exception e) {
-                            msg = e.toString();
-                            t = e;
-                        }
-                        Throwable finalT = t;
-                        String finalMsg = msg;
-                        view.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                CustomDialog.createFailsafe(view.getContext()).setTitle(finalT == null ? "状态" : "失败")
-                                        .setCancelable(true).setMessage(finalMsg).setPositiveButton("确认", null).show();
-                            }
-                        });
-                    }
-                }).start();
+        return view -> {
+            long uin = Utils.getLongAccountUin();
+            if (uin < 10000) {
+                return;
             }
+            CustomDialog.createFailsafe(view.getContext()).setTitle("状态")
+                .setCancelable(true).setMessage("破解版没有黑白名单哦").setPositiveButton("确认", null).show();
         };
     }
 
     public View.OnClickListener clickToWipeDeletedFriends() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CustomDialog dialog = CustomDialog.create(TroubleshootActivity.this);
-                dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        try {
-                            ExfriendManager exm = ExfriendManager.getCurrent();
-                            Iterator it = exm.getEvents().entrySet().iterator();
-                            while (it.hasNext()) {
-                                EventRecord ev = (EventRecord) ((Map.Entry) it.next()).getValue();
-                                if (exm.getPersons().get(ev.operand).friendStatus == FriendRecord.STATUS_FRIEND_MUTUAL)
-                                    it.remove();
-                            }
-                            exm.saveConfigure();
-                            showToast(TroubleshootActivity.this, TOAST_TYPE_SUCCESS, "操作成功", Toast.LENGTH_SHORT);
-                        } catch (Throwable e) {
-                        }
+        return v -> {
+            CustomDialog dialog = CustomDialog.create(TroubleshootActivity.this);
+            dialog.setPositiveButton("确认", (dialog1, which) -> {
+                try {
+                    ExfriendManager exm = ExfriendManager.getCurrent();
+                    Iterator it = exm.getEvents().entrySet().iterator();
+                    while (it.hasNext()) {
+                        EventRecord ev = (EventRecord) ((Map.Entry) it.next()).getValue();
+                        if (exm.getPersons().get(ev.operand).friendStatus == FriendRecord.STATUS_FRIEND_MUTUAL)
+                            it.remove();
                     }
-                });
-                dialog.setNegativeButton("取消", new Utils.DummyCallback());
-                dialog.setCancelable(true);
-                dialog.setMessage("此操作将删除当前帐号(" + getLongAccountUin() + ")下的 已恢复 的历史好友记录(记录可单独删除).如果因bug大量好友被标记为已删除,请先刷新好友列表,然后再点击此按钮.\n此操作不可恢复");
-                dialog.setTitle("确认操作");
-                dialog.show();
-            }
+                    exm.saveConfigure();
+                    showToast(TroubleshootActivity.this, TOAST_TYPE_SUCCESS, "操作成功", Toast.LENGTH_SHORT);
+                } catch (Throwable e) {
+                }
+            });
+            dialog.setNegativeButton("取消", new DummyCallback());
+            dialog.setCancelable(true);
+            dialog.setMessage("此操作将删除当前帐号(" + getLongAccountUin() + ")下的 已恢复 的历史好友记录(记录可单独删除).如果因bug大量好友被标记为已删除,请先刷新好友列表,然后再点击此按钮.\n此操作不可恢复");
+            dialog.setTitle("确认操作");
+            dialog.show();
         };
     }
 
@@ -416,56 +372,50 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
     }
 
     public View.OnClickListener clickToWipeAllFriends() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CustomDialog dialog = CustomDialog.create(TroubleshootActivity.this);
-                dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        try {
-                            ExfriendManager exm = ExfriendManager.getCurrent();
-                            exm.getConfig().getFile().delete();
-                            exm.getConfig().reinit();
-                            exm.reinit();
-                            showToast(TroubleshootActivity.this, TOAST_TYPE_SUCCESS, "操作成功", Toast.LENGTH_SHORT);
-                        } catch (Throwable e) {
-                        }
+        return v -> {
+            CustomDialog dialog = CustomDialog.create(TroubleshootActivity.this);
+            dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    try {
+                        ExfriendManager exm = ExfriendManager.getCurrent();
+                        exm.getConfig().getFile().delete();
+                        exm.getConfig().reinit();
+                        exm.reinit();
+                        showToast(TroubleshootActivity.this, TOAST_TYPE_SUCCESS, "操作成功", Toast.LENGTH_SHORT);
+                    } catch (Throwable e) {
                     }
-                });
-                dialog.setNegativeButton("取消", new Utils.DummyCallback());
-                dialog.setCancelable(true);
-                dialog.setMessage("此操作将删除当前帐号(" + getLongAccountUin() + ")下的 全部 的历史好友记录,通常您不需要进行此操作.如果您的历史好友列表中因bug出现大量好友,请在联系人列表下拉刷新后点击 删除标记为已恢复的好友 .\n此操作不可恢复");
-                dialog.setTitle("确认操作");
-                dialog.show();
-            }
+                }
+            });
+            dialog.setNegativeButton("取消", new DummyCallback());
+            dialog.setCancelable(true);
+            dialog.setMessage("此操作将删除当前帐号(" + getLongAccountUin() + ")下的 全部 的历史好友记录,通常您不需要进行此操作.如果您的历史好友列表中因bug出现大量好友,请在联系人列表下拉刷新后点击 删除标记为已恢复的好友 .\n此操作不可恢复");
+            dialog.setTitle("确认操作");
+            dialog.show();
         };
     }
 
     public View.OnClickListener clickToCleanCache() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CustomDialog dialog = CustomDialog.create(TroubleshootActivity.this);
-                dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        try {
-                            ConfigManager cfg = ConfigManager.getCache();
-                            cfg.getAllConfig().clear();
-                            cfg.getFile().delete();
-                            System.exit(0);
-                        } catch (Throwable e) {
-                            log(e);
-                        }
+        return v -> {
+            CustomDialog dialog = CustomDialog.create(TroubleshootActivity.this);
+            dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    try {
+                        ConfigManager cfg = ConfigManager.getCache();
+                        cfg.getAllConfig().clear();
+                        cfg.getFile().delete();
+                        System.exit(0);
+                    } catch (Throwable e) {
+                        log(e);
                     }
-                });
-                dialog.setNegativeButton("取消", new Utils.DummyCallback());
-                dialog.setCancelable(true);
-                dialog.setMessage("确认清除缓存,并重新计算适配数据?\n点击确认后请等待3秒后手动重启" + HostInformationProviderKt.getHostInfo().getHostName() + ".");
-                dialog.setTitle("确认操作");
-                dialog.show();
-            }
+                }
+            });
+            dialog.setNegativeButton("取消", new DummyCallback());
+            dialog.setCancelable(true);
+            dialog.setMessage("确认清除缓存,并重新计算适配数据?\n点击确认后请等待3秒后手动重启" + HostInformationProviderKt.getHostInfo().getHostName() + ".");
+            dialog.setTitle("确认操作");
+            dialog.show();
         };
     }
 

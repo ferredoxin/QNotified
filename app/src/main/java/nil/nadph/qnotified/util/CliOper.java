@@ -62,9 +62,6 @@ public class CliOper {
         HashMap<String, String> properties = new HashMap<>();
         properties.put("versionName", Utils.QN_VERSION_NAME);
         properties.put("versionCode", String.valueOf(Utils.QN_VERSION_CODE));
-        properties.put("Auth2Status", String.valueOf(LicenseStatus.getAuth2Status()));
-        properties.put("WhiteList", Integer.toHexString(LicenseStatus.getCurrentUserWhiteFlags()));
-        properties.put("BlackList", Integer.toHexString(LicenseStatus.getCurrentUserBlackFlags()));
         long longAccount = Utils.getLongAccountUin();
         if (longAccount!=-1) {
             properties.put("Uin", String.valueOf(longAccount));
@@ -82,20 +79,6 @@ public class CliOper {
         __init__(HostInformationProviderKt.getHostInfo().getApplication());
         Analytics.trackEvent("onLoad", properties);
         Utils.logd("start App Center Trace OnLoad:" + properties.toString());
-    }
-
-    public static void passAuth2Once(int retryCount, int chiralCount) {
-        __init__(HostInformationProviderKt.getHostInfo().getApplication());
-        Map<String, String> prop = new HashMap<>();
-        prop.put("retryCount", String.valueOf(retryCount));
-        prop.put("chiralCount", String.valueOf(chiralCount));
-        Analytics.trackEvent("passAuth2Once", prop);
-    }
-
-    public static void abortAuth2Once(int retryCount) {
-    }
-
-    public static void revokeAuth2Once() {
     }
 
     public static void copyCardMsg(String msg) {
@@ -162,7 +145,6 @@ public class CliOper {
         return prop;
     }
 
-    @Deprecated
     private static String findJsonValueOrEmpty(String raw, String key) {
         if (key == null || raw == null) return "";
         key = '"' + key + '"';
@@ -194,7 +176,6 @@ public class CliOper {
         }
     }
 
-    @Deprecated
     private static String findXmlValueOrEmpty(String raw, String key) {
         if (key == null || raw == null) return "";
         raw = raw.replace('\'', '"').replace(" ", "");

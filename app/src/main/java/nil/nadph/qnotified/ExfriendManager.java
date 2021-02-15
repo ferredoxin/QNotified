@@ -50,8 +50,6 @@ import nil.nadph.qnotified.config.Table;
 import nil.nadph.qnotified.hook.DelDetectorHook;
 import nil.nadph.qnotified.lifecycle.ActProxyMgr;
 import nil.nadph.qnotified.lifecycle.Parasitics;
-import nil.nadph.qnotified.remote.GetUserStatusResp;
-import nil.nadph.qnotified.remote.TransactionHelper;
 import nil.nadph.qnotified.util.*;
 
 import static nil.nadph.qnotified.config.Table.*;
@@ -774,13 +772,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
     public void timeToUpdateFl() {
         long t = System.currentTimeMillis() / 1000;
         if (t - lastUpdateTimeSec > FL_UPDATE_INT_MIN) {
-            tp.execute(new Runnable() {
-                @Override
-                public void run() {
-                    doRequestFlRefresh();
-                    doTryToUpdateUserStatusFlags();
-                }
-            });
+            tp.execute(this::doRequestFlRefresh);
         }
     }
 
@@ -804,41 +796,4 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
         fileData.putObject(key, val);
     }
 
-    public void doTryToUpdateUserStatusFlags() {
-        try {
-            doUpdateUserStatusFlags();
-        } catch (Exception ignored) {
-        }
-    }
-
-    public GetUserStatusResp doUpdateUserStatusFlags() throws Exception {
-        GetUserStatusResp resp = TransactionHelper.doQueryUserStatus(getUin());
-        putObject(LicenseStatus.qn_auth_uin_white_flags, resp.whitelistFlags);
-        putObject(LicenseStatus.qn_auth_uin_black_flags, resp.blacklistFlags);
-        putObject(LicenseStatus.qn_auth_uin_update_time, System.currentTimeMillis());
-        saveConfigure();
-        ConfigManager cfg = ConfigManager.getDefaultConfig();
-        boolean changed = false;
-        if ((resp.whitelistFlags & UserFlagConst.WF_FUNC_STICKY) != 0) {
-            int old = cfg.getIntOrDefault(LicenseStatus.qn_sticky_white_flags, 0);
-            int curr = old | resp.whitelistFlags;
-            if (curr != old) {
-                changed = true;
-                cfg.putInt(LicenseStatus.qn_sticky_white_flags, curr);
-            }
-        }
-        if ((resp.blacklistFlags & UserFlagConst.BF_FUNC_STICKY) != 0) {
-            int old = cfg.getIntOrDefault(LicenseStatus.qn_sticky_black_flags, 0);
-            int curr = old | resp.blacklistFlags;
-            if (curr != old) {
-                changed = true;
-                cfg.putInt(LicenseStatus.qn_sticky_black_flags, curr);
-            }
-        }
-        LicenseStatus.sDisableCommonHooks = LicenseStatus.isBlacklisted() || LicenseStatus.isSilentGone();
-        if (changed) {
-            cfg.save();
-        }
-        return resp;
-    }
 }

@@ -64,7 +64,6 @@ public class SettingEntryHook extends CommonDelayableHook {
             XposedHelpers.findAndHookMethod(load("com.tencent.mobileqq.activity.QQSettingSettingActivity"), "doOnCreate", Bundle.class, new XC_MethodHook(52) {
                 @Override
                 protected void afterHookedMethod(final MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.isLoadingDisabled() || LicenseStatus.isSilentGone()) return;
                     try {
                         Class<?> itemClass = null;
                         View itemRef = null;
@@ -81,18 +80,17 @@ public class SettingEntryHook extends CommonDelayableHook {
                         item.setId(R_ID_SETTING_ENTRY);
                         invoke_virtual(item, "setLeftText", "QNotified", CharSequence.class);
                         invoke_virtual(item, "setBgType", 2, int.class);
-                        if (LicenseStatus.isBlacklisted()) {
+                        if (true) {
                             invoke_virtual(item, "setRightText", "[禁用]", CharSequence.class);
                             item.setOnLongClickListener(new View.OnLongClickListener() {
                                 @Override
                                 public boolean onLongClick(final View v) {
-                                    if (!LicenseStatus.isBlacklisted()) return false;
+                                    if (!true) return false;
                                     Toast.makeText((Context) param.thisObject, "正在重新检验授权", Toast.LENGTH_SHORT).show();
                                     new Thread(new Runnable() {
                                         @Override
                                         public void run() {
                                             try {
-                                                ExfriendManager.getCurrent().doUpdateUserStatusFlags();
                                             } catch (final Exception e) {
                                                 v.post(new Runnable() {
                                                     @Override
@@ -116,7 +114,7 @@ public class SettingEntryHook extends CommonDelayableHook {
                         item.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                if (LicenseStatus.isBlacklisted()) {
+                                if (true) {
                                     Utils.showToast((Context) param.thisObject, TOAST_TYPE_ERROR, "无法使用本模块因为您已被拉黑", Toast.LENGTH_LONG);
                                 } else {
                                     if (LicenseStatus.hasUserAcceptEula()) {
