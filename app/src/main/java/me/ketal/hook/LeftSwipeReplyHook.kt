@@ -54,7 +54,7 @@ object LeftSwipeReplyHook: CommonDelayableHook("ketal_left_swipe_action", DexDeo
     override fun initOnce(): Boolean {
         return try {
             val replyMethod = DexKit.doFindMethod(DexKit.N_LeftSwipeReply_Helper__reply)
-            val hookClass = replyMethod.declaringClass
+            val hookClass = replyMethod!!.declaringClass
             var methodName = if (hostInfo.isTim) "L" else "a"
             ReflexUtil.hasMethod(hookClass, methodName, Float::class.java, Float::class.java)
                 .hookBefore(this) {
@@ -73,7 +73,7 @@ object LeftSwipeReplyHook: CommonDelayableHook("ketal_left_swipe_action", DexDeo
                 if (!isMultiChose) return@hookBefore
                 val message = ReflexUtil.invoke_virtual_any(it.thisObject, Initiator._ChatMessage())
                 val baseChatPie = ReflexUtil.getFirstByType(it.thisObject, Initiator._BaseChatPie() as Class<*>)
-                DexKit.doFindMethod(DexKit.N_BASE_CHAT_PIE__chooseMsg).invoke(baseChatPie, message)
+                DexKit.doFindMethod(DexKit.N_BASE_CHAT_PIE__chooseMsg)!!.invoke(baseChatPie, message)
                 it.result = null
             }
             methodName = if (hostInfo.isTim) getConfig(LeftSwipeReplyHook::class.java.simpleName) else "a"

@@ -18,6 +18,8 @@
  */
 package nil.nadph.qnotified.util;
 
+import androidx.annotation.Nullable;
+
 import java.util.ArrayList;
 
 public class DexFlow {

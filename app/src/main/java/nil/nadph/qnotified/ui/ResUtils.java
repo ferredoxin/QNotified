@@ -28,6 +28,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.widget.Button;
 
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 
@@ -39,7 +40,8 @@ import java.util.Map;
 import de.robv.android.xposed.XposedHelpers;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.util.ArscKit;
-import nil.nadph.qnotified.util.Nullable;
+
+import androidx.annotation.NonNull;
 
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;

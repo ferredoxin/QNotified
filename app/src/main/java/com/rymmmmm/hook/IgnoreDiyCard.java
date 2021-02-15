@@ -20,6 +20,8 @@ package com.rymmmmm.hook;
 
 import android.content.Intent;
 
+import androidx.annotation.NonNull;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -30,7 +32,6 @@ import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import me.singleneuron.util.QQVersion;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.NonNull;
 
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;

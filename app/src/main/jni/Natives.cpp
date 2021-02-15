@@ -495,7 +495,7 @@ jboolean handleSendCardMsg(JNIEnv *env, jclass clazz, jobject rt, jobject sessio
             env->ThrowNew(env->FindClass("java/lang/RuntimeException"), "404: TestStructMsg");
             return false;
         }
-        jclass cl_Utils = env->FindClass("nil/nadph/qnotified/util/Utils");
+        jclass cl_Utils = env->FindClass("nil/nadph/qnotified/util/ReflexUtil");
         cid = env->GetStaticMethodID(cl_Utils, "invoke_static_any",
                                      "(Ljava/lang/Class;[Ljava/lang/Object;)Ljava/lang/Object;");
         jobjectArray va = env->NewObjectArray(3, env->FindClass("java/lang/Object"), nullptr);
@@ -558,7 +558,7 @@ EXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
         env->ExceptionClear();
         __android_log_print(ANDROID_LOG_WARN, "QNdump", "not seeming in host, skip native hooks");
     } else {
-        clazz = env->FindClass("nil/nadph/qnotified/hook/CardMsgHook");
+        clazz = env->FindClass("cc/ioctl/hook/CardMsgHook");
         lMethods[0].name = "ntSendCardMsg";
         lMethods[0].signature = "(Lcom/tencent/mobileqq/app/QQAppInterface;Landroid/os/Parcelable;Ljava/lang/String;)Z";
         lMethods[0].fnPtr = (void *) &handleSendCardMsg;
@@ -566,7 +566,7 @@ EXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
             __android_log_print(ANDROID_LOG_INFO, "QNdump", "register native method[1] failed!\n");
             return -1;
         }
-        clazz = env->FindClass("nil/nadph/qnotified/util/SendBatchMsg");
+        clazz = env->FindClass("cc/ioctl/util/SendBatchMsg");
         lMethods[0].name = "ntSendBatchMessages";
         lMethods[0].signature = "(Lcom/tencent/mobileqq/app/QQAppInterface;Landroid/content/Context;Ljava/lang/String;[I[J)Z";
         lMethods[0].fnPtr = (void *) &handleSendBatchMessages;

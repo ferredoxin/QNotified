@@ -22,7 +22,7 @@ import java.lang.reflect.Field;
 
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.dialog.RikkaCustomDeviceModelDialog;
+import cc.ioctl.dialog.RikkaCustomDeviceModelDialog;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Utils;

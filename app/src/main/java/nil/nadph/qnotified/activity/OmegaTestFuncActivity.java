@@ -33,14 +33,14 @@ import com.tencent.mobileqq.widget.BounceScrollView;
 import me.kyuubiran.dialog.AutoRenewFireDialog;
 import me.singleneuron.hook.CopyCardMsg;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
-import nil.nadph.qnotified.hook.CardMsgHook;
+import cc.ioctl.hook.CardMsgHook;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.LicenseStatus;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.ui.ViewBuilder.*;
-import static nil.nadph.qnotified.util.SendBatchMsg.clickToBatchMsg;
+import static cc.ioctl.util.SendBatchMsg.clickToBatchMsg;
 import static nil.nadph.qnotified.util.Utils.dip2px;
 
 @SuppressLint("Registered")

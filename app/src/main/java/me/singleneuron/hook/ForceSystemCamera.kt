@@ -30,7 +30,7 @@ import nil.nadph.qnotified.util.Utils
 object ForceSystemCamera : BaseDelayableConditionalHookAdapter("forceSystemCamera") {
     override fun doInit(): Boolean {
         return try {
-            for (m in DexKit.doFindClass(DexKit.C_CaptureUtil).declaredMethods) {
+            for (m in DexKit.doFindClass(DexKit.C_CaptureUtil)!!.declaredMethods) {
                 val argt = m.parameterTypes
                 if ("a" == m.name && m.returnType == Boolean::class.javaPrimitiveType && argt.isEmpty()) {
                     XposedBridge.hookMethod(m, object : XC_MethodHook() {

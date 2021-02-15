@@ -37,7 +37,7 @@ object ItemBuilderFactoryHook : BaseDelayableHookAdapter(cfgName = "itemBuilderF
 
     override fun doInit(): Boolean {
             var getMsgType: Method? = null
-            for (m in DexKit.doFindClass(DexKit.C_ITEM_BUILDER_FAC).methods) {
+            for (m in DexKit.doFindClass(DexKit.C_ITEM_BUILDER_FAC)!!.methods) {
                 if (m.returnType == Int::class.javaPrimitiveType) {
                     val argt = m.parameterTypes
                     if (argt.isNotEmpty() && argt[argt.size - 1] == Initiator.load("com.tencent.mobileqq.data.ChatMessage")) {

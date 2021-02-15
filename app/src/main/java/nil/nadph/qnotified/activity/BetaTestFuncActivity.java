@@ -27,14 +27,16 @@ import android.widget.TextView;
 
 import com.tencent.mobileqq.widget.BounceScrollView;
 
+import cc.ioctl.activity.ChatTailActivity;
+import cc.ioctl.activity.ManageScriptsActivity;
 import me.kyuubiran.hook.RemoveRedDot;
 import me.kyuubiran.hook.testhook.CutMessage;
 import me.nextalone.hook.ForcedSendOriginalPhoto;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
-import nil.nadph.qnotified.hook.ChatTailHook;
-import nil.nadph.qnotified.hook.MutePokePacket;
-import nil.nadph.qnotified.hook.PttForwardHook;
-import nil.nadph.qnotified.script.QNScriptManager;
+import cc.ioctl.hook.ChatTailHook;
+import cc.ioctl.hook.MutePokePacket;
+import cc.ioctl.hook.PttForwardHook;
+import cc.ioctl.script.QNScriptManager;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.LicenseStatus;
 
@@ -76,11 +78,13 @@ public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
         ll.addView(newListItemSwitchConfig(this, "保存语音", "需要打开语音转发才能使用本功能", PttForwardHook.qn_enable_ptt_save, false));
         ll.addView(newListItemHookSwitchInit(this, "移除小红点", "仅供测试", RemoveRedDot.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "聊天自动发送原图", "仅供测试", ForcedSendOriginalPhoto.INSTANCE));
-        //__tv_chat_tail_status = _t.findViewById(R_ID_VALUE);
+        ll.addView(_t = newListItemButton(this, "自定义聊天小尾巴", "回车发送不生效", "N/A", clickToProxyActAction(ChatTailActivity.class)));
+        __tv_chat_tail_status = _t.findViewById(R_ID_VALUE);
         ll.addView(newListItemHookSwitchInit(this, "屏蔽戳一戳", "OvO", MutePokePacket.get()));
         ll.addView(newListItemHookSwitchInit(this, "在LogCat输出所有接收的消息", "[Debug]无关人士请不要打开 没有任何作用", CutMessage.INSTANCE));
         ViewGroup __t;
-        //__js_status = __t.findViewById(R_ID_VALUE);
+        ll.addView(__t = newListItemButton(this, "管理脚本(.java)", "请注意安全, 合理使用", "N/A", clickToProxyActAction(ManageScriptsActivity.class)));
+        __js_status = __t.findViewById(R_ID_VALUE);
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         setContentView(bounceScrollView);
         LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);

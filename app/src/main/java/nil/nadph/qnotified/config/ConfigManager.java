@@ -18,6 +18,9 @@
  */
 package nil.nadph.qnotified.config;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -27,8 +30,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.SyncUtils;
-import nil.nadph.qnotified.util.NonNull;
-import nil.nadph.qnotified.util.Nullable;
 import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.config.Table.*;

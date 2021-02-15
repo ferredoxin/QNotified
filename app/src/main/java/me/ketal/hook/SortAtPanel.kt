@@ -36,11 +36,11 @@ object SortAtPanel: CommonDelayableHook("ketal_At_Panel_Hook", DexDeobfStep(DexK
     private var isSort = false
     override fun initOnce(): Boolean {
         return try {
-            DexKit.doFindMethod(DexKit.N_AtPanel__showDialogAtView).hookAfter(this) {
-                    val key = it.args[1] as String
-                    isSort = TextUtils.isEmpty(key)
-                }
-            DexKit.doFindMethod(DexKit.N_AtPanel__refreshUI).hookBefore(this) {
+            DexKit.doFindMethod(DexKit.N_AtPanel__showDialogAtView)!!.hookAfter(this) {
+                val key = it.args[1] as String
+                isSort = TextUtils.isEmpty(key)
+            }
+            DexKit.doFindMethod(DexKit.N_AtPanel__refreshUI)!!.hookBefore(this) {
                 if (!isSort) return@hookBefore
                 val result = it.args[0]
                 val sessionInfo = ReflexUtil.getFirstByType(it.thisObject, Initiator._SessionInfo())

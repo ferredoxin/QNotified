@@ -18,8 +18,8 @@
  */
 package me.singleneuron.base.bridge
 
+import androidx.annotation.NonNull
 import com.google.gson.Gson
-import nil.nadph.qnotified.util.NonNull
 import java.net.URL
 
 abstract class CardMsgList {

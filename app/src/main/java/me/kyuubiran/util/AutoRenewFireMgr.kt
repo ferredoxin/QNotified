@@ -22,7 +22,7 @@ import android.os.Handler
 import android.os.Looper
 import com.topjohnwu.superuser.internal.UiThreadHandler.handler
 import me.singleneuron.qn_kernel.data.hostInfo
-import nil.nadph.qnotified.script.QNClient
+import cc.ioctl.script.QNClient
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.concurrent.thread

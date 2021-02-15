@@ -52,7 +52,7 @@ object MultiActionHook: CommonDelayableHook("qn_multi_action", DexDeobfStep(DexK
 
     public override fun initOnce(): Boolean {
         return try {
-            DexKit.doFindMethod(DexKit.N_BASE_CHAT_PIE__createMulti)
+            DexKit.doFindMethod(DexKit.N_BASE_CHAT_PIE__createMulti)!!
                 .hookAfter(this) {
                     val rootView = ReflexUtil.iget_object_or_null(it.thisObject, fieldName, LinearLayout::class.java)
                     if (rootView == null || !check(rootView)) return@hookAfter

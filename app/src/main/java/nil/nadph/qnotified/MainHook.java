@@ -32,6 +32,10 @@ import com.rymmmmm.hook.CustomSplash;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import cc.ioctl.hook.GagInfoDisclosure;
+import cc.ioctl.hook.MuteAtAllAndRedPacket;
+import cc.ioctl.hook.MuteQZoneThumbsUp;
+import cc.ioctl.hook.RevokeMsgHook;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import me.kyuubiran.hook.RemoveCameraButton;

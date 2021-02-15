@@ -28,6 +28,8 @@ import android.os.Build;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -41,19 +43,19 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
-import nil.nadph.qnotified.activity.ExfriendListActivity;
+import cc.ioctl.activity.ExfriendListActivity;
 import nil.nadph.qnotified.bridge.FriendChunk;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.config.EventRecord;
 import nil.nadph.qnotified.config.FriendRecord;
 import nil.nadph.qnotified.config.Table;
-import nil.nadph.qnotified.hook.DelDetectorHook;
+import cc.ioctl.hook.DelDetectorHook;
 import nil.nadph.qnotified.lifecycle.ActProxyMgr;
 import nil.nadph.qnotified.lifecycle.Parasitics;
 import nil.nadph.qnotified.util.*;
 
 import static nil.nadph.qnotified.config.Table.*;
-import static nil.nadph.qnotified.util.DateTimeUtil.getRelTimeStrSec;
+import static cc.ioctl.util.DateTimeUtil.getRelTimeStrSec;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
 import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_any;

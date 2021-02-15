@@ -183,3 +183,4 @@ fun showEulaDialog(activity: Activity) {
         }
     }.start()
 }
+

@@ -42,6 +42,7 @@ public class ActProxyMgr {
             return false;
         }
         return className.startsWith("nil.nadph.qnotified.")
+            || className.startsWith("cc.ioctl.activity.")
             || className.startsWith("me.zpp0196.qqpurify.activity.")
             || className.startsWith("me.singleneuron.")
             || className.startsWith("me.ketal.activity.")

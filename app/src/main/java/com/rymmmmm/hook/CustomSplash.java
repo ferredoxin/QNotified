@@ -27,7 +27,7 @@ import java.lang.reflect.Method;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
-import nil.nadph.qnotified.dialog.RikkaCustomSplash;
+import cc.ioctl.dialog.RikkaCustomSplash;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;

@@ -18,14 +18,16 @@
  */
 package nil.nadph.qnotified.util;
 
+import androidx.annotation.Nullable;
+
 import java.io.IOException;
 import java.util.HashSet;
 
 import nil.nadph.qnotified.BuildConfig;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.activity.EulaActivity;
-import nil.nadph.qnotified.chiral.MdlMolParser;
-import nil.nadph.qnotified.chiral.Molecule;
+import cc.ioctl.chiral.MdlMolParser;
+import cc.ioctl.chiral.Molecule;
 import nil.nadph.qnotified.config.ConfigManager;
 
 import static nil.nadph.qnotified.util.Utils.log;

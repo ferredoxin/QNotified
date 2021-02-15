@@ -22,7 +22,7 @@ import me.ketal.hook.LeftSwipeReplyHook
 import me.ketal.hook.MultiActionHook
 import me.ketal.util.TIMVersion.*
 import nil.nadph.qnotified.bridge.QQMessageFacade
-import nil.nadph.qnotified.hook.ReplyNoAtHook
+import cc.ioctl.hook.ReplyNoAtHook
 
 class TIMConfigTable: ConfigTableInterface {
 

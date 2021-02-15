@@ -18,9 +18,11 @@
  */
 package nil.nadph.qnotified.hook;
 
+import androidx.annotation.NonNull;
+
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.util.NonNull;
+
 
 public abstract class BaseDelayableHook extends AbsDelayableHook {
 

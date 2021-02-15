@@ -20,6 +20,8 @@ package nil.nadph.qnotified.util;
 
 import android.view.View;
 
+import androidx.annotation.Nullable;
+
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;

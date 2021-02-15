@@ -41,7 +41,7 @@ object SendFavoriteHook: CommonDelayableHook("ketal_send_favorite", SyncUtils.PR
 
     override fun initOnce(): Boolean {
         return try {
-            DexKit.doFindMethod(DexKit.N_PluginProxyActivity__initPlugin)
+            DexKit.doFindMethod(DexKit.N_PluginProxyActivity__initPlugin)!!
                 .hookAfter(this) {
                     val context = it.thisObject as Activity
                     val intent = context.intent
