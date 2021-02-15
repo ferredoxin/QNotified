@@ -70,6 +70,7 @@ import me.ketal.hook.SortAtPanel;
 import me.kyuubiran.hook.AutoMosaicName;
 import me.kyuubiran.hook.ShowSelfMsgByLeft;
 import me.nextalone.hook.SimplifyChatLongItem;
+import me.nextalone.hook.SimplifyPlusPanel;
 import me.nextalone.hook.SimplifyQQSettings;
 import me.singleneuron.activity.ChangeDrawerWidthActivity;
 import me.singleneuron.hook.*;
@@ -234,6 +235,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         if (SimplifyChatLongItem.INSTANCE.isValid()) {
             ll.addView(newListItemButton(this, "精简聊天气泡长按菜单", null, null, SimplifyChatLongItem.INSTANCE.simplifyChatLongItemClick()));
         }
+        ll.addView(newListItemButton(this, "精简加号菜单", null, null, SimplifyPlusPanel.INSTANCE.simplifyPlusPanelClick()));
         ll.addView(newListItemButton(this, "精简设置菜单", null, null, SimplifyQQSettings.INSTANCE.simplifyQQSettingsClick()));
         ll.addView(newListItemHookSwitchInit(this, "批量撤回消息", "多选消息后撤回", MultiActionHook.INSTANCE));
         if (LeftSwipeReplyHook.INSTANCE.isValid()) {
