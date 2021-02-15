@@ -33,7 +33,7 @@ import android.widget.*;
 import androidx.core.view.ViewCompat;
 
 import cc.ioctl.H;
-import me.nextalone.hook.base.MultiItemDelayableHook;
+import ltd.nextalone.base.MultiItemDelayableHook;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.MainHook;

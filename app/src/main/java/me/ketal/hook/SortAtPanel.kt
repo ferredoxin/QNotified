@@ -20,8 +20,8 @@ package me.ketal.hook
 
 import android.text.TextUtils
 import me.ketal.util.TIMVersion
-import me.nextalone.util.hookAfter
-import me.nextalone.util.hookBefore
+import ltd.nextalone.util.hookAfter
+import ltd.nextalone.util.hookBefore
 import me.singleneuron.qn_kernel.data.requireMinVersion
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.hook.CommonDelayableHook

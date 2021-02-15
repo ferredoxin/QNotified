@@ -16,23 +16,31 @@
  * along with this software.  If not, see
  * <https://www.gnu.org/licenses/>.
  */
-package me.nextalone.hook
+package ltd.nextalone.hook
 
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import me.nextalone.util.clazz
-import me.nextalone.util.hookAfterAllConstructors
+import android.view.View
+import android.widget.CheckBox
+import ltd.nextalone.util.hookAfter
+import me.kyuubiran.util.getMethods
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.Utils
+import nil.nadph.qnotified.util.Utils.PACKAGE_NAME_QQ
+import java.lang.reflect.Method
 
-object HideChatVipImage : CommonDelayableHook("na_hide_chat_vip_image_kt") {
+object ForcedSendOriginalPhoto : CommonDelayableHook("na_test_forced_original") {
 
     override fun initOnce(): Boolean {
         return try {
-            "com.tencent.mobileqq.widget.navbar.NavBarAIO".clazz.hookAfterAllConstructors {
-                val ctx = it.thisObject as RelativeLayout
-                val titleImageId = ctx.resources.getIdentifier("jp0", "id", Utils.PACKAGE_NAME_QQ)
-                ctx.findViewById<ImageView>(titleImageId).alpha = 0F
+            for (m: Method in getMethods("com.tencent.mobileqq.activity.aio.photo.PhotoListPanel")) {
+                val argt = m.parameterTypes
+                if (m.name == "a" && argt.size == 1 && argt[0] == Boolean::class.java) {
+                    m.hookAfter(this) {
+                        val ctx = it.thisObject as View
+                        val id = ctx.resources.getIdentifier("h1y", "id", PACKAGE_NAME_QQ)
+                        val sendOriginPhotoCheckbox: CheckBox = ctx.findViewById(id)
+                        sendOriginPhotoCheckbox.isChecked = true
+                    }
+                }
             }
             true
         } catch (t: Throwable) {

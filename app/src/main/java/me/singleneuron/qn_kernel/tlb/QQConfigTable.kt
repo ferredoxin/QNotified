@@ -19,8 +19,8 @@
 package me.singleneuron.qn_kernel.tlb
 
 import me.kyuubiran.hook.AutoMosaicName
-import me.nextalone.hook.HideProfileBubble
-import me.nextalone.hook.HideTotalNumber
+import ltd.nextalone.hook.HideProfileBubble
+import ltd.nextalone.hook.HideTotalNumber
 import me.singleneuron.util.QQVersion.*
 import cc.ioctl.hook.ReplyNoAtHook
 import cc.ioctl.hook.VasProfileAntiCrash

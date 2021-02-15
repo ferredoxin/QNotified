@@ -1,4 +1,4 @@
-package me.nextalone.util
+package ltd.nextalone.util
 
 import android.view.View
 import android.view.ViewGroup
@@ -45,6 +45,10 @@ internal fun Member.hook(callback: XC_MethodHook) = try {
 
 internal val hookNull: (XC_MethodHook.MethodHookParam) -> Unit = {
     it.result = null
+}
+
+internal val hookEmpty: (XC_MethodHook.MethodHookParam) -> Unit = {
+    it.result = ""
 }
 
 internal val hookFalse: (XC_MethodHook.MethodHookParam) -> Unit = {

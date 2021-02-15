@@ -16,22 +16,31 @@
  * along with this software.  If not, see
  * <https://www.gnu.org/licenses/>.
  */
-package me.nextalone.hook.testhook
+package ltd.nextalone.hook
 
-import me.nextalone.util.*
+import ltd.nextalone.util.hookBefore
+import ltd.nextalone.util.hookFalse
+import ltd.nextalone.util.methods
+import me.singleneuron.qn_kernel.data.hostInfo
+import me.singleneuron.qn_kernel.tlb.ConfigTable
+import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.Utils
+import java.lang.reflect.Method
 
-object TestCommonDelayable : CommonDelayableHook("na_test_base_delayable_kt") {
+object HideTotalNumber : CommonDelayableHook("na_hide_total_number") {
 
     override fun initOnce(): Boolean {
         return try {
-            val hookSimpleName = this::class.java.simpleName
-            "".method.hookBefore(this) {
-                logBefore(hookSimpleName)
+            var className = "com.tencent.mobileqq.activity.aio.core.TroopChatPie"
+            if (hostInfo.versionCode <= QQVersion.QQ_8_4_8) {
+                className = "com.tencent.mobileqq.activity.aio.rebuild.TroopChatPie"
             }
-            "".method.hookAfter(this) {
-                logAfter(hookSimpleName)
+            for (m: Method in className.methods) {
+                val argt = m.parameterTypes
+                if (m.name == ConfigTable.getConfig(HideTotalNumber::class.simpleName) && argt.isEmpty()) {
+                    m.hookBefore(this, hookFalse)
+                }
             }
             true
         } catch (t: Throwable) {

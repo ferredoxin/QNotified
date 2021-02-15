@@ -23,7 +23,7 @@ package cn.lliiooll.hook
 import cn.lliiooll.msg.MessageReceiver
 import cn.lliiooll.util.MsgRecordUtil
 import de.robv.android.xposed.XposedHelpers
-import me.nextalone.hook.base.MultiItemDelayableHook
+import ltd.nextalone.base.MultiItemDelayableHook
 import me.singleneuron.data.MsgRecordData
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion

@@ -16,13 +16,13 @@
  * along with this software.  If not, see
  * <https://www.gnu.org/licenses/>.
  */
-package me.nextalone.hook
+package ltd.nextalone.hook
 
 import de.robv.android.xposed.XC_MethodHook
-import me.nextalone.hook.base.MultiItemDelayableHook
-import me.nextalone.util.clazz
-import me.nextalone.util.hookBefore
-import me.nextalone.util.method
+import ltd.nextalone.base.MultiItemDelayableHook
+import ltd.nextalone.util.clazz
+import ltd.nextalone.util.hookBefore
+import ltd.nextalone.util.method
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.util.Utils
@@ -48,6 +48,7 @@ object SimplifyChatLongItem : MultiItemDelayableHook("na_simplify_chat_long_item
                     "L$customMenu;->a(ILjava/lang/String;I)V"
                         .method
                         .hookBefore(this@SimplifyChatLongItem, callback)
+                    return@forEach
                 }
             }
         }

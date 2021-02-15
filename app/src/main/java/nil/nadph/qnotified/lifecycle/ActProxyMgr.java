@@ -19,13 +19,13 @@
 package nil.nadph.qnotified.lifecycle;
 
 import androidx.annotation.NonNull;
-
 import org.intellij.lang.annotations.MagicConstant;
 
 /**
  * This class is used to cope with Activity
  */
 public class ActProxyMgr {
+
     public static final String STUB_DEFAULT_ACTIVITY = "com.tencent.mobileqq.activity.photo.CameraPreviewActivity";
     public static final String STUB_TRANSLUCENT_ACTIVITY = "cooperation.qlink.QlinkStandardDialogActivity";
     @MagicConstant
@@ -46,7 +46,9 @@ public class ActProxyMgr {
             || className.startsWith("me.zpp0196.qqpurify.activity.")
             || className.startsWith("me.singleneuron.")
             || className.startsWith("me.ketal.activity.")
-            || className.startsWith("com.rymmmmm.activity.");
+            || className.startsWith("com.rymmmmm.activity.")
+            || className.startsWith("cn.lliiooll.activity.")
+            || className.startsWith("ltd.nextalone.activity.");
     }
 
     public static boolean isResourceInjectionRequired(@NonNull String className) {
