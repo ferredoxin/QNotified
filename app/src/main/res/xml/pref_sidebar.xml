@@ -31,11 +31,4 @@
                 android:key="SimplifyQQSettingMe!"
                 android:title="隐藏侧滑栏列表"/>
     </PreferenceCategory>
-    <PreferenceCategory android:title="设置界面">
-        <MultiSelectListPreference
-                android:entries="@array/sidebar_setting_list_titles"
-                android:entryValues="@array/sidebar_setting_list_titles"
-                android:key="hideSettingItems!"
-                android:title="隐藏设置列表"/>
-    </PreferenceCategory>
 </PreferenceScreen>
