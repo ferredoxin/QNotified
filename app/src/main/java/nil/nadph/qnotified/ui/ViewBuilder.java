@@ -32,6 +32,7 @@ import android.widget.*;
 
 import androidx.core.view.ViewCompat;
 
+import cc.ioctl.H;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.MainHook;
@@ -43,6 +44,7 @@ import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.ui.widget.Switch;
 import nil.nadph.qnotified.util.NonUiThread;
+import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
 import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
@@ -513,10 +515,12 @@ public class ViewBuilder {
 
     public static RelativeLayout newListItemButtonIfValid(Context ctx, CharSequence title, CharSequence desc,
         CharSequence value, BaseDelayableHook hook, Class<?> activity) {
-        if (!hook.isValid()) {
-            return null;
+        View.OnClickListener listener;
+        if (hook.isValid()) {
+            listener = clickToProxyActAction(activity);
+        } else {
+            listener = (v -> Toasts.error(v.getContext(), "此功能暂不支持当前版本" + H.getAppName()));
         }
-        View.OnClickListener listener = clickToProxyActAction(activity);
         RelativeLayout root = new IsolatedStateRelativeLayout(ctx);
         root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx, CONSTANT_LIST_ITEM_HEIGHT_DP)));
         ViewCompat.setBackground(root, ResUtils.getListItemBackground());
@@ -587,7 +591,7 @@ public class ViewBuilder {
     public static RelativeLayout newListItemButtonIfValid(Context ctx, CharSequence title, CharSequence desc,
         CharSequence value, BaseDelayableHook hook, View.OnClickListener listener) {
         if (!hook.isValid()) {
-            return null;
+            listener = (v -> Toasts.error(v.getContext(), "此功能暂不支持当前版本" + H.getAppName()));
         }
         RelativeLayout root = new IsolatedStateRelativeLayout(ctx);
         root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx, CONSTANT_LIST_ITEM_HEIGHT_DP)));
