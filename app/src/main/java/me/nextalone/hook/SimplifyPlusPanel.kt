@@ -38,7 +38,7 @@ import nil.nadph.qnotified.util.Utils
 
 object SimplifyPlusPanel : CommonDelayableHook("__NOT_USED__") {
     private const val na_simplify_plus_panel = "na_simplify_plus_panel"
-    private val allItems = "语音通话|视频通话|一起派对|戳一戳|视频包厢|红包|位置|文件|一起听歌|分享屏幕|收藏|热图|一起玩|涂鸦|转账|名片|送礼物|腾讯文档|厘米秀|一起K歌".split("|")
+    private val allItems = "图片|拍摄|语音通话|视频通话|一起派对|戳一戳|视频包厢|红包|位置|文件|一起听歌|分享屏幕|收藏|热图|一起玩|涂鸦|转账|名片|送礼物|腾讯文档|厘米秀|一起K歌".split("|")
     private const val defaultItems = "语音通话|视频通话|位置|文件"
     private var activeItems
         get() = ConfigManager.getDefaultConfig().getStringOrDefault(na_simplify_plus_panel, defaultItems).split("|").toMutableList()
@@ -78,7 +78,9 @@ object SimplifyPlusPanel : CommonDelayableHook("__NOT_USED__") {
                 val item = list.next()
                 if (item != null) {
                     val str = (item.javaClass.getDeclaredField("a").get(item) as String).toString()
-                    if (!activeItems.contains(str)) {
+                    if (activeItems.all { string ->
+                            string !in str
+                        }) {
                         list.remove()
                     }
                 }
