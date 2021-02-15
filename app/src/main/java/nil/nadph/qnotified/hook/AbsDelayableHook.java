@@ -20,6 +20,8 @@ package nil.nadph.qnotified.hook;
 
 import androidx.annotation.NonNull;
 
+import cn.lliiooll.hook.AntiMessage;
+import cn.lliiooll.hook.MessageInterception;
 import com.rymmmmm.hook.BaseApk;
 import com.rymmmmm.hook.CustomDeviceModel;
 import com.rymmmmm.hook.CustomMsgTimeFormat;
@@ -222,6 +224,8 @@ public abstract class AbsDelayableHook implements SwitchConfigItem {
                 HideChatVipImage.INSTANCE,
                 SimplifyQQSettings.INSTANCE,
                 SimplifyPlusPanel.INSTANCE,
+                MessageInterception.INSTANCE,
+                AntiMessage.INSTANCE,
             };
         }
         return sAllHooks;

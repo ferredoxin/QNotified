@@ -34,6 +34,7 @@ import android.widget.*;
 import androidx.core.text.HtmlCompat;
 import androidx.core.view.ViewCompat;
 
+import cn.lliiooll.hook.AntiMessage;
 import com.rymmmmm.hook.RemoveMiniProgramAd;
 import com.tencent.mobileqq.widget.BounceScrollView;
 
@@ -229,6 +230,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         ll.addView(newListItemHookSwitchInit(this, "屏蔽QQ空间滑动相机", null, DisableQzoneSlideCamera.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "回执消息文本化", null, SimpleReceiptMessage.INSTANCE));
         ll.addView(newListItemButtonIfValid(this, "精简聊天气泡长按菜单", null, null, SimplifyChatLongItem.INSTANCE, SimplifyChatLongItem.INSTANCE.simplifyChatLongItemClick()));
+        ll.addView(newListItemButton(this, "屏蔽指定类型消息", null, null, AntiMessage.INSTANCE.antiMessageItemClick()));
         ll.addView(newListItemButton(this, "精简加号菜单", null, null, SimplifyPlusPanel.INSTANCE.simplifyPlusPanelClick()));
         ll.addView(newListItemButton(this, "精简设置菜单", null, null, SimplifyQQSettings.INSTANCE.simplifyQQSettingsClick()));
         ll.addView(newListItemHookSwitchInit(this, "批量撤回消息", "多选消息后撤回", MultiActionHook.INSTANCE));
@@ -329,15 +331,15 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
             getString(R.string.res_inject_success);
         } catch (Resources.NotFoundException e) {
             CustomDialog.createFailsafe(this).setTitle("FATAL Exception").setCancelable(true).setPositiveButton(getString(android.R.string.yes), null)
-                    .setNeutralButton("重启" + HostInformationProviderKt.getHostInfo().getHostName(), (dialog, which) -> {
-                        try {
-                            android.os.Process.killProcess(android.os.Process.myPid());
-                        } catch (Throwable e1) {
-                            log(e1);
-                        }
-                    })
-                    .setMessage("Resources injection failure!\nApplication may misbehave.\n" + e.toString()
-                            + "\n如果您刚刚更新了插件, 您可能需要重启" + HostInformationProviderKt.getHostInfo().getHostName() + "(太/无极阴,应用转生,天鉴等虚拟框架)或者重启手机(EdXp, Xposed, 太极阳), 如果重启手机后问题仍然存在, 请向作者反馈, 并提供详细日志").show();
+                .setNeutralButton("重启" + HostInformationProviderKt.getHostInfo().getHostName(), (dialog, which) -> {
+                    try {
+                        android.os.Process.killProcess(android.os.Process.myPid());
+                    } catch (Throwable e1) {
+                        log(e1);
+                    }
+                })
+                .setMessage("Resources injection failure!\nApplication may misbehave.\n" + e.toString()
+                    + "\n如果您刚刚更新了插件, 您可能需要重启" + HostInformationProviderKt.getHostInfo().getHostName() + "(太/无极阴,应用转生,天鉴等虚拟框架)或者重启手机(EdXp, Xposed, 太极阳), 如果重启手机后问题仍然存在, 请向作者反馈, 并提供详细日志").show();
         }
         return true;
     }
@@ -538,8 +540,8 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
                     recv.setEnabled(false);
                     updateRecvRedirectStatus();
                 }
-                })
-                .create();
+            })
+            .create();
         alertDialog.show();
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
