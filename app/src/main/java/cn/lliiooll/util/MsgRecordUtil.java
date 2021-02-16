@@ -20,13 +20,10 @@
 
 package cn.lliiooll.util;
 
-import nil.nadph.qnotified.util.Toasts;
-import nil.nadph.qnotified.util.Utils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class MsgRecordUtil {
 
@@ -247,7 +244,7 @@ public class MsgRecordUtil {
         put("MSG_TYPE_MEDIA_PIC", "图片消息");
         put("MSG_TYPE_MEDIA_PTT", "语音消息");
         put("MSG_TYPE_MEDIA_FILE", "文件");
-        put("MSG_TYPE_MEDIA_MARKFACE", "表情消息[并非\\\"我的收藏\\\" 而是从QQ表情商店下载的表情]");
+        put("MSG_TYPE_MEDIA_MARKFACE", "表情消息[从QQ表情商店下载的表情]");
         put("MSG_TYPE_MEDIA_VIDEO", "QQ语音/视频通话");
         put("MSG_TYPE_STRUCT_MSG", "卡片消息[分享/签到/转发消息等]");
         put("MSG_TYPE_ARK_APP", "小程序分享消息");
@@ -284,9 +281,9 @@ public class MsgRecordUtil {
      */
     @NotNull
     public static String getDesc(@Nullable String s) {
-        Toasts.info(Utils.getQQAppInterface().getApplication(), s);
+//        Toasts.info(Utils.getQQAppInterface().getApplication(), s);
         if (DESC.containsKey(s)) {
-            Toasts.info(Utils.getQQAppInterface().getApplication(), DESC.get(s));
+//            Toasts.info(Utils.getQQAppInterface().getApplication(), DESC.get(s));
             return DESC.get(s);
         }
         return s;

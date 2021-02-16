@@ -43,7 +43,7 @@ abstract class MultiItemDelayableHook constructor(keyName: String, val listenerT
             putValue(itemsConfigKeys, if (ret.isEmpty()) ret else ret.substring(1))
         }
 
-    fun listener() = View.OnClickListener {
+    open fun listener() = View.OnClickListener {
         try {
             val cache = activeItems.toMutableList()
             val ctx = it.context
@@ -68,7 +68,7 @@ abstract class MultiItemDelayableHook constructor(keyName: String, val listenerT
 
     override fun isEnabled(): Boolean = activeItems.isNotEmpty()
 
-    private fun getBoolAry(): BooleanArray {
+    internal open fun getBoolAry(): BooleanArray {
         val ret = BooleanArray(allItems.size)
         for ((i, item) in allItems.withIndex()) {
             ret[i] = activeItems.contains(item)
