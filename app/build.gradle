@@ -81,6 +81,9 @@ android {
 dependencies {
     compileOnly fileTree(include: ['*.jar'], dir: 'lib')
     compileOnly project(":stub")
+    implementation project(":annotations")
+    compileOnly project(":compiler")
+    annotationProcessor project(":compiler")
     implementation 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2'
     implementation 'com.jaredrummler:colorpicker:1.1.0'
     implementation 'de.psdev.licensesdialog:licensesdialog:2.1.0'
@@ -117,7 +120,7 @@ def _execDexTail = { String dexPath ->
     byte[] time = cl.loadClass("cc.ioctl.dextail.HexUtils").getMethod("getTimeAsByteArray").invoke(null) as byte[];
     PrintStream stdout = System.out;
     boolean result = cl.loadClass("cc.ioctl.dextail.Main").getMethod("checkAndUpdateTail", String.class, byte[].class, boolean.class, PrintStream.class)
-            .invoke(null, dexPath, time, true, stdout);
+        .invoke(null, dexPath, time, true, stdout);
     return result;
 }
 
@@ -253,8 +256,8 @@ tasks.whenTaskAdded { t ->
         dexTailDebug.mustRunAfter(t)
     }
     if (t.name == 'dexBuilderDebug' || t.name == 'mergeExtDexDebug'
-            || t.name == 'mergeLibDexDebug' || t.name == 'mergeProjectDexDebug'
-            || t.name == 'shrinkDebugRes' || t.name.startsWith('minifyDebug')) {
+        || t.name == 'mergeLibDexDebug' || t.name == 'mergeProjectDexDebug'
+        || t.name == 'shrinkDebugRes' || t.name.startsWith('minifyDebug')) {
         dexTailDebug.mustRunAfter(t)
     }
     if (t.name == 'assembleRelease') {
@@ -267,8 +270,8 @@ tasks.whenTaskAdded { t ->
         dexTailRelease.mustRunAfter(t)
     }
     if (t.name == 'dexBuilderRelease' || t.name == 'mergeExtDexRelease'
-            || t.name == 'mergeLibDexRelease' || t.name == 'mergeProjectDexRelease'
-            || t.name == 'shrinkReleaseRes' || t.name.startsWith('minifyRelease')) {
+        || t.name == 'mergeLibDexRelease' || t.name == 'mergeProjectDexRelease'
+        || t.name == 'shrinkReleaseRes' || t.name.startsWith('minifyRelease')) {
         dexTailRelease.mustRunAfter(t)
     }
 }

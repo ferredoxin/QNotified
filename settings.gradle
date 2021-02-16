@@ -1,2 +1,5 @@
-include ':app', ':stub'
+include ':app', ':stub', ':annotations', ':compiler'
 rootProject.name = 'QNotified'
+include 'annotations'
+include 'compiler'
+
