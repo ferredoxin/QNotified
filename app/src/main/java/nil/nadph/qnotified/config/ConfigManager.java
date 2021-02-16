@@ -18,6 +18,8 @@
  */
 package nil.nadph.qnotified.config;
 
+import android.content.Intent;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -115,7 +117,11 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
             return false;
         }
         try {
-            return ((Boolean) config.get(key)).booleanValue();
+            Boolean z = (Boolean) config.get(key);
+            if (z == null) {
+                return false;
+            }
+            return z;
         } catch (ClassCastException e) {
             return false;
         }
@@ -130,7 +136,11 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
             return def;
         }
         try {
-            return ((Boolean) config.get(key)).booleanValue();
+            Boolean z = (Boolean) config.get(key);
+            if (z == null) {
+                return def;
+            }
+            return z;
         } catch (ClassCastException e) {
             return def;
         }
@@ -145,7 +155,11 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
             return def;
         }
         try {
-            return ((Integer) config.get(key)).intValue();
+            Integer z = (Integer) config.get(key);
+            if (z == null) {
+                return def;
+            }
+            return z;
         } catch (ClassCastException e) {
             return def;
         }
@@ -338,7 +352,11 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
             return i;
         }
         try {
-            return ((Long) config.get(key)).longValue();
+            Long z = (Long) config.get(key);
+            if (z == null) {
+                return i;
+            }
+            return z;
         } catch (ClassCastException e) {
             return i;
         }
