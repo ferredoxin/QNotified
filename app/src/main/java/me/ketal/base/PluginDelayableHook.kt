@@ -18,7 +18,7 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-package me.ketal.hook
+package me.ketal.base
 
 import me.ketal.util.HookUtil.getMethod
 import me.singleneuron.qn_kernel.data.hostInfo

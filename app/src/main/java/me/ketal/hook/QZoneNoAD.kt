@@ -21,10 +21,10 @@
 package me.ketal.hook
 
 import ltd.nextalone.util.hookBefore
+import me.ketal.base.PluginDelayableHook
 import me.ketal.util.HookUtil.getField
 import me.ketal.util.HookUtil.getMethod
 import me.ketal.util.TIMVersion
-import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.qn_kernel.data.requireMinVersion
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.util.ReflexUtil
