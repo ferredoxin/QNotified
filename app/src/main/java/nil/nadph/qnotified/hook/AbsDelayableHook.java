@@ -77,6 +77,7 @@ import cc.ioctl.hook.VasProfileAntiCrash;
 import me.ketal.hook.HideAssistantRemoveTips;
 import me.ketal.hook.LeftSwipeReplyHook;
 import me.ketal.hook.MultiActionHook;
+import me.ketal.hook.QZoneNoAD;
 import me.ketal.hook.SendFavoriteHook;
 import me.ketal.hook.SortAtPanel;
 import me.kyuubiran.hook.AutoMosaicName;
@@ -226,6 +227,7 @@ public abstract class AbsDelayableHook implements SwitchConfigItem {
                 SimplifyPlusPanel.INSTANCE,
                 MessageInterception.INSTANCE,
                 AntiMessage.INSTANCE,
+                QZoneNoAD.INSTANCE,
             };
         }
         return sAllHooks;

@@ -22,6 +22,7 @@ package me.ketal.hook
 
 import me.ketal.util.HookUtil.getMethod
 import me.singleneuron.qn_kernel.data.hostInfo
+import nil.nadph.qnotified.BuildConfig
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.Utils
@@ -37,7 +38,9 @@ abstract  class PluginDelayableHook(keyName: String) : CommonDelayableHook(keyNa
             ?.invoke(null, hostInfo.application, pluginID) as ClassLoader
         startHook(classLoader)
     } catch (t: Throwable) {
-        Utils.log(t)
+        if (BuildConfig.DEBUG) {
+            Utils.log(t)
+        }
         false
     }
 }
