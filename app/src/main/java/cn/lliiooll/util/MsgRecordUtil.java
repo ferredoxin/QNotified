@@ -28,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 public class MsgRecordUtil {
 
     public static final BiMap<String, Integer> MSG = new HashBiMap<String, Integer>() {{
+        put("@全体消息", 0);
         put("EXTRA_STREAM_PTT_FLAG", 10001);
         put("MIN_VERSION_CODE_SUPPORT_IMAGE_MD5_TRANS", 2);
         put("MSG_TYPE_0X7F", -2006);

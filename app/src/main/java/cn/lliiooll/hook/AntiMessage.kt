@@ -39,6 +39,9 @@ object AntiMessage : MultiItemDelayableHook("qn_anti_message_items", "屏蔽"), 
         if (items.contains(data?.msgType)) {
             XposedHelpers.setBooleanField(data?.msgRecord, "isread", true)
             return true
+        } else if (items.contains(0) and (data?.msg?.contains("@全体成员") == true)) {
+            XposedHelpers.setBooleanField(data?.msgRecord, "isread", true)
+            return true
         }
         return false
     }
