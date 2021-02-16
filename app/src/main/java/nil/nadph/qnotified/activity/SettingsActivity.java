@@ -233,9 +233,9 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         ll.addView(newListItemButtonIfValid(this, "精简加号菜单", null, null, SimplifyPlusPanel.INSTANCE));
         ll.addView(newListItemButtonIfValid(this, "精简设置菜单", null, null, SimplifyQQSettings.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "批量撤回消息", "多选消息后撤回", MultiActionHook.INSTANCE));
-        ll.addView(newListItemButtonIfValid(this, "修改消息左滑动作", "", null, LeftSwipeReplyHook.INSTANCE, ModifyLeftSwipeReplyActivity.class));
+        ll.addView(newListItemButtonIfValid(this, "修改消息左滑动作", null, null, LeftSwipeReplyHook.INSTANCE, ModifyLeftSwipeReplyActivity.class));
         ll.addView(newListItemConfigSwitchIfValid(this, "修改@界面排序", "排序由群主管理员至正常人员", SortAtPanel.INSTANCE));
-        ll.addView(newListItemConfigSwitchIfValid(this, "发送收藏消息添加分组", "", SendFavoriteHook.INSTANCE));
+        ll.addView(newListItemConfigSwitchIfValid(this, "发送收藏消息添加分组", null, SendFavoriteHook.INSTANCE));
         ll.addView(subtitle(this, "好友列表"));
         ll.addView(newListItemButton(this, "打开资料卡", "打开指定用户的资料卡", null, new View.OnClickListener() {
             @Override
