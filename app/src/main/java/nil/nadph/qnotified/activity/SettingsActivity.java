@@ -105,7 +105,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
     private static final int R_ID_BTN_FILE_RECV = 0x300AFF91;
     private static final String qn_enable_fancy_rgb = "qn_enable_fancy_rgb";
 
-    private TextView __tv_muted_atall, __tv_muted_redpacket, __tv_fake_bat_status, __recv_status, __recv_desc, __jmp_ctl_cnt;
+    private TextView __tv_fake_bat_status, __recv_status, __recv_desc, __jmp_ctl_cnt;
 
     @Override
     public boolean doOnCreate(Bundle bundle) {
@@ -354,14 +354,6 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         super.doOnResume();
         ConfigManager cfg = ConfigManager.getDefaultConfig();//改这里的话可能会引发其他问题，所以只把红包和全体改了
         rgbEnabled = cfg.getBooleanOrFalse(qn_enable_fancy_rgb);
-        String str = ExfriendManager.getCurrent().getConfig().getString(ConfigItems.qn_muted_at_all);
-        int n = 0;
-        if (str != null && str.length() > 4) n = str.split(",").length;
-        __tv_muted_atall.setText(n + "个群");
-        str = ExfriendManager.getCurrent().getConfig().getString(ConfigItems.qn_muted_red_packet);
-        n = 0;
-        if (str != null && str.length() > 4) n = str.split(",").length;
-        __tv_muted_redpacket.setText(n + "个群");
         if (__tv_fake_bat_status != null) {
             FakeBatteryHook bat = FakeBatteryHook.get();
             if (bat.isEnabled()) {
