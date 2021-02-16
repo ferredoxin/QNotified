@@ -10,7 +10,8 @@ import java.lang.reflect.Method
 
 object HookUtil {
 
-    internal fun String.findClass(): Class<*>? = Initiator.load(this)
+    internal fun String.findClass(classLoader: ClassLoader, init: Boolean = false): Class<*> =
+        Class.forName(this, init, classLoader)
 
     internal fun String.getMethod(classLoader: ClassLoader = Initiator.getHostClassLoader()): Method? =
         DexMethodDescriptor(this).getMethodInstance(classLoader)
