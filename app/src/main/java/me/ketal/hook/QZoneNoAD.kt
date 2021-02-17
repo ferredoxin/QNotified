@@ -36,7 +36,6 @@ object QZoneNoAD : PluginDelayableHook("ketal_qzone_hook") {
     override val pluginID = "qzone_plugin.apk"
 
     override fun startHook(classLoader: ClassLoader) = try {
-        Utils.logd("qzone hook start")
         "Lcom/qzone/module/feedcomponent/ui/FeedViewBuilder;->setFeedViewData(Landroid/content/Context;Lcom/qzone/proxy/feedcomponent/ui/AbsFeedView;Lcom/qzone/proxy/feedcomponent/model/BusinessFeedData;ZZ)V"
             .getMethod(classLoader)
             ?.hookBefore(this) {

@@ -78,6 +78,7 @@ import ltd.nextalone.hook.ChatWordsCount;
 import me.ketal.hook.HideAssistantRemoveTips;
 import me.ketal.hook.LeftSwipeReplyHook;
 import me.ketal.hook.MultiActionHook;
+import me.ketal.hook.QWalletNoAD;
 import me.ketal.hook.QZoneNoAD;
 import me.ketal.hook.SendFavoriteHook;
 import me.ketal.hook.SortAtPanel;
@@ -230,6 +231,7 @@ public abstract class AbsDelayableHook implements SwitchConfigItem {
                 AntiMessage.INSTANCE,
                 QZoneNoAD.INSTANCE,
                 ChatWordsCount.INSTANCE,
+                QWalletNoAD.INSTANCE,
             };
         }
         return sAllHooks;
