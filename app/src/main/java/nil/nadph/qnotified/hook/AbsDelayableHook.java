@@ -74,6 +74,7 @@ import cc.ioctl.hook.ScriptEventHook;
 import cc.ioctl.hook.SettingEntryHook;
 import cc.ioctl.hook.ShowPicGagHook;
 import cc.ioctl.hook.VasProfileAntiCrash;
+import ltd.nextalone.hook.ChatWordsCount;
 import me.ketal.hook.HideAssistantRemoveTips;
 import me.ketal.hook.LeftSwipeReplyHook;
 import me.ketal.hook.MultiActionHook;
@@ -228,6 +229,7 @@ public abstract class AbsDelayableHook implements SwitchConfigItem {
                 MessageInterception.INSTANCE,
                 AntiMessage.INSTANCE,
                 QZoneNoAD.INSTANCE,
+                ChatWordsCount.INSTANCE,
             };
         }
         return sAllHooks;
