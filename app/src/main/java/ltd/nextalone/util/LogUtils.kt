@@ -25,7 +25,7 @@ internal fun logd(msg: String) {
 }
 
 internal fun logThrowable(msg: Throwable) {
-    logd("Throwable: $msg")
+    logd("Throwable: ${msg.stackTraceToString()}")
 }
 
 internal fun logDetail(info: String, msg: String = "") {

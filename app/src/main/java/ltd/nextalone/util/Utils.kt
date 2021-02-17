@@ -1,5 +1,7 @@
 package ltd.nextalone.util
 
+import android.content.SharedPreferences
+import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -8,16 +10,30 @@ import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
+import me.kyuubiran.util.getDefaultCfg
+import me.kyuubiran.util.getExFriendCfg
+import me.singleneuron.qn_kernel.data.hostInfo
+import nil.nadph.qnotified.SyncUtils
+import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.hook.BaseDelayableHook
-import nil.nadph.qnotified.util.DexMethodDescriptor
-import nil.nadph.qnotified.util.Initiator
-import nil.nadph.qnotified.util.LicenseStatus
+import nil.nadph.qnotified.util.*
 import java.lang.reflect.Member
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
+import java.text.DateFormat
+import java.util.*
 
 internal val linearParams = LinearLayout.LayoutParams(0, 0)
 internal val relativeParams = RelativeLayout.LayoutParams(0, 0)
+internal val isSimpleUi by lazy {
+    try {
+        val sharedPreferences = "Lcom/tencent/mobileqq/theme/ThemeUtil;->getUinThemePreferences(Lmqq/app/AppRuntime;)Landroid/content/SharedPreferences;".method.invoke(null, Utils.getAppRuntime()) as SharedPreferences
+        sharedPreferences.getBoolean("key_simple_ui_switch", false)
+    } catch (t: Throwable) {
+        false
+    }
+}
+
 internal val String.clazz: Class<*>
     get() = Initiator.load(this)
 
@@ -36,13 +52,6 @@ internal val Member.isPrivate: Boolean
 internal val Member.isPublic: Boolean
     get() = Modifier.isPublic(this.modifiers)
 
-internal fun Member.hook(callback: XC_MethodHook) = try {
-    XposedBridge.hookMethod(this, callback)
-} catch (e: Throwable) {
-    logThrowable(e)
-    null
-}
-
 internal val hookNull: (XC_MethodHook.MethodHookParam) -> Unit = {
     it.result = null
 }
@@ -59,6 +68,16 @@ internal val hookTrue: (XC_MethodHook.MethodHookParam) -> Unit = {
     it.result = true
 }
 
+internal fun Any?.get(objName: String, clz: Class<*>? = null): Any? {
+    return ReflexUtil.iget_object_or_null(this, objName, clz)
+}
+
+internal fun Member.hook(callback: XC_MethodHook) = try {
+    XposedBridge.hookMethod(this, callback)
+} catch (e: Throwable) {
+    logThrowable(e)
+    null
+}
 
 internal inline fun Member.hookBefore(baseHook: BaseDelayableHook, crossinline hooker: (XC_MethodHook.MethodHookParam) -> Unit) = hook(object : XC_MethodHook() {
     override fun beforeHookedMethod(param: MethodHookParam) {
@@ -217,7 +236,6 @@ fun View.setViewZeroSize() {
     this.layoutParams.width = 0
 }
 
-
 fun View.hide() {
     this.visibility = View.GONE
     val viewGroup = this.parent as ViewGroup
@@ -226,4 +244,37 @@ fun View.hide() {
     } else if (viewGroup is RelativeLayout) {
         this.layoutParams = relativeParams
     }
+}
+
+fun <T : View> T.qqId(name: String) = this.resources.getIdentifier(name, "id", Utils.PACKAGE_NAME_QQ)
+
+internal fun <T : View?> View.findQQView(name: String): T? {
+    this.let {
+        return it.findViewById<T>(it.qqId(name))
+    }
+}
+
+internal val Date.today: String
+    get() = DateFormat.getDateInstance().format(this)
+
+internal fun putValue(keyName: String, obj: Any, mgr: ConfigManager) {
+    try {
+        mgr.allConfig[keyName] = obj
+        mgr.save()
+    } catch (e: Exception) {
+        Utils.log(e)
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            Toasts.error(hostInfo.application, e.toString() + "")
+        } else {
+            SyncUtils.post { Toasts.error(hostInfo.application, e.toString() + "") }
+        }
+    }
+}
+
+internal fun putDefault(keyName: String, obj: Any) {
+    putValue(keyName, obj, getDefaultCfg())
+}
+
+internal fun putExFriend(keyName: String, obj: Any) {
+    putValue(keyName, obj, getExFriendCfg())
 }
