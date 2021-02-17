@@ -138,7 +138,7 @@ object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt") {
         }
     }
 
-    override fun isValid(): Boolean = requireMinQQVersion(QQVersion.QQ_8_5_5)
+    override fun isValid(): Boolean = requireMinQQVersion(QQVersion.QQ_8_5_0)
 
     fun showChatWordsCountDialog(activity: Context) {
         val dialog = CustomDialog.createFailsafe(activity)
