@@ -18,9 +18,8 @@
  */
 package me.ketal.hook
 
+import ltd.nextalone.util.replaceNull
 import me.ketal.util.HookUtil.getMethod
-import ltd.nextalone.util.hookBefore
-import ltd.nextalone.util.hookNull
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.Utils
 
@@ -29,7 +28,7 @@ object HideAssistantRemoveTips: CommonDelayableHook("ketal_hide_assistant_remove
         return try {
             "Lcom/tencent/mobileqq/activity/ChatActivityUtils;->a(Landroid/content/Context;Ljava/lang/String;Landroid/view/View\$OnClickListener;Landroid/view/View\$OnClickListener;)Landroid/view/View;"
                 .getMethod()
-                ?.hookBefore(this, hookNull)
+                ?.replaceNull(this)
             true
         } catch (e: Exception) {
             Utils.log(e)

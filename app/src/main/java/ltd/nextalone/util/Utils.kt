@@ -10,6 +10,8 @@ import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
+import ltd.nextalone.bridge.NAMethodHook
+import ltd.nextalone.bridge.NAMethodReplacement
 import me.kyuubiran.util.getDefaultCfg
 import me.kyuubiran.util.getExFriendCfg
 import me.singleneuron.qn_kernel.data.hostInfo
@@ -52,58 +54,52 @@ internal val Member.isPrivate: Boolean
 internal val Member.isPublic: Boolean
     get() = Modifier.isPublic(this.modifiers)
 
-internal val hookNull: (XC_MethodHook.MethodHookParam) -> Unit = {
-    it.result = null
+internal fun Member.replaceNull(baseHook: BaseDelayableHook) = this.replace(baseHook) {
+    null
 }
 
-internal val hookEmpty: (XC_MethodHook.MethodHookParam) -> Unit = {
-    it.result = ""
+internal fun Member.replaceTrue(baseHook: BaseDelayableHook) = this.replace(baseHook) {
+    true
 }
 
-internal val hookFalse: (XC_MethodHook.MethodHookParam) -> Unit = {
-    it.result = false
+internal fun Member.replaceFalse(baseHook: BaseDelayableHook) = this.replace(baseHook) {
+    false
 }
 
-internal val hookTrue: (XC_MethodHook.MethodHookParam) -> Unit = {
-    it.result = true
+internal fun Member.replaceEmpty(baseHook: BaseDelayableHook) = this.replace(baseHook) {
+    ""
 }
 
 internal fun Any?.get(objName: String, clz: Class<*>? = null): Any? {
     return ReflexUtil.iget_object_or_null(this, objName, clz)
 }
 
-internal fun Member.hook(callback: XC_MethodHook) = try {
+internal fun Member.hook(callback: NAMethodHook) = try {
     XposedBridge.hookMethod(this, callback)
 } catch (e: Throwable) {
     logThrowable(e)
     null
 }
 
-internal inline fun Member.hookBefore(baseHook: BaseDelayableHook, crossinline hooker: (XC_MethodHook.MethodHookParam) -> Unit) = hook(object : XC_MethodHook() {
-    override fun beforeHookedMethod(param: MethodHookParam) {
-        try {
-            if (!baseHook.isEnabled or LicenseStatus.sDisableCommonHooks) return
-            hooker(param)
-        } catch (e: Throwable) {
-            logThrowable(e)
-        }
+internal inline fun Member.hookBefore(baseHook: BaseDelayableHook, crossinline hooker: (XC_MethodHook.MethodHookParam) -> Unit) = hook(object : NAMethodHook(baseHook) {
+    override fun beforeMethod(param: MethodHookParam?) = try {
+        hooker(param!!)
+    } catch (e: Throwable) {
+        logThrowable(e)
     }
 })
 
-internal inline fun Member.hookAfter(baseHook: BaseDelayableHook, crossinline hooker: (XC_MethodHook.MethodHookParam) -> Unit) = hook(object : XC_MethodHook() {
-    override fun afterHookedMethod(param: MethodHookParam) {
-        try {
-            if (!baseHook.isEnabled or LicenseStatus.sDisableCommonHooks) return
-            hooker(param)
-        } catch (e: Throwable) {
-            logThrowable(e)
-        }
+internal inline fun Member.hookAfter(baseHook: BaseDelayableHook, crossinline hooker: (XC_MethodHook.MethodHookParam) -> Unit) = hook(object : NAMethodHook(baseHook) {
+    override fun afterMethod(param: MethodHookParam?) = try {
+        hooker(param!!)
+    } catch (e: Throwable) {
+        logThrowable(e)
     }
 })
 
-internal inline fun Member.replace(crossinline hooker: (XC_MethodHook.MethodHookParam) -> Any?) = hook(object : XC_MethodReplacement() {
-    override fun replaceHookedMethod(param: MethodHookParam) = try {
-        hooker(param)
+internal inline fun Member.replace(baseHook: BaseDelayableHook, crossinline hooker: (XC_MethodHook.MethodHookParam) -> Any?) = hook(object : NAMethodReplacement(baseHook) {
+    override fun replaceMethod(param: MethodHookParam?) = try {
+        hooker(param!!)
     } catch (e: Throwable) {
         logThrowable(e)
         null
@@ -123,26 +119,21 @@ internal fun Class<*>.hook(method: String?, vararg args: Any?) = try {
     null
 }
 
-internal inline fun Class<*>.hookBefore(baseHook: BaseDelayableHook, method: String?, vararg args: Any?, crossinline hooker: (XC_MethodHook.MethodHookParam) -> Unit) = hook(method, *args, object : XC_MethodHook() {
-    override fun beforeHookedMethod(param: MethodHookParam) {
-        try {
-            if (!baseHook.isEnabled or LicenseStatus.sDisableCommonHooks) return
-            hooker(param)
-        } catch (e: Throwable) {
-            logThrowable(e)
-        }
+internal inline fun Class<*>.hookBefore(baseHook: BaseDelayableHook, method: String?, vararg args: Any?, crossinline hooker: (XC_MethodHook.MethodHookParam) -> Unit) = hook(method, *args, object : NAMethodHook(baseHook) {
+    override fun beforeMethod(param: MethodHookParam?) = try {
+        hooker(param!!)
+    } catch (e: Throwable) {
+        logThrowable(e)
     }
 })
 
-internal inline fun Class<*>.hookAfter(baseHook: BaseDelayableHook, method: String?, vararg args: Any?, crossinline hooker: (XC_MethodHook.MethodHookParam) -> Unit) = hook(method, *args, object : XC_MethodHook() {
-    override fun afterHookedMethod(param: MethodHookParam) {
-        try {
-            if (!baseHook.isEnabled or LicenseStatus.sDisableCommonHooks) return
-            hooker(param)
-        } catch (e: Throwable) {
-            logThrowable(e)
-        }
+internal inline fun Class<*>.hookAfter(baseHook: BaseDelayableHook, method: String?, vararg args: Any?, crossinline hooker: (XC_MethodHook.MethodHookParam) -> Unit) = hook(method, *args, object : NAMethodHook(baseHook) {
+    override fun afterMethod(param: MethodHookParam?) = try {
+        hooker(param!!)
+    } catch (e: Throwable) {
+        logThrowable(e)
     }
+
 })
 
 internal inline fun Class<*>.replace(method: String?, vararg args: Any?, crossinline hooker: (XC_MethodHook.MethodHookParam) -> Any?) = hook(method, *args, object : XC_MethodReplacement() {
@@ -167,31 +158,25 @@ internal fun Class<*>.hookAllMethods(methodName: String?, hooker: XC_MethodHook)
     emptySet()
 }
 
-internal inline fun Class<*>.hookBeforeAllMethods(baseHook: BaseDelayableHook, methodName: String?, crossinline hooker: (XC_MethodHook.MethodHookParam) -> Unit): Set<XC_MethodHook.Unhook> = hookAllMethods(methodName, object : XC_MethodHook() {
-    override fun beforeHookedMethod(param: MethodHookParam) {
-        try {
-            if (!baseHook.isEnabled or LicenseStatus.sDisableCommonHooks) return
-            hooker(param)
-        } catch (e: Throwable) {
-            logThrowable(e)
-        }
+internal inline fun Class<*>.hookBeforeAllMethods(baseHook: BaseDelayableHook, methodName: String?, crossinline hooker: (XC_MethodHook.MethodHookParam) -> Unit): Set<XC_MethodHook.Unhook> = hookAllMethods(methodName, object : NAMethodHook(baseHook) {
+    override fun beforeMethod(param: MethodHookParam?) = try {
+        hooker(param!!)
+    } catch (e: Throwable) {
+        logThrowable(e)
     }
 })
 
-internal inline fun Class<*>.hookAfterAllMethods(baseHook: BaseDelayableHook, methodName: String?, crossinline hooker: (XC_MethodHook.MethodHookParam) -> Unit): Set<XC_MethodHook.Unhook> = hookAllMethods(methodName, object : XC_MethodHook() {
-    override fun afterHookedMethod(param: MethodHookParam) {
-        try {
-            if (!baseHook.isEnabled or LicenseStatus.sDisableCommonHooks) return
-            hooker(param)
-        } catch (e: Throwable) {
-            logThrowable(e)
-        }
+internal inline fun Class<*>.hookAfterAllMethods(baseHook: BaseDelayableHook, methodName: String?, crossinline hooker: (XC_MethodHook.MethodHookParam) -> Unit): Set<XC_MethodHook.Unhook> = hookAllMethods(methodName, object : NAMethodHook(baseHook) {
+    override fun afterMethod(param: MethodHookParam?) = try {
+        hooker(param!!)
+    } catch (e: Throwable) {
+        logThrowable(e)
     }
 })
 
 internal inline fun Class<*>.replaceAfterAllMethods(methodName: String?, crossinline hooker: (XC_MethodHook.MethodHookParam) -> Any?): Set<XC_MethodHook.Unhook> = hookAllMethods(methodName, object : XC_MethodReplacement() {
-    override fun replaceHookedMethod(param: MethodHookParam) = try {
-        hooker(param)
+    override fun replaceHookedMethod(param: MethodHookParam?) = try {
+        hooker(param!!)
     } catch (e: Throwable) {
         logThrowable(e)
         null
@@ -212,22 +197,18 @@ internal fun Class<*>.hookAllConstructors(hooker: XC_MethodHook): Set<XC_MethodH
 }
 
 internal inline fun Class<*>.hookBeforeAllConstructors(crossinline hooker: (XC_MethodHook.MethodHookParam) -> Unit) = hookAllConstructors(object : XC_MethodHook() {
-    override fun beforeHookedMethod(param: MethodHookParam) {
-        try {
-            hooker(param)
-        } catch (e: Throwable) {
-            logThrowable(e)
-        }
+    override fun beforeHookedMethod(param: MethodHookParam) = try {
+        hooker(param)
+    } catch (e: Throwable) {
+        logThrowable(e)
     }
 })
 
 internal inline fun Class<*>.hookAfterAllConstructors(crossinline hooker: (XC_MethodHook.MethodHookParam) -> Unit) = hookAllConstructors(object : XC_MethodHook() {
-    override fun afterHookedMethod(param: MethodHookParam) {
-        try {
-            hooker(param)
-        } catch (e: Throwable) {
-            logThrowable(e)
-        }
+    override fun afterHookedMethod(param: MethodHookParam) = try {
+        hooker(param)
+    } catch (e: Throwable) {
+        logThrowable(e)
     }
 })
 

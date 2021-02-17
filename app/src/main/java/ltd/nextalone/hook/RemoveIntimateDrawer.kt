@@ -19,8 +19,7 @@
 package ltd.nextalone.hook
 
 import android.view.View
-import ltd.nextalone.util.hookBefore
-import ltd.nextalone.util.hookNull
+import ltd.nextalone.util.replaceNull
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.DexKit
 import nil.nadph.qnotified.util.Utils
@@ -32,7 +31,7 @@ object RemoveIntimateDrawer : CommonDelayableHook("kr_remove_intimate_drawer") {
         return try {
             for (m: Method in DexKit.doFindClass(DexKit.C_IntimateDrawer)!!.declaredMethods) {
                 if (m.name == "a" && m.returnType == View::class.java) {
-                    m.hookBefore(this, hookNull)
+                    m.replaceNull(this)
                 }
             }
             true
