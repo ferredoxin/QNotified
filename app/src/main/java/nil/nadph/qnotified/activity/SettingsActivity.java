@@ -64,6 +64,7 @@ import cc.ioctl.hook.RoundAvatarHook;
 import cc.ioctl.hook.ShowPicGagHook;
 import ltd.nextalone.hook.ChatWordsCount;
 import me.ketal.activity.ModifyLeftSwipeReplyActivity;
+import me.ketal.hook.FakeBalance;
 import me.ketal.hook.LeftSwipeReplyHook;
 import me.ketal.hook.MultiActionHook;
 import me.ketal.hook.QWalletNoAD;
@@ -231,6 +232,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         ll.addView(newListItemConfigSwitchIfValid(this, "发送收藏消息添加分组", null, SendFavoriteHook.INSTANCE));
         ll.addView(newListItemConfigSwitchIfValid(this, "隐藏空间好友热播和广告", null, QZoneNoAD.INSTANCE));
         ll.addView(newListItemConfigSwitchIfValid(this, "隐藏QQ钱包超值精选", null, QWalletNoAD.INSTANCE));
+        ll.addView(newListItemButton(this, "自定义钱包余额", "仅供娱乐", null, FakeBalance.INSTANCE.listener()));
         ll.addView(subtitle(this, "好友列表"));
         ll.addView(newListItemButton(this, "打开资料卡", "打开指定用户的资料卡", null, new View.OnClickListener() {
             @Override
