@@ -22,6 +22,7 @@ import android.app.Activity
 import android.view.View
 import android.widget.TextView
 import ltd.nextalone.util.hookAfter
+import me.ketal.base.PluginDelayableHook
 import me.ketal.util.HookUtil.findClass
 import me.ketal.util.HookUtil.getMethod
 import me.singleneuron.qn_kernel.data.requireMinQQVersion

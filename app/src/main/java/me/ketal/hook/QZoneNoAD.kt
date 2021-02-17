@@ -21,15 +21,17 @@
 package me.ketal.hook
 
 import ltd.nextalone.util.hookBefore
+import me.ketal.base.PluginDelayableHook
 import me.ketal.util.HookUtil.getField
 import me.ketal.util.HookUtil.getMethod
-import me.singleneuron.qn_kernel.data.requireMinQQVersion
+import me.ketal.util.TIMVersion
+import me.singleneuron.qn_kernel.data.requireMinVersion
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.util.ReflexUtil
 import nil.nadph.qnotified.util.Utils
 
 object QZoneNoAD : PluginDelayableHook("ketal_qzone_hook") {
-    override fun isValid(): Boolean = requireMinQQVersion(QQVersion.QQ_8_0_0)
+    override fun isValid(): Boolean = requireMinVersion(QQVersion.QQ_8_0_0, TIMVersion.TIM_1_0_0)
 
     override val pluginID = "qzone_plugin.apk"
 
