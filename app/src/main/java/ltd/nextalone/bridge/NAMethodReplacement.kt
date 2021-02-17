@@ -39,10 +39,6 @@ abstract class NAMethodReplacement(baseHook: BaseDelayableHook) : NAMethodHook(b
 
     @Throws(Throwable::class)
     override fun afterHookedMethod(param: MethodHookParam) {
-        try {
-        } catch (e: Exception) {
-            Utils.log(e)
-        }
     }
 
     @Throws(Throwable::class)

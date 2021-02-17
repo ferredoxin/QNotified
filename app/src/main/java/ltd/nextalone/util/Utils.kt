@@ -40,7 +40,7 @@ internal val String.clazz: Class<*>
     get() = Initiator.load(this)
 
 internal val String.method: Method
-    get() = DexMethodDescriptor(this).getMethodInstance(Initiator.getHostClassLoader())
+    get() = DexMethodDescriptor(this.replace(".", "/")).getMethodInstance(Initiator.getHostClassLoader())
 
 internal val String.methods: Array<Method>
     get() = Initiator.load(this).declaredMethods
