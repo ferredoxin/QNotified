@@ -22,8 +22,6 @@ package me.ketal.hook
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.DialogInterface
-import android.graphics.Color
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
@@ -71,14 +69,18 @@ object FakeBalance : PluginDelayableHook("ketal_qwallet_fakebalance") {
 
     fun listener() = View.OnClickListener {
         try {
-            val ctx = it.context
             var enableFake = isEnabled
+            val dialog = CustomDialog.createFailsafe(it.context)
+                .setTitle("自定义钱包余额")
+                .setNegativeButton("取消", null)
+                .setPositiveButton("保存", null)
+                .create() as AlertDialog
+            val ctx = dialog.context
             val vg = LayoutInflater.from(ctx).inflate(R.layout.rikka_select_splash_dialog, null) as LinearLayout
             val input = vg.findViewById<TextView>(R.id.selectSplash_editTextPicLocation)
             val enable = vg.findViewById<CheckBox>(R.id.checkBoxEnableCustomStartupPic)
             val panel = vg.findViewById<RelativeLayout>(R.id.layoutSplashPanel)
             enable.text = "启用自定义钱包余额"
-            enable.setTextColor(Color.BLACK)
             enable.isChecked = enableFake
             enable.setOnCheckedChangeListener { _, isChecked ->
                 enableFake = isChecked
@@ -87,28 +89,24 @@ object FakeBalance : PluginDelayableHook("ketal_qwallet_fakebalance") {
             panel.visibility = if (enableFake) View.VISIBLE else View.GONE
             input.text = money
             input.hint = "请输入自定义金额..."
-            val dialog = CustomDialog.createFailsafe(it.context)
-                .setTitle("自定义钱包余额")
-                .setView(vg)
-                .setNegativeButton("取消", null)
-                .setPositiveButton("保存") { _: DialogInterface, _: Int ->
-                    if (!enableFake) {
-                        isEnabled = false
-                    } else {
-                        val inputMoney = input.text.toString()
-                        if (inputMoney.isEmpty()) {
-                            Toasts.error(ctx, "请输入金额")
-                            return@setPositiveButton
-                        }
-                        isEnabled = true
-                        money = inputMoney
-                        if (enableFake && !this.isInited) {
-                            this.init()
-                        }
+            dialog.setView(vg)
+            dialog.show()
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                if (!enableFake) {
+                    isEnabled = false
+                } else {
+                    val inputMoney = input.text.toString()
+                    if (inputMoney.isEmpty()) {
+                        Toasts.error(ctx, "请输入金额")
+                        return@setOnClickListener
+                    }
+                    isEnabled = true
+                    money = inputMoney
+                    if (enableFake && !this.isInited) {
+                        this.init()
                     }
                 }
-                .create() as AlertDialog
-            dialog.show()
+            }
         } catch (e: Exception) {
             Utils.log(e)
         }
