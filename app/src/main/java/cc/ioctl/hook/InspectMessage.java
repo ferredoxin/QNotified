@@ -20,10 +20,8 @@
 package cc.ioctl.hook;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -31,7 +29,6 @@ import java.lang.reflect.Modifier;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
-import nil.nadph.qnotified.bridge.QQMessageFacade;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.ui.CustomDialog;
@@ -50,7 +47,7 @@ public class InspectMessage extends CommonDelayableHook implements View.OnLongCl
     boolean bInspectMode = false;
 
     private InspectMessage() {
-        super("qn_inspect_msg", new DexDeobfStep(DexKit.C_AIO_UTILS), new DexDeobfStep(DexKit.C_MessageCache), new DexDeobfStep(DexKit.C_MSG_REC_FAC));
+        super("qn_inspect_msg", new DexDeobfStep(DexKit.C_AIO_UTILS));
     }
 
     public static InspectMessage get() {
@@ -82,17 +79,6 @@ public class InspectMessage extends CommonDelayableHook implements View.OnLongCl
                     dialog.setMessage(msg.toString());
                     dialog.setCancelable(true);
                     dialog.setPositiveButton("确认", null);
-                    final Context finalCtx = ctx;
-                    dialog.setNegativeButton("撤回", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            try {
-                                QQMessageFacade.revokeMessage(msg);
-                            } catch (Throwable e) {
-                                Utils.showToast(finalCtx, TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), Toast.LENGTH_LONG);
-                            }
-                        }
-                    });
                     dialog.show();
                     param.setResult(null);
                 }
