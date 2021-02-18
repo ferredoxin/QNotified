@@ -154,7 +154,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
     }
 
     /**
-     * @return f**k! Do NOT edit the cfg!!!
+     * @return Do NOT edit the cfg!!!
      * @hide
      */
     //@Deprecated
@@ -712,7 +712,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
         return false;
     }
 
-    //TODO: f**k with IPC notify
+    //TODO: IPC notify
     public boolean isNotifyWhenDeleted() {
         return getBooleanOrDefault("qn_notify_when_del", true);
     }

@@ -47,7 +47,6 @@ import static nil.nadph.qnotified.util.Utils.log;
 import static nil.nadph.qnotified.util.Utils.logi;
 
 /**
- * What the fuck?
  * I hadn't obfuscated the source code.
  * I just don't want to name it,
  * leaving it a()

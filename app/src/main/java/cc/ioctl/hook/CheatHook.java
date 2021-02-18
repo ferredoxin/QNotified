@@ -86,15 +86,15 @@ public class  CheatHook extends CommonDelayableHook {
                 }
             });
     
-            String fuckingMethod = "a";
+            String Method = "a";
     
             if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_4_8)) {
-                fuckingMethod = "sendMagicEmoticon";
+                Method = "sendMagicEmoticon";
             }
             if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_5_0)) {
                 XposedHelpers.findAndHookMethod(Class.forName("com.tencent.mobileqq.emoticonview" +
                                 ".sender.PicEmoticonInfoSender"),
-                        fuckingMethod, load("com.tencent.mobileqq.app.QQAppInterface"),
+                        Method, load("com.tencent.mobileqq.app.QQAppInterface"),
                         Context.class, _SessionInfo(), load("com.tencent.mobileqq.data.Emoticon"),
                         load("com.tencent.mobileqq.emoticon.EmojiStickerManager$StickerInfo"),
                         new XC_MethodHook(43) {
@@ -121,7 +121,7 @@ public class  CheatHook extends CommonDelayableHook {
                         });
             } else {
                 XposedHelpers.findAndHookMethod(DexKit.doFindClass(DexKit.C_PIC_EMOTICON_INFO),
-                        fuckingMethod, load("com.tencent.mobileqq.app.QQAppInterface"),
+                        Method, load("com.tencent.mobileqq.app.QQAppInterface"),
                         Context.class, _SessionInfo(), load("com.tencent.mobileqq.data.Emoticon"),
                         load("com.tencent.mobileqq.emoticon.EmojiStickerManager$StickerInfo"),
                         new XC_MethodHook(43) {
