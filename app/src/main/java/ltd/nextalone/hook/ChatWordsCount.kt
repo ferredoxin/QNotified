@@ -25,14 +25,12 @@ import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.view.ViewCompat
 import ltd.nextalone.util.*
 import me.kyuubiran.util.getExFriendCfg
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.ui.CustomDialog
-import nil.nadph.qnotified.ui.HighContrastBorder
 import nil.nadph.qnotified.ui.ViewBuilder
 import nil.nadph.qnotified.util.Toasts
 import nil.nadph.qnotified.util.Utils
@@ -83,8 +81,7 @@ object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt") {
                     editText.setText(getExFriendCfg().getStringOrDefault(colorCfg, "#ff000000"))
                     editText.textSize = 16f
                     val _5 = Utils.dip2px(activity, 5f)
-                    editText.setPadding(_5, _5, _5, _5)
-                    ViewCompat.setBackground(editText, HighContrastBorder())
+                    editText.setPadding(_5, _5, _5, _5 * 2)
                     val linearLayout = LinearLayout(ctx)
                     linearLayout.addView(editText, ViewBuilder.newLinearLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, _5 * 2))
                     val alertDialog = dialog
@@ -146,9 +143,8 @@ object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt") {
         val editText = EditText(ctx)
         editText.textSize = 16f
         val _5 = Utils.dip2px(activity, 5f)
-        editText.setPadding(_5, _5, _5, _5)
+        editText.setPadding(_5, _5, _5, _5 * 2)
         editText.setText(getExFriendCfg().getStringOrDefault(strCfg, "今日已发送 %1 条消息，共 %2 字，表情包 %3 个"))
-        ViewCompat.setBackground(editText, HighContrastBorder())
         val checkBox = CheckBox(ctx)
         checkBox.text = "开启聊天字数统计"
         checkBox.isChecked = isEnabled

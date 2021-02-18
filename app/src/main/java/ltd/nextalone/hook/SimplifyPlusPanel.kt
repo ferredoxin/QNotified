@@ -30,7 +30,7 @@ import nil.nadph.qnotified.util.Utils
 
 object SimplifyPlusPanel : MultiItemDelayableHook("na_simplify_plus_panel", "保留") {
     override val allItems = "图片|拍摄|语音通话|视频通话|一起派对|戳一戳|视频包厢|红包|位置|文件|一起听歌|分享屏幕|收藏|热图|一起玩|涂鸦|转账|名片|送礼物|腾讯文档|厘米秀|一起K歌|礼物|直播间|签到|匿名|群课堂|健康收集|一起看|投票|收钱|坦白说".split("|").toMutableList()
-    override val defaultItems = "语音通话|视频通话|位置|文件"
+    override val defaultItems = "图片|拍摄|语音通话|视频通话|一起派对|戳一戳|视频包厢|红包|位置|文件|一起听歌|分享屏幕|收藏|热图|一起玩|涂鸦|转账|名片|送礼物|腾讯文档|厘米秀|一起K歌|礼物|直播间|签到|匿名|群课堂|健康收集|一起看|投票|收钱|坦白说"
 
     override fun initOnce() = try {
         val callback: (XC_MethodHook.MethodHookParam) -> Unit = {
@@ -62,6 +62,8 @@ object SimplifyPlusPanel : MultiItemDelayableHook("na_simplify_plus_panel", "保
         Utils.log(t)
         false
     }
+
+    override fun isEnabled() = isValid && activeItems.size != allItems.size
 
     override fun isValid() = requireMinQQVersion(QQVersion.QQ_8_0_0)
 }

@@ -55,5 +55,7 @@ object SimplifyQQSettings : MultiItemDelayableHook("na_simplify_qq_settings", "ä
         false
     }
 
+    override fun isEnabled() = isValid && activeItems.size != allItems.size
+
     override fun isValid() = requireMinQQVersion(QQVersion.QQ_8_0_0)
 }
