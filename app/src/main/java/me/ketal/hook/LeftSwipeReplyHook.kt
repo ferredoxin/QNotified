@@ -23,6 +23,7 @@ import android.graphics.BitmapFactory
 import android.os.Looper
 import android.view.View
 import android.widget.ImageView
+import de.robv.android.xposed.XposedHelpers
 import me.ketal.util.TIMVersion
 import ltd.nextalone.util.hookAfter
 import ltd.nextalone.util.hookBefore
@@ -41,7 +42,6 @@ object LeftSwipeReplyHook: CommonDelayableHook("ketal_left_swipe_action", DexDeo
     private const val LEFT_SWIPE_NO_ACTION = "ketal_left_swipe_noAction"
     private const val LEFT_SWIPE_MULTI_CHOOSE = "ketal_left_swipe_multiChoose"
     private const val LEFT_SWIPE_REPLY_DISTANCE = "ketal_left_swipe_replyDistance"
-    private const val FLAG_REPLACE_PIC = 10001
     private var img: Bitmap? = null
     private val multiBitmap: Bitmap?
         get() {
@@ -56,7 +56,7 @@ object LeftSwipeReplyHook: CommonDelayableHook("ketal_left_swipe_action", DexDeo
             val replyMethod = DexKit.doFindMethod(DexKit.N_LeftSwipeReply_Helper__reply)
             val hookClass = replyMethod!!.declaringClass
             var methodName = if (hostInfo.isTim) "L" else "a"
-            ReflexUtil.hasMethod(hookClass, methodName, Float::class.java, Float::class.java)
+            XposedHelpers.findMethodBestMatch(hookClass, methodName, Float::class.java, Float::class.java)
                 .hookBefore(this) {
                     if (isNoAction) it.result = null
                 }
@@ -64,9 +64,9 @@ object LeftSwipeReplyHook: CommonDelayableHook("ketal_left_swipe_action", DexDeo
                 .hookBefore(this) {
                     if (!isMultiChose) return@hookBefore
                     val iv = it.args[0] as ImageView
-                    if (iv.getTag(FLAG_REPLACE_PIC) == null) {
+                    if (iv.tag == null) {
                         iv.setImageBitmap(multiBitmap)
-                        iv.setTag(FLAG_REPLACE_PIC, true)
+                        iv.tag = true
                     }
                 }
             replyMethod.hookBefore(this) {
