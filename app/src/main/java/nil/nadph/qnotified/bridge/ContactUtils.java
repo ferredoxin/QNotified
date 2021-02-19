@@ -24,8 +24,8 @@ package nil.nadph.qnotified.bridge;
 import java.lang.reflect.Modifier;
 
 import de.robv.android.xposed.XposedHelpers;
-import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.Initiator;
 
 import static nil.nadph.qnotified.util.Initiator._QQAppInterface;
 import static nil.nadph.qnotified.util.ReflexUtil.invoke_static_declared_ordinal_modifier;
@@ -71,11 +71,11 @@ public class ContactUtils {
                 nickname = (String) invoke_static_declared_ordinal_modifier(DexKit.doFindClass(DexKit.C_CONTACT_UTILS), 1, 3, true, Modifier.PUBLIC, 0,
                     getQQAppInterface(), memberUin, true, _QQAppInterface(), String.class, boolean.class, String.class);
             } catch (Throwable e2) {
-                log(e2);
                 try {
                     nickname = (String) invoke_static_declared_ordinal_modifier(DexKit.doFindClass(DexKit.C_CONTACT_UTILS), 1, 4, true, Modifier.PUBLIC, 0,
                         getQQAppInterface(), memberUin, true, _QQAppInterface(), String.class, boolean.class, String.class);
                 } catch (Throwable e3) {
+                    e3.addSuppressed(e2);
                     log(e3);
                 }
             }
