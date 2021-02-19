@@ -66,6 +66,7 @@ import cc.ioctl.hook.RevokeMsgHook;
 import cc.ioctl.hook.RoundAvatarHook;
 import cc.ioctl.hook.ShowPicGagHook;
 import ltd.nextalone.hook.ChatWordsCount;
+import ltd.nextalone.hook.SimplifyContactTabs;
 import me.ketal.activity.ModifyLeftSwipeReplyActivity;
 import me.ketal.hook.ChatItemShowQQUin;
 import me.ketal.hook.FakeBalance;
@@ -230,6 +231,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         ll.addView(newListItemButtonIfValid(this, "精简聊天气泡长按菜单", null, null, SimplifyChatLongItem.INSTANCE, SimplifyChatLongItem.INSTANCE.listener()));
         ll.addView(newListItemButtonIfValid(this, "精简加号菜单", null, null, SimplifyPlusPanel.INSTANCE));
         ll.addView(newListItemButtonIfValid(this, "精简设置菜单", null, null, SimplifyQQSettings.INSTANCE));
+        ll.addView(newListItemButtonIfValid(this, "精简联系人页面", null, null, SimplifyContactTabs.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "批量撤回消息", "多选消息后撤回", MultiActionHook.INSTANCE));
         ll.addView(newListItemButtonIfValid(this, "修改消息左滑动作", null, null, LeftSwipeReplyHook.INSTANCE, ModifyLeftSwipeReplyActivity.class));
         ll.addView(newListItemConfigSwitchIfValid(this, "修改@界面排序", "排序由群主管理员至正常人员", SortAtPanel.INSTANCE));

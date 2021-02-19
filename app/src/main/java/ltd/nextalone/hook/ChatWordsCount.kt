@@ -160,7 +160,8 @@ object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt") {
         }
         val linearLayout = LinearLayout(ctx)
         linearLayout.orientation = LinearLayout.VERTICAL
-        linearLayout.addView(ViewBuilder.subtitle(activity, "%1表示发送消息总数，%2表示发送字数，%3表示发送表情包个数"))
+        linearLayout.addView(ViewBuilder.subtitle(activity, "替换侧滑栏个性签名为聊天字数统计，点击可更换字体颜色。"), ViewBuilder.newLinearLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, _5, 0, _5, 0))
+        linearLayout.addView(ViewBuilder.subtitle(activity, "%1表示发送消息总数，%2表示发送字数，%3表示发送表情包个数。"), ViewBuilder.newLinearLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, _5, 0, _5, 0))
         linearLayout.addView(checkBox, ViewBuilder.newLinearLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, _5 * 2))
         linearLayout.addView(editText, ViewBuilder.newLinearLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, _5 * 2))
         val alertDialog = dialog.setTitle("输入聊天字数统计样式")
