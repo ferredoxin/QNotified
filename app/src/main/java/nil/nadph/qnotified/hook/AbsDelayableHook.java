@@ -78,6 +78,7 @@ import cc.ioctl.hook.SettingEntryHook;
 import cc.ioctl.hook.ShowPicGagHook;
 import cc.ioctl.hook.VasProfileAntiCrash;
 import ltd.nextalone.hook.ChatWordsCount;
+import ltd.nextalone.hook.SimplifyContactTabs;
 import me.ketal.hook.ChatItemShowQQUin;
 import me.ketal.hook.FakeBalance;
 import me.ketal.hook.HideAssistantRemoveTips;
@@ -238,7 +239,8 @@ public abstract class AbsDelayableHook implements SwitchConfigItem {
                 ChatWordsCount.INSTANCE,
                 QWalletNoAD.INSTANCE,
                 FakeBalance.INSTANCE,
-                ChatItemShowQQUin.INSTANCE
+                ChatItemShowQQUin.INSTANCE,
+                SimplifyContactTabs.INSTANCE,
             };
         }
         return sAllHooks;
