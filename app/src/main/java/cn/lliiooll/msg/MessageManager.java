@@ -19,10 +19,9 @@
  * <https://www.gnu.org/licenses/>
  * <https://github.com/ferredoxin/QNotified/blob/master/LICENSE.md>.
  */
+package cn.lliiooll.msg;
 
-    package cn.lliiooll.msg;
-
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -44,7 +43,7 @@ public class MessageManager {
      *
      * @param data 传入的消息
      */
-    public static void call(@NotNull MsgRecordData data) {
+    public static void call(@NonNull MsgRecordData data) {
         long uid = data.getMsgUid();
         if (MSG.containsKey(uid)) {
             return;
