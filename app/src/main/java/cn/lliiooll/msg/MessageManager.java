@@ -22,16 +22,17 @@
 
     package cn.lliiooll.msg;
 
-import cn.lliiooll.hook.AntiMessage;
-import me.singleneuron.data.MsgRecordData;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import cn.lliiooll.hook.AntiMessage;
+import me.singleneuron.data.MsgRecordData;
 
 public class MessageManager {
 
-    private static final Map<Long, Long> MSG = new HashMap<>();
+    private static final Map<Long, Long> MSG = new ConcurrentHashMap<>();
 
     private static final MessageReceiver[] receivers = {
         // 在这里添加消息处理

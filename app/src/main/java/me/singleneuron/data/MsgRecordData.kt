@@ -67,9 +67,9 @@ data class MsgRecordData(val msgRecord: Any?) {
     }
 
     //消息文本
-    val msg: String
+    val msg: String?
         @Throws(NullPointerException::class)
-        get() = getObjectOrNull(msgRecord, "msg", String::class.java) as String
+        get() = getObjectOrNull(msgRecord, "msg", String::class.java) as String?
 
     //也是消息文本
     val msg2: String?
