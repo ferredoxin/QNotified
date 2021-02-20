@@ -95,11 +95,16 @@ public class ArbitraryFrdSourceId extends CommonDelayableHook {
     @UiThread
     static void initFunView(Activity ctx) {
         Intent intent = ctx.getIntent();
+        Bundle argv = intent.getExtras();
+        assert argv != null : "Intent extra for AddFriendVerifyActivity should not be null";
+        int uinType = argv.getInt("k_uin_type", 0);
+        if (uinType == 4) {
+            //Pointless for group entry
+            return;
+        }
         ViewGroup[] tmp = findRlRootAndParent(ctx);
         RelativeLayout rl_root = (RelativeLayout) tmp[0];
         ViewGroup bsv = tmp[1];
-        Bundle argv = intent.getExtras();
-        assert argv != null : "Intent extra for AddFriendVerifyActivity should not be null";
         int __10_ = Utils.dip2px(ctx, 10);
         LinearLayout wrapper = new LinearLayout(ctx);
         wrapper.setOrientation(LinearLayout.VERTICAL);
