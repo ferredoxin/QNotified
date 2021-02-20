@@ -52,7 +52,7 @@ object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt") {
             "com.tencent.mobileqq.activity.QQSettingMe".clazz.hookBeforeAllConstructors {
                 "Lcom/tencent/mobileqq/activity/QQSettingMe;->a()V".method.hookAfter(this) {
                     val isToday = Date().today == getExFriendCfg().getStringOrDefault(timeCfg, "")
-                    val relativeLayout = (it.thisObject.get("a", ViewGroup::class.java) as ViewGroup).findQQView<RelativeLayout>("ivc")
+                    val relativeLayout = (it.thisObject.get("a", ViewGroup::class.java) as ViewGroup).findHostViewById<RelativeLayout>("ivc")
                     val textView = (relativeLayout?.parent as FrameLayout).findViewById<TextView>(nil.nadph.qnotified.R.id.chat_words_count)
                     var str = getExFriendCfg().getStringOrDefault(strCfg, "今日已发送 %1 条消息，共 %2 字，表情包 %3 个")
                     val msg = if (isToday) getExFriendCfg().getIntOrDefault(msgCfg, 0) else 0
@@ -65,7 +65,7 @@ object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt") {
             "com.tencent.mobileqq.activity.QQSettingMe".clazz.hookAfterAllConstructors {
                 val isToday = Date().today == getExFriendCfg().getStringOrDefault(timeCfg, "")
                 val activity: Activity = it.args[0] as Activity
-                val relativeLayout = (it.thisObject.get("a", ViewGroup::class.java) as ViewGroup).findQQView<RelativeLayout>("ivc")
+                val relativeLayout = (it.thisObject.get("a", ViewGroup::class.java) as ViewGroup).findHostViewById<RelativeLayout>("ivc")
                 relativeLayout!!.visibility = View.GONE
                 val textView = TextView(activity)
                 var str = getExFriendCfg().getStringOrDefault(strCfg, "今日已发送 %1 条消息，共 %2 字，表情包 %3 个")

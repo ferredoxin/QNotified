@@ -258,11 +258,11 @@ fun View.hide() {
     }
 }
 
-fun <T : View> T.qqId(name: String) = this.resources.getIdentifier(name, "id", Utils.PACKAGE_NAME_QQ)
+internal fun <T : View> T.hostId(name: String) = this.resources.getIdentifier(name, "id", hostInfo.packageName)
 
-internal fun <T : View?> View.findQQView(name: String): T? {
+internal fun <T : View?> View.findHostViewById(name: String): T? {
     this.let {
-        return it.findViewById<T>(it.qqId(name))
+        return it.findViewById<T>(it.hostId(name))
     }
 }
 
