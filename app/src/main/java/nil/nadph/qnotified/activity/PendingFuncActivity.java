@@ -74,7 +74,14 @@ public class PendingFuncActivity extends IphoneTitleBarActivityCompat {
         ll.addView(newListItemButton(this, "AddFriendReq.sourceID", "自定义加好友来源", "[不改动]", clickTheComing()));
         ll.addView(newListItemButton(this, "DelFriendReq.delType", "只能为1或2", "[不改动]", clickTheComing()));
         ll.addView(newListItemSwitchStub(this, "隐藏聊天界面右侧滑条", "强迫症专用", false));
-
+        ll.addView(newListItemSwitchStub(this, "复制群公告", "希望能拯救你们的眼睛", false));
+        ll.addView(newListItemSwitchStub(this, "隐藏底部消息数量", "只要我看不到一共有多少消息我就不用回复", false));
+        ll.addView(newListItemSwitchStub(this, "屏蔽QQ资料页送礼按钮", "谁会拿QQ这样送礼啊", false));
+        ll.addView(newListItemSwitchStub(this, "一键已读/去除批量已读动画", "建议打死QQ动效设计师", false));
+        ll.addView(newListItemSwitchStub(this, "取消聊天中开通会员提示", "如果我们能触发关键词的话", false));
+        ll.addView(newListItemSwitchStub(this, "去除底部动态或联系人页面", "如果你觉得你喜欢这样的QQ的话", false));
+        ll.addView(newListItemSwitchStub(this, "间说说自动回赞", "好耶", false));
+        
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         this.setContentView(bounceScrollView);
         LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);
