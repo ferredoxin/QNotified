@@ -103,7 +103,7 @@ import me.kyuubiran.hook.ShowSelfMsgByLeft;
 import me.kyuubiran.hook.SimplifyQQSettingMe;
 import me.kyuubiran.hook.testhook.CutMessage;
 import ltd.nextalone.hook.EnableQLog;
-import ltd.nextalone.hook.ForcedSendOriginalPhoto;
+import ltd.nextalone.hook.AutoSendOriginalPhoto;
 import ltd.nextalone.hook.HideChatVipImage;
 import ltd.nextalone.hook.HideOnlineNumber;
 import ltd.nextalone.hook.HideOnlineStatus;
@@ -216,7 +216,7 @@ public abstract class AbsDelayableHook implements SwitchConfigItem {
                 RemoveDiyCard.INSTANCE,
                 RemoveRedDot.INSTANCE,
                 EnableQLog.INSTANCE,
-                ForcedSendOriginalPhoto.INSTANCE,
+                AutoSendOriginalPhoto.INSTANCE,
                 InterceptZipBomb.INSTANCE,
                 HideTotalNumber.INSTANCE,
                 HideOnlineNumber.INSTANCE,
