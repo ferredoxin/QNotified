@@ -77,6 +77,7 @@ import cc.ioctl.hook.ScriptEventHook;
 import cc.ioctl.hook.SettingEntryHook;
 import cc.ioctl.hook.ShowPicGagHook;
 import cc.ioctl.hook.VasProfileAntiCrash;
+import ltd.nextalone.hook.AutoReceiveOriginalPhoto;
 import ltd.nextalone.hook.ChatWordsCount;
 import ltd.nextalone.hook.SimplifyContactTabs;
 import me.ketal.hook.ChatItemShowQQUin;
@@ -241,6 +242,7 @@ public abstract class AbsDelayableHook implements SwitchConfigItem {
                 FakeBalance.INSTANCE,
                 ChatItemShowQQUin.INSTANCE,
                 SimplifyContactTabs.INSTANCE,
+                AutoReceiveOriginalPhoto.INSTANCE,
             };
         }
         return sAllHooks;
