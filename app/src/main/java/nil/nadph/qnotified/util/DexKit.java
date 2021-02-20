@@ -94,8 +94,9 @@ public class DexKit {
     //for old version qq NewRoundHead
     public static final int C_FaceManager = 34;
     public static final int C_SmartDeviceProxyMgr = 35;
+    public static final int C_AIOPictureView = 36;
     //the last index
-    public static final int DEOBF_NUM_C = 35;
+    public static final int DEOBF_NUM_C = 36;
     
     public static final int N_BASE_CHAT_PIE__INIT = 20001;
     public static final int N_BASE_CHAT_PIE__handleNightMask = 20002;
@@ -332,6 +333,8 @@ public class DexKit {
                 return "facemanager";
             case C_SmartDeviceProxyMgr:
                 return "smartdeviceproxymgr";
+            case C_AIOPictureView:
+                return "aiopictureview";
             case N_BASE_CHAT_PIE__INIT:
                 return "base_chat_pie__init";
             case N_BASE_CHAT_PIE__handleNightMask:
@@ -462,6 +465,9 @@ public class DexKit {
             case C_FaceManager:
                 ret = "com.tencent.mobileqq.app.face.FaceManager";
                 break;
+            case C_AIOPictureView:
+                ret = "com.tencent.mobileqq.richmediabrowser.view.AIOPictureView";
+                break;
             case N_BASE_CHAT_PIE__INIT:
             case N_BASE_CHAT_PIE__handleNightMask:
             case N_BASE_CHAT_PIE__updateSession:
@@ -577,6 +583,8 @@ public class DexKit {
                 return new byte[][]{new byte[]{0x11, 0x72, 0x65, 0x73, 0x75, 0x6C, 0x74, 0x4C, 0x69, 0x73, 0x74, 0x20, 0x3D, 0x20, 0x6E, 0x75, 0x6C, 0x6C}};
             case N_AtPanel__showDialogAtView:
                 return new byte[][]{new byte[]{0x1b, 0x73, 0x68, 0x6F, 0x77, 0x44, 0x69, 0x61, 0x6C, 0x6F, 0x67, 0x41, 0x74, 0x56, 0x69, 0x65, 0x77}};
+            case C_AIOPictureView:
+                return new byte[][]{new byte[]{0x0e, 0x41, 0x49, 0x4F, 0x50, 0x69, 0x63, 0x74, 0x75, 0x72, 0x65, 0x56, 0x69, 0x65, 0x77}};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
@@ -663,6 +671,8 @@ public class DexKit {
                 return new int[]{3};
             case C_SmartDeviceProxyMgr:
                 return new int[]{5, 2};
+            case C_AIOPictureView:
+                return new int[]{10, 4};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
@@ -942,6 +952,7 @@ public class DexKit {
             case C_MultiMsg_Manager:
             case N_AtPanel__refreshUI:
             case N_AtPanel__showDialogAtView:
+            case C_AIOPictureView:
                 //has superclass
                 for (DexMethodDescriptor m : __methods) {
                     Class clz = Initiator.load(m.declaringClass);
