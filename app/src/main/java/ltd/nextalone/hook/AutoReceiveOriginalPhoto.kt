@@ -30,7 +30,7 @@ import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.Utils
 
-object AutoReceiveOriginalPhoto : CommonDelayableHook("na_test_forced_original", SyncUtils.PROC_PEAK) {
+object AutoReceiveOriginalPhoto : CommonDelayableHook("na_auto_receive_origin_photo", SyncUtils.PROC_PEAK) {
 
     override fun initOnce(): Boolean {
         return try {
