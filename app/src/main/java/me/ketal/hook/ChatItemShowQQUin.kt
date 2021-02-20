@@ -50,14 +50,9 @@ object ChatItemShowQQUin : CommonDelayableHook("ketal_ChatItem_ShowQQUin") {
                 val time = ReflexUtil.iget_object_or_null(msg, "time", Long::class.java)
                 val qq = ReflexUtil.iget_object_or_null(msg, "senderuin", String::class.java)
                 val text = "QQ:$qq  Time:" + SimpleDateFormat("MM-dd HH:mm:ss", Locale.getDefault()).format(Date(time * 1000))
-                val methodDesc = "Lcom/tencent/mobileqq/activity/aio/BaseChatItemLayout;->setTailMessage(ZLjava/lang/CharSequence;Landroid/view/View\$OnClickListener;Z)V"
-                try {
-                    methodDesc
-                        .method.invoke(it.result, true, text, listener, true)
-                } catch (t : Throwable) {
-                    methodDesc.replace("Z)V", ")V")
-                        .method.invoke(it.result, true, text, listener)
-                }
+                "Lcom/tencent/mobileqq/activity/aio/BaseChatItemLayout;->setTailMessage(ZLjava/lang/CharSequence;Landroid/view/View\$OnClickListener;)V"
+                    .method
+                    .invoke(it.result, true, text, listener)
             }
         true
     } catch (e: Exception) {
