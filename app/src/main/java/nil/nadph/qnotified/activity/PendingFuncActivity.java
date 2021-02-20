@@ -74,6 +74,15 @@ public class PendingFuncActivity extends IphoneTitleBarActivityCompat {
         ll.addView(newListItemButton(this, "AddFriendReq.sourceID", "自定义加好友来源", "[不改动]", clickTheComing()));
         ll.addView(newListItemButton(this, "DelFriendReq.delType", "只能为1或2", "[不改动]", clickTheComing()));
         ll.addView(newListItemSwitchStub(this, "隐藏聊天界面右侧滑条", "强迫症专用", false));
+        ll.addView(newListItemSwitchStub(this, "复制群公告", "希望能在关键时刻帮到你",false));
+        ll.addView(newListItemSwitchStub(this, "隐藏底部消息数量", null, false));
+        ll.addView(newListItemSwitchStub(this, "屏蔽QQ资料页送礼按钮", null, false));
+        ll.addView(newListItemSwitchStub(this, "一键已读/去除批量已读动画", null, false));
+        ll.addView(newListItemSwitchStub(this, "取消聊天中开通会员提示", "如果我们能触发关键词的话", false));
+        ll.addView(newListItemSwitchStub(this, "去除底部动态或联系人页面", "如果你觉得你喜欢这样的QQ的话", false));
+        ll.addView(newListItemSwitchStub(this, "空间说说自动回赞", "真正的友谊应该手动点", false));
+        ll.addView(newListItemSwitchStub(this, "一键退出已封禁群聊", null, false));
+        ll.addView(newListItemSwitchStub(this, "清理全部非置顶/清理群聊", null, false));
 
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         this.setContentView(bounceScrollView);
