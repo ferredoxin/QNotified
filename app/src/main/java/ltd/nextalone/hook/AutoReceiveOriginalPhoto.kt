@@ -24,19 +24,28 @@ package ltd.nextalone.hook
 import ltd.nextalone.util.invoke
 import ltd.nextalone.util.method
 import ltd.nextalone.util.replace
+import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.hook.CommonDelayableHook
+import nil.nadph.qnotified.step.DexDeobfStep
+import nil.nadph.qnotified.util.DexKit
 import nil.nadph.qnotified.util.Utils
 
-object AutoReceiveOriginalPhoto : CommonDelayableHook("na_auto_receive_origin_photo", SyncUtils.PROC_PEAK) {
+object AutoReceiveOriginalPhoto : CommonDelayableHook("na_auto_receive_origin_photo", SyncUtils.PROC_PEAK, false, DexDeobfStep(DexKit.C_AIOPictureView)) {
 
     override fun initOnce(): Boolean {
         return try {
-            "Lcom.tencent.mobileqq.richmediabrowser.view.AIOPictureView;->f(Z)V".method.replace(this) {
+            val method: String = if (hostInfo.versionCode >= QQVersion.QQ_8_5_0) {
+                "h"
+            } else {
+                "I"
+            }
+            val clz = DexKit.doFindClass(DexKit.C_AIOPictureView)
+            "L${clz!!.name};->f(Z)V".method.replace(this) {
                 if (it.args[0] as Boolean) {
-                    it.thisObject.invoke("h")
+                    it.thisObject.invoke(method)
                 }
             }
             true
@@ -46,5 +55,5 @@ object AutoReceiveOriginalPhoto : CommonDelayableHook("na_auto_receive_origin_ph
         }
     }
 
-    override fun isValid() = requireMinQQVersion(QQVersion.QQ_8_5_5)
+    override fun isValid() = requireMinQQVersion(QQVersion.QQ_8_3_5)
 }
