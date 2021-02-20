@@ -51,7 +51,9 @@ internal val relativeParams = RelativeLayout.LayoutParams(0, 0)
 internal val isSimpleUi by lazy {
     try {
         val sharedPreferences = "Lcom/tencent/mobileqq/theme/ThemeUtil;->getUinThemePreferences(Lmqq/app/AppRuntime;)Landroid/content/SharedPreferences;".method.invoke(null, Utils.getAppRuntime()) as SharedPreferences
-        sharedPreferences.getBoolean("key_simple_ui_switch", false)
+        val bool = sharedPreferences.getBoolean("key_simple_ui_switch", false)
+        logDetail("isSimpleUi:$bool")
+        bool
     } catch (t: Throwable) {
         false
     }
@@ -100,6 +102,8 @@ internal fun Any?.set(name: String, clz: Class<*>?, value: Any): Any = ReflexUti
 internal fun Class<*>?.instance(vararg arg: Any?): Any = XposedHelpers.newInstance(this, *arg)
 
 internal fun Class<*>?.instance(type: Array<Class<*>>, vararg arg: Any?): Any = XposedHelpers.newInstance(this, type, *arg)
+
+internal fun Any?.invoke(name: String, vararg args: Class<*>): Any? = ReflexUtil.invoke_virtual(this, name, *args)
 
 internal fun Member.hook(callback: NAMethodHook) = try {
     XposedBridge.hookMethod(this, callback)
