@@ -80,8 +80,9 @@ public class PendingFuncActivity extends IphoneTitleBarActivityCompat {
         ll.addView(newListItemSwitchStub(this, "一键已读/去除批量已读动画", "建议打死QQ动效设计师", false));
         ll.addView(newListItemSwitchStub(this, "取消聊天中开通会员提示", "如果我们能触发关键词的话", false));
         ll.addView(newListItemSwitchStub(this, "去除底部动态或联系人页面", "如果你觉得你喜欢这样的QQ的话", false));
-        ll.addView(newListItemSwitchStub(this, "间说说自动回赞", "好耶", false));
-        
+        ll.addView(newListItemSwitchStub(this, "空间说说自动回赞", "好耶", false));
+        ll.addView(newListItemSwitchStub(this, "一键退出已封禁群聊", "如果你真的被封了那么多群的话", false));
+
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         this.setContentView(bounceScrollView);
         LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);
