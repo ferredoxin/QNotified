@@ -596,40 +596,26 @@ public class Parasitics {
 
         @Override
         public void callActivityOnCreate(Activity activity, Bundle icicle) {
-            try {
-                if (icicle != null) {
-                    String className = activity.getClass().getName();
-                    if (ActProxyMgr.isResourceInjectionRequired(className)) {
-                        icicle.setClassLoader(MainHook.class.getClassLoader());
-                    }
+            if (icicle != null) {
+                String className = activity.getClass().getName();
+                if (ActProxyMgr.isResourceInjectionRequired(className)) {
+                    icicle.setClassLoader(MainHook.class.getClassLoader());
                 }
-                injectModuleResources(activity.getResources());
-                mBase.callActivityOnCreate(activity, icicle);
-            } catch (Exception e) {
-                if (Pattern.matches("[\\W]me\\.|nil\\.nadph", Log.getStackTraceString(e).replace("nil.nadph.qnotified.MainHook$MyInstrumentation.callActivityOnStart", ""))) {
-                    throw e;
-                }
-                //else ignore
             }
+            injectModuleResources(activity.getResources());
+            mBase.callActivityOnCreate(activity, icicle);
         }
 
         @Override
         public void callActivityOnCreate(Activity activity, Bundle icicle, PersistableBundle persistentState) {
-            try {
-                if (icicle != null) {
-                    String className = activity.getClass().getName();
-                    if (ActProxyMgr.isResourceInjectionRequired(className)) {
-                        icicle.setClassLoader(MainHook.class.getClassLoader());
-                    }
+            if (icicle != null) {
+                String className = activity.getClass().getName();
+                if (ActProxyMgr.isResourceInjectionRequired(className)) {
+                    icicle.setClassLoader(MainHook.class.getClassLoader());
                 }
-                injectModuleResources(activity.getResources());
-                mBase.callActivityOnCreate(activity, icicle, persistentState);
-            } catch (Exception e) {
-                if (Pattern.matches("[\\W]me\\.|nil\\.nadph", Log.getStackTraceString(e).replace("nil.nadph.qnotified.MainHook$MyInstrumentation.callActivityOnStart", ""))) {
-                    throw e;
-                }
-                //else ignore
             }
+            injectModuleResources(activity.getResources());
+            mBase.callActivityOnCreate(activity, icicle, persistentState);
         }
 
         @Override
