@@ -30,7 +30,7 @@ import nil.nadph.qnotified.util.Utils
 import nil.nadph.qnotified.util.Utils.PACKAGE_NAME_QQ
 import java.lang.reflect.Method
 
-object ForcedSendOriginalPhoto : CommonDelayableHook("na_test_forced_original") {
+object AutoSendOriginalPhoto : CommonDelayableHook("na_test_forced_original") {
 
     override fun initOnce(): Boolean {
         return try {

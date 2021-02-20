@@ -65,6 +65,8 @@ import cc.ioctl.hook.ReplyNoAtHook;
 import cc.ioctl.hook.RevokeMsgHook;
 import cc.ioctl.hook.RoundAvatarHook;
 import cc.ioctl.hook.ShowPicGagHook;
+import ltd.nextalone.hook.AutoReceiveOriginalPhoto;
+import ltd.nextalone.hook.AutoSendOriginalPhoto;
 import ltd.nextalone.hook.ChatWordsCount;
 import ltd.nextalone.hook.SimplifyContactTabs;
 import me.ketal.activity.ModifyLeftSwipeReplyActivity;
@@ -232,6 +234,8 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         ll.addView(newListItemButtonIfValid(this, "精简加号菜单", null, null, SimplifyPlusPanel.INSTANCE));
         ll.addView(newListItemButtonIfValid(this, "精简设置菜单", null, null, SimplifyQQSettings.INSTANCE));
         ll.addView(newListItemButtonIfValid(this, "精简联系人页面", null, null, SimplifyContactTabs.INSTANCE));
+        ll.addView(newListItemHookSwitchInit(this, "聊天自动发送原图", null, AutoSendOriginalPhoto.INSTANCE));
+        ll.addView(newListItemHookSwitchInit(this, "聊天自动接收原图", null, AutoReceiveOriginalPhoto.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "批量撤回消息", "多选消息后撤回", MultiActionHook.INSTANCE));
         ll.addView(newListItemButtonIfValid(this, "修改消息左滑动作", null, null, LeftSwipeReplyHook.INSTANCE, ModifyLeftSwipeReplyActivity.class));
         ll.addView(newListItemConfigSwitchIfValid(this, "修改@界面排序", "排序由群主管理员至正常人员", SortAtPanel.INSTANCE));
