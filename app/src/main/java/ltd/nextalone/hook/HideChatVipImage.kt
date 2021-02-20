@@ -24,6 +24,7 @@ package ltd.nextalone.hook
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import ltd.nextalone.util.clazz
+import ltd.nextalone.util.findHostViewById
 import ltd.nextalone.util.hookAfterAllConstructors
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.Utils
@@ -34,8 +35,7 @@ object HideChatVipImage : CommonDelayableHook("na_hide_chat_vip_image_kt") {
         return try {
             "com.tencent.mobileqq.widget.navbar.NavBarAIO".clazz.hookAfterAllConstructors {
                 val ctx = it.thisObject as RelativeLayout
-                val titleImageId = ctx.resources.getIdentifier("jp0", "id", Utils.PACKAGE_NAME_QQ)
-                ctx.findViewById<ImageView>(titleImageId).alpha = 0F
+                ctx.findHostViewById<ImageView>("jp0")!!.alpha = 0F
             }
             true
         } catch (t: Throwable) {

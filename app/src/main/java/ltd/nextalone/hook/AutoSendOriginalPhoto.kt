@@ -23,11 +23,11 @@ package ltd.nextalone.hook
 
 import android.view.View
 import android.widget.CheckBox
+import ltd.nextalone.util.findHostViewById
 import ltd.nextalone.util.hookAfter
 import me.kyuubiran.util.getMethods
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.Utils
-import nil.nadph.qnotified.util.Utils.PACKAGE_NAME_QQ
 import java.lang.reflect.Method
 
 object AutoSendOriginalPhoto : CommonDelayableHook("na_auto_send_origin_photo") {
@@ -39,8 +39,7 @@ object AutoSendOriginalPhoto : CommonDelayableHook("na_auto_send_origin_photo") 
                 if (m.name == "a" && argt.size == 1 && argt[0] == Boolean::class.java) {
                     m.hookAfter(this) {
                         val ctx = it.thisObject as View
-                        val id = ctx.resources.getIdentifier("h1y", "id", PACKAGE_NAME_QQ)
-                        val sendOriginPhotoCheckbox: CheckBox = ctx.findViewById(id)
+                        val sendOriginPhotoCheckbox: CheckBox = ctx.findHostViewById<CheckBox>("h1y")!!
                         sendOriginPhotoCheckbox.isChecked = true
                     }
                 }

@@ -24,6 +24,7 @@ package ltd.nextalone.hook
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import ltd.nextalone.util.clazz
+import ltd.nextalone.util.findHostViewById
 import ltd.nextalone.util.hookAfterAllConstructors
 import ltd.nextalone.util.setViewZeroSize
 import nil.nadph.qnotified.hook.CommonDelayableHook
@@ -35,8 +36,7 @@ object HideOnlineStatus : CommonDelayableHook("na_hide_online_status_kt") {
         return try {
             "com.tencent.mobileqq.widget.navbar.NavBarAIO".clazz.hookAfterAllConstructors {
                 val ctx = it.thisObject as RelativeLayout
-                val subTitleLinearLayoutId = ctx.resources.getIdentifier("j65", "id", Utils.PACKAGE_NAME_QQ)
-                ctx.findViewById<LinearLayout>(subTitleLinearLayoutId).setViewZeroSize()
+                ctx.findHostViewById<LinearLayout>("j65")!!.setViewZeroSize()
             }
             true
         } catch (t: Throwable) {
