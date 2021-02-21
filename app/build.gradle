@@ -17,7 +17,8 @@ android {
         minSdkVersion 21
         targetSdkVersion 29
         versionCode(getTimeStamp.call() as int)
-        versionName "0.8.11" + (getGitHeadRefsSuffix.call() as String)
+        // versionName format: major.minor.accumulation.commit_id
+        versionName "0.8.12" + (getGitHeadRefsSuffix.call() as String)
         multiDexEnabled false
         ndk {
             abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
