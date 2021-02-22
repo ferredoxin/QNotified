@@ -52,7 +52,7 @@ internal val isSimpleUi by lazy {
     try {
         val sharedPreferences = "Lcom/tencent/mobileqq/theme/ThemeUtil;->getUinThemePreferences(Lmqq/app/AppRuntime;)Landroid/content/SharedPreferences;".method.invoke(null, Utils.getAppRuntime()) as SharedPreferences
         val bool = sharedPreferences.getBoolean("key_simple_ui_switch", false)
-        logDetail("isSimpleUi:$bool")
+        logd("isSimpleUi:$bool")
         bool
     } catch (t: Throwable) {
         false
@@ -63,7 +63,7 @@ internal val String.clazz: Class<*>
     get() = Initiator.load(this)
 
 internal val String.method: Method
-    get() = DexMethodDescriptor(this.replace(".", "/")).getMethodInstance(Initiator.getHostClassLoader())
+    get() = DexMethodDescriptor(this.replace(".", "/").replace(" ", "")).getMethodInstance(Initiator.getHostClassLoader())
 
 internal val String.methods: Array<Method>
     get() = Initiator.load(this).declaredMethods
@@ -128,7 +128,7 @@ internal inline fun Member.hookAfter(baseHook: BaseDelayableHook, crossinline ho
     }
 })
 
-internal inline fun Member.replace(baseHook: BaseDelayableHook, crossinline hooker: (XC_MethodHook.MethodHookParam) -> Any?) = hook(object : NAMethodReplacement(baseHook) {
+internal inline fun <T : Any> Member.replace(baseHook: BaseDelayableHook, crossinline hooker: (XC_MethodHook.MethodHookParam) -> T?) = hook(object : NAMethodReplacement(baseHook) {
     override fun replaceMethod(param: MethodHookParam?) = try {
         hooker(param!!)
     } catch (e: Throwable) {
