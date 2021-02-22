@@ -73,7 +73,7 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
         String content = null;
         int failed = 0;
         try {
-            URL reqURL = new URL(UPDATE_INFO_GET1);
+            URL reqURL = new URL(UPDATE_INFO_GET_WEEKLY);
             HttpsURLConnection httpsConn = (HttpsURLConnection) reqURL.openConnection();
             InputStream in = httpsConn.getInputStream();
             ByteArrayOutputStream bais = new ByteArrayOutputStream();
