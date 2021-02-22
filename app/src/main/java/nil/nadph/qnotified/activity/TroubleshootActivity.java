@@ -245,7 +245,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
 
         ll.addView(subtitle(this, ""));
 
-        ll.addView(subtitle(this, "反混淆信息"));
+        ll.addView(subtitle(this, "反混淆信息", ResUtils.skin_black.getDefaultColor()));
         for (int i = 1; i <= DexKit.DEOBF_NUM_C; i++) {
             try {
                 String tag = DexKit.a(i);
@@ -261,9 +261,9 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                     Class<?> c = DexKit.loadClassFromCache(i);
                     if (c != null) currName = c.getName();
                 }
-                ll.addView(subtitle(this, "  [" + i + "]" + shortName + "\n" + orig + "\n= " + currName));
+                ll.addView(subtitle(this, "  [" + i + "]" + shortName + "\n" + orig + "\n= " + currName, ResUtils.skin_black.getDefaultColor(), true));
             } catch (Throwable e) {
-                ll.addView(subtitle(this, "  [" + i + "]" + e.toString()));
+                ll.addView(subtitle(this, "  [" + i + "]" + e.toString(), ResUtils.skin_black.getDefaultColor(), true));
             }
         }
         for (int ii = 1; ii <= DexKit.DEOBF_NUM_N; ii++) {
@@ -282,9 +282,9 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                     Class<?> c = DexKit.loadClassFromCache(i);
                     if (c != null) currName = c.getName();
                 }
-                ll.addView(subtitle(this, "  [" + i + "]" + shortName + "\n" + orig + "\n= " + currName));
+                ll.addView(subtitle(this, "  [" + i + "]" + shortName + "\n" + orig + "\n= " + currName, ResUtils.skin_black.getDefaultColor(), true));
             } catch (Throwable e) {
-                ll.addView(subtitle(this, "  [" + i + "]" + e.toString()));
+                ll.addView(subtitle(this, "  [" + i + "]" + e.toString(), ResUtils.skin_black.getDefaultColor(), true));
             }
         }
 
@@ -294,9 +294,9 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
             try {
                 String shortName = entry.getKey();
                 String currName = entry.getValue() + "";
-                ll.addView(subtitle(this, "  [" + i + "]" + shortName + "\n" + currName));
+                ll.addView(subtitle(this, "  [" + i + "]" + shortName + "\n" + currName, ResUtils.skin_black.getDefaultColor(), true));
             } catch (Exception e) {
-                e.printStackTrace();
+                ll.addView(subtitle(this, "  [" + i + "]" + e.toString(), ResUtils.skin_black.getDefaultColor(), true));
             }
             i++;
         }
@@ -304,17 +304,17 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
         {
             int cost;
             cost = Parasitics.getResourceInjectionCost();
-            ll.addView(subtitle(this, "ResourceInjectionCost: " + (cost < 0 ? "FAILED" : cost + "ms")));
+            ll.addView(subtitle(this, "ResourceInjectionCost: " + (cost < 0 ? "FAILED" : cost + "ms"), ResUtils.skin_black.getDefaultColor(),true));
             cost = Parasitics.getActivityStubHookCost();
-            ll.addView(subtitle(this, "ActivityStubHookCost: " + (cost < 0 ? "FAILED" : cost + "ms")));
+            ll.addView(subtitle(this, "ActivityStubHookCost: " + (cost < 0 ? "FAILED" : cost + "ms"), ResUtils.skin_black.getDefaultColor(), true));
         }
 
         ll.addView(subtitle(this, "SystemClassLoader\n" + ClassLoader.getSystemClassLoader()
             + "\nContext.getClassLoader()\n" + getClassLoader()
             + "\nThread.getContextClassLoader()\n" + Thread.currentThread().getContextClassLoader()
-            + "\nInitiator.getHostClassLoader()\n" + Initiator.getHostClassLoader()));
+            + "\nInitiator.getHostClassLoader()\n" + Initiator.getHostClassLoader(), ResUtils.skin_black.getDefaultColor(), true));
         long ts = Utils.getBuildTimestamp();
-        ll.addView(subtitle(this, "Build Time: " + (ts > 0 ? new Date(ts).toString() : "unknown")));
+        ll.addView(subtitle(this, "Build Time: " + (ts > 0 ? new Date(ts).toString() : "unknown"), ResUtils.skin_black.getDefaultColor(), true));
         String info;
         try {
             Natives.load(this);
@@ -324,7 +324,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
             log(e3);
             info = e3.toString();
         }
-        ll.addView(subtitle(this, info));
+        ll.addView(subtitle(this, info, ResUtils.skin_black.getDefaultColor(), true));
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         setContentView(bounceScrollView);
         LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);
