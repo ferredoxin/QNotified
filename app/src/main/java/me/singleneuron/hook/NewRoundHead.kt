@@ -90,6 +90,7 @@ object NewRoundHead : BaseDelayableHighPerformanceConditionalHookAdapter("newrou
     }
 
     override fun getPreconditions(): Array<Step> {
+        //特征字符串："FaceManager"/"AvatarUtil"
         return if (requireMinQQVersion(QQVersion.QQ_8_5_0)) {
             arrayOf(DexDeobfStep(DexKit.C_AvatarUtil))
         } else {

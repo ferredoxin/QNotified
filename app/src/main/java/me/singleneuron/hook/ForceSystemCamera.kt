@@ -58,6 +58,7 @@ object ForceSystemCamera : BaseDelayableConditionalHookAdapter("forceSystemCamer
     }
 
     override fun getPreconditions(): Array<Step> {
+        //特征字符串："CaptureUtil"
         return arrayOf(DexDeobfStep(DexKit.C_CaptureUtil))
     }
 
