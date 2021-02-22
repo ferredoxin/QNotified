@@ -45,31 +45,33 @@ import me.singleneuron.qn_kernel.data.requireMinVersion
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.R
 import nil.nadph.qnotified.SyncUtils
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.ui.CustomDialog
 import nil.nadph.qnotified.util.ReflexUtil
 import nil.nadph.qnotified.util.Toasts
 import nil.nadph.qnotified.util.Utils
 
+@FunctionEntry
 object FakeBalance : PluginDelayableHook("ketal_qwallet_fakebalance") {
     override val pluginID = "qwallet_plugin.apk"
     private const val moneyKey = "ketal_qwallet_fakebalance_money"
     private var money
         get() = ConfigManager.getDefaultConfig().getStringOrDefault(moneyKey, "114514")
         set(value) {
-        try {
-            val mgr = ConfigManager.getDefaultConfig()
-            mgr.allConfig[moneyKey] = value
-            mgr.save()
-        } catch (e: Exception) {
-            Utils.log(e)
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                Toasts.error(hostInfo.application, e.toString() + "")
-            } else {
-                SyncUtils.post { Toasts.error(hostInfo.application, e.toString() + "") }
+            try {
+                val mgr = ConfigManager.getDefaultConfig()
+                mgr.allConfig[moneyKey] = value
+                mgr.save()
+            } catch (e: Exception) {
+                Utils.log(e)
+                if (Looper.myLooper() == Looper.getMainLooper()) {
+                    Toasts.error(hostInfo.application, e.toString() + "")
+                } else {
+                    SyncUtils.post { Toasts.error(hostInfo.application, e.toString() + "") }
+                }
             }
         }
-    }
 
     override fun isValid(): Boolean = requireMinVersion(QQVersion.QQ_8_0_0, TIMVersion.TIM_1_0_0)
 

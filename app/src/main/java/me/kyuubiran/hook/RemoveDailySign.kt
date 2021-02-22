@@ -28,11 +28,13 @@ import de.robv.android.xposed.XposedBridge
 import me.kyuubiran.util.getObjectOrNull
 import me.kyuubiran.util.loadClass
 import me.kyuubiran.util.setViewZeroSize
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.LicenseStatus
 import nil.nadph.qnotified.util.Utils
 
 //移除侧滑栏左上角打卡
+@FunctionEntry
 object RemoveDailySign : CommonDelayableHook("kr_remove_daily_sign") {
 
     override fun initOnce(): Boolean {

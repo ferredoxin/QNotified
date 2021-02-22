@@ -34,6 +34,7 @@ import java.util.Random;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.bridge.ContactUtils;
 import nil.nadph.qnotified.bridge.RevokeMsgInfoImpl;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
@@ -56,6 +57,7 @@ import static nil.nadph.qnotified.util.Utils.*;
  * 2020/03/08 Sun.20:33 Minor changes at GreyTip
  * 2020/04/08 Tue.23:21 Use RevokeMsgInfoImpl for ease, wanna cry
  */
+@FunctionEntry
 public class RevokeMsgHook extends CommonDelayableHook {
     private static final RevokeMsgHook self = new RevokeMsgHook();
     private Object mQQMsgFacade = null;

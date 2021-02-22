@@ -24,6 +24,7 @@ package me.kyuubiran.hook
 import android.view.View
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.util.DexKit
@@ -32,6 +33,7 @@ import nil.nadph.qnotified.util.Utils
 import java.lang.reflect.Method
 
 //移除傻屌右划群应用
+@FunctionEntry
 object RemoveGroupApp : CommonDelayableHook("kr_remove_group_app", DexDeobfStep(DexKit.C_GroupAppActivity)) {
 
     override fun initOnce(): Boolean {

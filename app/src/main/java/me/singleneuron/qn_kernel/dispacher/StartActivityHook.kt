@@ -29,12 +29,14 @@ import me.singleneuron.base.adapter.BaseDelayableHookAdapter
 import me.singleneuron.hook.DebugDump
 import me.singleneuron.hook.decorator.DisableQzoneSlideCamera
 import nil.nadph.qnotified.SyncUtils
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 
+@FunctionEntry
 object StartActivityHook : BaseDelayableHookAdapter(cfgName = "startActivityHook",proc = SyncUtils.PROC_ANY) {
 
     val decorators = arrayOf(
-            DebugDump,
-            DisableQzoneSlideCamera
+        DebugDump,
+        DisableQzoneSlideCamera
     )
 
     override fun doInit(): Boolean {

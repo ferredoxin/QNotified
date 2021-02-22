@@ -48,6 +48,7 @@ import de.robv.android.xposed.XposedBridge;
 import me.singleneuron.hook.CopyCardMsg;
 import cc.ioctl.activity.ChatTailActivity;
 import cc.ioctl.dialog.RikkaCustomMsgTimeFormatDialog;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.step.DexDeobfStep;
@@ -61,7 +62,7 @@ import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.ReflexUtil.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
-
+@FunctionEntry
 public class InputButtonHook extends CommonDelayableHook {
     public static final int R_ID_COPY_CODE = 0x00EE77CC;
     private static final InputButtonHook self = new InputButtonHook();

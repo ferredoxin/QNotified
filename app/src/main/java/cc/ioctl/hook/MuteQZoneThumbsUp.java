@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
@@ -32,6 +33,7 @@ import nil.nadph.qnotified.util.LicenseStatus;
 
 import static nil.nadph.qnotified.util.Utils.*;
 
+@FunctionEntry
 public class MuteQZoneThumbsUp extends CommonDelayableHook {
 
     private static final MuteQZoneThumbsUp self = new MuteQZoneThumbsUp();
@@ -54,7 +56,7 @@ public class MuteQZoneThumbsUp extends CommonDelayableHook {
             for (Method m : clz.getDeclaredMethods()) {
                 if (m.getReturnType().equals(void.class)) {
                     if (showQZoneMsgNotification == null ||
-                            m.getParameterTypes().length > showQZoneMsgNotification.getParameterTypes().length) {
+                        m.getParameterTypes().length > showQZoneMsgNotification.getParameterTypes().length) {
                         showQZoneMsgNotification = m;
                     }
                 }

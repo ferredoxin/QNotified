@@ -31,10 +31,12 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.*;
 
+@FunctionEntry
 public class InterceptZipBomb extends CommonDelayableHook {
     public static final InterceptZipBomb INSTANCE = new InterceptZipBomb();
 
@@ -46,7 +48,7 @@ public class InterceptZipBomb extends CommonDelayableHook {
     protected boolean initOnce() {
         try {
             XposedBridge.hookMethod(DexKit.doFindClass(DexKit.C_ZipUtils_biz)
-                    .getMethod("a", File.class, String.class), new XC_MethodHook(51) {
+                .getMethod("a", File.class, String.class), new XC_MethodHook(51) {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     if (LicenseStatus.sDisableCommonHooks) return;
@@ -62,7 +64,7 @@ public class InterceptZipBomb extends CommonDelayableHook {
                     if (sizeSum >= 104550400) {
                         param.setResult(null);
                         Toasts.show(HostInformationProviderKt.getHostInfo().getApplication(), String.format("已拦截 %s ,解压后大小异常: %s",
-                                file.getPath(), BugUtils.getSizeString(sizeSum)));
+                            file.getPath(), BugUtils.getSizeString(sizeSum)));
                     }
                 }
             });

@@ -39,22 +39,29 @@ public class ErrorStatus {
     public static final int STATUS_INITIALIZATION = 1;
 
     /**
+     * For {@link AbsFunctionItem}: Turn on a function that is not available.<br/>
+     * For {@link AbsHookTask}: The hook task is being executed before its preparations are ready.
+     * This value should only be treated as an edge, not a constant level.
+     */
+    public static final int STATUS_REJECTED = 2;
+
+    /**
      * For {@link AbsFunctionItem}: The function is on and working properly.<br/>
      * For {@link AbsHookTask}: The hook task has been executed successfully.
      */
-    public static final int STATUS_SUCCESS = 2;
+    public static final int STATUS_SUCCESS = 3;
 
     /**
      * For {@link AbsFunctionItem}: The function working but sth may be wrong.<br/>
      * For {@link AbsHookTask}: The hook task has been executed with warning message.
      */
-    public static final int STATUS_WARNING = 3;
+    public static final int STATUS_WARNING = 4;
 
     /**
      * For {@link AbsFunctionItem}: An error occurred so this function is unusable.<br/>
      * For {@link AbsHookTask}: The hook task execution failed.
      */
-    public static final int STATUS_FAILED = 4;
+    public static final int STATUS_FAILED = 5;
 
     public final int status;
 
@@ -74,6 +81,9 @@ public class ErrorStatus {
 
     @NonNull
     public static final ErrorStatus INITIALIZATION = new ErrorStatus(STATUS_INITIALIZATION, null);
+
+    @NonNull
+    public static final ErrorStatus REJECTED = new ErrorStatus(STATUS_REJECTED, null);
 
     @NonNull
     public static final ErrorStatus SUCCESS = new ErrorStatus(STATUS_SUCCESS, null);
@@ -97,5 +107,29 @@ public class ErrorStatus {
     @NonNull
     public static ErrorStatus FAILED(@Nullable String msg) {
         return new ErrorStatus(STATUS_FAILED, msg);
+    }
+
+    public boolean isInactive() {
+        return status == STATUS_INACTIVE;
+    }
+
+    public boolean isSuccess() {
+        return status == STATUS_SUCCESS;
+    }
+
+    public boolean isWarning() {
+        return status == STATUS_WARNING;
+    }
+
+    public boolean isDone() {
+        return status == STATUS_SUCCESS || status == STATUS_WARNING;
+    }
+
+    public boolean isFailed() {
+        return status == STATUS_FAILED;
+    }
+
+    public boolean isRejected() {
+        return status == STATUS_REJECTED;
     }
 }

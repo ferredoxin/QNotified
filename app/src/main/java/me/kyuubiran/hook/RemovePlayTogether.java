@@ -27,6 +27,7 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import me.singleneuron.util.QQVersion;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
@@ -34,6 +35,7 @@ import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
 //屏蔽群聊界面一起嗨
+@FunctionEntry
 public class RemovePlayTogether extends CommonDelayableHook {
     private static final RemovePlayTogether self = new RemovePlayTogether();
 

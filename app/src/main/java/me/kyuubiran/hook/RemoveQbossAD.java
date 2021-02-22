@@ -28,12 +28,14 @@ import java.lang.reflect.Modifier;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
 //移除消息列表顶栏横幅广告
+@FunctionEntry
 public class RemoveQbossAD extends CommonDelayableHook {
     private static final RemoveQbossAD self = new RemoveQbossAD();
 

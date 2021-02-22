@@ -34,6 +34,7 @@ import ltd.nextalone.util.hookAfter
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.tlb.ConfigTable.getConfig
 import nil.nadph.qnotified.R
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.bridge.QQMessageFacade
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.step.DexDeobfStep
@@ -43,6 +44,7 @@ import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.ReflexUtil
 import nil.nadph.qnotified.util.Utils
 
+@FunctionEntry
 object MultiActionHook: CommonDelayableHook("qn_multi_action", DexDeobfStep(DexKit.C_MessageCache), DexDeobfStep(DexKit.C_MSG_REC_FAC), DexDeobfStep(DexKit.N_BASE_CHAT_PIE__createMulti), DexDeobfStep(DexKit.C_MultiMsg_Manager)) {
     private val fieldName = if (hostInfo.isTim) getConfig(MultiActionHook::class.java.simpleName) else "a"
     private var baseChatPie: Any? = null

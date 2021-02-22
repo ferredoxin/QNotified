@@ -30,6 +30,7 @@ import java.lang.reflect.Field;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.bridge.AIOUtilsImpl;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
@@ -40,6 +41,7 @@ import static nil.nadph.qnotified.util.Initiator._PicItemBuilder;
 import static nil.nadph.qnotified.util.ReflexUtil.findField;
 import static nil.nadph.qnotified.util.Utils.*;
 
+@FunctionEntry
 public class EmoPicHook extends CommonDelayableHook {
 
     private static final EmoPicHook self = new EmoPicHook();

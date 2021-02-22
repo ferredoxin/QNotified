@@ -34,6 +34,7 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
@@ -44,6 +45,7 @@ import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.ReflexUtil.findField;
 import static nil.nadph.qnotified.util.Utils.*;
 
+@FunctionEntry
 public class FlashPicHook extends CommonDelayableHook {
     private static final FlashPicHook self = new FlashPicHook();
 
@@ -133,7 +135,7 @@ public class FlashPicHook extends CommonDelayableHook {
                     }
                     if (setTailMessage == null) {
                         setTailMessage = XposedHelpers.findMethodExact(load("com.tencent.mobileqq.activity.aio.BaseChatItemLayout"),
-                                "setTailMessage", boolean.class, CharSequence.class, View.OnClickListener.class);
+                            "setTailMessage", boolean.class, CharSequence.class, View.OnClickListener.class);
                         setTailMessage.setAccessible(true);
                     }
                     if (setTailMessage != null) {
@@ -164,7 +166,7 @@ public class FlashPicHook extends CommonDelayableHook {
             }
             int msgtype = (int) MsgRecord_msgtype.get(msgRecord);
             return (msgtype == -2000 || msgtype == -2006)
-                    && !TextUtils.isEmpty((String) MsgRecord_getExtInfoFromExtStr.invoke(msgRecord, "commen_flash_pic"));
+                && !TextUtils.isEmpty((String) MsgRecord_getExtInfoFromExtStr.invoke(msgRecord, "commen_flash_pic"));
         } catch (Exception e) {
             log(e);
             return false;

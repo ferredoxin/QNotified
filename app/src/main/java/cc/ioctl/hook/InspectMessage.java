@@ -31,6 +31,7 @@ import java.lang.reflect.Modifier;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.ui.CustomDialog;
@@ -43,6 +44,7 @@ import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.ReflexUtil.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
+@FunctionEntry
 public class InspectMessage extends CommonDelayableHook implements View.OnLongClickListener {
     private static final InspectMessage self = new InspectMessage();
     static Field f_panel;
@@ -89,7 +91,7 @@ public class InspectMessage extends CommonDelayableHook implements View.OnLongCl
             Method a = null, b = null, c = null, _emmm_ = null;
             for (Method m : load("com.tencent.mobileqq.activity.aio.panel.PanelIconLinearLayout").getDeclaredMethods()) {
                 if (m.getReturnType().equals(void.class) && Modifier.isPublic(m.getModifiers()) && !Modifier.isStatic(m.getModifiers())
-                        && m.getParameterTypes().length == 0) {
+                    && m.getParameterTypes().length == 0) {
                     String name = m.getName();
                     if ("a".equals(name)) {
                         a = m;

@@ -29,6 +29,7 @@ import java.util.List;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.bridge.ContactUtils;
 import nil.nadph.qnotified.bridge.GreyTipBuilder;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
@@ -43,6 +44,7 @@ import static nil.nadph.qnotified.util.ReflexUtil.findMethodByTypes_1;
 import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_declared_ordinal_modifier;
 import static nil.nadph.qnotified.util.Utils.log;
 
+@FunctionEntry
 public class GagInfoDisclosure extends CommonDelayableHook {
     private static final GagInfoDisclosure self = new GagInfoDisclosure();
 
@@ -95,7 +97,7 @@ public class GagInfoDisclosure extends CommonDelayableHook {
                     List<Object> list = new ArrayList<>();
                     list.add(msg);
                     invoke_virtual_declared_ordinal_modifier(Utils.getQQMessageFacade(), 0, 4, false, Modifier.PUBLIC, 0,
-                            list, Utils.getAccount(), List.class, String.class, void.class);
+                        list, Utils.getAccount(), List.class, String.class, void.class);
                     param.setResult(null);
                 }
             });
@@ -133,7 +135,7 @@ public class GagInfoDisclosure extends CommonDelayableHook {
                     List<Object> list = new ArrayList<>();
                     list.add(msg);
                     invoke_virtual_declared_ordinal_modifier(Utils.getQQMessageFacade(), 0, 4, false, Modifier.PUBLIC, 0,
-                            list, Utils.getAccount(), List.class, String.class, void.class);
+                        list, Utils.getAccount(), List.class, String.class, void.class);
                     param.setResult(null);
                 }
             });

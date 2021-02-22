@@ -40,6 +40,7 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
@@ -48,6 +49,7 @@ import nil.nadph.qnotified.util.Initiator;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.*;
 
+@FunctionEntry
 public class FakeBatteryHook extends CommonDelayableHook implements InvocationHandler, SyncUtils.BroadcastListener {
     public static final String qn_fake_bat_enable = "qn_fake_bat_enable";
     private static final String ACTION_UPDATE_BATTERY_STATUS = "nil.nadph.qnotified.ACTION_UPDATE_BATTERY_STATUS";
@@ -96,7 +98,7 @@ public class FakeBatteryHook extends CommonDelayableHook implements InvocationHa
                         Intent intent = (Intent) param.args[1];
                         String action = intent.getAction();
                         if (action.equals("android.intent.action.ACTION_POWER_CONNECTED")
-                                || action.equals("android.intent.action.ACTION_POWER_DISCONNECTED")) {
+                            || action.equals("android.intent.action.ACTION_POWER_DISCONNECTED")) {
                             if (mBatteryStatusRecvRef == null || mBatteryStatusRecvRef.get() != param.thisObject) {
                                 mBatteryStatusRecvRef = new WeakReference<>((BroadcastReceiver) param.thisObject);
                             }
@@ -107,7 +109,7 @@ public class FakeBatteryHook extends CommonDelayableHook implements InvocationHa
                         }
                         if (!isEnabled()) return;
                         if (action.equals("android.intent.action.ACTION_POWER_CONNECTED")
-                                || action.equals("android.intent.action.ACTION_POWER_DISCONNECTED")) {
+                            || action.equals("android.intent.action.ACTION_POWER_DISCONNECTED")) {
                             if (isFakeBatteryCharging()) {
                                 lastFakeStatus = BatteryManager.BATTERY_STATUS_CHARGING;
                                 intent.setAction("android.intent.action.ACTION_POWER_CONNECTED");
@@ -213,7 +215,7 @@ public class FakeBatteryHook extends CommonDelayableHook implements InvocationHa
             }
         }
         String act = isFakeBatteryCharging() ? "android.intent.action.ACTION_POWER_CONNECTED"
-                : "android.intent.action.ACTION_POWER_DISCONNECTED";
+            : "android.intent.action.ACTION_POWER_DISCONNECTED";
         final Intent intent = new Intent(act);
         intent.putExtra(BatteryManager.EXTRA_LEVEL, getFakeBatteryCapacity());
         intent.putExtra(BatteryManager.EXTRA_SCALE, 100);
@@ -252,7 +254,7 @@ public class FakeBatteryHook extends CommonDelayableHook implements InvocationHa
                     scheduleReceiveBatteryLevel();
                 }
                 if (lastFakeStatus == -1 ||
-                        lastFakeStatus == BatteryManager.BATTERY_STATUS_DISCHARGING == isFakeBatteryCharging()) {
+                    lastFakeStatus == BatteryManager.BATTERY_STATUS_DISCHARGING == isFakeBatteryCharging()) {
                     scheduleReceiveBatteryStatus();
                 }
             }

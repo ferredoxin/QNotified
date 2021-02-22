@@ -47,7 +47,7 @@ public interface AbsHookTask {
     ErrorStatus getTaskStatus();
 
     /**
-     * Execute this task now, wait it to finish, ang get the result.
+     * Execute this task now, wait it to finish, and get the result.
      * If this task has been executed, then it should NOT be executed again.
      *
      * @return status when(after) this task is executed.
@@ -59,7 +59,7 @@ public interface AbsHookTask {
     /**
      * @return whether this task has been executed
      */
-    boolean hasExecuted();
+    boolean isExecuted();
 
     /**
      * Sth related to {@link nil.nadph.qnotified.util.DexKit}. <br/>
@@ -69,7 +69,7 @@ public interface AbsHookTask {
      */
     @Const
     @NonNull
-    Step[] getPreconditions();
+    Step[] getPreparations();
 
     /**
      * On which processes this hook task should be executed. If current process does not match
@@ -78,5 +78,5 @@ public interface AbsHookTask {
      * @return process ids, see {@link SyncUtils#isTargetProcess(int)}.
      */
     @Const
-    int getEffectiveProc();
+    int getTargetProcess();
 }

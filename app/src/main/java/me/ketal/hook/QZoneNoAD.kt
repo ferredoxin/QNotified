@@ -29,9 +29,11 @@ import me.ketal.util.HookUtil.getMethod
 import me.ketal.util.TIMVersion
 import me.singleneuron.qn_kernel.data.requireMinVersion
 import me.singleneuron.util.QQVersion
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.ReflexUtil
 import nil.nadph.qnotified.util.Utils
 
+@FunctionEntry
 object QZoneNoAD : PluginDelayableHook("ketal_qzone_hook") {
     override fun isValid(): Boolean = requireMinVersion(QQVersion.QQ_8_0_0, TIMVersion.TIM_1_0_0)
 

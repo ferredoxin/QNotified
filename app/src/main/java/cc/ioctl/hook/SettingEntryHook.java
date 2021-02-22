@@ -26,31 +26,31 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
-import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.activity.EulaActivity;
 import nil.nadph.qnotified.activity.SettingsActivity;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
-
-import androidx.annotation.NonNull;
-
 import nil.nadph.qnotified.util.ReflexUtil;
 import nil.nadph.qnotified.util.Utils;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.ReflexUtil.*;
-import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
+import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
+import static nil.nadph.qnotified.util.ReflexUtil.new_instance;
 import static nil.nadph.qnotified.util.Utils.log;
 
+@FunctionEntry
 public class SettingEntryHook extends CommonDelayableHook {
     public static final int R_ID_SETTING_ENTRY = 0x300AFF71;
     private static final SettingEntryHook self = new SettingEntryHook();

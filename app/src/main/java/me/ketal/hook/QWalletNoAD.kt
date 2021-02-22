@@ -32,9 +32,10 @@ import me.ketal.util.HookUtil.getField
 import me.ketal.util.HookUtil.getMethod
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.Utils
 
-
+@FunctionEntry
 object QWalletNoAD : PluginDelayableHook("ketal_qwallet_noad") {
     override val pluginID = "qwallet_plugin.apk"
 

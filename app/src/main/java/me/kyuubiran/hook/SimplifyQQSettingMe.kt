@@ -28,6 +28,7 @@ import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import me.kyuubiran.util.setViewZeroSize
 import nil.nadph.qnotified.SyncUtils
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null
 import nil.nadph.qnotified.step.Step
@@ -36,6 +37,7 @@ import nil.nadph.qnotified.util.Utils
 import java.util.*
 
 //侧滑栏精简
+@FunctionEntry
 object SimplifyQQSettingMe : BaseMultiConfigDelayableHook() {
     var isInit = false
 

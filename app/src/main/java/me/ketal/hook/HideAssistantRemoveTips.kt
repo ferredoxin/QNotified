@@ -23,9 +23,11 @@ package me.ketal.hook
 
 import ltd.nextalone.util.replaceNull
 import me.ketal.util.HookUtil.getMethod
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.Utils
 
+@FunctionEntry
 object HideAssistantRemoveTips: CommonDelayableHook("ketal_hide_assistant_removetips") {
     override fun initOnce(): Boolean {
         return try {

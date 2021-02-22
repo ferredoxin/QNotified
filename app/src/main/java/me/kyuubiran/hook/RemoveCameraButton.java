@@ -25,12 +25,14 @@ import java.lang.reflect.Method;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
 //屏蔽聊天界面相机图标
+@FunctionEntry
 public class RemoveCameraButton extends CommonDelayableHook {
     private static final RemoveCameraButton self = new RemoveCameraButton();
 

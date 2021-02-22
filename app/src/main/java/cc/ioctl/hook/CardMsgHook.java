@@ -25,12 +25,13 @@ import android.os.Parcelable;
 
 import com.tencent.mobileqq.app.QQAppInterface;
 
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.DexKit;
 
-
+@FunctionEntry
 public class CardMsgHook extends CommonDelayableHook {
     public static final int R_ID_COPY_CODE = 0x00EE77CC;
     private static final CardMsgHook self = new CardMsgHook();

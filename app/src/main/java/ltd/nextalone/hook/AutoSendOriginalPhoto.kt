@@ -26,10 +26,12 @@ import android.widget.CheckBox
 import ltd.nextalone.util.findHostViewById
 import ltd.nextalone.util.hookAfter
 import me.kyuubiran.util.getMethods
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.Utils
 import java.lang.reflect.Method
 
+@FunctionEntry
 object AutoSendOriginalPhoto : CommonDelayableHook("na_auto_send_origin_photo") {
 
     override fun initOnce(): Boolean {

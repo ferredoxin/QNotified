@@ -26,9 +26,11 @@ import android.widget.RelativeLayout
 import ltd.nextalone.util.clazz
 import ltd.nextalone.util.findHostViewById
 import ltd.nextalone.util.hookAfterAllConstructors
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.Utils
 
+@FunctionEntry
 object HideChatVipImage : CommonDelayableHook("na_hide_chat_vip_image_kt") {
 
     override fun initOnce(): Boolean {

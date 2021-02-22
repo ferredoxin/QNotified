@@ -28,6 +28,7 @@ import java.lang.reflect.Method;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
@@ -36,6 +37,7 @@ import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
 import static nil.nadph.qnotified.util.Utils.log;
 
 //回赞界面一键20赞
+@FunctionEntry
 public class OneTapTwentyLikes extends CommonDelayableHook {
     private static final OneTapTwentyLikes self = new OneTapTwentyLikes();
 

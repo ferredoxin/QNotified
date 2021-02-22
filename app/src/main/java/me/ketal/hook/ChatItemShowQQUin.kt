@@ -26,6 +26,7 @@ import ltd.nextalone.util.method
 import me.ketal.util.TIMVersion
 import me.singleneuron.qn_kernel.data.requireMinVersion
 import me.singleneuron.util.QQVersion
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.ui.CustomDialog
 import nil.nadph.qnotified.util.ReflexUtil
@@ -33,6 +34,7 @@ import nil.nadph.qnotified.util.Utils
 import java.text.SimpleDateFormat
 import java.util.*
 
+@FunctionEntry
 object ChatItemShowQQUin : CommonDelayableHook("ketal_ChatItem_ShowQQUin") {
     override fun isValid(): Boolean = requireMinVersion(QQVersion.QQ_8_0_0, TIMVersion.TIM_1_0_0)
 

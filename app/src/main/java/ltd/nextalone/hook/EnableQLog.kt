@@ -24,10 +24,12 @@ package ltd.nextalone.hook
 import ltd.nextalone.util.hookAfter
 import ltd.nextalone.util.replaceTrue
 import me.kyuubiran.util.getMethods
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.Utils
 import java.lang.reflect.Method
 
+@FunctionEntry
 object EnableQLog : CommonDelayableHook("na_enable_qlog") {
 
     override fun initOnce(): Boolean {

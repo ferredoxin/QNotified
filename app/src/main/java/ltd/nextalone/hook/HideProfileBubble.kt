@@ -28,10 +28,12 @@ import me.singleneuron.data.PageFaultHighPerformanceFunctionCache
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.qn_kernel.tlb.ConfigTable
 import me.singleneuron.util.QQVersion
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.Utils
 import java.lang.reflect.Method
 
+@FunctionEntry
 object HideProfileBubble : BaseDelayableHighPerformanceConditionalHookAdapter("hideProfileBubble") {
 
     override val recordTime: Boolean = false

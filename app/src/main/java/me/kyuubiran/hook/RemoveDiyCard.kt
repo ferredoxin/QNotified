@@ -25,11 +25,13 @@ import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import me.kyuubiran.util.getMethods
 import me.kyuubiran.util.isPublic
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.LicenseStatus
 import nil.nadph.qnotified.util.Utils
 import java.lang.reflect.Method
 
+@FunctionEntry
 object RemoveDiyCard : CommonDelayableHook("kr_remove_diy_card") {
 
     override fun initOnce(): Boolean {

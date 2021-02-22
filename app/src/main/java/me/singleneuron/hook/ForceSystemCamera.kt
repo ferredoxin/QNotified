@@ -24,12 +24,14 @@ package me.singleneuron.hook
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import me.singleneuron.base.adapter.BaseDelayableConditionalHookAdapter
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.step.Step
 import nil.nadph.qnotified.util.DexKit
 import nil.nadph.qnotified.util.LicenseStatus
 import nil.nadph.qnotified.util.Utils
 
+@FunctionEntry
 object ForceSystemCamera : BaseDelayableConditionalHookAdapter("forceSystemCamera") {
     override fun doInit(): Boolean {
         return try {

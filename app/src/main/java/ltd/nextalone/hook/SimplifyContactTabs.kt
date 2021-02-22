@@ -25,9 +25,10 @@ import ltd.nextalone.base.MultiItemDelayableHook
 import ltd.nextalone.util.*
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.Utils
 
-
+@FunctionEntry
 object SimplifyContactTabs : MultiItemDelayableHook("na_simplify_contact_tabs_kt", "保留") {
     override val allItems = "好友|分组|群聊|设备|通讯录|订阅号".split("|").toMutableList()
     override val defaultItems = "好友|分组|群聊|设备|通讯录|订阅号"

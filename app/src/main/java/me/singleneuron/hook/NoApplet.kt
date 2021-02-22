@@ -30,8 +30,10 @@ import me.singleneuron.data.PageFaultHighPerformanceFunctionCache
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.NoAppletUtil
 import me.singleneuron.util.QQVersion
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.Utils
 
+@FunctionEntry
 object NoApplet : BaseDelayableConditionalHookAdapter("noapplet") {
 
     override val conditionCache: PageFaultHighPerformanceFunctionCache<Boolean> = PageFaultHighPerformanceFunctionCache { requireMinQQVersion(QQVersion.QQ_8_0_0) }

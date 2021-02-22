@@ -26,7 +26,9 @@ import de.robv.android.xposed.XposedBridge
 import me.singleneuron.activity.ChooseAlbumAgentActivity
 import me.singleneuron.base.adapter.BaseDelayableConditionalHookAdapter
 import me.singleneuron.qn_kernel.data.hostInfo
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 
+@FunctionEntry
 object ForceSystemAlbum : BaseDelayableConditionalHookAdapter("forceSystemAlbum") {
 
     override fun doInit(): Boolean {

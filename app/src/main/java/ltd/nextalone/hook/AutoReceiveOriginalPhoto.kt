@@ -28,11 +28,13 @@ import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.SyncUtils
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.util.DexKit
 import nil.nadph.qnotified.util.Utils
 
+@FunctionEntry
 object AutoReceiveOriginalPhoto : CommonDelayableHook("na_auto_receive_origin_photo", SyncUtils.PROC_PEAK, false, DexDeobfStep(DexKit.C_AIOPictureView)) {
 
     override fun initOnce(): Boolean {

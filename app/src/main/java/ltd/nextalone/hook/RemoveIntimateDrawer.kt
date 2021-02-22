@@ -23,11 +23,13 @@ package ltd.nextalone.hook
 
 import android.view.View
 import ltd.nextalone.util.replaceNull
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.DexKit
 import nil.nadph.qnotified.util.Utils
 import java.lang.reflect.Method
 
+@FunctionEntry
 object RemoveIntimateDrawer : CommonDelayableHook("kr_remove_intimate_drawer") {
 
     override fun initOnce(): Boolean {
