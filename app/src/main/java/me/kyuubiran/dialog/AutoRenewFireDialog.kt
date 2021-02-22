@@ -105,7 +105,7 @@ object AutoRenewFireDialog {
         val linearLayout = LinearLayout(ctx)
         linearLayout.orientation = LinearLayout.VERTICAL
         linearLayout.addView(ViewBuilder.subtitle(context,
-            "说明:启用后将会在每天0点之后给对方发一条消息。\n此处开关为总开关，请单独在好友的设置页面打开自动续火开关。\n无论你是否给TA发过消息，本功能都会发送续火消息。\n如果你在续火消息发送前添加了好友，那么之后将会发送给这个好友。\n如果今天已经发送过续火消息了，则再添加好友并不会发送续火消息。"))
+            "说明:启用后将会在每天预设时间之后给对方发一条消息。\n此处开关为总开关，请单独在好友的设置页面打开自动续火开关。\n无论你是否给TA发过消息，本功能都会发送续火消息。\n如果你在续火消息发送前添加了好友，那么之后将会发送给这个好友。\n如果今天已经发送过续火消息了，则再添加好友并不会发送续火消息。"))
         linearLayout.addView(checkBox, params)
         linearLayout.addView(msgEditText, params)
         linearLayout.addView(timeEditText, params)
