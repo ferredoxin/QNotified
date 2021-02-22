@@ -33,6 +33,7 @@ import java.lang.reflect.Method;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.ui.ResUtils;
@@ -43,6 +44,7 @@ import nil.nadph.qnotified.util.Utils;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
+@FunctionEntry
 public class ArbitraryFrdSourceId extends CommonDelayableHook {
     private static final ArbitraryFrdSourceId self = new ArbitraryFrdSourceId();
 

@@ -42,6 +42,7 @@ import me.singleneuron.hook.AppCenterHookKt;
 import nil.nadph.qnotified.ExfriendManager;
 import cc.ioctl.activity.ExfriendListActivity;
 import nil.nadph.qnotified.activity.TroubleshootActivity;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.bridge.FriendChunk;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
@@ -57,6 +58,7 @@ import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.ReflexUtil.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
+@FunctionEntry
 public class DelDetectorHook extends CommonDelayableHook {
 
     public static final int VIEW_ID_DELETED_FRIEND = 0x00EE77AA;

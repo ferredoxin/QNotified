@@ -50,6 +50,7 @@ import java.util.ArrayList;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.bridge.ChatActivityFacade;
 import nil.nadph.qnotified.bridge.SessionInfoImpl;
 import nil.nadph.qnotified.config.ConfigManager;
@@ -68,7 +69,7 @@ import static nil.nadph.qnotified.util.ReflexUtil.*;
 import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
 import static nil.nadph.qnotified.util.Utils.*;
 
-
+@FunctionEntry
 public class PttForwardHook extends CommonDelayableHook {
 
     public static final int R_ID_PTT_FORWARD = 0x30EE77CB;

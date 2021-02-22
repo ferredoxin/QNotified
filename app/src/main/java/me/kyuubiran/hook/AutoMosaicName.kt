@@ -24,6 +24,7 @@ package me.kyuubiran.hook
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import me.singleneuron.qn_kernel.tlb.ConfigTable
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.Initiator._BaseChatPie
 import nil.nadph.qnotified.util.LicenseStatus
@@ -31,6 +32,7 @@ import nil.nadph.qnotified.util.Utils
 import java.lang.reflect.Method
 
 //聊天界面顶栏群名字/好友昵称自动打码
+@FunctionEntry
 object AutoMosaicName : CommonDelayableHook("kr_automatic_mosaic_name") {
 
     override fun initOnce(): Boolean {

@@ -28,6 +28,7 @@ import java.lang.reflect.Field;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import me.singleneuron.util.QQVersion;
 import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
@@ -40,6 +41,7 @@ import androidx.annotation.Nullable;
 
 import static nil.nadph.qnotified.util.Utils.log;
 
+@FunctionEntry
 public class FileRecvRedirect extends BaseDelayableHook {
     private static final FileRecvRedirect self = new FileRecvRedirect();
     private boolean inited = false;

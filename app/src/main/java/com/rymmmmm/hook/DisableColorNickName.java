@@ -26,12 +26,14 @@ import java.lang.reflect.Modifier;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
 //屏蔽群聊炫彩昵称
+@FunctionEntry
 public class DisableColorNickName extends CommonDelayableHook {
     private static final DisableColorNickName self = new DisableColorNickName();
 

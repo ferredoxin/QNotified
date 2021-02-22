@@ -30,7 +30,9 @@ import ltd.nextalone.base.MultiItemDelayableHook
 import me.singleneuron.data.MsgRecordData
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 
+@FunctionEntry
 object AntiMessage : MultiItemDelayableHook("qn_anti_message_items", "屏蔽"), MessageReceiver {
     override var allItems = MsgRecordUtil.MSG.keys.sorted().toMutableList()
     override val defaultItems = ""

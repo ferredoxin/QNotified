@@ -31,11 +31,13 @@ import java.lang.reflect.Method;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import cc.ioctl.dialog.RikkaCustomSplash;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
 //自定义启动图
+@FunctionEntry
 public class CustomSplash extends CommonDelayableHook {
     private static final CustomSplash self = new CustomSplash();
 

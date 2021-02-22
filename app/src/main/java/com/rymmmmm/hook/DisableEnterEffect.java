@@ -26,6 +26,7 @@ import java.lang.reflect.Modifier;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
@@ -33,6 +34,7 @@ import nil.nadph.qnotified.util.LicenseStatus;
 import static nil.nadph.qnotified.util.Utils.log;
 
 //屏蔽所有进场特效
+@FunctionEntry
 public class DisableEnterEffect extends CommonDelayableHook {
     private static final DisableEnterEffect self = new DisableEnterEffect();
 

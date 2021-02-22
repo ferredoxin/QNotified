@@ -27,6 +27,7 @@ import ltd.nextalone.util.hookAfter
 import ltd.nextalone.util.hookBefore
 import me.singleneuron.qn_kernel.data.requireMinVersion
 import me.singleneuron.util.QQVersion
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.util.DexKit
@@ -35,6 +36,7 @@ import nil.nadph.qnotified.util.ReflexUtil
 import nil.nadph.qnotified.util.Utils
 import java.util.*
 
+@FunctionEntry
 object SortAtPanel: CommonDelayableHook("ketal_At_Panel_Hook", DexDeobfStep(DexKit.N_AtPanel__refreshUI), DexDeobfStep(DexKit.N_AtPanel__showDialogAtView)) {
     private var isSort = false
     override fun initOnce(): Boolean {

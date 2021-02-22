@@ -26,10 +26,12 @@ import ltd.nextalone.util.replaceFalse
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.tlb.ConfigTable
 import me.singleneuron.util.QQVersion
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.Utils
 import java.lang.reflect.Method
 
+@FunctionEntry
 object HideTotalNumber : CommonDelayableHook("na_hide_total_number") {
 
     override fun initOnce(): Boolean {

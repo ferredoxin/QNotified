@@ -29,9 +29,11 @@ import android.view.WindowManager
 import de.robv.android.xposed.XposedHelpers
 import me.singleneuron.base.adapter.BaseDelayableConditionalHookAdapter
 import me.singleneuron.qn_kernel.data.hostInfo
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.util.Utils.PACKAGE_NAME_QQ
 
+@FunctionEntry
 object ChangeDrawerWidth : BaseDelayableConditionalHookAdapter("changeDrawerWidth") {
 
     override fun doInit(): Boolean {

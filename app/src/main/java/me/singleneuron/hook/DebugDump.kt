@@ -27,8 +27,10 @@ import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import me.singleneuron.base.decorator.BaseStartActivityHookDecorator
 import me.singleneuron.util.dump
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.Utils
 
+@FunctionEntry
 object DebugDump : BaseStartActivityHookDecorator("debugDump") {
 
     override fun doDecorate(intent: Intent, param: XC_MethodHook.MethodHookParam): Boolean {

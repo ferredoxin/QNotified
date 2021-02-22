@@ -30,8 +30,10 @@ import ltd.nextalone.util.method
 import ltd.nextalone.util.replaceNull
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.Utils
 
+@FunctionEntry
 object SimplifyQQSettings : MultiItemDelayableHook("na_simplify_qq_settings", "保留") {
     override val allItems = "手机号码|达人|安全|通知|记录|隐私|通用|辅助|免流量|关于".split("|").toMutableList()
     override val defaultItems = "手机号码|达人|安全|通知|隐私|通用|辅助|关于"

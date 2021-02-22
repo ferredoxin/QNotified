@@ -23,9 +23,11 @@ package me.singleneuron.hook.decorator
 
 import de.robv.android.xposed.XC_MethodHook
 import me.singleneuron.base.decorator.BaseItemBuilderFactoryHookDecorator
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null
 import nil.nadph.qnotified.util.ReflexUtil.invoke_virtual
 
+@FunctionEntry
 object SimpleCheckIn: BaseItemBuilderFactoryHookDecorator("qn_sign_in_as_text") {
 
     override fun doDecorate(result:Int,chatMessage:Any,param: XC_MethodHook.MethodHookParam): Boolean {

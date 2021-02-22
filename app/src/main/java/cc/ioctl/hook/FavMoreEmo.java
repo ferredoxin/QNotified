@@ -27,6 +27,7 @@ import java.util.List;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
@@ -38,6 +39,7 @@ import static nil.nadph.qnotified.util.ReflexUtil.iput_object;
 import static nil.nadph.qnotified.util.ReflexUtil.sput_object;
 import static nil.nadph.qnotified.util.Utils.log;
 
+@FunctionEntry
 public class FavMoreEmo extends CommonDelayableHook {
     private static final FavMoreEmo self = new FavMoreEmo();
 

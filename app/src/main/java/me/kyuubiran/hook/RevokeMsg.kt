@@ -30,6 +30,7 @@ import de.robv.android.xposed.XposedHelpers
 import me.kyuubiran.util.getDefaultCfg
 import me.kyuubiran.util.logdt
 import nil.nadph.qnotified.SyncUtils
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.bridge.ContactUtils
 import nil.nadph.qnotified.bridge.RevokeMsgInfoImpl
 import nil.nadph.qnotified.hook.CommonDelayableHook
@@ -44,6 +45,7 @@ import java.lang.reflect.Modifier
 import java.util.*
 
 //防撤回狐狸狸版
+@FunctionEntry
 object RevokeMsg : CommonDelayableHook("kr_revoke_msg", SyncUtils.PROC_MAIN or SyncUtils.PROC_MSF, DexDeobfStep(DexKit.C_MSG_REC_FAC), DexDeobfStep(DexKit.C_CONTACT_UTILS)) {
     var mQQMsgFacade: Any? = null
 

@@ -27,12 +27,14 @@ import me.singleneuron.base.adapter.BaseDelayableHighPerformanceConditionalHookA
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.step.Step
 import nil.nadph.qnotified.util.DexKit
 import nil.nadph.qnotified.util.LicenseStatus
 import nil.nadph.qnotified.util.Utils
 
+@FunctionEntry
 object NewRoundHead : BaseDelayableHighPerformanceConditionalHookAdapter("newroundhead") {
 
     override val recordTime: Boolean = false

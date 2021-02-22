@@ -35,6 +35,7 @@ import java.lang.reflect.Modifier;
 
 import de.robv.android.xposed.XC_MethodHook;
 import nil.nadph.qnotified.MainHook;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.ui.CustomDialog;
@@ -46,6 +47,7 @@ import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.ReflexUtil.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
+@FunctionEntry
 public class MultiForwardAvatarHook extends CommonDelayableHook {
 
     private static final MultiForwardAvatarHook self = new MultiForwardAvatarHook();
@@ -99,7 +101,7 @@ public class MultiForwardAvatarHook extends CommonDelayableHook {
                         if (view.getClass().getName().equals("com.tencent.mobileqq.vas.avatar.VasAvatar")) {
                             needShow = true;
                         } else if (view.getClass().equals(ImageView.class) ||
-                                view.getClass().equals(load("com.tencent.widget.CommonImageView"))) {
+                            view.getClass().equals(load("com.tencent.widget.CommonImageView"))) {
                             needShow = true;
                         }
                     }
@@ -210,7 +212,7 @@ public class MultiForwardAvatarHook extends CommonDelayableHook {
             return;
         }
         CustomDialog.createFailsafe(ctx).setTitle(Utils.getShort$Name(msg)).setMessage(msg.toString())
-                .setCancelable(true).setPositiveButton("确定", null).show();
+            .setCancelable(true).setPositiveButton("确定", null).show();
     }
 
     public static boolean isLeftCheckBoxVisible() {

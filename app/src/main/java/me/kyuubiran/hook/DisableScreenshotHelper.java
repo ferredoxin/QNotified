@@ -29,6 +29,7 @@ import java.lang.reflect.Modifier;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
@@ -36,6 +37,7 @@ import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
 //屏蔽截屏分享
+@FunctionEntry
 public class DisableScreenshotHelper extends CommonDelayableHook {
     private static final DisableScreenshotHelper self = new DisableScreenshotHelper();
 

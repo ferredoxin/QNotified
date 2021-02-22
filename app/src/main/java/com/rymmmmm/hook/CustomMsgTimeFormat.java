@@ -31,6 +31,7 @@ import java.util.Date;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import cc.ioctl.dialog.RikkaCustomMsgTimeFormatDialog;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
@@ -38,6 +39,7 @@ import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
 //自定义聊天页面时间格式
+@FunctionEntry
 public class CustomMsgTimeFormat extends CommonDelayableHook {
     private static final CustomMsgTimeFormat self = new CustomMsgTimeFormat();
 

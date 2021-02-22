@@ -33,12 +33,14 @@ import cc.ioctl.util.BugUtils;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.*;
 
 import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
 
+@FunctionEntry
 public class BlockFluxThief extends CommonDelayableHook {
     public static final BlockFluxThief INSTANCE = new BlockFluxThief();
 

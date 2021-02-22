@@ -36,6 +36,7 @@ import java.util.regex.Pattern;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.lifecycle.ActProxyMgr;
@@ -50,12 +51,13 @@ import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.util.Utils.log;
 
+@FunctionEntry
 public class JumpController extends CommonDelayableHook {
     private static final String qn_jmp_ctl_rules = "qn_jmp_ctl_rules";
 
     public static final String DEFAULT_RULES = "A,P:me.singleneuron.locknotification;\n" +
-            "A,P:cn.nexus6p.QQMusicNotify;\n" +
-            "A,A:android.media.action.VIDEO_CAPTURE;\n";
+        "A,P:cn.nexus6p.QQMusicNotify;\n" +
+        "A,A:android.media.action.VIDEO_CAPTURE;\n";
 
     public static final int JMP_DEFAULT = 0;
     public static final int JMP_ALLOW = 1;
@@ -104,7 +106,7 @@ public class JumpController extends CommonDelayableHook {
                         int result = checkIntent(ctx, intent);
                         ComponentName cmp = intent.getComponent();
                         if (cmp != null && ctx.getPackageName().equals(cmp.getPackageName()) &&
-                                ActProxyMgr.isModuleProxyActivity(cmp.getClassName())) {
+                            ActProxyMgr.isModuleProxyActivity(cmp.getClassName())) {
                             result = JMP_ALLOW;
                         }
                         if (result != JMP_DEFAULT) {
@@ -136,16 +138,16 @@ public class JumpController extends CommonDelayableHook {
                                     @Override
                                     public void run() {
                                         CustomDialog.create(ctx).setTitle("跳转控制").setMessage("即将打开 " + desc)
-                                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        try {
-                                                            JefsClass_runV.invoke(that, runnable);
-                                                        } catch (Exception e) {
-                                                            Utils.showErrorToastAnywhere(e.toString());
-                                                        }
+                                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    try {
+                                                        JefsClass_runV.invoke(that, runnable);
+                                                    } catch (Exception e) {
+                                                        Utils.showErrorToastAnywhere(e.toString());
                                                     }
-                                                }).setNegativeButton(android.R.string.cancel, null).setCancelable(true).show();
+                                                }
+                                            }).setNegativeButton(android.R.string.cancel, null).setCancelable(true).show();
                                     }
                                 });
                                 param.setResult(null);

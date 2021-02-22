@@ -35,6 +35,7 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import cc.ioctl.dialog.RikkaBaseApkFormatDialog;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
@@ -42,6 +43,7 @@ import nil.nadph.qnotified.util.LicenseStatus;
 import static nil.nadph.qnotified.util.Utils.log;
 
 //重命名base.apk
+@FunctionEntry
 public class BaseApk extends CommonDelayableHook {
     private static final BaseApk self = new BaseApk();
 

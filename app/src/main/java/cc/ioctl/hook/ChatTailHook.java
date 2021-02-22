@@ -43,6 +43,7 @@ import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.SyncUtils;
 import cc.ioctl.activity.ChatTailActivity;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import cc.ioctl.dialog.RikkaCustomMsgTimeFormatDialog;
@@ -54,6 +55,7 @@ import nil.nadph.qnotified.util.Utils;
 import static nil.nadph.qnotified.util.Initiator._SessionInfo;
 import static nil.nadph.qnotified.util.Utils.*;
 
+@FunctionEntry
 public class ChatTailHook extends CommonDelayableHook {
     public static final String qn_chat_tail_enable = "qn_chat_tail_enable";
     private static final String ACTION_UPDATE_CHAT_TAIL = "nil.nadph.qnotified.ACTION_UPDATE_CHAT_TAIL";
@@ -78,7 +80,7 @@ public class ChatTailHook extends CommonDelayableHook {
                 Class[] argt = mi.getParameterTypes();
                 if (argt.length != 6) continue;
                 if (argt[1].equals(Context.class) && argt[2].equals(_SessionInfo())
-                        && argt[3].equals(String.class) && argt[4].equals(ArrayList.class)) {
+                    && argt[3].equals(String.class) && argt[4].equals(ArrayList.class)) {
                     m = mi;
                     m.setAccessible(true);
                     break;
@@ -111,15 +113,15 @@ public class ChatTailHook extends CommonDelayableHook {
                             logi("isPassRegex:" + String.valueOf(ChatTailHook.isPassRegex(msg)));
                             logi("getTailRegex:" + ChatTailHook.getTailRegex());
                             if ((ct.isGlobal() || ct.containsTroop(uin) || ct.containsFriend(uin))
-                                    && (!isRegex() || !isPassRegex(msg))) {
+                                && (!isRegex() || !isPassRegex(msg))) {
                                 int battery = FakeBatteryHook.get().isEnabled() ? FakeBatteryHook.get().getFakeBatteryStatus() < 1 ? ChatTailActivity.getBattery() : FakeBatteryHook.get().getFakeBatteryCapacity() : ChatTailActivity.getBattery();
                                 text = ct.getTailCapacity()
-                                        .replace(ChatTailActivity.delimiter, msg)
-                                        .replace("#model#", Build.MODEL)
-                                        .replace("#brand#", Build.BRAND)
-                                        .replace("#battery#", battery + "")
-                                        .replace("#power#", ChatTailActivity.getPower())
-                                        .replace("#time#", new SimpleDateFormat(RikkaCustomMsgTimeFormatDialog.getTimeFormat()).format(new Date()));
+                                    .replace(ChatTailActivity.delimiter, msg)
+                                    .replace("#model#", Build.MODEL)
+                                    .replace("#brand#", Build.BRAND)
+                                    .replace("#battery#", battery + "")
+                                    .replace("#power#", ChatTailActivity.getPower())
+                                    .replace("#time#", new SimpleDateFormat(RikkaCustomMsgTimeFormatDialog.getTimeFormat()).format(new Date()));
                                 if (ct.getTailCapacity().contains("#Spacemsg#")) {
                                     text = text.replace("#Spacemsg#", "");
                                     text = UtilsKt.makeSpaceMsg(text);
@@ -151,7 +153,7 @@ public class ChatTailHook extends CommonDelayableHook {
 
     public static boolean isRegex() {
         return ExfriendManager.getCurrent().getConfig()
-                .getBooleanOrFalse(ConfigItems.qn_chat_tail_regex);
+            .getBooleanOrFalse(ConfigItems.qn_chat_tail_regex);
     }
 
     /**
@@ -206,7 +208,7 @@ public class ChatTailHook extends CommonDelayableHook {
     public static String getTailRegex() {
         // (?:(?![A-Za-z0-9])(?:[\x21-\x7e？！]))$
         return ExfriendManager.getCurrent().getConfig()
-                .getStringOrDefault(ConfigItems.qn_chat_tail_regex_text, "");
+            .getStringOrDefault(ConfigItems.qn_chat_tail_regex_text, "");
     }
 
     @Override

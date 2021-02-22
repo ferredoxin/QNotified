@@ -29,6 +29,7 @@ import java.lang.reflect.Modifier;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
@@ -37,6 +38,7 @@ import nil.nadph.qnotified.util.LicenseStatus;
 import static nil.nadph.qnotified.util.Utils.*;
 
 //显示具体消息数量
+@FunctionEntry
 public class ShowMsgCount extends CommonDelayableHook {
     private static final ShowMsgCount self = new ShowMsgCount();
 

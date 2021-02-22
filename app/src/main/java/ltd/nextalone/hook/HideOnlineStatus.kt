@@ -27,9 +27,11 @@ import ltd.nextalone.util.clazz
 import ltd.nextalone.util.findHostViewById
 import ltd.nextalone.util.hookAfterAllConstructors
 import ltd.nextalone.util.setViewZeroSize
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.Utils
 
+@FunctionEntry
 object HideOnlineStatus : CommonDelayableHook("na_hide_online_status_kt") {
 
     override fun initOnce(): Boolean {

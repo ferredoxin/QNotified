@@ -35,12 +35,14 @@ import me.singleneuron.qn_kernel.data.requireMinVersion
 import me.singleneuron.qn_kernel.tlb.ConfigTable.getConfig
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.SyncUtils
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.ui.ResUtils
 import nil.nadph.qnotified.util.*
 
+@FunctionEntry
 object LeftSwipeReplyHook: CommonDelayableHook("ketal_left_swipe_action", DexDeobfStep(DexKit.N_LeftSwipeReply_Helper__reply), DexDeobfStep(DexKit.N_BASE_CHAT_PIE__chooseMsg)) {
     private const val LEFT_SWIPE_NO_ACTION = "ketal_left_swipe_noAction"
     private const val LEFT_SWIPE_MULTI_CHOOSE = "ketal_left_swipe_multiChoose"
@@ -88,7 +90,7 @@ object LeftSwipeReplyHook: CommonDelayableHook("ketal_left_swipe_action", DexDeo
                         it.result = replyDistance
                     }
                 }
-             true
+            true
         } catch (e: Exception) {
             Utils.log(e)
             false

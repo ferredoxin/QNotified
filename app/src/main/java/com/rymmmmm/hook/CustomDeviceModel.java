@@ -26,11 +26,13 @@ import java.lang.reflect.Field;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.SyncUtils;
 import cc.ioctl.dialog.RikkaCustomDeviceModelDialog;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Utils;
 
 //自定义机型
+@FunctionEntry
 public class CustomDeviceModel extends CommonDelayableHook {
     private static final CustomDeviceModel self = new CustomDeviceModel();
 

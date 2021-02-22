@@ -39,6 +39,7 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.bridge.ChatActivityFacade;
 import cc.ioctl.dialog.RepeaterIconSettingDialog;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
@@ -50,6 +51,7 @@ import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.ReflexUtil.*;
 import static nil.nadph.qnotified.util.Utils.*;
 
+@FunctionEntry
 public class RepeaterHook extends CommonDelayableHook {
     private static final RepeaterHook self = new RepeaterHook();
 
@@ -91,7 +93,7 @@ public class RepeaterHook extends CommonDelayableHook {
                     ViewGroup relativeLayout = (ViewGroup) param.getResult();
                     Context ctx = relativeLayout.getContext();
                     if (ctx.getClass().getName().contains("ChatHistoryActivity") ||
-                            ctx.getClass().getName().contains("MultiForwardActivity"))
+                        ctx.getClass().getName().contains("MultiForwardActivity"))
                         return;
                     final QQAppInterface app = getFirstNSFByType(param.thisObject, _QQAppInterface());
                     final Parcelable session = getFirstNSFByType(param.thisObject, _SessionInfo());
@@ -149,71 +151,71 @@ public class RepeaterHook extends CommonDelayableHook {
             if (HostInformationProviderKt.getHostInfo().isTim()) {
                 // TODO: 2020/5/17 Add MsgForText +1 for TIM
                 XposedHelpers.findAndHookMethod(_TextItemBuilder(), "a", ChatMessage, itemHolder, View.class, BaseChatItemLayout, listener2,
-                        new XC_MethodHook(51) {
-                            @Override
-                            public void afterHookedMethod(final MethodHookParam param) throws Throwable {
-                                if (LicenseStatus.sDisableCommonHooks) return;
-                                if (!isEnabled()) return;
-                                View view;
-                                View resultView = (View) param.getResult();
-                                Context ctx = resultView.getContext();
-                                if (ctx.getClass().getName().contains("ChatHistoryActivity")
-                                        || ctx.getClass().getName().contains("MultiForwardActivity"))
-                                    return;
-                                final QQAppInterface app = getFirstNSFByType(param.thisObject, QQAppInterface.class);
-                                final Parcelable session = getFirstNSFByType(param.thisObject, _SessionInfo());
-                                String uin = "" + Utils.getLongAccountUin();
-                                if (resultView.findViewById(101) == null) {
-                                    LinearLayoutDelegate linearLayout = new LinearLayoutDelegate(ctx);
-                                    linearLayout.setOrientation(0);
-                                    linearLayout.setGravity(17);
-                                    ImageView imageView = new ImageView(ctx);
-                                    imageView.setId(101);
-                                    imageView.setImageBitmap(RepeaterIconSettingDialog.getRepeaterIcon());
-                                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(-2, -2);
-                                    layoutParams.rightMargin = dip2px(ctx, (float) 5);
-                                    linearLayout.addView(imageView, layoutParams);
-                                    ViewGroup p = (ViewGroup) resultView.getParent();
-                                    if (p != null) p.removeView(resultView);
-                                    ViewGroup.LayoutParams currlp = resultView.getLayoutParams();
-                                    linearLayout.addView(resultView, -2, -2);
-                                    linearLayout.setDelegate(resultView);
-                                    ImageView imageView2 = new ImageView(ctx);
-                                    imageView2.setId(102);
-                                    imageView2.setImageBitmap(RepeaterIconSettingDialog.getRepeaterIcon());
-                                    LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(-2, -2);
-                                    layoutParams2.leftMargin = dip2px(ctx, (float) 5);
-                                    linearLayout.addView(imageView2, layoutParams2);
-                                    linearLayout.setPadding(0, 0, 0, 0);
-                                    param.setResult(linearLayout);
-                                    view = linearLayout;
-                                } else {
-                                    view = resultView.findViewById(101);
-                                }
-                                ImageView imageView3 = view.findViewById(101);
-                                @SuppressLint("ResourceType") ImageView imageView4 = view.findViewById(102);
-                                if (iget_object_or_null(param.args[0], "senderuin").equals(uin)) {
-                                    imageView3.setVisibility(0);
-                                    imageView4.setVisibility(8);
-                                } else {
-                                    imageView3.setVisibility(8);
-                                    imageView4.setVisibility(0);
-                                }
-                                View.OnClickListener r0 = new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        try {
-                                            ChatActivityFacade.repeatMessage(app, session, param.args[0]);
-                                        } catch (Throwable e) {
-                                            log(e);
-                                            Utils.showToast(HostInformationProviderKt.getHostInfo().getApplication(), TOAST_TYPE_ERROR, e.toString(), Toast.LENGTH_SHORT);
-                                        }
-                                    }
-                                };
-                                imageView3.setOnClickListener(r0);
-                                imageView4.setOnClickListener(r0);
+                    new XC_MethodHook(51) {
+                        @Override
+                        public void afterHookedMethod(final MethodHookParam param) throws Throwable {
+                            if (LicenseStatus.sDisableCommonHooks) return;
+                            if (!isEnabled()) return;
+                            View view;
+                            View resultView = (View) param.getResult();
+                            Context ctx = resultView.getContext();
+                            if (ctx.getClass().getName().contains("ChatHistoryActivity")
+                                || ctx.getClass().getName().contains("MultiForwardActivity"))
+                                return;
+                            final QQAppInterface app = getFirstNSFByType(param.thisObject, QQAppInterface.class);
+                            final Parcelable session = getFirstNSFByType(param.thisObject, _SessionInfo());
+                            String uin = "" + Utils.getLongAccountUin();
+                            if (resultView.findViewById(101) == null) {
+                                LinearLayoutDelegate linearLayout = new LinearLayoutDelegate(ctx);
+                                linearLayout.setOrientation(0);
+                                linearLayout.setGravity(17);
+                                ImageView imageView = new ImageView(ctx);
+                                imageView.setId(101);
+                                imageView.setImageBitmap(RepeaterIconSettingDialog.getRepeaterIcon());
+                                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(-2, -2);
+                                layoutParams.rightMargin = dip2px(ctx, (float) 5);
+                                linearLayout.addView(imageView, layoutParams);
+                                ViewGroup p = (ViewGroup) resultView.getParent();
+                                if (p != null) p.removeView(resultView);
+                                ViewGroup.LayoutParams currlp = resultView.getLayoutParams();
+                                linearLayout.addView(resultView, -2, -2);
+                                linearLayout.setDelegate(resultView);
+                                ImageView imageView2 = new ImageView(ctx);
+                                imageView2.setId(102);
+                                imageView2.setImageBitmap(RepeaterIconSettingDialog.getRepeaterIcon());
+                                LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(-2, -2);
+                                layoutParams2.leftMargin = dip2px(ctx, (float) 5);
+                                linearLayout.addView(imageView2, layoutParams2);
+                                linearLayout.setPadding(0, 0, 0, 0);
+                                param.setResult(linearLayout);
+                                view = linearLayout;
+                            } else {
+                                view = resultView.findViewById(101);
                             }
-                        });
+                            ImageView imageView3 = view.findViewById(101);
+                            @SuppressLint("ResourceType") ImageView imageView4 = view.findViewById(102);
+                            if (iget_object_or_null(param.args[0], "senderuin").equals(uin)) {
+                                imageView3.setVisibility(0);
+                                imageView4.setVisibility(8);
+                            } else {
+                                imageView3.setVisibility(8);
+                                imageView4.setVisibility(0);
+                            }
+                            View.OnClickListener r0 = new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    try {
+                                        ChatActivityFacade.repeatMessage(app, session, param.args[0]);
+                                    } catch (Throwable e) {
+                                        log(e);
+                                        Utils.showToast(HostInformationProviderKt.getHostInfo().getApplication(), TOAST_TYPE_ERROR, e.toString(), Toast.LENGTH_SHORT);
+                                    }
+                                }
+                            };
+                            imageView3.setOnClickListener(r0);
+                            imageView4.setOnClickListener(r0);
+                        }
+                    });
             } else {
                 XposedHelpers.findAndHookMethod(_TextItemBuilder(), "a", ChatMessage, itemHolder, View.class, BaseChatItemLayout, listener2, new XC_MethodHook() {
                     @Override
@@ -222,7 +224,7 @@ public class RepeaterHook extends CommonDelayableHook {
                         if (!isEnabled()) return;
                         View v = (View) methodHookParam.args[2];
                         if (v != null && (v.getContext().getClass().getName().contains("ChatHistoryActivity")
-                                || v.getContext().getClass().getName().contains("MultiForwardActivity")))
+                            || v.getContext().getClass().getName().contains("MultiForwardActivity")))
                             return;
                         iput_object(methodHookParam.args[0], "isFlowMessage", true);
                         if (((int) iget_object_or_null(methodHookParam.args[0], "extraflag")) == 32768) {
@@ -262,65 +264,65 @@ public class RepeaterHook extends CommonDelayableHook {
             //end: text
             //begin: ptt
             XposedHelpers.findAndHookMethod(_PttItemBuilder(), "a", ChatMessage, itemHolder, View.class, BaseChatItemLayout, listener2,
-                    new XC_MethodHook(51) {
-                        @Override
-                        public void afterHookedMethod(final MethodHookParam param) throws Throwable {
-                            if (LicenseStatus.sDisableCommonHooks) return;
-                            if (!isEnabled()) return;
-                            ViewGroup convertView = (ViewGroup) param.getResult();
-                            Context ctx = convertView.getContext();
-                            if (ctx.getClass().getName().contains("ChatHistoryActivity")
-                                    || ctx.getClass().getName().contains("MultiForwardActivity"))
-                                return;
-                            final QQAppInterface app = getFirstNSFByType(param.thisObject, QQAppInterface.class);
-                            final Parcelable session = getFirstNSFByType(param.thisObject, _SessionInfo());
-                            String uin = "" + Utils.getLongAccountUin();
-                            if (convertView.findViewById(101) == null) {
-                                LinearLayoutDelegate wrapperLayout = new LinearLayoutDelegate(ctx);
-                                wrapperLayout.setDelegate(convertView);
-                                //wrapperLayout.setId(Integer.parseInt((String) Hook.config.get("PttItem_id"), 16));
-                                wrapperLayout.setOrientation(0);
-                                wrapperLayout.setGravity(17);
-                                ImageView leftIcon = new ImageView(ctx);
-                                leftIcon.setId(101);
-                                leftIcon.setImageBitmap(RepeaterIconSettingDialog.getRepeaterIcon());
-                                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(-2, -2);
-                                layoutParams.rightMargin = dip2px(ctx, (float) 5);
-                                wrapperLayout.addView(leftIcon, layoutParams);
-                                wrapperLayout.addView(convertView, -2, -2);
-                                ImageView rightIcon = new ImageView(ctx);
-                                rightIcon.setId(102);
-                                rightIcon.setImageBitmap(RepeaterIconSettingDialog.getRepeaterIcon());
-                                LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(-2, -2);
-                                layoutParams2.leftMargin = dip2px(ctx, (float) 5);
-                                wrapperLayout.addView(rightIcon, layoutParams2);
-                                param.setResult(wrapperLayout);
-                                convertView = wrapperLayout;
-                            }
-                            ImageView leftIcon = convertView.findViewById(101);
-                            ImageView rightIcon = convertView.findViewById(102);
-                            if (iget_object_or_null(param.args[0], "senderuin").equals(uin)) {
-                                leftIcon.setVisibility(0);
-                                rightIcon.setVisibility(8);
-                            } else {
-                                leftIcon.setVisibility(8);
-                                rightIcon.setVisibility(0);
-                            }
-                            View.OnClickListener l = new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    try {
-                                        ChatActivityFacade.repeatMessage(app, session, param.args[0]);
-                                    } catch (Throwable e) {
-                                        log(e);
-                                        Utils.showToast(HostInformationProviderKt.getHostInfo().getApplication(), TOAST_TYPE_ERROR, e.toString(), Toast.LENGTH_SHORT);
-                                    }
-                                }
-                            };
-                            leftIcon.setOnClickListener(l);
-                            rightIcon.setOnClickListener(l);
+                new XC_MethodHook(51) {
+                    @Override
+                    public void afterHookedMethod(final MethodHookParam param) throws Throwable {
+                        if (LicenseStatus.sDisableCommonHooks) return;
+                        if (!isEnabled()) return;
+                        ViewGroup convertView = (ViewGroup) param.getResult();
+                        Context ctx = convertView.getContext();
+                        if (ctx.getClass().getName().contains("ChatHistoryActivity")
+                            || ctx.getClass().getName().contains("MultiForwardActivity"))
+                            return;
+                        final QQAppInterface app = getFirstNSFByType(param.thisObject, QQAppInterface.class);
+                        final Parcelable session = getFirstNSFByType(param.thisObject, _SessionInfo());
+                        String uin = "" + Utils.getLongAccountUin();
+                        if (convertView.findViewById(101) == null) {
+                            LinearLayoutDelegate wrapperLayout = new LinearLayoutDelegate(ctx);
+                            wrapperLayout.setDelegate(convertView);
+                            //wrapperLayout.setId(Integer.parseInt((String) Hook.config.get("PttItem_id"), 16));
+                            wrapperLayout.setOrientation(0);
+                            wrapperLayout.setGravity(17);
+                            ImageView leftIcon = new ImageView(ctx);
+                            leftIcon.setId(101);
+                            leftIcon.setImageBitmap(RepeaterIconSettingDialog.getRepeaterIcon());
+                            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(-2, -2);
+                            layoutParams.rightMargin = dip2px(ctx, (float) 5);
+                            wrapperLayout.addView(leftIcon, layoutParams);
+                            wrapperLayout.addView(convertView, -2, -2);
+                            ImageView rightIcon = new ImageView(ctx);
+                            rightIcon.setId(102);
+                            rightIcon.setImageBitmap(RepeaterIconSettingDialog.getRepeaterIcon());
+                            LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(-2, -2);
+                            layoutParams2.leftMargin = dip2px(ctx, (float) 5);
+                            wrapperLayout.addView(rightIcon, layoutParams2);
+                            param.setResult(wrapperLayout);
+                            convertView = wrapperLayout;
                         }
-                    });
+                        ImageView leftIcon = convertView.findViewById(101);
+                        ImageView rightIcon = convertView.findViewById(102);
+                        if (iget_object_or_null(param.args[0], "senderuin").equals(uin)) {
+                            leftIcon.setVisibility(0);
+                            rightIcon.setVisibility(8);
+                        } else {
+                            leftIcon.setVisibility(8);
+                            rightIcon.setVisibility(0);
+                        }
+                        View.OnClickListener l = new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                try {
+                                    ChatActivityFacade.repeatMessage(app, session, param.args[0]);
+                                } catch (Throwable e) {
+                                    log(e);
+                                    Utils.showToast(HostInformationProviderKt.getHostInfo().getApplication(), TOAST_TYPE_ERROR, e.toString(), Toast.LENGTH_SHORT);
+                                }
+                            }
+                        };
+                        leftIcon.setOnClickListener(l);
+                        rightIcon.setOnClickListener(l);
+                    }
+                });
             //end: ptt
             return true;
         } catch (Throwable e) {

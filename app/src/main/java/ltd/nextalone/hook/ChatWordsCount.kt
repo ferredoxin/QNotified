@@ -32,6 +32,7 @@ import ltd.nextalone.util.*
 import me.kyuubiran.util.getExFriendCfg
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.ui.CustomDialog
 import nil.nadph.qnotified.ui.ViewBuilder
@@ -39,7 +40,7 @@ import nil.nadph.qnotified.util.Toasts
 import nil.nadph.qnotified.util.Utils
 import java.util.*
 
-
+@FunctionEntry
 object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt") {
     private const val msgCfg = "na_chat_words_count_kt_msg"
     private const val wordsCfg = "na_chat_words_count_kt_words"

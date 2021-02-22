@@ -29,12 +29,14 @@ import java.io.File;
 
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.SyncUtils;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
 import static nil.nadph.qnotified.util.Utils.log;
 
+@FunctionEntry
 public class DefaultBubbleHook extends CommonDelayableHook {
     private static final DefaultBubbleHook self = new DefaultBubbleHook();
 

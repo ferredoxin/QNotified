@@ -26,11 +26,13 @@ import java.lang.reflect.Modifier;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 
 import static nil.nadph.qnotified.util.Initiator._UpgradeController;
 import static nil.nadph.qnotified.util.Utils.log;
 
+@FunctionEntry
 public class PreUpgradeHook extends CommonDelayableHook {
     private static final PreUpgradeHook self = new PreUpgradeHook();
 

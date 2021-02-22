@@ -30,10 +30,11 @@ import me.ketal.util.HookUtil.findClass
 import me.ketal.util.HookUtil.getMethod
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.ReflexUtil
 import nil.nadph.qnotified.util.Utils
 
-
+@FunctionEntry
 object SendFavoriteHook: PluginDelayableHook("ketal_send_favorite") {
     override fun isValid(): Boolean = requireMinQQVersion(QQVersion.QQ_8_0_0)
 

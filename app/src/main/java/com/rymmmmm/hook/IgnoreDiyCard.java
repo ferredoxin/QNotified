@@ -33,6 +33,7 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import me.singleneuron.util.QQVersion;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.LicenseStatus;
 
@@ -42,6 +43,7 @@ import static nil.nadph.qnotified.util.Utils.log;
 import static nil.nadph.qnotified.util.Utils.loge;
 
 //屏蔽Diy卡片
+@FunctionEntry
 public class IgnoreDiyCard extends CommonDelayableHook {
     private static final IgnoreDiyCard self = new IgnoreDiyCard();
 

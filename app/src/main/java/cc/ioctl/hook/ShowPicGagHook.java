@@ -29,12 +29,14 @@ import java.lang.reflect.Method;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.LicenseStatus;
 
 import static nil.nadph.qnotified.util.Initiator._TroopPicEffectsController;
 import static nil.nadph.qnotified.util.Utils.log;
 
+@FunctionEntry
 public class ShowPicGagHook extends CommonDelayableHook {
 
     private static final ShowPicGagHook self = new ShowPicGagHook();

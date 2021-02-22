@@ -30,6 +30,7 @@ import java.lang.reflect.Method;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
@@ -38,6 +39,7 @@ import nil.nadph.qnotified.util.*;
 
 import static nil.nadph.qnotified.util.Utils.*;
 
+@FunctionEntry
 public class DarkOverlayHook extends CommonDelayableHook {
     private static final DarkOverlayHook self = new DarkOverlayHook();
 
@@ -109,7 +111,7 @@ public class DarkOverlayHook extends CommonDelayableHook {
                 return null;
             }
             byte[] dex = DexKit.getClassDeclaringDex(DexMethodDescriptor.getTypeSig(baseChatPie),
-                    DexKit.d(DexKit.N_BASE_CHAT_PIE__handleNightMask));
+                DexKit.d(DexKit.N_BASE_CHAT_PIE__handleNightMask));
             DexFieldDescriptor field;
             try {
                 field = DexFlow.guessFieldByNewInstance(dex, handleNightMask, View.class);
