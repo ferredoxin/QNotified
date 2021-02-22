@@ -35,35 +35,57 @@ import me.kyuubiran.util.AutoRenewFireMgr
 import me.kyuubiran.util.getExFriendCfg
 import me.kyuubiran.util.showToastByTencent
 import nil.nadph.qnotified.R
-import nil.nadph.qnotified.databinding.KyuubiranAutoRenewFireBinding
 import nil.nadph.qnotified.ui.CustomDialog
 import nil.nadph.qnotified.ui.ViewBuilder
 import nil.nadph.qnotified.util.LicenseStatus
 import nil.nadph.qnotified.util.Toasts
 import nil.nadph.qnotified.util.Utils
+import java.util.regex.Pattern
 
 object AutoRenewFireDialog {
     private var currentEnable: Boolean? = null
-    private lateinit var binding: KyuubiranAutoRenewFireBinding
     var replyMsg: String = getExFriendCfg().getStringOrDefault(AutoRenewFireMgr.MESSAGE, "[续火]")
+    var replyTime: String = getExFriendCfg().getStringOrDefault(AutoRenewFireMgr.TIMEPRESET, "")
 
     fun showMainDialog(context: Context) {
         val dialog = CustomDialog.createFailsafe(context)
         val ctx = dialog.context
         val enable = getExFriendCfg().getBooleanOrFalse(AutoRenewFireMgr.ENABLE)
         currentEnable = enable
-        val editText = EditText(ctx)
-        editText.textSize = 16f
-        editText.hint = "续火消息内容（不可更改)"
+        val msgEditText = EditText(ctx)
+        msgEditText.textSize = 16f
+        msgEditText.hint = "消息内容"
         val _5 = Utils.dip2px(context, 5f)
-        editText.setPadding(_5, _5, _5, _5 * 2)
-        editText.setText(replyMsg)
-        editText.addTextChangedListener(object : TextWatcher {
+        msgEditText.setPadding(_5, _5, _5, _5 * 2)
+        msgEditText.setText(replyMsg)
+        msgEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) =
                 Unit
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (LicenseStatus.isInsider()) replyMsg = s.toString()
+            }
+
+            override fun afterTextChanged(s: Editable?) =
+                Unit
+        })
+        val timeEditText = EditText(ctx)
+        timeEditText.textSize = 16f
+        timeEditText.hint = "续火时间，默认 00:00:05，格式 HH:MM:SS"
+        timeEditText.setPadding(_5, _5, _5, _5 * 2)
+        timeEditText.setText(replyTime)
+        timeEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                if (replyTime.isNotEmpty() && !stringTimeValidator(replyTime)) {
+                    timeEditText.error = "时间格式错误"
+                }
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                replyTime = s.toString()
+                if (replyTime.isNotEmpty() && !stringTimeValidator(replyTime)) {
+                    timeEditText.error = "时间格式错误"
+                }
             }
 
             override fun afterTextChanged(s: Editable?) =
@@ -79,12 +101,14 @@ object AutoRenewFireDialog {
                 false -> Toasts.showToast(ctx, Toasts.TYPE_INFO, "已关闭自动续火", Toasts.LENGTH_SHORT)
             }
         }
+        val params = ViewBuilder.newLinearLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, _5 * 2)
         val linearLayout = LinearLayout(ctx)
         linearLayout.orientation = LinearLayout.VERTICAL
         linearLayout.addView(ViewBuilder.subtitle(context,
             "说明:启用后将会在每天0点之后给对方发一条消息。\n此处开关为总开关，请单独在好友的设置页面打开自动续火开关。\n无论你是否给TA发过消息，本功能都会发送续火消息。\n如果你在续火消息发送前添加了好友，那么之后将会发送给这个好友。\n如果今天已经发送过续火消息了，则再添加好友并不会发送续火消息。"))
-        linearLayout.addView(checkBox, ViewBuilder.newLinearLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, _5 * 2))
-        linearLayout.addView(editText, ViewBuilder.newLinearLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, _5 * 2))
+        linearLayout.addView(checkBox, params)
+        linearLayout.addView(msgEditText, params)
+        linearLayout.addView(timeEditText, params)
         val alertDialog = dialog.setTitle("自动续火设置")
             .setView(linearLayout)
             .setCancelable(true)
@@ -92,12 +116,19 @@ object AutoRenewFireDialog {
                 if (replyMsg == "") {
                     Toasts.showToast(context, Utils.TOAST_TYPE_ERROR, "请输入自动续火内容", Toast.LENGTH_SHORT)
                 } else {
-                    save()
-                    Toasts.showToast(context, Utils.TOAST_TYPE_INFO, "设置已保存", Toast.LENGTH_SHORT)
-                    dialog.dismiss()
+                    if (stringTimeValidator(replyTime)) {
+                        save()
+                        Toasts.showToast(context, Utils.TOAST_TYPE_INFO, "设置已保存", Toast.LENGTH_SHORT)
+                        dialog.dismiss()
+                    } else {
+                        replyTime = ""
+                        Toasts.showToast(context, Utils.TOAST_TYPE_ERROR, " 时间格式错误", Toast.LENGTH_SHORT)
+                    }
+
                 }
             }.setNeutralButton("使用默认值") { _, _ ->
                 replyMsg = "[续火]"
+                replyTime = ""
                 save()
             }
             .setNegativeButton("取消", null)
@@ -157,6 +188,17 @@ object AutoRenewFireDialog {
         val cfg = getExFriendCfg()
         currentEnable?.let { cfg.setBooleanConfig(AutoRenewFireMgr.ENABLE, it) }
         cfg.putString(AutoRenewFireMgr.MESSAGE, replyMsg)
+        cfg.putString(AutoRenewFireMgr.TIMEPRESET, if (replyTime.isNotEmpty()) replyTime else "00:00:05")
         cfg.save()
+    }
+
+    fun stringTimeValidator(time: String): Boolean {
+        val format = "([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]"
+        val pattern = Pattern.compile(format)
+        val matcher = pattern.matcher(time)
+        if (matcher.matches()) {
+            return true
+        }
+        return false
     }
 }
