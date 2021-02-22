@@ -548,29 +548,26 @@ public class ViewBuilder {
     }
 
     public static LinearLayout subtitle(Context ctx, CharSequence title) {
-        LinearLayout ll = new LinearLayout(ctx);
-        ll.setOrientation(LinearLayout.HORIZONTAL);
-        ll.setGravity(Gravity.CENTER_VERTICAL);
-        TextView tv = new TextView(ctx);
-        tv.setText(title);
-        tv.setTextSize(dip2sp(ctx, 13));
-        tv.setTextColor(ResUtils.skin_gray3);
-        tv.setLayoutParams(new ViewGroup.LayoutParams(WRAP_CONTENT, WRAP_CONTENT));
-        ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-        int m = dip2px(ctx, 14);
-        tv.setPadding(m, m / 5, m / 5, m / 5);
-        ll.addView(tv);
-        return ll;
+        return subtitle(ctx, title, 0);
     }
 
     public static LinearLayout subtitle(Context ctx, CharSequence title, int color) {
+        return subtitle(ctx, title, color, false);
+    }
+
+    public static LinearLayout subtitle(Context ctx, CharSequence title, int color, boolean isSelectable) {
         LinearLayout ll = new LinearLayout(ctx);
         ll.setOrientation(LinearLayout.HORIZONTAL);
         ll.setGravity(Gravity.CENTER_VERTICAL);
         TextView tv = new TextView(ctx);
+        tv.setTextIsSelectable(isSelectable);
         tv.setText(title);
         tv.setTextSize(dip2sp(ctx, 13));
-        tv.setTextColor(color);
+        if (color == 0) {
+            tv.setTextColor(ResUtils.skin_gray3);
+        } else {
+            tv.setTextColor(color);
+        }
         tv.setLayoutParams(new ViewGroup.LayoutParams(WRAP_CONTENT, WRAP_CONTENT));
         ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
         int m = dip2px(ctx, 14);
