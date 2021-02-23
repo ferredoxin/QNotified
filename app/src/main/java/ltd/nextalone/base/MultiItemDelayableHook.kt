@@ -40,10 +40,8 @@ abstract class MultiItemDelayableHook constructor(keyName: String) : CommonDelay
     internal var activeItems
         get() = ConfigManager.getDefaultConfig().getStringOrDefault(itemsConfigKeys, defaultItems).split("|").toMutableList()
         set(value) {
-            var ret = ""
-            for (item in value)
-                ret += "|$item"
-            putValue(itemsConfigKeys, if (ret.isEmpty()) ret else ret.substring(1))
+            val ret = value.joinToString("|")
+            putValue(itemsConfigKeys, ret)
         }
 
     open fun listener() = View.OnClickListener {
