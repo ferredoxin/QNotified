@@ -29,7 +29,7 @@ import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.Utils
 
 @FunctionEntry
-object SimplifyContactTabs : MultiItemDelayableHook("na_simplify_contact_tabs_kt") {
+object SimplifyContactTabs : MultiItemDelayableHook("na_simplify_contact_tabs_multi") {
     override val allItems = "好友|分组|群聊|设备|通讯录|订阅号".split("|").toMutableList()
     override val defaultItems = "订阅号"
 
