@@ -33,7 +33,7 @@ import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 
 @FunctionEntry
-object AntiMessage : MultiItemDelayableHook("qn_anti_message_items", "屏蔽"), MessageReceiver {
+object AntiMessage : MultiItemDelayableHook("qn_anti_message_items"), MessageReceiver {
     override var allItems = MsgRecordUtil.MSG.keys.sorted().toMutableList()
     override val defaultItems = ""
 
