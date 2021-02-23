@@ -54,7 +54,7 @@ import static nil.nadph.qnotified.util.Utils.log;
 
 public class UpdateCheck implements View.OnClickListener, Runnable {
 
-    public static final String UPDATE_INFO_GET1 = "https://api.appcenter.ms/v0.1/public/sdk/apps/ddf4b597-1833-45dd-af28-96ca504b8123/releases/latest";
+    public static final String UPDATE_INFO_GET_WEEKLY = "https://api.appcenter.ms/v0.1/public/sdk/apps/ddf4b597-1833-45dd-af28-96ca504b8123/distribution_groups/8a11cc3e-47da-4e3b-84e7-ac306a128aaf/releases/latest";
     public static final String qn_update_info = "qn_update_info";
     public static final String qn_update_time = "qn_update_time";
     private final int RL_LOAD = 1;
@@ -73,7 +73,7 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
         String content = null;
         int failed = 0;
         try {
-            URL reqURL = new URL(UPDATE_INFO_GET1);
+            URL reqURL = new URL(UPDATE_INFO_GET_WEEKLY);
             HttpsURLConnection httpsConn = (HttpsURLConnection) reqURL.openConnection();
             InputStream in = httpsConn.getInputStream();
             ByteArrayOutputStream bais = new ByteArrayOutputStream();
