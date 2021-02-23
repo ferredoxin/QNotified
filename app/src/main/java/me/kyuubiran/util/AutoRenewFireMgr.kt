@@ -23,9 +23,9 @@ package me.kyuubiran.util
 
 import android.os.Handler
 import android.os.Looper
+import cc.ioctl.script.QNClient
 import com.topjohnwu.superuser.internal.UiThreadHandler.handler
 import me.singleneuron.qn_kernel.data.hostInfo
-import cc.ioctl.script.QNClient
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
@@ -36,6 +36,7 @@ object AutoRenewFireMgr {
     const val LIST = "kr_auto_renew_fire_list"
     const val MESSAGE = "kr_auto_renew_fire_message"
     const val TIME = "kr_auto_renew_fire_time"
+    const val TIMEPRESET = "kr_auto_renew_fire_time_preset"
     private val mHandler = Handler(Looper.getMainLooper())
     private val mRunnable = object : Runnable {
         override fun run() {
@@ -176,12 +177,19 @@ object AutoRenewFireMgr {
     private fun needSend(): Boolean {
         val cfg = getExFriendCfg()
         val nextTime = cfg.getLongOrDefault(TIME, 0L)
+        val presetTime = cfg.getStringOrDefault(TIMEPRESET, "00:00:05").run {
+            if (this.isEmpty()) {
+                return@run "00:00:05"
+            } else {
+                return@run this
+            }
+        }
         if (nextTime - System.currentTimeMillis() < 0) {
             val cal = Calendar.getInstance(Locale.CHINA)
             cal.add(Calendar.DATE, 1)
-            cal.set(Calendar.HOUR, 0)
-            cal.set(Calendar.MINUTE, 0)
-            cal.set(Calendar.SECOND, 5)
+            cal.set(Calendar.HOUR, presetTime[0].toInt())
+            cal.set(Calendar.MINUTE, presetTime[1].toInt())
+            cal.set(Calendar.SECOND, presetTime[2].toInt())
             cal.set(Calendar.MILLISECOND, 0)
             cfg.putLong(TIME, cal.timeInMillis)
             cfg.save()
