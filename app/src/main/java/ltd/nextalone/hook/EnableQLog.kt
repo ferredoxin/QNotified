@@ -42,10 +42,16 @@ object EnableQLog : CommonDelayableHook("na_enable_qlog") {
             }
             for (m: Method in getMethods("com.tencent.qphone.base.util.QLog")) {
                 val argt = m.parameterTypes
+                if (m.name == "isDevelopLevel" && argt.isEmpty()) {
+                    m.replaceTrue(this)
+                }
+            }
+            for (m: Method in getMethods("com.tencent.qphone.base.util.QLog")) {
+                val argt = m.parameterTypes
                 if (m.name == "getTag" && argt.size == 1 && argt[0] == String::class.java) {
                     m.hookAfter(this) {
                         val tag = it.args[0]
-                        it.result = "NAdump:$tag"
+                        it.result = "NADump:$tag"
                     }
                 }
             }
