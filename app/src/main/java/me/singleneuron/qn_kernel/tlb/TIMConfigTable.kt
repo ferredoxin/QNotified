@@ -22,7 +22,6 @@
 package me.singleneuron.qn_kernel.tlb
 
 import me.ketal.hook.LeftSwipeReplyHook
-import me.ketal.hook.MultiActionHook
 import me.ketal.util.TIMVersion.*
 import nil.nadph.qnotified.bridge.QQMessageFacade
 import cc.ioctl.hook.ReplyNoAtHook
@@ -34,13 +33,6 @@ class TIMConfigTable: ConfigTableInterface {
     )
 
     override val rangingConfigs: Map<String?, Map<Long, Any>> = mapOf(
-
-            MultiActionHook::class.java.simpleName to mapOf(
-                    TIM_1_0_0 to "a",
-                    TIM_3_0_0 to "kqr",
-                    TIM_3_0_0_1 to "kqy",
-                    TIM_3_1_1 to "hd",
-            ),
 
             //key:public \S* \(boolean
             QQMessageFacade::class.java.simpleName to mapOf(
