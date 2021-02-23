@@ -31,8 +31,6 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import com.tencent.mobileqq.app.BaseActivity
 import ltd.nextalone.util.hookAfter
-import me.singleneuron.qn_kernel.data.hostInfo
-import me.singleneuron.qn_kernel.tlb.ConfigTable.getConfig
 import nil.nadph.qnotified.R
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.bridge.QQMessageFacade
@@ -46,7 +44,6 @@ import nil.nadph.qnotified.util.Utils
 
 @FunctionEntry
 object MultiActionHook: CommonDelayableHook("qn_multi_action", DexDeobfStep(DexKit.C_MessageCache), DexDeobfStep(DexKit.C_MSG_REC_FAC), DexDeobfStep(DexKit.N_BASE_CHAT_PIE__createMulti), DexDeobfStep(DexKit.C_MultiMsg_Manager)) {
-    private val fieldName = if (hostInfo.isTim) getConfig(MultiActionHook::class.java.simpleName) else "a"
     private var baseChatPie: Any? = null
     private var img: Bitmap? = null
     private val recallBitmap: Bitmap?
@@ -57,17 +54,16 @@ object MultiActionHook: CommonDelayableHook("qn_multi_action", DexDeobfStep(DexK
 
     public override fun initOnce(): Boolean {
         return try {
-            DexKit.doFindMethod(DexKit.N_BASE_CHAT_PIE__createMulti)!!
-                .hookAfter(this) {
-                    val rootView = ReflexUtil.iget_object_or_null(it.thisObject, fieldName, LinearLayout::class.java)
-                    if (rootView == null || !check(rootView)) return@hookAfter
-                    val context = rootView.context as BaseActivity
-                    baseChatPie = ReflexUtil.getFirstByType(it.thisObject, Initiator._BaseChatPie() as Class<*>)
-                    val count = rootView.childCount
-                    val enableTalkBack = rootView.getChildAt(0).contentDescription != null
-                    if (rootView.findViewById<View?>(R.id.ketalRecallImageView) == null) rootView.addView(create(context, recallBitmap, enableTalkBack), count - 1)
-                    setMargin(rootView)
-                }
+            val m = DexKit.doFindMethod(DexKit.N_BASE_CHAT_PIE__createMulti)
+            m?.hookAfter(this) {
+                val rootView = findView(m.declaringClass , it.thisObject) ?: return@hookAfter
+                val context = rootView.context as BaseActivity
+                baseChatPie = ReflexUtil.getFirstByType(it.thisObject, Initiator._BaseChatPie() as Class<*>)
+                val count = rootView.childCount
+                val enableTalkBack = rootView.getChildAt(0).contentDescription != null
+                if (rootView.findViewById<View?>(R.id.ketalRecallImageView) == null) rootView.addView(create(context, recallBitmap, enableTalkBack), count - 1)
+                setMargin(rootView)
+            }
             true
         } catch (e: Exception) {
             Utils.log(e)
@@ -105,9 +101,21 @@ object MultiActionHook: CommonDelayableHook("qn_multi_action", DexDeobfStep(DexK
         }
     }
 
+    private fun findView(clazz: Class<*>, obj: Any): LinearLayout? {
+        for (f in clazz.declaredFields) {
+            if (f.type == LinearLayout::class.java) {
+                f.isAccessible = true
+                val view = f[obj] ?: continue
+                if (check(view as LinearLayout))
+                    return view
+            }
+        }
+        return null
+    }
+
     private fun check(rootView: LinearLayout): Boolean {
         val count = rootView.childCount
-        if (count == 1) return false
+        if (count <= 1) return false
         for (i in 0 until count) {
             val view = rootView.getChildAt(i)
             if (view is TextView) return false
