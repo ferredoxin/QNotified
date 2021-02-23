@@ -32,7 +32,7 @@ internal fun logThrowable(msg: Throwable) {
     logd("Throwable: ${msg.stackTraceToString()}")
 }
 
-internal fun <T : BaseDelayableHook> T.logDetail(info: String, vararg msg: String) {
+internal fun <T : BaseDelayableHook> T.logDetail(info: String, vararg msg: Any) {
     logd("${this.javaClass.simpleName}: $info, ${msg.joinToString(", ")}")
 }
 

@@ -34,9 +34,9 @@ import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.Utils
 
 @FunctionEntry
-object SimplifyQQSettings : MultiItemDelayableHook("na_simplify_qq_settings", "保留") {
+object SimplifyQQSettings : MultiItemDelayableHook("na_simplify_qq_settings_multi") {
     override val allItems = "手机号码|达人|安全|通知|记录|隐私|通用|辅助|免流量|关于".split("|").toMutableList()
-    override val defaultItems = "手机号码|达人|安全|通知|隐私|通用|辅助|关于"
+    override val defaultItems = "免流量"
 
     override fun initOnce() = try {
         "Lcom/tencent/mobileqq/activity/QQSettingSettingActivity;->a(IIII)V".method.hookAfter(this) {
@@ -45,21 +45,19 @@ object SimplifyQQSettings : MultiItemDelayableHook("na_simplify_qq_settings", "�
             val strId: Int = it.args[1].toString().toInt()
             val view = activity.findViewById<View>(viewId)
             val str = activity.getString(strId)
-            if (activeItems.all { string ->
-                    string !in str
+            if (activeItems.any { string ->
+                    string in str
                 }) {
                 view.hide()
             }
         }
-        if (!activeItems.contains("免流量"))
+        if (activeItems.contains("免流量"))
             "Lcom/tencent/mobileqq/activity/QQSettingSettingActivity;->a()V".method.replaceNull(this)
         true
     } catch (t: Throwable) {
         Utils.log(t)
         false
     }
-
-    override fun isEnabled() = isValid && activeItems.size != allItems.size
 
     override fun isValid() = requireMinQQVersion(QQVersion.QQ_8_0_0)
 }

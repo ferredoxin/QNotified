@@ -203,6 +203,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         ll.addView(newListItemButtonIfValid(this, "精简加号菜单", null, null, SimplifyPlusPanel.INSTANCE));
         ll.addView(newListItemButtonIfValid(this, "精简设置菜单", null, null, SimplifyQQSettings.INSTANCE));
         ll.addView(newListItemButtonIfValid(this, "精简联系人页面", null, null, SimplifyContactTabs.INSTANCE));
+        ll.addView(newListItemButtonIfValid(this, "精简主页对话框", null, null,SimplifyRecentDialog.INSTANCE));
         ll.addView(newListItemConfigSwitchIfValid(this, "精简表情菜单", null, SimplifyEmoPanel.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "聊天自动发送原图", null, AutoSendOriginalPhoto.INSTANCE));
         ll.addView(newListItemConfigSwitchIfValid(this, "聊天自动接收原图", null, AutoReceiveOriginalPhoto.INSTANCE));
