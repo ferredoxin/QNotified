@@ -23,20 +23,18 @@ package me.ketal.hook
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.os.Looper
 import android.view.View
 import android.widget.ImageView
 import de.robv.android.xposed.XposedHelpers
 import me.ketal.util.TIMVersion
 import ltd.nextalone.util.hookAfter
 import ltd.nextalone.util.hookBefore
+import me.ketal.data.ConfigData
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.data.requireMinVersion
 import me.singleneuron.qn_kernel.tlb.ConfigTable.getConfig
 import me.singleneuron.util.QQVersion
-import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.base.annotation.FunctionEntry
-import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.ui.ResUtils
@@ -44,9 +42,24 @@ import nil.nadph.qnotified.util.*
 
 @FunctionEntry
 object LeftSwipeReplyHook: CommonDelayableHook("ketal_left_swipe_action", DexDeobfStep(DexKit.N_LeftSwipeReply_Helper__reply), DexDeobfStep(DexKit.N_BASE_CHAT_PIE__chooseMsg)) {
-    private const val LEFT_SWIPE_NO_ACTION = "ketal_left_swipe_noAction"
-    private const val LEFT_SWIPE_MULTI_CHOOSE = "ketal_left_swipe_multiChoose"
-    private const val LEFT_SWIPE_REPLY_DISTANCE = "ketal_left_swipe_replyDistance"
+    private val LEFT_SWIPE_NO_ACTION = ConfigData<Boolean>("ketal_left_swipe_noAction")
+    private val LEFT_SWIPE_MULTI_CHOOSE = ConfigData<Boolean>("ketal_left_swipe_multiChoose")
+    private val LEFT_SWIPE_REPLY_DISTANCE = ConfigData<Int>("ketal_left_swipe_replyDistance")
+    var isNoAction: Boolean
+        get() = LEFT_SWIPE_NO_ACTION.getOrDefault(false)
+        set(on) {
+            LEFT_SWIPE_NO_ACTION.value = on
+        }
+    var isMultiChose: Boolean
+        get() = LEFT_SWIPE_MULTI_CHOOSE.getOrDefault(false)
+        set(on) {
+            LEFT_SWIPE_MULTI_CHOOSE.value = on
+        }
+    var replyDistance: Int
+        get() = LEFT_SWIPE_REPLY_DISTANCE.getOrDefault(-1)
+        set(replyDistance) {
+            LEFT_SWIPE_REPLY_DISTANCE.value = replyDistance
+        }
     private var img: Bitmap? = null
     private val multiBitmap: Bitmap?
         get() {
@@ -94,37 +107,6 @@ object LeftSwipeReplyHook: CommonDelayableHook("ketal_left_swipe_action", DexDeo
         } catch (e: Exception) {
             Utils.log(e)
             false
-        }
-    }
-
-    var isNoAction: Boolean
-        get() = ConfigManager.getDefaultConfig().getBooleanOrDefault(LEFT_SWIPE_NO_ACTION, false)
-        set(on) {
-            putValue(LEFT_SWIPE_NO_ACTION, on)
-        }
-    var isMultiChose: Boolean
-        get() = ConfigManager.getDefaultConfig().getBooleanOrDefault(LEFT_SWIPE_MULTI_CHOOSE, false)
-        set(on) {
-            putValue(LEFT_SWIPE_MULTI_CHOOSE, on)
-        }
-    var replyDistance: Int
-        get() = ConfigManager.getDefaultConfig().getOrDefault(LEFT_SWIPE_REPLY_DISTANCE, -1) as Int
-        set(replyDistance) {
-            putValue(LEFT_SWIPE_REPLY_DISTANCE, replyDistance)
-        }
-
-    private fun putValue(keyName: String, obj: Any) {
-        try {
-            val mgr = ConfigManager.getDefaultConfig()
-            mgr.allConfig[keyName] = obj
-            mgr.save()
-        } catch (e: Exception) {
-            Utils.log(e)
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                Toasts.error(hostInfo.application, e.toString() + "")
-            } else {
-                SyncUtils.post { Toasts.error(hostInfo.application, e.toString() + "") }
-            }
         }
     }
 }
