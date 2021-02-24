@@ -15,7 +15,8 @@
     <PreferenceCategory android:title="聊天">
         <SwitchPreference
             android:key="RevokeMsgHook"
-            android:title="防止消息撤回" />
+            android:title="防止消息撤回"
+            android:summary="自带撤回灰字提示"/>
         <SwitchPreference
             android:key="transparentImgBg"
             android:title="聊天图片背景透明" />
