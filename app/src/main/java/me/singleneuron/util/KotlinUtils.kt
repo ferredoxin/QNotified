@@ -179,7 +179,7 @@ fun showEulaDialog(activity: Activity) {
             } catch (e: InterruptedException) {
                 e.printStackTrace()
             }
-        } while (--time!=0)
+        } while (--time>=0)
         Utils.runOnUiThread {
             button.text = "确定"
             editText.isEnabled = true
