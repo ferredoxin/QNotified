@@ -40,6 +40,7 @@ import java.lang.reflect.Modifier;
 
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.CliOper;
+import nil.nadph.qnotified.util.SavedInstanceStatePatchedClassReferencer;
 import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.util.Initiator.load;
@@ -183,9 +184,14 @@ public class IphoneTitleBarActivityCompat extends IphoneTitleBarActivity {
         super.onRestoreInstanceState(savedInstanceState);
     }
 
+    private ClassLoader mXref = null;
+
     @Override
     public ClassLoader getClassLoader() {
-        return IphoneTitleBarActivityCompat.class.getClassLoader();
+        if (mXref == null) {
+            mXref = new SavedInstanceStatePatchedClassReferencer(IphoneTitleBarActivityCompat.class.getClassLoader());
+        }
+        return mXref;
     }
 
     @Override
