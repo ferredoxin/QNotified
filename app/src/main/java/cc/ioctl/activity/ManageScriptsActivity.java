@@ -96,7 +96,13 @@ public class ManageScriptsActivity extends IphoneTitleBarActivityCompat {
                     }
                 } else {
                     if (c.moveToFirst()) {
-                        String scriptName = c.getString(c.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                        String scriptName;
+                        int displayNameColIdx = c.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                        if (displayNameColIdx >= 0) {
+                            scriptName = c.getString(displayNameColIdx);
+                        } else {
+                            scriptName = System.currentTimeMillis() / 1000L + ".java";
+                        }
                         try {
                             ParcelFileDescriptor parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "r");
                             if (parcelFileDescriptor != null) {
