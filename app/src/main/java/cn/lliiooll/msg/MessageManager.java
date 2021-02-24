@@ -27,7 +27,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import cn.lliiooll.hook.AntiMessage;
-import me.singleneuron.data.MsgRecordData;
+import me.singleneuron.hook.decorator.RegexAntiMeg;
+import me.singleneuron.qn_kernel.data.MsgRecordData;
 
 public class MessageManager {
 
@@ -35,6 +36,7 @@ public class MessageManager {
 
     private static final MessageReceiver[] receivers = {
         // 在这里添加消息处理
+        RegexAntiMeg.INSTANCE,
         AntiMessage.INSTANCE,
     };
 
