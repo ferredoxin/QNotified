@@ -56,6 +56,7 @@ public class LicenseActivity extends IphoneTitleBarActivityCompat implements Vie
         notices.addNotice(new Notice("QQ净化", "https://github.com/zpp0196/QQPurify", "zpp0196", new ApacheSoftwareLicense20()));
         notices.addNotice(new Notice("NoApplet", "https://github.com/Alcatraz323/noapplet", "Alcatraz323", new MITLicense()));
         notices.addNotice(new Notice("原生音乐通知", "https://github.com/singleNeuron/XposedMusicNotify", "singleNeuron", new GnuLesserGeneralPublicLicense3()));
+        notices.addNotice(new Notice("QQSpeciallyCare", "https://github.com/singleNeuron/QQSpeciallyCare", "singleNeuron", new ApacheSoftwareLicense20()));
         notices.addNotice(flycoTabLayout);
         notices.addNotice(markwon);
         notices.addNotice(colorPicker);
