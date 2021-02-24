@@ -48,6 +48,7 @@ import nil.nadph.qnotified.R
 import nil.nadph.qnotified.activity.EulaActivity
 import nil.nadph.qnotified.activity.OmegaTestFuncActivity
 import nil.nadph.qnotified.hook.BaseDelayableHook
+import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit
 import nil.nadph.qnotified.util.LicenseStatus
 import nil.nadph.qnotified.util.Utils
@@ -63,6 +64,10 @@ fun ViewGroup.addViewConditionally(view: View, condition: Boolean) {
 
 fun <T> ViewGroup.addViewConditionally(context: Context, title: String, desc: String, hook: T) where T : BaseDelayableHook, T : Conditional {
     addViewConditionally(newListItemHookSwitchInit(context, title, desc, hook), hook.condition)
+}
+
+fun ViewGroup.addViewConditionally(context: Context, title: String, desc: String, hook: CommonDelayableHook) {
+    addViewConditionally(newListItemHookSwitchInit(context, title, desc, hook), hook.isValid)
 }
 
 @Throws(IOException::class)
