@@ -25,11 +25,10 @@ package me.singleneuron.hook.decorator
 import android.view.View
 import android.widget.EditText
 import cn.lliiooll.msg.MessageReceiver
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import de.robv.android.xposed.XposedHelpers
 import me.kyuubiran.util.getExFriendCfg
 import me.singleneuron.qn_kernel.data.MsgRecordData
-import me.singleneuron.qn_kernel.data.hostInfo
+import nil.nadph.qnotified.ui.CustomDialog
 import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.ReflexUtil
 import nil.nadph.qnotified.util.Utils
@@ -74,9 +73,9 @@ object RegexAntiMeg: MessageReceiver, View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-        val context = hostInfo.application
+        val context = v!!.context
         val editText = EditText(context)
-        MaterialAlertDialogBuilder(context)
+        CustomDialog.createFailsafe(context)
             .setTitle("设置万象屏蔽卡片消息正则表达式（留空禁用）")
             .setView(editText)
             .setPositiveButton("确定") { _, _ ->
