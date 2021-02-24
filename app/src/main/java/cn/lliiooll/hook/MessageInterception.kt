@@ -25,7 +25,7 @@ package cn.lliiooll.hook
 import cn.lliiooll.msg.MessageManager
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
-import me.singleneuron.data.MsgRecordData
+import me.singleneuron.qn_kernel.data.MsgRecordData
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.Initiator

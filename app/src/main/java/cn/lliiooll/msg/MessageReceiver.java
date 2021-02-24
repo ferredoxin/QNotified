@@ -22,7 +22,7 @@
 
 package cn.lliiooll.msg;
 
-import me.singleneuron.data.MsgRecordData;
+import me.singleneuron.qn_kernel.data.MsgRecordData;
 
 public interface MessageReceiver {
 

@@ -19,7 +19,7 @@
  * <https://www.gnu.org/licenses/>
  * <https://github.com/ferredoxin/QNotified/blob/master/LICENSE.md>.
  */
-package me.singleneuron.data
+package me.singleneuron.qn_kernel.data
 
 import me.kyuubiran.util.getObjectOrNull
 import me.kyuubiran.util.putObject

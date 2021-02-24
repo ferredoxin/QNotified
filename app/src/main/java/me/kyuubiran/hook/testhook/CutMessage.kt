@@ -28,7 +28,7 @@ import de.robv.android.xposed.XposedBridge
 import me.kyuubiran.util.LOG_TYPE_FIND_METHOD
 import me.kyuubiran.util.getObjectOrNull
 import me.kyuubiran.util.logd
-import me.singleneuron.data.MsgRecordData
+import me.singleneuron.qn_kernel.data.MsgRecordData
 import me.singleneuron.qn_kernel.data.hostInfo
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.base.annotation.FunctionEntry
