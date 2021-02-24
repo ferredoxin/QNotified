@@ -240,7 +240,8 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                 }
             }
         }));
-        ll.addView(newListItemButton(this,"测试数据库","",null,clickToProxyActAction(DatabaseTestActivity.class)));
+        ll.addView(newListItemButton(this,"测试数据库",null,null,clickToProxyActAction(DatabaseTestActivity.class)));
+        ll.addView(newListItemButton(this,"新界面",null,null,clickToProxyActAction(MainActivity.class)));
 
 
         ll.addView(subtitle(this, ""));
