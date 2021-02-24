@@ -81,5 +81,6 @@ public interface AbsConfigSection {
      * @param data        An Intent, which can return result data to the caller
      *                    (various data can be attached to Intent "extras").
      */
+    @SuppressWarnings("JavadocReference")
     void onActivityResult(@NonNull SharedUiProvider ui, int requestCode, int resultCode, Intent data);
 }

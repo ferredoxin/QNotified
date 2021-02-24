@@ -57,6 +57,7 @@ import me.kyuubiran.hook.AutoMosaicName;
 import me.kyuubiran.hook.ShowSelfMsgByLeft;
 import me.singleneuron.activity.ChangeDrawerWidthActivity;
 import me.singleneuron.hook.*;
+import me.singleneuron.hook.decorator.CardMsgToText;
 import me.singleneuron.hook.decorator.DisableQzoneSlideCamera;
 import me.singleneuron.hook.decorator.RegexAntiMeg;
 import me.singleneuron.hook.decorator.SimpleReceiptMessage;
@@ -216,6 +217,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         ll.addView(newListItemButton(this, "自定义钱包余额", "仅供娱乐", null, FakeBalance.INSTANCE.listener()));
         ll.addView(newListItemConfigSwitchIfValid(this, "消息显示发送者QQ号和时间", null, ChatItemShowQQUin.INSTANCE));
         ll.addView(newListItemButton(this,"万象屏蔽卡片消息","使用强大的正则表达式自由屏蔽卡片消息",null, RegexAntiMeg.INSTANCE));
+        ll.addView(newListItemHookSwitchInit(this, "卡片消息文本化",null, CardMsgToText.INSTANCE));
         ll.addView(subtitle(this, "好友列表"));
         ll.addView(newListItemButton(this, "打开资料卡", "打开指定用户的资料卡", null, new View.OnClickListener() {
             @Override

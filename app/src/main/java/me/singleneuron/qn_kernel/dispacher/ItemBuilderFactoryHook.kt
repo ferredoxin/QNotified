@@ -24,18 +24,20 @@ package me.singleneuron.qn_kernel.dispacher
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import me.singleneuron.base.adapter.BaseDelayableHookAdapter
+import me.singleneuron.hook.decorator.CardMsgToText
 import me.singleneuron.hook.decorator.SimpleCheckIn
 import me.singleneuron.hook.decorator.SimpleReceiptMessage
 import nil.nadph.qnotified.base.annotation.FunctionEntry
-import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.util.DexKit
+import nil.nadph.qnotified.util.Initiator
 import java.lang.reflect.Method
 
 @FunctionEntry
 object ItemBuilderFactoryHook : BaseDelayableHookAdapter(cfgName = "itemBuilderFactoryHook",cond = arrayOf(DexDeobfStep(DexKit.C_ITEM_BUILDER_FAC))) {
 
     val decorators = arrayOf(
+        CardMsgToText,
         SimpleCheckIn,
         SimpleReceiptMessage
     )

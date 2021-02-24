@@ -196,6 +196,7 @@ public class SendBatchMsg {
         }, 1000);
     }
 
+    @SuppressWarnings("JavaJniMissingFunction")
     static native boolean ntSendBatchMessages(QQAppInterface rt, Context ctx, String msg, int[] type, long[] uin);
 
     private static View getListView(Context context, String sendMsg,
