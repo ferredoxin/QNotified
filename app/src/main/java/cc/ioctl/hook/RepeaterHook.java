@@ -31,14 +31,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.tencent.mobileqq.app.QQAppInterface;
-
 import java.lang.reflect.Method;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import mqq.app.AppRuntime;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.bridge.ChatActivityFacade;
 import cc.ioctl.dialog.RepeaterIconSettingDialog;
@@ -95,7 +94,7 @@ public class RepeaterHook extends CommonDelayableHook {
                     if (ctx.getClass().getName().contains("ChatHistoryActivity") ||
                         ctx.getClass().getName().contains("MultiForwardActivity"))
                         return;
-                    final QQAppInterface app = getFirstNSFByType(param.thisObject, _QQAppInterface());
+                    final AppRuntime app = getFirstNSFByType(param.thisObject, _QQAppInterface());
                     final Parcelable session = getFirstNSFByType(param.thisObject, _SessionInfo());
                     String uin = "" + Utils.getLongAccountUin();
                     if (relativeLayout.findViewById(101) == null) {
@@ -162,7 +161,7 @@ public class RepeaterHook extends CommonDelayableHook {
                             if (ctx.getClass().getName().contains("ChatHistoryActivity")
                                 || ctx.getClass().getName().contains("MultiForwardActivity"))
                                 return;
-                            final QQAppInterface app = getFirstNSFByType(param.thisObject, QQAppInterface.class);
+                            final AppRuntime app = getFirstNSFByType(param.thisObject, _QQAppInterface());
                             final Parcelable session = getFirstNSFByType(param.thisObject, _SessionInfo());
                             String uin = "" + Utils.getLongAccountUin();
                             if (resultView.findViewById(101) == null) {
@@ -242,7 +241,7 @@ public class RepeaterHook extends CommonDelayableHook {
                         Bitmap repeat = RepeaterIconSettingDialog.getRepeaterIcon();
                         imageView.setImageBitmap(repeat);
                         imageView2.setImageBitmap(repeat);
-                        final QQAppInterface app = getFirstNSFByType(param.thisObject, QQAppInterface.class);
+                        final AppRuntime app = getFirstNSFByType(param.thisObject, _QQAppInterface());
                         final Parcelable session = getFirstNSFByType(param.thisObject, _SessionInfo());
                         final Object msg = param.args[0];
                         View.OnClickListener r0 = new View.OnClickListener() {
@@ -274,7 +273,7 @@ public class RepeaterHook extends CommonDelayableHook {
                         if (ctx.getClass().getName().contains("ChatHistoryActivity")
                             || ctx.getClass().getName().contains("MultiForwardActivity"))
                             return;
-                        final QQAppInterface app = getFirstNSFByType(param.thisObject, QQAppInterface.class);
+                        final AppRuntime app = getFirstNSFByType(param.thisObject, _QQAppInterface());
                         final Parcelable session = getFirstNSFByType(param.thisObject, _SessionInfo());
                         String uin = "" + Utils.getLongAccountUin();
                         if (convertView.findViewById(101) == null) {

@@ -426,7 +426,7 @@ jboolean handleSendBatchMessages(JNIEnv *env, jclass clazz, jobject rt,
     jmethodID strValOf = env->GetStaticMethodID(cl_Str, "valueOf", "(J)Ljava/lang/String;");
     jclass cl_Facade = env->FindClass("nil/nadph/qnotified/bridge/ChatActivityFacade");
     jmethodID send = env->GetStaticMethodID(cl_Facade, "sendMessage",
-                                            "(Lcom/tencent/mobileqq/app/QQAppInterface;Landroid/content/Context;Landroid/os/Parcelable;Ljava/lang/String;)[J");
+                                            "(Lmqq/app/AppRuntime;Landroid/content/Context;Landroid/os/Parcelable;Ljava/lang/String;)[J");
     for (int i = 0; i < len; i++) {
         jstring struin = (jstring) (env->CallStaticObjectMethod(cl_Str, strValOf, uins[i]));
         jobject session = env->CallStaticObjectMethod(cl_SessionInfoImpl, createSessionInfo, struin,
@@ -510,7 +510,7 @@ jboolean handleSendCardMsg(JNIEnv *env, jclass clazz, jobject rt, jobject sessio
         if (structMsg == nullptr)return false;
         jclass ChatActivityFacade = env->FindClass("nil/nadph/qnotified/bridge/ChatActivityFacade");
         jmethodID sendAbsStructMsg = env->GetStaticMethodID(ChatActivityFacade, "sendAbsStructMsg",
-                                                            "(Lcom/tencent/mobileqq/app/QQAppInterface;Landroid/os/Parcelable;Ljava/io/Externalizable;)V");
+                                                            "(Lmqq/app/AppRuntime;Landroid/os/Parcelable;Ljava/io/Externalizable;)V");
         env->CallStaticVoidMethod(ChatActivityFacade, sendAbsStructMsg, rt, session, structMsg);
         return !env->ExceptionCheck();
     } else if (format == '{') {
@@ -529,7 +529,7 @@ jboolean handleSendCardMsg(JNIEnv *env, jclass clazz, jobject rt, jobject sessio
         jclass ChatActivityFacade = env->FindClass("nil/nadph/qnotified/bridge/ChatActivityFacade");
         jmethodID sendArkAppMessage = env->GetStaticMethodID(ChatActivityFacade,
                                                              "sendArkAppMessage",
-                                                             "(Lcom/tencent/mobileqq/app/QQAppInterface;Landroid/os/Parcelable;Ljava/lang/Object;)Z");
+                                                             "(Lmqq/app/AppRuntime;Landroid/os/Parcelable;Ljava/lang/Object;)Z");
         return env->CallStaticBooleanMethod(ChatActivityFacade, sendArkAppMessage,
                                             rt, session, arkMsg);
     } else {
@@ -556,14 +556,14 @@ EXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
         __android_log_print(ANDROID_LOG_INFO, "QNdump", "register native method[0] failed!\n");
         return -1;
     }
-    jclass appInterface = env->FindClass("com/tencent/mobileqq/app/QQAppInterface");
+    jclass appInterface = env->FindClass("mqq/app/AppRuntime");
     if (appInterface == nullptr) {
         env->ExceptionClear();
         __android_log_print(ANDROID_LOG_WARN, "QNdump", "not seeming in host, skip native hooks");
     } else {
         clazz = env->FindClass("cc/ioctl/hook/CardMsgHook");
         lMethods[0].name = "ntSendCardMsg";
-        lMethods[0].signature = "(Lcom/tencent/mobileqq/app/QQAppInterface;Landroid/os/Parcelable;Ljava/lang/String;)Z";
+        lMethods[0].signature = "(Lmqq/app/AppRuntime;Landroid/os/Parcelable;Ljava/lang/String;)Z";
         lMethods[0].fnPtr = (void *) &handleSendCardMsg;
         if (env->RegisterNatives(clazz, lMethods, 1)) {
             __android_log_print(ANDROID_LOG_INFO, "QNdump", "register native method[1] failed!\n");
@@ -571,7 +571,7 @@ EXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
         }
         clazz = env->FindClass("cc/ioctl/util/SendBatchMsg");
         lMethods[0].name = "ntSendBatchMessages";
-        lMethods[0].signature = "(Lcom/tencent/mobileqq/app/QQAppInterface;Landroid/content/Context;Ljava/lang/String;[I[J)Z";
+        lMethods[0].signature = "(Lmqq/app/AppRuntime;Landroid/content/Context;Ljava/lang/String;[I[J)Z";
         lMethods[0].fnPtr = (void *) &handleSendBatchMessages;
         if (env->RegisterNatives(clazz, lMethods, 1)) {
             __android_log_print(ANDROID_LOG_INFO, "QNdump", "register native method[2] failed!\n");

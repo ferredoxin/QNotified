@@ -34,12 +34,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 
-import com.tencent.mobileqq.app.QQAppInterface;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import mqq.app.AppRuntime;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.activity.TroopSelectActivity;
 import nil.nadph.qnotified.util.CliOper;
@@ -197,7 +196,7 @@ public class SendBatchMsg {
     }
 
     @SuppressWarnings("JavaJniMissingFunction")
-    static native boolean ntSendBatchMessages(QQAppInterface rt, Context ctx, String msg, int[] type, long[] uin);
+    static native boolean ntSendBatchMessages(AppRuntime rt, Context ctx, String msg, int[] type, long[] uin);
 
     private static View getListView(Context context, String sendMsg,
                                     final TroopAndFriendSelectAdpter troopAndFriendSelectAdpter) {

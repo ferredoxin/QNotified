@@ -8,8 +8,8 @@
                 android:key="version_module"
                 android:title="模块版本"/>
         <Preference
-                android:key="version_qq"
-                android:title="QQ/TIM版本"/>
+            android:key="version_qq"
+            android:title="N/A版本" />
         <!-- <Preference -->
         <!--        android:key="licenses" -->
         <!--        android:title="开放源代码许可"/> -->

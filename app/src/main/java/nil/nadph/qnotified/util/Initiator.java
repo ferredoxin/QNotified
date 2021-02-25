@@ -23,7 +23,7 @@ package nil.nadph.qnotified.util;
 
 import android.os.Parcelable;
 
-import com.tencent.mobileqq.app.QQAppInterface;
+import mqq.app.AppRuntime;
 
 import static nil.nadph.qnotified.util.Utils.loge;
 import static nil.nadph.qnotified.util.Utils.PACKAGE_NAME_QQ;
@@ -453,7 +453,16 @@ public class Initiator {
 
     public static Class _Conversation() {
         Class<?> clazz = load("com/tencent/mobileqq/activity/home/Conversation");
-        if (clazz == null) clazz = load("com/tencent/mobileqq/activity/Conversation");
+        if (clazz == null) {
+            clazz = load("com/tencent/mobileqq/activity/Conversation");
+        }
+        if (clazz == null) {
+            Class cref = load("com/tencent/mobileqq/activity/Conversation$5");
+            try {
+                clazz = cref.getDeclaredField("this$0").getType();
+            } catch (NoSuchFieldException ignored) {
+            }
+        }
         return clazz;
     }
 
@@ -465,8 +474,22 @@ public class Initiator {
         return load("com/tencent/mobileqq/data/MessageRecord");
     }
 
-    public static Class<QQAppInterface> _QQAppInterface() {
-        return (Class<QQAppInterface>) load("com/tencent/mobileqq/app/QQAppInterface");
+    private static Class<?> kQQAppInterface = null;
+
+    public static Class<? extends AppRuntime> _QQAppInterface() {
+        if (kQQAppInterface == null) {
+            kQQAppInterface = load("com/tencent/mobileqq/app/QQAppInterface");
+            if (kQQAppInterface == null) {
+                Class<?> ref = load("com/tencent/mobileqq/app/QQAppInterface$1");
+                if (ref != null) {
+                    try {
+                        kQQAppInterface = ref.getDeclaredField("this$0").getType();
+                    } catch (Exception ignored) {
+                    }
+                }
+            }
+        }
+        return (Class<? extends AppRuntime>) kQQAppInterface;
     }
 
     public static Class<?> _BaseMessageManager() {

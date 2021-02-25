@@ -32,6 +32,7 @@ import androidx.annotation.NonNull;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.MainHook;
+import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.activity.EulaActivity;
 import nil.nadph.qnotified.activity.SettingsActivity;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
@@ -52,7 +53,6 @@ import static nil.nadph.qnotified.util.Utils.log;
 
 @FunctionEntry
 public class SettingEntryHook extends CommonDelayableHook {
-    public static final int R_ID_SETTING_ENTRY = 0x300AFF71;
     private static final SettingEntryHook self = new SettingEntryHook();
 
     private SettingEntryHook() {
@@ -71,19 +71,27 @@ public class SettingEntryHook extends CommonDelayableHook {
                 @Override
                 protected void afterHookedMethod(final MethodHookParam param) throws Throwable {
                     try {
-                        Class<?> itemClass = null;
-                        View itemRef = null;
-                        itemRef = (View) iget_object_or_null(param.thisObject, "a", load("com/tencent/mobileqq/widget/FormSimpleItem"));
+                        final Activity activity = (Activity) param.thisObject;
+                        Class<?> itemClass;
+                        View itemRef;
+                        itemRef = (View) iget_object_or_null(activity, "a", load("com/tencent/mobileqq/widget/FormSimpleItem"));
                         if (itemRef == null && (itemClass = load("com/tencent/mobileqq/widget/FormCommonSingleLineItem")) != null)
-                            itemRef = (View) iget_object_or_null(param.thisObject, "a", itemClass);
+                            itemRef = (View) iget_object_or_null(activity, "a", itemClass);
                         if (itemRef == null) {
                             Class<?> clz = load("com/tencent/mobileqq/widget/FormCommonSingleLineItem");
                             if (clz == null)
                                 clz = load("com/tencent/mobileqq/widget/FormSimpleItem");
-                            itemRef = (View) ReflexUtil.getFirstNSFByType(param.thisObject, clz);
+                            itemRef = (View) ReflexUtil.getFirstNSFByType(activity, clz);
                         }
-                        View item = (View) new_instance(itemRef.getClass(), param.thisObject, Context.class);
-                        item.setId(R_ID_SETTING_ENTRY);
+                        View item;
+                        if (itemRef == null) {
+                            // we are in triassic period?
+                            item = (View) new_instance(load("com/tencent/mobileqq/widget/FormSimpleItem"), activity, Context.class);
+                        } else {
+                            // modern age
+                            item = (View) new_instance(itemRef.getClass(), activity, Context.class);
+                        }
+                        item.setId(R.id.setting2Activity_settingEntryItem);
                         invoke_virtual(item, "setLeftText", "QNotified", CharSequence.class);
                         invoke_virtual(item, "setBgType", 2, int.class);
                         if (LicenseStatus.hasUserAcceptEula()) {
@@ -93,43 +101,53 @@ public class SettingEntryHook extends CommonDelayableHook {
                         }
                         item.setOnClickListener(v -> {
                             if (LicenseStatus.hasUserAcceptEula()) {
-                                MainHook.startProxyActivity((Context) param.thisObject, SettingsActivity.class);
+                                MainHook.startProxyActivity((Context) activity, SettingsActivity.class);
                             } else {
-                                MainHook.startProxyActivity((Context) param.thisObject, EulaActivity.class);
-                                if (param.thisObject instanceof Activity) {
-                                    ((Activity) param.thisObject).finish();
-                                }
+                                MainHook.startProxyActivity((Context) activity, EulaActivity.class);
+                                activity.finish();
                             }
                         });
-                        ViewGroup list = (ViewGroup) itemRef.getParent();
-                        ViewGroup.LayoutParams reflp;
-                        if (list.getChildCount() == 1) {
-                            //junk!
-                            list = (ViewGroup) list.getParent();
-                            reflp = ((View) itemRef.getParent()).getLayoutParams();
-                        } else {
-                            reflp = itemRef.getLayoutParams();
-                        }
-                        ViewGroup.LayoutParams lp = null;
-                        if (reflp != null) {
-                            lp = new ViewGroup.LayoutParams(MATCH_PARENT, /*reflp.height*/WRAP_CONTENT);
-                        }
-                        int index = 0;
-                        int account_switch = list.getContext().getResources().getIdentifier("account_switch", "id", list.getContext().getPackageName());
-                        try {
-                            if (account_switch > 0) {
-                                View accountItem = (View) list.findViewById(account_switch).getParent();
-                                for (int i = 0; i < list.getChildCount(); i++) {
-                                    if (list.getChildAt(i) == accountItem) {
-                                        index = i + 1;
-                                        break;
+                        if (itemRef != null) {
+                            //modern age
+                            ViewGroup list = (ViewGroup) itemRef.getParent();
+                            ViewGroup.LayoutParams reflp;
+                            if (list.getChildCount() == 1) {
+                                //junk!
+                                list = (ViewGroup) list.getParent();
+                                reflp = ((View) itemRef.getParent()).getLayoutParams();
+                            } else {
+                                reflp = itemRef.getLayoutParams();
+                            }
+                            ViewGroup.LayoutParams lp = null;
+                            if (reflp != null) {
+                                lp = new ViewGroup.LayoutParams(MATCH_PARENT, /*reflp.height*/WRAP_CONTENT);
+                            }
+                            int index = 0;
+                            int account_switch = list.getContext().getResources().getIdentifier("account_switch", "id", list.getContext().getPackageName());
+                            try {
+                                if (account_switch > 0) {
+                                    View accountItem = (View) list.findViewById(account_switch).getParent();
+                                    for (int i = 0; i < list.getChildCount(); i++) {
+                                        if (list.getChildAt(i) == accountItem) {
+                                            index = i + 1;
+                                            break;
+                                        }
                                     }
                                 }
+                                if (index > list.getChildCount()) index = 0;
+                            } catch (NullPointerException ignored) {
                             }
-                            if (index > list.getChildCount()) index = 0;
-                        } catch (NullPointerException ignored) {
+                            list.addView(item, index, lp);
+                        } else {
+                            // triassic period, we have to find the ViewGroup ourselves
+                            int qqsetting2_msg_notify = activity.getResources().getIdentifier("qqsetting2_msg_notify", "id", activity.getPackageName());
+                            if (qqsetting2_msg_notify == 0) {
+                                throw new UnsupportedOperationException("R.id.qqsetting2_msg_notify not found in triassic period");
+                            } else {
+                                ViewGroup vg = (ViewGroup) activity.findViewById(qqsetting2_msg_notify).getParent().getParent();
+                                vg.addView(item, 0, new ViewGroup.LayoutParams(MATCH_PARENT, /*reflp.height*/WRAP_CONTENT));
+                            }
                         }
-                        list.addView(item, index, lp);
                     } catch (Throwable e) {
                         log(e);
                         throw e;

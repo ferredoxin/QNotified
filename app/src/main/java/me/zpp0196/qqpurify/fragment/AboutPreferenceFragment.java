@@ -1,6 +1,6 @@
 package me.zpp0196.qqpurify.fragment;
 
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import cc.ioctl.H;
 import me.zpp0196.qqpurify.fragment.base.AbstractPreferenceFragment;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.util.Utils;
@@ -14,10 +14,9 @@ public class AboutPreferenceFragment extends AbstractPreferenceFragment {
     @SuppressWarnings("ConstantConditions")
     protected void initPreferences() {
         super.initPreferences();
-        String qqVersion = HostInformationProviderKt.getHostInfo().getVersionName();
-
         findPreference("version_module").setSummary(Utils.QN_VERSION_NAME);
-        findPreference("version_qq").setSummary(qqVersion);
+        findPreference("version_qq").setTitle(H.getAppName());
+        findPreference("version_qq").setSummary(String.format("%s (%d)", H.getVersionName(), H.getVersionCode()));
     }
 
     @Override

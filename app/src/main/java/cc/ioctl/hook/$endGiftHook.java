@@ -32,9 +32,9 @@ import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 
-import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.log;
 
 @FunctionEntry
@@ -52,7 +52,7 @@ public class $endGiftHook extends CommonDelayableHook {
     @Override
     public boolean initOnce() {
         try {
-            Method m = DexKit.doFindClass(DexKit.C_TROOP_GIFT_UTIL).getDeclaredMethod("a", Activity.class, String.class, String.class, load("com/tencent/mobileqq/app/QQAppInterface"));
+            Method m = DexKit.doFindClass(DexKit.C_TROOP_GIFT_UTIL).getDeclaredMethod("a", Activity.class, String.class, String.class, Initiator._QQAppInterface());
             XposedBridge.hookMethod(m, new XC_MethodHook(47) {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {

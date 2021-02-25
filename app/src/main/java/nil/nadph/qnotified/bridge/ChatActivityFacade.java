@@ -25,25 +25,25 @@ import android.content.Context;
 import android.os.Parcelable;
 import android.widget.Toast;
 
-import com.tencent.mobileqq.app.QQAppInterface;
-
 import java.io.Externalizable;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import mqq.app.AppRuntime;
 import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Utils;
 
+import static nil.nadph.qnotified.util.Initiator._QQAppInterface;
 import static nil.nadph.qnotified.util.Initiator._SessionInfo;
-import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
 import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
 import static nil.nadph.qnotified.util.Utils.*;
 
 public class ChatActivityFacade {
-    public static long[] sendMessage(QQAppInterface qqAppInterface, Context context, Parcelable sessionInfo, String msg,
+    public static long[] sendMessage(AppRuntime qqAppInterface, Context context, Parcelable sessionInfo, String msg,
                                      ArrayList<?> atInfo, Object sendMsgParams) {
         if (qqAppInterface == null) throw new NullPointerException("qqAppInterface == null");
         if (sessionInfo == null) throw new NullPointerException("sessionInfo == null");
@@ -70,7 +70,7 @@ public class ChatActivityFacade {
         }
     }
 
-    public static long[] sendMessage(QQAppInterface qqAppInterface, Context context, Parcelable sessionInfo, String msg) {
+    public static long[] sendMessage(AppRuntime qqAppInterface, Context context, Parcelable sessionInfo, String msg) {
         if (qqAppInterface == null) throw new NullPointerException("qqAppInterface == null");
         if (sessionInfo == null) throw new NullPointerException("sessionInfo == null");
         if (msg == null) throw new NullPointerException("msg == null");
@@ -97,7 +97,7 @@ public class ChatActivityFacade {
         }
     }
 
-    public static long sendPttMessage(QQAppInterface qqAppInterface, Parcelable sessionInfo, String pttPath) {
+    public static long sendPttMessage(AppRuntime qqAppInterface, Parcelable sessionInfo, String pttPath) {
         if (qqAppInterface == null) throw new NullPointerException("qqAppInterface == null");
         if (sessionInfo == null) throw new NullPointerException("sessionInfo == null");
         if (pttPath == null) throw new NullPointerException("pttPath == null");
@@ -106,7 +106,7 @@ public class ChatActivityFacade {
             if (m.getReturnType().equals(long.class)) {
                 Class<?>[] clz = m.getParameterTypes();
                 if (clz.length != 3) continue;
-                if (clz[0].equals(QQAppInterface.class) && clz[1].equals(_SessionInfo()) && clz[2].equals(String.class)) {
+                if (clz[0].equals(_QQAppInterface()) && clz[1].equals(_SessionInfo()) && clz[2].equals(String.class)) {
                     send = m;
                     break;
                 }
@@ -120,7 +120,7 @@ public class ChatActivityFacade {
         }
     }
 
-    public static boolean sendArkAppMessage(QQAppInterface qqAppInterface, Parcelable sessionInfo, Object arkAppMsg) {
+    public static boolean sendArkAppMessage(AppRuntime qqAppInterface, Parcelable sessionInfo, Object arkAppMsg) {
         if (qqAppInterface == null) throw new NullPointerException("qqAppInterface == null");
         if (sessionInfo == null) throw new NullPointerException("sessionInfo == null");
         if (arkAppMsg == null) throw new NullPointerException("arkAppMsg == null");
@@ -129,7 +129,7 @@ public class ChatActivityFacade {
             if (m.getReturnType().equals(boolean.class)) {
                 Class<?>[] clz = m.getParameterTypes();
                 if (clz.length != 3) continue;
-                if (clz[0].equals(QQAppInterface.class) && clz[1].equals(_SessionInfo()) && clz[2].isInstance(arkAppMsg)) {
+                if (clz[0].equals(_QQAppInterface()) && clz[1].equals(_SessionInfo()) && clz[2].isInstance(arkAppMsg)) {
                     send = m;
                     break;
                 }
@@ -143,7 +143,7 @@ public class ChatActivityFacade {
         }
     }
 
-    public static void sendAbsStructMsg(QQAppInterface qqAppInterface, Parcelable sessionInfo, Externalizable absStructMsg) {
+    public static void sendAbsStructMsg(AppRuntime qqAppInterface, Parcelable sessionInfo, Externalizable absStructMsg) {
         if (qqAppInterface == null) throw new NullPointerException("qqAppInterface == null");
         if (sessionInfo == null) throw new NullPointerException("sessionInfo == null");
         if (absStructMsg == null) throw new NullPointerException("absStructMsg == null");
@@ -152,7 +152,7 @@ public class ChatActivityFacade {
             if (m.getReturnType().equals(void.class)) {
                 Class<?>[] clz = m.getParameterTypes();
                 if (clz.length != 3) continue;
-                if (clz[0].equals(QQAppInterface.class) && clz[1].equals(_SessionInfo()) && clz[2].isInstance(absStructMsg)) {
+                if (clz[0].equals(_QQAppInterface()) && clz[1].equals(_SessionInfo()) && clz[2].isInstance(absStructMsg)) {
                     send = m;
                     break;
                 }
@@ -165,7 +165,7 @@ public class ChatActivityFacade {
         }
     }
 
-    public static void repeatMessage(QQAppInterface app, Parcelable session, Object msg) {
+    public static void repeatMessage(AppRuntime app, Parcelable session, Object msg) {
         if (app == null) throw new NullPointerException("app == null");
         if (session == null) throw new NullPointerException("session == null");
         if (msg == null) throw new NullPointerException("msg == null");
@@ -184,8 +184,8 @@ public class ChatActivityFacade {
                         if (!mi.getName().equals("a") && !mi.getName().equals("b")) continue;
                         argt = mi.getParameterTypes();
                         if (argt.length < 3) continue;
-                        if (argt[0].equals(load("com/tencent/mobileqq/app/QQAppInterface")) && argt[1].equals(_SessionInfo())
-                                && argt[2].isAssignableFrom(msg.getClass()) && mi.getReturnType().equals(void.class)) {
+                        if (argt[0].equals(Initiator._QQAppInterface()) && argt[1].equals(_SessionInfo())
+                            && argt[2].isAssignableFrom(msg.getClass()) && mi.getReturnType().equals(void.class)) {
                             m = mi;
                             break;
                         }

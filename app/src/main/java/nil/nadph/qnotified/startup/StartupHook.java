@@ -96,11 +96,14 @@ public class StartupHook {
             log_e(e);
             throw e;
         }
-        XposedHelpers.findAndHookMethod("com.tencent.mobileqq.qfix.QFixApplication", rtLoader, "attachBaseContext", Context.class, new XC_MethodHook() {
-            public void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                deleteDirIfNecessaryNoThrow((Context) param.args[0]);
-            }
-        });
+        try {
+            XposedHelpers.findAndHookMethod(rtLoader.loadClass("com.tencent.mobileqq.qfix.QFixApplication"), "attachBaseContext", Context.class, new XC_MethodHook() {
+                public void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    deleteDirIfNecessaryNoThrow((Context) param.args[0]);
+                }
+            });
+        } catch (ClassNotFoundException ignored) {
+        }
     }
 
     static boolean sec_static_stage_inited = false;

@@ -115,13 +115,19 @@ public class HideMiniAppPullEntry extends CommonDelayableHook {
                         if (miniapp == null)
                             miniapp = load("com/tencent/mobileqq/mini/entry/MiniAppEntryAdapter$1").getDeclaredField("this$0").getType();
                     }
+                    if (miniapp == null) {
+                        Class<?> ref = load("com.tencent.widget.MiniAppListView");
+                        if (ref != null) {
+                            miniapp = load("com/tencent/mobileqq/mini/entry/QQMessagePageMiniAppEntryManager");
+                        }
+                    }
                     XposedBridge.hookAllConstructors(miniapp, new XC_MethodHook(60) {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             String methodName = null;
                             StackTraceElement[] stacks = new Throwable().getStackTrace();
                             for (StackTraceElement stack : stacks) {
-                                if (stack.getClassName().contains("Conversation")) {
+                                if (stack.getClassName().equals(Initiator._Conversation().getName())) {
                                     methodName = stack.getMethodName();
                                     break;
                                 }
