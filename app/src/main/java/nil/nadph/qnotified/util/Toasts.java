@@ -78,14 +78,18 @@ public class Toasts {
                         clazz_QQToast = load("com/tencent/mobileqq/widget/QQToast");
                     }
                     if (clazz_QQToast == null) {
-                        Class clz = load("com/tencent/mobileqq/activity/aio/doodle/DoodleLayout");
-                        assert clz != null;
-                        Field[] fs = clz.getDeclaredFields();
-                        for (Field f : fs) {
-                            if (View.class.isAssignableFrom(f.getType())) continue;
-                            if (f.getType().isPrimitive()) continue;
-                            if (f.getType().isInterface()) continue;
-                            clazz_QQToast = f.getType();
+                        Class<?> clz = load("com/tencent/mobileqq/activity/aio/doodle/DoodleLayout");
+                        if (clz != null) {
+                            Field[] fs = clz.getDeclaredFields();
+                            for (Field f : fs) {
+                                if (View.class.isAssignableFrom(f.getType())) continue;
+                                if (f.getType().isPrimitive()) continue;
+                                if (f.getType().isInterface()) continue;
+                                clazz_QQToast = f.getType();
+                            }
+                        } else {
+                            // for qqlite >= 4.0.0
+                            clazz_QQToast = load("com.tencent.qqmini.sdk.core.widget.QQToast");
                         }
                     }
                     if (method_Toast_show == null) {
