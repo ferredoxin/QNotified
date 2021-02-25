@@ -92,15 +92,6 @@ object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt") {
                         .setTitle("输入聊天字数统计颜色")
                         .setView(linearLayout)
                         .setPositiveButton("确认") { _, _ ->
-                            val color = editText.text.toString()
-                            try {
-                                Color.parseColor(color)
-                                putExFriend(colorCfg, color)
-                                dialog.dismiss()
-                                Toasts.showToast(activity, Utils.TOAST_TYPE_INFO, "重启以应用设置", Toast.LENGTH_SHORT)
-                            } catch (e: IllegalArgumentException) {
-                                Toasts.showToast(activity, Utils.TOAST_TYPE_ERROR, "颜色格式不正确", Toast.LENGTH_SHORT)
-                            }
                         }
                         .setNegativeButton("取消", null)
                         .setNeutralButton("使用默认值") { _, _ ->
@@ -109,6 +100,17 @@ object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt") {
                         }
                         .create() as AlertDialog
                     alertDialog.show()
+                    alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                        val color = editText.text.toString()
+                        try {
+                            Color.parseColor(color)
+                            putExFriend(colorCfg, color)
+                            alertDialog.cancel()
+                            Toasts.showToast(activity, Utils.TOAST_TYPE_INFO, "重启以应用设置", Toast.LENGTH_SHORT)
+                        } catch (e: IllegalArgumentException) {
+                            Toasts.showToast(activity, Utils.TOAST_TYPE_ERROR, "颜色格式不正确", Toast.LENGTH_SHORT)
+                        }
+                    }
                 }
                 (relativeLayout.parent as FrameLayout).addView(textView)
             }
@@ -169,19 +171,21 @@ object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt") {
             .setView(linearLayout)
             .setCancelable(true)
             .setPositiveButton("确认") { _, _ ->
-                val text = editText.text.toString()
-                if (text == "") {
-                    Toasts.showToast(activity, Utils.TOAST_TYPE_ERROR, "请输入聊天字数统计样式", Toast.LENGTH_SHORT)
-                } else {
-                    putExFriend(strCfg, text)
-                    Toasts.showToast(activity, Utils.TOAST_TYPE_INFO, "设置已保存", Toast.LENGTH_SHORT)
-                    dialog.dismiss()
-                }
             }.setNeutralButton("使用默认值") { _, _ ->
                 putExFriend(strCfg, "今日已发送 %1 条消息，共 %2 字，表情包 %3 个")
             }
             .setNegativeButton("取消", null)
             .create() as AlertDialog
         alertDialog.show()
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            val text = editText.text.toString()
+            if (text == "") {
+                Toasts.showToast(activity, Utils.TOAST_TYPE_ERROR, "请输入聊天字数统计样式", Toast.LENGTH_SHORT)
+            } else {
+                putExFriend(strCfg, text)
+                Toasts.showToast(activity, Utils.TOAST_TYPE_INFO, "设置已保存", Toast.LENGTH_SHORT)
+                alertDialog.cancel()
+            }
+        }
     }
 }
