@@ -453,7 +453,16 @@ public class Initiator {
 
     public static Class _Conversation() {
         Class<?> clazz = load("com/tencent/mobileqq/activity/home/Conversation");
-        if (clazz == null) clazz = load("com/tencent/mobileqq/activity/Conversation");
+        if (clazz == null) {
+            clazz = load("com/tencent/mobileqq/activity/Conversation");
+        }
+        if (clazz == null) {
+            Class cref = load("com/tencent/mobileqq/activity/Conversation$5");
+            try {
+                clazz = cref.getDeclaredField("this$0").getType();
+            } catch (NoSuchFieldException ignored) {
+            }
+        }
         return clazz;
     }
 
