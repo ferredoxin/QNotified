@@ -63,7 +63,7 @@ public class FaceImpl implements InvocationHandler {
             Field[] fs = cl_rxMsg.getDeclaredFields();
             for (Field f : fs) {
                 if (f.getType().equals(View.class)) continue;
-                if (f.getType().equals(load("com/tencent/mobileqq/app/QQAppInterface"))) continue;
+                if (f.getType().equals(Initiator._QQAppInterface())) continue;
                 class_FaceDecoder = f.getType();
             }
         }

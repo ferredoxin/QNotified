@@ -34,9 +34,17 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
-import com.tencent.mobileqq.app.QQAppInterface;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Iterator;
@@ -54,7 +62,9 @@ import nil.nadph.qnotified.ui.ResUtils;
 
 import static me.singleneuron.util.KotlinUtilsKt.readFromBufferedReader;
 import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.ReflexUtil.*;
+import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_any;
 
 @SuppressLint("SimpleDateFormat")
 public class Utils {
@@ -142,7 +152,7 @@ public class Utils {
     }
 
     public static Object getQQMessageFacade() throws Exception {
-        QQAppInterface app = getQQAppInterface();
+        AppRuntime app = getQQAppInterface();
         return invoke_virtual_any(app, Initiator._QQMessageFacade());
     }
 
@@ -179,13 +189,13 @@ public class Utils {
     }
 
     @MainProcess
-    public static QQAppInterface getQQAppInterface() {
+    public static AppRuntime getQQAppInterface() {
         AppRuntime art = getAppRuntime();
         if (art == null) {
             return null;
         }
-        if (art instanceof QQAppInterface) {
-            return (QQAppInterface) art;
+        if (Initiator._QQAppInterface().isAssignableFrom(art.getClass())) {
+            return art;
         } else {
             throw new IllegalStateException("QQAppInterface is not available in current process");
         }
