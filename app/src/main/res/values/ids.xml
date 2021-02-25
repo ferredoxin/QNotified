@@ -18,4 +18,5 @@
 
     <item name="mainV2_menuItem_toggleDesktopIcon" type="id" />
     <item name="chat_words_count" type="id" />
+    <item name="setting2Activity_settingEntryItem" type="id" />
 </resources>

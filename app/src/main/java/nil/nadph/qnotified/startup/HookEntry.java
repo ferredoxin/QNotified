@@ -59,12 +59,12 @@ public class HookEntry implements IXposedHookLoadPackage {
                 break;
             }
             case PACKAGE_NAME_TIM:
-            case PACKAGE_NAME_QQ: {
+            case PACKAGE_NAME_QQ:
+            case PACKAGE_NAME_QQ_LITE: {
                 StartupHook.getInstance().doInit(lpparam.classLoader);
                 break;
             }
-            case PACKAGE_NAME_QQ_INTERNATIONAL:
-            case PACKAGE_NAME_QQ_LITE: {
+            case PACKAGE_NAME_QQ_INTERNATIONAL: {
                 //coming...
                 break;
             }
