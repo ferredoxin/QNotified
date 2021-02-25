@@ -45,13 +45,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                app:cardBackgroundColor="#4285F4"
+                app:cardBackgroundColor="@color/themeColor"
                 app:cardCornerRadius="8dp">
                 <LinearLayout
                     android:id="@+id/mainV2_activationStatusLinearLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:gravity="center"
                     android:paddingLeft="0dp"
                     android:paddingTop="18dp"
                     android:paddingRight="0dp"
@@ -59,12 +60,11 @@
 
                     <ImageView
                         android:id="@+id/mainV2_activationStatusIcon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="26dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_marginLeft="16dp"
-                        android:layout_marginTop="10dp"
                         android:layout_marginRight="16dp"
-                        android:scaleType="fitXY"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/ic_info"
                         app:tint="@color/whiteTextColor"/>
 
@@ -77,9 +77,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="0dp"
-                            android:text="模块生效版本"
+                            android:text="@string/ModuleEffectiveVersion"
                             android:textColor="@color/whiteTextColor"
-                            android:textSize="18sp" />
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/activeVersion"
@@ -88,7 +88,7 @@
                             android:paddingTop="2dp"
                             android:text="Active Version"
                             android:textColor="@color/whiteTextColor"
-                            android:textSize="14sp" />
+                            android:textSize="12sp" />
 
                     </LinearLayout>
 
@@ -102,7 +102,6 @@
                 android:background="@drawable/bg_trans_border_ripple"
                 android:clickable="true"
                 android:focusable="true"
-                android:gravity="start|top"
                 android:orientation="horizontal"
                 android:paddingLeft="0dp"
                 android:paddingTop="18dp"
@@ -110,13 +109,12 @@
                 android:paddingBottom="18dp">
 
                 <ImageView
-                    android:layout_width="26dp"
-                    android:layout_height="26dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_marginLeft="16dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginRight="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:scaleType="fitXY"
+                    android:scaleType="centerCrop"
                     android:src="@drawable/ic_assignment"
                     app:tint="@color/themeColor" />
 
@@ -129,9 +127,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="0dp"
-                        android:text="公告"
+                        android:text="@string/announcement"
                         android:textColor="@color/firstTextColor"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/mainTextViewVersion"
@@ -139,10 +137,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
                         android:paddingTop="2dp"
-                        android:text="哪有什么公告，根本没写诶!完全是预留的位置罢了。
-花里胡哨花里胡哨花里胡哨花里胡哨花里胡哨花里胡哨"
+                        android:text="目前没有新公告目前没有新公告目前没有新公告目前没有新公告目前没有新公告目前没有新公告目前没有新公告目前没有新公告目前没有新公告"
                         android:textColor="@color/secondTextColor"
-                        android:textSize="14sp" />
+                        android:textSize="12sp" />
 
                 </LinearLayout>
 
@@ -156,7 +153,7 @@
                 android:background="@drawable/bg_trans_border_null_ripple"
                 android:clickable="true"
                 android:focusable="true"
-                android:gravity="start|top"
+                android:gravity="center"
                 android:orientation="horizontal"
                 android:paddingLeft="0dp"
                 android:paddingTop="18dp"
@@ -164,12 +161,12 @@
                 android:paddingBottom="18dp">
 
                 <ImageView
-                    android:layout_width="26dp"
-                    android:layout_height="26dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_marginLeft="16dp"
-                    android:layout_marginTop="0dp"
                     android:layout_marginRight="16dp"
-                    android:scaleType="fitXY"
+                    android:layout_gravity="center_vertical"
+                    android:scaleType="centerCrop"
                     android:src="@drawable/ic_github"
                     app:tint="@color/secondTextColor" />
 
@@ -180,11 +177,11 @@
 
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="0dp"
-                        android:text="Github"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/github"
                         android:textColor="@color/firstTextColor"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
 
 
                 </LinearLayout>
@@ -199,7 +196,7 @@
                 android:background="@drawable/bg_trans_border_null_ripple"
                 android:clickable="true"
                 android:focusable="true"
-                android:gravity="start|top"
+                android:gravity="center"
                 android:orientation="horizontal"
                 android:paddingLeft="0dp"
                 android:paddingTop="18dp"
@@ -207,11 +204,11 @@
                 android:paddingBottom="18dp">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
-                    android:scaleType="fitXY"
+                    android:scaleType="centerCrop"
                     android:src="@drawable/ic_build"
                     app:tint="@color/secondTextColor" />
 
@@ -224,9 +221,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="0dp"
-                        android:text="故障排查"
+                        android:text="@string/BugCheck"
                         android:textColor="@color/firstTextColor"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
 
                 </LinearLayout>
 

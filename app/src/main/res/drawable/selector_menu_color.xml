@@ -22,6 +22,6 @@
   -->
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:color="#4285F4" android:state_checked="true"/>
-    <item android:color="#4F5355" android:state_checked="false"/>
+    <item android:color="@color/themeColor" android:state_checked="true"/>
+    <item android:color="@color/thirdTextColor" android:state_checked="false"/>
 </selector>
