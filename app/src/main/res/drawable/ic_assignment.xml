@@ -1,0 +1,31 @@
+<!--
+  ~ QNotified - An Xposed module for QQ/TIM
+  ~ Copyright (C) 2019-2021 dmca@ioctl.cc
+  ~ https://github.com/ferredoxin/QNotified
+  ~
+  ~ This software is non-free but opensource software: you can redistribute it
+  ~ and/or modify it under the terms of the GNU Affero General Public License
+  ~ as published by the Free Software Foundation; either
+  ~ version 3 of the License, or any later version and our eula as published
+  ~ by ferredoxin.
+  ~
+  ~ This software is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ and eula along with this software.  If not, see
+  ~ <https://www.gnu.org/licenses/>
+  ~ <https://github.com/ferredoxin/QNotified/blob/master/LICENSE.md>.
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <path
+      android:pathData="M7,15h7v2L7,17ZM7,11L17,11v2L7,13ZM7,7L17,7L17,9L7,9ZM19,3L14.82,3A2.988,2.988 0,0 0,9.18 3L5,3a1.752,1.752 0,0 0,-0.4 0.04A2.021,2.021 0,0 0,3.16 4.23,1.926 1.926,0 0,0 3,5L3,19a2.052,2.052 0,0 0,0.16 0.78,2.119 2.119,0 0,0 0.43,0.64 2.008,2.008 0,0 0,1.01 0.55A2.6,2.6 0,0 0,5 21L19,21a2.006,2.006 0,0 0,2 -2L21,5A2.006,2.006 0,0 0,19 3ZM12,2.75a0.75,0.75 0,1 1,-0.75 0.75A0.755,0.755 0,0 1,12 2.75ZM19,19L5,19L5,5L19,5Z"
+      android:fillColor="#5f6368"/>
+</vector>

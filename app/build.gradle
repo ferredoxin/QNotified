@@ -109,6 +109,9 @@ dependencies {
 }
 
 dependencies {
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.1'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.1'
     def room_version = "2.2.6"
 
     implementation "androidx.room:room-runtime:$room_version"
