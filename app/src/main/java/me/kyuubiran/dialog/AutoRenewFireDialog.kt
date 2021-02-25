@@ -116,15 +116,15 @@ object AutoRenewFireDialog {
                 if (replyMsg == "") {
                     Toasts.showToast(context, Utils.TOAST_TYPE_ERROR, "请输入自动续火内容", Toast.LENGTH_SHORT)
                 } else {
-                    if (stringTimeValidator(replyTime)) {
+                    if (replyTime.isEmpty() || stringTimeValidator(replyTime)) {
                         save()
                         Toasts.showToast(context, Utils.TOAST_TYPE_INFO, "设置已保存", Toast.LENGTH_SHORT)
                         dialog.dismiss()
                     } else {
                         replyTime = ""
                         Toasts.showToast(context, Utils.TOAST_TYPE_ERROR, " 时间格式错误", Toast.LENGTH_SHORT)
+                        dialog.show()
                     }
-
                 }
             }.setNeutralButton("使用默认值") { _, _ ->
                 replyMsg = "[续火]"

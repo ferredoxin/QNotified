@@ -179,9 +179,9 @@ object AutoRenewFireMgr {
         val nextTime = cfg.getLongOrDefault(TIME, 0L)
         val presetTime = cfg.getStringOrDefault(TIMEPRESET, "00:00:05").run {
             if (this.isEmpty()) {
-                return@run "00:00:05"
+                return@run "00:00:05".split(":")
             } else {
-                return@run this
+                return@run this.split(":")
             }
         }
         if (nextTime - System.currentTimeMillis() < 0) {
