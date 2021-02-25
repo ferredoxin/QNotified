@@ -25,6 +25,7 @@ import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import me.singleneuron.base.adapter.BaseDelayableHookAdapter
 import me.singleneuron.hook.decorator.CardMsgToText
+import me.singleneuron.hook.decorator.MiniAppToStruckMsg
 import me.singleneuron.hook.decorator.SimpleCheckIn
 import me.singleneuron.hook.decorator.SimpleReceiptMessage
 import nil.nadph.qnotified.base.annotation.FunctionEntry
@@ -36,10 +37,12 @@ import java.lang.reflect.Method
 @FunctionEntry
 object ItemBuilderFactoryHook : BaseDelayableHookAdapter(cfgName = "itemBuilderFactoryHook",cond = arrayOf(DexDeobfStep(DexKit.C_ITEM_BUILDER_FAC))) {
 
+    //Register your decorator here
     val decorators = arrayOf(
         CardMsgToText,
+        MiniAppToStruckMsg,
         SimpleCheckIn,
-        SimpleReceiptMessage
+        SimpleReceiptMessage,
     )
 
     override fun doInit(): Boolean {

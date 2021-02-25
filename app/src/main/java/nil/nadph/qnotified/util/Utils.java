@@ -168,7 +168,8 @@ public class Utils {
         try {
             AppRuntime rt = getAppRuntime();
             if (rt == null) {
-                logw("getLongAccountUin/E getAppRuntime == null");
+                if (BuildConfig.DEBUG)
+                    logw("getLongAccountUin/E getAppRuntime == null");
                 return -1;
             }
             return (long) invoke_virtual(rt, "getLongAccountUin");
