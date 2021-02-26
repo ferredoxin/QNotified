@@ -40,7 +40,6 @@ import me.ketal.util.HookUtil.findClass
 import me.ketal.util.HookUtil.getMethod
 import me.ketal.util.TIMVersion
 import me.singleneuron.qn_kernel.data.hostInfo
-import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.qn_kernel.data.requireMinVersion
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.R

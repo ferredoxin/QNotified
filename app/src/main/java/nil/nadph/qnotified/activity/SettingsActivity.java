@@ -217,6 +217,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         addViewConditionally(ll,this,"特别关心通知单独分组","将特别关心发送的消息通知移动到单独的通知渠道",SpecialCareNewChannel.INSTANCE);
         ll.addView(newListItemHookSwitchInit(this, "卡片消息文本化",null, CardMsgToText.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this,"小程序转链接分享（接收）",null, MiniAppToStruckMsg.INSTANCE));
+        ll.addView(newListItemConfigSwitchIfValid(this, "屏蔽好友资料页送礼物按钮", null, HideFriendCardSendGift.INSTANCE));
         ll.addView(subtitle(this, "好友列表"));
         ll.addView(newListItemButton(this, "打开资料卡", "打开指定用户的资料卡", null, new View.OnClickListener() {
             @Override
