@@ -51,6 +51,20 @@ object SimplifyPlusPanel : MultiItemDelayableHook("na_simplify_plus_panel_multi"
                 }
             }
         }
+        val callback2: (XC_MethodHook.MethodHookParam) -> Unit = {
+            val list = (it.args[0] as MutableList<*>).listIterator()
+            while (list.hasNext()) {
+                val item = list.next()
+                if (item != null) {
+                    val str = (item.javaClass.getDeclaredField("name").get(item) as String).toString()
+                    if (activeItems.any { string ->
+                            string.isNotEmpty() && string in str
+                        }) {
+                        list.remove()
+                    }
+                }
+            }
+        }
         when {
             hostInfo.versionCode >= QQVersion.QQ_8_5_5 -> {
                 "Lcom/tencent/mobileqq/activity/aio/pluspanel/PlusPanelViewBinder;->a(Ljava/util/ArrayList;Lcom/tencent/mobileqq/activity/aio/coreui/pluspanel/PanelAdapter;Lcom/tencent/mobileqq/emoticonview/EmoticonPagerRadioGroup;)V".method.hookBefore(this, callback)
@@ -60,9 +74,12 @@ object SimplifyPlusPanel : MultiItemDelayableHook("na_simplify_plus_panel_multi"
                 "Lcom/tencent/mobileqq/activity/aio/pluspanel/PlusPanelViewBinder;->a(Ljava/util/ArrayList;Lcom/tencent/mobileqq/activity/aio/PanelAdapter;Lcom/tencent/mobileqq/emoticonview/EmoticonPagerRadioGroup;)V".method.hookBefore(this, callback)
                 "Lcom/tencent/mobileqq/activity/aio/pluspanel/PlusPanelViewBinder;->b(Ljava/util/ArrayList;Lcom/tencent/mobileqq/activity/aio/PanelAdapter;Lcom/tencent/mobileqq/emoticonview/EmoticonPagerRadioGroup;)V".method.hookBefore(this, callback)
             }
-            else -> {
+            hostInfo.versionCode >= QQVersion.QQ_8_4_8 -> {
                 "Lcom/tencent/mobileqq/activity/aio/PlusPanel;->a(Ljava/util/ArrayList;)V".method.hookBefore(this, callback)
                 "Lcom/tencent/mobileqq/activity/aio/PlusPanel;->b(Ljava/util/ArrayList;)V".method.hookBefore(this, callback)
+            }
+            else -> {
+                "Lcom/tencent/mobileqq/activity/aio/PlusPanel;->a(Ljava/util/List;)V".method.hookBefore(this, callback2)
             }
         }
         true
