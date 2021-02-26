@@ -60,6 +60,7 @@ import me.singleneuron.hook.DebugDump;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import me.singleneuron.qn_kernel.tlb.ConfigTable;
 import me.singleneuron.util.KotlinUtilsKt;
+import nil.nadph.qnotified.BuildConfig;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigManager;
@@ -167,6 +168,20 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                 }
             }
         }));
+        if (Initiator.load("com.tencent.mobileqq.debug.DebugActivity") != null) {
+            ll.addView(newListItemButton(this, "打开 DebugActivity", null, null, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        Class<?> browser = Class.forName("com.tencent.mobileqq.debug.DebugActivity");
+                        Intent intent = new Intent(TroubleshootActivity.this, browser);
+                        startActivity(intent);
+                    } catch (Throwable e) {
+                        Toast.makeText(TroubleshootActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }));
+        }
         ll.addView(newListItemButton(this, "退出 Looper", "没事别按", null, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -236,13 +251,14 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                     nm.notify(ExfriendManager.ID_EX_NOTIFY, n);
                 } catch (Throwable e) {
                     CustomDialog.createFailsafe(TroubleshootActivity.this).setCancelable(true).setPositiveButton(getString(android.R.string.ok), null)
-                            .setTitle(getShort$Name(e)).setMessage(Log.getStackTraceString(e)).show();
+                        .setTitle(getShort$Name(e)).setMessage(Log.getStackTraceString(e)).show();
                 }
             }
         }));
-        ll.addView(newListItemButton(this,"测试数据库",null,null,clickToProxyActAction(DatabaseTestActivity.class)));
-        ll.addView(newListItemButton(this,"新界面",null,null,clickToProxyActAction(MainActivity.class)));
-
+        ll.addView(newListItemButton(this, "测试数据库", null, null, clickToProxyActAction(DatabaseTestActivity.class)));
+        if (BuildConfig.DEBUG) {
+            ll.addView(newListItemButton(this, "新界面", null, null, clickToProxyActAction(MainActivity.class)));
+        }
 
         ll.addView(subtitle(this, ""));
 
