@@ -76,7 +76,6 @@ public class PendingFuncActivity extends IphoneTitleBarActivityCompat {
         ll.addView(newListItemSwitchStub(this, "隐藏聊天界面右侧滑条", "强迫症专用", false));
         ll.addView(newListItemSwitchStub(this, "复制群公告", "希望能在关键时刻帮到你",false));
         ll.addView(newListItemSwitchStub(this, "隐藏底部消息数量", null, false));
-        ll.addView(newListItemSwitchStub(this, "屏蔽QQ资料页送礼按钮", null, false));
         ll.addView(newListItemSwitchStub(this, "一键已读/去除批量已读动画", null, false));
         ll.addView(newListItemSwitchStub(this, "取消聊天中开通会员提示", "如果我们能触发关键词的话", false));
         ll.addView(newListItemSwitchStub(this, "去除底部动态或联系人页面", "如果你觉得你喜欢这样的QQ的话", false));
