@@ -27,22 +27,8 @@
     <color name="warnColor">#ffFFC107</color>
     <color name="rippleColor">#143C4043</color>
     <color name="lineColor">#ffdddddd</color>
+    <color name="divideColor">#FFF0F2F5</color>
     <color name="nullColor">#00000000</color>
     <color name="backgroundColor">#FFFFFFFF</color>
-
-    <color name="mainThemeColor">#FF4285F4</color>
-    <color name="chartTextColor">#FF80868B</color>
-    <color name="textColor_1">#FFB0B3BF</color>
-    <color name="textColor_2">#FF3DDC84</color>
-    <color name="textColor_3">#FFF44336</color>
-    <color name="iconColor_1">#FFB0B3BF</color>
-    <color name="background">#FFFFFFFF</color>
-    <color name="shapeColor_1">#FFDDDDDD</color>
-    <color name="shapeColor_2">#FFF1F3F4</color>
-    <color name="shapeColor_3">#1E3DDC84</color>
-    <color name="shapeColor_4">#1EF44336</color>
-    <color name="shapeColor_5">#FF5F6368</color>
-    <color name="dividerColor">#1F202124</color>
-    <color name="shapeColor_6">#0A202124</color>
 
 </resources>

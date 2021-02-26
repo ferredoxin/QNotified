@@ -34,14 +34,12 @@ import android.content.pm.ActivityInfo;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.os.*;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import java.io.File;
 import java.lang.reflect.*;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import dalvik.system.BaseDexClassLoader;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
@@ -598,7 +596,7 @@ public class Parasitics {
         public void callActivityOnCreate(Activity activity, Bundle icicle) {
             if (icicle != null) {
                 String className = activity.getClass().getName();
-                if (ActProxyMgr.isResourceInjectionRequired(className)) {
+                if (ActProxyMgr.isModuleBundleClassLoaderRequired(className)) {
                     icicle.setClassLoader(MainHook.class.getClassLoader());
                 }
             }
@@ -610,7 +608,7 @@ public class Parasitics {
         public void callActivityOnCreate(Activity activity, Bundle icicle, PersistableBundle persistentState) {
             if (icicle != null) {
                 String className = activity.getClass().getName();
-                if (ActProxyMgr.isResourceInjectionRequired(className)) {
+                if (ActProxyMgr.isModuleBundleClassLoaderRequired(className)) {
                     icicle.setClassLoader(MainHook.class.getClassLoader());
                 }
             }
