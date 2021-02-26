@@ -32,7 +32,7 @@ public class SavedInstanceStatePatchedClassReferencer extends ClassLoader {
     private static final ClassLoader mBootstrap = Context.class.getClassLoader();
 
     public SavedInstanceStatePatchedClassReferencer(ClassLoader referencer) {
-        super(null);
+        super(mBootstrap);
         mBaseReferencer = Objects.requireNonNull(referencer);
         mHostReferencer = Initiator.getHostClassLoader();
     }
