@@ -27,6 +27,9 @@
             android:key="HideChatVipImage!"
             android:title="隐藏会员徽标" />
         <SwitchPreference
+            android:key="DisabledRedNick!"
+            android:title="隐藏会员红名" />
+        <SwitchPreference
             android:key="HideOnlineStatus!"
             android:title="隐藏在线状态" />
         <SwitchPreference
