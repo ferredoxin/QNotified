@@ -113,19 +113,6 @@ object AutoRenewFireDialog {
             .setView(linearLayout)
             .setCancelable(true)
             .setPositiveButton("确认") { _, _ ->
-                if (replyMsg == "") {
-                    Toasts.showToast(context, Utils.TOAST_TYPE_ERROR, "请输入自动续火内容", Toast.LENGTH_SHORT)
-                } else {
-                    if (stringTimeValidator(replyTime)) {
-                        save()
-                        Toasts.showToast(context, Utils.TOAST_TYPE_INFO, "设置已保存", Toast.LENGTH_SHORT)
-                        dialog.dismiss()
-                    } else {
-                        replyTime = ""
-                        Toasts.showToast(context, Utils.TOAST_TYPE_ERROR, " 时间格式错误", Toast.LENGTH_SHORT)
-                    }
-
-                }
             }.setNeutralButton("使用默认值") { _, _ ->
                 replyMsg = "[续火]"
                 replyTime = ""
@@ -134,6 +121,21 @@ object AutoRenewFireDialog {
             .setNegativeButton("取消", null)
             .create() as AlertDialog
         alertDialog.show()
+
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            if (replyMsg == "") {
+                Toasts.showToast(context, Utils.TOAST_TYPE_ERROR, "请输入自动续火内容", Toast.LENGTH_SHORT)
+            } else {
+                if (stringTimeValidator(replyTime)) {
+                    save()
+                    Toasts.showToast(context, Utils.TOAST_TYPE_INFO, "设置已保存", Toast.LENGTH_SHORT)
+                    alertDialog.cancel()
+                } else {
+                    replyTime = ""
+                    Toasts.showToast(context, Utils.TOAST_TYPE_ERROR, " 时间格式错误", Toast.LENGTH_SHORT)
+                }
+            }
+        }
     }
 
     fun showSettingsDialog(ctx: Context) {

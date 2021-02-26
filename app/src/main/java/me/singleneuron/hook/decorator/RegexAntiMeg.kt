@@ -23,24 +23,27 @@
 package me.singleneuron.hook.decorator
 
 import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.LinearLayout
 import cn.lliiooll.msg.MessageReceiver
 import de.robv.android.xposed.XposedHelpers
 import me.kyuubiran.util.getExFriendCfg
 import me.singleneuron.qn_kernel.data.MsgRecordData
 import nil.nadph.qnotified.ui.CustomDialog
+import nil.nadph.qnotified.ui.ViewBuilder
 import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.ReflexUtil
 import nil.nadph.qnotified.util.Utils
 
-object RegexAntiMeg: MessageReceiver, View.OnClickListener {
+object RegexAntiMeg : MessageReceiver, View.OnClickListener {
 
     private var regexCache: Regex? = null
     private var regexStringCache: String = ""
 
     override fun onReceive(data: MsgRecordData?): Boolean {
         try {
-            if (data==null) return false
+            if (data == null) return false
             val regexString = getExFriendCfg().getStringOrDefault(RegexAntiMeg::class.simpleName, "")
             if (regexString.isNullOrBlank()) return false
             return when {
@@ -60,30 +63,34 @@ object RegexAntiMeg: MessageReceiver, View.OnClickListener {
         }
     }
 
-    private fun processMsg(data: MsgRecordData, text: String, regexString:String): Boolean {
-        if (regexStringCache!=regexString) {
+    private fun processMsg(data: MsgRecordData, text: String, regexString: String): Boolean {
+        if (regexStringCache != regexString) {
             regexCache = regexString.toRegex()
             regexStringCache = regexString
         }
         if (regexCache?.matches(text) == true) {
             XposedHelpers.setBooleanField(data.msgRecord, "isread", true)
             return true
-        }
-        else return false
+        } else return false
     }
 
     override fun onClick(v: View?) {
-        val context = v!!.context
+        val dialog = CustomDialog.createFailsafe(v!!.context)
+        val context = dialog.context
+        val _5 = Utils.dip2px(context, 5f)
         val editText = EditText(context)
-        CustomDialog.createFailsafe(context)
-            .setTitle("设置万象屏蔽卡片消息正则表达式（留空禁用）")
-            .setView(editText)
+        editText.setPadding(_5, _5, _5, _5 * 2)
+        val params = ViewBuilder.newLinearLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, _5 * 2)
+        val linearLayout = LinearLayout(context)
+        linearLayout.orientation = LinearLayout.VERTICAL
+        linearLayout.addView(editText, params)
+        dialog.setTitle("设置万象屏蔽卡片消息正则表达式（留空禁用）")
+            .setView(linearLayout)
             .setPositiveButton("确定") { _, _ ->
                 getExFriendCfg().putString(RegexAntiMeg::class.java.simpleName, editText.text.toString())
             }
-            .setNegativeButton("取消",null)
+            .setNegativeButton("取消", null)
             .create()
             .show()
     }
-
 }
