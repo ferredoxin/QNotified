@@ -20,38 +20,33 @@
  * <https://github.com/ferredoxin/QNotified/blob/master/LICENSE.md>.
  */
 
-package me.singleneuron.qn_kernel.demo;
+package me.singleneuron.qn_kernel.`interface`.ui
 
-import androidx.annotation.NonNull;
+interface FunctionUIInterface {
 
-import org.jetbrains.annotations.NotNull;
+    val name: String
+    val description: String
+    val value: String?
+        get() = null
 
-import me.singleneuron.qn_kernel.annotation.HookLoadable;
-import me.singleneuron.qn_kernel.data.ModuleInfo;
-import nil.nadph.qnotified.hook.CommonDelayableHook;
-import nil.nadph.qnotified.step.Step;
+    val extraSearchWords: Array<String>
+        get() = emptyArray()
 
-@HookLoadable
-public class AnotherJavaHook extends CommonDelayableHook implements ModuleInfo {
+    fun getSupportedVersions(versions:Array<Long> = emptyArray() ,versionRanges:Array<LongRange> = emptyArray())
 
-    protected AnotherJavaHook(@NonNull String keyName, @NonNull Step... preconditions) {
-        super(keyName, preconditions);
-    }
+    val isRuntimeSupport: Boolean
+        get() = false
 
-    @NotNull
-    @Override
-    public String getName() {
-        return "C";
-    }
+}
 
-    @NotNull
-    @Override
-    public String getDescription() {
-        return "C's description";
-    }
+interface FunctionUIClickableInterface: FunctionUIInterface {
 
-    @Override
-    protected boolean initOnce() {
-        return false;
-    }
+    val onClick: ()->Boolean
+
+}
+
+interface FunctionUISwitchInterface: FunctionUIInterface {
+
+    val onStatusChanged: (isEnable: Boolean)->Unit
+
 }

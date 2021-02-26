@@ -20,6 +20,25 @@
  * <https://github.com/ferredoxin/QNotified/blob/master/LICENSE.md>.
  */
 
-package me.singleneuron.qn_kernel.annotation
+package me.singleneuron.qn_kernel.data
 
-annotation class HookLoadable()
+sealed class BaseError {
+    abstract val throwable: Throwable?
+    abstract val readableReason: String?
+}
+
+data class KernelError(
+    override val throwable: Throwable?,
+    override val readableReason: String?
+    ): BaseError()
+
+data class DispatcherError(
+    override val throwable: Throwable?,
+    override val readableReason: String?
+    ): BaseError()
+
+data class FunctionError(
+    override val throwable: Throwable?,
+    override val readableReason: String?,
+    val className: String
+    ): BaseError()
