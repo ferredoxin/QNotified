@@ -34,8 +34,6 @@ interface FunctionUIInterface {
 
     fun getSupportedVersions(versions:Array<Long> = emptyArray() ,versionRanges:Array<LongRange> = emptyArray())
 
-    val supportedVersions: (versions:Array<Long> ,versionRanges:Array<LongRange>)->Unit
-
     val isRuntimeSupport: Boolean
         get() = false
 
