@@ -1,6 +1,7 @@
 package cc.ioctl.dextail;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 
 public class Main {
@@ -138,22 +139,15 @@ public class Main {
         System.exit(exitCode);
     }
 
-    public static boolean checkAndUpdateTail(String dexPath, byte[] payload, boolean disableXor, PrintStream out) {
-        try {
-            byte[] dex = HexUtils.readFileData(dexPath);
-            if (!DexTail.checkDexSum(dex, System.out)) {
-                System.out.println("E Dex is invalid, abort.");
-                return false;
-            } else {
-                byte[] buf = DexTail.injectPayload(dex, payload, disableXor, System.out);
-                HexUtils.writeFileData(dexPath, buf);
-            }
-            return true;
-        } catch (Exception e) {
-            System.out.println("E Failed to inject payload: " + dexPath);
-            e.printStackTrace(System.out);
-            System.exit(1);
+    public static boolean checkAndUpdateTail(String dexPath, byte[] payload, boolean disableXor, PrintStream out) throws IOException {
+        byte[] dex = HexUtils.readFileData(dexPath);
+        if (!DexTail.checkDexSum(dex, System.out)) {
+            System.out.println("E Dex is invalid, abort.");
             return false;
+        } else {
+            byte[] buf = DexTail.injectPayload(dex, payload, disableXor, System.out);
+            HexUtils.writeFileData(dexPath, buf);
         }
+        return true;
     }
 }

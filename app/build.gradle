@@ -1,3 +1,4 @@
+import java.lang.reflect.InvocationTargetException
 import java.nio.file.Paths
 
 apply plugin: 'com.android.application'
@@ -126,11 +127,15 @@ dependencies {
 
 def _execDexTail = { String dexPath ->
     URLClassLoader cl = new URLClassLoader(Paths.get(rootProject.projectDir.absolutePath, "dex-ptm", "build", "classes", "java", "main").toUri().toURL())
-    byte[] time = cl.loadClass("cc.ioctl.dextail.HexUtils").getMethod("getTimeAsByteArray").invoke(null) as byte[];
-    PrintStream stdout = System.out;
-    boolean result = cl.loadClass("cc.ioctl.dextail.Main").getMethod("checkAndUpdateTail", String.class, byte[].class, boolean.class, PrintStream.class)
-        .invoke(null, dexPath, time, true, stdout);
-    return result;
+    try {
+        byte[] time = cl.loadClass("cc.ioctl.dextail.HexUtils").getMethod("getTimeAsByteArray").invoke(null) as byte[]
+        PrintStream stdout = System.out
+        boolean result = cl.loadClass("cc.ioctl.dextail.Main").getMethod("checkAndUpdateTail", String.class, byte[].class, boolean.class, PrintStream.class)
+            .invoke(null, dexPath, time, true, stdout)
+        return result
+    } catch (InvocationTargetException ie) {
+        throw ie.cause
+    }
 }
 
 task dexTailDebug {
