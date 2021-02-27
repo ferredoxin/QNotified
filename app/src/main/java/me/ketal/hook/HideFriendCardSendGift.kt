@@ -48,7 +48,6 @@ object HideFriendCardSendGift : CommonDelayableHook("ketal_HideFriendProfileCard
                 val child = (view as LinearLayout)[0]
                 if (child is TextView) {
                     child.doAfterTextChanged {
-                        Utils.logd("Text Changed->target=$child,parent=${child.parent},text=$it")
                         if (!isEnabled) return@doAfterTextChanged
                         if (it.toString() == "送礼物")
                             (child.parent as LinearLayout).isVisible = false
