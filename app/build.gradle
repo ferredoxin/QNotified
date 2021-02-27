@@ -126,7 +126,7 @@ dependencies {
 }
 
 def _execDexTail = { String dexPath ->
-    URLClassLoader cl = new URLClassLoader(Paths.get(rootProject.projectDir.absolutePath, "dex-ptm", "build", "classes", "java", "main").toUri().toURL())
+    URLClassLoader cl = new URLClassLoader(Paths.get(rootProject.projectDir.absolutePath, "libs", "dex-ptm", "build", "classes", "java", "main").toUri().toURL())
     try {
         byte[] time = cl.loadClass("cc.ioctl.dextail.HexUtils").getMethod("getTimeAsByteArray").invoke(null) as byte[]
         PrintStream stdout = System.out
