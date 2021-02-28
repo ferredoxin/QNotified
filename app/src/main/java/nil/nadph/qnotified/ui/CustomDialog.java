@@ -223,6 +223,12 @@ public class CustomDialog {
     }
 
     @NonNull
+    public CustomDialog ok() {
+        setPositiveButton(android.R.string.ok, null);
+        return this;
+    }
+
+    @NonNull
     public CustomDialog setPositiveButton(@NonNull String text, @Nullable DialogInterface.OnClickListener listener) {
         if (!failsafe) {
             if (text != null && listener == null) {
