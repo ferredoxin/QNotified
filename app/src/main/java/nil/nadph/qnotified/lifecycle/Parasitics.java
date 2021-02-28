@@ -31,6 +31,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.os.*;
@@ -41,6 +42,7 @@ import java.io.File;
 import java.lang.reflect.*;
 import java.util.List;
 
+import cc.ioctl.H;
 import dalvik.system.BaseDexClassLoader;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.MainHook;
@@ -183,7 +185,7 @@ public class Parasitics {
                 field_mCallback.set(oriHandler, new MyH(current));
             }
             //End of Handler
-            Class activityManagerClass;
+            Class<?> activityManagerClass;
             Field gDefaultField;
             try {
                 activityManagerClass = Class.forName("android.app.ActivityManagerNative");
@@ -205,14 +207,14 @@ public class Parasitics {
             Field mInstanceField = singletonClass.getDeclaredField("mInstance");
             mInstanceField.setAccessible(true);
             Object mInstance = mInstanceField.get(gDefault);
-            Object proxy = Proxy.newProxyInstance(
+            Object amProxy = Proxy.newProxyInstance(
                 Initiator.getPluginClassLoader(),
                 new Class[]{Class.forName("android.app.IActivityManager")},
                 new IActivityManagerHandler(mInstance));
-            mInstanceField.set(gDefault, proxy);
+            mInstanceField.set(gDefault, amProxy);
             //End of IActivityManager
             try {
-                Class activityTaskManagerClass = Class.forName("android.app.ActivityTaskManager");
+                Class<?> activityTaskManagerClass = Class.forName("android.app.ActivityTaskManager");
                 Field fIActivityTaskManagerSingleton = activityTaskManagerClass.getDeclaredField("IActivityTaskManagerSingleton");
                 fIActivityTaskManagerSingleton.setAccessible(true);
                 Object singleton = fIActivityTaskManagerSingleton.get(null);
@@ -226,6 +228,18 @@ public class Parasitics {
             } catch (Exception err3) {
             }
             //End of IActivityTaskManager
+            //Begin of PackageManager
+            Field sPackageManagerField = clazz_ActivityThread.getDeclaredField("sPackageManager");
+            sPackageManagerField.setAccessible(true);
+            Object packageManagerImpl = sPackageManagerField.get(sCurrentActivityThread);
+            Class<?> iPackageManagerInterface = Class.forName("android.content.pm.IPackageManager");
+            PackageManager pm = ctx.getPackageManager();
+            Field mPmField = pm.getClass().getDeclaredField("mPM");
+            mPmField.setAccessible(true);
+            Object pmProxy = Proxy.newProxyInstance(iPackageManagerInterface.getClassLoader(), new Class[]{iPackageManagerInterface}, new PackageManagerInvocationHandler(packageManagerImpl));
+            sPackageManagerField.set(currentActivityThread, pmProxy);
+            mPmField.set(pm, pmProxy);
+            //End of PackageManager
             sActStubHookEndTime = System.currentTimeMillis();
             __stub_hooked = true;
         } catch (Exception e) {
@@ -722,5 +736,41 @@ public class Parasitics {
             return mBase.acquireLooperManager(looper);
         }
 
+    }
+
+    public static class PackageManagerInvocationHandler implements InvocationHandler {
+        private final Object target;
+
+        public PackageManagerInvocationHandler(Object target) {
+            if (target == null) {
+                throw new NullPointerException("IPackageManager == null");
+            }
+            this.target = target;
+        }
+
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            // prototype: ActivityInfo getActivityInfo(in ComponentName className, int flags, int userId)
+            try {
+                if ("getActivityInfo".equals(method.getName())) {
+                    ActivityInfo ai = (ActivityInfo) method.invoke(target, args);
+                    if (ai != null) {
+                        return ai;
+                    }
+                    ComponentName component = (ComponentName) args[0];
+                    int flags = (Integer) args[1];
+                    if (H.getPackageName().equals(component.getPackageName())
+                        && ActProxyMgr.isModuleProxyActivity(component.getClassName())) {
+                        return CounterfeitActivityInfoFactory.makeProxyActivityInfo(component.getClassName(), flags);
+                    } else {
+                        return null;
+                    }
+                } else {
+                    return method.invoke(target, args);
+                }
+            } catch (InvocationTargetException ite) {
+                throw ite.getTargetException();
+            }
+        }
     }
 }

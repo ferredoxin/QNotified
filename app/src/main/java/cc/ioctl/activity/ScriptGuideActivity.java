@@ -29,10 +29,13 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import androidx.core.app.NavUtils;
+
 import com.tencent.mobileqq.widget.BounceScrollView;
 
 import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat;
 import cc.ioctl.script.QNScriptManager;
+import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ResUtils;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -66,7 +69,8 @@ public class ScriptGuideActivity extends IphoneTitleBarActivityCompat {
         __lp_r.addRule(RelativeLayout.CENTER_VERTICAL);
         ColorStateList hiColor = ColorStateList.valueOf(Color.argb(255, 242, 140, 72));
         RelativeLayout _t;
-
+        CustomDialog.createFailsafe(this).setTitle("NavUtils.getParentActivityIntent(this)").setMessage(
+            String.valueOf(NavUtils.getParentActivityIntent(this))).ok().show();
         ll.addView(subtitle(this, QNScriptManager.error));
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         this.setContentView(bounceScrollView);
