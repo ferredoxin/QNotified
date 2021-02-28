@@ -91,6 +91,7 @@ dependencies {
     implementation project(":annotations")
     compileOnly project(":compiler")
     annotationProcessor project(":compiler")
+    compileOnly 'de.robv.android.xposed:api:82'
     implementation 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2'
     implementation 'com.jaredrummler:colorpicker:1.1.0'
     implementation 'de.psdev.licensesdialog:licensesdialog:2.1.0'
@@ -116,8 +117,8 @@ dependencies {
 
 dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.3.1'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.1'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.3'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.3'
     def room_version = "2.2.6"
 
     implementation "androidx.room:room-runtime:$room_version"
