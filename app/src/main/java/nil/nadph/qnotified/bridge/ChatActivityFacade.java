@@ -34,6 +34,7 @@ import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import mqq.app.AppRuntime;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Initiator;
+import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.util.Initiator._QQAppInterface;
@@ -175,7 +176,12 @@ public class ChatActivityFacade {
         switch (getShort$Name(msg)) {
             case "MessageForText":
             case "MessageForFoldMsg":
+            case "MessageForLongTextMsg":
                 msgText = (String) iget_object_or_null(msg, "msg");
+                if (msgText.length() > 3000) {
+                    Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(), "暂不支持发送长消息");
+                    return;
+                }
                 sendMessage(app, HostInformationProviderKt.getHostInfo().getApplication(), session, msgText);
                 break;
             case "MessageForPic":
