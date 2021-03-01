@@ -22,45 +22,20 @@
 
 package nil.nadph.qnotified.fragment
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.Navigation
 import nil.nadph.qnotified.R
 
-class HomeFragment : Fragment() , View.OnClickListener{
+class TroubleshootFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.fragment_home, container, false)
+        val root = inflater.inflate(R.layout.fragment_troubleshoot, container, false)
         return root
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        listOf(R.id.home_githubRepo, R.id.home_troubleshoot)
-            .forEach {
-                activity?.findViewById<View>(it)?.setOnClickListener(this)
-            }
-    }
-
-    override fun onClick(v: View) {
-        val ctx = v.context
-        when (v.id) {
-            R.id.home_githubRepo -> {
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.data = Uri.parse("https://github.com/ferredoxin/QNotified")
-                ctx.startActivity(intent)
-            }
-            R.id.home_troubleshoot -> {
-                Navigation.findNavController(v).navigate(R.id.navigation_troubleshoot);
-            }
-        }
     }
 }
