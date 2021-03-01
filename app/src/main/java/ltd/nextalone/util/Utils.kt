@@ -21,6 +21,7 @@
  */
 package ltd.nextalone.util
 
+import android.app.Activity
 import android.content.SharedPreferences
 import android.os.Looper
 import android.view.View
@@ -259,11 +260,11 @@ fun View.hide() {
 
 internal fun <T : View> T.hostId(name: String) = this.resources.getIdentifier(name, "id", hostInfo.packageName)
 
-internal fun <T : View?> View.findHostViewById(name: String): T? {
-    this.let {
-        return it.findViewById<T>(it.hostId(name))
-    }
-}
+internal fun <T : Activity> T.hostId(name: String) = this.resources.getIdentifier(name, "id", hostInfo.packageName)
+
+internal fun <T : View?> View.findHostViewById(name: String): T? = this.findViewById<T>(this.hostId(name))
+
+internal fun <T : View?> Activity.findHostViewById(name: String): T? = this.findViewById<T>(this.hostId(name))
 
 internal val Date.today: String
     get() = DateFormat.getDateInstance().format(this)
