@@ -30,6 +30,9 @@
             android:key="DisabledRedNick!"
             android:title="隐藏会员红名" />
         <SwitchPreference
+            android:key="HideMutualMark!"
+            android:title="隐藏互动标识" />
+        <SwitchPreference
             android:key="HideOnlineStatus!"
             android:title="隐藏在线状态" />
         <SwitchPreference
