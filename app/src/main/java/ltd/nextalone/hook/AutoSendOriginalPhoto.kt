@@ -21,29 +21,34 @@
  */
 package ltd.nextalone.hook
 
+import android.app.Activity
 import android.view.View
 import android.widget.CheckBox
 import ltd.nextalone.util.findHostViewById
 import ltd.nextalone.util.hookAfter
-import me.kyuubiran.util.getMethods
+import ltd.nextalone.util.method
+import me.singleneuron.qn_kernel.data.requireMinQQVersion
+import me.singleneuron.util.QQVersion
+import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.Utils
-import java.lang.reflect.Method
 
 @FunctionEntry
-object AutoSendOriginalPhoto : CommonDelayableHook("na_auto_send_origin_photo") {
+object AutoSendOriginalPhoto : CommonDelayableHook("na_auto_send_origin_photo", SyncUtils.PROC_ANY) {
 
     override fun initOnce(): Boolean {
         return try {
-            for (m: Method in getMethods("com.tencent.mobileqq.activity.aio.photo.PhotoListPanel")) {
-                val argt = m.parameterTypes
-                if (m.name == "a" && argt.size == 1 && argt[0] == Boolean::class.java) {
-                    m.hookAfter(this) {
-                        val ctx = it.thisObject as View
-                        val sendOriginPhotoCheckbox: CheckBox = ctx.findHostViewById<CheckBox>("h1y")!!
-                        sendOriginPhotoCheckbox.isChecked = true
-                    }
+            "Lcom.tencent.mobileqq.activity.aio.photo.PhotoListPanel;->a(Z)V".method.hookAfter(this) {
+                val ctx = it.thisObject as View
+                val sendOriginPhotoCheckbox = ctx.findHostViewById<CheckBox>("h1y")
+                sendOriginPhotoCheckbox?.isChecked = true
+            }
+            if (requireMinQQVersion(QQVersion.QQ_8_2_0)) {
+                "Lcom.tencent.mobileqq.activity.photo.album.NewPhotoPreviewActivity;->onCreate(Landroid/os/Bundle;)V".method.hookAfter(this) {
+                    val ctx = it.thisObject as Activity
+                    val checkBox = ctx.findHostViewById<CheckBox>("h1y")
+                    checkBox?.isChecked = true
                 }
             }
             true
