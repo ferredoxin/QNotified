@@ -146,7 +146,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/mainV2_githubRepo"
+                android:id="@+id/home_githubRepo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -189,7 +189,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/mainV2_help"
+                android:id="@+id/home_troubleshoot"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"

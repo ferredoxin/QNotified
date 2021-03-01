@@ -22,4 +22,10 @@
         android:name="nil.nadph.qnotified.fragment.InfoFragment"
         android:label="关于"
         tools:layout="@layout/fragment_info" />
+
+    <fragment
+        android:id="@+id/navigation_troubleshoot"
+        android:name="nil.nadph.qnotified.fragment.TroubleshootFragment"
+        android:label="故障排查"
+        tools:layout="@layout/fragment_info" />
 </navigation>
