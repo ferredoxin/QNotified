@@ -21,28 +21,22 @@
  */
 package ltd.nextalone.hook
 
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import ltd.nextalone.util.clazz
-import ltd.nextalone.util.findHostView
-import ltd.nextalone.util.hookAfterAllConstructors
+import ltd.nextalone.util.method
+import ltd.nextalone.util.replaceNull
+import me.singleneuron.qn_kernel.data.requireMinQQVersion
+import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
-import nil.nadph.qnotified.util.Utils
 
 @FunctionEntry
-object HideChatVipImage : CommonDelayableHook("na_hide_chat_vip_image_kt") {
+object HideMutualMark : CommonDelayableHook("na_hide_intimate_image_kt") {
 
+    @Throws(Exception::class)
     override fun initOnce(): Boolean {
-        return try {
-            "com.tencent.mobileqq.widget.navbar.NavBarAIO".clazz.hookAfterAllConstructors {
-                val ctx = it.thisObject as RelativeLayout
-                ctx.findHostView<ImageView>("jp0")!!.alpha = 0F
-            }
-            true
-        } catch (t: Throwable) {
-            Utils.log(t)
-            false
-        }
+        if (!isValid) return false
+        "Lcom/tencent/mobileqq/widget/navbar/NavBarAIO;->setTitleIconLeftForMutualMark(Lcom/tencent/mobileqq/mutualmark/info/MutualMarkForDisplayInfo;Lcom/tencent/mobileqq/mutualmark/info/MutualMarkForDisplayInfo;)V".method.replaceNull(this)
+        return true
     }
+
+    override fun isValid() = requireMinQQVersion(QQVersion.QQ_8_5_5)
 }

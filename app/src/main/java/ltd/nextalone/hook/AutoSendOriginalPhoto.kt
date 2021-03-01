@@ -24,7 +24,7 @@ package ltd.nextalone.hook
 import android.app.Activity
 import android.view.View
 import android.widget.CheckBox
-import ltd.nextalone.util.findHostViewById
+import ltd.nextalone.util.findHostView
 import ltd.nextalone.util.hookAfter
 import ltd.nextalone.util.method
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
@@ -41,13 +41,13 @@ object AutoSendOriginalPhoto : CommonDelayableHook("na_auto_send_origin_photo", 
         return try {
             "Lcom.tencent.mobileqq.activity.aio.photo.PhotoListPanel;->a(Z)V".method.hookAfter(this) {
                 val ctx = it.thisObject as View
-                val sendOriginPhotoCheckbox = ctx.findHostViewById<CheckBox>("h1y")
+                val sendOriginPhotoCheckbox = ctx.findHostView<CheckBox>("h1y")
                 sendOriginPhotoCheckbox?.isChecked = true
             }
             if (requireMinQQVersion(QQVersion.QQ_8_2_0)) {
                 "Lcom.tencent.mobileqq.activity.photo.album.NewPhotoPreviewActivity;->onCreate(Landroid/os/Bundle;)V".method.hookAfter(this) {
                     val ctx = it.thisObject as Activity
-                    val checkBox = ctx.findHostViewById<CheckBox>("h1y")
+                    val checkBox = ctx.findHostView<CheckBox>("h1y")
                     checkBox?.isChecked = true
                 }
             }
