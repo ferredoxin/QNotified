@@ -27,6 +27,7 @@
     <string name="ModuleSetting_tip_3">暂不支持 轻聊版 / 国际版</string>
     <string name="qq">QQ</string>
     <string name="tim">TIM</string>
+    <string name="qq_lite">QQ极速版</string>
     <string name="tip">提示</string>
     <string name="privacy_rules">隐私条款</string>
     <string name="qq_version">QQ版本</string>

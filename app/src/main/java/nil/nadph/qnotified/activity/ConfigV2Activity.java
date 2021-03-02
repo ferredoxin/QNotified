@@ -164,6 +164,10 @@ public class ConfigV2Activity extends AppCompatActivity {
                 pkg = HookEntry.PACKAGE_NAME_TIM;
                 break;
             }
+            case R.id.mainRelativeLayoutButtonOpenQQLite: {
+                pkg = HookEntry.PACKAGE_NAME_QQ_LITE;
+                break;
+            }
             default: {
             }
         }
