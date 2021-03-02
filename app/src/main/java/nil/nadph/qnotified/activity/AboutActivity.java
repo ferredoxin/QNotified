@@ -70,7 +70,7 @@ public class AboutActivity extends IphoneTitleBarActivityCompat {
 
         ll.addView(subtitle(this, "注意: 6.5.5以下版本的QQ已不再受支持"));
 
-        ll.addView(subtitle(this, "此模块目前承认的APP发布渠道为 Github 上本项目的 Releases 和 Xposed Installer 里的模块下载 ,也可从https://github.com/ferredoxin/QNotified 获取源码自行编译, 如果您是在其他渠道下载的话请自己注意安全.\n Copyright (C) 2019-2021 cinit@github"));
+        ll.addView(subtitle(this, "此模块目前承认的APP发布渠道为 Github 上本项目的 Releases 和 Xposed Installer 里的模块下载 ,也可从https://github.com/ferredoxin/QNotified 获取源码自行编译, 如果您是在其他渠道下载的话请自己注意安全.\n Copyright (C) 2019-2021 ferredoxin@github"));
 
         ll.addView(subtitle(this, "支持的(类)Xposed内核:"));
         ll.addView(subtitle(this, "原生Xposed, Epic(太极), SandHook, YAHFA ,BugHook(应用转生), etc"));
