@@ -35,6 +35,7 @@ import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.hook.BaseDelayableHook
 import nil.nadph.qnotified.util.*
+import nil.nadph.qnotified.util.ReflexUtil.hasMethod
 import java.lang.reflect.Member
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
@@ -47,6 +48,17 @@ internal val String.method: Method
 
 internal val String.methods: Array<Method>
     get() = Initiator.load(this).declaredMethods
+
+internal fun String.method(name: String): Method? = Initiator.load(this).declaredMethods.run {
+    this.forEach {
+        if (it.name == name) {
+            return it
+        }
+    }
+    return null
+}
+
+internal fun String.method(name: String, vararg args: Class<*>): Method = hasMethod(this.clazz, name, args)
 
 internal val Member.isStatic: Boolean
     get() = Modifier.isStatic(this.modifiers)
