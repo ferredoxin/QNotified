@@ -22,30 +22,43 @@
 package cc.ioctl.hook;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Parcelable;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import androidx.core.view.ViewCompat;
 
 import java.lang.reflect.Method;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
+import me.ketal.activity.ModifyLeftSwipeReplyActivity;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import mqq.app.AppRuntime;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.bridge.ChatActivityFacade;
 import cc.ioctl.dialog.RepeaterIconSettingDialog;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
+import nil.nadph.qnotified.ui.CustomDialog;
+import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.LinearLayoutDelegate;
 import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.ReflexUtil;
+import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
+import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
 import static nil.nadph.qnotified.util.Initiator.*;
 import static nil.nadph.qnotified.util.ReflexUtil.*;
 import static nil.nadph.qnotified.util.Utils.*;
@@ -213,6 +226,48 @@ public class RepeaterHook extends CommonDelayableHook {
                             };
                             imageView3.setOnClickListener(r0);
                             imageView4.setOnClickListener(r0);
+                            View.OnLongClickListener l0 = v -> {
+                                CustomDialog dialog = CustomDialog.createFailsafe(v.getContext());
+                                Context context = dialog.getContext();
+                                final EditText editText = new EditText(ctx);
+                                editText.setTextSize(16);
+                                int _5 = dip2px(context, 5);
+                                editText.setPadding(_5, _5, _5, _5);
+                                Object msg = param.args[0];
+                                String msgText = (String) iget_object_or_null(msg, "msg");
+                                editText.setText(msgText);
+                                ViewCompat.setBackground(editText, new HighContrastBorder());
+                                LinearLayout linearLayout = new LinearLayout(ctx);
+                                linearLayout.setOrientation(LinearLayout.VERTICAL);linearLayout.addView(editText, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, _5 * 2));
+                                final AlertDialog alertDialog = (AlertDialog) dialog.setTitle("修改消息内容")
+                                    .setView(linearLayout)
+                                    .setCancelable(true)
+                                    .setPositiveButton("确认", null)
+                                    .setNegativeButton("取消", null)
+                                    .create();
+                                alertDialog.show();
+                                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v1 -> {
+                                    try {
+
+                                        String text = editText.getText().toString();
+                                        if (text.equals("")) {
+                                            Toasts.showToast(v1.getContext(), TOAST_TYPE_ERROR, "请输入消息", Toast.LENGTH_SHORT);
+                                            return;
+                                        }
+                                        iput_object(msg, "msg", text);
+                                        iput_object(msg, "sb", null);
+                                        iput_object(msg, "sb2", null);
+                                        ReflexUtil.invoke_virtual(msg, "doParse");
+                                        ReflexUtil.invoke_virtual(msg, "prewrite");
+                                    } catch (Exception e) {
+                                        Utils.log(e);
+                                    }
+                                    alertDialog.dismiss();
+                                });
+                                return true;
+                            };
+                            imageView3.setOnLongClickListener(l0);
+                            imageView4.setOnLongClickListener(l0);
                         }
                     });
             } else {
@@ -257,6 +312,47 @@ public class RepeaterHook extends CommonDelayableHook {
                         };
                         imageView.setOnClickListener(r0);
                         imageView2.setOnClickListener(r0);
+                        View.OnLongClickListener l0 = v -> {
+                            CustomDialog dialog = CustomDialog.createFailsafe(v.getContext());
+                            Context context = dialog.getContext();
+                            final EditText editText = new EditText(context);
+                            editText.setTextSize(16);
+                            int _5 = dip2px(context, 5);
+                            editText.setPadding(_5, _5, _5, _5);
+                            String msgText = (String) iget_object_or_null(msg, "msg");
+                            editText.setText(msgText);
+                            ViewCompat.setBackground(editText, new HighContrastBorder());
+                            LinearLayout linearLayout = new LinearLayout(context);
+                            linearLayout.setOrientation(LinearLayout.VERTICAL);linearLayout.addView(editText, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, _5 * 2));
+                            final AlertDialog alertDialog = (AlertDialog) dialog.setTitle("修改消息内容")
+                                .setView(linearLayout)
+                                .setCancelable(true)
+                                .setPositiveButton("确认", null)
+                                .setNegativeButton("取消", null)
+                                .create();
+                            alertDialog.show();
+                            alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v1 -> {
+                                try {
+
+                                    String text = editText.getText().toString();
+                                    if (text.equals("")) {
+                                        Toasts.showToast(v1.getContext(), TOAST_TYPE_ERROR, "请输入消息", Toast.LENGTH_SHORT);
+                                        return;
+                                    }
+                                    iput_object(msg, "msg", text);
+                                    iput_object(msg, "sb", null);
+                                    iput_object(msg, "sb2", null);
+                                    ReflexUtil.invoke_virtual(msg, "doParse");
+                                    ReflexUtil.invoke_virtual(msg, "prewrite");
+                                } catch (Exception e) {
+                                    Utils.log(e);
+                                }
+                                alertDialog.dismiss();
+                            });
+                            return true;
+                        };
+                        imageView.setOnLongClickListener(l0);
+                        imageView2.setOnLongClickListener(l0);
                     }
                 });
             }
