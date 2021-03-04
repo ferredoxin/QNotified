@@ -24,28 +24,26 @@ package me.ketal.hook
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.os.Looper
-import android.view.LayoutInflater
+import android.content.Context
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.widget.*
+import androidx.core.view.isVisible
+import androidx.core.view.plusAssign
 import androidx.core.widget.doAfterTextChanged
 import ltd.nextalone.util.clazz
 import ltd.nextalone.util.hookAfter
 import me.ketal.base.PluginDelayableHook
+import me.ketal.data.ConfigData
 import me.ketal.util.HookUtil.findClass
 import me.ketal.util.HookUtil.getMethod
 import me.ketal.util.TIMVersion
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.data.requireMinVersion
 import me.singleneuron.util.QQVersion
-import nil.nadph.qnotified.R
-import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.base.annotation.FunctionEntry
-import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.ui.CustomDialog
 import nil.nadph.qnotified.util.ReflexUtil
 import nil.nadph.qnotified.util.Toasts
@@ -54,46 +52,47 @@ import nil.nadph.qnotified.util.Utils
 @FunctionEntry
 object FakeBalance : PluginDelayableHook("ketal_qwallet_fakebalance") {
     override val pluginID = "qwallet_plugin.apk"
-    private const val moneyKey = "ketal_qwallet_fakebalance_money"
+    private val moneyKey = ConfigData<String>("ketal_qwallet_fakebalance_money")
     private var money
-        get() = ConfigManager.getDefaultConfig().getStringOrDefault(moneyKey, "114514")
+        get() = moneyKey.getOrDefault("114514")
         set(value) {
-            try {
-                val mgr = ConfigManager.getDefaultConfig()
-                mgr.allConfig[moneyKey] = value
-                mgr.save()
-            } catch (e: Exception) {
-                Utils.log(e)
-                if (Looper.myLooper() == Looper.getMainLooper()) {
-                    Toasts.error(hostInfo.application, e.toString() + "")
-                } else {
-                    SyncUtils.post { Toasts.error(hostInfo.application, e.toString() + "") }
-                }
-            }
+            moneyKey.value = value
         }
 
     override fun isValid(): Boolean = requireMinVersion(QQVersion.QQ_8_0_0, TIMVersion.TIM_1_0_0)
 
     fun listener() = View.OnClickListener {
+        showDialog(it.context, null)
+    }
+
+    private fun showDialog(context: Context, textView: TextView?) {
         try {
             var enableFake = isEnabled
-            val dialog = CustomDialog.createFailsafe(it.context)
+            val dialog = CustomDialog.createFailsafe(context)
                 .setTitle("自定义钱包余额")
                 .setNegativeButton("取消", null)
                 .setPositiveButton("保存", null)
                 .create() as AlertDialog
             val ctx = dialog.context
-            val vg = LayoutInflater.from(ctx).inflate(R.layout.rikka_select_splash_dialog, null) as LinearLayout
-            val input = vg.findViewById<TextView>(R.id.selectSplash_editTextPicLocation)
-            val enable = vg.findViewById<CheckBox>(R.id.checkBoxEnableCustomStartupPic)
-            val panel = vg.findViewById<RelativeLayout>(R.id.layoutSplashPanel)
+            val vg = LinearLayout(ctx)
+            vg.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+            vg.orientation = LinearLayout.VERTICAL
+            val enable = CheckBox(ctx)
+            enable.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+            val panel = RelativeLayout(ctx)
+            panel.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+            val input = EditText(ctx) as TextView
+            input.layoutParams = RelativeLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+            vg += enable
+            vg += panel
+            panel += input
             enable.text = "启用自定义钱包余额"
             enable.isChecked = enableFake
             enable.setOnCheckedChangeListener { _, isChecked ->
                 enableFake = isChecked
-                panel.visibility = if (enableFake) View.VISIBLE else View.GONE
+                panel.isVisible = enableFake
             }
-            panel.visibility = if (enableFake) View.VISIBLE else View.GONE
+            panel.isVisible = enableFake
             input.text = money
             input.hint = "请输入自定义金额..."
             dialog.setView(vg)
@@ -114,6 +113,7 @@ object FakeBalance : PluginDelayableHook("ketal_qwallet_fakebalance") {
                     }
                 }
                 dialog.dismiss()
+                textView?.text = "114514"
             }
         } catch (e: Exception) {
             Utils.log(e)
@@ -135,9 +135,13 @@ object FakeBalance : PluginDelayableHook("ketal_qwallet_fakebalance") {
                         f.isAccessible = true
                         val numAnim = f.get(headerView)
                         val tv = ReflexUtil.getFirstByType(numAnim, TextView::class.java)
-                        tv.doAfterTextChanged {
-                            if (this.isEnabled && it.toString() != money)
+                        tv.doAfterTextChanged { v ->
+                            if (this.isEnabled && v.toString() != money)
                                 tv.text = money
+                        }
+                        tv.setOnLongClickListener { v ->
+                            showDialog(v.context, tv)
+                            true
                         }
                     }
                 }
