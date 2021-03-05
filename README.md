@@ -1,7 +1,7 @@
 # QNotified
 
 [![Build Status](https://dev.azure.com/Cryolitia/QNotified/_apis/build/status/ferredoxin.QNotified?branchName=master)](https://dev.azure.com/Cryolitia/QNotified/_build/latest?definitionId=1&branchName=master)
-[![license](https://img.shields.io/github/license/ferredoxin/QNotified.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
+[![license](https://img.shields.io/github/license/ferredoxin/QNotified.svg)](https://www.gnu.org/licenses/agpl-3.0.html)
 [![GitHub release](https://img.shields.io/github/release/ferredoxin/QNotified.svg)](https://github.com/ferredoxin/QNotified/releases/latest)
 
 ---
