@@ -208,6 +208,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         ll.addView(newListItemConfigSwitchIfValid(this, "隐藏文本框上方快捷方式", null, RemoveShortCutBar.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "聊天自动发送原图", null, AutoSendOriginalPhoto.INSTANCE));
         ll.addView(newListItemConfigSwitchIfValid(this, "聊天自动接收原图", null, AutoReceiveOriginalPhoto.INSTANCE));
+        ll.addView(newListItemConfigSwitchIfValid(this, "折叠群聊复读消息", null, CollapseTroopMessage.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "批量撤回消息", "多选消息后撤回", MultiActionHook.INSTANCE));
         ll.addView(newListItemButtonIfValid(this, "修改消息左滑动作", null, null, LeftSwipeReplyHook.INSTANCE, ModifyLeftSwipeReplyActivity.class));
         ll.addView(newListItemConfigSwitchIfValid(this, "修改@界面排序", "排序由群主管理员至正常人员", SortAtPanel.INSTANCE));
