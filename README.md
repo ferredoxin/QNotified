@@ -1,33 +1,20 @@
-# QNotified
+![QNotified logo](docs/tile.jpg)
+
+---
 
 [![Build Status](https://dev.azure.com/Cryolitia/QNotified/_apis/build/status/ferredoxin.QNotified?branchName=master)](https://dev.azure.com/Cryolitia/QNotified/_build/latest?definitionId=1&branchName=master)
 [![license](https://img.shields.io/github/license/ferredoxin/QNotified.svg)](https://www.gnu.org/licenses/agpl-3.0.html)
 [![GitHub release](https://img.shields.io/github/release/ferredoxin/QNotified.svg)](https://github.com/ferredoxin/QNotified/releases/latest)
 
----
+QNotified 是一个旨在使QQ变得更好用的开源Xposed模块
 
-**QNotified开发组,管理组已正式休止活动，后续开发工作将由你们进行，感谢陪伴。**
+## QNotified
 
----
+**[持续集成版本下载](https://install.appcenter.ms/orgs/qnotifieddev/apps/qnotified/distribution_groups/alpha)**
 
-等(zuo)不(si)及的小伙伴可以: [CI构建下载](https://install.appcenter.ms/orgs/qnotifieddev/apps/qnotified/distribution_groups/alpha) (危!富含bug与兼容性问题,PR可能含恶意代码,自行承担风险)
+### 使用方法
 
-QNotified（以下简称本模块）是一款依赖 Xposed框架运行的辅助性QQ功能增强模块, 本模块无毒无害, 免费开源, 旨在:  
-
-1. **接手部分停更模块的部分功能**
-2. 提供被删好友通知功能
-3. **移除部分臃肿功能, 增加部分实用功能**
-
-QNotified is a Xposed module for mobile QQ that aims to:
-
-1. bring some nice functions in some modules back to life
-2. automatically refreshes friend list and tell(notify) user which friend had deleted him/her
-3. remove some unnecessary functions and add to facility
-
-- **适配QQ版本** : 普通版QQ,TIM (全版本)
-- **使用方法** : 在Xposed Installer 激活模块后，在QQ自带设置中点击QNotified即可开关对应功能。
-- 关于删好友通知:  **(从安装并激活日起生效，无法查看安装本模块以前删除自己的好友!)** ,自己删除好友没有多余提示但是有记录。激活模块后自动检测，无需手动配置.
-- QQ内模块界面主题自动跟随 QQ主题 或 Substratum主题如MaterialQQ - GoogleBlue 或 ColorQQ(2) .  
+激活本模块后，在QQ/TIM自带设置中点击QNotified即可开关对应功能。
 
 ## 一切开发旨在学习，请勿用于非法用途
 
@@ -35,7 +22,45 @@ QNotified is a Xposed module for mobile QQ that aims to:
 - 如果某功能被大量运用于非法用途或严重侵害插件使用者权益，那么该功能将会被移除。
 - 本模块完全免费开源, 近期发现模块倒卖现象严重,请勿上当
 
+### 许可证
+
+- AGPL-3.0
+
+```
+Copyright (C) 2019-2021 dmca@ioctl.cc
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+```
+
+- [EULA](LICENSE.md)
+
+```
+版权所有©2021 gao_cai_sheng <qwq233@qwq2333.top, qwq2333.top>
+
+允许在其遵守CC BY-NC-SA 4.0协议的同时，每个人复制和分发此许可证文档的逐字记录副本，且允许对其进行更改，但必须保留其版权信息与原作者。
+请务必仔细阅读和理解QNotified 最终用户许可协议中规定的所有权利和限制。在使用前，您需要仔细阅读并决定接受或不接受本协议的条款。除非或直至您接受本协议的条款，否则本软件及其相关副本、相关程序代码或相关资源不得在您的任何终端上下载、安装或使用。
+您一旦下载、使用本软件及其相关副本、相关程序代码或相关资源，即表示您同意接受本协议各项条款的约束。如您不同意本协议中的条款，您则应当立即删除本软件、附属资源及其相关源代码。
+本软件权利只许可使用，而不出售。
+本协议与GNU Affero通用公共许可证(即AGPL协议)共同作为本软件与您的协议，且本协议与AGPL协议的冲突部分均按照本协议约束。您必须同时同意并遵守本协议与AGPL协议，否则，您应立即卸载、删除本软件、附属资源及其相关源代码。
+
+鉴于项目的特殊性，开发团队可能在任何时间**停止更新**或**删除项目**。
+```
+
 ## 功能介绍
+
+<details>
+  <summary>目前已开发功能</summary>
 
 1. 隐藏消息列表小程序入口
 2. 去除回复自动at
@@ -86,21 +111,21 @@ QNotified is a Xposed module for mobile QQ that aims to:
 
 注1: 卡片消息及群发文本这两个功能因大量被用于广告引流而被加以限制
 
-### 计划任务
+</details>
 
-1. 查看已删除好友的聊天记录
-2. 收藏更多表情(原辅助模块)
-3. 屏蔽(类)回执消息(如:作业消息)通知
-4. 自定义复读次数
-5. 修复偶发性的莫名其妙好友全部被标记为删除的bug
-6. 加好友(群)自定义来源
-7. 禁用特别关心长震动
-8. 去你大爷的TX地图/QQ/内置浏览器
-9. (反)单向好友检测
+### [计划或正在开发的功能](https://github.com/ferredoxin/QNotified/projects/2)
 
 ### 不会支持的功能
 
 - 抢红包
 - 群发图片或其他类型消息
+
+## 开始
+
+- [CONTRIBUTING](CONTRIBUTING.md)
+
+## 赞助
+
+- 由于项目的特殊性，我们不接受任何形式的捐赠，但是我们希望有更多的人能够参与本项目的开发
 
 ## [QNotified最终用户许可协议](./app/src/main/assets/eula.txt)
