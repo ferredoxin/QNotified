@@ -37,6 +37,7 @@ import ltd.nextalone.util.clazz
 import ltd.nextalone.util.hookAfter
 import me.ketal.base.PluginDelayableHook
 import me.ketal.data.ConfigData
+import me.ketal.util.BaseUtil.tryVerbosely
 import me.ketal.util.HookUtil.findClass
 import me.ketal.util.HookUtil.getMethod
 import me.ketal.util.TIMVersion
@@ -47,7 +48,6 @@ import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.ui.CustomDialog
 import nil.nadph.qnotified.util.ReflexUtil
 import nil.nadph.qnotified.util.Toasts
-import nil.nadph.qnotified.util.Utils
 
 @FunctionEntry
 object FakeBalance : PluginDelayableHook("ketal_qwallet_fakebalance") {
@@ -66,7 +66,7 @@ object FakeBalance : PluginDelayableHook("ketal_qwallet_fakebalance") {
     }
 
     private fun showDialog(context: Context, textView: TextView?) {
-        try {
+        tryVerbosely(false) {
             var enableFake = isEnabled
             val dialog = CustomDialog.createFailsafe(context)
                 .setTitle("自定义钱包余额")
@@ -115,12 +115,10 @@ object FakeBalance : PluginDelayableHook("ketal_qwallet_fakebalance") {
                 dialog.dismiss()
                 textView?.text = "114514"
             }
-        } catch (e: Exception) {
-            Utils.log(e)
         }
     }
 
-    override fun startHook(classLoader: ClassLoader) = try {
+    override fun startHook(classLoader: ClassLoader) = tryVerbosely(false) {
         "Lcom/qwallet/activity/QWalletHomeActivity;->onCreate(Landroid/os/Bundle;)V"
             .getMethod(classLoader)
             ?.hookAfter(this) {
@@ -147,8 +145,5 @@ object FakeBalance : PluginDelayableHook("ketal_qwallet_fakebalance") {
                 }
             }
         true
-    } catch (e: Exception) {
-        Utils.log(e)
-        false
     }
 }

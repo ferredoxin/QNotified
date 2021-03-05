@@ -26,6 +26,7 @@ import android.view.View
 import android.widget.TextView
 import ltd.nextalone.util.hookAfter
 import me.ketal.base.PluginDelayableHook
+import me.ketal.util.BaseUtil.tryVerbosely
 import me.ketal.util.HookUtil.findClass
 import me.ketal.util.HookUtil.getMethod
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
@@ -40,7 +41,7 @@ object SendFavoriteHook: PluginDelayableHook("ketal_send_favorite") {
 
     override val pluginID = "qqfav.apk"
 
-    override fun startHook(classLoader: ClassLoader) = try {
+    override fun startHook(classLoader: ClassLoader) = tryVerbosely(false) {
         "Lcom/qqfav/activity/FavoritesListActivity;->onCreate(Landroid/os/Bundle;)V"
             .getMethod(classLoader)
             ?.hookAfter(this) {
@@ -51,7 +52,7 @@ object SendFavoriteHook: PluginDelayableHook("ketal_send_favorite") {
                 val logic = ReflexUtil.new_instance("com.qqfav.activity.FavoriteGroupLogic".findClass(classLoader),
                     thisObj, tv, thisObj::class.java, View::class.java)
                 tv?.setOnClickListener {
-                    try {
+                    tryVerbosely(false) {
                         ReflexUtil.invoke_virtual(logic, "b")
                         val b = ReflexUtil.iget_object_or_null(logic, "b", View::class.java)
                         if (b.visibility != 0) {
@@ -59,15 +60,10 @@ object SendFavoriteHook: PluginDelayableHook("ketal_send_favorite") {
                         } else {
                             ReflexUtil.invoke_virtual(logic, "a", true, Boolean::class.java)
                         }
-                    } catch (e: Exception) {
-                        Utils.log(e)
                     }
                 }
             }
         true
-    }  catch (t: Throwable) {
-        Utils.log(t)
-        false
     }
 
     private fun findCancelTV(thisObject: Any, clazz: Class<*>) : TextView? {

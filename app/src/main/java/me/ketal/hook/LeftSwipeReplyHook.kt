@@ -30,6 +30,7 @@ import me.ketal.util.TIMVersion
 import ltd.nextalone.util.hookAfter
 import ltd.nextalone.util.hookBefore
 import me.ketal.data.ConfigData
+import me.ketal.util.BaseUtil.tryVerbosely
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.data.requireMinVersion
 import me.singleneuron.qn_kernel.tlb.ConfigTable.getConfig
@@ -69,44 +70,39 @@ object LeftSwipeReplyHook: CommonDelayableHook("ketal_left_swipe_action", DexDeo
 
     override fun isValid(): Boolean = requireMinVersion(QQVersion.QQ_8_2_6,TIMVersion.TIM_3_1_1)
 
-    override fun initOnce(): Boolean {
-        return try {
-            val replyMethod = DexKit.doFindMethod(DexKit.N_LeftSwipeReply_Helper__reply)
-            val hookClass = replyMethod!!.declaringClass
-            var methodName = if (hostInfo.isTim) "L" else "a"
-            XposedHelpers.findMethodBestMatch(hookClass, methodName, Float::class.java, Float::class.java)
-                .hookBefore(this) {
-                    if (isNoAction) it.result = null
-                }
-            ReflexUtil.findMethodByTypes_1(hookClass, Void.TYPE, View::class.java, Int::class.javaPrimitiveType)
-                .hookBefore(this) {
-                    if (!isMultiChose) return@hookBefore
-                    val iv = it.args[0] as ImageView
-                    if (iv.tag == null) {
-                        iv.setImageBitmap(multiBitmap)
-                        iv.tag = true
-                    }
-                }
-            replyMethod.hookBefore(this) {
-                if (!isMultiChose) return@hookBefore
-                val message = ReflexUtil.invoke_virtual_any(it.thisObject, Initiator._ChatMessage())
-                val baseChatPie = ReflexUtil.getFirstByType(it.thisObject, Initiator._BaseChatPie() as Class<*>)
-                DexKit.doFindMethod(DexKit.N_BASE_CHAT_PIE__chooseMsg)!!.invoke(baseChatPie, message)
-                it.result = null
+    override fun initOnce() = tryVerbosely(false) {
+        val replyMethod = DexKit.doFindMethod(DexKit.N_LeftSwipeReply_Helper__reply)
+        val hookClass = replyMethod!!.declaringClass
+        var methodName = if (hostInfo.isTim) "L" else "a"
+        XposedHelpers.findMethodBestMatch(hookClass, methodName, Float::class.java, Float::class.java)
+            .hookBefore(this) {
+                if (isNoAction) it.result = null
             }
-            methodName = if (hostInfo.isTim) getConfig(LeftSwipeReplyHook::class.java.simpleName) else "a"
-            ReflexUtil.hasMethod(hookClass, methodName, Int::class.java)
-                .hookAfter(this) {
-                    if (replyDistance <= 0) {
-                        replyDistance = it.result as Int
-                    } else {
-                        it.result = replyDistance
-                    }
+        ReflexUtil.findMethodByTypes_1(hookClass, Void.TYPE, View::class.java, Int::class.javaPrimitiveType)
+            .hookBefore(this) {
+                if (!isMultiChose) return@hookBefore
+                val iv = it.args[0] as ImageView
+                if (iv.tag == null) {
+                    iv.setImageBitmap(multiBitmap)
+                    iv.tag = true
                 }
-            true
-        } catch (e: Exception) {
-            Utils.log(e)
-            false
+            }
+        replyMethod.hookBefore(this) {
+            if (!isMultiChose) return@hookBefore
+            val message = ReflexUtil.invoke_virtual_any(it.thisObject, Initiator._ChatMessage())
+            val baseChatPie = ReflexUtil.getFirstByType(it.thisObject, Initiator._BaseChatPie() as Class<*>)
+            DexKit.doFindMethod(DexKit.N_BASE_CHAT_PIE__chooseMsg)!!.invoke(baseChatPie, message)
+            it.result = null
         }
+        methodName = if (hostInfo.isTim) getConfig(LeftSwipeReplyHook::class.java.simpleName) else "a"
+        ReflexUtil.hasMethod(hookClass, methodName, Int::class.java)
+            .hookAfter(this) {
+                if (replyDistance <= 0) {
+                    replyDistance = it.result as Int
+                } else {
+                    it.result = replyDistance
+                }
+            }
+        true
     }
 }

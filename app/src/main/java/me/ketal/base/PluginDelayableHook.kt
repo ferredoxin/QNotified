@@ -22,6 +22,7 @@
 
 package me.ketal.base
 
+import me.ketal.util.BaseUtil.trySilently
 import me.ketal.util.HookUtil.getMethod
 import me.singleneuron.qn_kernel.data.hostInfo
 import nil.nadph.qnotified.SyncUtils
@@ -32,12 +33,10 @@ abstract  class PluginDelayableHook(keyName: String) : CommonDelayableHook(keyNa
 
     abstract fun startHook(classLoader: ClassLoader) : Boolean
 
-    override fun initOnce() = try {
+    override fun initOnce() = trySilently(false) {
         val classLoader = "Lcom/tencent/mobileqq/pluginsdk/PluginStatic;->getOrCreateClassLoader(Landroid/content/Context;Ljava/lang/String;)Ljava/lang/ClassLoader;"
             .getMethod()
             ?.invoke(null, hostInfo.application, pluginID) as ClassLoader
         startHook(classLoader)
-    } catch (t: Throwable) {
-        false
     }
 }
