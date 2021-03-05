@@ -24,6 +24,7 @@ package me.ketal.hook
 
 import ltd.nextalone.util.hookBefore
 import me.ketal.base.PluginDelayableHook
+import me.ketal.util.BaseUtil.tryVerbosely
 import me.ketal.util.HookUtil.getField
 import me.ketal.util.HookUtil.getMethod
 import me.ketal.util.TIMVersion
@@ -31,7 +32,6 @@ import me.singleneuron.qn_kernel.data.requireMinVersion
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.ReflexUtil
-import nil.nadph.qnotified.util.Utils
 
 @FunctionEntry
 object QZoneNoAD : PluginDelayableHook("ketal_qzone_hook") {
@@ -39,14 +39,14 @@ object QZoneNoAD : PluginDelayableHook("ketal_qzone_hook") {
 
     override val pluginID = "qzone_plugin.apk"
 
-    override fun startHook(classLoader: ClassLoader) = try {
+    override fun startHook(classLoader: ClassLoader) = tryVerbosely(false) {
         "Lcom/qzone/module/feedcomponent/ui/FeedViewBuilder;->setFeedViewData(Landroid/content/Context;Lcom/qzone/proxy/feedcomponent/ui/AbsFeedView;Lcom/qzone/proxy/feedcomponent/model/BusinessFeedData;ZZ)V"
             .getMethod(classLoader)
             ?.hookBefore(this) {
                 val obj = "Lcom/qzone/proxy/feedcomponent/model/BusinessFeedData;->cellOperationInfo:Lcom/qzone/proxy/feedcomponent/model/CellOperationInfo;"
                     .getField(classLoader)
                     ?.get(it.args[2])!!
-                val hashMap = ReflexUtil.iget_object_or_null(obj,"busiParam", Map::class.java)
+                val hashMap = ReflexUtil.iget_object_or_null(obj, "busiParam", Map::class.java)
                 for (num in hashMap.keys) {
                     if (num == 194) {
                         it.result = null
@@ -58,8 +58,5 @@ object QZoneNoAD : PluginDelayableHook("ketal_qzone_hook") {
 
             }
         true
-    }catch (e: Exception) {
-        Utils.log(e)
-        false
     }
 }

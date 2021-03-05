@@ -29,18 +29,18 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import ltd.nextalone.util.hookAfter
 import ltd.nextalone.util.method
+import me.ketal.util.BaseUtil.tryVerbosely
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
-import nil.nadph.qnotified.util.Utils
 
 @FunctionEntry
 object HideFriendCardSendGift : CommonDelayableHook("ketal_HideFriendProfileCardSendGift") {
 
     override fun isValid() = requireMinQQVersion(QQVersion.QQ_8_0_0)
 
-    override fun initOnce() = try {
+    override fun initOnce() = tryVerbosely(false) {
         "Lcom/tencent/mobileqq/activity/FriendProfileCardActivity;->a(Landroid/widget/LinearLayout;)V"
             .method.hookAfter(this) {
                 val rootView = it.args[0] as LinearLayout
@@ -55,8 +55,5 @@ object HideFriendCardSendGift : CommonDelayableHook("ketal_HideFriendProfileCard
                 }
             }
         true
-    } catch (t: Throwable) {
-        Utils.log(t)
-        false
     }
 }

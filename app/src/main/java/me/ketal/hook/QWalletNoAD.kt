@@ -28,6 +28,7 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import ltd.nextalone.util.hookAfter
 import me.ketal.base.PluginDelayableHook
+import me.ketal.util.BaseUtil.tryVerbosely
 import me.ketal.util.HookUtil.getField
 import me.ketal.util.HookUtil.getMethod
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
@@ -41,7 +42,7 @@ object QWalletNoAD : PluginDelayableHook("ketal_qwallet_noad") {
 
     override fun isValid(): Boolean = requireMinQQVersion(QQVersion.QQ_8_0_0)
 
-    override fun startHook(classLoader: ClassLoader) = try {
+    override fun startHook(classLoader: ClassLoader) = tryVerbosely(false) {
         "Lcom/qwallet/activity/QWalletHomeActivity;->onCreate(Landroid/os/Bundle;)V"
             .getMethod(classLoader)
             ?.hookAfter(this) {
@@ -63,8 +64,5 @@ object QWalletNoAD : PluginDelayableHook("ketal_qwallet_noad") {
                 })
             }
         true
-    } catch (e: Exception) {
-        Utils.log(e)
-        false
     }
 }
