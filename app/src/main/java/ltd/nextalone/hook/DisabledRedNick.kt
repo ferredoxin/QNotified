@@ -19,7 +19,7 @@
  * <https://www.gnu.org/licenses/>
  * <https://github.com/ferredoxin/QNotified/blob/master/LICENSE.md>.
  */
-package me.nextalone.hook
+package ltd.nextalone.hook
 
 import android.widget.LinearLayout
 import android.widget.RelativeLayout

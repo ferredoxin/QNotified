@@ -21,25 +21,14 @@
  */
 package ltd.nextalone.hook.testhook
 
-import ltd.nextalone.util.*
+import ltd.nextalone.util.method
 import nil.nadph.qnotified.hook.CommonDelayableHook
-import nil.nadph.qnotified.util.Utils
 
 object TestCommonDelayable : CommonDelayableHook("na_test_base_delayable_kt") {
 
+    @Throws(Exception::class)
     override fun initOnce(): Boolean {
-        return try {
-            val hookSimpleName = this::class.java.simpleName
-            "".method.hookBefore(this) {
-                logBefore(hookSimpleName)
-            }
-            "".method.hookAfter(this) {
-                logAfter(hookSimpleName)
-            }
-            true
-        } catch (t: Throwable) {
-            Utils.log(t)
-            false
-        }
+        "".method
+        return true
     }
 }

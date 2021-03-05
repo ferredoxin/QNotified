@@ -58,7 +58,7 @@ internal fun String.method(name: String): Method? = Initiator.load(this).declare
     return null
 }
 
-internal fun String.method(name: String, vararg args: Class<*>): Method = hasMethod(this.clazz, name, args)
+internal fun String.method(name: String, vararg args: Class<*>): Method = hasMethod(this.clazz, name, *args)
 
 internal val Member.isStatic: Boolean
     get() = Modifier.isStatic(this.modifiers)
