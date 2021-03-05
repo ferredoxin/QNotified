@@ -35,7 +35,7 @@ import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.Utils
 
 @FunctionEntry
-object AutoSendOriginalPhoto : CommonDelayableHook("na_auto_send_origin_photo", SyncUtils.PROC_ANY) {
+object AutoSendOriginalPhoto : CommonDelayableHook("na_auto_send_origin_photo", SyncUtils.PROC_MAIN or SyncUtils.PROC_PEAK) {
 
     override fun initOnce(): Boolean {
         return try {
