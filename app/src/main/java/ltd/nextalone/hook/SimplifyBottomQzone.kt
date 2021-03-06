@@ -23,7 +23,7 @@ package ltd.nextalone.hook
 
 import ltd.nextalone.util.hookBefore
 import ltd.nextalone.util.method
-import ltd.nextalone.util.replaceNull
+import ltd.nextalone.util.replace
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
@@ -40,7 +40,7 @@ object SimplifyBottomQzone : CommonDelayableHook("na_simplify_bottom_bar_kt") {
                 it.result = null
             }
         }
-        "com.tencent.mobileqq.activity.home.impl.TabFrameControllerImpl".method("updateRedTouch")?.replaceNull(this)
+        "com.tencent.mobileqq.activity.home.impl.TabFrameControllerImpl".method("updateRedTouch")?.replace(this, null)
         return true
     }
 

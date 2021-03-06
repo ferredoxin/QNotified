@@ -27,7 +27,7 @@ import ltd.nextalone.base.MultiItemDelayableHook
 import ltd.nextalone.util.hide
 import ltd.nextalone.util.hookAfter
 import ltd.nextalone.util.method
-import ltd.nextalone.util.replaceNull
+import ltd.nextalone.util.replace
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
@@ -52,7 +52,7 @@ object SimplifyQQSettings : MultiItemDelayableHook("na_simplify_qq_settings_mult
             }
         }
         if (activeItems.contains("免流量"))
-            "Lcom/tencent/mobileqq/activity/QQSettingSettingActivity;->a()V".method.replaceNull(this)
+            "Lcom/tencent/mobileqq/activity/QQSettingSettingActivity;->a()V".method.replace(this, null)
         true
     } catch (t: Throwable) {
         Utils.log(t)

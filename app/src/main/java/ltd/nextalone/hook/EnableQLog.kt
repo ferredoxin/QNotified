@@ -22,7 +22,7 @@
 package ltd.nextalone.hook
 
 import ltd.nextalone.util.hookAfter
-import ltd.nextalone.util.replaceTrue
+import ltd.nextalone.util.replace
 import me.kyuubiran.util.getMethods
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
@@ -37,13 +37,13 @@ object EnableQLog : CommonDelayableHook("na_enable_qlog") {
             for (m: Method in getMethods("com.tencent.qphone.base.util.QLog")) {
                 val argt = m.parameterTypes
                 if (m.name == "isColorLevel" && argt.isEmpty()) {
-                    m.replaceTrue(this)
+                    m.replace(this, true)
                 }
             }
             for (m: Method in getMethods("com.tencent.qphone.base.util.QLog")) {
                 val argt = m.parameterTypes
                 if (m.name == "isDevelopLevel" && argt.isEmpty()) {
-                    m.replaceTrue(this)
+                    m.replace(this, true)
                 }
             }
             for (m: Method in getMethods("com.tencent.qphone.base.util.QLog")) {

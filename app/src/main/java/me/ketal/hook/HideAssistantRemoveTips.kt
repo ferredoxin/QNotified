@@ -21,19 +21,19 @@
  */
 package me.ketal.hook
 
-import ltd.nextalone.util.replaceNull
+import ltd.nextalone.util.replace
 import me.ketal.util.BaseUtil.tryVerbosely
 import me.ketal.util.HookUtil.getMethod
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 
 @FunctionEntry
-object HideAssistantRemoveTips: CommonDelayableHook("ketal_hide_assistant_removetips") {
+object HideAssistantRemoveTips : CommonDelayableHook("ketal_hide_assistant_removetips") {
     override fun initOnce(): Boolean {
         return tryVerbosely(false) {
             "Lcom/tencent/mobileqq/activity/ChatActivityUtils;->a(Landroid/content/Context;Ljava/lang/String;Landroid/view/View\$OnClickListener;Landroid/view/View\$OnClickListener;)Landroid/view/View;"
                 .getMethod()
-                ?.replaceNull(this)
+                ?.replace(this, null)
             true
         }
     }

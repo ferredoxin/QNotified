@@ -22,7 +22,7 @@
 package ltd.nextalone.hook
 
 import ltd.nextalone.util.methods
-import ltd.nextalone.util.replaceFalse
+import ltd.nextalone.util.replace
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.tlb.ConfigTable
 import me.singleneuron.util.QQVersion
@@ -43,7 +43,7 @@ object HideTotalNumber : CommonDelayableHook("na_hide_total_number") {
             for (m: Method in className.methods) {
                 val argt = m.parameterTypes
                 if (m.name == ConfigTable.getConfig(HideTotalNumber::class.simpleName) && argt.isEmpty()) {
-                    m.replaceFalse(this)
+                    m.replace(this, false)
                 }
             }
             true

@@ -22,7 +22,7 @@
 package ltd.nextalone.hook
 
 import ltd.nextalone.util.method
-import ltd.nextalone.util.replaceNull
+import ltd.nextalone.util.replace
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
@@ -34,7 +34,7 @@ object RemoveShortCutBar : CommonDelayableHook("na_remove_short_cut_bar_kt") {
 
     override fun initOnce(): Boolean {
         return try {
-            "Lcom.tencent.mobileqq.activity.aio.helper.ShortcutBarAIOHelper;->h()V".method.replaceNull(this)
+            "Lcom.tencent.mobileqq.activity.aio.helper.ShortcutBarAIOHelper;->h()V".method.replace(this, null)
             true
         } catch (t: Throwable) {
             Utils.log(t)

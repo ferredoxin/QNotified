@@ -22,7 +22,7 @@
 package ltd.nextalone.hook
 
 import ltd.nextalone.util.method
-import ltd.nextalone.util.replaceNull
+import ltd.nextalone.util.replace
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
@@ -33,7 +33,7 @@ object RemoveBottomRedDots : CommonDelayableHook("na_remove_bottom_red_dots_kt")
 
     @Throws(Exception::class)
     override fun initOnce(): Boolean {
-        "com.tencent.mobileqq.activity.home.impl.TabFrameControllerImpl".method("updateRedTouch")?.replaceNull(this)
+        "com.tencent.mobileqq.activity.home.impl.TabFrameControllerImpl".method("updateRedTouch")?.replace(this, null)
         return true
     }
 

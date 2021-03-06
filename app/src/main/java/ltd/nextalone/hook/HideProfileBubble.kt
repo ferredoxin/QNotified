@@ -21,7 +21,7 @@
  */
 package ltd.nextalone.hook
 
-import ltd.nextalone.util.replaceNull
+import ltd.nextalone.util.replace
 import me.kyuubiran.util.isStatic
 import me.singleneuron.base.adapter.BaseDelayableHighPerformanceConditionalHookAdapter
 import me.singleneuron.data.PageFaultHighPerformanceFunctionCache
@@ -44,7 +44,7 @@ object HideProfileBubble : BaseDelayableHighPerformanceConditionalHookAdapter("h
             for (m: Method in clz.declaredMethods) {
                 val argt = m.parameterTypes
                 if (m.name == ConfigTable.getConfig(HideProfileBubble::class.simpleName) && !m.isStatic && argt.isEmpty()) {
-                    m.replaceNull(this)
+                    m.replace(this, null)
                 }
             }
             true
