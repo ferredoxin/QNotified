@@ -23,6 +23,7 @@ package ltd.nextalone.hook
 
 import ltd.nextalone.util.method
 import ltd.nextalone.util.replace
+import ltd.nextalone.util.tryOrFalse
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
@@ -31,11 +32,8 @@ import nil.nadph.qnotified.hook.CommonDelayableHook
 @FunctionEntry
 object HideMutualMark : CommonDelayableHook("na_hide_intimate_image_kt") {
 
-    @Throws(Exception::class)
-    override fun initOnce(): Boolean {
-        if (!isValid) return false
+    override fun initOnce() = tryOrFalse {
         "Lcom/tencent/mobileqq/widget/navbar/NavBarAIO;->setTitleIconLeftForMutualMark(Lcom/tencent/mobileqq/mutualmark/info/MutualMarkForDisplayInfo;Lcom/tencent/mobileqq/mutualmark/info/MutualMarkForDisplayInfo;)V".method.replace(this, null)
-        return true
     }
 
     override fun isValid() = requireMinQQVersion(QQVersion.QQ_8_5_5)

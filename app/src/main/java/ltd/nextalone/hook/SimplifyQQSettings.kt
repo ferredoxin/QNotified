@@ -24,21 +24,17 @@ package ltd.nextalone.hook
 import android.app.Activity
 import android.view.View
 import ltd.nextalone.base.MultiItemDelayableHook
-import ltd.nextalone.util.hide
-import ltd.nextalone.util.hookAfter
-import ltd.nextalone.util.method
-import ltd.nextalone.util.replace
+import ltd.nextalone.util.*
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
-import nil.nadph.qnotified.util.Utils
 
 @FunctionEntry
 object SimplifyQQSettings : MultiItemDelayableHook("na_simplify_qq_settings_multi") {
     override val allItems = "手机号码|达人|安全|通知|记录|隐私|通用|辅助|免流量|关于".split("|").toMutableList()
     override val defaultItems = ""
 
-    override fun initOnce() = try {
+    override fun initOnce() = tryOrFalse {
         "Lcom/tencent/mobileqq/activity/QQSettingSettingActivity;->a(IIII)V".method.hookAfter(this) {
             val activity = it.thisObject as Activity
             val viewId: Int = it.args[0].toString().toInt()
@@ -53,10 +49,6 @@ object SimplifyQQSettings : MultiItemDelayableHook("na_simplify_qq_settings_mult
         }
         if (activeItems.contains("免流量"))
             "Lcom/tencent/mobileqq/activity/QQSettingSettingActivity;->a()V".method.replace(this, null)
-        true
-    } catch (t: Throwable) {
-        Utils.log(t)
-        false
     }
 
     override fun isValid() = requireMinQQVersion(QQVersion.QQ_8_0_0)

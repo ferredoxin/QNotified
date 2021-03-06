@@ -28,8 +28,7 @@ import nil.nadph.qnotified.util.Utils
 
 @FunctionEntry
 object CollapseTroopMessage : CommonDelayableHook("na_collapse_troop_message_kt") {
-    @Throws(Exception::class)
-    override fun initOnce(): Boolean {
+    override fun initOnce() = tryOrFalse {
         logStart()
         "com.tencent.mobileqq.activity.aio.core.TroopChatPie".method("a", List::class.java, List::class.java).hookAfter(this) {
             logAfter("getAIOList")
@@ -58,6 +57,5 @@ object CollapseTroopMessage : CommonDelayableHook("na_collapse_troop_message_kt"
             }
             it.result = list
         }
-        return true
     }
 }

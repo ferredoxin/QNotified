@@ -69,6 +69,17 @@ internal val Member.isPrivate: Boolean
 internal val Member.isPublic: Boolean
     get() = Modifier.isPublic(this.modifiers)
 
+internal inline fun <T : BaseDelayableHook> T.tryOrFalse(crossinline function: () -> Unit): Boolean {
+    return try {
+        if (!this.isValid) return false
+        function()
+        true
+    } catch (t: Throwable) {
+        logThrowable(t)
+        false
+    }
+}
+
 internal fun Any?.get(objName: String, clz: Class<*>? = null): Any? = ReflexUtil.iget_object_or_null(this, objName, clz)
 
 internal fun Any?.set(name: String, value: Any): Any = ReflexUtil.iput_object(this, name, value)

@@ -26,23 +26,17 @@ import android.widget.RelativeLayout
 import ltd.nextalone.util.clazz
 import ltd.nextalone.util.findHostView
 import ltd.nextalone.util.hookAfterAllConstructors
+import ltd.nextalone.util.tryOrFalse
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
-import nil.nadph.qnotified.util.Utils
 
 @FunctionEntry
 object HideChatVipImage : CommonDelayableHook("na_hide_chat_vip_image_kt") {
 
-    override fun initOnce(): Boolean {
-        return try {
-            "com.tencent.mobileqq.widget.navbar.NavBarAIO".clazz.hookAfterAllConstructors {
-                val ctx = it.thisObject as RelativeLayout
-                ctx.findHostView<ImageView>("jp0")!!.alpha = 0F
-            }
-            true
-        } catch (t: Throwable) {
-            Utils.log(t)
-            false
+    override fun initOnce() = tryOrFalse {
+        "com.tencent.mobileqq.widget.navbar.NavBarAIO".clazz.hookAfterAllConstructors {
+            val ctx = it.thisObject as RelativeLayout
+            ctx.findHostView<ImageView>("jp0")!!.alpha = 0F
         }
     }
 }

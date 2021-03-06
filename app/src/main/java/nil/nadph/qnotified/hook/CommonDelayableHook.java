@@ -35,21 +35,21 @@ import nil.nadph.qnotified.util.Utils;
 import static nil.nadph.qnotified.util.Utils.log;
 
 public abstract class CommonDelayableHook extends BaseDelayableHook {
-    
+
     private final String mKeyName;
     private final boolean mDefaultEnabled;
     private final int mTargetProcess;
     private final Step[] mPreconditions;
     private boolean mInited = false;
-    
+
     protected CommonDelayableHook(@NonNull String keyName, @NonNull Step... preconditions) {
         this(keyName, SyncUtils.PROC_MAIN, false, preconditions);
     }
-    
+
     protected CommonDelayableHook(@NonNull String keyName, int targetProcess, @NonNull Step... preconditions) {
         this(keyName, targetProcess, false, preconditions);
     }
-    
+
     protected CommonDelayableHook(@NonNull String keyName, int targetProcess, boolean defEnabled, @NonNull Step... preconditions) {
         mKeyName = keyName;
         mTargetProcess = targetProcess;
@@ -59,23 +59,28 @@ public abstract class CommonDelayableHook extends BaseDelayableHook {
         }
         mPreconditions = preconditions;
     }
-    
+
     @Override
     public final boolean isInited() {
         return mInited;
     }
-    
+
     @Override
     public final boolean init() {
         if (mInited) {
             return true;
         }
-        mInited = initOnce();
+        try {
+            mInited = initOnce();
+        } catch (Throwable t) {
+            mInited = false;
+            Utils.log(t);
+        }
         return mInited;
     }
-    
-    protected abstract boolean initOnce();
-    
+
+    protected abstract boolean initOnce() throws Throwable;
+
     @Override
     public boolean isEnabled() {
         try {
@@ -85,7 +90,7 @@ public abstract class CommonDelayableHook extends BaseDelayableHook {
             return false;
         }
     }
-    
+
     @Override
     public void setEnabled(boolean enabled) {
         try {
@@ -106,13 +111,13 @@ public abstract class CommonDelayableHook extends BaseDelayableHook {
             }
         }
     }
-    
+
     @NonNull
     @Override
     public Step[] getPreconditions() {
         return mPreconditions;
     }
-    
+
     @Override
     public int getEffectiveProc() {
         return mTargetProcess;

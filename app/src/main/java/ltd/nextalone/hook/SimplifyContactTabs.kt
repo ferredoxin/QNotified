@@ -26,44 +26,37 @@ import ltd.nextalone.util.*
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
-import nil.nadph.qnotified.util.Utils
 
 @FunctionEntry
 object SimplifyContactTabs : MultiItemDelayableHook("na_simplify_contact_tabs_multi") {
     override val allItems = "好友|分组|群聊|设备|通讯录|订阅号".split("|").toMutableList()
     override val defaultItems = ""
 
-    override fun initOnce(): Boolean {
-        return try {
-            "Lcom.tencent.mobileqq.activity.contacts.base.tabs.ContactsTabs;->a()V".method.hookAfter(this) {
-                val list = it.thisObject.get("a", ArrayList::class.java) as ArrayList<Any>
-                val tabList = list.toMutableList()
-                list.clear()
-                val stringList: ArrayList<String> = arrayListOf()
-                val intList: ArrayList<Int> = arrayListOf()
-                val cls = "com.tencent.mobileqq.activity.contacts.base.tabs.TabInfo".clazz
-                tabList.forEach { obj ->
-                    val str = obj.get("f") as String
-                    if (str == "好友" && !activeItems.contains(str)) {
-                        val id = obj.get("d") as Int
-                        list.add(obj)
-                        stringList.add(str)
-                        intList.add(id)
-                    } else if (!activeItems.contains(str)) {
-                        val id = obj.get("d") as Int
-                        val instance = cls.instance(allItems.indexOf(str), id, str)
-                        list.add(instance)
-                        stringList.add(str)
-                        intList.add(id)
-                    }
+    override fun initOnce() = tryOrFalse {
+        "Lcom.tencent.mobileqq.activity.contacts.base.tabs.ContactsTabs;->a()V".method.hookAfter(this) {
+            val list = it.thisObject.get("a", ArrayList::class.java) as ArrayList<Any>
+            val tabList = list.toMutableList()
+            list.clear()
+            val stringList: ArrayList<String> = arrayListOf()
+            val intList: ArrayList<Int> = arrayListOf()
+            val cls = "com.tencent.mobileqq.activity.contacts.base.tabs.TabInfo".clazz
+            tabList.forEach { obj ->
+                val str = obj.get("f") as String
+                if (str == "好友" && !activeItems.contains(str)) {
+                    val id = obj.get("d") as Int
+                    list.add(obj)
+                    stringList.add(str)
+                    intList.add(id)
+                } else if (!activeItems.contains(str)) {
+                    val id = obj.get("d") as Int
+                    val instance = cls.instance(allItems.indexOf(str), id, str)
+                    list.add(instance)
+                    stringList.add(str)
+                    intList.add(id)
                 }
-                it.thisObject.set("a", Array<String>::class.java, stringList.toTypedArray())
-                it.thisObject.set("a", IntArray::class.java, intList.toIntArray())
             }
-            true
-        } catch (t: Throwable) {
-            Utils.log(t)
-            false
+            it.thisObject.set("a", Array<String>::class.java, stringList.toTypedArray())
+            it.thisObject.set("a", IntArray::class.java, intList.toIntArray())
         }
     }
 

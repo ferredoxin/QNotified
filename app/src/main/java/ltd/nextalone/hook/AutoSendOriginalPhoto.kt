@@ -27,34 +27,28 @@ import android.widget.CheckBox
 import ltd.nextalone.util.findHostView
 import ltd.nextalone.util.hookAfter
 import ltd.nextalone.util.method
+import ltd.nextalone.util.tryOrFalse
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
-import nil.nadph.qnotified.util.Utils
 
 @FunctionEntry
 object AutoSendOriginalPhoto : CommonDelayableHook("na_auto_send_origin_photo", SyncUtils.PROC_MAIN or SyncUtils.PROC_PEAK) {
 
-    override fun initOnce(): Boolean {
-        return try {
-            "Lcom.tencent.mobileqq.activity.aio.photo.PhotoListPanel;->a(Z)V".method.hookAfter(this) {
-                val ctx = it.thisObject as View
-                val sendOriginPhotoCheckbox = ctx.findHostView<CheckBox>("h1y")
-                sendOriginPhotoCheckbox?.isChecked = true
+    override fun initOnce() = tryOrFalse {
+        "Lcom.tencent.mobileqq.activity.aio.photo.PhotoListPanel;->a(Z)V".method.hookAfter(this) {
+            val ctx = it.thisObject as View
+            val sendOriginPhotoCheckbox = ctx.findHostView<CheckBox>("h1y")
+            sendOriginPhotoCheckbox?.isChecked = true
+        }
+        if (requireMinQQVersion(QQVersion.QQ_8_2_0)) {
+            "Lcom.tencent.mobileqq.activity.photo.album.NewPhotoPreviewActivity;->onCreate(Landroid/os/Bundle;)V".method.hookAfter(this) {
+                val ctx = it.thisObject as Activity
+                val checkBox = ctx.findHostView<CheckBox>("h1y")
+                checkBox?.isChecked = true
             }
-            if (requireMinQQVersion(QQVersion.QQ_8_2_0)) {
-                "Lcom.tencent.mobileqq.activity.photo.album.NewPhotoPreviewActivity;->onCreate(Landroid/os/Bundle;)V".method.hookAfter(this) {
-                    val ctx = it.thisObject as Activity
-                    val checkBox = ctx.findHostView<CheckBox>("h1y")
-                    checkBox?.isChecked = true
-                }
-            }
-            true
-        } catch (t: Throwable) {
-            Utils.log(t)
-            false
         }
     }
 }

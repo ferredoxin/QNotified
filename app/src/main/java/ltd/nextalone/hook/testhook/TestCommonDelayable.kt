@@ -22,13 +22,12 @@
 package ltd.nextalone.hook.testhook
 
 import ltd.nextalone.util.method
+import ltd.nextalone.util.tryOrFalse
 import nil.nadph.qnotified.hook.CommonDelayableHook
 
 object TestCommonDelayable : CommonDelayableHook("na_test_base_delayable_kt") {
 
-    @Throws(Exception::class)
-    override fun initOnce(): Boolean {
+    override fun initOnce() = tryOrFalse {
         "".method
-        return true
     }
 }
