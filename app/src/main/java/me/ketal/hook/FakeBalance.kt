@@ -119,8 +119,10 @@ object FakeBalance : PluginDelayableHook("ketal_qwallet_fakebalance") {
     }
 
     override fun startHook(classLoader: ClassLoader) = tryVerbosely(false) {
-        "Lcom/qwallet/activity/QWalletHomeActivity;->onCreate(Landroid/os/Bundle;)V"
-            .getMethod(classLoader)
+        arrayOf(
+            "Lcom/qwallet/activity/QWalletHomeActivity;->onCreate(Landroid/os/Bundle;)V",
+            "Lcom/qwallet/activity/QvipPayWalletActivity;->onCreate(Landroid/os/Bundle;)V"
+        ).getMethod(classLoader)
             ?.hookAfter(this) {
                 val ctx = it.thisObject as Activity
                 val id = ctx.resources.getIdentifier("root", "id", hostInfo.packageName)
