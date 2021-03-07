@@ -43,8 +43,10 @@ object QWalletNoAD : PluginDelayableHook("ketal_qwallet_noad") {
     override fun isValid(): Boolean = requireMinQQVersion(QQVersion.QQ_8_0_0)
 
     override fun startHook(classLoader: ClassLoader) = tryVerbosely(false) {
-        "Lcom/qwallet/activity/QWalletHomeActivity;->onCreate(Landroid/os/Bundle;)V"
-            .getMethod(classLoader)
+        arrayOf(
+            "Lcom/qwallet/activity/QWalletHomeActivity;->onCreate(Landroid/os/Bundle;)V",
+            "Lcom/qwallet/activity/QvipPayWalletActivity;->onCreate(Landroid/os/Bundle;)V"
+        ).getMethod(classLoader)
             ?.hookAfter(this) {
                 val ctx = it.thisObject as Activity
                 val id = ctx.resources.getIdentifier("root", "id", Utils.PACKAGE_NAME_QQ)
