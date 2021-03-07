@@ -13,11 +13,37 @@ object HookUtil {
     internal fun String.findClass(classLoader: ClassLoader, init: Boolean = false): Class<*> =
         Class.forName(this, init, classLoader)
 
-    internal fun String.getMethod(classLoader: ClassLoader = Initiator.getHostClassLoader()): Method? =
-        DexMethodDescriptor(this).getMethodInstance(classLoader)
+    internal fun String.getMethod(classLoader: ClassLoader = Initiator.getHostClassLoader()) =
+        try {
+            DexMethodDescriptor(this).getMethodInstance(classLoader)
+        } catch (e : Throwable) {
+            null
+        }
 
-    internal fun String.getField(classLoader: ClassLoader = Initiator.getHostClassLoader()): Field? =
-        DexFieldDescriptor(this).getFieldInstance(classLoader)
+    internal fun Array<String>.getMethod(classLoader: ClassLoader = Initiator.getHostClassLoader()): Method? {
+        this.forEach {
+            it.getMethod(classLoader)?.apply {
+                return this
+            }
+        }
+        return null
+    }
+
+    internal fun String.getField(classLoader: ClassLoader = Initiator.getHostClassLoader()) =
+        try {
+            DexFieldDescriptor(this).getFieldInstance(classLoader)
+        } catch (e : Throwable) {
+            null
+        }
+
+    internal fun Array<String>.getField(classLoader: ClassLoader = Initiator.getHostClassLoader()): Field? {
+        this.forEach {
+            it.getField(classLoader)?.apply {
+                return this
+            }
+        }
+        return null
+    }
 
     internal fun String.hookMethod(callback: XC_MethodHook) = getMethod()?.hookMethod(callback)
 
