@@ -22,24 +22,18 @@
 package ltd.nextalone.hook
 
 import ltd.nextalone.util.method
-import ltd.nextalone.util.replaceNull
+import ltd.nextalone.util.replace
+import ltd.nextalone.util.tryOrFalse
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
-import nil.nadph.qnotified.util.Utils
 
 @FunctionEntry
 object RemoveShortCutBar : CommonDelayableHook("na_remove_short_cut_bar_kt") {
 
-    override fun initOnce(): Boolean {
-        return try {
-            "Lcom.tencent.mobileqq.activity.aio.helper.ShortcutBarAIOHelper;->h()V".method.replaceNull(this)
-            true
-        } catch (t: Throwable) {
-            Utils.log(t)
-            false
-        }
+    override fun initOnce() = tryOrFalse {
+        "Lcom.tencent.mobileqq.activity.aio.helper.ShortcutBarAIOHelper;->h()V".method.replace(this, null)
     }
 
     override fun isValid() = requireMinQQVersion(QQVersion.QQ_8_5_5)

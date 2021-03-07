@@ -21,7 +21,8 @@
  */
 package ltd.nextalone.hook
 
-import ltd.nextalone.util.replaceNull
+import ltd.nextalone.util.replace
+import ltd.nextalone.util.tryOrFalse
 import me.kyuubiran.util.isStatic
 import me.singleneuron.base.adapter.BaseDelayableHighPerformanceConditionalHookAdapter
 import me.singleneuron.data.PageFaultHighPerformanceFunctionCache
@@ -30,7 +31,6 @@ import me.singleneuron.qn_kernel.tlb.ConfigTable
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.Initiator
-import nil.nadph.qnotified.util.Utils
 import java.lang.reflect.Method
 
 @FunctionEntry
@@ -38,19 +38,13 @@ object HideProfileBubble : BaseDelayableHighPerformanceConditionalHookAdapter("h
 
     override val recordTime: Boolean = false
 
-    override fun doInit(): Boolean {
-        return try {
-            val clz = Initiator.load("com.tencent.mobileqq.activity.QQSettingMe")
-            for (m: Method in clz.declaredMethods) {
-                val argt = m.parameterTypes
-                if (m.name == ConfigTable.getConfig(HideProfileBubble::class.simpleName) && !m.isStatic && argt.isEmpty()) {
-                    m.replaceNull(this)
-                }
+    override fun doInit() = tryOrFalse {
+        val clz = Initiator.load("com.tencent.mobileqq.activity.QQSettingMe")
+        for (m: Method in clz.declaredMethods) {
+            val argt = m.parameterTypes
+            if (m.name == ConfigTable.getConfig(HideProfileBubble::class.simpleName) && !m.isStatic && argt.isEmpty()) {
+                m.replace(this, null)
             }
-            true
-        } catch (t: Throwable) {
-            Utils.log(t)
-            false
         }
     }
 

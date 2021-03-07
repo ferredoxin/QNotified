@@ -25,32 +25,26 @@ import ltd.nextalone.base.MultiItemDelayableHook
 import ltd.nextalone.util.get
 import ltd.nextalone.util.hookBefore
 import ltd.nextalone.util.method
+import ltd.nextalone.util.tryOrFalse
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
-import nil.nadph.qnotified.util.Utils
 
 @FunctionEntry
 object SimplifyRecentDialog : MultiItemDelayableHook("na_simplify_recent_dialog_multi") {
     override val allItems = "创建群聊|加好友/群|匹配聊天|一起派对|扫一扫|面对面快传|收付款".split("|").toMutableList()
     override val defaultItems = ""
-    override fun initOnce(): Boolean {
-        return try {
-            "Lcom/tencent/widget/PopupMenuDialog;->b(Landroid/app/Activity;Ljava/util/List;Lcom/tencent/widget/PopupMenuDialog\$OnClickActionListener;Lcom/tencent/widget/PopupMenuDialog\$OnDismissListener;)Lcom/tencent/widget/PopupMenuDialog;".method.hookBefore(this) {
-                val list = (it.args[1] as List<*>).toMutableList()
-                val iterator = list.iterator()
-                while (iterator.hasNext()) {
-                    val string = iterator.next().get("a", String::class.java) as String
-                    if (activeItems.contains(string)) {
-                        iterator.remove()
-                    }
+    override fun initOnce() = tryOrFalse {
+        "Lcom/tencent/widget/PopupMenuDialog;->b(Landroid/app/Activity;Ljava/util/List;Lcom/tencent/widget/PopupMenuDialog\$OnClickActionListener;Lcom/tencent/widget/PopupMenuDialog\$OnDismissListener;)Lcom/tencent/widget/PopupMenuDialog;".method.hookBefore(this) {
+            val list = (it.args[1] as List<*>).toMutableList()
+            val iterator = list.iterator()
+            while (iterator.hasNext()) {
+                val string = iterator.next().get("a", String::class.java) as String
+                if (activeItems.contains(string)) {
+                    iterator.remove()
                 }
-                it.args[1] = list.toList()
             }
-            true
-        } catch (t: Throwable) {
-            Utils.log(t)
-            false
+            it.args[1] = list.toList()
         }
     }
 

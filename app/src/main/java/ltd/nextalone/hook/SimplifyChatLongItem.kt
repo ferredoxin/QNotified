@@ -26,17 +26,17 @@ import ltd.nextalone.base.MultiItemDelayableHook
 import ltd.nextalone.util.clazz
 import ltd.nextalone.util.hookBefore
 import ltd.nextalone.util.method
+import ltd.nextalone.util.tryOrFalse
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
-import nil.nadph.qnotified.util.Utils
 
 @FunctionEntry
 object SimplifyChatLongItem : MultiItemDelayableHook("na_simplify_chat_long_item_multi") {
     override val allItems = "复制|转发|收藏|回复|多选|撤回|删除|一起写|设为精华|待办|私聊|截图|存表情|相关表情|复制链接|存微云|发给电脑".split("|").toMutableList()
     override val defaultItems = ""
 
-    override fun initOnce() = try {
+    override fun initOnce() = tryOrFalse {
         val callback: (XC_MethodHook.MethodHookParam) -> Unit = callback@{
             if (!isEnabled) return@callback
             val str = it.args[1] as String
@@ -57,10 +57,6 @@ object SimplifyChatLongItem : MultiItemDelayableHook("na_simplify_chat_long_item
                 }
             }
         }
-        true
-    } catch (t: Throwable) {
-        Utils.log(t)
-        false
     }
 
     override fun isValid(): Boolean = requireMinQQVersion(QQVersion.QQ_8_0_0)

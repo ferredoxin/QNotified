@@ -22,43 +22,37 @@
 package ltd.nextalone.hook
 
 import ltd.nextalone.util.hookAfter
-import ltd.nextalone.util.replaceTrue
+import ltd.nextalone.util.replace
+import ltd.nextalone.util.tryOrFalse
 import me.kyuubiran.util.getMethods
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
-import nil.nadph.qnotified.util.Utils
 import java.lang.reflect.Method
 
 @FunctionEntry
 object EnableQLog : CommonDelayableHook("na_enable_qlog") {
 
-    override fun initOnce(): Boolean {
-        return try {
-            for (m: Method in getMethods("com.tencent.qphone.base.util.QLog")) {
-                val argt = m.parameterTypes
-                if (m.name == "isColorLevel" && argt.isEmpty()) {
-                    m.replaceTrue(this)
+    override fun initOnce() = tryOrFalse {
+        for (m: Method in getMethods("com.tencent.qphone.base.util.QLog")) {
+            val argt = m.parameterTypes
+            if (m.name == "isColorLevel" && argt.isEmpty()) {
+                m.replace(this, true)
+            }
+        }
+        for (m: Method in getMethods("com.tencent.qphone.base.util.QLog")) {
+            val argt = m.parameterTypes
+            if (m.name == "isDevelopLevel" && argt.isEmpty()) {
+                m.replace(this, true)
+            }
+        }
+        for (m: Method in getMethods("com.tencent.qphone.base.util.QLog")) {
+            val argt = m.parameterTypes
+            if (m.name == "getTag" && argt.size == 1 && argt[0] == String::class.java) {
+                m.hookAfter(this) {
+                    val tag = it.args[0]
+                    it.result = "NADump:$tag"
                 }
             }
-            for (m: Method in getMethods("com.tencent.qphone.base.util.QLog")) {
-                val argt = m.parameterTypes
-                if (m.name == "isDevelopLevel" && argt.isEmpty()) {
-                    m.replaceTrue(this)
-                }
-            }
-            for (m: Method in getMethods("com.tencent.qphone.base.util.QLog")) {
-                val argt = m.parameterTypes
-                if (m.name == "getTag" && argt.size == 1 && argt[0] == String::class.java) {
-                    m.hookAfter(this) {
-                        val tag = it.args[0]
-                        it.result = "NADump:$tag"
-                    }
-                }
-            }
-            true
-        } catch (t: Throwable) {
-            Utils.log(t)
-            false
         }
     }
 }

@@ -69,20 +69,15 @@ internal val Member.isPrivate: Boolean
 internal val Member.isPublic: Boolean
     get() = Modifier.isPublic(this.modifiers)
 
-internal fun Member.replaceNull(baseHook: BaseDelayableHook) = this.replace(baseHook) {
-    null
-}
-
-internal fun Member.replaceTrue(baseHook: BaseDelayableHook) = this.replace(baseHook) {
-    true
-}
-
-internal fun Member.replaceFalse(baseHook: BaseDelayableHook) = this.replace(baseHook) {
-    false
-}
-
-internal fun Member.replaceEmpty(baseHook: BaseDelayableHook) = this.replace(baseHook) {
-    ""
+internal inline fun <T : BaseDelayableHook> T.tryOrFalse(crossinline function: () -> Unit): Boolean {
+    return try {
+        if (!this.isValid) return false
+        function()
+        true
+    } catch (t: Throwable) {
+        logThrowable(t)
+        false
+    }
 }
 
 internal fun Any?.get(objName: String, clz: Class<*>? = null): Any? = ReflexUtil.iget_object_or_null(this, objName, clz)
@@ -119,6 +114,10 @@ internal inline fun Member.hookAfter(baseHook: BaseDelayableHook, crossinline ho
         logThrowable(e)
     }
 })
+
+internal fun Member.replace(baseHook: BaseDelayableHook, result: Any?) = this.replace(baseHook) {
+    result
+}
 
 internal inline fun <T : Any> Member.replace(baseHook: BaseDelayableHook, crossinline hooker: (XC_MethodHook.MethodHookParam) -> T?) = hook(object : NAMethodReplacement(baseHook) {
     override fun replaceMethod(param: MethodHookParam?) = try {

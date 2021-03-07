@@ -48,96 +48,90 @@ object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt") {
     private const val timeCfg = "na_chat_words_count_kt_time"
     private const val colorCfg = "na_chat_words_count_kt_color"
     private const val strCfg = "na_chat_words_count_kt_str"
-    override fun initOnce(): Boolean {
-        return try {
-            "com.tencent.mobileqq.activity.QQSettingMe".clazz.hookBeforeAllConstructors {
-                "Lcom/tencent/mobileqq/activity/QQSettingMe;->a()V".method.hookAfter(this) {
-                    val isToday = Date().today == getExFriendCfg().getStringOrDefault(timeCfg, "")
-                    val relativeLayout = (it.thisObject.get("a", ViewGroup::class.java) as ViewGroup).findHostView<RelativeLayout>("ivc")
-                    val textView = (relativeLayout?.parent as FrameLayout).findViewById<TextView>(nil.nadph.qnotified.R.id.chat_words_count)
-                    var str = getExFriendCfg().getStringOrDefault(strCfg, "今日已发送 %1 条消息，共 %2 字，表情包 %3 个")
-                    val msg = if (isToday) getExFriendCfg().getIntOrDefault(msgCfg, 0) else 0
-                    val words = if (isToday) getExFriendCfg().getIntOrDefault(wordsCfg, 0) else 0
-                    val emo = if (isToday) getExFriendCfg().getIntOrDefault(emoCfg, 0) else 0
-                    str = str.replace("%1", msg.toString()).replace("%2", words.toString()).replace("%3", emo.toString())
-                    textView.text = str
-                }
-            }
-            "com.tencent.mobileqq.activity.QQSettingMe".clazz.hookAfterAllConstructors {
+    override fun initOnce() = tryOrFalse {
+        "com.tencent.mobileqq.activity.QQSettingMe".clazz.hookBeforeAllConstructors {
+            "Lcom/tencent/mobileqq/activity/QQSettingMe;->a()V".method.hookAfter(this) {
                 val isToday = Date().today == getExFriendCfg().getStringOrDefault(timeCfg, "")
-                val activity: Activity = it.args[0] as Activity
                 val relativeLayout = (it.thisObject.get("a", ViewGroup::class.java) as ViewGroup).findHostView<RelativeLayout>("ivc")
-                relativeLayout!!.visibility = View.GONE
-                val textView = TextView(activity)
+                val textView = (relativeLayout?.parent as FrameLayout).findViewById<TextView>(nil.nadph.qnotified.R.id.chat_words_count)
                 var str = getExFriendCfg().getStringOrDefault(strCfg, "今日已发送 %1 条消息，共 %2 字，表情包 %3 个")
                 val msg = if (isToday) getExFriendCfg().getIntOrDefault(msgCfg, 0) else 0
                 val words = if (isToday) getExFriendCfg().getIntOrDefault(wordsCfg, 0) else 0
                 val emo = if (isToday) getExFriendCfg().getIntOrDefault(emoCfg, 0) else 0
                 str = str.replace("%1", msg.toString()).replace("%2", words.toString()).replace("%3", emo.toString())
                 textView.text = str
-                textView.setTextColor(Color.parseColor(getExFriendCfg().getStringOrDefault(colorCfg, "#FF000000")))
-                textView.id = nil.nadph.qnotified.R.id.chat_words_count
-                textView.textSize = 15.0f
-                textView.setOnClickListener {
-                    val dialog = CustomDialog.createFailsafe(activity)
-                    val ctx = dialog.context
-                    val editText = EditText(ctx)
-                    editText.setText(getExFriendCfg().getStringOrDefault(colorCfg, "#ff000000"))
-                    editText.textSize = 16f
-                    val _5 = Utils.dip2px(activity, 5f)
-                    editText.setPadding(_5, _5, _5, _5 * 2)
-                    val linearLayout = LinearLayout(ctx)
-                    linearLayout.addView(editText, ViewBuilder.newLinearLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, _5 * 2))
-                    val alertDialog = dialog
-                        .setTitle("输入聊天字数统计颜色")
-                        .setView(linearLayout)
-                        .setPositiveButton("确认") { _, _ ->
-                        }
-                        .setNegativeButton("取消", null)
-                        .setNeutralButton("使用默认值") { _, _ ->
-                            putExFriend(colorCfg, "#FF000000")
-                            Toasts.showToast(activity, Utils.TOAST_TYPE_INFO, "重启以应用设置", Toast.LENGTH_SHORT)
-                        }
-                        .create() as AlertDialog
-                    alertDialog.show()
-                    alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-                        val color = editText.text.toString()
-                        try {
-                            Color.parseColor(color)
-                            putExFriend(colorCfg, color)
-                            alertDialog.cancel()
-                            Toasts.showToast(activity, Utils.TOAST_TYPE_INFO, "重启以应用设置", Toast.LENGTH_SHORT)
-                        } catch (e: IllegalArgumentException) {
-                            Toasts.showToast(activity, Utils.TOAST_TYPE_ERROR, "颜色格式不正确", Toast.LENGTH_SHORT)
-                        }
+            }
+        }
+        "com.tencent.mobileqq.activity.QQSettingMe".clazz.hookAfterAllConstructors {
+            val isToday = Date().today == getExFriendCfg().getStringOrDefault(timeCfg, "")
+            val activity: Activity = it.args[0] as Activity
+            val relativeLayout = (it.thisObject.get("a", ViewGroup::class.java) as ViewGroup).findHostView<RelativeLayout>("ivc")
+            relativeLayout!!.visibility = View.GONE
+            val textView = TextView(activity)
+            var str = getExFriendCfg().getStringOrDefault(strCfg, "今日已发送 %1 条消息，共 %2 字，表情包 %3 个")
+            val msg = if (isToday) getExFriendCfg().getIntOrDefault(msgCfg, 0) else 0
+            val words = if (isToday) getExFriendCfg().getIntOrDefault(wordsCfg, 0) else 0
+            val emo = if (isToday) getExFriendCfg().getIntOrDefault(emoCfg, 0) else 0
+            str = str.replace("%1", msg.toString()).replace("%2", words.toString()).replace("%3", emo.toString())
+            textView.text = str
+            textView.setTextColor(Color.parseColor(getExFriendCfg().getStringOrDefault(colorCfg, "#FF000000")))
+            textView.id = nil.nadph.qnotified.R.id.chat_words_count
+            textView.textSize = 15.0f
+            textView.setOnClickListener {
+                val dialog = CustomDialog.createFailsafe(activity)
+                val ctx = dialog.context
+                val editText = EditText(ctx)
+                editText.setText(getExFriendCfg().getStringOrDefault(colorCfg, "#ff000000"))
+                editText.textSize = 16f
+                val _5 = Utils.dip2px(activity, 5f)
+                editText.setPadding(_5, _5, _5, _5 * 2)
+                val linearLayout = LinearLayout(ctx)
+                linearLayout.addView(editText, ViewBuilder.newLinearLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, _5 * 2))
+                val alertDialog = dialog
+                    .setTitle("输入聊天字数统计颜色")
+                    .setView(linearLayout)
+                    .setPositiveButton("确认") { _, _ ->
+                    }
+                    .setNegativeButton("取消", null)
+                    .setNeutralButton("使用默认值") { _, _ ->
+                        putExFriend(colorCfg, "#FF000000")
+                        Toasts.showToast(activity, Utils.TOAST_TYPE_INFO, "重启以应用设置", Toast.LENGTH_SHORT)
+                    }
+                    .create() as AlertDialog
+                alertDialog.show()
+                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                    val color = editText.text.toString()
+                    try {
+                        Color.parseColor(color)
+                        putExFriend(colorCfg, color)
+                        alertDialog.cancel()
+                        Toasts.showToast(activity, Utils.TOAST_TYPE_INFO, "重启以应用设置", Toast.LENGTH_SHORT)
+                    } catch (e: IllegalArgumentException) {
+                        Toasts.showToast(activity, Utils.TOAST_TYPE_ERROR, "颜色格式不正确", Toast.LENGTH_SHORT)
                     }
                 }
-                (relativeLayout.parent as FrameLayout).addView(textView)
             }
-            "Lcom/tencent/mobileqq/activity/ChatActivityFacade;->a(Lcom/tencent/mobileqq/app/QQAppInterface;Landroid/content/Context;Lcom/tencent/mobileqq/activity/aio/SessionInfo;Ljava/lang/String;Ljava/util/ArrayList;Lcom/tencent/mobileqq/activity/ChatActivityFacade\$SendMsgParams;)[J".method.hookAfter(this) {
-                val isToday = Date().today == getExFriendCfg().getStringOrDefault(timeCfg, "")
-                if (isToday) {
-                    putExFriend(msgCfg, getExFriendCfg().getIntOrDefault(msgCfg, 1) + 1)
-                    putExFriend(wordsCfg, getExFriendCfg().getIntOrDefault(wordsCfg, 1) + (it.args[3] as String).length)
-                } else {
-                    putExFriend(timeCfg, Date().today)
-                    putExFriend(msgCfg, 0)
-                    putExFriend(wordsCfg, 0)
-                }
+            (relativeLayout.parent as FrameLayout).addView(textView)
+        }
+        "Lcom/tencent/mobileqq/activity/ChatActivityFacade;->a(Lcom/tencent/mobileqq/app/QQAppInterface;Landroid/content/Context;Lcom/tencent/mobileqq/activity/aio/SessionInfo;Ljava/lang/String;Ljava/util/ArrayList;Lcom/tencent/mobileqq/activity/ChatActivityFacade\$SendMsgParams;)[J".method.hookAfter(this) {
+            val isToday = Date().today == getExFriendCfg().getStringOrDefault(timeCfg, "")
+            if (isToday) {
+                putExFriend(msgCfg, getExFriendCfg().getIntOrDefault(msgCfg, 1) + 1)
+                putExFriend(wordsCfg, getExFriendCfg().getIntOrDefault(wordsCfg, 1) + (it.args[3] as String).length)
+            } else {
+                putExFriend(timeCfg, Date().today)
+                putExFriend(msgCfg, 0)
+                putExFriend(wordsCfg, 0)
             }
-            "Lcom/tencent/mobileqq/activity/ChatActivityFacade;->a(Lcom/tencent/mobileqq/app/QQAppInterface;Landroid/content/Context;Lcom/tencent/mobileqq/activity/aio/SessionInfo;Ljava/lang/String;ZZZLjava/lang/String;Lcom/tencent/mobileqq/emoticon/EmojiStickerManager\$StickerInfo;Ljava/lang/String;Landroid/os/Bundle;)V".method.hookAfter(this) {
-                val isToday = Date().today == getExFriendCfg().getStringOrDefault(timeCfg, "")
-                if (isToday) {
-                    putExFriend(emoCfg, getExFriendCfg().getIntOrDefault(emoCfg, 0) + 1)
-                } else {
-                    putExFriend(timeCfg, Date().today)
-                    putExFriend(emoCfg, 0)
-                }
+        }
+        "Lcom/tencent/mobileqq/activity/ChatActivityFacade;->a(Lcom/tencent/mobileqq/app/QQAppInterface;Landroid/content/Context;Lcom/tencent/mobileqq/activity/aio/SessionInfo;Ljava/lang/String;ZZZLjava/lang/String;Lcom/tencent/mobileqq/emoticon/EmojiStickerManager\$StickerInfo;Ljava/lang/String;Landroid/os/Bundle;)V".method.hookAfter(this) {
+            val isToday = Date().today == getExFriendCfg().getStringOrDefault(timeCfg, "")
+            if (isToday) {
+                putExFriend(emoCfg, getExFriendCfg().getIntOrDefault(emoCfg, 0) + 1)
+            } else {
+                putExFriend(timeCfg, Date().today)
+                putExFriend(emoCfg, 0)
             }
-            true
-        } catch (t: Throwable) {
-            Utils.log(t)
-            false
         }
     }
 

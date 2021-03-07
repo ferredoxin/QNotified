@@ -23,48 +23,38 @@ package ltd.nextalone.hook
 
 import android.view.View
 import android.view.ViewGroup
-import ltd.nextalone.util.clazz
-import ltd.nextalone.util.hookAfter
-import ltd.nextalone.util.hookBefore
-import ltd.nextalone.util.method
+import ltd.nextalone.util.*
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
-import nil.nadph.qnotified.util.Utils
 import java.lang.reflect.Field
 
 @FunctionEntry
 object SimplifyEmoPanel : CommonDelayableHook("na_simplify_emo_panel_kt") {
     // todo fix scroll
-    override fun initOnce(): Boolean {
-        return try {
-            "Lcom/tencent/mobileqq/emoticonview/EmoticonPanelController;->initTabView(I)V".method.hookBefore(this) {
-                val declaredField: Field = "com.tencent.mobileqq.emoticonview.EmoticonPanelController".clazz.getDeclaredField("panelDataList")
-                declaredField.isAccessible = true
-                val list = (declaredField.get(it.thisObject) as MutableList<*>).listIterator()
-                while (list.hasNext()) {
-                    val item = list.next()
-                    if (item != null) {
-                        val i = item.javaClass.getDeclaredField("type").get(item) as Int
-                        if (i !in arrayListOf(4, 7)) {
-                            list.remove()
-                        }
+    override fun initOnce() = tryOrFalse {
+        "Lcom/tencent/mobileqq/emoticonview/EmoticonPanelController;->initTabView(I)V".method.hookBefore(this) {
+            val declaredField: Field = "com.tencent.mobileqq.emoticonview.EmoticonPanelController".clazz.getDeclaredField("panelDataList")
+            declaredField.isAccessible = true
+            val list = (declaredField.get(it.thisObject) as MutableList<*>).listIterator()
+            while (list.hasNext()) {
+                val item = list.next()
+                if (item != null) {
+                    val i = item.javaClass.getDeclaredField("type").get(item) as Int
+                    if (i !in arrayListOf(4, 7)) {
+                        list.remove()
                     }
                 }
-                "Lcom/tencent/mobileqq/emoticonview/EmoticonTabAdapter;->getView(ILandroid/view/View;Landroid/view/ViewGroup;)Landroid/view/View;".method.hookAfter(this@SimplifyEmoPanel) { it2 ->
-                    val view: View = it2.result as View
-                    val layoutParams: ViewGroup.LayoutParams = view.layoutParams
-                    layoutParams.width = hostInfo.application.resources.displayMetrics.widthPixels / 2
-                    view.layoutParams = layoutParams
-                    it2.result = view
-                }
             }
-            true
-        } catch (t: Throwable) {
-            Utils.log(t)
-            false
+            "Lcom/tencent/mobileqq/emoticonview/EmoticonTabAdapter;->getView(ILandroid/view/View;Landroid/view/ViewGroup;)Landroid/view/View;".method.hookAfter(this@SimplifyEmoPanel) { it2 ->
+                val view: View = it2.result as View
+                val layoutParams: ViewGroup.LayoutParams = view.layoutParams
+                layoutParams.width = hostInfo.application.resources.displayMetrics.widthPixels / 2
+                view.layoutParams = layoutParams
+                it2.result = view
+            }
         }
     }
 

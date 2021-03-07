@@ -25,18 +25,18 @@ import de.robv.android.xposed.XC_MethodHook
 import ltd.nextalone.base.MultiItemDelayableHook
 import ltd.nextalone.util.hookBefore
 import ltd.nextalone.util.method
+import ltd.nextalone.util.tryOrFalse
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
-import nil.nadph.qnotified.util.Utils
 
 @FunctionEntry
 object SimplifyPlusPanel : MultiItemDelayableHook("na_simplify_plus_panel_multi") {
     override val allItems = "图片|拍摄|语音通话|视频通话|一起派对|戳一戳|视频包厢|红包|位置|文件|一起听歌|分享屏幕|收藏|热图|一起玩|涂鸦|转账|名片|送礼物|腾讯文档|厘米秀|一起K歌|礼物|直播间|签到|匿名|群课堂|健康收集|一起看|投票|收钱|坦白说|超级粉丝团".split("|").toMutableList()
     override val defaultItems = ""
 
-    override fun initOnce() = try {
+    override fun initOnce() = tryOrFalse {
         val callback: (XC_MethodHook.MethodHookParam) -> Unit = {
             val list = (it.args[0] as MutableList<*>).listIterator()
             while (list.hasNext()) {
@@ -82,10 +82,6 @@ object SimplifyPlusPanel : MultiItemDelayableHook("na_simplify_plus_panel_multi"
                 "Lcom/tencent/mobileqq/activity/aio/PlusPanel;->a(Ljava/util/List;)V".method.hookBefore(this, callback2)
             }
         }
-        true
-    } catch (t: Throwable) {
-        Utils.log(t)
-        false
     }
 
     override fun isValid() = requireMinQQVersion(QQVersion.QQ_8_0_0)
