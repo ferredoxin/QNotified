@@ -21,6 +21,7 @@
  */
 package me.kyuubiran.hook;
 
+import androidx.annotation.NonNull;
 import java.lang.reflect.Method;
 
 import de.robv.android.xposed.XC_MethodHook;
@@ -30,9 +31,11 @@ import me.singleneuron.util.QQVersion;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
+import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
+import org.jetbrains.annotations.NotNull;
 
 //屏蔽群聊界面一起嗨
 @FunctionEntry
@@ -44,7 +47,7 @@ public class RemovePlayTogether extends CommonDelayableHook {
     }
 
     private RemovePlayTogether() {
-        super("kr_remove_play_together", new DexDeobfStep(DexKit.C_TogetherControlHelper), new DexDeobfStep(DexKit.C_ClockInEntryHelper));
+        super("kr_remove_play_together");
     }
 
     @Override
@@ -55,6 +58,9 @@ public class RemovePlayTogether extends CommonDelayableHook {
     @Override
     public boolean initOnce() {
         try {
+            if (HostInformationProviderKt.hostInfo.isPlayQQ()) {
+                return false;
+            }
             String method = "h";
             if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_4_8)) {
                 //QQ 8.4.8 除了一起嗨按钮，同一个位置还有一个群打卡按钮。默认显示群打卡，如果已经打卡就显示一起嗨，两个按钮点击之后都会打开同一个界面，但是要同时hook两个
@@ -95,6 +101,23 @@ public class RemovePlayTogether extends CommonDelayableHook {
         } catch (Exception t) {
             Utils.log(t);
             return false;
+        }
+    }
+
+    @Override
+    public boolean isValid() {
+        return !HostInformationProviderKt.getHostInfo().isPlayQQ();
+    }
+
+    @NotNull
+    @Override
+    public Step[] getPreconditions() {
+        if (isValid()) {
+            return new Step[]{
+                new DexDeobfStep(DexKit.C_TogetherControlHelper), new DexDeobfStep(DexKit.C_ClockInEntryHelper)
+            };
+        } else {
+            return new Step[]{};
         }
     }
 }
