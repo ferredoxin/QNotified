@@ -24,7 +24,7 @@
     <string name="ModuleSetting">模块设置</string>
     <string name="ModuleSetting_tip_1">请在 QQ / TIM 内进行操作</string>
     <string name="ModuleSetting_tip_2">QQ侧滑 > 设置 > QNotified 即可进入模块设置</string>
-    <string name="ModuleSetting_tip_3">暂不支持 轻聊版 / 国际版</string>
+    <string name="ModuleSetting_tip_3">暂不支持 国际版</string>
     <string name="qq">QQ</string>
     <string name="tim">TIM</string>
     <string name="qq_lite">QQ极速版</string>
