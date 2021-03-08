@@ -451,6 +451,12 @@ public class Initiator {
         return clazz;
     }
 
+    public static Class _TroopInfo() {
+        Class<?> clazz = load("com.tencent.mobileqq.data.troop.TroopInfo");
+        if (clazz == null) clazz = load("com.tencent.mobileqq.data.TroopInfo");
+        return clazz;
+    }
+
     public static Class _Conversation() {
         Class<?> clazz = load("com/tencent/mobileqq/activity/home/Conversation");
         if (clazz == null) {

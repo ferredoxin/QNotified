@@ -21,20 +21,14 @@
  */
 package ltd.nextalone.hook
 
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import ltd.nextalone.data.TroopInfo
 import ltd.nextalone.util.*
-import ltd.nextalone.util.hookAfter
-import ltd.nextalone.util.method
-import ltd.nextalone.util.tryOrFalse
 import me.ketal.util.findViewByType
 import me.singleneuron.qn_kernel.data.MsgRecordData
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
-import nil.nadph.qnotified.util.Initiator
-import nil.nadph.qnotified.util.ReflexUtil
-import nil.nadph.qnotified.util.Utils
 
 @FunctionEntry
 object HideTroopLevel : CommonDelayableHook("na_hide_troop_level_kt") {
@@ -46,15 +40,12 @@ object HideTroopLevel : CommonDelayableHook("na_hide_troop_level_kt") {
                 val msg = MsgRecordData(it.args[2])
                 if (1 != msg.isTroop) return@hookAfter
                 val sendUin = msg.senderUin
-                val troopUin = msg.friendUin
-                val clzTroopInfo = Initiator.load("com.tencent.mobileqq.data.troop.TroopInfo")
-                    ?: Initiator.load("com.tencent.mobileqq.data.TroopInfo")
-                val troopInfo = ReflexUtil.invoke_virtual(Utils.getTroopManager(), "b", troopUin, String::class.java, clzTroopInfo)
-                val ownerUin = ReflexUtil.iget_object_or_null(troopInfo, "troopowneruin", String::class.java)
-                val admin = ReflexUtil.iget_object_or_null(troopInfo, "Administrator", String::class.java).split("|")
+                val troopInfo = TroopInfo(msg.friendUin)
+                val ownerUin = troopInfo.troopOwnerUin
+                val admin = troopInfo.troopAdmin
                 val levelClass = "com.tencent.mobileqq.troop.troopMemberLevel.TroopMemberNewLevelView".clazz
                 val levelView = rootView.findViewByType(levelClass)
-                val isAdmin = sendUin in admin || ownerUin == sendUin
+                val isAdmin = admin?.contains(sendUin) == true || ownerUin == sendUin
                 levelView?.isVisible = isAdmin
             }
     }
