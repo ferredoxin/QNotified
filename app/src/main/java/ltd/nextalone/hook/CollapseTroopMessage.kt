@@ -31,7 +31,6 @@ object CollapseTroopMessage : CommonDelayableHook("na_collapse_troop_message_kt"
     override fun initOnce() = tryOrFalse {
         logStart()
         "com.tencent.mobileqq.activity.aio.core.TroopChatPie".method("a", List::class.java, List::class.java).hookAfter(this) {
-            logAfter("getAIOList")
             var picMd5: CharSequence
             var text: CharSequence
             val list = (it.result as List<*>).toMutableList()

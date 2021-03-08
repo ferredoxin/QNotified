@@ -124,7 +124,7 @@ data class MsgRecordData(val msgRecord: Any?) {
 
     //是否群组
     val isTroop: Int?
-        get() = getObjectOrNull(msgRecord, "istroop", Boolean::class.java) as Int?
+        get() = getObjectOrNull(msgRecord, "istroop", Int::class.javaPrimitiveType) as Int?
 
     //未知
     val msgSeq: Long?
