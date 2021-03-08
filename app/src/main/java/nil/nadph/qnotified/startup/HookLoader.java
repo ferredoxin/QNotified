@@ -77,7 +77,7 @@ public class HookLoader implements IXposedHookLoadPackage {
     /**
      * 实际hook逻辑处理类
      */
-    private final String handleHookClass = HookEntry.class.getName();
+    private final String handleHookClass = "nil.nadph.qnotified.startup.HookEntry";
     /**
      * 实际hook逻辑处理类的入口方法
      */
