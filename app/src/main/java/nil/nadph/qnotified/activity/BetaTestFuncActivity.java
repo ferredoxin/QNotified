@@ -23,6 +23,7 @@ package nil.nadph.qnotified.activity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -32,6 +33,9 @@ import com.tencent.mobileqq.widget.BounceScrollView;
 
 import cc.ioctl.activity.ChatTailActivity;
 import cc.ioctl.activity.ManageScriptsActivity;
+import me.kyuubiran.dialog.RevokeMsgDialog;
+import me.kyuubiran.hook.RemoveDiyCard;
+import me.kyuubiran.hook.RemovePokeGrayTips;
 import me.kyuubiran.hook.RemoveRedDot;
 import me.kyuubiran.hook.testhook.CutMessage;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
@@ -85,6 +89,13 @@ public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
         ViewGroup __t;
         ll.addView(__t = newListItemButton(this, "管理脚本(.java)", "请注意安全, 合理使用", "N/A", clickToProxyActAction(ManageScriptsActivity.class)));
         __js_status = __t.findViewById(R_ID_VALUE);
+
+        View v = subtitle(this, "狐狸狸测试功能");
+        v.setOnClickListener(v1 -> RevokeMsgDialog.INSTANCE.onShow(this));
+        ll.addView(v);
+        ll.addView(newListItemHookSwitchInit(this, "[无效]屏蔽戳一戳灰字", "仅屏蔽开启之后的提示", RemovePokeGrayTips.INSTANCE));
+        ll.addView(newListItemHookSwitchInit(this, "[特供版]彻底屏蔽傻逼diy名片", "用闪退/zip炸弹名片的先死个妈", RemoveDiyCard.INSTANCE));
+
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         setContentView(bounceScrollView);
         LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);
