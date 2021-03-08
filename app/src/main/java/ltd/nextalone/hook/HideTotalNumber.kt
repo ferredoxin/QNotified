@@ -21,7 +21,7 @@
  */
 package ltd.nextalone.hook
 
-import ltd.nextalone.util.methods
+import ltd.nextalone.util.clazz
 import ltd.nextalone.util.replace
 import ltd.nextalone.util.tryOrFalse
 import me.singleneuron.qn_kernel.data.hostInfo
@@ -39,7 +39,7 @@ object HideTotalNumber : CommonDelayableHook("na_hide_total_number") {
         if (hostInfo.versionCode <= QQVersion.QQ_8_4_8) {
             className = "com.tencent.mobileqq.activity.aio.rebuild.TroopChatPie"
         }
-        for (m: Method in className.methods) {
+        for (m: Method in className.clazz.methods) {
             val argt = m.parameterTypes
             if (m.name == ConfigTable.getConfig(HideTotalNumber::class.simpleName) && argt.isEmpty()) {
                 m.replace(this, false)
