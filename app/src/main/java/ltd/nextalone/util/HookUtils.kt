@@ -46,10 +46,7 @@ internal val String.clazz: Class<*>
 internal val String.method: Method
     get() = DexMethodDescriptor(this.replace(".", "/").replace(" ", "")).getMethodInstance(Initiator.getHostClassLoader())
 
-internal val String.methods: Array<Method>
-    get() = Initiator.load(this).declaredMethods
-
-internal fun String.method(name: String): Method? = Initiator.load(this).declaredMethods.run {
+internal fun Class<*>.method(name: String): Method? = this.declaredMethods.run {
     this.forEach {
         if (it.name == name) {
             return it
@@ -58,7 +55,25 @@ internal fun String.method(name: String): Method? = Initiator.load(this).declare
     return null
 }
 
-internal fun String.method(name: String, vararg args: Class<*>): Method = hasMethod(this.clazz, name, *args)
+internal fun Class<*>.method(name: String, vararg args: Class<*>): Method? = hasMethod(this, name, *args)
+
+internal fun Class<*>.method(size: Int, returnType: Class<*>, condition: (method: Member) -> Boolean = { true }): Method? = this.declaredMethods.run {
+    this.forEach {
+        if (it.returnType == returnType && it.parameterTypes.size == size && condition(it)) {
+            return it
+        }
+    }
+    return null
+}
+
+internal fun Class<*>.method(name: String, size: Int, returnType: Class<*>, condition: (method: Member) -> Boolean = { true }): Method? = this.declaredMethods.run {
+    this.forEach {
+        if (it.name == name && it.returnType == returnType && it.parameterTypes.size == size && condition(it)) {
+            return it
+        }
+    }
+    return null
+}
 
 internal val Member.isStatic: Boolean
     get() = Modifier.isStatic(this.modifiers)

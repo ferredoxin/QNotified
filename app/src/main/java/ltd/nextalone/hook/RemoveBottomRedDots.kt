@@ -21,6 +21,7 @@
  */
 package ltd.nextalone.hook
 
+import ltd.nextalone.util.clazz
 import ltd.nextalone.util.method
 import ltd.nextalone.util.replace
 import ltd.nextalone.util.tryOrFalse
@@ -33,7 +34,7 @@ import nil.nadph.qnotified.hook.CommonDelayableHook
 object RemoveBottomRedDots : CommonDelayableHook("na_remove_bottom_red_dots_kt") {
 
     override fun initOnce(): Boolean = tryOrFalse {
-        "com.tencent.mobileqq.activity.home.impl.TabFrameControllerImpl".method("updateRedTouch")?.replace(this, null)
+        "com.tencent.mobileqq.activity.framebusiness.controllerinject.FrameControllerInjectImpl".clazz.method("a", 6, Void.TYPE)?.replace(this, null)
     }
 
     override fun isValid() = requireMinQQVersion(QQVersion.QQ_8_5_5)

@@ -21,8 +21,8 @@
  */
 package ltd.nextalone.hook
 
+import ltd.nextalone.util.clazz
 import ltd.nextalone.util.hookBefore
-import ltd.nextalone.util.methods
 import ltd.nextalone.util.tryOrFalse
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.util.QQVersion
@@ -37,7 +37,7 @@ object HideOnlineNumber : CommonDelayableHook("na_hide_online_number") {
         if (hostInfo.versionCode <= QQVersion.QQ_8_4_8) {
             className = "com.tencent.mobileqq.activity.aio.rebuild.TroopChatPie"
         }
-        for (m: Method in className.methods) {
+        for (m: Method in className.clazz.methods) {
             val argt = m.parameterTypes
             if (m.name == "a" && argt.size == 2 && argt[0] == String::class.java && argt[1] == Boolean::class.java) {
                 m.hookBefore(this) {
