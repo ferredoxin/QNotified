@@ -43,6 +43,7 @@ import java.util.Date;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import ltd.nextalone.util.SystemServiceUtils;
 import me.singleneuron.hook.CopyCardMsg;
 import cc.ioctl.activity.ChatTailActivity;
 import cc.ioctl.dialog.RikkaCustomMsgTimeFormatDialog;
@@ -292,15 +293,14 @@ public class InputButtonHook extends CommonDelayableHook {
             if (id == R_ID_COPY_CODE) {
                 param.setResult(null);
                 try {
-                    ClipboardManager clipboardManager = (ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);
                     if (load("com.tencent.mobileqq.data.MessageForStructing").isAssignableFrom(chatMessage.getClass())) {
                         String text = (String) invoke_virtual(iget_object_or_null(chatMessage, "structingMsg"), "getXml", new Object[0]);
-                        clipboardManager.setPrimaryClip(ClipData.newPlainText(null, text));
+                        SystemServiceUtils.copyToClipboard(ctx,text);
                         showToast(ctx, TOAST_TYPE_INFO, "复制成功", Toast.LENGTH_SHORT);
                         CliOper.copyCardMsg(text);
                     } else if (load("com.tencent.mobileqq.data.MessageForArkApp").isAssignableFrom(chatMessage.getClass())) {
                         String text = (String) invoke_virtual(iget_object_or_null(chatMessage, "ark_app_message"), "toAppXml", new Object[0]);
-                        clipboardManager.setPrimaryClip(ClipData.newPlainText(null, text));
+                        SystemServiceUtils.copyToClipboard(ctx,text);
                         showToast(ctx, TOAST_TYPE_INFO, "复制成功", Toast.LENGTH_SHORT);
                         CliOper.copyCardMsg(text);
                     }

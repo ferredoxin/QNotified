@@ -33,6 +33,7 @@ import java.lang.reflect.Method;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import ltd.nextalone.util.SystemServiceUtils;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
@@ -127,8 +128,7 @@ public class PicMd5Hook extends CommonDelayableHook {
                         return;
                     }
                     CustomDialog.createFailsafe(ctx).setTitle("MD5").setCancelable(true).setMessage(md5).setPositiveButton("复制", (dialog, which) -> {
-                        ClipboardManager clipboardManager = (ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);
-                        clipboardManager.setPrimaryClip(ClipData.newPlainText(null, md5));
+                        SystemServiceUtils.copyToClipboard(ctx,md5);
                     }).setNegativeButton("关闭", null).show();
                 } catch (Throwable e) {
                     log(e);
