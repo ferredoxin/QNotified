@@ -22,6 +22,7 @@
 package cc.ioctl.hook;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -47,8 +48,14 @@ public class InterceptZipBomb extends CommonDelayableHook {
     @Override
     protected boolean initOnce() {
         try {
-            XposedBridge.hookMethod(DexKit.doFindClass(DexKit.C_ZipUtils_biz)
-                .getMethod("a", File.class, String.class), new XC_MethodHook(51) {
+            Class<?> zipUtil = DexKit.doFindClass(DexKit.C_ZipUtils_biz);
+            Method m;
+            try {
+                m = zipUtil.getMethod("a", File.class, String.class);
+            } catch (NoSuchMethodException e) {
+                m = zipUtil.getMethod("unZipFile", File.class, String.class);
+            }
+            XposedBridge.hookMethod(m, new XC_MethodHook(51) {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     if (LicenseStatus.sDisableCommonHooks) return;
