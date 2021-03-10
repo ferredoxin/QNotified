@@ -23,30 +23,27 @@ package ltd.nextalone.hook
 
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import de.robv.android.xposed.XC_MethodHook
 import ltd.nextalone.data.TroopInfo
 import ltd.nextalone.util.*
+import me.ketal.dispacher.OnBubbleBuilder
 import me.ketal.util.findViewByType
 import me.singleneuron.qn_kernel.data.MsgRecordData
-import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 
-@FunctionEntry
-object HideTroopLevel : CommonDelayableHook("na_hide_troop_level_kt") {
+object HideTroopLevel : CommonDelayableHook("na_hide_troop_level_kt"), OnBubbleBuilder {
 
-    override fun initOnce() = tryOrFalse {
-        "Lcom/tencent/mobileqq/activity/aio/BaseBubbleBuilder;->a(IILcom/tencent/mobileqq/data/ChatMessage;Landroid/view/View;Landroid/view/ViewGroup;Lcom/tencent/mobileqq/activity/aio/OnLongClickAndTouchListener;)Landroid/view/View;"
-            .method.hookAfter(this) {
-                val rootView = it.result as ViewGroup
-                val msg = MsgRecordData(it.args[2])
-                if (1 != msg.isTroop) return@hookAfter
-                val sendUin = msg.senderUin
-                val troopInfo = TroopInfo(msg.friendUin)
-                val ownerUin = troopInfo.troopOwnerUin
-                val admin = troopInfo.troopAdmin
-                val levelClass = "com.tencent.mobileqq.troop.troopMemberLevel.TroopMemberNewLevelView".clazz
-                val levelView = rootView.findViewByType(levelClass)
-                val isAdmin = admin?.contains(sendUin) == true || ownerUin == sendUin
-                levelView?.isVisible = isAdmin
-            }
+    override fun initOnce() = true
+
+    override fun onGetView(rootView: ViewGroup, msg: MsgRecordData, param: XC_MethodHook.MethodHookParam) {
+        if (!isEnabled || 1 != msg.isTroop) return
+        val sendUin = msg.senderUin
+        val troopInfo = TroopInfo(msg.friendUin)
+        val ownerUin = troopInfo.troopOwnerUin
+        val admin = troopInfo.troopAdmin
+        val levelClass = "com.tencent.mobileqq.troop.troopMemberLevel.TroopMemberNewLevelView".clazz
+        val levelView = rootView.findViewByType(levelClass)
+        val isAdmin = admin?.contains(sendUin) == true || ownerUin == sendUin
+        levelView?.isVisible = isAdmin
     }
 }
