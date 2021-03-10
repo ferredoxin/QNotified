@@ -1,4 +1,4 @@
-![QNotified logo](docs/tile.jpg)
+![QNotified logo](docs/title.png)
 
 ---
 
