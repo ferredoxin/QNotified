@@ -37,6 +37,7 @@ import androidx.core.view.ViewCompat;
 
 import cc.ioctl.H;
 import ltd.nextalone.base.MultiItemDelayableHook;
+import ltd.nextalone.util.SystemServiceUtils;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.MainHook;
@@ -681,11 +682,8 @@ public class ViewBuilder {
                 Context c = v.getContext();
                 String msg = ((TextView) v).getText().toString();
                 if (msg.length() > 0) {
-                    ClipboardManager cm = (ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);
-                    if (cm != null) {
-                        cm.setPrimaryClip(ClipData.newPlainText(null, msg));
-                        Utils.showToastShort(c, "已复制文本");
-                    }
+                    SystemServiceUtils.copyToClipboard(ctx,msg);
+                    Utils.showToastShort(c, "已复制文本");
                 }
                 return true;
             }
