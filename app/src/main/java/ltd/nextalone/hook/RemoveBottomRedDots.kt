@@ -34,6 +34,7 @@ import nil.nadph.qnotified.hook.CommonDelayableHook
 object RemoveBottomRedDots : CommonDelayableHook("na_remove_bottom_red_dots_kt") {
 
     override fun initOnce(): Boolean = tryOrFalse {
+        "com.tencent.mobileqq.activity.home.impl.TabFrameControllerImpl".clazz.method("updateRedTouch")?.replace(this, null)
         "com.tencent.mobileqq.activity.framebusiness.controllerinject.FrameControllerInjectImpl".clazz.method("a", 6, Void.TYPE)?.replace(this, null)
     }
 
