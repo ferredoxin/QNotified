@@ -28,11 +28,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
-import androidx.core.view.ViewCompat
 import me.ketal.data.ConfigData
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.ui.CustomDialog
-import nil.nadph.qnotified.ui.HighContrastBorder
 import nil.nadph.qnotified.ui.ViewBuilder
 import nil.nadph.qnotified.util.Toasts
 import nil.nadph.qnotified.util.Utils
@@ -42,7 +40,7 @@ abstract class MultiItemDelayableHook constructor(keyName: String) : CommonDelay
     private val allItemsConfigKeys = ConfigData<String>("$keyName\\_All")
     abstract val allItems: String
     abstract val defaultItems: String
-    open internal var items
+    internal open var items
         get() = allItemsConfigKeys.getOrDefault(allItems).split("|").toMutableList()
         set(value) {
             allItemsConfigKeys.value = value.joinToString("|")
@@ -66,6 +64,7 @@ abstract class MultiItemDelayableHook constructor(keyName: String) : CommonDelay
                 }
                 .setNegativeButton("取消", null)
                 .setPositiveButton("确定") { _: DialogInterface, _: Int ->
+                    Toasts.info(ctx, "已保存精简项目")
                     activeItems = cache
                 }
                 .setNeutralButton("自定义") { _: DialogInterface, _: Int ->
@@ -74,9 +73,8 @@ abstract class MultiItemDelayableHook constructor(keyName: String) : CommonDelay
                     val editText = EditText(context)
                     editText.textSize = 16f
                     val _5 = Utils.dip2px(context, 5f)
-                    editText.setPadding(_5, _5, _5, _5)
+                    editText.setPadding(_5, _5, _5, _5 * 2)
                     editText.setText(items.joinToString("|"))
-                    ViewCompat.setBackground(editText, HighContrastBorder())
                     val linearLayout = LinearLayout(ctx)
                     linearLayout.orientation = LinearLayout.VERTICAL
                     linearLayout.addView(ViewBuilder.subtitle(context, "使用|分割，请确保格式正确！", Color.RED))
@@ -86,6 +84,7 @@ abstract class MultiItemDelayableHook constructor(keyName: String) : CommonDelay
                         .setCancelable(true)
                         .setPositiveButton("确认", null)
                         .setNegativeButton("取消", null)
+                        .setNeutralButton("使用默认值", null)
                         .create() as AlertDialog
                     alertDialog.show()
                     alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
@@ -100,8 +99,14 @@ abstract class MultiItemDelayableHook constructor(keyName: String) : CommonDelay
                                 return@setOnClickListener
                             }
                         }
+                        Toasts.info(context, "已保存自定义项目")
                         allItemsConfigKeys.value = editText.text.toString()
-                        alertDialog.dismiss()
+                        alertDialog.cancel()
+                    }
+                    alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener {
+                        allItemsConfigKeys.remove()
+                        Toasts.info(context, "已使用默认值")
+                        alertDialog.cancel()
                     }
                 }
                 .show()
