@@ -23,7 +23,6 @@
 package me.ketal.data;
 
 import android.os.Looper;
-
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
@@ -31,6 +30,7 @@ import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
 public class ConfigData<T> {
+
     final String mKeyName;
     final ConfigManager mgr;
 
@@ -41,6 +41,14 @@ public class ConfigData<T> {
     public ConfigData(String keyName, ConfigManager manager) {
         mKeyName = keyName;
         mgr = manager;
+    }
+
+    public void remove() {
+        try {
+            mgr.remove(mKeyName);
+        } catch (Exception e) {
+            Utils.log(e);
+        }
     }
 
     public void setValue(T value) {

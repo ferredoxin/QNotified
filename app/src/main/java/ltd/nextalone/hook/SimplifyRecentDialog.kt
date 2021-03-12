@@ -32,7 +32,7 @@ import nil.nadph.qnotified.base.annotation.FunctionEntry
 
 @FunctionEntry
 object SimplifyRecentDialog : MultiItemDelayableHook("na_simplify_recent_dialog_multi") {
-    override val allItems = "创建群聊|加好友/群|匹配聊天|一起派对|扫一扫|面对面快传|收付款".split("|").toMutableList()
+    override val allItems = "创建群聊|加好友/群|匹配聊天|一起派对|扫一扫|面对面快传|收付款"
     override val defaultItems = ""
     override fun initOnce() = tryOrFalse {
         "Lcom/tencent/widget/PopupMenuDialog;->b(Landroid/app/Activity;Ljava/util/List;Lcom/tencent/widget/PopupMenuDialog\$OnClickActionListener;Lcom/tencent/widget/PopupMenuDialog\$OnDismissListener;)Lcom/tencent/widget/PopupMenuDialog;".method.hookBefore(this) {
