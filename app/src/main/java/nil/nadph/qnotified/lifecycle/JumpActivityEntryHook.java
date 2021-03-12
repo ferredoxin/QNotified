@@ -28,17 +28,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import java.lang.reflect.Method;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
-import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.activity.SettingsActivity;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.MainProcess;
-import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.log;

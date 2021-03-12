@@ -22,7 +22,6 @@
 package cc.ioctl.script;
 
 import android.widget.CompoundButton;
-import android.widget.Toast;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -34,6 +33,7 @@ import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.util.Initiator;
+import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.util.Utils.*;
@@ -283,7 +283,7 @@ public class QNScriptManager {
     public static void enableAll(CompoundButton compoundButton, boolean b) {
         if (b) enableAll();
         else disableAll();
-        Utils.showToast(compoundButton.getContext(), Utils.TOAST_TYPE_ERROR, "重启" + HostInformationProviderKt.getHostInfo().getHostName() + "生效", Toast.LENGTH_SHORT);
+        Toasts.error(compoundButton.getContext(), "重启" + HostInformationProviderKt.getHostInfo().getHostName() + "生效");
     }
 
     public static boolean isEnableAll() {

@@ -37,6 +37,7 @@ import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
@@ -156,9 +157,9 @@ public class InspectMessage extends CommonDelayableHook implements View.OnLongCl
         bInspectMode = !bInspectMode;
         Context ctx = v.getContext();
         if (bInspectMode) {
-            Utils.showToastShort(ctx, "已开启检查消息");
+            Toasts.info(ctx, "已开启检查消息");
         } else {
-            Utils.showToastShort(ctx, "已关闭检查消息");
+            Toasts.info(ctx, "已关闭检查消息");
         }
         return true;
     }

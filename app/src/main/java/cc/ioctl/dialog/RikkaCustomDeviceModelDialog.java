@@ -40,10 +40,9 @@ import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.CustomDialog;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.util.Toasts;
 
 import static nil.nadph.qnotified.util.Utils.log;
 
@@ -159,7 +158,7 @@ public class RikkaCustomDeviceModelDialog extends RikkaDialog.RikkaConfigItem {
                 if (!enableCustomDeviceModel) {
                     cfg.putBoolean(rq_custom_device_model_enabled, false);
                 } else if (currentDeviceManufacturer.length() == 0 || currentDeviceModel.length() == 0) {
-                    Utils.showToast(ctx, Utils.TOAST_TYPE_ERROR, "厂商或机型不能为空!", Toast.LENGTH_SHORT);
+                    Toasts.error(ctx, "厂商或机型不能为空!");
                     return;
                 } else {
                     cfg.putBoolean(rq_custom_device_model_enabled, true);
@@ -168,7 +167,7 @@ public class RikkaCustomDeviceModelDialog extends RikkaDialog.RikkaConfigItem {
                 }
                 try {
                     cfg.save();
-                    Utils.showToast(ctx, Utils.TOAST_TYPE_SUCCESS, "重启" + HostInformationProviderKt.getHostInfo().getHostName() + "生效!", Toast.LENGTH_SHORT);
+                    Toasts.success(ctx, "重启" + HostInformationProviderKt.getHostInfo().getHostName() + "生效!");
                 } catch (IOException e) {
                     log(e);
                 }

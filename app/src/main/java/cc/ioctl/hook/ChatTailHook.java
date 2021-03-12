@@ -25,7 +25,6 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Looper;
 import android.os.Parcelable;
-import android.widget.Toast;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -50,6 +49,7 @@ import cc.ioctl.dialog.RikkaCustomMsgTimeFormatDialog;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.util.Initiator._SessionInfo;
@@ -220,9 +220,9 @@ public class ChatTailHook extends CommonDelayableHook {
         } catch (final Exception e) {
             Utils.log(e);
             if (Looper.myLooper() == Looper.getMainLooper()) {
-                Utils.showToast(HostInformationProviderKt.getHostInfo().getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+                Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(), e + "");
             } else {
-                SyncUtils.post(() -> Utils.showToast(HostInformationProviderKt.getHostInfo().getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT));
+                SyncUtils.post(() -> Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(), e + ""));
             }
         }
     }

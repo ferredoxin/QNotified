@@ -375,7 +375,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                             it.remove();
                     }
                     exm.saveConfigure();
-                    showToast(TroubleshootActivity.this, TOAST_TYPE_SUCCESS, "操作成功", Toast.LENGTH_SHORT);
+                    Toasts.success(TroubleshootActivity.this, "操作成功");
                 } catch (Throwable e) {
                 }
             });
@@ -405,7 +405,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                         exm.getConfig().getFile().delete();
                         exm.getConfig().reinit();
                         exm.reinit();
-                        showToast(TroubleshootActivity.this, TOAST_TYPE_SUCCESS, "操作成功", Toast.LENGTH_SHORT);
+                        Toasts.success(TroubleshootActivity.this, "操作成功");
                     } catch (Throwable e) {
                     }
                 }

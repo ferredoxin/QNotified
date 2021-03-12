@@ -46,6 +46,7 @@ import nil.nadph.qnotified.config.FriendRecord;
 import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.ViewBuilder;
+import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -245,16 +246,15 @@ public class FriendlistExportActivity extends IphoneTitleBarActivityCompat {
         try {
             luin = Long.parseLong(suin);
         } catch (NumberFormatException ignored) {
-            Utils.showToast(FriendlistExportActivity.this, Utils.TOAST_TYPE_ERROR, "请输入有效QQ号", Toast.LENGTH_LONG);
+            Toasts.error(FriendlistExportActivity.this, "请输入有效QQ号", Toast.LENGTH_LONG);
             return;
         }
         if (!new File(HostInformationProviderKt.getHostInfo().getApplication().getFilesDir().getAbsolutePath() + "/qnotified_" + luin + ".dat").exists()) {
-
-            Utils.showToast(FriendlistExportActivity.this, Utils.TOAST_TYPE_ERROR, "此QQ在本机没有记录", Toast.LENGTH_LONG);
+            Toasts.error(FriendlistExportActivity.this, "此QQ在本机没有记录", Toast.LENGTH_LONG);
             return;
         }
         if (!exf && !fri) {
-            Utils.showToast(FriendlistExportActivity.this, Utils.TOAST_TYPE_ERROR, "请至少选择一个进行导出", Toast.LENGTH_LONG);
+            Toasts.error(FriendlistExportActivity.this, "请至少选择一个进行导出", Toast.LENGTH_LONG);
             return;
         }
         String rn;
@@ -273,7 +273,7 @@ public class FriendlistExportActivity extends IphoneTitleBarActivityCompat {
                         rn = "\n";
                         break;
                     default:
-                        Utils.showToast(FriendlistExportActivity.this, Utils.TOAST_TYPE_ERROR, "无效换行符", Toast.LENGTH_LONG);
+                        Toasts.error(FriendlistExportActivity.this, "无效换行符", Toast.LENGTH_LONG);
                         return;
                 }
                 if (fri) {
@@ -344,11 +344,11 @@ public class FriendlistExportActivity extends IphoneTitleBarActivityCompat {
                 sb.append(']');
                 break;
             default:
-                Utils.showToast(FriendlistExportActivity.this, Utils.TOAST_TYPE_ERROR, "格式转换错误", Toast.LENGTH_LONG);
+                Toasts.error(FriendlistExportActivity.this, "格式转换错误", Toast.LENGTH_LONG);
                 return;
         }
         if (sb.length() == 0) {
-            Utils.showToast(FriendlistExportActivity.this, Utils.TOAST_TYPE_ERROR, "格式转换错误", Toast.LENGTH_LONG);
+            Toasts.error(FriendlistExportActivity.this, "格式转换错误", Toast.LENGTH_LONG);
             return;
         }
         File f = new File(output);
@@ -359,7 +359,7 @@ public class FriendlistExportActivity extends IphoneTitleBarActivityCompat {
                 fout.write(sb.toString().getBytes());
                 fout.flush();
                 fout.close();
-                Utils.showToast(FriendlistExportActivity.this, Utils.TOAST_TYPE_SUCCESS, "操作完成", Toast.LENGTH_SHORT);
+                Toasts.success(FriendlistExportActivity.this, "操作完成");
                 return;
             } catch (IOException e) {
                 Toast.makeText(FriendlistExportActivity.this, "创建输出文件失败\n" + e.toString(), Toast.LENGTH_LONG).show();

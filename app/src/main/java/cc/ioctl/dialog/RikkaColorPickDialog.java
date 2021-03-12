@@ -38,6 +38,7 @@ import nil.nadph.qnotified.ui.CustomDialog;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
 import java.io.IOException;
@@ -142,7 +143,7 @@ public class RikkaColorPickDialog extends RikkaDialog.RikkaConfigItem {
                     dialog.dismiss();
                     invalidateStatus();
                 } else {
-                    Utils.showToast(ctx, Utils.TOAST_TYPE_ERROR, "颜色无效", Toast.LENGTH_SHORT);
+                    Toasts.error(ctx, "颜色无效");
                 }
             }
         });

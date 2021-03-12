@@ -38,7 +38,7 @@ import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.util.Toasts;
 
 import static nil.nadph.qnotified.util.Initiator._SessionInfo;
 import static nil.nadph.qnotified.util.Initiator.load;
@@ -76,13 +76,13 @@ public class  CheatHook extends CommonDelayableHook {
                     int num = (int) param.args[0];
                     if (num == 6) {
                         if (diceNum == -1) {
-                            Utils.showErrorToastAnywhere("diceNum/E unexpected -1");
+                            Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(), "diceNum/E unexpected -1");
                         } else {
                             param.setResult(diceNum);
                         }
                     } else if (num == 3) {
                         if (morraNum == -1) {
-                            Utils.showErrorToastAnywhere("morraNum/E unexpected -1");
+                            Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(), "morraNum/E unexpected -1");
                         } else {
                             param.setResult(morraNum);
                         }

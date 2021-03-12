@@ -22,11 +22,8 @@
 package cc.ioctl.hook;
 
 import android.app.Activity;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.view.View;
-import android.widget.Toast;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
@@ -42,6 +39,7 @@ import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.util.CustomMenu;
 import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.Toasts;
 
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
@@ -124,7 +122,7 @@ public class PicMd5Hook extends CommonDelayableHook {
                 try {
                     final String md5;
                     if (chatMessage == null || (md5 = (String) iget_object_or_null(chatMessage, "md5")) == null || md5.length() == 0) {
-                        showToast(ctx, TOAST_TYPE_ERROR, "获取图片MD5失败", Toast.LENGTH_SHORT);
+                        Toasts.error(ctx, "获取图片MD5失败");
                         return;
                     }
                     CustomDialog.createFailsafe(ctx).setTitle("MD5").setCancelable(true).setMessage(md5).setPositiveButton("复制", (dialog, which) -> {
@@ -132,7 +130,7 @@ public class PicMd5Hook extends CommonDelayableHook {
                     }).setNegativeButton("关闭", null).show();
                 } catch (Throwable e) {
                     log(e);
-                    showToast(ctx, TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), Toast.LENGTH_SHORT);
+                    Toasts.error(ctx, e.toString().replace("java.lang.", ""));
                 }
             }
         }

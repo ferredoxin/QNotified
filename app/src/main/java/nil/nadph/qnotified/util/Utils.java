@@ -473,18 +473,6 @@ public class Utils {
             .replace("\n", "\\n").replace("\r", "\\r") + "\"";
     }
 
-    public static void showToast(Context context, int type, CharSequence text, int duration) {
-        Toasts.showToast(context, type, text, duration);
-    }
-
-    public static void showToastShort(Context ctx, CharSequence str) {
-        Toasts.showToast(ctx, 0, str, 0);
-    }
-
-    public static void showErrorToastAnywhere(String text) {
-        Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(), text, Toasts.LENGTH_SHORT);
-    }
-
     public static void dumpTrace() {
         Throwable t = new Throwable("Trace dump");
         log(t);

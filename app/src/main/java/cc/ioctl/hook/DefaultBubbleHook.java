@@ -23,7 +23,6 @@ package cc.ioctl.hook;
 
 import android.app.Application;
 import android.os.Looper;
-import android.widget.Toast;
 
 import java.io.File;
 
@@ -31,9 +30,9 @@ import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
+import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
-import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
 import static nil.nadph.qnotified.util.Utils.log;
 
 @FunctionEntry
@@ -79,12 +78,12 @@ public class DefaultBubbleHook extends CommonDelayableHook {
         } catch (final Exception e) {
             Utils.log(e);
             if (Looper.myLooper() == Looper.getMainLooper()) {
-                Utils.showToast(HostInformationProviderKt.getHostInfo().getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+                Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(), e + "");
             } else {
                 SyncUtils.post(new Runnable() {
                     @Override
                     public void run() {
-                        Utils.showToast(HostInformationProviderKt.getHostInfo().getApplication(), TOAST_TYPE_ERROR, e + "", Toast.LENGTH_SHORT);
+                        Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(), e + "");
                     }
                 });
             }

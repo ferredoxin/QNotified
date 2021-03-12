@@ -22,7 +22,6 @@
 package me.singleneuron.base.adapter
 
 import android.os.Looper
-import android.widget.Toast
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedBridge
@@ -32,6 +31,7 @@ import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.hook.BaseDelayableHook
 import nil.nadph.qnotified.step.Step
 import nil.nadph.qnotified.util.LicenseStatus
+import nil.nadph.qnotified.util.Toasts
 import nil.nadph.qnotified.util.Utils
 
 abstract class BaseDelayableHookAdapter @JvmOverloads protected constructor(protected val cfgName: String, val proc: Int = SyncUtils.PROC_MAIN, val cond: Array<Step> = arrayOf(), val defVal: Boolean = false) : BaseDelayableHook() {
@@ -73,9 +73,9 @@ abstract class BaseDelayableHookAdapter @JvmOverloads protected constructor(prot
         } catch (e: Exception) {
             Utils.log(e)
             if (Looper.myLooper() == Looper.getMainLooper()) {
-                Utils.showToast(hostInfo.application, Utils.TOAST_TYPE_ERROR, e.toString() + "", Toast.LENGTH_SHORT)
+                Toasts.error(hostInfo.application, e.toString() + "")
             } else {
-                SyncUtils.post { Utils.showToast(hostInfo.application, Utils.TOAST_TYPE_ERROR, e.toString() + "", Toast.LENGTH_SHORT) }
+                SyncUtils.post { Toasts.error(hostInfo.application, e.toString() + "") }
             }
         }
     }

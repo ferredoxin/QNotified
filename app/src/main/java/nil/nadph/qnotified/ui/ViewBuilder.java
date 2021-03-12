@@ -21,8 +21,6 @@
  */
 package nil.nadph.qnotified.ui;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -40,7 +38,6 @@ import ltd.nextalone.base.MultiItemDelayableHook;
 import ltd.nextalone.util.SystemServiceUtils;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.ExfriendManager;
-import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
@@ -130,7 +127,7 @@ public class ViewBuilder {
                     mgr.save();
                 } catch (Exception e) {
                     Utils.log(e);
-                    Utils.showToastShort(buttonView.getContext(), e.toString());
+                    Toasts.info(ctx, e.toString());
                 }
             }
         });
@@ -148,10 +145,10 @@ public class ViewBuilder {
                     ConfigManager mgr = ConfigManager.getDefaultConfig();
                     mgr.getAllConfig().put(key, isChecked);
                     mgr.save();
-                    Utils.showToastShort(buttonView.getContext(), "重启" + HostInformationProviderKt.getHostInfo().getHostName() + "生效");
+                    Toasts.info(ctx, "重启" + HostInformationProviderKt.getHostInfo().getHostName() + "生效");
                 } catch (Throwable e) {
                     Utils.log(e);
-                    Utils.showToastShort(buttonView.getContext(), e.toString());
+                    Toasts.info(ctx, e.toString());
                 }
             }
         });
@@ -169,10 +166,10 @@ public class ViewBuilder {
 
                     mgr.getAllConfig().put(key, isChecked);
                     mgr.save();
-                    Utils.showToastShort(buttonView.getContext(), "设置成功");
+                    Toasts.info(ctx, "设置成功");
                 } catch (Throwable e) {
                     Utils.log(e);
-                    Utils.showToastShort(buttonView.getContext(), e.toString());
+                    Toasts.info(ctx, e.toString());
                 }
             }
         });
@@ -187,10 +184,10 @@ public class ViewBuilder {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 try {
                     item.setEnabled(isChecked);
-                    Utils.showToastShort(buttonView.getContext(), "重启" + HostInformationProviderKt.getHostInfo().getHostName() + "生效");
+                    Toasts.info(ctx, "重启" + HostInformationProviderKt.getHostInfo().getHostName() + "生效");
                 } catch (Throwable e) {
                     Utils.log(e);
-                    Utils.showToastShort(buttonView.getContext(), e.toString());
+                    Toasts.info(ctx, e.toString());
                 }
             }
         });
@@ -250,7 +247,7 @@ public class ViewBuilder {
                                 mgr.save();
                             } catch (Throwable e) {
                                 Utils.log(e);
-                                Utils.showToastShort(buttonView.getContext(), e.toString());
+                                Toasts.info(buttonView.getContext(), e.toString());
                             }
                         }
                     }).start();
@@ -261,7 +258,7 @@ public class ViewBuilder {
                         mgr.save();
                     } catch (Throwable e) {
                         try {
-                            Utils.showToastShort(buttonView.getContext(), e.toString());
+                            Toasts.info(buttonView.getContext(), e.toString());
                         } catch (Throwable ignored) {
                         }
                         Utils.log(e);
@@ -308,7 +305,7 @@ public class ViewBuilder {
                 }
                 if (!success) {
                     Utils.runOnUiThread(() -> {
-                        Utils.showToast(ctx, TOAST_TYPE_ERROR, "初始化失败", Toast.LENGTH_SHORT);
+                        Toasts.error(ctx, "初始化失败");
                     });
                 }
             }
@@ -379,7 +376,7 @@ public class ViewBuilder {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 buttonView.setChecked(false);
-                Utils.showToastShort(buttonView.getContext(), "对不起,此功能尚在开发中");
+                Toasts.info(buttonView.getContext(), "对不起,此功能尚在开发中");
             }
         });
         return root;
@@ -390,7 +387,7 @@ public class ViewBuilder {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 buttonView.setChecked(constVal);
-                Utils.showToastShort(buttonView.getContext(), "对不起,此功能尚在开发中");
+                Toasts.info(buttonView.getContext(), "对不起,此功能尚在开发中");
             }
         });
         return root;
@@ -614,7 +611,7 @@ public class ViewBuilder {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Utils.showToastShort(v.getContext(), "对不起,此功能尚在开发中");
+                Toasts.info(v.getContext(), "对不起,此功能尚在开发中");
             }
         };
     }
@@ -623,7 +620,7 @@ public class ViewBuilder {
         return new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Utils.showToastShort(v.getContext(), "TEST");
+                Toasts.info(v.getContext(), "TEST");
                 return false;
             }
         };
@@ -684,7 +681,7 @@ public class ViewBuilder {
                 String msg = ((TextView) v).getText().toString();
                 if (msg.length() > 0) {
                     SystemServiceUtils.copyToClipboard(ctx,msg);
-                    Utils.showToastShort(c, "已复制文本");
+                    Toasts.info(c, "已复制文本");
                 }
                 return true;
             }
