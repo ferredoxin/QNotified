@@ -23,6 +23,7 @@ package cc.ioctl.hook;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,9 +102,9 @@ public class SettingEntryHook extends CommonDelayableHook {
                         }
                         item.setOnClickListener(v -> {
                             if (LicenseStatus.hasUserAcceptEula()) {
-                                MainHook.startProxyActivity((Context) activity, SettingsActivity.class);
+                                activity.startActivity(new Intent(activity, SettingsActivity.class));
                             } else {
-                                MainHook.startProxyActivity((Context) activity, EulaActivity.class);
+                                activity.startActivity(new Intent(activity, EulaActivity.class));
                                 activity.finish();
                             }
                         });

@@ -164,7 +164,7 @@ public class EulaActivity extends IphoneTitleBarActivityCompat implements View.O
                 } else {
                     LicenseStatus.setEulaStatus(CURRENT_EULA_VERSION);
                     InjectDelayableHooks.doInitDelayableHooksMP();
-                    MainHook.startProxyActivity(this, SettingsActivity.class);
+                    this.startActivity(new Intent(this, SettingsActivity.class));
                     finish();
                 }
                 break;

@@ -581,7 +581,8 @@ public class ViewBuilder {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainHook.startProxyActivity(v.getContext(), clz);
+                Context ctx = v.getContext();
+                ctx.startActivity(new Intent(ctx, clz));
             }
         };
     }

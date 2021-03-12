@@ -25,6 +25,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -275,7 +276,8 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
             @Override
             public void onClick(View v) {
                 if (Initiator.load("com.tencent.mobileqq.haoliyou.JefsClass") != null) {
-                    MainHook.startProxyActivity(v.getContext(), JefsRulesActivity.class);
+                    Context ctx = v.getContext();
+                    ctx.startActivity(new Intent(ctx, JefsRulesActivity.class));
                 } else {
                     Utils.showToast(SettingsActivity.this, TOAST_TYPE_ERROR, "当前版本客户端版本不支持", Toast.LENGTH_SHORT);
                 }

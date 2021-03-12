@@ -132,7 +132,7 @@ private fun decodePercent(string:String): String {
 
 fun showEulaDialog(activity: Activity) {
     if (BuildConfig.DEBUG) {
-        MainHook.startProxyActivity(activity,OmegaTestFuncActivity::class.java)
+        activity.startActivity(Intent(activity, OmegaTestFuncActivity::class.java))
         return
     }
     val linearLayout = LinearLayout(activity)
@@ -149,10 +149,10 @@ fun showEulaDialog(activity: Activity) {
             .setView(linearLayout)
             .setCancelable(false)
             .setPositiveButton("我已阅读并同意用户协议"){ _: DialogInterface, _: Int ->
-                MainHook.startProxyActivity(activity,OmegaTestFuncActivity::class.java)
+                activity.startActivity(Intent(activity, OmegaTestFuncActivity::class.java))
             }
             .setNeutralButton("阅读用户协议"){ _: DialogInterface, _: Int ->
-                MainHook.startProxyActivity(activity,EulaActivity::class.java)
+                activity.startActivity(Intent(activity, EulaActivity::class.java))
                 activity.finish()
             }
             .setNegativeButton("取消"){ _: DialogInterface, _: Int ->
