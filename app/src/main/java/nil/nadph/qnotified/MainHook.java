@@ -99,13 +99,6 @@ public class MainHook {
         }
     }
 
-    /**
-     * @deprecated Use {@link Activity#startActivity(Intent)} directly instead.
-     */
-    public static void startProxyActivity(Context ctx, Class<?> clz) {
-        ctx.startActivity(new Intent(ctx, clz));
-    }
-
     public static void openProfileCard(Context ctx, long uin) {
         try {
             Parcelable allInOne = (Parcelable) new_instance(load("com/tencent/mobileqq/activity/ProfileActivity$AllInOne"), "" + uin, 35, String.class, int.class);
