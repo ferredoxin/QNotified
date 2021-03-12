@@ -20,6 +20,7 @@ import nil.nadph.qnotified.config.MultiConfigItem;
 import nil.nadph.qnotified.config.SwitchConfigItem;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.ui.ViewBuilder;
+import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
 /**
@@ -235,7 +236,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
             }
             _item.sync();
             if (restartRequired) {
-                Utils.showToastShort(mActivity, "重启" + HostInformationProviderKt.getHostInfo().getHostName() + "生效");
+                Toasts.info(mActivity, "重启" + HostInformationProviderKt.getHostInfo().getHostName() + "生效");
             }
             return true;
         } catch (Exception e) {

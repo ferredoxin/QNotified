@@ -181,7 +181,7 @@ object HookStatue {
             Shell.su("su")
             val result: Shell.Result =
                 Shell.su("ls $moduleLocate").exec()
-            val resultString: String = result.getOut().toString()
+            val resultString: String = result.out.toString()
             //Log.d("getMagiskModule", resultString);
             if (resultString.contains("edxp")) edxpModule = true
             if (resultString.contains("taichi")) taichiModule = true

@@ -54,6 +54,7 @@ import cc.ioctl.hook.ChatTailHook;
 import cc.ioctl.hook.FakeBatteryHook;
 import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
 import static android.text.InputType.TYPE_CLASS_TEXT;
@@ -134,7 +135,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
             v -> FriendSelectActivity.startToSelectFriendsAndSaveToExfMgr(ChatTailActivity.this, ConfigItems.qn_chat_tail_friends, "选择小尾巴生效好友")));
         __tv_chat_tail_friends = _s.findViewById(R_ID_VALUE);
         ll.addView(_s = newListItemButton(this, "设置日期格式", "请在QN内置花Q的\"聊天页自定义时间格式\"中设置", RikkaCustomMsgTimeFormatDialog.getTimeFormat(),
-            view -> Utils.showToastShort(ChatTailActivity.this, "请在QN内置花Q的\"聊天页自定义时间格式\"中设置")));
+            view -> Toasts.info(ChatTailActivity.this, "请在QN内置花Q的\"聊天页自定义时间格式\"中设置")));
         __tv_chat_tail_time_format = _s.findViewById(R_ID_VALUE);
         ll.addView(subtitle(ChatTailActivity.this, "设置小尾巴"));
         ll.addView(subtitle(ChatTailActivity.this, "可用变量(点击自动输入): "));
@@ -294,7 +295,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
                 try {
                     cfg.save();
                 } catch (Exception e) {
-                    Utils.showToast(ChatTailActivity.this, TOAST_TYPE_ERROR, "错误:" + e.toString(), Toast.LENGTH_LONG);
+                    Toasts.error(ChatTailActivity.this, "错误:" + e.toString(), Toast.LENGTH_LONG);
                     log(e);
                 }
                 showStatus();
@@ -308,11 +309,11 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         pct = ChatTailActivity.this.findViewById(R_ID_PERCENT_VALUE);
         String val = pct.getText().toString();
         if (Utils.isNullOrEmpty(val)) {
-            Utils.showToast(ChatTailActivity.this, TOAST_TYPE_ERROR, "请输入小尾巴", Toast.LENGTH_SHORT);
+            Toasts.error(ChatTailActivity.this, "请输入小尾巴");
             return;
         }
         if (!val.contains(ChatTailActivity.delimiter)) {
-            Utils.showToast(ChatTailActivity.this, TOAST_TYPE_ERROR, "请在小尾巴中加入" + ChatTailActivity.delimiter + "", Toast.LENGTH_SHORT);
+            Toasts.error(ChatTailActivity.this, "请在小尾巴中加入" + ChatTailActivity.delimiter + "");
             return;
         }
         ct.setTail(val);
@@ -325,7 +326,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
             try {
                 cfg.save();
             } catch (Exception e) {
-                Utils.showToast(ChatTailActivity.this, TOAST_TYPE_ERROR, "错误:" + e.toString(), Toast.LENGTH_LONG);
+                Toasts.error(ChatTailActivity.this, "错误:" + e.toString(), Toast.LENGTH_LONG);
                 log(e);
             }
         }

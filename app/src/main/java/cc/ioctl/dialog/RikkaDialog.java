@@ -50,6 +50,7 @@ import nil.nadph.qnotified.ui.ViewBuilder;
 
 import androidx.annotation.NonNull;
 
+import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -261,7 +262,7 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
 
                 @Override
                 public void onClick(View v) {
-                    Utils.showToastShort(v.getContext(), "对不起,此功能尚在开发中");
+                    Toasts.info(v.getContext(), "对不起,此功能尚在开发中");
                 }
 
                 @Override

@@ -42,7 +42,7 @@ import cc.ioctl.script.QNScript;
 import cc.ioctl.script.QNScriptManager;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.ViewBuilder;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.util.Toasts;
 
 import static nil.nadph.qnotified.util.Utils.log;
 
@@ -89,10 +89,10 @@ public class ManageScriptsActivity extends IphoneTitleBarActivityCompat {
                     String path = uri.getPath();
                     try {
                         QNScriptManager.addScript(path);
-                        Utils.showToastShort(this, "添加完毕");
+                        Toasts.info(this, "添加完毕");
                     } catch (Exception e) {
                         log(e);
-                        Utils.showToastShort(this, "未知错误: " + e.getMessage());
+                        Toasts.info(this, "未知错误: " + e.getMessage());
                     }
                 } else {
                     if (c.moveToFirst()) {
@@ -109,23 +109,23 @@ public class ManageScriptsActivity extends IphoneTitleBarActivityCompat {
                                 FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
                                 String err = QNScriptManager.addScriptFD(fileDescriptor, scriptName);
                                 if (err.isEmpty()) {
-                                    Utils.showToastShort(this, "添加完毕");
+                                    Toasts.info(this, "添加完毕");
                                 } else {
-                                    Utils.showToastShort(this, err);
+                                    Toasts.info(this, err);
                                 }
                             }
                         } catch (Throwable e) {
                             log(e);
-                            Utils.showToastShort(this, "未知错误：" + e.getMessage());
+                            Toasts.info(this, "未知错误：" + e.getMessage());
                         }
                     }
                     c.close();
                 }
             } else {
-                Utils.showToastShort(this, "内部错误");
+                Toasts.info(this, "内部错误");
             }
         } else {
-            Utils.showToastShort(this, "未知错误");
+            Toasts.info(this, "未知错误");
         }
     }
 

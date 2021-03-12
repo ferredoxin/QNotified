@@ -32,7 +32,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -48,7 +47,7 @@ import nil.nadph.qnotified.ui.CustomDialog;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.util.Toasts;
 
 import static nil.nadph.qnotified.util.Utils.log;
 
@@ -142,7 +141,7 @@ public class RikkaCustomMsgTimeFormatDialog extends RikkaDialog.RikkaConfigItem 
                         cfg.putString(rq_msg_time_format, currentFormat);
                         done = true;
                     } else {
-                        Utils.showToast(ctx, Utils.TOAST_TYPE_ERROR, "请输入一个有效的时间格式", Toast.LENGTH_SHORT);
+                        Toasts.error(ctx, "请输入一个有效的时间格式");
                     }
                 }
                 if (done) {

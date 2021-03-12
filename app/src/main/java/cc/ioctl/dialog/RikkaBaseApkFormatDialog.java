@@ -40,6 +40,7 @@ import nil.nadph.qnotified.ui.CustomDialog;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
 import java.io.IOException;
@@ -130,7 +131,7 @@ public class RikkaBaseApkFormatDialog extends RikkaDialog.RikkaConfigItem {
                         cfg.putString(rq_base_apk_format, currentFormat);
                         done = true;
                     } else {
-                        Utils.showToast(ctx, Utils.TOAST_TYPE_ERROR, "请输入一个有效的格式", Toast.LENGTH_SHORT);
+                        Toasts.error(ctx, "请输入一个有效的格式");
                     }
                 }
                 if (done) {

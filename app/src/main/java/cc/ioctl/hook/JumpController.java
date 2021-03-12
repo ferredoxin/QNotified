@@ -36,6 +36,7 @@ import java.util.regex.Pattern;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
@@ -47,6 +48,7 @@ import nil.nadph.qnotified.util.LicenseStatus;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.util.Utils.log;
@@ -144,7 +146,7 @@ public class JumpController extends CommonDelayableHook {
                                                     try {
                                                         JefsClass_runV.invoke(that, runnable);
                                                     } catch (Exception e) {
-                                                        Utils.showErrorToastAnywhere(e.toString());
+                                                        Toasts.info(HostInformationProviderKt.hostInfo.getApplication(), e.toString());
                                                     }
                                                 }
                                             }).setNegativeButton(android.R.string.cancel, null).setCancelable(true).show();

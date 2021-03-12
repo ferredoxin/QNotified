@@ -54,7 +54,6 @@ import java.util.Objects;
 
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.R;
-import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.FaceImpl;
@@ -221,7 +220,7 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
             } catch (Exception e) {
                 try {
                     log(e);
-                    Utils.showToast(this, Utils.TOAST_TYPE_ERROR, e.toString(), Toast.LENGTH_SHORT);
+                    Toasts.error(this, e.toString());
                 } catch (Throwable ignored) {
                 }
             }

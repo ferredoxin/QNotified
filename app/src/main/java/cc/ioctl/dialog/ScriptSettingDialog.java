@@ -33,7 +33,7 @@ import nil.nadph.qnotified.R;
 import cc.ioctl.script.QNScript;
 import cc.ioctl.script.QNScriptManager;
 import nil.nadph.qnotified.ui.CustomDialog;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.util.Toasts;
 
 public class ScriptSettingDialog implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
@@ -83,17 +83,17 @@ public class ScriptSettingDialog implements CompoundButton.OnCheckedChangeListen
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.script_save) {
-            Utils.showToast(ctx, Utils.TOAST_TYPE_ERROR, "抱歉，暂不支持保存代码", Toast.LENGTH_SHORT);
+            Toasts.error(ctx, "抱歉，暂不支持保存代码");
             return;
         }
         QNScriptManager.delScript(script);
-        Utils.showToast(ctx, Utils.TOAST_TYPE_ERROR, "删除完毕", Toast.LENGTH_SHORT);
+        Toasts.error(ctx, "删除完毕");
     }
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         script.setEnable(isChecked);
-        Utils.showToast(ctx, Utils.TOAST_TYPE_ERROR, "重启" + HostInformationProviderKt.getHostInfo().getHostName() + "生效", Toast.LENGTH_SHORT);
+        Toasts.error(ctx, "重启" + HostInformationProviderKt.getHostInfo().getHostName() + "生效");
     }
 
     public static void createAndShowDialog(Context ctx, QNScript qs) {

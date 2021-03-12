@@ -23,8 +23,6 @@ package cc.ioctl.hook;
 
 
 import android.app.Activity;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Build;
 import android.os.Parcelable;
@@ -33,7 +31,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
@@ -131,7 +128,7 @@ public class InputButtonHook extends CommonDelayableHook {
                                             EditText input = aioRootView.findViewById(ctx.getResources().getIdentifier("input", "id", ctx.getPackageName()));
                                             String text = input.getText().toString();
                                             if (text.length() == 0) {
-                                                showToast(ctx, TOAST_TYPE_ERROR, "请先输入卡片代码", Toast.LENGTH_SHORT);
+                                                Toasts.error(ctx, "请先输入卡片代码");
                                             }
                                             return true;
                                         }
@@ -159,14 +156,14 @@ public class InputButtonHook extends CommonDelayableHook {
                                                     Utils.runOnUiThread(() -> input.setText(""));
                                                     CliOper.sendCardMsg(Utils.getLongAccountUin(), text);
                                                 } else {
-                                                    Utils.showToast(ctx, TOAST_TYPE_ERROR, "XML语法错误(代码有误)", Toast.LENGTH_SHORT);
+                                                    Toasts.error(ctx, "XML语法错误(代码有误)");
                                                 }
                                             } catch (Throwable e) {
                                                 if (e instanceof InvocationTargetException) {
                                                     e = e.getCause();
                                                 }
                                                 log(e);
-                                                Utils.showToast(ctx, TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), Toast.LENGTH_SHORT);
+                                                Toasts.error(ctx, e.toString().replace("java.lang.", ""));
                                             }
                                         } else if (text.contains("{\"")) {
                                             try {
@@ -175,14 +172,14 @@ public class InputButtonHook extends CommonDelayableHook {
                                                     Utils.runOnUiThread(() -> input.setText(""));
                                                     CliOper.sendCardMsg(Utils.getLongAccountUin(), text);
                                                 } else {
-                                                    Utils.showToast(ctx, TOAST_TYPE_ERROR, "JSON语法错误(代码有误)", Toast.LENGTH_SHORT);
+                                                    Toasts.error(ctx, "JSON语法错误(代码有误)");
                                                 }
                                             } catch (Throwable e) {
                                                 if (e instanceof InvocationTargetException) {
                                                     e = e.getCause();
                                                 }
                                                 log(e);
-                                                Utils.showToast(ctx, TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), Toast.LENGTH_SHORT);
+                                                Toasts.error(ctx, e.toString().replace("java.lang.", ""));
                                             }
                                         }
                                     }).start();
@@ -200,7 +197,7 @@ public class InputButtonHook extends CommonDelayableHook {
                                         input.setText(tc);
                                         sendBtn.callOnClick();
                                     } else {
-                                        Utils.showToast(ctx, TOAST_TYPE_ERROR, "你还没有设置小尾巴", Toast.LENGTH_SHORT);
+                                        Toasts.error(ctx, "你还没有设置小尾巴");
                                     }
                                 }
                                 return true;
@@ -296,12 +293,12 @@ public class InputButtonHook extends CommonDelayableHook {
                     if (load("com.tencent.mobileqq.data.MessageForStructing").isAssignableFrom(chatMessage.getClass())) {
                         String text = (String) invoke_virtual(iget_object_or_null(chatMessage, "structingMsg"), "getXml", new Object[0]);
                         SystemServiceUtils.copyToClipboard(ctx,text);
-                        showToast(ctx, TOAST_TYPE_INFO, "复制成功", Toast.LENGTH_SHORT);
+                        Toasts.info(ctx, "复制成功");
                         CliOper.copyCardMsg(text);
                     } else if (load("com.tencent.mobileqq.data.MessageForArkApp").isAssignableFrom(chatMessage.getClass())) {
                         String text = (String) invoke_virtual(iget_object_or_null(chatMessage, "ark_app_message"), "toAppXml", new Object[0]);
                         SystemServiceUtils.copyToClipboard(ctx,text);
-                        showToast(ctx, TOAST_TYPE_INFO, "复制成功", Toast.LENGTH_SHORT);
+                        Toasts.info(ctx, "复制成功");
                         CliOper.copyCardMsg(text);
                     }
                 } catch (Throwable e) {

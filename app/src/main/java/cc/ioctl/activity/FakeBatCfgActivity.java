@@ -42,7 +42,7 @@ import cc.ioctl.hook.FakeBatteryHook;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.util.Toasts;
 
 import static android.text.InputType.TYPE_CLASS_NUMBER;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -211,7 +211,7 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
                 try {
                     cfg.save();
                 } catch (Exception e) {
-                    Utils.showToast(FakeBatCfgActivity.this, TOAST_TYPE_ERROR, "错误:" + e.toString(), Toast.LENGTH_LONG);
+                    Toasts.error(FakeBatCfgActivity.this, "错误:" + e.toString(), Toast.LENGTH_LONG);
                     log(e);
                 }
                 showStatus();
@@ -229,11 +229,11 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
         try {
             val = Integer.parseInt(pct.getText().toString());
         } catch (NumberFormatException e) {
-            Utils.showToast(FakeBatCfgActivity.this, TOAST_TYPE_ERROR, "请输入电量", Toast.LENGTH_SHORT);
+            Toasts.error(FakeBatCfgActivity.this, "请输入电量");
             return;
         }
         if (val < 0 || val > 100) {
-            Utils.showToast(FakeBatCfgActivity.this, TOAST_TYPE_ERROR, "电量取值范围: [1,100]", Toast.LENGTH_SHORT);
+            Toasts.error(FakeBatCfgActivity.this, "电量取值范围: [1,100]");
             return;
         }
         if (charging.isChecked()) val |= 128;
@@ -246,9 +246,9 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
                 if (!bat.isInited()) success = bat.init();
                 SyncUtils.requestInitHook(bat.getId(), bat.getEffectiveProc());
                 if (!success)
-                    Utils.showToast(FakeBatCfgActivity.this, TOAST_TYPE_ERROR, "初始化错误: 可能是版本不支持", Toast.LENGTH_SHORT);
+                    Toasts.error(FakeBatCfgActivity.this, "初始化错误: 可能是版本不支持");
             } catch (Exception e) {
-                Utils.showToast(FakeBatCfgActivity.this, TOAST_TYPE_ERROR, "错误:" + e.toString(), Toast.LENGTH_LONG);
+                Toasts.error(FakeBatCfgActivity.this, "错误:" + e.toString(), Toast.LENGTH_LONG);
                 log(e);
             }
         }

@@ -46,7 +46,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -200,7 +199,7 @@ public class FriendSelectActivity extends IphoneTitleBarActivityCompat implement
             } catch (Exception e) {
                 try {
                     log(e);
-                    Utils.showToast(this, Utils.TOAST_TYPE_ERROR, e.toString(), Toast.LENGTH_SHORT);
+                    Toasts.error(this, e.toString());
                 } catch (Throwable ignored) {
                 }
             }

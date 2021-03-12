@@ -35,6 +35,7 @@ import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.Toasts;
 
 import static nil.nadph.qnotified.util.Utils.*;
 
@@ -55,7 +56,7 @@ public class GalleryBgHook extends CommonDelayableHook {
             boolean canInit = checkPreconditions();
             if (!canInit && isEnabled()) {
                 if (Looper.myLooper() != null) {
-                    showToast(HostInformationProviderKt.getHostInfo().getApplication(), TOAST_TYPE_ERROR, "QNotified:聊天图片背景功能初始化错误", Toast.LENGTH_LONG);
+                    Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(), "QNotified:聊天图片背景功能初始化错误", Toast.LENGTH_LONG);
                 }
             }
             if (!canInit) return false;

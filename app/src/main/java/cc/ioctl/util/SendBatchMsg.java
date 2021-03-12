@@ -44,6 +44,7 @@ import nil.nadph.qnotified.activity.TroopSelectActivity;
 import nil.nadph.qnotified.util.CliOper;
 import nil.nadph.qnotified.util.FaceImpl;
 import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -116,10 +117,10 @@ public class SendBatchMsg {
                         public void onClick(View v) {
                             String msg = editText.getText().toString();
                             if (msg.isEmpty() || msg.equals("")) {
-                                showToast(exactCtx, TOAST_TYPE_ERROR, "请输入文本消息", Toast.LENGTH_SHORT);
+                                Toasts.error(exactCtx, "请输入文本消息");
                             } else {
                                 if (msg.length() > 6 && !LicenseStatus.isAsserted()) {
-                                    showToast(exactCtx, TOAST_TYPE_ERROR, "超出字数限制：输入被限制在五个字以内", Toast.LENGTH_SHORT);
+                                    Toasts.error(exactCtx, "超出字数限制：输入被限制在五个字以内");
                                 } else {
                                     try {
                                         showSelectDialog(exactCtx, msg);
@@ -163,7 +164,7 @@ public class SendBatchMsg {
                             boolean isSuccess = ntSendBatchMessages(getQQAppInterface(), context, msg, type, uins);
                             CliOper.batchSendMsg(Utils.getLongAccountUin(), msg, arrayList.size());
                             try {
-                                showToast(context, TOAST_TYPE_INFO, "发送" + (isSuccess ? "成功" : "失败"), Toast.LENGTH_SHORT);
+                                Toasts.showToast(context, TOAST_TYPE_INFO, "发送" + (isSuccess ? "成功" : "失败"), Toast.LENGTH_SHORT);
                             } catch (Throwable throwable) {
                                 Toast.makeText(context, "发送" + (isSuccess ? "成功" : "失败"), Toast.LENGTH_SHORT).show();
                             }

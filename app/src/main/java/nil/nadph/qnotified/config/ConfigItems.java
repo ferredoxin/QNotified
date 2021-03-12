@@ -32,6 +32,7 @@ import java.util.Objects;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.util.MainProcess;
+import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.util.Utils.QN_VERSION_CODE;
@@ -71,7 +72,7 @@ public class ConfigItems {
                 Context ctx = HostInformationProviderKt.getHostInfo().getApplication();
                 return new File(ctx.getFilesDir(), "qn_disable_hot_patch").exists();
             } catch (Throwable e) {
-                Utils.showErrorToastAnywhere(e.toString());
+                Toasts.error(HostInformationProviderKt.hostInfo.getApplication(), e.toString());
                 return false;
             }
         }
@@ -89,7 +90,7 @@ public class ConfigItems {
                     }
                 }
             } catch (Throwable e) {
-                Utils.showErrorToastAnywhere(e.toString());
+                Toasts.error(HostInformationProviderKt.hostInfo.getApplication(), e.toString());
             }
         }
 

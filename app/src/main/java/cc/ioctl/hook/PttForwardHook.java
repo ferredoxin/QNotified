@@ -126,7 +126,7 @@ public class PttForwardHook extends CommonDelayableHook {
                     if (ctx == null)
                         ctx = iget_object_or_null(param.thisObject, "mActivity", Activity.class);
                     if (path == null || !new File(path).exists()) {
-                        Utils.showToast(ctx, TOAST_TYPE_ERROR, "Error: Invalid ptt file!", Toast.LENGTH_SHORT);
+                        Toasts.error(ctx, "Error: Invalid ptt file!");
                         return;
                     }
                     ResUtils.initTheme(ctx);
@@ -155,7 +155,7 @@ public class PttForwardHook extends CommonDelayableHook {
                         if (cd.nick == null) cd.nick = data.getString("uin");
                         mTargets.add(cd);
                     }
-                    if (unsupport) Utils.showToastShort(ctx, "暂不支持我的设备/临时聊天/讨论组");
+                    if (unsupport) Toasts.info(ctx, "暂不支持我的设备/临时聊天/讨论组");
                     LinearLayout main = new LinearLayout(ctx);
                     main.setOrientation(LinearLayout.VERTICAL);
                     LinearLayout heads = new LinearLayout(ctx);
@@ -217,11 +217,11 @@ public class PttForwardHook extends CommonDelayableHook {
                                     Parcelable sesssion = SessionInfoImpl.createSessionInfo(cd.uin, cd.uinType);
                                     ChatActivityFacade.sendPttMessage(getQQAppInterface(), sesssion, path);
                                 }
-                                Utils.showToast(finalCtx, TOAST_TYPE_SUCCESS, "已发送", Toast.LENGTH_SHORT);
+                                Toasts.success(finalCtx, "已发送");
                             } catch (Throwable e) {
                                 log(e);
                                 try {
-                                    Utils.showToast(finalCtx, TOAST_TYPE_ERROR, "失败: " + e, Toast.LENGTH_SHORT);
+                                    Toasts.error(finalCtx, "失败: " + e);
                                 } catch (Throwable ignored) {
                                     Toast.makeText(finalCtx, "失败: " + e, Toast.LENGTH_SHORT).show();
                                 }
@@ -255,7 +255,7 @@ public class PttForwardHook extends CommonDelayableHook {
                         String url = (String) invoke_virtual(chatMessage, "getLocalFilePath");
                         File file = new File(url);
                         if (!file.exists()) {
-                            Utils.showToast(context, TOAST_TYPE_ERROR, "未找到语音文件", Toast.LENGTH_SHORT);
+                            Toasts.error(context, "未找到语音文件");
                             return;
                         }
                         Intent intent = new Intent(context, load("com/tencent/mobileqq/activity/ForwardRecentActivity"));
@@ -274,7 +274,7 @@ public class PttForwardHook extends CommonDelayableHook {
                         String url = (String) invoke_virtual(chatMessage, "getLocalFilePath");
                         File file = new File(url);
                         if (!file.exists()) {
-                            Utils.showToast(context, TOAST_TYPE_ERROR, "未找到语音文件", Toast.LENGTH_SHORT);
+                            Toasts.error(context, "未找到语音文件");
                             return;
                         }
                         showSavePttFileDialog(context, file);
@@ -358,21 +358,21 @@ public class PttForwardHook extends CommonDelayableHook {
             public void onClick(View v) {
                 String path = editText.getText().toString();
                 if (path.equals("")) {
-                    showToast(ctx, TOAST_TYPE_ERROR, "请输入路径", Toast.LENGTH_SHORT);
+                    Toasts.error(ctx, "请输入路径");
                     return;
                 }
                 if (!path.startsWith("/")) {
-                    showToast(ctx, TOAST_TYPE_ERROR, "请输入完整路径(以\"/\"开头)", Toast.LENGTH_SHORT);
+                    Toasts.error(ctx, "请输入完整路径(以\"/\"开头)");
                     return;
                 }
                 File f = new File(path);
                 File dir = f.getParentFile();
                 if (dir == null || !dir.exists() || !dir.isDirectory()) {
-                    showToast(ctx, TOAST_TYPE_ERROR, "文件夹不存在", Toast.LENGTH_SHORT);
+                    Toasts.error(ctx, "文件夹不存在");
                     return;
                 }
                 if (!dir.canWrite()) {
-                    showToast(ctx, TOAST_TYPE_ERROR, "文件夹无访问权限", Toast.LENGTH_SHORT);
+                    Toasts.error(ctx, "文件夹无访问权限");
                     return;
                 }
                 FileOutputStream fout = null;
@@ -395,7 +395,7 @@ public class PttForwardHook extends CommonDelayableHook {
                         cache.save();
                     }
                 } catch (IOException e) {
-                    showToast(ctx, TOAST_TYPE_ERROR, "失败:" + e.toString().replace("java.io.", ""), Toast.LENGTH_SHORT);
+                    Toasts.error(ctx, "失败:" + e.toString().replace("java.io.", ""));
                 } finally {
                     if (fin != null) {
                         try {

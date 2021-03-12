@@ -33,7 +33,6 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -48,11 +47,9 @@ import com.rymmmmm.hook.CustomMsgTimeFormat;
 
 import nil.nadph.qnotified.ui.CustomDialog;
 
-import nil.nadph.qnotified.util.Utils;
+import nil.nadph.qnotified.util.Toasts;
 
-import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
 import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.showToast;
 
 public class RikkaCustomSplash extends RikkaDialog.RikkaConfigItem {
     private static final String DEFAULT_SPLASH_PATH = "";
@@ -108,21 +105,21 @@ public class RikkaCustomSplash extends RikkaDialog.RikkaConfigItem {
                 } else {
                     currentPath = input.getText().toString();
                     if (currentPath.length() == 0) {
-                        Utils.showToast(ctx, Utils.TOAST_TYPE_ERROR, "请输入图片路径", Toast.LENGTH_SHORT);
+                        Toasts.error(ctx, "请输入图片路径");
                         return;
                     }
                     File file = new File(currentPath);
                     if (!file.exists() || !file.isFile()) {
-                        showToast(ctx, TOAST_TYPE_ERROR, "路径不存在或者有误", Toast.LENGTH_SHORT);
+                        Toasts.error(ctx, "路径不存在或者有误");
                         return;
                     }
                     if (!file.canRead()) {
-                        showToast(ctx, TOAST_TYPE_ERROR, "无法读取图片 请检查权限", Toast.LENGTH_SHORT);
+                        Toasts.error(ctx, "无法读取图片 请检查权限");
                         return;
                     }
                     Bitmap bitmap = BitmapFactory.decodeFile(currentPath);
                     if (bitmap == null) {
-                        showToast(ctx, TOAST_TYPE_ERROR, "无法加载图片 请检图片是否损坏", Toast.LENGTH_SHORT);
+                        Toasts.error(ctx, "无法加载图片 请检图片是否损坏");
                         return;
                     }
                     cfg.putBoolean(rq_splash_enabled, true);

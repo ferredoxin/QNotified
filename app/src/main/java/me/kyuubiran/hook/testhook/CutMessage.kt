@@ -21,20 +21,15 @@
  */
 package me.kyuubiran.hook.testhook
 
-import android.os.Looper
-import android.widget.Toast
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import me.kyuubiran.util.LOG_TYPE_FIND_METHOD
 import me.kyuubiran.util.getObjectOrNull
 import me.kyuubiran.util.logd
+import me.kyuubiran.util.logdt
 import me.singleneuron.qn_kernel.data.MsgRecordData
-import me.singleneuron.qn_kernel.data.hostInfo
-import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.base.annotation.FunctionEntry
-import nil.nadph.qnotified.config.ConfigManager
-import nil.nadph.qnotified.hook.BaseDelayableHook
-import nil.nadph.qnotified.step.Step
+import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.LicenseStatus
 import nil.nadph.qnotified.util.Utils
@@ -42,76 +37,35 @@ import java.lang.reflect.Method
 
 //截取消息
 @FunctionEntry
-object CutMessage : BaseDelayableHook() {
-    private const val kr_test_cut_message: String = "kr_test_cut_message"
-    var isInit = false
+object CutMessage : CommonDelayableHook("kr_test_cut_message") {
 
-    override fun getPreconditions(): Array<Step?> {
-        return arrayOfNulls(0)
-    }
-
-    override fun init(): Boolean {
-        if (isInited) return true
-        return try {
-            val QQMessageFacade = Initiator.load("com.tencent.imcore.message.QQMessageFacade")
-            val Msg = Initiator.load("com.tencent.imcore.message.QQMessageFacade\$Message")
-            for (m: Method in QQMessageFacade.declaredMethods) {
-                val argt = m.parameterTypes
-                if (m.name == "a" && argt.size == 1 && argt[0] != Msg::class.java) {
-                    XposedBridge.hookMethod(m, object : XC_MethodHook() {
-                        override fun beforeHookedMethod(param: MethodHookParam?) {
-                            if (LicenseStatus.sDisableCommonHooks) return
-                            if (!isEnabled) return
-                            val msgRecord = param?.args?.get(0) ?: return
-                            if (msgRecord::class.java.name != "com.tencent.imcore.message.QQMessageFacade${'$'}Message") return
-                            val msgRecordData = MsgRecordData(msgRecord)
-                            try {
-                                logd(LOG_TYPE_FIND_METHOD, "->$m")
-                                logd("收到一份消息: \n$msgRecordData")
-                            } catch (t: Throwable) {
-                            }
+    override fun initOnce() = try {
+        val QQMessageFacade = Initiator.load("com.tencent.imcore.message.QQMessageFacade")
+        val Msg = Initiator.load("com.tencent.imcore.message.QQMessageFacade\$Message")
+        for (m: Method in QQMessageFacade.declaredMethods) {
+            val argt = m.parameterTypes
+            if (m.name == "a" && argt.size == 1 && argt[0] != Msg::class.java) {
+                XposedBridge.hookMethod(m, object : XC_MethodHook() {
+                    override fun beforeHookedMethod(param: MethodHookParam?) {
+                        if (LicenseStatus.sDisableCommonHooks) return
+                        if (!isEnabled) return
+                        val msgRecord = param?.args?.get(0) ?: return
+                        if (msgRecord::class.java.name != "com.tencent.imcore.message.QQMessageFacade${'$'}Message") return
+                        val msgRecordData = MsgRecordData(msgRecord)
+                        try {
+                            logd(LOG_TYPE_FIND_METHOD, "->$m")
+                            logd("收到一份消息: \n$msgRecordData")
+                        } catch (t: Throwable) {
+                            logdt(t)
                         }
-                    })
-                }
-            }
-            isInit = true
-            true
-        } catch (t: Throwable) {
-            Utils.log(t)
-            false
-        }
-    }
-
-    override fun isEnabled(): Boolean {
-        return try {
-            ConfigManager.getDefaultConfig().getBooleanOrFalse(kr_test_cut_message)
-        } catch (e: java.lang.Exception) {
-            Utils.log(e)
-            false
-        }
-    }
-
-    override fun getEffectiveProc(): Int {
-        return SyncUtils.PROC_MAIN
-    }
-
-    override fun setEnabled(enabled: Boolean) {
-        try {
-            val mgr = ConfigManager.getDefaultConfig()
-            mgr.allConfig[kr_test_cut_message] = enabled
-            mgr.save()
-        } catch (e: Exception) {
-            Utils.log(e)
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                Utils.showToast(hostInfo.application, Utils.TOAST_TYPE_ERROR, e.toString() + "", Toast.LENGTH_SHORT)
-            } else {
-                SyncUtils.post { Utils.showToast(hostInfo.application, Utils.TOAST_TYPE_ERROR, e.toString() + "", Toast.LENGTH_SHORT) }
+                    }
+                })
             }
         }
-    }
-
-    override fun isInited(): Boolean {
-        return isInit
+        true
+    } catch (t: Throwable) {
+        Utils.log(t)
+        false
     }
 
     //消息文本

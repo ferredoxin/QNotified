@@ -41,11 +41,11 @@ import com.tencent.mobileqq.widget.BounceScrollView;
 import java.io.IOException;
 
 import nil.nadph.qnotified.InjectDelayableHooks;
-import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
 import cc.ioctl.hook.FakeBatteryHook;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -159,7 +159,7 @@ public class EulaActivity extends IphoneTitleBarActivityCompat implements View.O
         switch (v.getId()) {
             case R_ID_I_AGREE:
                 if (!read) {
-                    Utils.showToast(this, Utils.TOAST_TYPE_ERROR, "请先勾选\"我已阅读<<协议>>\"", Toast.LENGTH_SHORT);
+                    Toasts.error(this, "请先勾选\"我已阅读<<协议>>\"");
                     return;
                 } else {
                     LicenseStatus.setEulaStatus(CURRENT_EULA_VERSION);
@@ -174,9 +174,9 @@ public class EulaActivity extends IphoneTitleBarActivityCompat implements View.O
                     Intent intent = new Intent(Intent.ACTION_DELETE, uri);
                     startActivity(intent);
                 } catch (Exception e) {
-                    Utils.showToast(this, Utils.TOAST_TYPE_ERROR, e + "", Toast.LENGTH_LONG);
+                    Toasts.error(this, e + "", Toast.LENGTH_LONG);
                 }
-                Utils.showToast(this, Utils.TOAST_TYPE_ERROR, "请立即卸载QNotified", Toast.LENGTH_LONG);
+                Toasts.error(this, "请立即卸载QNotified", Toast.LENGTH_LONG);
                 break;
         }
     }

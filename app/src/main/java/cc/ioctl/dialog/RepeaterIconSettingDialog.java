@@ -38,7 +38,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.core.view.ViewCompat;
 
@@ -53,6 +52,7 @@ import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.DebugDrawable;
 import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
 public class RepeaterIconSettingDialog implements View.OnClickListener, DialogInterface.OnClickListener, RadioGroup.OnCheckedChangeListener, CompoundButton.OnCheckedChangeListener {
@@ -230,17 +230,17 @@ public class RepeaterIconSettingDialog implements View.OnClickListener, DialogIn
         if (v == loadBtn) {
             String path = pathInput.getText().toString();
             if (path.length() == 0) {
-                Utils.showToast(ctx, Utils.TOAST_TYPE_ERROR, "请输入图片路径", Toast.LENGTH_SHORT);
+               Toasts.error(ctx, "请输入图片路径");
                 return;
             }
             File file = new File(path);
             if (!file.exists()) {
-                Utils.showToast(ctx, Utils.TOAST_TYPE_ERROR, "找不到文件", Toast.LENGTH_SHORT);
+                Toasts.error(ctx, "找不到文件");
                 return;
             }
             Bitmap bm = BitmapFactory.decodeFile(path);
             if (bm == null) {
-                Utils.showToast(ctx, Utils.TOAST_TYPE_ERROR, "不支持此文件(格式)", Toast.LENGTH_SHORT);
+                Toasts.error(ctx, "不支持此文件(格式)");
                 return;
             }
             long fileSize = file.length();
@@ -285,7 +285,7 @@ public class RepeaterIconSettingDialog implements View.OnClickListener, DialogIn
                     sCachedRepeaterIcon = currentIcon;
                     dialog.dismiss();
                 } catch (IOException e) {
-                    Utils.showToast(ctx, Utils.TOAST_TYPE_ERROR, e.toString(), 0);
+                    Toasts.error(ctx, e.toString());
                 }
             } else {
                 if (useDefault) {
@@ -298,7 +298,7 @@ public class RepeaterIconSettingDialog implements View.OnClickListener, DialogIn
                         dialog.dismiss();
                         sCachedRepeaterIcon = null;
                     } catch (IOException e) {
-                        Utils.showToast(ctx, Utils.TOAST_TYPE_ERROR, e.toString(), 0);
+                        Toasts.error(ctx, e.toString());
                     }
                 } else {
                     try {
@@ -308,12 +308,12 @@ public class RepeaterIconSettingDialog implements View.OnClickListener, DialogIn
                         dialog.dismiss();
                         sCachedRepeaterIcon = null;
                     } catch (IOException e) {
-                        Utils.showToast(ctx, Utils.TOAST_TYPE_ERROR, e.toString(), 0);
+                        Toasts.error(ctx, e.toString());
                     }
                 }
             }
         } else if (v == browseBtn) {
-            Utils.showToastShort(ctx, "暂不支持...请手动复制文件路径到文本框并加载");
+            Toasts.info(ctx, "暂不支持...请手动复制文件路径到文本框并加载");
         }
     }
 

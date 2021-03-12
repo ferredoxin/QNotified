@@ -36,6 +36,7 @@ import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.Toasts;
 
 import static nil.nadph.qnotified.util.Initiator._PicItemBuilder;
 import static nil.nadph.qnotified.util.ReflexUtil.findField;
@@ -60,7 +61,7 @@ public class EmoPicHook extends CommonDelayableHook {
             boolean canInit = checkPreconditions();
             if (!canInit && isEnabled()) {
                 if (Looper.myLooper() != null) {
-                    showToast(HostInformationProviderKt.getHostInfo().getApplication(), TOAST_TYPE_ERROR, "QNotified:表情转图片功能初始化错误", Toast.LENGTH_LONG);
+                    Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(), "QNotified:表情转图片功能初始化错误", Toast.LENGTH_LONG);
                 }
             }
             if (!canInit) return false;

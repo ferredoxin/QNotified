@@ -21,20 +21,15 @@
  */
 package nil.nadph.qnotified.util;
 
-import androidx.annotation.Nullable;
-
 import java.io.IOException;
-import java.util.HashSet;
 
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.BuildConfig;
-import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.activity.EulaActivity;
-import cc.ioctl.chiral.MdlMolParser;
 import cc.ioctl.chiral.Molecule;
 import nil.nadph.qnotified.config.ConfigManager;
 
 import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.showErrorToastAnywhere;
 
 public class LicenseStatus {
     public static final String qn_eula_status = "qh_eula_status";//typo, ignore it
@@ -54,7 +49,7 @@ public class LicenseStatus {
             ConfigManager.getDefaultConfig().save();
         } catch (IOException e) {
             log(e);
-            showErrorToastAnywhere(e.toString());
+            Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(), e.toString());
         }
     }
 

@@ -23,7 +23,6 @@ package nil.nadph.qnotified.bridge;
 
 import android.content.Context;
 import android.os.Parcelable;
-import android.widget.Toast;
 
 import java.io.Externalizable;
 import java.io.File;
@@ -35,7 +34,6 @@ import mqq.app.AppRuntime;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Toasts;
-import nil.nadph.qnotified.util.Utils;
 
 import static nil.nadph.qnotified.util.Initiator._QQAppInterface;
 import static nil.nadph.qnotified.util.Initiator._SessionInfo;
@@ -199,7 +197,7 @@ public class ChatActivityFacade {
                     if (argt.length == 3) m.invoke(null, app, session, msg);
                     else m.invoke(null, app, session, msg, 0);
                 } catch (Exception e) {
-                    Utils.showToast(HostInformationProviderKt.getHostInfo().getApplication(), TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), 0);
+                    Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(), e.toString().replace("java.lang.", ""));
                     log(e);
                 }
                 break;
@@ -208,17 +206,17 @@ public class ChatActivityFacade {
                     String url = (String) invoke_virtual(msg, "getLocalFilePath");
                     File file = new File(url);
                     if (!file.exists()) {
-                        Utils.showToast(HostInformationProviderKt.getHostInfo().getApplication(), TOAST_TYPE_ERROR, "未找到语音文件", Toast.LENGTH_SHORT);
+                        Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(), "未找到语音文件");
                         return;
                     }
                     sendPttMessage(getQQAppInterface(), session, url);
                 } catch (Exception e) {
-                    Utils.showToast(HostInformationProviderKt.getHostInfo().getApplication(), TOAST_TYPE_ERROR, e.toString().replace("java.lang.", ""), 0);
+                    Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(), e.toString().replace("java.lang.", ""));
                     log(e);
                 }
                 break;
             default:
-                Utils.showToast(HostInformationProviderKt.getHostInfo().getApplication(), TOAST_TYPE_ERROR, "Unsupported msg type: " + getShort$Name(msg), 0);
+                Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(), "Unsupported msg type: " + getShort$Name(msg));
         }
     }
 }
