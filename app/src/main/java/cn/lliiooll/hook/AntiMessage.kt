@@ -34,8 +34,11 @@ import nil.nadph.qnotified.base.annotation.FunctionEntry
 
 @FunctionEntry
 object AntiMessage : MultiItemDelayableHook("qn_anti_message_items"), MessageReceiver {
-    override var allItems = MsgRecordUtil.MSG.keys.sorted().toMutableList()
+    override var allItems = ""
     override val defaultItems = ""
+    override var items: MutableList<String>
+        get() = MsgRecordUtil.MSG.keys.sorted().toMutableList()
+        set(_) = Unit
 
     override fun onReceive(data: MsgRecordData?): Boolean {
         if (data?.selfUin.equals(data?.senderUin)) return false
@@ -51,16 +54,16 @@ object AntiMessage : MultiItemDelayableHook("qn_anti_message_items"), MessageRec
     }
 
     override fun listener(): View.OnClickListener {
-        allItems.forEachIndexed { i: Int, str: String ->
-            allItems[i] = MsgRecordUtil.getDesc(str)
+        items.forEachIndexed { i: Int, str: String ->
+            items[i] = MsgRecordUtil.getDesc(str)
         }
-        allItems = allItems.sortedWith(SortChinese()).toTypedArray().toMutableList()
+        items = items.sortedWith(SortChinese()).toTypedArray().toMutableList()
         return super.listener()
     }
 
     override fun getBoolAry(): BooleanArray {
-        val ret = BooleanArray(allItems.size)
-        for ((i, item) in allItems.withIndex()) {
+        val ret = BooleanArray(items.size)
+        for ((i, item) in items.withIndex()) {
             ret[i] = activeItems.contains(item) or activeItems.contains(MsgRecordUtil.getKey(item))
         }
         return ret

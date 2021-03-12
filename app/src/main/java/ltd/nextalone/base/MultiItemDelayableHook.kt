@@ -23,25 +23,34 @@ package ltd.nextalone.base
 
 import android.app.AlertDialog
 import android.content.DialogInterface
-import android.os.Looper
+import android.graphics.Color
 import android.view.View
-import me.singleneuron.qn_kernel.data.hostInfo
-import nil.nadph.qnotified.SyncUtils
-import nil.nadph.qnotified.config.ConfigManager
+import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.LinearLayout
+import androidx.core.view.ViewCompat
+import me.ketal.data.ConfigData
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.ui.CustomDialog
+import nil.nadph.qnotified.ui.HighContrastBorder
+import nil.nadph.qnotified.ui.ViewBuilder
 import nil.nadph.qnotified.util.Toasts
 import nil.nadph.qnotified.util.Utils
 
 abstract class MultiItemDelayableHook constructor(keyName: String) : CommonDelayableHook("__NOT_USED__") {
-    private val itemsConfigKeys = keyName
-    abstract val allItems: List<String>
+    private val itemsConfigKeys = ConfigData<String>(keyName)
+    private val allItemsConfigKeys = ConfigData<String>("$keyName\\_All")
+    abstract val allItems: String
     abstract val defaultItems: String
-    internal var activeItems
-        get() = ConfigManager.getDefaultConfig().getStringOrDefault(itemsConfigKeys, defaultItems).split("|").toMutableList()
+    open internal var items
+        get() = allItemsConfigKeys.getOrDefault(allItems).split("|").toMutableList()
         set(value) {
-            val ret = value.joinToString("|")
-            putValue(itemsConfigKeys, ret)
+            allItemsConfigKeys.value = value.joinToString("|")
+        }
+    internal var activeItems
+        get() = itemsConfigKeys.getOrDefault(defaultItems).split("|").toMutableList()
+        set(value) {
+            itemsConfigKeys.value = value.joinToString("|")
         }
 
     open fun listener() = View.OnClickListener {
@@ -50,14 +59,50 @@ abstract class MultiItemDelayableHook constructor(keyName: String) : CommonDelay
             val ctx = it.context
             AlertDialog.Builder(ctx, CustomDialog.themeIdForDialog())
                 .setTitle("选择要精简的条目")
-                .setMultiChoiceItems(allItems.toTypedArray(), getBoolAry()) { _: DialogInterface, i: Int, _: Boolean ->
-                    val item = allItems[i]
+                .setMultiChoiceItems(items.toTypedArray(), getBoolAry()) { _: DialogInterface, i: Int, _: Boolean ->
+                    val item = items[i]
                     if (!cache.contains(item)) cache.add(item)
                     else cache.remove(item)
                 }
                 .setNegativeButton("取消", null)
                 .setPositiveButton("确定") { _: DialogInterface, _: Int ->
                     activeItems = cache
+                }
+                .setNeutralButton("自定义") { _: DialogInterface, _: Int ->
+                    val dialog = CustomDialog.createFailsafe(ctx)
+                    val context = dialog.context
+                    val editText = EditText(context)
+                    editText.textSize = 16f
+                    val _5 = Utils.dip2px(context, 5f)
+                    editText.setPadding(_5, _5, _5, _5)
+                    editText.setText(items.joinToString("|"))
+                    ViewCompat.setBackground(editText, HighContrastBorder())
+                    val linearLayout = LinearLayout(ctx)
+                    linearLayout.orientation = LinearLayout.VERTICAL
+                    linearLayout.addView(ViewBuilder.subtitle(context, "使用|分割，请确保格式正确！", Color.RED))
+                    linearLayout.addView(editText, ViewBuilder.newLinearLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, _5 * 2))
+                    val alertDialog = dialog.setTitle("自定义精简项目")
+                        .setView(linearLayout)
+                        .setCancelable(true)
+                        .setPositiveButton("确认", null)
+                        .setNegativeButton("取消", null)
+                        .create() as AlertDialog
+                    alertDialog.show()
+                    alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                        val text = editText.text.toString()
+                        if (text.isEmpty()) {
+                            Toasts.error(context, "不可为空")
+                            return@setOnClickListener
+                        }
+                        text.split("|").forEach { item ->
+                            if (item.isEmpty()) {
+                                Toasts.error(context, "请确保格式正确！")
+                                return@setOnClickListener
+                            }
+                        }
+                        allItemsConfigKeys.value = editText.text.toString()
+                        alertDialog.dismiss()
+                    }
                 }
                 .show()
         } catch (e: Exception) {
@@ -70,27 +115,12 @@ abstract class MultiItemDelayableHook constructor(keyName: String) : CommonDelay
     override fun isEnabled(): Boolean = activeItems.isNotEmpty() && isValid
 
     internal open fun getBoolAry(): BooleanArray {
-        val ret = BooleanArray(allItems.size)
-        for ((i, item) in allItems.withIndex()) {
-            ret[i] = activeItems.contains(item)
+        val ret = BooleanArray(items.size)
+        for ((i, item) in items.withIndex()) {
+            ret[i] = item in activeItems
         }
         return ret
     }
 
-    private fun putValue(keyName: String, obj: Any) {
-        try {
-            val mgr = ConfigManager.getDefaultConfig()
-            mgr.allConfig[keyName] = obj
-            mgr.save()
-        } catch (e: Exception) {
-            Utils.log(e)
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                Toasts.error(hostInfo.application, e.toString() + "")
-            } else {
-                SyncUtils.post { Toasts.error(hostInfo.application, e.toString() + "") }
-            }
-        }
-    }
-
-    override fun setEnabled(enabled: Boolean) {}
+    override fun setEnabled(enabled: Boolean) = Unit
 }

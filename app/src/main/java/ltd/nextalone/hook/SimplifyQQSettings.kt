@@ -31,7 +31,7 @@ import nil.nadph.qnotified.base.annotation.FunctionEntry
 
 @FunctionEntry
 object SimplifyQQSettings : MultiItemDelayableHook("na_simplify_qq_settings_multi") {
-    override val allItems = "手机号码|达人|安全|通知|记录|隐私|通用|辅助|免流量|关于".split("|").toMutableList()
+    override val allItems = "手机号码|达人|安全|通知|记录|隐私|通用|辅助|免流量|关于"
     override val defaultItems = ""
 
     override fun initOnce() = tryOrFalse {
