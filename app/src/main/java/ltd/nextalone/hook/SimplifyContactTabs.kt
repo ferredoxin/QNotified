@@ -49,7 +49,7 @@ object SimplifyContactTabs : MultiItemDelayableHook("na_simplify_contact_tabs_mu
                     intList.add(id)
                 } else if (!activeItems.contains(str)) {
                     val id = obj.get("d") as Int
-                    val instance = cls.instance(allItems.indexOf(str), id, str)
+                    val instance = cls.instance(items.indexOf(str), id, str)
                     list.add(instance)
                     stringList.add(str)
                     intList.add(id)
