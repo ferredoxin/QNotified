@@ -131,7 +131,10 @@ public class ConfigV2Activity extends AppCompatActivity {
                                 .setTitle("调试信息").setPositiveButton(android.R.string.ok, null).setMessage(dbgInfo).show();
                         return true;
                     }
-                    case R.id.menu_item_switchTheme:
+                    case R.id.menu_item_switchTheme: {
+                        startActivity(new Intent(ConfigV2Activity.this ,ConfigActivity.class));
+                        return true;
+                    }
                     case R.id.menu_item_about: {
                         Toast.makeText(ConfigV2Activity.this, "暂不支持", Toast.LENGTH_SHORT).show();
                         return true;
