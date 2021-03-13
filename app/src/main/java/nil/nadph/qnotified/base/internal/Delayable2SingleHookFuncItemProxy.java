@@ -24,9 +24,7 @@ package nil.nadph.qnotified.base.internal;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import java.util.Objects;
-
 import nil.nadph.qnotified.base.AbsFunctionItem;
 import nil.nadph.qnotified.base.AbsHookTask;
 import nil.nadph.qnotified.base.ErrorStatus;

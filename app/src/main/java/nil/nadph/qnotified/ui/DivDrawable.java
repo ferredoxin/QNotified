@@ -21,7 +21,11 @@
  */
 package nil.nadph.qnotified.ui;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.LinearGradient;
+import android.graphics.Paint;
+import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 
 public class DivDrawable extends Drawable {

@@ -21,9 +21,8 @@
  */
 package cc.ioctl.chiral;
 
-import java.util.HashSet;
-
 import cc.ioctl.util.IndexFrom;
+import java.util.HashSet;
 
 public class Molecule implements Cloneable {
 

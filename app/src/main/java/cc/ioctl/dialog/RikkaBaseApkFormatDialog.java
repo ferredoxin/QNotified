@@ -21,6 +21,8 @@
  */
 package cc.ioctl.dialog;
 
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -28,24 +30,19 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.*;
-
-import nil.nadph.qnotified.R;
-import nil.nadph.qnotified.config.ConfigManager;
-
-import com.rymmmmm.hook.BaseApk;
-
-import nil.nadph.qnotified.ui.CustomDialog;
-
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
+import com.rymmmmm.hook.BaseApk;
+import java.io.IOException;
+import nil.nadph.qnotified.R;
+import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
-
-import java.io.IOException;
-
-import static nil.nadph.qnotified.util.Utils.log;
 
 public class RikkaBaseApkFormatDialog extends RikkaDialog.RikkaConfigItem {
     private static final String DEFAULT_BASE_APK_FORMAT = "%n_%v.apk";

@@ -22,11 +22,9 @@
 package nil.nadph.qnotified.remote;
 
 import androidx.annotation.NonNull;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-
 import me.singleneuron.base.bridge.BugReport;
 import me.singleneuron.data.BugReportArguments;
 

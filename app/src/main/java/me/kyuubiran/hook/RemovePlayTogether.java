@@ -22,10 +22,9 @@
 package me.kyuubiran.hook;
 
 import androidx.annotation.NonNull;
-import java.lang.reflect.Method;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import java.lang.reflect.Method;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import me.singleneuron.util.QQVersion;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;

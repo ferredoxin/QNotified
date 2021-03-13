@@ -21,21 +21,21 @@
  */
 package nil.nadph.qnotified.activity;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static nil.nadph.qnotified.ui.ViewBuilder.clickTheComing;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemButton;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemSwitchStub;
+import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
+import static nil.nadph.qnotified.util.Utils.dip2px;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-
 import com.tencent.mobileqq.widget.BounceScrollView;
-
-import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.ui.ResUtils;
-
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.ui.ViewBuilder.*;
-import static nil.nadph.qnotified.util.Utils.dip2px;
 
 @SuppressLint("Registered")
 public class PendingFuncActivity extends IphoneTitleBarActivityCompat {

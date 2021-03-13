@@ -21,6 +21,8 @@
  */
 package cc.ioctl.dialog;
 
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -32,24 +34,16 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.rymmmmm.hook.CustomMsgTimeFormat;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigManager;
-
-import com.rymmmmm.hook.CustomMsgTimeFormat;
-
 import nil.nadph.qnotified.ui.CustomDialog;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import nil.nadph.qnotified.util.Toasts;
-
-import static nil.nadph.qnotified.util.Utils.log;
 
 public class RikkaCustomMsgTimeFormatDialog extends RikkaDialog.RikkaConfigItem {
     private static final String DEFAULT_MSG_TIME_FORMAT = "yyyy年MM月dd日 HH:mm:ss";

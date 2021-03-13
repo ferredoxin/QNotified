@@ -2,11 +2,8 @@ package me.zpp0196.qqpurify.utils;
 
 import android.app.Activity;
 import android.content.Context;
-
 import androidx.core.content.ContextCompat;
-
 import java.io.IOException;
-
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigManager;
 

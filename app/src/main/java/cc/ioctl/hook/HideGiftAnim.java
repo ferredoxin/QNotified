@@ -21,18 +21,17 @@
  */
 package cc.ioctl.hook;
 
-import android.app.Application;
+import static nil.nadph.qnotified.util.Initiator._TroopGiftAnimationController;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Utils.log;
 
+import android.app.Application;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.LicenseStatus;
-
-import static nil.nadph.qnotified.util.Initiator._TroopGiftAnimationController;
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.log;
 
 @FunctionEntry
 public class HideGiftAnim extends CommonDelayableHook {

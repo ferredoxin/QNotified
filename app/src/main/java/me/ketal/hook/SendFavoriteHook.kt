@@ -33,7 +33,6 @@ import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.ReflexUtil
-import nil.nadph.qnotified.util.Utils
 
 @FunctionEntry
 object SendFavoriteHook: PluginDelayableHook("ketal_send_favorite") {

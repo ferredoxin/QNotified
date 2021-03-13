@@ -25,8 +25,8 @@ import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import me.kyuubiran.hook.BaseMultiConfigDelayableHook
 import nil.nadph.qnotified.SyncUtils
-import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.step.Step
+import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.LicenseStatus
 import nil.nadph.qnotified.util.Utils
 import java.lang.reflect.Method

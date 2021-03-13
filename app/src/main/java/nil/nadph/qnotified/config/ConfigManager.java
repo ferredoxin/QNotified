@@ -21,24 +21,45 @@
  */
 package nil.nadph.qnotified.config;
 
-import android.content.Intent;
+import static nil.nadph.qnotified.config.Table.TYPE_ARRAY;
+import static nil.nadph.qnotified.config.Table.TYPE_BOOL;
+import static nil.nadph.qnotified.config.Table.TYPE_BYTE;
+import static nil.nadph.qnotified.config.Table.TYPE_DOUBLE;
+import static nil.nadph.qnotified.config.Table.TYPE_EOF;
+import static nil.nadph.qnotified.config.Table.TYPE_FLOAT;
+import static nil.nadph.qnotified.config.Table.TYPE_INT;
+import static nil.nadph.qnotified.config.Table.TYPE_IRAW;
+import static nil.nadph.qnotified.config.Table.TYPE_IUTF8;
+import static nil.nadph.qnotified.config.Table.TYPE_LONG;
+import static nil.nadph.qnotified.config.Table.TYPE_SHORT;
+import static nil.nadph.qnotified.config.Table.TYPE_TABLE;
+import static nil.nadph.qnotified.config.Table.TYPE_VOID;
+import static nil.nadph.qnotified.config.Table.TYPE_WCHAR32;
+import static nil.nadph.qnotified.config.Table.VOID_INSTANCE;
+import static nil.nadph.qnotified.config.Table.readArray;
+import static nil.nadph.qnotified.config.Table.readIRaw;
+import static nil.nadph.qnotified.config.Table.readIStr;
+import static nil.nadph.qnotified.config.Table.readTable;
+import static nil.nadph.qnotified.config.Table.writeRecord;
+import static nil.nadph.qnotified.util.Utils.log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.util.Utils;
-
-import static nil.nadph.qnotified.config.Table.*;
-import static nil.nadph.qnotified.util.Utils.log;
 
 public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConfigItem {
     //DataOutputStream should be BIG_ENDIAN, as is.

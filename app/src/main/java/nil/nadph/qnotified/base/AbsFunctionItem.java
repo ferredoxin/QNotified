@@ -20,7 +20,6 @@ package nil.nadph.qnotified.base;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import nil.nadph.qnotified.mvc.base.AbsConfigSection;
 import nil.nadph.qnotified.util.Const;
 

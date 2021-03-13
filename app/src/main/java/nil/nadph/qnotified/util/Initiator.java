@@ -21,12 +21,11 @@
  */
 package nil.nadph.qnotified.util;
 
-import android.os.Parcelable;
-
-import mqq.app.AppRuntime;
-
-import static nil.nadph.qnotified.util.Utils.loge;
 import static nil.nadph.qnotified.util.Utils.PACKAGE_NAME_QQ;
+import static nil.nadph.qnotified.util.Utils.loge;
+
+import android.os.Parcelable;
+import mqq.app.AppRuntime;
 
 @SuppressWarnings("rawtypes")
 public class Initiator {

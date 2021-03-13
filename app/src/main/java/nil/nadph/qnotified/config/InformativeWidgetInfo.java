@@ -22,11 +22,9 @@
 package nil.nadph.qnotified.config;
 
 import android.view.View;
-
 import com.qq.taf.jce.JceInputStream;
 import com.qq.taf.jce.JceOutputStream;
 import com.qq.taf.jce.JceStruct;
-
 import nil.nadph.qnotified.remote.JceId;
 import nil.nadph.qnotified.util.Utils;
 

@@ -21,28 +21,24 @@
  */
 package nil.nadph.qnotified.util;
 
+import static nil.nadph.qnotified.util.Utils.isEmpty;
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.app.Activity;
 import android.content.res.ColorStateList;
 import android.text.util.Linkify;
 import android.view.View;
 import android.widget.TextView;
-
 import androidx.annotation.Nullable;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.math.BigDecimal;
 import java.net.URL;
-
 import javax.net.ssl.HttpsURLConnection;
-
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.ResUtils;
-
-import static nil.nadph.qnotified.util.Utils.isEmpty;
-import static nil.nadph.qnotified.util.Utils.log;
 
 @MainProcess
 public class NewsHelper implements Runnable {

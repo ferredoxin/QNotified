@@ -22,7 +22,6 @@
 package cc.ioctl.hook;
 
 import android.os.Parcelable;
-
 import mqq.app.AppRuntime;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;

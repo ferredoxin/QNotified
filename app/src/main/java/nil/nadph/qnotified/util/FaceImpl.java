@@ -21,24 +21,21 @@
  */
 package nil.nadph.qnotified.util;
 
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_any;
+
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.ImageView;
-
 import androidx.annotation.Nullable;
-
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
-
 import nil.nadph.qnotified.ui.ResUtils;
-
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_any;
 
 public class FaceImpl implements InvocationHandler {
 

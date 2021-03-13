@@ -26,11 +26,11 @@ import android.graphics.BitmapFactory
 import android.view.View
 import android.widget.ImageView
 import de.robv.android.xposed.XposedHelpers
-import me.ketal.util.TIMVersion
 import ltd.nextalone.util.hookAfter
 import ltd.nextalone.util.hookBefore
 import me.ketal.data.ConfigData
 import me.ketal.util.BaseUtil.tryVerbosely
+import me.ketal.util.TIMVersion
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.data.requireMinVersion
 import me.singleneuron.qn_kernel.tlb.ConfigTable.getConfig

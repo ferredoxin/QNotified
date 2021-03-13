@@ -21,8 +21,26 @@
  */
 package nil.nadph.qnotified;
 
+import static cc.ioctl.util.DateTimeUtil.getRelTimeStrSec;
+import static nil.nadph.qnotified.config.Table.TYPE_INT;
+import static nil.nadph.qnotified.config.Table.TYPE_IUTF8;
+import static nil.nadph.qnotified.config.Table.TYPE_LONG;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_any;
+import static nil.nadph.qnotified.util.Utils.ContactDescriptor;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.logd;
+import static nil.nadph.qnotified.util.Utils.logi;
+import static nil.nadph.qnotified.util.Utils.logw;
+
 import android.annotation.SuppressLint;
-import android.app.*;
+import android.app.Activity;
+import android.app.Application;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -30,9 +48,9 @@ import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.view.View;
 import android.widget.TextView;
-
 import androidx.annotation.Nullable;
-
+import cc.ioctl.activity.ExfriendListActivity;
+import cc.ioctl.hook.DelDetectorHook;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -44,25 +62,16 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
-import cc.ioctl.activity.ExfriendListActivity;
 import nil.nadph.qnotified.bridge.FriendChunk;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.config.EventRecord;
 import nil.nadph.qnotified.config.FriendRecord;
 import nil.nadph.qnotified.config.Table;
-import cc.ioctl.hook.DelDetectorHook;
 import nil.nadph.qnotified.lifecycle.ActProxyMgr;
 import nil.nadph.qnotified.lifecycle.Parasitics;
-import nil.nadph.qnotified.util.*;
-
-import static nil.nadph.qnotified.config.Table.*;
-import static cc.ioctl.util.DateTimeUtil.getRelTimeStrSec;
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
-import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_any;
-import static nil.nadph.qnotified.util.Utils.*;
+import nil.nadph.qnotified.util.Toasts;
+import nil.nadph.qnotified.util.Utils;
 
 public class ExfriendManager implements SyncUtils.OnFileChangedListener {
     static public final int ID_EX_NOTIFY = 65537;

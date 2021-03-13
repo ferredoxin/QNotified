@@ -22,7 +22,6 @@
 package me.kyuubiran.hook;
 
 import java.io.IOException;
-
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.config.MultiConfigItem;
 import nil.nadph.qnotified.hook.BaseDelayableHook;

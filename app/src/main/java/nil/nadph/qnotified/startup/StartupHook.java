@@ -24,14 +24,12 @@ package nil.nadph.qnotified.startup;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
-
-import java.io.File;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
+import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
  * Startup hook for QQ/TIM

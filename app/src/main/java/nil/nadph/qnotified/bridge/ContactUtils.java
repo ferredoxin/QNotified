@@ -21,16 +21,17 @@
  */
 package nil.nadph.qnotified.bridge;
 
-import java.lang.reflect.Modifier;
-
-import de.robv.android.xposed.XposedHelpers;
-import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.Initiator;
-
 import static nil.nadph.qnotified.util.Initiator._QQAppInterface;
 import static nil.nadph.qnotified.util.ReflexUtil.invoke_static_declared_ordinal_modifier;
 import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_declared_ordinal;
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.getQQAppInterface;
+import static nil.nadph.qnotified.util.Utils.getTroopManager;
+import static nil.nadph.qnotified.util.Utils.log;
+
+import de.robv.android.xposed.XposedHelpers;
+import java.lang.reflect.Modifier;
+import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.Initiator;
 
 public class ContactUtils {
     

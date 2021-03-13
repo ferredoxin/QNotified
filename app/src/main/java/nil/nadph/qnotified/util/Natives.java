@@ -24,11 +24,9 @@ package nil.nadph.qnotified.util;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-
 import nil.nadph.qnotified.BuildConfig;
 
 public class Natives {

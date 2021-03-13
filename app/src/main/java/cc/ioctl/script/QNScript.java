@@ -21,15 +21,19 @@
  */
 package cc.ioctl.script;
 
+import static nil.nadph.qnotified.util.Utils.log;
+
 import bsh.EvalError;
 import bsh.Interpreter;
+import cc.ioctl.script.params.FriendAddedParam;
+import cc.ioctl.script.params.FriendMessageParam;
+import cc.ioctl.script.params.FriendRequestParam;
+import cc.ioctl.script.params.GroupJoinedParam;
+import cc.ioctl.script.params.GroupMessageParam;
+import cc.ioctl.script.params.GroupRequestParam;
+import java.io.IOException;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
-import cc.ioctl.script.params.*;
-
-import java.io.IOException;
-
-import static nil.nadph.qnotified.util.Utils.log;
 
 public class QNScript {
     private final Interpreter instance;

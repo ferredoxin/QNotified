@@ -2,7 +2,6 @@ package com.tencent.qphone.base.util;
 
 import android.app.Application;
 import android.content.Context;
-
 import java.util.ArrayList;
 
 public abstract class BaseApplication extends Application {

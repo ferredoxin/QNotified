@@ -22,7 +22,6 @@
 package cc.ioctl.util.thunk;
 
 import androidx.annotation.NonNull;
-
 import cc.ioctl.util.thunk.pcs.Convention;
 
 public class NativeFunction {

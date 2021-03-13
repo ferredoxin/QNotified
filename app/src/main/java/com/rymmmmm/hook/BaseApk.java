@@ -21,26 +21,24 @@
  */
 package com.rymmmmm.hook;
 
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-
+import cc.ioctl.dialog.RikkaBaseApkFormatDialog;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
-import cc.ioctl.dialog.RikkaBaseApkFormatDialog;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
-
-import static nil.nadph.qnotified.util.Utils.log;
 
 //重命名base.apk
 @FunctionEntry

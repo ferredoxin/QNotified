@@ -1,12 +1,15 @@
 package cc.ioctl.dextail;
 
+import static cc.ioctl.dextail.HexUtils.bytesEqu;
+import static cc.ioctl.dextail.HexUtils.readLe32;
+import static cc.ioctl.dextail.HexUtils.subByteArray;
+import static cc.ioctl.dextail.HexUtils.writeLe32;
+
 import java.io.PrintStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 import java.util.zip.Adler32;
-
-import static cc.ioctl.dextail.HexUtils.*;
 
 public class DexTail {
 

@@ -21,6 +21,13 @@
  */
 package nil.nadph.qnotified.ui;
 
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
+import static nil.nadph.qnotified.util.Utils.DummyCallback;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.strcmp;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -28,20 +35,12 @@ import android.content.DialogInterface;
 import android.os.Build;
 import android.view.View;
 import android.widget.TextView;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-
 import nil.nadph.qnotified.util.DexKit;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
-import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
-import static nil.nadph.qnotified.util.Utils.*;
 
 public class CustomDialog {
     private static Class<?> clz_DialogUtil;

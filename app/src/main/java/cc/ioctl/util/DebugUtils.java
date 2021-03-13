@@ -21,15 +21,14 @@
  */
 package cc.ioctl.util;
 
+import static nil.nadph.qnotified.util.Utils.logi;
+
+import de.robv.android.xposed.XC_MethodHook;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
-
-import de.robv.android.xposed.XC_MethodHook;
 import nil.nadph.qnotified.util.Utils;
-
-import static nil.nadph.qnotified.util.Utils.logi;
 
 /**
  * Handy utils used for debug/development env, not to use in production.

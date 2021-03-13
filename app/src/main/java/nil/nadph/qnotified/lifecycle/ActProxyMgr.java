@@ -22,10 +22,8 @@
 package nil.nadph.qnotified.lifecycle;
 
 import androidx.annotation.NonNull;
-
-import org.intellij.lang.annotations.MagicConstant;
-
 import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat;
+import org.intellij.lang.annotations.MagicConstant;
 
 /**
  * This class is used to cope with Activity

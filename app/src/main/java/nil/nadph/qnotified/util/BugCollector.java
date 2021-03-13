@@ -22,9 +22,7 @@
 package nil.nadph.qnotified.util;
 
 import android.app.Application;
-
 import com.microsoft.appcenter.crashes.Crashes;
-
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 
 public class BugCollector {

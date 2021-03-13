@@ -22,13 +22,9 @@
 package nil.nadph.qnotified.bridge;
 
 import android.view.View;
-
-import java.lang.reflect.Field;
-
-import nil.nadph.qnotified.util.Initiator;
-
 import androidx.annotation.Nullable;
-
+import java.lang.reflect.Field;
+import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Utils;
 
 public class AIOUtilsImpl {

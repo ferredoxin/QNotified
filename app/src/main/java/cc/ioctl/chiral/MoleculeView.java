@@ -33,15 +33,10 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-
+import androidx.annotation.Nullable;
+import cc.ioctl.util.IndexFrom;
 import java.util.HashSet;
 import java.util.Iterator;
-
-import cc.ioctl.util.IndexFrom;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import nil.nadph.qnotified.util.Utils;
 
 

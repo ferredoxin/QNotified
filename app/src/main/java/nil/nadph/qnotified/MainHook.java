@@ -21,6 +21,17 @@
  */
 package nil.nadph.qnotified;
 
+import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
+import static nil.nadph.qnotified.util.Initiator._StartupDirector;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.ReflexUtil.getFirstNSFByType;
+import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
+import static nil.nadph.qnotified.util.ReflexUtil.new_instance;
+import static nil.nadph.qnotified.util.Utils.getLongAccountUin;
+import static nil.nadph.qnotified.util.Utils.isAlphaVersion;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.loge;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -29,23 +40,20 @@ import android.os.Parcelable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-
-import com.rymmmmm.hook.CustomSplash;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-
 import cc.ioctl.hook.GagInfoDisclosure;
 import cc.ioctl.hook.MuteAtAllAndRedPacket;
 import cc.ioctl.hook.MuteQZoneThumbsUp;
 import cc.ioctl.hook.RevokeMsgHook;
+import com.rymmmmm.hook.CustomSplash;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import me.kyuubiran.hook.RemoveCameraButton;
 import me.kyuubiran.hook.RemoveRedDot;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.config.ConfigItems;
-import nil.nadph.qnotified.hook.*;
+import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.lifecycle.JumpActivityEntryHook;
 import nil.nadph.qnotified.lifecycle.Parasitics;
 import nil.nadph.qnotified.ui.ResUtils;
@@ -53,12 +61,6 @@ import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.MainProcess;
 import nil.nadph.qnotified.util.Utils;
-
-import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static nil.nadph.qnotified.util.Initiator._StartupDirector;
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.ReflexUtil.*;
-import static nil.nadph.qnotified.util.Utils.*;
 
 /*TitleKit:Lcom/tencent/mobileqq/widget/navbar/NavBarCommon*/
 

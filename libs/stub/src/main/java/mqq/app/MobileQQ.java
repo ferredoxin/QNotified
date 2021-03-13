@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.text.TextUtils;
 import com.tencent.qphone.base.remote.SimpleAccount;
 import com.tencent.qphone.base.util.BaseApplication;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;

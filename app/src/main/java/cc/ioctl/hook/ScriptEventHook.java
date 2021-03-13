@@ -21,12 +21,12 @@
  */
 package cc.ioctl.hook;
 
+import static nil.nadph.qnotified.util.Utils.log;
+
+import cc.ioctl.script.QNScriptManager;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
-import cc.ioctl.script.QNScriptManager;
-
-import static nil.nadph.qnotified.util.Utils.log;
 
 @FunctionEntry
 public class ScriptEventHook extends CommonDelayableHook {

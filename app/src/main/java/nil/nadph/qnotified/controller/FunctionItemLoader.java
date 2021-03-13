@@ -23,10 +23,8 @@
 package nil.nadph.qnotified.controller;
 
 import androidx.annotation.NonNull;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import nil.nadph.qnotified.hook.AbsDelayableHook;
 import nil.nadph.qnotified.util.UnsupportedFunctionUsage;
 

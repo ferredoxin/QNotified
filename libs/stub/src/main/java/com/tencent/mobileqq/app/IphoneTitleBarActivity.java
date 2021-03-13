@@ -1,10 +1,10 @@
 package com.tencent.mobileqq.app;
 
+import static android.view.Window.FEATURE_CUSTOM_TITLE;
+
 import android.content.Intent;
 import android.graphics.Paint;
 import android.view.View;
-
-import static android.view.Window.FEATURE_CUSTOM_TITLE;
 
 @Deprecated
 public class IphoneTitleBarActivity extends BaseActivity {

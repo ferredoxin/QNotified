@@ -27,10 +27,10 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
-import com.tencent.mobileqq.widget.BounceScrollView
 import cc.ioctl.hook.BlockFluxThief
 import cc.ioctl.hook.InterceptZipBomb
 import cc.ioctl.hook.PicMd5Hook
+import com.tencent.mobileqq.widget.BounceScrollView
 import nil.nadph.qnotified.ui.ResUtils
 import nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit
 

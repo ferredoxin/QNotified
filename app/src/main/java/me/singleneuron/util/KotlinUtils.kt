@@ -43,7 +43,6 @@ import me.singleneuron.base.Conditional
 import me.singleneuron.base.bridge.CardMsgList
 import me.singleneuron.data.CardMsgCheckResult
 import nil.nadph.qnotified.BuildConfig
-import nil.nadph.qnotified.MainHook
 import nil.nadph.qnotified.R
 import nil.nadph.qnotified.activity.EulaActivity
 import nil.nadph.qnotified.activity.OmegaTestFuncActivity

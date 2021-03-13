@@ -22,6 +22,17 @@
 package cc.ioctl.hook;
 
 
+import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
+import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
+import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_static;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_original;
+import static nil.nadph.qnotified.util.Utils.dip2px;
+import static nil.nadph.qnotified.util.Utils.dip2sp;
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -32,15 +43,13 @@ import android.widget.ExpandableListAdapter;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import java.lang.ref.WeakReference;
-import java.util.HashSet;
-
+import cc.ioctl.activity.ExfriendListActivity;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
+import java.lang.ref.WeakReference;
+import java.util.HashSet;
 import me.singleneuron.hook.AppCenterHookKt;
 import nil.nadph.qnotified.ExfriendManager;
-import cc.ioctl.activity.ExfriendListActivity;
 import nil.nadph.qnotified.activity.TroubleshootActivity;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.bridge.FriendChunk;
@@ -50,13 +59,6 @@ import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.CliOper;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
-
-import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
-import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
-import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.ReflexUtil.*;
-import static nil.nadph.qnotified.util.Utils.*;
 
 @FunctionEntry
 public class DelDetectorHook extends CommonDelayableHook {

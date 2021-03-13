@@ -21,6 +21,11 @@
  */
 package cc.ioctl.hook;
 
+import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
+
+import cc.ioctl.util.BugUtils;
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -28,17 +33,15 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
-import cc.ioctl.util.BugUtils;
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
-import nil.nadph.qnotified.util.*;
-
-import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
+import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.ReflexUtil;
+import nil.nadph.qnotified.util.Toasts;
+import nil.nadph.qnotified.util.Utils;
 
 @FunctionEntry
 public class BlockFluxThief extends CommonDelayableHook {

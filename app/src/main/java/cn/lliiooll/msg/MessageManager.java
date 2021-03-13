@@ -22,11 +22,9 @@
 package cn.lliiooll.msg;
 
 import androidx.annotation.NonNull;
-
+import cn.lliiooll.hook.AntiMessage;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import cn.lliiooll.hook.AntiMessage;
 import me.singleneuron.hook.decorator.RegexAntiMeg;
 import me.singleneuron.qn_kernel.data.MsgRecordData;
 

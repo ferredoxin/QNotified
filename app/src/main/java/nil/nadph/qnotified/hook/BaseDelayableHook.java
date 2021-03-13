@@ -22,7 +22,6 @@
 package nil.nadph.qnotified.hook;
 
 import androidx.annotation.NonNull;
-
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.AbsFunctionItem;
 import nil.nadph.qnotified.base.internal.Delayable2SingleHookFuncItemProxy;

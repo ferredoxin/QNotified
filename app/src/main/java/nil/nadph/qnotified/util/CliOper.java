@@ -22,14 +22,11 @@
 package nil.nadph.qnotified.util;
 
 import android.app.Application;
-
 import com.microsoft.appcenter.AppCenter;
 import com.microsoft.appcenter.analytics.Analytics;
 import com.microsoft.appcenter.crashes.Crashes;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.BuildConfig;
 import nil.nadph.qnotified.config.ConfigManager;

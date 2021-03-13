@@ -23,7 +23,6 @@
 package nil.nadph.qnotified.util;
 
 import android.content.Context;
-
 import java.util.Objects;
 
 public class SavedInstanceStatePatchedClassReferencer extends ClassLoader {

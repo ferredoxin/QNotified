@@ -21,9 +21,8 @@
  */
 package cc.ioctl.util.thunk.pcs;
 
-import nil.nadph.qnotified.util.Natives;
-
 import androidx.annotation.NonNull;
+import nil.nadph.qnotified.util.Natives;
 
 public abstract class Convention {
 

@@ -21,12 +21,11 @@
  */
 package nil.nadph.qnotified.remote;
 
+import androidx.annotation.NonNull;
 import com.qq.taf.jce.JceInputStream;
 import com.qq.taf.jce.JceOutputStream;
 import com.qq.taf.jce.JceStruct;
 import me.singleneuron.data.BugReportArguments;
-
-import androidx.annotation.NonNull;
 
 public class GetBugReportArgsResp extends JceStruct {
 

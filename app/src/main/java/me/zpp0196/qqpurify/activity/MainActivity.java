@@ -14,14 +14,20 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import com.flyco.tablayout.SlidingTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
-import me.zpp0196.qqpurify.fragment.*;
+import java.util.ArrayList;
+import java.util.List;
+import me.zpp0196.qqpurify.fragment.AboutPreferenceFragment;
+import me.zpp0196.qqpurify.fragment.ChatPreferenceFragment;
+import me.zpp0196.qqpurify.fragment.ExtensionPreferenceFragment;
+import me.zpp0196.qqpurify.fragment.MainuiPreferenceFragment;
+import me.zpp0196.qqpurify.fragment.ReadmeFragment;
+import me.zpp0196.qqpurify.fragment.SettingPreferenceFragment;
+import me.zpp0196.qqpurify.fragment.SidebarPreferenceFragment;
+import me.zpp0196.qqpurify.fragment.TroopPreferenceFragment;
 import me.zpp0196.qqpurify.utils.Constants;
 import me.zpp0196.qqpurify.utils.ThemeUtils;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.activity.AppCompatTransferActivity;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by zpp0196 on 2019/5/15.

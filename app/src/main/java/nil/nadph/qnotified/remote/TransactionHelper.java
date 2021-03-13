@@ -23,8 +23,6 @@ package nil.nadph.qnotified.remote;
 
 import com.qq.taf.jce.JceInputStream;
 import com.qq.taf.jce.JceOutputStream;
-
-import javax.net.ssl.*;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,6 +31,11 @@ import java.net.InetSocketAddress;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.SecureRandom;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 
 public class TransactionHelper {
     private static SSLSocketFactory sslFactory;

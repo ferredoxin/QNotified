@@ -23,19 +23,15 @@ package me.singleneuron.fragment;
 
 import android.os.Bundle;
 import android.widget.Toast;
-
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
-
 import com.microsoft.appcenter.AppCenter;
 import com.microsoft.appcenter.analytics.Analytics;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
 import me.singleneuron.data.BugReportArguments;
 import me.singleneuron.preference.BugReportPreference;
 import nil.nadph.qnotified.R;

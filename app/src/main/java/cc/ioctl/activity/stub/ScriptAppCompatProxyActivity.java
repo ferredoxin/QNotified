@@ -23,16 +23,13 @@ package cc.ioctl.activity.stub;
 
 import android.os.Bundle;
 import android.os.PersistableBundle;
-
 import androidx.annotation.Nullable;
-
-import java.lang.reflect.UndeclaredThrowableException;
-import java.util.Map;
-
-import de.robv.android.xposed.XC_MethodHook;
-import nil.nadph.qnotified.activity.AppCompatTransferActivity;
 import cc.ioctl.script.gui.ActivityProxyHandlerStaticHolder;
 import cc.ioctl.util.internal.XMethodHookDispatchUtil;
+import de.robv.android.xposed.XC_MethodHook;
+import java.lang.reflect.UndeclaredThrowableException;
+import java.util.Map;
+import nil.nadph.qnotified.activity.AppCompatTransferActivity;
 
 public class ScriptAppCompatProxyActivity extends AppCompatTransferActivity {
     private Map<String, XMethodHookDispatchUtil.HookHolder> mH;

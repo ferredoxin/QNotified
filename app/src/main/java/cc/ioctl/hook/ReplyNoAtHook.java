@@ -21,18 +21,18 @@
  */
 package cc.ioctl.hook;
 
+import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
+import static me.ketal.util.TIMVersion.TIM_3_1_1;
+import static me.singleneuron.util.QQVersion.QQ_8_1_3;
+import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
+import static nil.nadph.qnotified.util.Utils.log;
+
 import de.robv.android.xposed.XC_MethodHook;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import me.singleneuron.qn_kernel.tlb.ConfigTable;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.LicenseStatus;
-
-import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static me.ketal.util.TIMVersion.TIM_3_1_1;
-import static me.singleneuron.util.QQVersion.QQ_8_1_3;
-import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
-import static nil.nadph.qnotified.util.Utils.log;
 
 @FunctionEntry
 public class ReplyNoAtHook extends CommonDelayableHook {

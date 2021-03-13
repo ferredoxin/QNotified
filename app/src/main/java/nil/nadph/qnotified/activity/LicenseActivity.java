@@ -28,11 +28,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-
 import com.tencent.widget.XListView;
-
-import java.util.List;
-
 import de.psdev.licensesdialog.LicensesDialog;
 import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
 import de.psdev.licensesdialog.licenses.GnuLesserGeneralPublicLicense3;
@@ -40,6 +36,7 @@ import de.psdev.licensesdialog.licenses.MITLicense;
 import de.psdev.licensesdialog.model.Notice;
 import de.psdev.licensesdialog.model.Notices;
 import io.noties.markwon.Markwon;
+import java.util.List;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.ui.ResUtils;
 

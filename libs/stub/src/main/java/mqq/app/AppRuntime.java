@@ -4,9 +4,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import com.tencent.qphone.base.remote.SimpleAccount;
-import mqq.manager.Manager;
-
 import java.util.ArrayList;
+import mqq.manager.Manager;
 
 public abstract class AppRuntime {
     public static final int ACCOUNT_MANAGER = 0;

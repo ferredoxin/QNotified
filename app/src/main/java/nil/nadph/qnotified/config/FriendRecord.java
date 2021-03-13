@@ -21,9 +21,9 @@
  */
 package nil.nadph.qnotified.config;
 
-import java.io.Serializable;
-
 import static nil.nadph.qnotified.util.Utils.en;
+
+import java.io.Serializable;
 
 
 public class FriendRecord implements Serializable, Cloneable {

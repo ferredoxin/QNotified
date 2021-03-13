@@ -21,14 +21,12 @@
  */
 package nil.nadph.qnotified.bridge;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-
-import androidx.annotation.Nullable;
-
 import static nil.nadph.qnotified.util.Utils.log;
 import static nil.nadph.qnotified.util.Utils.logi;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+import androidx.annotation.Nullable;
 
 public class RevokeMsgInfoImpl {
 

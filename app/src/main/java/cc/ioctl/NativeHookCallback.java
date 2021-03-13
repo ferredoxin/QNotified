@@ -21,9 +21,8 @@
  */
 package cc.ioctl;
 
-import de.robv.android.xposed.XC_MethodHook;
-
 import androidx.annotation.NonNull;
+import de.robv.android.xposed.XC_MethodHook;
 
 @SuppressWarnings("JavaJniMissingFunction")
 public final class NativeHookCallback extends XC_MethodHook {

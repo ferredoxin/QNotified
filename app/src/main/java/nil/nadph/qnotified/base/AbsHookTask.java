@@ -19,7 +19,6 @@
 package nil.nadph.qnotified.base;
 
 import androidx.annotation.NonNull;
-
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.Const;

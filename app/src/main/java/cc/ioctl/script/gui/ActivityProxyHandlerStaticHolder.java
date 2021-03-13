@@ -21,11 +21,9 @@
  */
 package cc.ioctl.script.gui;
 
-import de.robv.android.xposed.XC_MethodHook;
 import cc.ioctl.script.api.RestrictedProxyParamList;
-import nil.nadph.qnotified.util.DexMethodDescriptor;
 import cc.ioctl.util.internal.XMethodHookDispatchUtil;
-
+import de.robv.android.xposed.XC_MethodHook;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
@@ -33,6 +31,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import nil.nadph.qnotified.util.DexMethodDescriptor;
 
 public final class ActivityProxyHandlerStaticHolder {
 

@@ -1,7 +1,6 @@
 package nil.nadph.qnotified.startup;
 
 import android.util.Log;
-
 import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.BuildConfig;
 

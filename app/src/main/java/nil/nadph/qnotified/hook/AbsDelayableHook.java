@@ -22,7 +22,6 @@
 package nil.nadph.qnotified.hook;
 
 import androidx.annotation.NonNull;
-
 import nil.nadph.qnotified.config.SwitchConfigItem;
 import nil.nadph.qnotified.controller.FunctionItemLoader;
 import nil.nadph.qnotified.step.Step;

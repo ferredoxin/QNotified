@@ -21,7 +21,13 @@
  */
 package cc.ioctl.script;
 
-import cc.ioctl.script.params.*;
+import cc.ioctl.script.params.FriendAddedParam;
+import cc.ioctl.script.params.FriendMessageParam;
+import cc.ioctl.script.params.FriendRequestParam;
+import cc.ioctl.script.params.GroupJoinedParam;
+import cc.ioctl.script.params.GroupMessageParam;
+import cc.ioctl.script.params.GroupRequestParam;
+import cc.ioctl.script.params.ParamFactory;
 
 public class QNScriptEventBus {
 

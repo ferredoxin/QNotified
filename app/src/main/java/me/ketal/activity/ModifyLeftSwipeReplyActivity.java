@@ -21,27 +21,6 @@
  */
 package me.ketal.activity;
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.Toast;
-
-import androidx.core.view.ViewCompat;
-
-import com.tencent.mobileqq.widget.BounceScrollView;
-
-import me.ketal.hook.LeftSwipeReplyHook;
-import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat;
-import nil.nadph.qnotified.ui.CustomDialog;
-import nil.nadph.qnotified.ui.HighContrastBorder;
-import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.util.Toasts;
-
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
@@ -51,6 +30,24 @@ import static nil.nadph.qnotified.ui.ViewBuilder.newListItemSwitch;
 import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
 import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
 import static nil.nadph.qnotified.util.Utils.dip2px;
+
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Toast;
+import androidx.core.view.ViewCompat;
+import com.tencent.mobileqq.widget.BounceScrollView;
+import me.ketal.hook.LeftSwipeReplyHook;
+import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat;
+import nil.nadph.qnotified.ui.CustomDialog;
+import nil.nadph.qnotified.ui.HighContrastBorder;
+import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.util.Toasts;
 
 @SuppressLint("Registered")
 public class ModifyLeftSwipeReplyActivity extends IphoneTitleBarActivityCompat {

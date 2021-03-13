@@ -23,7 +23,6 @@
 package nil.nadph.qnotified.base.internal;
 
 import androidx.annotation.NonNull;
-
 import nil.nadph.qnotified.base.AbsFunctionItem;
 
 /**

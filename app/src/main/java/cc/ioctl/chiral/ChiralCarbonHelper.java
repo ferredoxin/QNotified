@@ -22,7 +22,6 @@
 package cc.ioctl.chiral;
 
 import cc.ioctl.util.IndexFrom;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 

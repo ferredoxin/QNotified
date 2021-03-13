@@ -21,28 +21,27 @@
  */
 package cc.ioctl.hook;
 
+import static nil.nadph.qnotified.bridge.GreyTipBuilder.MSG_TYPE_TROOP_GAP_GRAY_TIPS;
+import static nil.nadph.qnotified.util.ReflexUtil.findMethodByTypes_1;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_declared_ordinal_modifier;
+import static nil.nadph.qnotified.util.Utils.log;
+
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.bridge.ContactUtils;
 import nil.nadph.qnotified.bridge.GreyTipBuilder;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
-import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
-
-import static nil.nadph.qnotified.bridge.GreyTipBuilder.MSG_TYPE_TROOP_GAP_GRAY_TIPS;
-import static nil.nadph.qnotified.util.ReflexUtil.findMethodByTypes_1;
-import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_declared_ordinal_modifier;
-import static nil.nadph.qnotified.util.Utils.log;
 
 @FunctionEntry
 public class GagInfoDisclosure extends CommonDelayableHook {

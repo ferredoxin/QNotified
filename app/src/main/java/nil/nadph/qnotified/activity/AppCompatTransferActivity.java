@@ -22,10 +22,8 @@
 package nil.nadph.qnotified.activity;
 
 import android.os.Bundle;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import nil.nadph.qnotified.util.CliOper;
 import nil.nadph.qnotified.util.SavedInstanceStatePatchedClassReferencer;
 import nil.nadph.qnotified.util.Utils;

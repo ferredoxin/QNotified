@@ -21,6 +21,8 @@
  */
 package nil.nadph.qnotified.ui;
 
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -28,8 +30,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 public class InterceptLayout extends LinearLayout {
 

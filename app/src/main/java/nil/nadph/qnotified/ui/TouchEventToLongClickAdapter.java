@@ -21,11 +21,11 @@
  */
 package nil.nadph.qnotified.ui;
 
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
-
-import static nil.nadph.qnotified.util.Utils.log;
 
 abstract public class TouchEventToLongClickAdapter implements View.OnTouchListener, View.OnLongClickListener, Runnable {
     private long mDownTime = -1;

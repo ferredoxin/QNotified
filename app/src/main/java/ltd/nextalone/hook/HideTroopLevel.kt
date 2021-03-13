@@ -25,7 +25,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import de.robv.android.xposed.XC_MethodHook
 import ltd.nextalone.data.TroopInfo
-import ltd.nextalone.util.*
+import ltd.nextalone.util.clazz
 import me.ketal.dispacher.OnBubbleBuilder
 import me.ketal.util.findViewByType
 import me.singleneuron.qn_kernel.data.MsgRecordData

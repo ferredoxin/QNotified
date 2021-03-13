@@ -21,6 +21,10 @@
  */
 package cc.ioctl.activity;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static nil.nadph.qnotified.util.Utils.dip2px;
+
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
@@ -28,28 +32,24 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
-
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import androidx.core.view.ViewCompat;
-
+import cc.ioctl.hook.JumpController;
 import com.tencent.mobileqq.widget.BounceScrollView;
-
 import java.text.ParseException;
 import java.util.ArrayList;
-
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat;
-import cc.ioctl.hook.JumpController;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.ViewBuilder;
 import nil.nadph.qnotified.util.UiThread;
-
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.util.Utils.dip2px;
 
 @SuppressLint("Registered")
 public class JefsRulesActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener {

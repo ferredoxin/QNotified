@@ -21,10 +21,9 @@
  */
 package cc.ioctl.script.api;
 
+import de.robv.android.xposed.XC_MethodHook;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-
-import de.robv.android.xposed.XC_MethodHook;
 import nil.nadph.qnotified.util.DexMethodDescriptor;
 
 public class RestrictedProxyParamList {

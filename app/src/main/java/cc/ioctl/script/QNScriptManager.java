@@ -21,14 +21,23 @@
  */
 package cc.ioctl.script;
 
+import static nil.nadph.qnotified.util.Utils.isNullOrEmpty;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.readByReader;
+
 import android.widget.CompoundButton;
-
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-
 import bsh.EvalError;
 import bsh.Interpreter;
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
@@ -36,8 +45,6 @@ import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
-
-import static nil.nadph.qnotified.util.Utils.*;
 
 public class QNScriptManager {
 

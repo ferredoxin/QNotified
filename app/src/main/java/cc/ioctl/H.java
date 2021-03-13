@@ -22,9 +22,7 @@
 package cc.ioctl;
 
 import android.app.Application;
-
 import androidx.annotation.NonNull;
-
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 
 /**

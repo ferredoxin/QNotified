@@ -21,6 +21,11 @@
  */
 package nil.nadph.qnotified.activity;
 
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.ReflexUtil.iput_object;
+import static nil.nadph.qnotified.util.ReflexUtil.new_instance;
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
@@ -29,24 +34,15 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
-
 import com.tencent.mobileqq.app.IphoneTitleBarActivity;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.CliOper;
 import nil.nadph.qnotified.util.SavedInstanceStatePatchedClassReferencer;
 import nil.nadph.qnotified.util.Utils;
-
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.ReflexUtil.iput_object;
-import static nil.nadph.qnotified.util.ReflexUtil.new_instance;
-import static nil.nadph.qnotified.util.Utils.log;
 
 @SuppressWarnings("deprecation")
 @SuppressLint("Registered")

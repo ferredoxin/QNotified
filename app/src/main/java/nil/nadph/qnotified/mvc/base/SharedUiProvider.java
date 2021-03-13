@@ -19,10 +19,8 @@
 package nil.nadph.qnotified.mvc.base;
 
 import android.content.Context;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import nil.nadph.qnotified.util.UiThread;
 
 /**

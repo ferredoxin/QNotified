@@ -21,15 +21,14 @@
  */
 package nil.nadph.qnotified.util;
 
-import java.io.IOException;
+import static nil.nadph.qnotified.util.Utils.log;
 
+import cc.ioctl.chiral.Molecule;
+import java.io.IOException;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.BuildConfig;
 import nil.nadph.qnotified.activity.EulaActivity;
-import cc.ioctl.chiral.Molecule;
 import nil.nadph.qnotified.config.ConfigManager;
-
-import static nil.nadph.qnotified.util.Utils.log;
 
 public class LicenseStatus {
     public static final String qn_eula_status = "qh_eula_status";//typo, ignore it

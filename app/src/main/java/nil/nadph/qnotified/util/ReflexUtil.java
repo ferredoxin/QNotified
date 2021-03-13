@@ -1,14 +1,17 @@
 package nil.nadph.qnotified.util;
 
-import java.lang.reflect.*;
-import java.util.Arrays;
-import java.util.regex.Pattern;
-
-import de.robv.android.xposed.XposedBridge;
-
 import static nil.nadph.qnotified.util.Utils.log;
 import static nil.nadph.qnotified.util.Utils.paramsTypesToString;
 import static nil.nadph.qnotified.util.Utils.strcmp;
+
+import de.robv.android.xposed.XposedBridge;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.regex.Pattern;
 
 public class ReflexUtil {
 

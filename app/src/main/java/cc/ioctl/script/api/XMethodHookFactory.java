@@ -22,12 +22,10 @@
 package cc.ioctl.script.api;
 
 import android.annotation.SuppressLint;
-
-import java.lang.reflect.Member;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.callbacks.XCallback;
+import java.lang.reflect.Member;
 
 @SuppressLint("UnknownNullness")
 public class XMethodHookFactory {

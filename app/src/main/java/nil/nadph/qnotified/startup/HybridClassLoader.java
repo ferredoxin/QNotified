@@ -22,7 +22,6 @@
 package nil.nadph.qnotified.startup;
 
 import android.content.Context;
-
 import java.net.URL;
 
 /**

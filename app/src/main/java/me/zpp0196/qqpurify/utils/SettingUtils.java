@@ -3,10 +3,6 @@ package me.zpp0196.qqpurify.utils;
 import android.content.Context;
 import android.util.Log;
 import androidx.annotation.StringDef;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Retention;
@@ -14,6 +10,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by zpp0196 on 2018/5/17.

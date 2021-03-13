@@ -21,6 +21,16 @@
  */
 package nil.nadph.qnotified.activity;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static nil.nadph.qnotified.ui.ViewBuilder.R_ID_VALUE;
+import static nil.nadph.qnotified.ui.ViewBuilder.clickToProxyActAction;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemButton;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemSwitchConfig;
+import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
+import static nil.nadph.qnotified.util.Utils.dip2px;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
@@ -28,27 +38,20 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.tencent.mobileqq.widget.BounceScrollView;
-
 import cc.ioctl.activity.ChatTailActivity;
 import cc.ioctl.activity.ManageScriptsActivity;
+import cc.ioctl.hook.ChatTailHook;
+import cc.ioctl.hook.MutePokePacket;
+import cc.ioctl.hook.PttForwardHook;
+import cc.ioctl.script.QNScriptManager;
+import com.tencent.mobileqq.widget.BounceScrollView;
 import me.kyuubiran.dialog.RevokeMsgDialog;
 import me.kyuubiran.hook.RemoveDiyCard;
 import me.kyuubiran.hook.RemovePokeGrayTips;
 import me.kyuubiran.hook.RemoveRedDot;
 import me.kyuubiran.hook.testhook.CutMessage;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
-import cc.ioctl.hook.ChatTailHook;
-import cc.ioctl.hook.MutePokePacket;
-import cc.ioctl.hook.PttForwardHook;
-import cc.ioctl.script.QNScriptManager;
 import nil.nadph.qnotified.ui.ResUtils;
-
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.ui.ViewBuilder.*;
-import static nil.nadph.qnotified.util.Utils.dip2px;
 
 @SuppressLint("Registered")
 public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {

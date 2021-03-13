@@ -26,12 +26,15 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.*;
-
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
-import nil.nadph.qnotified.R;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.Switch;
+import android.widget.TextView;
 import cc.ioctl.script.QNScript;
 import cc.ioctl.script.QNScriptManager;
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.util.Toasts;
 

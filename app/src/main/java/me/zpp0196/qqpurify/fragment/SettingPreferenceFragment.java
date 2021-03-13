@@ -6,18 +6,13 @@ import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.widget.Toast;
-
 import androidx.preference.Preference;
-import androidx.preference.SwitchPreference;
-
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
-
 import me.zpp0196.qqpurify.fragment.base.AbstractPreferenceFragment;
 import me.zpp0196.qqpurify.fragment.custom.ColorPickerPreference;
 import me.zpp0196.qqpurify.utils.ThemeUtils;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.util.Toasts;
-import nil.nadph.qnotified.util.Utils;
 
 /**
  * Created by zpp0196 on 2019/2/9.

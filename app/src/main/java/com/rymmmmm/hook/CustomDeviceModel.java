@@ -21,11 +21,10 @@
  */
 package com.rymmmmm.hook;
 
-import java.lang.reflect.Field;
-
-import de.robv.android.xposed.XposedHelpers;
-import nil.nadph.qnotified.SyncUtils;
 import cc.ioctl.dialog.RikkaCustomDeviceModelDialog;
+import de.robv.android.xposed.XposedHelpers;
+import java.lang.reflect.Field;
+import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.Initiator;

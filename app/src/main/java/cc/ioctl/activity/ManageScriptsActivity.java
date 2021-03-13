@@ -21,6 +21,8 @@
  */
 package cc.ioctl.activity;
 
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -31,20 +33,16 @@ import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.provider.OpenableColumns;
 import android.widget.LinearLayout;
-
-import java.io.FileDescriptor;
-
-import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat;
-import nil.nadph.qnotified.config.ConfigItems;
-import nil.nadph.qnotified.config.ConfigManager;
 import cc.ioctl.dialog.ScriptSettingDialog;
 import cc.ioctl.script.QNScript;
 import cc.ioctl.script.QNScriptManager;
+import java.io.FileDescriptor;
+import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat;
+import nil.nadph.qnotified.config.ConfigItems;
+import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.ViewBuilder;
 import nil.nadph.qnotified.util.Toasts;
-
-import static nil.nadph.qnotified.util.Utils.log;
 
 @SuppressLint("Registered")
 public class ManageScriptsActivity extends IphoneTitleBarActivityCompat {
