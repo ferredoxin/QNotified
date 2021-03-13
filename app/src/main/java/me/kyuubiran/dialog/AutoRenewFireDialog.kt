@@ -104,15 +104,26 @@ object AutoRenewFireDialog {
                 false -> Toasts.showToast(ctx, Toasts.TYPE_INFO, "已关闭自动续火", Toasts.LENGTH_SHORT)
             }
         }
-        val params = ViewBuilder.newLinearLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, _5 * 2)
+        val params = ViewBuilder.newLinearLayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            _5 * 2
+        )
         val linearLayout = LinearLayout(ctx)
         linearLayout.orientation = LinearLayout.VERTICAL
         linearLayout.addView(
             ViewBuilder.subtitle(
-                context, "说明:启用后将会在每天预设时间之后给对方发一条消息。\n此处开关为总开关，请单独在好友的设置页面打开自动续火开关。\n无论你是否给TA发过消息，本功能都会发送续火消息。\n如果你在续火消息发送前添加了好友，那么之后将会发送给这个好友。\n如果今天已经发送过续火消息了，则再添加好友并不会发送续火消息。"
+                context,
+                "说明:启用后将会在每天预设时间之后给对方发一条消息。\n此处开关为总开关，请单独在好友的设置页面打开自动续火开关。\n无论你是否给TA发过消息，本功能都会发送续火消息。\n如果你在续火消息发送前添加了好友，那么之后将会发送给这个好友。\n如果今天已经发送过续火消息了，则再添加好友并不会发送续火消息。"
             )
         )
-        linearLayout.addView(ViewBuilder.subtitle(context, "允许的续火消息:${allowMsg.joinToString(",")}", Color.RED))
+        linearLayout.addView(
+            ViewBuilder.subtitle(
+                context,
+                "允许的续火消息:${allowMsg.joinToString(",")}",
+                Color.RED
+            )
+        )
         linearLayout.addView(checkBox, params)
         linearLayout.addView(msgEditText, params)
         linearLayout.addView(timeEditText, params)
@@ -142,7 +153,12 @@ object AutoRenewFireDialog {
                     Toasts.showToast(context, Utils.TOAST_TYPE_ERROR, "时间格式错误", Toast.LENGTH_SHORT)
                 } else {
                     replyMsg = "续火"
-                    Toasts.showToast(context, Utils.TOAST_TYPE_ERROR, "非允许的续火消息", Toast.LENGTH_SHORT)
+                    Toasts.showToast(
+                        context,
+                        Utils.TOAST_TYPE_ERROR,
+                        "非允许的续火消息",
+                        Toast.LENGTH_SHORT
+                    )
                 }
             }
         }
@@ -179,7 +195,14 @@ object AutoRenewFireDialog {
         editText.setText(AutoRenewFireMgr.getMsg(uin))
         val linearLayout = LinearLayout(ctx)
         linearLayout.orientation = LinearLayout.VERTICAL
-        linearLayout.addView(editText, ViewBuilder.newLinearLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, _5 * 2))
+        linearLayout.addView(
+            editText,
+            ViewBuilder.newLinearLayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                _5 * 2
+            )
+        )
         val alertDialog = dialog.setTitle("设置单独续火消息")
             .setView(linearLayout)
             .setCancelable(true)
@@ -200,7 +223,10 @@ object AutoRenewFireDialog {
         val cfg = getExFriendCfg()
         currentEnable?.let { cfg.setBooleanConfig(AutoRenewFireMgr.ENABLE, it) }
         cfg.putString(AutoRenewFireMgr.MESSAGE, replyMsg)
-        cfg.putString(AutoRenewFireMgr.TIMEPRESET, if (replyTime.isNotEmpty()) replyTime else "00:00:05")
+        cfg.putString(
+            AutoRenewFireMgr.TIMEPRESET,
+            if (replyTime.isNotEmpty()) replyTime else "00:00:05"
+        )
         cfg.save()
     }
 

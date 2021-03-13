@@ -58,6 +58,7 @@ import nil.nadph.qnotified.util.Utils;
 
 public class ConfigV2Activity extends AppCompatActivity {
 
+    private static final String ALIAS_ACTIVITY_NAME = "nil.nadph.qnotified.activity.ConfigV2ActivityAlias";
     private final Looper mainLooper = Looper.getMainLooper();
     private String dbgInfo = "";
     private MainV2Binding mainV2Binding = null;
@@ -71,15 +72,16 @@ public class ConfigV2Activity extends AppCompatActivity {
         String str = "";
         try {
             str += "SystemClassLoader:" + ClassLoader.getSystemClassLoader() +
-                    "\nActiveModuleVersion:" + BuildConfig.VERSION_NAME
-                    + "\nThisVersion:" + Utils.QN_VERSION_NAME + "";
+                "\nActiveModuleVersion:" + BuildConfig.VERSION_NAME
+                + "\nThisVersion:" + Utils.QN_VERSION_NAME + "";
         } catch (Throwable r) {
             str += r;
         }
         dbgInfo += str;
         HookStatue.Statue statue = HookStatue.INSTANCE.getStatue(this, false);
         boolean isDynLoad = false;
-        InputStream in = ConfigV2Activity.class.getClassLoader().getResourceAsStream("assets/xposed_init");
+        InputStream in = ConfigV2Activity.class.getClassLoader()
+            .getResourceAsStream("assets/xposed_init");
         byte[] buf = new byte[64];
         String start;
         try {
@@ -98,8 +100,9 @@ public class ConfigV2Activity extends AppCompatActivity {
             long ts = Utils.getBuildTimestamp();
             delta = System.currentTimeMillis() - delta;
             dbgInfo += "\nBuild Time: " + (ts > 0 ? new Date(ts).toString() : "unknown") + ", " +
-                    "delta=" + delta + "ms\n" +
-                    "SUPPORTED_ABIS=" + Arrays.toString(Build.SUPPORTED_ABIS) + "\npageSize=" + Natives.getpagesize();
+                "delta=" + delta + "ms\n" +
+                "SUPPORTED_ABIS=" + Arrays.toString(Build.SUPPORTED_ABIS) + "\npageSize=" + Natives
+                .getpagesize();
         } catch (Throwable e) {
             dbgInfo += "\n" + e.toString();
         }
@@ -109,11 +112,11 @@ public class ConfigV2Activity extends AppCompatActivity {
         ImageView frameIcon = mainV2Binding.mainV2ActivationStatusIcon;
         TextView statusTitle = mainV2Binding.mainV2ActivationStatusTitle;
         frameStatus.setBackground(ResourcesCompat.getDrawable(getResources(),
-                HookStatue.INSTANCE.isActive(statue) ? R.drawable.bg_green_solid :
-                        R.drawable.bg_red_solid, getTheme()));
+            HookStatue.INSTANCE.isActive(statue) ? R.drawable.bg_green_solid :
+                R.drawable.bg_red_solid, getTheme()));
         frameIcon.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-                HookStatue.INSTANCE.isActive(statue) ? R.drawable.ic_success_white :
-                        R.drawable.ic_failure_white, getTheme()));
+            HookStatue.INSTANCE.isActive(statue) ? R.drawable.ic_success_white :
+                R.drawable.ic_failure_white, getTheme()));
         statusTitle.setText(HookStatue.INSTANCE.isActive(statue) ? "已激活" : "未激活");
         TextView tvStatus = mainV2Binding.mainV2ActivationStatusDesc;
         tvStatus.setText(getString(HookStatue.INSTANCE.getStatueName(statue)).split(" ")[0]);
@@ -125,7 +128,8 @@ public class ConfigV2Activity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.menu_item_debugInfo: {
                         new androidx.appcompat.app.AlertDialog.Builder(ConfigV2Activity.this)
-                                .setTitle("调试信息").setPositiveButton(android.R.string.ok, null).setMessage(dbgInfo).show();
+                            .setTitle("调试信息").setPositiveButton(android.R.string.ok, null)
+                            .setMessage(dbgInfo).show();
                         return true;
                     }
                     case R.id.menu_item_switchTheme: {
@@ -173,15 +177,17 @@ public class ConfigV2Activity extends AppCompatActivity {
         }
         if (pkg != null) {
             Intent intent = new Intent();
-            intent.setComponent(new ComponentName(pkg, "com.tencent.mobileqq.activity.JumpActivity"));
+            intent
+                .setComponent(new ComponentName(pkg, "com.tencent.mobileqq.activity.JumpActivity"));
             intent.setAction(Intent.ACTION_VIEW);
-            intent.putExtra(JumpActivityEntryHook.JUMP_ACTION_CMD, JumpActivityEntryHook.JUMP_ACTION_SETTING_ACTIVITY);
+            intent.putExtra(JumpActivityEntryHook.JUMP_ACTION_CMD,
+                JumpActivityEntryHook.JUMP_ACTION_SETTING_ACTIVITY);
             try {
                 startActivity(intent);
             } catch (ActivityNotFoundException e) {
                 new AlertDialog.Builder(this).setTitle("出错啦")
-                        .setMessage("拉起模块设置失败, 请确认 " + pkg + " 已安装并启用(没有被关冰箱或被冻结停用)\n" + e.toString())
-                        .setCancelable(true).setPositiveButton(android.R.string.ok, null).show();
+                    .setMessage("拉起模块设置失败, 请确认 " + pkg + " 已安装并启用(没有被关冰箱或被冻结停用)\n" + e.toString())
+                    .setCancelable(true).setPositiveButton(android.R.string.ok, null).show();
             }
         }
     }
@@ -196,16 +202,15 @@ public class ConfigV2Activity extends AppCompatActivity {
             }
             case R.id.mainV2_help: {
                 new AlertDialog.Builder(this)
-                        .setMessage("如模块无法使用，EdXp可尝试取消优化+开启兼容模式  ROOT用户可尝试 用幸运破解器-工具箱-移除odex更改 移除QQ与本模块的优化, 太极尝试取消优化")
-                        .setCancelable(true).setPositiveButton(android.R.string.ok, null).show();
+                    .setMessage(
+                        "如模块无法使用，EdXp可尝试取消优化+开启兼容模式  ROOT用户可尝试 用幸运破解器-工具箱-移除odex更改 移除QQ与本模块的优化, 太极尝试取消优化")
+                    .setCancelable(true).setPositiveButton(android.R.string.ok, null).show();
                 break;
             }
             default: {
             }
         }
     }
-
-    private static final String ALIAS_ACTIVITY_NAME = "nil.nadph.qnotified.activity.ConfigV2ActivityAlias";
 
     @Override
     protected void onResume() {
@@ -218,7 +223,7 @@ public class ConfigV2Activity extends AppCompatActivity {
         if (menu != null) {
             menu.removeItem(R.id.mainV2_menuItem_toggleDesktopIcon);
             menu.add(Menu.CATEGORY_SYSTEM, R.id.mainV2_menuItem_toggleDesktopIcon, 0,
-                    isLauncherIconEnabled() ? "隐藏桌面图标" : "显示桌面图标");
+                isLauncherIconEnabled() ? "隐藏桌面图标" : "显示桌面图标");
         }
     }
 
@@ -226,9 +231,9 @@ public class ConfigV2Activity extends AppCompatActivity {
         try {
             PackageManager packageManager = getPackageManager();
             int state = packageManager.getComponentEnabledSetting(
-                    new ComponentName(this, ALIAS_ACTIVITY_NAME));
+                new ComponentName(this, ALIAS_ACTIVITY_NAME));
             return state == PackageManager.COMPONENT_ENABLED_STATE_ENABLED ||
-                    state == PackageManager.COMPONENT_ENABLED_STATE_DEFAULT;
+                state == PackageManager.COMPONENT_ENABLED_STATE_DEFAULT;
         } catch (Exception e) {
             return false;
         }
@@ -237,9 +242,9 @@ public class ConfigV2Activity extends AppCompatActivity {
     @UiThread
     void setLauncherIconEnabled(boolean enabled) {
         getPackageManager().setComponentEnabledSetting(
-                new ComponentName(this, ALIAS_ACTIVITY_NAME),
-                enabled ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED :
-                        PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                PackageManager.DONT_KILL_APP);
+            new ComponentName(this, ALIAS_ACTIVITY_NAME),
+            enabled ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED :
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+            PackageManager.DONT_KILL_APP);
     }
 }

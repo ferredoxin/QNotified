@@ -83,7 +83,8 @@ public class DexTail {
         return dat;
     }
 
-    public static byte[] injectPayload(byte[] origin, byte[] payload, boolean noXor, PrintStream out) {
+    public static byte[] injectPayload(byte[] origin, byte[] payload, boolean noXor,
+        PrintStream out) {
         byte[] chunk = noXor ? createChunk(payload, 0) : createChunk(payload);
         byte[] result = new byte[origin.length + chunk.length + 4];
         System.arraycopy(origin, 0, result, 0, origin.length);
@@ -122,7 +123,8 @@ public class DexTail {
             return false;
         }
         if (origin[4] != '0' || origin[5] != '3' || origin[6] != '5') {
-            out.println("E Unsupported dex version: " + new String(origin, 4, 3) + ", only dex035 is supported.");
+            out.println("E Unsupported dex version: " + new String(origin, 4, 3)
+                + ", only dex035 is supported.");
             return false;
         }
         int a32_dex = readLe32(origin, 8);
@@ -157,7 +159,9 @@ public class DexTail {
         if (bytesEqu(sha1sig_dex, signature)) {
             out.println("I SHA1 sig: " + HexUtils.byteArrayToString(sha1sig_dex));
         } else {
-            out.println("E Incorrect SHA1 sig: " + HexUtils.byteArrayToString(sha1sig_dex) + ", expected " + HexUtils.byteArrayToString(signature));
+            out.println(
+                "E Incorrect SHA1 sig: " + HexUtils.byteArrayToString(sha1sig_dex) + ", expected "
+                    + HexUtils.byteArrayToString(signature));
             ret = false;
         }
         return ret;

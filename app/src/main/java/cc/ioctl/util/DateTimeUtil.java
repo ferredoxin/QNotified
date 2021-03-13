@@ -47,7 +47,8 @@ public class DateTimeUtil {
         }
         if ((curr - time_ms) / 1000f / 3600f / 24f < 6.0f) {
             format = new SimpleDateFormat(" HH:mm");
-            return "星期" + new String[]{"日", "一", "二", "三", "四", "五", "六"}[t.getDay()] + format.format(t);
+            return "星期" + new String[]{"日", "一", "二", "三", "四", "五", "六"}[t.getDay()] + format
+                .format(t);
         }
         format = new SimpleDateFormat("MM-dd HH:mm");
         return format.format(t);
@@ -100,10 +101,18 @@ public class DateTimeUtil {
         c1.setTime(t1);
         Calendar c2 = Calendar.getInstance();
         c2.setTime(t2);
-        if (c1.get(Calendar.YEAR) != c2.get(Calendar.YEAR)) return 5;
-        if (c1.get(Calendar.MONTH) != c2.get(Calendar.MONTH)) return 4;
-        if (c1.get(Calendar.DATE) != c2.get(Calendar.DATE)) return 3;
-        if (t1.equals(t2)) return 0;
+        if (c1.get(Calendar.YEAR) != c2.get(Calendar.YEAR)) {
+            return 5;
+        }
+        if (c1.get(Calendar.MONTH) != c2.get(Calendar.MONTH)) {
+            return 4;
+        }
+        if (c1.get(Calendar.DATE) != c2.get(Calendar.DATE)) {
+            return 3;
+        }
+        if (t1.equals(t2)) {
+            return 0;
+        }
         return 1;
     }
 

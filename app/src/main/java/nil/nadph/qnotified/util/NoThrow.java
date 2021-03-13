@@ -26,10 +26,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Do not throw any Exception.
- * Exception or bad cases should be conveyed in the return value or other way.
+ * Do not throw any Exception. Exception or bad cases should be conveyed in the return value or
+ * other way.
  */
 @Retention(CLASS)
 @Target({METHOD, CONSTRUCTOR})
 public @interface NoThrow {
+
 }

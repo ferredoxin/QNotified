@@ -30,6 +30,7 @@ import nil.nadph.qnotified.hook.CommonDelayableHook;
 
 @FunctionEntry
 public class ScriptEventHook extends CommonDelayableHook {
+
     public static final ScriptEventHook INSTANCE = new ScriptEventHook();
 
     private ScriptEventHook() {
@@ -48,12 +49,12 @@ public class ScriptEventHook extends CommonDelayableHook {
     }
 
     @Override
-    public void setEnabled(boolean enabled) {
-        //do nothing
+    public boolean isEnabled() {
+        return true;
     }
 
     @Override
-    public boolean isEnabled() {
-        return true;
+    public void setEnabled(boolean enabled) {
+        //do nothing
     }
 }

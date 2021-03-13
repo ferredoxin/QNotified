@@ -7,6 +7,7 @@ import nil.nadph.qnotified.R;
  * Created by zpp0196 on 2019/5/15.
  */
 public class MainuiPreferenceFragment extends AbstractPreferenceFragment {
+
     @Override
     protected int getPrefRes() {
         return R.xml.pref_mainui;

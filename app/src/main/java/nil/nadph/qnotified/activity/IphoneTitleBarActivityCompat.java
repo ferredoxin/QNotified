@@ -48,17 +48,23 @@ import nil.nadph.qnotified.util.Utils;
 @SuppressLint("Registered")
 public class IphoneTitleBarActivityCompat extends IphoneTitleBarActivity {
 
+    private ClassLoader mXref = null;
+
     @Override
     public boolean doOnCreate(Bundle bundle) {
         boolean ret = super.doOnCreate(bundle);
         try {
             ResUtils.initTheme(this);
             try {
-                AppCompatDelegate.setDefaultNightMode(ResUtils.isInNightMode() ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+                AppCompatDelegate.setDefaultNightMode(
+                    ResUtils.isInNightMode() ? AppCompatDelegate.MODE_NIGHT_YES
+                        : AppCompatDelegate.MODE_NIGHT_NO);
             } catch (Throwable e) {
                 log(e);
             }
-            Object exlist_mFlingHandler = new_instance(load("com/tencent/mobileqq/activity/fling/FlingGestureHandler"), this, Activity.class);
+            Object exlist_mFlingHandler = new_instance(
+                load("com/tencent/mobileqq/activity/fling/FlingGestureHandler"), this,
+                Activity.class);
             iput_object(this, "mFlingHandler", exlist_mFlingHandler);
         } catch (Throwable e) {
             log(e);
@@ -180,12 +186,11 @@ public class IphoneTitleBarActivityCompat extends IphoneTitleBarActivity {
         super.onRestoreInstanceState(savedInstanceState);
     }
 
-    private ClassLoader mXref = null;
-
     @Override
     public ClassLoader getClassLoader() {
         if (mXref == null) {
-            mXref = new SavedInstanceStatePatchedClassReferencer(IphoneTitleBarActivityCompat.class.getClassLoader());
+            mXref = new SavedInstanceStatePatchedClassReferencer(
+                IphoneTitleBarActivityCompat.class.getClassLoader());
         }
         return mXref;
     }

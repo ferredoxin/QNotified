@@ -41,12 +41,20 @@ class MainActivity : AppCompatTransferActivity() {
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
         val toolBar = findViewById<Toolbar>(R.id.topAppBar)
-        toolBar.setupWithNavController(navController,
-            AppBarConfiguration(setOf(R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_info)))
+        toolBar.setupWithNavController(
+            navController,
+            AppBarConfiguration(
+                setOf(
+                    R.id.navigation_home,
+                    R.id.navigation_dashboard,
+                    R.id.navigation_info
+                )
+            )
+        )
         val titleTV = ReflexUtil.iget_object_or_null(toolBar, "mTitleTextView") as TextView
         titleTV.textSize = 20f
         navController.addOnDestinationChangedListener { _, destination, arguments ->
-            when(destination.id) {
+            when (destination.id) {
                 R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_info ->
                     navView.isVisible = true
                 else ->

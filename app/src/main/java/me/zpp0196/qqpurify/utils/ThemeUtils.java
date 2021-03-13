@@ -12,6 +12,64 @@ import nil.nadph.qnotified.config.ConfigManager;
  */
 public class ThemeUtils {
 
+    private static final Themes THEME_DEFAULT = Themes.FTB;
+    private static Themes mTheme = THEME_DEFAULT;
+    private static String mThemeTitle = "theme_title";
+
+    public static void setColor(Activity activity, int color) {
+        ThemeUtils.mTheme = color2Theme(activity, color);
+        ConfigManager cfg = ConfigManager.getDefaultConfig();
+        cfg.putString(mThemeTitle, mTheme.title);
+        try {
+            cfg.save();
+        } catch (IOException ignored) {
+        }
+    }
+
+    public static int getThemeColor(Context context) {
+        return ContextCompat.getColor(context, mTheme.colorId);
+    }
+
+    public static String getThemeTitle() {
+        return mTheme.title;
+    }
+
+    public static int getStyleId(Context context) {
+        String title = ConfigManager.getDefaultConfig()
+            .getStringOrDefault(mThemeTitle, mTheme.title);
+        mTheme = title2Theme(title);
+        return mTheme.styleId;
+    }
+
+    public static int[] getColors(Context context) {
+        Themes[] themes = Themes.values();
+        int[] colors = new int[themes.length];
+        for (int i = 0; i < colors.length; i++) {
+            colors[i] = ContextCompat.getColor(context, themes[i].colorId);
+        }
+        return colors;
+    }
+
+    private static Themes color2Theme(Context context, int color) {
+        Themes[] themes = Themes.values();
+        for (Themes theme : themes) {
+            if (ContextCompat.getColor(context, theme.colorId) == color) {
+                return theme;
+            }
+        }
+        return THEME_DEFAULT;
+    }
+
+    private static Themes title2Theme(String title) {
+        Themes[] themes = Themes.values();
+        for (Themes theme : themes) {
+            if (theme.title.equals(title)) {
+                return theme;
+            }
+        }
+        return THEME_DEFAULT;
+    }
+
     public enum Themes {
 
         BLP(R.color.theme_color_blp, R.style.AppTheme_Blp, "哔哩粉"),
@@ -35,63 +93,6 @@ public class ThemeUtils {
             this.styleId = styleId;
             this.title = title;
         }
-    }
-
-    private static final Themes THEME_DEFAULT = Themes.FTB;
-    private static Themes mTheme = THEME_DEFAULT;
-    private static String mThemeTitle = "theme_title";
-
-    public static void setColor(Activity activity, int color) {
-        ThemeUtils.mTheme = color2Theme(activity, color);
-        ConfigManager cfg = ConfigManager.getDefaultConfig();
-        cfg.putString(mThemeTitle, mTheme.title);
-        try {
-            cfg.save();
-        } catch (IOException ignored) {
-        }
-    }
-
-    public static int getThemeColor(Context context) {
-        return ContextCompat.getColor(context,mTheme.colorId);
-    }
-
-    public static String getThemeTitle() {
-        return mTheme.title;
-    }
-
-    public static int getStyleId(Context context) {
-        String title = ConfigManager.getDefaultConfig().getStringOrDefault(mThemeTitle, mTheme.title);
-        mTheme = title2Theme(title);
-        return mTheme.styleId;
-    }
-
-    public static int[] getColors(Context context) {
-        Themes[] themes = Themes.values();
-        int[] colors = new int[themes.length];
-        for (int i = 0; i < colors.length; i++) {
-            colors[i] = ContextCompat.getColor(context,themes[i].colorId);
-        }
-        return colors;
-    }
-
-    private static Themes color2Theme(Context context, int color) {
-        Themes[] themes = Themes.values();
-        for (Themes theme : themes) {
-            if (ContextCompat.getColor(context,theme.colorId) == color) {
-                return theme;
-            }
-        }
-        return THEME_DEFAULT;
-    }
-
-    private static Themes title2Theme(String title) {
-        Themes[] themes = Themes.values();
-        for (Themes theme : themes) {
-            if (theme.title.equals(title)) {
-                return theme;
-            }
-        }
-        return THEME_DEFAULT;
     }
 }
 

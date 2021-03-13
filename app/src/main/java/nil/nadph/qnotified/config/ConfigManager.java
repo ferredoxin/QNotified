@@ -62,15 +62,16 @@ import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.util.Utils;
 
 public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConfigItem {
+
     //DataOutputStream should be BIG_ENDIAN, as is.
     public static final int BYTE_ORDER_STUB = 0x12345678;
     private static ConfigManager sDefConfig;
     private static ConfigManager sCache;
     private final File file;
-    private ConcurrentHashMap<String, Object> config;
-    private boolean dirty;
     private final int mFileTypeId;
     private final long mTargetUin;
+    private ConcurrentHashMap<String, Object> config;
+    private boolean dirty;
 
     public ConfigManager(File f, int fileTypeId, long uin) throws IOException {
         file = f;
@@ -82,7 +83,10 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
     public static ConfigManager getDefaultConfig() {
         try {
             if (sDefConfig == null) {
-                sDefConfig = new ConfigManager(new File(HostInformationProviderKt.getHostInfo().getApplication().getFilesDir().getAbsolutePath() + "/qnotified_config.dat"), SyncUtils.FILE_DEFAULT_CONFIG, 0);
+                sDefConfig = new ConfigManager(new File(
+                    HostInformationProviderKt.getHostInfo().getApplication().getFilesDir()
+                        .getAbsolutePath() + "/qnotified_config.dat"),
+                    SyncUtils.FILE_DEFAULT_CONFIG, 0);
                 SyncUtils.addOnFileChangedListener(sDefConfig);
             }
             return sDefConfig;
@@ -93,8 +97,11 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
 
     public static ConfigManager getCache() {
         try {
-            if (sCache == null)
-                sCache = new ConfigManager(new File(HostInformationProviderKt.getHostInfo().getApplication().getFilesDir().getAbsolutePath() + "/qnotified_cache.dat"), SyncUtils.FILE_CACHE, 0);
+            if (sCache == null) {
+                sCache = new ConfigManager(new File(
+                    HostInformationProviderKt.getHostInfo().getApplication().getFilesDir()
+                        .getAbsolutePath() + "/qnotified_cache.dat"), SyncUtils.FILE_CACHE, 0);
+            }
             SyncUtils.addOnFileChangedListener(sCache);
             return sCache;
         } catch (IOException e) {
@@ -112,7 +119,9 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
     }
 
     public void reinit() throws IOException {
-        if (!file.exists()) file.createNewFile();
+        if (!file.exists()) {
+            file.createNewFile();
+        }
         config = new ConcurrentHashMap<String, Object>();
         reload();
     }
@@ -123,7 +132,9 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
 
     public Object getOrDefault(String key, Object def) {
         try {
-            if (dirty) reload();
+            if (dirty) {
+                reload();
+            }
         } catch (Exception ignored) {
         }
         if (!config.containsKey(key)) {
@@ -134,7 +145,9 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
 
     public boolean getBooleanOrFalse(String key) {
         try {
-            if (dirty) reload();
+            if (dirty) {
+                reload();
+            }
         } catch (Exception ignored) {
         }
         if (!config.containsKey(key)) {
@@ -153,7 +166,9 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
 
     public boolean getBooleanOrDefault(String key, boolean def) {
         try {
-            if (dirty) reload();
+            if (dirty) {
+                reload();
+            }
         } catch (Exception ignored) {
         }
         if (!config.containsKey(key)) {
@@ -172,7 +187,9 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
 
     public int getIntOrDefault(String key, int def) {
         try {
-            if (dirty) reload();
+            if (dirty) {
+                reload();
+            }
         } catch (Exception ignored) {
         }
         if (!config.containsKey(key)) {
@@ -191,7 +208,9 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
 
     public String getString(String key) {
         try {
-            if (dirty) reload();
+            if (dirty) {
+                reload();
+            }
         } catch (Exception ignored) {
         }
         return (String) config.get(key);
@@ -199,18 +218,24 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
 
     public String getStringOrDefault(String key, String defVal) {
         try {
-            if (dirty) reload();
+            if (dirty) {
+                reload();
+            }
         } catch (Exception ignored) {
         }
         String val = (String) config.get(key);
-        if (val == null) val = defVal;
+        if (val == null) {
+            val = defVal;
+        }
         return val;
     }
 
     @Nullable
     public Object getObject(@NonNull String key) {
         try {
-            if (dirty) reload();
+            if (dirty) {
+                reload();
+            }
         } catch (Exception ignored) {
         }
         return config.get(key);
@@ -218,7 +243,9 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
 
     public void putString(String key, String val) {
         try {
-            if (dirty) reload();
+            if (dirty) {
+                reload();
+            }
         } catch (Exception ignored) {
         }
         config.put(key, val);
@@ -226,7 +253,9 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
 
     public void putInt(String key, int val) {
         try {
-            if (dirty) reload();
+            if (dirty) {
+                reload();
+            }
         } catch (Exception ignored) {
         }
         config.put(key, val);
@@ -235,7 +264,9 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
     //@Deprecated
     public ConcurrentHashMap<String, Object> getAllConfig() {
         try {
-            if (dirty) reload();
+            if (dirty) {
+                reload();
+            }
         } catch (Exception ignored) {
         }
         return config;
@@ -248,7 +279,9 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
         synchronized (this) {
             FileInputStream fin;
             fin = new FileInputStream(file);
-            if (fin.available() == 0) return;
+            if (fin.available() == 0) {
+                return;
+            }
             config.clear();
             DataInputStream in = new DataInputStream(fin);
             in.skip(4);//flag
@@ -256,17 +289,23 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
             int file_size = in.readInt();
             readIRaw(in);//ignore
             byte[] md5 = new byte[16];
-            if (in.read(md5, 0, 16) < 16) throw new IOException("Failed to read md5");
+            if (in.read(md5, 0, 16) < 16) {
+                throw new IOException("Failed to read md5");
+            }
             String key;
             a:
             while (in.available() > 0) {
                 int _type = in.read();
-                if (_type < 0 || _type > 255)
+                if (_type < 0 || _type > 255) {
                     throw new IOException("Unexpected type:" + _type + ",version:" + endian);
+                }
                 key = readIStr(in);
                 switch ((byte) _type) {
                     case TYPE_VOID:
-                        log(new RuntimeException("ConcurrentHashMap/reload: replace null with " + VOID_INSTANCE + " in [key=\"" + key + "\",type=TYPE_VOID] at " + file.getAbsolutePath()));
+                        log(new RuntimeException(
+                            "ConcurrentHashMap/reload: replace null with " + VOID_INSTANCE
+                                + " in [key=\"" + key + "\",type=TYPE_VOID] at " + file
+                                .getAbsolutePath()));
                         config.put(key, VOID_INSTANCE);
                         break;
                     case TYPE_BYTE:
@@ -308,7 +347,8 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
                     case TYPE_EOF:
                         break a;
                     default:
-                        throw new IOException("Unexpected type:" + _type + ",name:\"" + key + "\",version:" + endian);
+                        throw new IOException(
+                            "Unexpected type:" + _type + ",name:\"" + key + "\",version:" + endian);
                 }
             }
             dirty = false;
@@ -369,7 +409,9 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
 
     public long getLongOrDefault(String key, long i) {
         try {
-            if (dirty) reload();
+            if (dirty) {
+                reload();
+            }
         } catch (Exception ignored) {
         }
         if (!config.containsKey(key)) {
@@ -388,7 +430,9 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
 
     public void putBoolean(String key, boolean v) {
         try {
-            if (dirty) reload();
+            if (dirty) {
+                reload();
+            }
         } catch (Exception ignored) {
         }
         config.put(key, v);
@@ -396,7 +440,9 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
 
     public void putLong(String key, long v) {
         try {
-            if (dirty) reload();
+            if (dirty) {
+                reload();
+            }
         } catch (Exception ignored) {
         }
         config.put(key, v);
@@ -404,7 +450,9 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
 
     public void putObject(@NonNull String key, Object v) {
         try {
-            if (dirty) reload();
+            if (dirty) {
+                reload();
+            }
         } catch (Exception ignored) {
         }
         config.put(key, v);
@@ -413,7 +461,9 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
     @Nullable
     public Object remove(@NonNull String k) {
         try {
-            if (dirty) reload();
+            if (dirty) {
+                reload();
+            }
         } catch (Exception ignored) {
         }
         return config.remove(k);
@@ -422,7 +472,9 @@ public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConf
     @Nullable
     public boolean containsKey(@NonNull String k) {
         try {
-            if (dirty) reload();
+            if (dirty) {
+                reload();
+            }
         } catch (Exception ignored) {
         }
         return config.containsKey(k);

@@ -38,7 +38,9 @@ public class QNScriptEventBus {
      */
     public static void broadcastGroupMessage(GroupMessageParam param) {
         for (QNScript qs : QNScriptManager.getScripts()) {
-            if (!qs.isEnable()) continue;
+            if (!qs.isEnable()) {
+                continue;
+            }
             qs.onGroupMessage(param);
         }
     }
@@ -50,7 +52,9 @@ public class QNScriptEventBus {
      */
     public static void broadcastFriendMessage(FriendMessageParam param) {
         for (QNScript qs : QNScriptManager.getScripts()) {
-            if (!qs.isEnable()) continue;
+            if (!qs.isEnable()) {
+                continue;
+            }
             qs.onFriendMessage(param);
         }
     }
@@ -62,7 +66,9 @@ public class QNScriptEventBus {
      */
     public static void broadcastFriendRequest(FriendRequestParam param) {
         for (QNScript qs : QNScriptManager.getScripts()) {
-            if (!qs.isEnable()) continue;
+            if (!qs.isEnable()) {
+                continue;
+            }
             qs.onFriendRequest(param);
         }
     }
@@ -74,7 +80,9 @@ public class QNScriptEventBus {
      */
     public static void broadcastFriendAdded(FriendAddedParam param) {
         for (QNScript qs : QNScriptManager.getScripts()) {
-            if (!qs.isEnable()) continue;
+            if (!qs.isEnable()) {
+                continue;
+            }
             qs.onFriendAdded(param);
         }
     }
@@ -86,7 +94,9 @@ public class QNScriptEventBus {
      */
     public static void broadcastGroupRequest(GroupRequestParam param) {
         for (QNScript qs : QNScriptManager.getScripts()) {
-            if (!qs.isEnable()) continue;
+            if (!qs.isEnable()) {
+                continue;
+            }
             qs.onGroupRequest(param);
         }
     }
@@ -98,7 +108,9 @@ public class QNScriptEventBus {
      */
     public static void broadcastGroupJoined(GroupJoinedParam param) {
         for (QNScript qs : QNScriptManager.getScripts()) {
-            if (!qs.isEnable()) continue;
+            if (!qs.isEnable()) {
+                continue;
+            }
             qs.onGroupJoined(param);
         }
     }

@@ -28,7 +28,13 @@ import nil.nadph.qnotified.util.ReflexUtil
 import nil.nadph.qnotified.util.Utils
 
 data class TroopInfo(val troopUin: String?) {
-    private val troopInfo = ReflexUtil.invoke_virtual(Utils.getTroopManager(), "b", troopUin, String::class.java, Initiator._TroopInfo())
+    private val troopInfo = ReflexUtil.invoke_virtual(
+        Utils.getTroopManager(),
+        "b",
+        troopUin,
+        String::class.java,
+        Initiator._TroopInfo()
+    )
 
     var troopName = troopInfo.get("troopname")
     var troopOwnerUin = troopInfo.get("troopowneruin", String::class.java)

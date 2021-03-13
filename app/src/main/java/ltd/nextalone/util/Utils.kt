@@ -28,7 +28,11 @@ import java.util.*
 
 internal val isSimpleUi by lazy {
     try {
-        val sharedPreferences = "Lcom/tencent/mobileqq/theme/ThemeUtil;->getUinThemePreferences(Lmqq/app/AppRuntime;)Landroid/content/SharedPreferences;".method.invoke(null, Utils.getAppRuntime()) as SharedPreferences
+        val sharedPreferences =
+            "Lcom/tencent/mobileqq/theme/ThemeUtil;->getUinThemePreferences(Lmqq/app/AppRuntime;)Landroid/content/SharedPreferences;".method.invoke(
+                null,
+                Utils.getAppRuntime()
+            ) as SharedPreferences
         val bool = sharedPreferences.getBoolean("key_simple_ui_switch", false)
         bool
     } catch (t: Throwable) {

@@ -16,7 +16,8 @@ public class AboutPreferenceFragment extends AbstractPreferenceFragment {
         super.initPreferences();
         findPreference("version_module").setSummary(Utils.QN_VERSION_NAME);
         findPreference("version_qq").setTitle(H.getAppName());
-        findPreference("version_qq").setSummary(String.format("%s (%d)", H.getVersionName(), H.getVersionCode()));
+        findPreference("version_qq")
+            .setSummary(String.format("%s (%d)", H.getVersionName(), H.getVersionCode()));
     }
 
     @Override

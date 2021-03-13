@@ -46,6 +46,7 @@ import nil.nadph.qnotified.util.Utils;
 
 @FunctionEntry
 public class InspectMessage extends CommonDelayableHook implements View.OnLongClickListener {
+
     public static final InspectMessage INSTANCE = new InspectMessage();
     static Field f_panel;
     boolean bInspectMode = false;
@@ -57,36 +58,52 @@ public class InspectMessage extends CommonDelayableHook implements View.OnLongCl
     @Override
     public boolean initOnce() {
         try {
-            findAndHookMethod(load("com/tencent/mobileqq/activity/aio/BaseBubbleBuilder"), "onClick", View.class, new XC_MethodHook(49) {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.sDisableCommonHooks) return;
-                    if (!bInspectMode) return;
-                    if (!isEnabled()) return;
-                    Context ctx = iget_object_or_null(param.thisObject, "a", Context.class);
-                    if (ctx == null) ctx = getFirstNSFByType(param.thisObject, Context.class);
-                    View view = (View) param.args[0];
-                    if (ctx == null || MultiForwardAvatarHook.isLeftCheckBoxVisible()) return;
-                    String activityName = ctx.getClass().getName();
-                    if (activityName.equals("com.tencent.mobileqq.activity.MultiForwardActivity")) {
-                        return;
+            findAndHookMethod(load("com/tencent/mobileqq/activity/aio/BaseBubbleBuilder"),
+                "onClick", View.class, new XC_MethodHook(49) {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        if (LicenseStatus.sDisableCommonHooks) {
+                            return;
+                        }
+                        if (!bInspectMode) {
+                            return;
+                        }
+                        if (!isEnabled()) {
+                            return;
+                        }
+                        Context ctx = iget_object_or_null(param.thisObject, "a", Context.class);
+                        if (ctx == null) {
+                            ctx = getFirstNSFByType(param.thisObject, Context.class);
+                        }
+                        View view = (View) param.args[0];
+                        if (ctx == null || MultiForwardAvatarHook.isLeftCheckBoxVisible()) {
+                            return;
+                        }
+                        String activityName = ctx.getClass().getName();
+                        if (activityName
+                            .equals("com.tencent.mobileqq.activity.MultiForwardActivity")) {
+                            return;
+                        }
+                        final Object msg = MultiForwardAvatarHook.getChatMessageByView(view);
+                        if (msg == null) {
+                            return;
+                        }
+                        //取消istroop判断，在群里也可以撤回部分消息
+                        CustomDialog dialog = CustomDialog.createFailsafe(ctx);
+                        dialog.setTitle(Utils.getShort$Name(msg));
+                        dialog.setMessage(msg.toString());
+                        dialog.setCancelable(true);
+                        dialog.setPositiveButton("确认", null);
+                        dialog.show();
+                        param.setResult(null);
                     }
-                    final Object msg = MultiForwardAvatarHook.getChatMessageByView(view);
-                    if (msg == null) return;
-                    //取消istroop判断，在群里也可以撤回部分消息
-                    CustomDialog dialog = CustomDialog.createFailsafe(ctx);
-                    dialog.setTitle(Utils.getShort$Name(msg));
-                    dialog.setMessage(msg.toString());
-                    dialog.setCancelable(true);
-                    dialog.setPositiveButton("确认", null);
-                    dialog.show();
-                    param.setResult(null);
-                }
-            });
+                });
             //begin panel
             Method a = null, b = null, c = null, _emmm_ = null;
-            for (Method m : load("com.tencent.mobileqq.activity.aio.panel.PanelIconLinearLayout").getDeclaredMethods()) {
-                if (m.getReturnType().equals(void.class) && Modifier.isPublic(m.getModifiers()) && !Modifier.isStatic(m.getModifiers())
+            for (Method m : load("com.tencent.mobileqq.activity.aio.panel.PanelIconLinearLayout")
+                .getDeclaredMethods()) {
+                if (m.getReturnType().equals(void.class) && Modifier.isPublic(m.getModifiers())
+                    && !Modifier.isStatic(m.getModifiers())
                     && m.getParameterTypes().length == 0) {
                     String name = m.getName();
                     if ("a".equals(name)) {
@@ -101,12 +118,18 @@ public class InspectMessage extends CommonDelayableHook implements View.OnLongCl
                 }
             }
             Method m = c == null ? a : b;
-            if (m == null) m = _emmm_;
+            if (m == null) {
+                m = _emmm_;
+            }
             XposedBridge.hookMethod(m, new XC_MethodHook(49) {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.sDisableCommonHooks) return;
-                    if (!isEnabled()) return;
+                    if (LicenseStatus.sDisableCommonHooks) {
+                        return;
+                    }
+                    if (!isEnabled()) {
+                        return;
+                    }
                     ViewGroup panel = (ViewGroup) param.thisObject;
                     View v = panel.getChildAt(panel.getChildCount() - 1);
                     if (v instanceof ViewGroup) {
@@ -124,21 +147,28 @@ public class InspectMessage extends CommonDelayableHook implements View.OnLongCl
             });
             //end panel
             //begin tweak
-            findAndHookMethod(load("com.tencent.mobileqq.activity.aio.panel.PanelIconLinearLayout"), "setAllEnable", boolean.class, new XC_MethodHook(47) {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.sDisableCommonHooks) return;
-                    if (!isEnabled()) return;
-                    boolean z = (boolean) param.args[0];
-                    ViewGroup panel = (ViewGroup) param.thisObject;
-                    int cnt = panel.getChildCount();
-                    if (cnt == 0) return;
-                    View v = panel.getChildAt(cnt - 1);
-                    v.setEnabled(true);
-                    v.setClickable(z);
-                    v.setLongClickable(true);
-                }
-            });
+            findAndHookMethod(load("com.tencent.mobileqq.activity.aio.panel.PanelIconLinearLayout"),
+                "setAllEnable", boolean.class, new XC_MethodHook(47) {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        if (LicenseStatus.sDisableCommonHooks) {
+                            return;
+                        }
+                        if (!isEnabled()) {
+                            return;
+                        }
+                        boolean z = (boolean) param.args[0];
+                        ViewGroup panel = (ViewGroup) param.thisObject;
+                        int cnt = panel.getChildCount();
+                        if (cnt == 0) {
+                            return;
+                        }
+                        View v = panel.getChildAt(cnt - 1);
+                        v.setEnabled(true);
+                        v.setClickable(z);
+                        v.setLongClickable(true);
+                    }
+                });
             //end tweak
             return true;
         } catch (Throwable e) {

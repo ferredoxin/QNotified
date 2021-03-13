@@ -33,6 +33,7 @@ import nil.nadph.qnotified.util.Utils;
 //屏蔽聊天界面相机图标
 @FunctionEntry
 public class RemoveCameraButton extends CommonDelayableHook {
+
     public static final RemoveCameraButton INSTANCE = new RemoveCameraButton();
 
     private RemoveCameraButton() {
@@ -44,15 +45,21 @@ public class RemoveCameraButton extends CommonDelayableHook {
         try {
             for (Method m : Initiator._ConversationTitleBtnCtrl().getDeclaredMethods()) {
                 Class<?>[] argt = m.getParameterTypes();
-                if ("a".equals(m.getName()) && m.getReturnType() == void.class && argt.length == 0)
+                if ("a".equals(m.getName()) && m.getReturnType() == void.class
+                    && argt.length == 0) {
                     XposedBridge.hookMethod(m, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            if (LicenseStatus.sDisableCommonHooks) return;
-                            if (!isEnabled()) return;
+                            if (LicenseStatus.sDisableCommonHooks) {
+                                return;
+                            }
+                            if (!isEnabled()) {
+                                return;
+                            }
                             param.setResult(null);
                         }
                     });
+                }
             }
             return true;
         } catch (Exception t) {

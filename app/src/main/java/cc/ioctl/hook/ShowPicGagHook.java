@@ -57,8 +57,12 @@ public class ShowPicGagHook extends CommonDelayableHook {
             XposedBridge.hookMethod(showPicEffect, new XC_MethodHook(49) {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.sDisableCommonHooks) return;
-                    if (!isEnabled()) return;
+                    if (LicenseStatus.sDisableCommonHooks) {
+                        return;
+                    }
+                    if (!isEnabled()) {
+                        return;
+                    }
                     param.setResult(null);
                 }
             });

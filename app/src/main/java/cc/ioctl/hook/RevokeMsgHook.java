@@ -55,20 +55,19 @@ import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
 /**
- * @author fkzhang
- * Created by fkzhang on 1/20/2016.
- * Changes by cinit:
- * 2020/03/08 Sun.20:33 Minor changes at GreyTip
- * 2020/04/08 Tue.23:21 Use RevokeMsgInfoImpl for ease, wanna cry
+ * @author fkzhang Created by fkzhang on 1/20/2016. Changes by cinit: 2020/03/08 Sun.20:33 Minor
+ * changes at GreyTip 2020/04/08 Tue.23:21 Use RevokeMsgInfoImpl for ease, wanna cry
  */
 @FunctionEntry
 public class RevokeMsgHook extends CommonDelayableHook {
+
     public static final RevokeMsgHook INSTANCE = new RevokeMsgHook();
     private Object mQQMsgFacade = null;
 
     private RevokeMsgHook() {
         //FIXME: is MSF really necessary?
-        super("qn_anti_revoke_msg", SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF, new DexDeobfStep(DexKit.C_MSG_REC_FAC), new DexDeobfStep(DexKit.C_CONTACT_UTILS));
+        super("qn_anti_revoke_msg", SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF,
+            new DexDeobfStep(DexKit.C_MSG_REC_FAC), new DexDeobfStep(DexKit.C_CONTACT_UTILS));
     }
 
     @Override
@@ -78,7 +77,8 @@ public class RevokeMsgHook extends CommonDelayableHook {
             for (Method m : _QQMessageFacade().getDeclaredMethods()) {
                 if (m.getReturnType().equals(void.class)) {
                     Class<?>[] argt = m.getParameterTypes();
-                    if (argt.length == 2 && argt[0].equals(ArrayList.class) && argt[1].equals(boolean.class)) {
+                    if (argt.length == 2 && argt[0].equals(ArrayList.class) && argt[1]
+                        .equals(boolean.class)) {
                         revokeMsg = m;
                         break;
                     }
@@ -88,11 +88,17 @@ public class RevokeMsgHook extends CommonDelayableHook {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     mQQMsgFacade = param.thisObject;
-                    if (LicenseStatus.sDisableCommonHooks) return;
-                    if (!isEnabled()) return;
+                    if (LicenseStatus.sDisableCommonHooks) {
+                        return;
+                    }
+                    if (!isEnabled()) {
+                        return;
+                    }
                     ArrayList list = (ArrayList) param.args[0];
                     param.setResult(null);
-                    if (list == null || list.isEmpty()) return;
+                    if (list == null || list.isEmpty()) {
+                        return;
+                    }
                     for (Object revokeMsgInfo : list) {
                         try {
                             onRevokeMsg(revokeMsgInfo);
@@ -126,7 +132,9 @@ public class RevokeMsgHook extends CommonDelayableHook {
         String uin = istroop == 0 ? revokerUin : entityUin;
         Object msgObject = getMessage(uin, istroop, shmsgseq, msgUid);
         long id = getMessageUid(msgObject);
-        if (isCallingFrom(_C2CMessageProcessor().getName())) return;
+        if (isCallingFrom(_C2CMessageProcessor().getName())) {
+            return;
+        }
         boolean isGroupChat = istroop != 0;
         long newMsgUid;
         if (msgUid != 0) {
@@ -152,19 +160,27 @@ public class RevokeMsgHook extends CommonDelayableHook {
                 } else {
                     greyMsg += "撤回了一条消息(没收到)";
                 }
-                revokeGreyTip = createBareHighlightGreyTip(entityUin, istroop, revokerUin, time + 1, greyMsg, newMsgUid, shmsgseq);
-                addHightlightItem(revokeGreyTip, 1, 1 + revokerNick.length(), createTroopMemberHighlightItem(revokerUin));
+                revokeGreyTip = createBareHighlightGreyTip(entityUin, istroop, revokerUin, time + 1,
+                    greyMsg, newMsgUid, shmsgseq);
+                addHightlightItem(revokeGreyTip, 1, 1 + revokerNick.length(),
+                    createTroopMemberHighlightItem(revokerUin));
             } else {
                 //被权限狗撤回(含管理,群主)
                 String revokerNick = ContactUtils.getTroopMemberNick(entityUin, revokerUin);
                 String authorNick = ContactUtils.getTroopMemberNick(entityUin, authorUin);
                 if (msgObject == null) {
-                    String greyMsg = "\"" + revokerNick + "\u202d\"撤回了\"" + authorNick + "\u202d\"的消息(没收到)";
-                    revokeGreyTip = createBareHighlightGreyTip(entityUin, istroop, revokerUin, time + 1, greyMsg, newMsgUid, shmsgseq);
-                    addHightlightItem(revokeGreyTip, 1, 1 + revokerNick.length(), createTroopMemberHighlightItem(revokerUin));
-                    addHightlightItem(revokeGreyTip, 1 + revokerNick.length() + 1 + 5, 1 + revokerNick.length() + 1 + 5 + authorNick.length(), createTroopMemberHighlightItem(authorUin));
+                    String greyMsg =
+                        "\"" + revokerNick + "\u202d\"撤回了\"" + authorNick + "\u202d\"的消息(没收到)";
+                    revokeGreyTip = createBareHighlightGreyTip(entityUin, istroop, revokerUin,
+                        time + 1, greyMsg, newMsgUid, shmsgseq);
+                    addHightlightItem(revokeGreyTip, 1, 1 + revokerNick.length(),
+                        createTroopMemberHighlightItem(revokerUin));
+                    addHightlightItem(revokeGreyTip, 1 + revokerNick.length() + 1 + 5,
+                        1 + revokerNick.length() + 1 + 5 + authorNick.length(),
+                        createTroopMemberHighlightItem(authorUin));
                 } else {
-                    String greyMsg = "\"" + revokerNick + "\u202d\"尝试撤回\"" + authorNick + "\u202d\"的消息";
+                    String greyMsg =
+                        "\"" + revokerNick + "\u202d\"尝试撤回\"" + authorNick + "\u202d\"的消息";
                     String message = getMessageContentStripped(msgObject);
                     int msgtype = getMessageType(msgObject);
                     if (msgtype == -1000 /*text msg*/) {
@@ -172,9 +188,13 @@ public class RevokeMsgHook extends CommonDelayableHook {
                             greyMsg += ": " + message;
                         }
                     }
-                    revokeGreyTip = createBareHighlightGreyTip(entityUin, istroop, revokerUin, time + 1, greyMsg, newMsgUid, shmsgseq);
-                    addHightlightItem(revokeGreyTip, 1, 1 + revokerNick.length(), createTroopMemberHighlightItem(revokerUin));
-                    addHightlightItem(revokeGreyTip, 1 + revokerNick.length() + 1 + 6, 1 + revokerNick.length() + 1 + 6 + authorNick.length(), createTroopMemberHighlightItem(authorUin));
+                    revokeGreyTip = createBareHighlightGreyTip(entityUin, istroop, revokerUin,
+                        time + 1, greyMsg, newMsgUid, shmsgseq);
+                    addHightlightItem(revokeGreyTip, 1, 1 + revokerNick.length(),
+                        createTroopMemberHighlightItem(revokerUin));
+                    addHightlightItem(revokeGreyTip, 1 + revokerNick.length() + 1 + 6,
+                        1 + revokerNick.length() + 1 + 6 + authorNick.length(),
+                        createTroopMemberHighlightItem(authorUin));
                 }
             }
         } else {
@@ -191,12 +211,13 @@ public class RevokeMsgHook extends CommonDelayableHook {
                     }
                 }
             }
-            revokeGreyTip = createBarePlainGreyTip(revokerUin, istroop, revokerUin, time + 1, greyMsg, newMsgUid, shmsgseq);
+            revokeGreyTip = createBarePlainGreyTip(revokerUin, istroop, revokerUin, time + 1,
+                greyMsg, newMsgUid, shmsgseq);
         }
         List<Object> list = new ArrayList<>();
         list.add(revokeGreyTip);
         invoke_virtual_declared_ordinal_modifier(mQQMsgFacade, 0, 4, false, Modifier.PUBLIC, 0,
-                list, Utils.getAccount(), List.class, String.class, void.class);
+            list, Utils.getAccount(), List.class, String.class, void.class);
     }
 
     private Bundle createTroopMemberHighlightItem(String memberUin) {
@@ -207,20 +228,28 @@ public class RevokeMsgHook extends CommonDelayableHook {
         return bundle;
     }
 
-    private Object createBareHighlightGreyTip(String entityUin, int istroop, String fromUin, long time, String msg, long msgUid, long shmsgseq) throws Exception {
+    private Object createBareHighlightGreyTip(String entityUin, int istroop, String fromUin,
+        long time, String msg, long msgUid, long shmsgseq) throws Exception {
         int msgtype = -2030;// MessageRecord.MSG_TYPE_TROOP_GAP_GRAY_TIPS
-        Object messageRecord = invoke_static_declared_ordinal_modifier(DexKit.doFindClass(DexKit.C_MSG_REC_FAC), 0, 1, true, Modifier.PUBLIC, 0, msgtype, int.class);
-        callMethod(messageRecord, "init", Utils.getAccount(), entityUin, fromUin, msg, time, msgtype, istroop, time);
+        Object messageRecord = invoke_static_declared_ordinal_modifier(
+            DexKit.doFindClass(DexKit.C_MSG_REC_FAC), 0, 1, true, Modifier.PUBLIC, 0, msgtype,
+            int.class);
+        callMethod(messageRecord, "init", Utils.getAccount(), entityUin, fromUin, msg, time,
+            msgtype, istroop, time);
         setObjectField(messageRecord, "msgUid", msgUid);
         setObjectField(messageRecord, "shmsgseq", shmsgseq);
         setObjectField(messageRecord, "isread", true);
         return messageRecord;
     }
 
-    private Object createBarePlainGreyTip(String entityUin, int istroop, String fromUin, long time, String msg, long msgUid, long shmsgseq) throws Exception {
+    private Object createBarePlainGreyTip(String entityUin, int istroop, String fromUin, long time,
+        String msg, long msgUid, long shmsgseq) throws Exception {
         int msgtype = -2031;// MessageRecord.MSG_TYPE_REVOKE_GRAY_TIPS
-        Object messageRecord = invoke_static_declared_ordinal_modifier(DexKit.doFindClass(DexKit.C_MSG_REC_FAC), 0, 1, true, Modifier.PUBLIC, 0, msgtype, int.class);
-        callMethod(messageRecord, "init", Utils.getAccount(), entityUin, fromUin, msg, time, msgtype, istroop, time);
+        Object messageRecord = invoke_static_declared_ordinal_modifier(
+            DexKit.doFindClass(DexKit.C_MSG_REC_FAC), 0, 1, true, Modifier.PUBLIC, 0, msgtype,
+            int.class);
+        callMethod(messageRecord, "init", Utils.getAccount(), entityUin, fromUin, msg, time,
+            msgtype, istroop, time);
         setObjectField(messageRecord, "msgUid", msgUid);
         setObjectField(messageRecord, "shmsgseq", shmsgseq);
         setObjectField(messageRecord, "isread", true);
@@ -229,7 +258,8 @@ public class RevokeMsgHook extends CommonDelayableHook {
 
     private void addHightlightItem(Object msgForGreyTip, int start, int end, Bundle bundle) {
         try {
-            invoke_virtual(msgForGreyTip, "addHightlightItem", start, end, bundle, int.class, int.class, Bundle.class);
+            invoke_virtual(msgForGreyTip, "addHightlightItem", start, end, bundle, int.class,
+                int.class, Bundle.class);
         } catch (Exception e) {
             log(e);
         }
@@ -239,12 +269,14 @@ public class RevokeMsgHook extends CommonDelayableHook {
         List list = null;
         try {
             list = (List) invoke_virtual_declared_ordinal(mQQMsgFacade, 0, 2, false,
-                    uin, istroop, shmsgseq, msgUid, String.class, int.class, long.class, long.class, List.class);
+                uin, istroop, shmsgseq, msgUid, String.class, int.class, long.class, long.class,
+                List.class);
         } catch (Exception e) {
             log(e);
         }
-        if (list == null || list.isEmpty())
+        if (list == null || list.isEmpty()) {
             return null;
+        }
         return list.get(0);
     }
 
@@ -252,20 +284,24 @@ public class RevokeMsgHook extends CommonDelayableHook {
         String msg = (String) iget_object_or_null(msgObject, "msg");
         if (msg != null) {
             msg = msg.replace('\n', ' ').replace('\r', ' ').replace("\u202E", "");
-            if (msg.length() > 103) msg = msg.substring(0, 100) + "...";
+            if (msg.length() > 103) {
+                msg = msg.substring(0, 100) + "...";
+            }
         }
         return msg;
     }
 
     private long getMessageUid(Object msgObject) {
-        if (msgObject == null)
+        if (msgObject == null) {
             return 0;
+        }
         return (long) iget_object_or_null(msgObject, "msgUid");
     }
 
     private int getMessageType(Object msgObject) {
-        if (msgObject == null)
+        if (msgObject == null) {
             return -1;
+        }
         return (int) iget_object_or_null(msgObject, "msgtype");
     }
 }

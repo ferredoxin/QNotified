@@ -17,8 +17,7 @@ import com.jaredrummler.android.colorpicker.ColorShape;
 import nil.nadph.qnotified.R;
 
 /**
- * A Preference to select a color
- * copy from {@link com.jaredrummler.android.colorpicker.ColorPreferenceCompat}
+ * A Preference to select a color copy from {@link com.jaredrummler.android.colorpicker.ColorPreferenceCompat}
  */
 public class ColorPickerPreference extends Preference implements ColorPickerDialogListener {
 
@@ -52,14 +51,16 @@ public class ColorPickerPreference extends Preference implements ColorPickerDial
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.ColorPreference);
         showDialog = a.getBoolean(R.styleable.ColorPreference_cpv_showDialog, true);
         //noinspection WrongConstant
-        dialogType = a.getInt(R.styleable.ColorPreference_cpv_dialogType, ColorPickerDialog.TYPE_PRESETS);
+        dialogType = a
+            .getInt(R.styleable.ColorPreference_cpv_dialogType, ColorPickerDialog.TYPE_PRESETS);
         colorShape = a.getInt(R.styleable.ColorPreference_cpv_colorShape, ColorShape.CIRCLE);
         allowPresets = a.getBoolean(R.styleable.ColorPreference_cpv_allowPresets, true);
         allowCustom = a.getBoolean(R.styleable.ColorPreference_cpv_allowCustom, true);
         showAlphaSlider = a.getBoolean(R.styleable.ColorPreference_cpv_showAlphaSlider, false);
         showColorShades = a.getBoolean(R.styleable.ColorPreference_cpv_showColorShades, true);
         final int presetsResId = a.getResourceId(R.styleable.ColorPreference_cpv_colorPresets, 0);
-        dialogTitle = a.getResourceId(R.styleable.ColorPreference_cpv_dialogTitle, R.string.cpv_default_title);
+        dialogTitle = a
+            .getResourceId(R.styleable.ColorPreference_cpv_dialogTitle, R.string.cpv_default_title);
         if (presetsResId != 0) {
             presets = getContext().getResources().getIntArray(presetsResId);
         } else {
@@ -73,21 +74,21 @@ public class ColorPickerPreference extends Preference implements ColorPickerDial
         super.onClick();
         if (showDialog) {
             dialog = ColorPickerDialog.newBuilder()
-                    .setDialogType(dialogType)
-                    .setDialogTitle(dialogTitle)
-                    .setColorShape(colorShape)
-                    .setPresets(presets)
-                    .setAllowPresets(allowPresets)
-                    .setAllowCustom(allowCustom)
-                    .setShowAlphaSlider(showAlphaSlider)
-                    .setShowColorShades(showColorShades)
-                    .setColor(color)
-                    .create();
+                .setDialogType(dialogType)
+                .setDialogTitle(dialogTitle)
+                .setColorShape(colorShape)
+                .setPresets(presets)
+                .setAllowPresets(allowPresets)
+                .setAllowCustom(allowCustom)
+                .setShowAlphaSlider(showAlphaSlider)
+                .setShowColorShades(showColorShades)
+                .setColor(color)
+                .create();
             dialog.setColorPickerDialogListener(this);
             getActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(dialog, getFragmentTag())
-                    .commitAllowingStateLoss();
+                .beginTransaction()
+                .add(dialog, getFragmentTag())
+                .commitAllowingStateLoss();
         }
     }
 
@@ -109,7 +110,8 @@ public class ColorPickerPreference extends Preference implements ColorPickerDial
         super.onAttached();
         if (showDialog) {
             ColorPickerDialog fragment =
-                    (ColorPickerDialog) getActivity().getSupportFragmentManager().findFragmentByTag(getFragmentTag());
+                (ColorPickerDialog) getActivity().getSupportFragmentManager()
+                    .findFragmentByTag(getFragmentTag());
             if (fragment != null) {
                 // re-bind preference to fragment
                 fragment.setColorPickerDialogListener(this);
@@ -120,7 +122,8 @@ public class ColorPickerPreference extends Preference implements ColorPickerDial
     @Override
     public void onBindViewHolder(PreferenceViewHolder holder) {
         super.onBindViewHolder(holder);
-        ColorPanelView preview = holder.itemView.findViewById(R.id.cpv_preference_preview_color_panel);
+        ColorPanelView preview = holder.itemView
+            .findViewById(R.id.cpv_preference_preview_color_panel);
         if (preview != null) {
             preview.setColor(color);
         }

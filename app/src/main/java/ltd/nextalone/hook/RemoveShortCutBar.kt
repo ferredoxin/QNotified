@@ -33,7 +33,10 @@ import nil.nadph.qnotified.hook.CommonDelayableHook
 object RemoveShortCutBar : CommonDelayableHook("na_remove_short_cut_bar_kt") {
 
     override fun initOnce() = tryOrFalse {
-        "Lcom.tencent.mobileqq.activity.aio.helper.ShortcutBarAIOHelper;->h()V".method.replace(this, null)
+        "Lcom.tencent.mobileqq.activity.aio.helper.ShortcutBarAIOHelper;->h()V".method.replace(
+            this,
+            null
+        )
     }
 
     override fun isValid() = requireMinQQVersion(QQVersion.QQ_8_5_5)

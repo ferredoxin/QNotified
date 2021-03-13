@@ -39,7 +39,8 @@ public class RestrictedProxyParamList {
     }
 
     public RestrictedProxyParamList addMethod(Method method, XC_MethodHookImpl hook) {
-        proxyCallbacks.put(method.getName() + DexMethodDescriptor.getMethodTypeSig(method), XMethodHookFactory.create(hook));
+        proxyCallbacks.put(method.getName() + DexMethodDescriptor.getMethodTypeSig(method),
+            XMethodHookFactory.create(hook));
         return this;
     }
 

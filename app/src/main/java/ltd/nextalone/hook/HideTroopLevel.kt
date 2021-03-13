@@ -35,7 +35,11 @@ object HideTroopLevel : CommonDelayableHook("na_hide_troop_level_kt"), OnBubbleB
 
     override fun initOnce() = true
 
-    override fun onGetView(rootView: ViewGroup, msg: MsgRecordData, param: XC_MethodHook.MethodHookParam) {
+    override fun onGetView(
+        rootView: ViewGroup,
+        msg: MsgRecordData,
+        param: XC_MethodHook.MethodHookParam
+    ) {
         if (!isEnabled || 1 != msg.isTroop) return
         val sendUin = msg.senderUin
         val troopInfo = TroopInfo(msg.friendUin)

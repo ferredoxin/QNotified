@@ -36,8 +36,7 @@ import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Utils;
 
 /**
- * Not an important hook.
- * Provide limited anti-crash feature for VasProfileCard, esp DIY card.
+ * Not an important hook. Provide limited anti-crash feature for VasProfileCard, esp DIY card.
  */
 @FunctionEntry
 public class VasProfileAntiCrash extends CommonDelayableHook {
@@ -53,7 +52,8 @@ public class VasProfileAntiCrash extends CommonDelayableHook {
         try {
             String className = null;
             try {
-                className = ConfigTable.INSTANCE.getConfig(VasProfileAntiCrash.class.getSimpleName());
+                className = ConfigTable.INSTANCE
+                    .getConfig(VasProfileAntiCrash.class.getSimpleName());
             } catch (Exception e) {
                 Utils.log(e);
             }
@@ -71,21 +71,28 @@ public class VasProfileAntiCrash extends CommonDelayableHook {
             XposedBridge.hookAllMethods(JsonReader.class, "nextLong", new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    if (!param.hasThrowable()) return;
-                    if (!Log.getStackTraceString(param.getThrowable()).contains("FriendProfileCardActivity")) return;
+                    if (!param.hasThrowable()) {
+                        return;
+                    }
+                    if (!Log.getStackTraceString(param.getThrowable())
+                        .contains("FriendProfileCardActivity")) {
+                        return;
+                    }
                     param.setResult(0L);
                 }
             });
         } catch (Exception e) {
             //ignore
         }
-        if (className == null) return;
+        if (className == null) {
+            return;
+        }
         Class<?> Card = Initiator.load("com.tencent.mobileqq.data.Card");
         for (Method m : Initiator.load(className).getDeclaredMethods()) {
             Class<?>[] argt;
             if (Modifier.isStatic(m.getModifiers()) && m.getName().equals("a")
-                    && m.getReturnType() == long.class && (argt = m.getParameterTypes()).length == 1
-                    && argt[0] == Card) {
+                && m.getReturnType() == long.class && (argt = m.getParameterTypes()).length == 1
+                && argt[0] == Card) {
                 XposedBridge.hookMethod(m, new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -99,12 +106,12 @@ public class VasProfileAntiCrash extends CommonDelayableHook {
     }
 
     @Override
-    public void setEnabled(boolean enabled) {
-        //do nothing
+    public boolean isEnabled() {
+        return true;
     }
 
     @Override
-    public boolean isEnabled() {
-        return true;
+    public void setEnabled(boolean enabled) {
+        //do nothing
     }
 }

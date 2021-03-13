@@ -49,7 +49,8 @@ public class FakeVipHook extends CommonDelayableHook {
             for (Method m : clz.getDeclaredMethods()) {
                 if (m.getReturnType().equals(int.class)) {
                     Class<?>[] argt = m.getParameterTypes();
-                    if (argt.length == 2 && argt[0].equals(load("mqq/app/AppRuntime")) && argt[1].equals(String.class)) {
+                    if (argt.length == 2 && argt[0].equals(load("mqq/app/AppRuntime")) && argt[1]
+                        .equals(String.class)) {
                         getPrivilegeFlags = m;
                         break;
                     }
@@ -74,12 +75,12 @@ public class FakeVipHook extends CommonDelayableHook {
     }
 
     @Override
-    public void setEnabled(boolean enabled) {
-        //do nothing
+    public boolean isEnabled() {
+        return true;
     }
 
     @Override
-    public boolean isEnabled() {
-        return true;
+    public void setEnabled(boolean enabled) {
+        //do nothing
     }
 }

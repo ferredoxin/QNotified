@@ -55,14 +55,19 @@ public class ManageScriptsActivity extends IphoneTitleBarActivityCompat {
         LinearLayout main = new LinearLayout(this);
         main.setOrientation(LinearLayout.VERTICAL);
 
-        main.addView(ViewBuilder.newListItemSwitch(this, "总开关(关闭后所有脚本均不生效)", null, ConfigManager.getDefaultConfig().getBooleanOrDefault(ConfigItems.qn_script_global, false), QNScriptManager::changeGlobal));
+        main.addView(ViewBuilder.newListItemSwitch(this, "总开关(关闭后所有脚本均不生效)", null,
+            ConfigManager.getDefaultConfig()
+                .getBooleanOrDefault(ConfigItems.qn_script_global, false),
+            QNScriptManager::changeGlobal));
         main.addView(ViewBuilder.newListItemButton(this, "导入 ...", null, null, v -> {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.setType("text/x-java");
             startActivityForResult(intent, REQUEST_CODE);
         }));
-        main.addView(ViewBuilder.newListItemSwitch(this, "全部启用", null, QNScriptManager.isEnableAll(), QNScriptManager::enableAll));
+        main.addView(ViewBuilder
+            .newListItemSwitch(this, "全部启用", null, QNScriptManager.isEnableAll(),
+                QNScriptManager::enableAll));
         addAllScript(main);
         setContentView(main);
         setTitle("脚本");
@@ -102,10 +107,13 @@ public class ManageScriptsActivity extends IphoneTitleBarActivityCompat {
                             scriptName = System.currentTimeMillis() / 1000L + ".java";
                         }
                         try {
-                            ParcelFileDescriptor parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "r");
+                            ParcelFileDescriptor parcelFileDescriptor = getContentResolver()
+                                .openFileDescriptor(uri, "r");
                             if (parcelFileDescriptor != null) {
-                                FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-                                String err = QNScriptManager.addScriptFD(fileDescriptor, scriptName);
+                                FileDescriptor fileDescriptor = parcelFileDescriptor
+                                    .getFileDescriptor();
+                                String err = QNScriptManager
+                                    .addScriptFD(fileDescriptor, scriptName);
                                 if (err.isEmpty()) {
                                     Toasts.info(this, "添加完毕");
                                 } else {
@@ -132,7 +140,8 @@ public class ManageScriptsActivity extends IphoneTitleBarActivityCompat {
         for (QNScript qs : QNScriptManager.getScripts()) {
             String name = qs.getName() == null ? "出错" : qs.getName();
             String decs = qs.getDecs() == null ? "出错" : qs.getDecs();
-            main.addView(ViewBuilder.newListItemButton(this, name, decs, qs.getEnable(), view -> ScriptSettingDialog.OnClickListener_createDialog(view.getContext(), qs)));
+            main.addView(ViewBuilder.newListItemButton(this, name, decs, qs.getEnable(),
+                view -> ScriptSettingDialog.OnClickListener_createDialog(view.getContext(), qs)));
         }
     }
 }

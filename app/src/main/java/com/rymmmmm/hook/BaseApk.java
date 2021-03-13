@@ -43,6 +43,7 @@ import nil.nadph.qnotified.util.LicenseStatus;
 //重命名base.apk
 @FunctionEntry
 public class BaseApk extends CommonDelayableHook {
+
     public static final BaseApk INSTANCE = new BaseApk();
 
     protected BaseApk() {
@@ -52,32 +53,49 @@ public class BaseApk extends CommonDelayableHook {
     @Override
     public boolean initOnce() {
         try {
-            final Class<?> _ItemManagerClz = Initiator.load("com.tencent.mobileqq.troop.utils.TroopFileTransferManager$Item");
+            final Class<?> _ItemManagerClz = Initiator
+                .load("com.tencent.mobileqq.troop.utils.TroopFileTransferManager$Item");
             for (Method m : Initiator._TroopFileUploadMgr().getDeclaredMethods()) {
-                if (m.getName().equals("b") && !Modifier.isStatic(m.getModifiers()) && m.getReturnType().equals(int.class)) {
+                if (m.getName().equals("b") && !Modifier.isStatic(m.getModifiers()) && m
+                    .getReturnType().equals(int.class)) {
                     Class<?>[] argt = m.getParameterTypes();
-                    if (argt.length == 3 && argt[0] == long.class && argt[1] == _ItemManagerClz && argt[2] == Bundle.class) {
+                    if (argt.length == 3 && argt[0] == long.class && argt[1] == _ItemManagerClz
+                        && argt[2] == Bundle.class) {
                         XposedBridge.hookMethod(m, new XC_MethodHook() {
                             @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                                if (LicenseStatus.sDisableCommonHooks) return;
-                                if (!isEnabled()) return;
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                throws Throwable {
+                                if (LicenseStatus.sDisableCommonHooks) {
+                                    return;
+                                }
+                                if (!isEnabled()) {
+                                    return;
+                                }
                                 Object item = param.args[1];
-                                Field localFile = XposedHelpers.findField(_ItemManagerClz, "LocalFile");
-                                Field fileName = XposedHelpers.findField(_ItemManagerClz, "FileName");
+                                Field localFile = XposedHelpers
+                                    .findField(_ItemManagerClz, "LocalFile");
+                                Field fileName = XposedHelpers
+                                    .findField(_ItemManagerClz, "FileName");
                                 if (fileName.get(item).equals("base.apk")) {
-                                    PackageManager packageManager = HostInformationProviderKt.getHostInfo().getApplication().getPackageManager();
-                                    PackageInfo packageArchiveInfo = packageManager.getPackageArchiveInfo((String) localFile.get(item), PackageManager.GET_ACTIVITIES);
+                                    PackageManager packageManager = HostInformationProviderKt
+                                        .getHostInfo().getApplication().getPackageManager();
+                                    PackageInfo packageArchiveInfo = packageManager
+                                        .getPackageArchiveInfo((String) localFile.get(item),
+                                            PackageManager.GET_ACTIVITIES);
                                     ApplicationInfo applicationInfo = packageArchiveInfo.applicationInfo;
                                     applicationInfo.sourceDir = (String) localFile.get(item);
                                     applicationInfo.publicSourceDir = (String) localFile.get(item);
-                                    String format = RikkaBaseApkFormatDialog.getCurrentBaseApkFormat();
+                                    String format = RikkaBaseApkFormatDialog
+                                        .getCurrentBaseApkFormat();
                                     if (format != null) {
                                         String result = format
-                                                .replace("%n", applicationInfo.loadLabel(packageManager).toString())
-                                                .replace("%p", applicationInfo.packageName)
-                                                .replace("%v", packageArchiveInfo.versionName)
-                                                .replace("%c", String.valueOf(HostInformationProviderKt.getHostInfo().getApplication()));
+                                            .replace("%n", applicationInfo.loadLabel(packageManager)
+                                                .toString())
+                                            .replace("%p", applicationInfo.packageName)
+                                            .replace("%v", packageArchiveInfo.versionName)
+                                            .replace("%c", String.valueOf(
+                                                HostInformationProviderKt.getHostInfo()
+                                                    .getApplication()));
                                         fileName.set(item, result);
                                     }
                                 }

@@ -32,7 +32,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import nil.nadph.qnotified.R
 
-class HomeFragment : Fragment() , View.OnClickListener{
+class HomeFragment : Fragment(), View.OnClickListener {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

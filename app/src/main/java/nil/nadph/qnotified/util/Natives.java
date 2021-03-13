@@ -30,6 +30,7 @@ import java.io.InputStream;
 import nil.nadph.qnotified.BuildConfig;
 
 public class Natives {
+
     public static final int RTLD_LAZY = 0x00001;    /* Lazy function call binding.  */
     public static final int RTLD_NOW = 0x00002;    /* Immediate function call binding.  */
     public static final int RTLD_BINDING_MASK = 0x3;    /* Mask of binding time value.  */
@@ -117,8 +118,11 @@ public class Natives {
         }
         File soFile = new File(dir, soName);
         if (!soFile.exists()) {
-            InputStream in = Natives.class.getClassLoader().getResourceAsStream("lib/" + abi + "/libnatives.so");
-            if (in == null) throw new UnsatisfiedLinkError("Unsupported ABI: " + abi);
+            InputStream in = Natives.class.getClassLoader()
+                .getResourceAsStream("lib/" + abi + "/libnatives.so");
+            if (in == null) {
+                throw new UnsatisfiedLinkError("Unsupported ABI: " + abi);
+            }
             //clean up old files
             for (String name : dir.list()) {
                 if (name.startsWith("libnatives_")) {

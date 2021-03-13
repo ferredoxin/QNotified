@@ -36,11 +36,13 @@ import nil.nadph.qnotified.util.Utils;
 //去除小程序广告 需要手动点关闭
 @FunctionEntry
 public class RemoveMiniProgramAd extends CommonDelayableHook {
+
     public static final RemoveMiniProgramAd INSTANCE = new RemoveMiniProgramAd();
 
     protected RemoveMiniProgramAd() {
-        super("rq_remove_mini_program_ad", SyncUtils.PROC_ANY & ~(SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF | SyncUtils.PROC_QZONE
-            | SyncUtils.PROC_PEAK | SyncUtils.PROC_VIDEO));
+        super("rq_remove_mini_program_ad",
+            SyncUtils.PROC_ANY & ~(SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF | SyncUtils.PROC_QZONE
+                | SyncUtils.PROC_PEAK | SyncUtils.PROC_VIDEO));
     }
 
     @Override
@@ -52,8 +54,12 @@ public class RemoveMiniProgramAd extends CommonDelayableHook {
                     XposedBridge.hookMethod(m, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            if (LicenseStatus.sDisableCommonHooks) return;
-                            if (!isEnabled()) return;
+                            if (LicenseStatus.sDisableCommonHooks) {
+                                return;
+                            }
+                            if (!isEnabled()) {
+                                return;
+                            }
                             iput_object(param.thisObject, "c", Boolean.TYPE, true);
                         }
                     });

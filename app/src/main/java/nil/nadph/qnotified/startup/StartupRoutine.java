@@ -39,15 +39,16 @@ public class StartupRoutine {
     }
 
     /**
-     * From now on, kotlin, androidx or third party libraries may be accessed
-     * without crashing the ART.
+     * From now on, kotlin, androidx or third party libraries may be accessed without crashing the
+     * ART.
      *
      * @param ctx         Application context for host
      * @param step        Step instance
      * @param lpwReserved null, not used
      * @param bReserved   false, not used
      */
-    public static void execPostStartupInit(Context ctx, Object step, String lpwReserved, boolean bReserved) {
+    public static void execPostStartupInit(Context ctx, Object step, String lpwReserved,
+        boolean bReserved) {
         HostInformationProviderKt.init((Application) ctx);
         Initiator.init(ctx.getClassLoader());
         checkLogFlag();

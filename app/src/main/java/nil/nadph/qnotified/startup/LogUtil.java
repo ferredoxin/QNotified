@@ -17,12 +17,14 @@ class LogUtil {
     }
 
     static void logd(String str) {
-        if (BuildConfig.DEBUG) try {
-            Log.d("QNdump", str);
-            XposedBridge.log(str);
-        } catch (NoClassDefFoundError e) {
-            Log.d("Xposed", str);
-            Log.d("EdXposed-Bridge", str);
+        if (BuildConfig.DEBUG) {
+            try {
+                Log.d("QNdump", str);
+                XposedBridge.log(str);
+            } catch (NoClassDefFoundError e) {
+                Log.d("Xposed", str);
+                Log.d("EdXposed-Bridge", str);
+            }
         }
     }
 
@@ -47,7 +49,9 @@ class LogUtil {
     }
 
     static void log(Throwable th) {
-        if (th == null) return;
+        if (th == null) {
+            return;
+        }
         String msg = Log.getStackTraceString(th);
         Log.e("QNdump", msg);
         try {

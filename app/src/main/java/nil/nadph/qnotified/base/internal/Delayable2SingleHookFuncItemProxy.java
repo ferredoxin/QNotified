@@ -118,13 +118,13 @@ public class Delayable2SingleHookFuncItemProxy implements AbsFunctionItem, AbsHo
     }
 
     @Override
-    public void setEnabled(boolean enabled) {
-        h.setEnabled(enabled);
+    public boolean isEnabled() {
+        return h.isEnabled();
     }
 
     @Override
-    public boolean isEnabled() {
-        return h.isEnabled();
+    public void setEnabled(boolean enabled) {
+        h.setEnabled(enabled);
     }
 
     @NonNull

@@ -35,7 +35,10 @@ object DisabledRedNick : CommonDelayableHook("na_disable_red_nick_kt") {
     override fun initOnce() = tryOrFalse {
         if (!isSimpleUi) {
             "Lcom/tencent/mobileqq/activity/aio/core/FriendChatPie;->aP()V".method.hookBefore(this) {
-                val navAIO = it.thisObject.get("a", "com.tencent.mobileqq.widget.navbar.NavBarAIO".clazz) as RelativeLayout
+                val navAIO = it.thisObject.get(
+                    "a",
+                    "com.tencent.mobileqq.widget.navbar.NavBarAIO".clazz
+                ) as RelativeLayout
                 val linearLayout = navAIO.findHostView<LinearLayout>("e89")
                 linearLayout?.hide()
                 it.result = null

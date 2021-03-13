@@ -34,28 +34,47 @@ import nil.nadph.qnotified.util.Utils;
 //屏蔽头像挂件
 @FunctionEntry
 public class DisableAvatarDecoration extends CommonDelayableHook {
+
     public static final DisableAvatarDecoration INSTANCE = new DisableAvatarDecoration();
 
     protected DisableAvatarDecoration() {
         super("rq_disable_avatar_decoration");
     }
+
     @Override
     public boolean initOnce() {
         try {
-            for (Method m : Initiator.load("com.tencent.mobileqq.vas.PendantInfo").getDeclaredMethods()) {
+            for (Method m : Initiator.load("com.tencent.mobileqq.vas.PendantInfo")
+                .getDeclaredMethods()) {
                 if (m.getReturnType() == void.class) {
                     Class<?>[] argt = m.getParameterTypes();
-                    if (argt.length != 5) continue;
-                    if (argt[0] != View.class) continue;
-                    if (argt[1] != int.class) continue;
-                    if (argt[2] != long.class) continue;
-                    if (argt[3] != String.class) continue;
-                    if (argt[4] != int.class) continue;
+                    if (argt.length != 5) {
+                        continue;
+                    }
+                    if (argt[0] != View.class) {
+                        continue;
+                    }
+                    if (argt[1] != int.class) {
+                        continue;
+                    }
+                    if (argt[2] != long.class) {
+                        continue;
+                    }
+                    if (argt[3] != String.class) {
+                        continue;
+                    }
+                    if (argt[4] != int.class) {
+                        continue;
+                    }
                     XposedBridge.hookMethod(m, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            if (LicenseStatus.sDisableCommonHooks) return;
-                            if (!isEnabled()) return;
+                            if (LicenseStatus.sDisableCommonHooks) {
+                                return;
+                            }
+                            if (!isEnabled()) {
+                                return;
+                            }
                             param.setResult(null);
                         }
                     });

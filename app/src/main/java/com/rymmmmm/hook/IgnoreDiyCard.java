@@ -41,6 +41,7 @@ import nil.nadph.qnotified.util.LicenseStatus;
 //屏蔽Diy卡片
 @FunctionEntry
 public class IgnoreDiyCard extends CommonDelayableHook {
+
     public static final IgnoreDiyCard INSTANCE = new IgnoreDiyCard();
 
     private IgnoreDiyCard() {
@@ -50,26 +51,50 @@ public class IgnoreDiyCard extends CommonDelayableHook {
     @Override
     public boolean initOnce() {
         try {
-            for (Method m : load("com.tencent.mobileqq.activity.FriendProfileCardActivity").getDeclaredMethods()) {
+            for (Method m : load("com.tencent.mobileqq.activity.FriendProfileCardActivity")
+                .getDeclaredMethods()) {
                 Class<?>[] argt = m.getParameterTypes();
-                if (HostInformationProviderKt.getHostInfo().getVersionCode32() <= QQVersion.QQ_8_3_6) {
-                    if (m.getName().equals("a") && !Modifier.isStatic(m.getModifiers()) && m.getReturnType().equals(void.class)) {
-                        if (argt.length != 2) continue;
-                        if (argt[1] != boolean.class) continue;
-                        if (argt[0].getSuperclass() != Object.class) continue;
-                    } else continue;
+                if (HostInformationProviderKt.getHostInfo().getVersionCode32()
+                    <= QQVersion.QQ_8_3_6) {
+                    if (m.getName().equals("a") && !Modifier.isStatic(m.getModifiers()) && m
+                        .getReturnType().equals(void.class)) {
+                        if (argt.length != 2) {
+                            continue;
+                        }
+                        if (argt[1] != boolean.class) {
+                            continue;
+                        }
+                        if (argt[0].getSuperclass() != Object.class) {
+                            continue;
+                        }
+                    } else {
+                        continue;
+                    }
                 } else {
-                    if (m.getName().equals("b") && !Modifier.isStatic(m.getModifiers()) && m.getReturnType().equals(void.class)) {
-                        if (argt.length != 1) continue;
-                        if (argt[0].getSuperclass() == Intent.class) continue;
-                        if (argt[0].getSuperclass() != Object.class) continue;
-                    } else continue;
+                    if (m.getName().equals("b") && !Modifier.isStatic(m.getModifiers()) && m
+                        .getReturnType().equals(void.class)) {
+                        if (argt.length != 1) {
+                            continue;
+                        }
+                        if (argt[0].getSuperclass() == Intent.class) {
+                            continue;
+                        }
+                        if (argt[0].getSuperclass() != Object.class) {
+                            continue;
+                        }
+                    } else {
+                        continue;
+                    }
                 }
                 XposedBridge.hookMethod(m, new XC_MethodHook(49) {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        if (LicenseStatus.sDisableCommonHooks) return;
-                        if (!isEnabled()) return;
+                        if (LicenseStatus.sDisableCommonHooks) {
+                            return;
+                        }
+                        if (!isEnabled()) {
+                            return;
+                        }
                         Class<?> _ProfileCardInfo = ((Method) param.method).getParameterTypes()[0];
                         Object info = iget_object_or_null(param.thisObject, "a", _ProfileCardInfo);
                         if (info != null) {

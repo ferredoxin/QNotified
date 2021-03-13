@@ -35,6 +35,7 @@ import nil.nadph.qnotified.util.LicenseStatus;
 
 @FunctionEntry
 public class HideGiftAnim extends CommonDelayableHook {
+
     public static final HideGiftAnim INSTANCE = new HideGiftAnim();
 
     HideGiftAnim() {
@@ -45,14 +46,19 @@ public class HideGiftAnim extends CommonDelayableHook {
     public boolean initOnce() {
         try {
             Class clz = _TroopGiftAnimationController();
-            XposedHelpers.findAndHookMethod(clz, "a", load("com/tencent/mobileqq/data/MessageForDeliverGiftTips"), new XC_MethodHook(39) {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.sDisableCommonHooks) return;
-                    if (!isEnabled()) return;
-                    param.setResult(null);
-                }
-            });
+            XposedHelpers.findAndHookMethod(clz, "a",
+                load("com/tencent/mobileqq/data/MessageForDeliverGiftTips"), new XC_MethodHook(39) {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        if (LicenseStatus.sDisableCommonHooks) {
+                            return;
+                        }
+                        if (!isEnabled()) {
+                            return;
+                        }
+                        param.setResult(null);
+                    }
+                });
             return true;
         } catch (Throwable e) {
             log(e);

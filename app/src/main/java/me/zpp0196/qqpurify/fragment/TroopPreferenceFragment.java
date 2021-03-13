@@ -7,6 +7,7 @@ import nil.nadph.qnotified.R;
  * Created by zpp0196 on 2019/2/9.
  */
 public class TroopPreferenceFragment extends AbstractPreferenceFragment {
+
     @Override
     protected int getPrefRes() {
         return R.xml.pref_troop;

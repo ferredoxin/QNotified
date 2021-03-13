@@ -79,6 +79,8 @@ public class Utils {
     public static final int TOAST_TYPE_SUCCESS = 2;
     public static boolean ENABLE_DUMP_LOG = false;
     private static Handler mHandler;
+    private static boolean sAppRuntimeInit = false;
+    private static Field f_mAppRuntime = null;
 
     private Utils() {
         throw new AssertionError("No instance for you!");
@@ -92,7 +94,9 @@ public class Utils {
         if (Looper.myLooper() == Looper.getMainLooper()) {
             r.run();
         } else {
-            if (mHandler == null) mHandler = new Handler(Looper.getMainLooper());
+            if (mHandler == null) {
+                mHandler = new Handler(Looper.getMainLooper());
+            }
             mHandler.post(r);
         }
     }
@@ -157,8 +161,12 @@ public class Utils {
     }
 
     public static String paramsTypesToString(Class... c) {
-        if (c == null) return null;
-        if (c.length == 0) return "()";
+        if (c == null) {
+            return null;
+        }
+        if (c.length == 0) {
+            return "()";
+        }
         StringBuilder sb = new StringBuilder("(");
         for (int i = 0; i < c.length; i++) {
             sb.append(c[i] == null ? "[null]" : c[i].getName());
@@ -174,8 +182,9 @@ public class Utils {
         try {
             AppRuntime rt = getAppRuntime();
             if (rt == null) {
-                if (BuildConfig.DEBUG)
+                if (BuildConfig.DEBUG) {
                     logw("getLongAccountUin/E getAppRuntime == null");
+                }
                 return -1;
             }
             return (long) invoke_virtual(rt, "getLongAccountUin");
@@ -207,17 +216,16 @@ public class Utils {
 
     public static String byteStr(int i) {
         String ret = Integer.toHexString(i);
-        if (ret.length() == 1) return "0" + ret;
-        else return ret;
+        if (ret.length() == 1) {
+            return "0" + ret;
+        } else {
+            return ret;
+        }
     }
-
-    private static boolean sAppRuntimeInit = false;
 
     public static void $access$set$sAppRuntimeInit(boolean z) {
         sAppRuntimeInit = z;
     }
-
-    private static Field f_mAppRuntime = null;
 
     @Nullable
     @MainProcess
@@ -259,7 +267,8 @@ public class Utils {
                     cl_bh = cl_flh.getSuperclass();
                 }
                 Object appInterface = getQQAppInterface();
-                return invoke_virtual(appInterface, "getBusinessHandler", cl_flh.getName(), String.class, cl_bh);
+                return invoke_virtual(appInterface, "getBusinessHandler", cl_flh.getName(),
+                    String.class, cl_bh);
             } catch (Exception e) {
                 log(e);
                 return null;
@@ -277,7 +286,8 @@ public class Utils {
                     return invoke_virtual(appInterface, "a", 1, int.class, cl_bh);
                 } catch (NoSuchMethodException e) {
                     try {
-                        Method m = appInterface.getClass().getMethod("getBusinessHandler", int.class);
+                        Method m = appInterface.getClass()
+                            .getMethod("getBusinessHandler", int.class);
                         m.setAccessible(true);
                         return m.invoke(appInterface, 1);
                     } catch (Exception e2) {
@@ -331,30 +341,42 @@ public class Utils {
             Log.e("EdXposed-Bridge", str);
         }
         if (ENABLE_DUMP_LOG) {
-            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/qn_log.txt";
+            String path =
+                Environment.getExternalStorageDirectory().getAbsolutePath() + "/qn_log.txt";
             File f = new File(path);
             try {
-                if (!f.exists()) f.createNewFile();
-                appendToFile(path, "[" + System.currentTimeMillis() + "-" + android.os.Process.myPid() + "] " + str + "\n");
+                if (!f.exists()) {
+                    f.createNewFile();
+                }
+                appendToFile(path,
+                    "[" + System.currentTimeMillis() + "-" + android.os.Process.myPid() + "] " + str
+                        + "\n");
             } catch (IOException e) {
             }
         }
     }
 
     public static void logd(String str) {
-        if (BuildConfig.DEBUG) try {
-            Log.d("QNdump", str);
-            XposedBridge.log(str);
-        } catch (NoClassDefFoundError e) {
-            Log.d("Xposed", str);
-            Log.d("EdXposed-Bridge", str);
+        if (BuildConfig.DEBUG) {
+            try {
+                Log.d("QNdump", str);
+                XposedBridge.log(str);
+            } catch (NoClassDefFoundError e) {
+                Log.d("Xposed", str);
+                Log.d("EdXposed-Bridge", str);
+            }
         }
         if (ENABLE_DUMP_LOG) {
-            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/qn_log.txt";
+            String path =
+                Environment.getExternalStorageDirectory().getAbsolutePath() + "/qn_log.txt";
             File f = new File(path);
             try {
-                if (!f.exists()) f.createNewFile();
-                appendToFile(path, "[" + System.currentTimeMillis() + "-" + android.os.Process.myPid() + "] " + str + "\n");
+                if (!f.exists()) {
+                    f.createNewFile();
+                }
+                appendToFile(path,
+                    "[" + System.currentTimeMillis() + "-" + android.os.Process.myPid() + "] " + str
+                        + "\n");
             } catch (IOException e) {
             }
         }
@@ -369,11 +391,16 @@ public class Utils {
             Log.i("EdXposed-Bridge", str);
         }
         if (ENABLE_DUMP_LOG) {
-            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/qn_log.txt";
+            String path =
+                Environment.getExternalStorageDirectory().getAbsolutePath() + "/qn_log.txt";
             File f = new File(path);
             try {
-                if (!f.exists()) f.createNewFile();
-                appendToFile(path, "[" + System.currentTimeMillis() + "-" + android.os.Process.myPid() + "] " + str + "\n");
+                if (!f.exists()) {
+                    f.createNewFile();
+                }
+                appendToFile(path,
+                    "[" + System.currentTimeMillis() + "-" + android.os.Process.myPid() + "] " + str
+                        + "\n");
             } catch (IOException e) {
             }
         }
@@ -388,18 +415,25 @@ public class Utils {
             Log.w("EdXposed-Bridge", str);
         }
         if (ENABLE_DUMP_LOG) {
-            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/qn_log.txt";
+            String path =
+                Environment.getExternalStorageDirectory().getAbsolutePath() + "/qn_log.txt";
             File f = new File(path);
             try {
-                if (!f.exists()) f.createNewFile();
-                appendToFile(path, "[" + System.currentTimeMillis() + "-" + android.os.Process.myPid() + "] " + str + "\n");
+                if (!f.exists()) {
+                    f.createNewFile();
+                }
+                appendToFile(path,
+                    "[" + System.currentTimeMillis() + "-" + android.os.Process.myPid() + "] " + str
+                        + "\n");
             } catch (IOException e) {
             }
         }
     }
 
     public static void log(Throwable th) {
-        if (th == null) return;
+        if (th == null) {
+            return;
+        }
         String msg = Log.getStackTraceString(th);
         Log.e("QNdump", msg);
         try {
@@ -413,11 +447,16 @@ public class Utils {
         } catch (Throwable ignored) {
         }
         if (ENABLE_DUMP_LOG) {
-            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/qn_log.txt";
+            String path =
+                Environment.getExternalStorageDirectory().getAbsolutePath() + "/qn_log.txt";
             File f = new File(path);
             try {
-                if (!f.exists()) f.createNewFile();
-                appendToFile(path, "[" + System.currentTimeMillis() + "-" + android.os.Process.myPid() + "] " + msg + "\n");
+                if (!f.exists()) {
+                    f.createNewFile();
+                }
+                appendToFile(path,
+                    "[" + System.currentTimeMillis() + "-" + android.os.Process.myPid() + "] " + msg
+                        + "\n");
             } catch (IOException e) {
             }
         }
@@ -425,15 +464,17 @@ public class Utils {
 
     public static void checkLogFlag() {
         try {
-            File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.qn_log_flag");
-            if (f.exists()) ENABLE_DUMP_LOG = true;
+            File f = new File(
+                Environment.getExternalStorageDirectory().getAbsolutePath() + "/.qn_log_flag");
+            if (f.exists()) {
+                ENABLE_DUMP_LOG = true;
+            }
         } catch (Exception ignored) {
         }
     }
 
     /**
-     * 追加文件：使用FileWriter
-     * 不能使用LogAndToastUtil.log(Throwable),防止死递归
+     * 追加文件：使用FileWriter 不能使用LogAndToastUtil.log(Throwable),防止死递归
      *
      * @param fileName
      * @param content
@@ -457,7 +498,9 @@ public class Utils {
     }
 
     public static String en(String str) {
-        if (str == null) return "null";
+        if (str == null) {
+            return "null";
+        }
         return "\"" + str.replace("\\", "\\\\").replace("\"", "\\\"")
             .replace("\n", "\\n").replace("\r", "\\r") + "\"";
     }
@@ -468,16 +511,25 @@ public class Utils {
     }
 
     public static String de(String str) {
-        if (str == null) return null;
-        if (str.equals("null")) return null;
-        if (str.startsWith("\"")) str = str.substring(1);
-        if (str.endsWith("\"") && !str.endsWith("\\\"")) str = str.substring(0, str.length() - 1);
+        if (str == null) {
+            return null;
+        }
+        if (str.equals("null")) {
+            return null;
+        }
+        if (str.startsWith("\"")) {
+            str = str.substring(1);
+        }
+        if (str.endsWith("\"") && !str.endsWith("\\\"")) {
+            str = str.substring(0, str.length() - 1);
+        }
         return str.replace("\\\"", "\"").replace("\\\n", "\n")
             .replace("\\\r", "\r").replace("\\\\", "\\");
     }
 
     public static String csvenc(String s) {
-        if (!s.contains("\"") && !s.contains(" ") && !s.contains(",") && !s.contains("\r") && !s.contains("\n") && !s.contains("\t")) {
+        if (!s.contains("\"") && !s.contains(" ") && !s.contains(",") && !s.contains("\r") && !s
+            .contains("\n") && !s.contains("\t")) {
             return s;
         }
         return "\"" + s.replace("\"", "\"\"") + "\"";
@@ -485,7 +537,9 @@ public class Utils {
 
     public static String filterEmoji(String source) {
         if (source != null) {
-            Pattern emoji = Pattern.compile("[\ud83c\udc00-\ud83c\udfff]|[\ud83d\udc00-\ud83d\udfff]|[\u2600-\u27ff]", Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE);
+            Pattern emoji = Pattern
+                .compile("[\ud83c\udc00-\ud83c\udfff]|[\ud83d\udc00-\ud83d\udfff]|[\u2600-\u27ff]",
+                    Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE);
             Matcher emojiMatcher = emoji.matcher(source);
             if (emojiMatcher.find()) {
                 source = emojiMatcher.replaceAll("\u3000");
@@ -497,10 +551,18 @@ public class Utils {
     }
 
     private static boolean isSymbol(char c) {
-        if (c == '\u3000') return true;
-        if (c < '0') return true;
-        if (c > '9' && c < 'A') return true;
-        if (c > 'Z' && c < 'a') return true;
+        if (c == '\u3000') {
+            return true;
+        }
+        if (c < '0') {
+            return true;
+        }
+        if (c > '9' && c < 'A') {
+            return true;
+        }
+        if (c > 'Z' && c < 'a') {
+            return true;
+        }
         return (c <= 0xD7FF);
     }
 
@@ -512,7 +574,8 @@ public class Utils {
      */
     public static Context getContext(View view) {
         Context ctx = null;
-        if (view.getContext().getClass().getName().contains("com.android.internal.policy.DecorContext")) {
+        if (view.getContext().getClass().getName()
+            .contains("com.android.internal.policy.DecorContext")) {
             try {
                 Field field = view.getContext().getClass().getDeclaredField("mPhoneWindow");
                 field.setAccessible(true);
@@ -530,15 +593,21 @@ public class Utils {
 
     public static String getShort$Name(Object obj) {
         String name;
-        if (obj == null) return "null";
+        if (obj == null) {
+            return "null";
+        }
         if (obj instanceof String) {
             name = ((String) obj).replace("/", ".");
         } else if (obj instanceof Class) {
             name = ((Class) obj).getName();
         } else if (obj instanceof Field) {
             name = ((Field) obj).getType().getName();
-        } else name = obj.getClass().getName();
-        if (!name.contains(".")) return name;
+        } else {
+            name = obj.getClass().getName();
+        }
+        if (!name.contains(".")) {
+            return name;
+        }
         int p = name.lastIndexOf('.');
         return name.substring(p + 1);
     }
@@ -552,7 +621,8 @@ public class Utils {
     }
 
     public static boolean isAlphaVersion() {
-        return QN_VERSION_NAME.contains("-") || QN_VERSION_NAME.contains("es") || QN_VERSION_NAME.contains("a") || QN_VERSION_NAME.length() > 10;
+        return QN_VERSION_NAME.contains("-") || QN_VERSION_NAME.contains("es") || QN_VERSION_NAME
+            .contains("a") || QN_VERSION_NAME.length() > 10;
     }
 
     /**
@@ -578,8 +648,12 @@ public class Utils {
     }
 
     public static void copy(File s, File f) throws Exception {
-        if (!s.exists()) throw new FileNotFoundException("源文件不存在");
-        if (!f.exists()) f.createNewFile();
+        if (!s.exists()) {
+            throw new FileNotFoundException("源文件不存在");
+        }
+        if (!f.exists()) {
+            f.createNewFile();
+        }
         FileReader fr = new FileReader(s);
         FileWriter fw = new FileWriter(f);
         char[] buff = new char[1024];
@@ -590,28 +664,24 @@ public class Utils {
         fr.close();
     }
 
-    public static class DummyCallback implements DialogInterface.OnClickListener {
-        public DummyCallback() {
-        }
-
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-        }
-
-    }
-
     public static String en_toStr(Object obj) {
-        if (obj == null) return null;
+        if (obj == null) {
+            return null;
+        }
         String str;
-        if (obj instanceof CharSequence) str = Utils.en(obj.toString());
-        else str = "" + obj;
+        if (obj instanceof CharSequence) {
+            str = Utils.en(obj.toString());
+        } else {
+            str = "" + obj;
+        }
         return str;
     }
 
     public static Activity getCurrentActivity() {
         try {
             Class activityThreadClass = Class.forName("android.app.ActivityThread");
-            Object activityThread = activityThreadClass.getMethod("currentActivityThread").invoke(null);
+            Object activityThread = activityThreadClass.getMethod("currentActivityThread")
+                .invoke(null);
             Field activitiesField = activityThreadClass.getDeclaredField("mActivities");
             activitiesField.setAccessible(true);
             Map activities = (Map) activitiesField.get(activityThread);
@@ -629,24 +699,6 @@ public class Utils {
             log(e);
         }
         return null;
-    }
-
-    public static class ContactDescriptor {
-        public String uin;
-        public int uinType;
-        @Nullable
-        public String nick;
-
-        public String getId() {
-            StringBuilder msg = new StringBuilder();
-            if (uin.length() < 10) {
-                for (int i = 0; i < 10 - uin.length(); i++) {
-                    msg.append("0");
-                }
-            }
-            return msg + uin + uinType;
-        }
-
     }
 
     @SuppressWarnings("JavaJniMissingFunction")
@@ -685,7 +737,9 @@ public class Utils {
         int[] ret = new int[is.size()];
         Iterator<Integer> it = is.iterator();
         for (int i = 0; i < ret.length; i++) {
-            if (it.hasNext()) ret[i] = it.next();
+            if (it.hasNext()) {
+                ret[i] = it.next();
+            }
         }
         return ret;
     }
@@ -715,7 +769,9 @@ public class Utils {
             return sb.toString();
         } finally {
             try {
-                if (br != null) br.close();
+                if (br != null) {
+                    br.close();
+                }
             } catch (Exception ignored) {
             }
         }
@@ -730,6 +786,36 @@ public class Utils {
         fout.write(content.getBytes());
         fout.flush();
         fout.close();
+    }
+
+    public static class DummyCallback implements DialogInterface.OnClickListener {
+
+        public DummyCallback() {
+        }
+
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+        }
+
+    }
+
+    public static class ContactDescriptor {
+
+        public String uin;
+        public int uinType;
+        @Nullable
+        public String nick;
+
+        public String getId() {
+            StringBuilder msg = new StringBuilder();
+            if (uin.length() < 10) {
+                for (int i = 0; i < 10 - uin.length(); i++) {
+                    msg.append("0");
+                }
+            }
+            return msg + uin + uinType;
+        }
+
     }
 
 }

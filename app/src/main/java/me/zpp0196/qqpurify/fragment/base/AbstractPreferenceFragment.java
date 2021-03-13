@@ -30,8 +30,9 @@ import nil.nadph.qnotified.util.Utils;
 /**
  * Created by zpp0196 on 2019/2/9.
  */
-public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompat implements Constants,
-        Preference.OnPreferenceChangeListener, MainActivity.TabFragment, SettingUtils.ISetting {
+public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompat implements
+    Constants,
+    Preference.OnPreferenceChangeListener, MainActivity.TabFragment, SettingUtils.ISetting {
 
     protected MainActivity mActivity;
 
@@ -79,7 +80,9 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
 
     private void bindPreferenceSummary(Preference preference) {
         String pref_key = preference.getKey();
-        if (pref_key == null) return;
+        if (pref_key == null) {
+            return;
+        }
         pref_key = pref_key.replace("!", "");
         String[] __ = pref_key.split("\\$");
         String cfgName = __[0];
@@ -91,7 +94,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
 
         // 排除空值、多选、开关
         if (preference instanceof MultiSelectListPreference ||
-                preference instanceof TwoStatePreference || _item == null) {
+            preference instanceof TwoStatePreference || _item == null) {
             return;
         }
         try {
@@ -116,7 +119,9 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
     @SuppressWarnings("unchecked")
     private void bindPreferenceValue(Preference preference) {
         String pref_key = preference.getKey();
-        if (pref_key == null) return;
+        if (pref_key == null) {
+            return;
+        }
         pref_key = pref_key.replace("!", "");
         String[] __ = pref_key.split("\\$");
         String cfgName = __[0];
@@ -126,8 +131,9 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
         }
         AbstractConfigItem _item = P2CUtils.findConfigByName(cfgName);
         if (_item == null && (preference instanceof TwoStatePreference
-                || preference instanceof ListPreference || preference instanceof MultiSelectListPreference
-                || preference instanceof EditTextPreference)) {
+            || preference instanceof ListPreference
+            || preference instanceof MultiSelectListPreference
+            || preference instanceof EditTextPreference)) {
             preference.setEnabled(false);
             preference.setSummary("暂不开放");
         } else {
@@ -138,12 +144,14 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
                         ((ListPreference) preference).setValue(val);
                     }
                 } else if (preference instanceof MultiSelectListPreference) {
-                    Set<String> selected = new HashSet<String>(((MultiSelectListPreference) preference).getValues());
+                    Set<String> selected = new HashSet<String>(
+                        ((MultiSelectListPreference) preference).getValues());
                     MultiConfigItem item = (MultiConfigItem) _item;
                     CharSequence[] vals = ((MultiSelectListPreference) preference).getEntryValues();
                     for (CharSequence val : vals) {
                         String kval = val.toString();
-                        String __fullName = (keyName == null ? "" : keyName.concat("$")).concat(kval);
+                        String __fullName = (keyName == null ? "" : keyName.concat("$"))
+                            .concat(kval);
                         //implicit throw a NPE if key is illegal
                         if (item.hasConfig(__fullName)) {
                             boolean z;
@@ -152,7 +160,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
                             } else {
                                 selected.remove(kval);
                             }
-                        } 
+                        }
                     }
                     ((MultiSelectListPreference) preference).setValues(selected);
                 } else if (preference instanceof TwoStatePreference) {
@@ -162,7 +170,8 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
                     } else {
                         MultiConfigItem item = (MultiConfigItem) _item;
                         if (item.hasConfig(keyName)) {
-                            ((TwoStatePreference) preference).setChecked(item.getBooleanConfig(keyName));
+                            ((TwoStatePreference) preference)
+                                .setChecked(item.getBooleanConfig(keyName));
                         }
                     }
                 } else if (preference instanceof EditTextPreference) {
@@ -201,7 +210,8 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
                 Toast.makeText(mActivity, "404", Toast.LENGTH_SHORT).show();
                 return false;
             }
-            if (keyName == null && newValue instanceof Boolean && _item instanceof SwitchConfigItem) {
+            if (keyName == null && newValue instanceof Boolean
+                && _item instanceof SwitchConfigItem) {
                 SwitchConfigItem item = (SwitchConfigItem) _item;
                 boolean val2 = (Boolean) newValue;
                 item.setEnabled(val2);
@@ -213,12 +223,14 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
                     item.setIntConfig(keyName, (Integer) newValue);
                 } else if (newValue instanceof Boolean) {
                     item.setBooleanConfig(keyName, (Boolean) newValue);
-                } else if (newValue instanceof Set && preference instanceof MultiSelectListPreference) {
+                } else if (newValue instanceof Set
+                    && preference instanceof MultiSelectListPreference) {
                     //handle String only
                     Set<String> selected = (Set<String>) newValue;
                     CharSequence[] vals = ((MultiSelectListPreference) preference).getEntryValues();
                     for (CharSequence val : vals) {
-                        String __fullName = (keyName == null ? "" : keyName.concat("$")).concat(val.toString());
+                        String __fullName = (keyName == null ? "" : keyName.concat("$"))
+                            .concat(val.toString());
                         String kval = val.toString();
                         item.setBooleanConfig(__fullName, selected.contains(kval));
                     }
@@ -240,7 +252,8 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
             }
             _item.sync();
             if (restartRequired) {
-                Toasts.info(mActivity, "重启" + HostInformationProviderKt.getHostInfo().getHostName() + "生效");
+                Toasts.info(mActivity,
+                    "重启" + HostInformationProviderKt.getHostInfo().getHostName() + "生效");
             }
             return true;
         } catch (Exception e) {

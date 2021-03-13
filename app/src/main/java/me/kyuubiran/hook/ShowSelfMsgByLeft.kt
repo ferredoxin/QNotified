@@ -36,8 +36,9 @@ object ShowSelfMsgByLeft : CommonDelayableHook("kr_show_self_msg_by_left") {
 
     override fun initOnce(): Boolean {
         return try {
-            val m = DexMethodDescriptor("Lcom/tencent/mobileqq/activity/aio/BaseChatItemLayout;->setHearIconPosition(I)V")
-                .getMethodInstance(Initiator.getHostClassLoader())
+            val m =
+                DexMethodDescriptor("Lcom/tencent/mobileqq/activity/aio/BaseChatItemLayout;->setHearIconPosition(I)V")
+                    .getMethodInstance(Initiator.getHostClassLoader())
             XposedBridge.hookMethod(m, object : XC_MethodHook() {
                 override fun beforeHookedMethod(param: MethodHookParam?) {
                     if (LicenseStatus.sDisableCommonHooks) return

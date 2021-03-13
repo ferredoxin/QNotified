@@ -94,16 +94,116 @@ public class PttForwardHook extends CommonDelayableHook {
         super("qn_enable_ptt_forward", new DexDeobfStep(DexKit.C_FACADE));
     }
 
+    private static void showSavePttFileDialog(Activity context, final File ptt) {
+        CustomDialog dialog = CustomDialog.createFailsafe(context);
+        final Context ctx = dialog.getContext();
+        final EditText editText = new EditText(ctx);
+        TextView tv = new TextView(ctx);
+        tv.setText("格式为.slk/.amr 一般无法直接打开slk格式 而且大多数语音均为slk格式(转发语音可以看到格式) 请自行寻找软件进行转码");
+        tv.setPadding(20, 10, 20, 10);
+        String lastSaveDir = ConfigManager.getCache().getString(qn_cache_ptt_save_last_parent_dir);
+        if (TextUtils.isEmpty(lastSaveDir)) {
+            File f = ctx.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+            if (f == null) {
+                f = Environment.getExternalStorageDirectory();
+            }
+            lastSaveDir = f.getPath();
+        }
+        editText.setText(new File(lastSaveDir, Utils.getPathTail(ptt)).getPath());
+        editText.setTextSize(16);
+        int _5 = dip2px(ctx, 5);
+        editText.setPadding(_5, _5, _5, _5);
+        //editText.setBackgroundDrawable(new HighContrastBorder());
+        ViewCompat.setBackground(editText, new HighContrastBorder());
+        LinearLayout linearLayout = new LinearLayout(ctx);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.addView(tv, MATCH_PARENT, WRAP_CONTENT);
+        linearLayout.addView(editText, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, _5 * 2));
+        final AlertDialog alertDialog = (AlertDialog) dialog
+            .setTitle("输入保存路径(请自行转码)")
+            .setView(linearLayout)
+            .setPositiveButton("保存", null)
+            .setNegativeButton("取消", null)
+            .create();
+        alertDialog.show();
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            .setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String path = editText.getText().toString();
+                    if (path.equals("")) {
+                        Toasts.error(ctx, "请输入路径");
+                        return;
+                    }
+                    if (!path.startsWith("/")) {
+                        Toasts.error(ctx, "请输入完整路径(以\"/\"开头)");
+                        return;
+                    }
+                    File f = new File(path);
+                    File dir = f.getParentFile();
+                    if (dir == null || !dir.exists() || !dir.isDirectory()) {
+                        Toasts.error(ctx, "文件夹不存在");
+                        return;
+                    }
+                    if (!dir.canWrite()) {
+                        Toasts.error(ctx, "文件夹无访问权限");
+                        return;
+                    }
+                    FileOutputStream fout = null;
+                    FileInputStream fin = null;
+                    try {
+                        if (!f.exists()) {
+                            f.createNewFile();
+                        }
+                        fin = new FileInputStream(ptt);
+                        fout = new FileOutputStream(f);
+                        byte[] buf = new byte[1024];
+                        int i;
+                        while ((i = fin.read(buf)) > 0) {
+                            fout.write(buf, 0, i);
+                        }
+                        fout.flush();
+                        alertDialog.dismiss();
+                        ConfigManager cache = ConfigManager.getCache();
+                        String pdir = f.getParent();
+                        if (pdir != null) {
+                            cache.putString(qn_cache_ptt_save_last_parent_dir, pdir);
+                            cache.save();
+                        }
+                    } catch (IOException e) {
+                        Toasts.error(ctx, "失败:" + e.toString().replace("java.io.", ""));
+                    } finally {
+                        if (fin != null) {
+                            try {
+                                fin.close();
+                            } catch (IOException ignored) {
+                            }
+                        }
+                        if (fout != null) {
+                            try {
+                                fout.close();
+                            } catch (IOException ignored) {
+                            }
+                        }
+                    }
+                }
+            });
+    }
+
     @Override
     public boolean initOnce() {
         try {
             Class clz_ForwardBaseOption = load("com/tencent/mobileqq/forward/ForwardBaseOption");
             if (clz_ForwardBaseOption == null) {
-                Class clz_DirectForwardActivity = load("com/tencent/mobileqq/activity/DirectForwardActivity");
+                Class clz_DirectForwardActivity = load(
+                    "com/tencent/mobileqq/activity/DirectForwardActivity");
                 for (Field f : clz_DirectForwardActivity.getDeclaredFields()) {
-                    if (Modifier.isStatic(f.getModifiers())) continue;
+                    if (Modifier.isStatic(f.getModifiers())) {
+                        continue;
+                    }
                     Class clz = f.getType();
-                    if (Modifier.isAbstract(clz.getModifiers()) && !clz.getName().contains("android")) {
+                    if (Modifier.isAbstract(clz.getModifiers()) && !clz.getName()
+                        .contains("android")) {
                         clz_ForwardBaseOption = clz;
                         break;
                     }
@@ -111,9 +211,15 @@ public class PttForwardHook extends CommonDelayableHook {
             }
             Method buildConfirmDialog = null;
             for (Method m : clz_ForwardBaseOption.getDeclaredMethods()) {
-                if (!m.getReturnType().equals(void.class)) continue;
-                if (!Modifier.isFinal(m.getModifiers())) continue;
-                if (m.getParameterTypes().length != 0) continue;
+                if (!m.getReturnType().equals(void.class)) {
+                    continue;
+                }
+                if (!Modifier.isFinal(m.getModifiers())) {
+                    continue;
+                }
+                if (m.getParameterTypes().length != 0) {
+                    continue;
+                }
                 buildConfirmDialog = m;
                 break;
             }
@@ -127,12 +233,15 @@ public class PttForwardHook extends CommonDelayableHook {
                     }
                     f.setAccessible(true);
                     Bundle data = (Bundle) f.get(param.thisObject);
-                    if (!data.containsKey("ptt_forward_path")) return;
+                    if (!data.containsKey("ptt_forward_path")) {
+                        return;
+                    }
                     param.setResult(null);
                     final String path = data.getString("ptt_forward_path");
                     Activity ctx = iget_object_or_null(param.thisObject, "a", Activity.class);
-                    if (ctx == null)
+                    if (ctx == null) {
                         ctx = iget_object_or_null(param.thisObject, "mActivity", Activity.class);
+                    }
                     if (path == null || !new File(path).exists()) {
                         Toasts.error(ctx, "Error: Invalid ptt file!");
                         return;
@@ -160,10 +269,14 @@ public class PttForwardHook extends CommonDelayableHook {
                         cd.uin = data.getString("uin");
                         cd.uinType = data.getInt("uintype", -1);
                         cd.nick = data.getString("uinname");
-                        if (cd.nick == null) cd.nick = data.getString("uin");
+                        if (cd.nick == null) {
+                            cd.nick = data.getString("uin");
+                        }
                         mTargets.add(cd);
                     }
-                    if (unsupport) Toasts.info(ctx, "暂不支持我的设备/临时聊天/讨论组");
+                    if (unsupport) {
+                        Toasts.info(ctx, "暂不支持我的设备/临时聊天/讨论组");
+                    }
                     LinearLayout main = new LinearLayout(ctx);
                     main.setOrientation(LinearLayout.VERTICAL);
                     LinearLayout heads = new LinearLayout(ctx);
@@ -185,24 +298,35 @@ public class PttForwardHook extends CommonDelayableHook {
                     imglp.setMargins(pd, pd, pd, pd);
                     FaceImpl face = FaceImpl.getInstance();
                     if (multi) {
-                        if (mTargets != null) for (Utils.ContactDescriptor cd : mTargets) {
-                            ImageView imgview = new ImageView(ctx);
-                            Bitmap bm = face.getBitmapFromCache(cd.uinType == 1 ? FaceImpl.TYPE_TROOP : FaceImpl.TYPE_USER, cd.uin);
-                            if (bm == null) {
-                                imgview.setImageDrawable(ResUtils.loadDrawableFromAsset("face.png", ctx));
-                                face.registerView(cd.uinType == 1 ? FaceImpl.TYPE_TROOP : FaceImpl.TYPE_USER, cd.uin, imgview);
-                            } else {
-                                imgview.setImageBitmap(bm);
+                        if (mTargets != null) {
+                            for (Utils.ContactDescriptor cd : mTargets) {
+                                ImageView imgview = new ImageView(ctx);
+                                Bitmap bm = face.getBitmapFromCache(
+                                    cd.uinType == 1 ? FaceImpl.TYPE_TROOP : FaceImpl.TYPE_USER,
+                                    cd.uin);
+                                if (bm == null) {
+                                    imgview.setImageDrawable(
+                                        ResUtils.loadDrawableFromAsset("face.png", ctx));
+                                    face.registerView(
+                                        cd.uinType == 1 ? FaceImpl.TYPE_TROOP : FaceImpl.TYPE_USER,
+                                        cd.uin, imgview);
+                                } else {
+                                    imgview.setImageBitmap(bm);
+                                }
+                                heads.addView(imgview, imglp);
                             }
-                            heads.addView(imgview, imglp);
                         }
                     } else {
                         Utils.ContactDescriptor cd = mTargets.get(0);
                         ImageView imgview = new ImageView(ctx);
-                        Bitmap bm = face.getBitmapFromCache(cd.uinType == 1 ? FaceImpl.TYPE_TROOP : FaceImpl.TYPE_USER, cd.uin);
+                        Bitmap bm = face.getBitmapFromCache(
+                            cd.uinType == 1 ? FaceImpl.TYPE_TROOP : FaceImpl.TYPE_USER, cd.uin);
                         if (bm == null) {
-                            imgview.setImageDrawable(ResUtils.loadDrawableFromAsset("face.png", ctx));
-                            face.registerView(cd.uinType == 1 ? FaceImpl.TYPE_TROOP : FaceImpl.TYPE_USER, cd.uin, imgview);
+                            imgview
+                                .setImageDrawable(ResUtils.loadDrawableFromAsset("face.png", ctx));
+                            face.registerView(
+                                cd.uinType == 1 ? FaceImpl.TYPE_TROOP : FaceImpl.TYPE_USER, cd.uin,
+                                imgview);
                         } else {
                             imgview.setImageBitmap(bm);
                         }
@@ -222,8 +346,10 @@ public class PttForwardHook extends CommonDelayableHook {
                         public void onClick(DialogInterface dialog, int which) {
                             try {
                                 for (Utils.ContactDescriptor cd : mTargets) {
-                                    Parcelable sesssion = SessionInfoImpl.createSessionInfo(cd.uin, cd.uinType);
-                                    ChatActivityFacade.sendPttMessage(getQQAppInterface(), sesssion, path);
+                                    Parcelable sesssion = SessionInfoImpl
+                                        .createSessionInfo(cd.uin, cd.uinType);
+                                    ChatActivityFacade
+                                        .sendPttMessage(getQQAppInterface(), sesssion, path);
                                 }
                                 Toasts.success(finalCtx, "已发送");
                             } catch (Throwable e) {
@@ -252,67 +378,80 @@ public class PttForwardHook extends CommonDelayableHook {
                 } catch (NoSuchFieldException e) {
                 }
             }
-            findAndHookMethod(cl_PttItemBuilder, "a", int.class, Context.class, load("com/tencent/mobileqq/data/ChatMessage"), new XC_MethodHook(60) {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    int id = (int) param.args[0];
-                    Activity context = (Activity) param.args[1];
-                    Object chatMessage = param.args[2];
-                    if (id == R_ID_PTT_FORWARD) {
-                        param.setResult(null);
-                        String url = (String) invoke_virtual(chatMessage, "getLocalFilePath");
-                        File file = new File(url);
-                        if (!file.exists()) {
-                            Toasts.error(context, "未找到语音文件");
-                            return;
+            findAndHookMethod(cl_PttItemBuilder, "a", int.class, Context.class,
+                load("com/tencent/mobileqq/data/ChatMessage"), new XC_MethodHook(60) {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        int id = (int) param.args[0];
+                        Activity context = (Activity) param.args[1];
+                        Object chatMessage = param.args[2];
+                        if (id == R_ID_PTT_FORWARD) {
+                            param.setResult(null);
+                            String url = (String) invoke_virtual(chatMessage, "getLocalFilePath");
+                            File file = new File(url);
+                            if (!file.exists()) {
+                                Toasts.error(context, "未找到语音文件");
+                                return;
+                            }
+                            Intent intent = new Intent(context,
+                                load("com/tencent/mobileqq/activity/ForwardRecentActivity"));
+                            intent.putExtra("selection_mode", 0);
+                            intent.putExtra("direct_send_if_dataline_forward", false);
+                            intent.putExtra("forward_text", "null");
+                            intent.putExtra("ptt_forward_path", file.getPath());
+                            intent.putExtra("forward_type", -1);
+                            intent.putExtra("caller_name", "ChatActivity");
+                            intent.putExtra("k_smartdevice", false);
+                            intent.putExtra("k_dataline", false);
+                            intent.putExtra("k_forward_title", "语音转发");
+                            context.startActivity(intent);
+                        } else if (id == R_ID_PTT_SAVE) {
+                            param.setResult(null);
+                            String url = (String) invoke_virtual(chatMessage, "getLocalFilePath");
+                            File file = new File(url);
+                            if (!file.exists()) {
+                                Toasts.error(context, "未找到语音文件");
+                                return;
+                            }
+                            showSavePttFileDialog(context, file);
                         }
-                        Intent intent = new Intent(context, load("com/tencent/mobileqq/activity/ForwardRecentActivity"));
-                        intent.putExtra("selection_mode", 0);
-                        intent.putExtra("direct_send_if_dataline_forward", false);
-                        intent.putExtra("forward_text", "null");
-                        intent.putExtra("ptt_forward_path", file.getPath());
-                        intent.putExtra("forward_type", -1);
-                        intent.putExtra("caller_name", "ChatActivity");
-                        intent.putExtra("k_smartdevice", false);
-                        intent.putExtra("k_dataline", false);
-                        intent.putExtra("k_forward_title", "语音转发");
-                        context.startActivity(intent);
-                    } else if (id == R_ID_PTT_SAVE) {
-                        param.setResult(null);
-                        String url = (String) invoke_virtual(chatMessage, "getLocalFilePath");
-                        File file = new File(url);
-                        if (!file.exists()) {
-                            Toasts.error(context, "未找到语音文件");
-                            return;
-                        }
-                        showSavePttFileDialog(context, file);
                     }
-                }
-            });
+                });
             for (Method m : cl_PttItemBuilder.getDeclaredMethods()) {
-                if (!m.getReturnType().isArray()) continue;
+                if (!m.getReturnType().isArray()) {
+                    continue;
+                }
                 Class<?>[] ps = m.getParameterTypes();
-                if (ps.length == 1 && ps[0].equals(View.class))
+                if (ps.length == 1 && ps[0].equals(View.class)) {
                     XposedBridge.hookMethod(m, new XC_MethodHook(60) {
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                            if (LicenseStatus.sDisableCommonHooks) return;
-                            if (!isEnabled()) return;
+                            if (LicenseStatus.sDisableCommonHooks) {
+                                return;
+                            }
+                            if (!isEnabled()) {
+                                return;
+                            }
                             Object arr = param.getResult();
                             Class<?> clQQCustomMenuItem = arr.getClass().getComponentType();
                             Object ret;
                             if (isSavePttEnabled()) {
-                                Object item_forward = CustomMenu.createItem(clQQCustomMenuItem, R_ID_PTT_FORWARD, "转发");
-                                Object item_save = CustomMenu.createItem(clQQCustomMenuItem, R_ID_PTT_SAVE, "保存");
-                                ret = Array.newInstance(clQQCustomMenuItem, Array.getLength(arr) + 2);
+                                Object item_forward = CustomMenu
+                                    .createItem(clQQCustomMenuItem, R_ID_PTT_FORWARD, "转发");
+                                Object item_save = CustomMenu
+                                    .createItem(clQQCustomMenuItem, R_ID_PTT_SAVE, "保存");
+                                ret = Array
+                                    .newInstance(clQQCustomMenuItem, Array.getLength(arr) + 2);
                                 Array.set(ret, 0, Array.get(arr, 0));
                                 //noinspection SuspiciousSystemArraycopy
                                 System.arraycopy(arr, 1, ret, 2, Array.getLength(arr) - 1);
                                 Array.set(ret, 1, item_forward);
                                 Array.set(ret, Array.getLength(ret) - 1, item_save);
                             } else {
-                                Object item_forward = CustomMenu.createItem(clQQCustomMenuItem, R_ID_PTT_FORWARD, "转发");
-                                ret = Array.newInstance(clQQCustomMenuItem, Array.getLength(arr) + 1);
+                                Object item_forward = CustomMenu
+                                    .createItem(clQQCustomMenuItem, R_ID_PTT_FORWARD, "转发");
+                                ret = Array
+                                    .newInstance(clQQCustomMenuItem, Array.getLength(arr) + 1);
                                 Array.set(ret, 0, Array.get(arr, 0));
                                 //noinspection SuspiciousSystemArraycopy
                                 System.arraycopy(arr, 1, ret, 2, Array.getLength(arr) - 1);
@@ -321,105 +460,13 @@ public class PttForwardHook extends CommonDelayableHook {
                             param.setResult(ret);
                         }
                     });
+                }
             }
             return true;
         } catch (Throwable e) {
             log(e);
             return false;
         }
-    }
-
-    private static void showSavePttFileDialog(Activity context, final File ptt) {
-        CustomDialog dialog = CustomDialog.createFailsafe(context);
-        final Context ctx = dialog.getContext();
-        final EditText editText = new EditText(ctx);
-        TextView tv = new TextView(ctx);
-        tv.setText("格式为.slk/.amr 一般无法直接打开slk格式 而且大多数语音均为slk格式(转发语音可以看到格式) 请自行寻找软件进行转码");
-        tv.setPadding(20, 10, 20, 10);
-        String lastSaveDir = ConfigManager.getCache().getString(qn_cache_ptt_save_last_parent_dir);
-        if (TextUtils.isEmpty(lastSaveDir)) {
-            File f = ctx.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
-            if (f == null) {
-                f = Environment.getExternalStorageDirectory();
-            }
-            lastSaveDir = f.getPath();
-        }
-        editText.setText(new File(lastSaveDir, Utils.getPathTail(ptt)).getPath());
-        editText.setTextSize(16);
-        int _5 = dip2px(ctx, 5);
-        editText.setPadding(_5, _5, _5, _5);
-        //editText.setBackgroundDrawable(new HighContrastBorder());
-        ViewCompat.setBackground(editText, new HighContrastBorder());
-        LinearLayout linearLayout = new LinearLayout(ctx);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.addView(tv, MATCH_PARENT, WRAP_CONTENT);
-        linearLayout.addView(editText, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, _5 * 2));
-        final AlertDialog alertDialog = (AlertDialog) dialog
-                .setTitle("输入保存路径(请自行转码)")
-                .setView(linearLayout)
-                .setPositiveButton("保存", null)
-                .setNegativeButton("取消", null)
-                .create();
-        alertDialog.show();
-        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String path = editText.getText().toString();
-                if (path.equals("")) {
-                    Toasts.error(ctx, "请输入路径");
-                    return;
-                }
-                if (!path.startsWith("/")) {
-                    Toasts.error(ctx, "请输入完整路径(以\"/\"开头)");
-                    return;
-                }
-                File f = new File(path);
-                File dir = f.getParentFile();
-                if (dir == null || !dir.exists() || !dir.isDirectory()) {
-                    Toasts.error(ctx, "文件夹不存在");
-                    return;
-                }
-                if (!dir.canWrite()) {
-                    Toasts.error(ctx, "文件夹无访问权限");
-                    return;
-                }
-                FileOutputStream fout = null;
-                FileInputStream fin = null;
-                try {
-                    if (!f.exists()) f.createNewFile();
-                    fin = new FileInputStream(ptt);
-                    fout = new FileOutputStream(f);
-                    byte[] buf = new byte[1024];
-                    int i;
-                    while ((i = fin.read(buf)) > 0) {
-                        fout.write(buf, 0, i);
-                    }
-                    fout.flush();
-                    alertDialog.dismiss();
-                    ConfigManager cache = ConfigManager.getCache();
-                    String pdir = f.getParent();
-                    if (pdir != null) {
-                        cache.putString(qn_cache_ptt_save_last_parent_dir, pdir);
-                        cache.save();
-                    }
-                } catch (IOException e) {
-                    Toasts.error(ctx, "失败:" + e.toString().replace("java.io.", ""));
-                } finally {
-                    if (fin != null) {
-                        try {
-                            fin.close();
-                        } catch (IOException ignored) {
-                        }
-                    }
-                    if (fout != null) {
-                        try {
-                            fout.close();
-                        } catch (IOException ignored) {
-                        }
-                    }
-                }
-            }
-        });
     }
 
     public boolean isSavePttEnabled() {

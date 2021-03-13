@@ -26,8 +26,6 @@ import nil.nadph.qnotified.util.Natives;
 
 public abstract class Convention {
 
-    public abstract int getPointerSize();
-
     @NonNull
     public static Convention getInstance() {
         //drop x86
@@ -37,4 +35,6 @@ public abstract class Convention {
             throw new RuntimeException("Stub!");
         }
     }
+
+    public abstract int getPointerSize();
 }

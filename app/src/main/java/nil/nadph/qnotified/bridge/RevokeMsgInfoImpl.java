@@ -48,7 +48,9 @@ public class RevokeMsgInfoImpl {
     public int opType = -1;
 
     public RevokeMsgInfoImpl(Parcelable o) {
-        if (o == null) throw new NullPointerException("RevokeMsgInfo == null");
+        if (o == null) {
+            throw new NullPointerException("RevokeMsgInfo == null");
+        }
         Parcel p = Parcel.obtain();
         try {
             o.writeToParcel(p, 0);
@@ -59,8 +61,12 @@ public class RevokeMsgInfoImpl {
             sendUin = p.readString();
             msgUid = p.readLong();
             time = p.readLong();
-            if (p.dataAvail() > 0) authorUin = p.readString();
-            if (p.dataAvail() > 0) opType = p.readInt();
+            if (p.dataAvail() > 0) {
+                authorUin = p.readString();
+            }
+            if (p.dataAvail() > 0) {
+                opType = p.readInt();
+            }
         } catch (Exception e) {
             log(e);
         }
@@ -72,11 +78,17 @@ public class RevokeMsgInfoImpl {
             return;
         }
         int valueStart = summery.indexOf('=', keyIndex) + 1;
-        if (summery.charAt(valueStart) == ' ') valueStart++;
+        if (summery.charAt(valueStart) == ' ') {
+            valueStart++;
+        }
         int end1 = summery.indexOf(',', valueStart);
         int end2 = summery.indexOf(' ', valueStart);
-        if (end1 == -1) end1 = summery.length() - 1;
-        if (end2 == -1) end2 = summery.length() - 1;
+        if (end1 == -1) {
+            end1 = summery.length() - 1;
+        }
+        if (end2 == -1) {
+            end2 = summery.length() - 1;
+        }
         int end = Math.min(end1, end2);
         String str = summery.substring(valueStart, end);
         if (str.equals("null")) {
@@ -89,15 +101,15 @@ public class RevokeMsgInfoImpl {
     @Override
     public String toString() {
         return "RevokeMsgInfoImpl{" +
-                "istroop=" + istroop +
-                ", shmsgseq=" + shmsgseq +
-                ", friendUin='" + friendUin + '\'' +
-                ", msgUid=" + msgUid +
-                ", fromUin='" + fromUin + '\'' +
-                ", time=" + time +
-                ", sendUin='" + sendUin + '\'' +
-                ", authorUin='" + authorUin + '\'' +
-                ", opType=" + opType +
-                '}';
+            "istroop=" + istroop +
+            ", shmsgseq=" + shmsgseq +
+            ", friendUin='" + friendUin + '\'' +
+            ", msgUid=" + msgUid +
+            ", fromUin='" + fromUin + '\'' +
+            ", time=" + time +
+            ", sendUin='" + sendUin + '\'' +
+            ", authorUin='" + authorUin + '\'' +
+            ", opType=" + opType +
+            '}';
     }
 }

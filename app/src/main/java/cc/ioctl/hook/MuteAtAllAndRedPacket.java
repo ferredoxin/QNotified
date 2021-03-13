@@ -42,6 +42,7 @@ import nil.nadph.qnotified.util.LicenseStatus;
 
 @FunctionEntry
 public class MuteAtAllAndRedPacket extends CommonDelayableHook {
+
     public static final MuteAtAllAndRedPacket INSTANCE = new MuteAtAllAndRedPacket();
 
     private MuteAtAllAndRedPacket() {
@@ -57,20 +58,28 @@ public class MuteAtAllAndRedPacket extends CommonDelayableHook {
                 cl_MessageInfo = c.getDeclaredField("mMessageInfo").getType();
             }
             /* @author qiwu */
-            final int at_all_type = (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_7_8_0)) ? 13 : 12;
+            final int at_all_type =
+                (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_7_8_0)) ? 13 : 12;
             for (Method m : cl_MessageInfo.getDeclaredMethods()) {
                 if (m.getReturnType().equals(int.class)) {
                     Class<?>[] argt = m.getParameterTypes();
                     if (argt.length == 3) {
-                        if (argt[0].equals(_QQAppInterface()) && argt[1].equals(boolean.class) && argt[2].equals(String.class)) {
+                        if (argt[0].equals(_QQAppInterface()) && argt[1].equals(boolean.class)
+                            && argt[2].equals(String.class)) {
                             XposedBridge.hookMethod(m, new XC_MethodHook(60) {
                                 @Override
-                                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                                    if (LicenseStatus.sDisableCommonHooks) return;
+                                protected void afterHookedMethod(MethodHookParam param)
+                                    throws Throwable {
+                                    if (LicenseStatus.sDisableCommonHooks) {
+                                        return;
+                                    }
                                     int ret = (int) param.getResult();
                                     String troopuin = (String) param.args[2];
-                                    if (ret != at_all_type) return;
-                                    String muted = "," + ExfriendManager.getCurrent().getConfig().getString(ConfigItems.qn_muted_at_all) + ",";
+                                    if (ret != at_all_type) {
+                                        return;
+                                    }
+                                    String muted = "," + ExfriendManager.getCurrent().getConfig()
+                                        .getString(ConfigItems.qn_muted_at_all) + ",";
                                     if (muted.contains("," + troopuin + ",")) {
                                         param.setResult(0);
                                     }
@@ -85,29 +94,35 @@ public class MuteAtAllAndRedPacket extends CommonDelayableHook {
             log(e);
         }
         try {
-            XposedHelpers.findAndHookMethod(load("com.tencent.mobileqq.data.MessageForQQWalletMsg"), "doParse", new XC_MethodHook(200) {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.sDisableCommonHooks) return;
-                    boolean mute = false;
-                    int istroop = (Integer) iget_object_or_null(param.thisObject, "istroop");
-                    if (istroop != 1) return;
-                    String troopuin = (String) iget_object_or_null(param.thisObject, "frienduin");
-                    String muted = "," + ExfriendManager.getCurrent().getConfig().getString(ConfigItems.qn_muted_red_packet) + ",";
-                    if (muted.contains("," + troopuin + ",")) mute = true;
-                    if (mute) XposedHelpers.setObjectField(param.thisObject, "isread", true);
-                }
-            });
+            XposedHelpers.findAndHookMethod(load("com.tencent.mobileqq.data.MessageForQQWalletMsg"),
+                "doParse", new XC_MethodHook(200) {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        if (LicenseStatus.sDisableCommonHooks) {
+                            return;
+                        }
+                        boolean mute = false;
+                        int istroop = (Integer) iget_object_or_null(param.thisObject, "istroop");
+                        if (istroop != 1) {
+                            return;
+                        }
+                        String troopuin = (String) iget_object_or_null(param.thisObject,
+                            "frienduin");
+                        String muted = "," + ExfriendManager.getCurrent().getConfig()
+                            .getString(ConfigItems.qn_muted_red_packet) + ",";
+                        if (muted.contains("," + troopuin + ",")) {
+                            mute = true;
+                        }
+                        if (mute) {
+                            XposedHelpers.setObjectField(param.thisObject, "isread", true);
+                        }
+                    }
+                });
             return true;
         } catch (Throwable e) {
             log(e);
             return false;
         }
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        //do nothing
     }
 
     @Override
@@ -118,5 +133,10 @@ public class MuteAtAllAndRedPacket extends CommonDelayableHook {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        //do nothing
     }
 }

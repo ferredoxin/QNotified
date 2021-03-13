@@ -31,6 +31,7 @@ public interface SingleLineEditItem extends BaseStatefulItem {
     void setText(@NonNull String text);
 
     interface OnTextChangeListener {
+
         void onTextChanged(@NonNull SingleLineEditItem item, @NonNull String text);
     }
 }

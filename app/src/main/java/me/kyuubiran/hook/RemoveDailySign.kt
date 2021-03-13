@@ -39,14 +39,20 @@ object RemoveDailySign : CommonDelayableHook("kr_remove_daily_sign") {
 
     override fun initOnce(): Boolean {
         return try {
-            XposedBridge.hookAllConstructors(loadClass("com.tencent.mobileqq.activity.QQSettingMe"), object : XC_MethodHook() {
-                override fun afterHookedMethod(param: MethodHookParam?) {
-                    if (LicenseStatus.sDisableCommonHooks) return
-                    if (!isEnabled) return
-                    val dailySignLayout = getObjectOrNull(param?.thisObject, "a", LinearLayout::class.java) as LinearLayout
-                    dailySignLayout.setViewZeroSize()
-                }
-            })
+            XposedBridge.hookAllConstructors(
+                loadClass("com.tencent.mobileqq.activity.QQSettingMe"),
+                object : XC_MethodHook() {
+                    override fun afterHookedMethod(param: MethodHookParam?) {
+                        if (LicenseStatus.sDisableCommonHooks) return
+                        if (!isEnabled) return
+                        val dailySignLayout = getObjectOrNull(
+                            param?.thisObject,
+                            "a",
+                            LinearLayout::class.java
+                        ) as LinearLayout
+                        dailySignLayout.setViewZeroSize()
+                    }
+                })
             true
         } catch (t: Throwable) {
             Utils.log(t)

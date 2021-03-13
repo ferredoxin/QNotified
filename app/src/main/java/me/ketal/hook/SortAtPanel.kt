@@ -38,7 +38,11 @@ import nil.nadph.qnotified.util.ReflexUtil
 import java.util.*
 
 @FunctionEntry
-object SortAtPanel: CommonDelayableHook("ketal_At_Panel_Hook", DexDeobfStep(DexKit.N_AtPanel__refreshUI), DexDeobfStep(DexKit.N_AtPanel__showDialogAtView)) {
+object SortAtPanel : CommonDelayableHook(
+    "ketal_At_Panel_Hook",
+    DexDeobfStep(DexKit.N_AtPanel__refreshUI),
+    DexDeobfStep(DexKit.N_AtPanel__showDialogAtView)
+) {
     private var isSort = false
     override fun initOnce() = tryVerbosely(false) {
         DexKit.doFindMethod(DexKit.N_AtPanel__showDialogAtView)!!.hookAfter(this) {
@@ -49,12 +53,14 @@ object SortAtPanel: CommonDelayableHook("ketal_At_Panel_Hook", DexDeobfStep(DexK
             if (!isSort) return@hookBefore
             val result = it.args[0]
             val sessionInfo = ReflexUtil.getFirstByType(it.thisObject, Initiator._SessionInfo())
-            val troopUin = ReflexUtil.iget_object_or_null(sessionInfo, "troopUin", String::class.java)
-                ?: ReflexUtil.iget_object_or_null(sessionInfo, "a", String::class.java)
-            val troopInfo =TroopInfo(troopUin)
+            val troopUin =
+                ReflexUtil.iget_object_or_null(sessionInfo, "troopUin", String::class.java)
+                    ?: ReflexUtil.iget_object_or_null(sessionInfo, "a", String::class.java)
+            val troopInfo = TroopInfo(troopUin)
             val ownerUin = troopInfo.troopOwnerUin
-            val admin =troopInfo.troopAdmin
-            val list = ReflexUtil.getFirstByType(result, MutableList::class.java) as MutableList<Any>
+            val admin = troopInfo.troopAdmin
+            val list =
+                ReflexUtil.getFirstByType(result, MutableList::class.java) as MutableList<Any>
             var uin = getUin(list[0])
             val isAdmin = "0" == uin
             for (i in 1 until list.size) {

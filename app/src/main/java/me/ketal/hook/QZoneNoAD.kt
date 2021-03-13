@@ -43,9 +43,10 @@ object QZoneNoAD : PluginDelayableHook("ketal_qzone_hook") {
         "Lcom/qzone/module/feedcomponent/ui/FeedViewBuilder;->setFeedViewData(Landroid/content/Context;Lcom/qzone/proxy/feedcomponent/ui/AbsFeedView;Lcom/qzone/proxy/feedcomponent/model/BusinessFeedData;ZZ)V"
             .getMethod(classLoader)
             ?.hookBefore(this) {
-                val obj = "Lcom/qzone/proxy/feedcomponent/model/BusinessFeedData;->cellOperationInfo:Lcom/qzone/proxy/feedcomponent/model/CellOperationInfo;"
-                    .getField(classLoader)
-                    ?.get(it.args[2])!!
+                val obj =
+                    "Lcom/qzone/proxy/feedcomponent/model/BusinessFeedData;->cellOperationInfo:Lcom/qzone/proxy/feedcomponent/model/CellOperationInfo;"
+                        .getField(classLoader)
+                        ?.get(it.args[2])!!
                 val hashMap = ReflexUtil.iget_object_or_null(obj, "busiParam", Map::class.java)
                 for (num in hashMap.keys) {
                     if (num == 194) {

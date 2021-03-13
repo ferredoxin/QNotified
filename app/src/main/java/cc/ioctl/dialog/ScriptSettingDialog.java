@@ -38,7 +38,8 @@ import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.util.Toasts;
 
-public class ScriptSettingDialog implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
+public class ScriptSettingDialog implements CompoundButton.OnCheckedChangeListener,
+    View.OnClickListener {
 
     private final Context ctx;
     private final AlertDialog dialog;
@@ -54,7 +55,7 @@ public class ScriptSettingDialog implements CompoundButton.OnCheckedChangeListen
     public ScriptSettingDialog(Context context, QNScript qs) {
         this.script = qs;
         dialog = (AlertDialog) CustomDialog.createFailsafe(context).setTitle(qs.getName())
-                .setCancelable(true).create();
+            .setCancelable(true).create();
         ctx = dialog.getContext();
         dialog.setCanceledOnTouchOutside(false);
         View v = LayoutInflater.from(ctx).inflate(R.layout.script_setting_dialog, null);
@@ -66,6 +67,14 @@ public class ScriptSettingDialog implements CompoundButton.OnCheckedChangeListen
         saveBtn = v.findViewById(R.id.script_save);
         delBtn = v.findViewById(R.id.script_delete);
         dialog.setView(v);
+    }
+
+    public static void createAndShowDialog(Context ctx, QNScript qs) {
+        new ScriptSettingDialog(ctx, qs).show();
+    }
+
+    public static void OnClickListener_createDialog(final Context ctx, QNScript qs) {
+        createAndShowDialog(ctx, qs);
     }
 
     public AlertDialog show() {
@@ -80,7 +89,6 @@ public class ScriptSettingDialog implements CompoundButton.OnCheckedChangeListen
         code.setText(script.getCode());
         return dialog;
     }
-
 
     @SuppressLint("DefaultLocale")
     @Override
@@ -97,13 +105,5 @@ public class ScriptSettingDialog implements CompoundButton.OnCheckedChangeListen
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         script.setEnable(isChecked);
         Toasts.error(ctx, "重启" + HostInformationProviderKt.getHostInfo().getHostName() + "生效");
-    }
-
-    public static void createAndShowDialog(Context ctx, QNScript qs) {
-        new ScriptSettingDialog(ctx, qs).show();
-    }
-
-    public static void OnClickListener_createDialog(final Context ctx, QNScript qs) {
-        createAndShowDialog(ctx, qs);
     }
 }

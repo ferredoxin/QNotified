@@ -26,6 +26,7 @@ import de.robv.android.xposed.XC_MethodHook;
 
 @SuppressWarnings("JavaJniMissingFunction")
 public final class NativeHookCallback extends XC_MethodHook {
+
     public final long a;
 
     public NativeHookCallback(long a, int b) {

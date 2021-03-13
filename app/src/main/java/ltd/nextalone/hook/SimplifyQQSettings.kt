@@ -48,7 +48,10 @@ object SimplifyQQSettings : MultiItemDelayableHook("na_simplify_qq_settings_mult
             }
         }
         if (activeItems.contains("免流量"))
-            "Lcom/tencent/mobileqq/activity/QQSettingSettingActivity;->a()V".method.replace(this, null)
+            "Lcom/tencent/mobileqq/activity/QQSettingSettingActivity;->a()V".method.replace(
+                this,
+                null
+            )
     }
 
     override fun isValid() = requireMinQQVersion(QQVersion.QQ_8_0_0)

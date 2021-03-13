@@ -27,44 +27,54 @@ import androidx.annotation.Nullable;
 public class ErrorStatus {
 
     /**
-     * For {@link AbsFunctionItem}: This function is turned off, or is unavailable.<br/>
-     * For {@link AbsHookTask}: This hook task is not executed yet.
+     * For {@link AbsFunctionItem}: This function is turned off, or is unavailable.<br/> For {@link
+     * AbsHookTask}: This hook task is not executed yet.
      */
     public static final int STATUS_INACTIVE = 0;
 
     /**
-     * For {@link AbsFunctionItem}: Rising edge when user turns on.<br/>
-     * For {@link AbsHookTask}: The hook task is being executed.
+     * For {@link AbsFunctionItem}: Rising edge when user turns on.<br/> For {@link AbsHookTask}:
+     * The hook task is being executed.
      */
     public static final int STATUS_INITIALIZATION = 1;
 
     /**
-     * For {@link AbsFunctionItem}: Turn on a function that is not available.<br/>
-     * For {@link AbsHookTask}: The hook task is being executed before its preparations are ready.
-     * This value should only be treated as an edge, not a constant level.
+     * For {@link AbsFunctionItem}: Turn on a function that is not available.<br/> For {@link
+     * AbsHookTask}: The hook task is being executed before its preparations are ready. This value
+     * should only be treated as an edge, not a constant level.
      */
     public static final int STATUS_REJECTED = 2;
 
     /**
-     * For {@link AbsFunctionItem}: The function is on and working properly.<br/>
-     * For {@link AbsHookTask}: The hook task has been executed successfully.
+     * For {@link AbsFunctionItem}: The function is on and working properly.<br/> For {@link
+     * AbsHookTask}: The hook task has been executed successfully.
      */
     public static final int STATUS_SUCCESS = 3;
 
     /**
-     * For {@link AbsFunctionItem}: The function working but sth may be wrong.<br/>
-     * For {@link AbsHookTask}: The hook task has been executed with warning message.
+     * For {@link AbsFunctionItem}: The function working but sth may be wrong.<br/> For {@link
+     * AbsHookTask}: The hook task has been executed with warning message.
      */
     public static final int STATUS_WARNING = 4;
 
     /**
-     * For {@link AbsFunctionItem}: An error occurred so this function is unusable.<br/>
-     * For {@link AbsHookTask}: The hook task execution failed.
+     * For {@link AbsFunctionItem}: An error occurred so this function is unusable.<br/> For {@link
+     * AbsHookTask}: The hook task execution failed.
      */
     public static final int STATUS_FAILED = 5;
-
+    @NonNull
+    public static final ErrorStatus INACTIVE = new ErrorStatus(STATUS_INACTIVE, null);
+    @NonNull
+    public static final ErrorStatus INITIALIZATION = new ErrorStatus(STATUS_INITIALIZATION, null);
+    @NonNull
+    public static final ErrorStatus REJECTED = new ErrorStatus(STATUS_REJECTED, null);
+    @NonNull
+    public static final ErrorStatus SUCCESS = new ErrorStatus(STATUS_SUCCESS, null);
+    @NonNull
+    public static final ErrorStatus WARNING = new ErrorStatus(STATUS_WARNING, null);
+    @NonNull
+    public static final ErrorStatus FAILED = new ErrorStatus(STATUS_FAILED, null);
     public final int status;
-
     /**
      * Optional message
      */
@@ -77,32 +87,14 @@ public class ErrorStatus {
     }
 
     @NonNull
-    public static final ErrorStatus INACTIVE = new ErrorStatus(STATUS_INACTIVE, null);
-
-    @NonNull
-    public static final ErrorStatus INITIALIZATION = new ErrorStatus(STATUS_INITIALIZATION, null);
-
-    @NonNull
-    public static final ErrorStatus REJECTED = new ErrorStatus(STATUS_REJECTED, null);
-
-    @NonNull
-    public static final ErrorStatus SUCCESS = new ErrorStatus(STATUS_SUCCESS, null);
-
-    @NonNull
     public static ErrorStatus SUCCESS(@Nullable String msg) {
         return new ErrorStatus(STATUS_SUCCESS, msg);
     }
 
     @NonNull
-    public static final ErrorStatus WARNING = new ErrorStatus(STATUS_WARNING, null);
-
-    @NonNull
     public static ErrorStatus WARNING(@Nullable String msg) {
         return new ErrorStatus(STATUS_WARNING, msg);
     }
-
-    @NonNull
-    public static final ErrorStatus FAILED = new ErrorStatus(STATUS_FAILED, null);
 
     @NonNull
     public static ErrorStatus FAILED(@Nullable String msg) {

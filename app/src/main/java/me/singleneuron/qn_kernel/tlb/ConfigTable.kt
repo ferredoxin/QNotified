@@ -48,7 +48,7 @@ object ConfigTable {
     fun <T> getConfig(className: String?): T {
         val config = cacheMap[className]
         return config as T
-                ?: throw RuntimeException("$className :Unsupported Version: "+ hostInfo.versionName)
+            ?: throw RuntimeException("$className :Unsupported Version: " + hostInfo.versionName)
     }
 
 }

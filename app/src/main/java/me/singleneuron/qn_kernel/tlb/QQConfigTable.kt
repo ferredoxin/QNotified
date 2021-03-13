@@ -28,7 +28,7 @@ import ltd.nextalone.hook.HideTotalNumber
 import me.kyuubiran.hook.AutoMosaicName
 import me.singleneuron.util.QQVersion.*
 
-class QQConfigTable: ConfigTableInterface {
+class QQConfigTable : ConfigTableInterface {
 
     override val configs: Map<String?, Map<Long, Any>> = mapOf(
 

@@ -26,6 +26,19 @@ import androidx.annotation.Nullable;
  */
 public class ValidStatus {
 
+    @NonNull
+    public State state;
+    @Nullable
+    public String message;
+    public ValidStatus() {
+        this.state = State.INVALID;
+    }
+
+    public ValidStatus(@NonNull State state, @Nullable String message) {
+        this.state = state;
+        this.message = message;
+    }
+
     enum State {
         /**
          * Value of item is valid and reasonable.
@@ -39,19 +52,5 @@ public class ValidStatus {
          * Value of item is invalid.
          */
         INVALID
-    }
-
-    @NonNull
-    public State state;
-    @Nullable
-    public String message;
-
-    public ValidStatus() {
-        this.state = State.INVALID;
-    }
-
-    public ValidStatus(@NonNull State state, @Nullable String message) {
-        this.state = state;
-        this.message = message;
     }
 }

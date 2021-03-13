@@ -41,10 +41,12 @@ import nil.nadph.qnotified.util.Utils;
 
 @FunctionEntry
 public class InterceptZipBomb extends CommonDelayableHook {
+
     public static final InterceptZipBomb INSTANCE = new InterceptZipBomb();
 
     private InterceptZipBomb() {
-        super("bug_intercept_zip_bomb", SyncUtils.PROC_MAIN, true, new DexDeobfStep(DexKit.C_ZipUtils_biz));
+        super("bug_intercept_zip_bomb", SyncUtils.PROC_MAIN, true,
+            new DexDeobfStep(DexKit.C_ZipUtils_biz));
     }
 
     @Override
@@ -60,8 +62,12 @@ public class InterceptZipBomb extends CommonDelayableHook {
             XposedBridge.hookMethod(m, new XC_MethodHook(51) {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.sDisableCommonHooks) return;
-                    if (!isEnabled()) return;
+                    if (LicenseStatus.sDisableCommonHooks) {
+                        return;
+                    }
+                    if (!isEnabled()) {
+                        return;
+                    }
                     File file = (File) param.args[0];
                     ZipFile zipFile = new ZipFile(file);
                     Enumeration<? extends ZipEntry> entries = zipFile.entries();
@@ -72,8 +78,9 @@ public class InterceptZipBomb extends CommonDelayableHook {
                     zipFile.close();
                     if (sizeSum >= 104550400) {
                         param.setResult(null);
-                        Toasts.show(HostInformationProviderKt.getHostInfo().getApplication(), String.format("已拦截 %s ,解压后大小异常: %s",
-                            file.getPath(), BugUtils.getSizeString(sizeSum)));
+                        Toasts.show(HostInformationProviderKt.getHostInfo().getApplication(),
+                            String.format("已拦截 %s ,解压后大小异常: %s",
+                                file.getPath(), BugUtils.getSizeString(sizeSum)));
                     }
                 }
             });

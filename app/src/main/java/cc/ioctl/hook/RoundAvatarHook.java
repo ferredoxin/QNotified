@@ -35,6 +35,7 @@ import nil.nadph.qnotified.util.DexKit;
 
 @FunctionEntry
 public class RoundAvatarHook extends CommonDelayableHook {
+
     public static final RoundAvatarHook INSTANCE = new RoundAvatarHook();
 
     RoundAvatarHook() {
@@ -47,18 +48,28 @@ public class RoundAvatarHook extends CommonDelayableHook {
             Method a = null, b = null;
             Class clz = DexKit.doFindClass(DexKit.C_SIMPLE_UI_UTIL);
             for (Method m : clz.getDeclaredMethods()) {
-                if (!boolean.class.equals(m.getReturnType())) continue;
+                if (!boolean.class.equals(m.getReturnType())) {
+                    continue;
+                }
                 Class[] argt = m.getParameterTypes();
-                if (argt.length != 1) continue;
+                if (argt.length != 1) {
+                    continue;
+                }
                 if (String.class.equals(argt[0])) {
-                    if (m.getName().equals("a")) a = m;
-                    if (m.getName().equals("b")) b = m;
+                    if (m.getName().equals("a")) {
+                        a = m;
+                    }
+                    if (m.getName().equals("b")) {
+                        b = m;
+                    }
                 }
             }
             XC_MethodHook hook = new XC_MethodHook(43) {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    if (!isEnabled()) return;
+                    if (!isEnabled()) {
+                        return;
+                    }
                     param.setResult(false);
                 }
             };

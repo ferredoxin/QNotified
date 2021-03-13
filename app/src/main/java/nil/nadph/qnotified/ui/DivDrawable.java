@@ -47,15 +47,19 @@ public class DivDrawable extends Drawable {
         int w = getBounds().width();
         if (iType == TYPE_HORIZONTAL) {
             float off = (h - iThickness) / 2f;
-            Shader s = new LinearGradient(0, off, 0, h / 2f, new int[]{0x00363636, 0x36363636}, new float[]{0f, 1f}, Shader.TileMode.CLAMP);
+            Shader s = new LinearGradient(0, off, 0, h / 2f, new int[]{0x00363636, 0x36363636},
+                new float[]{0f, 1f}, Shader.TileMode.CLAMP);
             p.setShader(s);
             //p.setColor(0x36000000);
             canvas.drawRect(0, off, w, h / 2f, p);
-            s = new LinearGradient(0, h / 2f, 0, h / 2f + iThickness / 2f, new int[]{0x36C8C8C8, 0x00C8C8C8}, new float[]{0f, 1f}, Shader.TileMode.CLAMP);
+            s = new LinearGradient(0, h / 2f, 0, h / 2f + iThickness / 2f,
+                new int[]{0x36C8C8C8, 0x00C8C8C8}, new float[]{0f, 1f}, Shader.TileMode.CLAMP);
             p.setShader(s);
             //p.setColor(0x36FFFFFF);
             canvas.drawRect(0, h / 2f, w, h / 2f + iThickness / 2f, p);
-        } else throw new UnsupportedOperationException("iType == " + iType);
+        } else {
+            throw new UnsupportedOperationException("iType == " + iType);
+        }
     }
 
     @Override

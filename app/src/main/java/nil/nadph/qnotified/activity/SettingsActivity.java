@@ -146,8 +146,14 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
 
     private static final int R_ID_BTN_FILE_RECV = 0x300AFF91;
     private static final String qn_enable_fancy_rgb = "qn_enable_fancy_rgb";
-
+    int color;
+    int step;//(0-255)
+    int stage;//0-5
     private TextView __tv_fake_bat_status, __recv_status, __recv_desc, __jmp_ctl_cnt;
+    private boolean isVisible = false;
+    private boolean rgbEnabled = false;
+    private TextView mRikkaTitle, mRikkaDesc;
+    private Looper mainLooper = Looper.getMainLooper();
 
     @Override
     public boolean doOnCreate(Bundle bundle) {
@@ -163,13 +169,16 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         bounceScrollView.setId(R.id.rootBounceScrollView);
         bounceScrollView.setLayoutParams(mmlp);
         bounceScrollView.addView(ll, new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-        LinearLayout.LayoutParams fixlp = new LinearLayout.LayoutParams(MATCH_PARENT, dip2px(this, 48));
-        RelativeLayout.LayoutParams __lp_l = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+        LinearLayout.LayoutParams fixlp = new LinearLayout.LayoutParams(MATCH_PARENT,
+            dip2px(this, 48));
+        RelativeLayout.LayoutParams __lp_l = new RelativeLayout.LayoutParams(WRAP_CONTENT,
+            WRAP_CONTENT);
         int mar = (int) (dip2px(this, 12) + 0.5f);
         __lp_l.setMargins(mar, 0, mar, 0);
         __lp_l.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         __lp_l.addRule(RelativeLayout.CENTER_VERTICAL);
-        RelativeLayout.LayoutParams __lp_r = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+        RelativeLayout.LayoutParams __lp_r = new RelativeLayout.LayoutParams(WRAP_CONTENT,
+            WRAP_CONTENT);
         __lp_r.setMargins(mar, 0, mar, 0);
         __lp_r.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         __lp_r.addRule(RelativeLayout.CENTER_VERTICAL);
@@ -184,19 +193,23 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         } catch (Throwable e) {
             log(e);
         }
-        ll.addView(newListItemButton(this, "Beta测试性功能", "仅用于测试稳定性", null, clickToProxyActAction(BetaTestFuncActivity.class)));
-        ll.addView(newListItemButton(this, "Omega测试性功能", "这是个不存在的功能", null, v -> KotlinUtilsKt.showEulaDialog(SettingsActivity.this)));
+        ll.addView(newListItemButton(this, "Beta测试性功能", "仅用于测试稳定性", null,
+            clickToProxyActAction(BetaTestFuncActivity.class)));
+        ll.addView(newListItemButton(this, "Omega测试性功能", "这是个不存在的功能", null,
+            v -> KotlinUtilsKt.showEulaDialog(SettingsActivity.this)));
         ll.addView(subtitle(this, "基本功能"));
         if (HostInformationProviderKt.requireMinQQVersion(QQ_8_2_6)) {
-            ll.addView(_t = newListItemButton(this, "自定义电量", "[QQ>=8.2.6]在线模式为我的电量时生效", "N/A", clickToProxyActAction(FakeBatCfgActivity.class)));
+            ll.addView(_t = newListItemButton(this, "自定义电量", "[QQ>=8.2.6]在线模式为我的电量时生效", "N/A",
+                clickToProxyActAction(FakeBatCfgActivity.class)));
             __tv_fake_bat_status = _t.findViewById(R_ID_VALUE);
         }
-        ViewGroup _tmp_vg = newListItemButton(this, "花Q", "若无另行说明, 所有功能开关都即时生效", null, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RikkaDialog.showRikkaFuncDialog(SettingsActivity.this);
-            }
-        });
+        ViewGroup _tmp_vg = newListItemButton(this, "花Q", "若无另行说明, 所有功能开关都即时生效", null,
+            new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    RikkaDialog.showRikkaFuncDialog(SettingsActivity.this);
+                }
+            });
         _tmp_vg.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -216,75 +229,121 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         mRikkaTitle = _tmp_vg.findViewById(R_ID_TITLE);
         mRikkaDesc = _tmp_vg.findViewById(R_ID_DESCRIPTION);
         ll.addView(_tmp_vg);
-        ll.addView(newListItemButton(this, "QQ净化[WIP]", "开发中...", null, clickToProxyActAction(me.zpp0196.qqpurify.activity.MainActivity.class)));
+        ll.addView(newListItemButton(this, "QQ净化[WIP]", "开发中...", null,
+            clickToProxyActAction(me.zpp0196.qqpurify.activity.MainActivity.class)));
         ll.addView(newListItemHookSwitchInit(this, "语音转发", "长按语音消息", PttForwardHook.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, " +1", "不是复读机", RepeaterHook.INSTANCE));
-        ll.addView(newListItemButton(this, "自定义+1图标", null, null, RepeaterIconSettingDialog.OnClickListener_createDialog(this)));
+        ll.addView(newListItemButton(this, "自定义+1图标", null, null,
+            RepeaterIconSettingDialog.OnClickListener_createDialog(this)));
         ll.addView(subtitle(this, "净化设置"));
-        ll.addView(newListItemConfigSwitchIfValid(this, "禁止回复自动@", "去除回复消息时自动@特性", ReplyNoAtHook.INSTANCE));
-        ll.addView(newListItemHookSwitchInit(this, "禁用$打开送礼界面", "禁止聊天时输入$自动弹出[选择赠送对象]窗口", $endGiftHook.INSTANCE));
+        ll.addView(newListItemConfigSwitchIfValid(this, "禁止回复自动@", "去除回复消息时自动@特性",
+            ReplyNoAtHook.INSTANCE));
+        ll.addView(newListItemHookSwitchInit(this, "禁用$打开送礼界面", "禁止聊天时输入$自动弹出[选择赠送对象]窗口",
+            $endGiftHook.INSTANCE));
         ll.addView(subtitle(this, "消息通知设置(不影响接收消息)屏蔽后可能仍有[橙字],但通知栏不会有通知,赞说说不提醒仅屏蔽通知栏的通知"));
         ll.addView(subtitle(this, "    注:屏蔽后可能仍有[橙字],但不会有通知"));
-        ll.addView(newListItemHookSwitchInit(this, "被赞说说不提醒", "不影响评论,转发或击掌的通知", MuteQZoneThumbsUp.INSTANCE));
-        ll.addView(newListItemHookSwitchInit(this, "转发消息点头像查看详细信息", "仅限合并转发的消息", MultiForwardAvatarHook.INSTANCE));
+        ll.addView(newListItemHookSwitchInit(this, "被赞说说不提醒", "不影响评论,转发或击掌的通知",
+            MuteQZoneThumbsUp.INSTANCE));
+        ll.addView(newListItemHookSwitchInit(this, "转发消息点头像查看详细信息", "仅限合并转发的消息",
+            MultiForwardAvatarHook.INSTANCE));
         if (!HostInformationProviderKt.getHostInfo().isTim()) {
             ll.addView(subtitle(this, "图片相关"));
             ll.addView(newListItemHookSwitchInit(this, "禁止秀图自动展示", null, ShowPicGagHook.INSTANCE));
-            ll.addView(newListItemHookSwitchInit(this, "禁用夜间模式遮罩", "移除夜间模式下聊天界面的深色遮罩", DarkOverlayHook.INSTANCE));
+            ll.addView(newListItemHookSwitchInit(this, "禁用夜间模式遮罩", "移除夜间模式下聊天界面的深色遮罩",
+                DarkOverlayHook.INSTANCE));
         }
-        ll.addView(newListItemButton(this, "辅助功能", null, null, clickToProxyActAction(AuxFuncActivity.class)));
-        ll.addView(newListItemHookSwitchInit(this, "显示设置禁言的管理", "即使你只是普通群成员", GagInfoDisclosure.INSTANCE));
-        addViewConditionally(ll, this, "小程序分享转链接（发送）", "感谢Alcatraz323开发远离小程序,神经元移植到Xposed", NoApplet.INSTANCE);
+        ll.addView(newListItemButton(this, "辅助功能", null, null,
+            clickToProxyActAction(AuxFuncActivity.class)));
+        ll.addView(
+            newListItemHookSwitchInit(this, "显示设置禁言的管理", "即使你只是普通群成员", GagInfoDisclosure.INSTANCE));
+        addViewConditionally(ll, this, "小程序分享转链接（发送）", "感谢Alcatraz323开发远离小程序,神经元移植到Xposed",
+            NoApplet.INSTANCE);
         ll.addView(subtitle(this, "实验性功能(未必有效)"));
-        ll.addView(_t = newListItemButton(this, "下载重定向", "N/A", "N/A", this::onFileRecvRedirectClick));
+        ll.addView(
+            _t = newListItemButton(this, "下载重定向", "N/A", "N/A", this::onFileRecvRedirectClick));
         _t.setId(R_ID_BTN_FILE_RECV);
         __recv_desc = _t.findViewById(R_ID_DESCRIPTION);
         __recv_status = _t.findViewById(R_ID_VALUE);
-        ll.addView(newListItemButton(this, "添加账号", "需要手动登录, 核心代码由 JamGmilk 提供", null, this::onAddAccountClick));
-        ll.addView(newListItemHookSwitchInit(this, "屏蔽小程序广告", "需要手动关闭广告, 请勿反馈此功能无效", RemoveMiniProgramAd.INSTANCE));
-        ll.addView(newListItemHookSwitchInit(this, "昵称/群名字打码", "娱乐功能 不进行维护", AutoMosaicName.INSTANCE));
-        ll.addView(newListItemHookSwitchInit(this, "自己的消息和头像居左显示", "娱乐功能 不进行维护", ShowSelfMsgByLeft.INSTANCE));
-        ll.addView(newListItemConfigSwitchIfValid(this, "收藏更多表情", "[暂不支持>=8.2.0]保存在本地", FavMoreEmo.INSTANCE));
+        ll.addView(newListItemButton(this, "添加账号", "需要手动登录, 核心代码由 JamGmilk 提供", null,
+            this::onAddAccountClick));
+        ll.addView(newListItemHookSwitchInit(this, "屏蔽小程序广告", "需要手动关闭广告, 请勿反馈此功能无效",
+            RemoveMiniProgramAd.INSTANCE));
+        ll.addView(
+            newListItemHookSwitchInit(this, "昵称/群名字打码", "娱乐功能 不进行维护", AutoMosaicName.INSTANCE));
+        ll.addView(newListItemHookSwitchInit(this, "自己的消息和头像居左显示", "娱乐功能 不进行维护",
+            ShowSelfMsgByLeft.INSTANCE));
+        ll.addView(newListItemConfigSwitchIfValid(this, "收藏更多表情", "[暂不支持>=8.2.0]保存在本地",
+            FavMoreEmo.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "屏蔽更新提醒", null, PreUpgradeHook.INSTANCE));
         if (!HostInformationProviderKt.getHostInfo().isTim()) {
             ll.addView(newListItemHookSwitchInit(this, "自定义猜拳骰子", null, CheatHook.INSTANCE));
-            ll.addView(newListItemHookSwitchInit(this, "简洁模式圆头像", "From Rikka", RoundAvatarHook.INSTANCE));
+            ll.addView(
+                newListItemHookSwitchInit(this, "简洁模式圆头像", "From Rikka", RoundAvatarHook.INSTANCE));
         }
-        ll.addView(newListItemSwitchConfigNext(this, "新版简洁模式圆头像", "From Rikka, 支持8.3.6及更高，重启后生效", NewRoundHead.INSTANCE));
-        ll.addView(newListItemHookSwitchInit(this, "强制使用系统相机", "仅能录像，支持8.3.6及更高", ForceSystemCamera.INSTANCE));
+        ll.addView(newListItemSwitchConfigNext(this, "新版简洁模式圆头像", "From Rikka, 支持8.3.6及更高，重启后生效",
+            NewRoundHead.INSTANCE));
+        ll.addView(newListItemHookSwitchInit(this, "强制使用系统相机", "仅能录像，支持8.3.6及更高",
+            ForceSystemCamera.INSTANCE));
         addViewConditionally(ll, this, "强制使用系统相册", "支持8.3.6及更高", ForceSystemAlbum.INSTANCE);
-        ll.addView(newListItemHookSwitchInit(this, "强制使用系统文件", "支持8.3.6及更高", ForceSystemFile.INSTANCE));
-        ll.addView(newListItemButton(this, "修改侧滑边距", "感谢祈无，支持8.4.1及更高，重启后生效", "", clickToProxyActAction(ChangeDrawerWidthActivity.class)));
-        ll.addView(newListItemHookSwitchInit(this, "屏蔽QQ空间滑动相机", null, DisableQzoneSlideCamera.INSTANCE));
+        ll.addView(
+            newListItemHookSwitchInit(this, "强制使用系统文件", "支持8.3.6及更高", ForceSystemFile.INSTANCE));
+        ll.addView(newListItemButton(this, "修改侧滑边距", "感谢祈无，支持8.4.1及更高，重启后生效", "",
+            clickToProxyActAction(ChangeDrawerWidthActivity.class)));
+        ll.addView(
+            newListItemHookSwitchInit(this, "屏蔽QQ空间滑动相机", null, DisableQzoneSlideCamera.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "回执消息文本化", null, SimpleReceiptMessage.INSTANCE));
         ll.addView(newListItemButtonIfValid(this, "静默指定类型消息通知", null, null, AntiMessage.INSTANCE));
-        ll.addView(newListItemButtonIfValid(this, "聊天字数统计", null, null, ChatWordsCount.INSTANCE, v -> ChatWordsCount.INSTANCE.showChatWordsCountDialog(this)));
-        ll.addView(newListItemButtonIfValid(this, "精简聊天气泡长按菜单", null, null, SimplifyChatLongItem.INSTANCE, SimplifyChatLongItem.INSTANCE.listener()));
-        ll.addView(newListItemButtonIfValid(this, "精简加号菜单", null, null, SimplifyPlusPanel.INSTANCE));
-        ll.addView(newListItemButtonIfValid(this, "精简设置菜单", null, null, SimplifyQQSettings.INSTANCE));
-        ll.addView(newListItemButtonIfValid(this, "精简联系人页面", null, null, SimplifyContactTabs.INSTANCE));
-        ll.addView(newListItemButtonIfValid(this, "精简主页对话框", null, null,SimplifyRecentDialog.INSTANCE));
+        ll.addView(newListItemButtonIfValid(this, "聊天字数统计", null, null, ChatWordsCount.INSTANCE,
+            v -> ChatWordsCount.INSTANCE.showChatWordsCountDialog(this)));
+        ll.addView(
+            newListItemButtonIfValid(this, "精简聊天气泡长按菜单", null, null, SimplifyChatLongItem.INSTANCE,
+                SimplifyChatLongItem.INSTANCE.listener()));
+        ll.addView(
+            newListItemButtonIfValid(this, "精简加号菜单", null, null, SimplifyPlusPanel.INSTANCE));
+        ll.addView(
+            newListItemButtonIfValid(this, "精简设置菜单", null, null, SimplifyQQSettings.INSTANCE));
+        ll.addView(
+            newListItemButtonIfValid(this, "精简联系人页面", null, null, SimplifyContactTabs.INSTANCE));
+        ll.addView(
+            newListItemButtonIfValid(this, "精简主页对话框", null, null, SimplifyRecentDialog.INSTANCE));
         ll.addView(newListItemConfigSwitchIfValid(this, "精简表情菜单", null, SimplifyEmoPanel.INSTANCE));
-        ll.addView(newListItemConfigSwitchIfValid(this, "精简底栏动态", null, SimplifyBottomQzone.INSTANCE));
-        ll.addView(newListItemConfigSwitchIfValid(this, "隐藏底栏小红点", null, RemoveBottomRedDots.INSTANCE));
-        ll.addView(newListItemConfigSwitchIfValid(this, "隐藏文本框上方快捷方式", null, RemoveShortCutBar.INSTANCE));
-        ll.addView(newListItemConfigSwitchIfValid(this, "隐藏群聊群成员头衔", null, HideTroopLevel.INSTANCE));
-        ll.addView(newListItemHookSwitchInit(this, "聊天自动发送原图", null, AutoSendOriginalPhoto.INSTANCE));
-        ll.addView(newListItemConfigSwitchIfValid(this, "聊天自动接收原图", null, AutoReceiveOriginalPhoto.INSTANCE));
-        ll.addView(newListItemConfigSwitchIfValid(this, "折叠群聊复读消息", null, CollapseTroopMessage.INSTANCE));
+        ll.addView(
+            newListItemConfigSwitchIfValid(this, "精简底栏动态", null, SimplifyBottomQzone.INSTANCE));
+        ll.addView(
+            newListItemConfigSwitchIfValid(this, "隐藏底栏小红点", null, RemoveBottomRedDots.INSTANCE));
+        ll.addView(
+            newListItemConfigSwitchIfValid(this, "隐藏文本框上方快捷方式", null, RemoveShortCutBar.INSTANCE));
+        ll.addView(
+            newListItemConfigSwitchIfValid(this, "隐藏群聊群成员头衔", null, HideTroopLevel.INSTANCE));
+        ll.addView(
+            newListItemHookSwitchInit(this, "聊天自动发送原图", null, AutoSendOriginalPhoto.INSTANCE));
+        ll.addView(newListItemConfigSwitchIfValid(this, "聊天自动接收原图", null,
+            AutoReceiveOriginalPhoto.INSTANCE));
+        ll.addView(
+            newListItemConfigSwitchIfValid(this, "折叠群聊复读消息", null, CollapseTroopMessage.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "批量撤回消息", "多选消息后撤回", MultiActionHook.INSTANCE));
-        ll.addView(newListItemButtonIfValid(this, "修改消息左滑动作", null, null, LeftSwipeReplyHook.INSTANCE, ModifyLeftSwipeReplyActivity.class));
-        ll.addView(newListItemConfigSwitchIfValid(this, "修改@界面排序", "排序由群主管理员至正常人员", SortAtPanel.INSTANCE));
-        ll.addView(newListItemConfigSwitchIfValid(this, "发送收藏消息添加分组", null, SendFavoriteHook.INSTANCE));
+        ll.addView(
+            newListItemButtonIfValid(this, "修改消息左滑动作", null, null, LeftSwipeReplyHook.INSTANCE,
+                ModifyLeftSwipeReplyActivity.class));
+        ll.addView(
+            newListItemConfigSwitchIfValid(this, "修改@界面排序", "排序由群主管理员至正常人员", SortAtPanel.INSTANCE));
+        ll.addView(
+            newListItemConfigSwitchIfValid(this, "发送收藏消息添加分组", null, SendFavoriteHook.INSTANCE));
         ll.addView(newListItemConfigSwitchIfValid(this, "隐藏空间好友热播和广告", null, QZoneNoAD.INSTANCE));
         ll.addView(newListItemConfigSwitchIfValid(this, "隐藏QQ钱包超值精选", null, QWalletNoAD.INSTANCE));
-        ll.addView(newListItemButton(this, "自定义钱包余额", "仅供娱乐", null, FakeBalance.INSTANCE.listener()));
-        ll.addView(newListItemConfigSwitchIfValid(this, "消息显示发送者QQ号和时间", null, ChatItemShowQQUin.INSTANCE));
-        ll.addView(newListItemButton(this,"万象屏蔽卡片消息","使用强大的正则表达式自由屏蔽卡片消息",null, RegexAntiMeg.INSTANCE));
-        addViewConditionally(ll,this,"特别关心通知单独分组","将特别关心发送的消息通知移动到单独的通知渠道",SpecialCareNewChannel.INSTANCE);
-        ll.addView(newListItemHookSwitchInit(this, "卡片消息文本化",null, CardMsgToText.INSTANCE));
-        ll.addView(newListItemHookSwitchInit(this,"小程序转链接分享（接收）",null, MiniAppToStruckMsg.INSTANCE));
-        ll.addView(newListItemConfigSwitchIfValid(this, "屏蔽好友资料页送礼物按钮", null, HideFriendCardSendGift.INSTANCE));
+        ll.addView(
+            newListItemButton(this, "自定义钱包余额", "仅供娱乐", null, FakeBalance.INSTANCE.listener()));
+        ll.addView(newListItemConfigSwitchIfValid(this, "消息显示发送者QQ号和时间", null,
+            ChatItemShowQQUin.INSTANCE));
+        ll.addView(
+            newListItemButton(this, "万象屏蔽卡片消息", "使用强大的正则表达式自由屏蔽卡片消息", null, RegexAntiMeg.INSTANCE));
+        addViewConditionally(ll, this, "特别关心通知单独分组", "将特别关心发送的消息通知移动到单独的通知渠道",
+            SpecialCareNewChannel.INSTANCE);
+        ll.addView(newListItemHookSwitchInit(this, "卡片消息文本化", null, CardMsgToText.INSTANCE));
+        ll.addView(
+            newListItemHookSwitchInit(this, "小程序转链接分享（接收）", null, MiniAppToStruckMsg.INSTANCE));
+        ll.addView(newListItemConfigSwitchIfValid(this, "屏蔽好友资料页送礼物按钮", null,
+            HideFriendCardSendGift.INSTANCE));
         ll.addView(subtitle(this, "好友列表"));
         ll.addView(newListItemButton(this, "打开资料卡", "打开指定用户的资料卡", null, new View.OnClickListener() {
             @Override
@@ -297,7 +356,8 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
                 editText.setPadding(_5, _5, _5, _5);
                 ViewCompat.setBackground(editText, new HighContrastBorder());
                 LinearLayout linearLayout = new LinearLayout(ctx);
-                linearLayout.addView(editText, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, _5 * 2));
+                linearLayout
+                    .addView(editText, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, _5 * 2));
                 AlertDialog alertDialog = (AlertDialog) dialog.setTitle("输入对方QQ号")
                     .setView(linearLayout)
                     .setCancelable(true)
@@ -305,64 +365,81 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
                     .setNegativeButton("取消", null)
                     .create();
                 alertDialog.show();
-                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String text = editText.getText().toString();
-                        if (text.equals("")) {
-                            Toasts.error(SettingsActivity.this, "请输入QQ号");
-                            return;
+                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                    .setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            String text = editText.getText().toString();
+                            if (text.equals("")) {
+                                Toasts.error(SettingsActivity.this, "请输入QQ号");
+                                return;
+                            }
+                            long uin = 0;
+                            try {
+                                uin = Long.parseLong(text);
+                            } catch (NumberFormatException ignored) {
+                            }
+                            if (uin < 10000) {
+                                Toasts.error(SettingsActivity.this, "请输入有效的QQ号");
+                                return;
+                            }
+                            alertDialog.dismiss();
+                            MainHook.openProfileCard(SettingsActivity.this, uin);
                         }
-                        long uin = 0;
-                        try {
-                            uin = Long.parseLong(text);
-                        } catch (NumberFormatException ignored) {
-                        }
-                        if (uin < 10000) {
-                            Toasts.error(SettingsActivity.this, "请输入有效的QQ号");
-                            return;
-                        }
-                        alertDialog.dismiss();
-                        MainHook.openProfileCard(SettingsActivity.this, uin);
-                    }
-                });
+                    });
             }
         }));
-        ll.addView(newListItemButton(this, "历史好友", null, null, clickToProxyActAction(ExfriendListActivity.class)));
-        ll.addView(newListItemButton(this, "导出历史好友列表", "支持csv/json格式", null, clickToProxyActAction(FriendlistExportActivity.class)));
-        ll.addView(newListItemConfigSwitchIfValid(this, "被删好友通知", "检测到你被好友删除后发出通知", ConfigItems.qn_notify_when_del));
+        ll.addView(newListItemButton(this, "历史好友", null, null,
+            clickToProxyActAction(ExfriendListActivity.class)));
+        ll.addView(newListItemButton(this, "导出历史好友列表", "支持csv/json格式", null,
+            clickToProxyActAction(FriendlistExportActivity.class)));
+        ll.addView(newListItemConfigSwitchIfValid(this, "被删好友通知", "检测到你被好友删除后发出通知",
+            ConfigItems.qn_notify_when_del));
         if (!HostInformationProviderKt.getHostInfo().isTim()) {
-            ll.addView(newListItemSwitchConfigNext(this, "隐藏分组下方入口", "隐藏分组列表最下方的历史好友按钮", ConfigItems.qn_hide_ex_entry_group, false));
+            ll.addView(newListItemSwitchConfigNext(this, "隐藏分组下方入口", "隐藏分组列表最下方的历史好友按钮",
+                ConfigItems.qn_hide_ex_entry_group, false));
         }
-        ll.addView(newListItemSwitchConfigNext(this, "禁用" + _hostName + "热补丁", "一般无需开启", ConfigItems.qn_disable_hot_patch));
+        ll.addView(newListItemSwitchConfigNext(this, "禁用" + _hostName + "热补丁", "一般无需开启",
+            ConfigItems.qn_disable_hot_patch));
         ll.addView(subtitle(this, "参数设定"));
-        ll.addView(_t = newListItemButton(this, "跳转控制", "跳转自身及第三方Activity控制", "N/A", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Initiator.load("com.tencent.mobileqq.haoliyou.JefsClass") != null) {
-                    Context ctx = v.getContext();
-                    ctx.startActivity(new Intent(ctx, JefsRulesActivity.class));
-                } else {
-                    Toasts.error(SettingsActivity.this, "当前版本客户端版本不支持");
+        ll.addView(_t = newListItemButton(this, "跳转控制", "跳转自身及第三方Activity控制", "N/A",
+            new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (Initiator.load("com.tencent.mobileqq.haoliyou.JefsClass") != null) {
+                        Context ctx = v.getContext();
+                        ctx.startActivity(new Intent(ctx, JefsRulesActivity.class));
+                    } else {
+                        Toasts.error(SettingsActivity.this, "当前版本客户端版本不支持");
+                    }
                 }
-            }
-        }));
+            }));
         __jmp_ctl_cnt = _t.findViewById(R_ID_VALUE);
         ll.addView(newListItemSwitchStub(this, "禁用特别关心长震动", "他女朋友都没了他也没开发这个功能", false));
         ll.addView(subtitle(this, "关于"));
-        ll.addView(newListItemDummy(this, HostInformationProviderKt.getHostInfo().getHostName(), null, HostInformationProviderKt.getHostInfo().getVersionName() + "(" + HostInformationProviderKt.getHostInfo().getVersionCode() + ")"));
+        ll.addView(
+            newListItemDummy(this, HostInformationProviderKt.getHostInfo().getHostName(), null,
+                HostInformationProviderKt.getHostInfo().getVersionName() + "("
+                    + HostInformationProviderKt.getHostInfo().getVersionCode() + ")"));
         ll.addView(newListItemDummy(this, "模块版本", null, Utils.QN_VERSION_NAME));
         UpdateCheck uc = new UpdateCheck();
         ll.addView(_t = newListItemButton(this, "检查更新", null, "点击检查", uc));
         uc.setVersionTip(_t);
-        ll.addView(newListItemButton(this, "关于模块", null, null, clickToProxyActAction(AboutActivity.class)));
-        ll.addView(newListItemButton(this, "用户协议", "《QNotified 最终用户许可协议》与《隐私条款》", null, clickToProxyActAction(EulaActivity.class)));
-        ll.addView(newListItemButton(this, "展望未来", "其实都还没写", null, clickToProxyActAction(PendingFuncActivity.class)));
-        ll.addView(newListItemButton(this, "特别鸣谢", "感谢卖动绘制图标", null, clickToProxyActAction(LicenseActivity.class)));
+        ll.addView(newListItemButton(this, "关于模块", null, null,
+            clickToProxyActAction(AboutActivity.class)));
+        ll.addView(newListItemButton(this, "用户协议", "《QNotified 最终用户许可协议》与《隐私条款》", null,
+            clickToProxyActAction(EulaActivity.class)));
+        ll.addView(newListItemButton(this, "展望未来", "其实都还没写", null,
+            clickToProxyActAction(PendingFuncActivity.class)));
+        ll.addView(newListItemButton(this, "特别鸣谢", "感谢卖动绘制图标", null,
+            clickToProxyActAction(LicenseActivity.class)));
         ll.addView(subtitle(this, "调试"));
-        ll.addView(newListItemButton(this, "故障排查", null, null, clickToProxyActAction(TroubleshootActivity.class)));
+        ll.addView(newListItemButton(this, "故障排查", null, null,
+            clickToProxyActAction(TroubleshootActivity.class)));
         ll.addView(newListItemButton(this, "Shell.exec", "正常情况下无需使用此功能", null, clickTheComing()));
-        ll.addView(newListItemButton(this, "Github", "获取源代码 Bug -> Issue (star)", "ferredoxin/QNotified", clickToUrl("https://github.com/ferredoxin/QNotified")));
+        ll.addView(
+            newListItemButton(this, "Github", "获取源代码 Bug -> Issue (star)", "ferredoxin/QNotified",
+                clickToUrl("https://github.com/ferredoxin/QNotified")));
         ll.addView(subtitle(this, "本软件为免费软件,请尊重个人劳动成果,严禁倒卖\nLife feeds on negative entropy."));
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         setContentView(bounceScrollView);
@@ -379,19 +456,26 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         try {
             getString(R.string.res_inject_success);
         } catch (Resources.NotFoundException e) {
-            CustomDialog.createFailsafe(this).setTitle("FATAL Exception").setCancelable(true).setPositiveButton(getString(android.R.string.yes), null)
-                .setNeutralButton("重启" + HostInformationProviderKt.getHostInfo().getHostName(), (dialog, which) -> {
-                    try {
-                        android.os.Process.killProcess(android.os.Process.myPid());
-                    } catch (Throwable e1) {
-                        log(e1);
-                    }
-                })
-                .setMessage("Resources injection failure!\nApplication may misbehave.\n" + e.toString()
-                    + "\n如果您刚刚更新了插件, 您可能需要重启" + HostInformationProviderKt.getHostInfo().getHostName() + "(太/无极阴,应用转生,天鉴等虚拟框架)或者重启手机(EdXp, Xposed, 太极阳), 如果重启手机后问题仍然存在, 请向作者反馈, 并提供详细日志").show();
+            CustomDialog.createFailsafe(this).setTitle("FATAL Exception").setCancelable(true)
+                .setPositiveButton(getString(android.R.string.yes), null)
+                .setNeutralButton("重启" + HostInformationProviderKt.getHostInfo().getHostName(),
+                    (dialog, which) -> {
+                        try {
+                            android.os.Process.killProcess(android.os.Process.myPid());
+                        } catch (Throwable e1) {
+                            log(e1);
+                        }
+                    })
+                .setMessage(
+                    "Resources injection failure!\nApplication may misbehave.\n" + e.toString()
+                        + "\n如果您刚刚更新了插件, 您可能需要重启" + HostInformationProviderKt.getHostInfo()
+                        .getHostName()
+                        + "(太/无极阴,应用转生,天鉴等虚拟框架)或者重启手机(EdXp, Xposed, 太极阳), 如果重启手机后问题仍然存在, 请向作者反馈, 并提供详细日志")
+                .show();
         }
         ConfigManager cfg = ConfigManager.getDefaultConfig();
-        if (HostInformationProviderKt.getHostInfo().isPlayQQ() && !cfg.getBooleanOrFalse("isShowPlayQQTip")) {
+        if (HostInformationProviderKt.getHostInfo().isPlayQQ() && !cfg
+            .getBooleanOrFalse("isShowPlayQQTip")) {
             CustomDialog.createFailsafe(this).setTitle("警告")
                 .setPositiveButton("我已了解后果并愿意继续使用", (dialog, which) -> {
                     cfg.putBoolean("isShowPlayQQTip", true);
@@ -400,7 +484,9 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
                     } catch (IOException ignored) {
                     }
                 })
-                .setMessage("你正在使用Play版QQ，该版本QQ版本号与国内版有很大区别，QNotified的部分功能的版本适配依赖软件版本号，可能会出现预想不到的情况，且任何play版本都未进行测试。").show();
+                .setMessage(
+                    "你正在使用Play版QQ，该版本QQ版本号与国内版有很大区别，QNotified的部分功能的版本适配依赖软件版本号，可能会出现预想不到的情况，且任何play版本都未进行测试。")
+                .show();
 
         }
         return true;
@@ -442,7 +528,9 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
     }
 
     private void startRgbIfEnabled() {
-        if (!rgbEnabled || !isVisible) return;
+        if (!rgbEnabled || !isVisible) {
+            return;
+        }
         mRikkaTitle.setText("花Q[狐狸狸魔改版]");
         new Thread(this).start();
     }
@@ -484,7 +572,8 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
             try {
                 success = f.createNewFile();
             } catch (IOException e) {
-                Toasts.error(SettingsActivity.this, e.toString().replaceAll("java\\.(lang|io)\\.", ""));
+                Toasts.error(SettingsActivity.this,
+                    e.toString().replaceAll("java\\.(lang|io)\\.", ""));
                 return;
             }
             if (success) {
@@ -509,15 +598,6 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
             }
         }
     }
-
-    int color;
-    int step;//(0-255)
-    int stage;//0-5
-    private boolean isVisible = false;
-    private boolean rgbEnabled = false;
-    private TextView mRikkaTitle, mRikkaDesc;
-    private Looper mainLooper = Looper.getMainLooper();
-
 
     /**
      * 没良心的method
@@ -572,7 +652,9 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
     private void showChangeRecvPathDialog() {
         FileRecvRedirect recv = FileRecvRedirect.INSTANCE;
         String currPath = recv.getRedirectPath();
-        if (currPath == null) currPath = recv.getDefaultPath();
+        if (currPath == null) {
+            currPath = recv.getDefaultPath();
+        }
         CustomDialog dialog = CustomDialog.createFailsafe(this);
         Context ctx = dialog.getContext();
         EditText editText = new EditText(ctx);
@@ -597,33 +679,36 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
             })
             .create();
         alertDialog.show();
-        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String path = editText.getText().toString();
-                if (path.equals("")) {
-                    Toasts.error(SettingsActivity.this, "请输入路径");
-                    return;
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            .setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String path = editText.getText().toString();
+                    if (path.equals("")) {
+                        Toasts.error(SettingsActivity.this, "请输入路径");
+                        return;
+                    }
+                    if (!path.startsWith("/")) {
+                        Toasts.error(SettingsActivity.this, "请输入完整路径(以\"/\"开头)");
+                        return;
+                    }
+                    File f = new File(path);
+                    if (!f.exists() || !f.isDirectory()) {
+                        Toasts.error(SettingsActivity.this, "文件夹不存在");
+                        return;
+                    }
+                    if (!f.canWrite()) {
+                        Toasts.error(SettingsActivity.this, "文件夹无访问权限");
+                        return;
+                    }
+                    if (!path.endsWith("/")) {
+                        path += "/";
+                    }
+                    recv.setRedirectPathAndEnable(path);
+                    updateRecvRedirectStatus();
+                    alertDialog.dismiss();
                 }
-                if (!path.startsWith("/")) {
-                    Toasts.error(SettingsActivity.this, "请输入完整路径(以\"/\"开头)");
-                    return;
-                }
-                File f = new File(path);
-                if (!f.exists() || !f.isDirectory()) {
-                    Toasts.error(SettingsActivity.this, "文件夹不存在");
-                    return;
-                }
-                if (!f.canWrite()) {
-                    Toasts.error(SettingsActivity.this, "文件夹无访问权限");
-                    return;
-                }
-                if (!path.endsWith("/")) path += "/";
-                recv.setRedirectPathAndEnable(path);
-                updateRecvRedirectStatus();
-                alertDialog.dismiss();
-            }
-        });
+            });
     }
 
     private void updateRecvRedirectStatus() {

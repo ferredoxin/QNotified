@@ -46,29 +46,49 @@ object SpecialCareNewChannel : CommonDelayableHook("specialCareNewChannel") {
 
     override fun initOnce(): Boolean {
         return try {
-            XposedBridge.hookAllMethods(NotificationManager::class.java, "notify", object : XC_MethodHook() {
-                @RequiresApi(Build.VERSION_CODES.O)
-                override fun beforeHookedMethod(param: MethodHookParam) {
-                    try {
-                        val notification: Notification = param.args[param.args.size - 1] as Notification
-                        val title: String = notification.extras.get(Notification.EXTRA_TITLE).toString()
-                        val text: String = notification.extras.get(Notification.EXTRA_TEXT).toString()
-                        if (BuildConfig.DEBUG) XposedBridge.log("QQ特别关心：$title$text")
-                        if (title.contains("[特别关心]")) {
-                            Utils.logd("QQ特别关心：" + title + text + "true")
-                            Utils.logd("QQ特别关心Channel：" + XposedHelpers.getObjectField(notification, "mChannelId").toString())
-                            val notificationChannel = NotificationChannel("CHANNEL_ID_SPECIALLY_CARE", "特别关心", NotificationManager.IMPORTANCE_HIGH)
-                            hostInfo.application.getSystemService(NotificationManager::class.java).createNotificationChannel(notificationChannel)
-                            XposedHelpers.setObjectField(notification, "mChannelId", "CHANNEL_ID_SPECIALLY_CARE")
-                            param.args[param.args.size - 1] = notification
+            XposedBridge.hookAllMethods(
+                NotificationManager::class.java,
+                "notify",
+                object : XC_MethodHook() {
+                    @RequiresApi(Build.VERSION_CODES.O)
+                    override fun beforeHookedMethod(param: MethodHookParam) {
+                        try {
+                            val notification: Notification =
+                                param.args[param.args.size - 1] as Notification
+                            val title: String =
+                                notification.extras.get(Notification.EXTRA_TITLE).toString()
+                            val text: String =
+                                notification.extras.get(Notification.EXTRA_TEXT).toString()
+                            if (BuildConfig.DEBUG) XposedBridge.log("QQ特别关心：$title$text")
+                            if (title.contains("[特别关心]")) {
+                                Utils.logd("QQ特别关心：" + title + text + "true")
+                                Utils.logd(
+                                    "QQ特别关心Channel：" + XposedHelpers.getObjectField(
+                                        notification,
+                                        "mChannelId"
+                                    ).toString()
+                                )
+                                val notificationChannel = NotificationChannel(
+                                    "CHANNEL_ID_SPECIALLY_CARE",
+                                    "特别关心",
+                                    NotificationManager.IMPORTANCE_HIGH
+                                )
+                                hostInfo.application.getSystemService(NotificationManager::class.java)
+                                    .createNotificationChannel(notificationChannel)
+                                XposedHelpers.setObjectField(
+                                    notification,
+                                    "mChannelId",
+                                    "CHANNEL_ID_SPECIALLY_CARE"
+                                )
+                                param.args[param.args.size - 1] = notification
+                            }
+                        } catch (e: Exception) {
+                            Utils.log(e)
                         }
-                    } catch (e: Exception) {
-                        Utils.log(e)
                     }
-                }
-            })
+                })
             true
-        } catch (e:Exception) {
+        } catch (e: Exception) {
             Utils.log(e)
             false
         }

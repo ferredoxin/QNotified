@@ -38,6 +38,7 @@ import nil.nadph.qnotified.util.Utils;
 //屏蔽群聊界面一起嗨
 @FunctionEntry
 public class RemovePlayTogether extends CommonDelayableHook {
+
     public static final RemovePlayTogether INSTANCE = new RemovePlayTogether();
 
     private RemovePlayTogether() {
@@ -59,12 +60,15 @@ public class RemovePlayTogether extends CommonDelayableHook {
             if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_4_8)) {
                 //QQ 8.4.8 除了一起嗨按钮，同一个位置还有一个群打卡按钮。默认显示群打卡，如果已经打卡就显示一起嗨，两个按钮点击之后都会打开同一个界面，但是要同时hook两个
                 String entryMethod = "d";
-                for (Method m : DexKit.doFindClass(DexKit.C_ClockInEntryHelper).getDeclaredMethods()) {
+                for (Method m : DexKit.doFindClass(DexKit.C_ClockInEntryHelper)
+                    .getDeclaredMethods()) {
                     Class<?>[] argt = m.getParameterTypes();
-                    if (entryMethod.equals(m.getName()) && m.getReturnType() == boolean.class && argt.length == 0) {
+                    if (entryMethod.equals(m.getName()) && m.getReturnType() == boolean.class
+                        && argt.length == 0) {
                         XposedBridge.hookMethod(m, new XC_MethodHook() {
                             @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                throws Throwable {
                                 if (LicenseStatus.sDisableCommonHooks) {
                                     return;
                                 }
@@ -78,14 +82,20 @@ public class RemovePlayTogether extends CommonDelayableHook {
                 }
                 method = "g";
             }
-            for (Method m : DexKit.doFindClass(DexKit.C_TogetherControlHelper).getDeclaredMethods()) {
+            for (Method m : DexKit.doFindClass(DexKit.C_TogetherControlHelper)
+                .getDeclaredMethods()) {
                 Class<?>[] argt = m.getParameterTypes();
-                if (method.equals(m.getName()) && m.getReturnType() == void.class && argt.length == 0) {
+                if (method.equals(m.getName()) && m.getReturnType() == void.class
+                    && argt.length == 0) {
                     XposedBridge.hookMethod(m, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            if (LicenseStatus.sDisableCommonHooks) return;
-                            if (!isEnabled()) return;
+                            if (LicenseStatus.sDisableCommonHooks) {
+                                return;
+                            }
+                            if (!isEnabled()) {
+                                return;
+                            }
                             param.setResult(null);
                         }
                     });
@@ -108,7 +118,8 @@ public class RemovePlayTogether extends CommonDelayableHook {
     public Step[] getPreconditions() {
         if (isValid()) {
             return new Step[]{
-                new DexDeobfStep(DexKit.C_TogetherControlHelper), new DexDeobfStep(DexKit.C_ClockInEntryHelper)
+                new DexDeobfStep(DexKit.C_TogetherControlHelper),
+                new DexDeobfStep(DexKit.C_ClockInEntryHelper)
             };
         } else {
             return new Step[]{};

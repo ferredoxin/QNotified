@@ -35,6 +35,7 @@ import nil.nadph.qnotified.util.Utils;
 
 @FunctionEntry
 public class DefaultBubbleHook extends CommonDelayableHook {
+
     public static final DefaultBubbleHook INSTANCE = new DefaultBubbleHook();
 
     private DefaultBubbleHook() {
@@ -53,9 +54,26 @@ public class DefaultBubbleHook extends CommonDelayableHook {
     }
 
     @Override
+    public boolean isEnabled() {
+        try {
+            Application app = HostInformationProviderKt.getHostInfo().getApplication();
+            if (app != null && HostInformationProviderKt.getHostInfo().isTim()) {
+                return false;
+            }
+            File dir = new File(app.getFilesDir().getAbsolutePath() + "/bubble_info");
+            return !dir.exists() || !dir.canRead();
+        } catch (Exception e) {
+            log(e);
+            return false;
+        }
+    }
+
+    @Override
     public void setEnabled(boolean enabled) {
         try {
-            File dir = new File(HostInformationProviderKt.getHostInfo().getApplication().getFilesDir().getAbsolutePath() + "/bubble_info");
+            File dir = new File(
+                HostInformationProviderKt.getHostInfo().getApplication().getFilesDir()
+                    .getAbsolutePath() + "/bubble_info");
             boolean curr = !dir.exists() || !dir.canRead();
             if (dir.exists()) {
                 if (enabled && !curr) {
@@ -77,23 +95,11 @@ public class DefaultBubbleHook extends CommonDelayableHook {
                 SyncUtils.post(new Runnable() {
                     @Override
                     public void run() {
-                        Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(), e + "");
+                        Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(),
+                            e + "");
                     }
                 });
             }
-        }
-    }
-
-    @Override
-    public boolean isEnabled() {
-        try {
-            Application app = HostInformationProviderKt.getHostInfo().getApplication();
-            if (app != null && HostInformationProviderKt.getHostInfo().isTim()) return false;
-            File dir = new File(app.getFilesDir().getAbsolutePath() + "/bubble_info");
-            return !dir.exists() || !dir.canRead();
-        } catch (Exception e) {
-            log(e);
-            return false;
         }
     }
 }

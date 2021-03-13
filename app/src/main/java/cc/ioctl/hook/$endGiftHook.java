@@ -37,21 +37,29 @@ import nil.nadph.qnotified.util.LicenseStatus;
 
 @FunctionEntry
 public class $endGiftHook extends CommonDelayableHook {
+
     public static final $endGiftHook INSTANCE = new $endGiftHook();
 
     private $endGiftHook() {
-        super("qn_disable_$end_gift", SyncUtils.PROC_MAIN, new DexDeobfStep(DexKit.C_TROOP_GIFT_UTIL));
+        super("qn_disable_$end_gift", SyncUtils.PROC_MAIN,
+            new DexDeobfStep(DexKit.C_TROOP_GIFT_UTIL));
     }
 
     @Override
     public boolean initOnce() {
         try {
-            Method m = DexKit.doFindClass(DexKit.C_TROOP_GIFT_UTIL).getDeclaredMethod("a", Activity.class, String.class, String.class, Initiator._QQAppInterface());
+            Method m = DexKit.doFindClass(DexKit.C_TROOP_GIFT_UTIL)
+                .getDeclaredMethod("a", Activity.class, String.class, String.class,
+                    Initiator._QQAppInterface());
             XposedBridge.hookMethod(m, new XC_MethodHook(47) {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.sDisableCommonHooks) return;
-                    if(!isEnabled()) return;
+                    if (LicenseStatus.sDisableCommonHooks) {
+                        return;
+                    }
+                    if (!isEnabled()) {
+                        return;
+                    }
                     param.setResult(null);
                 }
             });

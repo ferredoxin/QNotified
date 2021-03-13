@@ -63,7 +63,8 @@ public class Dex2CProcessor extends BaseProcessor {
         MethodSpec.Builder beyond = MethodSpec.methodBuilder("getDex2CClasses")
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
             .returns(ParameterizedTypeName.get(List.class, String.class))
-            .addStatement("$T result = new $T<>()", ParameterizedTypeName.get(List.class, String.class), ArrayList.class);
+            .addStatement("$T result = new $T<>()",
+                ParameterizedTypeName.get(List.class, String.class), ArrayList.class);
         for (Element e : annos) {
             System.out.println("Processing >>> " + e.toString());
             beyond.addStatement("result.add($S)", e.toString());

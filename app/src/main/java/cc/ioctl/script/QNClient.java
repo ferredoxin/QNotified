@@ -48,7 +48,8 @@ public class QNClient {
     public static void send(String uin, String content, int type) {
         // to do
         ChatActivityFacade.sendMessage(
-                Utils.getQQAppInterface(), HostInformationProviderKt.getHostInfo().getApplication(), SessionInfoImpl.createSessionInfo(uin, type), content
+            Utils.getQQAppInterface(), HostInformationProviderKt.getHostInfo().getApplication(),
+            SessionInfoImpl.createSessionInfo(uin, type), content
         );
     }
 
@@ -83,14 +84,15 @@ public class QNClient {
     }
 
     /**
-     * 发送卡片消息
-     * NOTICE：需要高级白名单
+     * 发送卡片消息 NOTICE：需要高级白名单
      *
      * @param uin     要发送的 群/好友
      * @param content xml/json
      */
     public static void sendCard(long uin, String content) {
-        if (!LicenseStatus.isAsserted()) return;
+        if (!LicenseStatus.isAsserted()) {
+            return;
+        }
         // to do
     }
 

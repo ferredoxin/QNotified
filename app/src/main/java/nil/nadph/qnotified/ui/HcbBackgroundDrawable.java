@@ -28,6 +28,7 @@ import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 
 public class HcbBackgroundDrawable extends Drawable {
+
     private final Paint mPaint;
     private int color;
 
@@ -36,12 +37,12 @@ public class HcbBackgroundDrawable extends Drawable {
         color = c;
     }
 
-    public void setColor(int color) {
-        this.color = color;
-    }
-
     public int getColor() {
         return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
     }
 
     public Paint getPaint() {

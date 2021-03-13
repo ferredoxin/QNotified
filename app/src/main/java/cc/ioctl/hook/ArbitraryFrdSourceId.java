@@ -44,33 +44,11 @@ import nil.nadph.qnotified.util.Utils;
 
 @FunctionEntry
 public class ArbitraryFrdSourceId extends CommonDelayableHook {
+
     public static final ArbitraryFrdSourceId INSTANCE = new ArbitraryFrdSourceId();
 
     private ArbitraryFrdSourceId() {
         super("__NOT_USED__");
-    }
-
-    @Override
-    public boolean initOnce() {
-        try {
-            Method AddFriendVerifyActivity_doOnCreate = null;
-            for (Method m : Initiator.load("com.tencent.mobileqq.activity.AddFriendVerifyActivity").getDeclaredMethods()) {
-                if (m.getName().equals("doOnCreate")) {
-                    AddFriendVerifyActivity_doOnCreate = m;
-                    break;
-                }
-            }
-            XposedBridge.hookMethod(AddFriendVerifyActivity_doOnCreate, new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    Activity ctx = (Activity) param.thisObject;
-                    initFunView(ctx);
-                }
-            });
-        } catch (Throwable e) {
-            Utils.log(e);
-        }
-        return false;
     }
 
     @UiThread
@@ -108,10 +86,14 @@ public class ArbitraryFrdSourceId extends CommonDelayableHook {
         LinearLayout sourceAttrLayout = new LinearLayout(ctx);
         sourceAttrLayout.setOrientation(LinearLayout.VERTICAL);
         sourceAttrLayout.addView(ViewBuilder.subtitle(ctx, "来源参数"));
-        sourceAttrLayout.addView(ViewBuilder.newListItemDummy(ctx, "SourceId", null, String.valueOf(argv.getInt("source_id", 3999))));
-        sourceAttrLayout.addView(ViewBuilder.newListItemDummy(ctx, "SubSourceId", null, String.valueOf(argv.getInt("sub_source_id", 0))));
-        sourceAttrLayout.addView(ViewBuilder.newListItemDummy(ctx, "Extra", null, String.valueOf(argv.getString("extra"))));
-        sourceAttrLayout.addView(ViewBuilder.newListItemDummy(ctx, "Msg", null, String.valueOf(argv.getString("msg"))));
+        sourceAttrLayout.addView(ViewBuilder.newListItemDummy(ctx, "SourceId", null,
+            String.valueOf(argv.getInt("source_id", 3999))));
+        sourceAttrLayout.addView(ViewBuilder.newListItemDummy(ctx, "SubSourceId", null,
+            String.valueOf(argv.getInt("sub_source_id", 0))));
+        sourceAttrLayout.addView(ViewBuilder
+            .newListItemDummy(ctx, "Extra", null, String.valueOf(argv.getString("extra"))));
+        sourceAttrLayout.addView(
+            ViewBuilder.newListItemDummy(ctx, "Msg", null, String.valueOf(argv.getString("msg"))));
         sourceAttrLayout.setPadding(0, __10_, 0, __10_);
 
         ViewGroup.LayoutParams rl_root_lp = rl_root.getLayoutParams();
@@ -123,11 +105,35 @@ public class ArbitraryFrdSourceId extends CommonDelayableHook {
     }
 
     @Override
-    public void setEnabled(boolean enabled) {
+    public boolean initOnce() {
+        try {
+            Method AddFriendVerifyActivity_doOnCreate = null;
+            for (Method m : Initiator.load("com.tencent.mobileqq.activity.AddFriendVerifyActivity")
+                .getDeclaredMethods()) {
+                if (m.getName().equals("doOnCreate")) {
+                    AddFriendVerifyActivity_doOnCreate = m;
+                    break;
+                }
+            }
+            XposedBridge.hookMethod(AddFriendVerifyActivity_doOnCreate, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    Activity ctx = (Activity) param.thisObject;
+                    initFunView(ctx);
+                }
+            });
+        } catch (Throwable e) {
+            Utils.log(e);
+        }
+        return false;
     }
 
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
     }
 }

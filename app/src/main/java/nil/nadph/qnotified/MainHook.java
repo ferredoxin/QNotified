@@ -81,8 +81,9 @@ public class MainHook {
         return SELF;
     }
 
-    public static XC_MethodHook.Unhook findAndHookMethodIfExists(Class<?> clazz, String methodName, Object...
-        parameterTypesAndCallback) {
+    public static XC_MethodHook.Unhook findAndHookMethodIfExists(Class<?> clazz, String methodName,
+        Object...
+            parameterTypesAndCallback) {
         try {
             return findAndHookMethod(clazz, methodName, parameterTypesAndCallback);
         } catch (Throwable e) {
@@ -91,8 +92,9 @@ public class MainHook {
         }
     }
 
-    public static XC_MethodHook.Unhook findAndHookMethodIfExists(String clazzName, ClassLoader cl, String
-        methodName, Object... parameterTypesAndCallback) {
+    public static XC_MethodHook.Unhook findAndHookMethodIfExists(String clazzName, ClassLoader cl,
+        String
+            methodName, Object... parameterTypesAndCallback) {
         try {
             return findAndHookMethod(clazzName, cl, methodName, parameterTypesAndCallback);
         } catch (Throwable e) {
@@ -103,8 +105,11 @@ public class MainHook {
 
     public static void openProfileCard(Context ctx, long uin) {
         try {
-            Parcelable allInOne = (Parcelable) new_instance(load("com/tencent/mobileqq/activity/ProfileActivity$AllInOne"), "" + uin, 35, String.class, int.class);
-            Intent intent = new Intent(ctx, load("com/tencent/mobileqq/activity/FriendProfileCardActivity"));
+            Parcelable allInOne = (Parcelable) new_instance(
+                load("com/tencent/mobileqq/activity/ProfileActivity$AllInOne"), "" + uin, 35,
+                String.class, int.class);
+            Intent intent = new Intent(ctx,
+                load("com/tencent/mobileqq/activity/FriendProfileCardActivity"));
             intent.putExtra("AllInOne", allInOne);
             ctx.startActivity(intent);
         } catch (Exception e) {
@@ -116,8 +121,12 @@ public class MainHook {
      * A屏黑主题,自用
      */
     public static void deepDarkTheme() {
-        if (!SyncUtils.isMainProcess()) return;
-        if (getLongAccountUin() != 1041703712) return;
+        if (!SyncUtils.isMainProcess()) {
+            return;
+        }
+        if (getLongAccountUin() != 1041703712) {
+            return;
+        }
         try {
             Class clz = load("com/tencent/mobileqq/activity/FriendProfileCardActivity");
             findAndHookMethod(clz, "doOnCreate", Bundle.class, new XC_MethodHook() {
@@ -139,8 +148,11 @@ public class MainHook {
                                     try {
                                         View frame = ctx.findViewById(android.R.id.content);
                                         frame.setBackgroundColor(0xFF000000);
-                                        View dk0 = ctx.findViewById(ctx.getResources().getIdentifier("dk0", "id", ctx.getPackageName()));
-                                        if (dk0 != null) dk0.setBackgroundColor(0x00000000);
+                                        View dk0 = ctx.findViewById(ctx.getResources()
+                                            .getIdentifier("dk0", "id", ctx.getPackageName()));
+                                        if (dk0 != null) {
+                                            dk0.setBackgroundColor(0x00000000);
+                                        }
                                     } catch (Exception e) {
                                         log(e);
                                     }
@@ -170,7 +182,9 @@ public class MainHook {
                                     try {
                                         FrameLayout frame = ctx.findViewById(android.R.id.content);
                                         frame.getChildAt(0).setBackgroundColor(0xFF000000);
-                                        ViewGroup list = ctx.findViewById(ctx.getResources().getIdentifier("common_xlistview", "id", ctx.getPackageName()));
+                                        ViewGroup list = ctx.findViewById(ctx.getResources()
+                                            .getIdentifier("common_xlistview", "id",
+                                                ctx.getPackageName()));
                                         list.getChildAt(0).setBackgroundColor(0x00000000);
                                     } catch (Exception e) {
                                         log(e);
@@ -193,6 +207,25 @@ public class MainHook {
         } catch (Exception e) {
             log(e);
         }
+    }
+
+    private static void injectLifecycleForProcess(Context ctx) {
+        if (SyncUtils.isMainProcess()) {
+            Parasitics.injectModuleResources(ctx.getApplicationContext().getResources());
+        }
+        if (SyncUtils.isTargetProcess(SyncUtils.PROC_MAIN | SyncUtils.PROC_PEAK)) {
+            Parasitics.initForStubActivity(ctx);
+        }
+    }
+
+    /**
+     * dummy method, for development and test only
+     */
+    public static void onAppStartupForMain() {
+        if (!isAlphaVersion()) {
+            return;
+        }
+        deepDarkTheme();
     }
 
     public void performHook(Context ctx, Object step) {
@@ -236,7 +269,8 @@ public class MainHook {
             Class loadData = load("com/tencent/mobileqq/startup/step/LoadData");
             Method doStep = null;
             for (Method method : loadData.getDeclaredMethods()) {
-                if (method.getReturnType().equals(boolean.class) && method.getParameterTypes().length == 0) {
+                if (method.getReturnType().equals(boolean.class)
+                    && method.getParameterTypes().length == 0) {
                     doStep = method;
                     break;
                 }
@@ -244,13 +278,20 @@ public class MainHook {
             XposedBridge.hookMethod(doStep, new XC_MethodHook(51) {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    if (third_stage_inited) return;
+                    if (third_stage_inited) {
+                        return;
+                    }
                     Class director = _StartupDirector();
                     Object dir = iget_object_or_null(param.thisObject, "mDirector", director);
-                    if (dir == null) dir = iget_object_or_null(param.thisObject, "a", director);
-                    if (dir == null) dir = getFirstNSFByType(param.thisObject, director);
+                    if (dir == null) {
+                        dir = iget_object_or_null(param.thisObject, "a", director);
+                    }
+                    if (dir == null) {
+                        dir = getFirstNSFByType(param.thisObject, director);
+                    }
                     if (SyncUtils.isMainProcess()) {
-                        ResUtils.loadThemeByArsc(HostInformationProviderKt.getHostInfo().getApplication(), false);
+                        ResUtils.loadThemeByArsc(
+                            HostInformationProviderKt.getHostInfo().getApplication(), false);
                     }
                     InjectDelayableHooks.step(dir);
                     onAppStartupForMain();
@@ -261,33 +302,20 @@ public class MainHook {
             if (LicenseStatus.hasUserAcceptEula()) {
                 Class director = _StartupDirector();
                 Object dir = iget_object_or_null(step, "mDirector", director);
-                if (dir == null) dir = iget_object_or_null(step, "a", director);
-                if (dir == null) dir = getFirstNSFByType(step, director);
+                if (dir == null) {
+                    dir = iget_object_or_null(step, "a", director);
+                }
+                if (dir == null) {
+                    dir = getFirstNSFByType(step, director);
+                }
                 InjectDelayableHooks.step(dir);
             }
-        }
-    }
-
-    private static void injectLifecycleForProcess(Context ctx) {
-        if (SyncUtils.isMainProcess()) {
-            Parasitics.injectModuleResources(ctx.getApplicationContext().getResources());
-        }
-        if (SyncUtils.isTargetProcess(SyncUtils.PROC_MAIN | SyncUtils.PROC_PEAK)) {
-            Parasitics.initForStubActivity(ctx);
         }
     }
 
     @MainProcess
     private void injectStartupHookForMain(Context ctx) {
         JumpActivityEntryHook.initForJumpActivityEntry(ctx);
-    }
-
-    /**
-     * dummy method, for development and test only
-     */
-    public static void onAppStartupForMain() {
-        if (!isAlphaVersion()) return;
-        deepDarkTheme();
     }
 
 }

@@ -24,9 +24,8 @@ import nil.nadph.qnotified.mvc.base.AbsConfigSection;
 import nil.nadph.qnotified.util.Const;
 
 /**
- * A user-fronted function, which would be displayed in the function list
- * user interface, and be searchable.
- * You should not copy, clone or new too much of them, because it should be Singleton.
+ * A user-fronted function, which would be displayed in the function list user interface, and be
+ * searchable. You should not copy, clone or new too much of them, because it should be Singleton.
  */
 public interface AbsFunctionItem {
 
@@ -49,7 +48,8 @@ public interface AbsFunctionItem {
     /**
      * Under most circumstances, you just want to {@code return null;}.
      *
-     * @return optional search keywords if you are afraid user cannot find it with a name or description.
+     * @return optional search keywords if you are afraid user cannot find it with a name or
+     * description.
      */
     @Nullable
     String[] getExtraSearchKeywords();
@@ -62,8 +62,7 @@ public interface AbsFunctionItem {
     boolean isCompatible();
 
     /**
-     * A HUMAN-READABLE String meaning which versions are compatible(NOT FOR NLP).
-     * Keep it short.
+     * A HUMAN-READABLE String meaning which versions are compatible(NOT FOR NLP). Keep it short.
      * See {@link #isCompatible()}.
      *
      * @return human-readable, eg."QQ7.6.0-8.5.10, TIM>=2.3.0". May be null.
@@ -72,8 +71,8 @@ public interface AbsFunctionItem {
     String getCompatibleVersions();
 
     /**
-     * @return Hook tasks which this function relies on. If no hook task is required,
-     * return {@link BaseFunctionItem#EMPTY_HOOK_TASK}.
+     * @return Hook tasks which this function relies on. If no hook task is required, return {@link
+     * BaseFunctionItem#EMPTY_HOOK_TASK}.
      */
     @Const
     @NonNull
@@ -96,7 +95,8 @@ public interface AbsFunctionItem {
     /**
      * For an average hook, return false if it works.
      *
-     * @return whether this hook should be executed very early (discouraged, nearly when QQ/TIM startup).
+     * @return whether this hook should be executed very early (discouraged, nearly when QQ/TIM
+     * startup).
      */
     boolean isNeedEarlyInit();
 
@@ -110,14 +110,14 @@ public interface AbsFunctionItem {
     boolean hasEnableState();
 
     /**
-     * @param enabled whether this function is CONFIGURED to be enabled
-     */
-    void setEnabled(boolean enabled);
-
-    /**
      * @return whether this function is CONFIGURED to be enabled
      */
     boolean isEnabled();
+
+    /**
+     * @param enabled whether this function is CONFIGURED to be enabled
+     */
+    void setEnabled(boolean enabled);
 
     /**
      * If you this function instance is not Proxy, just {@code return getClass().getName();},
@@ -131,7 +131,8 @@ public interface AbsFunctionItem {
     // User Interface Stuff ----------------------------------
 
     /**
-     * False if you want to hide the main switch, or its main switch is controlled by some other condition.
+     * False if you want to hide the main switch, or its main switch is controlled by some other
+     * condition.
      *
      * @return whether a main switch for this function should be shown to user
      */
@@ -146,16 +147,16 @@ public interface AbsFunctionItem {
     CharSequence getSummaryText();
 
     /**
-     * This return value should correspond with {@link #createConfigSection()}.
-     * If false, a simplest list item with an enable-disable switch will be used.
+     * This return value should correspond with {@link #createConfigSection()}. If false, a simplest
+     * list item with an enable-disable switch will be used.
      *
      * @return whether this function has a detailed config section(user interface)
      */
     boolean hasConfigSection();
 
     /**
-     * Create the detailed config user interface
-     * Retrieve the UI configuration that control what will be displayed to user for this function.
+     * Create the detailed config user interface Retrieve the UI configuration that control what
+     * will be displayed to user for this function.
      *
      * @return must NOT be null if {@link #hasConfigSection()} returns true, otherwise return null
      */

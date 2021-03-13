@@ -34,4 +34,5 @@ import java.lang.annotation.Target;
 @Retention(CLASS)
 @Target({METHOD, CONSTRUCTOR})
 public @interface NonUiThread {
+
 }

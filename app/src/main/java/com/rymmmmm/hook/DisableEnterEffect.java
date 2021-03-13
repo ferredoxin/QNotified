@@ -35,6 +35,7 @@ import nil.nadph.qnotified.util.LicenseStatus;
 //屏蔽所有进场特效
 @FunctionEntry
 public class DisableEnterEffect extends CommonDelayableHook {
+
     public static final DisableEnterEffect INSTANCE = new DisableEnterEffect();
 
     protected DisableEnterEffect() {
@@ -45,12 +46,17 @@ public class DisableEnterEffect extends CommonDelayableHook {
     public boolean initOnce() {
         try {
             for (Method m : Initiator._TroopEnterEffectController().getDeclaredMethods()) {
-                if (m.getName().equals("a") && !Modifier.isStatic(m.getModifiers()) && m.getReturnType() == void.class) {
+                if (m.getName().equals("a") && !Modifier.isStatic(m.getModifiers())
+                    && m.getReturnType() == void.class) {
                     XposedBridge.hookMethod(m, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            if (LicenseStatus.sDisableCommonHooks) return;
-                            if (!isEnabled()) return;
+                            if (LicenseStatus.sDisableCommonHooks) {
+                                return;
+                            }
+                            if (!isEnabled()) {
+                                return;
+                            }
                             param.setResult(null);
                         }
                     });

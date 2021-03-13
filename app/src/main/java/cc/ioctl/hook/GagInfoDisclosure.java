@@ -45,23 +45,54 @@ import nil.nadph.qnotified.util.Utils;
 
 @FunctionEntry
 public class GagInfoDisclosure extends CommonDelayableHook {
+
     public static final GagInfoDisclosure INSTANCE = new GagInfoDisclosure();
 
     GagInfoDisclosure() {
         // TODO: 2020/6/12 Figure out whether MSF is really needed
-        super("qn_disclose_gag_info", SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF, new DexDeobfStep(DexKit.C_MSG_REC_FAC));
+        super("qn_disclose_gag_info", SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF,
+            new DexDeobfStep(DexKit.C_MSG_REC_FAC));
+    }
+
+    public static String getGagTimeString(long sec) {
+        String _min = "分钟";
+        String _hour = "小时";
+        String _day = "天";
+        if (sec < 60) {
+            return 1 + _min;
+        }
+        long fsec = 59 + sec;
+        long d = fsec / 86400;
+        long h = (fsec - (86400 * d)) / 3600;
+        long m = ((fsec - (86400 * d)) - (3600 * h)) / 60;
+        String ret = "";
+        if (d > 0) {
+            ret = ret + d + _day;
+        }
+        if (h > 0) {
+            ret = ret + h + _hour;
+        }
+        if (m > 0) {
+            return ret + m + _min;
+        }
+        return ret;
     }
 
     @Override
     public boolean initOnce() {
         try {
             Class<?> clzGagMgr = Initiator._TroopGagMgr();
-            Method m1 = findMethodByTypes_1(clzGagMgr, void.class, String.class, long.class, long.class, int.class, String.class, String.class, boolean.class);
+            Method m1 = findMethodByTypes_1(clzGagMgr, void.class, String.class, long.class,
+                long.class, int.class, String.class, String.class, boolean.class);
             XposedBridge.hookMethod(m1, new XC_MethodHook(48) {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.sDisableCommonHooks) return;
-                    if (!isEnabled()) return;
+                    if (LicenseStatus.sDisableCommonHooks) {
+                        return;
+                    }
+                    if (!isEnabled()) {
+                        return;
+                    }
                     String selfUin = Utils.getAccount() + "";
                     String troopUin = (String) param.args[0];
                     long time = (long) param.args[1];
@@ -91,17 +122,23 @@ public class GagInfoDisclosure extends CommonDelayableHook {
                     Object msg = builder.build(troopUin, 1, opUin, time, msgseq);
                     List<Object> list = new ArrayList<>();
                     list.add(msg);
-                    invoke_virtual_declared_ordinal_modifier(Utils.getQQMessageFacade(), 0, 4, false, Modifier.PUBLIC, 0,
+                    invoke_virtual_declared_ordinal_modifier(Utils.getQQMessageFacade(), 0, 4,
+                        false, Modifier.PUBLIC, 0,
                         list, Utils.getAccount(), List.class, String.class, void.class);
                     param.setResult(null);
                 }
             });
-            Method m2 = findMethodByTypes_1(clzGagMgr, void.class, String.class, String.class, long.class, long.class, int.class, boolean.class, boolean.class);
+            Method m2 = findMethodByTypes_1(clzGagMgr, void.class, String.class, String.class,
+                long.class, long.class, int.class, boolean.class, boolean.class);
             XposedBridge.hookMethod(m2, new XC_MethodHook(48) {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.sDisableCommonHooks) return;
-                    if (!isEnabled()) return;
+                    if (LicenseStatus.sDisableCommonHooks) {
+                        return;
+                    }
+                    if (!isEnabled()) {
+                        return;
+                    }
                     String selfUin = Utils.getAccount() + "";
                     String troopUin = (String) param.args[0];
                     String opUin = (String) param.args[1];
@@ -129,7 +166,8 @@ public class GagInfoDisclosure extends CommonDelayableHook {
                     Object msg = builder.build(troopUin, 1, opUin, time, msgseq);
                     List<Object> list = new ArrayList<>();
                     list.add(msg);
-                    invoke_virtual_declared_ordinal_modifier(Utils.getQQMessageFacade(), 0, 4, false, Modifier.PUBLIC, 0,
+                    invoke_virtual_declared_ordinal_modifier(Utils.getQQMessageFacade(), 0, 4,
+                        false, Modifier.PUBLIC, 0,
                         list, Utils.getAccount(), List.class, String.class, void.class);
                     param.setResult(null);
                 }
@@ -139,29 +177,5 @@ public class GagInfoDisclosure extends CommonDelayableHook {
             log(e);
             return false;
         }
-    }
-
-    public static String getGagTimeString(long sec) {
-        String _min = "分钟";
-        String _hour = "小时";
-        String _day = "天";
-        if (sec < 60) {
-            return 1 + _min;
-        }
-        long fsec = 59 + sec;
-        long d = fsec / 86400;
-        long h = (fsec - (86400 * d)) / 3600;
-        long m = ((fsec - (86400 * d)) - (3600 * h)) / 60;
-        String ret = "";
-        if (d > 0) {
-            ret = ret + d + _day;
-        }
-        if (h > 0) {
-            ret = ret + h + _hour;
-        }
-        if (m > 0) {
-            return ret + m + _min;
-        }
-        return ret;
     }
 }

@@ -48,6 +48,7 @@ object HideProfileBubble : BaseDelayableHighPerformanceConditionalHookAdapter("h
         }
     }
 
-    override val conditionCache: PageFaultHighPerformanceFunctionCache<Boolean> = PageFaultHighPerformanceFunctionCache { requireMinQQVersion(QQVersion.QQ_8_3_6) }
+    override val conditionCache: PageFaultHighPerformanceFunctionCache<Boolean> =
+        PageFaultHighPerformanceFunctionCache { requireMinQQVersion(QQVersion.QQ_8_3_6) }
 
 }

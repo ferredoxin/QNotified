@@ -72,16 +72,23 @@ public class DelDetectorHook extends CommonDelayableHook {
         @Override
         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
             try {
-                if (LicenseStatus.sDisableCommonHooks) return;
+                if (LicenseStatus.sDisableCommonHooks) {
+                    return;
+                }
                 boolean hide = false;
                 try {
-                    hide = ConfigManager.getDefaultConfig().getBooleanOrFalse("qn_hide_ex_entry_group");
+                    hide = ConfigManager.getDefaultConfig()
+                        .getBooleanOrFalse("qn_hide_ex_entry_group");
                 } catch (Throwable e) {
                     log(e);
                 }
-                if (hide) return;
-                if (!param.thisObject.getClass().getName().contains("ContactsFPSPinnedHeaderExpandableListView"))
+                if (hide) {
                     return;
+                }
+                if (!param.thisObject.getClass().getName()
+                    .contains("ContactsFPSPinnedHeaderExpandableListView")) {
+                    return;
+                }
                 LinearLayout layout_entrance;
                 View lv = (View) param.thisObject;
                 final Activity splashActivity = (Activity) Utils.getContext(lv);
@@ -113,15 +120,16 @@ public class DelDetectorHook extends CommonDelayableHook {
                 redDot.getPaint().setFakeBoldText(true);
                 redDot.setTextSize(Utils.dip2sp(splashActivity, 10));
                 try {
-                    invoke_static(load("com/tencent/widget/CustomWidgetUtil"), "a", redDot, 3, 1, 0, TextView.class, int.class, int.class, int.class, void.class);
+                    invoke_static(load("com/tencent/widget/CustomWidgetUtil"), "a", redDot, 3, 1, 0,
+                        TextView.class, int.class, int.class, int.class, void.class);
                 } catch (NullPointerException e) {
                     redDot.setTextColor(Color.RED);
                 }
                 ExfriendManager.get(Utils.getLongAccountUin()).setRedDot();
 
-
                 int height = dip2px(splashActivity, 48);
-                RelativeLayout.LayoutParams exlp = new RelativeLayout.LayoutParams(MATCH_PARENT, height);
+                RelativeLayout.LayoutParams exlp = new RelativeLayout.LayoutParams(MATCH_PARENT,
+                    height);
                 exlp.topMargin = 0;
                 exlp.leftMargin = 0;
                 try {
@@ -132,7 +140,8 @@ public class DelDetectorHook extends CommonDelayableHook {
                     log(e);
                 }
                 rell.addView(exfriend, exlp);
-                RelativeLayout.LayoutParams dotlp = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+                RelativeLayout.LayoutParams dotlp = new RelativeLayout.LayoutParams(WRAP_CONTENT,
+                    WRAP_CONTENT);
                 dotlp.topMargin = 0;
                 dotlp.rightMargin = Utils.dip2px(splashActivity, 24);
                 dotlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
@@ -144,7 +153,9 @@ public class DelDetectorHook extends CommonDelayableHook {
                 exfriend.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (LicenseStatus.sDisableCommonHooks) return;
+                        if (LicenseStatus.sDisableCommonHooks) {
+                            return;
+                        }
                         Intent intent = new Intent(splashActivity, ExfriendListActivity.class);
                         splashActivity.startActivity(intent);
                     }
@@ -164,71 +175,80 @@ public class DelDetectorHook extends CommonDelayableHook {
 
     @Override
     public boolean initOnce() {
-        findAndHookMethod(load("com/tencent/widget/PinnedHeaderExpandableListView"), "setAdapter", ExpandableListAdapter.class, exfriendEntryHook);
+        findAndHookMethod(load("com/tencent/widget/PinnedHeaderExpandableListView"), "setAdapter",
+            ExpandableListAdapter.class, exfriendEntryHook);
         AppCenterHookKt.initAppCenterHook();
-        XposedHelpers.findAndHookMethod(load("com/tencent/mobileqq/activity/SplashActivity"), "doOnResume", new XC_MethodHook(700) {
-            boolean z = false;
+        XposedHelpers
+            .findAndHookMethod(load("com/tencent/mobileqq/activity/SplashActivity"), "doOnResume",
+                new XC_MethodHook(700) {
+                    boolean z = false;
 
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
 
-                try {
-                    if (Utils.getLongAccountUin() > 10000) {
-                        ExfriendManager ex = ExfriendManager.getCurrent();
-                        ex.timeToUpdateFl();
+                        try {
+                            if (Utils.getLongAccountUin() > 10000) {
+                                ExfriendManager ex = ExfriendManager.getCurrent();
+                                ex.timeToUpdateFl();
+                            }
+                        } catch (Throwable e) {
+                            log(e);
+                            throw e;
+                        }
+                        if (Utils.getBuildTimestamp() < 0 && (Math.random() < 0.25)) {
+                            TroubleshootActivity.quitLooper();
+                        } else {
+                            if (z) {
+                                return;
+                            }
+                            CliOper.onLoad();
+                            z = true;
+                        }
                     }
-                } catch (Throwable e) {
-                    log(e);
-                    throw e;
+                });
+        findAndHookMethod(load("friendlist/GetFriendListResp"), "readFrom",
+            load("com/qq/taf/jce/JceInputStream"), new XC_MethodHook(200) {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    try {
+                        FriendChunk fc = new FriendChunk(param.thisObject);
+                        ExfriendManager.onGetFriendListResp(fc);
+                    } catch (Throwable e) {
+                        log(e);
+                        throw e;
+                    }
                 }
-                if (Utils.getBuildTimestamp() < 0 && (Math.random() < 0.25)) {
-                    TroubleshootActivity.quitLooper();
-                } else {
-                    if (z) return;
-                    CliOper.onLoad();
-                    z = true;
-                }
-            }
-        });
-        findAndHookMethod(load("friendlist/GetFriendListResp"), "readFrom", load("com/qq/taf/jce/JceInputStream"), new XC_MethodHook(200) {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                try {
-                    FriendChunk fc = new FriendChunk(param.thisObject);
-                    ExfriendManager.onGetFriendListResp(fc);
-                } catch (Throwable e) {
-                    log(e);
-                    throw e;
-                }
-            }
-        });
+            });
 
-        findAndHookMethod(load("friendlist/DelFriendResp"), "readFrom", load("com/qq/taf/jce/JceInputStream"), new XC_MethodHook(200) {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                try {
-                    long uin = (Long) iget_object_or_null(param.thisObject, "uin");
-                    long deluin = (Long) iget_object_or_null(param.thisObject, "deluin");
-                    int result = (Integer) iget_object_or_null(param.thisObject, "result");
-                    short errorCode = (Short) iget_object_or_null(param.thisObject, "errorCode");
-                    if (result == 0 && errorCode == 0)
-                        ExfriendManager.get(uin).markActiveDelete(deluin);
-                } catch (Throwable e) {
-                    log(e);
-                    throw e;
+        findAndHookMethod(load("friendlist/DelFriendResp"), "readFrom",
+            load("com/qq/taf/jce/JceInputStream"), new XC_MethodHook(200) {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    try {
+                        long uin = (Long) iget_object_or_null(param.thisObject, "uin");
+                        long deluin = (Long) iget_object_or_null(param.thisObject, "deluin");
+                        int result = (Integer) iget_object_or_null(param.thisObject, "result");
+                        short errorCode = (Short) iget_object_or_null(param.thisObject,
+                            "errorCode");
+                        if (result == 0 && errorCode == 0) {
+                            ExfriendManager.get(uin).markActiveDelete(deluin);
+                        }
+                    } catch (Throwable e) {
+                        log(e);
+                        throw e;
+                    }
                 }
-            }
-        });
+            });
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
         return true;
     }
 
     @Override
     public void setEnabled(boolean enabled) {
         //do nothing
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
     }
 }

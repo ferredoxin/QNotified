@@ -36,12 +36,11 @@ import nil.nadph.qnotified.util.LicenseStatus;
 public class MuteQZoneThumbsUp extends CommonDelayableHook {
 
     public static final MuteQZoneThumbsUp INSTANCE = new MuteQZoneThumbsUp();
+    protected int MSG_INFO_OFFSET = -1;
 
     private MuteQZoneThumbsUp() {
         super("qn_mute_thumb_up", new DexDeobfStep(DexKit.C_QZONE_MSG_NOTIFY));
     }
-
-    protected int MSG_INFO_OFFSET = -1;
 
     @Override
     public boolean initOnce() {
@@ -51,7 +50,8 @@ public class MuteQZoneThumbsUp extends CommonDelayableHook {
             for (Method m : clz.getDeclaredMethods()) {
                 if (m.getReturnType().equals(void.class)) {
                     if (showQZoneMsgNotification == null ||
-                        m.getParameterTypes().length > showQZoneMsgNotification.getParameterTypes().length) {
+                        m.getParameterTypes().length > showQZoneMsgNotification
+                            .getParameterTypes().length) {
                         showQZoneMsgNotification = m;
                     }
                 }
@@ -59,8 +59,12 @@ public class MuteQZoneThumbsUp extends CommonDelayableHook {
             XposedBridge.hookMethod(showQZoneMsgNotification, new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.sDisableCommonHooks) return;
-                    if (!isEnabled()) return;
+                    if (LicenseStatus.sDisableCommonHooks) {
+                        return;
+                    }
+                    if (!isEnabled()) {
+                        return;
+                    }
                     if (MSG_INFO_OFFSET < 0) {
                         Class<?>[] argt = ((Method) param.method).getParameterTypes();
                         int hit = 0;
@@ -76,7 +80,8 @@ public class MuteQZoneThumbsUp extends CommonDelayableHook {
                         }
                     }
                     String desc = (String) param.args[MSG_INFO_OFFSET];
-                    if (desc != null && (desc.endsWith("赞了你的说说") || desc.endsWith("赞了你的分享") || desc.endsWith("赞了你的照片"))) {
+                    if (desc != null && (desc.endsWith("赞了你的说说") || desc.endsWith("赞了你的分享") || desc
+                        .endsWith("赞了你的照片"))) {
                         param.setResult(null);
                     }
                 }

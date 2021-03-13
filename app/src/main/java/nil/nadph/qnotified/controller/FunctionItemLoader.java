@@ -32,15 +32,13 @@ import nil.nadph.qnotified.util.UnsupportedFunctionUsage;
 @UnsupportedFunctionUsage
 public class FunctionItemLoader {
 
+    public static final Map<String, String> sInitializationErrors = new HashMap<>();
     private static long sLoadBeginTime = 0L;
     private static long sLoadEndTime = 0L;
-
+    private static AbsDelayableHook[] sFunctionItems = null;
     private FunctionItemLoader() {
         throw new AssertionError("No instance for you!");
     }
-
-    private static AbsDelayableHook[] sFunctionItems = null;
-    public static final Map<String, String> sInitializationErrors = new HashMap<>();
 
     @NonNull
     public static AbsDelayableHook[] enumerateFunctionItems() {
@@ -111,7 +109,8 @@ public class FunctionItemLoader {
             }
         }
          */
-        return nil.nadph.qnotified.gen.AnnotatedFunctionItemList.getAnnotatedFunctionItemClassList().toArray(new AbsDelayableHook[0]);
+        return nil.nadph.qnotified.gen.AnnotatedFunctionItemList.getAnnotatedFunctionItemClassList()
+            .toArray(new AbsDelayableHook[0]);
     }
 /*
     @NonNull

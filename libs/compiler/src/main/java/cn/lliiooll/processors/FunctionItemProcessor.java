@@ -63,10 +63,12 @@ public class FunctionItemProcessor extends BaseProcessor {
             System.out.println(">>>> FunctionEntry Processing <<<<");
             ClassName absHook = ClassName.get("nil.nadph.qnotified.hook", "AbsDelayableHook");
             ClassName list = ClassName.get("java.util", "List");
-            MethodSpec.Builder beyond = MethodSpec.methodBuilder("getAnnotatedFunctionItemClassList")
+            MethodSpec.Builder beyond = MethodSpec
+                .methodBuilder("getAnnotatedFunctionItemClassList")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .returns(ParameterizedTypeName.get(list, absHook))
-                .addStatement("$T result = new $T<>()", ParameterizedTypeName.get(list, absHook), ArrayList.class);
+                .addStatement("$T result = new $T<>()", ParameterizedTypeName.get(list, absHook),
+                    ArrayList.class);
 
             for (Element e : annos) {
 //                System.out.println("Processing >>> " + e.toString());

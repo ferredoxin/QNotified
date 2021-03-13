@@ -3,61 +3,61 @@
     <PreferenceCategory android:title="通用">
         <SwitchPreference
             android:key="DisableScreenshotHelper"
-            android:title="隐藏截屏分享" />
+            android:title="隐藏截屏分享"/>
         <SwitchPreference
             android:key="RemoveRedDot"
-            android:title="移除小红点" />
+            android:title="移除小红点"/>
         <SwitchPreference
             android:key="RemoveDiyCard"
-            android:title="屏蔽DIY名片"
-            android:summary="抵制DIY从我做起"/>
+            android:summary="抵制DIY从我做起"
+            android:title="屏蔽DIY名片"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="聊天">
         <SwitchPreference
             android:key="RevokeMsgHook"
-            android:title="防止消息撤回"
-            android:summary="自带撤回灰字提示"/>
+            android:summary="自带撤回灰字提示"
+            android:title="防止消息撤回"/>
         <SwitchPreference
             android:key="transparentImgBg"
-            android:title="聊天图片背景透明" />
+            android:title="聊天图片背景透明"/>
         <SwitchPreference
             android:key="FlashPicHook"
-            android:title="以图片方式打开闪照" />
+            android:title="以图片方式打开闪照"/>
         <SwitchPreference
             android:key="EmoPicHook"
-            android:title="以图片方式打开表情包" />
+            android:title="以图片方式打开表情包"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="群聊">
         <SwitchPreference
             android:key="preventAt"
-            android:title="防止被@" />
+            android:title="防止被@"/>
         <SwitchPreference
             android:key="SimpleCheckIn"
-            android:title="签到文本化" />
+            android:title="签到文本化"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="文件">
-        <SwitchPreference
-            android:enabled="false"
-            android:key="BaseApk"
-            android:summary="在群里上传本机安装已应用时修改上传文件名"
-            android:title="重命名base.apk" />
         <EditTextPreference
-            android:enabled="false"
+            android:defaultValue="%n_%v.apk"
             android:dependency="BaseApk"
             android:dialogLayout="@layout/preference_dialog_et"
             android:dialogMessage="%n 应用名称\n%p 包名(packageName)\n%v 版本名(versionName)\n%c 版本号(versionCode)"
+            android:enabled="false"
             android:key="$rq_base_apk_format"
-            android:defaultValue="%n_%v.apk"
             android:title="文件上传格式"/>
-        <SwitchPreference
-            android:key="FileRecvRedirect"
-            android:title="重定向文件下载目录"
-            android:summary="当 QQ>=8.2.8 可能出现问题"/>
         <EditTextPreference
             android:dependency="FileRecvRedirect"
             android:dialogLayout="@layout/preference_dialog_et"
             android:key="$qn_file_recv_redirect_path"
-            android:title="下载目录"
-            android:summary="目录需为绝对路径且不含中文"/>
+            android:summary="目录需为绝对路径且不含中文"
+            android:title="下载目录"/>
+        <SwitchPreference
+            android:key="FileRecvRedirect"
+            android:summary="当 QQ>=8.2.8 可能出现问题"
+            android:title="重定向文件下载目录"/>
+        <SwitchPreference
+            android:enabled="false"
+            android:key="BaseApk"
+            android:summary="在群里上传本机安装已应用时修改上传文件名"
+            android:title="重命名base.apk"/>
     </PreferenceCategory>
 </PreferenceScreen>

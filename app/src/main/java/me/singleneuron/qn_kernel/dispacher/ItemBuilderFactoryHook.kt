@@ -35,7 +35,10 @@ import nil.nadph.qnotified.util.Initiator
 import java.lang.reflect.Method
 
 @FunctionEntry
-object ItemBuilderFactoryHook : BaseDelayableHookAdapter(cfgName = "itemBuilderFactoryHook",cond = arrayOf(DexDeobfStep(DexKit.C_ITEM_BUILDER_FAC))) {
+object ItemBuilderFactoryHook : BaseDelayableHookAdapter(
+    cfgName = "itemBuilderFactoryHook",
+    cond = arrayOf(DexDeobfStep(DexKit.C_ITEM_BUILDER_FAC))
+) {
 
     //Register your decorator here
     val decorators = arrayOf(
@@ -62,7 +65,7 @@ object ItemBuilderFactoryHook : BaseDelayableHookAdapter(cfgName = "itemBuilderF
                 val result = param.result as Int
                 val chatMessage = param.args[param.args.size - 1]
                 for (decorator in decorators) {
-                    if (decorator.decorate(result,chatMessage,param)) {
+                    if (decorator.decorate(result, chatMessage, param)) {
                         return
                     }
                 }

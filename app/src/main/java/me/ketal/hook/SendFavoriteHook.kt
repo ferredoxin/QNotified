@@ -35,7 +35,7 @@ import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.ReflexUtil
 
 @FunctionEntry
-object SendFavoriteHook: PluginDelayableHook("ketal_send_favorite") {
+object SendFavoriteHook : PluginDelayableHook("ketal_send_favorite") {
     override fun isValid(): Boolean = requireMinQQVersion(QQVersion.QQ_8_0_0)
 
     override val pluginID = "qqfav.apk"
@@ -47,9 +47,14 @@ object SendFavoriteHook: PluginDelayableHook("ketal_send_favorite") {
                 val thisObj = it.thisObject as Activity
                 val isHooked = thisObj.intent.getBooleanExtra("bEnterToSelect", false)
                 if (!isHooked) return@hookAfter
-                val tv = findCancelTV(thisObj, "com.qqfav.activity.QfavBaseActivity".findClass(classLoader))
-                val logic = ReflexUtil.new_instance("com.qqfav.activity.FavoriteGroupLogic".findClass(classLoader),
-                    thisObj, tv, thisObj::class.java, View::class.java)
+                val tv = findCancelTV(
+                    thisObj,
+                    "com.qqfav.activity.QfavBaseActivity".findClass(classLoader)
+                )
+                val logic = ReflexUtil.new_instance(
+                    "com.qqfav.activity.FavoriteGroupLogic".findClass(classLoader),
+                    thisObj, tv, thisObj::class.java, View::class.java
+                )
                 tv?.setOnClickListener {
                     tryVerbosely(false) {
                         ReflexUtil.invoke_virtual(logic, "b")
@@ -65,7 +70,7 @@ object SendFavoriteHook: PluginDelayableHook("ketal_send_favorite") {
         true
     }
 
-    private fun findCancelTV(thisObject: Any, clazz: Class<*>) : TextView? {
+    private fun findCancelTV(thisObject: Any, clazz: Class<*>): TextView? {
         for (field in clazz.declaredFields) {
             field.isAccessible = true
             if (field[thisObject] is TextView) {

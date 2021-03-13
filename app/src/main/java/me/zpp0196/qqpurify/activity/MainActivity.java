@@ -32,13 +32,20 @@ import nil.nadph.qnotified.activity.AppCompatTransferActivity;
 /**
  * Created by zpp0196 on 2019/5/15.
  */
-public class MainActivity extends AppCompatTransferActivity implements ViewPager.OnPageChangeListener,
-        OnTabSelectListener, Constants {
-
-    private TextView mTitleTextView;
+public class MainActivity extends AppCompatTransferActivity implements
+    ViewPager.OnPageChangeListener,
+    OnTabSelectListener, Constants {
 
     public List<TabFragment> mRefreshedFragment = new ArrayList<>();
+    private TextView mTitleTextView;
     private List<TabFragment> mFragments = new ArrayList<>();
+
+    public static boolean hasAppCompatAttr(Context ctx) {
+        TypedArray a = ctx.obtainStyledAttributes(R.styleable.AppCompatTheme);
+        boolean hasVal = a.hasValue(R.styleable.AppCompatTheme_windowActionBar);
+        a.recycle();
+        return hasVal;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,13 +55,6 @@ public class MainActivity extends AppCompatTransferActivity implements ViewPager
         setContentView(R.layout.activity_main);
         initTabLayout();
         initToolbar();
-    }
-
-    public static boolean hasAppCompatAttr(Context ctx) {
-        TypedArray a = ctx.obtainStyledAttributes(R.styleable.AppCompatTheme);
-        boolean hasVal = a.hasValue(R.styleable.AppCompatTheme_windowActionBar);
-        a.recycle();
-        return hasVal;
     }
 
     private void initTabLayout() {
@@ -121,6 +121,7 @@ public class MainActivity extends AppCompatTransferActivity implements ViewPager
     }
 
     public interface TabFragment {
+
         String getTabTitle();
 
         String getToolbarTitle();

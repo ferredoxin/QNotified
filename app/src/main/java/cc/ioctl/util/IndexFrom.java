@@ -35,5 +35,6 @@ import java.lang.annotation.Target;
 @Target({TYPE, METHOD, CONSTRUCTOR, FIELD, PARAMETER, LOCAL_VARIABLE})
 @Retention(RetentionPolicy.CLASS)
 public @interface IndexFrom {
+
     int value();
 }

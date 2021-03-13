@@ -43,20 +43,21 @@ import java.lang.reflect.Modifier;
 import nil.nadph.qnotified.util.DexKit;
 
 public class CustomDialog {
+
     private static Class<?> clz_DialogUtil;
     private static Class<?> clz_CustomDialog;
     private static Method m_DialogUtil_a;
-
+    @SuppressWarnings("deprecation")
+    private static int THEME_LIGHT = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1
+        ? android.R.style.Theme_DeviceDefault_Light_Dialog_Alert
+        : AlertDialog.THEME_DEVICE_DEFAULT_LIGHT;
+    @SuppressWarnings("deprecation")
+    private static int THEME_DARK = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1
+        ? android.R.style.Theme_DeviceDefault_Dialog_Alert : AlertDialog.THEME_DEVICE_DEFAULT_DARK;
     private Dialog mDialog = null;
     private AlertDialog mFailsafeDialog = null;
     private AlertDialog.Builder mBuilder = null;
     private boolean failsafe = false;
-
-    @SuppressWarnings("deprecation")
-    private static int THEME_LIGHT = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1 ? android.R.style.Theme_DeviceDefault_Light_Dialog_Alert : AlertDialog.THEME_DEVICE_DEFAULT_LIGHT;
-    @SuppressWarnings("deprecation")
-    private static int THEME_DARK = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1 ? android.R.style.Theme_DeviceDefault_Dialog_Alert : AlertDialog.THEME_DEVICE_DEFAULT_DARK;
-
 
     public static CustomDialog create(Context ctx) {
         try {
@@ -69,7 +70,8 @@ public class CustomDialog {
                     Class clz_Lite = load("com/dataline/activities/LiteActivity");
                     Field[] fs = clz_Lite.getDeclaredFields();
                     for (Field f : fs) {
-                        if (Modifier.isPrivate(f.getModifiers()) && Dialog.class.isAssignableFrom(f.getType())) {
+                        if (Modifier.isPrivate(f.getModifiers()) && Dialog.class
+                            .isAssignableFrom(f.getType())) {
                             clz_CustomDialog = f.getType();
                             break;
                         }
@@ -79,9 +81,12 @@ public class CustomDialog {
             if (m_DialogUtil_a == null) {
                 Method tmpa = null, tmpb = null;
                 for (Method m : clz_DialogUtil.getDeclaredMethods()) {
-                    if (m.getReturnType().equals(clz_CustomDialog) && (Modifier.isPublic(m.getModifiers()))) {
+                    if (m.getReturnType().equals(clz_CustomDialog) && (Modifier
+                        .isPublic(m.getModifiers()))) {
                         Class<?>[] argt = m.getParameterTypes();
-                        if (argt.length != 2) continue;
+                        if (argt.length != 2) {
+                            continue;
+                        }
                         if (argt[0].equals(Context.class) && argt[1].equals(int.class)) {
                             if (m.getName().equals("a")) {
                                 m_DialogUtil_a = m;
@@ -116,7 +121,8 @@ public class CustomDialog {
         }
         if (ref.mDialog == null) {
             ref.failsafe = true;
-            ref.mBuilder = new AlertDialog.Builder(ctx, ResUtils.isInNightMode() ? THEME_DARK : THEME_LIGHT);
+            ref.mBuilder = new AlertDialog.Builder(ctx,
+                ResUtils.isInNightMode() ? THEME_DARK : THEME_LIGHT);
         }
         return ref;
     }
@@ -128,7 +134,8 @@ public class CustomDialog {
     public static CustomDialog createFailsafe(Context ctx) {
         CustomDialog ref = new CustomDialog();
         ref.failsafe = true;
-        ref.mBuilder = new AlertDialog.Builder(ctx, ResUtils.isInNightMode() ? THEME_DARK : THEME_LIGHT);
+        ref.mBuilder = new AlertDialog.Builder(ctx,
+            ResUtils.isInNightMode() ? THEME_DARK : THEME_LIGHT);
         return ref;
     }
 
@@ -152,9 +159,11 @@ public class CustomDialog {
                 log(e);
             }
         } else {
-            if (mFailsafeDialog == null)
+            if (mFailsafeDialog == null) {
                 mBuilder.setTitle(title);
-            else mFailsafeDialog.setTitle(title);
+            } else {
+                mFailsafeDialog.setTitle(title);
+            }
         }
         return this;
     }
@@ -167,9 +176,11 @@ public class CustomDialog {
                 log(e);
             }
         } else {
-            if (mFailsafeDialog == null)
+            if (mFailsafeDialog == null) {
                 mBuilder.setMessage(msg);
-            else mFailsafeDialog.setMessage(msg);
+            } else {
+                mFailsafeDialog.setMessage(msg);
+            }
         }
         return this;
     }
@@ -178,9 +189,11 @@ public class CustomDialog {
         if (!failsafe) {
             return mDialog.getContext();
         } else {
-            if (mFailsafeDialog == null)
+            if (mFailsafeDialog == null) {
                 return mBuilder.getContext();
-            else return mFailsafeDialog.getContext();
+            } else {
+                return mFailsafeDialog.getContext();
+            }
         }
     }
 
@@ -192,15 +205,18 @@ public class CustomDialog {
                 log(e);
             }
         } else {
-            if (mFailsafeDialog == null)
+            if (mFailsafeDialog == null) {
                 mBuilder.setView(v);
-            else mFailsafeDialog.setView(v);
+            } else {
+                mFailsafeDialog.setView(v);
+            }
         }
         return this;
     }
 
     @NonNull
-    public CustomDialog setPositiveButton(int text, @Nullable DialogInterface.OnClickListener listener) {
+    public CustomDialog setPositiveButton(int text,
+        @Nullable DialogInterface.OnClickListener listener) {
         Context ctx;
         if (failsafe) {
             ctx = mBuilder.getContext();
@@ -211,7 +227,8 @@ public class CustomDialog {
     }
 
     @NonNull
-    public CustomDialog setNegativeButton(int text, @Nullable DialogInterface.OnClickListener listener) {
+    public CustomDialog setNegativeButton(int text,
+        @Nullable DialogInterface.OnClickListener listener) {
         Context ctx;
         if (failsafe) {
             ctx = mBuilder.getContext();
@@ -228,13 +245,15 @@ public class CustomDialog {
     }
 
     @NonNull
-    public CustomDialog setPositiveButton(@NonNull String text, @Nullable DialogInterface.OnClickListener listener) {
+    public CustomDialog setPositiveButton(@NonNull String text,
+        @Nullable DialogInterface.OnClickListener listener) {
         if (!failsafe) {
             if (text != null && listener == null) {
                 listener = new DummyCallback();
             }
             try {
-                invoke_virtual(mDialog, "setPositiveButton", text, listener, String.class, DialogInterface.OnClickListener.class);
+                invoke_virtual(mDialog, "setPositiveButton", text, listener, String.class,
+                    DialogInterface.OnClickListener.class);
             } catch (Exception e) {
                 log(e);
             }
@@ -245,7 +264,8 @@ public class CustomDialog {
     }
 
     @NonNull
-    public CustomDialog setNeutralButton(@NonNull String text, @Nullable DialogInterface.OnClickListener listener) {
+    public CustomDialog setNeutralButton(@NonNull String text,
+        @Nullable DialogInterface.OnClickListener listener) {
         if (!failsafe) {
             //They don't have a neutral button, sigh...
         } else {
@@ -255,7 +275,8 @@ public class CustomDialog {
     }
 
     @NonNull
-    public CustomDialog setNeutralButton(int text, @Nullable DialogInterface.OnClickListener listener) {
+    public CustomDialog setNeutralButton(int text,
+        @Nullable DialogInterface.OnClickListener listener) {
         if (!failsafe) {
             //They don't have a neutral button, sigh...
         } else {
@@ -270,7 +291,8 @@ public class CustomDialog {
                 listener = new DummyCallback();
             }
             try {
-                invoke_virtual(mDialog, "setNegativeButton", text, listener, String.class, DialogInterface.OnClickListener.class);
+                invoke_virtual(mDialog, "setNegativeButton", text, listener, String.class,
+                    DialogInterface.OnClickListener.class);
             } catch (Exception e) {
                 log(e);
             }
@@ -284,8 +306,9 @@ public class CustomDialog {
         if (!failsafe) {
             return mDialog;
         } else {
-            if (mFailsafeDialog == null)
+            if (mFailsafeDialog == null) {
                 mFailsafeDialog = mBuilder.create();
+            }
             return mFailsafeDialog;
         }
     }
@@ -295,8 +318,9 @@ public class CustomDialog {
             mDialog.show();
             return mDialog;
         } else {
-            if (mFailsafeDialog == null)
+            if (mFailsafeDialog == null) {
                 mFailsafeDialog = mBuilder.create();
+            }
             mFailsafeDialog.show();
             return mFailsafeDialog;
         }
@@ -313,8 +337,12 @@ public class CustomDialog {
     }
 
     public boolean isShowing() {
-        if (mDialog != null) return mDialog.isShowing();
-        if (mFailsafeDialog != null) return mFailsafeDialog.isShowing();
+        if (mDialog != null) {
+            return mDialog.isShowing();
+        }
+        if (mFailsafeDialog != null) {
+            return mFailsafeDialog.isShowing();
+        }
         return false;
     }
 

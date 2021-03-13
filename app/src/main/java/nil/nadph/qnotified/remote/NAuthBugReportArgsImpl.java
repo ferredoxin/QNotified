@@ -29,6 +29,7 @@ import me.singleneuron.base.bridge.BugReport;
 import me.singleneuron.data.BugReportArguments;
 
 public class NAuthBugReportArgsImpl extends BugReport {
+
     @NonNull
     @Override
     public ArrayList<BugReportArguments> getBugReportArgumentsList() throws IOException {

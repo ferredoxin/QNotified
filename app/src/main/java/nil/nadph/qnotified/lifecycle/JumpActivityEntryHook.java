@@ -45,6 +45,7 @@ import nil.nadph.qnotified.util.MainProcess;
  * @author cinit
  */
 public class JumpActivityEntryHook {
+
     public static final String JUMP_ACTION_CMD = "qn_jump_action_cmd";
     public static final String JUMP_ACTION_TARGET = "qn_jump_action_target";
     public static final String JUMP_ACTION_START_ACTIVITY = "nil.nadph.qnotified.START_ACTIVITY";
@@ -55,7 +56,9 @@ public class JumpActivityEntryHook {
     @MainProcess
     @SuppressLint("PrivateApi")
     public static void initForJumpActivityEntry(Context ctx) {
-        if (__jump_act_init) return;
+        if (__jump_act_init) {
+            return;
+        }
         try {
             Class<?> clz = load("com.tencent.mobileqq.activity.JumpActivity");
             if (clz == null) {
@@ -69,13 +72,15 @@ public class JumpActivityEntryHook {
                     final Activity activity = (Activity) param.thisObject;
                     Intent intent = activity.getIntent();
                     String cmd;
-                    if (intent == null || (cmd = intent.getStringExtra(JUMP_ACTION_CMD)) == null)
+                    if (intent == null || (cmd = intent.getStringExtra(JUMP_ACTION_CMD)) == null) {
                         return;
+                    }
                     if (JUMP_ACTION_SETTING_ACTIVITY.equals(cmd)) {
                         if (LicenseStatus.sDisableCommonHooks) {
                         } else {
                             Intent realIntent = new Intent(intent);
-                            realIntent.setComponent(new ComponentName(activity, SettingsActivity.class));
+                            realIntent
+                                .setComponent(new ComponentName(activity, SettingsActivity.class));
                             activity.startActivity(realIntent);
                         }
                     } else if (JUMP_ACTION_START_ACTIVITY.equals(cmd)) {

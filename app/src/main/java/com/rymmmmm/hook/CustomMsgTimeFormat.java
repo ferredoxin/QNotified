@@ -39,6 +39,7 @@ import nil.nadph.qnotified.util.Utils;
 //自定义聊天页面时间格式
 @FunctionEntry
 public class CustomMsgTimeFormat extends CommonDelayableHook {
+
     public static final CustomMsgTimeFormat INSTANCE = new CustomMsgTimeFormat();
 
     protected CustomMsgTimeFormat() {
@@ -50,16 +51,22 @@ public class CustomMsgTimeFormat extends CommonDelayableHook {
         try {
             for (Method m : DexKit.doFindClass(DexKit.C_TimeFormatterUtils).getDeclaredMethods()) {
                 Class<?>[] argt = m.getParameterTypes();
-                if (m.getName().equals("a") && argt.length == 3 && Modifier.isStatic(m.getModifiers())) {
+                if (m.getName().equals("a") && argt.length == 3 && Modifier
+                    .isStatic(m.getModifiers())) {
                     XposedBridge.hookMethod(m, new XC_MethodHook() {
                         @SuppressLint("SimpleDateFormat")
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            if (LicenseStatus.sDisableCommonHooks) return;
-                            if (!isEnabled()) return;
+                            if (LicenseStatus.sDisableCommonHooks) {
+                                return;
+                            }
+                            if (!isEnabled()) {
+                                return;
+                            }
                             String fmt = RikkaCustomMsgTimeFormatDialog.getCurrentMsgTimeFormat();
                             if (fmt != null) {
-                                param.setResult(new SimpleDateFormat(fmt).format(new Date((long) param.args[2])));
+                                param.setResult(new SimpleDateFormat(fmt)
+                                    .format(new Date((long) param.args[2])));
                             }
                         }
                     });

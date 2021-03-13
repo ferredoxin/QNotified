@@ -33,6 +33,7 @@ import nil.nadph.qnotified.hook.CommonDelayableHook;
 
 @FunctionEntry
 public class PreUpgradeHook extends CommonDelayableHook {
+
     public static final PreUpgradeHook INSTANCE = new PreUpgradeHook();
 
     private PreUpgradeHook() {
@@ -43,9 +44,15 @@ public class PreUpgradeHook extends CommonDelayableHook {
     public boolean initOnce() {
         try {
             for (Method m : _UpgradeController().getDeclaredMethods()) {
-                if (m.getParameterTypes().length != 0) continue;
-                if (Modifier.isStatic(m.getModifiers())) continue;
-                if (!m.getName().equals("a")) continue;
+                if (m.getParameterTypes().length != 0) {
+                    continue;
+                }
+                if (Modifier.isStatic(m.getModifiers())) {
+                    continue;
+                }
+                if (!m.getName().equals("a")) {
+                    continue;
+                }
                 if (m.getReturnType().getName().contains("UpgradeDetailWrapper")) {
                     XposedBridge.hookMethod(m, new XC_MethodHook(43) {
                         @Override

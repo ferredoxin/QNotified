@@ -41,8 +41,7 @@ public @interface FunctionInfo {
     String name();
 
     /**
-     * See {@link AbsFunctionItem#getDescription()}
-     * length should be 0(for null) or 1
+     * See {@link AbsFunctionItem#getDescription()} length should be 0(for null) or 1
      */
     String[] description() default {};
 

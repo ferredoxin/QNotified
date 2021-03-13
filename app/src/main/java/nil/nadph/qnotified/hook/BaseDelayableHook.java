@@ -31,6 +31,8 @@ import nil.nadph.qnotified.step.Step;
 
 public abstract class BaseDelayableHook extends AbsDelayableHook implements IFunctionItemInterface {
 
+    private AbsFunctionItem mStub = null;
+
     @Override
     public boolean isTargetProc() {
         return (getEffectiveProc() & SyncUtils.getProcessType()) != 0;
@@ -71,10 +73,9 @@ public abstract class BaseDelayableHook extends AbsDelayableHook implements IFun
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + (isInited() ? "inited" : "") + "," + (isEnabled() ? "enabled" : "") + "," + SyncUtils.getProcessName() + ")";
+        return getClass().getSimpleName() + "(" + (isInited() ? "inited" : "") + "," + (isEnabled()
+            ? "enabled" : "") + "," + SyncUtils.getProcessName() + ")";
     }
-
-    private AbsFunctionItem mStub = null;
 
     @NonNull
     @Override

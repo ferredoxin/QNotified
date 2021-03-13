@@ -32,6 +32,7 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 @Target({METHOD, PARAMETER, FIELD})
 public @interface JceId {
+
     int value();
 
     boolean required() default true;

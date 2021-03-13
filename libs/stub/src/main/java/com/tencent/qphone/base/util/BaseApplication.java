@@ -5,19 +5,15 @@ import android.content.Context;
 import java.util.ArrayList;
 
 public abstract class BaseApplication extends Application {
+
     public static int appnewavmsgicon = 0;
     public static int appnewmsgicon = 0;
-    static Context context;
     public static int defaultNotifSoundResourceId = 0;
     public static int devlockQuickloginIcon = 0;
     public static ArrayList exclusiveStreamList = new ArrayList();
     public static int qqlaunchicon = 0;
     public static int qqwifiicon = 0;
-
-    public void onCreate() {
-        super.onCreate();
-        context = this;
-    }
+    static Context context;
 
     public static Context getContext() {
         return context;
@@ -45,6 +41,11 @@ public abstract class BaseApplication extends Application {
 
     public static int getDevlockQuickloginIcon() {
         return devlockQuickloginIcon;
+    }
+
+    public void onCreate() {
+        super.onCreate();
+        context = this;
     }
 
 }

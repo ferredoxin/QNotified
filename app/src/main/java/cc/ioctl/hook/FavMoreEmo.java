@@ -40,6 +40,7 @@ import nil.nadph.qnotified.util.DexKit;
 
 @FunctionEntry
 public class FavMoreEmo extends CommonDelayableHook {
+
     public static final FavMoreEmo INSTANCE = new FavMoreEmo();
 
     FavMoreEmo() {
@@ -55,34 +56,40 @@ public class FavMoreEmo extends CommonDelayableHook {
                 if (mFavEmoRoamingHandler == null) {
                     setEmoNum();
                 } else {
-                    XposedHelpers.findAndHookMethod(mFavEmoRoamingHandler, "a", List.class, List.class, new XC_MethodHook() {
+                    XposedHelpers
+                        .findAndHookMethod(mFavEmoRoamingHandler, "a", List.class, List.class,
+                            new XC_MethodHook() {
+                                @Override
+                                protected void beforeHookedMethod(MethodHookParam param)
+                                    throws Throwable {
+                                    setEmoNum();
+                                }
+                            });
+                }
+            } else {
+                Class mUpCallBack$SendResult = null;
+                for (Method m : mEmoAddedAuthCallback.getDeclaredMethods()) {
+                    if (m.getName().equals("b") && m.getReturnType().equals(void.class)
+                        && m.getParameterTypes().length == 1) {
+                        mUpCallBack$SendResult = m.getParameterTypes()[0];
+                        break;
+                    }
+                }
+                XposedHelpers.findAndHookMethod(mEmoAddedAuthCallback, "b", mUpCallBack$SendResult,
+                    new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            Object msg = param.args[0];
+                            iput_object(msg, "a", int.class, 0);
+                        }
+                    });
+                XposedHelpers.findAndHookMethod(mFavEmoRoamingHandler, "a", List.class, List.class,
+                    new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             setEmoNum();
                         }
                     });
-                }
-            } else {
-                Class mUpCallBack$SendResult = null;
-                for (Method m : mEmoAddedAuthCallback.getDeclaredMethods()) {
-                    if (m.getName().equals("b") && m.getReturnType().equals(void.class) && m.getParameterTypes().length == 1) {
-                        mUpCallBack$SendResult = m.getParameterTypes()[0];
-                        break;
-                    }
-                }
-                XposedHelpers.findAndHookMethod(mEmoAddedAuthCallback, "b", mUpCallBack$SendResult, new XC_MethodHook() {
-                    @Override
-                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        Object msg = param.args[0];
-                        iput_object(msg, "a", int.class, 0);
-                    }
-                });
-                XposedHelpers.findAndHookMethod(mFavEmoRoamingHandler, "a", List.class, List.class, new XC_MethodHook() {
-                    @Override
-                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        setEmoNum();
-                    }
-                });
             }
             return true;
         } catch (Throwable e) {

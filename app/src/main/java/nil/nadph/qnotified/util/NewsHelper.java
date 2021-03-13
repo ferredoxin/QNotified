@@ -70,8 +70,11 @@ public class NewsHelper implements Runnable {
         } catch (Exception ignored) {
         }
         if (needUpdate) {
-            if (tv != null) new Thread(new NewsHelper(new WeakReference<>(tv))).start();
-            else new Thread(new NewsHelper(null)).start();
+            if (tv != null) {
+                new Thread(new NewsHelper(new WeakReference<>(tv))).start();
+            } else {
+                new Thread(new NewsHelper(null)).start();
+            }
         }
     }
 
@@ -90,7 +93,8 @@ public class NewsHelper implements Runnable {
         }
         show = null != news;
         if (show) {
-            show = (news.persist || (news.time + news.ttl > System.currentTimeMillis() / 1000L)) && !isEmpty(news.text);
+            show = (news.persist || (news.time + news.ttl > System.currentTimeMillis() / 1000L))
+                && !isEmpty(news.text);
         }
         if (show) {
             tv.setText(news.text);
@@ -101,7 +105,8 @@ public class NewsHelper implements Runnable {
                 } catch (NumberFormatException ignored) {
                 }
                 try {
-                    ColorStateList color = (ColorStateList) ResUtils.class.getField(news.color).get(null);
+                    ColorStateList color = (ColorStateList) ResUtils.class.getField(news.color)
+                        .get(null);
                     tv.setTextColor(color);
                 } catch (Exception ignored) {
                 }
@@ -169,6 +174,7 @@ public class NewsHelper implements Runnable {
     }
 
     private static class News {
+
         public String text = null;
         public String color = null;
         public long time = 0;

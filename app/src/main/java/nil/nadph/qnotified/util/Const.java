@@ -30,4 +30,5 @@ import java.lang.annotation.Target;
 @Retention(CLASS)
 @Target({METHOD})
 public @interface Const {
+
 }

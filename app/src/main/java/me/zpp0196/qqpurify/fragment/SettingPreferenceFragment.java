@@ -18,7 +18,7 @@ import nil.nadph.qnotified.util.Toasts;
  * Created by zpp0196 on 2019/2/9.
  */
 public class SettingPreferenceFragment extends AbstractPreferenceFragment
-        implements Preference.OnPreferenceClickListener, ColorPickerDialogListener {
+    implements Preference.OnPreferenceClickListener, ColorPickerDialogListener {
 
     @Override
     @SuppressWarnings("ConstantConditions")
@@ -26,7 +26,6 @@ public class SettingPreferenceFragment extends AbstractPreferenceFragment
         super.initPreferences();
         findPreference("restoreDefault").setOnPreferenceClickListener(this);
         findPreference("displayDesktop").setOnPreferenceClickListener(this);
-
 
         ColorPickerPreference appThemeColor = findPreference("appThemeColor");
         appThemeColor.setPersistent(false);
@@ -41,28 +40,32 @@ public class SettingPreferenceFragment extends AbstractPreferenceFragment
     public boolean onPreferenceClick(Preference preference) {
         if ("restoreDefault".equals(preference.getKey())) {
             new AlertDialog.Builder(mActivity).setCancelable(false)
-                    .setTitle("提示")
-                    .setMessage("请确认是否恢复到默认设置")
-                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            try {
-                                if (Math.random() < 2) throw new UnsupportedOperationException("不支持此操作");
-                                mActivity.mRefreshedFragment.clear();
-                                SettingPreferenceFragment.this.initPreferences();
-                                Toast.makeText(mActivity, "已恢复到默认设置", Toast.LENGTH_SHORT).show();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                Toast.makeText(mActivity, "恢复失败: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                .setTitle("提示")
+                .setMessage("请确认是否恢复到默认设置")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            if (Math.random() < 2) {
+                                throw new UnsupportedOperationException("不支持此操作");
                             }
+                            mActivity.mRefreshedFragment.clear();
+                            SettingPreferenceFragment.this.initPreferences();
+                            Toast.makeText(mActivity, "已恢复到默认设置", Toast.LENGTH_SHORT).show();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(mActivity, "恢复失败: " + e.getMessage(), Toast.LENGTH_SHORT)
+                                .show();
                         }
-                    })
-                    .setNegativeButton("取消", null)
-                    .show();
+                    }
+                })
+                .setNegativeButton("取消", null)
+                .show();
         } else if ("displayDesktop".equals(preference.getKey())) {
             try {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setComponent(new ComponentName("nil.nadph.qnotified", "nil.nadph.qnotified.activity.ConfigV2Activity"));
+                intent.setComponent(new ComponentName("nil.nadph.qnotified",
+                    "nil.nadph.qnotified.activity.ConfigV2Activity"));
                 startActivity(intent);
             } catch (ActivityNotFoundException e) {
                 Toasts.show(getActivity(), "拉起失败!\n注: 内置模块无法显示桌面图标\n" + e.toString());

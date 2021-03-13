@@ -39,7 +39,10 @@ object AutoMosaicName : CommonDelayableHook("kr_automatic_mosaic_name") {
         return try {
             for (m: Method in _BaseChatPie().declaredMethods) {
                 val argt = m.parameterTypes
-                if (argt.size == 1 && argt[0] == Boolean::class.java && m.name == ConfigTable.getConfig(AutoMosaicName::class.java.simpleName)) {
+                if (argt.size == 1 && argt[0] == Boolean::class.java && m.name == ConfigTable.getConfig(
+                        AutoMosaicName::class.java.simpleName
+                    )
+                ) {
                     XposedBridge.hookMethod(m, object : XC_MethodHook() {
                         override fun beforeHookedMethod(param: MethodHookParam) {
                             if (LicenseStatus.sDisableCommonHooks) return

@@ -33,6 +33,7 @@ import nil.nadph.qnotified.util.LicenseStatus;
 //屏蔽戳一戳动画
 @FunctionEntry
 public class DisablePokeEffect extends CommonDelayableHook {
+
     public static final DisablePokeEffect INSTANCE = new DisablePokeEffect();
 
     public DisablePokeEffect() {
@@ -44,12 +45,17 @@ public class DisablePokeEffect extends CommonDelayableHook {
         try {
             for (Method m : Initiator._GivingHeartItemBuilder().getDeclaredMethods()) {
                 Class<?>[] argt = m.getParameterTypes();
-                if (m.getName().equals("a") && argt.length == 3 && !Modifier.isStatic(m.getModifiers())) {
+                if (m.getName().equals("a") && argt.length == 3 && !Modifier
+                    .isStatic(m.getModifiers())) {
                     XposedBridge.hookMethod(m, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            if (LicenseStatus.sDisableCommonHooks) return;
-                            if (!isEnabled()) return;
+                            if (LicenseStatus.sDisableCommonHooks) {
+                                return;
+                            }
+                            if (!isEnabled()) {
+                                return;
+                            }
                             // param.setResult(null);// 此处不应为null
                             if (param.getResult().getClass().isPrimitive()) {// 判断是boolean (基本类型)
                                 param.setResult(false);

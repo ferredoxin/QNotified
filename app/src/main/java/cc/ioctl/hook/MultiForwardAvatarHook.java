@@ -58,12 +58,12 @@ public class MultiForwardAvatarHook extends CommonDelayableHook {
     private static Field mLeftCheckBoxVisible = null;
 
     private MultiForwardAvatarHook() {
-        super("qn_multi_forward_avatar_profile", new DexDeobfStep(DexKit.C_AIO_UTILS)/*, new FindAvatarLongClickListener()*/);
+        super("qn_multi_forward_avatar_profile",
+            new DexDeobfStep(DexKit.C_AIO_UTILS)/*, new FindAvatarLongClickListener()*/);
     }
 
     /**
-     * Target TIM or QQ<=7.6.0
-     * Here we use DexKit!!!
+     * Target TIM or QQ<=7.6.0 Here we use DexKit!!!
      *
      * @param v the view in bubble
      * @return message or null
@@ -72,56 +72,17 @@ public class MultiForwardAvatarHook extends CommonDelayableHook {
     //@Deprecated
     public static Object getChatMessageByView(View v) {
         Class cl_AIOUtils = DexKit.doFindClass(DexKit.C_AIO_UTILS);
-        if (cl_AIOUtils == null) return null;
+        if (cl_AIOUtils == null) {
+            return null;
+        }
         try {
-            return invoke_static_any(cl_AIOUtils, v, View.class, load("com.tencent.mobileqq.data.ChatMessage"));
+            return invoke_static_any(cl_AIOUtils, v, View.class,
+                load("com.tencent.mobileqq.data.ChatMessage"));
         } catch (NoSuchMethodException e) {
             return null;
         } catch (Exception e) {
             log(e);
             return null;
-        }
-    }
-
-    @Override
-    public boolean initOnce() {
-        try {
-            findAndHookMethod(load("com/tencent/mobileqq/activity/aio/BaseBubbleBuilder"), "onClick", View.class, new XC_MethodHook(49) {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.sDisableCommonHooks) return;
-                    if (!isEnabled()) return;
-                    Context ctx = iget_object_or_null(param.thisObject, "a", Context.class);
-                    if (ctx == null) ctx = getFirstNSFByType(param.thisObject, Context.class);
-                    View view = (View) param.args[0];
-                    if (ctx == null || isLeftCheckBoxVisible()) return;
-                    String activityName = ctx.getClass().getName();
-                    boolean needShow = false;
-                    if (activityName.equals("com.tencent.mobileqq.activity.MultiForwardActivity")) {
-                        if (view.getClass().getName().equals("com.tencent.mobileqq.vas.avatar.VasAvatar")) {
-                            needShow = true;
-                        } else if (view.getClass().equals(ImageView.class) ||
-                            view.getClass().equals(load("com.tencent.widget.CommonImageView"))) {
-                            needShow = true;
-                        }
-                    }
-                    if (!needShow) return;
-                    Object msg = getChatMessageByView(view);
-                    if (msg == null) return;
-                    int istroop = (int) iget_object_or_null(msg, "istroop");
-                    if (istroop == 1 || istroop == 3000) {
-                        createAndShowDialogForTroop(ctx, msg);
-                    } else if (istroop == 0) {
-                        createAndShowDialogForPrivateMsg(ctx, msg);
-                    } else {
-                        createAndShowDialogForDetail(ctx, msg);
-                    }
-                }
-            });
-            return true;
-        } catch (Throwable e) {
-            log(e);
-            return false;
         }
     }
 
@@ -131,25 +92,27 @@ public class MultiForwardAvatarHook extends CommonDelayableHook {
             loge("createAndShowDialogForTroop/E msg == null");
             return;
         }
-        CustomDialog dialog = CustomDialog.createFailsafe(__ctx).setTitle(getShort$Name(msg)).setNeutralButton("资料卡", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                try {
-                    String senderuin = (String) iget_object_or_null(msg, "senderuin");
-                    long uin = Long.parseLong(senderuin);
-                    if (uin > 10000) {
-                        MainHook.openProfileCard(__ctx, uin);
+        CustomDialog dialog = CustomDialog.createFailsafe(__ctx).setTitle(getShort$Name(msg))
+            .setNeutralButton("资料卡", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    try {
+                        String senderuin = (String) iget_object_or_null(msg, "senderuin");
+                        long uin = Long.parseLong(senderuin);
+                        if (uin > 10000) {
+                            MainHook.openProfileCard(__ctx, uin);
+                        }
+                    } catch (Exception e) {
+                        log(e);
                     }
-                } catch (Exception e) {
-                    log(e);
                 }
-            }
-        }).setPositiveButton("确认", null).setCancelable(true).setNegativeButton("详情", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                createAndShowDialogForDetail(__ctx, msg);
-            }
-        });
+            }).setPositiveButton("确认", null).setCancelable(true)
+            .setNegativeButton("详情", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    createAndShowDialogForDetail(__ctx, msg);
+                }
+            });
         Context ctx = dialog.getContext();
         LinearLayout ll = new LinearLayout(ctx);
         ll.setOrientation(LinearLayout.VERTICAL);
@@ -172,25 +135,27 @@ public class MultiForwardAvatarHook extends CommonDelayableHook {
             loge("createAndShowDialogForPrivateMsg/E msg == null");
             return;
         }
-        CustomDialog dialog = CustomDialog.createFailsafe(__ctx).setTitle(getShort$Name(msg)).setNeutralButton("资料卡", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                try {
-                    String senderuin = (String) iget_object_or_null(msg, "senderuin");
-                    long uin = Long.parseLong(senderuin);
-                    if (uin > 10000) {
-                        MainHook.openProfileCard(__ctx, uin);
+        CustomDialog dialog = CustomDialog.createFailsafe(__ctx).setTitle(getShort$Name(msg))
+            .setNeutralButton("资料卡", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    try {
+                        String senderuin = (String) iget_object_or_null(msg, "senderuin");
+                        long uin = Long.parseLong(senderuin);
+                        if (uin > 10000) {
+                            MainHook.openProfileCard(__ctx, uin);
+                        }
+                    } catch (Exception e) {
+                        log(e);
                     }
-                } catch (Exception e) {
-                    log(e);
                 }
-            }
-        }).setPositiveButton("确认", null).setCancelable(true).setNegativeButton("详情", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                createAndShowDialogForDetail(__ctx, msg);
-            }
-        });
+            }).setPositiveButton("确认", null).setCancelable(true)
+            .setNegativeButton("详情", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    createAndShowDialogForDetail(__ctx, msg);
+                }
+            });
         Context ctx = dialog.getContext();
         LinearLayout ll = new LinearLayout(ctx);
         int p = Utils.dip2px(ctx, 10);
@@ -211,7 +176,8 @@ public class MultiForwardAvatarHook extends CommonDelayableHook {
             loge("createAndShowDialogForDetail/E msg == null");
             return;
         }
-        CustomDialog.createFailsafe(ctx).setTitle(Utils.getShort$Name(msg)).setMessage(msg.toString())
+        CustomDialog.createFailsafe(ctx).setTitle(Utils.getShort$Name(msg))
+            .setMessage(msg.toString())
             .setCancelable(true).setPositiveButton("确定", null).show();
     }
 
@@ -221,10 +187,16 @@ public class MultiForwardAvatarHook extends CommonDelayableHook {
             if (mLeftCheckBoxVisible != null) {
                 return mLeftCheckBoxVisible.getBoolean(null);
             } else {
-                for (Field f : load("com/tencent/mobileqq/activity/aio/BaseChatItemLayout").getDeclaredFields()) {
-                    if (Modifier.isStatic(f.getModifiers()) && Modifier.isPublic(f.getModifiers()) && f.getType().equals(boolean.class)) {
-                        if ("a".equals(f.getName())) a = f;
-                        if ("b".equals(f.getName())) b = f;
+                for (Field f : load("com/tencent/mobileqq/activity/aio/BaseChatItemLayout")
+                    .getDeclaredFields()) {
+                    if (Modifier.isStatic(f.getModifiers()) && Modifier.isPublic(f.getModifiers())
+                        && f.getType().equals(boolean.class)) {
+                        if ("a".equals(f.getName())) {
+                            a = f;
+                        }
+                        if ("b".equals(f.getName())) {
+                            b = f;
+                        }
                     }
                 }
                 if (a != null) {
@@ -238,6 +210,64 @@ public class MultiForwardAvatarHook extends CommonDelayableHook {
                 return false;
             }
         } catch (Exception e) {
+            log(e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean initOnce() {
+        try {
+            findAndHookMethod(load("com/tencent/mobileqq/activity/aio/BaseBubbleBuilder"),
+                "onClick", View.class, new XC_MethodHook(49) {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        if (LicenseStatus.sDisableCommonHooks) {
+                            return;
+                        }
+                        if (!isEnabled()) {
+                            return;
+                        }
+                        Context ctx = iget_object_or_null(param.thisObject, "a", Context.class);
+                        if (ctx == null) {
+                            ctx = getFirstNSFByType(param.thisObject, Context.class);
+                        }
+                        View view = (View) param.args[0];
+                        if (ctx == null || isLeftCheckBoxVisible()) {
+                            return;
+                        }
+                        String activityName = ctx.getClass().getName();
+                        boolean needShow = false;
+                        if (activityName
+                            .equals("com.tencent.mobileqq.activity.MultiForwardActivity")) {
+                            if (view.getClass().getName()
+                                .equals("com.tencent.mobileqq.vas.avatar.VasAvatar")) {
+                                needShow = true;
+                            } else if (view.getClass().equals(ImageView.class) ||
+                                view.getClass()
+                                    .equals(load("com.tencent.widget.CommonImageView"))) {
+                                needShow = true;
+                            }
+                        }
+                        if (!needShow) {
+                            return;
+                        }
+                        Object msg = getChatMessageByView(view);
+                        if (msg == null) {
+                            return;
+                        }
+                        int istroop = (int) iget_object_or_null(msg, "istroop");
+                        if (istroop == 1 || istroop == 3000) {
+                            createAndShowDialogForTroop(ctx, msg);
+                        } else if (istroop == 0) {
+                            createAndShowDialogForPrivateMsg(ctx, msg);
+                        } else {
+                            createAndShowDialogForDetail(ctx, msg);
+                        }
+                    }
+                });
+            return true;
+        } catch (Throwable e) {
             log(e);
             return false;
         }

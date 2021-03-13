@@ -56,94 +56,14 @@ import nil.nadph.qnotified.util.Utils;
 
 @FunctionEntry
 public class ChatTailHook extends CommonDelayableHook {
+
     public static final String qn_chat_tail_enable = "qn_chat_tail_enable";
-    private static final String ACTION_UPDATE_CHAT_TAIL = "nil.nadph.qnotified.ACTION_UPDATE_CHAT_TAIL";
     public static final ChatTailHook INSTANCE = new ChatTailHook();
+    private static final String ACTION_UPDATE_CHAT_TAIL = "nil.nadph.qnotified.ACTION_UPDATE_CHAT_TAIL";
 
 
     ChatTailHook() {
         super(qn_chat_tail_enable);
-    }
-
-    @Override
-    public boolean initOnce() {
-        try {
-            Class facade = DexKit.doFindClass(DexKit.C_FACADE);
-            Method m = null;
-            for (Method mi : facade.getDeclaredMethods()) {
-                if (!mi.getReturnType().equals(long[].class)) continue;
-                Class[] argt = mi.getParameterTypes();
-                if (argt.length != 6) continue;
-                if (argt[1].equals(Context.class) && argt[2].equals(_SessionInfo())
-                    && argt[3].equals(String.class) && argt[4].equals(ArrayList.class)) {
-                    m = mi;
-                    m.setAccessible(true);
-                    break;
-                }
-            }
-
-            XposedBridge.hookMethod(m, new XC_MethodHook() {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    if (isEnabled()) {
-                        if (LicenseStatus.sDisableCommonHooks) return;
-                        String msg = (String) param.args[3];
-                        String text = msg;
-                        final Parcelable session = (Parcelable) param.args[2];
-                        try {
-                            String uin = "10000";
-                            if (!isGlobal()) {
-                                Field field = null;
-                                for (Field f : session.getClass().getDeclaredFields()) {
-                                    // 因为有多个同名变量，所以要判断返回类型
-                                    if (f.getName().equalsIgnoreCase("a") && f.getType() == String.class) {
-                                        field = f;
-                                    }
-                                }
-                                if (null == field) field = session.getClass().getDeclaredField("curFriendUin");
-                                uin = (String) field.get(session);
-                            }
-                            ChatTailHook ct = ChatTailHook.INSTANCE;
-                            logi("isRegex:" + String.valueOf(ChatTailHook.isRegex()));
-                            logi("isPassRegex:" + String.valueOf(ChatTailHook.isPassRegex(msg)));
-                            logi("getTailRegex:" + ChatTailHook.getTailRegex());
-                            if ((ct.isGlobal() || ct.containsTroop(uin) || ct.containsFriend(uin))
-                                && (!isRegex() || !isPassRegex(msg))) {
-                                int battery = FakeBatteryHook.INSTANCE.isEnabled() ? FakeBatteryHook.INSTANCE.getFakeBatteryStatus() < 1 ? ChatTailActivity.getBattery() : FakeBatteryHook.INSTANCE.getFakeBatteryCapacity() : ChatTailActivity.getBattery();
-                                text = ct.getTailCapacity()
-                                    .replace(ChatTailActivity.delimiter, msg)
-                                    .replace("#model#", Build.MODEL)
-                                    .replace("#brand#", Build.BRAND)
-                                    .replace("#battery#", battery + "")
-                                    .replace("#power#", ChatTailActivity.getPower())
-                                    .replace("#time#", new SimpleDateFormat(RikkaCustomMsgTimeFormatDialog.getTimeFormat()).format(new Date()));
-                                if (ct.getTailCapacity().contains("#Spacemsg#")) {
-                                    text = text.replace("#Spacemsg#", "");
-                                    text = UtilsKt.makeSpaceMsg(text);
-                                }
-                            }
-                        } catch (Throwable e) {
-                            log(e);
-                        } finally {
-                            param.args[3] = text;
-                        }
-                    }
-                }
-            });
-            return true;
-        } catch (Throwable throwable) {
-            log(throwable);
-            return false;
-        }
-    }
-
-    private boolean containsFriend(String uin) {
-        String muted = "," + ExfriendManager.getCurrent().getConfig().getString(ConfigItems.qn_chat_tail_friends) + ",";
-        return muted.contains("," + uin + ",");
-    }
-
-    private boolean isGlobal() {
-        return ExfriendManager.getCurrent().getConfig().getBooleanOrFalse(ConfigItems.qn_chat_tail_global);
     }
 
     public static boolean isRegex() {
@@ -166,28 +86,10 @@ public class ChatTailHook extends CommonDelayableHook {
         }
     }
 
-    private boolean containsTroop(String uin) {
-        String muted = "," + ExfriendManager.getCurrent().getConfig().getString(ConfigItems.qn_chat_tail_troops) + ",";
-        return muted.contains("," + uin + ",");
-    }
-
-
-    public void setTail(String tail) {
-        try {
-            ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
-            cfg.putString(ConfigItems.qn_chat_tail, tail);
-            cfg.save();
-        } catch (IOException e) {
-            log(e);
-        }
-    }
-
-    public String getTailStatus() {
-        return ExfriendManager.getCurrent().getConfig().getStringOrDefault(ConfigItems.qn_chat_tail, "");
-    }
-
-    public String getTailCapacity() {
-        return getTailStatus().replace("\\n", "\n");
+    public static String getTailRegex() {
+        // (?:(?![A-Za-z0-9])(?:[\x21-\x7e？！]))$
+        return ExfriendManager.getCurrent().getConfig()
+            .getStringOrDefault(ConfigItems.qn_chat_tail_regex_text, "");
     }
 
     public static void setTailRegex(String regex) {
@@ -200,10 +102,139 @@ public class ChatTailHook extends CommonDelayableHook {
         }
     }
 
-    public static String getTailRegex() {
-        // (?:(?![A-Za-z0-9])(?:[\x21-\x7e？！]))$
+    @Override
+    public boolean initOnce() {
+        try {
+            Class facade = DexKit.doFindClass(DexKit.C_FACADE);
+            Method m = null;
+            for (Method mi : facade.getDeclaredMethods()) {
+                if (!mi.getReturnType().equals(long[].class)) {
+                    continue;
+                }
+                Class[] argt = mi.getParameterTypes();
+                if (argt.length != 6) {
+                    continue;
+                }
+                if (argt[1].equals(Context.class) && argt[2].equals(_SessionInfo())
+                    && argt[3].equals(String.class) && argt[4].equals(ArrayList.class)) {
+                    m = mi;
+                    m.setAccessible(true);
+                    break;
+                }
+            }
+
+            XposedBridge.hookMethod(m, new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    if (isEnabled()) {
+                        if (LicenseStatus.sDisableCommonHooks) {
+                            return;
+                        }
+                        String msg = (String) param.args[3];
+                        String text = msg;
+                        final Parcelable session = (Parcelable) param.args[2];
+                        try {
+                            String uin = "10000";
+                            if (!isGlobal()) {
+                                Field field = null;
+                                for (Field f : session.getClass().getDeclaredFields()) {
+                                    // 因为有多个同名变量，所以要判断返回类型
+                                    if (f.getName().equalsIgnoreCase("a")
+                                        && f.getType() == String.class) {
+                                        field = f;
+                                    }
+                                }
+                                if (null == field) {
+                                    field = session.getClass().getDeclaredField("curFriendUin");
+                                }
+                                uin = (String) field.get(session);
+                            }
+                            ChatTailHook ct = ChatTailHook.INSTANCE;
+                            logi("isRegex:" + String.valueOf(ChatTailHook.isRegex()));
+                            logi("isPassRegex:" + String.valueOf(ChatTailHook.isPassRegex(msg)));
+                            logi("getTailRegex:" + ChatTailHook.getTailRegex());
+                            if ((ct.isGlobal() || ct.containsTroop(uin) || ct.containsFriend(uin))
+                                && (!isRegex() || !isPassRegex(msg))) {
+                                int battery = FakeBatteryHook.INSTANCE.isEnabled() ?
+                                    FakeBatteryHook.INSTANCE.getFakeBatteryStatus() < 1
+                                        ? ChatTailActivity.getBattery()
+                                        : FakeBatteryHook.INSTANCE.getFakeBatteryCapacity()
+                                    : ChatTailActivity.getBattery();
+                                text = ct.getTailCapacity()
+                                    .replace(ChatTailActivity.delimiter, msg)
+                                    .replace("#model#", Build.MODEL)
+                                    .replace("#brand#", Build.BRAND)
+                                    .replace("#battery#", battery + "")
+                                    .replace("#power#", ChatTailActivity.getPower())
+                                    .replace("#time#", new SimpleDateFormat(
+                                        RikkaCustomMsgTimeFormatDialog.getTimeFormat())
+                                        .format(new Date()));
+                                if (ct.getTailCapacity().contains("#Spacemsg#")) {
+                                    text = text.replace("#Spacemsg#", "");
+                                    text = UtilsKt.makeSpaceMsg(text);
+                                }
+                            }
+                        } catch (Throwable e) {
+                            log(e);
+                        } finally {
+                            param.args[3] = text;
+                        }
+                    }
+                }
+            });
+            return true;
+        } catch (Throwable throwable) {
+            log(throwable);
+            return false;
+        }
+    }
+
+    private boolean containsFriend(String uin) {
+        String muted = "," + ExfriendManager.getCurrent().getConfig()
+            .getString(ConfigItems.qn_chat_tail_friends) + ",";
+        return muted.contains("," + uin + ",");
+    }
+
+    private boolean isGlobal() {
         return ExfriendManager.getCurrent().getConfig()
-            .getStringOrDefault(ConfigItems.qn_chat_tail_regex_text, "");
+            .getBooleanOrFalse(ConfigItems.qn_chat_tail_global);
+    }
+
+    private boolean containsTroop(String uin) {
+        String muted = "," + ExfriendManager.getCurrent().getConfig()
+            .getString(ConfigItems.qn_chat_tail_troops) + ",";
+        return muted.contains("," + uin + ",");
+    }
+
+    public void setTail(String tail) {
+        try {
+            ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
+            cfg.putString(ConfigItems.qn_chat_tail, tail);
+            cfg.save();
+        } catch (IOException e) {
+            log(e);
+        }
+    }
+
+    public String getTailStatus() {
+        return ExfriendManager.getCurrent().getConfig()
+            .getStringOrDefault(ConfigItems.qn_chat_tail, "");
+    }
+
+    public String getTailCapacity() {
+        return getTailStatus().replace("\\n", "\n");
+    }
+
+    @Override
+    public boolean isEnabled() {
+        try {
+            return ExfriendManager.getCurrent().getBooleanOrDefault(qn_chat_tail_enable, false);
+        } catch (IllegalArgumentException e) {
+            return false;
+        } catch (Exception e) {
+            log(e);
+            return false;
+        }
     }
 
     @Override
@@ -217,20 +248,9 @@ public class ChatTailHook extends CommonDelayableHook {
             if (Looper.myLooper() == Looper.getMainLooper()) {
                 Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(), e + "");
             } else {
-                SyncUtils.post(() -> Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(), e + ""));
+                SyncUtils.post(() -> Toasts
+                    .error(HostInformationProviderKt.getHostInfo().getApplication(), e + ""));
             }
-        }
-    }
-
-    @Override
-    public boolean isEnabled() {
-        try {
-            return ExfriendManager.getCurrent().getBooleanOrDefault(qn_chat_tail_enable, false);
-        } catch (IllegalArgumentException e) {
-            return false;
-        } catch (Exception e) {
-            log(e);
-            return false;
         }
     }
 }

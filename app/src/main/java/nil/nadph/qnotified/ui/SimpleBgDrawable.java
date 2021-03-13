@@ -27,6 +27,7 @@ import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 
 public class SimpleBgDrawable extends Drawable {
+
     private final int iColor;
     private final int iEdgeColor;
     private final int iEdgeWidth;

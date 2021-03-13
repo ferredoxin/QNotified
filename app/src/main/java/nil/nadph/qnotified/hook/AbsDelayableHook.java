@@ -46,7 +46,8 @@ public abstract class AbsDelayableHook implements SwitchConfigItem {
             return;
         }
         try {
-            if (hook.isTargetProc() && hook.isEnabled() && hook.checkPreconditions() && !hook.isInited()) {
+            if (hook.isTargetProc() && hook.isEnabled() && hook.checkPreconditions() && !hook
+                .isInited()) {
                 hook.init();
             }
         } catch (Throwable e) {

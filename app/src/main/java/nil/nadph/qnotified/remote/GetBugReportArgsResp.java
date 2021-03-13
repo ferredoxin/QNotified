@@ -29,7 +29,8 @@ import me.singleneuron.data.BugReportArguments;
 
 public class GetBugReportArgsResp extends JceStruct {
 
-    private static final BugReportArguments[] DUMMY_ARGS_ARRAY = new BugReportArguments[]{new BugReportArguments()};
+    private static final BugReportArguments[] DUMMY_ARGS_ARRAY = new BugReportArguments[]{
+        new BugReportArguments()};
 
     @NonNull
     @JceId(0)

@@ -17,8 +17,8 @@ data class HostInformationProvider(
     val versionCode32: Int,
     val versionName: String,
     val isTim: Boolean,
-    val isPlayQQ: Boolean)
-
+    val isPlayQQ: Boolean
+)
 
 
 lateinit var hostInfo: HostInformationProvider
@@ -35,7 +35,8 @@ fun init(applicationContext: Application) {
         PackageInfoCompat.getLongVersionCode(packageInfo).toInt(),
         packageInfo.versionName,
         Utils.PACKAGE_NAME_TIM == packageName,
-        "GoogleMarket" in (packageInfo.applicationInfo.metaData["AppSetting_params"] ?: "") as String
+        "GoogleMarket" in (packageInfo.applicationInfo.metaData["AppSetting_params"]
+            ?: "") as String
     )
 }
 
@@ -49,13 +50,16 @@ private fun getHostInfo(context: Context): PackageInfo {
 }
 
 fun requireMinQQVersion(versionCode: Long): Boolean {
-    return  !hostInfo.isTim && hostInfo.versionCode>=versionCode
+    return !hostInfo.isTim && hostInfo.versionCode >= versionCode
 }
 
 fun requireMinTimVersion(versionCode: Long): Boolean {
-    return  hostInfo.isTim && hostInfo.versionCode>=versionCode
+    return hostInfo.isTim && hostInfo.versionCode >= versionCode
 }
 
-fun requireMinVersion(QQVersionCode: Long = Long.MAX_VALUE, TimVersionCode: Long = Long.MAX_VALUE): Boolean {
+fun requireMinVersion(
+    QQVersionCode: Long = Long.MAX_VALUE,
+    TimVersionCode: Long = Long.MAX_VALUE
+): Boolean {
     return requireMinQQVersion(QQVersionCode) or requireMinTimVersion(TimVersionCode)
 }

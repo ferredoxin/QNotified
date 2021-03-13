@@ -58,21 +58,35 @@ object AutoRenewFire : CommonDelayableHook("kr_auto_renew_fire") {
                             //如果未启用 不显示按钮
                             if (!getExFriendCfg().getBooleanOrFalse("kr_auto_renew_fire")) return
                             //获取 设为置顶 SwitchItem
-                            val setToTopItem = getObjectOrNull(param.thisObject, "b", FormSimpleItem)
+                            val setToTopItem =
+                                getObjectOrNull(param.thisObject, "b", FormSimpleItem)
                             //如果SwitchItem不为空 说明为好友
                             if (setToTopItem != null) {
                                 //创建SwitchItem对象
                                 val autoRenewFireItem =
-                                    new_instance(FormSimpleItem, param.thisObject, Context::class.java)
+                                    new_instance(
+                                        FormSimpleItem,
+                                        param.thisObject,
+                                        Context::class.java
+                                    )
                                 //拿到ViewGroup
                                 val listView = (setToTopItem as View).parent as ViewGroup
                                 //设置开关文本
-                                invoke_virtual(autoRenewFireItem, "setText", "自动续火", CharSequence::class.java)
+                                invoke_virtual(
+                                    autoRenewFireItem,
+                                    "setText",
+                                    "自动续火",
+                                    CharSequence::class.java
+                                )
                                 //添加View
                                 listView.addView(autoRenewFireItem as View, 7)
                                 //拿到好友相关信息
                                 val intent =
-                                    getObjectOrNull(param.thisObject, "a", Intent::class.java) as Intent
+                                    getObjectOrNull(
+                                        param.thisObject,
+                                        "a",
+                                        Intent::class.java
+                                    ) as Intent
                                 //QQ
                                 val uin = intent.getStringExtra("uin")
                                 //昵称
@@ -89,7 +103,10 @@ object AutoRenewFire : CommonDelayableHook("kr_auto_renew_fire") {
                                     autoRenewFireItem,
                                     "setOnCheckedChangeListener",
                                     object : CompoundButton.OnCheckedChangeListener {
-                                        override fun onCheckedChanged(p0: CompoundButton?, p1: Boolean) {
+                                        override fun onCheckedChanged(
+                                            p0: CompoundButton?,
+                                            p1: Boolean
+                                        ) {
                                             if (p1) {
                                                 AutoRenewFireMgr.add(uin)
                                                 (param.thisObject as Context).showToastByTencent("已开启与${uinName}的自动续火")
@@ -103,7 +120,10 @@ object AutoRenewFire : CommonDelayableHook("kr_auto_renew_fire") {
                                 )
                                 if (LicenseStatus.isInsider()) {
                                     autoRenewFireItem.setOnLongClickListener {
-                                        AutoRenewFireDialog.showSetMsgDialog(param.thisObject as Context, uin)
+                                        AutoRenewFireDialog.showSetMsgDialog(
+                                            param.thisObject as Context,
+                                            uin
+                                        )
                                         true
                                     }
                                 }
