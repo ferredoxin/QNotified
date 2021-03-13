@@ -41,8 +41,6 @@ import nil.nadph.qnotified.hook.AbsDelayableHook;
 import static nil.nadph.qnotified.util.Utils.log;
 import static nil.nadph.qnotified.util.Utils.loge;
 
-//import libcore.io.Libcore;
-
 
 @SuppressLint("PrivateApi")
 public class SyncUtils {
