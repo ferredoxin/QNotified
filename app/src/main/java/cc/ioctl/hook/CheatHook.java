@@ -46,7 +46,7 @@ import static nil.nadph.qnotified.util.Utils.log;
 
 @FunctionEntry
 public class  CheatHook extends CommonDelayableHook {
-    private static final CheatHook self = new CheatHook();
+    public static final CheatHook INSTANCE = new CheatHook();
     private final String[] diceItem = {"1", "2", "3", "4", "5", "6"};
     private final String[] morraItem = {"石头", "剪刀", "布"};
 
@@ -55,10 +55,6 @@ public class  CheatHook extends CommonDelayableHook {
 
     private CheatHook() {
         super("qh_random_cheat", new DexDeobfStep(DexKit.C_PNG_FRAME_UTIL), new DexDeobfStep(DexKit.C_PIC_EMOTICON_INFO));
-    }
-
-    public static CheatHook get() {
-        return self;
     }
 
     @Override

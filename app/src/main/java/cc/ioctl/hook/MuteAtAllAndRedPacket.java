@@ -41,14 +41,10 @@ import static nil.nadph.qnotified.util.Utils.log;
 
 @FunctionEntry
 public class MuteAtAllAndRedPacket extends CommonDelayableHook {
-    private static final MuteAtAllAndRedPacket self = new MuteAtAllAndRedPacket();
+    public static final MuteAtAllAndRedPacket INSTANCE = new MuteAtAllAndRedPacket();
 
     private MuteAtAllAndRedPacket() {
         super("__NOT_USED__", SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF);
-    }
-
-    public static MuteAtAllAndRedPacket get() {
-        return self;
     }
 
     @Override

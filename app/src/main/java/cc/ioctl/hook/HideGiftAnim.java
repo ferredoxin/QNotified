@@ -36,14 +36,10 @@ import static nil.nadph.qnotified.util.Utils.log;
 
 @FunctionEntry
 public class HideGiftAnim extends CommonDelayableHook {
-    private static final HideGiftAnim self = new HideGiftAnim();
+    public static final HideGiftAnim INSTANCE = new HideGiftAnim();
 
     HideGiftAnim() {
         super("qn_hide_gift_animation");
-    }
-
-    public static HideGiftAnim get() {
-        return self;
     }
 
     @Override

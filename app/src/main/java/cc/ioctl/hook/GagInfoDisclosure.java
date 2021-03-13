@@ -46,15 +46,11 @@ import static nil.nadph.qnotified.util.Utils.log;
 
 @FunctionEntry
 public class GagInfoDisclosure extends CommonDelayableHook {
-    private static final GagInfoDisclosure self = new GagInfoDisclosure();
+    public static final GagInfoDisclosure INSTANCE = new GagInfoDisclosure();
 
     GagInfoDisclosure() {
         // TODO: 2020/6/12 Figure out whether MSF is really needed
         super("qn_disclose_gag_info", SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF, new DexDeobfStep(DexKit.C_MSG_REC_FAC));
-    }
-
-    public static GagInfoDisclosure get() {
-        return self;
     }
 
     @Override

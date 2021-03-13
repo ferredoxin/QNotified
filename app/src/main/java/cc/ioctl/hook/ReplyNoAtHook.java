@@ -24,7 +24,6 @@ package cc.ioctl.hook;
 import de.robv.android.xposed.XC_MethodHook;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import me.singleneuron.qn_kernel.tlb.ConfigTable;
-import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.LicenseStatus;
@@ -37,14 +36,10 @@ import static nil.nadph.qnotified.util.Utils.log;
 
 @FunctionEntry
 public class ReplyNoAtHook extends CommonDelayableHook {
-    private static final ReplyNoAtHook self = new ReplyNoAtHook();
+    public static final ReplyNoAtHook INSTANCE = new ReplyNoAtHook();
 
     private ReplyNoAtHook() {
-        super("qn_disable_auto_at", SyncUtils.PROC_MAIN, false);
-    }
-
-    public static ReplyNoAtHook get() {
-        return self;
+        super("qn_disable_auto_at");
     }
 
     /**

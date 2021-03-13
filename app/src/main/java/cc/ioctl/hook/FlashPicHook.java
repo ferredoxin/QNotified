@@ -48,14 +48,10 @@ import static nil.nadph.qnotified.util.Utils.*;
 
 @FunctionEntry
 public class FlashPicHook extends CommonDelayableHook {
-    private static final FlashPicHook self = new FlashPicHook();
+    public static final FlashPicHook INSTANCE = new FlashPicHook();
 
     private FlashPicHook() {
         super("qn_flash_as_pic", new DexDeobfStep(DexKit.C_FLASH_PIC_HELPER), new DexDeobfStep(DexKit.C_BASE_PIC_DL_PROC), new DexDeobfStep(DexKit.C_ITEM_BUILDER_FAC));
-    }
-
-    public static FlashPicHook get() {
-        return self;
     }
 
     @Override

@@ -34,12 +34,7 @@ import nil.nadph.qnotified.util.Utils;
 //屏蔽聊天界面相机图标
 @FunctionEntry
 public class RemoveCameraButton extends CommonDelayableHook {
-    private static final RemoveCameraButton self = new RemoveCameraButton();
-
-
-    public static RemoveCameraButton get() {
-        return self;
-    }
+    public static final RemoveCameraButton INSTANCE = new RemoveCameraButton();
 
     private RemoveCameraButton() {
         super("kr_disable_camera_button");

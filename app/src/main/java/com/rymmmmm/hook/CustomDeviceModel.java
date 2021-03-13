@@ -34,11 +34,7 @@ import nil.nadph.qnotified.util.Utils;
 //自定义机型
 @FunctionEntry
 public class CustomDeviceModel extends CommonDelayableHook {
-    private static final CustomDeviceModel self = new CustomDeviceModel();
-
-    public static CustomDeviceModel get() {
-        return self;
-    }
+    public static final CustomDeviceModel INSTANCE = new CustomDeviceModel();
 
     protected CustomDeviceModel() {
         super("__NOT_USED__", SyncUtils.PROC_ANY);

@@ -37,11 +37,7 @@ import static nil.nadph.qnotified.util.ReflexUtil.iput_object;
 //去除群聊送礼物广告
 @FunctionEntry
 public class RemoveSendGiftAd extends CommonDelayableHook {
-    private static final RemoveSendGiftAd self = new RemoveSendGiftAd();
-
-    public static RemoveSendGiftAd get() {
-        return self;
-    }
+    public static final RemoveSendGiftAd INSTANCE = new RemoveSendGiftAd();
 
 
     public RemoveSendGiftAd() {

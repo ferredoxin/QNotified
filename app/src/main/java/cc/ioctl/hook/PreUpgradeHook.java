@@ -34,14 +34,10 @@ import static nil.nadph.qnotified.util.Utils.log;
 
 @FunctionEntry
 public class PreUpgradeHook extends CommonDelayableHook {
-    private static final PreUpgradeHook self = new PreUpgradeHook();
+    public static final PreUpgradeHook INSTANCE = new PreUpgradeHook();
 
     private PreUpgradeHook() {
         super("qh_pre_upgrade");
-    }
-
-    public static PreUpgradeHook get() {
-        return self;
     }
 
     @Override

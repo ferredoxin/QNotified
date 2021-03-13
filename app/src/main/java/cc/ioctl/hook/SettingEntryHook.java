@@ -28,11 +28,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
-import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.activity.EulaActivity;
 import nil.nadph.qnotified.activity.SettingsActivity;
@@ -54,15 +51,10 @@ import static nil.nadph.qnotified.util.Utils.log;
 
 @FunctionEntry
 public class SettingEntryHook extends CommonDelayableHook {
-    private static final SettingEntryHook self = new SettingEntryHook();
+    public static final SettingEntryHook INSTANCE = new SettingEntryHook();
 
     private SettingEntryHook() {
         super("__NOT_USED__", new DexDeobfStep(DexKit.C_DIALOG_UTIL));
-    }
-
-    @NonNull
-    public static SettingEntryHook get() {
-        return self;
     }
 
     @Override

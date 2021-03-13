@@ -221,12 +221,12 @@ public class MainHook {
             Utils.$access$set$sAppRuntimeInit(true);
         }
         injectLifecycleForProcess(ctx);
-        BaseDelayableHook.allowEarlyInit(RevokeMsgHook.get());
-        BaseDelayableHook.allowEarlyInit(MuteQZoneThumbsUp.get());
-        BaseDelayableHook.allowEarlyInit(MuteAtAllAndRedPacket.get());
-        BaseDelayableHook.allowEarlyInit(GagInfoDisclosure.get());
-        BaseDelayableHook.allowEarlyInit(CustomSplash.get());
-        BaseDelayableHook.allowEarlyInit(RemoveCameraButton.get());
+        BaseDelayableHook.allowEarlyInit(RevokeMsgHook.INSTANCE);
+        BaseDelayableHook.allowEarlyInit(MuteQZoneThumbsUp.INSTANCE);
+        BaseDelayableHook.allowEarlyInit(MuteAtAllAndRedPacket.INSTANCE);
+        BaseDelayableHook.allowEarlyInit(GagInfoDisclosure.INSTANCE);
+        BaseDelayableHook.allowEarlyInit(CustomSplash.INSTANCE);
+        BaseDelayableHook.allowEarlyInit(RemoveCameraButton.INSTANCE);
         BaseDelayableHook.allowEarlyInit(RemoveRedDot.INSTANCE);
         if (SyncUtils.isMainProcess()) {
             ConfigItems.removePreviousCacheIfNecessary();

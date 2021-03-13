@@ -37,11 +37,7 @@ import static nil.nadph.qnotified.util.ReflexUtil.iput_object;
 //去除小程序广告 需要手动点关闭
 @FunctionEntry
 public class RemoveMiniProgramAd extends CommonDelayableHook {
-    private static final RemoveMiniProgramAd self = new RemoveMiniProgramAd();
-
-    public static RemoveMiniProgramAd get() {
-        return self;
-    }
+    public static final RemoveMiniProgramAd INSTANCE = new RemoveMiniProgramAd();
 
     protected RemoveMiniProgramAd() {
         super("rq_remove_mini_program_ad", SyncUtils.PROC_ANY & ~(SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF | SyncUtils.PROC_QZONE

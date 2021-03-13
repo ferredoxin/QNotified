@@ -39,7 +39,7 @@ import nil.nadph.qnotified.util.Utils;
 //自定义启动图
 @FunctionEntry
 public class CustomSplash extends CommonDelayableHook {
-    private static final CustomSplash self = new CustomSplash();
+    public static final CustomSplash INSTANCE = new CustomSplash();
 
     private static final byte[] TRANSPARENT_PNG = new byte[]{
             (byte) 0x89, (byte) 0x50, (byte) 0x4E, (byte) 0x47, (byte) 0x0D, (byte) 0x0A, (byte) 0x1A, (byte) 0x0A,
@@ -51,10 +51,6 @@ public class CustomSplash extends CommonDelayableHook {
             (byte) 0x00, (byte) 0x05, (byte) 0x00, (byte) 0x01, (byte) 0xE2, (byte) 0x26, (byte) 0x05, (byte) 0x9B,
             (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x49, (byte) 0x45, (byte) 0x4E, (byte) 0x44,
             (byte) 0xAE, (byte) 0x42, (byte) 0x60, (byte) 0x82};
-
-    public static CustomSplash get() {
-        return self;
-    }
 
     protected CustomSplash() {
         super("__NOT_USED__");

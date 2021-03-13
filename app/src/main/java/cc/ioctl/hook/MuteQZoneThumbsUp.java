@@ -36,14 +36,10 @@ import static nil.nadph.qnotified.util.Utils.*;
 @FunctionEntry
 public class MuteQZoneThumbsUp extends CommonDelayableHook {
 
-    private static final MuteQZoneThumbsUp self = new MuteQZoneThumbsUp();
+    public static final MuteQZoneThumbsUp INSTANCE = new MuteQZoneThumbsUp();
 
     private MuteQZoneThumbsUp() {
         super("qn_mute_thumb_up", new DexDeobfStep(DexKit.C_QZONE_MSG_NOTIFY));
-    }
-
-    public static MuteQZoneThumbsUp get() {
-        return self;
     }
 
     protected int MSG_INFO_OFFSET = -1;

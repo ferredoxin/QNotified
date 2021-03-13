@@ -176,11 +176,7 @@ public class JumpController extends CommonDelayableHook {
         }
     }
 
-    private static final JumpController self = new JumpController();
-
-    public static JumpController get() {
-        return self;
-    }
+    public static final JumpController INSTANCE = new JumpController();
 
     protected JumpController() {
         super("qn_jmp_ctl_enable");

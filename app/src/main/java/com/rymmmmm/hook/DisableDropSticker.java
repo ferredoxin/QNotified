@@ -34,12 +34,7 @@ import nil.nadph.qnotified.util.Utils;
 //屏蔽掉落小表情
 @FunctionEntry
 public class DisableDropSticker extends CommonDelayableHook {
-    private static final DisableDropSticker self = new DisableDropSticker();
-    private boolean isInit = false;
-
-    public static DisableDropSticker get() {
-        return self;
-    }
+    public static final DisableDropSticker INSTANCE = new DisableDropSticker();
 
     protected DisableDropSticker() {
         super("rq_disable_drop_sticker");

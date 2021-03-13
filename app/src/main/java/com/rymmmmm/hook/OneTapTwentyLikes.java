@@ -39,11 +39,7 @@ import static nil.nadph.qnotified.util.Utils.log;
 //回赞界面一键20赞
 @FunctionEntry
 public class OneTapTwentyLikes extends CommonDelayableHook {
-    private static final OneTapTwentyLikes self = new OneTapTwentyLikes();
-
-    public static OneTapTwentyLikes get() {
-        return self;
-    }
+    public static final OneTapTwentyLikes INSTANCE = new OneTapTwentyLikes();
 
     protected OneTapTwentyLikes() {
         super("rq_one_tap_twenty_likes");

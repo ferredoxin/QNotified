@@ -36,11 +36,7 @@ import static nil.nadph.qnotified.util.Utils.log;
 //屏蔽所有进场特效
 @FunctionEntry
 public class DisableEnterEffect extends CommonDelayableHook {
-    private static final DisableEnterEffect self = new DisableEnterEffect();
-
-    public static DisableEnterEffect get() {
-        return self;
-    }
+    public static final DisableEnterEffect INSTANCE = new DisableEnterEffect();
 
     protected DisableEnterEffect() {
         super("rq_disable_enter_effect");

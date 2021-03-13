@@ -118,7 +118,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
         ll.addView(subtitle(this, "以下内容基本上都没用，它们为了修复故障才留在这里。"));
         ll.addView(subtitle(this, "测试"));
         ll.addView(newListItemHookSwitchInit(this, "堆栈转储", "没事别开", DebugDump.INSTANCE));
-        ll.addView(newListItemHookSwitchInit(this, "检查消息",  null, InspectMessage.get()));
+        ll.addView(newListItemHookSwitchInit(this, "检查消息",  null, InspectMessage.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "开启QQ日志", "前缀NAdump", EnableQLog.INSTANCE));
         ll.addView(newListItemButton(this, "强制重新生成日志历史记录", null, null, new View.OnClickListener() {
             final String LAST_TRACE_HASHCODE_CONFIG = "lastTraceHashcode";

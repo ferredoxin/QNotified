@@ -30,14 +30,10 @@ import static nil.nadph.qnotified.util.Utils.log;
 
 @FunctionEntry
 public class ScriptEventHook extends CommonDelayableHook {
-    private static final ScriptEventHook self = new ScriptEventHook();
+    public static final ScriptEventHook INSTANCE = new ScriptEventHook();
 
     private ScriptEventHook() {
         super("__NOT_USED__", SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF);
-    }
-
-    public static ScriptEventHook get() {
-        return self;
     }
 
     @Override

@@ -63,14 +63,10 @@ import static nil.nadph.qnotified.util.Utils.*;
 
 @FunctionEntry
 public class RepeaterHook extends CommonDelayableHook {
-    private static final RepeaterHook self = new RepeaterHook();
+    public static final RepeaterHook INSTANCE = new RepeaterHook();
 
     private RepeaterHook() {
         super("bug_repeater");
-    }
-
-    public static RepeaterHook get() {
-        return self;
     }
 
     @Override

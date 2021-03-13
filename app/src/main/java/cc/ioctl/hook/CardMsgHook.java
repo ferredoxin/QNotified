@@ -33,14 +33,10 @@ import nil.nadph.qnotified.util.DexKit;
 @FunctionEntry
 public class CardMsgHook extends CommonDelayableHook {
     public static final int R_ID_COPY_CODE = 0x00EE77CC;
-    private static final CardMsgHook self = new CardMsgHook();
+    public static final CardMsgHook INSTANCE = new CardMsgHook();
 
     private CardMsgHook() {
         super("qn_send_card_msg");
-    }
-
-    public static CardMsgHook get() {
-        return self;
     }
 
     @Override

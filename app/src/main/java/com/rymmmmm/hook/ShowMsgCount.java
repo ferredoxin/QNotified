@@ -21,8 +21,6 @@
  */
 package com.rymmmmm.hook;
 
-import androidx.annotation.NonNull;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
@@ -40,15 +38,10 @@ import static nil.nadph.qnotified.util.Utils.*;
 //显示具体消息数量
 @FunctionEntry
 public class ShowMsgCount extends CommonDelayableHook {
-    private static final ShowMsgCount self = new ShowMsgCount();
+    public static final ShowMsgCount INSTANCE = new ShowMsgCount();
 
     private ShowMsgCount() {
         super("rq_show_msg_count", SyncUtils.PROC_MAIN, new DexDeobfStep(DexKit.C_CustomWidgetUtil));
-    }
-
-    @NonNull
-    public static ShowMsgCount get() {
-        return self;
     }
 
     @Override

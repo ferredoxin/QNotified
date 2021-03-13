@@ -44,14 +44,10 @@ import static nil.nadph.qnotified.util.Utils.log;
 @FunctionEntry
 public class VasProfileAntiCrash extends CommonDelayableHook {
 
-    private static final VasProfileAntiCrash self = new VasProfileAntiCrash();
+    public static final VasProfileAntiCrash INSTANCE = new VasProfileAntiCrash();
 
     private VasProfileAntiCrash() {
         super("__NOT_USED__");
-    }
-
-    public static VasProfileAntiCrash get() {
-        return self;
     }
 
     @Override

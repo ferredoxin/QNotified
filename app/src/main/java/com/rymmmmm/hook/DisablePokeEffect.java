@@ -33,12 +33,8 @@ import nil.nadph.qnotified.util.LicenseStatus;
 
 //屏蔽戳一戳动画
 @FunctionEntry
-public class DisablePokeEffect extends CommonDelayableHook {;
-    private static final DisablePokeEffect self = new DisablePokeEffect();
-
-    public static DisablePokeEffect get() {
-        return self;
-    }
+public class DisablePokeEffect extends CommonDelayableHook {
+    public static final DisablePokeEffect INSTANCE = new DisablePokeEffect();
 
     public DisablePokeEffect() {
         super("rq_disable_poke_effect");

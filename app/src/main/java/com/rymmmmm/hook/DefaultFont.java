@@ -37,11 +37,7 @@ import nil.nadph.qnotified.util.Utils;
 //强制使用默认字体
 @FunctionEntry
 public class DefaultFont extends CommonDelayableHook {
-    private static final DefaultFont self = new DefaultFont();
-
-    public static DefaultFont get() {
-        return self;
-    }
+    public static final DefaultFont INSTANCE = new DefaultFont();
 
     protected DefaultFont() {
         super("rq_default_font");

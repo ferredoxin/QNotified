@@ -528,7 +528,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
     }
 
     public void setRedDot() {
-        WeakReference redDotRef = DelDetectorHook.get().redDotRef;
+        WeakReference redDotRef = DelDetectorHook.INSTANCE.redDotRef;
         if (redDotRef == null) return;
         final TextView rd = (TextView) redDotRef.get();
         if (rd == null) {

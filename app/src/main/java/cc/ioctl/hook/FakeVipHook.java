@@ -36,14 +36,10 @@ import static nil.nadph.qnotified.util.Utils.log;
 @FunctionEntry
 public class FakeVipHook extends CommonDelayableHook {
 
-    private static final FakeVipHook self = new FakeVipHook();
+    public static final FakeVipHook INSTANCE = new FakeVipHook();
 
     private FakeVipHook() {
         super("__NOT_USED__", new DexDeobfStep(DexKit.C_VIP_UTILS));
-    }
-
-    public static FakeVipHook get() {
-        return self;
     }
 
     @Override

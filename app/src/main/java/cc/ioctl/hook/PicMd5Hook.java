@@ -47,14 +47,10 @@ import static nil.nadph.qnotified.util.Utils.*;
 
 @FunctionEntry
 public class PicMd5Hook extends CommonDelayableHook {
-    private static final PicMd5Hook self = new PicMd5Hook();
+    public static final PicMd5Hook INSTANCE = new PicMd5Hook();
 
     PicMd5Hook() {
         super("qn_show_pic_md5");
-    }
-
-    public static PicMd5Hook get() {
-        return self;
     }
 
     @Override
@@ -95,7 +91,7 @@ public class PicMd5Hook extends CommonDelayableHook {
         @Override
         protected void afterHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
             if (LicenseStatus.sDisableCommonHooks) return;
-            if (!PicMd5Hook.get().isEnabled()) return;
+            if (!INSTANCE.isEnabled()) return;
             Object arr = param.getResult();
             Class<?> clQQCustomMenuItem = arr.getClass().getComponentType();
             Object item_copy = CustomMenu.createItem(clQQCustomMenuItem, R.id.item_showPicMd5, "MD5");

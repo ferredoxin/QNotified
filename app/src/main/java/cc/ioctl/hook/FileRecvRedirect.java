@@ -36,23 +36,18 @@ import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.DexKit;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import static nil.nadph.qnotified.util.Utils.log;
 
 @FunctionEntry
 public class FileRecvRedirect extends BaseDelayableHook {
-    private static final FileRecvRedirect self = new FileRecvRedirect();
+    public static final FileRecvRedirect INSTANCE = new FileRecvRedirect();
     private boolean inited = false;
 
     private Field TARGET_FIELD = null;
 
     FileRecvRedirect() {
-    }
-
-    public static FileRecvRedirect get() {
-        return self;
     }
 
     @Override

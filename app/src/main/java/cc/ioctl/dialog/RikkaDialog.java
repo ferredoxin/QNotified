@@ -169,11 +169,11 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
 
     private RikkaConfigItem[] queryRikkaHooks() {
         return new RikkaConfigItem[]{
-                RikkaConfigItem.create(this, "显示具体消息数量", ShowMsgCount.get()),
+                RikkaConfigItem.create(this, "显示具体消息数量", ShowMsgCount.INSTANCE),
                 new RikkaBaseApkFormatDialog(this),
-                RikkaConfigItem.create(this, "回赞界面一键20赞", OneTapTwentyLikes.get()),
+                RikkaConfigItem.create(this, "回赞界面一键20赞", OneTapTwentyLikes.INSTANCE),
                 new RikkaCustomMsgTimeFormatDialog(this),
-                RikkaConfigItem.create(this, "免广告送免费礼物[仅限群聊送礼物]", RemoveSendGiftAd.get()),
+                RikkaConfigItem.create(this, "免广告送免费礼物[仅限群聊送礼物]", RemoveSendGiftAd.INSTANCE),
                 new RikkaCustomDeviceModelDialog(this),
                 new RikkaCustomSplash(this),
                 new RikkaColorPickDialog(this),

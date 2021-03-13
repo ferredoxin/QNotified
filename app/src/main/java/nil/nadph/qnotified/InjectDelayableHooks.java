@@ -159,7 +159,7 @@ public class InjectDelayableHooks {
                 }
             }
         } else {
-            SettingEntryHook.get().init();
+            SettingEntryHook.INSTANCE.init();
         }
         if (ctx != null && main[0] != null) {
             System.gc();

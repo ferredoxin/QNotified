@@ -35,11 +35,7 @@ import nil.nadph.qnotified.util.Utils;
 //屏蔽群聊炫彩昵称
 @FunctionEntry
 public class DisableColorNickName extends CommonDelayableHook {
-    private static final DisableColorNickName self = new DisableColorNickName();
-
-    public static DisableColorNickName get() {
-        return self;
-    }
+    public static final DisableColorNickName INSTANCE = new DisableColorNickName();
 
     protected DisableColorNickName() {
         super("rq_disable_color_nick_name");
