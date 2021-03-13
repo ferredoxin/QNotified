@@ -25,6 +25,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".activity.ConfigActivity"
+            android:icon="@drawable/icon"
+            android:label="@string/app_name" />
+
         <activity-alias
             android:name=".activity.ConfigV2ActivityAlias"
             android:icon="@drawable/icon"
