@@ -23,6 +23,7 @@ package me.kyuubiran.dialog
 
 import android.app.AlertDialog
 import android.content.Context
+import android.graphics.Color
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.ViewGroup
@@ -44,7 +45,9 @@ import java.util.regex.Pattern
 
 object AutoRenewFireDialog {
     private var currentEnable: Boolean? = null
-    var replyMsg: String = getExFriendCfg().getStringOrDefault(AutoRenewFireMgr.MESSAGE, "[续火]")
+    private val allowMsg = arrayListOf("早安", "早", "晚安", "安", "续火", "🔥")
+
+    var replyMsg: String = getExFriendCfg().getStringOrDefault(AutoRenewFireMgr.MESSAGE, "续火")
     var replyTime: String = getExFriendCfg().getStringOrDefault(AutoRenewFireMgr.TIMEPRESET, "")
 
     fun showMainDialog(context: Context) {
@@ -63,7 +66,7 @@ object AutoRenewFireDialog {
                 Unit
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (LicenseStatus.isInsider()) replyMsg = s.toString()
+                replyMsg = s.toString()
             }
 
             override fun afterTextChanged(s: Editable?) =
@@ -104,8 +107,12 @@ object AutoRenewFireDialog {
         val params = ViewBuilder.newLinearLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, _5 * 2)
         val linearLayout = LinearLayout(ctx)
         linearLayout.orientation = LinearLayout.VERTICAL
-        linearLayout.addView(ViewBuilder.subtitle(context,
-            "说明:启用后将会在每天预设时间之后给对方发一条消息。\n此处开关为总开关，请单独在好友的设置页面打开自动续火开关。\n无论你是否给TA发过消息，本功能都会发送续火消息。\n如果你在续火消息发送前添加了好友，那么之后将会发送给这个好友。\n如果今天已经发送过续火消息了，则再添加好友并不会发送续火消息。"))
+        linearLayout.addView(
+            ViewBuilder.subtitle(
+                context, "说明:启用后将会在每天预设时间之后给对方发一条消息。\n此处开关为总开关，请单独在好友的设置页面打开自动续火开关。\n无论你是否给TA发过消息，本功能都会发送续火消息。\n如果你在续火消息发送前添加了好友，那么之后将会发送给这个好友。\n如果今天已经发送过续火消息了，则再添加好友并不会发送续火消息。"
+            )
+        )
+        linearLayout.addView(ViewBuilder.subtitle(context, "允许的续火消息:${allowMsg.joinToString(",")}", Color.RED))
         linearLayout.addView(checkBox, params)
         linearLayout.addView(msgEditText, params)
         linearLayout.addView(timeEditText, params)
@@ -126,13 +133,16 @@ object AutoRenewFireDialog {
             if (replyMsg == "") {
                 Toasts.showToast(context, Utils.TOAST_TYPE_ERROR, "请输入自动续火内容", Toast.LENGTH_SHORT)
             } else {
-                if (stringTimeValidator(replyTime)) {
+                if (stringTimeValidator(replyTime) && msgValidator(replyMsg)) {
                     save()
                     Toasts.showToast(context, Utils.TOAST_TYPE_INFO, "设置已保存", Toast.LENGTH_SHORT)
                     alertDialog.cancel()
-                } else {
+                } else if (!stringTimeValidator(replyTime)) {
                     replyTime = ""
-                    Toasts.showToast(context, Utils.TOAST_TYPE_ERROR, " 时间格式错误", Toast.LENGTH_SHORT)
+                    Toasts.showToast(context, Utils.TOAST_TYPE_ERROR, "时间格式错误", Toast.LENGTH_SHORT)
+                } else {
+                    replyMsg = "续火"
+                    Toasts.showToast(context, Utils.TOAST_TYPE_ERROR, "非允许的续火消息", Toast.LENGTH_SHORT)
                 }
             }
         }
@@ -202,5 +212,14 @@ object AutoRenewFireDialog {
             return true
         }
         return false
+    }
+
+    private fun msgValidator(msg: String): Boolean {
+        if (!LicenseStatus.isInsider()) {
+            if (msg !in allowMsg) {
+                return false
+            }
+        }
+        return true
     }
 }
