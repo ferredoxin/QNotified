@@ -41,14 +41,10 @@ import static nil.nadph.qnotified.util.Utils.log;
 
 @FunctionEntry
 public class FavMoreEmo extends CommonDelayableHook {
-    private static final FavMoreEmo self = new FavMoreEmo();
+    public static final FavMoreEmo INSTANCE = new FavMoreEmo();
 
     FavMoreEmo() {
         super("qqhelper_fav_more_emo", new DexDeobfStep(DexKit.C_FAV_EMO_CONST));
-    }
-
-    public static FavMoreEmo get() {
-        return self;
     }
 
     @Override

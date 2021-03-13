@@ -153,23 +153,23 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         mRikkaDesc = _tmp_vg.findViewById(R_ID_DESCRIPTION);
         ll.addView(_tmp_vg);
         ll.addView(newListItemButton(this, "QQ净化[WIP]", "开发中...", null, clickToProxyActAction(me.zpp0196.qqpurify.activity.MainActivity.class)));
-        ll.addView(newListItemHookSwitchInit(this, "语音转发", "长按语音消息", PttForwardHook.get()));
-        ll.addView(newListItemHookSwitchInit(this, " +1", "不是复读机", RepeaterHook.get()));
+        ll.addView(newListItemHookSwitchInit(this, "语音转发", "长按语音消息", PttForwardHook.INSTANCE));
+        ll.addView(newListItemHookSwitchInit(this, " +1", "不是复读机", RepeaterHook.INSTANCE));
         ll.addView(newListItemButton(this, "自定义+1图标", null, null, RepeaterIconSettingDialog.OnClickListener_createDialog(this)));
         ll.addView(subtitle(this, "净化设置"));
-        ll.addView(newListItemConfigSwitchIfValid(this, "禁止回复自动@", "去除回复消息时自动@特性", ReplyNoAtHook.get()));
-        ll.addView(newListItemHookSwitchInit(this, "禁用$打开送礼界面", "禁止聊天时输入$自动弹出[选择赠送对象]窗口", $endGiftHook.get()));
+        ll.addView(newListItemConfigSwitchIfValid(this, "禁止回复自动@", "去除回复消息时自动@特性", ReplyNoAtHook.INSTANCE));
+        ll.addView(newListItemHookSwitchInit(this, "禁用$打开送礼界面", "禁止聊天时输入$自动弹出[选择赠送对象]窗口", $endGiftHook.INSTANCE));
         ll.addView(subtitle(this, "消息通知设置(不影响接收消息)屏蔽后可能仍有[橙字],但通知栏不会有通知,赞说说不提醒仅屏蔽通知栏的通知"));
         ll.addView(subtitle(this, "    注:屏蔽后可能仍有[橙字],但不会有通知"));
-        ll.addView(newListItemHookSwitchInit(this, "被赞说说不提醒", "不影响评论,转发或击掌的通知", MuteQZoneThumbsUp.get()));
-        ll.addView(newListItemHookSwitchInit(this, "转发消息点头像查看详细信息", "仅限合并转发的消息", MultiForwardAvatarHook.get()));
+        ll.addView(newListItemHookSwitchInit(this, "被赞说说不提醒", "不影响评论,转发或击掌的通知", MuteQZoneThumbsUp.INSTANCE));
+        ll.addView(newListItemHookSwitchInit(this, "转发消息点头像查看详细信息", "仅限合并转发的消息", MultiForwardAvatarHook.INSTANCE));
         if (!HostInformationProviderKt.getHostInfo().isTim()) {
             ll.addView(subtitle(this, "图片相关"));
-            ll.addView(newListItemHookSwitchInit(this, "禁止秀图自动展示", null, ShowPicGagHook.get()));
-            ll.addView(newListItemHookSwitchInit(this, "禁用夜间模式遮罩", "移除夜间模式下聊天界面的深色遮罩", DarkOverlayHook.get()));
+            ll.addView(newListItemHookSwitchInit(this, "禁止秀图自动展示", null, ShowPicGagHook.INSTANCE));
+            ll.addView(newListItemHookSwitchInit(this, "禁用夜间模式遮罩", "移除夜间模式下聊天界面的深色遮罩", DarkOverlayHook.INSTANCE));
         }
         ll.addView(newListItemButton(this, "辅助功能", null, null, clickToProxyActAction(AuxFuncActivity.class)));
-        ll.addView(newListItemHookSwitchInit(this, "显示设置禁言的管理", "即使你只是普通群成员", GagInfoDisclosure.get()));
+        ll.addView(newListItemHookSwitchInit(this, "显示设置禁言的管理", "即使你只是普通群成员", GagInfoDisclosure.INSTANCE));
         addViewConditionally(ll, this, "小程序分享转链接（发送）", "感谢Alcatraz323开发远离小程序,神经元移植到Xposed", NoApplet.INSTANCE);
         ll.addView(subtitle(this, "实验性功能(未必有效)"));
         ll.addView(_t = newListItemButton(this, "下载重定向", "N/A", "N/A", this::onFileRecvRedirectClick));
@@ -177,14 +177,14 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         __recv_desc = _t.findViewById(R_ID_DESCRIPTION);
         __recv_status = _t.findViewById(R_ID_VALUE);
         ll.addView(newListItemButton(this, "添加账号", "需要手动登录, 核心代码由 JamGmilk 提供", null, this::onAddAccountClick));
-        ll.addView(newListItemHookSwitchInit(this, "屏蔽小程序广告", "需要手动关闭广告, 请勿反馈此功能无效", RemoveMiniProgramAd.get()));
+        ll.addView(newListItemHookSwitchInit(this, "屏蔽小程序广告", "需要手动关闭广告, 请勿反馈此功能无效", RemoveMiniProgramAd.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "昵称/群名字打码", "娱乐功能 不进行维护", AutoMosaicName.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "自己的消息和头像居左显示", "娱乐功能 不进行维护", ShowSelfMsgByLeft.INSTANCE));
-        ll.addView(newListItemConfigSwitchIfValid(this, "收藏更多表情", "[暂不支持>=8.2.0]保存在本地", FavMoreEmo.get()));
-        ll.addView(newListItemHookSwitchInit(this, "屏蔽更新提醒", null, PreUpgradeHook.get()));
+        ll.addView(newListItemConfigSwitchIfValid(this, "收藏更多表情", "[暂不支持>=8.2.0]保存在本地", FavMoreEmo.INSTANCE));
+        ll.addView(newListItemHookSwitchInit(this, "屏蔽更新提醒", null, PreUpgradeHook.INSTANCE));
         if (!HostInformationProviderKt.getHostInfo().isTim()) {
-            ll.addView(newListItemHookSwitchInit(this, "自定义猜拳骰子", null, CheatHook.get()));
-            ll.addView(newListItemHookSwitchInit(this, "简洁模式圆头像", "From Rikka", RoundAvatarHook.get()));
+            ll.addView(newListItemHookSwitchInit(this, "自定义猜拳骰子", null, CheatHook.INSTANCE));
+            ll.addView(newListItemHookSwitchInit(this, "简洁模式圆头像", "From Rikka", RoundAvatarHook.INSTANCE));
         }
         ll.addView(newListItemSwitchConfigNext(this, "新版简洁模式圆头像", "From Rikka, 支持8.3.6及更高，重启后生效", NewRoundHead.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "强制使用系统相机", "仅能录像，支持8.3.6及更高", ForceSystemCamera.INSTANCE));
@@ -349,7 +349,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         ConfigManager cfg = ConfigManager.getDefaultConfig();//改这里的话可能会引发其他问题，所以只把红包和全体改了
         rgbEnabled = cfg.getBooleanOrFalse(qn_enable_fancy_rgb);
         if (__tv_fake_bat_status != null) {
-            FakeBatteryHook bat = FakeBatteryHook.get();
+            FakeBatteryHook bat = FakeBatteryHook.INSTANCE;
             if (bat.isEnabled()) {
                 int cap = bat.getFakeBatteryCapacity();
                 boolean c = bat.isFakeBatteryCharging();
@@ -360,7 +360,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         }
         updateRecvRedirectStatus();
         if (__jmp_ctl_cnt != null) {
-            int cnt = JumpController.get().getEffectiveRulesCount();
+            int cnt = JumpController.INSTANCE.getEffectiveRulesCount();
             if (cnt == -1) {
                 __jmp_ctl_cnt.setText("[禁用]");
             } else {
@@ -435,11 +435,11 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
 
     public void onFileRecvRedirectClick(View v) {
         if (v.getId() == R_ID_BTN_FILE_RECV) {
-            if (FileRecvRedirect.get().checkPreconditions()) {
+            if (FileRecvRedirect.INSTANCE.checkPreconditions()) {
                 showChangeRecvPathDialog();
             } else {
                 new Thread(() -> {
-                    doSetupForPrecondition(SettingsActivity.this, FileRecvRedirect.get());
+                    doSetupForPrecondition(SettingsActivity.this, FileRecvRedirect.INSTANCE);
                     runOnUiThread(this::showChangeRecvPathDialog);
                 }).start();
             }
@@ -506,7 +506,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
 
 
     private void showChangeRecvPathDialog() {
-        FileRecvRedirect recv = FileRecvRedirect.get();
+        FileRecvRedirect recv = FileRecvRedirect.INSTANCE;
         String currPath = recv.getRedirectPath();
         if (currPath == null) currPath = recv.getDefaultPath();
         CustomDialog dialog = CustomDialog.createFailsafe(this);
@@ -563,7 +563,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
     }
 
     private void updateRecvRedirectStatus() {
-        FileRecvRedirect recv = FileRecvRedirect.get();
+        FileRecvRedirect recv = FileRecvRedirect.INSTANCE;
         if (recv.isEnabled()) {
             __recv_status.setText("[已启用]");
             __recv_desc.setText(recv.getRedirectPath());

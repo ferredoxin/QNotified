@@ -109,7 +109,7 @@ public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
     @Override
     protected void onResume() {
         super.onResume();
-        String text = ChatTailHook.get().isEnabled() ? ChatTailHook.get().getTailCapacity().replace("\n", "") : null;
+        String text = ChatTailHook.INSTANCE.isEnabled() ? ChatTailHook.INSTANCE.getTailCapacity().replace("\n", "") : null;
         if (text != null && text.length() > 3) {
             // 避免过长影响美观
             text = "..." + text.substring(text.length() - 3);

@@ -23,8 +23,6 @@ package com.rymmmmm.hook;
 
 import android.content.Intent;
 
-import androidx.annotation.NonNull;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -45,15 +43,10 @@ import static nil.nadph.qnotified.util.Utils.loge;
 //屏蔽Diy卡片
 @FunctionEntry
 public class IgnoreDiyCard extends CommonDelayableHook {
-    private static final IgnoreDiyCard self = new IgnoreDiyCard();
+    public static final IgnoreDiyCard INSTANCE = new IgnoreDiyCard();
 
     private IgnoreDiyCard() {
         super("rq_ignore_diy_card");
-    }
-
-    @NonNull
-    public static IgnoreDiyCard get() {
-        return self;
     }
 
     @Override

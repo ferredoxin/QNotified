@@ -37,14 +37,10 @@ import static nil.nadph.qnotified.util.Utils.log;
 
 @FunctionEntry
 public class RoundAvatarHook extends CommonDelayableHook {
-    private static final RoundAvatarHook self = new RoundAvatarHook();
+    public static final RoundAvatarHook INSTANCE = new RoundAvatarHook();
 
     RoundAvatarHook() {
         super("qn_round_avatar", new DexDeobfStep(DexKit.C_SIMPLE_UI_UTIL));
-    }
-
-    public static RoundAvatarHook get() {
-        return self;
     }
 
     @Override

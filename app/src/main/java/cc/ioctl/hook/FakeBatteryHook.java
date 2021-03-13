@@ -55,7 +55,7 @@ public class FakeBatteryHook extends CommonDelayableHook implements InvocationHa
     private static final String ACTION_UPDATE_BATTERY_STATUS = "nil.nadph.qnotified.ACTION_UPDATE_BATTERY_STATUS";
     private static final String _FLAG_MANUAL_CALL = "flag_manual_call";
     private static final Collection<Long> sLockedThreadsId = Collections.synchronizedCollection(new HashSet<Long>());
-    private static final FakeBatteryHook self = new FakeBatteryHook();
+    public static final FakeBatteryHook INSTANCE = new FakeBatteryHook();
     private WeakReference<BroadcastReceiver> mBatteryLevelRecvRef = null;
     private WeakReference<BroadcastReceiver> mBatteryStatusRecvRef = null;
     private Object origRegistrar = null;
@@ -65,10 +65,6 @@ public class FakeBatteryHook extends CommonDelayableHook implements InvocationHa
 
     FakeBatteryHook() {
         super(qn_fake_bat_enable, SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF);
-    }
-
-    public static FakeBatteryHook get() {
-        return self;
     }
 
     @Override

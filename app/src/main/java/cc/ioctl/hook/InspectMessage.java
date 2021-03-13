@@ -47,16 +47,12 @@ import static nil.nadph.qnotified.util.Utils.*;
 
 @FunctionEntry
 public class InspectMessage extends CommonDelayableHook implements View.OnLongClickListener {
-    private static final InspectMessage self = new InspectMessage();
+    public static final InspectMessage INSTANCE = new InspectMessage();
     static Field f_panel;
     boolean bInspectMode = false;
 
     private InspectMessage() {
         super("qn_inspect_msg", new DexDeobfStep(DexKit.C_AIO_UTILS));
-    }
-
-    public static InspectMessage get() {
-        return self;
     }
 
     @Override

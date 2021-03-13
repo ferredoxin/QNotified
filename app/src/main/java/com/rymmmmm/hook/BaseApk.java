@@ -45,11 +45,7 @@ import static nil.nadph.qnotified.util.Utils.log;
 //重命名base.apk
 @FunctionEntry
 public class BaseApk extends CommonDelayableHook {
-    private static final BaseApk self = new BaseApk();
-
-    public static BaseApk get() {
-        return self;
-    }
+    public static final BaseApk INSTANCE = new BaseApk();
 
     protected BaseApk() {
         super("__NOT_USED__");

@@ -133,7 +133,7 @@ public class RikkaCustomSplash extends RikkaDialog.RikkaConfigItem {
                 dialog.dismiss();
                 invalidateStatus();
                 if (enableSplash) {
-                    CustomMsgTimeFormat hook = CustomMsgTimeFormat.get();
+                    CustomMsgTimeFormat hook = CustomMsgTimeFormat.INSTANCE;
                     if (!hook.isInited()) hook.init();
                 }
             }

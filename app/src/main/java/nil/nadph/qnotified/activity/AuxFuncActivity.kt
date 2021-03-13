@@ -49,7 +49,7 @@ class AuxFuncActivity : IphoneTitleBarActivityCompat() {
 
         ll.addView(newListItemHookSwitchInit(this, "拦截异常zip", null, InterceptZipBomb.INSTANCE))
         ll.addView(newListItemHookSwitchInit(this, "拦截异常体积图片加载", null, BlockFluxThief.INSTANCE))
-        ll.addView(newListItemHookSwitchInit(this, "显示图片MD5", "长按图片消息点击MD5", PicMd5Hook.get()))
+        ll.addView(newListItemHookSwitchInit(this, "显示图片MD5", "长按图片消息点击MD5", PicMd5Hook.INSTANCE))
 
         setContentBackgroundDrawable(ResUtils.skin_background)
         title = "辅助功能"

@@ -85,7 +85,7 @@ public class OmegaTestFuncActivity extends IphoneTitleBarActivityCompat {
         });
         ll.addView(autoRenewFire);
         ll.addView(newListItemHookSwitchInit(this, "复制卡片消息", "", CopyCardMsg.INSTANCE));
-        ll.addView(newListItemHookSwitchInit(this, "发送卡片消息", "ArkAppMsg(json)+StructMsg(xml)", CardMsgHook.get()));
+        ll.addView(newListItemHookSwitchInit(this, "发送卡片消息", "ArkAppMsg(json)+StructMsg(xml)", CardMsgHook.INSTANCE));
         ll.addView(subtitle(this, "卡片消息使用说明:先输入卡片代码(聊天界面),后长按发送按钮\n勿滥用此功能! 频繁使用此功能被举报可能封号"));
         ll.addView(newListItemButton(this, "群发文本消息" + (LicenseStatus.isAsserted() ? "" : "（仅限五个字以内）"),
             "年少不知号贵-理性使用以免永冻", null, clickToBatchMsg()));

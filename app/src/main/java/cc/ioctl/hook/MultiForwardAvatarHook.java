@@ -50,15 +50,11 @@ import static nil.nadph.qnotified.util.Utils.*;
 @FunctionEntry
 public class MultiForwardAvatarHook extends CommonDelayableHook {
 
-    private static final MultiForwardAvatarHook self = new MultiForwardAvatarHook();
+    public static final MultiForwardAvatarHook INSTANCE = new MultiForwardAvatarHook();
     private static Field mLeftCheckBoxVisible = null;
 
     private MultiForwardAvatarHook() {
         super("qn_multi_forward_avatar_profile", new DexDeobfStep(DexKit.C_AIO_UTILS)/*, new FindAvatarLongClickListener()*/);
-    }
-
-    public static MultiForwardAvatarHook get() {
-        return self;
     }
 
     /**

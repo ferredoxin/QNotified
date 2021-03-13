@@ -58,7 +58,6 @@ import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import me.singleneuron.util.QQVersion;
 import mqq.app.AppRuntime;
 import nil.nadph.qnotified.BuildConfig;
-import nil.nadph.qnotified.ui.ResUtils;
 
 import static me.singleneuron.util.KotlinUtilsKt.readFromBufferedReader;
 import static nil.nadph.qnotified.util.Initiator.load;
@@ -143,9 +142,9 @@ public class Utils {
             return getManager(troopMgrId);
         } else {
             // 8.4.8 or earlier
-            Object mTroopManager = invoke_virtual(getQQAppInterface(), "getManager", 51, int.class);
+            Object mTroopManager = getManager(51);
             if (!mTroopManager.getClass().getName().contains("TroopManager")) {
-                mTroopManager = invoke_virtual(getQQAppInterface(), "getManager", 52, int.class);
+                mTroopManager = getManager(52);
             }
             return mTroopManager;
         }
@@ -311,16 +310,9 @@ public class Utils {
             try {
                 return invoke_virtual(appInterface, "a", type, int.class, cl_bh);
             } catch (NoSuchMethodException e) {
-                try {
-                    Method m = appInterface.getClass().getMethod("getBusinessHandler", int.class);
-                    m.setAccessible(true);
-                    return m.invoke(appInterface, type);
-                } catch (Exception e2) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        e.addSuppressed(e2);
-                    }
-                }
-                throw e;
+                Method m = appInterface.getClass().getMethod("getBusinessHandler", int.class);
+                m.setAccessible(true);
+                return m.invoke(appInterface, type);
             }
         } catch (Exception e) {
             log(e);
@@ -586,10 +578,6 @@ public class Utils {
     public static int px2sp(Context context, float pxValue) {
         float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
         return (int) (pxValue / fontScale + 0.5f);
-    }
-
-    public static InputStream toInputStream(String name) {
-        return ResUtils.openAsset(name);
     }
 
     public static void copy(File s, File f) throws Exception {

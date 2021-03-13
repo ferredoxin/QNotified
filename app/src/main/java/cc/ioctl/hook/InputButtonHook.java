@@ -62,15 +62,11 @@ import static nil.nadph.qnotified.util.Utils.*;
 @FunctionEntry
 public class InputButtonHook extends CommonDelayableHook {
     public static final int R_ID_COPY_CODE = 0x00EE77CC;
-    private static final InputButtonHook self = new InputButtonHook();
+    public static final InputButtonHook INSTANCE = new InputButtonHook();
 
     private InputButtonHook() {
         super("__NOT_USED__", new DexDeobfStep(DexKit.C_ARK_APP_ITEM_BUBBLE_BUILDER), new DexDeobfStep(DexKit.C_FACADE),
             new DexDeobfStep(DexKit.C_TEST_STRUCT_MSG), new DexDeobfStep(DexKit.N_BASE_CHAT_PIE__INIT));
-    }
-
-    public static InputButtonHook get() {
-        return self;
     }
 
     @Override
@@ -106,7 +102,7 @@ public class InputButtonHook extends CommonDelayableHook {
                             layout.setTouchInterceptor(new TouchEventToLongClickAdapter() {
                                 @Override
                                 public boolean onTouch(View v, MotionEvent event) {
-                                    if (!CardMsgHook.get().isEnabled())
+                                    if (!CardMsgHook.INSTANCE.isEnabled())
                                         return false;
                                     ViewGroup vg = (ViewGroup) v;
                                     if (event.getAction() == MotionEvent.ACTION_DOWN &&
@@ -120,7 +116,7 @@ public class InputButtonHook extends CommonDelayableHook {
                                 public boolean onLongClick(View v) {
                                     try {
                                         if (LicenseStatus.sDisableCommonHooks) return false;
-                                        if (!CardMsgHook.get().isEnabled())
+                                        if (!CardMsgHook.INSTANCE.isEnabled())
                                             return false;
                                         ViewGroup vg = (ViewGroup) v;
                                         Context ctx = v.getContext();
@@ -146,7 +142,7 @@ public class InputButtonHook extends CommonDelayableHook {
                                 Context ctx = v.getContext();
                                 EditText input = aioRootView.findViewById(ctx.getResources().getIdentifier("input", "id", ctx.getPackageName()));
                                 String text = input.getText().toString();
-                                if (((TextView) v).length() == 0 || !CardMsgHook.get().isEnabled()) {
+                                if (((TextView) v).length() == 0 || !CardMsgHook.INSTANCE.isEnabled()) {
                                     return false;
                                 } else if (text.contains("<?xml") || text.contains("{\"")) {
                                     new Thread(() -> {
@@ -184,10 +180,10 @@ public class InputButtonHook extends CommonDelayableHook {
                                         }
                                     }).start();
                                 } else {
-                                    if (!ChatTailHook.get().isEnabled()) return false;
-                                    if (!Utils.isNullOrEmpty(ChatTailHook.get().getTailCapacity())) {
-                                        int battery = FakeBatteryHook.get().isEnabled() ? FakeBatteryHook.get().getFakeBatteryStatus() < 1 ? ChatTailActivity.getBattery() : FakeBatteryHook.get().getFakeBatteryCapacity() : ChatTailActivity.getBattery();
-                                        String tc = ChatTailHook.get().getTailCapacity().
+                                    if (!ChatTailHook.INSTANCE.isEnabled()) return false;
+                                    if (!Utils.isNullOrEmpty(ChatTailHook.INSTANCE.getTailCapacity())) {
+                                        int battery = FakeBatteryHook.INSTANCE.isEnabled() ? FakeBatteryHook.INSTANCE.getFakeBatteryStatus() < 1 ? ChatTailActivity.getBattery() : FakeBatteryHook.INSTANCE.getFakeBatteryCapacity() : ChatTailActivity.getBattery();
+                                        String tc = ChatTailHook.INSTANCE.getTailCapacity().
                                                 replace(ChatTailActivity.delimiter, input.getText())
                                                 .replace("#model#", Build.MODEL)
                                                 .replace("#brand#", Build.BRAND)

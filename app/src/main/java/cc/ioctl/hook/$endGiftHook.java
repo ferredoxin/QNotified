@@ -39,14 +39,10 @@ import static nil.nadph.qnotified.util.Utils.log;
 
 @FunctionEntry
 public class $endGiftHook extends CommonDelayableHook {
-    private static final $endGiftHook self = new $endGiftHook();
+    public static final $endGiftHook INSTANCE = new $endGiftHook();
 
     private $endGiftHook() {
         super("qn_disable_$end_gift", SyncUtils.PROC_MAIN, new DexDeobfStep(DexKit.C_TROOP_GIFT_UTIL));
-    }
-
-    public static $endGiftHook get() {
-        return self;
     }
 
     @Override

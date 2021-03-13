@@ -37,11 +37,7 @@ import nil.nadph.qnotified.util.Utils;
 //移除消息列表顶栏横幅广告
 @FunctionEntry
 public class RemoveQbossAD extends CommonDelayableHook {
-    private static final RemoveQbossAD self = new RemoveQbossAD();
-
-    public static RemoveQbossAD get() {
-        return self;
-    }
+    public static final RemoveQbossAD INSTANCE = new RemoveQbossAD();
 
     private RemoveQbossAD() {
         super("kr_remove_qboss_ad");

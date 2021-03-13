@@ -39,14 +39,10 @@ import static nil.nadph.qnotified.util.Utils.log;
 @FunctionEntry
 public class ShowPicGagHook extends CommonDelayableHook {
 
-    private static final ShowPicGagHook self = new ShowPicGagHook();
+    public static final ShowPicGagHook INSTANCE = new ShowPicGagHook();
 
     private ShowPicGagHook() {
         super("qn_gag_show_pic");
-    }
-
-    public static ShowPicGagHook get() {
-        return self;
     }
 
     @Override

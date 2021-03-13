@@ -153,7 +153,7 @@ public class RikkaCustomMsgTimeFormatDialog extends RikkaDialog.RikkaConfigItem 
                     dialog.dismiss();
                     invalidateStatus();
                     if (enableMsgTimeFormat) {
-                        CustomMsgTimeFormat hook = CustomMsgTimeFormat.get();
+                        CustomMsgTimeFormat hook = CustomMsgTimeFormat.INSTANCE;
                         if (!hook.isInited()) hook.init();
                     }
                 }

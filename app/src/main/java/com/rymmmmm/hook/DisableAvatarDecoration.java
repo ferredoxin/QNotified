@@ -36,12 +36,7 @@ import nil.nadph.qnotified.util.Utils;
 //屏蔽头像挂件
 @FunctionEntry
 public class DisableAvatarDecoration extends CommonDelayableHook {
-    private static final DisableAvatarDecoration self = new DisableAvatarDecoration();
-
-
-    public static DisableAvatarDecoration get() {
-        return self;
-    }
+    public static final DisableAvatarDecoration INSTANCE = new DisableAvatarDecoration();
 
     protected DisableAvatarDecoration() {
         super("rq_disable_avatar_decoration");

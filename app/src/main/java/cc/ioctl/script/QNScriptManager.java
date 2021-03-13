@@ -32,6 +32,7 @@ import bsh.Interpreter;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
@@ -185,7 +186,7 @@ public class QNScriptManager {
         // 返回全部脚本代码
         List<String> codes = new ArrayList<String>() {{
             try {
-                add(Utils.readByReader(new InputStreamReader(Utils.toInputStream("demo.java"))));
+                add(Utils.readByReader(new InputStreamReader(ResUtils.openAsset("demo.java"))));
             } catch (IOException e) {
                 log(e);
             }

@@ -124,7 +124,7 @@ public class EulaActivity extends IphoneTitleBarActivityCompat implements View.O
             iHaveRead.setTextColor(ResUtils.skin_black);
             iHaveRead.setButtonDrawable(ResUtils.getCheckBoxBackground());
             iHaveRead.setPadding(_5dp, _5dp, _5dp, _5dp);
-            iHaveRead.setChecked(FakeBatteryHook.get().isFakeBatteryCharging());
+            iHaveRead.setChecked(FakeBatteryHook.INSTANCE.isFakeBatteryCharging());
             ll.addView(iHaveRead, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 3 * _5dp, _5dp, 2 * _5dp, _5dp));
 
             Button agree = new Button(this);

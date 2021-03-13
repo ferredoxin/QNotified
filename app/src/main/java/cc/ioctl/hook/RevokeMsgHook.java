@@ -59,16 +59,12 @@ import static nil.nadph.qnotified.util.Utils.*;
  */
 @FunctionEntry
 public class RevokeMsgHook extends CommonDelayableHook {
-    private static final RevokeMsgHook self = new RevokeMsgHook();
+    public static final RevokeMsgHook INSTANCE = new RevokeMsgHook();
     private Object mQQMsgFacade = null;
 
     private RevokeMsgHook() {
         //FIXME: is MSF really necessary?
         super("qn_anti_revoke_msg", SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF, new DexDeobfStep(DexKit.C_MSG_REC_FAC), new DexDeobfStep(DexKit.C_CONTACT_UTILS));
-    }
-
-    public static RevokeMsgHook get() {
-        return self;
     }
 
     @Override

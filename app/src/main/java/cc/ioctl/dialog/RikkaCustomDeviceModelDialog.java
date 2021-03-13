@@ -174,7 +174,7 @@ public class RikkaCustomDeviceModelDialog extends RikkaDialog.RikkaConfigItem {
                 dialog.dismiss();
                 invalidateStatus();
                 if (enableCustomDeviceModel) {
-                    CustomMsgTimeFormat hook = CustomMsgTimeFormat.get();
+                    CustomMsgTimeFormat hook = CustomMsgTimeFormat.INSTANCE;
                     if (!hook.isInited()) hook.init();
                 }
             }

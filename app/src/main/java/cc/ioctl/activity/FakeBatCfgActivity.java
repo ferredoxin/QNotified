@@ -91,7 +91,7 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
         ll.addView(subtitle(FakeBatCfgActivity.this, "!!! 此功能仅在 QQ>=8.2.6 且在线状态为 我的电量 时生效"));
         ll.addView(subtitle(FakeBatCfgActivity.this, "服务器的电量数据有6分钟的延迟属于正常情况"));
         ll.addView(subtitle(FakeBatCfgActivity.this, "请不要把电量设置为 0 ,因为 0 会被TX和谐掉"));
-        FakeBatteryHook bat = FakeBatteryHook.get();
+        FakeBatteryHook bat = FakeBatteryHook.INSTANCE;
         boolean enabled = bat.isEnabled();
         LinearLayout _t;
         ll.addView(_t = subtitle(FakeBatCfgActivity.this, ""));
@@ -118,7 +118,7 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
         charging.setTextColor(ResUtils.skin_black);
         charging.setButtonDrawable(ResUtils.getCheckBoxBackground());
         charging.setPadding(_5dp, _5dp, _5dp, _5dp);
-        charging.setChecked(FakeBatteryHook.get().isFakeBatteryCharging());
+        charging.setChecked(FakeBatteryHook.INSTANCE.isFakeBatteryCharging());
         ll.addView(charging, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 3 * _5dp, _5dp, 2 * _5dp, _5dp));
         Button apply = new Button(FakeBatCfgActivity.this);
         apply.setId(R_ID_APPLY);
@@ -140,7 +140,7 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
     }
 
     private void showStatus() {
-        FakeBatteryHook bat = FakeBatteryHook.get();
+        FakeBatteryHook bat = FakeBatteryHook.INSTANCE;
         boolean enabled = bat.isEnabled();
         String desc = "当前状态: ";
         if (enabled) {
@@ -219,7 +219,7 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
     }
 
     private void doUpdateBatCfg() {
-        FakeBatteryHook bat = FakeBatteryHook.get();
+        FakeBatteryHook bat = FakeBatteryHook.INSTANCE;
         ConfigManager cfg = ConfigManager.getDefaultConfig();
         EditText pct;
         CheckBox charging;

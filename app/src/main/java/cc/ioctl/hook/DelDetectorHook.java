@@ -62,7 +62,7 @@ import static nil.nadph.qnotified.util.Utils.*;
 public class DelDetectorHook extends CommonDelayableHook {
 
     public static final int VIEW_ID_DELETED_FRIEND = 0x00EE77AA;
-    private static final DelDetectorHook self = new DelDetectorHook();
+    public static final DelDetectorHook INSTANCE = new DelDetectorHook();
     public HashSet addedListView = new HashSet();
     public WeakReference<TextView> exfriendRef;
     public WeakReference<TextView> redDotRef;
@@ -158,10 +158,6 @@ public class DelDetectorHook extends CommonDelayableHook {
 
     private DelDetectorHook() {
         super("__NOT_USED__");
-    }
-
-    public static DelDetectorHook get() {
-        return self;
     }
 
     @Override

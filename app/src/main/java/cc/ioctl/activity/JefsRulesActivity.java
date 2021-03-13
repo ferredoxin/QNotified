@@ -58,7 +58,7 @@ public class JefsRulesActivity extends IphoneTitleBarActivityCompat implements V
     private TextView rulesTv;
     private LinearLayout layoutDisplay;
     private LinearLayout layoutEdit;
-    private final JumpController jmpctl = JumpController.get();
+    private final JumpController jmpctl = JumpController.INSTANCE;
     private boolean currEditMode;
 
     @Override
@@ -71,7 +71,7 @@ public class JefsRulesActivity extends IphoneTitleBarActivityCompat implements V
         bounceScrollView.addView(mainLayout, MATCH_PARENT, WRAP_CONTENT);
         mainLayout.setOrientation(LinearLayout.VERTICAL);
 
-        RelativeLayout _tmp = ViewBuilder.newListItemHookSwitchInit(this, "总开关", "关闭后所有规则不生效", JumpController.get());
+        RelativeLayout _tmp = ViewBuilder.newListItemHookSwitchInit(this, "总开关", "关闭后所有规则不生效", JumpController.INSTANCE);
         mainLayout.addView(_tmp, ViewBuilder.newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 0));
 
         int __10 = dip2px(this, 10);

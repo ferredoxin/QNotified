@@ -76,14 +76,10 @@ public class PttForwardHook extends CommonDelayableHook {
     public static final int R_ID_PTT_SAVE = 0x30EE77CC;
     public static final String qn_enable_ptt_save = "qn_enable_ptt_save";
     public static final String qn_cache_ptt_save_last_parent_dir = "qn_cache_ptt_save_last_parent_dir";
-    private static final PttForwardHook self = new PttForwardHook();
+    public static final PttForwardHook INSTANCE = new PttForwardHook();
 
     private PttForwardHook() {
         super("qn_enable_ptt_forward", new DexDeobfStep(DexKit.C_FACADE));
-    }
-
-    public static PttForwardHook get() {
-        return self;
     }
 
     @Override

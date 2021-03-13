@@ -46,14 +46,10 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 @FunctionEntry
 public class ArbitraryFrdSourceId extends CommonDelayableHook {
-    private static final ArbitraryFrdSourceId self = new ArbitraryFrdSourceId();
+    public static final ArbitraryFrdSourceId INSTANCE = new ArbitraryFrdSourceId();
 
     private ArbitraryFrdSourceId() {
         super("__NOT_USED__");
-    }
-
-    public static ArbitraryFrdSourceId get() {
-        return self;
     }
 
     @Override

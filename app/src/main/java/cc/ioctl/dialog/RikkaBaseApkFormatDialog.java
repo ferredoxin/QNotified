@@ -143,7 +143,7 @@ public class RikkaBaseApkFormatDialog extends RikkaDialog.RikkaConfigItem {
                     dialog.dismiss();
                     invalidateStatus();
                     if (enableBaseApk) {
-                        BaseApk hook = BaseApk.get();
+                        BaseApk hook = BaseApk.INSTANCE;
                         if (!hook.isInited()) hook.init();
                     }
                 }

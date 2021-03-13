@@ -35,16 +35,11 @@ import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
-import org.jetbrains.annotations.NotNull;
 
 //屏蔽群聊界面一起嗨
 @FunctionEntry
 public class RemovePlayTogether extends CommonDelayableHook {
-    private static final RemovePlayTogether self = new RemovePlayTogether();
-
-    public static RemovePlayTogether get() {
-        return self;
-    }
+    public static final RemovePlayTogether INSTANCE = new RemovePlayTogether();
 
     private RemovePlayTogether() {
         super("kr_remove_play_together");
@@ -109,7 +104,7 @@ public class RemovePlayTogether extends CommonDelayableHook {
         return !HostInformationProviderKt.getHostInfo().isPlayQQ();
     }
 
-    @NotNull
+    @NonNull
     @Override
     public Step[] getPreconditions() {
         if (isValid()) {

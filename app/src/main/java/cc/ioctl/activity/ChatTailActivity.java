@@ -84,8 +84,8 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
     }
 
     public static String getPower() {
-        if (FakeBatteryHook.get().isEnabled()) {
-            return FakeBatteryHook.get().isFakeBatteryCharging() ? "充电中" : "未充电";
+        if (FakeBatteryHook.INSTANCE.isEnabled()) {
+            return FakeBatteryHook.INSTANCE.isFakeBatteryCharging() ? "充电中" : "未充电";
         }
         return power;
     }
@@ -93,7 +93,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
     @Override
     public boolean doOnCreate(Bundle bundle) {
         super.doOnCreate(bundle);
-        if (!FakeBatteryHook.get().isEnabled()) {
+        if (!FakeBatteryHook.INSTANCE.isEnabled()) {
             IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
             filter.addAction(Intent.ACTION_POWER_CONNECTED);
             filter.addAction(Intent.ACTION_POWER_DISCONNECTED);
@@ -120,7 +120,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         __lp_r.addRule(RelativeLayout.CENTER_VERTICAL);
 
         ll.addView(subtitle(ChatTailActivity.this, "在这里设置然后每次聊天自动添加"));
-        ChatTailHook ct = ChatTailHook.get();
+        ChatTailHook ct = ChatTailHook.INSTANCE;
         boolean enabled = ct.isEnabled();
         RelativeLayout _s;
         LinearLayout _t;
@@ -242,7 +242,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
     }
 
     private void showStatus() {
-        ChatTailHook ct = ChatTailHook.get();
+        ChatTailHook ct = ChatTailHook.INSTANCE;
         boolean enabled = ct.isEnabled();
         String desc = "当前状态: ";
         if (enabled) {
@@ -303,7 +303,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
     }
 
     private void doUpdateTailCfg() {
-        ChatTailHook ct = ChatTailHook.get();
+        ChatTailHook ct = ChatTailHook.INSTANCE;
         ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
         EditText pct;
         pct = ChatTailActivity.this.findViewById(R_ID_PERCENT_VALUE);

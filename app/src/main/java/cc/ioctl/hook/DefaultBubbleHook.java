@@ -37,14 +37,10 @@ import static nil.nadph.qnotified.util.Utils.log;
 
 @FunctionEntry
 public class DefaultBubbleHook extends CommonDelayableHook {
-    private static final DefaultBubbleHook self = new DefaultBubbleHook();
+    public static final DefaultBubbleHook INSTANCE = new DefaultBubbleHook();
 
     private DefaultBubbleHook() {
         super("__NOT_USED__");
-    }
-
-    public static DefaultBubbleHook get() {
-        return self;
     }
 
     @Override

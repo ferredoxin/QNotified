@@ -41,11 +41,7 @@ import nil.nadph.qnotified.util.Utils;
 //自定义聊天页面时间格式
 @FunctionEntry
 public class CustomMsgTimeFormat extends CommonDelayableHook {
-    private static final CustomMsgTimeFormat self = new CustomMsgTimeFormat();
-
-    public static CustomMsgTimeFormat get() {
-        return self;
-    }
+    public static final CustomMsgTimeFormat INSTANCE = new CustomMsgTimeFormat();
 
     protected CustomMsgTimeFormat() {
         super("__NOT_USED__", new DexDeobfStep(DexKit.C_TimeFormatterUtils));

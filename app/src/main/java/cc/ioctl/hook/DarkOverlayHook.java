@@ -41,14 +41,10 @@ import static nil.nadph.qnotified.util.Utils.*;
 
 @FunctionEntry
 public class DarkOverlayHook extends CommonDelayableHook {
-    private static final DarkOverlayHook self = new DarkOverlayHook();
+    public static final DarkOverlayHook INSTANCE = new DarkOverlayHook();
 
     DarkOverlayHook() {
         super("qn_disable_dark_overlay", new DexDeobfStep(DexKit.N_BASE_CHAT_PIE__handleNightMask), new FindNightMask());
-    }
-
-    public static DarkOverlayHook get() {
-        return self;
     }
 
     @Override

@@ -59,15 +59,11 @@ import static nil.nadph.qnotified.util.Utils.*;
 public class ChatTailHook extends CommonDelayableHook {
     public static final String qn_chat_tail_enable = "qn_chat_tail_enable";
     private static final String ACTION_UPDATE_CHAT_TAIL = "nil.nadph.qnotified.ACTION_UPDATE_CHAT_TAIL";
-    private static final ChatTailHook self = new ChatTailHook();
+    public static final ChatTailHook INSTANCE = new ChatTailHook();
 
 
     ChatTailHook() {
         super(qn_chat_tail_enable);
-    }
-
-    public static ChatTailHook get() {
-        return self;
     }
 
     @Override
@@ -108,13 +104,13 @@ public class ChatTailHook extends CommonDelayableHook {
                                 if (null == field) field = session.getClass().getDeclaredField("curFriendUin");
                                 uin = (String) field.get(session);
                             }
-                            ChatTailHook ct = ChatTailHook.get();
+                            ChatTailHook ct = ChatTailHook.INSTANCE;
                             logi("isRegex:" + String.valueOf(ChatTailHook.isRegex()));
                             logi("isPassRegex:" + String.valueOf(ChatTailHook.isPassRegex(msg)));
                             logi("getTailRegex:" + ChatTailHook.getTailRegex());
                             if ((ct.isGlobal() || ct.containsTroop(uin) || ct.containsFriend(uin))
                                 && (!isRegex() || !isPassRegex(msg))) {
-                                int battery = FakeBatteryHook.get().isEnabled() ? FakeBatteryHook.get().getFakeBatteryStatus() < 1 ? ChatTailActivity.getBattery() : FakeBatteryHook.get().getFakeBatteryCapacity() : ChatTailActivity.getBattery();
+                                int battery = FakeBatteryHook.INSTANCE.isEnabled() ? FakeBatteryHook.INSTANCE.getFakeBatteryStatus() < 1 ? ChatTailActivity.getBattery() : FakeBatteryHook.INSTANCE.getFakeBatteryCapacity() : ChatTailActivity.getBattery();
                                 text = ct.getTailCapacity()
                                     .replace(ChatTailActivity.delimiter, msg)
                                     .replace("#model#", Build.MODEL)

@@ -39,11 +39,7 @@ import nil.nadph.qnotified.util.Utils;
 //屏蔽截屏分享
 @FunctionEntry
 public class DisableScreenshotHelper extends CommonDelayableHook {
-    private static final DisableScreenshotHelper self = new DisableScreenshotHelper();
-
-    public static DisableScreenshotHelper get() {
-        return self;
-    }
+    public static final DisableScreenshotHelper INSTANCE = new DisableScreenshotHelper();
 
     private DisableScreenshotHelper() {
         super("kr_disable_screenshot_helper", new DexDeobfStep(DexKit.C_ScreenShotHelper));

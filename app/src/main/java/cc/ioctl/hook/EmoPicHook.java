@@ -45,14 +45,10 @@ import static nil.nadph.qnotified.util.Utils.*;
 @FunctionEntry
 public class EmoPicHook extends CommonDelayableHook {
 
-    private static final EmoPicHook self = new EmoPicHook();
+    public static final EmoPicHook INSTANCE = new EmoPicHook();
 
     private EmoPicHook() {
         super("qn_sticker_as_pic", new DexDeobfStep(DexKit.C_AIO_UTILS));
-    }
-
-    public static EmoPicHook get() {
-        return self;
     }
 
     @Override
