@@ -25,7 +25,7 @@ QNotified 是一个旨在使QQ变得更好用的开源Xposed模块
 
 ### 许可证
 
-- AGPL-3.0
+- AGPL-3.0(LICENSE.md)
 
 ```
 Copyright (C) 2019-2021 dmca@ioctl.cc
@@ -44,7 +44,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ```
 
-- [EULA](LICENSE.md)
+- [EULA](./app/src/main/assets/eula.md)
 
 ```
 版权所有©2021 gao_cai_sheng <qwq233@qwq2333.top, qwq2333.top>
