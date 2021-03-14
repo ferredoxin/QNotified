@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="AppThemeDummy" parent="@android:style/Theme.Holo">
-    </style>
+
+    <style name="AppThemeDummy" parent="@android:style/Theme.Holo"></style>
 
     <!-- Base application theme. -->
     <style name="AppTheme.Def" parent="Theme.AppCompat.DayNight.NoActionBar">
@@ -140,7 +140,25 @@
         <item name="colorSecondaryVariant">@color/themeColor</item>
         <item name="colorOnSecondary">@color/firstTextColor</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" >@color/backgroundColor</item>
+        <item name="android:statusBarColor">@color/backgroundColor</item>
+        <!-- Customize your theme here. -->
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="colorControlNormal">@color/firstTextColor</item>
+    </style>
+
+    <style name="Theme.MaiTungTMDesignNight" parent="Theme.MaterialComponents.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/themeColor</item>
+        <item name="colorPrimaryVariant">@color/themeColor</item>
+        <item name="colorOnPrimary">@color/firstTextColor</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/themeColor</item>
+        <item name="colorSecondaryVariant">@color/themeColor</item>
+        <item name="colorOnSecondary">@color/firstTextColor</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">@color/backgroundColor</item>
         <!-- Customize your theme here. -->
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>

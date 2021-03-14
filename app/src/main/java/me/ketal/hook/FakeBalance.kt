@@ -26,7 +26,7 @@ import android.app.Activity
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.TextView
 import androidx.core.widget.doAfterTextChanged
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
@@ -47,6 +47,7 @@ import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.R
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.ui.CommonContextWrapper
+import nil.nadph.qnotified.ui.ResUtils
 import nil.nadph.qnotified.util.ReflexUtil
 
 @FunctionEntry
@@ -67,7 +68,7 @@ object FakeBalance : PluginDelayableHook("ketal_qwallet_fakebalance") {
 
     private fun showDialog(ctx: Context, textView: TextView?) {
         tryVerbosely(false) {
-            val context = CommonContextWrapper(ctx, R.style.Theme_MaiTungTMDesign)
+            val context = CommonContextWrapper(ctx, if (ResUtils.isInNightMode()) R.style.Theme_MaiTungTMDesignNight else R.style.Theme_MaiTungTMDesign)
             val vg = ConfigView(context)
             vg.setText("启用自定义钱包余额")
             val dialog = MaterialDialog(context).show {
