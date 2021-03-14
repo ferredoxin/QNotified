@@ -79,26 +79,6 @@ public class MainHook {
         return SELF;
     }
 
-    public static XC_MethodHook.Unhook findAndHookMethodIfExists(Class<?> clazz, String methodName, Object...
-        parameterTypesAndCallback) {
-        try {
-            return findAndHookMethod(clazz, methodName, parameterTypesAndCallback);
-        } catch (Throwable e) {
-            log(e);
-            return null;
-        }
-    }
-
-    public static XC_MethodHook.Unhook findAndHookMethodIfExists(String clazzName, ClassLoader cl, String
-        methodName, Object... parameterTypesAndCallback) {
-        try {
-            return findAndHookMethod(clazzName, cl, methodName, parameterTypesAndCallback);
-        } catch (Throwable e) {
-            log(e);
-            return null;
-        }
-    }
-
     public static void openProfileCard(Context ctx, long uin) {
         try {
             Parcelable allInOne = (Parcelable) new_instance(load("com/tencent/mobileqq/activity/ProfileActivity$AllInOne"), "" + uin, 35, String.class, int.class);
