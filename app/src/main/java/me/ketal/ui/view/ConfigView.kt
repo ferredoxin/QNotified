@@ -31,6 +31,7 @@ import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import androidx.core.view.minusAssign
 import androidx.core.view.plusAssign
+import nil.nadph.qnotified.util.Utils.dip2px
 
 class ConfigView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -61,9 +62,12 @@ class ConfigView @JvmOverloads constructor(
         }
 
     init {
-        layoutParams = LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        layoutParams = LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         orientation = VERTICAL
-        this += enable
+        this += LinearLayout(context).apply {
+            addView(enable)
+            setPadding(dip2px(context, 21f), 0, dip2px(context, 21f), 0)
+        }
         enable.setOnCheckedChangeListener { _, isChecked -> isVisible = isChecked }
     }
 
