@@ -46,7 +46,7 @@ object RemoveDiyCard : CommonDelayableHook("kr_remove_diy_card") {
             for (m: Method in getMethods("com.tencent.mobileqq.profilecard.vas.VasProfileTemplateController")) {
                 val argt = m.parameterTypes
                 if (m.name == "a" && argt.size == 2 && argt[1] == Int::class.java && m.isPublic) {
-                    XposedBridge.hookMethod(m,hook)
+                    XposedBridge.hookMethod(m, hook)
                 } else if (m.name == "onCardUpdate" && argt.size == 2 && argt[1] == Int::class.java && m.isPublic) {
                     XposedBridge.hookMethod(m, hook)
                 }

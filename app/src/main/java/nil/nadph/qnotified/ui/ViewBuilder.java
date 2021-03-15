@@ -21,6 +21,12 @@
  */
 package nil.nadph.qnotified.ui;
 
+import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
+import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Utils.dip2px;
+import static nil.nadph.qnotified.util.Utils.dip2sp;
+
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -29,10 +35,13 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
-
+import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import androidx.core.view.ViewCompat;
-
 import cc.ioctl.H;
 import ltd.nextalone.base.MultiItemDelayableHook;
 import ltd.nextalone.util.SystemServiceUtils;
@@ -49,11 +58,6 @@ import nil.nadph.qnotified.util.NonUiThread;
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
-import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
-import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.*;
-
 public class ViewBuilder {
 
     public static final int R_ID_TITLE = 0x300AFF11;
@@ -64,11 +68,13 @@ public class ViewBuilder {
 
     private static final int CONSTANT_LIST_ITEM_HEIGHT_DP = 48;
 
-    public static RelativeLayout newListItemSwitch(Context ctx, CharSequence title, CharSequence desc, boolean on, CompoundButton.OnCheckedChangeListener listener) {
+    public static RelativeLayout newListItemSwitch(Context ctx, CharSequence title,
+        CharSequence desc, boolean on, CompoundButton.OnCheckedChangeListener listener) {
         RelativeLayout root = new IsolatedStateRelativeLayout(ctx);
         root.setId((title == null ? "" : title).hashCode());
-        root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx, CONSTANT_LIST_ITEM_HEIGHT_DP)));
-        ViewCompat.setBackground(root,ResUtils.getListItemBackground());
+        root.setLayoutParams(
+            new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx, CONSTANT_LIST_ITEM_HEIGHT_DP)));
+        ViewCompat.setBackground(root, ResUtils.getListItemBackground());
         TextView tv = new TextView(ctx);
         tv.setText(title);
         tv.setId(R_ID_TITLE);
@@ -78,13 +84,15 @@ public class ViewBuilder {
         sw.setChecked(on);
         sw.setId(R_ID_SWITCH);
         sw.setOnCheckedChangeListener(listener);
-        RelativeLayout.LayoutParams lp_sw = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+        RelativeLayout.LayoutParams lp_sw = new RelativeLayout.LayoutParams(WRAP_CONTENT,
+            WRAP_CONTENT);
         int m = dip2px(ctx, 14);
         lp_sw.setMargins(m, m, m, 0);
         lp_sw.addRule(RelativeLayout.CENTER_VERTICAL);
         lp_sw.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         if (desc == null) {
-            RelativeLayout.LayoutParams lp_t = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+            RelativeLayout.LayoutParams lp_t = new RelativeLayout.LayoutParams(WRAP_CONTENT,
+                WRAP_CONTENT);
             m = dip2px(ctx, 14);
             lp_t.setMargins(m, m, 0, 0);
             lp_t.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
@@ -92,7 +100,8 @@ public class ViewBuilder {
             lp_t.addRule(RelativeLayout.LEFT_OF, R_ID_SWITCH);
             root.addView(tv, lp_t);
         } else {
-            RelativeLayout.LayoutParams lp_t = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+            RelativeLayout.LayoutParams lp_t = new RelativeLayout.LayoutParams(WRAP_CONTENT,
+                WRAP_CONTENT);
             m = dip2px(ctx, 14);
             lp_t.setMargins(m, m / 2, 0, 0);
             lp_t.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
@@ -104,7 +113,8 @@ public class ViewBuilder {
             des.setTextSize(dip2sp(ctx, 13));
             des.setSingleLine();
             des.setEllipsize(TextUtils.TruncateAt.END);
-            RelativeLayout.LayoutParams lp_d = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+            RelativeLayout.LayoutParams lp_d = new RelativeLayout.LayoutParams(WRAP_CONTENT,
+                WRAP_CONTENT);
             lp_d.setMargins(m, 0, 0, 0);
             lp_d.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
             lp_d.addRule(RelativeLayout.BELOW, R_ID_TITLE);
@@ -116,156 +126,173 @@ public class ViewBuilder {
         return root;
     }
 
-    public static RelativeLayout newListItemSwitchConfig(Context ctx, CharSequence title, CharSequence desc, final String key, boolean defVal) {
+    public static RelativeLayout newListItemSwitchConfig(Context ctx, CharSequence title,
+        CharSequence desc, final String key, boolean defVal) {
         boolean on = ConfigManager.getDefaultConfig().getBooleanOrDefault(key, defVal);
-        RelativeLayout root = newListItemSwitch(ctx, title, desc, on, new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                try {
-                    ConfigManager mgr = ConfigManager.getDefaultConfig();
-                    mgr.getAllConfig().put(key, isChecked);
-                    mgr.save();
-                } catch (Exception e) {
-                    Utils.log(e);
-                    Toasts.info(ctx, e.toString());
+        RelativeLayout root = newListItemSwitch(ctx, title, desc, on,
+            new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    try {
+                        ConfigManager mgr = ConfigManager.getDefaultConfig();
+                        mgr.getAllConfig().put(key, isChecked);
+                        mgr.save();
+                    } catch (Exception e) {
+                        Utils.log(e);
+                        Toasts.info(ctx, e.toString());
+                    }
                 }
-            }
-        });
+            });
         root.setId(key.hashCode());
         return root;
     }
 
 
-    public static RelativeLayout newListItemSwitchConfigNext(Context ctx, CharSequence title, CharSequence desc, final String key, boolean defVal) {
+    public static RelativeLayout newListItemSwitchConfigNext(Context ctx, CharSequence title,
+        CharSequence desc, final String key, boolean defVal) {
         boolean on = ConfigManager.getDefaultConfig().getBooleanOrDefault(key, defVal);
-        RelativeLayout root = newListItemSwitch(ctx, title, desc, on, new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                try {
-                    ConfigManager mgr = ConfigManager.getDefaultConfig();
-                    mgr.getAllConfig().put(key, isChecked);
-                    mgr.save();
-                    Toasts.info(ctx, "重启" + HostInformationProviderKt.getHostInfo().getHostName() + "生效");
-                } catch (Throwable e) {
-                    Utils.log(e);
-                    Toasts.info(ctx, e.toString());
+        RelativeLayout root = newListItemSwitch(ctx, title, desc, on,
+            new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    try {
+                        ConfigManager mgr = ConfigManager.getDefaultConfig();
+                        mgr.getAllConfig().put(key, isChecked);
+                        mgr.save();
+                        Toasts.info(ctx,
+                            "重启" + HostInformationProviderKt.getHostInfo().getHostName() + "生效");
+                    } catch (Throwable e) {
+                        Utils.log(e);
+                        Toasts.info(ctx, e.toString());
+                    }
                 }
-            }
-        });
+            });
         root.setId(key.hashCode());
         return root;
     }
 
-    public static RelativeLayout newListItemSwitchFriendConfigNext(Context ctx, CharSequence title, CharSequence desc, final String key, boolean defVal) {
+    public static RelativeLayout newListItemSwitchFriendConfigNext(Context ctx, CharSequence title,
+        CharSequence desc, final String key, boolean defVal) {
         ConfigManager mgr = ExfriendManager.getCurrent().getConfig();
         boolean on = mgr.getBooleanOrDefault(key, defVal);
-        RelativeLayout root = newListItemSwitch(ctx, title, desc, on, new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                try {
+        RelativeLayout root = newListItemSwitch(ctx, title, desc, on,
+            new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    try {
 
-                    mgr.getAllConfig().put(key, isChecked);
-                    mgr.save();
-                    Toasts.info(ctx, "设置成功");
-                } catch (Throwable e) {
-                    Utils.log(e);
-                    Toasts.info(ctx, e.toString());
+                        mgr.getAllConfig().put(key, isChecked);
+                        mgr.save();
+                        Toasts.info(ctx, "设置成功");
+                    } catch (Throwable e) {
+                        Utils.log(e);
+                        Toasts.info(ctx, e.toString());
+                    }
                 }
-            }
-        });
+            });
         root.setId(key.hashCode());
         return root;
     }
 
-    public static RelativeLayout newListItemSwitchConfigNext(Context ctx, CharSequence title, CharSequence desc, final SwitchConfigItem item) {
+    public static RelativeLayout newListItemSwitchConfigNext(Context ctx, CharSequence title,
+        CharSequence desc, final SwitchConfigItem item) {
         boolean on = item.isEnabled();
-        RelativeLayout root = newListItemSwitch(ctx, title, desc, on, new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                try {
-                    item.setEnabled(isChecked);
-                    Toasts.info(ctx, "重启" + HostInformationProviderKt.getHostInfo().getHostName() + "生效");
-                } catch (Throwable e) {
-                    Utils.log(e);
-                    Toasts.info(ctx, e.toString());
+        RelativeLayout root = newListItemSwitch(ctx, title, desc, on,
+            new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    try {
+                        item.setEnabled(isChecked);
+                        Toasts.info(ctx,
+                            "重启" + HostInformationProviderKt.getHostInfo().getHostName() + "生效");
+                    } catch (Throwable e) {
+                        Utils.log(e);
+                        Toasts.info(ctx, e.toString());
+                    }
                 }
-            }
-        });
+            });
         root.setId(title.hashCode());
         return root;
     }
 
-    public static RelativeLayout newListItemHookSwitchInit(final Context ctx, CharSequence title, CharSequence desc, final BaseDelayableHook hook) {
+    public static RelativeLayout newListItemHookSwitchInit(final Context ctx, CharSequence title,
+        CharSequence desc, final BaseDelayableHook hook) {
         boolean on = hook.isEnabled();
-        RelativeLayout root = newListItemSwitch(ctx, title, desc, on, new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(final CompoundButton buttonView, boolean isChecked) {
-                if (!hook.isInited() && isChecked) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            hook.setEnabled(true);
-                            doSetupAndInit(ctx, hook);
-                        }
-                    }).start();
-                } else {
-                    hook.setEnabled(isChecked);
+        RelativeLayout root = newListItemSwitch(ctx, title, desc, on,
+            new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(final CompoundButton buttonView, boolean isChecked) {
+                    if (!hook.isInited() && isChecked) {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                hook.setEnabled(true);
+                                doSetupAndInit(ctx, hook);
+                            }
+                        }).start();
+                    } else {
+                        hook.setEnabled(isChecked);
+                    }
                 }
-            }
-        });
+            });
         root.setId(hook.getClass().getName().hashCode());
         return root;
     }
 
-    public static RelativeLayout newListItemConfigSwitchIfValid(final Context ctx, CharSequence title, CharSequence desc, final SwitchConfigItem item) {
+    public static RelativeLayout newListItemConfigSwitchIfValid(final Context ctx,
+        CharSequence title, CharSequence desc, final SwitchConfigItem item) {
         boolean on = item.isEnabled();
-        RelativeLayout root = newListItemSwitch(ctx, title, desc, on, new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(final CompoundButton buttonView, boolean isChecked) {
-                item.setEnabled(isChecked);
-            }
-        });
+        RelativeLayout root = newListItemSwitch(ctx, title, desc, on,
+            new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(final CompoundButton buttonView, boolean isChecked) {
+                    item.setEnabled(isChecked);
+                }
+            });
         root.findViewById(R_ID_SWITCH).setEnabled(item.isValid());
         root.setId(item.hashCode());
         return root;
     }
 
     @Deprecated
-    public static RelativeLayout newListItemSwitchConfigInitByKey(final Context ctx, CharSequence title, CharSequence desc, final String key, boolean defVal, final BaseDelayableHook hook) {
+    public static RelativeLayout newListItemSwitchConfigInitByKey(final Context ctx,
+        CharSequence title, CharSequence desc, final String key, boolean defVal,
+        final BaseDelayableHook hook) {
         boolean on = ConfigManager.getDefaultConfig().getBooleanOrDefault(key, defVal);
-        RelativeLayout root = newListItemSwitch(ctx, title, desc, on, new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(final CompoundButton buttonView, boolean isChecked) {
-                if (!hook.isInited() && isChecked) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            doSetupAndInit(ctx, hook);
-                            try {
-                                ConfigManager mgr = ConfigManager.getDefaultConfig();
-                                mgr.getAllConfig().put(key, true);
-                                mgr.save();
-                            } catch (Throwable e) {
-                                Utils.log(e);
-                                Toasts.info(buttonView.getContext(), e.toString());
+        RelativeLayout root = newListItemSwitch(ctx, title, desc, on,
+            new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(final CompoundButton buttonView, boolean isChecked) {
+                    if (!hook.isInited() && isChecked) {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                doSetupAndInit(ctx, hook);
+                                try {
+                                    ConfigManager mgr = ConfigManager.getDefaultConfig();
+                                    mgr.getAllConfig().put(key, true);
+                                    mgr.save();
+                                } catch (Throwable e) {
+                                    Utils.log(e);
+                                    Toasts.info(buttonView.getContext(), e.toString());
+                                }
                             }
-                        }
-                    }).start();
-                } else {
-                    try {
-                        ConfigManager mgr = ConfigManager.getDefaultConfig();
-                        mgr.getAllConfig().put(key, isChecked);
-                        mgr.save();
-                    } catch (Throwable e) {
+                        }).start();
+                    } else {
                         try {
-                            Toasts.info(buttonView.getContext(), e.toString());
-                        } catch (Throwable ignored) {
+                            ConfigManager mgr = ConfigManager.getDefaultConfig();
+                            mgr.getAllConfig().put(key, isChecked);
+                            mgr.save();
+                        } catch (Throwable e) {
+                            try {
+                                Toasts.info(buttonView.getContext(), e.toString());
+                            } catch (Throwable ignored) {
+                            }
+                            Utils.log(e);
                         }
-                        Utils.log(e);
                     }
                 }
-            }
-        });
+            });
         return root;
     }
 
@@ -275,7 +302,9 @@ public class ViewBuilder {
         Throwable err = null;
         try {
             for (Step s : hook.getPreconditions()) {
-                if (s.isDone()) continue;
+                if (s.isDone()) {
+                    continue;
+                }
                 final String name = s.getDescription();
                 Utils.runOnUiThread(new Runnable() {
                     @Override
@@ -315,7 +344,7 @@ public class ViewBuilder {
             Throwable finalErr = err;
             Utils.runOnUiThread(() -> {
                 CustomDialog.createFailsafe(ctx).setTitle("发生错误").setMessage(finalErr.toString())
-                        .setCancelable(true).setPositiveButton(android.R.string.ok, null).show();
+                    .setCancelable(true).setPositiveButton(android.R.string.ok, null).show();
             });
         }
         if (pDialog[0] != null) {
@@ -334,7 +363,9 @@ public class ViewBuilder {
         Throwable error = null;
         try {
             for (Step i : hook.getPreconditions()) {
-                if (i.isDone()) continue;
+                if (i.isDone()) {
+                    continue;
+                }
                 final String name = i.getDescription();
                 Utils.runOnUiThread(new Runnable() {
                     @Override
@@ -357,7 +388,7 @@ public class ViewBuilder {
             Throwable finalErr = error;
             Utils.runOnUiThread(() -> {
                 CustomDialog.createFailsafe(ctx).setTitle("发生错误").setMessage(finalErr.toString())
-                        .setCancelable(true).setPositiveButton(android.R.string.ok, null).show();
+                    .setCancelable(true).setPositiveButton(android.R.string.ok, null).show();
             });
         }
         if (pDialog[0] != null) {
@@ -370,34 +401,40 @@ public class ViewBuilder {
         }
     }
 
-    public static RelativeLayout newListItemSwitchConfigStub(Context ctx, CharSequence title, CharSequence desc,
-                                                             final String key, boolean defVal) {
-        RelativeLayout root = newListItemSwitch(ctx, title, desc, false, new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                buttonView.setChecked(false);
-                Toasts.info(buttonView.getContext(), "对不起,此功能尚在开发中");
-            }
-        });
+    public static RelativeLayout newListItemSwitchConfigStub(Context ctx, CharSequence title,
+        CharSequence desc,
+        final String key, boolean defVal) {
+        RelativeLayout root = newListItemSwitch(ctx, title, desc, false,
+            new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    buttonView.setChecked(false);
+                    Toasts.info(buttonView.getContext(), "对不起,此功能尚在开发中");
+                }
+            });
         return root;
     }
 
-    public static RelativeLayout newListItemSwitchStub(Context ctx, CharSequence title, CharSequence desc, final boolean constVal) {
-        RelativeLayout root = newListItemSwitch(ctx, title, desc, constVal, new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                buttonView.setChecked(constVal);
-                Toasts.info(buttonView.getContext(), "对不起,此功能尚在开发中");
-            }
-        });
+    public static RelativeLayout newListItemSwitchStub(Context ctx, CharSequence title,
+        CharSequence desc, final boolean constVal) {
+        RelativeLayout root = newListItemSwitch(ctx, title, desc, constVal,
+            new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    buttonView.setChecked(constVal);
+                    Toasts.info(buttonView.getContext(), "对不起,此功能尚在开发中");
+                }
+            });
         return root;
     }
 
-    public static RelativeLayout newListItemDummy(Context ctx, CharSequence title, CharSequence desc, CharSequence
-            value) {
+    public static RelativeLayout newListItemDummy(Context ctx, CharSequence title,
+        CharSequence desc, CharSequence
+        value) {
         RelativeLayout root = new IsolatedStateRelativeLayout(ctx);
-        root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx, CONSTANT_LIST_ITEM_HEIGHT_DP)));
-        ViewCompat.setBackground(root,ResUtils.getListItemBackground());
+        root.setLayoutParams(
+            new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx, CONSTANT_LIST_ITEM_HEIGHT_DP)));
+        ViewCompat.setBackground(root, ResUtils.getListItemBackground());
         TextView tv = new TextView(ctx);
         tv.setText(title);
         tv.setId(R_ID_TITLE);
@@ -408,13 +445,15 @@ public class ViewBuilder {
         st.setText(value);
         st.setTextColor(ResUtils.skin_gray3);
         st.setTextSize(dip2sp(ctx, 15));
-        RelativeLayout.LayoutParams lp_sw = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+        RelativeLayout.LayoutParams lp_sw = new RelativeLayout.LayoutParams(WRAP_CONTENT,
+            WRAP_CONTENT);
         int m = dip2px(ctx, 14);
         lp_sw.setMargins(m, m, m, m);
         lp_sw.addRule(RelativeLayout.CENTER_VERTICAL);
         lp_sw.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         if (desc == null) {
-            RelativeLayout.LayoutParams lp_t = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+            RelativeLayout.LayoutParams lp_t = new RelativeLayout.LayoutParams(WRAP_CONTENT,
+                WRAP_CONTENT);
             m = dip2px(ctx, 14);
             lp_t.setMargins(m, m, 0, 0);
             lp_t.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
@@ -422,7 +461,8 @@ public class ViewBuilder {
             lp_t.addRule(RelativeLayout.LEFT_OF, R_ID_VALUE);
             root.addView(tv, lp_t);
         } else {
-            RelativeLayout.LayoutParams lp_t = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+            RelativeLayout.LayoutParams lp_t = new RelativeLayout.LayoutParams(WRAP_CONTENT,
+                WRAP_CONTENT);
             m = dip2px(ctx, 14);
             lp_t.setMargins(m, m / 2, 0, 0);
             lp_t.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
@@ -434,7 +474,8 @@ public class ViewBuilder {
             des.setTextSize(dip2sp(ctx, 13));
             des.setSingleLine();
             des.setEllipsize(TextUtils.TruncateAt.END);
-            RelativeLayout.LayoutParams lp_d = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+            RelativeLayout.LayoutParams lp_d = new RelativeLayout.LayoutParams(WRAP_CONTENT,
+                WRAP_CONTENT);
             //m=(int)dip2px(ctx,6);
             lp_d.setMargins(m, 0, 0, 0);
             lp_d.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
@@ -448,11 +489,13 @@ public class ViewBuilder {
         return root;
     }
 
-    public static RelativeLayout newListItemButton(Context ctx, CharSequence title, CharSequence desc, CharSequence
-            value, View.OnClickListener listener) {
+    public static RelativeLayout newListItemButton(Context ctx, CharSequence title,
+        CharSequence desc, CharSequence
+        value, View.OnClickListener listener) {
         RelativeLayout root = new IsolatedStateRelativeLayout(ctx);
-        root.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx, CONSTANT_LIST_ITEM_HEIGHT_DP)));
-        ViewCompat.setBackground(root,ResUtils.getListItemBackground());
+        root.setLayoutParams(
+            new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx, CONSTANT_LIST_ITEM_HEIGHT_DP)));
+        ViewCompat.setBackground(root, ResUtils.getListItemBackground());
         TextView tv = new TextView(ctx);
         tv.setText(title);
         tv.setId(R_ID_TITLE);
@@ -461,13 +504,15 @@ public class ViewBuilder {
         ImageView img = new ImageView(ctx);
         img.setImageDrawable(ResUtils.skin_icon_arrow_right_normal);
         img.setId(R_ID_ARROW);
-        RelativeLayout.LayoutParams lp_im = new RelativeLayout.LayoutParams(dip2px(ctx, 9), dip2px(ctx, 15));
+        RelativeLayout.LayoutParams lp_im = new RelativeLayout.LayoutParams(dip2px(ctx, 9),
+            dip2px(ctx, 15));
         int m = dip2px(ctx, 14);
         lp_im.setMargins(0, m, m, 0);
         lp_im.addRule(RelativeLayout.CENTER_VERTICAL);
         lp_im.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         if (desc == null) {
-            RelativeLayout.LayoutParams lp_t = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+            RelativeLayout.LayoutParams lp_t = new RelativeLayout.LayoutParams(WRAP_CONTENT,
+                WRAP_CONTENT);
             m = dip2px(ctx, 14);
             lp_t.setMargins(m, m, 0, 0);
             lp_t.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
@@ -475,7 +520,8 @@ public class ViewBuilder {
             lp_t.addRule(RelativeLayout.LEFT_OF, R_ID_VALUE);
             root.addView(tv, lp_t);
         } else {
-            RelativeLayout.LayoutParams lp_t = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+            RelativeLayout.LayoutParams lp_t = new RelativeLayout.LayoutParams(WRAP_CONTENT,
+                WRAP_CONTENT);
             m = dip2px(ctx, 14);
             lp_t.setMargins(m, m / 2, 0, 0);
             lp_t.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
@@ -487,7 +533,8 @@ public class ViewBuilder {
             des.setTextSize(dip2sp(ctx, 13));
             des.setSingleLine();
             des.setEllipsize(TextUtils.TruncateAt.END);
-            RelativeLayout.LayoutParams lp_d = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+            RelativeLayout.LayoutParams lp_d = new RelativeLayout.LayoutParams(WRAP_CONTENT,
+                WRAP_CONTENT);
             lp_d.setMargins(m, 0, 0, 0);
             lp_d.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
             lp_d.addRule(RelativeLayout.BELOW, R_ID_TITLE);
@@ -498,10 +545,13 @@ public class ViewBuilder {
         root.addView(img, lp_im);
         TextView st = new TextView(ctx);
         st.setId(R_ID_VALUE);
-        if (value != null) st.setText(value);
+        if (value != null) {
+            st.setText(value);
+        }
         st.setTextColor(ResUtils.skin_gray3);
         st.setTextSize(dip2sp(ctx, 15));
-        RelativeLayout.LayoutParams lp_st = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+        RelativeLayout.LayoutParams lp_st = new RelativeLayout.LayoutParams(WRAP_CONTENT,
+            WRAP_CONTENT);
         m = dip2px(ctx, 14);
         lp_st.setMargins(m / 4, m, m / 4, 0);
         lp_st.addRule(RelativeLayout.CENTER_VERTICAL);
@@ -515,7 +565,8 @@ public class ViewBuilder {
         return root;
     }
 
-    public static RelativeLayout newListItemButtonIfValid(Context ctx, CharSequence title, CharSequence desc,
+    public static RelativeLayout newListItemButtonIfValid(Context ctx, CharSequence title,
+        CharSequence desc,
         CharSequence value, MultiItemDelayableHook hook) {
         View.OnClickListener listener;
         if (hook.isValid()) {
@@ -526,7 +577,8 @@ public class ViewBuilder {
         return newListItemButton(ctx, title, desc, value, listener);
     }
 
-    public static RelativeLayout newListItemButtonIfValid(Context ctx, CharSequence title, CharSequence desc,
+    public static RelativeLayout newListItemButtonIfValid(Context ctx, CharSequence title,
+        CharSequence desc,
         CharSequence value, BaseDelayableHook hook, Class<?> activity) {
         View.OnClickListener listener;
         if (hook.isValid()) {
@@ -537,7 +589,8 @@ public class ViewBuilder {
         return newListItemButton(ctx, title, desc, value, listener);
     }
 
-    public static RelativeLayout newListItemButtonIfValid(Context ctx, CharSequence title, CharSequence desc,
+    public static RelativeLayout newListItemButtonIfValid(Context ctx, CharSequence title,
+        CharSequence desc,
         CharSequence value, BaseDelayableHook hook, View.OnClickListener listener) {
         if (!hook.isValid()) {
             listener = (v -> Toasts.error(v.getContext(), "此功能暂不支持当前版本" + H.getAppName()));
@@ -553,7 +606,8 @@ public class ViewBuilder {
         return subtitle(ctx, title, color, false);
     }
 
-    public static LinearLayout subtitle(Context ctx, CharSequence title, int color, boolean isSelectable) {
+    public static LinearLayout subtitle(Context ctx, CharSequence title, int color,
+        boolean isSelectable) {
         LinearLayout ll = new LinearLayout(ctx);
         ll.setOrientation(LinearLayout.HORIZONTAL);
         ll.setGravity(Gravity.CENTER_VERTICAL);
@@ -599,8 +653,10 @@ public class ViewBuilder {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri uri = Uri.parse("mqqwpa://im/chat?chat_type=wpa&uin=1041703712&version=1&src_type=web&web_src=null");
-                Intent intent = new Intent(v.getContext(), load("com/tencent/mobileqq/activity/JumpActivity"));
+                Uri uri = Uri.parse(
+                    "mqqwpa://im/chat?chat_type=wpa&uin=1041703712&version=1&src_type=web&web_src=null");
+                Intent intent = new Intent(v.getContext(),
+                    load("com/tencent/mobileqq/activity/JumpActivity"));
                 intent.setData(uri);
                 v.getContext().startActivity(intent);
             }
@@ -626,24 +682,28 @@ public class ViewBuilder {
         };
     }
 
-    public static LinearLayout.LayoutParams newLinearLayoutParams(int width, int height, int left, int top, int right, int bottom) {
+    public static LinearLayout.LayoutParams newLinearLayoutParams(int width, int height, int left,
+        int top, int right, int bottom) {
         LinearLayout.LayoutParams ret = new LinearLayout.LayoutParams(width, height);
         ret.setMargins(left, top, right, bottom);
         return ret;
     }
 
-    public static LinearLayout.LayoutParams newLinearLayoutParams(int width, int height, int gravity, int left, int top, int right, int bottom) {
+    public static LinearLayout.LayoutParams newLinearLayoutParams(int width, int height,
+        int gravity, int left, int top, int right, int bottom) {
         LinearLayout.LayoutParams ret = new LinearLayout.LayoutParams(width, height);
         ret.setMargins(left, top, right, bottom);
         ret.gravity = gravity;
         return ret;
     }
 
-    public static LinearLayout.LayoutParams newLinearLayoutParams(int width, int height, int margins) {
+    public static LinearLayout.LayoutParams newLinearLayoutParams(int width, int height,
+        int margins) {
         return newLinearLayoutParams(width, height, margins, margins, margins, margins);
     }
 
-    public static RelativeLayout.LayoutParams newRelativeLayoutParamsM(int width, int height, int left, int top, int right, int bottom, int... verbArgv) {
+    public static RelativeLayout.LayoutParams newRelativeLayoutParamsM(int width, int height,
+        int left, int top, int right, int bottom, int... verbArgv) {
         RelativeLayout.LayoutParams ret = new RelativeLayout.LayoutParams(width, height);
         ret.setMargins(left, top, right, bottom);
         for (int i = 0; i < verbArgv.length / 2; i++) {
@@ -652,7 +712,8 @@ public class ViewBuilder {
         return ret;
     }
 
-    public static RelativeLayout.LayoutParams newRelativeLayoutParams(int width, int height, int... verbArgv) {
+    public static RelativeLayout.LayoutParams newRelativeLayoutParams(int width, int height,
+        int... verbArgv) {
         RelativeLayout.LayoutParams ret = new RelativeLayout.LayoutParams(width, height);
         for (int i = 0; i < verbArgv.length / 2; i++) {
             ret.addRule(verbArgv[i * 2], verbArgv[i * 2 + 1]);
@@ -673,14 +734,15 @@ public class ViewBuilder {
         return new Switch(ctx);
     }
 
-    public static LinearLayout newDialogClickableItemClickToCopy(final Context ctx, String title, String value, ViewGroup vg, boolean attach) {
+    public static LinearLayout newDialogClickableItemClickToCopy(final Context ctx, String title,
+        String value, ViewGroup vg, boolean attach) {
         return newDialogClickableItem(ctx, title, value, new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 Context c = v.getContext();
                 String msg = ((TextView) v).getText().toString();
                 if (msg.length() > 0) {
-                    SystemServiceUtils.copyToClipboard(ctx,msg);
+                    SystemServiceUtils.copyToClipboard(ctx, msg);
                     Toasts.info(c, "已复制文本");
                 }
                 return true;
@@ -688,15 +750,17 @@ public class ViewBuilder {
         }, vg, attach);
     }
 
-    public static LinearLayout newDialogClickableItem(final Context ctx, String title, String value, View.OnLongClickListener ll, ViewGroup vg, boolean attach) {
-        LinearLayout root = (LinearLayout) LayoutInflater.from(ctx).inflate(R.layout.dialog_clickable_item, vg, false);
+    public static LinearLayout newDialogClickableItem(final Context ctx, String title, String value,
+        View.OnLongClickListener ll, ViewGroup vg, boolean attach) {
+        LinearLayout root = (LinearLayout) LayoutInflater.from(ctx)
+            .inflate(R.layout.dialog_clickable_item, vg, false);
         TextView t = root.findViewById(R.id.dialogClickableItemTitle);
         TextView v = root.findViewById(R.id.dialogClickableItemValue);
         t.setText(title);
         v.setText(value);
         if (ll != null) {
             v.setOnLongClickListener(ll);
-            ViewCompat.setBackground(v,ResUtils.getDialogClickableItemBackground());
+            ViewCompat.setBackground(v, ResUtils.getDialogClickableItemBackground());
         }
         if (attach) {
             vg.addView(root);

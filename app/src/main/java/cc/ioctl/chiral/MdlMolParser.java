@@ -23,12 +23,6 @@ package cc.ioctl.chiral;
 
 public class MdlMolParser {
 
-    public static class BadMolFormatException extends Exception {
-        public BadMolFormatException(String msg) {
-            super(msg);
-        }
-    }
-
     public static Molecule parseString(String str) throws BadMolFormatException {
         int start = -1;
         Molecule.Atom[] atoms;
@@ -41,8 +35,9 @@ public class MdlMolParser {
                 break;
             }
         }
-        if (start == -1)
+        if (start == -1) {
             throw new BadMolFormatException("V2000 tag not found at any_line.substring(34, 39)");
+        }
         int numAtoms = Integer.parseInt(lines[start].substring(0, 3).trim());
         int numBonds = Integer.parseInt(lines[start].substring(3, 6).trim());
         atoms = new Molecule.Atom[numAtoms];
@@ -80,14 +75,16 @@ public class MdlMolParser {
             bonds[i] = bond;
             String line = lines[start + numAtoms + 1 + i];
             if (line.length() < 12) {
-                throw new BadMolFormatException("Invalid MDL MOL: bond line" + (start + numAtoms + 2 + i));
+                throw new BadMolFormatException(
+                    "Invalid MDL MOL: bond line" + (start + numAtoms + 2 + i));
             }
             int from = Integer.parseInt(line.substring(0, 3).trim());
             int to = Integer.parseInt(line.substring(3, 6).trim());
             int type = Integer.parseInt(line.substring(6, 9).trim());
             int stereo = Integer.parseInt(line.substring(9, 12).trim());
             if (from == to || from < 1 || from > numAtoms || to < 1 || to > numAtoms) {
-                throw new BadMolFormatException("Invalid MDL MOL: bond line" + (start + numAtoms + 2 + i));
+                throw new BadMolFormatException(
+                    "Invalid MDL MOL: bond line" + (start + numAtoms + 2 + i));
             }
             int order = (type < 1 || type > 3) ? 1 : type;
             int style = 0;
@@ -140,8 +137,10 @@ public class MdlMolParser {
                 try {
                     int len = Integer.parseInt(line.substring(6, 9).trim());
                     for (int n3 = 0; n3 < len; n3++) {
-                        int pos = Integer.parseInt(line.substring((n3 * 8) + 9, (n3 * 8) + 13).trim());
-                        int val = Integer.parseInt(line.substring((n3 * 8) + 13, (n3 * 8) + 17).trim());
+                        int pos = Integer
+                            .parseInt(line.substring((n3 * 8) + 9, (n3 * 8) + 13).trim());
+                        int val = Integer
+                            .parseInt(line.substring((n3 * 8) + 13, (n3 * 8) + 17).trim());
                         if (pos < 1) {
                             throw new BadMolFormatException("Invalid MDL MOL: M-block");
                         }
@@ -169,5 +168,12 @@ public class MdlMolParser {
         }
         molecule.initOnce();
         return molecule;
+    }
+
+    public static class BadMolFormatException extends Exception {
+
+        public BadMolFormatException(String msg) {
+            super(msg);
+        }
     }
 }

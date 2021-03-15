@@ -21,6 +21,9 @@
  */
 package cc.ioctl.dialog;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -36,27 +39,21 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-
+import androidx.annotation.NonNull;
 import androidx.core.view.ViewCompat;
-
-import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat;
-import nil.nadph.qnotified.hook.BaseDelayableHook;
 import com.rymmmmm.hook.OneTapTwentyLikes;
 import com.rymmmmm.hook.RemoveSendGiftAd;
 import com.rymmmmm.hook.ShowMsgCount;
+import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat;
+import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.ui.DummyDrawable;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.ViewBuilder;
-
-import androidx.annotation.NonNull;
-
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-
 public class RikkaDialog extends Dialog implements View.OnClickListener {
+
     private final Context mContext;
     GradientDrawable itemOnDrawable;
     GradientDrawable itemOffDrawable;
@@ -109,12 +106,13 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
         itemOnDrawable = new GradientDrawable();
         itemOnDrawable.setColor(0);
         itemOnDrawable.setCornerRadius(__5_dp);
-        itemOnDrawable.setStroke(Utils.dip2px(mContext, 2), RikkaColorPickDialog.getCurrentRikkaBorderColor());
+        itemOnDrawable.setStroke(Utils.dip2px(mContext, 2),
+            RikkaColorPickDialog.getCurrentRikkaBorderColor());
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         Window win = getWindow();
         win.setBackgroundDrawable(new DummyDrawable());
         ScrollView outer = new ScrollView(mContext);
-        ViewCompat.setBackground(outer,dialogBgDrawable);
+        ViewCompat.setBackground(outer, dialogBgDrawable);
         LinearLayout ll = new LinearLayout(mContext);
         ll.setClickable(true);
         LinearLayout root = new LinearLayout(mContext);
@@ -169,37 +167,28 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
 
     private RikkaConfigItem[] queryRikkaHooks() {
         return new RikkaConfigItem[]{
-                RikkaConfigItem.create(this, "显示具体消息数量", ShowMsgCount.INSTANCE),
-                new RikkaBaseApkFormatDialog(this),
-                RikkaConfigItem.create(this, "回赞界面一键20赞", OneTapTwentyLikes.INSTANCE),
-                new RikkaCustomMsgTimeFormatDialog(this),
-                RikkaConfigItem.create(this, "免广告送免费礼物[仅限群聊送礼物]", RemoveSendGiftAd.INSTANCE),
-                new RikkaCustomDeviceModelDialog(this),
-                new RikkaCustomSplash(this),
-                new RikkaColorPickDialog(this),
+            RikkaConfigItem.create(this, "显示具体消息数量", ShowMsgCount.INSTANCE),
+            new RikkaBaseApkFormatDialog(this),
+            RikkaConfigItem.create(this, "回赞界面一键20赞", OneTapTwentyLikes.INSTANCE),
+            new RikkaCustomMsgTimeFormatDialog(this),
+            RikkaConfigItem.create(this, "免广告送免费礼物[仅限群聊送礼物]", RemoveSendGiftAd.INSTANCE),
+            new RikkaCustomDeviceModelDialog(this),
+            new RikkaCustomSplash(this),
+            new RikkaColorPickDialog(this),
         };
     }
 
     public abstract static class RikkaConfigItem implements View.OnClickListener {
+
         final protected RikkaDialog rikkaDialog;
+        public View view;
 
         public RikkaConfigItem(RikkaDialog d) {
             rikkaDialog = d;
         }
 
-        public View view;
-
-        public abstract boolean isEnabled();
-
-        public abstract String getName();
-
-        public void invalidateStatus() {
-            View v = view;
-            if (v == null) return;
-            ViewCompat.setBackground(v, isEnabled() ? rikkaDialog.itemOnDrawable : rikkaDialog.itemOffDrawable);
-        }
-
-        public static RikkaConfigItem create(RikkaDialog dialog, final String name, final BaseDelayableHook hook) {
+        public static RikkaConfigItem create(RikkaDialog dialog, final String name,
+            final BaseDelayableHook hook) {
             return new RikkaConfigItem(dialog) {
 
                 @Override
@@ -275,6 +264,19 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
                     return name;
                 }
             };
+        }
+
+        public abstract boolean isEnabled();
+
+        public abstract String getName();
+
+        public void invalidateStatus() {
+            View v = view;
+            if (v == null) {
+                return;
+            }
+            ViewCompat.setBackground(v,
+                isEnabled() ? rikkaDialog.itemOnDrawable : rikkaDialog.itemOffDrawable);
         }
     }
 

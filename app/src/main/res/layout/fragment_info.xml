@@ -22,10 +22,10 @@
   -->
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragment.InfoFragment"
     tools:ignore="ContentDescription">
     <androidx.core.widget.NestedScrollView
@@ -37,30 +37,27 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
+            android:padding="16dp"
             android:gravity="center_horizontal"
-            android:padding="16dp">
+            android:orientation="vertical">
 
             <ImageView
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                android:src="@drawable/icon" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="@string/app_name"
-                android:textColor="@color/firstTextColor"
-                android:textSize="16sp" />
+                android:src="@drawable/icon"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical" >
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_chevron_right"/>
 
                 <TextView
                     android:layout_width="0dp"
@@ -68,19 +65,19 @@
                     android:layout_weight="1"
                     android:text="@string/privacy_rules"
                     android:textColor="@color/secondTextColor"
-                    android:textSize="16sp" />
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_chevron_right" />
+                    android:textSize="16sp"/>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical" >
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_chevron_right"/>
 
                 <TextView
                     android:layout_width="0dp"
@@ -88,24 +85,14 @@
                     android:layout_weight="1"
                     android:text="@string/user_agreement"
                     android:textColor="@color/secondTextColor"
-                    android:textSize="16sp" />
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_chevron_right" />
+                    android:textSize="16sp"/>
             </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/divideColor" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical" >
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="0dp"
@@ -113,21 +100,21 @@
                     android:layout_weight="1"
                     android:text="@string/ModuleVersion"
                     android:textColor="@color/secondTextColor"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Version Name"
                     android:textColor="@color/thirdTextColor"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"/>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical" >
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="0dp"
@@ -135,21 +122,33 @@
                     android:layout_weight="1"
                     android:text="@string/qq_version"
                     android:textColor="@color/secondTextColor"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Version Name"
                     android:textColor="@color/thirdTextColor"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"/>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical" >
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_chevron_right"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="已是最新"
+                    android:textColor="@color/thirdTextColor"
+                    android:textSize="12sp"/>
 
                 <TextView
                     android:layout_width="0dp"
@@ -157,31 +156,19 @@
                     android:layout_weight="1"
                     android:text="@string/check_update"
                     android:textColor="@color/secondTextColor"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="已是最新"
-                    android:textColor="@color/thirdTextColor"
-                    android:textSize="12sp" />
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_chevron_right" />
+                    android:textSize="16sp"/>
             </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/divideColor" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical" >
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_chevron_right"/>
 
                 <TextView
                     android:layout_width="0dp"
@@ -189,19 +176,19 @@
                     android:layout_weight="1"
                     android:text="@string/community_channel"
                     android:textColor="@color/secondTextColor"
-                    android:textSize="16sp" />
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_chevron_right" />
+                    android:textSize="16sp"/>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical" >
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_chevron_right"/>
 
                 <TextView
                     android:layout_width="0dp"
@@ -209,24 +196,19 @@
                     android:layout_weight="1"
                     android:text="@string/contact"
                     android:textColor="@color/secondTextColor"
-                    android:textSize="16sp" />
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_chevron_right" />
+                    android:textSize="16sp"/>
             </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/divideColor" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical" >
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_chevron_right"/>
 
                 <TextView
                     android:layout_width="0dp"
@@ -234,19 +216,19 @@
                     android:layout_weight="1"
                     android:text="@string/github"
                     android:textColor="@color/secondTextColor"
-                    android:textSize="16sp" />
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_chevron_right" />
+                    android:textSize="16sp"/>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical" >
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_chevron_right"/>
 
                 <TextView
                     android:layout_width="0dp"
@@ -254,24 +236,19 @@
                     android:layout_weight="1"
                     android:text="@string/open_source_license"
                     android:textColor="@color/secondTextColor"
-                    android:textSize="16sp" />
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_chevron_right" />
+                    android:textSize="16sp"/>
             </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/divideColor" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical" >
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_chevron_right"/>
 
                 <TextView
                     android:layout_width="0dp"
@@ -279,13 +256,36 @@
                     android:layout_weight="1"
                     android:text="@string/main_developers"
                     android:textColor="@color/secondTextColor"
-                    android:textSize="16sp" />
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_chevron_right" />
+                    android:textSize="16sp"/>
             </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="@string/app_name"
+                android:textColor="@color/firstTextColor"
+                android:textSize="16sp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divideColor"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divideColor"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divideColor"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divideColor"/>
 
         </LinearLayout>
 

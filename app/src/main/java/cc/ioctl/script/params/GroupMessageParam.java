@@ -22,6 +22,7 @@
 package cc.ioctl.script.params;
 
 public class GroupMessageParam {
+
     /**
      * 发送者id
      */

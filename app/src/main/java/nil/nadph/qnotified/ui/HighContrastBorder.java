@@ -28,6 +28,7 @@ import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 
 public class HighContrastBorder extends Drawable {
+
     private final Paint mPaint;
 
     public HighContrastBorder() {

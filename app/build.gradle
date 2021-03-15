@@ -21,7 +21,7 @@ android {
         targetSdkVersion 29
         versionCode(getTimeStamp.call() as int)
         // versionName format: major.minor.accumulation.commit_id
-        versionName "0.8.14" + (getGitHeadRefsSuffix.call() as String)
+        versionName "0.8.15" + (getGitHeadRefsSuffix.call() as String)
         multiDexEnabled false
         ndk {
             abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
@@ -274,8 +274,8 @@ task checkTargetNativeLibsDebug {
             File f = new File(rootProject.projectDir, tmp_path)
             if (!f.exists()) {
                 throw new IllegalStateException("Native library missing for the target abi: " + abi
-                    + ".\nPlease run gradle task ':app:externalNativeBuildDebug' manually to " +
-                    "force android gradle plugin to satisfy all required ABIs.")
+                    +".\nPlease run gradle task ':app:externalNativeBuildDebug' manually to " +
+                        "force android gradle plugin to satisfy all required ABIs.")
             }
         }
     }
@@ -294,8 +294,8 @@ task checkTargetNativeLibsRelease {
             File f = new File(rootProject.projectDir, tmp_path)
             if (!f.exists()) {
                 throw new IllegalStateException("Native library missing for the target abi: " + abi
-                    + ".\nPlease run gradle task ':app:externalNativeBuildRelease' manually to " +
-                    "force android gradle plugin to satisfy all required ABIs.")
+                    +".\nPlease run gradle task ':app:externalNativeBuildRelease' manually to " +
+                        "force android gradle plugin to satisfy all required ABIs.")
             }
         }
     }

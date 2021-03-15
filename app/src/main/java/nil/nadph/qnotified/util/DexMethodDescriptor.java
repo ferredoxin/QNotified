@@ -26,6 +26,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 public class DexMethodDescriptor implements Serializable, Cloneable {
+
     /**
      * Ljava/lang/Object;
      */
@@ -40,14 +41,18 @@ public class DexMethodDescriptor implements Serializable, Cloneable {
     public final String signature;
 
     public DexMethodDescriptor(Method method) {
-        if (method == null) throw new NullPointerException();
+        if (method == null) {
+            throw new NullPointerException();
+        }
         declaringClass = getTypeSig(method.getDeclaringClass());
         name = method.getName();
         signature = getMethodTypeSig(method);
     }
 
     public DexMethodDescriptor(String desc) {
-        if (desc == null) throw new NullPointerException();
+        if (desc == null) {
+            throw new NullPointerException();
+        }
         int a = desc.indexOf("->");
         int b = desc.indexOf('(', a);
         declaringClass = desc.substring(0, a);
@@ -56,50 +61,12 @@ public class DexMethodDescriptor implements Serializable, Cloneable {
     }
 
     public DexMethodDescriptor(String clz, String n, String s) {
-        if (clz == null || n == null || s == null) throw new NullPointerException();
+        if (clz == null || n == null || s == null) {
+            throw new NullPointerException();
+        }
         declaringClass = clz;
         name = n;
         signature = s;
-    }
-
-    public String getDeclaringClassName() {
-        return declaringClass.substring(1, declaringClass.length() - 1).replace('/', '.');
-    }
-
-    @Override
-    public String toString() {
-        return declaringClass + "->" + name + signature;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        return toString().equals(o.toString());
-    }
-
-    @Override
-    public int hashCode() {
-        return toString().hashCode();
-    }
-
-    public Method getMethodInstance(ClassLoader classLoader) throws NoSuchMethodException {
-        try {
-            Class<?> clz = classLoader.loadClass(declaringClass.substring(1, declaringClass.length() - 1).replace('/', '.'));
-            for (Method m : clz.getDeclaredMethods()) {
-                if (m.getName().equals(name) && getMethodTypeSig(m).equals(signature)) return m;
-            }
-            while ((clz = clz.getSuperclass()) != null) {
-                for (Method m : clz.getDeclaredMethods()) {
-                    if (Modifier.isPrivate(m.getModifiers()) || Modifier.isStatic(m.getModifiers()))
-                        continue;
-                    if (m.getName().equals(name) && getMethodTypeSig(m).equals(signature)) return m;
-                }
-            }
-            throw new NoSuchMethodException(declaringClass + "->" + name + signature);
-        } catch (ClassNotFoundException e) {
-            throw (NoSuchMethodException) new NoSuchMethodException(declaringClass + "->" + name + signature).initCause(e);
-        }
     }
 
     public static String getMethodTypeSig(final Method method) {
@@ -149,6 +116,58 @@ public class DexMethodDescriptor implements Serializable, Cloneable {
             return "[" + getTypeSig(type.getComponentType());
         }
         return "L" + type.getName().replace('.', '/') + ";";
+    }
+
+    public String getDeclaringClassName() {
+        return declaringClass.substring(1, declaringClass.length() - 1).replace('/', '.');
+    }
+
+    @Override
+    public String toString() {
+        return declaringClass + "->" + name + signature;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        return toString().equals(o.toString());
+    }
+
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
+
+    public Method getMethodInstance(ClassLoader classLoader) throws NoSuchMethodException {
+        try {
+            Class<?> clz = classLoader.loadClass(
+                declaringClass.substring(1, declaringClass.length() - 1).replace('/', '.'));
+            for (Method m : clz.getDeclaredMethods()) {
+                if (m.getName().equals(name) && getMethodTypeSig(m).equals(signature)) {
+                    return m;
+                }
+            }
+            while ((clz = clz.getSuperclass()) != null) {
+                for (Method m : clz.getDeclaredMethods()) {
+                    if (Modifier.isPrivate(m.getModifiers()) || Modifier
+                        .isStatic(m.getModifiers())) {
+                        continue;
+                    }
+                    if (m.getName().equals(name) && getMethodTypeSig(m).equals(signature)) {
+                        return m;
+                    }
+                }
+            }
+            throw new NoSuchMethodException(declaringClass + "->" + name + signature);
+        } catch (ClassNotFoundException e) {
+            throw (NoSuchMethodException) new NoSuchMethodException(
+                declaringClass + "->" + name + signature).initCause(e);
+        }
     }
 
 }

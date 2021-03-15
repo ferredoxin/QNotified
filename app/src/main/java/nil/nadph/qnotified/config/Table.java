@@ -22,34 +22,23 @@
 package nil.nadph.qnotified.config;
 
 import androidx.annotation.Nullable;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 
 public class Table<K> implements Serializable, Cloneable {
 
     public static final Object VOID_INSTANCE;
-
-    static {
-        Object tmp = null;
-        try {
-            Method m = Class.class.getMethod("getDeclaredConstructor", Class[].class);
-            Constructor<Void> c = (Constructor<Void>) m.invoke(Void.class, new Object[]{new Class[0]});
-            c.setAccessible(true);
-            tmp = c.newInstance();
-        } catch (Exception e) {
-            //**sigh**
-            e.printStackTrace();
-            tmp = new Object();
-        }
-        VOID_INSTANCE = tmp;
-    }
+    public static final byte TYPE_VOID = 0;//should NOT have value
 
     /* New format!!
      * LE
@@ -60,8 +49,6 @@ public class Table<K> implements Serializable, Cloneable {
      * 00   000000   00000008
      * type reserved length
      */
-
-    public static final byte TYPE_VOID = 0;//should NOT have value
     public static final byte TYPE_BYTE = 1;
     public static final byte TYPE_BOOL = 2;
     public static final byte TYPE_WCHAR32 = 3;
@@ -70,13 +57,13 @@ public class Table<K> implements Serializable, Cloneable {
     public static final byte TYPE_LONG = 6;
     public static final byte TYPE_FLOAT = 7;
     public static final byte TYPE_DOUBLE = 8;
-
     public static final byte TYPE_IRAW = 9;
     public static final byte TYPE_IUTF8 = 10;
     public static final byte TYPE_IUTF32 = 11;
     /**
-     * B_TABLE ISTR_table_name [ I_len_types(fields.len) I_len_data(records.len) B_key_type ISTR_key_name (B_field_type I_STR_name)... (B_type_K(THIS-IS-IMPORTANTA!) index (B_type val)...)... ]
-     * B_type  ISTR_name       val
+     * B_TABLE ISTR_table_name [ I_len_types(fields.len) I_len_data(records.len) B_key_type
+     * ISTR_key_name (B_field_type I_STR_name)... (B_type_K(THIS-IS-IMPORTANTA!) index (B_type
+     * val)...)... ] B_type  ISTR_name       val
      */
     public static final byte TYPE_TABLE = 16;
     /**
@@ -84,9 +71,23 @@ public class Table<K> implements Serializable, Cloneable {
      **/
     public static final byte TYPE_ARRAY = 17;
     public static final byte TYPE_MAP = 18;
-
     public static final byte TYPE_EOF = (byte) 0xFF;//oh,no...it's terrible!
 
+    static {
+        Object tmp = null;
+        try {
+            Method m = Class.class.getMethod("getDeclaredConstructor", Class[].class);
+            Constructor<Void> c = (Constructor<Void>) m
+                .invoke(Void.class, new Object[]{new Class[0]});
+            c.setAccessible(true);
+            tmp = c.newInstance();
+        } catch (Exception e) {
+            //**sigh**
+            e.printStackTrace();
+            tmp = new Object();
+        }
+        VOID_INSTANCE = tmp;
+    }
 
     public HashMap<K, Object[]> records;
     public String[] fields;
@@ -187,7 +188,8 @@ public class Table<K> implements Serializable, Cloneable {
                     case TYPE_EOF:
                         break a;
                     default:
-                        throw new IOException("Unexpected type:" + table.types[i] + ",record_name:\"" + fn + "\"");
+                        throw new IOException(
+                            "Unexpected type:" + table.types[i] + ",record_name:\"" + fn + "\"");
                 }
             }
             table.records.put(fn, recval);
@@ -231,7 +233,8 @@ public class Table<K> implements Serializable, Cloneable {
         }
     }
 
-    public static void writeTypeAndObj(DataOutputStream out, byte rtype, Object obj) throws IOException {
+    public static void writeTypeAndObj(DataOutputStream out, byte rtype, Object obj)
+        throws IOException {
         out.write(rtype);
         switch (rtype) {
             case TYPE_VOID:
@@ -275,7 +278,8 @@ public class Table<K> implements Serializable, Cloneable {
         }
     }
 
-    public static void writeRecord(DataOutputStream out, @Nullable String key, Object val) throws IOException {
+    public static void writeRecord(DataOutputStream out, @Nullable String key, Object val)
+        throws IOException {
         byte type;
         try {
             Class clz = val.getClass();
@@ -393,8 +397,9 @@ public class Table<K> implements Serializable, Cloneable {
 
     public int getFieldId(String name) {
         for (int i = 0; i < fields.length; i++) {
-            if (name.equals(fields[i]))
+            if (name.equals(fields[i])) {
                 return i;
+            }
         }
         return -1;
     }
@@ -405,16 +410,24 @@ public class Table<K> implements Serializable, Cloneable {
 
     public Object get(K key, String field) throws NoSuchFieldException {
         int i = getFieldId(field);
-        if (i < 0) throw new NoSuchFieldException(field);
-        if (!hasRecord(key)) throw new NoSuchElementException("key:" + key);
+        if (i < 0) {
+            throw new NoSuchFieldException(field);
+        }
+        if (!hasRecord(key)) {
+            throw new NoSuchElementException("key:" + key);
+        }
         return records.get(key)[i];
     }
 
     public void set(K key, String field, Serializable val) throws NoSuchFieldException {
         synchronized (this) {
             int i = getFieldId(field);
-            if (i < 0) throw new NoSuchFieldException(field);
-            if (!hasRecord(key)) throw new NoSuchElementException("key:" + key);
+            if (i < 0) {
+                throw new NoSuchFieldException(field);
+            }
+            if (!hasRecord(key)) {
+                throw new NoSuchElementException("key:" + key);
+            }
 
             records.get(key)[i] = val;
         }
@@ -422,7 +435,9 @@ public class Table<K> implements Serializable, Cloneable {
 
     public void insert(K key) {
         synchronized (this) {
-            if (hasRecord(key)) return;
+            if (hasRecord(key)) {
+                return;
+            }
             Object[] rec = new Object[fields.length];
             records.put(key, rec);
         }
@@ -436,8 +451,12 @@ public class Table<K> implements Serializable, Cloneable {
 
     public boolean addField(String field, byte type) {
         synchronized (this) {
-            if (getFieldId(field) >= 0) return true;
-            if (field == null) return false;
+            if (getFieldId(field) >= 0) {
+                return true;
+            }
+            if (field == null) {
+                return false;
+            }
             String[] _f = new String[fields.length + 1];
             byte[] _t = new byte[fields.length + 1];
             System.arraycopy(fields, 0, _f, 0, fields.length);
@@ -462,11 +481,21 @@ public class Table<K> implements Serializable, Cloneable {
 
     public void init() {
         synchronized (this) {
-            if (records == null) records = new HashMap<>();
-            if (fields == null) fields = new String[0];
-            if (types == null) types = new byte[0];
-            if (keyName == null) keyName = "id";
-            if (keyType == 0) keyType = TYPE_INT;
+            if (records == null) {
+                records = new HashMap<>();
+            }
+            if (fields == null) {
+                fields = new String[0];
+            }
+            if (types == null) {
+                types = new byte[0];
+            }
+            if (keyName == null) {
+                keyName = "id";
+            }
+            if (keyType == 0) {
+                keyType = TYPE_INT;
+            }
         }
     }
 }

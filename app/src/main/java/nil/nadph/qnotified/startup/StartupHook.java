@@ -24,100 +24,41 @@ package nil.nadph.qnotified.startup;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
-
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.XposedHelpers;
-
 /**
- * Startup hook for QQ/TIM
- * They should act differently according to the process they belong to.
- * I don't want to cope with them any more, enjoy it as long as possible.
- * DO NOT INVOKE ANY METHOD THAT MAY GET IN TOUCH WITH KOTLIN HERE.
- * DO NOT MODIFY ANY CODE HERE UNLESS NECESSARY.
+ * Startup hook for QQ/TIM They should act differently according to the process they belong to. I
+ * don't want to cope with them any more, enjoy it as long as possible. DO NOT INVOKE ANY METHOD
+ * THAT MAY GET IN TOUCH WITH KOTLIN HERE. DO NOT MODIFY ANY CODE HERE UNLESS NECESSARY.
  *
  * @author cinit
  */
 public class StartupHook {
+
     public static final String QN_FULL_TAG = "qn_full_tag";
     public static StartupHook SELF;
+    static boolean sec_static_stage_inited = false;
     private boolean first_stage_inited = false;
 
     private StartupHook() {
     }
 
-    public void doInit(ClassLoader rtLoader) throws Throwable {
-        if (first_stage_inited) {
-            return;
-        }
-        try {
-            XC_MethodHook startup = new XC_MethodHook(51) {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    try {
-                        Context app;
-                        Class<?> clz = param.thisObject.getClass().getClassLoader().loadClass("com.tencent.common.app.BaseApplicationImpl");
-                        Field fsApp = null;
-                        for (Field f : clz.getDeclaredFields()) {
-                            if (f.getType() == clz) {
-                                fsApp = f;
-                                break;
-                            }
-                        }
-                        if (fsApp == null) {
-                            throw new NoSuchFieldException("field BaseApplicationImpl.sApplication not found");
-                        }
-                        app = (Context) fsApp.get(null);
-                        execStartupInit(app, param.thisObject, null, false);
-                    } catch (Throwable e) {
-                        log_e(e);
-                        throw e;
-                    }
-                }
-            };
-            Class<?> loadDex = rtLoader.loadClass("com.tencent.mobileqq.startup.step.LoadDex");
-            Method[] ms = loadDex.getDeclaredMethods();
-            Method m = null;
-            for (Method method : ms) {
-                if (method.getReturnType().equals(boolean.class) && method.getParameterTypes().length == 0) {
-                    m = method;
-                    break;
-                }
-            }
-            XposedBridge.hookMethod(m, startup);
-            first_stage_inited = true;
-        } catch (Throwable e) {
-            if ((e + "").contains("com.bug.zqq")) return;
-            if ((e + "").contains("com.google.android.webview")) return;
-            log_e(e);
-            throw e;
-        }
-        try {
-            XposedHelpers.findAndHookMethod(rtLoader.loadClass("com.tencent.mobileqq.qfix.QFixApplication"), "attachBaseContext", Context.class, new XC_MethodHook() {
-                public void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    deleteDirIfNecessaryNoThrow((Context) param.args[0]);
-                }
-            });
-        } catch (ClassNotFoundException ignored) {
-        }
-    }
-
-    static boolean sec_static_stage_inited = false;
-
     /**
-     * Entry point for static or dynamic initialization.
-     * NOTICE: Do NOT change the method name or signature.
+     * Entry point for static or dynamic initialization. NOTICE: Do NOT change the method name or
+     * signature.
      *
      * @param ctx         Application context for host
      * @param step        Step instance
      * @param lpwReserved null, not used
      * @param bReserved   false, not used
      */
-    public static void execStartupInit(Context ctx, Object step, String lpwReserved, boolean bReserved) {
+    public static void execStartupInit(Context ctx, Object step, String lpwReserved,
+        boolean bReserved) {
         if (sec_static_stage_inited) {
             return;
         }
@@ -197,7 +138,9 @@ public class StartupHook {
     }
 
     static void log_e(Throwable th) {
-        if (th == null) return;
+        if (th == null) {
+            return;
+        }
         String msg = Log.getStackTraceString(th);
         Log.e("QNdump", msg);
         try {
@@ -222,8 +165,74 @@ public class StartupHook {
         Log.e("QNdump", "Module.parent: " + StartupHook.class.getClassLoader().getParent());
         Log.e("QNdump", "XposedBridge: " + XposedBridge.class.getClassLoader());
         Log.e("QNdump", "SystemClassLoader: " + ClassLoader.getSystemClassLoader());
-        Log.e("QNdump", "currentThread.getContextClassLoader(): " + Thread.currentThread().getContextClassLoader());
+        Log.e("QNdump", "currentThread.getContextClassLoader(): " + Thread.currentThread()
+            .getContextClassLoader());
         Log.e("QNdump", "Context.class: " + Context.class.getClassLoader());
+    }
+
+    public void doInit(ClassLoader rtLoader) throws Throwable {
+        if (first_stage_inited) {
+            return;
+        }
+        try {
+            XC_MethodHook startup = new XC_MethodHook(51) {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    try {
+                        Context app;
+                        Class<?> clz = param.thisObject.getClass().getClassLoader()
+                            .loadClass("com.tencent.common.app.BaseApplicationImpl");
+                        Field fsApp = null;
+                        for (Field f : clz.getDeclaredFields()) {
+                            if (f.getType() == clz) {
+                                fsApp = f;
+                                break;
+                            }
+                        }
+                        if (fsApp == null) {
+                            throw new NoSuchFieldException(
+                                "field BaseApplicationImpl.sApplication not found");
+                        }
+                        app = (Context) fsApp.get(null);
+                        execStartupInit(app, param.thisObject, null, false);
+                    } catch (Throwable e) {
+                        log_e(e);
+                        throw e;
+                    }
+                }
+            };
+            Class<?> loadDex = rtLoader.loadClass("com.tencent.mobileqq.startup.step.LoadDex");
+            Method[] ms = loadDex.getDeclaredMethods();
+            Method m = null;
+            for (Method method : ms) {
+                if (method.getReturnType().equals(boolean.class)
+                    && method.getParameterTypes().length == 0) {
+                    m = method;
+                    break;
+                }
+            }
+            XposedBridge.hookMethod(m, startup);
+            first_stage_inited = true;
+        } catch (Throwable e) {
+            if ((e + "").contains("com.bug.zqq")) {
+                return;
+            }
+            if ((e + "").contains("com.google.android.webview")) {
+                return;
+            }
+            log_e(e);
+            throw e;
+        }
+        try {
+            XposedHelpers
+                .findAndHookMethod(rtLoader.loadClass("com.tencent.mobileqq.qfix.QFixApplication"),
+                    "attachBaseContext", Context.class, new XC_MethodHook() {
+                        public void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            deleteDirIfNecessaryNoThrow((Context) param.args[0]);
+                        }
+                    });
+        } catch (ClassNotFoundException ignored) {
+        }
     }
 
 

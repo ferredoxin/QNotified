@@ -22,15 +22,13 @@
 package com.rymmmmm.hook;
 
 import android.content.res.AssetManager;
-
+import cc.ioctl.dialog.RikkaCustomSplash;
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.lang.reflect.Method;
-
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import cc.ioctl.dialog.RikkaCustomSplash;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.LicenseStatus;
@@ -39,18 +37,27 @@ import nil.nadph.qnotified.util.Utils;
 //自定义启动图
 @FunctionEntry
 public class CustomSplash extends CommonDelayableHook {
+
     public static final CustomSplash INSTANCE = new CustomSplash();
 
     private static final byte[] TRANSPARENT_PNG = new byte[]{
-            (byte) 0x89, (byte) 0x50, (byte) 0x4E, (byte) 0x47, (byte) 0x0D, (byte) 0x0A, (byte) 0x1A, (byte) 0x0A,
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x0D, (byte) 0x49, (byte) 0x48, (byte) 0x44, (byte) 0x52,
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x01, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x01,
-            (byte) 0x08, (byte) 0x06, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x1F, (byte) 0x15, (byte) 0xC4,
-            (byte) 0x89, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x0B, (byte) 0x49, (byte) 0x44, (byte) 0x41,
-            (byte) 0x54, (byte) 0x08, (byte) 0xD7, (byte) 0x63, (byte) 0x60, (byte) 0x00, (byte) 0x02, (byte) 0x00,
-            (byte) 0x00, (byte) 0x05, (byte) 0x00, (byte) 0x01, (byte) 0xE2, (byte) 0x26, (byte) 0x05, (byte) 0x9B,
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x49, (byte) 0x45, (byte) 0x4E, (byte) 0x44,
-            (byte) 0xAE, (byte) 0x42, (byte) 0x60, (byte) 0x82};
+        (byte) 0x89, (byte) 0x50, (byte) 0x4E, (byte) 0x47, (byte) 0x0D, (byte) 0x0A, (byte) 0x1A,
+        (byte) 0x0A,
+        (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x0D, (byte) 0x49, (byte) 0x48, (byte) 0x44,
+        (byte) 0x52,
+        (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x01, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+        (byte) 0x01,
+        (byte) 0x08, (byte) 0x06, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x1F, (byte) 0x15,
+        (byte) 0xC4,
+        (byte) 0x89, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x0B, (byte) 0x49, (byte) 0x44,
+        (byte) 0x41,
+        (byte) 0x54, (byte) 0x08, (byte) 0xD7, (byte) 0x63, (byte) 0x60, (byte) 0x00, (byte) 0x02,
+        (byte) 0x00,
+        (byte) 0x00, (byte) 0x05, (byte) 0x00, (byte) 0x01, (byte) 0xE2, (byte) 0x26, (byte) 0x05,
+        (byte) 0x9B,
+        (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x49, (byte) 0x45, (byte) 0x4E,
+        (byte) 0x44,
+        (byte) 0xAE, (byte) 0x42, (byte) 0x60, (byte) 0x82};
 
     protected CustomSplash() {
         super("__NOT_USED__");
@@ -63,12 +70,18 @@ public class CustomSplash extends CommonDelayableHook {
             XposedBridge.hookMethod(open, new XC_MethodHook(53) {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.sDisableCommonHooks) return;
-                    if (!isEnabled()) return;
+                    if (LicenseStatus.sDisableCommonHooks) {
+                        return;
+                    }
+                    if (!isEnabled()) {
+                        return;
+                    }
                     String fileName = (String) param.args[0];
                     if ("splash.jpg".equals(fileName) || "splash_big.jpg".equals(fileName)) {
                         String customPath = RikkaCustomSplash.getCurrentSplashPath();
-                        if (customPath == null) return;
+                        if (customPath == null) {
+                            return;
+                        }
                         File f = new File(customPath);
                         if (f.exists() && f.isFile() && f.canRead()) {
                             param.setResult(new FileInputStream(f));

@@ -25,7 +25,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import de.robv.android.xposed.XC_MethodHook
 import ltd.nextalone.data.TroopInfo
-import ltd.nextalone.util.*
+import ltd.nextalone.util.clazz
 import me.ketal.dispacher.OnBubbleBuilder
 import me.ketal.util.findViewByType
 import me.singleneuron.qn_kernel.data.MsgRecordData
@@ -35,7 +35,11 @@ object HideTroopLevel : CommonDelayableHook("na_hide_troop_level_kt"), OnBubbleB
 
     override fun initOnce() = true
 
-    override fun onGetView(rootView: ViewGroup, msg: MsgRecordData, param: XC_MethodHook.MethodHookParam) {
+    override fun onGetView(
+        rootView: ViewGroup,
+        msg: MsgRecordData,
+        param: XC_MethodHook.MethodHookParam
+    ) {
         if (!isEnabled || 1 != msg.isTroop) return
         val sendUin = msg.senderUin
         val troopInfo = TroopInfo(msg.friendUin)

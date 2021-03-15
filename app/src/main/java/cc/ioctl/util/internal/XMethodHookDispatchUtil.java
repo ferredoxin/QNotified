@@ -23,7 +23,6 @@ package cc.ioctl.util.internal;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -42,19 +41,24 @@ public class XMethodHookDispatchUtil {
             F_RETURN_EARLY.setAccessible(true);
             M_PARAM_INIT = XC_MethodHook.MethodHookParam.class.getDeclaredConstructor();
             M_PARAM_INIT.setAccessible(true);
-            M_XCM_beforeHookedMethod = XC_MethodHook.class.getDeclaredMethod("beforeHookedMethod", XC_MethodHook.MethodHookParam.class);
+            M_XCM_beforeHookedMethod = XC_MethodHook.class
+                .getDeclaredMethod("beforeHookedMethod", XC_MethodHook.MethodHookParam.class);
             M_XCM_beforeHookedMethod.setAccessible(true);
-            M_XCM_afterHookedMethod = XC_MethodHook.class.getDeclaredMethod("afterHookedMethod", XC_MethodHook.MethodHookParam.class);
+            M_XCM_afterHookedMethod = XC_MethodHook.class
+                .getDeclaredMethod("afterHookedMethod", XC_MethodHook.MethodHookParam.class);
             M_XCM_afterHookedMethod.setAccessible(true);
         } catch (NoSuchFieldException e) {
-            throw new UnsupportedOperationException("MethodHookParam.returnEarly not found, API: " + XposedBridge.getXposedVersion());
+            throw new UnsupportedOperationException(
+                "MethodHookParam.returnEarly not found, API: " + XposedBridge.getXposedVersion());
         } catch (NoSuchMethodException e) {
-            throw new UnsupportedOperationException("MethodHookParam.<init>() not found, API: " + XposedBridge.getXposedVersion());
+            throw new UnsupportedOperationException(
+                "MethodHookParam.<init>() not found, API: " + XposedBridge.getXposedVersion());
         }
     }
 
 
-    public static XC_MethodHook.MethodHookParam createParam(XC_MethodHook hook, Method method, Object thisObj, Object... argv) {
+    public static XC_MethodHook.MethodHookParam createParam(XC_MethodHook hook, Method method,
+        Object thisObj, Object... argv) {
         try {
             XC_MethodHook.MethodHookParam p = M_PARAM_INIT.newInstance();
             p.thisObject = thisObj;
@@ -71,7 +75,9 @@ public class XMethodHookDispatchUtil {
     }
 
     public static boolean callBeforeHook(XC_MethodHook hook, XC_MethodHook.MethodHookParam param) {
-        if (hook == null || param == null) return false;
+        if (hook == null || param == null) {
+            return false;
+        }
         try {
             M_XCM_beforeHookedMethod.invoke(hook, param);
             return (boolean) F_RETURN_EARLY.get(param);
@@ -93,7 +99,9 @@ public class XMethodHookDispatchUtil {
     }
 
     public static void callAfterHook(XC_MethodHook hook, XC_MethodHook.MethodHookParam param) {
-        if (hook == null || param == null) return;
+        if (hook == null || param == null) {
+            return;
+        }
         try {
             M_XCM_afterHookedMethod.invoke(hook, param);
         } catch (InvocationTargetException e) {
@@ -114,16 +122,16 @@ public class XMethodHookDispatchUtil {
     }
 
     public static final class HookHolder {
+
+        public XC_MethodHook hook;
+        public Method method;
+
         public HookHolder() {
         }
-
         public HookHolder(XC_MethodHook h, Method m) {
             hook = h;
             method = m;
         }
-
-        public XC_MethodHook hook;
-        public Method method;
     }
 
 }

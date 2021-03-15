@@ -21,11 +21,12 @@
  */
 package com.rymmmmm.hook;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import static nil.nadph.qnotified.util.Utils.log;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
@@ -33,15 +34,15 @@ import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
 
-import static nil.nadph.qnotified.util.Utils.*;
-
 //显示具体消息数量
 @FunctionEntry
 public class ShowMsgCount extends CommonDelayableHook {
+
     public static final ShowMsgCount INSTANCE = new ShowMsgCount();
 
     private ShowMsgCount() {
-        super("rq_show_msg_count", SyncUtils.PROC_MAIN, new DexDeobfStep(DexKit.C_CustomWidgetUtil));
+        super("rq_show_msg_count", SyncUtils.PROC_MAIN,
+            new DexDeobfStep(DexKit.C_CustomWidgetUtil));
     }
 
     @Override
@@ -50,14 +51,19 @@ public class ShowMsgCount extends CommonDelayableHook {
             Class<?> clazz = DexKit.doFindClass(DexKit.C_CustomWidgetUtil);
             for (Method m : clazz.getDeclaredMethods()) {
                 Class<?>[] argt = m.getParameterTypes();
-                if (argt.length == 6 && Modifier.isStatic(m.getModifiers()) && m.getReturnType() == void.class) {
+                if (argt.length == 6 && Modifier.isStatic(m.getModifiers())
+                    && m.getReturnType() == void.class) {
                     // TIM 3.1.1(1084) smali references
                     // updateCustomNoteTxt(Landroid/widget/TextView;IIIILjava/lang/String;)V
                     XposedBridge.hookMethod(m, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            if (LicenseStatus.sDisableCommonHooks) return;
-                            if (!isEnabled()) return;
+                            if (LicenseStatus.sDisableCommonHooks) {
+                                return;
+                            }
+                            if (!isEnabled()) {
+                                return;
+                            }
                             param.args[4] = Integer.MAX_VALUE;
                         }
                     });

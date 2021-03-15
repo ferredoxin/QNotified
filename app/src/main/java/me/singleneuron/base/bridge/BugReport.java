@@ -22,10 +22,8 @@
 package me.singleneuron.base.bridge;
 
 import androidx.annotation.NonNull;
-
 import java.io.IOException;
 import java.util.ArrayList;
-
 import me.singleneuron.data.BugReportArguments;
 import nil.nadph.qnotified.remote.NAuthBugReportArgsImpl;
 import nil.nadph.qnotified.util.NonUiThread;

@@ -21,13 +21,15 @@
  */
 package nil.nadph.qnotified.ui;
 
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 
-import static nil.nadph.qnotified.util.Utils.log;
+abstract public class TouchEventToLongClickAdapter implements View.OnTouchListener,
+    View.OnLongClickListener, Runnable {
 
-abstract public class TouchEventToLongClickAdapter implements View.OnTouchListener, View.OnLongClickListener, Runnable {
     private long mDownTime = -1;
     private float mX, mY;
     private int THRESHOLD = 500;
@@ -81,7 +83,9 @@ abstract public class TouchEventToLongClickAdapter implements View.OnTouchListen
 
     @Override
     public void run() {
-        if (mDownTime < 0) return;
+        if (mDownTime < 0) {
+            return;
+        }
         long curr = System.currentTimeMillis();
         if (curr - mDownTime > THRESHOLD) {
             mDownTime = -1;

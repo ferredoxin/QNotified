@@ -9,7 +9,8 @@ object DatabaseContainer {
         Room.databaseBuilder(
             AndroidAppHelper.currentApplication(),
             AppDatabase::class.java,
-            "QNotifiedDatabase")
+            "QNotifiedDatabase"
+        )
             .allowMainThreadQueries()
             .enableMultiInstanceInvalidation()
             .build()

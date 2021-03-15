@@ -28,15 +28,17 @@ import me.singleneuron.qn_kernel.data.hostInfo
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.hook.CommonDelayableHook
 
-abstract  class PluginDelayableHook(keyName: String) : CommonDelayableHook(keyName, SyncUtils.PROC_ANY) {
+abstract class PluginDelayableHook(keyName: String) :
+    CommonDelayableHook(keyName, SyncUtils.PROC_ANY) {
     abstract val pluginID: String
 
-    abstract fun startHook(classLoader: ClassLoader) : Boolean
+    abstract fun startHook(classLoader: ClassLoader): Boolean
 
     override fun initOnce() = trySilently(false) {
-        val classLoader = "Lcom/tencent/mobileqq/pluginsdk/PluginStatic;->getOrCreateClassLoader(Landroid/content/Context;Ljava/lang/String;)Ljava/lang/ClassLoader;"
-            .getMethod()
-            ?.invoke(null, hostInfo.application, pluginID) as ClassLoader
+        val classLoader =
+            "Lcom/tencent/mobileqq/pluginsdk/PluginStatic;->getOrCreateClassLoader(Landroid/content/Context;Ljava/lang/String;)Ljava/lang/ClassLoader;"
+                .getMethod()
+                ?.invoke(null, hostInfo.application, pluginID) as ClassLoader
         startHook(classLoader)
     }
 }

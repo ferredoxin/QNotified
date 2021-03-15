@@ -1,10 +1,40 @@
 package mqq.app;
 
 public interface Constants {
+
     public static final String FILE_INSTANCE_STATE = "savedInstanceState";
     public static final String OPEN_SDK = "com.tencent.mobileqq:openSdk";
 
+    public enum Key {
+        nickname,
+        _logintime,
+        SvcRegister_timeStamp,
+        currentAccount
+    }
+
+    public enum LogoutReason {
+        user,
+        expired,
+        gray,
+        kicked,
+        tips,
+        suspend,
+        forceLogout,
+        switchAccount,
+        secKicked
+    }
+
+    public enum PropertiesKey {
+        uinDisplayName,
+        nickName;
+
+        public String toString() {
+            return name();
+        }
+    }
+
     public interface Action {
+
         public static final int ACTION_APP_GUARD = 2200;
         public static final int ACTION_CHANGE_TOKEN = 1032;
         public static final int ACTION_DELETE_ACCOUNT = 1007;
@@ -58,33 +88,5 @@ public interface Constants {
         public static final int ACTION_WTLOGIN_VerifyCode = 2104;
         public static final int ACTION_WTLOGIN_VerifySMSVerifyLoginCode = 2120;
         public static final int ACTION_WTLOGIN_setRegDevLockFlag = 2125;
-    }
-
-    public enum Key {
-        nickname,
-        _logintime,
-        SvcRegister_timeStamp,
-        currentAccount
-    }
-
-    public enum LogoutReason {
-        user,
-        expired,
-        gray,
-        kicked,
-        tips,
-        suspend,
-        forceLogout,
-        switchAccount,
-        secKicked
-    }
-
-    public enum PropertiesKey {
-        uinDisplayName,
-        nickName;
-
-        public String toString() {
-            return name();
-        }
     }
 }

@@ -21,21 +21,21 @@
  */
 package com.rymmmmm.hook;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import static nil.nadph.qnotified.util.Utils.log;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 
-import static nil.nadph.qnotified.util.Utils.log;
-
 //屏蔽所有进场特效
 @FunctionEntry
 public class DisableEnterEffect extends CommonDelayableHook {
+
     public static final DisableEnterEffect INSTANCE = new DisableEnterEffect();
 
     protected DisableEnterEffect() {
@@ -46,12 +46,17 @@ public class DisableEnterEffect extends CommonDelayableHook {
     public boolean initOnce() {
         try {
             for (Method m : Initiator._TroopEnterEffectController().getDeclaredMethods()) {
-                if (m.getName().equals("a") && !Modifier.isStatic(m.getModifiers()) && m.getReturnType() == void.class) {
+                if (m.getName().equals("a") && !Modifier.isStatic(m.getModifiers())
+                    && m.getReturnType() == void.class) {
                     XposedBridge.hookMethod(m, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            if (LicenseStatus.sDisableCommonHooks) return;
-                            if (!isEnabled()) return;
+                            if (LicenseStatus.sDisableCommonHooks) {
+                                return;
+                            }
+                            if (!isEnabled()) {
+                                return;
+                            }
                             param.setResult(null);
                         }
                     });

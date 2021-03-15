@@ -30,14 +30,14 @@ class MiniAppArkData {
 
     lateinit var desc: String
     lateinit var prompt: String
-    lateinit var meta: Map<String,MiniAppArkDetailData>
+    lateinit var meta: Map<String, MiniAppArkDetailData>
     lateinit var config: ArkMsgConfigData
     lateinit var extra: String
 
     companion object {
         @JvmStatic
         fun fromJson(json: String): MiniAppArkData {
-            val type: Type = object : TypeToken<MiniAppArkData>(){}.type
+            val type: Type = object : TypeToken<MiniAppArkData>() {}.type
             return Gson().fromJson(json, type)
         }
     }
@@ -55,5 +55,5 @@ class MiniAppArkDetailData {
 }
 
 class ArkMsgConfigData {
-    var ctime: Long = System.currentTimeMillis()/1000
+    var ctime: Long = System.currentTimeMillis() / 1000
 }

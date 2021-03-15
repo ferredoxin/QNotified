@@ -23,9 +23,7 @@
 package cc.ioctl.util;
 
 import android.annotation.SuppressLint;
-
 import androidx.annotation.NonNull;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 

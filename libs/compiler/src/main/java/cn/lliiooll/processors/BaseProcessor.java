@@ -30,6 +30,7 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
 public abstract class BaseProcessor extends AbstractProcessor {
+
     protected ProcessingEnvironment env;
     Filer mFiler;
     Types types;

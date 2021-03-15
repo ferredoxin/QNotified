@@ -21,14 +21,12 @@
  */
 package nil.nadph.qnotified.bridge;
 
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import java.lang.reflect.Constructor;
-
 import nil.nadph.qnotified.util.Initiator;
-
-import static nil.nadph.qnotified.util.Utils.log;
 
 public class SessionInfoImpl {
 

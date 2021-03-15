@@ -21,20 +21,18 @@
  */
 package cc.ioctl.hook;
 
+import static nil.nadph.qnotified.util.Initiator._TroopPicEffectsController;
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.app.Application;
 import android.graphics.Bitmap;
-
-import java.lang.reflect.Method;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import java.lang.reflect.Method;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.LicenseStatus;
-
-import static nil.nadph.qnotified.util.Initiator._TroopPicEffectsController;
-import static nil.nadph.qnotified.util.Utils.log;
 
 @FunctionEntry
 public class ShowPicGagHook extends CommonDelayableHook {
@@ -59,8 +57,12 @@ public class ShowPicGagHook extends CommonDelayableHook {
             XposedBridge.hookMethod(showPicEffect, new XC_MethodHook(49) {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.sDisableCommonHooks) return;
-                    if (!isEnabled()) return;
+                    if (LicenseStatus.sDisableCommonHooks) {
+                        return;
+                    }
+                    if (!isEnabled()) {
+                        return;
+                    }
                     param.setResult(null);
                 }
             });

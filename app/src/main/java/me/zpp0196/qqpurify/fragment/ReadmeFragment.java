@@ -24,7 +24,8 @@ public class ReadmeFragment extends Fragment implements MainActivity.TabFragment
     @Override
     @SuppressLint("InflateParams")
     @SuppressWarnings("ConstantConditions")
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+        @Nullable Bundle savedInstanceState) {
         ScrollView rootView = (ScrollView) inflater.inflate(R.layout.fragment_readme, null);
         TextView readme = rootView.findViewById(R.id.readme);
         Markwon markwon = Markwon.create(getActivity());

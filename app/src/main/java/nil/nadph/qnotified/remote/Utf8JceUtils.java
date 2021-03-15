@@ -24,7 +24,6 @@ package nil.nadph.qnotified.remote;
 import com.qq.taf.jce.JceInputStream;
 import com.qq.taf.jce.JceOutputStream;
 import com.qq.taf.jce.JceStruct;
-
 import java.io.IOException;
 
 public class Utf8JceUtils {

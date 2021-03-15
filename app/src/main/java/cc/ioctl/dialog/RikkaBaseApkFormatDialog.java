@@ -21,6 +21,8 @@
  */
 package cc.ioctl.dialog;
 
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -28,26 +30,22 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.*;
-
-import nil.nadph.qnotified.R;
-import nil.nadph.qnotified.config.ConfigManager;
-
-import com.rymmmmm.hook.BaseApk;
-
-import nil.nadph.qnotified.ui.CustomDialog;
-
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
+import com.rymmmmm.hook.BaseApk;
+import java.io.IOException;
+import nil.nadph.qnotified.R;
+import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
-import java.io.IOException;
-
-import static nil.nadph.qnotified.util.Utils.log;
-
 public class RikkaBaseApkFormatDialog extends RikkaDialog.RikkaConfigItem {
+
     private static final String DEFAULT_BASE_APK_FORMAT = "%n_%v.apk";
 
     private static final String rq_base_apk_format = "rq_base_apk_format";
@@ -65,11 +63,29 @@ public class RikkaBaseApkFormatDialog extends RikkaDialog.RikkaConfigItem {
         super(d);
     }
 
+    public static boolean IsEnabled() {
+        return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_base_apk_enabled);
+    }
+
+    @Nullable
+    public static String getCurrentBaseApkFormat() {
+        ConfigManager cfg = ConfigManager.getDefaultConfig();
+        if (cfg.getBooleanOrFalse(rq_base_apk_enabled)) {
+            String val = cfg.getString(rq_base_apk_format);
+            if (val == null) {
+                val = DEFAULT_BASE_APK_FORMAT;
+            }
+            return val;
+        }
+        return null;
+    }
+
     @SuppressLint("InflateParams")
     @Override
     public void onClick(View v) {
-        dialog = (AlertDialog) CustomDialog.createFailsafe(v.getContext()).setTitle("BaseApk").setNegativeButton("取消", null)
-                .setPositiveButton("保存", null).create();
+        dialog = (AlertDialog) CustomDialog.createFailsafe(v.getContext()).setTitle("BaseApk")
+            .setNegativeButton("取消", null)
+            .setPositiveButton("保存", null).create();
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(false);
         final Context ctx = dialog.getContext();
@@ -82,7 +98,9 @@ public class RikkaBaseApkFormatDialog extends RikkaDialog.RikkaConfigItem {
         enable.setChecked(enableBaseApk);
         panel.setVisibility(enableBaseApk ? View.VISIBLE : View.GONE);
         currentFormat = ConfigManager.getDefaultConfig().getString(rq_base_apk_format);
-        if (currentFormat == null) currentFormat = DEFAULT_BASE_APK_FORMAT;
+        if (currentFormat == null) {
+            currentFormat = DEFAULT_BASE_APK_FORMAT;
+        }
         input.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -97,10 +115,10 @@ public class RikkaBaseApkFormatDialog extends RikkaDialog.RikkaConfigItem {
                 String format = s.toString();
                 currentFormat = format;
                 String result = format
-                        .replace("%n", "QNotified")
-                        .replace("%p", Utils.PACKAGE_NAME_SELF)
-                        .replace("%v", Utils.QN_VERSION_NAME)
-                        .replace("%c", String.valueOf(Utils.QN_VERSION_CODE));
+                    .replace("%n", "QNotified")
+                    .replace("%p", Utils.PACKAGE_NAME_SELF)
+                    .replace("%v", Utils.QN_VERSION_NAME)
+                    .replace("%c", String.valueOf(Utils.QN_VERSION_CODE));
                 if (!format.toLowerCase().contains(".apk")) {
                     result += "\n提示:你还没有输入.apk后缀哦";
                 }
@@ -117,38 +135,42 @@ public class RikkaBaseApkFormatDialog extends RikkaDialog.RikkaConfigItem {
         });
         dialog.setView(vg);
         dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ConfigManager cfg = ConfigManager.getDefaultConfig();
-                boolean done = false;
-                if (!enableBaseApk) {
-                    cfg.putBoolean(rq_base_apk_enabled, false);
-                    done = true;
-                } else {
-                    if (currentFormat != null && currentFormat.length() > 0 && (currentFormat.contains("%n") || currentFormat.contains("%p"))) {
-                        cfg.putBoolean(rq_base_apk_enabled, true);
-                        cfg.putString(rq_base_apk_format, currentFormat);
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            .setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ConfigManager cfg = ConfigManager.getDefaultConfig();
+                    boolean done = false;
+                    if (!enableBaseApk) {
+                        cfg.putBoolean(rq_base_apk_enabled, false);
                         done = true;
                     } else {
-                        Toasts.error(ctx, "请输入一个有效的格式");
+                        if (currentFormat != null && currentFormat.length() > 0 && (
+                            currentFormat.contains("%n") || currentFormat.contains("%p"))) {
+                            cfg.putBoolean(rq_base_apk_enabled, true);
+                            cfg.putString(rq_base_apk_format, currentFormat);
+                            done = true;
+                        } else {
+                            Toasts.error(ctx, "请输入一个有效的格式");
+                        }
+                    }
+                    if (done) {
+                        try {
+                            cfg.save();
+                        } catch (IOException e) {
+                            log(e);
+                        }
+                        dialog.dismiss();
+                        invalidateStatus();
+                        if (enableBaseApk) {
+                            BaseApk hook = BaseApk.INSTANCE;
+                            if (!hook.isInited()) {
+                                hook.init();
+                            }
+                        }
                     }
                 }
-                if (done) {
-                    try {
-                        cfg.save();
-                    } catch (IOException e) {
-                        log(e);
-                    }
-                    dialog.dismiss();
-                    invalidateStatus();
-                    if (enableBaseApk) {
-                        BaseApk hook = BaseApk.INSTANCE;
-                        if (!hook.isInited()) hook.init();
-                    }
-                }
-            }
-        });
+            });
     }
 
     @Override
@@ -156,23 +178,8 @@ public class RikkaBaseApkFormatDialog extends RikkaDialog.RikkaConfigItem {
         return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_base_apk_enabled);
     }
 
-    public static boolean IsEnabled() {
-        return ConfigManager.getDefaultConfig().getBooleanOrFalse(rq_base_apk_enabled);
-    }
-
     @Override
     public String getName() {
         return "群上传重命名base.apk";
-    }
-
-    @Nullable
-    public static String getCurrentBaseApkFormat() {
-        ConfigManager cfg = ConfigManager.getDefaultConfig();
-        if (cfg.getBooleanOrFalse(rq_base_apk_enabled)) {
-            String val = cfg.getString(rq_base_apk_format);
-            if (val == null) val = DEFAULT_BASE_APK_FORMAT;
-            return val;
-        }
-        return null;
     }
 }

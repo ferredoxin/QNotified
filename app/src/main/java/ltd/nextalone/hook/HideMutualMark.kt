@@ -33,7 +33,10 @@ import nil.nadph.qnotified.hook.CommonDelayableHook
 object HideMutualMark : CommonDelayableHook("na_hide_intimate_image_kt") {
 
     override fun initOnce() = tryOrFalse {
-        "Lcom/tencent/mobileqq/widget/navbar/NavBarAIO;->setTitleIconLeftForMutualMark(Lcom/tencent/mobileqq/mutualmark/info/MutualMarkForDisplayInfo;Lcom/tencent/mobileqq/mutualmark/info/MutualMarkForDisplayInfo;)V".method.replace(this, null)
+        "Lcom/tencent/mobileqq/widget/navbar/NavBarAIO;->setTitleIconLeftForMutualMark(Lcom/tencent/mobileqq/mutualmark/info/MutualMarkForDisplayInfo;Lcom/tencent/mobileqq/mutualmark/info/MutualMarkForDisplayInfo;)V".method.replace(
+            this,
+            null
+        )
     }
 
     override fun isValid() = requireMinQQVersion(QQVersion.QQ_8_5_5)

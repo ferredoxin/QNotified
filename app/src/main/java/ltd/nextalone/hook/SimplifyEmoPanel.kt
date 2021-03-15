@@ -35,8 +35,11 @@ import java.lang.reflect.Field
 object SimplifyEmoPanel : CommonDelayableHook("na_simplify_emo_panel_kt") {
     // todo fix scroll
     override fun initOnce() = tryOrFalse {
-        "Lcom/tencent/mobileqq/emoticonview/EmoticonPanelController;->initTabView(I)V".method.hookBefore(this) {
-            val declaredField: Field = "com.tencent.mobileqq.emoticonview.EmoticonPanelController".clazz.getDeclaredField("panelDataList")
+        "Lcom/tencent/mobileqq/emoticonview/EmoticonPanelController;->initTabView(I)V".method.hookBefore(
+            this
+        ) {
+            val declaredField: Field =
+                "com.tencent.mobileqq.emoticonview.EmoticonPanelController".clazz.getDeclaredField("panelDataList")
             declaredField.isAccessible = true
             val list = (declaredField.get(it.thisObject) as MutableList<*>).listIterator()
             while (list.hasNext()) {
@@ -48,7 +51,9 @@ object SimplifyEmoPanel : CommonDelayableHook("na_simplify_emo_panel_kt") {
                     }
                 }
             }
-            "Lcom/tencent/mobileqq/emoticonview/EmoticonTabAdapter;->getView(ILandroid/view/View;Landroid/view/ViewGroup;)Landroid/view/View;".method.hookAfter(this@SimplifyEmoPanel) { it2 ->
+            "Lcom/tencent/mobileqq/emoticonview/EmoticonTabAdapter;->getView(ILandroid/view/View;Landroid/view/ViewGroup;)Landroid/view/View;".method.hookAfter(
+                this@SimplifyEmoPanel
+            ) { it2 ->
                 val view: View = it2.result as View
                 val layoutParams: ViewGroup.LayoutParams = view.layoutParams
                 layoutParams.width = hostInfo.application.resources.displayMetrics.widthPixels / 2

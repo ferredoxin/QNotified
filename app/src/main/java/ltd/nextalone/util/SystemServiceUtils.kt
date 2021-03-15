@@ -41,7 +41,8 @@ object SystemServiceUtils {
         }
         val item = ClipData.Item(text)
         val clipData = ClipData("", arrayOf("text/plain"), item)
-        val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
+        val clipboardManager =
+            context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
         clipboardManager ?: return
         clipboardManager.setPrimaryClip(clipData)
     }

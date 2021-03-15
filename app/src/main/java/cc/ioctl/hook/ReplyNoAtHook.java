@@ -21,6 +21,12 @@
  */
 package cc.ioctl.hook;
 
+import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
+import static me.ketal.util.TIMVersion.TIM_3_1_1;
+import static me.singleneuron.util.QQVersion.QQ_8_1_3;
+import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
+import static nil.nadph.qnotified.util.Utils.log;
+
 import de.robv.android.xposed.XC_MethodHook;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import me.singleneuron.qn_kernel.tlb.ConfigTable;
@@ -28,14 +34,9 @@ import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.LicenseStatus;
 
-import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static me.ketal.util.TIMVersion.TIM_3_1_1;
-import static me.singleneuron.util.QQVersion.QQ_8_1_3;
-import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
-import static nil.nadph.qnotified.util.Utils.log;
-
 @FunctionEntry
 public class ReplyNoAtHook extends CommonDelayableHook {
+
     public static final ReplyNoAtHook INSTANCE = new ReplyNoAtHook();
 
     private ReplyNoAtHook() {
@@ -43,28 +44,29 @@ public class ReplyNoAtHook extends CommonDelayableHook {
     }
 
     /**
-     * 813 1246 k
-     * 815 1258 l
-     * 818 1276 l
-     * 820 1296 l
-     * 826 1320 m
-     * 827 1328 m
-     * ...
-     * 836 1406 n ^
-     * 848 1492 createAtMsg
+     * 813 1246 k 815 1258 l 818 1276 l 820 1296 l 826 1320 m 827 1328 m ... 836 1406 n ^ 848 1492
+     * createAtMsg
      */
     @Override
     public boolean initOnce() {
         try {
             String method = ConfigTable.INSTANCE.getConfig(ReplyNoAtHook.class.getSimpleName());
-            if (method == null) return false;
+            if (method == null) {
+                return false;
+            }
             findAndHookMethod(_BaseChatPie(), method, boolean.class, new XC_MethodHook(49) {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.sDisableCommonHooks) return;
-                    if (!isEnabled()) return;
+                    if (LicenseStatus.sDisableCommonHooks) {
+                        return;
+                    }
+                    if (!isEnabled()) {
+                        return;
+                    }
                     boolean p0 = (boolean) param.args[0];
-                    if (!p0) param.setResult(null);
+                    if (!p0) {
+                        param.setResult(null);
+                    }
                 }
             });
             return true;
@@ -76,6 +78,6 @@ public class ReplyNoAtHook extends CommonDelayableHook {
 
     @Override
     public boolean isValid() {
-        return HostInformationProviderKt.requireMinVersion(QQ_8_1_3,TIM_3_1_1);
+        return HostInformationProviderKt.requireMinVersion(QQ_8_1_3, TIM_3_1_1);
     }
 }

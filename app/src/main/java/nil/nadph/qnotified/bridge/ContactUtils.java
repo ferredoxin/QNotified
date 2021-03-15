@@ -21,19 +21,20 @@
  */
 package nil.nadph.qnotified.bridge;
 
-import java.lang.reflect.Modifier;
-
-import de.robv.android.xposed.XposedHelpers;
-import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.Initiator;
-
 import static nil.nadph.qnotified.util.Initiator._QQAppInterface;
 import static nil.nadph.qnotified.util.ReflexUtil.invoke_static_declared_ordinal_modifier;
 import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_declared_ordinal;
-import static nil.nadph.qnotified.util.Utils.*;
+import static nil.nadph.qnotified.util.Utils.getQQAppInterface;
+import static nil.nadph.qnotified.util.Utils.getTroopManager;
+import static nil.nadph.qnotified.util.Utils.log;
+
+import de.robv.android.xposed.XposedHelpers;
+import java.lang.reflect.Modifier;
+import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.Initiator;
 
 public class ContactUtils {
-    
+
     public static String getTroopMemberNick(String troopUin, String memberUin) {
         if (troopUin != null && troopUin.length() > 0) {
             try {
@@ -41,7 +42,8 @@ public class ContactUtils {
                 Object troopMemberInfo = invoke_virtual_declared_ordinal(mTroopManager, 0, 3, false,
                     troopUin, memberUin, String.class, String.class, Initiator._TroopMemberInfo());
                 if (troopMemberInfo != null) {
-                    String troopnick = (String) XposedHelpers.getObjectField(troopMemberInfo, "troopnick");
+                    String troopnick = (String) XposedHelpers
+                        .getObjectField(troopMemberInfo, "troopnick");
                     if (troopnick != null) {
                         String ret = troopnick.replaceAll("\\u202E", "");
                         if (ret.trim().length() > 0) {
@@ -54,10 +56,13 @@ public class ContactUtils {
             }
             try {
                 String ret;//getDiscussionMemberShowName
-                String nickname = (String) invoke_static_declared_ordinal_modifier(DexKit.doFindClass(DexKit.C_CONTACT_UTILS),
+                String nickname = (String) invoke_static_declared_ordinal_modifier(
+                    DexKit.doFindClass(DexKit.C_CONTACT_UTILS),
                     2, 10, false, Modifier.PUBLIC, 0,
-                    getQQAppInterface(), troopUin, memberUin, _QQAppInterface(), String.class, String.class);
-                if (nickname != null && (ret = nickname.replaceAll("\\u202E", "")).trim().length() > 0) {
+                    getQQAppInterface(), troopUin, memberUin, _QQAppInterface(), String.class,
+                    String.class);
+                if (nickname != null
+                    && (ret = nickname.replaceAll("\\u202E", "")).trim().length() > 0) {
                     return ret;
                 }
             } catch (Throwable e) {
@@ -68,18 +73,23 @@ public class ContactUtils {
             String ret;//getBuddyName
             String nickname = null;
             try {
-                nickname = (String) invoke_static_declared_ordinal_modifier(DexKit.doFindClass(DexKit.C_CONTACT_UTILS), 1, 3, true, Modifier.PUBLIC, 0,
-                    getQQAppInterface(), memberUin, true, _QQAppInterface(), String.class, boolean.class, String.class);
+                nickname = (String) invoke_static_declared_ordinal_modifier(
+                    DexKit.doFindClass(DexKit.C_CONTACT_UTILS), 1, 3, true, Modifier.PUBLIC, 0,
+                    getQQAppInterface(), memberUin, true, _QQAppInterface(), String.class,
+                    boolean.class, String.class);
             } catch (Throwable e2) {
                 try {
-                    nickname = (String) invoke_static_declared_ordinal_modifier(DexKit.doFindClass(DexKit.C_CONTACT_UTILS), 1, 4, true, Modifier.PUBLIC, 0,
-                        getQQAppInterface(), memberUin, true, _QQAppInterface(), String.class, boolean.class, String.class);
+                    nickname = (String) invoke_static_declared_ordinal_modifier(
+                        DexKit.doFindClass(DexKit.C_CONTACT_UTILS), 1, 4, true, Modifier.PUBLIC, 0,
+                        getQQAppInterface(), memberUin, true, _QQAppInterface(), String.class,
+                        boolean.class, String.class);
                 } catch (Throwable e3) {
                     e3.addSuppressed(e2);
                     log(e3);
                 }
             }
-            if (nickname != null && (ret = nickname.replaceAll("\\u202E", "")).trim().length() > 0) {
+            if (nickname != null
+                && (ret = nickname.replaceAll("\\u202E", "")).trim().length() > 0) {
                 return ret;
             }
         } catch (Throwable e) {

@@ -52,14 +52,17 @@ object QWalletNoAD : PluginDelayableHook("ketal_qwallet_noad") {
                 val id = ctx.resources.getIdentifier("root", "id", Utils.PACKAGE_NAME_QQ)
                 val rootView = ctx.findViewById<ViewGroup>(id)
                 rootView.removeViewAt(rootView.childCount - 1)
-                val headerView = "Lcom/qwallet/view/QWalletHeaderViewRootLayout;->a:Lcom/qwallet/view/QWalletHeaderView;"
-                    .getField(classLoader)
-                    ?.get(rootView) as ViewGroup
-                headerView.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+                val headerView =
+                    "Lcom/qwallet/view/QWalletHeaderViewRootLayout;->a:Lcom/qwallet/view/QWalletHeaderView;"
+                        .getField(classLoader)
+                        ?.get(rootView) as ViewGroup
+                headerView.viewTreeObserver.addOnGlobalLayoutListener(object :
+                    OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
-                        val webView = "Lcom/qwallet/view/QWalletHeaderView;->a:Lcom/tencent/biz/ui/TouchWebView;"
-                            .getField(classLoader)
-                            ?.get(headerView) as View
+                        val webView =
+                            "Lcom/qwallet/view/QWalletHeaderView;->a:Lcom/tencent/biz/ui/TouchWebView;"
+                                .getField(classLoader)
+                                ?.get(headerView) as View
                         headerView.removeView(webView)
                         headerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                     }

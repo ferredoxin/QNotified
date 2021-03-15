@@ -30,15 +30,15 @@ sealed class BaseError {
 data class KernelError(
     override val throwable: Throwable?,
     override val readableReason: String?
-    ): BaseError()
+) : BaseError()
 
 data class DispatcherError(
     override val throwable: Throwable?,
     override val readableReason: String?
-    ): BaseError()
+) : BaseError()
 
 data class FunctionError(
     override val throwable: Throwable?,
     override val readableReason: String?,
     val className: String
-    ): BaseError()
+) : BaseError()

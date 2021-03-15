@@ -21,19 +21,19 @@
  */
 package cc.ioctl.hook;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import nil.nadph.qnotified.base.annotation.FunctionEntry;
-import nil.nadph.qnotified.hook.CommonDelayableHook;
-
 import static nil.nadph.qnotified.util.Initiator._UpgradeController;
 import static nil.nadph.qnotified.util.Utils.log;
 
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
+import nil.nadph.qnotified.hook.CommonDelayableHook;
+
 @FunctionEntry
 public class PreUpgradeHook extends CommonDelayableHook {
+
     public static final PreUpgradeHook INSTANCE = new PreUpgradeHook();
 
     private PreUpgradeHook() {
@@ -44,9 +44,15 @@ public class PreUpgradeHook extends CommonDelayableHook {
     public boolean initOnce() {
         try {
             for (Method m : _UpgradeController().getDeclaredMethods()) {
-                if (m.getParameterTypes().length != 0) continue;
-                if (Modifier.isStatic(m.getModifiers())) continue;
-                if (!m.getName().equals("a")) continue;
+                if (m.getParameterTypes().length != 0) {
+                    continue;
+                }
+                if (Modifier.isStatic(m.getModifiers())) {
+                    continue;
+                }
+                if (!m.getName().equals("a")) {
+                    continue;
+                }
                 if (m.getReturnType().getName().contains("UpgradeDetailWrapper")) {
                     XposedBridge.hookMethod(m, new XC_MethodHook(43) {
                         @Override

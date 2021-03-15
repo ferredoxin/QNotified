@@ -21,11 +21,10 @@
  */
 package com.rymmmmm.hook;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.Initiator;
@@ -35,6 +34,7 @@ import nil.nadph.qnotified.util.Utils;
 //屏蔽群聊炫彩昵称
 @FunctionEntry
 public class DisableColorNickName extends CommonDelayableHook {
+
     public static final DisableColorNickName INSTANCE = new DisableColorNickName();
 
     protected DisableColorNickName() {
@@ -46,12 +46,17 @@ public class DisableColorNickName extends CommonDelayableHook {
         try {
             for (Method m : Initiator._ColorNickManager().getDeclaredMethods()) {
                 Class<?>[] argt = m.getParameterTypes();
-                if (m.getName().equals("a") && Modifier.isStatic(m.getModifiers()) && m.getReturnType() == void.class && argt.length == 3) {
+                if (m.getName().equals("a") && Modifier.isStatic(m.getModifiers())
+                    && m.getReturnType() == void.class && argt.length == 3) {
                     XposedBridge.hookMethod(m, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            if (LicenseStatus.sDisableCommonHooks) return;
-                            if (!isEnabled()) return;
+                            if (LicenseStatus.sDisableCommonHooks) {
+                                return;
+                            }
+                            if (!isEnabled()) {
+                                return;
+                            }
                             param.setResult(null);
                         }
                     });

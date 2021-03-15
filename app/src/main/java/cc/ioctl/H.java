@@ -22,14 +22,11 @@
 package cc.ioctl;
 
 import android.app.Application;
-
 import androidx.annotation.NonNull;
-
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 
 /**
- * Helper class for getting host information.
- * Keep it as simple as possible.
+ * Helper class for getting host information. Keep it as simple as possible.
  */
 public class H {
 

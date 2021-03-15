@@ -22,12 +22,10 @@
 package com.rymmmmm.hook;
 
 import android.view.View;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.Initiator;
@@ -37,6 +35,7 @@ import nil.nadph.qnotified.util.Utils;
 //强制使用默认字体
 @FunctionEntry
 public class DefaultFont extends CommonDelayableHook {
+
     public static final DefaultFont INSTANCE = new DefaultFont();
 
     protected DefaultFont() {
@@ -48,14 +47,20 @@ public class DefaultFont extends CommonDelayableHook {
         try {
             Class<?> C_ChatMessage = Initiator.load("com.tencent.mobileqq.data.ChatMessage");
             for (Method m : Initiator._TextItemBuilder().getDeclaredMethods()) {
-                if (m.getName().equals("a") && !Modifier.isStatic(m.getModifiers()) && m.getReturnType() == void.class) {
+                if (m.getName().equals("a") && !Modifier.isStatic(m.getModifiers())
+                    && m.getReturnType() == void.class) {
                     Class<?>[] argt = m.getParameterTypes();
                     if (argt.length == 2 && argt[0] != View.class && argt[1] == C_ChatMessage) {
                         XposedBridge.hookMethod(m, new XC_MethodHook() {
                             @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                                if (LicenseStatus.sDisableCommonHooks) return;
-                                if (!isEnabled()) return;
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                throws Throwable {
+                                if (LicenseStatus.sDisableCommonHooks) {
+                                    return;
+                                }
+                                if (!isEnabled()) {
+                                    return;
+                                }
                                 param.setResult(null);
                             }
                         });

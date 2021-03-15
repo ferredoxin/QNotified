@@ -21,12 +21,12 @@
  */
 package nil.nadph.qnotified.util;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
 import static java.lang.annotation.ElementType.CONSTRUCTOR;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.CLASS;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
  * This method is time-consuming and must NOT run on UI thread.
@@ -34,4 +34,5 @@ import static java.lang.annotation.RetentionPolicy.CLASS;
 @Retention(CLASS)
 @Target({METHOD, CONSTRUCTOR})
 public @interface NonUiThread {
+
 }

@@ -22,16 +22,22 @@
 package nil.nadph.qnotified.util;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
 
 /**
- * A simple class to use json and vector like php array
- * When I wrote this class, both God and me could understand,
- * But now, only the God.
+ * A simple class to use json and vector like php array When I wrote this class, both God and me
+ * could understand, But now, only the God.
  *
  * @author cinit@github
  */
 public class PHPArray implements Iterable<HashMap.Entry> {
+
     private final static int _TYPE_OBJECT = 2;
     private final static int _TYPE_ARRAY = 3;
     public HashMap map;
@@ -55,15 +61,21 @@ public class PHPArray implements Iterable<HashMap.Entry> {
         String si;
         for (int i = 0; i < ref.chain.size(); i++) {
             index = ref.chain.get(i);
-            if (index == null) throw new RuntimeException("Cannot use [] for unsetting");
+            if (index == null) {
+                throw new RuntimeException("Cannot use [] for unsetting");
+            }
             if (last.map.containsKey(index)) {
                 if (i != ref.chain.size() - 1) {
                     try {
                         last = (PHPArray) last.map.get(index);
                     } catch (ClassCastException e) {
-                        throw new RuntimeException("Cannot use " + last.map.get(index).getClass().getName() + " as an array");
+                        throw new RuntimeException(
+                            "Cannot use " + last.map.get(index).getClass().getName()
+                                + " as an array");
                     }
-                } else last.map.remove(index);
+                } else {
+                    last.map.remove(index);
+                }
             } else {
                 System.out.println("WARNING: Use null as an array for unsetting");
                 return;
@@ -95,16 +107,22 @@ public class PHPArray implements Iterable<HashMap.Entry> {
                 case '\u3000':
                     continue;
                 case '[':
-                    if (types.empty()) curr = root;
-                    else curr = new PHPArray();
+                    if (types.empty()) {
+                        curr = root;
+                    } else {
+                        curr = new PHPArray();
+                    }
                     types.push(_TYPE_ARRAY);
                     stack.push(curr);
                     readKey = false;
                     hasValue = false;
                     break;
                 case '{':
-                    if (types.empty()) curr = root;
-                    else curr = new PHPArray();
+                    if (types.empty()) {
+                        curr = root;
+                    } else {
+                        curr = new PHPArray();
+                    }
                     types.push(_TYPE_OBJECT);
                     stack.push(curr);
                     readKey = true;
@@ -129,12 +147,17 @@ public class PHPArray implements Iterable<HashMap.Entry> {
                     while (off < json.length()) {
                         int q = json.indexOf("\"", off);
                         int bs = json.indexOf("\\", off);
-                        if (bs != -1 && bs > q) bs = -1;
+                        if (bs != -1 && bs > q) {
+                            bs = -1;
+                        }
                         if (bs == -1) {
                             ret.append(json, off, q);
                             off = q + 1;
-                            if (readKey) keys.push(ret.toString());
-                            else value = ret.toString();
+                            if (readKey) {
+                                keys.push(ret.toString());
+                            } else {
+                                value = ret.toString();
+                            }
                             hasValue = true;
                             break;
                         } else {
@@ -176,7 +199,9 @@ public class PHPArray implements Iterable<HashMap.Entry> {
                     readKey = false;
                     break;
                 case ',':
-                    if (!hasValue) continue;
+                    if (!hasValue) {
+                        continue;
+                    }
                     t = types.peek();
                     if (t == _TYPE_OBJECT) {
                         stack.peek().__(keys.pop()).$$(value);
@@ -208,12 +233,19 @@ public class PHPArray implements Iterable<HashMap.Entry> {
                     int i1 = json.indexOf(",", off);
                     int i2 = json.indexOf("]", off);
                     int i3 = json.indexOf("}", off);
-                    if (i1 == -1) i1 = json.length();
-                    if (i2 == -1) i2 = json.length();
-                    if (i3 == -1) i3 = json.length();
+                    if (i1 == -1) {
+                        i1 = json.length();
+                    }
+                    if (i2 == -1) {
+                        i2 = json.length();
+                    }
+                    if (i3 == -1) {
+                        i3 = json.length();
+                    }
                     int end = Math.min(i3, Math.min(i1, i2));
                     try {
-                        BigDecimal num = new BigDecimal(json.substring(off - 1, end).replace(" ", ""));
+                        BigDecimal num = new BigDecimal(
+                            json.substring(off - 1, end).replace(" ", ""));
                         if (readKey) {
                             keys.push(num.intValue());
                         } else {
@@ -221,7 +253,8 @@ public class PHPArray implements Iterable<HashMap.Entry> {
                         }
                         off = end;
                     } catch (NumberFormatException e) {
-                        throw new RuntimeException("Unexpected \"" + json.substring(off - 1, end) + "\" at " + (off - 1));
+                        throw new RuntimeException(
+                            "Unexpected \"" + json.substring(off - 1, end) + "\" at " + (off - 1));
                     }
             }
         }
@@ -230,7 +263,8 @@ public class PHPArray implements Iterable<HashMap.Entry> {
 
     private static String quote(String s) {
         return "\"" + s.replace("\\", "\\\\").replace("\n", "\\n").replace("\0", "\\0")
-                .replace("\t", "\\t").replace("\b", "\\b").replace("\r", "\\r").replace("\"", "\\\"") + "\"";
+            .replace("\t", "\\t").replace("\b", "\\b").replace("\r", "\\r").replace("\"", "\\\"")
+            + "\"";
     }
 
     public static boolean array_key_exists(String k, PHPArray php) {
@@ -250,7 +284,9 @@ public class PHPArray implements Iterable<HashMap.Entry> {
     }
 
     public static PHPArray array_map(Object... x) {
-        if (x.length % 2 == 1) throw new IllegalArgumentException("x.length == " + x.length);
+        if (x.length % 2 == 1) {
+            throw new IllegalArgumentException("x.length == " + x.length);
+        }
         PHPArray ret = new PHPArray();
         for (int i = 0; i < x.length / 2; i++) {
             ret.__(x[i * 2]).$$(x[i * 2 + 1]);
@@ -283,7 +319,9 @@ public class PHPArray implements Iterable<HashMap.Entry> {
             Object a = val, b = entry.getValue();
             // Objcets.equals requires API19,current14
             //noinspection EqualsReplaceableByObjectsCall
-            if ((a == b) || a != null && a.equals(b)) return entry.getKey();
+            if ((a == b) || a != null && a.equals(b)) {
+                return entry.getKey();
+            }
         }
         return false;
     }
@@ -333,11 +371,18 @@ public class PHPArray implements Iterable<HashMap.Entry> {
             sb.append('[');
             for (int i = 0; i < size; i++) {
                 v = map.get(i);
-                if (v == null) sb.append("null");
-                else if (v instanceof String) sb.append(quote((String) v));
-                else if (v instanceof BigDecimal) sb.append(v.toString());
-                else sb.append(v);
-                if (i + 1 != size) sb.append(',');
+                if (v == null) {
+                    sb.append("null");
+                } else if (v instanceof String) {
+                    sb.append(quote((String) v));
+                } else if (v instanceof BigDecimal) {
+                    sb.append(v.toString());
+                } else {
+                    sb.append(v);
+                }
+                if (i + 1 != size) {
+                    sb.append(',');
+                }
             }
             sb.append(']');
             return sb.toString();
@@ -349,13 +394,20 @@ public class PHPArray implements Iterable<HashMap.Entry> {
                 sb.append(quote("" + v));
                 sb.append(':');
                 v = en.getValue();
-                if (v == null) sb.append("null");
-                else if (v instanceof String) sb.append(quote((String) v));
-                else if (v instanceof BigDecimal) sb.append(((BigDecimal) v).toPlainString());
-                else sb.append(v);
+                if (v == null) {
+                    sb.append("null");
+                } else if (v instanceof String) {
+                    sb.append(quote((String) v));
+                } else if (v instanceof BigDecimal) {
+                    sb.append(((BigDecimal) v).toPlainString());
+                } else {
+                    sb.append(v);
+                }
                 sb.append(',');
             }
-            if (sb.charAt(sb.length() + -1) == ',') sb.deleteCharAt(sb.length() - 1);
+            if (sb.charAt(sb.length() + -1) == ',') {
+                sb.deleteCharAt(sb.length() - 1);
+            }
             sb.append('}');
             return sb.toString();
         }
@@ -365,12 +417,20 @@ public class PHPArray implements Iterable<HashMap.Entry> {
         int i;
         int max = -1;
         int size = map.size();
-        if (size == 0) return true;
+        if (size == 0) {
+            return true;
+        }
         for (Object k : map.keySet()) {
-            if (k instanceof String) return false;
+            if (k instanceof String) {
+                return false;
+            }
             i = (Integer) k;
-            if (i < 0) return false;
-            if (max < i) max = i;
+            if (i < 0) {
+                return false;
+            }
+            if (max < i) {
+                max = i;
+            }
         }
         return max + 1 == size;
     }
@@ -380,8 +440,9 @@ public class PHPArray implements Iterable<HashMap.Entry> {
     }
 
     public static class Ref {
-        ArrayList chain;
+
         private final PHPArray root;
+        ArrayList chain;
 
         Ref(PHPArray arr) {
             root = arr;
@@ -394,22 +455,34 @@ public class PHPArray implements Iterable<HashMap.Entry> {
         }
 
         public Ref __(Object i) {
-            if (i == null) chain.add("");
-            else if (i instanceof String) {
+            if (i == null) {
+                chain.add("");
+            } else if (i instanceof String) {
                 boolean dec = false;
                 int ii = 0;
                 try {
                     ii = Integer.parseInt((String) i);
-                    if (((String) i).equalsIgnoreCase("" + ii)) dec = true;
+                    if (((String) i).equalsIgnoreCase("" + ii)) {
+                        dec = true;
+                    }
                 } catch (NumberFormatException ignored) {
                 }
-                if (dec) chain.add(ii);
-                else chain.add(i);
-            } else if (i instanceof Number) chain.add(((Number) i).intValue());
-            else if (i instanceof Boolean) {
-                if ((Boolean) i) chain.add(1);
-                else chain.add(0);
-            } else throw new RuntimeException("Illegal offset type " + i.getClass().getName());
+                if (dec) {
+                    chain.add(ii);
+                } else {
+                    chain.add(i);
+                }
+            } else if (i instanceof Number) {
+                chain.add(((Number) i).intValue());
+            } else if (i instanceof Boolean) {
+                if ((Boolean) i) {
+                    chain.add(1);
+                } else {
+                    chain.add(0);
+                }
+            } else {
+                throw new RuntimeException("Illegal offset type " + i.getClass().getName());
+            }
             return this;
         }
 
@@ -420,15 +493,21 @@ public class PHPArray implements Iterable<HashMap.Entry> {
             String si;
             for (int i = 0; i < chain.size(); i++) {
                 index = chain.get(i);
-                if (index == null) throw new RuntimeException("Cannot use [] for reading");
+                if (index == null) {
+                    throw new RuntimeException("Cannot use [] for reading");
+                }
                 if (last.map.containsKey(index)) {
                     if (i != chain.size() - 1) {
                         try {
                             last = (PHPArray) last.map.get(index);
                         } catch (ClassCastException e) {
-                            throw new RuntimeException("Cannot use " + last.map.get(index).getClass().getName() + " as an array");
+                            throw new RuntimeException(
+                                "Cannot use " + last.map.get(index).getClass().getName()
+                                    + " as an array");
                         }
-                    } else return last.map.get(index);
+                    } else {
+                        return last.map.get(index);
+                    }
                 } else {
                     System.out.println("WARNING: Use null as an array");
                     return null;
@@ -438,7 +517,9 @@ public class PHPArray implements Iterable<HashMap.Entry> {
         }
 
         public void $$(Object obj) {
-            if (obj instanceof Ref) obj = ((Ref) obj)._$();
+            if (obj instanceof Ref) {
+                obj = ((Ref) obj)._$();
+            }
             Object index;
             PHPArray last = root;
             int ii;
@@ -453,7 +534,9 @@ public class PHPArray implements Iterable<HashMap.Entry> {
                         try {
                             last = (PHPArray) last.map.get(index);
                         } catch (ClassCastException e) {
-                            throw new RuntimeException("Cannot use " + last.map.get(index).getClass().getName() + " as an array");
+                            throw new RuntimeException(
+                                "Cannot use " + last.map.get(index).getClass().getName()
+                                    + " as an array");
                         }
                     } else {
                         PHPArray t = new PHPArray();

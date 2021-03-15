@@ -34,24 +34,32 @@ import nil.nadph.qnotified.util.ReflexUtil
 import nil.nadph.qnotified.util.Utils
 import org.json.JSONObject
 
-object MiniAppToStruckMsg: BaseItemBuilderFactoryHookDecorator(MiniAppToStruckMsg::class.java.simpleName) {
+object MiniAppToStruckMsg :
+    BaseItemBuilderFactoryHookDecorator(MiniAppToStruckMsg::class.java.simpleName) {
 
-    override fun doDecorate(result: Int, chatMessage: Any, param: XC_MethodHook.MethodHookParam): Boolean {
+    override fun doDecorate(
+        result: Int,
+        chatMessage: Any,
+        param: XC_MethodHook.MethodHookParam
+    ): Boolean {
         try {
             if (hostInfo.versionCode < QQVersion.QQ_8_0_0) return false
-            return if (Initiator.load("com.tencent.mobileqq.data.MessageForArkApp").isAssignableFrom(chatMessage.javaClass)) {
+            return if (Initiator.load("com.tencent.mobileqq.data.MessageForArkApp")
+                    .isAssignableFrom(chatMessage.javaClass)
+            ) {
                 val arkAppMsg = ReflexUtil.iget_object_or_null(chatMessage, "ark_app_message")
-                val json = ReflexUtil.invoke_virtual(arkAppMsg, "toAppXml", *arrayOfNulls(0)) as String
+                val json =
+                    ReflexUtil.invoke_virtual(arkAppMsg, "toAppXml", *arrayOfNulls(0)) as String
                 val jsonObject = JSONObject(json)
-                if (jsonObject.optString("app").contains("com.tencent.miniapp",true)) {
+                if (jsonObject.optString("app").contains("com.tencent.miniapp", true)) {
                     val miniAppArkData = MiniAppArkData.fromJson(json)
                     val structMsgJson = StructMsgData.fromMiniApp(miniAppArkData).toString()
                     //Utils.logd(structMsgJson)
-                    XposedHelpers.callMethod(arkAppMsg,"fromAppXml",structMsgJson)
+                    XposedHelpers.callMethod(arkAppMsg, "fromAppXml", structMsgJson)
                     true
                 } else false
             } else false
-        } catch (e:Exception) {
+        } catch (e: Exception) {
             Utils.log(e)
             return false
         }

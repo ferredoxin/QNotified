@@ -21,12 +21,12 @@
  */
 package me.singleneuron.qn_kernel.tlb
 
+import cc.ioctl.hook.ReplyNoAtHook
 import me.ketal.hook.LeftSwipeReplyHook
 import me.ketal.util.TIMVersion.*
 import nil.nadph.qnotified.bridge.QQMessageFacade
-import cc.ioctl.hook.ReplyNoAtHook
 
-class TIMConfigTable: ConfigTableInterface {
+class TIMConfigTable : ConfigTableInterface {
 
     override val configs: Map<String?, Map<Long, Any>> = mapOf(
 
@@ -34,23 +34,23 @@ class TIMConfigTable: ConfigTableInterface {
 
     override val rangingConfigs: Map<String?, Map<Long, Any>> = mapOf(
 
-            //key:public \S* \(boolean
-            QQMessageFacade::class.java.simpleName to mapOf(
-                    TIM_1_0_0 to "b",
-                    TIM_3_0_0 to "wa",
-                    TIM_3_1_1 to "PK",
-                    TIM_3_3_0 to "PO",
-            ),
+        //key:public \S* \(boolean
+        QQMessageFacade::class.java.simpleName to mapOf(
+            TIM_1_0_0 to "b",
+            TIM_3_0_0 to "wa",
+            TIM_3_1_1 to "PK",
+            TIM_3_3_0 to "PO",
+        ),
 
-            ReplyNoAtHook::class.java.simpleName to mapOf(
-                    TIM_3_1_1 to "wg",
-                    TIM_3_3_0 to "wk",
-            ),
+        ReplyNoAtHook::class.java.simpleName to mapOf(
+            TIM_3_1_1 to "wg",
+            TIM_3_3_0 to "wk",
+        ),
 
-            LeftSwipeReplyHook::class.java.simpleName to mapOf(
-                    TIM_3_1_1 to "Cg",
-                    TIM_3_3_0 to "Cn"
-            ),
+        LeftSwipeReplyHook::class.java.simpleName to mapOf(
+            TIM_3_1_1 to "Cg",
+            TIM_3_3_0 to "Cn"
+        ),
     )
 
 }

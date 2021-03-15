@@ -21,15 +21,17 @@
  */
 package cc.ioctl.hook;
 
+import static nil.nadph.qnotified.util.Initiator._SessionInfo;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-
-import java.util.Random;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
+import java.util.Random;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import me.singleneuron.util.QQVersion;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
@@ -40,12 +42,9 @@ import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Toasts;
 
-import static nil.nadph.qnotified.util.Initiator._SessionInfo;
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.log;
-
 @FunctionEntry
-public class  CheatHook extends CommonDelayableHook {
+public class CheatHook extends CommonDelayableHook {
+
     public static final CheatHook INSTANCE = new CheatHook();
     private final String[] diceItem = {"1", "2", "3", "4", "5", "6"};
     private final String[] morraItem = {"石头", "剪刀", "布"};
@@ -54,37 +53,48 @@ public class  CheatHook extends CommonDelayableHook {
     private int morraNum = -1;
 
     private CheatHook() {
-        super("qh_random_cheat", new DexDeobfStep(DexKit.C_PNG_FRAME_UTIL), new DexDeobfStep(DexKit.C_PIC_EMOTICON_INFO));
+        super("qh_random_cheat", new DexDeobfStep(DexKit.C_PNG_FRAME_UTIL),
+            new DexDeobfStep(DexKit.C_PIC_EMOTICON_INFO));
     }
 
     @Override
     public boolean initOnce() {
         try {
-            XposedHelpers.findAndHookMethod(DexKit.doFindClass(DexKit.C_PNG_FRAME_UTIL), "a", int.class, new XC_MethodHook(43) {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.sDisableCommonHooks) return;
-                    try {
-                        if (!isEnabled()) return;
-                    } catch (Throwable e) {
-                        log(e);
-                    }
-                    int num = (int) param.args[0];
-                    if (num == 6) {
-                        if (diceNum == -1) {
-                            Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(), "diceNum/E unexpected -1");
-                        } else {
-                            param.setResult(diceNum);
+            XposedHelpers
+                .findAndHookMethod(DexKit.doFindClass(DexKit.C_PNG_FRAME_UTIL), "a", int.class,
+                    new XC_MethodHook(43) {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            if (LicenseStatus.sDisableCommonHooks) {
+                                return;
+                            }
+                            try {
+                                if (!isEnabled()) {
+                                    return;
+                                }
+                            } catch (Throwable e) {
+                                log(e);
+                            }
+                            int num = (int) param.args[0];
+                            if (num == 6) {
+                                if (diceNum == -1) {
+                                    Toasts.error(
+                                        HostInformationProviderKt.getHostInfo().getApplication(),
+                                        "diceNum/E unexpected -1");
+                                } else {
+                                    param.setResult(diceNum);
+                                }
+                            } else if (num == 3) {
+                                if (morraNum == -1) {
+                                    Toasts.error(
+                                        HostInformationProviderKt.getHostInfo().getApplication(),
+                                        "morraNum/E unexpected -1");
+                                } else {
+                                    param.setResult(morraNum);
+                                }
+                            }
                         }
-                    } else if (num == 3) {
-                        if (morraNum == -1) {
-                            Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(), "morraNum/E unexpected -1");
-                        } else {
-                            param.setResult(morraNum);
-                        }
-                    }
-                }
-            });
+                    });
 
             String Method = "a";
 
@@ -100,9 +110,13 @@ public class  CheatHook extends CommonDelayableHook {
                     new XC_MethodHook(43) {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            if (LicenseStatus.sDisableCommonHooks) return;
+                            if (LicenseStatus.sDisableCommonHooks) {
+                                return;
+                            }
                             try {
-                                if (!isEnabled()) return;
+                                if (!isEnabled()) {
+                                    return;
+                                }
                             } catch (Throwable e) {
                                 log(e);
                             }
@@ -127,9 +141,13 @@ public class  CheatHook extends CommonDelayableHook {
                     new XC_MethodHook(43) {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            if (LicenseStatus.sDisableCommonHooks) return;
+                            if (LicenseStatus.sDisableCommonHooks) {
+                                return;
+                            }
                             try {
-                                if (!isEnabled()) return;
+                                if (!isEnabled()) {
+                                    return;
+                                }
                             } catch (Throwable e) {
                                 log(e);
                             }
@@ -170,7 +188,8 @@ public class  CheatHook extends CommonDelayableHook {
                 public void onClick(DialogInterface dialog, int which) {
                     diceNum = Math.abs(new Random().nextInt(6));
                     try {
-                        XposedBridge.invokeOriginalMethod(param.method, param.thisObject, param.args);
+                        XposedBridge
+                            .invokeOriginalMethod(param.method, param.thisObject, param.args);
                     } catch (Exception e) {
                         XposedBridge.log(e);
                     }
@@ -180,7 +199,8 @@ public class  CheatHook extends CommonDelayableHook {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     try {
-                        XposedBridge.invokeOriginalMethod(param.method, param.thisObject, param.args);
+                        XposedBridge
+                            .invokeOriginalMethod(param.method, param.thisObject, param.args);
                     } catch (Exception e) {
                         XposedBridge.log(e);
                     }
@@ -205,7 +225,8 @@ public class  CheatHook extends CommonDelayableHook {
                 public void onClick(DialogInterface dialog, int which) {
                     morraNum = Math.abs(new Random().nextInt(3));
                     try {
-                        XposedBridge.invokeOriginalMethod(param.method, param.thisObject, param.args);
+                        XposedBridge
+                            .invokeOriginalMethod(param.method, param.thisObject, param.args);
                     } catch (Exception e) {
                         XposedBridge.log(e);
                     }
@@ -215,7 +236,8 @@ public class  CheatHook extends CommonDelayableHook {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     try {
-                        XposedBridge.invokeOriginalMethod(param.method, param.thisObject, param.args);
+                        XposedBridge
+                            .invokeOriginalMethod(param.method, param.thisObject, param.args);
                     } catch (Exception e) {
                         XposedBridge.log(e);
                     }

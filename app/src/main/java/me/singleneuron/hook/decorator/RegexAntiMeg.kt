@@ -44,15 +44,28 @@ object RegexAntiMeg : MessageReceiver, View.OnClickListener {
     override fun onReceive(data: MsgRecordData?): Boolean {
         try {
             if (data == null) return false
-            val regexString = getExFriendCfg().getStringOrDefault(RegexAntiMeg::class.simpleName, "")
+            val regexString =
+                getExFriendCfg().getStringOrDefault(RegexAntiMeg::class.simpleName, "")
             if (regexString.isNullOrBlank()) return false
             return when {
-                Initiator.load("com.tencent.mobileqq.data.MessageForStructing").isAssignableFrom(data.javaClass) -> {
-                    val text = ReflexUtil.invoke_virtual(ReflexUtil.iget_object_or_null(data, "structingMsg"), "getXml", *arrayOfNulls(0)) as String
+                Initiator.load("com.tencent.mobileqq.data.MessageForStructing")
+                    .isAssignableFrom(data.javaClass) -> {
+                    val text = ReflexUtil.invoke_virtual(
+                        ReflexUtil.iget_object_or_null(
+                            data,
+                            "structingMsg"
+                        ), "getXml", *arrayOfNulls(0)
+                    ) as String
                     processMsg(data, text, regexString)
                 }
-                Initiator.load("com.tencent.mobileqq.data.MessageForArkApp").isAssignableFrom(data.javaClass) -> {
-                    val text = ReflexUtil.invoke_virtual(ReflexUtil.iget_object_or_null(data, "ark_app_message"), "toAppXml", *arrayOfNulls(0)) as String
+                Initiator.load("com.tencent.mobileqq.data.MessageForArkApp")
+                    .isAssignableFrom(data.javaClass) -> {
+                    val text = ReflexUtil.invoke_virtual(
+                        ReflexUtil.iget_object_or_null(
+                            data,
+                            "ark_app_message"
+                        ), "toAppXml", *arrayOfNulls(0)
+                    ) as String
                     processMsg(data, text, regexString)
                 }
                 else -> false
@@ -80,14 +93,21 @@ object RegexAntiMeg : MessageReceiver, View.OnClickListener {
         val _5 = Utils.dip2px(context, 5f)
         val editText = EditText(context)
         editText.setPadding(_5, _5, _5, _5 * 2)
-        val params = ViewBuilder.newLinearLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, _5 * 2)
+        val params = ViewBuilder.newLinearLayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            _5 * 2
+        )
         val linearLayout = LinearLayout(context)
         linearLayout.orientation = LinearLayout.VERTICAL
         linearLayout.addView(editText, params)
         dialog.setTitle("设置万象屏蔽卡片消息正则表达式（留空禁用）")
             .setView(linearLayout)
             .setPositiveButton("确定") { _, _ ->
-                getExFriendCfg().putString(RegexAntiMeg::class.java.simpleName, editText.text.toString())
+                getExFriendCfg().putString(
+                    RegexAntiMeg::class.java.simpleName,
+                    editText.text.toString()
+                )
             }
             .setNegativeButton("取消", null)
             .create()

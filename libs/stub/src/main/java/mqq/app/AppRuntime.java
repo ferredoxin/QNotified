@@ -4,11 +4,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import com.tencent.qphone.base.remote.SimpleAccount;
+import java.util.ArrayList;
 import mqq.manager.Manager;
 
-import java.util.ArrayList;
-
 public abstract class AppRuntime {
+
     public static final int ACCOUNT_MANAGER = 0;
     public static final int END_UN_LOGIN_MANAGER = 6;
     public static final int PUSH_MANAGER = 4;
@@ -33,23 +33,20 @@ public abstract class AppRuntime {
 
     byte[] uinSign = null;
 
-    public enum Status {
-        online,
-        offline,
-        away,
-        invisiable,
-        receiveofflinemsg
+    public static String showInfo() {
+        throw new RuntimeException("Stub!");
     }
 
 //    void init(MobileQQ context, MainService mService2, SimpleAccount account) {
 //        throw new RuntimeException("Stub!");
 //    }
 
-    protected boolean canAutoLogin(String account) {
-        return true;
+    public static ArrayList<String> getAccountList() {
+        throw new RuntimeException("Stub!");
     }
 
-    public void setAutoLogin(boolean auto) {
+    protected boolean canAutoLogin(String account) {
+        return true;
     }
 
 //    MainService getService() {
@@ -60,8 +57,7 @@ public abstract class AppRuntime {
 //        return this.mServletContainer;
 //    }
 
-    public MobileQQ getApplication() {
-        return this.mContext;
+    public void setAutoLogin(boolean auto) {
     }
 
 //    public void login(String account, byte[] password, AccountObserver observer) {
@@ -87,6 +83,10 @@ public abstract class AppRuntime {
 //    public void getSubAccountKey(String account, String subaccount, SubAccountObserver observer) {
 //        throw new RuntimeException("Stub!");
 //    }
+
+    public MobileQQ getApplication() {
+        return this.mContext;
+    }
 
     public void login(final SimpleAccount newAccount) {
         runOnUiThread(new Runnable() {
@@ -139,13 +139,13 @@ public abstract class AppRuntime {
         throw new RuntimeException("Stub!");
     }
 
-    public void sendAppDataIncermentMsg(String flowUin, String[] tag2, long flow) {
-        throw new RuntimeException("Stub!");
-    }
-
 //    public void startServlet(NewIntent intent) {
 //        throw new RuntimeException("Stub!");
 //    }
+
+    public void sendAppDataIncermentMsg(String flowUin, String[] tag2, long flow) {
+        throw new RuntimeException("Stub!");
+    }
 
     public final void runOnUiThread(Runnable action) {
         throw new RuntimeException("Stub!");
@@ -175,10 +175,6 @@ public abstract class AppRuntime {
         throw new RuntimeException("Stub!");
     }
 
-    synchronized void setOnlineStatus(Status onlineStatus2) {
-        throw new RuntimeException("Stub!");
-    }
-
     public synchronized Status getOnlineStatus() {
         throw new RuntimeException("Stub!");
     }
@@ -202,6 +198,10 @@ public abstract class AppRuntime {
 //    protected Class<? extends MSFServlet>[] getMessagePushServlets() {
 //        return null;
 //    }
+
+    synchronized void setOnlineStatus(Status onlineStatus2) {
+        throw new RuntimeException("Stub!");
+    }
 
     protected String[] getMessagePushSSOCommands() {
         return null;
@@ -252,14 +252,6 @@ public abstract class AppRuntime {
         throw new RuntimeException("Stub!");
     }
 
-    public static String showInfo() {
-        throw new RuntimeException("Stub!");
-    }
-
-    public static ArrayList<String> getAccountList() {
-        throw new RuntimeException("Stub!");
-    }
-
     public byte[] getUinSign() {
         throw new RuntimeException("Stub!");
     }
@@ -278,5 +270,13 @@ public abstract class AppRuntime {
 
     public void setDevLockIntent(Intent i) {
         throw new RuntimeException("Stub!");
+    }
+
+    public enum Status {
+        online,
+        offline,
+        away,
+        invisiable,
+        receiveofflinemsg
     }
 }

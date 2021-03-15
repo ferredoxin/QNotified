@@ -21,15 +21,16 @@
  */
 package cc.ioctl.hook;
 
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Utils.log;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.LicenseStatus;
 
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.log;
-
 public class MutePokePacket extends CommonDelayableHook {
+
     private static final MutePokePacket self = new MutePokePacket();
 
     private MutePokePacket() {
@@ -43,13 +44,17 @@ public class MutePokePacket extends CommonDelayableHook {
     @Override
     public boolean initOnce() {
         try {
-            XposedHelpers.findAndHookMethod(load("com.tencent.mobileqq.data.MessageForPoke"), "doParse", new XC_MethodHook(200) {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.sDisableCommonHooks || !isEnabled()) return;
-                    XposedHelpers.setObjectField(param.thisObject, "isPlayed", true);
-                }
-            });
+            XposedHelpers
+                .findAndHookMethod(load("com.tencent.mobileqq.data.MessageForPoke"), "doParse",
+                    new XC_MethodHook(200) {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            if (LicenseStatus.sDisableCommonHooks || !isEnabled()) {
+                                return;
+                            }
+                            XposedHelpers.setObjectField(param.thisObject, "isPlayed", true);
+                        }
+                    });
             return true;
 
         } catch (Throwable e) {

@@ -21,12 +21,15 @@
  */
 package cc.ioctl.hook;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Utils.log;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import me.singleneuron.util.QQVersion;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
@@ -35,12 +38,9 @@ import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.Initiator;
 
-import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.log;
-
 @FunctionEntry
 public class HideMiniAppPullEntry extends CommonDelayableHook {
+
     public static final HideMiniAppPullEntry INSTANCE = new HideMiniAppPullEntry();
 
     protected HideMiniAppPullEntry() {
@@ -50,32 +50,43 @@ public class HideMiniAppPullEntry extends CommonDelayableHook {
     @Override
     protected boolean initOnce() {
         try {
-            if (HostInformationProviderKt.getHostInfo().isTim()) return false;
+            if (HostInformationProviderKt.getHostInfo().isTim()) {
+                return false;
+            }
             ConfigManager cache = ConfigManager.getCache();
             if (isEnabled()) {
                 int lastVersion = cache.getIntOrDefault("qn_hide_msg_list_miniapp_version_code", 0);
                 if (HostInformationProviderKt.getHostInfo().getVersionCode32() == lastVersion) {
                     String methodName = cache.getString("qn_hide_msg_list_miniapp_method_name");
-                    findAndHookMethod(Initiator._Conversation(), methodName, XC_MethodReplacement.returnConstant(null));
+                    findAndHookMethod(Initiator._Conversation(), methodName,
+                        XC_MethodReplacement.returnConstant(null));
                 } else {
                     Class<?> con = Initiator._Conversation();
                     for (Method m : con.getDeclaredMethods()) {
                         Class<?>[] ps = m.getParameterTypes();
-                        if (ps != null && ps.length > 0) continue;
-                        if (!m.getReturnType().equals(void.class)) continue;
+                        if (ps != null && ps.length > 0) {
+                            continue;
+                        }
+                        if (!m.getReturnType().equals(void.class)) {
+                            continue;
+                        }
                         String name = m.getName();
-                        if (name.length() > 1) continue;
+                        if (name.length() > 1) {
+                            continue;
+                        }
                         char c = name.charAt(0);
-                        if ('F' <= c && c < 'a')
+                        if ('F' <= c && c < 'a') {
                             XposedBridge.hookMethod(m, new XC_MethodReplacement(30) {
                                 @Override
                                 protected Object replaceHookedMethod(MethodHookParam param) {
                                     try {
                                         Method m = (Method) param.method;
                                         m.setAccessible(true);
-                                        XposedBridge.invokeOriginalMethod(m, param.thisObject, param.args);
+                                        XposedBridge
+                                            .invokeOriginalMethod(m, param.thisObject, param.args);
                                     } catch (InvocationTargetException e) {
-                                        if (!(e.getCause() instanceof UnsupportedOperationException)) {
+                                        if (!(e
+                                            .getCause() instanceof UnsupportedOperationException)) {
                                             log(e);
                                         }
                                     } catch (Throwable t) {
@@ -84,6 +95,7 @@ public class HideMiniAppPullEntry extends CommonDelayableHook {
                                     return null;
                                 }
                             });
+                        }
                     }
 
                     Class<?> tmp;
@@ -93,32 +105,45 @@ public class HideMiniAppPullEntry extends CommonDelayableHook {
                         miniapp = load("com/tencent/mobileqq/mini/entry/MiniAppDesktop");
                         if (miniapp == null) {
                             tmp = load("com/tencent/mobileqq/mini/entry/MiniAppDesktop$1");
-                            if (tmp != null) miniapp = tmp.getDeclaredField("this$0").getType();
+                            if (tmp != null) {
+                                miniapp = tmp.getDeclaredField("this$0").getType();
+                            }
                         }
                     } else {
                         //for 818
                         try {
-                            miniapp = load("com.tencent.mobileqq.mini.entry.desktop.MiniAppDesktopLayout");
+                            miniapp = load(
+                                "com.tencent.mobileqq.mini.entry.desktop.MiniAppDesktopLayout");
                             if (miniapp == null) {
-                                tmp = load("com.tencent.mobileqq.mini.entry.desktop.MiniAppDesktopLayout$1");
-                                if (tmp != null) miniapp = tmp.getDeclaredField("this$0").getType();
+                                tmp = load(
+                                    "com.tencent.mobileqq.mini.entry.desktop.MiniAppDesktopLayout$1");
+                                if (tmp != null) {
+                                    miniapp = tmp.getDeclaredField("this$0").getType();
+                                }
                             }
                             if (miniapp == null) {
-                                tmp = load("com.tencent.mobileqq.mini.entry.desktop.MiniAppDesktopLayout$2");
-                                if (tmp != null) miniapp = tmp.getDeclaredField("this$0").getType();
+                                tmp = load(
+                                    "com.tencent.mobileqq.mini.entry.desktop.MiniAppDesktopLayout$2");
+                                if (tmp != null) {
+                                    miniapp = tmp.getDeclaredField("this$0").getType();
+                                }
                             }
                         } catch (Exception ignored) {
                         }
                         //for older
-                        if (miniapp == null)
+                        if (miniapp == null) {
                             miniapp = load("com/tencent/mobileqq/mini/entry/MiniAppEntryAdapter");
-                        if (miniapp == null)
-                            miniapp = load("com/tencent/mobileqq/mini/entry/MiniAppEntryAdapter$1").getDeclaredField("this$0").getType();
+                        }
+                        if (miniapp == null) {
+                            miniapp = load("com/tencent/mobileqq/mini/entry/MiniAppEntryAdapter$1")
+                                .getDeclaredField("this$0").getType();
+                        }
                     }
                     if (miniapp == null) {
                         Class<?> ref = load("com.tencent.widget.MiniAppListView");
                         if (ref != null) {
-                            miniapp = load("com/tencent/mobileqq/mini/entry/QQMessagePageMiniAppEntryManager");
+                            miniapp = load(
+                                "com/tencent/mobileqq/mini/entry/QQMessagePageMiniAppEntryManager");
                         }
                     }
                     XposedBridge.hookAllConstructors(miniapp, new XC_MethodHook(60) {
@@ -127,18 +152,23 @@ public class HideMiniAppPullEntry extends CommonDelayableHook {
                             String methodName = null;
                             StackTraceElement[] stacks = new Throwable().getStackTrace();
                             for (StackTraceElement stack : stacks) {
-                                if (stack.getClassName().equals(Initiator._Conversation().getName())) {
+                                if (stack.getClassName()
+                                    .equals(Initiator._Conversation().getName())) {
                                     methodName = stack.getMethodName();
                                     break;
                                 }
                             }
-                            if (methodName == null)
-                                throw new NullPointerException("Failed to get Conversation.?() to hide MiniApp!");
+                            if (methodName == null) {
+                                throw new NullPointerException(
+                                    "Failed to get Conversation.?() to hide MiniApp!");
+                            }
                             ConfigManager cache = ConfigManager.getCache();
                             cache.putString("qn_hide_msg_list_miniapp_method_name", methodName);
-                            cache.getAllConfig().put("qn_hide_msg_list_miniapp_version_code", HostInformationProviderKt.getHostInfo().getVersionCode32());
+                            cache.getAllConfig().put("qn_hide_msg_list_miniapp_version_code",
+                                HostInformationProviderKt.getHostInfo().getVersionCode32());
                             cache.save();
-                            param.setThrowable(new UnsupportedOperationException("MiniAppEntry disabled"));
+                            param.setThrowable(
+                                new UnsupportedOperationException("MiniAppEntry disabled"));
                         }
                     });
                 }

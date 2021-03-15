@@ -21,6 +21,10 @@
  */
 package nil.nadph.qnotified.activity;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -34,30 +38,37 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
-
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+import cc.ioctl.hook.FakeBatteryHook;
 import com.tencent.mobileqq.widget.BounceScrollView;
-
 import java.io.IOException;
-
 import nil.nadph.qnotified.InjectDelayableHooks;
 import nil.nadph.qnotified.R;
-import cc.ioctl.hook.FakeBatteryHook;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
-
 @SuppressLint("Registered")
 public class EulaActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener {
+
     public static final int CURRENT_EULA_VERSION = 8;
     private static final int R_ID_I_HAVE_READ = 0x300AFF91;
     private static final int R_ID_I_AGREE = 0x300AFF92;
     private static final int R_ID_I_DENY = 0x300AFF93;
+
+    public static void appendEx2(SpannableStringBuilder sb, String text) {
+        int start = sb.length();
+        sb.append(text);
+        sb.setSpan(new StyleSpan(Typeface.BOLD), start, sb.length(),
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        sb.setSpan(new RelativeSizeSpan(1.3f), start, sb.length(),
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
 
     @Override
     public boolean doOnCreate(Bundle bundle) {
@@ -111,7 +122,8 @@ public class EulaActivity extends IphoneTitleBarActivityCompat implements View.O
         tv.setTextSize(23);
         tv.setGravity(Gravity.CENTER);
         tv.setTextColor(ResUtils.skin_black);
-        tv.setText("\n注意: 本软件是免费软件!\nQNotified自始至终都是免费且非商业使用，如果有你发现有人在违反GPL和最终用户许可（主要为未明确指出本软件的作者以及免费获取的网址）的情况下商用本软件并牟取利润(群发,代发,引流,出售,贩卖等)，请拒绝并不遗余力地在一切平台举报投诉他！\n");
+        tv.setText(
+            "\n注意: 本软件是免费软件!\nQNotified自始至终都是免费且非商业使用，如果有你发现有人在违反GPL和最终用户许可（主要为未明确指出本软件的作者以及免费获取的网址）的情况下商用本软件并牟取利润(群发,代发,引流,出售,贩卖等)，请拒绝并不遗余力地在一切平台举报投诉他！\n");
         ll.addView(tv, stdlp);
 
         int _5dp = Utils.dip2px(this, 5);
@@ -125,21 +137,24 @@ public class EulaActivity extends IphoneTitleBarActivityCompat implements View.O
             iHaveRead.setButtonDrawable(ResUtils.getCheckBoxBackground());
             iHaveRead.setPadding(_5dp, _5dp, _5dp, _5dp);
             iHaveRead.setChecked(FakeBatteryHook.INSTANCE.isFakeBatteryCharging());
-            ll.addView(iHaveRead, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 3 * _5dp, _5dp, 2 * _5dp, _5dp));
+            ll.addView(iHaveRead,
+                newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 3 * _5dp, _5dp, 2 * _5dp, _5dp));
 
             Button agree = new Button(this);
             agree.setId(R_ID_I_AGREE);
             agree.setOnClickListener(this);
             ResUtils.applyStyleCommonBtnBlue(agree);
             agree.setText("我同意并继续");
-            ll.addView(agree, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 2 * _5dp, _5dp, 2 * _5dp, _5dp));
+            ll.addView(agree,
+                newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 2 * _5dp, _5dp, 2 * _5dp, _5dp));
 
             Button deny = new Button(this);
             deny.setId(R_ID_I_DENY);
             deny.setOnClickListener(this);
             ResUtils.applyStyleCommonBtnBlue(deny);
             deny.setText("我拒绝");
-            ll.addView(deny, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 2 * _5dp, _5dp, 2 * _5dp, _5dp));
+            ll.addView(deny,
+                newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 2 * _5dp, _5dp, 2 * _5dp, _5dp));
         } else {
             tv = new TextView(this);
             tv.setTextSize(17);
@@ -179,12 +194,5 @@ public class EulaActivity extends IphoneTitleBarActivityCompat implements View.O
                 Toasts.error(this, "请立即卸载QNotified", Toast.LENGTH_LONG);
                 break;
         }
-    }
-
-    public static void appendEx2(SpannableStringBuilder sb, String text) {
-        int start = sb.length();
-        sb.append(text);
-        sb.setSpan(new StyleSpan(Typeface.BOLD), start, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        sb.setSpan(new RelativeSizeSpan(1.3f), start, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 }

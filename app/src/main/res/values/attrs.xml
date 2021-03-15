@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <attr name="themeColor" format="color"/>
+    <attr format="color" name="themeColor"/>
 
     <string-array name="mainui_hide_menu_titles">
         <item>版本更新</item>

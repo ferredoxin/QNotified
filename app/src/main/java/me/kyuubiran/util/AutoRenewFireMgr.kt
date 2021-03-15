@@ -27,7 +27,6 @@ import cc.ioctl.script.QNClient
 import com.topjohnwu.superuser.internal.UiThreadHandler.handler
 import me.singleneuron.qn_kernel.data.hostInfo
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 
 

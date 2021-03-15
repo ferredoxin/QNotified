@@ -21,21 +21,28 @@
  */
 package cc.ioctl.chiral;
 
-import java.util.HashSet;
-
 import cc.ioctl.util.IndexFrom;
+import java.util.HashSet;
 
 public class Molecule implements Cloneable {
 
+    public static final int SHOW_FLAG_DEFAULT = 0;
+    public static final int SHOW_FLAG_EXPLICIT = 1;
+    public static final int SHOW_FLAG_IMPLICIT = 2;
+    public static final int DIRECTION_UNSPECIFIED = 0;
+    public static final int DIRECTION_TOP = 1;
+    public static final int DIRECTION_BOTTOM = 2;
+    public static final int DIRECTION_LEFT = 4;
+    public static final int DIRECTION_RIGHT = 8;
     private final Atom[] atoms;
     private final Bond[] bonds;
+    private final String mdlMolStr;
     private float maxX = 0.0f;
     private float maxY = 0.0f;
     private float minX = 0.0f;
     private float minY = 0.0f;
     private boolean invalMinMax = true;
     private float avgBondLength;
-    private final String mdlMolStr;
 
     public Molecule(Atom[] a, Bond[] b, String mdlMol) {
         atoms = a;
@@ -84,7 +91,9 @@ public class Molecule implements Cloneable {
 
     @IndexFrom(1)
     public int getAtomIndexNear(float x, float y, float tolerance) {
-        if (atoms.length == 0) return -1;
+        if (atoms.length == 0) {
+            return -1;
+        }
         int N = 1;
         float t1, t2, t3;
         t1 = atoms[0].x - x;
@@ -99,8 +108,11 @@ public class Molecule implements Cloneable {
                 curr = t3;
             }
         }
-        if (curr < tolerance * tolerance) return N;
-        else return -1;
+        if (curr < tolerance * tolerance) {
+            return N;
+        } else {
+            return -1;
+        }
     }
 
     public int atomCount() {
@@ -169,7 +181,8 @@ public class Molecule implements Cloneable {
             }
             return ret.toArray(new Bond[0]);
         }
-        throw new IndexOutOfBoundsException("getAtomBonds: get " + N + ", bondCount=" + this.bonds.length);
+        throw new IndexOutOfBoundsException(
+            "getAtomBonds: get " + N + ", bondCount=" + this.bonds.length);
     }
 
     @IndexFrom(1)
@@ -207,7 +220,8 @@ public class Molecule implements Cloneable {
             if (atom.hydrogenCount == 0) {
                 switch (atom.element) {
                     case "C":
-                        atom.hydrogenCount = Math.max(0, 4 - atom.unpaired - Math.abs(atom.charge) - ii);
+                        atom.hydrogenCount = Math
+                            .max(0, 4 - atom.unpaired - Math.abs(atom.charge) - ii);
                         break;
                     case "O":
                     case "S":
@@ -221,16 +235,23 @@ public class Molecule implements Cloneable {
                     case "Cl":
                     case "Br":
                     case "I":
-                        atom.hydrogenCount = Math.max(0, 1 - atom.unpaired - Math.abs(atom.charge) - ii);
+                        atom.hydrogenCount = Math
+                            .max(0, 1 - atom.unpaired - Math.abs(atom.charge) - ii);
                         break;
                 }
             }
             if (atom.element.equals("C")) {
                 if (bs.length == 2) {
-                    float t1 = (float) Math.atan2(atomY(bs[0].from) - atomY(bs[0].to), atomX(bs[0].from) - atomX(bs[0].to));
-                    float t2 = (float) Math.atan2(atomY(bs[1].from) - atomY(bs[1].to), atomX(bs[1].from) - atomX(bs[1].to));
-                    if (t1 < 0) t1 += Math.PI;
-                    if (t2 < 0) t2 += Math.PI;
+                    float t1 = (float) Math.atan2(atomY(bs[0].from) - atomY(bs[0].to),
+                        atomX(bs[0].from) - atomX(bs[0].to));
+                    float t2 = (float) Math.atan2(atomY(bs[1].from) - atomY(bs[1].to),
+                        atomX(bs[1].from) - atomX(bs[1].to));
+                    if (t1 < 0) {
+                        t1 += Math.PI;
+                    }
+                    if (t2 < 0) {
+                        t2 += Math.PI;
+                    }
                     if (Math.abs(t1 - t2) < 10f / 360f * Math.PI * 2f) {
                         atom.showFlag |= SHOW_FLAG_EXPLICIT;
                     }
@@ -252,16 +273,24 @@ public class Molecule implements Cloneable {
                 float dt = (float) Math.atan2(y2 - y1, x2 - x1);
                 float tmp;
                 tmp = Math.abs(dt - 0);
-                if (tmp > Math.PI * 2) tmp -= Math.PI * 2;
+                if (tmp > Math.PI * 2) {
+                    tmp -= Math.PI * 2;
+                }
                 right = Math.min(right, tmp);
                 tmp = (float) Math.min(Math.abs(dt - Math.PI), Math.abs(dt + Math.PI));
-                if (tmp > Math.PI * 2) tmp -= Math.PI * 2;
+                if (tmp > Math.PI * 2) {
+                    tmp -= Math.PI * 2;
+                }
                 left = Math.min(left, tmp);
                 tmp = (float) Math.abs(dt - Math.PI / 2f);
-                if (tmp > Math.PI * 2) tmp -= Math.PI * 2;
+                if (tmp > Math.PI * 2) {
+                    tmp -= Math.PI * 2;
+                }
                 top = Math.min(top, tmp);
                 tmp = (float) Math.abs(dt + Math.PI / 2);
-                if (tmp > Math.PI * 2) tmp -= Math.PI * 2;
+                if (tmp > Math.PI * 2) {
+                    tmp -= Math.PI * 2;
+                }
                 bottom = Math.min(bottom, tmp);
             }
             if (right > 1.0f) {
@@ -295,17 +324,8 @@ public class Molecule implements Cloneable {
         return mdlMolStr;
     }
 
-    public static final int SHOW_FLAG_DEFAULT = 0;
-    public static final int SHOW_FLAG_EXPLICIT = 1;
-    public static final int SHOW_FLAG_IMPLICIT = 2;
-
-    public static final int DIRECTION_UNSPECIFIED = 0;
-    public static final int DIRECTION_TOP = 1;
-    public static final int DIRECTION_BOTTOM = 2;
-    public static final int DIRECTION_LEFT = 4;
-    public static final int DIRECTION_RIGHT = 8;
-
     public static final class Atom {
+
         public int charge;
         public String element;
         public int showFlag;
@@ -321,6 +341,7 @@ public class Molecule implements Cloneable {
     }
 
     public static final class Bond {
+
         public int from;
         public int to;
         public int type;

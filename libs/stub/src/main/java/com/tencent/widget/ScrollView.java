@@ -183,11 +183,11 @@ public class ScrollView extends FrameLayout {
         throw new RuntimeException("Stub!");
     }
 
-    public void setOverScrollMode(int i2) {
+    public int getOverScrollMode() {
         throw new RuntimeException("Stub!");
     }
 
-    public int getOverScrollMode() {
+    public void setOverScrollMode(int i2) {
         throw new RuntimeException("Stub!");
     }
 
@@ -197,7 +197,8 @@ public class ScrollView extends FrameLayout {
     }
 
 
-    protected boolean overScrollBy(int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9, boolean z) {
+    protected boolean overScrollBy(int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9,
+        boolean z) {
         throw new RuntimeException("Stub!");
     }
 

@@ -3,10 +3,6 @@ package me.zpp0196.qqpurify.utils;
 import android.content.Context;
 import android.util.Log;
 import androidx.annotation.StringDef;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Retention;
@@ -14,47 +10,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by zpp0196 on 2018/5/17.
  */
 public class SettingUtils implements Constants {
 
-    public interface ISetting {
-
-        String SETTING_MAINUI = "mainui";
-        String SETTING_SIDEBAR = "sidebar";
-        String SETTING_CHAT = "chat";
-        String SETTING_TROOP = "troop";
-        String SETTING_EXTENSION = "extension";
-        String SETTING_SETTING = "setting";
-        String SETTING_ABOUT = "about";
-        String SETTING_EARLIER = "earlier";
-        String SETTING_DEFAULT = "default";
-
-        @StringDef(value = {
-                SETTING_MAINUI,
-                SETTING_SIDEBAR,
-                SETTING_CHAT,
-                SETTING_TROOP,
-                SETTING_EXTENSION,
-                SETTING_SETTING,
-                SETTING_ABOUT,
-                SETTING_EARLIER,
-                SETTING_DEFAULT,
-        })
-        @Retention(RetentionPolicy.SOURCE)
-        @interface SettingGroup {
-        }
-
-        @SettingGroup
-        String getSettingGroup();
-    }
-
-    private static final JSONObject DEFAULT_SETTING = new JSONObject();
     static final JSONObject DEFAULT_GROUPS = new JSONObject();
+    private static final JSONObject DEFAULT_SETTING = new JSONObject();
     static JSONObject mJsonData;
-
     private static File mDataFile;
 
     static {
@@ -147,5 +114,37 @@ public class SettingUtils implements Constants {
     static void write(JSONObject data) throws IOException, JSONException {
         nil.nadph.qnotified.util.Utils.saveFileContent(mDataFile.getPath(), data.toString());
         mJsonData = new JSONObject(data.toString());
+    }
+
+    public interface ISetting {
+
+        String SETTING_MAINUI = "mainui";
+        String SETTING_SIDEBAR = "sidebar";
+        String SETTING_CHAT = "chat";
+        String SETTING_TROOP = "troop";
+        String SETTING_EXTENSION = "extension";
+        String SETTING_SETTING = "setting";
+        String SETTING_ABOUT = "about";
+        String SETTING_EARLIER = "earlier";
+        String SETTING_DEFAULT = "default";
+
+        @SettingGroup
+        String getSettingGroup();
+
+        @StringDef(value = {
+            SETTING_MAINUI,
+            SETTING_SIDEBAR,
+            SETTING_CHAT,
+            SETTING_TROOP,
+            SETTING_EXTENSION,
+            SETTING_SETTING,
+            SETTING_ABOUT,
+            SETTING_EARLIER,
+            SETTING_DEFAULT,
+        })
+        @Retention(RetentionPolicy.SOURCE)
+        @interface SettingGroup {
+
+        }
     }
 }

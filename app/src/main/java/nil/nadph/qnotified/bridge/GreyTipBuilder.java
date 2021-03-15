@@ -21,44 +21,28 @@
  */
 package nil.nadph.qnotified.bridge;
 
-import android.os.Bundle;
-
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-
-import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.Utils;
-
 import static de.robv.android.xposed.XposedHelpers.callMethod;
 import static de.robv.android.xposed.XposedHelpers.setObjectField;
 import static nil.nadph.qnotified.util.ReflexUtil.invoke_static_declared_ordinal_modifier;
 import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
 import static nil.nadph.qnotified.util.Utils.log;
 
+import android.os.Bundle;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.Utils;
+
 public class GreyTipBuilder implements Appendable, CharSequence {
 
     public static final int MSG_TYPE_TROOP_GAP_GRAY_TIPS = -2030;
     public static final int MSG_TYPE_REVOKE_GRAY_TIPS = -2031;
-
-    private int type;
     private final StringBuilder msg = new StringBuilder();
+    private int type;
+    private ArrayList<HighlightItemHolder> items = null;
 
     private GreyTipBuilder() {
     }
-
-    private static class HighlightItemHolder {
-        public HighlightItemHolder(Bundle i, int s, int e) {
-            item = i;
-            start = s;
-            end = e;
-        }
-
-        public int start;
-        public int end;
-        public Bundle item;
-    }
-
-    private ArrayList<HighlightItemHolder> items = null;
 
     public static GreyTipBuilder create(int _type) {
         GreyTipBuilder builder = new GreyTipBuilder();
@@ -76,7 +60,9 @@ public class GreyTipBuilder implements Appendable, CharSequence {
     }
 
     public GreyTipBuilder appendTroopMember(String memberUin, String name, boolean update) {
-        if (items == null) items = new ArrayList<>();
+        if (items == null) {
+            items = new ArrayList<>();
+        }
         Bundle bundle = new Bundle();
         bundle.putInt("key_action", 5);
         bundle.putString("troop_mem_uin", memberUin);
@@ -87,17 +73,22 @@ public class GreyTipBuilder implements Appendable, CharSequence {
         return this;
     }
 
-    public Object build(String uin, int istroop, String fromUin, long time, long msgUid, long msgseq, long shmsgseq) {
+    public Object build(String uin, int istroop, String fromUin, long time, long msgUid,
+        long msgseq, long shmsgseq) {
         Object messageRecord = null;
         try {
-            messageRecord = invoke_static_declared_ordinal_modifier(DexKit.doFindClass(DexKit.C_MSG_REC_FAC), 0, 1, true, Modifier.PUBLIC, 0, type, int.class);
-            callMethod(messageRecord, "init", Utils.getAccount(), uin, fromUin, msg.toString(), time, type, istroop, msgseq);
+            messageRecord = invoke_static_declared_ordinal_modifier(
+                DexKit.doFindClass(DexKit.C_MSG_REC_FAC), 0, 1, true, Modifier.PUBLIC, 0, type,
+                int.class);
+            callMethod(messageRecord, "init", Utils.getAccount(), uin, fromUin, msg.toString(),
+                time, type, istroop, msgseq);
             setObjectField(messageRecord, "msgUid", msgUid);
             setObjectField(messageRecord, "shmsgseq", shmsgseq);
             setObjectField(messageRecord, "isread", true);
             if (items != null) {
                 for (HighlightItemHolder h : items) {
-                    invoke_virtual(messageRecord, "addHightlightItem", h.start, h.end, h.item, int.class, int.class, Bundle.class);
+                    invoke_virtual(messageRecord, "addHightlightItem", h.start, h.end, h.item,
+                        int.class, int.class, Bundle.class);
                 }
             }
         } catch (Exception e) {
@@ -109,12 +100,16 @@ public class GreyTipBuilder implements Appendable, CharSequence {
     public Object build(String uin, int istroop, String fromUin, long time, long msgseq) {
         Object messageRecord = null;
         try {
-            messageRecord = invoke_static_declared_ordinal_modifier(DexKit.doFindClass(DexKit.C_MSG_REC_FAC), 0, 1, true, Modifier.PUBLIC, 0, type, int.class);
-            callMethod(messageRecord, "init", Utils.getAccount(), uin, fromUin, msg.toString(), time, type, istroop, msgseq);
+            messageRecord = invoke_static_declared_ordinal_modifier(
+                DexKit.doFindClass(DexKit.C_MSG_REC_FAC), 0, 1, true, Modifier.PUBLIC, 0, type,
+                int.class);
+            callMethod(messageRecord, "init", Utils.getAccount(), uin, fromUin, msg.toString(),
+                time, type, istroop, msgseq);
             setObjectField(messageRecord, "isread", true);
             if (items != null) {
                 for (HighlightItemHolder h : items) {
-                    invoke_virtual(messageRecord, "addHightlightItem", h.start, h.end, h.item, int.class, int.class, Bundle.class);
+                    invoke_virtual(messageRecord, "addHightlightItem", h.start, h.end, h.item,
+                        int.class, int.class, Bundle.class);
                 }
             }
         } catch (Exception e) {
@@ -154,5 +149,17 @@ public class GreyTipBuilder implements Appendable, CharSequence {
     @Override
     public CharSequence subSequence(int start, int end) {
         return msg.subSequence(start, end);
+    }
+
+    private static class HighlightItemHolder {
+
+        public int start;
+        public int end;
+        public Bundle item;
+        public HighlightItemHolder(Bundle i, int s, int e) {
+            item = i;
+            start = s;
+            end = e;
+        }
     }
 }

@@ -21,32 +21,31 @@
  */
 package cc.ioctl.hook;
 
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.app.Activity;
 import android.content.Context;
 import android.view.View;
-
-import java.lang.reflect.Array;
-import java.lang.reflect.Method;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 import ltd.nextalone.util.SystemServiceUtils;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
-import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.util.CustomMenu;
+import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Toasts;
 
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
-import static nil.nadph.qnotified.util.Utils.*;
-
 @FunctionEntry
 public class PicMd5Hook extends CommonDelayableHook {
+
     public static final PicMd5Hook INSTANCE = new PicMd5Hook();
 
     PicMd5Hook() {
@@ -58,10 +57,14 @@ public class PicMd5Hook extends CommonDelayableHook {
         try {
             Class cl_PicItemBuilder = Initiator._PicItemBuilder();
             Class cl_BasePicItemBuilder = cl_PicItemBuilder.getSuperclass();
-            MainHook.findAndHookMethodIfExists(cl_PicItemBuilder, "a", int.class, Context.class, load("com/tencent/mobileqq/data/ChatMessage"), new MenuItemClickCallback());
-            MainHook.findAndHookMethodIfExists(cl_BasePicItemBuilder, "a", int.class, Context.class, load("com/tencent/mobileqq/data/ChatMessage"), new MenuItemClickCallback());
+            MainHook.findAndHookMethodIfExists(cl_PicItemBuilder, "a", int.class, Context.class,
+                load("com/tencent/mobileqq/data/ChatMessage"), new MenuItemClickCallback());
+            MainHook.findAndHookMethodIfExists(cl_BasePicItemBuilder, "a", int.class, Context.class,
+                load("com/tencent/mobileqq/data/ChatMessage"), new MenuItemClickCallback());
             for (Method m : cl_PicItemBuilder.getDeclaredMethods()) {
-                if (!m.getReturnType().isArray()) continue;
+                if (!m.getReturnType().isArray()) {
+                    continue;
+                }
                 Class[] ps = m.getParameterTypes();
                 if (ps.length == 1 && ps[0].equals(View.class)) {
                     XposedBridge.hookMethod(m, new GetMenuItemCallBack());
@@ -69,7 +72,9 @@ public class PicMd5Hook extends CommonDelayableHook {
                 }
             }
             for (Method m : cl_BasePicItemBuilder.getDeclaredMethods()) {
-                if (!m.getReturnType().isArray()) continue;
+                if (!m.getReturnType().isArray()) {
+                    continue;
+                }
                 Class[] ps = m.getParameterTypes();
                 if (ps.length == 1 && ps[0].equals(View.class)) {
                     XposedBridge.hookMethod(m, new GetMenuItemCallBack());
@@ -84,17 +89,23 @@ public class PicMd5Hook extends CommonDelayableHook {
     }
 
     public static class GetMenuItemCallBack extends XC_MethodHook {
+
         public GetMenuItemCallBack() {
             super(60);
         }
 
         @Override
         protected void afterHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
-            if (LicenseStatus.sDisableCommonHooks) return;
-            if (!INSTANCE.isEnabled()) return;
+            if (LicenseStatus.sDisableCommonHooks) {
+                return;
+            }
+            if (!INSTANCE.isEnabled()) {
+                return;
+            }
             Object arr = param.getResult();
             Class<?> clQQCustomMenuItem = arr.getClass().getComponentType();
-            Object item_copy = CustomMenu.createItem(clQQCustomMenuItem, R.id.item_showPicMd5, "MD5");
+            Object item_copy = CustomMenu
+                .createItem(clQQCustomMenuItem, R.id.item_showPicMd5, "MD5");
             Object ret = Array.newInstance(clQQCustomMenuItem, Array.getLength(arr) + 1);
             //noinspection SuspiciousSystemArraycopy
             System.arraycopy(arr, 0, ret, 0, Array.getLength(arr));
@@ -104,6 +115,7 @@ public class PicMd5Hook extends CommonDelayableHook {
     }
 
     public static class MenuItemClickCallback extends XC_MethodHook {
+
         public MenuItemClickCallback() {
             super(60);
         }
@@ -117,12 +129,15 @@ public class PicMd5Hook extends CommonDelayableHook {
                 param.setResult(null);
                 try {
                     final String md5;
-                    if (chatMessage == null || (md5 = (String) iget_object_or_null(chatMessage, "md5")) == null || md5.length() == 0) {
+                    if (chatMessage == null
+                        || (md5 = (String) iget_object_or_null(chatMessage, "md5")) == null
+                        || md5.length() == 0) {
                         Toasts.error(ctx, "获取图片MD5失败");
                         return;
                     }
-                    CustomDialog.createFailsafe(ctx).setTitle("MD5").setCancelable(true).setMessage(md5).setPositiveButton("复制", (dialog, which) -> {
-                        SystemServiceUtils.copyToClipboard(ctx,md5);
+                    CustomDialog.createFailsafe(ctx).setTitle("MD5").setCancelable(true)
+                        .setMessage(md5).setPositiveButton("复制", (dialog, which) -> {
+                        SystemServiceUtils.copyToClipboard(ctx, md5);
                     }).setNegativeButton("关闭", null).show();
                 } catch (Throwable e) {
                     log(e);

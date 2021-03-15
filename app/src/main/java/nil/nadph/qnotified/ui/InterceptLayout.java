@@ -21,6 +21,8 @@
  */
 package nil.nadph.qnotified.ui;
 
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -29,27 +31,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-
 public class InterceptLayout extends LinearLayout {
 
     private OnTouchListener mTouchInterceptor = null;
     private OnKeyListener mKeyInterceptor = null;
 
-    public OnKeyListener getKeyInterceptor() {
-        return mKeyInterceptor;
+    public InterceptLayout(Context context) {
+        super(context);
     }
 
-    public OnTouchListener getTouchInterceptor() {
-        return mTouchInterceptor;
+    public InterceptLayout(Context context, AttributeSet attrs) {
+        super(context, attrs);
     }
 
-    public void setKeyInterceptor(OnKeyListener mKeyInterceptor) {
-        this.mKeyInterceptor = mKeyInterceptor;
-    }
-
-    public void setTouchInterceptor(OnTouchListener mTouchInterceptor) {
-        this.mTouchInterceptor = mTouchInterceptor;
+    public InterceptLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
     }
 
     public static InterceptLayout setupRudely(View v) {
@@ -77,7 +73,7 @@ public class InterceptLayout extends LinearLayout {
             lpInner.leftMargin = ((MarginLayoutParams) currlp).leftMargin;
             lpInner.rightMargin = ((MarginLayoutParams) currlp).rightMargin;
             ((MarginLayoutParams) currlp).bottomMargin = ((MarginLayoutParams) currlp).topMargin
-                    = ((MarginLayoutParams) currlp).leftMargin = ((MarginLayoutParams) currlp).rightMargin = 0;
+                = ((MarginLayoutParams) currlp).leftMargin = ((MarginLayoutParams) currlp).rightMargin = 0;
             lpOuter.height = lpOuter.width = WRAP_CONTENT;
         } else {
             lpOuter = new ViewGroup.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
@@ -88,28 +84,35 @@ public class InterceptLayout extends LinearLayout {
         return layout;
     }
 
+    public OnKeyListener getKeyInterceptor() {
+        return mKeyInterceptor;
+    }
+
+    public void setKeyInterceptor(OnKeyListener mKeyInterceptor) {
+        this.mKeyInterceptor = mKeyInterceptor;
+    }
+
+    public OnTouchListener getTouchInterceptor() {
+        return mTouchInterceptor;
+    }
+
+    public void setTouchInterceptor(OnTouchListener mTouchInterceptor) {
+        this.mTouchInterceptor = mTouchInterceptor;
+    }
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (mTouchInterceptor != null && mTouchInterceptor.onTouch(this, ev)) return true;
+        if (mTouchInterceptor != null && mTouchInterceptor.onTouch(this, ev)) {
+            return true;
+        }
         return super.dispatchTouchEvent(ev);
     }
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (mKeyInterceptor != null && mKeyInterceptor.onKey(this, event.getKeyCode(), event))
+        if (mKeyInterceptor != null && mKeyInterceptor.onKey(this, event.getKeyCode(), event)) {
             return true;
+        }
         return super.dispatchKeyEvent(event);
-    }
-
-    public InterceptLayout(Context context) {
-        super(context);
-    }
-
-    public InterceptLayout(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    public InterceptLayout(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
     }
 }

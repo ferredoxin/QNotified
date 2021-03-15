@@ -21,6 +21,9 @@
  */
 package nil.nadph.qnotified;
 
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.loge;
+
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
@@ -29,21 +32,23 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Looper;
-
 import androidx.annotation.NonNull;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
-
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.hook.AbsDelayableHook;
-
-import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.loge;
 
 
 @SuppressLint("PrivateApi")
 public class SyncUtils {
+
     public static final int PROC_ERROR = 0;
     public static final int PROC_MAIN = 1;
     public static final int PROC_MSF = 1 << 1;
@@ -63,103 +68,30 @@ public class SyncUtils {
     public static final String ENUM_PROC_RESP = "nil.nadph.qnotified.ENUM_PROC_RESP";
     public static final String GENERIC_WRAPPER = "nil.nadph.qnotified.GENERIC_WRAPPER";
     public static final String _REAL_INTENT = "__real_intent";
-
+    public static final int FILE_DEFAULT_CONFIG = 1;
+    public static final int FILE_CACHE = 2;
+    public static final int FILE_UIN_DATA = 3;
+    private static final ConcurrentHashMap<Integer, EnumRequestHolder> sEnumProcCallbacks = new ConcurrentHashMap<>();
+    private static final Collection<OnFileChangedListener> sFileChangedListeners = Collections
+        .synchronizedCollection(new HashSet<OnFileChangedListener>());
+    private static final Collection<BroadcastListener> sBroadcastListeners = Collections
+        .synchronizedCollection(new HashSet<BroadcastListener>());
+    private static final Map<Long, Collection<String>> sTlsFlags = new HashMap<Long, Collection<String>>();
+    private static final Object sTlsLock = new Object();
     private static int myId = 0;
     private static boolean inited = false;
     private static int mProcType = 0;
     private static String mProcName = null;
     private static Handler sHandler;
-    private static final ConcurrentHashMap<Integer, EnumRequestHolder> sEnumProcCallbacks = new ConcurrentHashMap<>();
-    private static final Collection<OnFileChangedListener> sFileChangedListeners = Collections.synchronizedCollection(new HashSet<OnFileChangedListener>());
-    private static final Collection<BroadcastListener> sBroadcastListeners = Collections.synchronizedCollection(new HashSet<BroadcastListener>());
-    private static final Map<Long, Collection<String>> sTlsFlags = new HashMap<Long, Collection<String>>();
-    private static final Object sTlsLock = new Object();
-    public static final int FILE_DEFAULT_CONFIG = 1;
-    public static final int FILE_CACHE = 2;
-    public static final int FILE_UIN_DATA = 3;
 
     private SyncUtils() {
         throw new AssertionError("No instance for you!");
     }
 
-    private static class IpcReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context ctx, Intent intent) {
-            String action = intent.getAction();
-            if (action == null) return;
-            if (action.equals(GENERIC_WRAPPER) && intent.hasExtra(_REAL_INTENT)) {
-                intent.setAction(intent.getStringExtra(_REAL_INTENT));
-            }
-            boolean done = false;
-            for (BroadcastListener bl : sBroadcastListeners) {
-                done = done || bl.onReceive(ctx, intent);
-            }
-            if (done) return;
-            switch (action) {
-                case SYNC_FILE_CHANGED:
-                    int id = intent.getIntExtra("id", -1);
-                    int file = intent.getIntExtra("file", 0);
-                    long uin = intent.getLongExtra("uin", 0);
-                    int what = intent.getIntExtra("file", 0);
-                    if (id != -1 && id != myId) {
-                        onRecvFileChanged(file, uin, what);
-                    }
-                    break;
-                case HOOK_DO_INIT:
-                    int myType = getProcessType();
-                    int targetType = intent.getIntExtra("process", 0);
-                    int hookId = intent.getIntExtra("hook", -1);
-                    if (hookId != -1 && (myType & targetType) != 0) {
-                        AbsDelayableHook hook = AbsDelayableHook.getHookByType(hookId);
-                        if (hook != null) {
-                            try {
-                                hook.init();
-                            } catch (Throwable e) {
-                                log(e);
-                            }
-                        }
-                    }
-                    break;
-                case ENUM_PROC_REQ:
-                    myType = getProcessType();
-                    if (!intent.hasExtra("seq")) break;
-                    int seq = intent.getIntExtra("seq", 0);
-                    int mask = intent.getIntExtra("mask", 0);
-                    if ((mask & myType) != 0) {
-                        Intent resp = new Intent(ENUM_PROC_RESP);
-                        resp.setPackage(ctx.getPackageName());
-                        initId();
-                        resp.putExtra("seq", seq);
-                        resp.putExtra("pid", android.os.Process.myPid());
-                        resp.putExtra("type", myType);
-                        resp.putExtra("time", System.currentTimeMillis());
-                        resp.putExtra("name", getProcessName());
-                        ctx.sendBroadcast(resp);
-                    }
-                    break;
-                case ENUM_PROC_RESP:
-                    if (!intent.hasExtra("seq")) break;
-                    seq = intent.getIntExtra("seq", 0);
-                    EnumRequestHolder holder = sEnumProcCallbacks.get(seq);
-                    if (holder == null) break;
-                    String name = intent.getStringExtra("name");
-                    int pid = intent.getIntExtra("pid", 0);
-                    int type = intent.getIntExtra("type", 0);
-                    long time = intent.getLongExtra("time", -1);
-                    ProcessInfo pi = new ProcessInfo();
-                    pi.name = name;
-                    pi.pid = pid;
-                    pi.time = time;
-                    pi.type = type;
-                    holder.result.add(pi);
-                    holder.callback.onResponse(holder, pi);
-                    break;
-            }
-        }
-    }
-
     public static void initBroadcast(Context ctx) {
-        if (inited) return;
+        if (inited) {
+            return;
+        }
         BroadcastReceiver recv = new IpcReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(SYNC_FILE_CHANGED);
@@ -177,7 +109,9 @@ public class SyncUtils {
     }
 
     public static void sendGenericBroadcast(Context ctx, Intent intent) {
-        if (ctx == null) ctx = HostInformationProviderKt.getHostInfo().getApplication();
+        if (ctx == null) {
+            ctx = HostInformationProviderKt.getHostInfo().getApplication();
+        }
         intent.putExtra(_REAL_INTENT, intent.getAction());
         intent.setAction(GENERIC_WRAPPER);
         intent.setPackage(ctx.getPackageName());
@@ -216,7 +150,9 @@ public class SyncUtils {
     }
 
     public static int getProcessType() {
-        if (mProcType != 0) return mProcType;
+        if (mProcType != 0) {
+            return mProcType;
+        }
         String[] parts = getProcessName().split(":");
         if (parts.length == 1) {
             if (parts[0].equals("unknown")) {
@@ -265,15 +201,20 @@ public class SyncUtils {
     }
 
     public static String getProcessName() {
-        if (mProcName != null) return mProcName;
+        if (mProcName != null) {
+            return mProcName;
+        }
         String name = "unknown";
         int retry = 0;
         do {
             try {
-                List<ActivityManager.RunningAppProcessInfo> runningAppProcesses = ((ActivityManager) HostInformationProviderKt.getHostInfo().getApplication().getSystemService(Context.ACTIVITY_SERVICE)).getRunningAppProcesses();
+                List<ActivityManager.RunningAppProcessInfo> runningAppProcesses = ((ActivityManager) HostInformationProviderKt
+                    .getHostInfo().getApplication().getSystemService(Context.ACTIVITY_SERVICE))
+                    .getRunningAppProcesses();
                 if (runningAppProcesses != null) {
                     for (ActivityManager.RunningAppProcessInfo runningAppProcessInfo : runningAppProcesses) {
-                        if (runningAppProcessInfo != null && runningAppProcessInfo.pid == android.os.Process.myPid()) {
+                        if (runningAppProcessInfo != null
+                            && runningAppProcessInfo.pid == android.os.Process.myPid()) {
                             mProcName = runningAppProcessInfo.processName;
                             return runningAppProcessInfo.processName;
                         }
@@ -290,13 +231,19 @@ public class SyncUtils {
         return name;
     }
 
-    public static EnumRequestHolder enumerateProc(Context ctx, final int procMask, int timeout, EnumCallback callback) {
+    public static EnumRequestHolder enumerateProc(Context ctx, final int procMask, int timeout,
+        EnumCallback callback) {
         return enumerateProc(ctx, randomInt32Bits(), procMask, timeout, callback);
     }
 
-    public static EnumRequestHolder enumerateProc(Context ctx, final int requestSeq, final int procMask, int timeout, EnumCallback callback) {
-        if (callback == null) throw new NullPointerException("callback == null");
-        if (ctx == null) throw new NullPointerException("ctx == null");
+    public static EnumRequestHolder enumerateProc(Context ctx, final int requestSeq,
+        final int procMask, int timeout, EnumCallback callback) {
+        if (callback == null) {
+            throw new NullPointerException("callback == null");
+        }
+        if (ctx == null) {
+            throw new NullPointerException("ctx == null");
+        }
         Intent changed = new Intent(ENUM_PROC_REQ);
         changed.setPackage(ctx.getPackageName());
         initId();
@@ -316,7 +263,9 @@ public class SyncUtils {
             @Override
             public void run() {
                 EnumRequestHolder holder = sEnumProcCallbacks.remove(requestSeq);
-                if (holder == null) return;
+                if (holder == null) {
+                    return;
+                }
                 holder.callback.onEnumResult(holder);
             }
         }, timeout);
@@ -340,30 +289,10 @@ public class SyncUtils {
         postDelayed(r, 0L);
     }
 
-    public static class EnumRequestHolder {
-        public EnumCallback callback;
-        public ArrayList<ProcessInfo> result = new ArrayList<>();
-        public long deadline;
-        public int seq;
-        public int mask;
-    }
-
-    public interface EnumCallback {
-        void onResponse(EnumRequestHolder holder, ProcessInfo process);
-
-        void onEnumResult(EnumRequestHolder holder);
-    }
-
-    public interface OnFileChangedListener {
-        boolean onFileChanged(int type, long uin, int what);
-    }
-
-    public interface BroadcastListener {
-        boolean onReceive(Context context, Intent intent);
-    }
-
     public static void addOnFileChangedListener(OnFileChangedListener l) {
-        if (l != null) sFileChangedListeners.add(l);
+        if (l != null) {
+            sFileChangedListeners.add(l);
+        }
     }
 
     public static boolean removeBroadcastListener(BroadcastListener l) {
@@ -371,7 +300,9 @@ public class SyncUtils {
     }
 
     public static void addBroadcastListener(BroadcastListener l) {
-        if (l != null) sBroadcastListeners.add(l);
+        if (l != null) {
+            sBroadcastListeners.add(l);
+        }
     }
 
     public static boolean removeOnFileChangedListener(OnFileChangedListener l) {
@@ -382,13 +313,6 @@ public class SyncUtils {
         for (SyncUtils.OnFileChangedListener l : sFileChangedListeners) {
             l.onFileChanged(file, uin, what);
         }
-    }
-
-    public static class ProcessInfo {
-        public int pid;
-        public String name;
-        public int type;
-        public long time;
     }
 
     public static int randomInt32Bits() {
@@ -436,5 +360,126 @@ public class SyncUtils {
             }
         }
         return tls.contains(name);
+    }
+
+    public interface EnumCallback {
+
+        void onResponse(EnumRequestHolder holder, ProcessInfo process);
+
+        void onEnumResult(EnumRequestHolder holder);
+    }
+
+    public interface OnFileChangedListener {
+
+        boolean onFileChanged(int type, long uin, int what);
+    }
+
+    public interface BroadcastListener {
+
+        boolean onReceive(Context context, Intent intent);
+    }
+
+    private static class IpcReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context ctx, Intent intent) {
+            String action = intent.getAction();
+            if (action == null) {
+                return;
+            }
+            if (action.equals(GENERIC_WRAPPER) && intent.hasExtra(_REAL_INTENT)) {
+                intent.setAction(intent.getStringExtra(_REAL_INTENT));
+            }
+            boolean done = false;
+            for (BroadcastListener bl : sBroadcastListeners) {
+                done = done || bl.onReceive(ctx, intent);
+            }
+            if (done) {
+                return;
+            }
+            switch (action) {
+                case SYNC_FILE_CHANGED:
+                    int id = intent.getIntExtra("id", -1);
+                    int file = intent.getIntExtra("file", 0);
+                    long uin = intent.getLongExtra("uin", 0);
+                    int what = intent.getIntExtra("file", 0);
+                    if (id != -1 && id != myId) {
+                        onRecvFileChanged(file, uin, what);
+                    }
+                    break;
+                case HOOK_DO_INIT:
+                    int myType = getProcessType();
+                    int targetType = intent.getIntExtra("process", 0);
+                    int hookId = intent.getIntExtra("hook", -1);
+                    if (hookId != -1 && (myType & targetType) != 0) {
+                        AbsDelayableHook hook = AbsDelayableHook.getHookByType(hookId);
+                        if (hook != null) {
+                            try {
+                                hook.init();
+                            } catch (Throwable e) {
+                                log(e);
+                            }
+                        }
+                    }
+                    break;
+                case ENUM_PROC_REQ:
+                    myType = getProcessType();
+                    if (!intent.hasExtra("seq")) {
+                        break;
+                    }
+                    int seq = intent.getIntExtra("seq", 0);
+                    int mask = intent.getIntExtra("mask", 0);
+                    if ((mask & myType) != 0) {
+                        Intent resp = new Intent(ENUM_PROC_RESP);
+                        resp.setPackage(ctx.getPackageName());
+                        initId();
+                        resp.putExtra("seq", seq);
+                        resp.putExtra("pid", android.os.Process.myPid());
+                        resp.putExtra("type", myType);
+                        resp.putExtra("time", System.currentTimeMillis());
+                        resp.putExtra("name", getProcessName());
+                        ctx.sendBroadcast(resp);
+                    }
+                    break;
+                case ENUM_PROC_RESP:
+                    if (!intent.hasExtra("seq")) {
+                        break;
+                    }
+                    seq = intent.getIntExtra("seq", 0);
+                    EnumRequestHolder holder = sEnumProcCallbacks.get(seq);
+                    if (holder == null) {
+                        break;
+                    }
+                    String name = intent.getStringExtra("name");
+                    int pid = intent.getIntExtra("pid", 0);
+                    int type = intent.getIntExtra("type", 0);
+                    long time = intent.getLongExtra("time", -1);
+                    ProcessInfo pi = new ProcessInfo();
+                    pi.name = name;
+                    pi.pid = pid;
+                    pi.time = time;
+                    pi.type = type;
+                    holder.result.add(pi);
+                    holder.callback.onResponse(holder, pi);
+                    break;
+            }
+        }
+    }
+
+    public static class EnumRequestHolder {
+
+        public EnumCallback callback;
+        public ArrayList<ProcessInfo> result = new ArrayList<>();
+        public long deadline;
+        public int seq;
+        public int mask;
+    }
+
+    public static class ProcessInfo {
+
+        public int pid;
+        public String name;
+        public int type;
+        public long time;
     }
 }

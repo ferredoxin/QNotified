@@ -35,7 +35,8 @@ import nil.nadph.qnotified.ui.ViewBuilder
 import nil.nadph.qnotified.util.Toasts
 import nil.nadph.qnotified.util.Utils
 
-abstract class MultiItemDelayableHook constructor(keyName: String) : CommonDelayableHook("__NOT_USED__") {
+abstract class MultiItemDelayableHook constructor(keyName: String) :
+    CommonDelayableHook("__NOT_USED__") {
     private val itemsConfigKeys = ConfigData<String>(keyName)
     private val allItemsConfigKeys = ConfigData<String>("$keyName\\_All")
     abstract val allItems: String
@@ -57,7 +58,10 @@ abstract class MultiItemDelayableHook constructor(keyName: String) : CommonDelay
             val ctx = it.context
             AlertDialog.Builder(ctx, CustomDialog.themeIdForDialog())
                 .setTitle("选择要精简的条目")
-                .setMultiChoiceItems(items.toTypedArray(), getBoolAry()) { _: DialogInterface, i: Int, _: Boolean ->
+                .setMultiChoiceItems(
+                    items.toTypedArray(),
+                    getBoolAry()
+                ) { _: DialogInterface, i: Int, _: Boolean ->
                     val item = items[i]
                     if (!cache.contains(item)) cache.add(item)
                     else cache.remove(item)
@@ -78,7 +82,14 @@ abstract class MultiItemDelayableHook constructor(keyName: String) : CommonDelay
                     val linearLayout = LinearLayout(ctx)
                     linearLayout.orientation = LinearLayout.VERTICAL
                     linearLayout.addView(ViewBuilder.subtitle(context, "使用|分割，请确保格式正确！", Color.RED))
-                    linearLayout.addView(editText, ViewBuilder.newLinearLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, _5 * 2))
+                    linearLayout.addView(
+                        editText,
+                        ViewBuilder.newLinearLayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT,
+                            _5 * 2
+                        )
+                    )
                     val alertDialog = dialog.setTitle("自定义精简项目")
                         .setView(linearLayout)
                         .setCancelable(true)

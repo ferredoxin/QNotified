@@ -94,7 +94,8 @@ public class Main {
                         } else {
                             byte[] dat = DexTail.extractPayload(dex, System.out);
                             if (dat != null) {
-                                System.out.printf("I Dex payload size 0x%x(%d)\n", dat.length, dat.length);
+                                System.out.printf("I Dex payload size 0x%x(%d)\n", dat.length,
+                                    dat.length);
                                 if (output != null) {
                                     HexUtils.writeFileData(output, dat);
                                 }
@@ -124,7 +125,8 @@ public class Main {
                             System.out.println("E Dex is invalid, abort.");
                             exitCode = 1;
                         } else {
-                            byte[] buf = DexTail.injectPayload(dex, payload, arg.disableXor, System.out);
+                            byte[] buf = DexTail
+                                .injectPayload(dex, payload, arg.disableXor, System.out);
                             HexUtils.writeFileData(output, buf);
                         }
                     } catch (Exception e) {
@@ -139,7 +141,8 @@ public class Main {
         System.exit(exitCode);
     }
 
-    public static boolean checkAndUpdateTail(String dexPath, byte[] payload, boolean disableXor, PrintStream out) throws IOException {
+    public static boolean checkAndUpdateTail(String dexPath, byte[] payload, boolean disableXor,
+        PrintStream out) throws IOException {
         byte[] dex = HexUtils.readFileData(dexPath);
         if (!DexTail.checkDexSum(dex, System.out)) {
             System.out.println("E Dex is invalid, abort.");

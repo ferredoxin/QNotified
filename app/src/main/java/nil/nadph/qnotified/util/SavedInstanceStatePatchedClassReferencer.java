@@ -23,13 +23,13 @@
 package nil.nadph.qnotified.util;
 
 import android.content.Context;
-
 import java.util.Objects;
 
 public class SavedInstanceStatePatchedClassReferencer extends ClassLoader {
+
+    private static final ClassLoader mBootstrap = Context.class.getClassLoader();
     private final ClassLoader mBaseReferencer;
     private final ClassLoader mHostReferencer;
-    private static final ClassLoader mBootstrap = Context.class.getClassLoader();
 
     public SavedInstanceStatePatchedClassReferencer(ClassLoader referencer) {
         super(mBootstrap);

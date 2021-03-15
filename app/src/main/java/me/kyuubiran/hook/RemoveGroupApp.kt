@@ -34,7 +34,8 @@ import java.lang.reflect.Method
 
 //移除傻屌右划群应用
 @FunctionEntry
-object RemoveGroupApp : CommonDelayableHook("kr_remove_group_app", DexDeobfStep(DexKit.C_GroupAppActivity)) {
+object RemoveGroupApp :
+    CommonDelayableHook("kr_remove_group_app", DexDeobfStep(DexKit.C_GroupAppActivity)) {
 
     override fun initOnce(): Boolean {
         return try {

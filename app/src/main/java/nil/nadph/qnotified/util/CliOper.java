@@ -22,32 +22,35 @@
 package nil.nadph.qnotified.util;
 
 import android.app.Application;
-
 import com.microsoft.appcenter.AppCenter;
 import com.microsoft.appcenter.analytics.Analytics;
 import com.microsoft.appcenter.crashes.Crashes;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.BuildConfig;
 import nil.nadph.qnotified.config.ConfigManager;
 
 public class CliOper {
 
+    private static final String appCenterToken =
+        BuildConfig.DEBUG ? "530d3819-3543-46e3-8c59-5576604f3801"
+            : "ddf4b597-1833-45dd-af28-96ca504b8123";
     private static boolean appCenterInit = false;
-    private static final String appCenterToken = BuildConfig.DEBUG?"530d3819-3543-46e3-8c59-5576604f3801":"ddf4b597-1833-45dd-af28-96ca504b8123";
 
     public static void __init__(Application app) {
-        if (app == null) return;
-        if (appCenterInit) return;
+        if (app == null) {
+            return;
+        }
+        if (appCenterInit) {
+            return;
+        }
 
         long longAccount = Utils.getLongAccountUin();
         if (longAccount != -1) {
             AppCenter.setUserId(String.valueOf(longAccount));
         }
-        AppCenter.start(app, appCenterToken, Analytics.class,Crashes.class);
+        AppCenter.start(app, appCenterToken, Analytics.class, Crashes.class);
         appCenterInit = true;
 
     }
@@ -66,11 +69,11 @@ public class CliOper {
         properties.put("versionName", Utils.QN_VERSION_NAME);
         properties.put("versionCode", String.valueOf(Utils.QN_VERSION_CODE));
         long longAccount = Utils.getLongAccountUin();
-        if (longAccount!=-1) {
+        if (longAccount != -1) {
             properties.put("Uin", String.valueOf(longAccount));
         }
         Integer newHashCode = properties.hashCode();
-        if (oldHashCode!=null&&oldHashCode.equals(newHashCode)) {
+        if (oldHashCode != null && oldHashCode.equals(newHashCode)) {
             return;
         }
         try {
@@ -85,7 +88,9 @@ public class CliOper {
     }
 
     public static void copyCardMsg(String msg) {
-        if (msg == null) return;
+        if (msg == null) {
+            return;
+        }
         __init__(HostInformationProviderKt.getHostInfo().getApplication());
         try {
             Analytics.trackEvent("copyCardMsg", digestCardMsg(msg));
@@ -95,7 +100,9 @@ public class CliOper {
     }
 
     public static void sendCardMsg(long uin, String msg) {
-        if (msg == null) return;
+        if (msg == null) {
+            return;
+        }
         __init__(HostInformationProviderKt.getHostInfo().getApplication());
         try {
             Map<String, String> prop = digestCardMsg(msg);
@@ -107,7 +114,9 @@ public class CliOper {
     }
 
     public static void batchSendMsg(long uin, String msg, int count) {
-        if (msg == null) return;
+        if (msg == null) {
+            return;
+        }
         Map<String, String> properties = new HashMap<>();
         if (msg.length() > 127) {
             msg = msg.substring(0, 127);
@@ -149,19 +158,28 @@ public class CliOper {
     }
 
     private static String findJsonValueOrEmpty(String raw, String key) {
-        if (key == null || raw == null) return "";
+        if (key == null || raw == null) {
+            return "";
+        }
         key = '"' + key + '"';
         raw = raw.replace(" ", "");
-        if (!raw.contains(key)) return "";
+        if (!raw.contains(key)) {
+            return "";
+        }
         int limit = raw.indexOf(key);
         int start = raw.indexOf(':', limit);
         int e1 = raw.indexOf(',', start);
         int e2 = raw.indexOf('}', start);
         int end;
-        if (e1 * e2 == 1) return "";
+        if (e1 * e2 == 1) {
+            return "";
+        }
         if (e1 * e2 < 0) {
-            if (e1 == -1) end = e2;
-            else end = e1;
+            if (e1 == -1) {
+                end = e2;
+            } else {
+                end = e1;
+            }
         } else {
             end = Math.min(e1, e2);
         }
@@ -169,7 +187,8 @@ public class CliOper {
         if (subseq.startsWith("\"")) {
             int e3 = raw.indexOf('"', start);
             int stop = indexMax(end, e3);
-            if ((raw.charAt(stop) == ',' || raw.charAt(stop) == '}') && raw.charAt(stop - 1) == '"') {
+            if ((raw.charAt(stop) == ',' || raw.charAt(stop) == '}')
+                && raw.charAt(stop - 1) == '"') {
                 return raw.substring(start + 2, stop - 1);//exclude '"'
             } else {
                 return raw.substring(start + 1, stop);
@@ -180,25 +199,39 @@ public class CliOper {
     }
 
     private static String findXmlValueOrEmpty(String raw, String key) {
-        if (key == null || raw == null) return "";
+        if (key == null || raw == null) {
+            return "";
+        }
         raw = raw.replace('\'', '"').replace(" ", "");
-        if (!raw.contains(key)) return "";
+        if (!raw.contains(key)) {
+            return "";
+        }
         int limit = raw.indexOf(key);
         int start = raw.indexOf('"', limit);
         int end = raw.indexOf('"', start + 1);
-        if (start == -1 || end == -1) return "";
+        if (start == -1 || end == -1) {
+            return "";
+        }
         return raw.substring(start + 1, end);
     }
 
     public static int indexMax(int a, int b) {
-        if (a < 0) return b;
-        if (b < 0) return a;
+        if (a < 0) {
+            return b;
+        }
+        if (b < 0) {
+            return a;
+        }
         return Math.max(a, b);
     }
 
     public static int indexMin(int a, int b) {
-        if (a < 0) return b;
-        if (b < 0) return a;
+        if (a < 0) {
+            return b;
+        }
+        if (b < 0) {
+            return a;
+        }
         return Math.min(a, b);
     }
 
@@ -208,7 +241,7 @@ public class CliOper {
             Map<String, String> prop = new HashMap<>();
             prop.put("name", shortName);
             Analytics.trackEvent("enterModuleActivity", prop);
-            Utils.logd("Start App Center Trace enterModuleActivity: "+prop.toString());
+            Utils.logd("Start App Center Trace enterModuleActivity: " + prop.toString());
         } catch (Throwable ignored) {
         }
     }

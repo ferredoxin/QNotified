@@ -21,15 +21,15 @@
  */
 package cc.ioctl.hook;
 
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
-import java.lang.reflect.Field;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
+import java.lang.reflect.Field;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
@@ -37,9 +37,8 @@ import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Toasts;
 
-import static nil.nadph.qnotified.util.Utils.*;
-
 public class GalleryBgHook extends CommonDelayableHook {
+
     private static final GalleryBgHook self = new GalleryBgHook();
 
     private GalleryBgHook() {
@@ -56,24 +55,31 @@ public class GalleryBgHook extends CommonDelayableHook {
             boolean canInit = checkPreconditions();
             if (!canInit && isEnabled()) {
                 if (Looper.myLooper() != null) {
-                    Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(), "QNotified:聊天图片背景功能初始化错误", Toast.LENGTH_LONG);
+                    Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(),
+                        "QNotified:聊天图片背景功能初始化错误", Toast.LENGTH_LONG);
                 }
             }
-            if (!canInit) return false;
-            XposedHelpers.findAndHookMethod(DexKit.doFindClass(DexKit.C_ABS_GAL_SCENE), "a", ViewGroup.class, new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    if (!isEnabled()) return;
-                    for (Field f : param.method.getDeclaringClass().getDeclaredFields()) {
-                        if (f.getType().equals(View.class)) {
-                            f.setAccessible(true);
-                            View v = (View) f.get(param.thisObject);
-                            v.setBackgroundColor(0x00000000);
-                            return;
+            if (!canInit) {
+                return false;
+            }
+            XposedHelpers
+                .findAndHookMethod(DexKit.doFindClass(DexKit.C_ABS_GAL_SCENE), "a", ViewGroup.class,
+                    new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            if (!isEnabled()) {
+                                return;
+                            }
+                            for (Field f : param.method.getDeclaringClass().getDeclaredFields()) {
+                                if (f.getType().equals(View.class)) {
+                                    f.setAccessible(true);
+                                    View v = (View) f.get(param.thisObject);
+                                    v.setBackgroundColor(0x00000000);
+                                    return;
+                                }
+                            }
                         }
-                    }
-                }
-            });
+                    });
             return true;
         } catch (Throwable e) {
             log(e);

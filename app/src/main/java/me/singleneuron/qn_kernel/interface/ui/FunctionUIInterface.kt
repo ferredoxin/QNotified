@@ -32,21 +32,24 @@ interface FunctionUIInterface {
     val extraSearchWords: Array<String>
         get() = emptyArray()
 
-    fun getSupportedVersions(versions:Array<Long> = emptyArray() ,versionRanges:Array<LongRange> = emptyArray())
+    fun getSupportedVersions(
+        versions: Array<Long> = emptyArray(),
+        versionRanges: Array<LongRange> = emptyArray()
+    )
 
     val isRuntimeSupport: Boolean
         get() = false
 
 }
 
-interface FunctionUIClickableInterface: FunctionUIInterface {
+interface FunctionUIClickableInterface : FunctionUIInterface {
 
-    val onClick: ()->Boolean
+    val onClick: () -> Boolean
 
 }
 
-interface FunctionUISwitchInterface: FunctionUIInterface {
+interface FunctionUISwitchInterface : FunctionUIInterface {
 
-    val onStatusChanged: (isEnable: Boolean)->Unit
+    val onStatusChanged: (isEnable: Boolean) -> Unit
 
 }

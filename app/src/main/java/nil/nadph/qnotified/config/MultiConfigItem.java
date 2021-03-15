@@ -22,6 +22,7 @@
 package nil.nadph.qnotified.config;
 
 public interface MultiConfigItem extends AbstractConfigItem {
+
     boolean isValid();
 
     boolean hasConfig(String name);

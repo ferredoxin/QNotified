@@ -8,19 +8,15 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.core.content.pm.PackageInfoCompat;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-
 import nil.nadph.qnotified.SyncUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 /**
  * Created by zpp0196 on 2018/3/11.

@@ -4,20 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/mainTextViewStatusA"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="5dp"
-        android:text="!!! 本模块没有激活 !!!"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?android:attr/dividerVertical" />
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -40,7 +26,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="_status_2"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
             </LinearLayout>
 
             <LinearLayout
@@ -50,40 +36,10 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="QNotified - QQ/TIM辅助型功能增强"
-                        android:textAppearance="?android:attr/textAppearanceMedium"/>
-
-                <TextView
-                    android:id="@+id/mainTextViewVersion"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="无效版本"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="请在QQ/TIM内进行操作"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
-
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="10dp">
-
-                    <TextView
-                        android:id="@+id/mainRelativeLayoutLabelTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:text="模块设置"
-                        android:textAppearance="?android:attr/textAppearanceMedium" />
 
                     <Button
                         android:id="@+id/mainRelativeLayoutButtonOpenQQ"
@@ -91,7 +47,7 @@
                         android:layout_height="wrap_content"
                         android:layout_toLeftOf="@id/mainRelativeLayoutLabelTextView"
                         android:onClick="openModuleSettingForHost"
-                        android:text="QQ" />
+                        android:text="QQ"/>
 
                     <Button
                         android:id="@+id/mainRelativeLayoutButtonOpenTIM"
@@ -99,50 +55,80 @@
                         android:layout_height="wrap_content"
                         android:layout_toRightOf="@id/mainRelativeLayoutLabelTextView"
                         android:onClick="openModuleSettingForHost"
-                        android:text="TIM" />
+                        android:text="TIM"/>
+
+                    <TextView
+                        android:id="@+id/mainRelativeLayoutLabelTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:text="模块设置"
+                        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
                 </RelativeLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="暂不支持轻聊版/国际版" />
+                    android:text="QNotified - QQ/TIM辅助型功能增强"
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+                <TextView
+                    android:id="@+id/mainTextViewVersion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="无效版本"
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="请在QQ/TIM内进行操作"
+                    android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="暂不支持轻聊版/国际版"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="QQ侧滑-&gt;设置-&gt;QNotified 即可进入功能列表"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="本模块无毒无害且开源免费可放心食用"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                    android:textAppearance="?android:attr/textAppearanceSmall"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="如模块无法使用,EdXp可尝试取消优化+开启兼容模式, ROOT用户可尝试 用幸运破解器-工具箱-移除odex更改 移除QQ与本模块的优化, 太极尝试取消优化"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                    android:textAppearance="?android:attr/textAppearanceSmall"/>
 
                 <TextView
                     android:id="@+id/mainTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:text="ERROR!" />
+                    android:text="ERROR!"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Source code/源代码(有问题+Issue):" />
+                    android:text="Source code/源代码(有问题+Issue):"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:autoLink="web"
-                    android:text="https://github.com/ferredoxin/QNotified" />
+                    android:text="https://github.com/ferredoxin/QNotified"/>
 
                 <TextView
 
@@ -151,34 +137,48 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:text="uint32_t Author_QQ = 0x3E172320;"
-                    android:textIsSelectable="true" />
+                    android:textIsSelectable="true"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:clickable="true"
                     android:focusable="true"
-                    android:text="皮一下很开心 :(" />
+                    android:text="皮一下很开心 :("/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:autoLink="all"
-                    android:text="Mail: xenonhydride@gmail.com" />
+                    android:text="Mail: xenonhydride@gmail.com"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:autoLink="web"
-                    android:text="Telegram: https://t.me/Auride" />
+                    android:text="Telegram: https://t.me/Auride"/>
 
                 <TextView
                     android:id="@+id/mainTextViewBuildTime"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"/>
 
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
+
+    <TextView
+        android:id="@+id/mainTextViewStatusA"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:gravity="center"
+        android:text="!!! 本模块没有激活 !!!"
+        android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/dividerVertical"/>
 </LinearLayout>
 

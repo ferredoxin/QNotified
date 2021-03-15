@@ -22,7 +22,6 @@
 package nil.nadph.qnotified.startup;
 
 import android.content.Context;
-
 import java.net.URL;
 
 /**
@@ -30,13 +29,29 @@ import java.net.URL;
  */
 public class HybridClassLoader extends ClassLoader {
 
+    private static final ClassLoader sBootClassLoader = Context.class.getClassLoader();
     private final ClassLoader clPreload;
     private final ClassLoader clBase;
-    private static final ClassLoader sBootClassLoader = Context.class.getClassLoader();
 
     public HybridClassLoader(ClassLoader x, ClassLoader ctx) {
         clPreload = x;
         clBase = ctx;
+    }
+
+    /**
+     * 把宿主和模块共有的 package 扔这里.
+     *
+     * @param name NonNull, class name
+     * @return true if conflicting
+     */
+    public static boolean isConflictingClass(String name) {
+        return name.startsWith("androidx.") || name.startsWith("android.support.v4.")
+            || name.startsWith("kotlin.") || name.startsWith("kotlinx.")
+            || name.startsWith("com.android.tools.r8.")
+            || name.startsWith("com.google.android.material.") || name
+            .startsWith("com.google.gson.")
+            || name.startsWith("org.intellij.lang.annotations.") || name
+            .startsWith("org.jetbrains.annotations.");
     }
 
     @Override
@@ -71,21 +86,9 @@ public class HybridClassLoader extends ClassLoader {
     @Override
     public URL getResource(String name) {
         URL ret = clPreload.getResource(name);
-        if (ret != null) return ret;
+        if (ret != null) {
+            return ret;
+        }
         return clBase.getResource(name);
-    }
-
-    /**
-     * 把宿主和模块共有的 package 扔这里.
-     *
-     * @param name NonNull, class name
-     * @return true if conflicting
-     */
-    public static boolean isConflictingClass(String name) {
-        return name.startsWith("androidx.") || name.startsWith("android.support.v4.")
-            || name.startsWith("kotlin.") || name.startsWith("kotlinx.")
-            || name.startsWith("com.android.tools.r8.")
-            || name.startsWith("com.google.android.material.") || name.startsWith("com.google.gson.")
-            || name.startsWith("org.intellij.lang.annotations.") || name.startsWith("org.jetbrains.annotations.");
     }
 }

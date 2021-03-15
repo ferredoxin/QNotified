@@ -21,24 +21,22 @@
  */
 package nil.nadph.qnotified.config;
 
+import static nil.nadph.qnotified.util.Utils.QN_VERSION_CODE;
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.content.Context;
-
 import androidx.annotation.NonNull;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
-
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.util.MainProcess;
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
-import static nil.nadph.qnotified.util.Utils.QN_VERSION_CODE;
-import static nil.nadph.qnotified.util.Utils.log;
-
 public class ConfigItems {
+
     public static final String qn_hide_msg_list_miniapp = "qn_hide_msg_list_miniapp";
     public static final String qn_hide_ex_entry_group = "qn_hide_ex_entry_group";
     public static final String qn_muted_at_all = "qn_muted_at_all";
@@ -78,6 +76,9 @@ public class ConfigItems {
         }
 
         @Override
+        public boolean sync() {
+            return true;
+        }        @Override
         public void setEnabled(boolean enabled) {
             try {
                 Context ctx = HostInformationProviderKt.getHostInfo().getApplication();
@@ -94,10 +95,7 @@ public class ConfigItems {
             }
         }
 
-        @Override
-        public boolean sync() {
-            return true;
-        }
+
     };
 
     public static final SwitchConfigItem qn_notify_when_del = new SwitchConfigItem() {
@@ -124,6 +122,9 @@ public class ConfigItems {
         }
 
         @Override
+        public boolean sync() {
+            return true;
+        }        @Override
         public void setEnabled(boolean enabled) {
             try {
                 ExfriendManager mgr = ExfriendManager.getCurrent();
@@ -133,16 +134,15 @@ public class ConfigItems {
             }
         }
 
-        @Override
-        public boolean sync() {
-            return true;
-        }
+
     };
 
-    public static final SwitchConfigItem bug_unlock_msg_length = switchConfigAtDefault("bug_unlock_msg_length", false);
+    public static final SwitchConfigItem bug_unlock_msg_length = switchConfigAtDefault(
+        "bug_unlock_msg_length", false);
 
     @NonNull
-    private static SwitchConfigItem switchConfigAtDefault(final @NonNull String name, final boolean defVal) {
+    private static SwitchConfigItem switchConfigAtDefault(final @NonNull String name,
+        final boolean defVal) {
         Objects.requireNonNull(name, "name");
         return new SwitchConfigItem() {
 
@@ -170,7 +170,9 @@ public class ConfigItems {
 
     @MainProcess
     public static void removePreviousCacheIfNecessary() {
-        if (!Utils.__REMOVE_PREVIOUS_CACHE) return;
+        if (!Utils.__REMOVE_PREVIOUS_CACHE) {
+            return;
+        }
         ConfigManager cache = ConfigManager.getCache();
         if (cache.getIntOrDefault(cache_qn_prev_version, -1) < Utils.QN_VERSION_CODE) {
             try {

@@ -22,6 +22,7 @@ package nil.nadph.qnotified.base;
 import nil.nadph.qnotified.step.Step;
 
 public abstract class BaseHookTask implements AbsHookTask {
+
     public static final Step[] EMPTY_STEPS = new Step[0];
     // TODO: 21-1-27 Add commonly function wrappers
 }

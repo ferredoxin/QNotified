@@ -28,17 +28,20 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
-
-import javax.annotation.processing.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.Processor;
+import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 @AutoService(Processor.class)
 @SupportedAnnotationTypes("cn.lliiooll.annotations.Dex2C")
@@ -60,7 +63,8 @@ public class Dex2CProcessor extends BaseProcessor {
         MethodSpec.Builder beyond = MethodSpec.methodBuilder("getDex2CClasses")
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
             .returns(ParameterizedTypeName.get(List.class, String.class))
-            .addStatement("$T result = new $T<>()", ParameterizedTypeName.get(List.class, String.class), ArrayList.class);
+            .addStatement("$T result = new $T<>()",
+                ParameterizedTypeName.get(List.class, String.class), ArrayList.class);
         for (Element e : annos) {
             System.out.println("Processing >>> " + e.toString());
             beyond.addStatement("result.add($S)", e.toString());

@@ -25,8 +25,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.AbsFunctionItem;
 import nil.nadph.qnotified.mvc.impl.MainSettingSection;
 
@@ -43,8 +41,7 @@ public @interface FunctionInfo {
     String name();
 
     /**
-     * See {@link AbsFunctionItem#getDescription()}
-     * length should be 0(for null) or 1
+     * See {@link AbsFunctionItem#getDescription()} length should be 0(for null) or 1
      */
     String[] description() default {};
 

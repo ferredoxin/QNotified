@@ -25,4 +25,5 @@ package nil.nadph.qnotified.mvc.impl;
  * Dummy class
  */
 public class MainSettingSection {
+
 }

@@ -21,22 +21,22 @@
  */
 package com.rymmmmm.hook;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import static nil.nadph.qnotified.util.ReflexUtil.iput_object;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
 
-import static nil.nadph.qnotified.util.ReflexUtil.iput_object;
-
 //去除群聊送礼物广告
 @FunctionEntry
 public class RemoveSendGiftAd extends CommonDelayableHook {
+
     public static final RemoveSendGiftAd INSTANCE = new RemoveSendGiftAd();
 
 
@@ -47,15 +47,21 @@ public class RemoveSendGiftAd extends CommonDelayableHook {
     @Override
     public boolean initOnce() {
         try {
-            final Class<?> _TroopGiftPanel = Initiator.load("com.tencent.biz.troopgift.TroopGiftPanel");
+            final Class<?> _TroopGiftPanel = Initiator
+                .load("com.tencent.biz.troopgift.TroopGiftPanel");
             for (Method m : _TroopGiftPanel.getDeclaredMethods()) {
                 Class<?>[] argt = m.getParameterTypes();
-                if (m.getName().equals("onClick") && argt.length == 1 && !Modifier.isStatic(m.getModifiers())) {
+                if (m.getName().equals("onClick") && argt.length == 1 && !Modifier
+                    .isStatic(m.getModifiers())) {
                     XposedBridge.hookMethod(m, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            if (LicenseStatus.sDisableCommonHooks) return;
-                            if (!isEnabled()) return;
+                            if (LicenseStatus.sDisableCommonHooks) {
+                                return;
+                            }
+                            if (!isEnabled()) {
+                                return;
+                            }
                             iput_object(param.thisObject, "f", Boolean.TYPE, true);
                         }
                     });

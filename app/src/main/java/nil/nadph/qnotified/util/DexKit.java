@@ -21,10 +21,16 @@
  */
 package nil.nadph.qnotified.util;
 
+import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
+import static nil.nadph.qnotified.util.Initiator._QQAppInterface;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.logi;
+
 import android.view.View;
-
 import androidx.annotation.Nullable;
-
+import dalvik.system.DexClassLoader;
+import dalvik.system.PathClassLoader;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -37,25 +43,14 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.regex.Pattern;
-
-import dalvik.system.DexClassLoader;
-import dalvik.system.PathClassLoader;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.config.ConfigManager;
 
-import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
-import static nil.nadph.qnotified.util.Initiator._QQAppInterface;
-import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
-import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.logi;
-
 /**
- * I hadn't obfuscated the source code.
- * I just don't want to name it,
- * leaving it a()
+ * I hadn't obfuscated the source code. I just don't want to name it, leaving it a()
  */
 public class DexKit {
-    
+
     //WARN: NEVER change the index!
     public static final int C_DIALOG_UTIL = 1;
     public static final int C_FACADE = 2;
@@ -97,7 +92,7 @@ public class DexKit {
     public static final int C_AIOPictureView = 36;
     //the last index
     public static final int DEOBF_NUM_C = 36;
-    
+
     public static final int N_BASE_CHAT_PIE__INIT = 20001;
     public static final int N_BASE_CHAT_PIE__handleNightMask = 20002;
     public static final int N_BASE_CHAT_PIE__updateSession = 20003;
@@ -106,10 +101,10 @@ public class DexKit {
     public static final int N_LeftSwipeReply_Helper__reply = 20006;
     public static final int N_AtPanel__showDialogAtView = 20007;
     public static final int N_AtPanel__refreshUI = 20008;
-    
+
     public static final int DEOBF_NUM_N = 8;
-    
-    
+
+
     @Nullable
     public static boolean prepareFor(int i) {
         if (i / 10000 == 0) {
@@ -118,7 +113,7 @@ public class DexKit {
             return doFindMethod(i) != null;
         }
     }
-    
+
     @Nullable
     public static boolean checkFor(int i) {
         if (i / 10000 == 0) {
@@ -127,7 +122,7 @@ public class DexKit {
             return getMethodDescFromCache(i) != null;
         }
     }
-    
+
     @Nullable
     public static Class loadClassFromCache(int i) {
         Class ret = Initiator.load(c(i));
@@ -140,7 +135,7 @@ public class DexKit {
         }
         return Initiator.load(m.declaringClass);
     }
-    
+
     @Nullable
     public static Class doFindClass(int i) {
         Class ret = Initiator.load(c(i));
@@ -156,7 +151,7 @@ public class DexKit {
         }
         return Initiator.load(m.declaringClass);
     }
-    
+
     @Nullable
     public static Method getMethodFromCache(int i) {
         if (i / 10000 == 0) {
@@ -177,7 +172,7 @@ public class DexKit {
             return null;
         }
     }
-    
+
     @Nullable
     public static Method doFindMethod(int i) {
         if (i / 10000 == 0) {
@@ -198,7 +193,7 @@ public class DexKit {
             return null;
         }
     }
-    
+
     @Nullable
     public static DexMethodDescriptor getMethodDescFromCache(int i) {
         try {
@@ -217,7 +212,7 @@ public class DexKit {
             return null;
         }
     }
-    
+
     @Nullable
     public static DexMethodDescriptor doFindMethodDesc(int i) {
         DexMethodDescriptor ret = getMethodDescFromCache(i);
@@ -254,15 +249,16 @@ public class DexKit {
                 return null;
             }
             cache.putString("cache_" + a(i) + "_method", ret.toString());
-            cache.getAllConfig().put("cache_" + a(i) + "_code", HostInformationProviderKt.getHostInfo().getVersionCode32());
+            cache.getAllConfig().put("cache_" + a(i) + "_code",
+                HostInformationProviderKt.getHostInfo().getVersionCode32());
             cache.save();
         } catch (Exception e) {
             log(e);
         }
         return ret;
     }
-    
-    
+
+
     public static String a(int i) {
         switch (i) {
             case C_DIALOG_UTIL:
@@ -354,7 +350,7 @@ public class DexKit {
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
-    
+
     public static String c(int i) {
         String ret;
         switch (i) {
@@ -432,7 +428,7 @@ public class DexKit {
                 //guess
                 ret = "com.tencent.mobileqq.aio.helper.TogetherControlHelper";
                 break;
-            case C_GroupAppActivity:    
+            case C_GroupAppActivity:
                 ret = "com/tencent/mobileqq/activity/aio/drawer/TroopAppShortcutDrawer";
                 break;
             case C_IntimateDrawer:
@@ -487,108 +483,194 @@ public class DexKit {
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
-    
+
     public static byte[][] b(int i) {
         switch (i) {
             case C_DIALOG_UTIL:
-                return new byte[][]{new byte[]{0x1B, 0x61, 0x6E, 0x64, 0x72, 0x6F, 0x69, 0x64, 0x2E, 0x70, 0x65, 0x72, 0x6D, 0x69, 0x73, 0x73, 0x69, 0x6F, 0x6E, 0x2E, 0x53, 0x45, 0x4E, 0x44, 0x5F, 0x53, 0x4D, 0x53}};
+                return new byte[][]{
+                    new byte[]{0x1B, 0x61, 0x6E, 0x64, 0x72, 0x6F, 0x69, 0x64, 0x2E, 0x70, 0x65,
+                        0x72, 0x6D, 0x69, 0x73, 0x73, 0x69, 0x6F, 0x6E, 0x2E, 0x53, 0x45, 0x4E,
+                        0x44, 0x5F, 0x53, 0x4D, 0x53}};
             case C_FACADE:
-                return new byte[][]{new byte[]{0x20, 0x72, 0x65, 0x53, 0x65, 0x6E, 0x64, 0x45, 0x6D, 0x6F}};
+                return new byte[][]{
+                    new byte[]{0x20, 0x72, 0x65, 0x53, 0x65, 0x6E, 0x64, 0x45, 0x6D, 0x6F}};
             case C_FLASH_PIC_HELPER:
-                return new byte[][]{new byte[]{0x0E, 0x46, 0x6C, 0x61, 0x73, 0x68, 0x50, 0x69, 0x63, 0x48, 0x65, 0x6C, 0x70, 0x65, 0x72}};
+                return new byte[][]{
+                    new byte[]{0x0E, 0x46, 0x6C, 0x61, 0x73, 0x68, 0x50, 0x69, 0x63, 0x48, 0x65,
+                        0x6C, 0x70, 0x65, 0x72}};
             case C_BASE_PIC_DL_PROC:
-                return new byte[][]{new byte[]{0x2C, 0x42, 0x61, 0x73, 0x65, 0x50, 0x69, 0x63, 0x44, 0x6F, 0x77, 0x6E, 0x6C}};
+                return new byte[][]{
+                    new byte[]{0x2C, 0x42, 0x61, 0x73, 0x65, 0x50, 0x69, 0x63, 0x44, 0x6F, 0x77,
+                        0x6E, 0x6C}};
             case C_ITEM_BUILDER_FAC:
                 return new byte[][]{
-                    new byte[]{0x24, 0x49, 0x74, 0x65, 0x6D, 0x42, 0x75, 0x69, 0x6C, 0x64, 0x65, 0x72, 0x20, 0x69, 0x73, 0x3A, 0x20, 0x44},
-                    new byte[]{0x2A, 0x66, 0x69, 0x6E, 0x64, 0x49, 0x74, 0x65, 0x6D, 0x42, 0x75, 0x69, 0x6C, 0x64, 0x65, 0x72, 0x3A, 0x20, 0x69, 0x6E, 0x76, 0x6F, 0x6B, 0x65, 0x64, 0x2E}
+                    new byte[]{0x24, 0x49, 0x74, 0x65, 0x6D, 0x42, 0x75, 0x69, 0x6C, 0x64, 0x65,
+                        0x72, 0x20, 0x69, 0x73, 0x3A, 0x20, 0x44},
+                    new byte[]{0x2A, 0x66, 0x69, 0x6E, 0x64, 0x49, 0x74, 0x65, 0x6D, 0x42, 0x75,
+                        0x69, 0x6C, 0x64, 0x65, 0x72, 0x3A, 0x20, 0x69, 0x6E, 0x76, 0x6F, 0x6B,
+                        0x65, 0x64, 0x2E}
                 };
             case C_AIO_UTILS:
-                return new byte[][]{new byte[]{0x0D, 0x6F, 0x70, 0x65, 0x6E, 0x41, 0x49, 0x4F, 0x20, 0x62, 0x79, 0x20, 0x4D, 0x54}};
+                return new byte[][]{
+                    new byte[]{0x0D, 0x6F, 0x70, 0x65, 0x6E, 0x41, 0x49, 0x4F, 0x20, 0x62, 0x79,
+                        0x20, 0x4D, 0x54}};
             case C_ABS_GAL_SCENE:
-                return new byte[][]{new byte[]{0x16, 0x67, 0x61, 0x6C, 0x6C, 0x65, 0x72, 0x79, 0x20, 0x73, 0x65, 0x74, 0x43, 0x6F, 0x6C, 0x6F, 0x72, 0x20, 0x62, 0x6C}};
+                return new byte[][]{
+                    new byte[]{0x16, 0x67, 0x61, 0x6C, 0x6C, 0x65, 0x72, 0x79, 0x20, 0x73, 0x65,
+                        0x74, 0x43, 0x6F, 0x6C, 0x6F, 0x72, 0x20, 0x62, 0x6C}};
             case C_FAV_EMO_CONST:
                 return new byte[][]{
-                    new byte[]{0x11, 0x68, 0x74, 0x74, 0x70, 0x3A, 0x2F, 0x2F, 0x70, 0x2E, 0x71, 0x70, 0x69, 0x63, 0x2E},
-                    new byte[]{0x12, 0x68, 0x74, 0x74, 0x70, 0x73, 0x3A, 0x2F, 0x2F, 0x70, 0x2E, 0x71, 0x70, 0x69, 0x63, 0x2E},
+                    new byte[]{0x11, 0x68, 0x74, 0x74, 0x70, 0x3A, 0x2F, 0x2F, 0x70, 0x2E, 0x71,
+                        0x70, 0x69, 0x63, 0x2E},
+                    new byte[]{0x12, 0x68, 0x74, 0x74, 0x70, 0x73, 0x3A, 0x2F, 0x2F, 0x70, 0x2E,
+                        0x71, 0x70, 0x69, 0x63, 0x2E},
                 };
             case C_MSG_REC_FAC:
-                return new byte[][]{new byte[]{0x2C, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50, 0x69, 0x63, 0x4D, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65}};
+                return new byte[][]{
+                    new byte[]{0x2C, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50, 0x69, 0x63, 0x4D,
+                        0x65, 0x73, 0x73, 0x61, 0x67, 0x65}};
             case C_CONTACT_UTILS:
                 return new byte[][]{new byte[]{0x07, 0x20, 0x2D, 0x20, 0x57, 0x69, 0x46, 0x69}};
             case C_VIP_UTILS:
                 return new byte[][]{new byte[]{0x05, 0x6A, 0x68, 0x61, 0x6E, 0x5F}};
             case C_ARK_APP_ITEM_BUBBLE_BUILDER:
-                return new byte[][]{new byte[]{0x0F, 0x64, 0x65, 0x62, 0x75, 0x67, 0x41, 0x72, 0x6B, 0x4D, 0x65, 0x74, 0x61, 0x20, 0x3D, 0x20}};
+                return new byte[][]{
+                    new byte[]{0x0F, 0x64, 0x65, 0x62, 0x75, 0x67, 0x41, 0x72, 0x6B, 0x4D, 0x65,
+                        0x74, 0x61, 0x20, 0x3D, 0x20}};
             case C_PNG_FRAME_UTIL:
-                return new byte[][]{new byte[]{0x2A, 0x66, 0x75, 0x6E, 0x63, 0x20, 0x63, 0x68, 0x65, 0x63, 0x6B, 0x52, 0x61, 0x6E, 0x64, 0x6F, 0x6D, 0x50, 0x6E, 0x67, 0x45, 0x78}};
+                return new byte[][]{
+                    new byte[]{0x2A, 0x66, 0x75, 0x6E, 0x63, 0x20, 0x63, 0x68, 0x65, 0x63, 0x6B,
+                        0x52, 0x61, 0x6E, 0x64, 0x6F, 0x6D, 0x50, 0x6E, 0x67, 0x45, 0x78}};
             case C_PIC_EMOTICON_INFO:
-                return new byte[][]{new byte[]{0x20, 0x73, 0x65, 0x6E, 0x64, 0x20, 0x65, 0x6D, 0x6F, 0x74, 0x69, 0x6F, 0x6E, 0x20, 0x2B, 0x20, 0x31, 0x3A}};
+                return new byte[][]{
+                    new byte[]{0x20, 0x73, 0x65, 0x6E, 0x64, 0x20, 0x65, 0x6D, 0x6F, 0x74, 0x69,
+                        0x6F, 0x6E, 0x20, 0x2B, 0x20, 0x31, 0x3A}};
             case C_SIMPLE_UI_UTIL:
-                return new byte[][]{new byte[]{0x15, 0x6B, 0x65, 0x79, 0x5F, 0x73, 0x69, 0x6D, 0x70, 0x6C, 0x65, 0x5F, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x5F, 0x73}};
+                return new byte[][]{
+                    new byte[]{0x15, 0x6B, 0x65, 0x79, 0x5F, 0x73, 0x69, 0x6D, 0x70, 0x6C, 0x65,
+                        0x5F, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x5F, 0x73}};
             case C_TROOP_GIFT_UTIL:
-                return new byte[][]{new byte[]{0x1A, 0x2E, 0x74, 0x72, 0x6F, 0x6F, 0x70, 0x2E, 0x73, 0x65, 0x6E, 0x64, 0x5F, 0x67, 0x69, 0x66, 0x74, 0x54}};
+                return new byte[][]{
+                    new byte[]{0x1A, 0x2E, 0x74, 0x72, 0x6F, 0x6F, 0x70, 0x2E, 0x73, 0x65, 0x6E,
+                        0x64, 0x5F, 0x67, 0x69, 0x66, 0x74, 0x54}};
             case C_TEST_STRUCT_MSG:
-                return new byte[][]{new byte[]{0x0D, 0x54, 0x65, 0x73, 0x74, 0x53, 0x74, 0x72, 0x75, 0x63, 0x74, 0x4D, 0x73, 0x67}};
+                return new byte[][]{
+                    new byte[]{0x0D, 0x54, 0x65, 0x73, 0x74, 0x53, 0x74, 0x72, 0x75, 0x63, 0x74,
+                        0x4D, 0x73, 0x67}};
             case C_QZONE_MSG_NOTIFY:
-                return new byte[][]{new byte[]{0x14, 0x75, 0x73, 0x65, 0x20, 0x73, 0x6D, 0x61, 0x6C, 0x6C, 0x20, 0x69, 0x63, 0x6F, 0x6E, 0x20, 0x2C, 0x65, 0x78, 0x70, 0x3A}};
+                return new byte[][]{
+                    new byte[]{0x14, 0x75, 0x73, 0x65, 0x20, 0x73, 0x6D, 0x61, 0x6C, 0x6C, 0x20,
+                        0x69, 0x63, 0x6F, 0x6E, 0x20, 0x2C, 0x65, 0x78, 0x70, 0x3A}};
             case C_APP_CONSTANTS:
-                return new byte[][]{new byte[]{0x0B, 0x2E, 0x69, 0x6E, 0x64, 0x69, 0x76, 0x41, 0x6E, 0x69, 0x6D, 0x2F}};
+                return new byte[][]{
+                    new byte[]{0x0B, 0x2E, 0x69, 0x6E, 0x64, 0x69, 0x76, 0x41, 0x6E, 0x69, 0x6D,
+                        0x2F}};
             case C_MessageCache:
-                return new byte[][]{new byte[]{0x12, 0x51, 0x2E, 0x6D, 0x73, 0x67, 0x2E, 0x4D, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x43, 0x61, 0x63, 0x68, 0x65}};
+                return new byte[][]{
+                    new byte[]{0x12, 0x51, 0x2E, 0x6D, 0x73, 0x67, 0x2E, 0x4D, 0x65, 0x73, 0x73,
+                        0x61, 0x67, 0x65, 0x43, 0x61, 0x63, 0x68, 0x65}};
             case C_ScreenShotHelper:
-                return new byte[][]{new byte[]{0x1D, 0x6F, 0x6E, 0x41, 0x63, 0x74, 0x69, 0x76, 0x69, 0x74, 0x79, 0x52, 0x65, 0x73, 0x75, 0x6D, 0x65, 0x48, 0x69, 0x64, 0x65, 0x46, 0x6C, 0x6F, 0x61, 0x74, 0x56, 0x69, 0x65, 0x77}};
+                return new byte[][]{
+                    new byte[]{0x1D, 0x6F, 0x6E, 0x41, 0x63, 0x74, 0x69, 0x76, 0x69, 0x74, 0x79,
+                        0x52, 0x65, 0x73, 0x75, 0x6D, 0x65, 0x48, 0x69, 0x64, 0x65, 0x46, 0x6C,
+                        0x6F, 0x61, 0x74, 0x56, 0x69, 0x65, 0x77}};
             case C_TimeFormatterUtils:
-                return new byte[][]{new byte[]{0x12, 0x54, 0x69, 0x6D, 0x65, 0x46, 0x6F, 0x72, 0x6D, 0x61, 0x74, 0x74, 0x65, 0x72, 0x55, 0x74, 0x69, 0x6C, 0x73}};
+                return new byte[][]{
+                    new byte[]{0x12, 0x54, 0x69, 0x6D, 0x65, 0x46, 0x6F, 0x72, 0x6D, 0x61, 0x74,
+                        0x74, 0x65, 0x72, 0x55, 0x74, 0x69, 0x6C, 0x73}};
             case C_TogetherControlHelper:
-                return new byte[][]{new byte[]{0x16, 0x53, 0x49, 0x4E, 0x47, 0x20, 0x74, 0x6F, 0x67, 0x65, 0x74, 0x68, 0x65, 0x72, 0x20, 0x69, 0x73, 0x20, 0x63, 0x6C, 0x69, 0x63, 0x6B}};
+                return new byte[][]{
+                    new byte[]{0x16, 0x53, 0x49, 0x4E, 0x47, 0x20, 0x74, 0x6F, 0x67, 0x65, 0x74,
+                        0x68, 0x65, 0x72, 0x20, 0x69, 0x73, 0x20, 0x63, 0x6C, 0x69, 0x63, 0x6B}};
             case C_GroupAppActivity:
-                return new byte[][]{new byte[]{0x11, 0x6F, 0x6E, 0x44, 0x72, 0x61, 0x77, 0x65, 0x72, 0x53, 0x74, 0x61, 0x72, 0x74, 0x4F, 0x70, 0x65, 0x6E}};
+                return new byte[][]{
+                    new byte[]{0x11, 0x6F, 0x6E, 0x44, 0x72, 0x61, 0x77, 0x65, 0x72, 0x53, 0x74,
+                        0x61, 0x72, 0x74, 0x4F, 0x70, 0x65, 0x6E}};
             case C_IntimateDrawer:
-                return new byte[][]{new byte[]{0x15, 0x69, 0x6E, 0x74, 0x69, 0x6D, 0x61, 0x74, 0x65, 0x5F, 0x72, 0x65, 0x6C, 0x61, 0x74, 0x69, 0x6F, 0x6E, 0x73, 0x68, 0x69, 0x70}};
+                return new byte[][]{
+                    new byte[]{0x15, 0x69, 0x6E, 0x74, 0x69, 0x6D, 0x61, 0x74, 0x65, 0x5F, 0x72,
+                        0x65, 0x6C, 0x61, 0x74, 0x69, 0x6F, 0x6E, 0x73, 0x68, 0x69, 0x70}};
             case C_ZipUtils_biz: {
-                return new byte[][]{new byte[]{0x10, 0x2C, 0x5A, 0x69, 0x70, 0x45, 0x6E, 0x74, 0x72, 0x79, 0x20, 0x6E, 0x61, 0x6D, 0x65, 0x3A, 0x20}};
+                return new byte[][]{
+                    new byte[]{0x10, 0x2C, 0x5A, 0x69, 0x70, 0x45, 0x6E, 0x74, 0x72, 0x79, 0x20,
+                        0x6E, 0x61, 0x6D, 0x65, 0x3A, 0x20}};
             }
             case N_BASE_CHAT_PIE__INIT:
-                return new byte[][]{new byte[]{0x0F, 0x69, 0x6E, 0x70, 0x75, 0x74, 0x20, 0x73, 0x65, 0x74, 0x20, 0x65, 0x72, 0x72, 0x6F, 0x72}};
+                return new byte[][]{
+                    new byte[]{0x0F, 0x69, 0x6E, 0x70, 0x75, 0x74, 0x20, 0x73, 0x65, 0x74, 0x20,
+                        0x65, 0x72, 0x72, 0x6F, 0x72}};
             case N_BASE_CHAT_PIE__handleNightMask:
-                return new byte[][]{new byte[]{0x2D, 0x23, 0x68, 0x61, 0x6E, 0x64, 0x6C, 0x65, 0x4E, 0x69, 0x67, 0x68, 0x74, 0x4D, 0x61, 0x73, 0x6B, 0x23, 0x20, 0x3A, 0x20, 0x69, 0x6E, 0x4E, 0x69, 0x67, 0x68, 0x74, 0x4D, 0x6F, 0x64, 0x65}};
+                return new byte[][]{
+                    new byte[]{0x2D, 0x23, 0x68, 0x61, 0x6E, 0x64, 0x6C, 0x65, 0x4E, 0x69, 0x67,
+                        0x68, 0x74, 0x4D, 0x61, 0x73, 0x6B, 0x23, 0x20, 0x3A, 0x20, 0x69, 0x6E,
+                        0x4E, 0x69, 0x67, 0x68, 0x74, 0x4D, 0x6F, 0x64, 0x65}};
             case N_BASE_CHAT_PIE__updateSession:
-                return new byte[][]{new byte[]{0x19, 0x41, 0x49, 0x4F, 0x54, 0x69, 0x6D, 0x65, 0x20, 0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6F, 0x6E, 0x20, 0x65, 0x6E, 0x64}};
+                return new byte[][]{
+                    new byte[]{0x19, 0x41, 0x49, 0x4F, 0x54, 0x69, 0x6D, 0x65, 0x20, 0x75, 0x70,
+                        0x64, 0x61, 0x74, 0x65, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6F, 0x6E, 0x20,
+                        0x65, 0x6E, 0x64}};
             case N_BASE_CHAT_PIE__createMulti:
-                return new byte[][]{new byte[]{0x0B, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4D, 0x75, 0x6C, 0x74, 0x69}};
+                return new byte[][]{
+                    new byte[]{0x0B, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4D, 0x75, 0x6C, 0x74,
+                        0x69}};
             case N_BASE_CHAT_PIE__chooseMsg:
-                return new byte[][]{new byte[]{0x19, 0x73, 0x65, 0x74, 0x20, 0x6C, 0x65, 0x66, 0x74, 0x20, 0x74, 0x65, 0x78, 0x74, 0x20, 0x66, 0x72, 0x6F, 0x6D, 0x20, 0x63, 0x61, 0x6E, 0x63, 0x65, 0x6C}};
+                return new byte[][]{
+                    new byte[]{0x19, 0x73, 0x65, 0x74, 0x20, 0x6C, 0x65, 0x66, 0x74, 0x20, 0x74,
+                        0x65, 0x78, 0x74, 0x20, 0x66, 0x72, 0x6F, 0x6D, 0x20, 0x63, 0x61, 0x6E,
+                        0x63, 0x65, 0x6C}};
             case C_CustomWidgetUtil:
                 return new byte[][]{new byte[]{0x03, 0x4E, 0x45, 0x57, 0x00}};
             case C_HttpDownloader:
-                return new byte[][]{new byte[]{0x18, 0x5B, 0x72, 0x65, 0x70, 0x6F, 0x72, 0x74, 0x48, 0x74, 0x74, 0x70, 0x73, 0x52, 0x65, 0x73, 0x75, 0x6C, 0x74, 0x5D, 0x20, 0x75, 0x72, 0x6C, 0x3D}};
+                return new byte[][]{
+                    new byte[]{0x18, 0x5B, 0x72, 0x65, 0x70, 0x6F, 0x72, 0x74, 0x48, 0x74, 0x74,
+                        0x70, 0x73, 0x52, 0x65, 0x73, 0x75, 0x6C, 0x74, 0x5D, 0x20, 0x75, 0x72,
+                        0x6C, 0x3D}};
             case C_MultiMsg_Manager:
-                return new byte[][]{new byte[]{0x1C, 0x5B, 0x73, 0x65, 0x6E, 0x64, 0x4D, 0x75, 0x6C, 0x74, 0x69, 0x4D, 0x73, 0x67, 0x5D, 0x64, 0x61, 0x74, 0x61, 0x2E, 0x6C, 0x65, 0x6E, 0x67, 0x74, 0x68, 0x20, 0x3D, 0x20}};
+                return new byte[][]{
+                    new byte[]{0x1C, 0x5B, 0x73, 0x65, 0x6E, 0x64, 0x4D, 0x75, 0x6C, 0x74, 0x69,
+                        0x4D, 0x73, 0x67, 0x5D, 0x64, 0x61, 0x74, 0x61, 0x2E, 0x6C, 0x65, 0x6E,
+                        0x67, 0x74, 0x68, 0x20, 0x3D, 0x20}};
             case N_LeftSwipeReply_Helper__reply:
-                return new byte[][]{new byte[]{0x09, 0x30, 0x58, 0x38, 0x30, 0x30, 0x41, 0x39, 0x32, 0x46}};
+                return new byte[][]{
+                    new byte[]{0x09, 0x30, 0x58, 0x38, 0x30, 0x30, 0x41, 0x39, 0x32, 0x46}};
             case C_ClockInEntryHelper:
                 return new byte[][]{
-                    new byte[]{0x1f, 0x69, 0x73, 0x53, 0x68, 0x6f, 0x77, 0x54, 0x6f, 0x67, 0x65, 0x74, 0x68, 0x65, 0x72, 0x45, 0x6e, 0x74, 0x72, 0x79},
-                    new byte[]{0x19, 0x43, 0x6c, 0x6f, 0x63, 0x6b, 0x49, 0x6e, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x48, 0x65, 0x6c, 0x70, 0x65, 0x72, 0x2e, 0x68, 0x65, 0x6c, 0x70, 0x65, 0x72}};
+                    new byte[]{0x1f, 0x69, 0x73, 0x53, 0x68, 0x6f, 0x77, 0x54, 0x6f, 0x67, 0x65,
+                        0x74, 0x68, 0x65, 0x72, 0x45, 0x6e, 0x74, 0x72, 0x79},
+                    new byte[]{0x19, 0x43, 0x6c, 0x6f, 0x63, 0x6b, 0x49, 0x6e, 0x45, 0x6e, 0x74,
+                        0x72, 0x79, 0x48, 0x65, 0x6c, 0x70, 0x65, 0x72, 0x2e, 0x68, 0x65, 0x6c,
+                        0x70, 0x65, 0x72}};
             case C_CaptureUtil:
-                return new byte[][]{new byte[]{0x1f, 0x6d, 0x65, 0x64, 0x69, 0x61, 0x63, 0x6f, 0x64, 0x65, 0x63}};
+                return new byte[][]{
+                    new byte[]{0x1f, 0x6d, 0x65, 0x64, 0x69, 0x61, 0x63, 0x6f, 0x64, 0x65, 0x63}};
             case C_AvatarUtil:
-                return new byte[][]{new byte[]{0x0a, 0x41, 0x76, 0x61, 0x74, 0x61, 0x72, 0x55, 0x74, 0x69, 0x6c}};
+                return new byte[][]{
+                    new byte[]{0x0a, 0x41, 0x76, 0x61, 0x74, 0x61, 0x72, 0x55, 0x74, 0x69, 0x6c}};
             case C_FaceManager:
-                return new byte[][]{new byte[]{0x0b, 0x46, 0x61, 0x63, 0x65, 0x4d, 0x61, 0x6e, 0x61, 0x67, 0x65, 0x72}};
+                return new byte[][]{
+                    new byte[]{0x0b, 0x46, 0x61, 0x63, 0x65, 0x4d, 0x61, 0x6e, 0x61, 0x67, 0x65,
+                        0x72}};
             case C_SmartDeviceProxyMgr:
-                return new byte[][]{new byte[]{0x1a, 0x53, 0x6d, 0x61, 0x72, 0x74, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x50, 0x72, 0x6f, 0x78, 0x79, 0x4d, 0x67, 0x72, 0x20, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65}};
+                return new byte[][]{
+                    new byte[]{0x1a, 0x53, 0x6d, 0x61, 0x72, 0x74, 0x44, 0x65, 0x76, 0x69, 0x63,
+                        0x65, 0x50, 0x72, 0x6f, 0x78, 0x79, 0x4d, 0x67, 0x72, 0x20, 0x63, 0x72,
+                        0x65, 0x61, 0x74, 0x65}};
             case N_AtPanel__refreshUI:
-                return new byte[][]{new byte[]{0x11, 0x72, 0x65, 0x73, 0x75, 0x6C, 0x74, 0x4C, 0x69, 0x73, 0x74, 0x20, 0x3D, 0x20, 0x6E, 0x75, 0x6C, 0x6C}};
+                return new byte[][]{
+                    new byte[]{0x11, 0x72, 0x65, 0x73, 0x75, 0x6C, 0x74, 0x4C, 0x69, 0x73, 0x74,
+                        0x20, 0x3D, 0x20, 0x6E, 0x75, 0x6C, 0x6C}};
             case N_AtPanel__showDialogAtView:
-                return new byte[][]{new byte[]{0x1b, 0x73, 0x68, 0x6F, 0x77, 0x44, 0x69, 0x61, 0x6C, 0x6F, 0x67, 0x41, 0x74, 0x56, 0x69, 0x65, 0x77}};
+                return new byte[][]{
+                    new byte[]{0x1b, 0x73, 0x68, 0x6F, 0x77, 0x44, 0x69, 0x61, 0x6C, 0x6F, 0x67,
+                        0x41, 0x74, 0x56, 0x69, 0x65, 0x77}};
             case C_AIOPictureView:
-                return new byte[][]{new byte[]{0x0e, 0x41, 0x49, 0x4F, 0x50, 0x69, 0x63, 0x74, 0x75, 0x72, 0x65, 0x56, 0x69, 0x65, 0x77}};
+                return new byte[][]{
+                    new byte[]{0x0e, 0x41, 0x49, 0x4F, 0x50, 0x69, 0x63, 0x74, 0x75, 0x72, 0x65,
+                        0x56, 0x69, 0x65, 0x77}};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
-    
+
     public static int[] d(int i) {
         switch (i) {
             case C_DIALOG_UTIL:
@@ -676,8 +758,9 @@ public class DexKit {
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
-    
-    private static DexMethodDescriptor a(int i, HashSet<DexMethodDescriptor> __methods, DexDeobfReport report) {
+
+    private static DexMethodDescriptor a(int i, HashSet<DexMethodDescriptor> __methods,
+        DexDeobfReport report) {
         switch (i) {
             case C_DIALOG_UTIL:
             case C_FACADE:
@@ -729,8 +812,10 @@ public class DexKit {
                     Class clz = Initiator.load(md.declaringClass);
                     for (Field f : clz.getDeclaredFields()) {
                         int m = f.getModifiers();
-                        if (Modifier.isStatic(m) && Modifier.isFinal(m) && f.getType().equals(Pattern.class))
+                        if (Modifier.isStatic(m) && Modifier.isFinal(m) && f.getType()
+                            .equals(Pattern.class)) {
                             return md;
+                        }
                     }
                 }
                 break;
@@ -870,19 +955,23 @@ public class DexKit {
             case N_BASE_CHAT_PIE__handleNightMask:
             case N_BASE_CHAT_PIE__updateSession:
                 for (DexMethodDescriptor m : __methods) {
-                    if (m.declaringClass.replace('/', '.').contains(_BaseChatPie().getName()))
+                    if (m.declaringClass.replace('/', '.').contains(_BaseChatPie().getName())) {
                         return m;
+                    }
                 }
                 break;
             case N_LeftSwipeReply_Helper__reply:
                 //NOTICE: this must only has one result
-    
+
                 return (DexMethodDescriptor) __methods.toArray()[0];
             case N_BASE_CHAT_PIE__createMulti:
                 for (DexMethodDescriptor m : __methods) {
                     String name = m.declaringClass.replace('/', '.');
-                    if (name.contains("com.tencent.mobileqq.activity.aio.helper.AIOMultiActionHelper") || name.contains(_BaseChatPie().getName()))
+                    if (name
+                        .contains("com.tencent.mobileqq.activity.aio.helper.AIOMultiActionHelper")
+                        || name.contains(_BaseChatPie().getName())) {
                         return m;
+                    }
                 }
                 break;
             case C_CustomWidgetUtil:
@@ -971,14 +1060,14 @@ public class DexKit {
         }
         return null;
     }
-    
+
     public static boolean p(int i) {
         if (i == C_CustomWidgetUtil || i == N_BASE_CHAT_PIE__INIT) {
             return true;
         }
         return false;
     }
-    
+
     @Nullable
     private static HashSet<DexMethodDescriptor> e(int i, DexDeobfReport rep) {
         ClassLoader loader = Initiator.getHostClassLoader();
@@ -991,7 +1080,8 @@ public class DexKit {
                 record |= 1 << dexi;
                 try {
                     for (byte[] k : keys) {
-                        HashSet<DexMethodDescriptor> ret = findMethodsByConstString(k, dexi, loader);
+                        HashSet<DexMethodDescriptor> ret = findMethodsByConstString(k, dexi,
+                            loader);
                         if (ret != null && ret.size() > 0) {
                             if (check) {
                                 DexMethodDescriptor m = a(i, ret, rep);
@@ -1037,7 +1127,7 @@ public class DexKit {
             dexi++;
         }
     }
-    
+
     @Nullable
     public static byte[] getClassDeclaringDex(String klass, @Nullable int[] qf) {
         ClassLoader loader = Initiator.getHostClassLoader();
@@ -1057,7 +1147,8 @@ public class DexKit {
                     HashSet<URL> urls = new HashSet<>(3);
                     try {
                         Enumeration<URL> eu;
-                        eu = (Enumeration<URL>) invoke_virtual(loader, "findResources", name, String.class);
+                        eu = (Enumeration<URL>) invoke_virtual(loader, "findResources", name,
+                            String.class);
                         if (eu != null) {
                             while (eu.hasMoreElements()) {
                                 urls.add(eu.nextElement());
@@ -1066,11 +1157,13 @@ public class DexKit {
                     } catch (Throwable e) {
                         log(e);
                     }
-                    if (!loader.getClass().equals(PathClassLoader.class) && !loader.getClass().equals(DexClassLoader.class)
+                    if (!loader.getClass().equals(PathClassLoader.class) && !loader.getClass()
+                        .equals(DexClassLoader.class)
                         && loader.getParent() != null) {
                         try {
                             Enumeration<URL> eu;
-                            eu = (Enumeration<URL>) invoke_virtual(loader.getParent(), "findResources", name, String.class);
+                            eu = (Enumeration<URL>) invoke_virtual(loader.getParent(),
+                                "findResources", name, String.class);
                             if (eu != null) {
                                 while (eu.hasMoreElements()) {
                                     urls.add(eu.nextElement());
@@ -1124,7 +1217,8 @@ public class DexKit {
                 HashSet<URL> urls = new HashSet<>(3);
                 try {
                     Enumeration<URL> eu;
-                    eu = (Enumeration<URL>) invoke_virtual(loader, "findResources", name, String.class);
+                    eu = (Enumeration<URL>) invoke_virtual(loader, "findResources", name,
+                        String.class);
                     if (eu != null) {
                         while (eu.hasMoreElements()) {
                             urls.add(eu.nextElement());
@@ -1133,11 +1227,13 @@ public class DexKit {
                 } catch (Throwable e) {
                     log(e);
                 }
-                if (!loader.getClass().equals(PathClassLoader.class) && !loader.getClass().equals(DexClassLoader.class)
+                if (!loader.getClass().equals(PathClassLoader.class) && !loader.getClass()
+                    .equals(DexClassLoader.class)
                     && loader.getParent() != null) {
                     try {
                         Enumeration<URL> eu;
-                        eu = (Enumeration<URL>) invoke_virtual(loader.getParent(), "findResources", name, String.class);
+                        eu = (Enumeration<URL>) invoke_virtual(loader.getParent(), "findResources",
+                            name, String.class);
                         if (eu != null) {
                             while (eu.hasMoreElements()) {
                                 urls.add(eu.nextElement());
@@ -1175,7 +1271,7 @@ public class DexKit {
             dexi++;
         }
     }
-    
+
     public static ArrayList<Integer> a(byte[] buf, byte[] target) {
         ArrayList<Integer> rets = new ArrayList<>();
         int[] ret = new int[1];
@@ -1207,7 +1303,7 @@ public class DexKit {
         }
         return rets;
     }
-    
+
     /**
      * get ALL the possible class names
      *
@@ -1217,7 +1313,8 @@ public class DexKit {
      * @return ["abc","ab"]
      * @throws FileNotFoundException apk has no classesN.dex
      */
-    public static HashSet<DexMethodDescriptor> findMethodsByConstString(byte[] key, int i, ClassLoader loader) throws FileNotFoundException {
+    public static HashSet<DexMethodDescriptor> findMethodsByConstString(byte[] key, int i,
+        ClassLoader loader) throws FileNotFoundException {
         String name;
         byte[] buf = new byte[4096];
         byte[] content;
@@ -1238,11 +1335,13 @@ public class DexKit {
         } catch (Throwable e) {
             log(e);
         }
-        if (!loader.getClass().equals(PathClassLoader.class) && !loader.getClass().equals(DexClassLoader.class)
+        if (!loader.getClass().equals(PathClassLoader.class) && !loader.getClass()
+            .equals(DexClassLoader.class)
             && loader.getParent() != null) {
             try {
                 Enumeration<URL> eu;
-                eu = (Enumeration<URL>) invoke_virtual(loader.getParent(), "findResources", name, String.class);
+                eu = (Enumeration<URL>) invoke_virtual(loader.getParent(), "findResources", name,
+                    String.class);
                 if (eu != null) {
                     while (eu.hasMoreElements()) {
                         urls.add(eu.nextElement());
@@ -1271,7 +1370,8 @@ public class DexKit {
                 ArrayList<Integer> opcodeOffsets = a(content, key);
                 for (int j = 0; j < opcodeOffsets.size(); j++) {
                     try {
-                        DexMethodDescriptor desc = DexFlow.getDexMethodByOpOffset(content, opcodeOffsets.get(j), true);
+                        DexMethodDescriptor desc = DexFlow
+                            .getDexMethodByOpOffset(content, opcodeOffsets.get(j), true);
                         if (desc != null) {
                             rets.add(desc);
                         }
@@ -1285,18 +1385,19 @@ public class DexKit {
             return null;
         }
     }
-    
+
     public static class DexDeobfReport {
+
         int target;
         int version;
         String result;
         String log;
         long time;
-        
+
         public DexDeobfReport() {
             time = System.currentTimeMillis();
         }
-        
+
         public void v(String str) {
             if (log == null) {
                 log = str + "\n";
@@ -1304,7 +1405,7 @@ public class DexKit {
                 log = log + str + "\n";
             }
         }
-        
+
         @Override
         public String toString() {
             return "Deobf target: " + target + '\n' +
@@ -1314,5 +1415,5 @@ public class DexKit {
                 log;
         }
     }
-    
+
 }

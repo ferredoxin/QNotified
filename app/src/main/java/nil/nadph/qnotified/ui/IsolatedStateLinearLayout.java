@@ -30,6 +30,7 @@ import android.util.SparseArray;
 import android.widget.LinearLayout;
 
 public class IsolatedStateLinearLayout extends LinearLayout {
+
     public IsolatedStateLinearLayout(Context context) {
         super(context);
     }
@@ -43,14 +44,17 @@ public class IsolatedStateLinearLayout extends LinearLayout {
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public IsolatedStateLinearLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public IsolatedStateLinearLayout(Context context, AttributeSet attrs, int defStyleAttr,
+        int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
     @Override
     protected void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
         int id = getId();
-        if (id == NO_ID) return;
+        if (id == NO_ID) {
+            return;
+        }
         Parcelable superState = super.onSaveInstanceState();
         IsolatedLayoutSaveState iss = new IsolatedLayoutSaveState(superState);
         SparseArray<Parcelable> array = iss.childStates;
@@ -61,9 +65,13 @@ public class IsolatedStateLinearLayout extends LinearLayout {
     @Override
     public void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
         int id = getId();
-        if (id == NO_ID) return;
+        if (id == NO_ID) {
+            return;
+        }
         Parcelable state = container.get(id);
-        if (state == null) return;
+        if (state == null) {
+            return;
+        }
         IsolatedLayoutSaveState ss = (IsolatedLayoutSaveState) state;
         SparseArray<Parcelable> array = ss.childStates;
         super.dispatchRestoreInstanceState(array);

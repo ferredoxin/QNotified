@@ -22,6 +22,16 @@ import androidx.annotation.NonNull;
 
 public interface TextItem extends BaseItem {
 
+    @NonNull
+    TextType getTextType();
+
+    void setTextType(@NonNull TextType textType);
+
+    @NonNull
+    CharSequence getText();
+
+    void setText(@NonNull CharSequence text);
+
     enum TextType {
         /**
          * Huge title
@@ -36,14 +46,4 @@ public interface TextItem extends BaseItem {
          */
         TEXT_TYPE_DESCRIPTION,
     }
-
-    void setTextType(@NonNull TextType textType);
-
-    @NonNull
-    TextType getTextType();
-
-    @NonNull
-    CharSequence getText();
-
-    void setText(@NonNull CharSequence text);
 }

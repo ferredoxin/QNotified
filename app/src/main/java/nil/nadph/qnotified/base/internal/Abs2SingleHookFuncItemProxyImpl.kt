@@ -67,7 +67,8 @@ abstract class Abs2SingleHookFuncItemProxyImpl : IFunctionItemInterface {
     override fun asFunctionItem(): AbsFunctionItem = adapter;
 }
 
-private class Abs2SingleHookFuncProxy2ItemAdapter(val h: Abs2SingleHookFuncItemProxyImpl) : AbsFunctionItem, AbsHookTask {
+private class Abs2SingleHookFuncProxy2ItemAdapter(val h: Abs2SingleHookFuncItemProxyImpl) :
+    AbsFunctionItem, AbsHookTask {
     override fun getName(): String = h.functionName
     override fun getDescription(): CharSequence? = h.description
     override fun getExtraSearchKeywords(): Array<String>? = h.extraSearchKeywords

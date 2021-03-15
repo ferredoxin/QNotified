@@ -65,7 +65,11 @@ object RemoveRedDot : CommonDelayableHook("kr_remove_red_dot") {
                             putObject(
                                 param.result,
                                 "a",
-                                BitmapFactory.decodeByteArray(TRANSPARENT_PNG, 0, TRANSPARENT_PNG.size),
+                                BitmapFactory.decodeByteArray(
+                                    TRANSPARENT_PNG,
+                                    0,
+                                    TRANSPARENT_PNG.size
+                                ),
                                 Bitmap::class.java
                             )
                         }

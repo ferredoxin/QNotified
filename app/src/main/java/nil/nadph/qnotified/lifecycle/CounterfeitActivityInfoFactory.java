@@ -27,10 +27,8 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import cc.ioctl.H;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat;
@@ -44,14 +42,16 @@ public class CounterfeitActivityInfoFactory {
             Class<?> cl = Class.forName(className);
             try {
                 ActivityInfo proto = ctx.getPackageManager().getActivityInfo(new ComponentName(
-                    ctx.getPackageName(), "com.tencent.mobileqq.activity.QQSettingSettingActivity"), flags);
+                        ctx.getPackageName(), "com.tencent.mobileqq.activity.QQSettingSettingActivity"),
+                    flags);
                 if (!IphoneTitleBarActivityCompat.class.isAssignableFrom(cl)) {
                     // init style here, comment it out if it crashes on Android >= 10
                     proto.theme = R.style.Theme_MaiTungTMDesign;
                 }
                 return initCommon(proto, className);
             } catch (PackageManager.NameNotFoundException e) {
-                throw new IllegalStateException("QQSettingSettingActivity not found, are we in the host?", e);
+                throw new IllegalStateException(
+                    "QQSettingSettingActivity not found, are we in the host?", e);
             }
         } catch (ClassNotFoundException e) {
             return null;
