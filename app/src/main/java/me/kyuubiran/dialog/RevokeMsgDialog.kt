@@ -32,16 +32,17 @@ import me.kyuubiran.hook.RevokeMsg
 import me.kyuubiran.util.getDefaultCfg
 import nil.nadph.qnotified.R
 import nil.nadph.qnotified.databinding.KyuubiranRevokeMsgDialogBinding
+import nil.nadph.qnotified.ui.CommonContextWrapper
 
 object RevokeMsgDialog {
     private var currentEnable: Boolean? = null
     private var currentMsgEnable: Boolean? = null
     private var currentRevokeTips = ""
     private var currentUnreceivedTips = ""
-    private lateinit var binding: KyuubiranRevokeMsgDialogBinding
 
-    fun onShow(ctx: Context) {
-        binding = KyuubiranRevokeMsgDialogBinding.inflate(LayoutInflater.from(ctx))
+    fun onShow(baseContext: Context) {
+        val ctx = CommonContextWrapper.createMaterialDesignContext(baseContext)
+        val binding = KyuubiranRevokeMsgDialogBinding.inflate(LayoutInflater.from(ctx))
         val cfg = getDefaultCfg()
         val enable = cfg.getBooleanOrFalse(RevokeMsg.kr_revoke_msg)
         val showMsgEnable = cfg.getBooleanOrFalse(RevokeMsg.kr_revoke_msg_show_msg_text_enabled)

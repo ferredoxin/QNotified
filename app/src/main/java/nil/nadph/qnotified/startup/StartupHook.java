@@ -78,7 +78,7 @@ public class StartupHook {
         deleteDirIfNecessaryNoThrow(ctx);
     }
 
-    public static void injectClassLoader(ClassLoader classLoader) {
+    private static void injectClassLoader(ClassLoader classLoader) {
         if (classLoader == null) {
             throw new NullPointerException("classLoader == null");
         }
@@ -137,7 +137,7 @@ public class StartupHook {
         return !file.exists();
     }
 
-    public static void log_e(Throwable th) {
+    static void log_e(Throwable th) {
         if (th == null) {
             return;
         }

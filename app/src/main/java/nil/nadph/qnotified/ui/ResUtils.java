@@ -31,6 +31,7 @@ import static nil.nadph.qnotified.util.Utils.logd;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -306,9 +307,7 @@ public class ResUtils {
             byte[] chunk = bitmap.getNinePatchChunk();
             if (NinePatch.isNinePatchChunk(chunk)) {
                 Class clz = load("com/tencent/theme/SkinnableNinePatchDrawable");
-                ret = (Drawable) XposedHelpers
-                    .findConstructorBestMatch(clz, Resources.class, Bitmap.class, byte[].class,
-                        Rect.class, String.class)
+                ret = (Drawable) XposedHelpers.findConstructorBestMatch(clz, Resources.class, Bitmap.class, byte[].class, Rect.class, String.class)
                     .newInstance(res, bitmap, chunk, new Rect(), name);
             } else {
                 ret = new BitmapDrawable(res, bitmap);
@@ -382,6 +381,10 @@ public class ResUtils {
             log(e);
             return false;
         }
+    }
+
+    public static int getNightModeMasked() {
+        return isInNightMode() ? Configuration.UI_MODE_NIGHT_YES : Configuration.UI_MODE_NIGHT_NO;
     }
 }
 

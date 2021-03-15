@@ -36,9 +36,8 @@ import nil.nadph.qnotified.base.annotation.FunctionEntry
 object AntiMessage : MultiItemDelayableHook("qn_anti_message_items"), MessageReceiver {
     override var allItems = ""
     override val defaultItems = ""
-    override var items: MutableList<String>
-        get() = MsgRecordUtil.MSG.keys.sorted().toMutableList()
-        set(_) = Unit
+    override var items: MutableList<String> = MsgRecordUtil.MSG.keys.sorted().toMutableList()
+
 
     override fun onReceive(data: MsgRecordData?): Boolean {
         if (data?.selfUin.equals(data?.senderUin)) return false
