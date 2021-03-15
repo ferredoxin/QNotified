@@ -24,11 +24,11 @@ package nil.nadph.qnotified.remote;
 import com.qq.taf.jce.JceInputStream;
 import com.qq.taf.jce.JceOutputStream;
 import com.qq.taf.jce.JceStruct;
-
 import java.io.IOException;
 import java.util.Random;
 
 public class ToServiceMsg extends JceStruct {
+
     private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
     private static final Random r = new Random();
     private int uniSeq;//0
@@ -62,44 +62,44 @@ public class ToServiceMsg extends JceStruct {
         token = t;
     }
 
-    public void setBody(byte[] body) {
-        this.body = body;
-    }
-
     public byte[] getBody() {
         return body;
     }
 
-    public void setToken(long token) {
-        this.token = token;
+    public void setBody(byte[] body) {
+        this.body = body;
     }
 
     public long getToken() {
         return token;
     }
 
-    public void setUniSeq(int uniSeq) {
-        this.uniSeq = uniSeq;
+    public void setToken(long token) {
+        this.token = token;
     }
 
     public int getUniSeq() {
         return uniSeq;
     }
 
-    public void setServiceCmd(String serviceCmd) {
-        this.serviceCmd = serviceCmd;
-    }
-
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
+    public void setUniSeq(int uniSeq) {
+        this.uniSeq = uniSeq;
     }
 
     public String getServiceCmd() {
         return serviceCmd;
     }
 
+    public void setServiceCmd(String serviceCmd) {
+        this.serviceCmd = serviceCmd;
+    }
+
     public String getServiceName() {
         return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 
     @Override
@@ -121,8 +121,14 @@ public class ToServiceMsg extends JceStruct {
     }
 
     public void ensureNonNull() {
-        if (body == null) body = EMPTY_BYTE_ARRAY;
-        if (serviceCmd == null) serviceCmd = "";
-        if (serviceName == null) serviceName = "";
+        if (body == null) {
+            body = EMPTY_BYTE_ARRAY;
+        }
+        if (serviceCmd == null) {
+            serviceCmd = "";
+        }
+        if (serviceName == null) {
+            serviceName = "";
+        }
     }
 }

@@ -21,11 +21,10 @@
  */
 package com.rymmmmm.hook;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
@@ -33,27 +32,35 @@ import nil.nadph.qnotified.util.Utils;
 
 //屏蔽抖动窗口 作用暂时不明
 public class DisableShakeWindow extends CommonDelayableHook {
-    private final static DisableShakeWindow self = new DisableShakeWindow();
 
-    public static DisableShakeWindow get() {
-        return self;
-    }
+    private final static DisableShakeWindow self = new DisableShakeWindow();
 
     protected DisableShakeWindow() {
         super("rq_disable_shake_window");
+    }
+
+    public static DisableShakeWindow get() {
+        return self;
     }
 
     @Override
     public boolean initOnce() {
         try {
             for (int i = 1; i < 4; i++) {
-                for (Method m : Initiator.load("com.tencent.mobileqq.activity.aio.helper.AIOShakeHelper$" + i).getDeclaredMethods()) {
+                for (Method m : Initiator
+                    .load("com.tencent.mobileqq.activity.aio.helper.AIOShakeHelper$" + i)
+                    .getDeclaredMethods()) {
                     if (m.getName().equals("run") && !Modifier.isStatic(m.getModifiers())) {
                         XposedBridge.hookMethod(m, new XC_MethodHook() {
                             @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                                if (LicenseStatus.sDisableCommonHooks) return;
-                                if (!isEnabled()) return;
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                throws Throwable {
+                                if (LicenseStatus.sDisableCommonHooks) {
+                                    return;
+                                }
+                                if (!isEnabled()) {
+                                    return;
+                                }
                                 param.setResult(null);
                             }
                         });

@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class QNScriptInfo {
+
     /**
      * 作者
      */
@@ -96,6 +97,7 @@ public class QNScriptInfo {
     }
 
     public static class Builder {
+
         private String author;
         private String name;
         private String label;

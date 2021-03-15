@@ -23,16 +23,16 @@
 package nil.nadph.qnotified.base.internal;
 
 import androidx.annotation.NonNull;
-
 import nil.nadph.qnotified.base.AbsFunctionItem;
 
 /**
- * DO NOT LOOK AT IT, it solves this problem:<br/>
- * Accidental override: The following declarations have the same JVM signature {@code (getName()Ljava/lang/String;)}:<br/>
- * {@code public final fun <get-name>(): String defined in nil.nadph.qnotified.hook.CommonKotlinHook}<br/>
- * {@code public abstract fun getName(): String defined in nil.nadph.qnotified.hook.CommonKotlinHook}<br/>
+ * DO NOT LOOK AT IT, it solves this problem:<br/> Accidental override: The following declarations
+ * have the same JVM signature {@code (getName()Ljava/lang/String;)}:<br/> {@code public final fun
+ * <get-name>(): String defined in nil.nadph.qnotified.hook.CommonKotlinHook}<br/> {@code public
+ * abstract fun getName(): String defined in nil.nadph.qnotified.hook.CommonKotlinHook}<br/>
  */
 public interface IFunctionItemInterface {
+
     @NonNull
     AbsFunctionItem asFunctionItem();
 }

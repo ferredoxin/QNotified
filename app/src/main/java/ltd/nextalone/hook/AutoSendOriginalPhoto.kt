@@ -35,7 +35,8 @@ import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 
 @FunctionEntry
-object AutoSendOriginalPhoto : CommonDelayableHook("na_auto_send_origin_photo", SyncUtils.PROC_MAIN or SyncUtils.PROC_PEAK) {
+object AutoSendOriginalPhoto :
+    CommonDelayableHook("na_auto_send_origin_photo", SyncUtils.PROC_MAIN or SyncUtils.PROC_PEAK) {
 
     override fun initOnce() = tryOrFalse {
         "Lcom.tencent.mobileqq.activity.aio.photo.PhotoListPanel;->a(Z)V".method.hookAfter(this) {
@@ -44,7 +45,9 @@ object AutoSendOriginalPhoto : CommonDelayableHook("na_auto_send_origin_photo", 
             sendOriginPhotoCheckbox?.isChecked = true
         }
         if (requireMinQQVersion(QQVersion.QQ_8_2_0)) {
-            "Lcom.tencent.mobileqq.activity.photo.album.NewPhotoPreviewActivity;->onCreate(Landroid/os/Bundle;)V".method.hookAfter(this) {
+            "Lcom.tencent.mobileqq.activity.photo.album.NewPhotoPreviewActivity;->onCreate(Landroid/os/Bundle;)V".method.hookAfter(
+                this
+            ) {
                 val ctx = it.thisObject as Activity
                 val checkBox = ctx.findHostView<CheckBox>("h1y")
                 checkBox?.isChecked = true

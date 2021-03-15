@@ -21,19 +21,20 @@
  */
 package com.rymmmmm.hook;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
+
 //屏蔽掉落小表情
 @FunctionEntry
 public class DisableDropSticker extends CommonDelayableHook {
+
     public static final DisableDropSticker INSTANCE = new DisableDropSticker();
 
     protected DisableDropSticker() {
@@ -45,12 +46,17 @@ public class DisableDropSticker extends CommonDelayableHook {
         try {
             for (Method m : Initiator._ConfigHandler().getDeclaredMethods()) {
                 Class<?>[] argt = m.getParameterTypes();
-                if (m.getName().equals("f") && !Modifier.isStatic(m.getModifiers()) && argt.length == 1) {
+                if (m.getName().equals("f") && !Modifier.isStatic(m.getModifiers())
+                    && argt.length == 1) {
                     XposedBridge.hookMethod(m, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            if (LicenseStatus.sDisableCommonHooks) return;
-                            if (!isEnabled()) return;
+                            if (LicenseStatus.sDisableCommonHooks) {
+                                return;
+                            }
+                            if (!isEnabled()) {
+                                return;
+                            }
                             param.setResult(null);
                         }
                     });

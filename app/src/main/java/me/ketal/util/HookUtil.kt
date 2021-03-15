@@ -16,7 +16,7 @@ object HookUtil {
     internal fun String.getMethod(classLoader: ClassLoader = Initiator.getHostClassLoader()) =
         try {
             DexMethodDescriptor(this).getMethodInstance(classLoader)
-        } catch (e : Throwable) {
+        } catch (e: Throwable) {
             null
         }
 
@@ -32,7 +32,7 @@ object HookUtil {
     internal fun String.getField(classLoader: ClassLoader = Initiator.getHostClassLoader()) =
         try {
             DexFieldDescriptor(this).getFieldInstance(classLoader)
-        } catch (e : Throwable) {
+        } catch (e: Throwable) {
             null
         }
 

@@ -21,11 +21,10 @@
  */
 package com.rymmmmm.hook;
 
-import java.lang.reflect.Field;
-
-import de.robv.android.xposed.XposedHelpers;
-import nil.nadph.qnotified.SyncUtils;
 import cc.ioctl.dialog.RikkaCustomDeviceModelDialog;
+import de.robv.android.xposed.XposedHelpers;
+import java.lang.reflect.Field;
+import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.Initiator;
@@ -34,6 +33,7 @@ import nil.nadph.qnotified.util.Utils;
 //自定义机型
 @FunctionEntry
 public class CustomDeviceModel extends CommonDelayableHook {
+
     public static final CustomDeviceModel INSTANCE = new CustomDeviceModel();
 
     protected CustomDeviceModel() {
@@ -48,7 +48,8 @@ public class CustomDeviceModel extends CommonDelayableHook {
             Field model = XposedHelpers.findField(Clz, "MODEL");
             manufacturer.setAccessible(true);
             model.setAccessible(true);
-            manufacturer.set(Clz.newInstance(), RikkaCustomDeviceModelDialog.getCurrentDeviceManufacturer());
+            manufacturer.set(Clz.newInstance(),
+                RikkaCustomDeviceModelDialog.getCurrentDeviceManufacturer());
             model.set(Clz.newInstance(), RikkaCustomDeviceModelDialog.getCurrentDeviceModel());
             return true;
         } catch (Throwable e) {

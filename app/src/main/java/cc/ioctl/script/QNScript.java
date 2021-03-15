@@ -21,17 +21,22 @@
  */
 package cc.ioctl.script;
 
-import bsh.EvalError;
-import bsh.Interpreter;
-import nil.nadph.qnotified.config.ConfigItems;
-import nil.nadph.qnotified.config.ConfigManager;
-import cc.ioctl.script.params.*;
-
-import java.io.IOException;
-
 import static nil.nadph.qnotified.util.Utils.log;
 
+import bsh.EvalError;
+import bsh.Interpreter;
+import cc.ioctl.script.params.FriendAddedParam;
+import cc.ioctl.script.params.FriendMessageParam;
+import cc.ioctl.script.params.FriendRequestParam;
+import cc.ioctl.script.params.GroupJoinedParam;
+import cc.ioctl.script.params.GroupMessageParam;
+import cc.ioctl.script.params.GroupRequestParam;
+import java.io.IOException;
+import nil.nadph.qnotified.config.ConfigItems;
+import nil.nadph.qnotified.config.ConfigManager;
+
 public class QNScript {
+
     private final Interpreter instance;
     private final String code;
     private final QNScriptInfo info;
@@ -44,9 +49,13 @@ public class QNScript {
         this.info = QNScriptInfo.getInfo(code);
     }
 
+    public static QNScript create(Interpreter lp, String code) {
+        return new QNScript(lp, code);
+    }
+
     public void onLoad() {
         try {
-            if (!init){
+            if (!init) {
                 instance.eval(code);
             }
             instance.eval("onLoad()");
@@ -57,7 +66,9 @@ public class QNScript {
     }
 
     public void onGroupMessage(GroupMessageParam param) {
-        if (!init) return;
+        if (!init) {
+            return;
+        }
         try {
             instance.set("groupMessageParam", param);
             instance.eval("onGroupMessage(groupMessageParam)");
@@ -67,7 +78,9 @@ public class QNScript {
     }
 
     public void onFriendMessage(FriendMessageParam param) {
-        if (!init) return;
+        if (!init) {
+            return;
+        }
         try {
             instance.set("friendMessageParam", param);
             instance.eval("onFriendMessage(friendMessageParam)");
@@ -77,7 +90,9 @@ public class QNScript {
     }
 
     public void onFriendRequest(FriendRequestParam param) {
-        if (!init) return;
+        if (!init) {
+            return;
+        }
         try {
             instance.set("friendRequestParam", param);
             instance.eval("onFriendRequest(friendRequestParam)");
@@ -87,7 +102,9 @@ public class QNScript {
     }
 
     public void onFriendAdded(FriendAddedParam param) {
-        if (!init) return;
+        if (!init) {
+            return;
+        }
         try {
             instance.set("friendAddedParam", param);
             instance.eval("onFriendAdded(friendAddedParam)");
@@ -97,7 +114,9 @@ public class QNScript {
     }
 
     public void onGroupRequest(GroupRequestParam param) {
-        if (!init) return;
+        if (!init) {
+            return;
+        }
         try {
             instance.set("groupRequestParam", param);
             instance.eval("onGroupRequest(groupRequestParam)");
@@ -107,7 +126,9 @@ public class QNScript {
     }
 
     public void onGroupJoined(GroupJoinedParam param) {
-        if (!init) return;
+        if (!init) {
+            return;
+        }
         try {
             instance.set("groupJoinedParam", param);
             instance.eval("onGroupJoined(groupJoinedParam)");
@@ -141,7 +162,8 @@ public class QNScript {
     }
 
     public boolean isEnable() {
-        this.enable = ConfigManager.getDefaultConfig().getBooleanOrFalse(ConfigItems.qn_script_enable_ + getLabel());
+        this.enable = ConfigManager.getDefaultConfig()
+            .getBooleanOrFalse(ConfigItems.qn_script_enable_ + getLabel());
         return this.enable;
     }
 
@@ -156,11 +178,6 @@ public class QNScript {
         }
         return this.enable = enable;
     }
-
-    public static QNScript create(Interpreter lp, String code) {
-        return new QNScript(lp, code);
-    }
-
 
     public CharSequence getEnable() {
         return isEnable() ? "[启用]" : "[禁用]";

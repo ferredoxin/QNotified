@@ -23,8 +23,8 @@ package me.singleneuron.data
 
 class PageFaultHighPerformanceFunctionCacheMap : MutableMap<String, Any> {
 
-    private val hashMap : HashMap<String, Any> = HashMap()
-    private val functionHashMap : HashMap<String, ()->Any> = HashMap()
+    private val hashMap: HashMap<String, Any> = HashMap()
+    private val functionHashMap: HashMap<String, () -> Any> = HashMap()
 
     override val size: Int
         get() = functionHashMap.size
@@ -42,14 +42,14 @@ class PageFaultHighPerformanceFunctionCacheMap : MutableMap<String, Any> {
     override fun get(key: String): Any? {
         return try {
             hashMap[key]!!
-        } catch (e:Exception) {
+        } catch (e: Exception) {
             hashMap[key] = functionHashMap[key]!!.invoke()
             hashMap[key]
         }
     }
 
     override fun isEmpty(): Boolean {
-       return functionHashMap.isEmpty()
+        return functionHashMap.isEmpty()
     }
 
     @Deprecated("Avoid to use this method, it will cache all values.")
@@ -75,13 +75,13 @@ class PageFaultHighPerformanceFunctionCacheMap : MutableMap<String, Any> {
     }
 
     override fun put(key: String, value: Any): Any? {
-        putFunctional(key) {value}
+        putFunctional(key) { value }
         return null
     }
 
     override fun putAll(from: Map<out String, Any>) {
         from.keys.forEach {
-            putFunctional(it) {from[it]!!}
+            putFunctional(it) { from[it]!! }
         }
     }
 
@@ -91,7 +91,7 @@ class PageFaultHighPerformanceFunctionCacheMap : MutableMap<String, Any> {
         return null
     }
 
-    fun putFunctional(key: String, function: ()->Any) {
+    fun putFunctional(key: String, function: () -> Any) {
         functionHashMap[key] = function
     }
 
@@ -125,15 +125,15 @@ class PageFaultHighPerformanceFunctionCacheMap : MutableMap<String, Any> {
         return this[key] as String
     }
 
-    fun putLong(key: String, function: ()->Long) {
+    fun putLong(key: String, function: () -> Long) {
         functionHashMap[key] = function
     }
 
-    fun putInt(key: String, function: ()->Int) {
+    fun putInt(key: String, function: () -> Int) {
         functionHashMap[key] = function
     }
 
-    fun putBoolean(key: String, function: ()->Boolean) {
+    fun putBoolean(key: String, function: () -> Boolean) {
         functionHashMap[key] = function
     }
 
@@ -141,7 +141,7 @@ class PageFaultHighPerformanceFunctionCacheMap : MutableMap<String, Any> {
         functionHashMap[key] = function
     }
 
-    fun putFloat(key: String, function: ()->Float) {
+    fun putFloat(key: String, function: () -> Float) {
         functionHashMap[key] = function
     }
 

@@ -22,7 +22,6 @@
 package cc.ioctl.hook;
 
 import android.os.Parcelable;
-
 import mqq.app.AppRuntime;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
@@ -32,6 +31,7 @@ import nil.nadph.qnotified.util.DexKit;
 
 @FunctionEntry
 public class CardMsgHook extends CommonDelayableHook {
+
     public static final int R_ID_COPY_CODE = 0x00EE77CC;
     public static final CardMsgHook INSTANCE = new CardMsgHook();
 
@@ -39,17 +39,20 @@ public class CardMsgHook extends CommonDelayableHook {
         super("qn_send_card_msg");
     }
 
+    @SuppressWarnings("JavaJniMissingFunction")
+    static native boolean ntSendCardMsg(AppRuntime rt, Parcelable session, String msg)
+        throws Exception;
+
     @Override
     public boolean initOnce() {
         return true;
     }
 
-    @SuppressWarnings("JavaJniMissingFunction")
-    static native boolean ntSendCardMsg(AppRuntime rt, Parcelable session, String msg) throws Exception;
-
     @Override
     public Step[] getPreconditions() {
-        return new Step[]{new DexDeobfStep(DexKit.C_ARK_APP_ITEM_BUBBLE_BUILDER), new DexDeobfStep(DexKit.C_FACADE),
-                new DexDeobfStep(DexKit.C_TEST_STRUCT_MSG), new DexDeobfStep(DexKit.N_BASE_CHAT_PIE__INIT)};
+        return new Step[]{new DexDeobfStep(DexKit.C_ARK_APP_ITEM_BUBBLE_BUILDER),
+            new DexDeobfStep(DexKit.C_FACADE),
+            new DexDeobfStep(DexKit.C_TEST_STRUCT_MSG),
+            new DexDeobfStep(DexKit.N_BASE_CHAT_PIE__INIT)};
     }
 }

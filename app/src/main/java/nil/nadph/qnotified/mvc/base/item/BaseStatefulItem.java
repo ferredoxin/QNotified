@@ -19,7 +19,6 @@
 package nil.nadph.qnotified.mvc.base.item;
 
 import androidx.annotation.NonNull;
-
 import nil.nadph.qnotified.mvc.base.ValidStatus;
 
 public interface BaseStatefulItem extends BaseItem {

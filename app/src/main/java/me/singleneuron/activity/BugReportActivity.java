@@ -22,12 +22,9 @@
 package me.singleneuron.activity;
 
 import android.os.Bundle;
-
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import java.util.ArrayList;
-
 import me.singleneuron.base.bridge.BugReport;
 import me.singleneuron.data.BugReportArguments;
 import me.singleneuron.fragment.BugReportFragment;
@@ -38,9 +35,9 @@ import nil.nadph.qnotified.databinding.ActivityBugReportBinding;
 
 public class BugReportActivity extends AppCompatTransferActivity {
 
-    private ActivityBugReportBinding binding;
     BugReportFragment bugReportFragment;
     LoadingBugReportFragment loadingBugReportFragment;
+    private ActivityBugReportBinding binding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,7 +52,9 @@ public class BugReportActivity extends AppCompatTransferActivity {
     }
 
     void changeFragment(Fragment fragment) {
-        getSupportFragmentManager().beginTransaction().replace(R.id.bug_report_content_frame, fragment).addToBackStack(fragment.getClass().getSimpleName()).commit();
+        getSupportFragmentManager().beginTransaction()
+            .replace(R.id.bug_report_content_frame, fragment)
+            .addToBackStack(fragment.getClass().getSimpleName()).commit();
     }
 
     private class runnable implements Runnable {
@@ -63,7 +62,8 @@ public class BugReportActivity extends AppCompatTransferActivity {
         @Override
         public void run() {
             try {
-                ArrayList<BugReportArguments> list = BugReport.getInstance().getBugReportArgumentsList();
+                ArrayList<BugReportArguments> list = BugReport.getInstance()
+                    .getBugReportArgumentsList();
                 runOnUiThread(() -> {
                     bugReportFragment = BugReportFragment.getInstance(list);
                     changeFragment(bugReportFragment);

@@ -21,9 +21,9 @@
  */
 package nil.nadph.qnotified.config;
 
-import java.io.Serializable;
-
 import static nil.nadph.qnotified.util.Utils.en;
+
+import java.io.Serializable;
 
 
 public class FriendRecord implements Serializable, Cloneable {
@@ -56,15 +56,23 @@ public class FriendRecord implements Serializable, Cloneable {
     }
 
     public String getShowStr() {
-        if (remark != null && remark.length() > 0) return remark;
-        else if (nick != null && nick.length() > 0) return nick;
-        else return "" + uin;
+        if (remark != null && remark.length() > 0) {
+            return remark;
+        } else if (nick != null && nick.length() > 0) {
+            return nick;
+        } else {
+            return "" + uin;
+        }
     }
 
     public String getShowStrWithUin() {
-        if (remark != null && remark.length() > 0) return remark + "(" + uin + ")";
-        else if (nick != null && nick.length() > 0) return nick + "(" + uin + ")";
-        else return "" + uin;
+        if (remark != null && remark.length() > 0) {
+            return remark + "(" + uin + ")";
+        } else if (nick != null && nick.length() > 0) {
+            return nick + "(" + uin + ")";
+        } else {
+            return "" + uin;
+        }
     }
 
     @Override
@@ -79,7 +87,9 @@ public class FriendRecord implements Serializable, Cloneable {
         sb.append(friendStatus);
         sb.append(",serverTime=");
         sb.append(serverTime);
-        if (sb.charAt(sb.length() - 1) == ',') sb.deleteCharAt(sb.length() - 1);
+        if (sb.charAt(sb.length() - 1) == ',') {
+            sb.deleteCharAt(sb.length() - 1);
+        }
         sb.append("}");
         return sb.toString();
     }

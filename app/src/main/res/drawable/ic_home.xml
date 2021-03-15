@@ -21,11 +21,11 @@
   -->
 
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp"
     android:height="24dp"
+    android:viewportHeight="24"
     android:viewportWidth="24"
-    android:viewportHeight="24">
-  <path
-      android:pathData="M12,5.69l5,4.5V18H15V12H9v6H7V10.19l5,-4.5M12,3 L2,12H5v8h6V14h2v6h6V12h3Z"
-      android:fillColor="#4285f4"/>
+    android:width="24dp">
+    <path
+        android:fillColor="#4285f4"
+        android:pathData="M12,5.69l5,4.5V18H15V12H9v6H7V10.19l5,-4.5M12,3 L2,12H5v8h6V14h2v6h6V12h3Z"/>
 </vector>

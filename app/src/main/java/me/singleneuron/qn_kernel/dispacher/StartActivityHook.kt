@@ -32,7 +32,8 @@ import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 
 @FunctionEntry
-object StartActivityHook : BaseDelayableHookAdapter(cfgName = "startActivityHook",proc = SyncUtils.PROC_ANY) {
+object StartActivityHook :
+    BaseDelayableHookAdapter(cfgName = "startActivityHook", proc = SyncUtils.PROC_ANY) {
 
     val decorators = arrayOf(
         DebugDump,
@@ -43,18 +44,18 @@ object StartActivityHook : BaseDelayableHookAdapter(cfgName = "startActivityHook
         //dump startActivity
         val hook = object : XposedMethodHookAdapter() {
             override fun beforeMethod(param: MethodHookParam?) {
-                val intent : Intent = param!!.args[0] as Intent
+                val intent: Intent = param!!.args[0] as Intent
                 for (decorator in decorators) {
-                    if (decorator.decorate(intent,param)){
+                    if (decorator.decorate(intent, param)) {
                         return
                     }
                 }
             }
         }
         XposedBridge.hookAllMethods(ContextWrapper::class.java, "startActivity", hook)
-        XposedBridge.hookAllMethods(ContextWrapper::class.java,"startActivityForResult", hook)
-        XposedBridge.hookAllMethods(Activity::class.java,"startActivity", hook)
-        XposedBridge.hookAllMethods(Activity::class.java,"startActivityForResult", hook)
+        XposedBridge.hookAllMethods(ContextWrapper::class.java, "startActivityForResult", hook)
+        XposedBridge.hookAllMethods(Activity::class.java, "startActivity", hook)
+        XposedBridge.hookAllMethods(Activity::class.java, "startActivityForResult", hook)
         return true
     }
 

@@ -76,7 +76,9 @@ public class CliArgs {
     }
 
     public void printHelp(PrintStream out) {
-        if (out == null) return;
+        if (out == null) {
+            return;
+        }
         out.println("Usage: [options] <dex file>");
         out.println("options: -h, --help    Show this help");
         out.println("         -x            Disable xor");

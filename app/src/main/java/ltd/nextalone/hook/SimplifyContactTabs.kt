@@ -33,7 +33,9 @@ object SimplifyContactTabs : MultiItemDelayableHook("na_simplify_contact_tabs_mu
     override val defaultItems = ""
 
     override fun initOnce() = tryOrFalse {
-        "Lcom.tencent.mobileqq.activity.contacts.base.tabs.ContactsTabs;->a()V".method.hookAfter(this) {
+        "Lcom.tencent.mobileqq.activity.contacts.base.tabs.ContactsTabs;->a()V".method.hookAfter(
+            this
+        ) {
             val list = it.thisObject.get("a", ArrayList::class.java) as ArrayList<Any>
             val tabList = list.toMutableList()
             list.clear()

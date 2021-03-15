@@ -21,19 +21,23 @@ class DatabaseTestActivity : AppCompatTransferActivity() {
         binding = ActivityDatabaseTestBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.insert.setOnClickListener {
-            val testData = Test(binding.keyEditText.text.toString(),binding.valueEditText.text.toString())
+            val testData =
+                Test(binding.keyEditText.text.toString(), binding.valueEditText.text.toString())
             DatabaseContainer.db.testDao().insertTest(testData)
         }
         binding.update.setOnClickListener {
-            val testData = Test(binding.keyEditText.text.toString(),binding.valueEditText.text.toString())
+            val testData =
+                Test(binding.keyEditText.text.toString(), binding.valueEditText.text.toString())
             DatabaseContainer.db.testDao().updateTest(testData)
         }
         binding.query.setOnClickListener {
-            val result = DatabaseContainer.db.testDao().findTest(binding.keyEditText.text.toString())
+            val result =
+                DatabaseContainer.db.testDao().findTest(binding.keyEditText.text.toString())
             binding.result += result.toString()
         }
         binding.delete.setOnClickListener {
-            val testData = Test(binding.keyEditText.text.toString(),binding.valueEditText.text.toString())
+            val testData =
+                Test(binding.keyEditText.text.toString(), binding.valueEditText.text.toString())
             DatabaseContainer.db.testDao().deleteTest(testData)
         }
         binding.queryAll.setOnClickListener {
@@ -41,14 +45,16 @@ class DatabaseTestActivity : AppCompatTransferActivity() {
             binding.result += result.joinToString { it.toString() }
         }
         binding.observe.setOnClickListener {
-            DatabaseContainer.db.testDao().findLiveDataTest(binding.keyEditText.text.toString()).observe(this,{
-                binding.result += it.toString()
-            })
+            DatabaseContainer.db.testDao().findLiveDataTest(binding.keyEditText.text.toString())
+                .observe(this, {
+                    binding.result += it.toString()
+                })
         }
     }
 
 }
 
 private infix operator fun TextView.plusAssign(string: String) {
-    this.text = '['+DateFormat.getTimeInstance().format(Date())+"] "+string + '\n' + this.text.toString()
+    this.text = '[' + DateFormat.getTimeInstance()
+        .format(Date()) + "] " + string + '\n' + this.text.toString()
 }

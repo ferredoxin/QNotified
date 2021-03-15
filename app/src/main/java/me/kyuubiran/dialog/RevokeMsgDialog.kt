@@ -32,21 +32,23 @@ import me.kyuubiran.hook.RevokeMsg
 import me.kyuubiran.util.getDefaultCfg
 import nil.nadph.qnotified.R
 import nil.nadph.qnotified.databinding.KyuubiranRevokeMsgDialogBinding
+import nil.nadph.qnotified.ui.CommonContextWrapper
 
-object RevokeMsgDialog{
+object RevokeMsgDialog {
     private var currentEnable: Boolean? = null
     private var currentMsgEnable: Boolean? = null
     private var currentRevokeTips = ""
     private var currentUnreceivedTips = ""
-    private lateinit var binding: KyuubiranRevokeMsgDialogBinding
 
-    fun onShow(ctx: Context) {
-        binding = KyuubiranRevokeMsgDialogBinding.inflate(LayoutInflater.from(ctx))
+    fun onShow(baseContext: Context) {
+        val ctx = CommonContextWrapper.createMaterialDesignContext(baseContext)
+        val binding = KyuubiranRevokeMsgDialogBinding.inflate(LayoutInflater.from(ctx))
         val cfg = getDefaultCfg()
         val enable = cfg.getBooleanOrFalse(RevokeMsg.kr_revoke_msg)
         val showMsgEnable = cfg.getBooleanOrFalse(RevokeMsg.kr_revoke_msg_show_msg_text_enabled)
         val revokedMsgTips = cfg.getStringOrDefault(RevokeMsg.kr_revoke_msg_tips_text, "尝试撤回一条消息")
-        val unreceivedRevokedMsgTips = cfg.getStringOrDefault(RevokeMsg.kr_revoke_unreceived_msg_tips_text, "撤回了一条消息(没收到)")
+        val unreceivedRevokedMsgTips =
+            cfg.getStringOrDefault(RevokeMsg.kr_revoke_unreceived_msg_tips_text, "撤回了一条消息(没收到)")
 
         currentEnable = enable
         currentMsgEnable = showMsgEnable
@@ -56,8 +58,12 @@ object RevokeMsgDialog{
         binding.krRevokeMsgEnabled.isChecked = enable
         binding.krRevokeMsgPanel.visibility = if (enable) View.VISIBLE else View.GONE
         binding.krRevokeMsgShowMsgTextEnabled.isChecked = showMsgEnable
-        if (binding.krRevokedMsgTipsText.text.isEmpty()) binding.krRevokedMsgTipsText.setText(revokedMsgTips)
-        if (binding.krUnreceivedRevokedMsgTipsText.text.isEmpty()) binding.krUnreceivedRevokedMsgTipsText.setText(unreceivedRevokedMsgTips)
+        if (binding.krRevokedMsgTipsText.text.isEmpty()) binding.krRevokedMsgTipsText.setText(
+            revokedMsgTips
+        )
+        if (binding.krUnreceivedRevokedMsgTipsText.text.isEmpty()) binding.krUnreceivedRevokedMsgTipsText.setText(
+            unreceivedRevokedMsgTips
+        )
         if (currentRevokeTips.isEmpty()) currentRevokeTips = revokedMsgTips
         if (currentUnreceivedTips.isEmpty()) currentUnreceivedTips = unreceivedRevokedMsgTips
 
@@ -103,7 +109,12 @@ object RevokeMsgDialog{
     fun save() {
         val cfg = getDefaultCfg()
         currentEnable?.let { cfg.setBooleanConfig(RevokeMsg.kr_revoke_msg, it) }
-        currentMsgEnable?.let { cfg.setBooleanConfig(RevokeMsg.kr_revoke_msg_show_msg_text_enabled, it) }
+        currentMsgEnable?.let {
+            cfg.setBooleanConfig(
+                RevokeMsg.kr_revoke_msg_show_msg_text_enabled,
+                it
+            )
+        }
         cfg.setStringConfig(RevokeMsg.kr_revoke_msg_tips_text, currentRevokeTips)
         cfg.setStringConfig(RevokeMsg.kr_revoke_unreceived_msg_tips_text, currentUnreceivedTips)
         cfg.save()

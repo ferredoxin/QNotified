@@ -22,16 +22,16 @@
 package nil.nadph.qnotified.util;
 
 import android.app.Application;
-
 import com.microsoft.appcenter.crashes.Crashes;
-
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 
 public class BugCollector {
 
     public static void onThrowable(Throwable th) {
         try {
-            if (Utils.isCallingFrom("BugCollector")) return;
+            if (Utils.isCallingFrom("BugCollector")) {
+                return;
+            }
             Application ctx = HostInformationProviderKt.getHostInfo().getApplication();
             if (ctx != null) {
                 CliOper.__init__(ctx);

@@ -22,6 +22,7 @@
 package nil.nadph.qnotified.step;
 
 public abstract class Step implements Comparable<Step> {
+
     abstract public boolean step();
 
     abstract public boolean isDone();

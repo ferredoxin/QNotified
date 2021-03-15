@@ -4,10 +4,11 @@ import android.app.Activity;
 import android.os.Bundle;
 
 public class BaseActivity extends Activity {
+
     protected static int sResumeCount = 0;
+    protected boolean mIsShadow;
     private AppRuntime app;
     private boolean isResume;
-    protected boolean mIsShadow;
 
     protected boolean isShadow() {
         return false;
@@ -35,10 +36,6 @@ public class BaseActivity extends Activity {
 
     public AppRuntime waitAppRuntime() {
         throw new RuntimeException("Stub!");
-    }
-
-    void setAppRuntime(AppRuntime app2) {
-        this.app = app2;
     }
 
     protected void onStart() {
@@ -86,6 +83,10 @@ public class BaseActivity extends Activity {
 
     public final AppRuntime getAppRuntime() {
         return this.app;
+    }
+
+    void setAppRuntime(AppRuntime app2) {
+        this.app = app2;
     }
 
     protected void finalize() throws Throwable {

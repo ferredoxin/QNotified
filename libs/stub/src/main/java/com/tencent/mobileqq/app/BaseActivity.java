@@ -18,6 +18,11 @@ public class BaseActivity extends AppActivity {
 
     public QQAppInterface app;
 
+    public static boolean isMoveTaskToBack(Context context, Intent intent) {
+        return intent.getComponent() == null || !intent.getComponent().getPackageName()
+            .equals(context.getPackageName());
+    }
+
     @SuppressLint({"SdCardPath"})
     public boolean doDispatchKeyEvent(KeyEvent keyEvent) {
         throw new RuntimeException("Stub!");
@@ -53,7 +58,6 @@ public class BaseActivity extends AppActivity {
         throw new RuntimeException("Stub!");
     }
 
-
     public void doOnDestroy() {
         super.doOnDestroy();
         throw new RuntimeException("Stub!");
@@ -61,10 +65,6 @@ public class BaseActivity extends AppActivity {
 
     public void doOnBackPressed() {
         throw new RuntimeException("Stub!");
-    }
-
-    public static boolean isMoveTaskToBack(Context context, Intent intent) {
-        return intent.getComponent() == null || !intent.getComponent().getPackageName().equals(context.getPackageName());
     }
 
     @Deprecated

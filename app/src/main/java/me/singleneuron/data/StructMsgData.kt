@@ -43,14 +43,14 @@ data class StructMsgData(
 
     init {
         try {
-            val appid = JSONObject(extra).optLong("appid",-1)
-            news.appid = if (appid==-1L) null else appid.toString()
-        }catch (e:Exception) {
+            val appid = JSONObject(extra).optLong("appid", -1)
+            news.appid = if (appid == -1L) null else appid.toString()
+        } catch (e: Exception) {
             Utils.log(e)
         }
     }
 
-    companion object{
+    companion object {
         @JvmStatic
         fun fromMiniApp(miniApp: MiniAppArkData): StructMsgData {
             val detail_1 = miniApp.meta["detail_1"]!!
@@ -91,9 +91,9 @@ data class StructMsgNewsData(
 }
 
 data class StructMsgConfigData(
-    var ctime:Long,
+    var ctime: Long,
 
-) {
+    ) {
 
     val autosize: Boolean = true
     val forward: Boolean = true

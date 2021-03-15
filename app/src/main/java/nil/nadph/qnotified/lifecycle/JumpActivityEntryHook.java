@@ -21,6 +21,10 @@
  */
 package nil.nadph.qnotified.lifecycle;
 
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.logi;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
@@ -28,18 +32,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-
-import java.lang.reflect.Method;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import java.lang.reflect.Method;
 import nil.nadph.qnotified.activity.SettingsActivity;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.MainProcess;
-
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.logi;
 
 /**
  * Used to jump into module proxy Activities from external Intent
@@ -47,6 +45,7 @@ import static nil.nadph.qnotified.util.Utils.logi;
  * @author cinit
  */
 public class JumpActivityEntryHook {
+
     public static final String JUMP_ACTION_CMD = "qn_jump_action_cmd";
     public static final String JUMP_ACTION_TARGET = "qn_jump_action_target";
     public static final String JUMP_ACTION_START_ACTIVITY = "nil.nadph.qnotified.START_ACTIVITY";
@@ -57,7 +56,9 @@ public class JumpActivityEntryHook {
     @MainProcess
     @SuppressLint("PrivateApi")
     public static void initForJumpActivityEntry(Context ctx) {
-        if (__jump_act_init) return;
+        if (__jump_act_init) {
+            return;
+        }
         try {
             Class<?> clz = load("com.tencent.mobileqq.activity.JumpActivity");
             if (clz == null) {
@@ -71,13 +72,15 @@ public class JumpActivityEntryHook {
                     final Activity activity = (Activity) param.thisObject;
                     Intent intent = activity.getIntent();
                     String cmd;
-                    if (intent == null || (cmd = intent.getStringExtra(JUMP_ACTION_CMD)) == null)
+                    if (intent == null || (cmd = intent.getStringExtra(JUMP_ACTION_CMD)) == null) {
                         return;
+                    }
                     if (JUMP_ACTION_SETTING_ACTIVITY.equals(cmd)) {
                         if (LicenseStatus.sDisableCommonHooks) {
                         } else {
                             Intent realIntent = new Intent(intent);
-                            realIntent.setComponent(new ComponentName(activity, SettingsActivity.class));
+                            realIntent
+                                .setComponent(new ComponentName(activity, SettingsActivity.class));
                             activity.startActivity(realIntent);
                         }
                     } else if (JUMP_ACTION_START_ACTIVITY.equals(cmd)) {

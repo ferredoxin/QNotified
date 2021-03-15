@@ -21,14 +21,16 @@
  */
 package cc.ioctl.hook;
 
+import static nil.nadph.qnotified.util.Initiator._PicItemBuilder;
+import static nil.nadph.qnotified.util.ReflexUtil.findField;
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.os.Looper;
 import android.view.View;
 import android.widget.Toast;
-
-import java.lang.reflect.Field;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
+import java.lang.reflect.Field;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.bridge.AIOUtilsImpl;
@@ -37,10 +39,6 @@ import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Toasts;
-
-import static nil.nadph.qnotified.util.Initiator._PicItemBuilder;
-import static nil.nadph.qnotified.util.ReflexUtil.findField;
-import static nil.nadph.qnotified.util.Utils.*;
 
 @FunctionEntry
 public class EmoPicHook extends CommonDelayableHook {
@@ -57,41 +55,52 @@ public class EmoPicHook extends CommonDelayableHook {
             boolean canInit = checkPreconditions();
             if (!canInit && isEnabled()) {
                 if (Looper.myLooper() != null) {
-                    Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(), "QNotified:表情转图片功能初始化错误", Toast.LENGTH_LONG);
+                    Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(),
+                        "QNotified:表情转图片功能初始化错误", Toast.LENGTH_LONG);
                 }
             }
-            if (!canInit) return false;
-            XposedHelpers.findAndHookMethod(_PicItemBuilder(), "onClick", View.class, new XC_MethodHook(51) {
+            if (!canInit) {
+                return false;
+            }
+            XposedHelpers
+                .findAndHookMethod(_PicItemBuilder(), "onClick", View.class, new XC_MethodHook(51) {
 
-                Field f_picExtraData = null;
-                Field f_imageBizType = null;
-                Field f_imageType = null;
+                    Field f_picExtraData = null;
+                    Field f_imageBizType = null;
+                    Field f_imageType = null;
 
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.sDisableCommonHooks) return;
-                    if (!isEnabled()) return;
-                    Object chatMsg = AIOUtilsImpl.getChatMessage((View) param.args[0]);
-                    if (chatMsg == null) return;
-                    if (f_picExtraData == null) {
-                        f_picExtraData = findField(chatMsg.getClass(), null, "picExtraData");
-                        f_picExtraData.setAccessible(true);
-                    }
-                    Object picMessageExtraData = f_picExtraData.get(chatMsg);
-                    if (f_imageType == null) {
-                        f_imageType = findField(chatMsg.getClass(), null, "imageType");
-                        f_imageType.setAccessible(true);
-                    }
-                    f_imageType.setInt(chatMsg, 0);
-                    if (picMessageExtraData != null) {
-                        if (f_imageBizType == null) {
-                            f_imageBizType = findField(picMessageExtraData.getClass(), null, "imageBizType");
-                            f_imageBizType.setAccessible(true);
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        if (LicenseStatus.sDisableCommonHooks) {
+                            return;
                         }
-                        f_imageBizType.setInt(picMessageExtraData, 0);
+                        if (!isEnabled()) {
+                            return;
+                        }
+                        Object chatMsg = AIOUtilsImpl.getChatMessage((View) param.args[0]);
+                        if (chatMsg == null) {
+                            return;
+                        }
+                        if (f_picExtraData == null) {
+                            f_picExtraData = findField(chatMsg.getClass(), null, "picExtraData");
+                            f_picExtraData.setAccessible(true);
+                        }
+                        Object picMessageExtraData = f_picExtraData.get(chatMsg);
+                        if (f_imageType == null) {
+                            f_imageType = findField(chatMsg.getClass(), null, "imageType");
+                            f_imageType.setAccessible(true);
+                        }
+                        f_imageType.setInt(chatMsg, 0);
+                        if (picMessageExtraData != null) {
+                            if (f_imageBizType == null) {
+                                f_imageBizType = findField(picMessageExtraData.getClass(), null,
+                                    "imageBizType");
+                                f_imageBizType.setAccessible(true);
+                            }
+                            f_imageBizType.setInt(picMessageExtraData, 0);
+                        }
                     }
-                }
-            });
+                });
             return true;
         } catch (Throwable e) {
             log(e);

@@ -8,6 +8,7 @@ import android.view.KeyEvent;
 
 
 public class AppActivity extends Activity {
+
     protected static int sResumeCount = 0;
 
     protected boolean mIsResume = false;
@@ -16,6 +17,10 @@ public class AppActivity extends Activity {
 
     public final AppRuntime getAppRuntime() {
         return this.mRuntime;
+    }
+
+    void setAppRuntime(AppRuntime runtime) {
+        this.mRuntime = runtime;
     }
 
     protected void requestWindowFeature(Intent intent) {
@@ -167,10 +172,6 @@ public class AppActivity extends Activity {
 
     protected void doOnDestroy() {
         throw new RuntimeException("Stub!");
-    }
-
-    void setAppRuntime(AppRuntime runtime) {
-        this.mRuntime = runtime;
     }
 
     public final boolean isResume() {

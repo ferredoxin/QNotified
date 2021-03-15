@@ -21,26 +21,24 @@
  */
 package nil.nadph.qnotified.util;
 
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.content.Context;
 import android.view.View;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Objects;
-
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
-
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.log;
 
 /**
  * Use custom toast anywhere
  */
 public class Toasts {
+
     public static final int TYPE_PLAIN = -1;
     public static final int TYPE_INFO = 0;
     public static final int TYPE_ERROR = 1;
@@ -57,13 +55,14 @@ public class Toasts {
      * Make a QQ custom toast.
      *
      * @param context  The context to use.
-     * @param type     The type of toast, Either {@link #TYPE_INFO}, {@link #TYPE_ERROR},
-     *                 {@link #TYPE_SUCCESS} or {@link #TYPE_INFO}
+     * @param type     The type of toast, Either {@link #TYPE_INFO}, {@link #TYPE_ERROR}, {@link
+     *                 #TYPE_SUCCESS} or {@link #TYPE_INFO}
      * @param text     The text to show.
-     * @param duration How long to display the message.  Either {@link #LENGTH_SHORT} or
-     *                 {@link #LENGTH_LONG}
+     * @param duration How long to display the message.  Either {@link #LENGTH_SHORT} or {@link
+     *                 #LENGTH_LONG}
      */
-    public static void showToast(@Nullable Context context, int type, @NonNull final CharSequence text, int duration) {
+    public static void showToast(@Nullable Context context, int type,
+        @NonNull final CharSequence text, int duration) {
         Objects.requireNonNull(text, "text");
         if (context == null) {
             context = HostInformationProviderKt.getHostInfo().getApplication();
@@ -78,13 +77,20 @@ public class Toasts {
                         clazz_QQToast = load("com/tencent/mobileqq/widget/QQToast");
                     }
                     if (clazz_QQToast == null) {
-                        Class<?> clz = load("com/tencent/mobileqq/activity/aio/doodle/DoodleLayout");
+                        Class<?> clz = load(
+                            "com/tencent/mobileqq/activity/aio/doodle/DoodleLayout");
                         if (clz != null) {
                             Field[] fs = clz.getDeclaredFields();
                             for (Field f : fs) {
-                                if (View.class.isAssignableFrom(f.getType())) continue;
-                                if (f.getType().isPrimitive()) continue;
-                                if (f.getType().isInterface()) continue;
+                                if (View.class.isAssignableFrom(f.getType())) {
+                                    continue;
+                                }
+                                if (f.getType().isPrimitive()) {
+                                    continue;
+                                }
+                                if (f.getType().isInterface()) {
+                                    continue;
+                                }
                                 clazz_QQToast = f.getType();
                             }
                         } else {
@@ -95,7 +101,8 @@ public class Toasts {
                     if (method_Toast_show == null) {
                         Method[] ms = clazz_QQToast.getMethods();
                         for (Method m : ms) {
-                            if (Toast.class.equals(m.getReturnType()) && m.getParameterTypes().length == 0) {
+                            if (Toast.class.equals(m.getReturnType())
+                                && m.getParameterTypes().length == 0) {
                                 method_Toast_show = m;
                                 break;
                             }
@@ -103,15 +110,19 @@ public class Toasts {
                     }
                     if (method_Toast_makeText == null) {
                         try {
-                            method_Toast_makeText = clazz_QQToast.getMethod("a", Context.class, int.class, CharSequence.class, int.class);
+                            method_Toast_makeText = clazz_QQToast
+                                .getMethod("a", Context.class, int.class, CharSequence.class,
+                                    int.class);
                         } catch (NoSuchMethodException e) {
                             try {
-                                method_Toast_makeText = clazz_QQToast.getMethod("b", Context.class, int.class, CharSequence.class, int.class);
+                                method_Toast_makeText = clazz_QQToast
+                                    .getMethod("b", Context.class, int.class, CharSequence.class,
+                                        int.class);
                             } catch (NoSuchMethodException e2) {
                                 try {
                                     method_Toast_makeText = clazz_QQToast.getMethod("makeText",
-                                            Context.class,
-                                            int.class, CharSequence.class, int.class);
+                                        Context.class,
+                                        int.class, CharSequence.class, int.class);
                                 } catch (NoSuchMethodException e3) {
                                     throw e;
                                 }
@@ -119,8 +130,9 @@ public class Toasts {
                         }
                     }
                     Object this_QQToast_does_NOT_extend_a_standard_Toast_so_please_do_NOT_cast_it_to_Toast
-                            = method_Toast_makeText.invoke(null, ctx, type, text, duration);
-                    method_Toast_show.invoke(this_QQToast_does_NOT_extend_a_standard_Toast_so_please_do_NOT_cast_it_to_Toast);
+                        = method_Toast_makeText.invoke(null, ctx, type, text, duration);
+                    method_Toast_show.invoke(
+                        this_QQToast_does_NOT_extend_a_standard_Toast_so_please_do_NOT_cast_it_to_Toast);
                     // However, the return value of QQToast.show() is a standard Toast
                 } catch (Exception e) {
                     log(e);

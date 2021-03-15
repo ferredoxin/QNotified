@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.text.TextUtils;
 import com.tencent.qphone.base.remote.SimpleAccount;
 import com.tencent.qphone.base.util.BaseApplication;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -16,37 +15,46 @@ import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class MobileQQ extends BaseApplication {
+
     public static final String KEY_UIN = "uin";
-    static final int MSG_ACCOUNT = 1;
-    private static final String PREF_KEY = "currentAccount";
     public static final String PREF_LAST_LOGIN = "last";
-    private static final String PREF_SHARE = "share";
-    private static final String PROPERTY_NAME = "Properties";
     public static final int STATE_EMPTY = 1;
     public static final int STATE_INITING = 2;
     public static final int STATE_READY = 3;
+    static final int MSG_ACCOUNT = 1;
+    private static final String PREF_KEY = "currentAccount";
+    private static final String PREF_SHARE = "share";
+    private static final String PROPERTY_NAME = "Properties";
     public static String processName;
     public static MobileQQ sMobileQQ;
     /* access modifiers changed from: private */
-    public boolean accountChanged;
-    /* access modifiers changed from: private */
     public final List activitys = new ArrayList();
     protected final ArrayList appActivities = new ArrayList<>();
+    final Handler mHandler = null;
+    /* access modifiers changed from: private */
+    private final Properties properties = new Properties();
+    /* access modifiers changed from: private */
+    public boolean accountChanged;
     /* access modifiers changed from: private */
     public Runnable doExit = null;
     /* access modifiers changed from: private */
     public boolean isCrashed;
     /* access modifiers changed from: private */
     public AppRuntime mAppRuntime;
-    final Handler mHandler = null;
-    private volatile AtomicInteger mRuntimeState = new AtomicInteger(1);
-    /* access modifiers changed from: private */
-    private final Properties properties = new Properties();
     /* access modifiers changed from: private */
     public Bundle savedInstanceState;
-    List<SimpleAccount> sortAccountList = null;
     /* access modifiers changed from: private */
     public boolean stopMSF = false;
+    List<SimpleAccount> sortAccountList = null;
+    private volatile AtomicInteger mRuntimeState = new AtomicInteger(1);
+
+    public static MobileQQ getMobileQQ() {
+        return sMobileQQ;
+    }
+
+    public static boolean killProcess(Context context, String processName2) {
+        throw new RuntimeException("Stub!");
+    }
 
     public abstract AppRuntime createRuntime(String str);
 
@@ -55,10 +63,6 @@ public abstract class MobileQQ extends BaseApplication {
     public abstract String getBootBroadcastName(String str);
 
     public abstract boolean isNeedMSF(String str);
-
-    public static MobileQQ getMobileQQ() {
-        return sMobileQQ;
-    }
 
     void addActivity(BaseActivity act) {
         throw new RuntimeException("Stub!");
@@ -117,10 +121,6 @@ public abstract class MobileQQ extends BaseApplication {
         throw new RuntimeException("Stub!");
     }
 
-    public static boolean killProcess(Context context, String processName2) {
-        throw new RuntimeException("Stub!");
-    }
-
     void delStateFile() {
         throw new RuntimeException("Stub!");
     }
@@ -161,7 +161,8 @@ public abstract class MobileQQ extends BaseApplication {
         return 0;
     }
 
-    void createNewRuntime(SimpleAccount account, boolean forLogin, boolean needSaveLoginTime, int cnrType) {
+    void createNewRuntime(SimpleAccount account, boolean forLogin, boolean needSaveLoginTime,
+        int cnrType) {
         throw new RuntimeException("Stub!");
     }
 
@@ -221,7 +222,8 @@ public abstract class MobileQQ extends BaseApplication {
     }
 
     public void setAutoLogin(boolean isLogin) {
-        if (this.mAppRuntime != null && this.mAppRuntime.getAccount() != null && this.mAppRuntime.getAccount().length() > 0) {
+        if (this.mAppRuntime != null && this.mAppRuntime.getAccount() != null
+            && this.mAppRuntime.getAccount().length() > 0) {
             this.mAppRuntime.setAutoLogin(isLogin);
         }
     }

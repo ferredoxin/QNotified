@@ -27,10 +27,10 @@ import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-
 import nil.nadph.qnotified.util.Utils;
 
 public class DebugDrawable extends Drawable {
+
     Paint paint = new Paint();
     float[] sDebugLines;
     int i1, i8;
@@ -42,7 +42,7 @@ public class DebugDrawable extends Drawable {
     }
 
     private static void drawRectCorners(Canvas canvas, int x1, int y1, int x2, int y2, Paint paint,
-                                        int lineLength, int lineWidth) {
+        int lineLength, int lineWidth) {
         drawCorner(canvas, paint, x1, y1, lineLength, lineLength, lineWidth);
         drawCorner(canvas, paint, x1, y2, lineLength, -lineLength, lineWidth);
         drawCorner(canvas, paint, x2, y1, -lineLength, lineLength, lineWidth);
@@ -87,8 +87,9 @@ public class DebugDrawable extends Drawable {
         paint.setStyle(Paint.Style.FILL);
         int lineLength = i8;
         int lineWidth = i1;
-        drawRectCorners(canvas, 0, 0, getBounds().width(), getBounds().height(),/* c.getLeft(), c.getTop(), c.getRight(), c.getBottom(),*/
-                paint, lineLength, lineWidth);
+        drawRectCorners(canvas, 0, 0, getBounds().width(),
+            getBounds().height(),/* c.getLeft(), c.getTop(), c.getRight(), c.getBottom(),*/
+            paint, lineLength, lineWidth);
     }
 
     private void drawRect(Canvas canvas, Paint paint, int x1, int y1, int x2, int y2) {

@@ -21,6 +21,12 @@
  */
 package cc.ioctl.activity;
 
+import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
+import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
+import static cc.ioctl.util.DateTimeUtil.getIntervalDspMs;
+import static cc.ioctl.util.DateTimeUtil.getRelTimeStrSec;
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.DialogInterface;
@@ -31,16 +37,17 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.*;
-
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import com.tencent.widget.XListView;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
@@ -52,12 +59,6 @@ import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.ViewBuilder;
 import nil.nadph.qnotified.util.FaceImpl;
 import nil.nadph.qnotified.util.Utils;
-
-import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
-import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
-import static cc.ioctl.util.DateTimeUtil.getIntervalDspMs;
-import static cc.ioctl.util.DateTimeUtil.getRelTimeStrSec;
-import static nil.nadph.qnotified.util.Utils.log;
 
 @SuppressLint("Registered")
 public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
@@ -106,7 +107,8 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
         XListView sdlv = new XListView(this, null);
         sdlv.setFocusable(true);
         ViewGroup.LayoutParams mmlp = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-        RelativeLayout.LayoutParams mwllp = new RelativeLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
+        RelativeLayout.LayoutParams mwllp = new RelativeLayout.LayoutParams(MATCH_PARENT,
+            WRAP_CONTENT);
         RelativeLayout rl = new RelativeLayout(ExfriendListActivity.this);
         rl.setId(R.id.rootMainLayout);
         sdlv.setId(R.id.rootMainList);
@@ -148,9 +150,14 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
 
     public void reload() {
         ConcurrentHashMap<Integer, EventRecord> eventsMap = exm.getEvents();
-        if (evs == null) evs = new ArrayList<>();
-        else evs.clear();
-        if (eventsMap == null) return;
+        if (evs == null) {
+            evs = new ArrayList<>();
+        } else {
+            evs.clear();
+        }
+        if (eventsMap == null) {
+            return;
+        }
         Iterator<Map.Entry<Integer, EventRecord>> it = eventsMap.entrySet().iterator();
         EventRecord ev;
         while (it.hasNext()) {
@@ -184,8 +191,10 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
 
         TextView stat = convertView.findViewById(R_ID_EXL_STATUS);
         try {
-            if (exm.getPersons().get(ev.operand).friendStatus == FriendRecord.STATUS_FRIEND_MUTUAL)
+            if (exm.getPersons().get(ev.operand).friendStatus
+                == FriendRecord.STATUS_FRIEND_MUTUAL) {
                 isfri = true;
+            }
         } catch (Exception e) {
         }
 
@@ -201,7 +210,8 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
         ImageView imgview = convertView.findViewById(R_ID_EXL_FACE);
         Bitmap bm = face.getBitmapFromCache(FaceImpl.TYPE_USER, "" + ev.operand);
         if (bm == null) {
-            imgview.setImageDrawable(ResUtils.loadDrawableFromAsset("face.png", ExfriendListActivity.this));
+            imgview.setImageDrawable(
+                ResUtils.loadDrawableFromAsset("face.png", ExfriendListActivity.this));
             face.registerView(FaceImpl.TYPE_USER, "" + ev.operand, imgview);
         } else {
             imgview.setImageBitmap(bm);
@@ -223,55 +233,59 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
         textlayout.setOrientation(LinearLayout.VERTICAL);
         rlayout.setBackground(ResUtils.getListItemBackground());
 
-        LinearLayout.LayoutParams imglp = new LinearLayout.LayoutParams(Utils.dip2px(ExfriendListActivity.this, 50), Utils.dip2px(ExfriendListActivity.this, 50));
+        LinearLayout.LayoutParams imglp = new LinearLayout.LayoutParams(
+            Utils.dip2px(ExfriendListActivity.this, 50),
+            Utils.dip2px(ExfriendListActivity.this, 50));
         imglp.setMargins(tmp = Utils.dip2px(ExfriendListActivity.this, 6), tmp, tmp, tmp);
         ImageView imgview = new ImageView(ExfriendListActivity.this);
         imgview.setFocusable(false);
         imgview.setClickable(false);
         imgview.setId(R_ID_EXL_FACE);
 
-
         imgview.setScaleType(ImageView.ScaleType.FIT_XY);
         llayout.addView(imgview, imglp);
-        LinearLayout.LayoutParams ltxtlp = new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
-        LinearLayout.LayoutParams textlp = new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
+        LinearLayout.LayoutParams ltxtlp = new LinearLayout.LayoutParams(MATCH_PARENT,
+            WRAP_CONTENT);
+        LinearLayout.LayoutParams textlp = new LinearLayout.LayoutParams(MATCH_PARENT,
+            WRAP_CONTENT);
         ltxtlp.setMargins(tmp = Utils.dip2px(ExfriendListActivity.this, 2), tmp, tmp, tmp);
         textlp.setMargins(tmp = Utils.dip2px(ExfriendListActivity.this, 1), tmp, tmp, tmp);
         llayout.addView(textlayout, ltxtlp);
-
 
         TextView title = new TextView(ExfriendListActivity.this);
         title.setId(R_ID_EXL_TITLE);
         title.setSingleLine();
         title.setGravity(Gravity.CENTER_VERTICAL);
         title.setTextColor(ResUtils.cloneColor(ResUtils.skin_black));
-        title.setTextSize(Utils.px2sp(ExfriendListActivity.this, Utils.dip2px(ExfriendListActivity.this, 16)));
+        title.setTextSize(
+            Utils.px2sp(ExfriendListActivity.this, Utils.dip2px(ExfriendListActivity.this, 16)));
 
         TextView subtitle = new TextView(ExfriendListActivity.this);
         subtitle.setId(R_ID_EXL_SUBTITLE);
         subtitle.setSingleLine();
         subtitle.setGravity(Gravity.CENTER_VERTICAL);
         subtitle.setTextColor(ResUtils.cloneColor(ResUtils.skin_gray3));
-        subtitle.setTextSize(Utils.px2sp(ExfriendListActivity.this, Utils.dip2px(ExfriendListActivity.this, 14)));
+        subtitle.setTextSize(
+            Utils.px2sp(ExfriendListActivity.this, Utils.dip2px(ExfriendListActivity.this, 14)));
 
         textlayout.addView(title, textlp);
         textlayout.addView(subtitle, textlp);
 
-        RelativeLayout.LayoutParams statlp = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+        RelativeLayout.LayoutParams statlp = new RelativeLayout.LayoutParams(WRAP_CONTENT,
+            WRAP_CONTENT);
 
         TextView stat = new TextView(ExfriendListActivity.this);
         stat.setId(R_ID_EXL_STATUS);
         stat.setSingleLine();
         stat.setGravity(Gravity.CENTER);
-        stat.setTextSize(Utils.px2sp(ExfriendListActivity.this, Utils.dip2px(ExfriendListActivity.this, 16)));
+        stat.setTextSize(
+            Utils.px2sp(ExfriendListActivity.this, Utils.dip2px(ExfriendListActivity.this, 16)));
         statlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         statlp.addRule(RelativeLayout.CENTER_VERTICAL);
         statlp.rightMargin = Utils.dip2px(ExfriendListActivity.this, 16);
 
-
         rlayout.addView(llayout);
         rlayout.addView(stat, statlp);
-
 
         rlayout.setClickable(true);
         rlayout.setOnClickListener(new OnClickListener() {

@@ -28,14 +28,23 @@ import nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null
 import nil.nadph.qnotified.util.ReflexUtil.invoke_virtual
 
 @FunctionEntry
-object SimpleCheckIn: BaseItemBuilderFactoryHookDecorator("qn_sign_in_as_text") {
+object SimpleCheckIn : BaseItemBuilderFactoryHookDecorator("qn_sign_in_as_text") {
 
-    override fun doDecorate(result:Int,chatMessage:Any,param: XC_MethodHook.MethodHookParam): Boolean {
+    override fun doDecorate(
+        result: Int,
+        chatMessage: Any,
+        param: XC_MethodHook.MethodHookParam
+    ): Boolean {
         if (result == 71 || result == 84) {
             param.result = -1
             return true
         } else if (result == 47) {
-            val json = invoke_virtual(iget_object_or_null(param.args[param.args.size - 1], "ark_app_message"), "toAppXml", *arrayOfNulls(0)) as String
+            val json = invoke_virtual(
+                iget_object_or_null(
+                    param.args[param.args.size - 1],
+                    "ark_app_message"
+                ), "toAppXml", *arrayOfNulls(0)
+            ) as String
             if (json.contains("com.tencent.qq.checkin")) {
                 param.result = -1
                 return true

@@ -21,15 +21,15 @@
  */
 package me.singleneuron.data
 
-class PageFaultHighPerformanceFunctionCache<T:Any>(function: () -> T) {
+class PageFaultHighPerformanceFunctionCache<T : Any>(function: () -> T) {
 
-    private lateinit var mValue : T
-    private val mFunction : ()->T = function
+    private lateinit var mValue: T
+    private val mFunction: () -> T = function
 
-    fun getValue():T {
+    fun getValue(): T {
         return try {
             mValue
-        } catch (e:UninitializedPropertyAccessException) {
+        } catch (e: UninitializedPropertyAccessException) {
             mValue = mFunction()
             mValue
         }

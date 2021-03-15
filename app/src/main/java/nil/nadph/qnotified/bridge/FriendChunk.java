@@ -21,20 +21,21 @@
  */
 package nil.nadph.qnotified.bridge;
 
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Utils.log;
+
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.log;
-
 
 public class FriendChunk implements Serializable, Cloneable {
+
+    private static final int maxLength = 14;
     private static Field[] from;
     private static Field[] to;
     private static int validLength = -1;
-    private static final int maxLength = 14;
     private static Field f_uin, f_remark, f_nick, f_cSpecialFlag, f_status, f_stSelfInfo;
     public byte cHasOtherRespFlag;
     public byte cRespType;
@@ -64,7 +65,9 @@ public class FriendChunk implements Serializable, Cloneable {
     }
 
     public static synchronized void initOnce() {
-        if (validLength > 0) return;
+        if (validLength > 0) {
+            return;
+        }
         from = new Field[maxLength];
         to = new Field[maxLength];
         Class clz_gfr = load("friendlist/GetFriendListResp");
@@ -74,7 +77,8 @@ public class FriendChunk implements Serializable, Cloneable {
         Field f;
         for (Field field : mine) {
             try {
-                if (!field.getName().startsWith("arr") && !Modifier.isStatic(field.getModifiers())) {
+                if (!field.getName().startsWith("arr") && !Modifier
+                    .isStatic(field.getModifiers())) {
                     f = clz_gfr.getField(field.getName());
                     f.setAccessible(true);
                     field.setAccessible(true);
@@ -119,7 +123,9 @@ public class FriendChunk implements Serializable, Cloneable {
     }
 
     public void fromGetFriendListResp(Object resp) {
-        if (validLength < 0) initOnce();
+        if (validLength < 0) {
+            initOnce();
+        }
         try {
             for (int i = 0; i < validLength; i++) {
                 to[i].set(this, from[i].get(resp));
@@ -143,7 +149,9 @@ public class FriendChunk implements Serializable, Cloneable {
         } catch (ClassCastException e) {
             log(e);
         }
-        if (serverTime == 0) serverTime = System.currentTimeMillis() / 1000L;
+        if (serverTime == 0) {
+            serverTime = System.currentTimeMillis() / 1000L;
+        }
     }
 
     @Override
@@ -152,9 +160,13 @@ public class FriendChunk implements Serializable, Cloneable {
     }
 
     public int getUinIndex(long uin) {
-        if (arrUin == null) return -1;
+        if (arrUin == null) {
+            return -1;
+        }
         for (int i = 0; i < arrUin.length; i++) {
-            if (arrUin[i] == uin) return i;
+            if (arrUin[i] == uin) {
+                return i;
+            }
         }
         return -1;
     }

@@ -21,28 +21,24 @@
  */
 package nil.nadph.qnotified.util;
 
+import static nil.nadph.qnotified.util.Utils.isEmpty;
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.app.Activity;
 import android.content.res.ColorStateList;
 import android.text.util.Linkify;
 import android.view.View;
 import android.widget.TextView;
-
 import androidx.annotation.Nullable;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.math.BigDecimal;
 import java.net.URL;
-
 import javax.net.ssl.HttpsURLConnection;
-
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.ResUtils;
-
-import static nil.nadph.qnotified.util.Utils.isEmpty;
-import static nil.nadph.qnotified.util.Utils.log;
 
 @MainProcess
 public class NewsHelper implements Runnable {
@@ -74,8 +70,11 @@ public class NewsHelper implements Runnable {
         } catch (Exception ignored) {
         }
         if (needUpdate) {
-            if (tv != null) new Thread(new NewsHelper(new WeakReference<>(tv))).start();
-            else new Thread(new NewsHelper(null)).start();
+            if (tv != null) {
+                new Thread(new NewsHelper(new WeakReference<>(tv))).start();
+            } else {
+                new Thread(new NewsHelper(null)).start();
+            }
         }
     }
 
@@ -94,7 +93,8 @@ public class NewsHelper implements Runnable {
         }
         show = null != news;
         if (show) {
-            show = (news.persist || (news.time + news.ttl > System.currentTimeMillis() / 1000L)) && !isEmpty(news.text);
+            show = (news.persist || (news.time + news.ttl > System.currentTimeMillis() / 1000L))
+                && !isEmpty(news.text);
         }
         if (show) {
             tv.setText(news.text);
@@ -105,7 +105,8 @@ public class NewsHelper implements Runnable {
                 } catch (NumberFormatException ignored) {
                 }
                 try {
-                    ColorStateList color = (ColorStateList) ResUtils.class.getField(news.color).get(null);
+                    ColorStateList color = (ColorStateList) ResUtils.class.getField(news.color)
+                        .get(null);
                     tv.setTextColor(color);
                 } catch (Exception ignored) {
                 }
@@ -173,6 +174,7 @@ public class NewsHelper implements Runnable {
     }
 
     private static class News {
+
         public String text = null;
         public String color = null;
         public long time = 0;

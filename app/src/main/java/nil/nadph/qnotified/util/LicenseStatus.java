@@ -21,21 +21,24 @@
  */
 package nil.nadph.qnotified.util;
 
-import java.io.IOException;
+import static nil.nadph.qnotified.util.Utils.log;
 
+import cc.ioctl.chiral.Molecule;
+import java.io.IOException;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.BuildConfig;
 import nil.nadph.qnotified.activity.EulaActivity;
-import cc.ioctl.chiral.Molecule;
 import nil.nadph.qnotified.config.ConfigManager;
 
-import static nil.nadph.qnotified.util.Utils.log;
-
 public class LicenseStatus {
+
     public static final String qn_eula_status = "qh_eula_status";//typo, ignore it
     public static final String qn_auth2_molecule = "qn_auth2_molecule";
     public static final String qn_auth2_chiral = "qn_auth2_chiral";
-
+    /**
+     * No longer true, but keep it here.
+     */
+    public static final boolean sDisableCommonHooks = false;
     private static Molecule mAuth2Mol = null;
     private static int[] mAuth2Chiral = null;
 
@@ -61,11 +64,6 @@ public class LicenseStatus {
     public static boolean hasUserAcceptEula() {
         return getEulaStatus() == EulaActivity.CURRENT_EULA_VERSION;
     }
-
-    /**
-     * No longer true, but keep it here.
-     */
-    public static final boolean sDisableCommonHooks = false;
 
     public static boolean isAsserted() {
         return BuildConfig.DEBUG;

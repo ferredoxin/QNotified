@@ -21,14 +21,14 @@
  */
 package me.singleneuron.qn_kernel.tlb
 
-import me.kyuubiran.hook.AutoMosaicName
-import ltd.nextalone.hook.HideProfileBubble
-import ltd.nextalone.hook.HideTotalNumber
-import me.singleneuron.util.QQVersion.*
 import cc.ioctl.hook.ReplyNoAtHook
 import cc.ioctl.hook.VasProfileAntiCrash
+import ltd.nextalone.hook.HideProfileBubble
+import ltd.nextalone.hook.HideTotalNumber
+import me.kyuubiran.hook.AutoMosaicName
+import me.singleneuron.util.QQVersion.*
 
-class QQConfigTable: ConfigTableInterface {
+class QQConfigTable : ConfigTableInterface {
 
     override val configs: Map<String?, Map<Long, Any>> = mapOf(
 

@@ -22,7 +22,6 @@
 package cc.ioctl.util.thunk;
 
 import androidx.annotation.NonNull;
-
 import cc.ioctl.util.thunk.pcs.Convention;
 
 public class NativeFunction {
@@ -33,10 +32,13 @@ public class NativeFunction {
     }
 
     public static class Builder {
+
         private long addr;
 
         public Builder(Convention cc) {
-            if (cc == null) throw new NullPointerException("calling convention is null");
+            if (cc == null) {
+                throw new NullPointerException("calling convention is null");
+            }
         }
 
         public Builder setAddress(long a) {

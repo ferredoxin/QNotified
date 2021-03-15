@@ -26,10 +26,10 @@ import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import nil.nadph.qnotified.R
 import nil.nadph.qnotified.util.ReflexUtil
 
@@ -41,12 +41,20 @@ class MainActivity : AppCompatTransferActivity() {
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
         val toolBar = findViewById<Toolbar>(R.id.topAppBar)
-        toolBar.setupWithNavController(navController,
-            AppBarConfiguration(setOf(R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_info)))
+        toolBar.setupWithNavController(
+            navController,
+            AppBarConfiguration(
+                setOf(
+                    R.id.navigation_home,
+                    R.id.navigation_dashboard,
+                    R.id.navigation_info
+                )
+            )
+        )
         val titleTV = ReflexUtil.iget_object_or_null(toolBar, "mTitleTextView") as TextView
         titleTV.textSize = 20f
         navController.addOnDestinationChangedListener { _, destination, arguments ->
-            when(destination.id) {
+            when (destination.id) {
                 R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_info ->
                     navView.isVisible = true
                 else ->

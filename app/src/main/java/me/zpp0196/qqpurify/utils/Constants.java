@@ -4,6 +4,7 @@ package me.zpp0196.qqpurify.utils;
  * Created by zpp0196 on 2018/3/11.
  */
 public interface Constants {
+
     String PACKAGE_NAME_QQ = "com.tencent.mobileqq";
     String INTENT_BUILD_NUM = "buildNum";
     String INTENT_LAUNCH = "isLaunchFromQQ";

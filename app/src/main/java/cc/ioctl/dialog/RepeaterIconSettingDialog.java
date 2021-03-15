@@ -38,15 +38,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-
 import androidx.core.view.ViewCompat;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.CustomDialog;
@@ -55,38 +52,40 @@ import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
-public class RepeaterIconSettingDialog implements View.OnClickListener, DialogInterface.OnClickListener, RadioGroup.OnCheckedChangeListener, CompoundButton.OnCheckedChangeListener {
+public class RepeaterIconSettingDialog implements View.OnClickListener,
+    DialogInterface.OnClickListener, RadioGroup.OnCheckedChangeListener,
+    CompoundButton.OnCheckedChangeListener {
 
+    public static final String qn_repeat_icon_data = "qn_repeat_icon_data";
+    public static final String qn_repeat_icon_dpi = "qn_repeat_icon_dpi";
+    public static final String qn_repeat_last_file = "qn_repeat_last_file";
+    private static Bitmap sCachedRepeaterIcon;
     private final Context ctx;
     private final AlertDialog dialog;
-    private String targetIconPath;
-    private Button saveBtn;
     private final Button loadBtn;
     private final Button browseBtn;
     private final Button restoreDefBtn;
-    private Bitmap currentIcon;
-    private BitmapDrawable currentIconDrawable;
     private final EditText pathInput;
     private final ImageView prevImgView;
     private final CheckBox specDpi;
     private final RadioGroup dpiGroup;
     private final LinearLayout linearLayoutDpi;
-    private boolean useDefault;
     private final TextView textViewWarning;
     private final int physicalDpi;
-
-    private static Bitmap sCachedRepeaterIcon;
-
-    public static final String qn_repeat_icon_data = "qn_repeat_icon_data";
-    public static final String qn_repeat_icon_dpi = "qn_repeat_icon_dpi";
-    public static final String qn_repeat_last_file = "qn_repeat_last_file";
+    private String targetIconPath;
+    private Button saveBtn;
+    private Bitmap currentIcon;
+    private BitmapDrawable currentIconDrawable;
+    private boolean useDefault;
 
     public RepeaterIconSettingDialog(Context context) {
-        dialog = (AlertDialog) CustomDialog.createFailsafe(context).setTitle("自定义+1图标").setPositiveButton("保存", this)
-                .setNegativeButton("取消", null).setCancelable(true).create();
+        dialog = (AlertDialog) CustomDialog.createFailsafe(context).setTitle("自定义+1图标")
+            .setPositiveButton("保存", this)
+            .setNegativeButton("取消", null).setCancelable(true).create();
         ctx = dialog.getContext();
         dialog.setCanceledOnTouchOutside(false);
-        @SuppressLint("InflateParams") View v = LayoutInflater.from(ctx).inflate(R.layout.select_repeater_icon_dialog, null);
+        @SuppressLint("InflateParams") View v = LayoutInflater.from(ctx)
+            .inflate(R.layout.select_repeater_icon_dialog, null);
         loadBtn = v.findViewById(R.id.selectRepeaterIcon_buttonLoadFile);
         loadBtn.setOnClickListener(this);
         browseBtn = v.findViewById(R.id.selectRepeaterIcon_buttonBrowseImg);
@@ -139,6 +138,38 @@ public class RepeaterIconSettingDialog implements View.OnClickListener, DialogIn
         return sCachedRepeaterIcon;
     }
 
+    private static int getSelectedIdByDpi(int dpi) {
+        switch (dpi) {
+            case 640:
+                return R.id.selectRepeaterIcon_RadioButtonXxxhdpi;
+            case 480:
+                return R.id.selectRepeaterIcon_RadioButtonXxhdpi;
+            case 320:
+                return R.id.selectRepeaterIcon_RadioButtonXhdpi;
+            case 240:
+                return R.id.selectRepeaterIcon_RadioButtonHdpi;
+            case 160:
+                return R.id.selectRepeaterIcon_RadioButtonMdpi;
+            case 120:
+                return R.id.selectRepeaterIcon_RadioButtonLdpi;
+            default:
+                return 0;
+        }
+    }
+
+    public static void createAndShowDialog(Context ctx) {
+        new RepeaterIconSettingDialog(ctx).show();
+    }
+
+    public static View.OnClickListener OnClickListener_createDialog(final Context ctx) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new RepeaterIconSettingDialog(ctx).show();
+            }
+        };
+    }
+
     public AlertDialog show() {
         dialog.show();
         saveBtn = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
@@ -180,7 +211,9 @@ public class RepeaterIconSettingDialog implements View.OnClickListener, DialogIn
     }
 
     private int getCurrentSelectedDpi() {
-        if (!specDpi.isChecked()) return 0;
+        if (!specDpi.isChecked()) {
+            return 0;
+        }
         int id = dpiGroup.getCheckedRadioButtonId();
         switch (id) {
             case R.id.selectRepeaterIcon_RadioButtonXxxhdpi:
@@ -200,25 +233,6 @@ public class RepeaterIconSettingDialog implements View.OnClickListener, DialogIn
         }
     }
 
-    private static int getSelectedIdByDpi(int dpi) {
-        switch (dpi) {
-            case 640:
-                return R.id.selectRepeaterIcon_RadioButtonXxxhdpi;
-            case 480:
-                return R.id.selectRepeaterIcon_RadioButtonXxhdpi;
-            case 320:
-                return R.id.selectRepeaterIcon_RadioButtonXhdpi;
-            case 240:
-                return R.id.selectRepeaterIcon_RadioButtonHdpi;
-            case 160:
-                return R.id.selectRepeaterIcon_RadioButtonMdpi;
-            case 120:
-                return R.id.selectRepeaterIcon_RadioButtonLdpi;
-            default:
-                return 0;
-        }
-    }
-
     @Override
     public void onClick(DialogInterface dialog, int which) {
         dialog.dismiss();
@@ -230,7 +244,7 @@ public class RepeaterIconSettingDialog implements View.OnClickListener, DialogIn
         if (v == loadBtn) {
             String path = pathInput.getText().toString();
             if (path.length() == 0) {
-               Toasts.error(ctx, "请输入图片路径");
+                Toasts.error(ctx, "请输入图片路径");
                 return;
             }
             File file = new File(path);
@@ -338,18 +352,5 @@ public class RepeaterIconSettingDialog implements View.OnClickListener, DialogIn
                 prevImgView.setImageDrawable(currentIconDrawable);
             }
         }
-    }
-
-    public static void createAndShowDialog(Context ctx) {
-        new RepeaterIconSettingDialog(ctx).show();
-    }
-
-    public static View.OnClickListener OnClickListener_createDialog(final Context ctx) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new RepeaterIconSettingDialog(ctx).show();
-            }
-        };
     }
 }

@@ -22,6 +22,7 @@
 package cc.ioctl.script.params;
 
 public class FriendRequestParam {
+
     /**
      * 好友id
      */

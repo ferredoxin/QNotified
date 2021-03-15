@@ -44,14 +44,17 @@ public class IsolatedStateRelativeLayout extends RelativeLayout {
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public IsolatedStateRelativeLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public IsolatedStateRelativeLayout(Context context, AttributeSet attrs, int defStyleAttr,
+        int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
     @Override
     protected void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
         int id = getId();
-        if (id == NO_ID) return;
+        if (id == NO_ID) {
+            return;
+        }
         Parcelable superState = super.onSaveInstanceState();
         IsolatedLayoutSaveState iss = new IsolatedLayoutSaveState(superState);
         SparseArray<Parcelable> array = iss.childStates;
@@ -62,9 +65,13 @@ public class IsolatedStateRelativeLayout extends RelativeLayout {
     @Override
     public void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
         int id = getId();
-        if (id == NO_ID) return;
+        if (id == NO_ID) {
+            return;
+        }
         Parcelable state = container.get(id);
-        if (state == null) return;
+        if (state == null) {
+            return;
+        }
         IsolatedLayoutSaveState ss = (IsolatedLayoutSaveState) state;
         super.onRestoreInstanceState(ss.getSuperState());
         SparseArray<Parcelable> array = ss.childStates;

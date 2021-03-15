@@ -33,8 +33,8 @@ public class ProportionDrawable extends Drawable {
     private final int iGravity;
     private final int iDoneColor;
     private final int iUndoneColor;
-    private float fProportion;
     private final Paint p;
+    private float fProportion;
 
     public ProportionDrawable(int doneColor, int undoneColor, int gravity, float prop) {
         iGravity = gravity;
@@ -65,8 +65,12 @@ public class ProportionDrawable extends Drawable {
     }
 
     public void setProportion(float p) {
-        if (p < 0f) p = 0f;
-        if (p > 1.0f) p = 1.0f;
+        if (p < 0f) {
+            p = 0f;
+        }
+        if (p > 1.0f) {
+            p = 1.0f;
+        }
         fProportion = p;
         invalidateSelf();
     }

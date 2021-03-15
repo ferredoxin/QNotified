@@ -2,9 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:padding="3dp"
     android:gravity="left|top"
-    android:orientation="horizontal"
-    android:padding="3dp">
+    android:orientation="horizontal">
 
     <TextView
         android:id="@+id/dialogClickableItemTitle"
@@ -15,18 +15,18 @@
         android:padding="1dp"
         android:paddingRight="3dp"
         android:text="Title"
-        android:textSize="16sp" />
+        android:textSize="16sp"/>
 
     <TextView
         android:id="@+id/dialogClickableItemValue"
         style="@android:style/TextAppearance.Holo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
         android:padding="1dp"
         android:paddingLeft="3dp"
+        android:clickable="true"
+        android:focusable="true"
         android:text="Value"
-        android:textSize="16sp" />
+        android:textSize="16sp"/>
 
 </LinearLayout>

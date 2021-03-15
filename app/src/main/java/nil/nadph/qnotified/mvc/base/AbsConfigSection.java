@@ -20,7 +20,6 @@ package nil.nadph.qnotified.mvc.base;
 
 import android.app.Activity;
 import android.content.Intent;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
@@ -59,10 +58,10 @@ public interface AbsConfigSection {
     void onResume(@NonNull SharedUiProvider ui);
 
     /**
-     * Cope with it when user press back button with the unsaved config<br/>
-     * Return true to intercept the exit event, and you usually want to show a dialog to
-     * ask user whether to save the unsaved config. Return false to finish the config section.
-     * This exit event usually comes from {@link Activity#onBackPressed()} etc.
+     * Cope with it when user press back button with the unsaved config<br/> Return true to
+     * intercept the exit event, and you usually want to show a dialog to ask user whether to save
+     * the unsaved config. Return false to finish the config section. This exit event usually comes
+     * from {@link Activity#onBackPressed()} etc.
      *
      * @param ui The ui you may use
      * @return whether this exit event should be intercepted
@@ -73,14 +72,14 @@ public interface AbsConfigSection {
      * See {@link Activity#onActivityResult(int, int, Intent)}.
      *
      * @param ui          The ui you may use
-     * @param requestCode The integer request code originally supplied to
-     *                    startActivityForResult(), allowing you to identify who this
-     *                    result came from.
-     * @param resultCode  The integer result code returned by the child activity
-     *                    through its setResult().
-     * @param data        An Intent, which can return result data to the caller
-     *                    (various data can be attached to Intent "extras").
+     * @param requestCode The integer request code originally supplied to startActivityForResult(),
+     *                    allowing you to identify who this result came from.
+     * @param resultCode  The integer result code returned by the child activity through its
+     *                    setResult().
+     * @param data        An Intent, which can return result data to the caller (various data can be
+     *                    attached to Intent "extras").
      */
     @SuppressWarnings("JavadocReference")
-    void onActivityResult(@NonNull SharedUiProvider ui, int requestCode, int resultCode, Intent data);
+    void onActivityResult(@NonNull SharedUiProvider ui, int requestCode, int resultCode,
+        Intent data);
 }

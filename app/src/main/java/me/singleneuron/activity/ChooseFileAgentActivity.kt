@@ -34,10 +34,10 @@ class ChooseFileAgentActivity : AbstractChooseActivity() {
         super.onCreate(savedInstanceState)
         val intent = Intent(ACTION_GET_CONTENT).apply {
             type = "*/*"
-            putExtra(EXTRA_ALLOW_MULTIPLE,false)
+            putExtra(EXTRA_ALLOW_MULTIPLE, false)
         }
-        if (intent.resolveActivity(packageManager)!=null) {
-            startActivityForResult(createChooser(intent,"选择文件应用"),REQUEST_CODE)
+        if (intent.resolveActivity(packageManager) != null) {
+            startActivityForResult(createChooser(intent, "选择文件应用"), REQUEST_CODE)
         }
     }
 

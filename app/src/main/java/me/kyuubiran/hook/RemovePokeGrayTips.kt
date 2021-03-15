@@ -44,7 +44,8 @@ object RemovePokeGrayTips : CommonDelayableHook("kr_remove_poke_tips") {
                         override fun beforeHookedMethod(param: MethodHookParam) {
                             if (LicenseStatus.sDisableCommonHooks) return
                             if (!isEnabled) return
-                            val msg = getObjectOrNull(param.args[0], "msg", String::class.java) as String
+                            val msg =
+                                getObjectOrNull(param.args[0], "msg", String::class.java) as String
                             logd("msg -> $msg")
                         }
                     })

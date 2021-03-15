@@ -28,10 +28,10 @@ import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import nil.nadph.qnotified.startup.HookEntry
 import nil.nadph.qnotified.lifecycle.JumpActivityEntryHook
+import nil.nadph.qnotified.startup.HookEntry
 
-class QQPurifyAgentActivity :AppCompatActivity() {
+class QQPurifyAgentActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,9 +42,11 @@ class QQPurifyAgentActivity :AppCompatActivity() {
         intent.action = Intent.ACTION_VIEW
         intent.putExtra(
             JumpActivityEntryHook.JUMP_ACTION_CMD,
-            JumpActivityEntryHook.JUMP_ACTION_START_ACTIVITY)
+            JumpActivityEntryHook.JUMP_ACTION_START_ACTIVITY
+        )
         intent.putExtra(
-            JumpActivityEntryHook.JUMP_ACTION_TARGET, "me.zpp0196.qqpurify.activity.MainActivity")
+            JumpActivityEntryHook.JUMP_ACTION_TARGET, "me.zpp0196.qqpurify.activity.MainActivity"
+        )
         try {
             startActivity(intent)
         } catch (e: ActivityNotFoundException) {

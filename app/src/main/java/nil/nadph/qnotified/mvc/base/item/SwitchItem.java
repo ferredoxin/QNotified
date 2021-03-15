@@ -23,14 +23,15 @@ import androidx.annotation.Nullable;
 
 public interface SwitchItem extends BaseStatefulItem {
 
-    interface OnCheckedChangeListener {
-        void onCheckedChanged(@NonNull SwitchItem item, boolean value);
-    }
-
     void setOnCheckedChangeListener(@Nullable OnCheckedChangeListener listener);
 
     boolean isChecked();
 
     void setChecked(boolean checked);
+
+    interface OnCheckedChangeListener {
+
+        void onCheckedChanged(@NonNull SwitchItem item, boolean value);
+    }
 
 }

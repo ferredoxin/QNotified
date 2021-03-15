@@ -21,38 +21,44 @@
  */
 package cc.ioctl.activity;
 
+import static android.text.InputType.TYPE_CLASS_NUMBER;
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
+import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
+import static nil.nadph.qnotified.util.Utils.dip2px;
+import static nil.nadph.qnotified.util.Utils.dip2sp;
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
-
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 import androidx.core.view.ViewCompat;
-
+import cc.ioctl.hook.FakeBatteryHook;
 import com.tencent.mobileqq.widget.BounceScrollView;
-
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat;
 import nil.nadph.qnotified.config.ConfigManager;
-import cc.ioctl.hook.FakeBatteryHook;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.Toasts;
 
-import static android.text.InputType.TYPE_CLASS_NUMBER;
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
-import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
-import static nil.nadph.qnotified.util.Utils.*;
-
 @SuppressLint("Registered")
-public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener {
+public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements
+    View.OnClickListener {
 
     private static final int R_ID_APPLY = 0x300AFF81;
     private static final int R_ID_DISABLE = 0x300AFF82;
@@ -77,13 +83,16 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
         bounceScrollView.setId(R.id.rootBounceScrollView);
         ll.setId(R.id.rootMainLayout);
         bounceScrollView.addView(ll, new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-        LinearLayout.LayoutParams fixlp = new LinearLayout.LayoutParams(MATCH_PARENT, dip2px(FakeBatCfgActivity.this, 48));
-        RelativeLayout.LayoutParams __lp_l = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+        LinearLayout.LayoutParams fixlp = new LinearLayout.LayoutParams(MATCH_PARENT,
+            dip2px(FakeBatCfgActivity.this, 48));
+        RelativeLayout.LayoutParams __lp_l = new RelativeLayout.LayoutParams(WRAP_CONTENT,
+            WRAP_CONTENT);
         int mar = (int) (dip2px(FakeBatCfgActivity.this, 12) + 0.5f);
         __lp_l.setMargins(mar, 0, mar, 0);
         __lp_l.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         __lp_l.addRule(RelativeLayout.CENTER_VERTICAL);
-        RelativeLayout.LayoutParams __lp_r = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+        RelativeLayout.LayoutParams __lp_r = new RelativeLayout.LayoutParams(WRAP_CONTENT,
+            WRAP_CONTENT);
         __lp_r.setMargins(mar, 0, mar, 0);
         __lp_r.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         __lp_r.addRule(RelativeLayout.CENTER_VERTICAL);
@@ -103,14 +112,15 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
         pct.setInputType(TYPE_CLASS_NUMBER);
         pct.setTextColor(ResUtils.skin_black);
         pct.setTextSize(dip2sp(FakeBatCfgActivity.this, 18));
-        ViewCompat.setBackground(pct,null);
+        ViewCompat.setBackground(pct, null);
         pct.setGravity(Gravity.CENTER);
         pct.setPadding(_5dp, _5dp / 2, _5dp, _5dp / 2);
-        ViewCompat.setBackground(pct,new HighContrastBorder());
+        ViewCompat.setBackground(pct, new HighContrastBorder());
         pct.setHint("电量百分比, 取值范围 [1,100]");
         pct.setText(bat.getFakeBatteryCapacity() + "");
         pct.setSelection(pct.getText().length());
-        ll.addView(pct, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 2 * _5dp, _5dp, 2 * _5dp, _5dp));
+        ll.addView(pct,
+            newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 2 * _5dp, _5dp, 2 * _5dp, _5dp));
         CheckBox charging = new CheckBox(FakeBatCfgActivity.this);
         charging.setId(R_ID_CHARGING);
         charging.setText("正在充电");
@@ -119,18 +129,21 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
         charging.setButtonDrawable(ResUtils.getCheckBoxBackground());
         charging.setPadding(_5dp, _5dp, _5dp, _5dp);
         charging.setChecked(FakeBatteryHook.INSTANCE.isFakeBatteryCharging());
-        ll.addView(charging, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 3 * _5dp, _5dp, 2 * _5dp, _5dp));
+        ll.addView(charging,
+            newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 3 * _5dp, _5dp, 2 * _5dp, _5dp));
         Button apply = new Button(FakeBatCfgActivity.this);
         apply.setId(R_ID_APPLY);
         apply.setOnClickListener(this);
         ResUtils.applyStyleCommonBtnBlue(apply);
-        ll.addView(apply, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 2 * _5dp, _5dp, 2 * _5dp, _5dp));
+        ll.addView(apply,
+            newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 2 * _5dp, _5dp, 2 * _5dp, _5dp));
         Button dis = new Button(FakeBatCfgActivity.this);
         dis.setId(R_ID_DISABLE);
         dis.setOnClickListener(this);
         ResUtils.applyStyleCommonBtnBlue(dis);
         dis.setText("停用");
-        ll.addView(dis, newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 2 * _5dp, _5dp, 2 * _5dp, _5dp));
+        ll.addView(dis,
+            newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 2 * _5dp, _5dp, 2 * _5dp, _5dp));
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         setContentView(bounceScrollView);
         showStatus();
@@ -145,7 +158,9 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
         String desc = "当前状态: ";
         if (enabled) {
             desc += "已开启 " + bat.getFakeBatteryCapacity() + "%";
-            if (bat.isFakeBatteryCharging()) desc += "+";
+            if (bat.isFakeBatteryCharging()) {
+                desc += "+";
+            }
         } else {
             desc += "禁用";
         }
@@ -173,37 +188,47 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
                 if (mMsfResponsive) {
                     doUpdateBatCfg();
                 } else {
-                    final Dialog waitDialog = CustomDialog.create(this).setCancelable(true).setTitle("请稍候")
-                            .setMessage("等待 :MSF 进程响应").show();
-                    SyncUtils.enumerateProc(this, SyncUtils.PROC_MSF, 3000, new SyncUtils.EnumCallback() {
-                        private boolean mFinished = false;
+                    final Dialog waitDialog = CustomDialog.create(this).setCancelable(true)
+                        .setTitle("请稍候")
+                        .setMessage("等待 :MSF 进程响应").show();
+                    SyncUtils.enumerateProc(this, SyncUtils.PROC_MSF, 3000,
+                        new SyncUtils.EnumCallback() {
+                            private boolean mFinished = false;
 
-                        @Override
-                        public void onResponse(SyncUtils.EnumRequestHolder holder, SyncUtils.ProcessInfo process) {
-                            if (mFinished) return;
-                            mFinished = true;
-                            mMsfResponsive = true;
-                            waitDialog.dismiss();
-                            doUpdateBatCfg();
-                        }
-
-                        @Override
-                        public void onEnumResult(SyncUtils.EnumRequestHolder holder) {
-                            if (mFinished) return;
-                            mFinished = true;
-                            mMsfResponsive = holder.result.size() > 0;
-                            waitDialog.dismiss();
-                            if (mMsfResponsive) {
+                            @Override
+                            public void onResponse(SyncUtils.EnumRequestHolder holder,
+                                SyncUtils.ProcessInfo process) {
+                                if (mFinished) {
+                                    return;
+                                }
+                                mFinished = true;
+                                mMsfResponsive = true;
+                                waitDialog.dismiss();
                                 doUpdateBatCfg();
-                            } else {
-                                CustomDialog.create(FakeBatCfgActivity.this).setTitle("操作失败")
-                                        .setCancelable(true).setPositiveButton("确认", null)
-                                        .setMessage("发生错误:\n" + getApplication().getPackageName() + ":MSF 进程响应超时\n" +
-                                                "如果您的" + HostInformationProviderKt.getHostInfo().getHostName() + "刚刚启动,您可以在十几秒后再试一次\n" +
-                                                "如果您是太极(含无极)用户,请确认您的太极版本至少为 湛泸-6.0.2(1907) ,如低于此版本,请尽快升级").show();
                             }
-                        }
-                    });
+
+                            @Override
+                            public void onEnumResult(SyncUtils.EnumRequestHolder holder) {
+                                if (mFinished) {
+                                    return;
+                                }
+                                mFinished = true;
+                                mMsfResponsive = holder.result.size() > 0;
+                                waitDialog.dismiss();
+                                if (mMsfResponsive) {
+                                    doUpdateBatCfg();
+                                } else {
+                                    CustomDialog.create(FakeBatCfgActivity.this).setTitle("操作失败")
+                                        .setCancelable(true).setPositiveButton("确认", null)
+                                        .setMessage("发生错误:\n" + getApplication().getPackageName()
+                                            + ":MSF 进程响应超时\n" +
+                                            "如果您的" + HostInformationProviderKt.getHostInfo()
+                                            .getHostName() + "刚刚启动,您可以在十几秒后再试一次\n" +
+                                            "如果您是太极(含无极)用户,请确认您的太极版本至少为 湛泸-6.0.2(1907) ,如低于此版本,请尽快升级")
+                                        .show();
+                                }
+                            }
+                        });
                 }
                 break;
             case R_ID_DISABLE:
@@ -236,17 +261,22 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements 
             Toasts.error(FakeBatCfgActivity.this, "电量取值范围: [1,100]");
             return;
         }
-        if (charging.isChecked()) val |= 128;
+        if (charging.isChecked()) {
+            val |= 128;
+        }
         bat.setFakeSendBatteryStatus(val);
         if (!bat.isEnabled()) {
             cfg.putBoolean(FakeBatteryHook.qn_fake_bat_enable, true);
             try {
                 cfg.save();
                 boolean success = true;
-                if (!bat.isInited()) success = bat.init();
+                if (!bat.isInited()) {
+                    success = bat.init();
+                }
                 SyncUtils.requestInitHook(bat.getId(), bat.getEffectiveProc());
-                if (!success)
+                if (!success) {
                     Toasts.error(FakeBatCfgActivity.this, "初始化错误: 可能是版本不支持");
+                }
             } catch (Exception e) {
                 Toasts.error(FakeBatCfgActivity.this, "错误:" + e.toString(), Toast.LENGTH_LONG);
                 log(e);

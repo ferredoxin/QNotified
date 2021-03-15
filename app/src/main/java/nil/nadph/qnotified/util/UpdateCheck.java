@@ -21,6 +21,9 @@
  */
 package nil.nadph.qnotified.util;
 
+import static cc.ioctl.util.DateTimeUtil.getRelTimeStrSec;
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Build;
@@ -35,22 +38,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.TimeZone;
-
 import javax.net.ssl.HttpsURLConnection;
-
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ViewBuilder;
-
-import static cc.ioctl.util.DateTimeUtil.getRelTimeStrSec;
-import static nil.nadph.qnotified.util.Utils.log;
 
 public class UpdateCheck implements View.OnClickListener, Runnable {
 
@@ -67,6 +64,25 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
     private int runlevel;
 
     public UpdateCheck() {
+    }
+
+    public static long iso8601ToTimestampMs(String expr) {
+        if (!expr.endsWith("Z")) {
+            throw new IllegalArgumentException("reject, not UTC");
+        }
+        String[] arr = expr.replace("Z", "").split("T");
+        String[] p1 = arr[0].split("-");
+        int yyyy = Integer.parseInt(p1[0]);
+        int MM = Integer.parseInt(p1[1]);
+        int dd = Integer.parseInt(p1[2]);
+        String[] p2 = arr[1].split("[:.]");
+        int HH = Integer.parseInt(p2[0]);
+        int mm = Integer.parseInt(p2[1]);
+        int ss = Integer.parseInt(p2[2]);
+        int ms = Integer.parseInt(p2[3]);
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        calendar.set(yyyy, MM - 1, dd, HH, mm, ss);
+        return calendar.getTime().getTime() + ms;
     }
 
     public String doRefreshInfo() {
@@ -93,13 +109,15 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
         } catch (IOException e) {
             final IOException e2 = e;
             runlevel = 0;
-            if (content == null)
+            if (content == null) {
                 new Handler(viewGroup.getContext().getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(viewGroup.getContext(), "检查更新失败:" + e2, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(viewGroup.getContext(), "检查更新失败:" + e2, Toast.LENGTH_SHORT)
+                            .show();
                     }
                 });
+            }
         }
         return null;
     }
@@ -155,7 +173,9 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
         switch (runlevel) {
             case RL_LOAD:
                 String ret = doRefreshInfo();
-                if (ret == null) return;
+                if (ret == null) {
+                    return;
+                }
                 runlevel = 2;
                 result = PHPArray.fromJson(ret);
                 new Handler(viewGroup.getContext().getMainLooper()).post(this);
@@ -163,11 +183,12 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
             case RL_SHOW_RET:
                 doSetVersionTip(viewGroup, result);
                 runlevel = 0;
-                if (clicked) doShowUpdateInfo();
+                if (clicked) {
+                    doShowUpdateInfo();
+                }
                 return;
         }
     }
-
 
     private void doShowUpdateInfo() {
         try {
@@ -189,7 +210,8 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
             String date = getRelTimeStrSec(time / 1000L);
 
             SpannableString tmp = new SpannableString(vn + " (" + vc + ")");
-            tmp.setSpan(new RelativeSizeSpan(1.8f), 0, tmp.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            tmp.setSpan(new RelativeSizeSpan(1.8f), 0, tmp.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             sb.append(tmp);
 
             if (currVerName.equals(vn)) {
@@ -206,7 +228,8 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
             sb.append(desc);
             sb.append("\n下载地址:\n");
             tmp = new SpannableString((String) download_url);
-            tmp.setSpan(new URLSpan((String) download_url), 0, tmp.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            tmp.setSpan(new URLSpan((String) download_url), 0, tmp.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             sb.append(tmp);
             sb.append("\n");
             sb.append("\n");
@@ -242,24 +265,5 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
         } else {
             doShowUpdateInfo();
         }
-    }
-
-    public static long iso8601ToTimestampMs(String expr) {
-        if (!expr.endsWith("Z")) {
-            throw new IllegalArgumentException("reject, not UTC");
-        }
-        String[] arr = expr.replace("Z", "").split("T");
-        String[] p1 = arr[0].split("-");
-        int yyyy = Integer.parseInt(p1[0]);
-        int MM = Integer.parseInt(p1[1]);
-        int dd = Integer.parseInt(p1[2]);
-        String[] p2 = arr[1].split("[:.]");
-        int HH = Integer.parseInt(p2[0]);
-        int mm = Integer.parseInt(p2[1]);
-        int ss = Integer.parseInt(p2[2]);
-        int ms = Integer.parseInt(p2[3]);
-        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-        calendar.set(yyyy, MM - 1, dd, HH, mm, ss);
-        return calendar.getTime().getTime() + ms;
     }
 }

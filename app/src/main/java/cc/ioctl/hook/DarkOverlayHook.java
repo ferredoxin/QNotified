@@ -21,30 +21,40 @@
  */
 package cc.ioctl.hook;
 
-import android.view.View;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.loge;
+import static nil.nadph.qnotified.util.Utils.logi;
 
+import android.view.View;
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.util.*;
-
-import static nil.nadph.qnotified.util.Utils.*;
+import nil.nadph.qnotified.util.DexFieldDescriptor;
+import nil.nadph.qnotified.util.DexFlow;
+import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.DexMethodDescriptor;
+import nil.nadph.qnotified.util.Initiator;
+import nil.nadph.qnotified.util.LicenseStatus;
 
 @FunctionEntry
 public class DarkOverlayHook extends CommonDelayableHook {
+
     public static final DarkOverlayHook INSTANCE = new DarkOverlayHook();
+    private static final String cache_night_mask_field = "cache_night_mask_field";
+    private static final String cache_night_mask_field_version_code = "cache_night_mask_field_version_code";
+
 
     DarkOverlayHook() {
-        super("qn_disable_dark_overlay", new DexDeobfStep(DexKit.N_BASE_CHAT_PIE__handleNightMask), new FindNightMask());
+        super("qn_disable_dark_overlay", new DexDeobfStep(DexKit.N_BASE_CHAT_PIE__handleNightMask),
+            new FindNightMask());
     }
 
     @Override
@@ -56,8 +66,12 @@ public class DarkOverlayHook extends CommonDelayableHook {
 
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.sDisableCommonHooks) return;
-                    if (!isEnabled()) return;
+                    if (LicenseStatus.sDisableCommonHooks) {
+                        return;
+                    }
+                    if (!isEnabled()) {
+                        return;
+                    }
                     if (fMask == null) {
                         DexFieldDescriptor desc = FindNightMask.getNightMaskField();
                         if (desc == null) {
@@ -65,12 +79,16 @@ public class DarkOverlayHook extends CommonDelayableHook {
                             return;
                         }
                         fMask = desc.getFieldInstance(Initiator.getHostClassLoader());
-                        if (fMask != null) fMask.setAccessible(true);
+                        if (fMask != null) {
+                            fMask.setAccessible(true);
+                        }
                     }
                     if (fMask != null) {
                         Object chatPie = param.thisObject;
                         View mask = (View) fMask.get(chatPie);
-                        if (mask != null) mask.setVisibility(View.GONE);
+                        if (mask != null) {
+                            mask.setVisibility(View.GONE);
+                        }
                     }
                 }
             });
@@ -80,10 +98,6 @@ public class DarkOverlayHook extends CommonDelayableHook {
             return false;
         }
     }
-
-
-    private static final String cache_night_mask_field = "cache_night_mask_field";
-    private static final String cache_night_mask_field_version_code = "cache_night_mask_field_version_code";
 
     private static class FindNightMask extends Step {
 
@@ -98,10 +112,15 @@ public class DarkOverlayHook extends CommonDelayableHook {
                     fieldName = name;
                 }
             }
-            if (fieldName != null) return new DexFieldDescriptor(fieldName);
+            if (fieldName != null) {
+                return new DexFieldDescriptor(fieldName);
+            }
             Class<?> baseChatPie = Initiator._BaseChatPie();
-            if (baseChatPie == null) return null;
-            DexMethodDescriptor handleNightMask = DexKit.doFindMethodDesc(DexKit.N_BASE_CHAT_PIE__handleNightMask);
+            if (baseChatPie == null) {
+                return null;
+            }
+            DexMethodDescriptor handleNightMask = DexKit
+                .doFindMethodDesc(DexKit.N_BASE_CHAT_PIE__handleNightMask);
             if (handleNightMask == null) {
                 logi("getNightMaskField: handleNightMask is null");
                 return null;

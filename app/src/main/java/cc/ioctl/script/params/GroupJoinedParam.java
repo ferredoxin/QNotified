@@ -22,6 +22,7 @@
 package cc.ioctl.script.params;
 
 public class GroupJoinedParam {
+
     /**
      * 群id
      */

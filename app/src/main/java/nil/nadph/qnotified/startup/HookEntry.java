@@ -30,16 +30,15 @@ import me.singleneuron.util.HookStatue;
 import nil.nadph.qnotified.R;
 
 /**
- * Xposed entry class
- * DO NOT MODIFY ANY CODE HERE UNLESS NECESSARY.
- * DO NOT INVOKE ANY METHOD THAT MAY GET IN TOUCH WITH KOTLIN HERE.
- * DO NOT TOUCH ANDROIDX OR KOTLIN HERE, WHATEVER DIRECTLY OR INDIRECTLY.
- * THIS CLASS SHOULD ONLY CALL {@code StartupHook.getInstance().doInit()} AND RETURN GRACEFULLY.
- * OTHERWISE SOMETHING MAY HAPPEN BECAUSE OF A NON-STANDARD PLUGIN CLASSLOADER.
+ * Xposed entry class DO NOT MODIFY ANY CODE HERE UNLESS NECESSARY. DO NOT INVOKE ANY METHOD THAT
+ * MAY GET IN TOUCH WITH KOTLIN HERE. DO NOT TOUCH ANDROIDX OR KOTLIN HERE, WHATEVER DIRECTLY OR
+ * INDIRECTLY. THIS CLASS SHOULD ONLY CALL {@code StartupHook.getInstance().doInit()} AND RETURN
+ * GRACEFULLY. OTHERWISE SOMETHING MAY HAPPEN BECAUSE OF A NON-STANDARD PLUGIN CLASSLOADER.
  *
  * @author kinit
  */
 public class HookEntry implements IXposedHookLoadPackage {
+
     public static final String PACKAGE_NAME_QQ = "com.tencent.mobileqq";
     public static final String PACKAGE_NAME_QQ_INTERNATIONAL = "com.tencent.mobileqqi";
     public static final String PACKAGE_NAME_QQ_LITE = "com.tencent.qqlite";
@@ -55,7 +54,9 @@ public class HookEntry implements IXposedHookLoadPackage {
         }
         switch (lpparam.packageName) {
             case PACKAGE_NAME_SELF: {
-                XposedHelpers.findAndHookMethod(HookStatue.class.getName(), lpparam.classLoader, "isEnabled", XC_MethodReplacement.returnConstant(true));
+                XposedHelpers
+                    .findAndHookMethod(HookStatue.class.getName(), lpparam.classLoader, "isEnabled",
+                        XC_MethodReplacement.returnConstant(true));
                 break;
             }
             case PACKAGE_NAME_TIM:

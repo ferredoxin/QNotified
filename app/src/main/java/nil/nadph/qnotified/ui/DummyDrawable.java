@@ -27,6 +27,7 @@ import android.graphics.drawable.Drawable;
 
 //dummy, don't use it
 public class DummyDrawable extends Drawable {
+
     @Override
     public void draw(Canvas canvas) {
     }

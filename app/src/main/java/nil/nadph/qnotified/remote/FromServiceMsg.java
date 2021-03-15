@@ -26,6 +26,7 @@ import com.qq.taf.jce.JceOutputStream;
 import com.qq.taf.jce.JceStruct;
 
 public class FromServiceMsg extends JceStruct {
+
     public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
     private int uniSeq;//0
     private int resultCode;//1
@@ -68,12 +69,12 @@ public class FromServiceMsg extends JceStruct {
         body = EMPTY_BYTE_ARRAY;
     }
 
-    public void setBody(byte[] body) {
-        this.body = body;
-    }
-
     public byte[] getBody() {
         return body;
+    }
+
+    public void setBody(byte[] body) {
+        this.body = body;
     }
 
     public void getBody(JceStruct struct) {
@@ -82,12 +83,12 @@ public class FromServiceMsg extends JceStruct {
         struct.readFrom(in);
     }
 
-    public void setUniSeq(int uniSeq) {
-        this.uniSeq = uniSeq;
-    }
-
     public int getUniSeq() {
         return uniSeq;
+    }
+
+    public void setUniSeq(int uniSeq) {
+        this.uniSeq = uniSeq;
     }
 
     public String getErrorMsg() {

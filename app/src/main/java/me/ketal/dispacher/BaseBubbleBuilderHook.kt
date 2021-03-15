@@ -39,6 +39,7 @@ object BaseBubbleBuilderHook : CommonDelayableHook("__NOT_USED__") {
     private val decorators = arrayOf<OnBubbleBuilder>(
         HideTroopLevel,
     )
+
     override fun initOnce() = tryOrFalse {
         "Lcom/tencent/mobileqq/activity/aio/BaseBubbleBuilder;->a(IILcom/tencent/mobileqq/data/ChatMessage;Landroid/view/View;Landroid/view/ViewGroup;Lcom/tencent/mobileqq/activity/aio/OnLongClickAndTouchListener;)Landroid/view/View;"
             .method.hookAfter(this) {
@@ -48,7 +49,7 @@ object BaseBubbleBuilderHook : CommonDelayableHook("__NOT_USED__") {
                 for (decorator in decorators) {
                     try {
                         decorator.onGetView(rootView, msg, it)
-                    } catch (e:Exception) {
+                    } catch (e: Exception) {
                         Utils.log(e)
                     }
                 }
@@ -61,5 +62,9 @@ object BaseBubbleBuilderHook : CommonDelayableHook("__NOT_USED__") {
 }
 
 interface OnBubbleBuilder {
-    fun onGetView(rootView: ViewGroup, chatMessage:MsgRecordData, param: XC_MethodHook.MethodHookParam)
+    fun onGetView(
+        rootView: ViewGroup,
+        chatMessage: MsgRecordData,
+        param: XC_MethodHook.MethodHookParam
+    )
 }

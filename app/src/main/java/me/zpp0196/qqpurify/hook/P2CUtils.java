@@ -26,11 +26,19 @@ public class P2CUtils {
     @Nullable
     public static AbstractConfigItem findConfigByName(@NonNull String name) {
         //noinspection Nullability failsafe, ok?
-        if (name == null) return null;
-        if (name.contains("$")) name = name.split("\\$")[0];
-        if (name.equals("")) return ConfigManager.getDefaultConfig();
+        if (name == null) {
+            return null;
+        }
+        if (name.contains("$")) {
+            name = name.split("\\$")[0];
+        }
+        if (name.equals("")) {
+            return ConfigManager.getDefaultConfig();
+        }
         AbstractConfigItem item = doFindConfigByName(name);
-        if (item == null) item = doFindHookByName(name);
+        if (item == null) {
+            item = doFindHookByName(name);
+        }
         return item;
     }
 }

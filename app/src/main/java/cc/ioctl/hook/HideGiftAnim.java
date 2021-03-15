@@ -21,8 +21,11 @@
  */
 package cc.ioctl.hook;
 
-import android.app.Application;
+import static nil.nadph.qnotified.util.Initiator._TroopGiftAnimationController;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Utils.log;
 
+import android.app.Application;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
@@ -30,12 +33,9 @@ import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.LicenseStatus;
 
-import static nil.nadph.qnotified.util.Initiator._TroopGiftAnimationController;
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.log;
-
 @FunctionEntry
 public class HideGiftAnim extends CommonDelayableHook {
+
     public static final HideGiftAnim INSTANCE = new HideGiftAnim();
 
     HideGiftAnim() {
@@ -46,14 +46,19 @@ public class HideGiftAnim extends CommonDelayableHook {
     public boolean initOnce() {
         try {
             Class clz = _TroopGiftAnimationController();
-            XposedHelpers.findAndHookMethod(clz, "a", load("com/tencent/mobileqq/data/MessageForDeliverGiftTips"), new XC_MethodHook(39) {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.sDisableCommonHooks) return;
-                    if (!isEnabled()) return;
-                    param.setResult(null);
-                }
-            });
+            XposedHelpers.findAndHookMethod(clz, "a",
+                load("com/tencent/mobileqq/data/MessageForDeliverGiftTips"), new XC_MethodHook(39) {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        if (LicenseStatus.sDisableCommonHooks) {
+                            return;
+                        }
+                        if (!isEnabled()) {
+                            return;
+                        }
+                        param.setResult(null);
+                    }
+                });
             return true;
         } catch (Throwable e) {
             log(e);

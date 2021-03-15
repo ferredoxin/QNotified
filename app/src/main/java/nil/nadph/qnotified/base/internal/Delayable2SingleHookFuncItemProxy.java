@@ -24,9 +24,7 @@ package nil.nadph.qnotified.base.internal;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import java.util.Objects;
-
 import nil.nadph.qnotified.base.AbsFunctionItem;
 import nil.nadph.qnotified.base.AbsHookTask;
 import nil.nadph.qnotified.base.ErrorStatus;
@@ -120,13 +118,13 @@ public class Delayable2SingleHookFuncItemProxy implements AbsFunctionItem, AbsHo
     }
 
     @Override
-    public void setEnabled(boolean enabled) {
-        h.setEnabled(enabled);
+    public boolean isEnabled() {
+        return h.isEnabled();
     }
 
     @Override
-    public boolean isEnabled() {
-        return h.isEnabled();
+    public void setEnabled(boolean enabled) {
+        h.setEnabled(enabled);
     }
 
     @NonNull

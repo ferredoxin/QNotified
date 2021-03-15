@@ -21,6 +21,15 @@
  */
 package nil.nadph.qnotified.activity;
 
+import static android.view.View.GONE;
+import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
+import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
+import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
+import static nil.nadph.qnotified.util.Utils.dip2px;
+import static nil.nadph.qnotified.util.Utils.getTroopManager;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.strcmp;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -37,21 +46,25 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
-
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
-
 import com.tencent.widget.XListView;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
-
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigManager;
@@ -60,15 +73,10 @@ import nil.nadph.qnotified.util.FaceImpl;
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
-import static android.view.View.GONE;
-import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
-import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
-import static nil.nadph.qnotified.util.Utils.*;
-
 
 @SuppressLint("Registered")
-public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
+public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
+    View.OnClickListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
 
     private static final String TRP_SELECT_EXFMGR_KEY_NAME = "TRP_SELECT_EXFMGR_KEY_NAME";
     private static final String TRP_SELECT_TITLE = "TRP_SELECT_TITLE";
@@ -83,9 +91,14 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
     private static final int R_ID_TRP_REVERSE = 0x300AFF37;
     private static final int R_ID_TRP_SELECT_ALL = 0x300AFF38;
     public static int HIGHLIGHT_COLOR = 0xFF20B0FF;
+    String targetDataSaveKey, lpwTitle;
     private ArrayList<TroopInfo> mTroopInfoList;
     private int hits;
     private boolean searchMode = false;
+    private FaceImpl face;
+    private EditText search;
+    private TextView rightBtn, cancel, reverse, selectAll;
+    private HashSet<String> muted;
     private final BaseAdapter mAdapter = new BaseAdapter() {
         @Override
         public int getCount() {
@@ -107,12 +120,6 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
             return TroopSelectActivity.this.getView(position, convertView, parent);
         }
     };
-    private FaceImpl face;
-    private EditText search;
-    private TextView rightBtn, cancel, reverse, selectAll;
-    private HashSet<String> muted;
-
-    String targetDataSaveKey, lpwTitle;
 
     public static ArrayList<TroopInfo> getTroopInfoList() throws Exception {
         Object mTroopManager = getTroopManager();
@@ -129,7 +136,8 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
         ArrayList<?> tx;
         Method m0a = null, m0b = null;
         for (Method m : mTroopManager.getClass().getMethods()) {
-            if (m.getReturnType().equals(ArrayList.class) && Modifier.isPublic(m.getModifiers()) && m.getParameterTypes().length == 0) {
+            if (m.getReturnType().equals(ArrayList.class) && Modifier.isPublic(m.getModifiers())
+                && m.getParameterTypes().length == 0) {
                 if (m.getName().equals("a")) {
                     m0a = m;
                     break;
@@ -146,9 +154,26 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
         if (m0b == null) {
             tx = (ArrayList<?>) m0a.invoke(mTroopManager);
         } else {
-            tx = (ArrayList<?>) ((strcmp(m0a.getName(), m0b.getName()) > 0) ? m0b : m0a).invoke(mTroopManager);
+            tx = (ArrayList<?>) ((strcmp(m0a.getName(), m0b.getName()) > 0) ? m0b : m0a)
+                .invoke(mTroopManager);
         }
         return tx;
+    }
+
+    public static void startToSelectTroopsAndSaveToExfMgr(@NonNull Context ctx,
+        @NonNull String keyName) {
+        startToSelectTroopsAndSaveToExfMgr(ctx, keyName, null);
+    }
+
+    public static void startToSelectTroopsAndSaveToExfMgr(@NonNull Context ctx,
+        @NonNull String keyName, @Nullable String title) {
+        Objects.requireNonNull(keyName, "keyName == null");
+        Intent intent = new Intent(ctx, TroopSelectActivity.class);
+        intent.putExtra(TRP_SELECT_EXFMGR_KEY_NAME, keyName);
+        if (title != null) {
+            intent.putExtra(TRP_SELECT_TITLE, title);
+        }
+        ctx.startActivity(intent);
     }
 
     @Override
@@ -167,7 +192,9 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
             s.delete(i, i + 1);
         }
         str = s.toString();
-        if (s.length() == 0) return;
+        if (s.length() == 0) {
+            return;
+        }
         searchMode = true;
         parseKeyword(str);
     }
@@ -183,7 +210,8 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
             searchMode = false;
             search.setFocusable(false);
             search.setText("");
-            InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) this
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
             View v2 = this.getWindow().peekDecorView();
             if (null != v) {
                 imm.hideSoftInputFromWindow(v2.getWindowToken(), 0);
@@ -197,7 +225,8 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
             search.setFocusable(true);
             search.setFocusableInTouchMode(true);
             search.requestFocus();
-            InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) this
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT);
             cancel.setVisibility(View.VISIBLE);
             selectAll.setVisibility(GONE);
@@ -211,7 +240,9 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
             String ret;
             if (sb.length() < 4) {
                 ret = "";
-            } else ret = sb.substring(1);
+            } else {
+                ret = sb.substring(1);
+            }
             try {
                 ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
                 cfg.putString(targetDataSaveKey, ret);
@@ -245,13 +276,17 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
     public int getCount() {
         if (searchMode && hits > 0) {
             return hits;
-        } else return mTroopInfoList == null ? 0 : mTroopInfoList.size();
+        } else {
+            return mTroopInfoList == null ? 0 : mTroopInfoList.size();
+        }
     }
 
     public Object getItem(int position) {
         if (searchMode && hits > 0) {
             return mTroopInfoList.get(position);
-        } else return mTroopInfoList == null ? null : mTroopInfoList.get(position);
+        } else {
+            return mTroopInfoList == null ? null : mTroopInfoList.get(position);
+        }
     }
 
     public long getItemId(int position) {
@@ -260,7 +295,9 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null) convertView = createItemView();
+        if (convertView == null) {
+            convertView = createItemView();
+        }
         TroopInfo info = mTroopInfoList.get(position);
         convertView.setTag(info.troopuin);
         if (searchMode) {
@@ -410,7 +447,8 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
         checkBox.setOnCheckedChangeListener(this);
         checkBox.setButtonDrawable(null);
         ViewCompat.setBackground(checkBox, ResUtils.getCheckBoxBackground());
-        LinearLayout.LayoutParams imglp = new LinearLayout.LayoutParams(Utils.dip2px(this, 50), Utils.dip2px(this, 50));
+        LinearLayout.LayoutParams imglp = new LinearLayout.LayoutParams(Utils.dip2px(this, 50),
+            Utils.dip2px(this, 50));
         imglp.setMargins(tmp = Utils.dip2px(this, 12), tmp / 2, tmp / 2, tmp / 2);
         ImageView imgview = new ImageView(this);
         imgview.setFocusable(false);
@@ -421,8 +459,10 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
         llayout.addView(imgview, imglp);
         LinearLayout textlayout = new LinearLayout(this);
         textlayout.setOrientation(LinearLayout.VERTICAL);
-        LinearLayout.LayoutParams ltxtlp = new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
-        LinearLayout.LayoutParams textlp = new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
+        LinearLayout.LayoutParams ltxtlp = new LinearLayout.LayoutParams(MATCH_PARENT,
+            WRAP_CONTENT);
+        LinearLayout.LayoutParams textlp = new LinearLayout.LayoutParams(MATCH_PARENT,
+            WRAP_CONTENT);
         ltxtlp.setMargins(tmp = Utils.dip2px(this, 2), tmp, tmp, tmp);
         textlp.setMargins(tmp = Utils.dip2px(this, 1), tmp, tmp, tmp);
         llayout.addView(textlayout, ltxtlp);
@@ -460,20 +500,28 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
                 boolean y = false;
                 if (start != -1) {
                     SpannableString ret = new SpannableString(info.troopuin);
-                    ret.setSpan(new ForegroundColorSpan(HIGHLIGHT_COLOR), start, start + len, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                    ret.setSpan(new ForegroundColorSpan(HIGHLIGHT_COLOR), start, start + len,
+                        Spannable.SPAN_INCLUSIVE_INCLUSIVE);
                     info._troopuin = ret;
                     info.hit += 10;
                     y = true;
-                } else info._troopuin = info.troopuin;
+                } else {
+                    info._troopuin = info.troopuin;
+                }
                 start = info.troopname.indexOf(keyword);
                 if (start != -1) {
                     SpannableString ret = new SpannableString(info.troopname);
-                    ret.setSpan(new ForegroundColorSpan(HIGHLIGHT_COLOR), start, start + len, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                    ret.setSpan(new ForegroundColorSpan(HIGHLIGHT_COLOR), start, start + len,
+                        Spannable.SPAN_INCLUSIVE_INCLUSIVE);
                     info._troopname = ret;
                     info.hit += 10;
                     y = true;
-                } else info._troopname = info.troopname;
-                if (y) hits++;
+                } else {
+                    info._troopname = info.troopname;
+                }
+                if (y) {
+                    hits++;
+                }
             }
 
         }
@@ -485,7 +533,9 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         LinearLayout ll = (LinearLayout) buttonView.getParent();
         String guin = (String) ll.getTag();
-        if (guin == null) return;
+        if (guin == null) {
+            return;
+        }
         if (isChecked) {
             muted.add(guin);
         } else {
@@ -494,8 +544,8 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
         rightBtn.setText("完成(" + muted.size() + ")");
     }
 
-
     public static class TroopInfo implements Comparable {
+
         public String troopuin;
         public String troopname;
         public CharSequence _troopuin;
@@ -513,19 +563,5 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
             TroopInfo t = (TroopInfo) o;
             return t.hit - hit;
         }
-    }
-
-    public static void startToSelectTroopsAndSaveToExfMgr(@NonNull Context ctx, @NonNull String keyName) {
-        startToSelectTroopsAndSaveToExfMgr(ctx, keyName, null);
-    }
-
-    public static void startToSelectTroopsAndSaveToExfMgr(@NonNull Context ctx, @NonNull String keyName, @Nullable String title) {
-        Objects.requireNonNull(keyName, "keyName == null");
-        Intent intent = new Intent(ctx, TroopSelectActivity.class);
-        intent.putExtra(TRP_SELECT_EXFMGR_KEY_NAME, keyName);
-        if (title != null) {
-            intent.putExtra(TRP_SELECT_TITLE, title);
-        }
-        ctx.startActivity(intent);
     }
 }

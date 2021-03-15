@@ -35,7 +35,12 @@ import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.util.DexKit
 
 @FunctionEntry
-object AutoReceiveOriginalPhoto : CommonDelayableHook("na_auto_receive_origin_photo", SyncUtils.PROC_PEAK, false, DexDeobfStep(DexKit.C_AIOPictureView)) {
+object AutoReceiveOriginalPhoto : CommonDelayableHook(
+    "na_auto_receive_origin_photo",
+    SyncUtils.PROC_PEAK,
+    false,
+    DexDeobfStep(DexKit.C_AIOPictureView)
+) {
 
     override fun initOnce() = tryOrFalse {
         val method: String = if (hostInfo.versionCode >= QQVersion.QQ_8_5_0) {

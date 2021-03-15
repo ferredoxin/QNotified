@@ -51,6 +51,15 @@ public class ConfigData<T> {
         }
     }
 
+    public T getValue() {
+        try {
+            return (T) mgr.getObject(mKeyName);
+        } catch (Exception e) {
+            Utils.log(e);
+            return null;
+        }
+    }
+
     public void setValue(T value) {
         try {
             mgr.getAllConfig().put(mKeyName, value);
@@ -60,17 +69,9 @@ public class ConfigData<T> {
             if (Looper.myLooper() == Looper.getMainLooper()) {
                 Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(), e + "");
             } else {
-                SyncUtils.post(() -> Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(), e + ""));
+                SyncUtils.post(() -> Toasts
+                    .error(HostInformationProviderKt.getHostInfo().getApplication(), e + ""));
             }
-        }
-    }
-
-    public T getValue() {
-        try {
-            return (T) mgr.getObject(mKeyName);
-        } catch (Exception e) {
-            Utils.log(e);
-            return null;
         }
     }
 

@@ -23,12 +23,10 @@ package me.kyuubiran.hook;
 
 import android.content.Context;
 import android.os.Handler;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
@@ -39,6 +37,7 @@ import nil.nadph.qnotified.util.Utils;
 //屏蔽截屏分享
 @FunctionEntry
 public class DisableScreenshotHelper extends CommonDelayableHook {
+
     public static final DisableScreenshotHelper INSTANCE = new DisableScreenshotHelper();
 
     private DisableScreenshotHelper() {
@@ -49,14 +48,21 @@ public class DisableScreenshotHelper extends CommonDelayableHook {
     public boolean initOnce() {
         try {
             for (Method m : DexKit.doFindClass(DexKit.C_ScreenShotHelper).getDeclaredMethods()) {
-                if (m.getName().equals("a") && Modifier.isStatic(m.getModifiers()) && m.getReturnType() == void.class) {
+                if (m.getName().equals("a") && Modifier.isStatic(m.getModifiers())
+                    && m.getReturnType() == void.class) {
                     Class<?>[] argt = m.getParameterTypes();
-                    if (argt.length == 3 && argt[0] == Context.class && argt[1] == String.class && argt[2] == Handler.class) {
+                    if (argt.length == 3 && argt[0] == Context.class && argt[1] == String.class
+                        && argt[2] == Handler.class) {
                         XposedBridge.hookMethod(m, new XC_MethodHook() {
                             @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                                if (LicenseStatus.sDisableCommonHooks) return;
-                                if (!isEnabled()) return;
+                            protected void beforeHookedMethod(MethodHookParam param)
+                                throws Throwable {
+                                if (LicenseStatus.sDisableCommonHooks) {
+                                    return;
+                                }
+                                if (!isEnabled()) {
+                                    return;
+                                }
                                 param.setResult(null);
                             }
                         });

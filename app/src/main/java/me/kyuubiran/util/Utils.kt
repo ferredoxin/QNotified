@@ -39,7 +39,11 @@ fun Context.showToastBySystem(text: CharSequence, duration: Int = Toast.LENGTH_S
     else Utils.runOnUiThread { showToastBySystem(text, duration) }
 }
 
-fun Context.showToastByTencent(text: CharSequence, type: Int = Utils.TOAST_TYPE_INFO, duration: Int = Toast.LENGTH_SHORT) {
+fun Context.showToastByTencent(
+    text: CharSequence,
+    type: Int = Utils.TOAST_TYPE_INFO,
+    duration: Int = Toast.LENGTH_SHORT
+) {
     if (Looper.getMainLooper() == Looper.myLooper())
         Toasts.showToast(this, type, text, duration)
     else Utils.runOnUiThread { showToastByTencent(text, duration) }

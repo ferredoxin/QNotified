@@ -43,12 +43,19 @@ import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.ReflexUtil
 
 @FunctionEntry
-object MultiActionHook: CommonDelayableHook("qn_multi_action", DexDeobfStep(DexKit.C_MessageCache), DexDeobfStep(DexKit.C_MSG_REC_FAC), DexDeobfStep(DexKit.N_BASE_CHAT_PIE__createMulti), DexDeobfStep(DexKit.C_MultiMsg_Manager)) {
+object MultiActionHook : CommonDelayableHook(
+    "qn_multi_action",
+    DexDeobfStep(DexKit.C_MessageCache),
+    DexDeobfStep(DexKit.C_MSG_REC_FAC),
+    DexDeobfStep(DexKit.N_BASE_CHAT_PIE__createMulti),
+    DexDeobfStep(DexKit.C_MultiMsg_Manager)
+) {
     private var baseChatPie: Any? = null
     private var img: Bitmap? = null
     private val recallBitmap: Bitmap?
         get() {
-            if (img == null || img!!.isRecycled) img = BitmapFactory.decodeStream(ResUtils.openAsset("recall.png"))
+            if (img == null || img!!.isRecycled) img =
+                BitmapFactory.decodeStream(ResUtils.openAsset("recall.png"))
             return img
         }
 
@@ -57,10 +64,14 @@ object MultiActionHook: CommonDelayableHook("qn_multi_action", DexDeobfStep(DexK
         m?.hookAfter(this) {
             val rootView = findView(m.declaringClass, it.thisObject) ?: return@hookAfter
             val context = rootView.context as BaseActivity
-            baseChatPie = ReflexUtil.getFirstByType(it.thisObject, Initiator._BaseChatPie() as Class<*>)
+            baseChatPie =
+                ReflexUtil.getFirstByType(it.thisObject, Initiator._BaseChatPie() as Class<*>)
             val count = rootView.childCount
             val enableTalkBack = rootView.getChildAt(0).contentDescription != null
-            if (rootView.findViewById<View?>(R.id.ketalRecallImageView) == null) rootView.addView(create(context, recallBitmap, enableTalkBack), count - 1)
+            if (rootView.findViewById<View?>(R.id.ketalRecallImageView) == null) rootView.addView(
+                create(context, recallBitmap, enableTalkBack),
+                count - 1
+            )
             setMargin(rootView)
         }
         true
@@ -70,11 +81,20 @@ object MultiActionHook: CommonDelayableHook("qn_multi_action", DexDeobfStep(DexK
         tryVerbosely(false) {
             val clazz = DexKit.doFindClass(DexKit.C_MultiMsg_Manager)
             val manager = ReflexUtil.findMethodByTypes_1(clazz, clazz).invoke(null)
-            val list = ReflexUtil.findMethodByTypes_1(clazz, MutableList::class.java).invoke(manager) as List<*>
+            val list = ReflexUtil.findMethodByTypes_1(clazz, MutableList::class.java)
+                .invoke(manager) as List<*>
             if (list.isNotEmpty()) {
                 for (msg in list) QQMessageFacade.revokeMessage(msg)
             }
-            ReflexUtil.invoke_virtual_any(baseChatPie, false, null, false, Boolean::class.javaPrimitiveType, Initiator._ChatMessage(), Boolean::class.javaPrimitiveType)
+            ReflexUtil.invoke_virtual_any(
+                baseChatPie,
+                false,
+                null,
+                false,
+                Boolean::class.javaPrimitiveType,
+                Initiator._ChatMessage(),
+                Boolean::class.javaPrimitiveType
+            )
             baseChatPie = null
         }
     }

@@ -1,6 +1,10 @@
 package cc.ioctl.dextail;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class HexUtils {
 
@@ -13,7 +17,9 @@ public class HexUtils {
     }
 
     public static String byteArrayToString(byte[] arr) {
-        if (arr == null || arr.length == 0) return "";
+        if (arr == null || arr.length == 0) {
+            return "";
+        }
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < arr.length; i++) {
             int b = arr[i] & 0xff;
@@ -36,7 +42,8 @@ public class HexUtils {
     }
 
     public static int readLe32(byte[] buf, int index) {
-        return buf[index] & 0xFF | (buf[index + 1] << 8) & 0xff00 | (buf[index + 2] << 16) & 0xff0000 | (buf[index + 3] << 24) & 0xff000000;
+        return buf[index] & 0xFF | (buf[index + 1] << 8) & 0xff00
+            | (buf[index + 2] << 16) & 0xff0000 | (buf[index + 3] << 24) & 0xff000000;
     }
 
     public static void writeLe32(byte[] buf, int index, int val) {
@@ -63,7 +70,9 @@ public class HexUtils {
     }
 
     public static void writeFileData(String path, byte[] data) throws IOException {
-        if (data == null) throw new NullPointerException("data == null");
+        if (data == null) {
+            throw new NullPointerException("data == null");
+        }
         File f = new File(path);
         if (!f.exists()) {
             f.createNewFile();
@@ -75,10 +84,16 @@ public class HexUtils {
     }
 
     public static boolean bytesEqu(byte[] a, byte[] b) {
-        if (a.length != b.length) return false;
-        if (a == b) return true;
+        if (a.length != b.length) {
+            return false;
+        }
+        if (a == b) {
+            return true;
+        }
         for (int i = 0; i < a.length; i++) {
-            if (a[i] != b[i]) return false;
+            if (a[i] != b[i]) {
+                return false;
+            }
         }
         return true;
     }

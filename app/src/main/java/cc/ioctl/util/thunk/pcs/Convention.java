@@ -21,13 +21,10 @@
  */
 package cc.ioctl.util.thunk.pcs;
 
+import androidx.annotation.NonNull;
 import nil.nadph.qnotified.util.Natives;
 
-import androidx.annotation.NonNull;
-
 public abstract class Convention {
-
-    public abstract int getPointerSize();
 
     @NonNull
     public static Convention getInstance() {
@@ -38,4 +35,6 @@ public abstract class Convention {
             throw new RuntimeException("Stub!");
         }
     }
+
+    public abstract int getPointerSize();
 }

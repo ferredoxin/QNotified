@@ -34,7 +34,12 @@ import nil.nadph.qnotified.util.LicenseStatus
 import nil.nadph.qnotified.util.Toasts
 import nil.nadph.qnotified.util.Utils
 
-abstract class BaseDelayableHookAdapter @JvmOverloads protected constructor(protected val cfgName: String, val proc: Int = SyncUtils.PROC_MAIN, val cond: Array<Step> = arrayOf(), val defVal: Boolean = false) : BaseDelayableHook() {
+abstract class BaseDelayableHookAdapter @JvmOverloads protected constructor(
+    protected val cfgName: String,
+    val proc: Int = SyncUtils.PROC_MAIN,
+    val cond: Array<Step> = arrayOf(),
+    val defVal: Boolean = false
+) : BaseDelayableHook() {
 
     private var inited = false
     protected open val recordTime = false
@@ -146,7 +151,11 @@ abstract class BaseDelayableHookAdapter @JvmOverloads protected constructor(prot
                 startTime = System.currentTimeMillis()
             }
             val returnObject: Any? = if (!checkEnabled()) {
-                XposedBridge.invokeOriginalMethod(methodHookParam.method, methodHookParam.thisObject, methodHookParam.args)
+                XposedBridge.invokeOriginalMethod(
+                    methodHookParam.method,
+                    methodHookParam.thisObject,
+                    methodHookParam.args
+                )
             } else {
                 replaceMethod(methodHookParam)
             }

@@ -22,12 +22,10 @@
 package me.kyuubiran.hook;
 
 import android.view.View;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.Initiator;
@@ -37,6 +35,7 @@ import nil.nadph.qnotified.util.Utils;
 //移除消息列表顶栏横幅广告
 @FunctionEntry
 public class RemoveQbossAD extends CommonDelayableHook {
+
     public static final RemoveQbossAD INSTANCE = new RemoveQbossAD();
 
     private RemoveQbossAD() {
@@ -48,12 +47,17 @@ public class RemoveQbossAD extends CommonDelayableHook {
         try {
             for (Method m : Initiator._QbossADImmersionBannerManager().getDeclaredMethods()) {
                 Class<?>[] argt = m.getParameterTypes();
-                if (m.getReturnType() == View.class && argt.length == 0 && !Modifier.isStatic(m.getModifiers())) {
+                if (m.getReturnType() == View.class && argt.length == 0 && !Modifier
+                    .isStatic(m.getModifiers())) {
                     XposedBridge.hookMethod(m, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            if (LicenseStatus.sDisableCommonHooks) return;
-                            if (!isEnabled()) return;
+                            if (LicenseStatus.sDisableCommonHooks) {
+                                return;
+                            }
+                            if (!isEnabled()) {
+                                return;
+                            }
                             param.setResult(null);
                         }
                     });

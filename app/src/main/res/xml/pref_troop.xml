@@ -2,50 +2,50 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="标题栏">
         <SwitchPreference
-                android:key="HideTotalNumber"
-                android:title="隐藏总人数"/>
+            android:key="HideTotalNumber"
+            android:title="隐藏总人数"/>
         <SwitchPreference
-                android:key="HideOnlineNumber"
-                android:title="隐藏在线人数"/>
+            android:key="HideOnlineNumber"
+            android:title="隐藏在线人数"/>
         <SwitchPreference
-                android:key="RemovePlayTogether"
-                android:title="隐藏一起嗨"/>
+            android:key="RemovePlayTogether"
+            android:title="隐藏一起嗨"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="头衔">
         <SwitchPreference
-                android:key="hideLevel"
-                android:title="隐藏群头衔"/>
+            android:key="hideLevel"
+            android:title="隐藏群头衔"/>
         <SwitchPreference
-                android:key="hideGlamourLevel"
-                android:title="隐藏魅力等级"/>
+            android:key="hideGlamourLevel"
+            android:title="隐藏魅力等级"/>
         <SwitchPreference
-                android:key="DisableColorNickName"
-                android:title="隐藏炫彩昵称"/>
+            android:key="DisableColorNickName"
+            android:title="隐藏炫彩昵称"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="动画">
         <SwitchPreference
-                android:key="HideGiftAnim"
-                android:title="隐藏礼物动画"/>
+            android:key="HideGiftAnim"
+            android:title="隐藏礼物动画"/>
         <SwitchPreference
-                android:key="DisableEnterEffect!"
-                android:title="隐藏入场动画"/>
+            android:key="DisableEnterEffect!"
+            android:title="隐藏入场动画"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="群助手">
         <SwitchPreference
-                android:key="hideAssistantDynamic"
-                android:title="隐藏群助手顶部动态"/>
+            android:key="hideAssistantDynamic"
+            android:title="隐藏群助手顶部动态"/>
         <SwitchPreference
-                android:key="HideAssistantRemoveTips"
-                android:title="隐藏移出群助手提示"/>
+            android:key="HideAssistantRemoveTips"
+            android:title="隐藏移出群助手提示"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="群通知">
         <SwitchPreference
-                android:key="hideNoticeRecommend"
-                android:title="隐藏群通知里面的群推荐"/>
+            android:key="hideNoticeRecommend"
+            android:title="隐藏群通知里面的群推荐"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="其他">
         <SwitchPreference
-                android:key="RemoveGroupApp"
-                android:title="隐藏滑动群应用"/>
+            android:key="RemoveGroupApp"
+            android:title="隐藏滑动群应用"/>
     </PreferenceCategory>
 </PreferenceScreen>

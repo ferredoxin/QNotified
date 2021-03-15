@@ -19,16 +19,14 @@
 package nil.nadph.qnotified.mvc.base;
 
 import android.content.Context;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import nil.nadph.qnotified.util.UiThread;
 
 /**
- * An abstract user interface which you can control to interact with user.
- * Implementation of this interface may be a Fragment, (part of) an Activity, a Dialog or even a commandline interface.
- * One StyledUiProvider can only attach one AbsConfigSection at a time.
+ * An abstract user interface which you can control to interact with user. Implementation of this
+ * interface may be a Fragment, (part of) an Activity, a Dialog or even a commandline interface. One
+ * StyledUiProvider can only attach one AbsConfigSection at a time.
  */
 public interface SharedUiProvider {
 

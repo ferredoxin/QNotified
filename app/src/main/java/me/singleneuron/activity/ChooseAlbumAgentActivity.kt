@@ -34,10 +34,10 @@ class ChooseAlbumAgentActivity : AbstractChooseActivity() {
         super.onCreate(savedInstanceState)
         val intent = Intent(ACTION_GET_CONTENT).apply {
             type = "image/*"
-            putExtra(EXTRA_ALLOW_MULTIPLE,true)
+            putExtra(EXTRA_ALLOW_MULTIPLE, true)
         }
-        if (intent.resolveActivity(packageManager)!=null) {
-            startActivityForResult(createChooser(intent,"选择相册应用"),REQUEST_CODE)
+        if (intent.resolveActivity(packageManager) != null) {
+            startActivityForResult(createChooser(intent, "选择相册应用"), REQUEST_CODE)
         }
     }
 
