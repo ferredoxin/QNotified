@@ -23,6 +23,7 @@ package nil.nadph.qnotified.ui;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.*;
 import android.graphics.drawable.BitmapDrawable;
@@ -81,11 +82,11 @@ public class ResUtils {
             log(e);
         }
         skin_gray3
-                = skin_black
-                = skin_red
-                = skin_blue = skin_tips = null;
+            = skin_black
+            = skin_red
+            = skin_blue = skin_tips = null;
         skin_list_item_normal = skin_list_item_unread = skin_list_item_pressed
-                = skin_background = null;
+            = skin_background = null;
         list_checkbox_selected_nopress = list_checkbox_selected = list_checkbox_multi = list_checkbox = null;
         loadThemeByArsc(ctx, true);
         initByFallback(ctx);
@@ -170,7 +171,7 @@ public class ResUtils {
                 if (load) {
                     if (id != 0) {
                         try {
-                            Drawable ret = ContextCompat.getDrawable(ctx,id);
+                            Drawable ret = ContextCompat.getDrawable(ctx, id);
                             f.set(null, ret);
                             success = true;
                         } catch (Exception e) {
@@ -185,7 +186,7 @@ public class ResUtils {
                 if (load) {
                     if (id != 0) {
                         try {
-                            ColorStateList ret = ContextCompat.getColorStateList(ctx,id);
+                            ColorStateList ret = ContextCompat.getColorStateList(ctx, id);
                             f.set(null, ret);
                             success = true;
                         } catch (Exception e) {
@@ -217,7 +218,7 @@ public class ResUtils {
     }
 
     public static void applyStyleCommonBtnBlue(Button btn) {
-        ViewCompat.setBackground(btn,getCommonBtnBlueBackground());
+        ViewCompat.setBackground(btn, getCommonBtnBlueBackground());
         btn.setTextColor(skin_color_button_blue);
         btn.setTextSize(17);
         btn.setMinHeight(dip2px(btn.getContext(), 42));
@@ -259,7 +260,7 @@ public class ResUtils {
             if (NinePatch.isNinePatchChunk(chunk)) {
                 Class clz = load("com/tencent/theme/SkinnableNinePatchDrawable");
                 ret = (Drawable) XposedHelpers.findConstructorBestMatch(clz, Resources.class, Bitmap.class, byte[].class, Rect.class, String.class)
-                        .newInstance(res, bitmap, chunk, new Rect(), name);
+                    .newInstance(res, bitmap, chunk, new Rect(), name);
             } else {
                 ret = new BitmapDrawable(res, bitmap);
             }
@@ -322,6 +323,10 @@ public class ResUtils {
             log(e);
             return false;
         }
+    }
+
+    public static int getNightModeMasked() {
+        return isInNightMode() ? Configuration.UI_MODE_NIGHT_YES : Configuration.UI_MODE_NIGHT_NO;
     }
 }
 

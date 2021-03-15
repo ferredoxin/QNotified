@@ -28,13 +28,26 @@ import android.view.ContextThemeWrapper;
 
 import androidx.annotation.NonNull;
 
+import java.util.Objects;
+
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.lifecycle.Parasitics;
 import nil.nadph.qnotified.util.SavedInstanceStatePatchedClassReferencer;
 import nil.nadph.qnotified.util.Utils;
 
+/**
+ * If you just want to create a MaterialDialog or AppCompatDialog,
+ * see {@link #createMaterialDesignContext(Context)} and {@link #createAppCompatContext(Context)}
+ **/
 public class CommonContextWrapper extends ContextThemeWrapper {
 
+    /**
+     * Creates a new context wrapper with the specified theme with correct module ClassLoader.
+     *
+     * @param base  the base context
+     * @param theme the resource ID of the theme to be applied on top of
+     *              the base context's theme
+     */
     public CommonContextWrapper(@NonNull Context base, int theme) {
         super(base, theme);
         Parasitics.injectModuleResources(getResources());
@@ -52,19 +65,32 @@ public class CommonContextWrapper extends ContextThemeWrapper {
     }
 
     @NonNull
-    public static CommonContextWrapper createAppCompatContext(Context base) {
-        if (base == null) {
-            throw new NullPointerException("base is null");
+    public static Context applyNighMode(@NonNull Context base, int uiNightMode) {
+        Objects.requireNonNull(base, "base is null");
+        Configuration baseConfig = base.getResources().getConfiguration();
+        if ((baseConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK) == uiNightMode) {
+            // config for base context is already what we want, just return
+            return base;
         }
         try {
-            int uiMode = ResUtils.isInNightMode() ? Configuration.UI_MODE_NIGHT_YES : Configuration.UI_MODE_NIGHT_NO;
-            Configuration conf = new Configuration(base.getResources().getConfiguration());
-            conf.uiMode = uiMode
-                | (base.getResources().getConfiguration().uiMode & ~Configuration.UI_MODE_NIGHT_MASK);
-            base = base.createConfigurationContext(conf);
+            Configuration conf = new Configuration();
+            conf.uiMode = uiNightMode | (baseConfig.uiMode & ~Configuration.UI_MODE_NIGHT_MASK);
+            return base.createConfigurationContext(conf);
         } catch (Exception e) {
             Utils.log(e);
+            return base;
         }
-        return new CommonContextWrapper(base, R.style.Theme_AppCompat_DayNight);
+    }
+
+    @NonNull
+    public static CommonContextWrapper createAppCompatContext(@NonNull Context base) {
+        return new CommonContextWrapper(applyNighMode(base, ResUtils.getNightModeMasked()),
+            R.style.Theme_AppCompat_DayNight);
+    }
+
+    @NonNull
+    public static CommonContextWrapper createMaterialDesignContext(@NonNull Context base) {
+        return new CommonContextWrapper(applyNighMode(base, ResUtils.getNightModeMasked()),
+            R.style.Theme_MaiTungTMDesign);
     }
 }
