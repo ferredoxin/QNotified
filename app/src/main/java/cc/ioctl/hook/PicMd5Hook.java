@@ -30,6 +30,7 @@ import android.content.Context;
 import android.view.View;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import ltd.nextalone.util.SystemServiceUtils;
@@ -57,10 +58,10 @@ public class PicMd5Hook extends CommonDelayableHook {
         try {
             Class cl_PicItemBuilder = Initiator._PicItemBuilder();
             Class cl_BasePicItemBuilder = cl_PicItemBuilder.getSuperclass();
-            MainHook.findAndHookMethodIfExists(cl_PicItemBuilder, "a", int.class, Context.class,
-                load("com/tencent/mobileqq/data/ChatMessage"), new MenuItemClickCallback());
-            MainHook.findAndHookMethodIfExists(cl_BasePicItemBuilder, "a", int.class, Context.class,
-                load("com/tencent/mobileqq/data/ChatMessage"), new MenuItemClickCallback());
+            try {
+                XposedHelpers.findAndHookMethod(cl_PicItemBuilder, "a", int.class, Context.class, load("com/tencent/mobileqq/data/ChatMessage"), new MenuItemClickCallback());
+                XposedHelpers.findAndHookMethod(cl_BasePicItemBuilder, "a", int.class, Context.class, load("com/tencent/mobileqq/data/ChatMessage"), new MenuItemClickCallback());
+            } catch (Exception e) {}
             for (Method m : cl_PicItemBuilder.getDeclaredMethods()) {
                 if (!m.getReturnType().isArray()) {
                     continue;

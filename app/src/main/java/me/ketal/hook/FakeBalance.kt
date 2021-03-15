@@ -23,20 +23,20 @@
 package me.ketal.hook
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import android.widget.*
-import androidx.core.view.isVisible
-import androidx.core.view.plusAssign
+import android.widget.TextView
 import androidx.core.widget.doAfterTextChanged
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.customview.getCustomView
+import com.afollestad.materialdialogs.input.input
 import ltd.nextalone.util.clazz
 import ltd.nextalone.util.hookAfter
 import me.ketal.base.PluginDelayableHook
 import me.ketal.data.ConfigData
+import me.ketal.ui.view.ConfigView
 import me.ketal.util.BaseUtil.tryVerbosely
 import me.ketal.util.HookUtil.findClass
 import me.ketal.util.HookUtil.getMethod
@@ -44,10 +44,11 @@ import me.ketal.util.TIMVersion
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.data.requireMinVersion
 import me.singleneuron.util.QQVersion
+import nil.nadph.qnotified.R
 import nil.nadph.qnotified.base.annotation.FunctionEntry
-import nil.nadph.qnotified.ui.CustomDialog
+import nil.nadph.qnotified.ui.CommonContextWrapper
+import nil.nadph.qnotified.ui.ResUtils
 import nil.nadph.qnotified.util.ReflexUtil
-import nil.nadph.qnotified.util.Toasts
 
 @FunctionEntry
 object FakeBalance : PluginDelayableHook("ketal_qwallet_fakebalance") {
@@ -65,56 +66,31 @@ object FakeBalance : PluginDelayableHook("ketal_qwallet_fakebalance") {
         showDialog(it.context, null)
     }
 
-    private fun showDialog(context: Context, textView: TextView?) {
+    private fun showDialog(ctx: Context, textView: TextView?) {
         tryVerbosely(false) {
-            var enableFake = isEnabled
-            val dialog = CustomDialog.createFailsafe(context)
-                .setTitle("自定义钱包余额")
-                .setNegativeButton("取消", null)
-                .setPositiveButton("保存", null)
-                .create() as AlertDialog
-            val ctx = dialog.context
-            val vg = LinearLayout(ctx)
-            vg.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-            vg.orientation = LinearLayout.VERTICAL
-            val enable = CheckBox(ctx)
-            enable.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
-            val panel = RelativeLayout(ctx)
-            panel.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-            val input = EditText(ctx) as TextView
-            input.layoutParams = RelativeLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
-            vg += enable
-            vg += panel
-            panel += input
-            enable.text = "启用自定义钱包余额"
-            enable.isChecked = enableFake
-            enable.setOnCheckedChangeListener { _, isChecked ->
-                enableFake = isChecked
-                panel.isVisible = enableFake
-            }
-            panel.isVisible = enableFake
-            input.text = money
-            input.hint = "请输入自定义金额..."
-            dialog.setView(vg)
-            dialog.show()
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-                if (!enableFake) {
-                    isEnabled = false
-                } else {
-                    val inputMoney = input.text.toString()
-                    if (inputMoney.isEmpty()) {
-                        Toasts.error(ctx, "请输入金额")
-                        return@setOnClickListener
+            val context = CommonContextWrapper(ctx, if (ResUtils.isInNightMode()) R.style.Theme_MaiTungTMDesignNight else R.style.Theme_MaiTungTMDesign)
+            val vg = ConfigView(context)
+            vg.setText("启用自定义钱包余额")
+            val dialog = MaterialDialog(context).show {
+                title(text = "自定义钱包余额")
+                input(hint = "请输入自定义金额...", prefill = money) { dialog, text ->
+                    val enableFake = vg.isChecked
+                    isEnabled = enableFake
+                    if (enableFake) {
+                        money = text.toString()
+                        if (!isInited) init()
                     }
-                    isEnabled = true
-                    money = inputMoney
-                    if (enableFake && !this.isInited) {
-                        this.init()
-                    }
+                    dialog.dismiss()
+                    textView?.text = "114514"
                 }
-                dialog.dismiss()
-                textView?.text = "114514"
+                positiveButton(text = "保存")
+                negativeButton(text = "取消")
             }
+            vg.view = dialog.getCustomView()
+            vg.isVisible = isEnabled
+            vg.isChecked = isEnabled
+            dialog.view.contentLayout.customView = null
+            dialog.customView(view = vg)
         }
     }
 
@@ -136,7 +112,7 @@ object FakeBalance : PluginDelayableHook("ketal_qwallet_fakebalance") {
                         val numAnim = f.get(headerView)
                         val tv = ReflexUtil.getFirstByType(numAnim, TextView::class.java)
                         tv.doAfterTextChanged { v ->
-                            if (this.isEnabled && v.toString() != money)
+                            if (isEnabled && v.toString() != money)
                                 tv.text = money
                         }
                         tv.setOnLongClickListener { v ->
