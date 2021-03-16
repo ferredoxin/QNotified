@@ -135,7 +135,7 @@ public class Natives {
      */
     static File extractNativeLibrary(Context ctx, String libraryName) throws IOException {
         String abi = Build.CPU_ABI;
-        String soName = "lib" + libraryName + "_" + abi + "_" + BuildConfig.VERSION_NAME + ".so";
+        String soName = "lib" + libraryName + ".so." + BuildConfig.VERSION_NAME + "." + abi;
         File dir = new File(ctx.getFilesDir(), "qn_dyn_lib");
         if (!dir.isDirectory()) {
             if (dir.isFile()) {
@@ -152,7 +152,8 @@ public class Natives {
             }
             //clean up old files
             for (String name : dir.list()) {
-                if (name.startsWith("lib" + libraryName + "_")) {
+                if (name.startsWith("lib" + libraryName + "_")
+                    || name.startsWith("lib" + libraryName + ".so")) {
                     new File(dir, name).delete();
                 }
             }
