@@ -24,20 +24,18 @@ package nil.nadph.qnotified.ui;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.view.ContextThemeWrapper;
-
 import androidx.annotation.NonNull;
-
+import androidx.annotation.Nullable;
 import java.util.Objects;
-
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.lifecycle.Parasitics;
 import nil.nadph.qnotified.util.SavedInstanceStatePatchedClassReferencer;
-import nil.nadph.qnotified.util.Utils;
 
 /**
- * If you just want to create a MaterialDialog or AppCompatDialog,
- * see {@link #createMaterialDesignContext(Context)} and {@link #createAppCompatContext(Context)}
+ * If you just want to create a MaterialDialog or AppCompatDialog, see {@link
+ * #createMaterialDesignContext(Context)} and {@link #createAppCompatContext(Context)}
  **/
 public class CommonContextWrapper extends ContextThemeWrapper {
 
@@ -45,52 +43,75 @@ public class CommonContextWrapper extends ContextThemeWrapper {
      * Creates a new context wrapper with the specified theme with correct module ClassLoader.
      *
      * @param base  the base context
-     * @param theme the resource ID of the theme to be applied on top of
-     *              the base context's theme
+     * @param theme the resource ID of the theme to be applied on top of the base context's theme
      */
     public CommonContextWrapper(@NonNull Context base, int theme) {
+        this(base, theme, null);
+    }
+
+    /**
+     * Creates a new context wrapper with the specified theme with correct module ClassLoader.
+     *
+     * @param base          the base context
+     * @param theme         the resource ID of the theme to be applied on top of the base context's
+     *                      theme
+     * @param configuration the configuration to override the base one
+     */
+    public CommonContextWrapper(@NonNull Context base, int theme,
+        @Nullable Configuration configuration) {
         super(base, theme);
+        if (configuration != null) {
+            mOverrideResources = base.createConfigurationContext(configuration).getResources();
+        }
         Parasitics.injectModuleResources(getResources());
     }
 
     private ClassLoader mXref = null;
+    private Resources mOverrideResources;
 
     @NonNull
     @Override
     public ClassLoader getClassLoader() {
         if (mXref == null) {
-            mXref = new SavedInstanceStatePatchedClassReferencer(CommonContextWrapper.class.getClassLoader());
+            mXref = new SavedInstanceStatePatchedClassReferencer(
+                CommonContextWrapper.class.getClassLoader());
         }
         return mXref;
     }
 
-    @NonNull
-    public static Context applyNighMode(@NonNull Context base, int uiNightMode) {
+    @Nullable
+    private static Configuration recreateNighModeConfig(@NonNull Context base, int uiNightMode) {
         Objects.requireNonNull(base, "base is null");
         Configuration baseConfig = base.getResources().getConfiguration();
         if ((baseConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK) == uiNightMode) {
-            // config for base context is already what we want, just return
-            return base;
+            // config for base context is already what we want,
+            // just return null to avoid unnecessary override
+            return null;
         }
-        try {
-            Configuration conf = new Configuration();
-            conf.uiMode = uiNightMode | (baseConfig.uiMode & ~Configuration.UI_MODE_NIGHT_MASK);
-            return base.createConfigurationContext(conf);
-        } catch (Exception e) {
-            Utils.log(e);
-            return base;
+        Configuration conf = new Configuration();
+        conf.uiMode = uiNightMode | (baseConfig.uiMode & ~Configuration.UI_MODE_NIGHT_MASK);
+        return conf;
+    }
+
+    @NonNull
+    @Override
+    public Resources getResources() {
+        if (mOverrideResources == null) {
+            return super.getResources();
+        } else {
+            return mOverrideResources;
         }
     }
 
     @NonNull
     public static CommonContextWrapper createAppCompatContext(@NonNull Context base) {
-        return new CommonContextWrapper(applyNighMode(base, ResUtils.getNightModeMasked()),
-            R.style.Theme_AppCompat_DayNight);
+        return new CommonContextWrapper(base, R.style.Theme_AppCompat_DayNight,
+            recreateNighModeConfig(base, ResUtils.getNightModeMasked()));
     }
 
     @NonNull
     public static CommonContextWrapper createMaterialDesignContext(@NonNull Context base) {
-        return new CommonContextWrapper(applyNighMode(base, ResUtils.getNightModeMasked()),
-            R.style.Theme_MaiTungTMDesign);
+        return new CommonContextWrapper(base, R.style.Theme_MaiTungTMDesign,
+            recreateNighModeConfig(base, ResUtils.getNightModeMasked()));
     }
 }

@@ -56,6 +56,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import cc.ioctl.activity.ExfriendListActivity;
+import cc.ioctl.activity.MmkvTestActivity;
 import cc.ioctl.hook.InspectMessage;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tencent.mobileqq.widget.BounceScrollView;
@@ -304,6 +305,8 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
         }));
         ll.addView(newListItemButton(this, "测试数据库", null, null,
             clickToProxyActAction(DatabaseTestActivity.class)));
+        ll.addView(newListItemButton(this, "测试 MMKV", null, null,
+            clickToProxyActAction(MmkvTestActivity.class)));
         if (BuildConfig.DEBUG) {
             ll.addView(newListItemButton(this, "新界面", null, null,
                 clickToProxyActAction(MainActivity.class)));
