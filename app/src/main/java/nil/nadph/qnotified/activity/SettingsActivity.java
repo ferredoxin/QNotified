@@ -102,7 +102,7 @@ import ltd.nextalone.hook.SimplifyEmoPanel;
 import ltd.nextalone.hook.SimplifyPlusPanel;
 import ltd.nextalone.hook.SimplifyQQSettings;
 import ltd.nextalone.hook.SimplifyRecentDialog;
-import me.ketal.activity.ModifyLeftSwipeReplyActivity;
+import me.ketal.ui.activity.ModifyLeftSwipeReplyActivity;
 import me.ketal.hook.ChatItemShowQQUin;
 import me.ketal.hook.FakeBalance;
 import me.ketal.hook.HideFriendCardSendGift;

@@ -49,7 +49,7 @@ public class ActProxyMgr {
             || className.startsWith("cc.ioctl.activity.")
             || className.startsWith("me.zpp0196.qqpurify.activity.")
             || className.startsWith("me.singleneuron.")
-            || className.startsWith("me.ketal.activity.")
+            || className.startsWith("me.ketal.ui.activity.")
             || className.startsWith("com.rymmmmm.activity.")
             || className.startsWith("cn.lliiooll.activity.")
             || className.startsWith("ltd.nextalone.activity.");
