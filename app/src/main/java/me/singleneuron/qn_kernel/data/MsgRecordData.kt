@@ -106,6 +106,10 @@ data class MsgRecordData(val msgRecord: Any?) {
     val extraFlag: Int?
         get() = getObjectOrNull(msgRecord, "extraflag", Int::class.java) as Int?
 
+    //额外flag
+    val extStr: String?
+        get() = getObjectOrNull(msgRecord, "extStr", String::class.java) as String?
+
     //时间戳
     val time: Long?
         get() = getObjectOrNull(msgRecord, "time", Long::class.java) as Long?
