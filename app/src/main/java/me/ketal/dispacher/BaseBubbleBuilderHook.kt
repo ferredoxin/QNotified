@@ -28,6 +28,7 @@ import ltd.nextalone.hook.HideTroopLevel
 import ltd.nextalone.util.hookAfter
 import ltd.nextalone.util.method
 import ltd.nextalone.util.tryOrFalse
+import me.ketal.hook.ShowMsgAt
 import me.singleneuron.qn_kernel.data.MsgRecordData
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
@@ -38,6 +39,7 @@ object BaseBubbleBuilderHook : CommonDelayableHook("__NOT_USED__") {
     //Register your decorator here
     private val decorators = arrayOf<OnBubbleBuilder>(
         HideTroopLevel,
+        ShowMsgAt,
     )
 
     override fun initOnce() = tryOrFalse {

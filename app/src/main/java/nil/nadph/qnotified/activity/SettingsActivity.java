@@ -102,6 +102,7 @@ import ltd.nextalone.hook.SimplifyEmoPanel;
 import ltd.nextalone.hook.SimplifyPlusPanel;
 import ltd.nextalone.hook.SimplifyQQSettings;
 import ltd.nextalone.hook.SimplifyRecentDialog;
+import me.ketal.hook.ShowMsgAt;
 import me.ketal.ui.activity.ModifyLeftSwipeReplyActivity;
 import me.ketal.hook.ChatItemShowQQUin;
 import me.ketal.hook.FakeBalance;
@@ -335,6 +336,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
             newListItemButton(this, "自定义钱包余额", "仅供娱乐", null, FakeBalance.INSTANCE.listener()));
         ll.addView(newListItemConfigSwitchIfValid(this, "消息显示发送者QQ号和时间", null,
             ChatItemShowQQUin.INSTANCE));
+        ll.addView(newListItemConfigSwitchIfValid(this, "消息显示At对象", null, ShowMsgAt.INSTANCE));
         ll.addView(
             newListItemButton(this, "万象屏蔽卡片消息", "使用强大的正则表达式自由屏蔽卡片消息", null, RegexAntiMeg.INSTANCE));
         addViewConditionally(ll, this, "特别关心通知单独分组", "将特别关心发送的消息通知移动到单独的通知渠道",
