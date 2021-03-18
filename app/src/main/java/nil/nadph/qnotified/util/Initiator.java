@@ -618,4 +618,12 @@ public class Initiator {
         }
         return clazz;
     }
+
+    public static Class _TroopMemberLevelView() {
+        Class<?> clazz = load("com.tencent.mobileqq.troop.troopMemberLevel.TroopMemberNewLevelView");
+        if (clazz == null) {
+            clazz = load("com.tencent.mobileqq.troop.widget.troopmemberlevel.TroopMemberNewLevelView");
+        }
+        return clazz;
+    }
 }
