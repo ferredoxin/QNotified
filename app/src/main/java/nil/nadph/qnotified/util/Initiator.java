@@ -471,6 +471,10 @@ public class Initiator {
         return director;
     }
 
+    public static Class _BaseQQMessageFacade() {
+        return load("com/tencent/imcore/message/BaseQQMessageFacade");
+    }
+
     public static Class _QQMessageFacade() {
         Class<?> cFacade = load("com/tencent/mobileqq/app/message/QQMessageFacade");
         if (cFacade != null) {
