@@ -610,4 +610,12 @@ public class Initiator {
         }
         return clazz;
     }
+
+    public static Class _ThemeUtil() {
+        Class<?> clazz = load("com/tencent/mobileqq/theme/ThemeUtil");
+        if (clazz == null) {
+            clazz = load("com.tencent.mobileqq.vas.theme.api.ThemeUtil");
+        }
+        return clazz;
+    }
 }

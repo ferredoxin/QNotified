@@ -21,6 +21,7 @@
  */
 package nil.nadph.qnotified.ui;
 
+import static nil.nadph.qnotified.util.Initiator._ThemeUtil;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
 import static nil.nadph.qnotified.util.ReflexUtil.invoke_static;
@@ -87,7 +88,7 @@ public class ResUtils {
 
     public static void initTheme(Context ctx) {
         try {
-            String themeId = (String) invoke_static(load("com/tencent/mobileqq/theme/ThemeUtil"),
+            String themeId = (String) invoke_static(_ThemeUtil(),
                 "getUserCurrentThemeId", null, load("mqq/app/AppRuntime"));
             if (themeId.equals(cachedThemeId)) {
                 return;
@@ -371,7 +372,7 @@ public class ResUtils {
 
     public static boolean isInNightMode() {
         try {
-            String themeId = (String) invoke_static(load("com/tencent/mobileqq/theme/ThemeUtil"),
+            String themeId = (String) invoke_static(_ThemeUtil(),
                 "getUserCurrentThemeId", getAppRuntime(), load("mqq/app/AppRuntime"));
             return "1103".endsWith(themeId) || "2920".endsWith(themeId);
         } catch (Exception e) {
