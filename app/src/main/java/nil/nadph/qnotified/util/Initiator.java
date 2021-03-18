@@ -87,6 +87,18 @@ public class Initiator {
             } catch (Exception ignored) {
             }
         }
+        mQbossADImmersionBannerManager = load(
+            "cooperation.vip.qqbanner.manager.VasADImmersionBannerManager");
+        if (mQbossADImmersionBannerManager == null) {
+            try {
+                tmp = load("cooperation.vip.qqbanner.manager.VasADImmersionBannerManager$1");
+                if (tmp == null) {
+                    tmp = load("cooperation.vip.qqbanner.manager.VasADImmersionBannerManager$2");
+                }
+                mQbossADImmersionBannerManager = tmp.getDeclaredField("this$0").getType();
+            } catch (Exception ignored) {
+            }
+        }
         return mQbossADImmersionBannerManager;
     }
 
