@@ -88,7 +88,8 @@ class QQConfigTable : ConfigTableInterface {
             QQ_8_2_6 to "m",
             QQ_8_3_6 to "n",
             QQ_8_4_8 to "createAtMsg",
-            QQ_8_5_5 to "l"
+            QQ_8_5_5 to "l",
+            QQ_8_6_0 to "__NOT_USED__",
         ),
     )
 
