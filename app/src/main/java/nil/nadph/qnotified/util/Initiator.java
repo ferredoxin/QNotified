@@ -594,4 +594,20 @@ public class Initiator {
         loge("Initiator/E class C2CMessageProcessor not found");
         return null;
     }
+
+    public static Class _AllInOne() {
+        Class<?> clazz = load("com/tencent/mobileqq/activity/ProfileActivity$AllInOne");
+        if (clazz == null) {
+            clazz = load("com.tencent.mobileqq.profilecard.data.AllInOne");
+        }
+        return clazz;
+    }
+
+    public static Class _FriendProfileCardActivity() {
+        Class<?> clazz = load("com/tencent/mobileqq/activity/FriendProfileCardActivity");
+        if (clazz == null) {
+            clazz = load("com.tencent.mobileqq.profilecard.activity.FriendProfileCardActivity");
+        }
+        return clazz;
+    }
 }

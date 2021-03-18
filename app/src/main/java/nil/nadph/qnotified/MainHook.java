@@ -22,6 +22,8 @@
 package nil.nadph.qnotified;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
+import static nil.nadph.qnotified.util.Initiator._AllInOne;
+import static nil.nadph.qnotified.util.Initiator._FriendProfileCardActivity;
 import static nil.nadph.qnotified.util.Initiator._StartupDirector;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.ReflexUtil.getFirstNSFByType;
@@ -83,11 +85,11 @@ public class MainHook {
 
     public static void openProfileCard(Context ctx, long uin) {
         try {
+            Utils.logd("class="+ _AllInOne());
             Parcelable allInOne = (Parcelable) new_instance(
-                load("com/tencent/mobileqq/activity/ProfileActivity$AllInOne"), "" + uin, 35,
+                _AllInOne(), "" + uin, 35,
                 String.class, int.class);
-            Intent intent = new Intent(ctx,
-                load("com/tencent/mobileqq/activity/FriendProfileCardActivity"));
+            Intent intent = new Intent(ctx, _FriendProfileCardActivity());
             intent.putExtra("AllInOne", allInOne);
             ctx.startActivity(intent);
         } catch (Exception e) {
