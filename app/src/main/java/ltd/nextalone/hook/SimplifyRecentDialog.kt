@@ -22,10 +22,7 @@
 package ltd.nextalone.hook
 
 import ltd.nextalone.base.MultiItemDelayableHook
-import ltd.nextalone.util.get
-import ltd.nextalone.util.hookBefore
-import ltd.nextalone.util.method
-import ltd.nextalone.util.tryOrFalse
+import ltd.nextalone.util.*
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
@@ -35,15 +32,20 @@ object SimplifyRecentDialog : MultiItemDelayableHook("na_simplify_recent_dialog_
     override val allItems = "创建群聊|加好友/群|匹配聊天|一起派对|扫一扫|面对面快传|收付款"
     override val defaultItems = ""
     override fun initOnce() = tryOrFalse {
-        val methodName = if (requireMinQQVersion(QQVersion.QQ_8_6_0)) "build" else "b"
-        "Lcom/tencent/widget/PopupMenuDialog;->$methodName(Landroid/app/Activity;Ljava/util/List;Lcom/tencent/widget/PopupMenuDialog\$OnClickActionListener;Lcom/tencent/widget/PopupMenuDialog\$OnDismissListener;)Lcom/tencent/widget/PopupMenuDialog;".method.hookBefore(
-            this
-        ) {
+        val methodName: String
+        val titleName: String
+        if (requireMinQQVersion(QQVersion.QQ_8_6_0)) {
+            methodName = "conversationPlusBuild"
+            titleName = "title"
+        } else {
+            methodName = "b"
+            titleName = "a"
+        }
+        "com/tencent/widget/PopupMenuDialog".clazz?.method(methodName)?.hookBefore(this) {
             val list = (it.args[1] as List<*>).toMutableList()
             val iterator = list.iterator()
             while (iterator.hasNext()) {
-                val string =  iterator.next().get("a", String::class.java)
-                    ?: iterator.next().get("title", String::class.java)
+                val string = iterator.next().get(titleName, String::class.java)
                 if (activeItems.contains(string)) {
                     iterator.remove()
                 }

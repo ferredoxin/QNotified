@@ -40,7 +40,7 @@ import java.lang.reflect.Member
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 
-internal val String.clazz: Class<*>
+internal val String.clazz: Class<*>?
     get() = Initiator.load(this)
 
 internal val String.method: Method
