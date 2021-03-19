@@ -338,7 +338,8 @@ public class Initiator {
     public static Class _TroopFileUploadMgr() {
         Class<?> ret, cref;
         for (String clzName : new String[]{
-            "com.tencent.mobileqq.troop.filemanager.upload.TroopFileUploadMgr"}) {
+            "com.tencent.mobileqq.troop.filemanager.upload.TroopFileUploadMgr",
+            "com.tencent.mobileqq.troop.filemanager.download.TroopFileDownloadMgr"}) {
             ret = load(clzName);
             if (ret != null) {
                 return ret;
