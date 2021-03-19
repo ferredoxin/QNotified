@@ -35,13 +35,15 @@ object SimplifyRecentDialog : MultiItemDelayableHook("na_simplify_recent_dialog_
     override val allItems = "创建群聊|加好友/群|匹配聊天|一起派对|扫一扫|面对面快传|收付款"
     override val defaultItems = ""
     override fun initOnce() = tryOrFalse {
-        "Lcom/tencent/widget/PopupMenuDialog;->b(Landroid/app/Activity;Ljava/util/List;Lcom/tencent/widget/PopupMenuDialog\$OnClickActionListener;Lcom/tencent/widget/PopupMenuDialog\$OnDismissListener;)Lcom/tencent/widget/PopupMenuDialog;".method.hookBefore(
+        val methodName = if (requireMinQQVersion(QQVersion.QQ_8_6_0)) "build" else "b"
+        "Lcom/tencent/widget/PopupMenuDialog;->$methodName(Landroid/app/Activity;Ljava/util/List;Lcom/tencent/widget/PopupMenuDialog\$OnClickActionListener;Lcom/tencent/widget/PopupMenuDialog\$OnDismissListener;)Lcom/tencent/widget/PopupMenuDialog;".method.hookBefore(
             this
         ) {
             val list = (it.args[1] as List<*>).toMutableList()
             val iterator = list.iterator()
             while (iterator.hasNext()) {
-                val string = iterator.next().get("a", String::class.java) as String
+                val string =  iterator.next().get("a", String::class.java)
+                    ?: iterator.next().get("title", String::class.java)
                 if (activeItems.contains(string)) {
                     iterator.remove()
                 }
