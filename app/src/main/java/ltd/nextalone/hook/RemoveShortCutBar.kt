@@ -33,7 +33,10 @@ import nil.nadph.qnotified.hook.CommonDelayableHook
 object RemoveShortCutBar : CommonDelayableHook("na_remove_short_cut_bar_kt") {
 
     override fun initOnce() = tryOrFalse {
-        "Lcom.tencent.mobileqq.activity.aio.helper.ShortcutBarAIOHelper;->h()V".method.replace(
+        val methodName = if (requireMinQQVersion(QQVersion.QQ_8_6_0))
+            "Lcom/tencent/mobileqq/activity/aio/helper/TroopAppShortcutBarHelper;->g()V"
+        else "Lcom.tencent.mobileqq.activity.aio.helper.ShortcutBarAIOHelper;->h()V"
+        methodName.method.replace(
             this,
             null
         )
