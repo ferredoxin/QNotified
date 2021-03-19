@@ -96,74 +96,54 @@ public class CheatHook extends CommonDelayableHook {
                         }
                     });
 
+            XC_MethodHook hook = new XC_MethodHook(43) {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    if (LicenseStatus.sDisableCommonHooks) {
+                        return;
+                    }
+                    try {
+                        if (!isEnabled()) {
+                            return;
+                        }
+                    } catch (Throwable e) {
+                        log(e);
+                    }
+                    Context context = (Context) param.args[1];
+                    Object emoticon = param.args[3];
+                    String name = (String) XposedHelpers.getObjectField(emoticon,
+                        "name");
+                    if ("随机骰子".equals(name) || "骰子".equals(name)) {
+                        param.setResult(null);
+                        showDiceDialog(context, param);
+                    } else if ("猜拳".equals(name)) {
+                        param.setResult(null);
+                        showMorraDialog(context, param);
+                    }
+                }
+            };
             String Method = "a";
 
             if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_4_8)) {
                 Method = "sendMagicEmoticon";
-            }
-            if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_5_0)) {
+            }if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_6_0)) {
+                XposedHelpers.findAndHookMethod(Class.forName("com.tencent.mobileqq.emoticonview" +
+                        ".sender.PicEmoticonInfoSender"),
+                    Method, load("com.tencent.common.app.business.BaseQQAppInterface"),
+                    Context.class, load("com/tencent/mobileqq/activity/aio/BaseSessionInfo"),
+                    load("com.tencent.mobileqq.data.Emoticon"),
+                    load("com.tencent.mobileqq.emoticon.StickerInfo"), hook);
+            } else if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_5_0)) {
                 XposedHelpers.findAndHookMethod(Class.forName("com.tencent.mobileqq.emoticonview" +
                         ".sender.PicEmoticonInfoSender"),
                     Method, load("com.tencent.mobileqq.app.QQAppInterface"),
                     Context.class, _SessionInfo(), load("com.tencent.mobileqq.data.Emoticon"),
-                    load("com.tencent.mobileqq.emoticon.EmojiStickerManager$StickerInfo"),
-                    new XC_MethodHook(43) {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            if (LicenseStatus.sDisableCommonHooks) {
-                                return;
-                            }
-                            try {
-                                if (!isEnabled()) {
-                                    return;
-                                }
-                            } catch (Throwable e) {
-                                log(e);
-                            }
-                            Context context = (Context) param.args[1];
-                            Object emoticon = param.args[3];
-                            String name = (String) XposedHelpers.getObjectField(emoticon,
-                                "name");
-                            if ("随机骰子".equals(name) || "骰子".equals(name)) {
-                                param.setResult(null);
-                                showDiceDialog(context, param);
-                            } else if ("猜拳".equals(name)) {
-                                param.setResult(null);
-                                showMorraDialog(context, param);
-                            }
-                        }
-                    });
+                    load("com.tencent.mobileqq.emoticon.EmojiStickerManager$StickerInfo"), hook);
             } else {
                 XposedHelpers.findAndHookMethod(DexKit.doFindClass(DexKit.C_PIC_EMOTICON_INFO),
                     Method, load("com.tencent.mobileqq.app.QQAppInterface"),
                     Context.class, _SessionInfo(), load("com.tencent.mobileqq.data.Emoticon"),
-                    load("com.tencent.mobileqq.emoticon.EmojiStickerManager$StickerInfo"),
-                    new XC_MethodHook(43) {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            if (LicenseStatus.sDisableCommonHooks) {
-                                return;
-                            }
-                            try {
-                                if (!isEnabled()) {
-                                    return;
-                                }
-                            } catch (Throwable e) {
-                                log(e);
-                            }
-                            Context context = (Context) param.args[1];
-                            Object emoticon = param.args[3];
-                            String name = (String) XposedHelpers.getObjectField(emoticon,
-                                "name");
-                            if ("随机骰子".equals(name) || "骰子".equals(name)) {
-                                param.setResult(null);
-                                showDiceDialog(context, param);
-                            } else if ("猜拳".equals(name)) {
-                                param.setResult(null);
-                                showMorraDialog(context, param);
-                            }
-                        }
-                    });
+                    load("com.tencent.mobileqq.emoticon.EmojiStickerManager$StickerInfo"), hook);
             }
             return true;
         } catch (Throwable e) {
