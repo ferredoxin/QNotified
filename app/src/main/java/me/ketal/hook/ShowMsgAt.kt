@@ -29,10 +29,12 @@ import android.text.style.ClickableSpan
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.view.forEach
 import de.robv.android.xposed.XC_MethodHook
 import ltd.nextalone.util.findHostView
 import me.ketal.dispacher.OnBubbleBuilder
 import me.singleneuron.qn_kernel.data.MsgRecordData
+import me.singleneuron.qn_kernel.data.MsgRecordData.Companion.MSG_TYPE_REPLY_TEXT
 import me.singleneuron.qn_kernel.data.MsgRecordData.Companion.MSG_TYPE_TEXT
 import me.singleneuron.qn_kernel.data.hostInfo
 import nil.nadph.qnotified.MainHook
@@ -54,26 +56,45 @@ object ShowMsgAt : CommonDelayableHook("Ketal_HideTroopLevel"), OnBubbleBuilder 
         val extStr = chatMessage.extStr ?: return
         val json = JSONObject(extStr)
         if (json.has("troop_at_info_list")) {
+            val at = JSONArray(json["troop_at_info_list"] as String)
             when (chatMessage.msgType) {
-                MSG_TYPE_TEXT -> {
-                    val textView = rootView.findHostView<TextView>("chat_item_content_layout")!!
-                    val at = JSONArray(json["troop_at_info_list"] as String)
-                    val spannableString = SpannableString(textView.text)
-                    for (i in 0 until at.length()) {
-                        val con = at[i] as JSONObject
-                        val uin = con["uin"].toString().toLong()
-                        val start = con["startPos"] as Int
-                        val length = con["textLen"] as Int
-                        spannableString.setSpan(OpenQQSpan(uin), start, start + length, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
+                MSG_TYPE_TEXT, // TODO MSG_TYPE_MIX,
+                MSG_TYPE_REPLY_TEXT -> {
+                    when (val content = rootView.findHostView<View>("chat_item_content_layout")!!) {
+                        is TextView -> {
+                            copeAtInfo(content, at)
+                        }
+                        is ViewGroup -> {
+                            content.forEach {
+                                if (it is TextView)
+                                    copeAtInfo(it, at)
+                            }
+                        }
+                        else -> {
+                            Utils.logd("暂不支持的控件类型--->$content")
+                            return
+                        }
                     }
-                    textView.text = spannableString
-                    textView.movementMethod = LinkMovementMethod.getInstance()
                 }
                 else -> {
                     Utils.logd("暂不支持的消息类型--->${chatMessage.msgType}")
+                    return
                 }
             }
         }
+    }
+
+    private fun copeAtInfo(textView: TextView, at: JSONArray) {
+        val spannableString = SpannableString(textView.text)
+        for (i in 0 until at.length()) {
+            val con = at[i] as JSONObject
+            val uin = con["uin"].toString().toLong()
+            val start = con["startPos"] as Int
+            val length = con["textLen"] as Int
+            spannableString.setSpan(OpenQQSpan(uin), start, start + length, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
+        }
+        textView.text = spannableString
+        textView.movementMethod = LinkMovementMethod.getInstance()
     }
 }
 
