@@ -34,7 +34,9 @@ object DisabledRedNick : CommonDelayableHook("na_disable_red_nick_kt") {
 
     override fun initOnce() = tryOrFalse {
         if (!isSimpleUi) {
-            "Lcom/tencent/mobileqq/activity/aio/core/FriendChatPie;->aP()V".method.hookBefore(this) {
+            //todo string: FriendChatPie updateUI_titleBarForTheme, SimpleUIMode is open now
+            val methodName = if (requireMinQQVersion(QQVersion.QQ_8_6_0)) "aj" else "aP"
+            "Lcom/tencent/mobileqq/activity/aio/core/FriendChatPie;->$methodName()V".method.hookBefore(this) {
                 val navAIO = it.thisObject.get(
                     "a",
                     "com.tencent.mobileqq.widget.navbar.NavBarAIO".clazz
