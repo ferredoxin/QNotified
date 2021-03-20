@@ -26,19 +26,17 @@ import static nil.nadph.qnotified.util.Utils.log;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.LicenseStatus;
 
+@FunctionEntry
 public class MutePokePacket extends CommonDelayableHook {
 
-    private static final MutePokePacket self = new MutePokePacket();
+    public static final MutePokePacket INSTANCE = new MutePokePacket();
 
     private MutePokePacket() {
         super("qn_mute_poke");
-    }
-
-    public static MutePokePacket get() {
-        return self;
     }
 
     @Override

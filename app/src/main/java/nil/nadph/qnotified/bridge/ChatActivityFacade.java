@@ -23,6 +23,7 @@ package nil.nadph.qnotified.bridge;
 
 import static nil.nadph.qnotified.util.Initiator._QQAppInterface;
 import static nil.nadph.qnotified.util.Initiator._SessionInfo;
+import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
 import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
 import static nil.nadph.qnotified.util.Utils.getQQAppInterface;
@@ -102,12 +103,14 @@ public class ChatActivityFacade {
             if (argt.length != 6) {
                 continue;
             }
-            if (argt[1].equals(Context.class) && argt[2].equals(_SessionInfo())
+            if (argt[1].equals(Context.class)
                 && argt[3].equals(String.class) && argt[4].equals(ArrayList.class)) {
-                m = mi;
-                m.setAccessible(true);
-                SendMsgParams = argt[5];
-                break;
+                if (argt[2].equals(_SessionInfo()) || argt[2].equals(load("com/tencent/mobileqq/activity/aio/BaseSessionInfo"))) {
+                    m = mi;
+                    m.setAccessible(true);
+                    SendMsgParams = argt[5];
+                    break;
+                }
             }
         }
         try {

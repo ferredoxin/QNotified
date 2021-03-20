@@ -31,7 +31,7 @@ import nil.nadph.qnotified.hook.CommonDelayableHook
 object HideOnlineStatus : CommonDelayableHook("na_hide_online_status_kt") {
 
     override fun initOnce() = tryOrFalse {
-        "com.tencent.mobileqq.widget.navbar.NavBarAIO".clazz.hookAfterAllConstructors {
+        "com.tencent.mobileqq.widget.navbar.NavBarAIO".clazz?.hookAfterAllConstructors {
             val ctx = it.thisObject as RelativeLayout
             ctx.findHostView<LinearLayout>("j65")!!.hide()
         }

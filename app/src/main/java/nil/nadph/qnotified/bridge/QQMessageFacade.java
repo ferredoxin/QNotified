@@ -33,8 +33,10 @@ import static nil.nadph.qnotified.util.Utils.log;
 import static nil.nadph.qnotified.util.Utils.loge;
 
 import java.lang.reflect.Modifier;
+
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import me.singleneuron.qn_kernel.tlb.ConfigTable;
+import me.singleneuron.util.QQVersion;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Utils;
@@ -53,6 +55,11 @@ public class QQMessageFacade {
 
     public static Object getMessageManager(int istroop) {
         try {
+            if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_6_0)) {
+                return invoke_virtual_declared_fixed_modifier_ordinal(get(), Modifier.PUBLIC, 0,
+                    Initiator._BaseQQMessageFacade(), 0, 1, true, istroop,
+                    int.class, Initiator._BaseMessageManager());
+            }
             return invoke_virtual_declared_modifier_any(get(), Modifier.PUBLIC, 0, istroop,
                 int.class, Initiator._BaseMessageManager());
         } catch (Exception e) {
@@ -81,9 +88,15 @@ public class QQMessageFacade {
                 methodName = ConfigTable.INSTANCE.getConfig(QQMessageFacade.class.getSimpleName());
             }
             invoke_virtual(msgCache, methodName, true, boolean.class, void.class);
-            invoke_virtual_declared_fixed_modifier_ordinal(mgr, Modifier.PUBLIC, 0,
-                Initiator._BaseMessageManager(), 2, 4, true, msg2, Initiator._MessageRecord(),
-                void.class);
+            if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_6_0)) {
+                invoke_virtual_declared_fixed_modifier_ordinal(mgr, Modifier.PUBLIC, 0,
+                    Initiator._BaseMessageManager(), 4, 7, true, msg2, Initiator._MessageRecord(),
+                    void.class);
+            } else {
+                invoke_virtual_declared_fixed_modifier_ordinal(mgr, Modifier.PUBLIC, 0,
+                    Initiator._BaseMessageManager(), 2, 4, true, msg2, Initiator._MessageRecord(),
+                    void.class);
+            }
         } catch (Exception e) {
             loge("revokeMessage failed: " + msg);
             log(e);

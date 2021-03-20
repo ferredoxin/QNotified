@@ -105,7 +105,11 @@ object FakeBalance : PluginDelayableHook("ketal_qwallet_fakebalance") {
                 val rootView = ctx.findViewById<ViewGroup>(id)
                 val headerClass = "com.qwallet.view.QWalletHeaderView".findClass(classLoader)
                 val headerView = ReflexUtil.getFirstByType(rootView, headerClass)
-                val numAnimClass = "com.tencent.mobileqq.activity.qwallet.widget.NumAnim".clazz
+                val numAnimClass = try {
+                    "com.tencent.mobileqq.activity.qwallet.widget.NumAnim".clazz
+                } catch (e: Throwable) {
+                    "com.tencent.mobileqq.qwallet.widget.NumAnim".clazz
+                }
                 for (f in headerClass.declaredFields) {
                     if (f.type == numAnimClass) {
                         f.isAccessible = true

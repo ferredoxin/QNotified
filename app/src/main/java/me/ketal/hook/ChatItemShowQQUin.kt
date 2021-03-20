@@ -21,45 +21,38 @@
 package me.ketal.hook
 
 import android.view.View
-import ltd.nextalone.util.hookAfter
+import android.view.ViewGroup
+import de.robv.android.xposed.XC_MethodHook
 import ltd.nextalone.util.method
-import me.ketal.util.BaseUtil.tryVerbosely
-import me.ketal.util.TIMVersion
+import me.ketal.dispacher.OnBubbleBuilder
+import me.singleneuron.qn_kernel.data.MsgRecordData
 import me.singleneuron.qn_kernel.data.requireMinVersion
 import me.singleneuron.util.QQVersion
-import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.ui.CustomDialog
-import nil.nadph.qnotified.util.ReflexUtil
 import nil.nadph.qnotified.util.Utils
 import java.text.SimpleDateFormat
 import java.util.*
 
-@FunctionEntry
-object ChatItemShowQQUin : CommonDelayableHook("ketal_ChatItem_ShowQQUin") {
-    override fun isValid(): Boolean = requireMinVersion(QQVersion.QQ_8_0_0, TIMVersion.TIM_1_0_0)
+object ChatItemShowQQUin : CommonDelayableHook("ketal_ChatItem_ShowQQUin"), OnBubbleBuilder {
+    override fun isValid(): Boolean = requireMinVersion(QQVersion.QQ_8_0_0)
 
-    override fun initOnce() = tryVerbosely(false) {
-        "Lcom/tencent/mobileqq/activity/aio/BaseBubbleBuilder;->a(IILcom/tencent/mobileqq/data/ChatMessage;Landroid/view/View;Landroid/view/ViewGroup;Lcom/tencent/mobileqq/activity/aio/OnLongClickAndTouchListener;)Landroid/view/View;"
-            .method.hookAfter(this) {
-                val msg = it.args[2]
-                val listener = View.OnClickListener {
-                    CustomDialog.createFailsafe(it.context)
-                        .setTitle(Utils.`getShort$Name`(msg))
-                        .setMessage(msg.toString())
-                        .setPositiveButton("确认", null)
-                        .show()
-                }
-                val time = ReflexUtil.iget_object_or_null(msg, "time", Long::class.java)
-                val qq = ReflexUtil.iget_object_or_null(msg, "senderuin", String::class.java)
-                val text = "QQ:$qq  Time:" + SimpleDateFormat(
-                    "MM-dd HH:mm:ss",
-                    Locale.getDefault()
-                ).format(Date(time * 1000))
-                "Lcom/tencent/mobileqq/activity/aio/BaseChatItemLayout;->setTailMessage(ZLjava/lang/CharSequence;Landroid/view/View\$OnClickListener;)V"
-                    .method
-                    .invoke(it.result, true, text, listener)
-            }
-        true
+    override fun initOnce() = isValid
+
+    override fun onGetView(rootView: ViewGroup, chatMessage: MsgRecordData, param: XC_MethodHook.MethodHookParam) {
+        if (!isEnabled) return
+        val listener = View.OnClickListener {
+            CustomDialog.createFailsafe(it.context)
+                .setTitle(Utils.`getShort$Name`(chatMessage.msgRecord))
+                .setMessage(chatMessage.msgRecord.toString())
+                .setPositiveButton("确认", null)
+                .show()
+        }
+        val text = "QQ:${chatMessage.senderUin}  Time:" + SimpleDateFormat(
+            "MM-dd HH:mm:ss", Locale.getDefault())
+            .format(Date(chatMessage.time!! * 1000))
+        "Lcom/tencent/mobileqq/activity/aio/BaseChatItemLayout;->setTailMessage(ZLjava/lang/CharSequence;Landroid/view/View\$OnClickListener;)V"
+            .method
+            .invoke(rootView, true, text, listener)
     }
 }

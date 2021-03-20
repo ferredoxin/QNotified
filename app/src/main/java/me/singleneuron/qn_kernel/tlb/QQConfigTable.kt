@@ -42,7 +42,8 @@ class QQConfigTable : ConfigTableInterface {
             QQ_8_4_17 to "Y",
             QQ_8_4_18 to "Y",
             QQ_8_5_0 to "Z",
-            QQ_8_5_5 to "Z"
+            QQ_8_5_5 to "Z",
+            //QQ_8_6_0 to "a" //TODO Need Fixed
         ),
 
         VasProfileAntiCrash::class.java.simpleName to mapOf(
@@ -54,6 +55,7 @@ class QQConfigTable : ConfigTableInterface {
             QQ_8_4_18 to "Y",
             QQ_8_5_0 to "com.tencent.mobileqq.profile.ProfileCardTemplate",
             QQ_8_5_5 to "com.tencent.mobileqq.profile.ProfileCardTemplate",
+            QQ_8_6_0 to "com.tencent.mobileqq.profilecard.template.ProfileCardTemplate",
         ),
 
         //com.tencent.mobileqq.activity.aio.core.TroopChatPie中一般是包含R.id.blz的
@@ -65,7 +67,8 @@ class QQConfigTable : ConfigTableInterface {
             QQ_8_4_17 to "t",
             QQ_8_4_18 to "t",
             QQ_8_5_0 to "s",
-            QQ_8_5_5 to "bz"
+            QQ_8_5_5 to "bz",
+            QQ_8_6_0 to "aE",
         ),
 
         AutoMosaicName::class.java.simpleName to mapOf(
@@ -77,6 +80,7 @@ class QQConfigTable : ConfigTableInterface {
             QQ_8_4_18 to "enableMosaicEffect",
             QQ_8_5_0 to "enableMosaicEffect",
             QQ_8_5_5 to "r",
+            QQ_8_6_0 to "k",
         ),
 
         )
@@ -88,7 +92,8 @@ class QQConfigTable : ConfigTableInterface {
             QQ_8_2_6 to "m",
             QQ_8_3_6 to "n",
             QQ_8_4_8 to "createAtMsg",
-            QQ_8_5_5 to "l"
+            QQ_8_5_5 to "l",
+            QQ_8_6_0 to "__NOT_USED__",
         ),
     )
 

@@ -34,7 +34,7 @@ import nil.nadph.qnotified.hook.CommonDelayableHook
 object SimplifyBottomQzone : CommonDelayableHook("na_simplify_bottom_bar_kt") {
 
     override fun initOnce() = tryOrFalse {
-        "com.tencent.mobileqq.activity.home.impl.TabFrameControllerImpl".clazz.method("addFrame")
+        "com.tencent.mobileqq.activity.home.impl.TabFrameControllerImpl".clazz?.method("addFrame")
             ?.hookBefore(this) {
                 val clzName = (it.args[it.args.size - 2] as Class<*>).name
                 if (clzName == "com.tencent.mobileqq.leba.Leba" || clzName == "com.tencent.mobileqq.activity.leba.QzoneFrame") {

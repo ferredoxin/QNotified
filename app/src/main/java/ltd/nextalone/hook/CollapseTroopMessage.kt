@@ -29,7 +29,7 @@ import nil.nadph.qnotified.util.Utils
 @FunctionEntry
 object CollapseTroopMessage : CommonDelayableHook("na_collapse_troop_message_kt") {
     override fun initOnce() = tryOrFalse {
-        "com.tencent.mobileqq.activity.aio.core.TroopChatPie".clazz.method(
+        "com.tencent.mobileqq.activity.aio.core.TroopChatPie".clazz?.method(
             "a",
             List::class.java,
             List::class.java
