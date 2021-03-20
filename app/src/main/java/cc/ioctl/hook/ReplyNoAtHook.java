@@ -56,21 +56,6 @@ public class ReplyNoAtHook extends CommonDelayableHook {
     @Override
     public boolean initOnce() {
         try {
-            XC_MethodHook hook = new XC_MethodHook(49) {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    if (LicenseStatus.sDisableCommonHooks) {
-                        return;
-                    }
-                    if (!isEnabled()) {
-                        return;
-                    }
-                    boolean p0 = (boolean) param.args[0];
-                    if (!p0) {
-                        param.setResult(null);
-                    }
-                }
-            };
             String method = ConfigTable.INSTANCE.getConfig(ReplyNoAtHook.class.getSimpleName());
             if (method == null) {
                 return false;

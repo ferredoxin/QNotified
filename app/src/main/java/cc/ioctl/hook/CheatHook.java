@@ -21,6 +21,7 @@
  */
 package cc.ioctl.hook;
 
+import static nil.nadph.qnotified.util.Initiator._BaseSessionInfo;
 import static nil.nadph.qnotified.util.Initiator._SessionInfo;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.log;
@@ -130,7 +131,7 @@ public class CheatHook extends CommonDelayableHook {
                 XposedHelpers.findAndHookMethod(Class.forName("com.tencent.mobileqq.emoticonview" +
                         ".sender.PicEmoticonInfoSender"),
                     Method, load("com.tencent.common.app.business.BaseQQAppInterface"),
-                    Context.class, load("com/tencent/mobileqq/activity/aio/BaseSessionInfo"),
+                    Context.class, _BaseSessionInfo(),
                     load("com.tencent.mobileqq.data.Emoticon"),
                     load("com.tencent.mobileqq.emoticon.StickerInfo"), hook);
             } else if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_5_0)) {
