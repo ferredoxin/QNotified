@@ -30,6 +30,6 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="故障排查"/>
+        android:text="故障排查" />
 
 </FrameLayout>

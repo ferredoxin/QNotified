@@ -4,7 +4,7 @@
     package="nil.nadph.qnotified">
 
     <!-- dummy permission, making LP report false positive "License verification found" -->
-    <uses-permission android:name="com.android.vending.CHECK_LICENSE"/>
+    <uses-permission android:name="com.android.vending.CHECK_LICENSE" />
 
     <application
         android:icon="@drawable/icon"
@@ -20,15 +20,15 @@
             android:label="@string/app_name"
             android:theme="@style/Theme.MaiTungTMDesign">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS" />
             </intent-filter>
         </activity>
 
         <activity
             android:name=".activity.ConfigActivity"
             android:icon="@drawable/icon"
-            android:label="@string/app_name"/>
+            android:label="@string/app_name" />
 
         <activity-alias
             android:name=".activity.ConfigV2ActivityAlias"
@@ -37,8 +37,8 @@
             android:targetActivity=".activity.ConfigV2Activity"
             android:theme="@style/Theme.MaiTungTMDesign">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity-alias>
 
@@ -47,20 +47,20 @@
             android:excludeFromRecents="true"
             android:icon="@drawable/qqpurify_launcher"
             android:label="@string/qqpurify_name"
-            android:theme="@style/noDisplay"/>
+            android:theme="@style/noDisplay" />
 
         <meta-data
             android:name="xposedmodule"
-            android:value="true"/>
+            android:value="true" />
         <meta-data
             android:name="xposeddescription"
-            android:value="@string/xposeddescription"/>
+            android:value="@string/xposeddescription" />
         <meta-data
             android:name="xposedminversion"
-            android:value="51"/>
+            android:value="51" />
         <meta-data
             android:name="xposedscope"
-            android:resource="@array/xposedscope"/>
+            android:resource="@array/xposedscope" />
 
     </application>
 

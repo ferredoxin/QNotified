@@ -7,25 +7,25 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:label="首页"
         android:name="nil.nadph.qnotified.fragment.HomeFragment"
-        tools:layout="@layout/fragment_home"/>
+        android:label="首页"
+        tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:label="功能"
         android:name="nil.nadph.qnotified.fragment.DashboardFragment"
-        tools:layout="@layout/fragment_dashboard"/>
+        android:label="功能"
+        tools:layout="@layout/fragment_dashboard" />
 
     <fragment
         android:id="@+id/navigation_info"
-        android:label="关于"
         android:name="nil.nadph.qnotified.fragment.InfoFragment"
-        tools:layout="@layout/fragment_info"/>
+        android:label="关于"
+        tools:layout="@layout/fragment_info" />
 
     <fragment
         android:id="@+id/navigation_troubleshoot"
-        android:label="故障排查"
         android:name="nil.nadph.qnotified.fragment.TroubleshootFragment"
-        tools:layout="@layout/fragment_info"/>
+        android:label="故障排查"
+        tools:layout="@layout/fragment_info" />
 </navigation>
