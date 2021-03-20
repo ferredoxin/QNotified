@@ -21,17 +21,14 @@
  */
 package ltd.nextalone.hook
 
-import ltd.nextalone.util.replace
-import ltd.nextalone.util.tryOrFalse
-import me.kyuubiran.util.isStatic
+import android.view.View
+import android.view.ViewGroup
+import ltd.nextalone.util.*
 import me.singleneuron.base.adapter.BaseDelayableHighPerformanceConditionalHookAdapter
 import me.singleneuron.data.PageFaultHighPerformanceFunctionCache
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import me.singleneuron.qn_kernel.tlb.ConfigTable
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
-import nil.nadph.qnotified.util.Initiator
-import java.lang.reflect.Method
 
 @FunctionEntry
 object HideProfileBubble : BaseDelayableHighPerformanceConditionalHookAdapter("hideProfileBubble") {
@@ -39,12 +36,9 @@ object HideProfileBubble : BaseDelayableHighPerformanceConditionalHookAdapter("h
     override val recordTime: Boolean = false
 
     override fun doInit() = tryOrFalse {
-        val clz = Initiator.load("com.tencent.mobileqq.activity.QQSettingMe")
-        for (m: Method in clz.declaredMethods) {
-            val argt = m.parameterTypes
-            if (m.name == ConfigTable.getConfig(HideProfileBubble::class.simpleName) && !m.isStatic && argt.isEmpty()) {
-                m.replace(this, null)
-            }
+        "com.tencent.mobileqq.activity.QQSettingMe".clazz?.hookAfterAllConstructors {
+            val viewGroup = it.thisObject.get("a", ViewGroup::class.java)
+            viewGroup?.findHostView<View>("cgf")?.hide()
         }
     }
 
