@@ -44,7 +44,7 @@ public class SessionInfoImpl {
         Parcelable ret = null;
         try {
             Class<?> clSessionInfo = Initiator._SessionInfo();
-            Constructor<?> c = clSessionInfo.getConstructor(Parcel.class);
+            Constructor<?> c = clSessionInfo.getDeclaredConstructor(Parcel.class);
             c.setAccessible(true);
             ret = (Parcelable) c.newInstance(parcel);
         } catch (Exception e) {
