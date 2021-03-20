@@ -101,8 +101,9 @@ public class DexKit {
     public static final int N_LeftSwipeReply_Helper__reply = 20006;
     public static final int N_AtPanel__showDialogAtView = 20007;
     public static final int N_AtPanel__refreshUI = 20008;
+    public static final int N_FriendChatPie_updateUITitle = 20009;
 
-    public static final int DEOBF_NUM_N = 8;
+    public static final int DEOBF_NUM_N = 9;
 
 
     @Nullable
@@ -347,6 +348,8 @@ public class DexKit {
                 return "atpanel__showDialogAtView";
             case N_AtPanel__refreshUI:
                 return "atpanel__refreshUI";
+            case N_FriendChatPie_updateUITitle:
+                return "friendchatpie_updateUITitle";
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
@@ -474,6 +477,9 @@ public class DexKit {
             case N_AtPanel__refreshUI:
             case N_AtPanel__showDialogAtView:
                 ret = "com/tencent/mobileqq/troop/quickat/ui/AtPanel";
+                break;
+            case N_FriendChatPie_updateUITitle:
+                ret = "com/tencent/mobileqq/activity/aio/core/FriendChatPie";
                 break;
             default:
                 ret = null;
@@ -669,6 +675,11 @@ public class DexKit {
                 return new byte[][]{
                     new byte[]{0x0e, 0x41, 0x49, 0x4F, 0x50, 0x69, 0x63, 0x74, 0x75, 0x72, 0x65,
                         0x56, 0x69, 0x65, 0x77}};
+            case N_FriendChatPie_updateUITitle:
+                return new byte[][]{
+                    new byte[]{0x41, 0x46, 0x72, 0x69, 0x65, 0x6e, 0x64, 0x43, 0x68, 0x61, 0x74,
+                        0x50, 0x69, 0x65, 0x20, 0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x55, 0x49,
+                        0x5f, 0x74, 0x69}};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
@@ -757,6 +768,8 @@ public class DexKit {
                 return new int[]{5, 2};
             case C_AIOPictureView:
                 return new int[]{10, 4};
+            case N_FriendChatPie_updateUITitle:
+                return new int[]{4, 6, 2};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
@@ -963,6 +976,7 @@ public class DexKit {
                 }
                 break;
             case N_LeftSwipeReply_Helper__reply:
+            case N_FriendChatPie_updateUITitle:
                 //NOTICE: this must only has one result
 
                 return (DexMethodDescriptor) __methods.toArray()[0];
