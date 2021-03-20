@@ -174,6 +174,21 @@ public class Initiator {
             } catch (Exception ignored) {
             }
         }
+        mGdtMvViewController = load("com.tencent.gdtad.basics.motivevideo.GdtMvViewController");
+        if (mGdtMvViewController == null) {
+            try {
+                tmp = load("com.tencent.gdtad.basics.motivevideo.GdtMvViewController$6");
+                mGdtMvViewController = tmp.getDeclaredField("this$0").getType();
+            } catch (Exception ignored) {
+            }
+        }
+        if (mGdtMvViewController == null) {
+            try {
+                tmp = load("com.tencent.gdtad.basics.motivevideo.GdtMvViewController$8");
+                mGdtMvViewController = tmp.getDeclaredField("this$0").getType();
+            } catch (Exception ignored) {
+            }
+        }
         return mGdtMvViewController;
     }
 
