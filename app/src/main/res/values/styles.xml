@@ -140,11 +140,12 @@
         <item name="colorSecondaryVariant">@color/themeColor</item>
         <item name="colorOnSecondary">@color/firstTextColor</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">@color/backgroundColor</item>
+        <!-- <item name="android:statusBarColor">@color/backgroundColor</item> -->
+        <item name="android:statusBarColor">@color/themeColor</item>
         <!-- Customize your theme here. -->
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
         <!-- <item name="colorControlNormal">@color/firstTextColor</item> -->
         <item name="colorControlNormal">@color/whiteTextColor</item>
     </style>
@@ -159,11 +160,12 @@
         <item name="colorSecondaryVariant">@color/themeColor</item>
         <item name="colorOnSecondary">@color/firstTextColor</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">@color/backgroundColor</item>
+        <!-- <item name="android:statusBarColor">@color/backgroundColor</item> -->
+        <item name="android:statusBarColor">@color/themeColor</item>
         <!-- Customize your theme here. -->
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
         <!-- <item name="colorControlNormal">@color/firstTextColor</item> -->
         <item name="colorControlNormal">@color/whiteTextColor</item>
     </style>
