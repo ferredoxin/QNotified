@@ -145,7 +145,8 @@
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
-        <item name="colorControlNormal">@color/firstTextColor</item>
+        <!-- <item name="colorControlNormal">@color/firstTextColor</item> -->
+        <item name="colorControlNormal">@color/whiteTextColor</item>
     </style>
 
     <style name="Theme.MaiTungTMDesignNight" parent="Theme.MaterialComponents.NoActionBar">
@@ -163,18 +164,21 @@
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
-        <item name="colorControlNormal">@color/firstTextColor</item>
+        <!-- <item name="colorControlNormal">@color/firstTextColor</item> -->
+        <item name="colorControlNormal">@color/whiteTextColor</item>
     </style>
 
     <style name="Toolbar" parent="Widget.MaterialComponents.Toolbar">
         <item name="android:layout_width">match_parent</item>
-        <item name="colorControlNormal">@color/firstTextColor</item>
-        <item name="android:background">@color/backgroundColor</item>
+        <!-- <item name="colorControlNormal">@color/firstTextColor</item> -->
+        <item name="colorControlNormal">@color/whiteTextColor</item>
+        <!-- <item name="android:background">@color/backgroundColor</item> -->
+        <item name="android:background">@color/themeColor</item>
         <item name="elevation">0dp</item>
         <item name="android:paddingLeft">16dp</item>
         <item name="android:paddingRight">8dp</item>
         <item name="android:stateListAnimator">@null</item>
-        <item name="titleTextColor">@color/firstTextColor</item>
+        <item name="titleTextColor">@color/whiteTextColor</item>
     </style>
 
 </resources>
