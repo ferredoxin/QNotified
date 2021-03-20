@@ -13,7 +13,6 @@
 3. 一个commit做一件事情
 4. 请勿在commit附上任何有关[skip ci]的字段
 5. 每个commit都必须附着有效的GPG签名
-6. Hook的单例使用**INSTANCE**实现
 
 ## Pull Request
 1. 请勿在修改会被编译分发至用户的部分时在PR标题添加[skip ci]；请务必在文档、模板等不会影响编译流程和实际分发的目标生成，或完全无法编译但出于必要目的必须提交的PR标题添加[skip ci]
@@ -22,7 +21,7 @@
 
 1. 请确认您的编辑器支持EditorConfig，否则请注意您的编码、行位序列及其其他事项。
 
-2. 在原则上代码风格建议遵循[Google Java Style](https://google.github.io/styleguide/javaguide.html)[中文翻译](https://github.com/fantasticmao/google-java-style-guide-zh_cn)
+2. 在原则上代码风格遵循[Google Java Style](https://google.github.io/styleguide/javaguide.html)[中文翻译](https://github.com/fantasticmao/google-java-style-guide-zh_cn)
 
 3. 每位开发者的代码风格应保持一致
 
@@ -47,6 +46,8 @@
 12. 除个别情况，必须添加代码头
 
 13. **在任何时候，您都不应该随意更改[build.gradle](build.gradle)，特别是升级 `com.android.tools.build:gradle` 版本**
+
+14. Hook的单例使用**INSTANCE**实现
 
 ## 其他
 
