@@ -33,15 +33,17 @@ import java.lang.reflect.Method
 @FunctionEntry
 object HideOnlineNumber : CommonDelayableHook("na_hide_online_number") {
     override fun initOnce() = tryOrFalse {
-        var className = "com.tencent.mobileqq.activity.aio.core.TroopChatPie"
+        var clz = "com.tencent.mobileqq.activity.aio.core.TroopChatPie".clazz
         if (hostInfo.versionCode <= QQVersion.QQ_8_4_8) {
-            className = "com.tencent.mobileqq.activity.aio.rebuild.TroopChatPie"
+            clz = "com.tencent.mobileqq.activity.aio.rebuild.TroopChatPie".clazz
         }
-        for (m: Method in className.clazz.methods) {
-            val argt = m.parameterTypes
-            if (m.name == "a" && argt.size == 2 && argt[0] == String::class.java && argt[1] == Boolean::class.java) {
-                m.hookBefore(this) {
-                    it.args[0] = ""
+        if (clz != null) {
+            for (m: Method in clz.methods) {
+                val argt = m.parameterTypes
+                if (m.name == "a" && argt.size == 2 && argt[0] == String::class.java && argt[1] == Boolean::class.java) {
+                    m.hookBefore(this) {
+                        it.args[0] = ""
+                    }
                 }
             }
         }

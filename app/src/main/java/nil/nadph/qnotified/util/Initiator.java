@@ -99,6 +99,18 @@ public class Initiator {
             } catch (Exception ignored) {
             }
         }
+        mQbossADImmersionBannerManager = load(
+            "cooperation.vip.qqbanner.manager.VasADImmersionBannerManager");
+        if (mQbossADImmersionBannerManager == null) {
+            try {
+                tmp = load("cooperation.vip.qqbanner.manager.VasADImmersionBannerManager$1");
+                if (tmp == null) {
+                    tmp = load("cooperation.vip.qqbanner.manager.VasADImmersionBannerManager$2");
+                }
+                mQbossADImmersionBannerManager = tmp.getDeclaredField("this$0").getType();
+            } catch (Exception ignored) {
+            }
+        }
         return mQbossADImmersionBannerManager;
     }
 
@@ -636,6 +648,14 @@ public class Initiator {
         Class<?> clazz = load("com.tencent.mobileqq.troop.troopMemberLevel.TroopMemberNewLevelView");
         if (clazz == null) {
             clazz = load("com.tencent.mobileqq.troop.widget.troopmemberlevel.TroopMemberNewLevelView");
+        }
+        return clazz;
+    }
+
+    public static Class _TroopChatPie() {
+        Class<?> clazz = load("com.tencent.mobileqq.activity.aio.core.TroopChatPie");
+        if (clazz == null) {
+            clazz = load("com.tencent.mobileqq.activity.aio.rebuild.TroopChatPie");
         }
         return clazz;
     }

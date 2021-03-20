@@ -49,7 +49,7 @@ object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt") {
     private const val colorCfg = "na_chat_words_count_kt_color"
     private const val strCfg = "na_chat_words_count_kt_str"
     override fun initOnce() = tryOrFalse {
-        "com.tencent.mobileqq.activity.QQSettingMe".clazz.hookBeforeAllConstructors {
+        "com.tencent.mobileqq.activity.QQSettingMe".clazz?.hookBeforeAllConstructors {
             "Lcom/tencent/mobileqq/activity/QQSettingMe;->a()V".method.hookAfter(this) {
                 val isToday = Date().today == getExFriendCfg().getStringOrDefault(timeCfg, "")
                 val relativeLayout = (it.thisObject.get(
@@ -68,7 +68,7 @@ object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt") {
                 textView.text = str
             }
         }
-        "com.tencent.mobileqq.activity.QQSettingMe".clazz.hookAfterAllConstructors {
+        "com.tencent.mobileqq.activity.QQSettingMe".clazz?.hookAfterAllConstructors {
             val isToday = Date().today == getExFriendCfg().getStringOrDefault(timeCfg, "")
             val activity: Activity = it.args[0] as Activity
             val relativeLayout = (it.thisObject.get(

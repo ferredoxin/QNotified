@@ -39,7 +39,7 @@ object SimplifyEmoPanel : CommonDelayableHook("na_simplify_emo_panel_kt") {
             this
         ) {
             val declaredField: Field =
-                "com.tencent.mobileqq.emoticonview.EmoticonPanelController".clazz.getDeclaredField("panelDataList")
+                "com.tencent.mobileqq.emoticonview.EmoticonPanelController".clazz!!.getDeclaredField("panelDataList")
             declaredField.isAccessible = true
             val list = (declaredField.get(it.thisObject) as MutableList<*>).listIterator()
             while (list.hasNext()) {

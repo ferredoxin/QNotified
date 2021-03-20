@@ -34,7 +34,7 @@ import nil.nadph.qnotified.hook.CommonDelayableHook
 object HideChatVipImage : CommonDelayableHook("na_hide_chat_vip_image_kt") {
 
     override fun initOnce() = tryOrFalse {
-        "com.tencent.mobileqq.widget.navbar.NavBarAIO".clazz.hookAfterAllConstructors {
+        "com.tencent.mobileqq.widget.navbar.NavBarAIO".clazz?.hookAfterAllConstructors {
             val ctx = it.thisObject as RelativeLayout
             ctx.findHostView<ImageView>("jp0")!!.alpha = 0F
         }
