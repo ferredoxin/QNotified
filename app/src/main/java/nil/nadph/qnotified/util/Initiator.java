@@ -678,4 +678,24 @@ public class Initiator {
         }
         return clazz;
     }
+
+    public static Class _ChatActivityFacade() {
+        return load("com/tencent/mobileqq/activity/ChatActivityFacade");
+    }
+
+    public static Class _BaseSessionInfo() {
+        Class<?> clazz = load("com/tencent/mobileqq/activity/aio/BaseSessionInfo");
+        if (clazz == null) {
+            clazz = load("com/tencent/mobileqq/activity/aio/SessionInfo");
+        }
+        return clazz;
+    }
+
+    public static Class _StickerInfo() {
+        Class<?> clazz = load("com.tencent.mobileqq.emoticon.StickerInfo");
+        if (clazz == null) {
+            clazz = load("com.tencent.mobileqq.emoticon.EmojiStickerManager.StickerInfo");
+        }
+        return clazz;
+    }
 }

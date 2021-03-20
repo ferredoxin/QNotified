@@ -57,13 +57,24 @@ internal fun Class<*>.method(name: String): Method? = this.declaredMethods.run {
     return null
 }
 
-internal fun Class<*>.method(name: String, vararg args: Class<*>): Method? =
+internal fun Class<*>.method(name: String, vararg args: Class<*>?): Method? =
     hasMethod(this, name, *args)
+
+internal fun Class<*>.method(
+    condition: (method: Method) -> Boolean = { true }
+): Method? = this.declaredMethods.run {
+    this.forEach {
+        if (condition(it)) {
+            return it
+        }
+    }
+    return null
+}
 
 internal fun Class<*>.method(
     size: Int,
     returnType: Class<*>,
-    condition: (method: Member) -> Boolean = { true }
+    condition: (method: Method) -> Boolean = { true }
 ): Method? = this.declaredMethods.run {
     this.forEach {
         if (it.returnType == returnType && it.parameterTypes.size == size && condition(it)) {
@@ -77,7 +88,7 @@ internal fun Class<*>.method(
     name: String,
     size: Int,
     returnType: Class<*>,
-    condition: (method: Member) -> Boolean = { true }
+    condition: (method: Method) -> Boolean = { true }
 ): Method? = this.declaredMethods.run {
     this.forEach {
         if (it.name == name && it.returnType == returnType && it.parameterTypes.size == size && condition(

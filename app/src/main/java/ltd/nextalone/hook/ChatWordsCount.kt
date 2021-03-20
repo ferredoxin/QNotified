@@ -36,6 +36,7 @@ import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.ui.CustomDialog
 import nil.nadph.qnotified.ui.ViewBuilder
+import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.Toasts
 import nil.nadph.qnotified.util.Utils
 import java.util.*
@@ -152,15 +153,18 @@ object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt") {
             }
             (relativeLayout.parent as FrameLayout).addView(textView)
         }
-        "Lcom/tencent/mobileqq/activity/ChatActivityFacade;->a(Lcom/tencent/mobileqq/app/QQAppInterface;Landroid/content/Context;Lcom/tencent/mobileqq/activity/aio/SessionInfo;Ljava/lang/String;Ljava/util/ArrayList;Lcom/tencent/mobileqq/activity/ChatActivityFacade\$SendMsgParams;)[J".method.hookAfter(
-            this
-        ) {
+        Initiator._ChatActivityFacade().method(
+            "a",
+            6,
+            LongArray::class.java
+        )?.hookAfter(this)
+        {
             val isToday = Date().today == getExFriendCfg().getStringOrDefault(timeCfg, "")
             if (isToday) {
-                putExFriend(msgCfg, getExFriendCfg().getIntOrDefault(msgCfg, 1) + 1)
+                putExFriend(msgCfg, getExFriendCfg().getIntOrDefault(msgCfg, 0) + 1)
                 putExFriend(
                     wordsCfg,
-                    getExFriendCfg().getIntOrDefault(wordsCfg, 1) + (it.args[3] as String).length
+                    getExFriendCfg().getIntOrDefault(wordsCfg, 0) + (it.args[3] as String).length
                 )
             } else {
                 putExFriend(timeCfg, Date().today)
@@ -168,7 +172,12 @@ object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt") {
                 putExFriend(wordsCfg, 0)
             }
         }
-        "Lcom/tencent/mobileqq/activity/ChatActivityFacade;->a(Lcom/tencent/mobileqq/app/QQAppInterface;Landroid/content/Context;Lcom/tencent/mobileqq/activity/aio/SessionInfo;Ljava/lang/String;ZZZLjava/lang/String;Lcom/tencent/mobileqq/emoticon/EmojiStickerManager\$StickerInfo;Ljava/lang/String;Landroid/os/Bundle;)V".method.hookAfter(
+        //todo fix emotion for QQ860
+        Initiator._ChatActivityFacade().method(
+            "a", 11, Void.TYPE
+        ) {
+            it.parameterTypes.contains(Initiator._StickerInfo())
+        }?.hookAfter(
             this
         ) {
             val isToday = Date().today == getExFriendCfg().getStringOrDefault(timeCfg, "")
