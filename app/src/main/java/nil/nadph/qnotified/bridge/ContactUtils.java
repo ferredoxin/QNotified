@@ -22,6 +22,7 @@
 package nil.nadph.qnotified.bridge;
 
 import static nil.nadph.qnotified.util.Initiator._QQAppInterface;
+import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.ReflexUtil.invoke_static_declared_ordinal_modifier;
 import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_declared_ordinal;
 import static nil.nadph.qnotified.util.Utils.getQQAppInterface;
@@ -84,8 +85,19 @@ public class ContactUtils {
                         getQQAppInterface(), memberUin, true, _QQAppInterface(), String.class,
                         boolean.class, String.class);
                 } catch (Throwable e3) {
-                    e3.addSuppressed(e2);
-                    log(e3);
+                    try {
+                        nickname = (String) invoke_static_declared_ordinal_modifier(
+                            DexKit.doFindClass(DexKit.C_CONTACT_UTILS), 1, 2, false,
+                            Modifier.PUBLIC,
+                            0,
+                            getQQAppInterface(), memberUin, true,
+                            load("com.tencent.common.app.AppInterface"), String.class,
+                            boolean.class, String.class);
+                    } catch (Throwable e4) {
+                        e2.addSuppressed(e3);
+                        e2.addSuppressed(e4);
+                        log(e2);
+                    }
                 }
             }
             if (nickname != null
