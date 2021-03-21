@@ -41,7 +41,9 @@ object SimplifyRecentDialog : MultiItemDelayableHook("na_simplify_recent_dialog_
             methodName = "b"
             titleName = "a"
         }
-        "com/tencent/widget/PopupMenuDialog".clazz?.method(methodName)?.hookBefore(this) {
+        "com/tencent/widget/PopupMenuDialog".clazz?.method(methodName,
+            4,
+            "com.tencent.widget.PopupMenuDialog".clazz)?.hookBefore(this) {
             val list = (it.args[1] as List<*>).toMutableList()
             val iterator = list.iterator()
             while (iterator.hasNext()) {
