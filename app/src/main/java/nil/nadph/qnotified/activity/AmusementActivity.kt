@@ -28,7 +28,8 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
 import com.tencent.mobileqq.widget.BounceScrollView
-import me.ketal.hook.FakeBalance.listener
+import me.ketal.hook.FakeBalance
+import me.ketal.hook.FakeQQLevel
 import me.kyuubiran.hook.AutoMosaicName
 import me.kyuubiran.hook.ShowSelfMsgByLeft
 import nil.nadph.qnotified.ui.ResUtils
@@ -53,8 +54,9 @@ class AmusementActivity : IphoneTitleBarActivityCompat() {
         ll.addView(newListItemHookSwitchInit(this, "自己的消息和头像居左显示", "娱乐功能 不进行维护",
             ShowSelfMsgByLeft))
         ll.addView(
-            ViewBuilder.newListItemButton(this, "自定义钱包余额", "仅供娱乐", null, listener()))
-
+            ViewBuilder.newListItemButton(this, "自定义钱包余额", "仅供娱乐", null, FakeBalance.listener()))
+        ll.addView(
+            ViewBuilder.newListItemButton(this, "自定义QQ等级", "仅本地生效", null, FakeQQLevel.listener()))
 
         setContentBackgroundDrawable(ResUtils.skin_background)
         title = "娱乐功能"
