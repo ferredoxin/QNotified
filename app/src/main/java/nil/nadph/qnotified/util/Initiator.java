@@ -88,6 +88,7 @@ public class Initiator {
                     tmp = load("cooperation.vip.qqbanner.QbossADImmersionBannerManager$2");
                 }
                 mQbossADImmersionBannerManager = tmp.getDeclaredField("this$0").getType();
+                return mQbossADImmersionBannerManager;
             } catch (Exception ignored) {
             }
         }
@@ -100,6 +101,7 @@ public class Initiator {
                     tmp = load("cooperation.vip.qqbanner.manager.VasADImmersionBannerManager$2");
                 }
                 mQbossADImmersionBannerManager = tmp.getDeclaredField("this$0").getType();
+                return mQbossADImmersionBannerManager;
             } catch (Exception ignored) {
             }
         }
@@ -112,6 +114,7 @@ public class Initiator {
                     tmp = load("cooperation.vip.qqbanner.manager.VasADImmersionBannerManager$2");
                 }
                 mQbossADImmersionBannerManager = tmp.getDeclaredField("this$0").getType();
+                return mQbossADImmersionBannerManager;
             } catch (Exception ignored) {
             }
         }
