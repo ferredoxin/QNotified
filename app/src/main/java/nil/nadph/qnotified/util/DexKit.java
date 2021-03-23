@@ -102,8 +102,9 @@ public class DexKit {
     public static final int N_AtPanel__showDialogAtView = 20007;
     public static final int N_AtPanel__refreshUI = 20008;
     public static final int N_FriendChatPie_updateUITitle = 20009;
+    public static final int N_ProfileCardUtil_getCard = 20010;
 
-    public static final int DEOBF_NUM_N = 9;
+    public static final int DEOBF_NUM_N = 10;
 
 
     @Nullable
@@ -350,6 +351,8 @@ public class DexKit {
                 return "atpanel__refreshUI";
             case N_FriendChatPie_updateUITitle:
                 return "friendchatpie_updateUITitle";
+            case N_ProfileCardUtil_getCard:
+                return "profileCardUtil_getCard";
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
@@ -480,6 +483,9 @@ public class DexKit {
                 break;
             case N_FriendChatPie_updateUITitle:
                 ret = "com/tencent/mobileqq/activity/aio/core/FriendChatPie";
+                break;
+            case N_ProfileCardUtil_getCard:
+                ret = "com.tencent.mobileqq.util.ProfileCardUtil";
                 break;
             default:
                 ret = null;
@@ -680,6 +686,11 @@ public class DexKit {
                     new byte[]{0x41, 0x46, 0x72, 0x69, 0x65, 0x6e, 0x64, 0x43, 0x68, 0x61, 0x74,
                         0x50, 0x69, 0x65, 0x20, 0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x55, 0x49,
                         0x5f, 0x74, 0x69}};
+            case N_ProfileCardUtil_getCard:
+                return new byte[][]{
+                    new byte[]{0x17, 0x69, 0x6E, 0x69, 0x74, 0x43, 0x61, 0x72, 0x64, 0x20, 0x62,
+                        0x53, 0x75, 0x70, 0x65, 0x72, 0x56, 0x69, 0x70, 0x4F, 0x70, 0x65, 0x6E,
+                        0x3D}};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
@@ -770,6 +781,8 @@ public class DexKit {
                 return new int[]{10, 4};
             case N_FriendChatPie_updateUITitle:
                 return new int[]{4, 6, 2};
+            case N_ProfileCardUtil_getCard:
+                return new int[]{9, 10, 11, 5, 4, 2};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
@@ -988,6 +1001,18 @@ public class DexKit {
                         || name.contains(_BaseChatPie().getName())) {
                         return m;
                     }
+                }
+                break;
+            case N_ProfileCardUtil_getCard:
+                for (DexMethodDescriptor m : __methods) {
+                    Method method;
+                    try {
+                        method = m.getMethodInstance(Initiator.getHostClassLoader());
+                    } catch (Exception e) {
+                        continue;
+                    }
+                    if ("Card".equals(method.getReturnType().getSimpleName()))
+                        return m;
                 }
                 break;
             case C_CustomWidgetUtil:
