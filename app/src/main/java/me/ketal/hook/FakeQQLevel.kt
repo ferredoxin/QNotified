@@ -56,7 +56,7 @@ object FakeQQLevel : CommonDelayableHook("Ketal_FakeQQLevel", DexDeobfStep(DexKi
     fun listener() = View.OnClickListener {
         val context = CommonContextWrapper.createMaterialDesignContext(it.context)
         val vg = ConfigView(context)
-        vg.setText("启用自定义钱包余额")
+        vg.setText("启用自定义QQ等级")
         val dialog = MaterialDialog(context).show {
             title(text = "自定义QQ等级")
             input(hint = "自定义QQ等级...", prefill = level, waitForPositiveButton = false) { dialog, text ->
