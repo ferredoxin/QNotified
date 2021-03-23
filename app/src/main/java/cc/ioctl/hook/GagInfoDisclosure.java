@@ -23,6 +23,7 @@ package cc.ioctl.hook;
 
 import static nil.nadph.qnotified.bridge.GreyTipBuilder.MSG_TYPE_TROOP_GAP_GRAY_TIPS;
 import static nil.nadph.qnotified.util.ReflexUtil.findMethodByTypes_1;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
 import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_declared_ordinal_modifier;
 import static nil.nadph.qnotified.util.Utils.log;
 
@@ -32,6 +33,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import me.singleneuron.util.QQVersion;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.bridge.ContactUtils;
@@ -122,9 +125,15 @@ public class GagInfoDisclosure extends CommonDelayableHook {
                     Object msg = builder.build(troopUin, 1, opUin, time, msgseq);
                     List<Object> list = new ArrayList<>();
                     list.add(msg);
-                    invoke_virtual_declared_ordinal_modifier(Utils.getQQMessageFacade(), 0, 4,
-                        false, Modifier.PUBLIC, 0,
-                        list, Utils.getAccount(), List.class, String.class, void.class);
+                    //todo fix 860+
+                    if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_6_0)) {
+                        invoke_virtual(Utils.getQQMessageFacade(), "a", list, Utils.getAccount(),
+                            List.class, String.class, void.class);
+                    } else {
+                        invoke_virtual_declared_ordinal_modifier(Utils.getQQMessageFacade(), 0, 4,
+                            false, Modifier.PUBLIC, 0,
+                            list, Utils.getAccount(), List.class, String.class, void.class);
+                    }
                     param.setResult(null);
                 }
             });
@@ -166,9 +175,15 @@ public class GagInfoDisclosure extends CommonDelayableHook {
                     Object msg = builder.build(troopUin, 1, opUin, time, msgseq);
                     List<Object> list = new ArrayList<>();
                     list.add(msg);
-                    invoke_virtual_declared_ordinal_modifier(Utils.getQQMessageFacade(), 0, 4,
-                        false, Modifier.PUBLIC, 0,
-                        list, Utils.getAccount(), List.class, String.class, void.class);
+                    //todo fix 860+
+                    if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_6_0)) {
+                        invoke_virtual(Utils.getQQMessageFacade(), "a", list, Utils.getAccount(),
+                            List.class, String.class, void.class);
+                    } else {
+                        invoke_virtual_declared_ordinal_modifier(Utils.getQQMessageFacade(), 0, 4,
+                            false, Modifier.PUBLIC, 0,
+                            list, Utils.getAccount(), List.class, String.class, void.class);
+                    }
                     param.setResult(null);
                 }
             });

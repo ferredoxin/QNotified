@@ -73,7 +73,7 @@ internal fun Class<*>.method(
 
 internal fun Class<*>.method(
     size: Int,
-    returnType: Class<*>,
+    returnType: Class<*>?,
     condition: (method: Method) -> Boolean = { true }
 ): Method? = this.declaredMethods.run {
     this.forEach {
@@ -87,7 +87,7 @@ internal fun Class<*>.method(
 internal fun Class<*>.method(
     name: String,
     size: Int,
-    returnType: Class<*>,
+    returnType: Class<*>?,
     condition: (method: Method) -> Boolean = { true }
 ): Method? = this.declaredMethods.run {
     this.forEach {

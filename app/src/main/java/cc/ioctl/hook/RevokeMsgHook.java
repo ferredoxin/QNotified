@@ -44,6 +44,8 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import me.singleneuron.util.QQVersion;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.bridge.ContactUtils;
@@ -216,8 +218,14 @@ public class RevokeMsgHook extends CommonDelayableHook {
         }
         List<Object> list = new ArrayList<>();
         list.add(revokeGreyTip);
-        invoke_virtual_declared_ordinal_modifier(mQQMsgFacade, 0, 4, false, Modifier.PUBLIC, 0,
-            list, Utils.getAccount(), List.class, String.class, void.class);
+        //todo fix 860+
+        if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_6_0)) {
+            invoke_virtual(mQQMsgFacade, "a", list, Utils.getAccount(), List.class, String.class,
+                void.class);
+        } else {
+            invoke_virtual_declared_ordinal_modifier(mQQMsgFacade, 0, 4, false, Modifier.PUBLIC, 0,
+                list, Utils.getAccount(), List.class, String.class, void.class);
+        }
     }
 
     private Bundle createTroopMemberHighlightItem(String memberUin) {
@@ -268,9 +276,16 @@ public class RevokeMsgHook extends CommonDelayableHook {
     private Object getMessage(String uin, int istroop, long shmsgseq, long msgUid) {
         List list = null;
         try {
-            list = (List) invoke_virtual_declared_ordinal(mQQMsgFacade, 0, 2, false,
-                uin, istroop, shmsgseq, msgUid, String.class, int.class, long.class, long.class,
-                List.class);
+            //todo fix 860+
+            if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_6_0)) {
+                list = (List) invoke_virtual(mQQMsgFacade, "a", uin, istroop, shmsgseq, msgUid,
+                    String.class, int.class, long.class, long.class,
+                    List.class);
+            } else {
+                list = (List) invoke_virtual_declared_ordinal(mQQMsgFacade, 0, 2, false,
+                    uin, istroop, shmsgseq, msgUid, String.class, int.class, long.class, long.class,
+                    List.class);
+            }
         } catch (Exception e) {
             log(e);
         }

@@ -85,7 +85,7 @@ object AutoRenewFireDialog {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                replyTime = s.toString()
+                replyTime = s.toString().replace("：",":")
                 if (replyTime.isNotEmpty() && !stringTimeValidator(replyTime)) {
                     timeEditText.error = "时间格式错误"
                 }
