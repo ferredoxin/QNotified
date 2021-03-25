@@ -29,7 +29,11 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+
+import de.robv.android.xposed.XposedHelpers;
+import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import me.singleneuron.qn_kernel.tlb.ConfigTable;
+import me.singleneuron.util.QQVersion;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.Initiator;
@@ -87,20 +91,27 @@ public class VasProfileAntiCrash extends CommonDelayableHook {
         if (className == null) {
             return;
         }
+        XC_MethodHook hook = new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                if (param.hasThrowable()) {
+                    param.setResult(0L);
+                }
+            }
+        };
         Class<?> Card = Initiator.load("com.tencent.mobileqq.data.Card");
+        if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_6_0)) {
+            XposedHelpers.findAndHookMethod(
+                Initiator.load(className),
+                "getDiyTemplateVersion", Card, hook);
+            return;
+        }
         for (Method m : Initiator.load(className).getDeclaredMethods()) {
             Class<?>[] argt;
             if (Modifier.isStatic(m.getModifiers()) && m.getName().equals("a")
                 && m.getReturnType() == long.class && (argt = m.getParameterTypes()).length == 1
                 && argt[0] == Card) {
-                XposedBridge.hookMethod(m, new XC_MethodHook() {
-                    @Override
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                        if (param.hasThrowable()) {
-                            param.setResult(0L);
-                        }
-                    }
-                });
+                XposedBridge.hookMethod(m, hook);
             }
         }
     }

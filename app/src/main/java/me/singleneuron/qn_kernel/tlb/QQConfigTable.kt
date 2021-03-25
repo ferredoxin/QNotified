@@ -43,7 +43,6 @@ class QQConfigTable : ConfigTableInterface {
             QQ_8_4_18 to "Y",
             QQ_8_5_0 to "Z",
             QQ_8_5_5 to "Z",
-            //QQ_8_6_0 to "a" //TODO Need Fixed
         ),
 
         VasProfileAntiCrash::class.java.simpleName to mapOf(
@@ -55,7 +54,7 @@ class QQConfigTable : ConfigTableInterface {
             QQ_8_4_18 to "Y",
             QQ_8_5_0 to "com.tencent.mobileqq.profile.ProfileCardTemplate",
             QQ_8_5_5 to "com.tencent.mobileqq.profile.ProfileCardTemplate",
-            QQ_8_6_0 to "com.tencent.mobileqq.profilecard.template.ProfileCardTemplate",
+            QQ_8_6_0 to "com.tencent.mobileqq.profilecard.vas.component.template.VasProfileTemplateComponent",
         ),
 
         //com.tencent.mobileqq.activity.aio.core.TroopChatPie中一般是包含R.id.blz的
