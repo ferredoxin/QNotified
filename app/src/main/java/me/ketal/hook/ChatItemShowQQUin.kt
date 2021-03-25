@@ -26,8 +26,6 @@ import de.robv.android.xposed.XC_MethodHook
 import ltd.nextalone.util.method
 import me.ketal.dispacher.OnBubbleBuilder
 import me.singleneuron.qn_kernel.data.MsgRecordData
-import me.singleneuron.qn_kernel.data.requireMinVersion
-import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.ui.CustomDialog
 import nil.nadph.qnotified.util.Utils
@@ -35,7 +33,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 object ChatItemShowQQUin : CommonDelayableHook("ketal_ChatItem_ShowQQUin"), OnBubbleBuilder {
-    override fun isValid(): Boolean = requireMinVersion(QQVersion.QQ_8_0_0)
 
     override fun initOnce() = isValid
 
