@@ -468,22 +468,6 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
                         + "(太/无极阴,应用转生,天鉴等虚拟框架)或者重启手机(EdXp, Xposed, 太极阳), 如果重启手机后问题仍然存在, 请向作者反馈, 并提供详细日志")
                 .show();
         }
-        ConfigManager cfg = ConfigManager.getDefaultConfig();
-        if (HostInformationProviderKt.getHostInfo().isPlayQQ() && !cfg
-            .getBooleanOrFalse("isShowPlayQQTip")) {
-            CustomDialog.createFailsafe(this).setTitle("警告")
-                .setPositiveButton("我已了解后果并愿意继续使用", (dialog, which) -> {
-                    cfg.putBoolean("isShowPlayQQTip", true);
-                    try {
-                        cfg.save();
-                    } catch (IOException ignored) {
-                    }
-                })
-                .setMessage(
-                    "你正在使用Play版QQ，该版本QQ版本号与国内版有很大区别，QNotified的部分功能的版本适配依赖软件版本号，可能会出现预想不到的情况，且任何play版本都未进行测试。")
-                .show();
-
-        }
         return true;
     }
 
