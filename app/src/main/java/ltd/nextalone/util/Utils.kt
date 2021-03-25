@@ -22,6 +22,8 @@
 package ltd.nextalone.util
 
 import android.content.SharedPreferences
+import mqq.app.AppRuntime
+import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.Utils
 import java.text.DateFormat
 import java.util.*
@@ -29,7 +31,7 @@ import java.util.*
 internal val isSimpleUi by lazy {
     try {
         val sharedPreferences =
-            "Lcom/tencent/mobileqq/theme/ThemeUtil;->getUinThemePreferences(Lmqq/app/AppRuntime;)Landroid/content/SharedPreferences;".method.invoke(
+        Initiator._ThemeUtil().getDeclaredMethod("getUinThemePreferences", AppRuntime::class.java).invoke(
                 null,
                 Utils.getAppRuntime()
             ) as SharedPreferences
