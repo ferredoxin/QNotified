@@ -28,10 +28,11 @@ import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
+import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.util.DexKit
 
 @FunctionEntry
-object DisabledRedNick : CommonDelayableHook("na_disable_red_nick_kt") {
+object DisabledRedNick : CommonDelayableHook("na_disable_red_nick_kt", DexDeobfStep(DexKit.N_FriendChatPie_updateUITitle)) {
 
     override fun initOnce() = tryOrFalse {
         if (!isSimpleUi) {
