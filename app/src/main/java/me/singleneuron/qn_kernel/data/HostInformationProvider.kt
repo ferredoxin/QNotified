@@ -50,7 +50,11 @@ private fun getHostInfo(context: Context): PackageInfo {
 }
 
 fun requireMinQQVersion(versionCode: Long): Boolean {
-    return !hostInfo.isTim && hostInfo.versionCode >= versionCode
+    return !hostInfo.isTim && !hostInfo.isPlayQQ && hostInfo.versionCode >= versionCode
+}
+
+fun requireMinPlayQQVersion(versionCode: Long): Boolean {
+    return hostInfo.isPlayQQ && hostInfo.versionCode >= versionCode
 }
 
 fun requireMinTimVersion(versionCode: Long): Boolean {
@@ -59,7 +63,8 @@ fun requireMinTimVersion(versionCode: Long): Boolean {
 
 fun requireMinVersion(
     QQVersionCode: Long = Long.MAX_VALUE,
-    TimVersionCode: Long = Long.MAX_VALUE
+    TimVersionCode: Long = Long.MAX_VALUE,
+    PlayQQVersionCode: Long = Long.MAX_VALUE
 ): Boolean {
-    return requireMinQQVersion(QQVersionCode) or requireMinTimVersion(TimVersionCode)
+    return requireMinQQVersion(QQVersionCode) or requireMinTimVersion(TimVersionCode) or requireMinPlayQQVersion(PlayQQVersionCode)
 }
