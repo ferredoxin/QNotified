@@ -27,6 +27,8 @@ import ltd.nextalone.util.get
 import ltd.nextalone.util.hookBefore
 import ltd.nextalone.util.tryOrFalse
 import me.singleneuron.qn_kernel.data.hostInfo
+import me.singleneuron.qn_kernel.data.requireMinQQVersion
+import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.step.DexDeobfStep
@@ -43,13 +45,24 @@ object RemoveDiyCard : CommonDelayableHook(
                 when (it.thisObject) {
                     is Activity -> {
                         val card = it.args[0]
-                        val id = card.get("lCurrentStyleId", Long::class.java)
-                        if ((21L == id) or (22L == id))
-                            card.set("lCurrentStyleId", 0)
+                        copeCard(card)
                     }
-                    else -> it.result = null
+                    else -> {
+                        if (requireMinQQVersion(QQVersion.QQ_8_6_0)) {
+                            val card = it.args[1].get("card")
+                            copeCard(card!!)
+                            return@hookBefore
+                        }
+                        it.result = null
+                    }
                 }
             }
+    }
+
+    private fun copeCard(card: Any) {
+        val id = card.get("lCurrentStyleId", Long::class.java)
+        if ((21L == id) or (22L == id))
+            card.set("lCurrentStyleId", 0)
     }
 
     override fun isValid() = !hostInfo.isTim
