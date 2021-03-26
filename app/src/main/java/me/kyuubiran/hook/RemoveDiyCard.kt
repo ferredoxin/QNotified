@@ -21,7 +21,10 @@
  */
 package me.kyuubiran.hook
 
-import ltd.nextalone.util.replace
+import android.app.Activity
+import ltd.nextalone.util.*
+import ltd.nextalone.util.get
+import ltd.nextalone.util.hookBefore
 import ltd.nextalone.util.tryOrFalse
 import me.singleneuron.qn_kernel.data.hostInfo
 import nil.nadph.qnotified.base.annotation.FunctionEntry
@@ -35,7 +38,18 @@ object RemoveDiyCard : CommonDelayableHook(
     DexDeobfStep(DexKit.N_VasProfileTemplateController_onCardUpdate)) {
 
     override fun initOnce() = tryOrFalse {
-        DexKit.doFindMethod(DexKit.N_VasProfileTemplateController_onCardUpdate)!!.replace(this, null)
+        DexKit.doFindMethod(DexKit.N_VasProfileTemplateController_onCardUpdate)!!
+            .hookBefore(this) {
+                when (it.thisObject) {
+                    is Activity -> {
+                        val card = it.args[0]
+                        val id = card.get("lCurrentStyleId", Long::class.java)
+                        if ((21L == id) or (22L == id))
+                            card.set("lCurrentStyleId", 0)
+                    }
+                    else -> it.result = null
+                }
+            }
     }
 
     override fun isValid() = !hostInfo.isTim
