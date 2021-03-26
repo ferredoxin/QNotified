@@ -30,6 +30,7 @@ import ltd.nextalone.util.hookAfter
 import ltd.nextalone.util.hookBefore
 import me.ketal.data.ConfigData
 import me.ketal.util.BaseUtil.tryVerbosely
+import me.ketal.util.PlayQQVersion
 import me.ketal.util.TIMVersion
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.data.requireMinVersion
@@ -73,7 +74,7 @@ object LeftSwipeReplyHook : CommonDelayableHook(
             return img
         }
 
-    override fun isValid(): Boolean = requireMinVersion(QQVersion.QQ_8_2_6, TIMVersion.TIM_3_1_1)
+    override fun isValid(): Boolean = requireMinVersion(QQVersion.QQ_8_2_6, TIMVersion.TIM_3_1_1, PlayQQVersion.PlayQQ_8_2_9)
 
     override fun initOnce() = tryVerbosely(false) {
         val replyMethod = DexKit.doFindMethod(DexKit.N_LeftSwipeReply_Helper__reply)

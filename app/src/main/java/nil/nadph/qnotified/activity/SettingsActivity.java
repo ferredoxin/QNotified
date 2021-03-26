@@ -23,6 +23,7 @@ package nil.nadph.qnotified.activity;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static me.ketal.util.PlayQQVersion.PlayQQ_8_2_9;
 import static me.singleneuron.util.KotlinUtilsKt.addViewConditionally;
 import static me.singleneuron.util.QQVersion.QQ_8_2_6;
 import static nil.nadph.qnotified.ui.ViewBuilder.R_ID_DESCRIPTION;
@@ -196,7 +197,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         ll.addView(newListItemButton(this, "Omega测试性功能", "这是个不存在的功能", null,
             v -> KotlinUtilsKt.showEulaDialog(SettingsActivity.this)));
         ll.addView(subtitle(this, "基本功能"));
-        if (HostInformationProviderKt.requireMinQQVersion(QQ_8_2_6)) {
+        if (HostInformationProviderKt.requireMinQQVersion(QQ_8_2_6) || HostInformationProviderKt.requireMinPlayQQVersion(PlayQQ_8_2_9)) {
             ll.addView(_t = newListItemButton(this, "自定义电量", "[QQ>=8.2.6]在线模式为我的电量时生效", "N/A",
                 clickToProxyActAction(FakeBatCfgActivity.class)));
             __tv_fake_bat_status = _t.findViewById(R_ID_VALUE);
