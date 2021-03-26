@@ -24,8 +24,10 @@ package ltd.nextalone.hook
 import android.view.View
 import android.view.ViewGroup
 import ltd.nextalone.util.*
+import me.ketal.util.PlayQQVersion.PlayQQ_8_2_9
 import me.singleneuron.base.adapter.BaseDelayableHighPerformanceConditionalHookAdapter
 import me.singleneuron.data.PageFaultHighPerformanceFunctionCache
+import me.singleneuron.qn_kernel.data.requireMinPlayQQVersion
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.qn_kernel.tlb.ConfigTable
 import me.singleneuron.util.QQVersion
@@ -56,6 +58,6 @@ object HideProfileBubble : BaseDelayableHighPerformanceConditionalHookAdapter("h
     }
 
     override val conditionCache: PageFaultHighPerformanceFunctionCache<Boolean> =
-        PageFaultHighPerformanceFunctionCache { requireMinQQVersion(QQVersion.QQ_8_3_6) }
+        PageFaultHighPerformanceFunctionCache { requireMinQQVersion(QQVersion.QQ_8_3_6) or requireMinPlayQQVersion(PlayQQ_8_2_9) }
 
 }

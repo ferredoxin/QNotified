@@ -30,6 +30,7 @@ import nil.nadph.qnotified.base.annotation.FunctionEntry
 
 @FunctionEntry
 object ForceSystemAlbum : BaseDelayableConditionalHookAdapter("forceSystemAlbum") {
+    override val condition = true
 
     override fun doInit(): Boolean {
         //特征字符串:"onAlbumBtnClicked"
@@ -38,7 +39,9 @@ object ForceSystemAlbum : BaseDelayableConditionalHookAdapter("forceSystemAlbum"
         XposedBridge.hookAllMethods(photoListPanelClass, "e", object : XposedMethodHookAdapter() {
             override fun beforeMethod(param: MethodHookParam?) {
                 val context = hostInfo.application
-                context.startActivity(Intent(context, ChooseAlbumAgentActivity::class.java))
+                val intent = Intent(context, ChooseAlbumAgentActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                context.startActivity(intent)
                 param!!.result = null
             }
         })

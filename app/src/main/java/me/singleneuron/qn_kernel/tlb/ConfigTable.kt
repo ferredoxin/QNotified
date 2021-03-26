@@ -28,7 +28,11 @@ object ConfigTable {
     public val cacheMap: Map<String?, Any?> by lazy {
         val map: HashMap<String?, Any?> = HashMap()
         val versionCode = hostInfo.versionCode
-        val table: ConfigTableInterface = if (hostInfo.isTim) TIMConfigTable() else QQConfigTable()
+        val table: ConfigTableInterface = when {
+            hostInfo.isTim -> TIMConfigTable()
+            hostInfo.isPlayQQ -> PlayQQConfigTable()
+            else -> QQConfigTable()
+        }
         for (pair in table.rangingConfigs) {
             for (i in versionCode downTo 1) {
                 if (pair.value.containsKey(i)) {

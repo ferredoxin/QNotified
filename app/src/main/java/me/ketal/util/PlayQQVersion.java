@@ -19,28 +19,12 @@
  * <https://www.gnu.org/licenses/>
  * <https://github.com/ferredoxin/QNotified/blob/master/LICENSE.md>.
  */
-package ltd.nextalone.util
+package me.ketal.util;
 
-import android.content.SharedPreferences
-import mqq.app.AppRuntime
-import nil.nadph.qnotified.util.Initiator
-import nil.nadph.qnotified.util.Utils
-import java.text.DateFormat
-import java.util.*
+public class PlayQQVersion {
 
-internal val isSimpleUi by lazy {
-    try {
-        val sharedPreferences =
-        Initiator._ThemeUtil().getDeclaredMethod("getUinThemePreferences", AppRuntime::class.java).invoke(
-                null,
-                Utils.getAppRuntime()
-            ) as SharedPreferences
-        val bool = sharedPreferences.getBoolean("key_simple_ui_switch", false)
-        bool
-    } catch (t: Throwable) {
-        false
-    }
+    public static final long PlayQQ_8_2_9 = 1352;
+    public static final long PlayQQ_8_2_9_1 = 1353;
+    public static final long PlayQQ_8_2_10 = 1354;
+    public static final long PlayQQ_8_2_11 = 1380;
 }
-
-internal val Date.today: String
-    get() = DateFormat.getDateInstance().format(this)

@@ -25,8 +25,6 @@ import android.app.Activity
 import android.view.View
 import ltd.nextalone.base.MultiItemDelayableHook
 import ltd.nextalone.util.*
-import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 
 @FunctionEntry
@@ -53,6 +51,4 @@ object SimplifyQQSettings : MultiItemDelayableHook("na_simplify_qq_settings_mult
                 null
             )
     }
-
-    override fun isValid() = requireMinQQVersion(QQVersion.QQ_8_0_0)
 }

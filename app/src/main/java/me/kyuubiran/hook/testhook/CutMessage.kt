@@ -40,8 +40,8 @@ import java.lang.reflect.Method
 object CutMessage : CommonDelayableHook("kr_test_cut_message") {
 
     override fun initOnce() = try {
-        val QQMessageFacade = Initiator.load("com.tencent.imcore.message.QQMessageFacade")
-        val Msg = Initiator.load("com.tencent.imcore.message.QQMessageFacade\$Message")
+        val QQMessageFacade = Initiator._QQMessageFacade()
+        val Msg = Initiator.load("${QQMessageFacade.name}\$Message")
         for (m: Method in QQMessageFacade.declaredMethods) {
             val argt = m.parameterTypes
             if (m.name == "a" && argt.size == 1 && argt[0] != Msg::class.java) {

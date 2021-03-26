@@ -23,6 +23,7 @@ package nil.nadph.qnotified.activity;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static me.ketal.util.PlayQQVersion.PlayQQ_8_2_9;
 import static me.singleneuron.util.KotlinUtilsKt.addViewConditionally;
 import static me.singleneuron.util.QQVersion.QQ_8_2_6;
 import static nil.nadph.qnotified.ui.ViewBuilder.R_ID_DESCRIPTION;
@@ -196,7 +197,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         ll.addView(newListItemButton(this, "Omega测试性功能", "这是个不存在的功能", null,
             v -> KotlinUtilsKt.showEulaDialog(SettingsActivity.this)));
         ll.addView(subtitle(this, "基本功能"));
-        if (HostInformationProviderKt.requireMinQQVersion(QQ_8_2_6)) {
+        if (HostInformationProviderKt.requireMinQQVersion(QQ_8_2_6) || HostInformationProviderKt.requireMinPlayQQVersion(PlayQQ_8_2_9)) {
             ll.addView(_t = newListItemButton(this, "自定义电量", "[QQ>=8.2.6]在线模式为我的电量时生效", "N/A",
                 clickToProxyActAction(FakeBatCfgActivity.class)));
             __tv_fake_bat_status = _t.findViewById(R_ID_VALUE);
@@ -467,22 +468,6 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
                         .getHostName()
                         + "(太/无极阴,应用转生,天鉴等虚拟框架)或者重启手机(EdXp, Xposed, 太极阳), 如果重启手机后问题仍然存在, 请向作者反馈, 并提供详细日志")
                 .show();
-        }
-        ConfigManager cfg = ConfigManager.getDefaultConfig();
-        if (HostInformationProviderKt.getHostInfo().isPlayQQ() && !cfg
-            .getBooleanOrFalse("isShowPlayQQTip")) {
-            CustomDialog.createFailsafe(this).setTitle("警告")
-                .setPositiveButton("我已了解后果并愿意继续使用", (dialog, which) -> {
-                    cfg.putBoolean("isShowPlayQQTip", true);
-                    try {
-                        cfg.save();
-                    } catch (IOException ignored) {
-                    }
-                })
-                .setMessage(
-                    "你正在使用Play版QQ，该版本QQ版本号与国内版有很大区别，QNotified的部分功能的版本适配依赖软件版本号，可能会出现预想不到的情况，且任何play版本都未进行测试。")
-                .show();
-
         }
         return true;
     }

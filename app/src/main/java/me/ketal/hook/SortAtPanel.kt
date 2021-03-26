@@ -26,6 +26,7 @@ import ltd.nextalone.data.TroopInfo
 import ltd.nextalone.util.hookAfter
 import ltd.nextalone.util.hookBefore
 import me.ketal.util.BaseUtil.tryVerbosely
+import me.ketal.util.PlayQQVersion
 import me.ketal.util.TIMVersion
 import me.singleneuron.qn_kernel.data.requireMinVersion
 import me.singleneuron.util.QQVersion
@@ -89,5 +90,5 @@ object SortAtPanel : CommonDelayableHook(
         return uin
     }
 
-    override fun isValid(): Boolean = requireMinVersion(QQVersion.QQ_8_1_3, TIMVersion.TIM_3_1_1)
+    override fun isValid(): Boolean = requireMinVersion(QQVersion.QQ_8_1_3, TIMVersion.TIM_3_1_1, PlayQQVersion.PlayQQ_8_2_9)
 }

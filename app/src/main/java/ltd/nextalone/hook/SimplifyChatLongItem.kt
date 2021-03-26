@@ -27,8 +27,6 @@ import ltd.nextalone.util.clazz
 import ltd.nextalone.util.hookBefore
 import ltd.nextalone.util.method
 import ltd.nextalone.util.tryOrFalse
-import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 
 @FunctionEntry
@@ -48,17 +46,24 @@ object SimplifyChatLongItem : MultiItemDelayableHook("na_simplify_chat_long_item
             this?.forEach { method ->
                 if (method.name == "setMenu") {
                     val customMenu = method.parameterTypes[0].name.replace(".", "/")
-                    "L$customMenu;->a(ILjava/lang/String;II)V"
-                        .method
-                        .hookBefore(this@SimplifyChatLongItem, callback)
-                    "L$customMenu;->a(ILjava/lang/String;I)V"
-                        .method
-                        .hookBefore(this@SimplifyChatLongItem, callback)
+                    try {
+                        "L$customMenu;->a(ILjava/lang/String;II)V"
+                            .method
+                            .hookBefore(this@SimplifyChatLongItem, callback)
+                    } catch (t: Throwable) {
+                        Unit
+                    }
+                    try {
+
+                        "L$customMenu;->a(ILjava/lang/String;I)V"
+                            .method
+                            .hookBefore(this@SimplifyChatLongItem, callback)
+                    } catch (t: Throwable) {
+                        Unit
+                    }
                     return@forEach
                 }
             }
         }
     }
-
-    override fun isValid(): Boolean = requireMinQQVersion(QQVersion.QQ_8_0_0)
 }

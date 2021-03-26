@@ -34,7 +34,6 @@ import de.robv.android.xposed.XposedHelpers;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import ltd.nextalone.util.SystemServiceUtils;
-import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
