@@ -38,6 +38,15 @@ import nil.nadph.qnotified.util.Initiator
 object ForceSystemFile : BaseDelayableConditionalHookAdapter("forceSystemFile") {
 
     override fun doInit(): Boolean {
+        val hook = object : XposedMethodHookAdapter() {
+            override fun beforeMethod(param: MethodHookParam?) {
+                val context = hostInfo.application
+                val intent = Intent(context, ChooseFileAgentActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                context.startActivity(intent)
+                param!!.result = null
+            }
+        }
         if (requireMinQQVersion(QQVersion.QQ_8_4_8)) {
             val plusPanelClass = Class.forName("com.tencent.mobileqq.pluspanel.appinfo.FileAppInfo")
             //特征字符串:"SmartDeviceProxyMgr create"
@@ -48,13 +57,7 @@ object ForceSystemFile : BaseDelayableConditionalHookAdapter("forceSystemFile") 
                 "a",
                 Initiator._BaseChatPie(),
                 sessionInfoClass,
-                object : XposedMethodHookAdapter() {
-                    override fun beforeMethod(param: MethodHookParam?) {
-                        val context = hostInfo.application
-                        context.startActivity(Intent(context, ChooseFileAgentActivity::class.java))
-                        param!!.result = null
-                    }
-                })
+                hook)
         } else {
             val plusPanelClass = Class.forName("com.tencent.mobileqq.activity.aio.PlusPanel")
             val smartDeviceProxyMgrClass = DexKit.doFindClass(DexKit.C_SmartDeviceProxyMgr)
@@ -63,13 +66,7 @@ object ForceSystemFile : BaseDelayableConditionalHookAdapter("forceSystemFile") 
                 plusPanelClass,
                 "a",
                 smartDeviceProxyMgrClass,
-                object : XposedMethodHookAdapter() {
-                    override fun beforeMethod(param: MethodHookParam?) {
-                        val context = hostInfo.application
-                        context.startActivity(Intent(context, ChooseFileAgentActivity::class.java))
-                        param!!.result = null
-                    }
-                })
+                hook)
         }
         return true
     }
