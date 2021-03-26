@@ -62,7 +62,7 @@ object QWalletNoAD : PluginDelayableHook("ketal_qwallet_noad") {
                         val webView =
                             "Lcom/qwallet/view/QWalletHeaderView;->a:Lcom/tencent/biz/ui/TouchWebView;"
                                 .getField(classLoader)
-                                ?.get(headerView) as View
+                                ?.get(headerView) as View?
                         headerView.removeView(webView)
                         headerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                     }
