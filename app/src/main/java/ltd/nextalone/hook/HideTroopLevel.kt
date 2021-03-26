@@ -34,7 +34,9 @@ import nil.nadph.qnotified.util.Initiator._TroopMemberLevelView
 object HideTroopLevel : CommonDelayableHook("na_hide_troop_level_kt"), OnBubbleBuilder {
     private val levelClass = _TroopMemberLevelView()
 
-    override fun initOnce() = true
+    override fun isValid() = levelClass != null
+
+    override fun initOnce() = isValid
 
     override fun onGetView(
         rootView: ViewGroup,
