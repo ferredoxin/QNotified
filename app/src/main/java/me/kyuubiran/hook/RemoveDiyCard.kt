@@ -21,40 +21,22 @@
  */
 package me.kyuubiran.hook
 
-import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XposedBridge
-import me.kyuubiran.util.getMethods
-import me.kyuubiran.util.isPublic
+import ltd.nextalone.util.replace
+import ltd.nextalone.util.tryOrFalse
+import me.singleneuron.qn_kernel.data.hostInfo
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
-import nil.nadph.qnotified.util.LicenseStatus
-import nil.nadph.qnotified.util.Utils
-import java.lang.reflect.Method
+import nil.nadph.qnotified.step.DexDeobfStep
+import nil.nadph.qnotified.util.DexKit
 
 @FunctionEntry
-object RemoveDiyCard : CommonDelayableHook("kr_remove_diy_card") {
+object RemoveDiyCard : CommonDelayableHook(
+    "kr_remove_diy_card",
+    DexDeobfStep(DexKit.N_VasProfileTemplateController_onCardUpdate)) {
 
-    override fun initOnce(): Boolean {
-        return try {
-            val hook = object : XC_MethodHook() {
-                override fun beforeHookedMethod(param: MethodHookParam) {
-                    if (LicenseStatus.sDisableCommonHooks) return
-                    if (!isEnabled) return
-                    param.result = null
-                }
-            }
-            for (m: Method in getMethods("com.tencent.mobileqq.profilecard.vas.VasProfileTemplateController")) {
-                val argt = m.parameterTypes
-                if (m.name == "a" && argt.size == 2 && argt[1] == Int::class.java && m.isPublic) {
-                    XposedBridge.hookMethod(m, hook)
-                } else if (m.name == "onCardUpdate" && argt.size == 2 && argt[1] == Int::class.java && m.isPublic) {
-                    XposedBridge.hookMethod(m, hook)
-                }
-            }
-            true
-        } catch (t: Throwable) {
-            Utils.log(t)
-            false
-        }
+    override fun initOnce() = tryOrFalse {
+        DexKit.doFindMethod(DexKit.N_VasProfileTemplateController_onCardUpdate)!!.replace(this, null)
     }
+
+    override fun isValid() = !hostInfo.isTim
 }
