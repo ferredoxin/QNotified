@@ -135,7 +135,7 @@ public class Natives {
      */
     static File extractNativeLibrary(Context ctx, String libraryName) throws IOException {
         String abi = Build.CPU_ABI;
-        String soName = "lib" + libraryName + ".so." + BuildConfig.VERSION_NAME + "." + abi;
+        String soName = "lib" + libraryName + ".so." + BuildConfig.VERSION_CODE + "." + abi;
         File dir = new File(ctx.getFilesDir(), "qn_dyn_lib");
         if (!dir.isDirectory()) {
             if (dir.isFile()) {
