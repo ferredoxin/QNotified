@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import me.singleneuron.util.QQVersion;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
@@ -97,6 +98,14 @@ public class DarkOverlayHook extends CommonDelayableHook {
             log(e);
             return false;
         }
+    }
+
+    @Override
+    public boolean isValid() {
+        if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_6_0)) {
+            return false;
+        }
+        return super.isValid();
     }
 
     private static class FindNightMask extends Step {
