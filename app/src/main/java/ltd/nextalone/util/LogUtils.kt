@@ -23,9 +23,10 @@ package ltd.nextalone.util
 
 import nil.nadph.qnotified.hook.BaseDelayableHook
 import nil.nadph.qnotified.util.Utils
+import java.lang.reflect.Method
 
-internal fun logd(msg: String) {
-    Utils.logd("NA: $msg")
+internal fun logd(vararg msg: Any) {
+    Utils.logd("NA: ${msg.joinToString(", ")}")
 }
 
 internal fun logThrowable(msg: Throwable) {
@@ -40,8 +41,8 @@ internal fun <T : BaseDelayableHook> T.logClass(msg: String = "") {
     logd("$this: Class, $msg")
 }
 
-internal fun <T : BaseDelayableHook> T.logMethod(msg: String = "") {
-    logd("$this: Method, $msg")
+internal fun <T : BaseDelayableHook> T.logMethod(method: Method) {
+    logd("$this: Method", "name", method.name, "return", method.returnType, "param", *method.parameterTypes)
 }
 
 internal fun <T : BaseDelayableHook> T.logStart() {
