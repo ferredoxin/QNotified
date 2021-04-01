@@ -101,11 +101,11 @@ public class DarkOverlayHook extends CommonDelayableHook {
     }
 
     @Override
-    public boolean isValid() {
+    public boolean isEnabled() {
         if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_6_0)) {
             return false;
         }
-        return super.isValid();
+        return super.isEnabled();
     }
 
     private static class FindNightMask extends Step {
