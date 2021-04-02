@@ -252,7 +252,7 @@ dexTailRelease.dependsOn(":dex-ptm:assemble")
 task replaceIcon(type: Copy) {
     delete 'src/main/res/drawable.png'
     def random = new Random()
-    def iconsFileDir = file("icons/")
+    def iconsFileDir = file("MiStyleIcons/")
     def fileCount = iconsFileDir.listFiles().length
     def number = random.nextInt(fileCount)
     def iconFile = iconsFileDir.listFiles()[number]
