@@ -27,12 +27,15 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
+import androidx.core.view.plusAssign
 import cc.ioctl.hook.BlockFluxThief
 import cc.ioctl.hook.InterceptZipBomb
 import cc.ioctl.hook.PicMd5Hook
 import com.tencent.mobileqq.widget.BounceScrollView
+import me.ketal.hook.*
+import me.ketal.ui.activity.ModifyLeftSwipeReplyActivity
 import nil.nadph.qnotified.ui.ResUtils
-import nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit
+import nil.nadph.qnotified.ui.ViewBuilder.*
 
 @SuppressLint("Registered")
 class AuxFuncActivity : IphoneTitleBarActivityCompat() {
@@ -47,9 +50,16 @@ class AuxFuncActivity : IphoneTitleBarActivityCompat() {
             addView(ll)
         })
 
-        ll.addView(newListItemHookSwitchInit(this, "拦截异常zip", null, InterceptZipBomb.INSTANCE))
-        ll.addView(newListItemHookSwitchInit(this, "拦截异常体积图片加载", null, BlockFluxThief.INSTANCE))
-        ll.addView(newListItemHookSwitchInit(this, "显示图片MD5", "长按图片消息点击MD5", PicMd5Hook.INSTANCE))
+        ll += newListItemHookSwitchInit(this, "拦截异常zip", null, InterceptZipBomb.INSTANCE)
+        ll += newListItemHookSwitchInit(this, "拦截异常体积图片加载", null, BlockFluxThief.INSTANCE)
+        ll += newListItemHookSwitchInit(this, "显示图片MD5", "长按图片消息点击MD5", PicMd5Hook.INSTANCE)
+        ll += newListItemConfigSwitchIfValid(this, "修改@界面排序", "排序由群主管理员至正常人员", SortAtPanel)
+        ll += newListItemConfigSwitchIfValid(this, "发送收藏消息添加分组", null, SendFavoriteHook)
+        ll += newListItemConfigSwitchIfValid(this, "消息显示发送者QQ号和时间", null, ChatItemShowQQUin)
+        ll += newListItemConfigSwitchIfValid(this, "消息显示At对象", null, ShowMsgAt)
+        ll += newListItemHookSwitchInit(this, "批量撤回消息", "多选消息后撤回", MultiActionHook)
+        ll += newListItemButtonIfValid(this, "修改消息左滑动作", null, null, LeftSwipeReplyHook,
+                ModifyLeftSwipeReplyActivity::class.java)
 
         setContentBackgroundDrawable(ResUtils.skin_background)
         title = "辅助功能"

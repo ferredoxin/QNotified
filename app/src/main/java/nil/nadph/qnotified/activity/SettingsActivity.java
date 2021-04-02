@@ -104,16 +104,9 @@ import ltd.nextalone.hook.SimplifyPlusPanel;
 import ltd.nextalone.hook.SimplifyQQSettings;
 import ltd.nextalone.hook.SimplifyRecentDialog;
 import ltd.nextalone.hook.TrimMessage;
-import me.ketal.hook.ShowMsgAt;
-import me.ketal.ui.activity.ModifyLeftSwipeReplyActivity;
-import me.ketal.hook.ChatItemShowQQUin;
 import me.ketal.hook.HideFriendCardSendGift;
-import me.ketal.hook.LeftSwipeReplyHook;
-import me.ketal.hook.MultiActionHook;
 import me.ketal.hook.QWalletNoAD;
 import me.ketal.hook.QZoneNoAD;
-import me.ketal.hook.SendFavoriteHook;
-import me.ketal.hook.SortAtPanel;
 import me.singleneuron.activity.ChangeDrawerWidthActivity;
 import me.singleneuron.hook.ForceSystemAlbum;
 import me.singleneuron.hook.ForceSystemCamera;
@@ -235,6 +228,8 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         ll.addView(newListItemHookSwitchInit(this, " +1", "不是复读机", RepeaterHook.INSTANCE));
         ll.addView(newListItemButton(this, "自定义+1图标", null, null,
             RepeaterIconSettingDialog.OnClickListener_createDialog(this)));
+        ll.addView(newListItemButton(this, "辅助功能", null, null,
+            clickToProxyActAction(AuxFuncActivity.class)));
         ll.addView(subtitle(this, "净化设置"));
         ll.addView(newListItemConfigSwitchIfValid(this, "禁止回复自动@", "去除回复消息时自动@特性",
             ReplyNoAtHook.INSTANCE));
@@ -252,8 +247,6 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
             ll.addView(newListItemHookSwitchInit(this, "禁用夜间模式遮罩", "移除夜间模式下聊天界面的深色遮罩",
                 DarkOverlayHook.INSTANCE));
         }
-        ll.addView(newListItemButton(this, "辅助功能", null, null,
-            clickToProxyActAction(AuxFuncActivity.class)));
         ll.addView(
             newListItemHookSwitchInit(this, "显示设置禁言的管理", "即使你只是普通群成员", GagInfoDisclosure.INSTANCE));
         addViewConditionally(ll, this, "小程序分享转链接（发送）", "感谢Alcatraz323开发远离小程序,神经元移植到Xposed",
@@ -321,19 +314,8 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
             newListItemConfigSwitchIfValid(this, "折叠群聊复读消息", null, CollapseTroopMessage.INSTANCE));
         ll.addView(
             newListItemConfigSwitchIfValid(this, "移除消息前后的空格", null, TrimMessage.INSTANCE));
-        ll.addView(newListItemHookSwitchInit(this, "批量撤回消息", "多选消息后撤回", MultiActionHook.INSTANCE));
-        ll.addView(
-            newListItemButtonIfValid(this, "修改消息左滑动作", null, null, LeftSwipeReplyHook.INSTANCE,
-                ModifyLeftSwipeReplyActivity.class));
-        ll.addView(
-            newListItemConfigSwitchIfValid(this, "修改@界面排序", "排序由群主管理员至正常人员", SortAtPanel.INSTANCE));
-        ll.addView(
-            newListItemConfigSwitchIfValid(this, "发送收藏消息添加分组", null, SendFavoriteHook.INSTANCE));
         ll.addView(newListItemConfigSwitchIfValid(this, "隐藏空间好友热播和广告", null, QZoneNoAD.INSTANCE));
         ll.addView(newListItemConfigSwitchIfValid(this, "隐藏QQ钱包超值精选", null, QWalletNoAD.INSTANCE));
-        ll.addView(newListItemConfigSwitchIfValid(this, "消息显示发送者QQ号和时间", null,
-            ChatItemShowQQUin.INSTANCE));
-        ll.addView(newListItemConfigSwitchIfValid(this, "消息显示At对象", null, ShowMsgAt.INSTANCE));
         ll.addView(
             newListItemButton(this, "万象屏蔽卡片消息", "使用强大的正则表达式自由屏蔽卡片消息", null, RegexAntiMeg.INSTANCE));
         addViewConditionally(ll, this, "特别关心通知单独分组", "将特别关心发送的消息通知移动到单独的通知渠道",
