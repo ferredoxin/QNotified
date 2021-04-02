@@ -103,6 +103,7 @@ import ltd.nextalone.hook.SimplifyEmoPanel;
 import ltd.nextalone.hook.SimplifyPlusPanel;
 import ltd.nextalone.hook.SimplifyQQSettings;
 import ltd.nextalone.hook.SimplifyRecentDialog;
+import ltd.nextalone.hook.TrimMessage;
 import me.ketal.hook.ShowMsgAt;
 import me.ketal.ui.activity.ModifyLeftSwipeReplyActivity;
 import me.ketal.hook.ChatItemShowQQUin;
@@ -318,6 +319,8 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
             AutoReceiveOriginalPhoto.INSTANCE));
         ll.addView(
             newListItemConfigSwitchIfValid(this, "折叠群聊复读消息", null, CollapseTroopMessage.INSTANCE));
+        ll.addView(
+            newListItemConfigSwitchIfValid(this, "移除消息前后的空格", null, TrimMessage.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "批量撤回消息", "多选消息后撤回", MultiActionHook.INSTANCE));
         ll.addView(
             newListItemButtonIfValid(this, "修改消息左滑动作", null, null, LeftSwipeReplyHook.INSTANCE,
