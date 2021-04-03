@@ -43,13 +43,24 @@ object AutoReceiveOriginalPhoto : CommonDelayableHook(
 ) {
 
     override fun initOnce() = tryOrFalse {
-        val method: String = if (hostInfo.versionCode >= QQVersion.QQ_8_5_0) {
-            "h"
-        } else {
-            "I"
+        val method: String = when {
+            requireMinQQVersion(QQVersion.QQ_8_6_0) -> {
+                "j"
+            }
+            requireMinQQVersion(QQVersion.QQ_8_5_0) -> {
+                "h"
+            }
+            else -> {
+                "I"
+            }
         }
         val clz = DexKit.doFindClass(DexKit.C_AIOPictureView)
-        "L${clz!!.name};->f(Z)V".method.replace(this) {
+        val m: String = if (hostInfo.versionCode >= QQVersion.QQ_8_6_0) {
+            "g"
+        } else {
+            "f"
+        }
+        "L${clz?.name};->$m(Z)V".method.replace(this) {
             if (it.args[0] as Boolean) {
                 it.thisObject.invoke(method)
             }
