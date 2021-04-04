@@ -26,23 +26,20 @@ import android.content.res.Resources
 import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.WindowManager
+import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
-import me.singleneuron.base.adapter.BaseDelayableConditionalHookAdapter
 import me.singleneuron.qn_kernel.data.hostInfo
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.config.ConfigManager
+import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.Utils.PACKAGE_NAME_QQ
 
 @FunctionEntry
-object ChangeDrawerWidth : BaseDelayableConditionalHookAdapter("changeDrawerWidth") {
+object ChangeDrawerWidth : CommonDelayableHook("changeDrawerWidth") {
 
-    override fun doInit(): Boolean {
-        XposedHelpers.findAndHookMethod(
-            Resources::class.java,
-            "getDimensionPixelSize",
-            Int::class.javaPrimitiveType,
-            object : XposedMethodHookAdapter() {
-                override fun beforeMethod(param: MethodHookParam?) {
+    override fun initOnce(): Boolean {
+        XposedHelpers.findAndHookMethod(Resources::class.java, "getDimensionPixelSize", Int::class.javaPrimitiveType, object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: MethodHookParam?) {
                     if (param!!.args[0] == hostInfo.application.resources.getIdentifier(
                             "akx",
                             "dimen",
@@ -59,8 +56,6 @@ object ChangeDrawerWidth : BaseDelayableConditionalHookAdapter("changeDrawerWidt
             })
         return true
     }
-
-    override fun setEnabled(enabled: Boolean) {}
 
     override fun isEnabled(): Boolean {
         return width != 0
@@ -85,6 +80,4 @@ object ChangeDrawerWidth : BaseDelayableConditionalHookAdapter("changeDrawerWidt
         return (dm.widthPixels / dm.density)
     }
 
-    override val condition: Boolean
-        get() = true
 }

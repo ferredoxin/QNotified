@@ -21,12 +21,6 @@
  */
 package nil.nadph.qnotified.ui;
 
-import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
-import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.dip2px;
-import static nil.nadph.qnotified.util.Utils.dip2sp;
-
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -35,17 +29,16 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.*;
+
 import androidx.core.view.ViewCompat;
+
 import cc.ioctl.H;
 import ltd.nextalone.base.MultiItemDelayableHook;
 import ltd.nextalone.util.SystemServiceUtils;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import me.singleneuron.qn_kernel.ui.base.UiSwitchItem;
+import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.SyncUtils;
@@ -58,6 +51,12 @@ import nil.nadph.qnotified.util.NonUiThread;
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
+import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
+import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Utils.dip2px;
+import static nil.nadph.qnotified.util.Utils.dip2sp;
+
 public class ViewBuilder {
 
     public static final int R_ID_TITLE = 0x300AFF11;
@@ -69,7 +68,7 @@ public class ViewBuilder {
     private static final int CONSTANT_LIST_ITEM_HEIGHT_DP = 48;
 
     public static RelativeLayout newListItemSwitch(Context ctx, CharSequence title,
-        CharSequence desc, boolean on, CompoundButton.OnCheckedChangeListener listener) {
+        CharSequence desc, boolean on, boolean enabled, CompoundButton.OnCheckedChangeListener listener) {
         RelativeLayout root = new IsolatedStateRelativeLayout(ctx);
         root.setId((title == null ? "" : title).hashCode());
         root.setLayoutParams(
@@ -82,6 +81,7 @@ public class ViewBuilder {
         tv.setTextSize(dip2sp(ctx, 18));
         CompoundButton sw = switch_new(ctx);
         sw.setChecked(on);
+        sw.setEnabled(enabled);
         sw.setId(R_ID_SWITCH);
         sw.setOnCheckedChangeListener(listener);
         RelativeLayout.LayoutParams lp_sw = new RelativeLayout.LayoutParams(WRAP_CONTENT,
@@ -124,6 +124,10 @@ public class ViewBuilder {
         }
         root.addView(sw, lp_sw);
         return root;
+    }
+
+    public static RelativeLayout newListItemSwitch(Context ctx, CharSequence title, CharSequence desc, boolean on, CompoundButton.OnCheckedChangeListener listener){
+        return newListItemSwitch(ctx, title, desc, on, true, listener);
     }
 
     public static RelativeLayout newListItemSwitchConfig(Context ctx, CharSequence title,
@@ -236,6 +240,16 @@ public class ViewBuilder {
                 }
             });
         root.setId(hook.getClass().getName().hashCode());
+        return root;
+    }
+
+    public static RelativeLayout newListItemHookSwitchInit(final Context ctx, UiSwitchItem uiSwitchItem) {
+        UiSwitchPreference preference = uiSwitchItem.getPreference();
+        Boolean on = preference.getGetValue().invoke();
+        on = on==null?false:on;
+        RelativeLayout root = newListItemSwitch(ctx, preference.getTitle(), preference.getSummary(), on, preference.getValid(),
+            (buttonView, isChecked) -> preference.getOnPreferenceChangeListener().invoke(isChecked));
+        root.setId(uiSwitchItem.getClass().getName().hashCode());
         return root;
     }
 
@@ -624,6 +638,23 @@ public class ViewBuilder {
         ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
         int m = dip2px(ctx, 14);
         tv.setPadding(m, m / 5, m / 5, m / 5);
+        ll.addView(tv);
+        return ll;
+    }
+
+    public static LinearLayout largeSubtitle(Context ctx, CharSequence title) {
+        LinearLayout ll = new LinearLayout(ctx);
+        ll.setOrientation(LinearLayout.HORIZONTAL);
+        ll.setGravity(Gravity.CENTER_VERTICAL);
+        TextView tv = new TextView(ctx);
+        tv.setTextIsSelectable(false);
+        tv.setText(title);
+        tv.setTextSize(dip2sp(ctx, 13));
+        tv.setTextColor(HostInformationProviderKt.getHostInfo().getApplication().getResources().getColor(R.color.colorPrimary));
+        tv.setLayoutParams(new ViewGroup.LayoutParams(WRAP_CONTENT, WRAP_CONTENT));
+        ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
+        int m = dip2px(ctx, 14);
+        tv.setPadding(m, m, m / 5, m / 5);
         ll.addView(tv);
         return ll;
     }

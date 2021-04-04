@@ -19,10 +19,29 @@
  * <https://www.gnu.org/licenses/>
  * <https://github.com/ferredoxin/QNotified/blob/master/LICENSE.md>.
  */
-package me.singleneuron.hook
 
-import nil.nadph.qnotified.hook.CommonDelayableHook
+package me.singleneuron.qn_kernel.ui.base
 
-object CopyCardMsg : CommonDelayableHook("copyCardMsg") {
-    override fun initOnce(): Boolean = true
+import android.app.Activity
+import android.content.Intent
+import me.singleneuron.qn_kernel.data.hostInfo
+
+class UiCategoryFactory: UiCategory{
+    override lateinit var name: String
+    override var contains: MutableMap<String, UiDescription> = linkedMapOf()
+}
+
+class UiPreferenceFactory: UiPreference {
+
+    override lateinit var title: String
+    override var summary: String? = null
+    override var onClickListener: () -> Boolean = {true}
+    lateinit var activity: Class<out Activity>
+
+    fun create() {
+        onClickListener = {
+            hostInfo.application.startActivity(Intent(hostInfo.application, activity))
+            true
+        }
+    }
 }

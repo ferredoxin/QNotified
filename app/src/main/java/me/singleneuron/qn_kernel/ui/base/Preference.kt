@@ -19,10 +19,22 @@
  * <https://www.gnu.org/licenses/>
  * <https://github.com/ferredoxin/QNotified/blob/master/LICENSE.md>.
  */
-package me.singleneuron.hook
 
-import nil.nadph.qnotified.hook.CommonDelayableHook
+package me.singleneuron.qn_kernel.ui.base
 
-object CopyCardMsg : CommonDelayableHook("copyCardMsg") {
-    override fun initOnce(): Boolean = true
+interface UiPreference : UiDescription {
+    var title: String
+    var summary: String?
+    var onClickListener: ()->Boolean
 }
+
+interface UiChangeablePreference<T>: UiPreference {
+    var onPreferenceChangeListener: (T)->Boolean
+    abstract var getValue: ()->Boolean?
+
+}
+
+interface UiSwitchPreference: UiChangeablePreference<Boolean> {
+    var valid: Boolean
+}
+

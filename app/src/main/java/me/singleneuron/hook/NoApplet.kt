@@ -24,27 +24,27 @@ package me.singleneuron.hook
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
-import me.singleneuron.base.adapter.BaseDelayableConditionalHookAdapter
-import me.singleneuron.data.PageFaultHighPerformanceFunctionCache
+import me.singleneuron.qn_kernel.annotation.UiItem
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
+import me.singleneuron.qn_kernel.ui.base.UiDescription
 import me.singleneuron.util.NoAppletUtil
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.Utils
 
 @FunctionEntry
-object NoApplet : BaseDelayableConditionalHookAdapter("noapplet") {
+@UiItem
+object NoApplet : CommonDelayAbleHookBridge("noapplet") {
 
-    override val conditionCache: PageFaultHighPerformanceFunctionCache<Boolean> =
-        PageFaultHighPerformanceFunctionCache { true }
-
-    override fun doInit(): Boolean {
+    override fun initOnce(): Boolean {
         try {
             //val jumpActivityClass = Class.forName("com.tencent.mobileqq.activity.JumpActivity")
             XposedBridge.hookAllMethods(
                 Activity::class.java,
                 "getIntent",
-                object : XposedMethodHookAdapter() {
-                    override fun afterMethod(param: MethodHookParam?) {
+                object : XC_MethodHook() {
+                    override fun afterHookedMethod(param: MethodHookParam?) {
                         if (param!!.thisObject::class.java.simpleName != "JumpActivity") return
                         //Utils.logd("NoApplet started: "+param.thisObject::class.java.simpleName)
                         val originIntent = param.result as Intent
@@ -68,5 +68,12 @@ object NoApplet : BaseDelayableConditionalHookAdapter("noapplet") {
         }
         return true
     }
+
+    override val preference: UiDescription = uiSwitchPreference {
+        title = "小程序分享转链接（发送）"
+        summary = "感谢Alcatraz323开发的远离小程序，由神经元移植到Xposed"
+    }
+
+    override val preferenceLocate: Array<String> = arrayOf("辅助功能")
 
 }

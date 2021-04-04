@@ -24,12 +24,15 @@ package me.singleneuron.hook.decorator
 
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
-import me.singleneuron.base.decorator.BaseItemBuilderFactoryHookDecorator
+import me.singleneuron.qn_kernel.annotation.UiItem
+import me.singleneuron.qn_kernel.decorator.BaseItemBuilderFactoryHookDecorator
+import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference
 import nil.nadph.qnotified.BuildConfig
 import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.ReflexUtil
 import nil.nadph.qnotified.util.Utils
 
+@UiItem
 object CardMsgToText : BaseItemBuilderFactoryHookDecorator(CardMsgToText::class.java.simpleName) {
     override fun doDecorate(
         result: Int,
@@ -69,6 +72,13 @@ object CardMsgToText : BaseItemBuilderFactoryHookDecorator(CardMsgToText::class.
             false
         }
     }
+
+    override val preference: UiSwitchPreference = uiSwitchPreference {
+        title = "卡片消息文本化"
+    }
+
+    override val preferenceLocate: Array<String> = arrayOf("净化功能")
+
 }
 
 private fun dumpCardMsg(chatMessage: Any) {

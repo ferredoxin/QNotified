@@ -19,16 +19,26 @@
  * <https://www.gnu.org/licenses/>
  * <https://github.com/ferredoxin/QNotified/blob/master/LICENSE.md>.
  */
-package me.singleneuron.base.decorator
 
-import me.singleneuron.base.adapter.BaseDelayableHookAdapter
+package me.singleneuron.qn_kernel.ui.base
 
-abstract class BaseDecorator(cfg: String) : BaseDelayableHookAdapter(cfg) {
-    override fun init(): Boolean {
-        return true
-    }
+interface UiDescription
 
-    override fun doInit(): Boolean {
-        return true
-    }
+interface UiGroup: UiDescription {
+    var name: String
+    var contains: MutableMap<String,UiDescription>
+}
+
+interface UiScreen: UiGroup
+
+interface UiCategory: UiGroup
+
+interface UiItem: UiDescription {
+    val preference: UiDescription
+    val preferenceLocate: Array<String>?
+        get() = null
+}
+
+interface UiSwitchItem: UiItem {
+    override val preference: UiSwitchPreference
 }

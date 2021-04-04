@@ -21,16 +21,15 @@
  */
 package me.singleneuron.hook
 
-import android.app.Activity
 import android.content.Intent
 import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XposedBridge
-import me.singleneuron.base.decorator.BaseStartActivityHookDecorator
+import me.singleneuron.qn_kernel.annotation.UiItem
+import me.singleneuron.qn_kernel.decorator.BaseStartActivityHookDecorator
+import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference
 import me.singleneuron.util.dump
-import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.Utils
 
-@FunctionEntry
+@UiItem
 object DebugDump : BaseStartActivityHookDecorator("debugDump") {
 
     override fun doDecorate(intent: Intent, param: XC_MethodHook.MethodHookParam): Boolean {
@@ -39,7 +38,14 @@ object DebugDump : BaseStartActivityHookDecorator("debugDump") {
         return false
     }
 
-    override fun doInit(): Boolean {
+    override val preference: UiSwitchPreference = uiSwitchPreference {
+        title = "Activity堆栈转储"
+        summary = "没事别开"
+    }
+
+    override val preferenceLocate: Array<String> = arrayOf("实验性功能")
+
+    /*override fun doInit(): Boolean {
         //dump setResult
         XposedBridge.hookAllMethods(
             Activity::class.java,
@@ -53,5 +59,5 @@ object DebugDump : BaseStartActivityHookDecorator("debugDump") {
                 }
             })
         return true
-    }
+    }*/
 }

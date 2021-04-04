@@ -19,37 +19,24 @@
  * <https://www.gnu.org/licenses/>
  * <https://github.com/ferredoxin/QNotified/blob/master/LICENSE.md>.
  */
+package me.singleneuron.qn_kernel.decorator
 
-package me.singleneuron.qn_kernel.`interface`.ui
+import android.content.Intent
+import de.robv.android.xposed.XC_MethodHook
+import nil.nadph.qnotified.util.Utils
 
-interface FunctionUIInterface {
+abstract class BaseStartActivityHookDecorator(cfg: String) : BaseDecorator(cfg) {
 
-    val name: String
-    val description: String
-    val value: String?
-        get() = null
+    fun decorate(intent: Intent, param: XC_MethodHook.MethodHookParam): Boolean {
+        if (preference.getValue() != true) return false
+        return try {
+            doDecorate(intent, param)
+        } catch (e: Exception) {
+            Utils.log(e)
+            false
+        }
+    }
 
-    val extraSearchWords: Array<String>
-        get() = emptyArray()
-
-    fun getSupportedVersions(
-        versions: Array<Long> = emptyArray(),
-        versionRanges: Array<LongRange> = emptyArray()
-    )
-
-    val isRuntimeSupport: Boolean
-        get() = false
-
-}
-
-interface FunctionUIClickableInterface : FunctionUIInterface {
-
-    val onClick: () -> Boolean
-
-}
-
-interface FunctionUISwitchInterface : FunctionUIInterface {
-
-    val onStatusChanged: (isEnable: Boolean) -> Unit
+    protected abstract fun doDecorate(intent: Intent, param: XC_MethodHook.MethodHookParam): Boolean
 
 }

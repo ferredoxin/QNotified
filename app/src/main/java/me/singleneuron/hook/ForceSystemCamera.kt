@@ -23,7 +23,9 @@ package me.singleneuron.hook
 
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
-import me.singleneuron.base.adapter.BaseDelayableConditionalHookAdapter
+import me.singleneuron.qn_kernel.annotation.UiItem
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
+import me.singleneuron.qn_kernel.ui.base.UiDescription
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.step.Step
@@ -31,9 +33,16 @@ import nil.nadph.qnotified.util.DexKit
 import nil.nadph.qnotified.util.LicenseStatus
 import nil.nadph.qnotified.util.Utils
 
+@UiItem
 @FunctionEntry
-object ForceSystemCamera : BaseDelayableConditionalHookAdapter("forceSystemCamera") {
-    override fun doInit(): Boolean {
+object ForceSystemCamera : CommonDelayAbleHookBridge("forceSystemCamera") {
+
+    override fun getPreconditions(): Array<Step> {
+        //特征字符串："CaptureUtil"
+        return arrayOf(DexDeobfStep(DexKit.C_CaptureUtil))
+    }
+
+    override fun initOnce(): Boolean {
         return try {
             for (m in DexKit.doFindClass(DexKit.C_CaptureUtil)!!.declaredMethods) {
                 val argt = m.parameterTypes
@@ -59,11 +68,11 @@ object ForceSystemCamera : BaseDelayableConditionalHookAdapter("forceSystemCamer
         }
     }
 
-    override fun getPreconditions(): Array<Step> {
-        //特征字符串："CaptureUtil"
-        return arrayOf(DexDeobfStep(DexKit.C_CaptureUtil))
+    override val preference: UiDescription = uiSwitchPreference {
+        title = "强制使用系统相机"
+        summary = "支持8.3.6及更高"
     }
 
-    override val condition: Boolean
-        get() = true
+    override val preferenceLocate: Array<String> = arrayOf("增强功能")
+
 }

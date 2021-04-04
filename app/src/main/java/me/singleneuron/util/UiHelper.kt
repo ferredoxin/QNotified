@@ -19,24 +19,22 @@
  * <https://www.gnu.org/licenses/>
  * <https://github.com/ferredoxin/QNotified/blob/master/LICENSE.md>.
  */
-package me.singleneuron.base.decorator
 
-import android.content.Intent
-import de.robv.android.xposed.XC_MethodHook
-import nil.nadph.qnotified.util.Utils
+package me.singleneuron.util
 
-abstract class BaseStartActivityHookDecorator(cfg: String) : BaseDecorator(cfg) {
+import me.singleneuron.qn_kernel.ui.base.UiCategory
+import me.singleneuron.qn_kernel.ui.base.UiCategoryFactory
+import me.singleneuron.qn_kernel.ui.base.UiPreference
+import me.singleneuron.qn_kernel.ui.base.UiPreferenceFactory
 
-    fun decorate(intent: Intent, param: XC_MethodHook.MethodHookParam): Boolean {
-        if (!checkEnabled()) return false
-        return try {
-            doDecorate(intent, param)
-        } catch (e: Exception) {
-            Utils.log(e)
-            false
-        }
-    }
+fun uiClickToActivityItem(init: UiPreferenceFactory.()->Unit): Pair<String,UiPreference> {
+    val uiClickToActivityItemFactory = UiPreferenceFactory()
+    uiClickToActivityItemFactory.init()
+    return Pair(uiClickToActivityItemFactory.title,uiClickToActivityItemFactory)
+}
 
-    protected abstract fun doDecorate(intent: Intent, param: XC_MethodHook.MethodHookParam): Boolean
-
+fun uiCategory(init: UiCategory.()->Unit): Pair<String,UiCategory> {
+    val uiCategory = UiCategoryFactory()
+    uiCategory.init()
+    return Pair(uiCategory.name,uiCategory)
 }

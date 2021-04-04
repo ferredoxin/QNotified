@@ -19,10 +19,31 @@
  * <https://www.gnu.org/licenses/>
  * <https://github.com/ferredoxin/QNotified/blob/master/LICENSE.md>.
  */
-package me.singleneuron.hook
 
+package me.singleneuron.qn_kernel.base
+
+import me.singleneuron.qn_kernel.ui.base.UiItem
+import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference
 import nil.nadph.qnotified.hook.CommonDelayableHook
 
-object CopyCardMsg : CommonDelayableHook("copyCardMsg") {
-    override fun initOnce(): Boolean = true
+abstract class CommonDelayAbleHookBridge(keyName: String): CommonDelayableHook(keyName), UiItem {
+
+    fun uiSwitchPreference(init: UiSwitchPreferenceItemFactory.()->Unit): UiSwitchPreference {
+        val uiSwitchPreferenceFactory = UiSwitchPreferenceItemFactory()
+        uiSwitchPreferenceFactory.init()
+        return uiSwitchPreferenceFactory
+    }
+
+    open inner class UiSwitchPreferenceItemFactory: UiSwitchPreference {
+        override lateinit var title: String
+        override var summary: String? = null
+        override var getValue: () -> Boolean? = { isEnabled }
+        override var onPreferenceChangeListener: (Boolean) -> Boolean = {
+            isEnabled = it
+            true
+        }
+        override var onClickListener: () -> Boolean = {true}
+        override var valid: Boolean = isValid
+    }
+
 }

@@ -23,9 +23,12 @@ package me.singleneuron.hook.decorator
 
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
-import me.singleneuron.base.decorator.BaseItemBuilderFactoryHookDecorator
+import me.singleneuron.qn_kernel.annotation.UiItem
+import me.singleneuron.qn_kernel.decorator.BaseItemBuilderFactoryHookDecorator
+import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference
 import nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null
 
+@UiItem
 object SimpleReceiptMessage : BaseItemBuilderFactoryHookDecorator("simpleReceiptMessage") {
 
     override fun doDecorate(
@@ -48,5 +51,11 @@ object SimpleReceiptMessage : BaseItemBuilderFactoryHookDecorator("simpleReceipt
         }
         return false
     }
+
+    override val preference: UiSwitchPreference = uiSwitchPreference {
+        title = "回执消息文本化"
+    }
+
+    override val preferenceLocate: Array<String> = arrayOf("净化功能")
 
 }

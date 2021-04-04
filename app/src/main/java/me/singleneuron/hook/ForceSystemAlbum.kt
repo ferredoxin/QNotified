@@ -22,22 +22,24 @@
 package me.singleneuron.hook
 
 import android.content.Intent
+import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import me.singleneuron.activity.ChooseAlbumAgentActivity
-import me.singleneuron.base.adapter.BaseDelayableConditionalHookAdapter
+import me.singleneuron.qn_kernel.annotation.UiItem
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.hostInfo
+import me.singleneuron.qn_kernel.ui.base.UiDescription
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 
 @FunctionEntry
-object ForceSystemAlbum : BaseDelayableConditionalHookAdapter("forceSystemAlbum") {
-    override val condition = true
+@UiItem
+object ForceSystemAlbum : CommonDelayAbleHookBridge("forceSystemAlbum") {
 
-    override fun doInit(): Boolean {
+    override fun initOnce(): Boolean {
         //特征字符串:"onAlbumBtnClicked"
-        val photoListPanelClass =
-            Class.forName("com.tencent.mobileqq.activity.aio.photo.PhotoListPanel")
-        XposedBridge.hookAllMethods(photoListPanelClass, "e", object : XposedMethodHookAdapter() {
-            override fun beforeMethod(param: MethodHookParam?) {
+        val photoListPanelClass = Class.forName("com.tencent.mobileqq.activity.aio.photo.PhotoListPanel")
+        XposedBridge.hookAllMethods(photoListPanelClass, "e", object : XC_MethodHook() {
+            override fun beforeHookedMethod(param: MethodHookParam?) {
                 val context = hostInfo.application
                 val intent = Intent(context, ChooseAlbumAgentActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -47,5 +49,12 @@ object ForceSystemAlbum : BaseDelayableConditionalHookAdapter("forceSystemAlbum"
         })
         return true
     }
+
+    override val preference: UiDescription = uiSwitchPreference {
+        title = "强制使用系统相机"
+        summary = "支持8.3.6及更高"
+    }
+
+    override val preferenceLocate: Array<String> = arrayOf("增强功能")
 
 }

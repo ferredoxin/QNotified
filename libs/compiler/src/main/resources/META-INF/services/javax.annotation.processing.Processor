@@ -1,2 +1,3 @@
 cn.lliiooll.processors.Dex2CProcessor
 cn.lliiooll.processors.FunctionItemProcessor
+me.singleneuron.qn_kernel.processors.UiDescriptionProcessor
