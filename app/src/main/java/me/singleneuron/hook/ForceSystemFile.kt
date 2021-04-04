@@ -22,11 +22,14 @@
 package me.singleneuron.hook
 
 import android.content.Intent
+import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 import me.singleneuron.activity.ChooseFileAgentActivity
-import me.singleneuron.base.adapter.BaseDelayableConditionalHookAdapter
+import me.singleneuron.qn_kernel.annotation.UiItem
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
+import me.singleneuron.qn_kernel.ui.base.UiDescription
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.step.DexDeobfStep
@@ -35,11 +38,16 @@ import nil.nadph.qnotified.util.DexKit
 import nil.nadph.qnotified.util.Initiator
 
 @FunctionEntry
-object ForceSystemFile : BaseDelayableConditionalHookAdapter("forceSystemFile") {
+@UiItem
+object ForceSystemFile : CommonDelayAbleHookBridge("forceSystemFile") {
 
-    override fun doInit(): Boolean {
-        val hook = object : XposedMethodHookAdapter() {
-            override fun beforeMethod(param: MethodHookParam?) {
+    override fun getPreconditions(): Array<Step> {
+        return arrayOf(DexDeobfStep(DexKit.C_SmartDeviceProxyMgr))
+    }
+
+    override fun initOnce(): Boolean {
+        val hook = object : XC_MethodHook() {
+            override fun beforeHookedMethod(param: MethodHookParam?) {
                 val context = hostInfo.application
                 val intent = Intent(context, ChooseFileAgentActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -71,10 +79,11 @@ object ForceSystemFile : BaseDelayableConditionalHookAdapter("forceSystemFile") 
         return true
     }
 
-    override fun getPreconditions(): Array<Step> {
-        return arrayOf(DexDeobfStep(DexKit.C_SmartDeviceProxyMgr))
+    override val preference: UiDescription = uiSwitchPreference {
+        title = "强制使用系统文件"
+        summary = "支持8.3.6及更高"
     }
 
-    override val condition: Boolean
-        get() = true
+    override val preferenceLocate: Array<String> = arrayOf("增强功能")
+
 }

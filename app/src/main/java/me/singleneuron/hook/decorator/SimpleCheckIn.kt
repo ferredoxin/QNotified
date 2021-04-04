@@ -22,10 +22,13 @@
 package me.singleneuron.hook.decorator
 
 import de.robv.android.xposed.XC_MethodHook
-import me.singleneuron.base.decorator.BaseItemBuilderFactoryHookDecorator
+import me.singleneuron.qn_kernel.annotation.UiItem
+import me.singleneuron.qn_kernel.decorator.BaseItemBuilderFactoryHookDecorator
+import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference
 import nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null
 import nil.nadph.qnotified.util.ReflexUtil.invoke_virtual
 
+@UiItem
 object SimpleCheckIn : BaseItemBuilderFactoryHookDecorator("qn_sign_in_as_text") {
 
     override fun doDecorate(
@@ -50,5 +53,11 @@ object SimpleCheckIn : BaseItemBuilderFactoryHookDecorator("qn_sign_in_as_text")
         }
         return false
     }
+
+    override val preference: UiSwitchPreference = uiSwitchPreference {
+        title = "签到文本化"
+    }
+
+    override val preferenceLocate: Array<String> = arrayOf("净化功能")
 
 }

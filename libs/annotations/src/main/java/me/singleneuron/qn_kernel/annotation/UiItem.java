@@ -19,27 +19,14 @@
  * <https://www.gnu.org/licenses/>
  * <https://github.com/ferredoxin/QNotified/blob/master/LICENSE.md>.
  */
-package me.singleneuron.base.decorator
 
-import de.robv.android.xposed.XC_MethodHook
-import nil.nadph.qnotified.util.Utils
+package me.singleneuron.qn_kernel.annotation;
 
-abstract class BaseItemBuilderFactoryHookDecorator(cfg: String) : BaseDecorator(cfg) {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-    fun decorate(result: Int, chatMessage: Any, param: XC_MethodHook.MethodHookParam): Boolean {
-        if (!checkEnabled()) return false
-        return try {
-            doDecorate(result, chatMessage, param)
-        } catch (e: Exception) {
-            Utils.log(e)
-            false
-        }
-    }
-
-    protected abstract fun doDecorate(
-        result: Int,
-        chatMessage: Any,
-        param: XC_MethodHook.MethodHookParam
-    ): Boolean
-
-}
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.CLASS)
+public @interface UiItem {}

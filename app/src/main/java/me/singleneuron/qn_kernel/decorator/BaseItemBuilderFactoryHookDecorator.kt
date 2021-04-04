@@ -19,10 +19,27 @@
  * <https://www.gnu.org/licenses/>
  * <https://github.com/ferredoxin/QNotified/blob/master/LICENSE.md>.
  */
-package me.singleneuron.hook
+package me.singleneuron.qn_kernel.decorator
 
-import nil.nadph.qnotified.hook.CommonDelayableHook
+import de.robv.android.xposed.XC_MethodHook
+import nil.nadph.qnotified.util.Utils
 
-object CopyCardMsg : CommonDelayableHook("copyCardMsg") {
-    override fun initOnce(): Boolean = true
+abstract class BaseItemBuilderFactoryHookDecorator(cfg: String) : BaseDecorator(cfg) {
+
+    fun decorate(result: Int, chatMessage: Any, param: XC_MethodHook.MethodHookParam): Boolean {
+        if (preference.getValue() != true) return false
+        return try {
+            doDecorate(result, chatMessage, param)
+        } catch (e: Exception) {
+            Utils.log(e)
+            false
+        }
+    }
+
+    protected abstract fun doDecorate(
+        result: Int,
+        chatMessage: Any,
+        param: XC_MethodHook.MethodHookParam
+    ): Boolean
+
 }

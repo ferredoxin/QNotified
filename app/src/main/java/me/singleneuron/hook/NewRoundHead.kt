@@ -23,9 +23,11 @@ package me.singleneuron.hook
 
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
-import me.singleneuron.base.adapter.BaseDelayableHighPerformanceConditionalHookAdapter
+import me.singleneuron.qn_kernel.annotation.UiItem
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
+import me.singleneuron.qn_kernel.ui.base.UiDescription
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.step.DexDeobfStep
@@ -35,11 +37,19 @@ import nil.nadph.qnotified.util.LicenseStatus
 import nil.nadph.qnotified.util.Utils
 
 @FunctionEntry
-object NewRoundHead : BaseDelayableHighPerformanceConditionalHookAdapter("newroundhead") {
+@UiItem
+object NewRoundHead : CommonDelayAbleHookBridge("newroundhead") {
 
-    override val recordTime: Boolean = false
+    override fun getPreconditions(): Array<Step> {
+        //特征字符串："FaceManager"/"AvatarUtil"
+        return if (requireMinQQVersion(QQVersion.QQ_8_5_0)) {
+            arrayOf(DexDeobfStep(DexKit.C_AvatarUtil))
+        } else {
+            arrayOf(DexDeobfStep(DexKit.C_FaceManager))
+        }
+    }
 
-    override fun doInit(): Boolean {
+    override fun initOnce(): Boolean {
         return try {
             var method = "a"
             if (hostInfo.versionCode == QQVersion.QQ_8_5_0) {
@@ -91,15 +101,11 @@ object NewRoundHead : BaseDelayableHighPerformanceConditionalHookAdapter("newrou
         }
     }
 
-    override fun getPreconditions(): Array<Step> {
-        //特征字符串："FaceManager"/"AvatarUtil"
-        return if (requireMinQQVersion(QQVersion.QQ_8_5_0)) {
-            arrayOf(DexDeobfStep(DexKit.C_AvatarUtil))
-        } else {
-            arrayOf(DexDeobfStep(DexKit.C_FaceManager))
-        }
+    override val preference: UiDescription = uiSwitchPreference {
+        title = "新版简洁模式圆头像"
+        summary = "From 花Q，支持8.3.6及更高，重启后生效"
     }
 
-    override val condition: Boolean
-        get() = true
+    override val preferenceLocate: Array<String> = arrayOf("辅助功能")
+
 }
