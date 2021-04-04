@@ -72,7 +72,7 @@ public class FunctionItemProcessor extends BaseProcessor {
 
             for (Element e : annos) {
 //                System.out.println("Processing >>> " + e.toString());
-                beyond.addStatement("result.add($L.INSTANCE)", e.toString());
+                beyond.addStatement("result.add($T.INSTANCE)", e.asType());
             }
             beyond.addStatement("return result");
             TypeSpec util = TypeSpec.classBuilder("AnnotatedFunctionItemList")
