@@ -28,6 +28,7 @@ import static nil.nadph.qnotified.ui.ViewBuilder.clickToProxyActAction;
 import static nil.nadph.qnotified.ui.ViewBuilder.newListItemButton;
 import static nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit;
 import static nil.nadph.qnotified.ui.ViewBuilder.newListItemSwitchConfig;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemSwitchConfigNext;
 import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
 import static nil.nadph.qnotified.util.Utils.dip2px;
 
@@ -45,6 +46,7 @@ import cc.ioctl.hook.MutePokePacket;
 import cc.ioctl.hook.PttForwardHook;
 import cc.ioctl.script.QNScriptManager;
 import com.tencent.mobileqq.widget.BounceScrollView;
+import me.ketal.hook.HideTab;
 import me.kyuubiran.dialog.RevokeMsgDialog;
 import me.kyuubiran.hook.RemoveDiyCard;
 import me.kyuubiran.hook.RemovePokeGrayTips;
@@ -109,6 +111,7 @@ public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
             RemovePokeGrayTips.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "[特供版]彻底屏蔽傻逼diy名片", "用闪退/zip炸弹名片的先死个妈",
             RemoveDiyCard.INSTANCE));
+        ll.addView(newListItemSwitchConfigNext(this, "隐藏底栏", "底栏项目移到侧滑", HideTab.INSTANCE));
 
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         setContentView(bounceScrollView);
