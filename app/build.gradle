@@ -90,7 +90,7 @@ dependencies {
     compileOnly project(":stub")
     implementation project(":annotations")
     compileOnly project(":compiler")
-    annotationProcessor project(":compiler")
+    kapt project(":compiler")
     compileOnly 'de.robv.android.xposed:api:82'
     implementation 'com.flyco.tablayout:FlycoTabLayout_Lib:2.2.0'
     implementation 'com.jaredrummler:colorpicker:1.1.0'
@@ -105,7 +105,7 @@ dependencies {
     // androidx
     implementation 'androidx.preference:preference-ktx:1.1.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    implementation 'com.google.android.material:material:1.4.0-alpha01'
+    implementation 'com.google.android.material:material:1.4.0-alpha02'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.afollestad.material-dialogs:core:3.3.0'
     implementation 'com.afollestad.material-dialogs:input:3.3.0'
@@ -120,8 +120,8 @@ dependencies {
 
 dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.3.3'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.3'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.4'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.4'
     def room_version = "2.2.6"
 
     implementation "androidx.room:room-runtime:$room_version"
