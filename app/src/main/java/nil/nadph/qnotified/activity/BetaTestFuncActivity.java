@@ -50,9 +50,12 @@ import me.kyuubiran.hook.RemoveDiyCard;
 import me.kyuubiran.hook.RemovePokeGrayTips;
 import me.kyuubiran.hook.RemoveRedDot;
 import me.kyuubiran.hook.testhook.CutMessage;
+import ltd.nextalone.hook.*;
+import me.singleneuron.qn_kernel.ui.NewSettingsActivity;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.ui.ResUtils;
 
+import static nil.nadph.qnotified.ui.ViewBuilder.*;
 @SuppressLint("Registered")
 public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
 
@@ -90,6 +93,8 @@ public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
                 + "闪退 请酌情开启]"));
         ll.addView(newListItemSwitchConfig(this, "保存语音", "需要打开语音转发才能使用本功能",
             PttForwardHook.qn_enable_ptt_save, false));
+        ll.addView(
+            newListItemConfigSwitchIfValid(this, "折叠群聊复读消息", "不推荐使用", CollapseTroopMessage.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "移除小红点", "仅供测试", RemoveRedDot.INSTANCE));
         ll.addView(_t = newListItemButton(this, "自定义聊天小尾巴", "回车发送不生效", "N/A",
             clickToProxyActAction(ChatTailActivity.class)));

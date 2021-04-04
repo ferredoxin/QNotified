@@ -260,8 +260,6 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         ll.addView(newListItemConfigSwitchIfValid(this, "聊天自动接收原图", null,
             AutoReceiveOriginalPhoto.INSTANCE));
         ll.addView(
-            newListItemConfigSwitchIfValid(this, "折叠群聊复读消息", null, CollapseTroopMessage.INSTANCE));
-        ll.addView(
             newListItemConfigSwitchIfValid(this, "移除消息前后的空格", null, TrimMessage.INSTANCE));
         ll.addView(newListItemConfigSwitchIfValid(this, "隐藏空间好友热播和广告", null, QZoneNoAD.INSTANCE));
         ll.addView(newListItemConfigSwitchIfValid(this, "隐藏QQ钱包超值精选", null, QWalletNoAD.INSTANCE));
