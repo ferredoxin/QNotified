@@ -23,15 +23,12 @@
 package me.ketal.hook
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TabHost
 import android.widget.TextView
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.core.view.plusAssign
@@ -64,16 +61,15 @@ object HideTab : CommonDelayableHook("ketal_HideTab") {
         "com.tencent.mobileqq.activity.QQSettingMe".clazz?.hookAfterAllConstructors {
             if (!isEnabled) return@hookAfterAllConstructors
             val rootView = it.args[2] as ViewGroup
-            val ctx = rootView.context
             val linearLayout = rootView.findHostView<LinearLayout>("midcontent_list")!!
-            addSettingItem(linearLayout, loadDrawable(ctx, "skin_tab_icon_conversation_normal"), "消息") {
+            addSettingItem(linearLayout, "skin_tab_icon_conversation_normal", "消息") {
                 tab.currentTab = 0
             }
-            addSettingItem(linearLayout, loadDrawable(ctx, "skin_tab_icon_contact_normal"), "联系人") {
+            addSettingItem(linearLayout, "skin_tab_icon_contact_normal", "联系人") {
                 tab.currentTab = 1
             }
             if (!SimplifyBottomQzone.isEnabled) {
-                addSettingItem(linearLayout, loadDrawable(ctx, "skin_tab_icon_plugin_normal"), "动态") {
+                addSettingItem(linearLayout, "skin_tab_icon_plugin_normal", "动态") {
                     val size = (tab.get("mTabSpecs") as ArrayList<*>).size
                     tab.currentTab = if (size == 3) 2 else 3
                 }
@@ -81,19 +77,15 @@ object HideTab : CommonDelayableHook("ketal_HideTab") {
         }
     }
 
-    private fun addSettingItem(linearLayout: LinearLayout, drawable: Drawable?, label: String, clickListener: View.OnClickListener) {
+    private fun addSettingItem(linearLayout: LinearLayout, resName: String, label: String, clickListener: View.OnClickListener) {
         val ctx = linearLayout.context
         val view = View.inflate(ctx, ctx.hostLayout("b2g")!!, null) as LinearLayout
         val imgView = view[0] as ImageView
         val textView = view[1] as TextView
-        imgView.setImageDrawable(drawable)
+        imgView.setImageResource(ctx.hostDrawable(resName)!!)
         textView.text = label
         view.setOnClickListener(clickListener)
         linearLayout += view
     }
-
-    private fun loadDrawable(ctx: Context, str: String) =
-        ResourcesCompat.getDrawable(ctx.resources, ctx.hostDrawable(str)!!, null)
-
 }
 
