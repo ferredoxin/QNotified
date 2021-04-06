@@ -179,6 +179,8 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
             RepeaterIconSettingDialog.OnClickListener_createDialog(this)));
         ll.addView(newListItemButton(this, "辅助功能", null, null,
             clickToProxyActAction(AuxFuncActivity.class)));
+        ll.addView(newListItemButton(this, "娱乐功能", null, null,
+            clickToProxyActAction(AmusementActivity.class)));
         ll.addView(subtitle(this, "净化设置"));
         ll.addView(newListItemConfigSwitchIfValid(this, "禁止回复自动@", "去除回复消息时自动@特性",
             ReplyNoAtHook.INSTANCE));
@@ -200,8 +202,6 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
             newListItemHookSwitchInit(this, "显示设置禁言的管理", "即使你只是普通群成员", GagInfoDisclosure.INSTANCE));
         addViewConditionally(ll, this, "小程序分享转链接（发送）", "感谢Alcatraz323开发远离小程序,神经元移植到Xposed",
             NoApplet.INSTANCE);
-        ll.addView(newListItemButton(this, "娱乐功能", null, null,
-            clickToProxyActAction(AmusementActivity.class)));
         ll.addView(subtitle(this, "实验性功能(未必有效)"));
         ll.addView(
             _t = newListItemButton(this, "下载重定向", "N/A", "N/A", this::onFileRecvRedirectClick));
