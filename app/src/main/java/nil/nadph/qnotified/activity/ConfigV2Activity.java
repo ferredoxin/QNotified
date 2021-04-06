@@ -24,7 +24,6 @@ package nil.nadph.qnotified.activity;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -45,6 +44,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Date;
+import me.ketal.util.ComponentUtilKt;
 import me.singleneuron.util.HookStatue;
 import nil.nadph.qnotified.BuildConfig;
 import nil.nadph.qnotified.R;
@@ -228,23 +228,13 @@ public class ConfigV2Activity extends AppCompatActivity {
     }
 
     boolean isLauncherIconEnabled() {
-        try {
-            PackageManager packageManager = getPackageManager();
-            int state = packageManager.getComponentEnabledSetting(
-                new ComponentName(this, ALIAS_ACTIVITY_NAME));
-            return state == PackageManager.COMPONENT_ENABLED_STATE_ENABLED ||
-                state == PackageManager.COMPONENT_ENABLED_STATE_DEFAULT;
-        } catch (Exception e) {
-            return false;
-        }
+        ComponentName componentName = new ComponentName(this, ALIAS_ACTIVITY_NAME);
+        return ComponentUtilKt.getEnable(componentName, this);
     }
 
     @UiThread
     void setLauncherIconEnabled(boolean enabled) {
-        getPackageManager().setComponentEnabledSetting(
-            new ComponentName(this, ALIAS_ACTIVITY_NAME),
-            enabled ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED :
-                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-            PackageManager.DONT_KILL_APP);
+        ComponentName componentName = new ComponentName(this, ALIAS_ACTIVITY_NAME);
+        ComponentUtilKt.setEnable(componentName, this, enabled);
     }
 }
