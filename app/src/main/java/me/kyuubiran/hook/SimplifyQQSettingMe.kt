@@ -22,10 +22,16 @@
 package me.kyuubiran.hook
 
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.view.forEach
+import androidx.core.view.forEachIndexed
+import androidx.core.view.get
+import androidx.core.view.size
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
+import ltd.nextalone.util.get
 import me.kyuubiran.util.setViewZeroSize
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
@@ -34,7 +40,6 @@ import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.step.Step
 import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.LicenseStatus
-import nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null
 import nil.nadph.qnotified.util.Utils
 import java.util.*
 
@@ -96,92 +101,99 @@ object SimplifyQQSettingMe : BaseMultiConfigDelayableHook() {
                     if (!isEnabled) return
                     try {
                         //中间部分(QQ会员 我的钱包等)
-                        val midcontentName = if (requireMinQQVersion(QQVersion.QQ_8_6_0)) "n" else "k"
-                        val midcontentListLayout: LinearLayout = iget_object_or_null(
-                            param.thisObject,
-                            midcontentName,
-                            View::class.java
-                        ) as LinearLayout
+                        val midcontentListLayout = if (requireMinQQVersion(QQVersion.QQ_8_6_5)) {
+                            param.thisObject.get("c", LinearLayout::class.java)
+                        } else {
+                            val midcontentName = if (requireMinQQVersion(QQVersion.QQ_8_6_0)) "n" else "k"
+                            param.thisObject.get(midcontentName, View::class.java) as LinearLayout
+                        }
                         //底端部分 设置 夜间模式 达人 等
                         val underSettingsName = if (requireMinQQVersion(QQVersion.QQ_8_6_0)) "l" else "h"
-                        val underSettingsLayout: LinearLayout = iget_object_or_null(
-                            param.thisObject,
-                            underSettingsName,
-                            View::class.java
-                        ) as LinearLayout
-                        for (i in 1 until underSettingsLayout.childCount) {
-                            val child = underSettingsLayout.getChildAt(i) as LinearLayout
-                            val tv = child.getChildAt(1) as TextView
+                        val underSettingsLayout = if (requireMinQQVersion(QQVersion.QQ_8_6_5)) {
+                            val parent  = midcontentListLayout?.parent?.parent as ViewGroup
+                            var ret: LinearLayout? = null
+                            parent.forEach {
+                                if (it is LinearLayout && it[0] is LinearLayout) {
+                                    ret = it
+                                }
+                            }
+                            ret
+                        } else {
+                            param.thisObject.get(underSettingsName, View::class.java) as LinearLayout
+                        }
+                        underSettingsLayout?.forEachIndexed { i, v ->
+                            val tv = (v as LinearLayout)[1] as TextView
                             val text = tv.text
                             when {
                                 text.contains("间") && getBooleanConfig(HIDE_YE_JIAN) -> {
-                                    child.setViewZeroSize()
+                                    v.setViewZeroSize()
                                 }
                                 (text.contains("达") || text.contains("天")) && getBooleanConfig(
                                     HIDE_DA_REN
                                 ) -> {
-                                    child.setViewZeroSize()
+                                    v.setViewZeroSize()
                                 }
                                 i == 3 && getBooleanConfig(HIDE_WEN_DU) -> {
-                                    child.setViewZeroSize()
+                                    v.setViewZeroSize()
                                 }
                             }
                         }
-
-                        if (midcontentListLayout.toString().contains("midcontent_list")) {
-                            for (i in 1 until midcontentListLayout.childCount) {
-                                val child = midcontentListLayout.getChildAt(i) as LinearLayout
-                                val tv = child.getChildAt(1) as TextView
-                                val text = tv.text.toString()
-                                when {
-                                    text.contains("播") && getBooleanConfig(HIDE_KAI_BO_LA_E) -> {
-                                        child.setViewZeroSize()
-                                    }
-                                    text.contains("世界") && getBooleanConfig(HIDE_XIAO_SHI_JIE) -> {
-                                        child.setViewZeroSize()
-                                    }
-                                    (text.contains("会员") || text.toLowerCase(Locale.ROOT)
-                                        .contains("vip")) && getBooleanConfig(HIDE_HUI_YUAN) -> {
-                                        child.setViewZeroSize()
-                                    }
-                                    text.contains("钱包") && getBooleanConfig(HIDE_QIAN_BAO) -> {
-                                        child.setViewZeroSize()
-                                    }
-                                    text.contains("装扮") && getBooleanConfig(HIDE_ZHUANG_BAN) -> {
-                                        child.setViewZeroSize()
-                                    }
-                                    text.contains("情侣") && getBooleanConfig(HIDE_QING_LV) -> {
-                                        child.setViewZeroSize()
-                                    }
-                                    text.contains("相册") && getBooleanConfig(HIDE_XIANG_CE) -> {
-                                        child.setViewZeroSize()
-                                    }
-                                    text.contains("收藏") && getBooleanConfig(HIDE_SHOU_CANG) -> {
-                                        child.setViewZeroSize()
-                                    }
-                                    text.contains("文件") && getBooleanConfig(HIDE_WEN_JIAN) -> {
-                                        child.setViewZeroSize()
-                                    }
-                                    text.contains("日程") && getBooleanConfig(HIDE_RI_CHENG) -> {
-                                        child.setViewZeroSize()
-                                    }
-                                    text.contains("视频") && getBooleanConfig(HIDE_SHI_PIN) -> {
-                                        child.setViewZeroSize()
-                                    }
-                                    text.contains("游戏") && getBooleanConfig(HIDE_XIAO_YOU_XI) -> {
-                                        child.setViewZeroSize()
-                                    }
-                                    text.contains("文档") && getBooleanConfig(HIDE_WEN_DANG) -> {
-                                        child.setViewZeroSize()
-                                    }
-                                    text.contains("打卡") && getBooleanConfig(HIDE_DA_KA) -> {
-                                        child.setViewZeroSize()
-                                    }
-                                    (text.contains("王卡") || text.contains("流量") || text.contains("送12个月")) && getBooleanConfig(
-                                        HIDE_WANG_KA
-                                    ) -> {
-                                        child.setViewZeroSize()
-                                    }
+                        midcontentListLayout?.forEach {
+                            val child = it as LinearLayout
+                            val tv = if (child.size == 1) {
+                                (child[0] as LinearLayout)[1]
+                            } else {
+                                child[1]
+                            } as TextView
+                            val text = tv.text.toString()
+                            when {
+                                text.contains("播") && getBooleanConfig(HIDE_KAI_BO_LA_E) -> {
+                                    child.setViewZeroSize()
+                                }
+                                text.contains("世界") && getBooleanConfig(HIDE_XIAO_SHI_JIE) -> {
+                                    child.setViewZeroSize()
+                                }
+                                (text.contains("会员") || text.toLowerCase(Locale.ROOT)
+                                    .contains("vip")) && getBooleanConfig(HIDE_HUI_YUAN) -> {
+                                    child.setViewZeroSize()
+                                }
+                                text.contains("钱包") && getBooleanConfig(HIDE_QIAN_BAO) -> {
+                                    child.setViewZeroSize()
+                                }
+                                text.contains("装扮") && getBooleanConfig(HIDE_ZHUANG_BAN) -> {
+                                    child.setViewZeroSize()
+                                }
+                                text.contains("情侣") && getBooleanConfig(HIDE_QING_LV) -> {
+                                    child.setViewZeroSize()
+                                }
+                                text.contains("相册") && getBooleanConfig(HIDE_XIANG_CE) -> {
+                                    child.setViewZeroSize()
+                                }
+                                text.contains("收藏") && getBooleanConfig(HIDE_SHOU_CANG) -> {
+                                    child.setViewZeroSize()
+                                }
+                                text.contains("文件") && getBooleanConfig(HIDE_WEN_JIAN) -> {
+                                    child.setViewZeroSize()
+                                }
+                                text.contains("日程") && getBooleanConfig(HIDE_RI_CHENG) -> {
+                                    child.setViewZeroSize()
+                                }
+                                text.contains("视频") && getBooleanConfig(HIDE_SHI_PIN) -> {
+                                    child.setViewZeroSize()
+                                }
+                                text.contains("游戏") && getBooleanConfig(HIDE_XIAO_YOU_XI) -> {
+                                    child.setViewZeroSize()
+                                }
+                                text.contains("文档") && getBooleanConfig(HIDE_WEN_DANG) -> {
+                                    child.setViewZeroSize()
+                                }
+                                text.contains("打卡") && getBooleanConfig(HIDE_DA_KA) -> {
+                                    child.setViewZeroSize()
+                                }
+                                (text.contains("王卡") || text.contains("流量") || text.contains("送12个月")) && getBooleanConfig(
+                                    HIDE_WANG_KA
+                                ) -> {
+                                    child.setViewZeroSize()
                                 }
                             }
                         }
