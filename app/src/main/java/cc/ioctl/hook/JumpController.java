@@ -39,6 +39,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
@@ -67,7 +68,7 @@ public class JumpController extends CommonDelayableHook {
     private ArrayList<Rule> rules = null;
 
     protected JumpController() {
-        super("qn_jmp_ctl_enable");
+        super("qn_jmp_ctl_enable", SyncUtils.PROC_MAIN, true);
     }
 
     public static ArrayList<Rule> parseRules(String rules) throws ParseException {
