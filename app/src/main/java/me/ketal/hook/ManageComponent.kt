@@ -42,10 +42,10 @@ import nil.nadph.qnotified.util.Toasts
 object ManageComponent : CommonDelayableHook("Ketal_ManageComponent") {
     override fun initOnce() = true
     private val components = mapOf(
-        "发送到我的iPad" to ComponentName(HookEntry.PACKAGE_NAME_SELF, "me.ketal.ui.activity.QFileShareToIpadActivity"),
         "发送到我的电脑" to ComponentName(hostInfo.packageName, "com.tencent.mobileqq.activity.qfileJumpActivity"),
         "保存到QQ收藏" to ComponentName(hostInfo.packageName, "cooperation.qqfav.widget.QfavJumpActivity"),
-        "面对面快传" to ComponentName(hostInfo.packageName, "cooperation.qlink.QlinkShareJumpActivity")
+        "面对面快传" to ComponentName(hostInfo.packageName, "cooperation.qlink.QlinkShareJumpActivity"),
+        "发送到我的iPad" to ComponentName(HookEntry.PACKAGE_NAME_SELF, "me.ketal.ui.activity.QFileShareToIpadActivity")
     )
 
     val listener = View.OnClickListener {
@@ -79,6 +79,7 @@ object ManageComponent : CommonDelayableHook("Ketal_ManageComponent") {
                             putExtra(SEND_TO_IPAD_CMD, ENABLE_SEND_TO_IPAD)
                             putExtra(ENABLE_SEND_TO_IPAD_STATUS, b)
                         }
+                        Toasts.info(ctx, "已保存组件状态")
                         ctx.startActivity(intent)
                         return@setPositiveButton
                     }
