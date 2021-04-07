@@ -29,7 +29,7 @@ import android.content.Intent
 import android.view.View
 import me.ketal.ui.activity.QFileShareToIpadActivity.Companion.ENABLE_SEND_TO_IPAD
 import me.ketal.ui.activity.QFileShareToIpadActivity.Companion.ENABLE_SEND_TO_IPAD_STATUS
-import me.ketal.ui.activity.QFileShareToIpadActivity.Companion.SEND_TO_IAPD_CMD
+import me.ketal.ui.activity.QFileShareToIpadActivity.Companion.SEND_TO_IPAD_CMD
 import me.ketal.util.getEnable
 import me.ketal.util.setEnable
 import me.singleneuron.qn_kernel.data.hostInfo
@@ -42,7 +42,7 @@ import nil.nadph.qnotified.util.Toasts
 object ManageComponent : CommonDelayableHook("Ketal_ManageComponent") {
     override fun initOnce() = true
     private val components = mapOf(
-        "发送到我的ipad" to ComponentName(HookEntry.PACKAGE_NAME_SELF, "me.ketal.ui.activity.QFileShareToIpadActivity"),
+        "发送到我的iPad" to ComponentName(HookEntry.PACKAGE_NAME_SELF, "me.ketal.ui.activity.QFileShareToIpadActivity"),
         "发送到我的电脑" to ComponentName(hostInfo.packageName, "com.tencent.mobileqq.activity.qfileJumpActivity"),
         "保存到QQ收藏" to ComponentName(hostInfo.packageName, "cooperation.qqfav.widget.QfavJumpActivity"),
         "面对面快传" to ComponentName(hostInfo.packageName, "cooperation.qlink.QlinkShareJumpActivity")
@@ -67,16 +67,16 @@ object ManageComponent : CommonDelayableHook("Ketal_ManageComponent") {
             .setNegativeButton("取消", null)
             .setPositiveButton("确定") { _: DialogInterface, _: Int ->
                 cache.forEachIndexed { i, b ->
-                    if (!cache[keys.indexOf("发送到我的电脑")] && cache[keys.indexOf("发送到我的ipad")]) {
-                        Toasts.error(ctx, "启用发送到ipad需启用发送到电脑")
+                    if (!cache[keys.indexOf("发送到我的电脑")] && cache[keys.indexOf("发送到我的iPad")]) {
+                        Toasts.error(ctx, "启用发送到iPad需启用发送到电脑")
                         it.performClick()
                         return@setPositiveButton
                     }
                     val k = keys[i]
-                    if (k == "发送到我的ipad" && b != components[k]?.getEnable(ctx)) {
+                    if (k == "发送到我的iPad" && b != components[k]?.getEnable(ctx)) {
                         val intent = Intent().apply {
                             component = ComponentName(BuildConfig.APPLICATION_ID, "nil.nadph.qnotified.activity.ConfigV2Activity")
-                            putExtra(SEND_TO_IAPD_CMD, ENABLE_SEND_TO_IPAD)
+                            putExtra(SEND_TO_IPAD_CMD, ENABLE_SEND_TO_IPAD)
                             putExtra(ENABLE_SEND_TO_IPAD_STATUS, b)
                         }
                         ctx.startActivity(intent)
