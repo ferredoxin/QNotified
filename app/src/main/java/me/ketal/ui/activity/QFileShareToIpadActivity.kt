@@ -30,6 +30,11 @@ import android.os.Bundle
 import nil.nadph.qnotified.startup.HookEntry
 
 class QFileShareToIpadActivity : Activity() {
+    companion object {
+        const val SEND_TO_IAPD_CMD = "send_to_ipad_cmd"
+        const val ENABLE_SEND_TO_IPAD = "enable_send_to_ipad"
+        const val ENABLE_SEND_TO_IPAD_STATUS = "enable_send_to_ipad_status"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

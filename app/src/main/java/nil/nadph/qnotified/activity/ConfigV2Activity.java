@@ -21,6 +21,10 @@
  */
 package nil.nadph.qnotified.activity;
 
+import static me.ketal.ui.activity.QFileShareToIpadActivity.ENABLE_SEND_TO_IPAD;
+import static me.ketal.ui.activity.QFileShareToIpadActivity.ENABLE_SEND_TO_IPAD_STATUS;
+import static me.ketal.ui.activity.QFileShareToIpadActivity.SEND_TO_IAPD_CMD;
+
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -44,6 +48,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Date;
+
+import me.ketal.ui.activity.QFileShareToIpadActivity;
 import me.ketal.util.ComponentUtilKt;
 import me.singleneuron.util.HookStatue;
 import nil.nadph.qnotified.BuildConfig;
@@ -68,6 +74,14 @@ public class ConfigV2Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         if (R.string.res_inject_success >>> 24 == 0x7f) {
             throw new RuntimeException("package id must NOT be 0x7f");
+        }
+        String cmd = getIntent().getStringExtra(SEND_TO_IAPD_CMD);
+        if (ENABLE_SEND_TO_IPAD.equals(cmd)) {
+            boolean enabled = getIntent().getBooleanExtra(ENABLE_SEND_TO_IPAD_STATUS, false);
+            Utils.logd("状态" + enabled);
+            ComponentName componentName = new ComponentName(this, QFileShareToIpadActivity.class);
+            ComponentUtilKt.setEnable(componentName, this, enabled);
+            finish();
         }
         String str = "";
         try {
