@@ -37,4 +37,5 @@
     <string name="contact">联系我们</string>
     <string name="open_source_license">开放源代码许可</string>
     <string name="main_developers">主要开发者</string>
+    <string name="send_to_ipad">发送到我的iPad</string>
 </resources>

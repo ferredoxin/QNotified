@@ -39,6 +39,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
@@ -54,7 +55,8 @@ public class JumpController extends CommonDelayableHook {
 
     public static final String DEFAULT_RULES = "A,P:me.singleneuron.locknotification;\n" +
         "A,P:cn.nexus6p.QQMusicNotify;\n" +
-        "A,A:android.media.action.VIDEO_CAPTURE;\n";
+        "A,A:android.media.action.VIDEO_CAPTURE;\n" +
+        "A,P:nil.nadph.qnotified;\n";
     public static final int JMP_DEFAULT = 0;
     public static final int JMP_ALLOW = 1;
     public static final int JMP_REJECT = 2;
@@ -66,7 +68,7 @@ public class JumpController extends CommonDelayableHook {
     private ArrayList<Rule> rules = null;
 
     protected JumpController() {
-        super("qn_jmp_ctl_enable");
+        super("qn_jmp_ctl_enable", SyncUtils.PROC_MAIN, true);
     }
 
     public static ArrayList<Rule> parseRules(String rules) throws ParseException {

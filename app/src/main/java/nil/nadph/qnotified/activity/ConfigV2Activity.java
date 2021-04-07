@@ -21,10 +21,13 @@
  */
 package nil.nadph.qnotified.activity;
 
+import static me.ketal.ui.activity.QFileShareToIpadActivity.ENABLE_SEND_TO_IPAD;
+import static me.ketal.ui.activity.QFileShareToIpadActivity.ENABLE_SEND_TO_IPAD_STATUS;
+import static me.ketal.ui.activity.QFileShareToIpadActivity.SEND_TO_IPAD_CMD;
+
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -45,6 +48,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Date;
+
+import me.ketal.ui.activity.QFileShareToIpadActivity;
+import me.ketal.util.ComponentUtilKt;
 import me.singleneuron.util.HookStatue;
 import nil.nadph.qnotified.BuildConfig;
 import nil.nadph.qnotified.R;
@@ -68,6 +74,13 @@ public class ConfigV2Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         if (R.string.res_inject_success >>> 24 == 0x7f) {
             throw new RuntimeException("package id must NOT be 0x7f");
+        }
+        String cmd = getIntent().getStringExtra(SEND_TO_IPAD_CMD);
+        if (ENABLE_SEND_TO_IPAD.equals(cmd)) {
+            boolean enabled = getIntent().getBooleanExtra(ENABLE_SEND_TO_IPAD_STATUS, false);
+            ComponentName componentName = new ComponentName(this, QFileShareToIpadActivity.class);
+            ComponentUtilKt.setEnable(componentName, this, enabled);
+            finish();
         }
         String str = "";
         try {
@@ -228,23 +241,13 @@ public class ConfigV2Activity extends AppCompatActivity {
     }
 
     boolean isLauncherIconEnabled() {
-        try {
-            PackageManager packageManager = getPackageManager();
-            int state = packageManager.getComponentEnabledSetting(
-                new ComponentName(this, ALIAS_ACTIVITY_NAME));
-            return state == PackageManager.COMPONENT_ENABLED_STATE_ENABLED ||
-                state == PackageManager.COMPONENT_ENABLED_STATE_DEFAULT;
-        } catch (Exception e) {
-            return false;
-        }
+        ComponentName componentName = new ComponentName(this, ALIAS_ACTIVITY_NAME);
+        return ComponentUtilKt.getEnable(componentName, this);
     }
 
     @UiThread
     void setLauncherIconEnabled(boolean enabled) {
-        getPackageManager().setComponentEnabledSetting(
-            new ComponentName(this, ALIAS_ACTIVITY_NAME),
-            enabled ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED :
-                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-            PackageManager.DONT_KILL_APP);
+        ComponentName componentName = new ComponentName(this, ALIAS_ACTIVITY_NAME);
+        ComponentUtilKt.setEnable(componentName, this, enabled);
     }
 }

@@ -60,6 +60,7 @@ class AuxFuncActivity : IphoneTitleBarActivityCompat() {
         ll += newListItemHookSwitchInit(this, "批量撤回消息", "多选消息后撤回", MultiActionHook)
         ll += newListItemButtonIfValid(this, "修改消息左滑动作", null, null, LeftSwipeReplyHook,
                 ModifyLeftSwipeReplyActivity::class.java)
+        ll += newListItemButton(this, "管理QQ组件", null, null, ManageComponent.listener)
 
         setContentBackgroundDrawable(ResUtils.skin_background)
         title = "辅助功能"
