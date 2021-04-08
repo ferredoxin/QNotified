@@ -25,7 +25,6 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.annotation.IntDef
 import androidx.annotation.StringRes
-import com.topjohnwu.superuser.Shell
 import nil.nadph.qnotified.R
 import java.io.File
 
@@ -45,11 +44,14 @@ object HookStatue {
 
     fun Context.getStatue(useSu: Boolean): Statue {
         val isInstall = IsInstall(this)
-        val getMagiskModule: BaseGetMagiskModule = if (useSu) {
+        val getMagiskModule: BaseGetMagiskModule = BaseGetMagiskModule()
+        /*
+        if (useSu) {
             GetMagiskModule()
         } else {
             BaseGetMagiskModule()
         }
+         */
         val isExp = isExpModuleActive(this)
         return if (isEnabled()) {
             if (edxp) Statue.Edxp_Active else if (isExp == TAICHI_ACTIVE) Statue.taichi_magisk_active else if (isInstall.isEdxpManagerInstall || getMagiskModule.edxpModule) Statue.Edxp_Active else if (isInstall.isXposedInstall) Statue.xposed_active else Statue.xposed_active
@@ -174,6 +176,7 @@ object HookStatue {
     @IntDef(TAICHI_NOT_INSTALL, TAICHI_NOT_ACTIVE, TAICHI_ACTIVE)
     annotation class Taichi_statue
 
+    /*
     class GetMagiskModule : BaseGetMagiskModule() {
 
         companion object {
@@ -190,6 +193,8 @@ object HookStatue {
             if (resultString.contains("taichi")) taichiModule = true
         }
     }
+
+     */
 
     open class BaseGetMagiskModule {
         var taichiModule = false
