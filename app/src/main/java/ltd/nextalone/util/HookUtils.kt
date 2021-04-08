@@ -136,7 +136,7 @@ internal fun Class<*>?.instance(vararg arg: Any?): Any = XposedHelpers.newInstan
 internal fun Class<*>?.instance(type: Array<Class<*>>, vararg arg: Any?): Any =
     XposedHelpers.newInstance(this, type, *arg)
 
-internal fun Any?.invoke(name: String, vararg args: Class<*>): Any? =
+internal fun Any?.invoke(name: String, vararg args: Any): Any? =
     ReflexUtil.invoke_virtual(this, name, *args)
 
 internal fun Member.hook(callback: NAMethodHook) = try {

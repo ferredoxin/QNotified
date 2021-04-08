@@ -30,11 +30,14 @@ import android.widget.LinearLayout
 import com.tencent.mobileqq.widget.BounceScrollView
 import me.ketal.hook.FakeBalance
 import me.ketal.hook.FakeQQLevel
+import me.ketal.hook.HideSearch
+import me.ketal.hook.HideTab
 import me.kyuubiran.hook.AutoMosaicName
 import me.kyuubiran.hook.ShowSelfMsgByLeft
 import nil.nadph.qnotified.ui.ResUtils
 import nil.nadph.qnotified.ui.ViewBuilder
 import nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit
+import nil.nadph.qnotified.ui.ViewBuilder.newListItemSwitchConfigNext
 
 @SuppressLint("Registered")
 class AmusementActivity : IphoneTitleBarActivityCompat() {
@@ -57,6 +60,12 @@ class AmusementActivity : IphoneTitleBarActivityCompat() {
             ViewBuilder.newListItemButton(this, "自定义钱包余额", "仅供娱乐", null, FakeBalance.listener()))
         ll.addView(
             ViewBuilder.newListItemButton(this, "自定义QQ等级", "仅本地生效", null, FakeQQLevel.listener()))
+        if (HideTab.isValid) {
+            ll.addView(newListItemSwitchConfigNext(this, "隐藏底栏", "底栏项目移到侧滑", HideTab))
+        }
+        if (HideSearch.isValid) {
+            ll.addView(newListItemSwitchConfigNext(this, "隐藏搜索编辑框", "谨慎开启", HideSearch))
+        }
 
         setContentBackgroundDrawable(ResUtils.skin_background)
         title = "娱乐功能"
