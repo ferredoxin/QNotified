@@ -22,19 +22,22 @@
 
 package me.singleneuron.qn_kernel.ui.base
 
+import android.content.Context
+
 interface UiPreference : UiDescription {
     var title: String
     var summary: String?
-    var onClickListener: ()->Boolean
+    var onClickListener: (Context) -> Boolean
 }
 
-interface UiChangeablePreference<T>: UiPreference {
-    var onPreferenceChangeListener: (T)->Boolean
-    abstract var getValue: ()->Boolean?
-
+interface UiChangeablePreference<T> : UiPreference {
+    var onPreferenceChangeListener: (T) -> Boolean
+    var getValue: () -> T?
 }
 
-interface UiSwitchPreference: UiChangeablePreference<Boolean> {
+interface UiSwitchPreference : UiChangeablePreference<Boolean> {
     var valid: Boolean
 }
+
+interface UiEditTextPreference : UiChangeablePreference<String>
 

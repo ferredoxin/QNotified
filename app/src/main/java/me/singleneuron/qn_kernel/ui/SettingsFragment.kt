@@ -56,16 +56,31 @@ class SettingsFragment : Fragment() {
         Utils.logd("Adding: "+uiGroup.name +" = " + uiGroup.contains.toString())
         for (uiDescription in uiGroup.contains.values) {
             Utils.logd("Adding: $uiDescription")
-            if (uiDescription is UiCategory && uiDescription.contains.isNotEmpty()) {
-                viewGroup.addView(largeSubtitle(activity, uiDescription.name))
-                addViewInUiGroup(uiDescription, viewGroup)
-            } else if (uiDescription is UiPreference) {
-                if (uiDescription is UiSwitchPreference) {
-                    viewGroup.addView(newListItemSwitch(activity, uiDescription.title, uiDescription.summary, uiDescription.getValue()?:false, uiDescription.valid) { _, isChecked -> uiDescription.onPreferenceChangeListener(isChecked) })
-                } else if (uiDescription is UiPreference) {
-                    viewGroup.addView(newListItemButton(activity, uiDescription.title, uiDescription.summary, null) {
-                        uiDescription.onClickListener()
-                    })
+            when {
+                uiDescription is UiCategory && uiDescription.contains.isNotEmpty() -> {
+                    viewGroup.addView(largeSubtitle(activity, uiDescription.name))
+                    addViewInUiGroup(uiDescription, viewGroup)
+                }
+                uiDescription is UiScreen -> {
+                    viewGroup.addView(newListItemButton(activity, uiDescription.name, uiDescription.summary, null) { (activity as NewSettingsActivity).changeFragment(uiDescription) })
+                }
+                uiDescription is UiPreference -> {
+                    when (uiDescription) {
+                        is UiSwitchPreference -> {
+                            viewGroup.addView(newListItemSwitch(activity, uiDescription.title, uiDescription.summary, uiDescription.getValue()
+                                ?: false, uiDescription.valid) { _, isChecked -> uiDescription.onPreferenceChangeListener(isChecked) })
+                        }
+                        is UiChangeablePreference<*> -> {
+                            viewGroup.addView(newListItemButton(activity, uiDescription.title, uiDescription.summary, uiDescription.getValue.invoke().toString()) {
+                                uiDescription.onClickListener(activity)
+                            })
+                        }
+                        is UiPreference -> {
+                            viewGroup.addView(newListItemButton(activity, uiDescription.title, uiDescription.summary, null) {
+                                uiDescription.onClickListener(activity)
+                            })
+                        }
+                    }
                 }
             }
         }

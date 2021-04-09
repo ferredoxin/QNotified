@@ -22,14 +22,18 @@
 
 package me.singleneuron.qn_kernel.ui.base
 
+import me.singleneuron.qn_kernel.tlb.UiMap
+
 interface UiDescription
 
-interface UiGroup: UiDescription {
+interface UiGroup : UiDescription {
     var name: String
-    var contains: MutableMap<String,UiDescription>
+    var contains: UiMap
 }
 
-interface UiScreen: UiGroup
+interface UiScreen : UiGroup {
+    var summary: String?
+}
 
 interface UiCategory: UiGroup
 

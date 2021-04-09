@@ -25,11 +25,7 @@ package me.singleneuron.qn_kernel.ui
 import android.annotation.SuppressLint
 import android.os.Bundle
 import me.singleneuron.qn_kernel.tlb.UiTable
-import me.singleneuron.qn_kernel.ui.base.UiDescription
-import me.singleneuron.qn_kernel.ui.base.UiGroup
-import me.singleneuron.qn_kernel.ui.base.UiPreference
 import me.singleneuron.qn_kernel.ui.base.UiScreen
-import me.singleneuron.qn_kernel.ui.gen.AnnotatedUiItemList
 import nil.nadph.qnotified.R
 import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat
 import nil.nadph.qnotified.databinding.ActivityNewSettingsBinding
@@ -46,7 +42,6 @@ class NewSettingsActivity : IphoneTitleBarActivityCompat() {
         binding = ActivityNewSettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        initUiTable()
         changeFragment(UiTable)
 
         setContentBackgroundDrawable(ResUtils.skin_background)
@@ -54,49 +49,23 @@ class NewSettingsActivity : IphoneTitleBarActivityCompat() {
 
     }
 
-    fun setTitle(title:String) {
+    fun setTitle(title: String) {
         this.title = title
     }
 
     fun changeFragment(uiScreen: UiScreen) {
-        val rootFragment = SettingsFragment().setUiScreen(UiTable)
-        fragmentManager.beginTransaction().replace(R.id.new_setting_container,rootFragment).addToBackStack(null).commit()
+        val rootFragment = SettingsFragment().setUiScreen(uiScreen)
+        fragmentManager.beginTransaction().replace(R.id.new_setting_container, rootFragment).addToBackStack(uiScreen.name).commit()
         setTitle(uiScreen.name)
     }
 
-    private fun initUiTable() {
-        for (uiItem in AnnotatedUiItemList.getAnnotatedUiItemClassList()) {
-            addUiItemToUiGroup(uiItem.preference, UiTable, uiItem.preferenceLocate, 0)
-        }
-    }
-
-    private fun addUiItemToUiGroup(uiDescription: UiDescription, uiGroup: UiGroup, array: Array<String>?, point:Int){
-        if (array==null || array.isEmpty()) {
-            if (uiDescription is UiPreference) {
-                val contains = uiGroup.contains[uiDescription.title]
-                if (contains is UiGroup) {
-                    contains.contains[uiDescription.title] = uiDescription
-                }
-            }
+    override fun onBackPressed() {
+        if (fragmentManager.backStackEntryCount <= 1) {
+            super.onBackPressed()
         } else {
-            val contains = uiGroup.contains
-            if (contains.containsKey(array[point])) {
-                if (point == array.size-1) {
-                    val ui = contains[array[point]]
-                    if (ui!=null&&ui is UiGroup) {
-                        if (uiDescription is UiPreference) {
-                            ui.contains[uiDescription.title] = uiDescription
-                        } else if (uiDescription is UiGroup) {
-                            ui.contains[uiDescription.name] = uiDescription
-                        }
-                    }
-                } else {
-                    val ui = contains[array[point]]
-                    if (ui is UiGroup) {
-                        addUiItemToUiGroup(uiDescription, ui, array, point+1)
-                    }
-                }
-            }
+            val string = fragmentManager.getBackStackEntryAt(fragmentManager.backStackEntryCount - 2).name
+            setTitle(string)
+            fragmentManager.popBackStack()
         }
     }
 
