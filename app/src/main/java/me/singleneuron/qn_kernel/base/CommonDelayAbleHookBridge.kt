@@ -22,6 +22,7 @@
 
 package me.singleneuron.qn_kernel.base
 
+import android.content.Context
 import me.singleneuron.qn_kernel.ui.base.UiItem
 import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference
 import nil.nadph.qnotified.hook.CommonDelayableHook
@@ -42,7 +43,7 @@ abstract class CommonDelayAbleHookBridge(keyName: String): CommonDelayableHook(k
             isEnabled = it
             true
         }
-        override var onClickListener: () -> Boolean = {true}
+        override var onClickListener: (Context) -> Boolean = { true }
         override var valid: Boolean = isValid
     }
 

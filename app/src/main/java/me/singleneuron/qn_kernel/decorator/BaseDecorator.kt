@@ -21,6 +21,7 @@
  */
 package me.singleneuron.qn_kernel.decorator
 
+import android.content.Context
 import android.os.Looper
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.ui.base.UiSwitchItem
@@ -44,7 +45,7 @@ abstract class BaseDecorator(val cfg: String) : UiSwitchItem {
 
         override lateinit var title: String
         override var summary: String? = null
-        override var onClickListener: () -> Boolean = {true}
+        override var onClickListener: (Context) -> Boolean = { true }
         override var valid: Boolean = true
 
         override var getValue: () -> Boolean? = {

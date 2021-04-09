@@ -30,13 +30,17 @@ import cn.lliiooll.msg.MessageReceiver
 import de.robv.android.xposed.XposedHelpers
 import me.kyuubiran.util.getExFriendCfg
 import me.singleneuron.qn_kernel.data.MsgRecordData
+import me.singleneuron.qn_kernel.ui.base.UiDescription
+import me.singleneuron.qn_kernel.ui.base.UiItem
+import me.singleneuron.qn_kernel.ui.base.uiEditTextPreference
 import nil.nadph.qnotified.ui.CustomDialog
 import nil.nadph.qnotified.ui.ViewBuilder
 import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.ReflexUtil
 import nil.nadph.qnotified.util.Utils
 
-object RegexAntiMeg : MessageReceiver, View.OnClickListener {
+@me.singleneuron.qn_kernel.annotation.UiItem
+object RegexAntiMeg : MessageReceiver, View.OnClickListener, UiItem {
 
     private var regexCache: Regex? = null
     private var regexStringCache: String = ""
@@ -113,4 +117,19 @@ object RegexAntiMeg : MessageReceiver, View.OnClickListener {
             .create()
             .show()
     }
+
+    override val preference: UiDescription = uiEditTextPreference {
+        title = "万象屏蔽卡片消息"
+        summary = "使用强大的正则表达式自由屏蔽卡片消息"
+        onPreferenceChangeListener = {
+            getExFriendCfg().putString(RegexAntiMeg::class.java.simpleName, it)
+            true
+        }
+        inputLayoutSetter = {
+            helperText = "留空以禁用"
+        }
+    }
+
+    override val preferenceLocate: Array<String> = arrayOf("辅助功能")
+
 }

@@ -23,19 +23,26 @@
 package me.singleneuron.qn_kernel.ui.base
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import me.singleneuron.qn_kernel.data.hostInfo
+import me.singleneuron.qn_kernel.tlb.UiMap
+import nil.nadph.qnotified.R
+import nil.nadph.qnotified.ui.CommonContextWrapper
 
 class UiCategoryFactory: UiCategory{
     override lateinit var name: String
-    override var contains: MutableMap<String, UiDescription> = linkedMapOf()
+    override var contains: UiMap = linkedMapOf()
 }
 
-class UiPreferenceFactory: UiPreference {
+class UiClickToActivityPreferenceFactory : UiPreference {
 
     override lateinit var title: String
     override var summary: String? = null
-    override var onClickListener: () -> Boolean = {true}
+    override var onClickListener: (Context) -> Boolean = { true }
     lateinit var activity: Class<out Activity>
 
     fun create() {
@@ -44,4 +51,27 @@ class UiPreferenceFactory: UiPreference {
             true
         }
     }
+}
+
+class MaterialAlertDialogPreferenceFactory(context: Context) : MaterialAlertDialogBuilder(context, R.style.MaterialDialog), UiChangeablePreference<String> {
+    override lateinit var title: String
+    override var summary: String? = null
+    override var onClickListener: (Context) -> Boolean = { true }
+    override var onPreferenceChangeListener: (String) -> Boolean = { true }
+    override var getValue: () -> String? = { null }
+}
+
+class EditPreferenceFactory(context: Context) : UiEditTextPreference, TextInputEditText(CommonContextWrapper.createMaterialDesignContext(context), null, R.style.MaterialDialog) {
+    override var onPreferenceChangeListener: (String) -> Boolean = { true }
+    override var getValue: () -> String? = { null }
+    override lateinit var title: String
+    override var summary: String? = null
+    override lateinit var onClickListener: (Context) -> Boolean
+    var inputLayoutSetter: TextInputLayout.() -> Unit = {}
+}
+
+class UiScreenFactory : UiScreen {
+    override var summary: String? = null
+    override lateinit var name: String
+    override var contains: UiMap = linkedMapOf()
 }
