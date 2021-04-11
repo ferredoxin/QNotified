@@ -256,6 +256,9 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         ll.addView(
             newListItemConfigSwitchIfValid(this, "隐藏群聊群成员头衔", null, HideTroopLevel.INSTANCE));
         ll.addView(
+            newListItemButtonIfValid(this, "聊天框添加提示文字", null, null,ChatInputHint.INSTANCE,
+                v -> ChatInputHint.INSTANCE.showInputHintDialog(this)));
+        ll.addView(
             newListItemHookSwitchInit(this, "聊天自动发送原图", null, AutoSendOriginalPhoto.INSTANCE));
         ll.addView(newListItemConfigSwitchIfValid(this, "聊天自动接收原图", null,
             AutoReceiveOriginalPhoto.INSTANCE));
