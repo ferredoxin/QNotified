@@ -56,7 +56,7 @@ object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt") {
                 val relativeLayout = (it.thisObject.get(
                     "a",
                     ViewGroup::class.java
-                ) as ViewGroup).findHostView<RelativeLayout>("ivc")
+                ) as ViewGroup).findHostView<RelativeLayout>(if (requireMinQQVersion(QQVersion.QQ_8_6_5)) "mwm" else "ivc")
                 val textView =
                     (relativeLayout?.parent as FrameLayout).findViewById<TextView>(nil.nadph.qnotified.R.id.chat_words_count)
                 var str =
@@ -75,7 +75,7 @@ object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt") {
             val relativeLayout = (it.thisObject.get(
                 "a",
                 ViewGroup::class.java
-            ) as ViewGroup).findHostView<RelativeLayout>("ivc")
+            ) as ViewGroup).findHostView<RelativeLayout>(if (requireMinQQVersion(QQVersion.QQ_8_6_5)) "mwm" else "ivc")
             relativeLayout!!.visibility = View.GONE
             val textView = TextView(activity)
             var str = getExFriendCfg().getStringOrDefault(strCfg, "今日已发送 %1 条消息，共 %2 字，表情包 %3 个")
@@ -172,12 +172,15 @@ object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt") {
                 putExFriend(wordsCfg, 0)
             }
         }
-        //todo fix emotion for QQ860
-        Initiator._ChatActivityFacade().method(
-            "a", 11, Void.TYPE
-        ) {
-            it.parameterTypes.contains(Initiator._StickerInfo())
-        }?.hookAfter(
+        val sendEmoMethod =
+            if ("com.tencent.mobileqq.emoticonview.sender.CustomEmotionSenderUtil".clazz != null)
+                "com.tencent.mobileqq.emoticonview.sender.CustomEmotionSenderUtil".clazz?.method("sendCustomEmotion", 11, Void.TYPE)
+            else Initiator._ChatActivityFacade().method(
+                "a", 11, Void.TYPE
+            ) {
+                it.parameterTypes.contains(Initiator._StickerInfo())
+            }
+        sendEmoMethod?.hookAfter(
             this
         ) {
             val isToday = Date().today == getExFriendCfg().getStringOrDefault(timeCfg, "")
