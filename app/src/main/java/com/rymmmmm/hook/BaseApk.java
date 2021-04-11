@@ -21,6 +21,7 @@
  */
 package com.rymmmmm.hook;
 
+import static me.singleneuron.util.QQVersion.QQ_8_6_0;
 import static nil.nadph.qnotified.util.Utils.log;
 
 import android.content.pm.ApplicationInfo;
@@ -39,6 +40,7 @@ import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.Utils;
 
 //重命名base.apk
 @FunctionEntry
@@ -53,6 +55,45 @@ public class BaseApk extends CommonDelayableHook {
     @Override
     public boolean initOnce() {
         try {
+            if (HostInformationProviderKt.requireMinQQVersion(QQ_8_6_0)) {
+                Class c = Initiator.load("com.tencent.mobileqq.utils.FileUtils");
+                XposedHelpers.findAndHookMethod(c, "getFileName", String.class, new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        try {
+                            String fileName = (String) param.getResult();
+                            String localFile = (String) param.args[0];
+                            Utils.logd("LocalFile=" + localFile + ",FileName=" + fileName);
+                            if (fileName.equals("base.apk")) {
+                                PackageManager packageManager = HostInformationProviderKt
+                                    .getHostInfo().getApplication().getPackageManager();
+                                PackageInfo packageArchiveInfo = packageManager
+                                    .getPackageArchiveInfo(localFile,
+                                        PackageManager.GET_ACTIVITIES);
+                                ApplicationInfo applicationInfo = packageArchiveInfo.applicationInfo;
+                                applicationInfo.sourceDir = localFile;
+                                applicationInfo.publicSourceDir = localFile;
+                                String format = RikkaBaseApkFormatDialog
+                                    .getCurrentBaseApkFormat();
+                                if (format != null) {
+                                    String result = format
+                                        .replace("%n", applicationInfo.loadLabel(packageManager)
+                                            .toString())
+                                        .replace("%p", applicationInfo.packageName)
+                                        .replace("%v", packageArchiveInfo.versionName)
+                                        .replace("%c", String.valueOf(
+                                            HostInformationProviderKt.getHostInfo()
+                                                .getApplication()));
+                                    param.setResult(result);
+                                }
+                            }
+                        } catch (Exception e) {
+                            Utils.log(e);
+                        }
+                    }
+                });
+                return true;
+            }
             final Class<?> _ItemManagerClz = Initiator
                 .load("com.tencent.mobileqq.troop.utils.TroopFileTransferManager$Item");
             for (Method m : Initiator._TroopFileUploadMgr().getDeclaredMethods()) {
