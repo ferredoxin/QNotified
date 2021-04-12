@@ -220,6 +220,47 @@ public class ConfigV2Activity extends AppCompatActivity {
                     .setCancelable(true).setPositiveButton(android.R.string.ok, null).show();
                 break;
             }
+            case R.id.mainV2_troubleshoot: {
+                new AlertDialog.Builder(this)
+                    .setTitle("你想要进入哪个App的故障排除")
+                    .setItems(new String[] {"QQ", "TIM", "QQ极速版"}, (dialog, which) -> {
+                        String pkg = null;
+                        switch (which) {
+                            case 0: {
+                                pkg = HookEntry.PACKAGE_NAME_QQ;
+                                break;
+                            }
+                            case 1: {
+                                pkg = HookEntry.PACKAGE_NAME_TIM;
+                                break;
+                            }
+                            case 2: {
+                                pkg = HookEntry.PACKAGE_NAME_QQ_LITE;
+                                break;
+                            }
+                            default: {
+                            }
+                        }
+                        if (pkg != null) {
+                            Intent intent = new Intent();
+                            intent
+                                .setComponent(new ComponentName(pkg, "com.tencent.mobileqq.activity.JumpActivity"));
+                            intent.setAction(Intent.ACTION_VIEW);
+                            intent.putExtra(JumpActivityEntryHook.JUMP_ACTION_CMD,
+                                JumpActivityEntryHook.JUMP_ACTION_START_ACTIVITY);
+                            intent.putExtra(JumpActivityEntryHook.JUMP_ACTION_TARGET, "nil.nadph.qnotified.activity.TroubleshootActivity");
+                            try {
+                                startActivity(intent);
+                            } catch (ActivityNotFoundException e) {
+                                new AlertDialog.Builder(this).setTitle("出错啦")
+                                    .setMessage("拉起模块设置失败, 请确认 " + pkg + " 已安装并启用(没有被关冰箱或被冻结停用)\n" + e.toString())
+                                    .setCancelable(true).setPositiveButton(android.R.string.ok, null).show();
+                            }
+                        }
+                    })
+                    .setPositiveButton(android.R.string.ok, null).show();
+                break;
+            }
             default: {
             }
         }
