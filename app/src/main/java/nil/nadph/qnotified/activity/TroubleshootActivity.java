@@ -45,6 +45,7 @@ import android.widget.Toast;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tencent.mobileqq.widget.BounceScrollView;
 
+import java.io.File;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
@@ -463,12 +464,16 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     try {
+                        Long qq = Utils.getLongAccountUin();
+                        new File(
+                            HostInformationProviderKt.getHostInfo().getApplication().getFilesDir()
+                                .getAbsolutePath() + "/qnotified_" + qq + ".dat").delete();
                         ExfriendManager exm = ExfriendManager.getCurrent();
-                        exm.getConfig().getFile().delete();
                         exm.getConfig().reinit();
                         exm.reinit();
                         Toasts.success(TroubleshootActivity.this, "操作成功");
                     } catch (Throwable e) {
+                        Utils.log(e);
                     }
                 }
             });
@@ -488,9 +493,12 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     try {
+                        new File(
+                            HostInformationProviderKt.getHostInfo().getApplication().getFilesDir()
+                                .getAbsolutePath() + "/qnotified_cache.dat").delete();
                         ConfigManager cfg = ConfigManager.getCache();
                         cfg.getAllConfig().clear();
-                        cfg.getFile().delete();
+                        //cfg.getFile().delete();
                         System.exit(0);
                     } catch (Throwable e) {
                         log(e);
@@ -514,9 +522,12 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                 CustomDialog dialog = CustomDialog.create(TroubleshootActivity.this);
                 dialog.setPositiveButton("确认", (dialog1, which) -> {
                     try {
+                        new File(
+                            HostInformationProviderKt.getHostInfo().getApplication().getFilesDir()
+                                .getAbsolutePath() + "/qnotified_config.dat").delete();
                         ConfigManager cfg = ConfigManager.getDefaultConfig();
                         cfg.getAllConfig().clear();
-                        cfg.getFile().delete();
+                        //cfg.getFile().delete();
                         System.exit(0);
                     } catch (Throwable e) {
                         log(e);
