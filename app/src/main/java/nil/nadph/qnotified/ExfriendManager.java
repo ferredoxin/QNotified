@@ -73,6 +73,10 @@ import nil.nadph.qnotified.lifecycle.Parasitics;
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
+/**
+ * @deprecated 设计不合理 将陆续弃用并在重构中移除
+ */
+@Deprecated
 public class ExfriendManager implements SyncUtils.OnFileChangedListener {
 
     static public final int ID_EX_NOTIFY = 65537;
