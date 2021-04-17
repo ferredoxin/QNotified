@@ -245,10 +245,10 @@ public class ViewBuilder {
 
     public static RelativeLayout newListItemHookSwitchInit(final Context ctx, UiSwitchItem uiSwitchItem) {
         UiSwitchPreference preference = uiSwitchItem.getPreference();
-        Boolean on = preference.getGetValue().invoke();
+        Boolean on = preference.getValue().getValue();
         on = on==null?false:on;
         RelativeLayout root = newListItemSwitch(ctx, preference.getTitle(), preference.getSummary(), on, preference.getValid(),
-            (buttonView, isChecked) -> preference.getOnPreferenceChangeListener().invoke(isChecked));
+            (buttonView, isChecked) -> preference.getValue().setValue(isChecked));
         root.setId(uiSwitchItem.getClass().getName().hashCode());
         return root;
     }

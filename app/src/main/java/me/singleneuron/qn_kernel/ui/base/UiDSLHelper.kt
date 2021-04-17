@@ -43,7 +43,7 @@ fun uiCategory(init: UiCategory.() -> Unit): Pair<String, UiCategory> {
     return Pair(uiCategory.name, uiCategory)
 }
 
-fun uiDialogPreference(init: MaterialAlertDialogPreferenceFactory.() -> Unit): UiChangeablePreference<String> {
+fun uiDialogPreference(init: MaterialAlertDialogPreferenceFactory.() -> Unit): MaterialAlertDialogPreferenceFactory {
     val builder = MaterialAlertDialogPreferenceFactory(CommonContextWrapper.createMaterialDesignContext(hostInfo.application))
     builder.init()
     builder.onClickListener = {
@@ -71,7 +71,7 @@ fun uiEditTextPreference(init: EditPreferenceFactory.() -> Unit): UiEditTextPref
         builder2.setView(inputLayout)
         builder2.setNegativeButton("取消", null)
         builder2.setPositiveButton("确定") { dialog: DialogInterface, _: Int ->
-            builder.onPreferenceChangeListener.invoke(textInputEditText.text.toString())
+            builder.value.value = textInputEditText.text.toString()
             dialog.dismiss()
         }
         builder2.create().show()

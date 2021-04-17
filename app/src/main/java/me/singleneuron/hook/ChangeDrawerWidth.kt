@@ -31,7 +31,7 @@ import com.google.android.material.slider.Slider
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 import me.singleneuron.qn_kernel.data.hostInfo
-import me.singleneuron.qn_kernel.ui.base.UiDescription
+import me.singleneuron.qn_kernel.ui.base.MaterialAlertDialogPreferenceFactory
 import me.singleneuron.qn_kernel.ui.base.UiItem
 import me.singleneuron.qn_kernel.ui.base.uiDialogPreference
 import nil.nadph.qnotified.base.annotation.FunctionEntry
@@ -74,6 +74,7 @@ object ChangeDrawerWidth : CommonDelayableHook("changeDrawerWidth"), UiItem {
             return ConfigManager.getDefaultConfig().getIntOrDefault(ChangeDrawerWidth_width, 0)
         }
         set(value) {
+            preference.value.value = "$value dp"
             ConfigManager.getDefaultConfig()
                 .apply { putInt(ChangeDrawerWidth_width, value); save() }
         }
@@ -86,13 +87,11 @@ object ChangeDrawerWidth : CommonDelayableHook("changeDrawerWidth"), UiItem {
         return (dm.widthPixels / dm.density)
     }
 
-    override val preference: UiDescription by lazy {
+    override val preference: MaterialAlertDialogPreferenceFactory by lazy {
         uiDialogPreference {
             title = "修改侧滑边距"
             summary = "感谢祈无，支持8.4.1及更高，重启后生效"
-            getValue = {
-                "$width dp"
-            }
+            value.value = "$width dp"
             val slider = Slider(context)
             slider.valueFrom = 0f
             slider.valueTo = getMaxWidth(hostInfo.application).toInt().toFloat()

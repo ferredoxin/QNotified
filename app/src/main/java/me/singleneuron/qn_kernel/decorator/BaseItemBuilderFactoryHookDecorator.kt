@@ -27,7 +27,7 @@ import nil.nadph.qnotified.util.Utils
 abstract class BaseItemBuilderFactoryHookDecorator(cfg: String) : BaseDecorator(cfg) {
 
     fun decorate(result: Int, chatMessage: Any, param: XC_MethodHook.MethodHookParam): Boolean {
-        if (preference.getValue() != true) return false
+        if (preference.value.value != true) return false
         return try {
             doDecorate(result, chatMessage, param)
         } catch (e: Exception) {

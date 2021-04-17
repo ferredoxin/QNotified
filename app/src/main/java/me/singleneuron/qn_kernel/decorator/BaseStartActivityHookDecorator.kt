@@ -28,7 +28,7 @@ import nil.nadph.qnotified.util.Utils
 abstract class BaseStartActivityHookDecorator(cfg: String) : BaseDecorator(cfg) {
 
     fun decorate(intent: Intent, param: XC_MethodHook.MethodHookParam): Boolean {
-        if (preference.getValue() != true) return false
+        if (preference.value.value != true) return false
         return try {
             doDecorate(intent, param)
         } catch (e: Exception) {

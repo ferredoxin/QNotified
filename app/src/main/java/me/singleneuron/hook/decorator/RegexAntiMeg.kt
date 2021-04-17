@@ -26,6 +26,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
+import androidx.lifecycle.ProcessLifecycleOwner
 import cn.lliiooll.msg.MessageReceiver
 import de.robv.android.xposed.XposedHelpers
 import me.kyuubiran.util.getExFriendCfg
@@ -33,6 +34,7 @@ import me.singleneuron.qn_kernel.data.MsgRecordData
 import me.singleneuron.qn_kernel.ui.base.UiDescription
 import me.singleneuron.qn_kernel.ui.base.UiItem
 import me.singleneuron.qn_kernel.ui.base.uiEditTextPreference
+import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.ui.CustomDialog
 import nil.nadph.qnotified.ui.ViewBuilder
 import nil.nadph.qnotified.util.Initiator
@@ -121,9 +123,10 @@ object RegexAntiMeg : MessageReceiver, View.OnClickListener, UiItem {
     override val preference: UiDescription = uiEditTextPreference {
         title = "万象屏蔽卡片消息"
         summary = "使用强大的正则表达式自由屏蔽卡片消息"
-        onPreferenceChangeListener = {
-            getExFriendCfg().putString(RegexAntiMeg::class.java.simpleName, it)
-            true
+        SyncUtils.post {
+            value.observe(ProcessLifecycleOwner.get()) {
+                getExFriendCfg().putString(RegexAntiMeg::class.java.simpleName, it)
+            }
         }
         inputLayoutSetter = {
             helperText = "留空以禁用"
