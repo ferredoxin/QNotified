@@ -23,6 +23,7 @@
 package me.singleneuron.qn_kernel.ui.base
 
 import android.content.Context
+import androidx.lifecycle.MutableLiveData
 
 interface UiPreference : UiDescription {
     var title: String
@@ -31,8 +32,7 @@ interface UiPreference : UiDescription {
 }
 
 interface UiChangeablePreference<T> : UiPreference {
-    var onPreferenceChangeListener: (T) -> Boolean
-    var getValue: () -> T?
+    val value: MutableLiveData<T?>
 }
 
 interface UiSwitchPreference : UiChangeablePreference<Boolean> {

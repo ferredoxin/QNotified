@@ -23,6 +23,8 @@
 package me.singleneuron.qn_kernel.base
 
 import android.content.Context
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ProcessLifecycleOwner
 import me.singleneuron.qn_kernel.ui.base.UiItem
 import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference
 import nil.nadph.qnotified.hook.CommonDelayableHook
@@ -38,10 +40,13 @@ abstract class CommonDelayAbleHookBridge(keyName: String): CommonDelayableHook(k
     open inner class UiSwitchPreferenceItemFactory: UiSwitchPreference {
         override lateinit var title: String
         override var summary: String? = null
-        override var getValue: () -> Boolean? = { isEnabled }
-        override var onPreferenceChangeListener: (Boolean) -> Boolean = {
-            isEnabled = it
-            true
+        override val value: MutableLiveData<Boolean?> by lazy {
+            MutableLiveData<Boolean?>().apply {
+                value = isEnabled
+                observe(ProcessLifecycleOwner.get()) {
+                    isEnabled = it ?: false
+                }
+            }
         }
         override var onClickListener: (Context) -> Boolean = { true }
         override var valid: Boolean = isValid

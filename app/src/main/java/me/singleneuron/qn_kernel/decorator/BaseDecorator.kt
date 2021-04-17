@@ -23,6 +23,8 @@ package me.singleneuron.qn_kernel.decorator
 
 import android.content.Context
 import android.os.Looper
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ProcessLifecycleOwner
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.ui.base.UiSwitchItem
 import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference
@@ -48,31 +50,31 @@ abstract class BaseDecorator(val cfg: String) : UiSwitchItem {
         override var onClickListener: (Context) -> Boolean = { true }
         override var valid: Boolean = true
 
-        override var getValue: () -> Boolean? = {
-            try {
-                ConfigManager.getDefaultConfig().getBooleanOrDefault(cfg, false)
-            } catch (e: Exception) {
-                Utils.log(e)
-                null
+        override val value: MutableLiveData<Boolean?> by lazy {
+            MutableLiveData<Boolean?>().apply {
+                value = try {
+                    ConfigManager.getDefaultConfig().getBooleanOrDefault(cfg, false)
+                } catch (e: Exception) {
+                    Utils.log(e)
+                    null
+                }
+                observe(ProcessLifecycleOwner.get()) {
+                    try {
+                        val mgr = ConfigManager.getDefaultConfig()
+                        mgr.allConfig[cfg] = it
+                        mgr.save()
+                    } catch (e: Exception) {
+                        Utils.log(e)
+                        if (Looper.myLooper() == Looper.getMainLooper()) {
+                            Toasts.error(hostInfo.application, e.toString() + "")
+                        } else {
+                            SyncUtils.post { Toasts.error(hostInfo.application, e.toString() + "") }
+                        }
+                    }
+                }
             }
         }
 
-        override var onPreferenceChangeListener: (Boolean) -> Boolean = {
-            try {
-                val mgr = ConfigManager.getDefaultConfig()
-                mgr.allConfig[cfg] = it
-                mgr.save()
-                true
-            } catch (e: Exception) {
-                Utils.log(e)
-                if (Looper.myLooper() == Looper.getMainLooper()) {
-                    Toasts.error(hostInfo.application, e.toString() + "")
-                } else {
-                    SyncUtils.post { Toasts.error(hostInfo.application, e.toString() + "") }
-                }
-                false
-            }
-        }
     }
 
 }

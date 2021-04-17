@@ -25,6 +25,7 @@ package me.singleneuron.qn_kernel.ui.base
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import androidx.lifecycle.MutableLiveData
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -57,13 +58,11 @@ class MaterialAlertDialogPreferenceFactory(context: Context) : MaterialAlertDial
     override lateinit var title: String
     override var summary: String? = null
     override var onClickListener: (Context) -> Boolean = { true }
-    override var onPreferenceChangeListener: (String) -> Boolean = { true }
-    override var getValue: () -> String? = { null }
+    override val value: MutableLiveData<String?> = MutableLiveData()
 }
 
 class EditPreferenceFactory(context: Context) : UiEditTextPreference, TextInputEditText(CommonContextWrapper.createMaterialDesignContext(context), null, R.style.MaterialDialog) {
-    override var onPreferenceChangeListener: (String) -> Boolean = { true }
-    override var getValue: () -> String? = { null }
+    override val value: MutableLiveData<String?> = MutableLiveData()
     override lateinit var title: String
     override var summary: String? = null
     override lateinit var onClickListener: (Context) -> Boolean

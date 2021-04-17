@@ -20,6 +20,8 @@
  * <https://github.com/ferredoxin/QNotified/blob/master/LICENSE.md>.
  */
 
+@file:Suppress("DEPRECATION")
+
 package me.singleneuron.qn_kernel.ui
 
 import android.annotation.SuppressLint

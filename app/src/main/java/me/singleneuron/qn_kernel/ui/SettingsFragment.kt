@@ -20,6 +20,8 @@
  * <https://github.com/ferredoxin/QNotified/blob/master/LICENSE.md>.
  */
 
+@file:Suppress("DEPRECATION")
+
 package me.singleneuron.qn_kernel.ui
 
 import android.app.Fragment
@@ -28,15 +30,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
 import me.singleneuron.qn_kernel.ui.base.*
 import nil.nadph.qnotified.ui.ViewBuilder.*
 import nil.nadph.qnotified.util.Utils
 
-class SettingsFragment : Fragment() {
+class SettingsFragment : Fragment(), LifecycleOwner {
 
     private lateinit var uiScreen: UiScreen
 
+    private lateinit var lifecycleRegistry: LifecycleRegistry
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+
+        lifecycleRegistry = LifecycleRegistry(this)
+        lifecycleRegistry.currentState = Lifecycle.State.CREATED
+
         val ll = LinearLayout(activity).apply {
             orientation = LinearLayout.VERTICAL
             layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -67,13 +79,17 @@ class SettingsFragment : Fragment() {
                 uiDescription is UiPreference -> {
                     when (uiDescription) {
                         is UiSwitchPreference -> {
-                            viewGroup.addView(newListItemSwitch(activity, uiDescription.title, uiDescription.summary, uiDescription.getValue()
-                                ?: false, uiDescription.valid) { _, isChecked -> uiDescription.onPreferenceChangeListener(isChecked) })
+                            viewGroup.addView(newListItemSwitch(activity, uiDescription.title, uiDescription.summary, uiDescription.value.value
+                                ?: false, uiDescription.valid) { _, isChecked -> uiDescription.value.value = isChecked })
                         }
                         is UiChangeablePreference<*> -> {
-                            viewGroup.addView(newListItemButton(activity, uiDescription.title, uiDescription.summary, uiDescription.getValue.invoke().toString()) {
+                            val ll = newListItemButton(activity, uiDescription.title, uiDescription.summary, uiDescription.value.value.toString()) {
                                 uiDescription.onClickListener(activity)
-                            })
+                            }
+                            viewGroup.addView(ll)
+                            uiDescription.value.observe(this) {
+                                ll.findViewById<TextView>(R_ID_VALUE).text = it.toString()
+                            }
                         }
                         is UiPreference -> {
                             viewGroup.addView(newListItemButton(activity, uiDescription.title, uiDescription.summary, null) {
@@ -85,4 +101,26 @@ class SettingsFragment : Fragment() {
             }
         }
     }
+
+    override fun onStart() {
+        super.onStart()
+        lifecycleRegistry.currentState = Lifecycle.State.STARTED
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        lifecycleRegistry.currentState = Lifecycle.State.CREATED
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        lifecycleRegistry.currentState = Lifecycle.State.RESUMED
+    }
+
+    override fun onDestroy() {
+        lifecycleRegistry.currentState = Lifecycle.State.DESTROYED
+        super.onDestroy()
+    }
+
+    override fun getLifecycle(): Lifecycle = lifecycleRegistry
 }
