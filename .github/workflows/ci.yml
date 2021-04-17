@@ -16,10 +16,10 @@ jobs:
     - uses: actions/checkout@v2
       name: Clone repository
 
-    - name: Prepare Java 11
+    - name: Prepare Java 15
       uses: actions/setup-java@v1
       with:
-        java-version: 11
+        java-version: 15
         java-package: jdk+fx
 
     - name: Cache Gradle packages
@@ -32,8 +32,7 @@ jobs:
     - name: Build project
       run: |
         if ${{ !!github.head_ref }}; then echo "::warning:: Gradle $WARN_ON_PR"; fi
-        gradle wrapper
-        bash gradlew build
+        ./gradlew build
     
     - name: Upload articact
       uses: actions/upload-artifact@v2
