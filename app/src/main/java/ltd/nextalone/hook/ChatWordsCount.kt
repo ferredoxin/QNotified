@@ -24,12 +24,14 @@ package ltd.nextalone.hook
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import ltd.nextalone.util.*
 import me.kyuubiran.util.getExFriendCfg
+import me.kyuubiran.util.showToastByTencent
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
@@ -150,6 +152,16 @@ object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt") {
                         )
                     }
                 }
+                textView.setOnLongClickListener {
+                    CustomDialog.createFailsafe(activity).setTitle("聊天字数统计设置").setMessage("是否要重置统计记录").setPositiveButton(android.R.string.ok) { _: DialogInterface, _: Int ->
+                        putExFriend(timeCfg, Date().today)
+                        putExFriend(msgCfg, 0)
+                        putExFriend(wordsCfg, 0)
+                        putExFriend(emoCfg, 0)
+                        activity.showToastByTencent("已清空聊天字数统计")
+                    }.setNegativeButton(android.R.string.cancel, null).show()
+                    true
+                }
             }
             (relativeLayout.parent as FrameLayout).addView(textView)
         }
@@ -170,6 +182,7 @@ object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt") {
                 putExFriend(timeCfg, Date().today)
                 putExFriend(msgCfg, 0)
                 putExFriend(wordsCfg, 0)
+                putExFriend(emoCfg, 0)
             }
         }
         val sendEmoMethod =
@@ -188,6 +201,8 @@ object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt") {
                 putExFriend(emoCfg, getExFriendCfg().getIntOrDefault(emoCfg, 0) + 1)
             } else {
                 putExFriend(timeCfg, Date().today)
+                putExFriend(msgCfg, 0)
+                putExFriend(wordsCfg, 0)
                 putExFriend(emoCfg, 0)
             }
         }
