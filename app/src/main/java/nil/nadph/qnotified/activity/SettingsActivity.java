@@ -311,6 +311,8 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         ll.addView(
             newListItemConfigSwitchIfValid(this, "隐藏部分小红点", null, HideRedPoints.INSTANCE));
         ll.addView(
+            newListItemConfigSwitchIfValid(this, "隐藏群聊共同好友提醒", null, HideTroopAddTips.INSTANCE));
+        ll.addView(
             newListItemConfigSwitchIfValid(this, "隐藏文本框上方快捷方式", null, RemoveShortCutBar.INSTANCE));
         ll.addView(
             newListItemConfigSwitchIfValid(this, "隐藏群聊群成员头衔", null, HideTroopLevel.INSTANCE));
