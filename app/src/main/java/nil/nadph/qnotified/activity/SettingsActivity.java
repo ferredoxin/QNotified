@@ -21,6 +21,30 @@
  */
 package nil.nadph.qnotified.activity;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static me.ketal.util.PlayQQVersion.PlayQQ_8_2_9;
+import static me.singleneuron.util.KotlinUtilsKt.addViewConditionally;
+import static me.singleneuron.util.QQVersion.QQ_8_2_6;
+import static nil.nadph.qnotified.ui.ViewBuilder.R_ID_DESCRIPTION;
+import static nil.nadph.qnotified.ui.ViewBuilder.R_ID_TITLE;
+import static nil.nadph.qnotified.ui.ViewBuilder.R_ID_VALUE;
+import static nil.nadph.qnotified.ui.ViewBuilder.clickTheComing;
+import static nil.nadph.qnotified.ui.ViewBuilder.clickToProxyActAction;
+import static nil.nadph.qnotified.ui.ViewBuilder.clickToUrl;
+import static nil.nadph.qnotified.ui.ViewBuilder.doSetupForPrecondition;
+import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemButton;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemButtonIfValid;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemConfigSwitchIfValid;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemDummy;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemSwitchConfigNext;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemSwitchStub;
+import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
+import static nil.nadph.qnotified.util.Utils.dip2px;
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -37,30 +61,66 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import androidx.core.view.ViewCompat;
-
-import com.rymmmmm.hook.RemoveMiniProgramAd;
-import com.tencent.mobileqq.widget.BounceScrollView;
-
-import java.io.File;
-import java.io.IOException;
-
 import cc.ioctl.activity.ExfriendListActivity;
 import cc.ioctl.activity.FakeBatCfgActivity;
 import cc.ioctl.activity.FriendlistExportActivity;
 import cc.ioctl.activity.JefsRulesActivity;
 import cc.ioctl.dialog.RepeaterIconSettingDialog;
 import cc.ioctl.dialog.RikkaDialog;
-import cc.ioctl.hook.*;
+import cc.ioctl.hook.$endGiftHook;
+import cc.ioctl.hook.CheatHook;
+import cc.ioctl.hook.DarkOverlayHook;
+import cc.ioctl.hook.FakeBatteryHook;
+import cc.ioctl.hook.FavMoreEmo;
+import cc.ioctl.hook.FileRecvRedirect;
+import cc.ioctl.hook.GagInfoDisclosure;
+import cc.ioctl.hook.JumpController;
+import cc.ioctl.hook.MultiForwardAvatarHook;
+import cc.ioctl.hook.MuteQZoneThumbsUp;
+import cc.ioctl.hook.PreUpgradeHook;
+import cc.ioctl.hook.PttForwardHook;
+import cc.ioctl.hook.RepeaterHook;
+import cc.ioctl.hook.ReplyNoAtHook;
+import cc.ioctl.hook.RoundAvatarHook;
+import cc.ioctl.hook.ShowPicGagHook;
 import cn.lliiooll.hook.AntiMessage;
-import ltd.nextalone.hook.*;
+import com.rymmmmm.hook.RemoveMiniProgramAd;
+import com.tencent.mobileqq.widget.BounceScrollView;
+import java.io.File;
+import java.io.IOException;
+import ltd.nextalone.hook.AutoReceiveOriginalPhoto;
+import ltd.nextalone.hook.AutoSendOriginalPhoto;
+import ltd.nextalone.hook.ChatInputHint;
+import ltd.nextalone.hook.ChatWordsCount;
+import ltd.nextalone.hook.HideRedPoints;
+import ltd.nextalone.hook.HideTroopAddTips;
+import ltd.nextalone.hook.HideTroopLevel;
+import ltd.nextalone.hook.RemoveBottomRedDots;
+import ltd.nextalone.hook.RemoveShortCutBar;
+import ltd.nextalone.hook.SimplifyBottomQzone;
+import ltd.nextalone.hook.SimplifyChatLongItem;
+import ltd.nextalone.hook.SimplifyContactTabs;
+import ltd.nextalone.hook.SimplifyEmoPanel;
+import ltd.nextalone.hook.SimplifyPlusPanel;
+import ltd.nextalone.hook.SimplifyQQSettings;
+import ltd.nextalone.hook.SimplifyRecentDialog;
+import ltd.nextalone.hook.TrimMessage;
 import me.ketal.hook.HideFriendCardSendGift;
 import me.ketal.hook.QWalletNoAD;
 import me.ketal.hook.QZoneNoAD;
 import me.singleneuron.activity.ChangeDrawerWidthActivity;
-import me.singleneuron.hook.*;
-import me.singleneuron.hook.decorator.*;
+import me.singleneuron.hook.ForceSystemAlbum;
+import me.singleneuron.hook.ForceSystemCamera;
+import me.singleneuron.hook.ForceSystemFile;
+import me.singleneuron.hook.NewRoundHead;
+import me.singleneuron.hook.NoApplet;
+import me.singleneuron.hook.SpecialCareNewChannel;
+import me.singleneuron.hook.decorator.CardMsgToText;
+import me.singleneuron.hook.decorator.DisableQzoneSlideCamera;
+import me.singleneuron.hook.decorator.MiniAppToStruckMsg;
+import me.singleneuron.hook.decorator.RegexAntiMeg;
+import me.singleneuron.hook.decorator.SimpleReceiptMessage;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import me.singleneuron.qn_kernel.ui.NewSettingsActivity;
 import me.singleneuron.util.KotlinUtilsKt;
@@ -71,16 +131,11 @@ import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.util.*;
-
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static me.ketal.util.PlayQQVersion.PlayQQ_8_2_9;
-import static me.singleneuron.util.KotlinUtilsKt.addViewConditionally;
-import static me.singleneuron.util.QQVersion.QQ_8_2_6;
-import static nil.nadph.qnotified.ui.ViewBuilder.*;
-import static nil.nadph.qnotified.util.Utils.dip2px;
-import static nil.nadph.qnotified.util.Utils.log;
+import nil.nadph.qnotified.util.Initiator;
+import nil.nadph.qnotified.util.NewsHelper;
+import nil.nadph.qnotified.util.Toasts;
+import nil.nadph.qnotified.util.UpdateCheck;
+import nil.nadph.qnotified.util.Utils;
 
 @SuppressLint("Registered")
 public class SettingsActivity extends IphoneTitleBarActivityCompat implements Runnable {
@@ -134,13 +189,15 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         } catch (Throwable e) {
             log(e);
         }
-        ll.addView(newListItemButton(this,"打开新版设置页面","WIP", null, clickToProxyActAction(NewSettingsActivity.class)));
+        ll.addView(newListItemButton(this, "打开新版设置页面", "WIP", null,
+            clickToProxyActAction(NewSettingsActivity.class)));
         ll.addView(newListItemButton(this, "Beta测试性功能", "仅用于测试稳定性", null,
             clickToProxyActAction(BetaTestFuncActivity.class)));
         ll.addView(newListItemButton(this, "Omega测试性功能", "这是个不存在的功能", null,
             v -> KotlinUtilsKt.showEulaDialog(SettingsActivity.this)));
         ll.addView(subtitle(this, "基本功能"));
-        if (HostInformationProviderKt.requireMinQQVersion(QQ_8_2_6) || HostInformationProviderKt.requireMinPlayQQVersion(PlayQQ_8_2_9)) {
+        if (HostInformationProviderKt.requireMinQQVersion(QQ_8_2_6) || HostInformationProviderKt
+            .requireMinPlayQQVersion(PlayQQ_8_2_9)) {
             ll.addView(_t = newListItemButton(this, "自定义电量", "[QQ>=8.2.6]在线模式为我的电量时生效", "N/A",
                 clickToProxyActAction(FakeBatCfgActivity.class)));
             __tv_fake_bat_status = _t.findViewById(R_ID_VALUE);
@@ -252,11 +309,13 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         ll.addView(
             newListItemConfigSwitchIfValid(this, "隐藏底栏小红点", null, RemoveBottomRedDots.INSTANCE));
         ll.addView(
+            newListItemConfigSwitchIfValid(this, "隐藏部分小红点", null, HideRedPoints.INSTANCE));
+        ll.addView(
             newListItemConfigSwitchIfValid(this, "隐藏文本框上方快捷方式", null, RemoveShortCutBar.INSTANCE));
         ll.addView(
             newListItemConfigSwitchIfValid(this, "隐藏群聊群成员头衔", null, HideTroopLevel.INSTANCE));
         ll.addView(
-            newListItemButtonIfValid(this, "聊天框添加提示文字", null, null,ChatInputHint.INSTANCE,
+            newListItemButtonIfValid(this, "聊天框添加提示文字", null, null, ChatInputHint.INSTANCE,
                 v -> ChatInputHint.INSTANCE.showInputHintDialog(this)));
         ll.addView(
             newListItemHookSwitchInit(this, "聊天自动发送原图", null, AutoSendOriginalPhoto.INSTANCE));
