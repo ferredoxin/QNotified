@@ -1,6 +1,6 @@
 # QNotified
 
-![QNotified logo](docs/title.png)
+![QNotified logo](https://github.com/ferredoxin/QNotified/blob/master/docs/title.png)
 
 ---
 
@@ -44,7 +44,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ```
 
-- [EULA](./app/src/main/assets/eula.md)
+- [EULA](https://github.com/ferredoxin/QNotified/blob/master/app/src/main/assets/eula.md)
 
 ```
 版权所有©2021 gao_cai_sheng <qwq233@qwq2333.top, qwq2333.top>
@@ -147,10 +147,10 @@ QNotified的版本号组成为`x.y.z.w`，正常情况下`x`位将一直保持�
 
 ## 开始贡献
 
-- [CONTRIBUTING](CONTRIBUTING.md)
+- [CONTRIBUTING](https://github.com/ferredoxin/QNotified/blob/master/CONTRIBUTING.md)
 
 ## 赞助
 
 - 由于项目的特殊性，我们不接受任何形式的捐赠，但是我们希望有更多的人能够参与本项目的开发
 
-## [QNotified最终用户许可协议](./app/src/main/assets/eula.txt)
+## [QNotified最终用户许可协议](https://github.com/ferredoxin/QNotified/blob/master/app/src/main/assets/eula.txt)
