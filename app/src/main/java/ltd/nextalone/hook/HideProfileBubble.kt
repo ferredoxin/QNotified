@@ -44,7 +44,8 @@ object HideProfileBubble : BaseDelayableHighPerformanceConditionalHookAdapter("h
         if (requireMinQQVersion(QQVersion.QQ_8_6_5)) {
             "com.tencent.mobileqq.activity.QQSettingMe".clazz?.hookAfterAllConstructors {
                 val viewGroup = it.thisObject.get("a", ViewGroup::class.java)
-                viewGroup?.findHostView<View>("mvi")?.hide()
+                val idName = if (requireMinQQVersion(QQVersion.QQ_8_7_0)) "mwh" else "mvi"
+                viewGroup?.findHostView<View>(idName)?.hide()
             }
         } else if (requireMinQQVersion(QQVersion.QQ_8_6_0)) {
             "com.tencent.mobileqq.activity.QQSettingMe".clazz?.hookAfterAllConstructors {
