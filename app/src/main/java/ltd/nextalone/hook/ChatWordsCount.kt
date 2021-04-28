@@ -33,6 +33,7 @@ import ltd.nextalone.util.*
 import me.kyuubiran.util.getExFriendCfg
 import me.kyuubiran.util.showToastByTencent
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
+import me.singleneuron.qn_kernel.tlb.ConfigTable.getConfig
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
@@ -58,7 +59,7 @@ object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt") {
                 val relativeLayout = (it.thisObject.get(
                     "a",
                     ViewGroup::class.java
-                ) as ViewGroup).findHostView<RelativeLayout>(if (requireMinQQVersion(QQVersion.QQ_8_6_5)) "mwm" else "ivc")
+                ) as ViewGroup).findHostView<RelativeLayout>(getConfig(ChatWordsCount::class.java.simpleName))
                 val textView =
                     (relativeLayout?.parent as FrameLayout).findViewById<TextView>(nil.nadph.qnotified.R.id.chat_words_count)
                 var str =
@@ -77,7 +78,7 @@ object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt") {
             val relativeLayout = (it.thisObject.get(
                 "a",
                 ViewGroup::class.java
-            ) as ViewGroup).findHostView<RelativeLayout>(if (requireMinQQVersion(QQVersion.QQ_8_6_5)) "mwm" else "ivc")
+            ) as ViewGroup).findHostView<RelativeLayout>(getConfig(ChatWordsCount::class.java.simpleName))
             relativeLayout!!.visibility = View.GONE
             val textView = TextView(activity)
             var str = getExFriendCfg().getStringOrDefault(strCfg, "今日已发送 %1 条消息，共 %2 字，表情包 %3 个")
