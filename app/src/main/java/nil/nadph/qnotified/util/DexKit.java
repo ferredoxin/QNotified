@@ -104,8 +104,9 @@ public class DexKit {
     public static final int N_FriendChatPie_updateUITitle = 20009;
     public static final int N_ProfileCardUtil_getCard = 20010;
     public static final int N_VasProfileTemplateController_onCardUpdate = 20011;
+    public static final int N_QQSettingMe_updateProfileBubble = 20012;
 
-    public static final int DEOBF_NUM_N = 11;
+    public static final int DEOBF_NUM_N = 12;
 
 
     @Nullable
@@ -356,6 +357,8 @@ public class DexKit {
                 return "profileCardUtil_getCard";
             case N_VasProfileTemplateController_onCardUpdate:
                 return "vasProfileTemplateController_onCardUpdate";
+            case N_QQSettingMe_updateProfileBubble:
+                return "qqsettingme_updateProfileBubble";
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
@@ -492,6 +495,9 @@ public class DexKit {
                 break;
             case N_VasProfileTemplateController_onCardUpdate:
                 ret = "com.tencent.mobileqq.profilecard.vas.VasProfileTemplateController";
+                break;
+            case N_QQSettingMe_updateProfileBubble:
+                ret = "com.tencent.mobileqq.activity.QQSettingMe";
                 break;
             default:
                 ret = null;
@@ -703,6 +709,14 @@ public class DexKit {
                         0x74, 0x65, 0x20, 0x66, 0x61, 0x69, 0x6C, 0x2E},
                     new byte[]{0x13, 0x6F, 0x6E, 0x43, 0x61, 0x72, 0x64, 0x55, 0x70, 0x64, 0x61,
                         0x74, 0x65, 0x3A, 0x20, 0x62, 0x67, 0x49, 0x64, 0x3D}};
+            case N_QQSettingMe_updateProfileBubble:
+                return new byte[][]{
+                    new byte[]{0x1B, 0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x66,
+                        0x69,
+                        0x6c, 0x65, 0x42, 0x75, 0x62, 0x62, 0x6c, 0x65, 0x4d, 0x73, 0x67, 0x56,
+                        0x69, 0x65, 0x77
+                    }
+                };
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
@@ -797,6 +811,8 @@ public class DexKit {
                 return new int[]{9, 10, 11, 5, 4, 2};
             case N_VasProfileTemplateController_onCardUpdate:
                 return new int[]{7, 6};
+            case N_QQSettingMe_updateProfileBubble:
+                return new int[]{4, 6, 8, 7};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
@@ -1004,6 +1020,7 @@ public class DexKit {
                 break;
             case N_LeftSwipeReply_Helper__reply:
             case N_FriendChatPie_updateUITitle:
+            case N_QQSettingMe_updateProfileBubble:
                 //NOTICE: this must only has one result
 
                 return (DexMethodDescriptor) __methods.toArray()[0];
@@ -1025,8 +1042,9 @@ public class DexKit {
                     } catch (Exception e) {
                         continue;
                     }
-                    if ("Card".equals(method.getReturnType().getSimpleName()))
+                    if ("Card".equals(method.getReturnType().getSimpleName())) {
                         return m;
+                    }
                 }
                 break;
             case N_VasProfileTemplateController_onCardUpdate:
@@ -1038,12 +1056,19 @@ public class DexKit {
                     } catch (Exception e) {
                         continue;
                     }
-                    if ("onCardUpdate".equals(method.getName()))
+                    if ("onCardUpdate".equals(method.getName())) {
                         return m;
-                    if (method.getClass().isAssignableFrom(Initiator.load("com.tencent.mobileqq.profilecard.vas.VasProfileTemplateController")))
+                    }
+                    if (method.getClass().isAssignableFrom(Initiator
+                        .load(
+                            "com.tencent.mobileqq.profilecard.vas.VasProfileTemplateController"))) {
                         return m;
-                    if (method.getClass().isAssignableFrom(Initiator.load("com.tencent.mobileqq.activity.FriendProfileCardActivity")))
+                    }
+                    if (method.getClass().isAssignableFrom(
+                        Initiator
+                            .load("com.tencent.mobileqq.activity.FriendProfileCardActivity"))) {
                         return m;
+                    }
                 }
                 break;
             case C_CustomWidgetUtil:

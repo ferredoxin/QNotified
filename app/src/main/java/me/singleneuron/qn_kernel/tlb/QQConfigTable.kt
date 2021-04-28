@@ -24,7 +24,6 @@ package me.singleneuron.qn_kernel.tlb
 import cc.ioctl.hook.ReplyNoAtHook
 import cc.ioctl.hook.VasProfileAntiCrash
 import ltd.nextalone.hook.ChatWordsCount
-import ltd.nextalone.hook.HideProfileBubble
 import ltd.nextalone.hook.HideTotalNumber
 import me.kyuubiran.hook.AutoMosaicName
 import me.singleneuron.util.QQVersion.*
@@ -32,20 +31,6 @@ import me.singleneuron.util.QQVersion.*
 class QQConfigTable : ConfigTableInterface {
 
     override val configs: Map<String?, Map<Long, Any>> = mapOf(
-
-        // 字符串关键字 updateProfileBubbleMsgView
-        HideProfileBubble::class.simpleName to mapOf(
-            QQ_8_3_9 to "S",
-            QQ_8_4_1 to "V",
-            QQ_8_4_5 to "V",
-            QQ_8_4_8 to "U",
-            QQ_8_4_10 to "Y",
-            QQ_8_4_17 to "Y",
-            QQ_8_4_18 to "Y",
-            QQ_8_5_0 to "Z",
-            QQ_8_5_5 to "Z",
-        ),
-
         VasProfileAntiCrash::class.java.simpleName to mapOf(
             QQ_8_4_1 to "azfl",
             QQ_8_4_5 to "azxy",
