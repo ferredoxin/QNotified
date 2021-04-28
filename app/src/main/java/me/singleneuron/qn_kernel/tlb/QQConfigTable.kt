@@ -23,6 +23,7 @@ package me.singleneuron.qn_kernel.tlb
 
 import cc.ioctl.hook.ReplyNoAtHook
 import cc.ioctl.hook.VasProfileAntiCrash
+import ltd.nextalone.hook.ChatWordsCount
 import ltd.nextalone.hook.HideProfileBubble
 import ltd.nextalone.hook.HideTotalNumber
 import me.kyuubiran.hook.AutoMosaicName
@@ -100,6 +101,11 @@ class QQConfigTable : ConfigTableInterface {
             QQ_8_5_5 to "l",
             QQ_8_6_0 to "__NOT_USED__",
         ),
+        ChatWordsCount::class.java.simpleName to mapOf(
+            QQ_8_5_0 to "ivc",
+            QQ_8_6_5 to "mvm",
+            QQ_8_7_0 to "mxh",
+        )
     )
 
 }
