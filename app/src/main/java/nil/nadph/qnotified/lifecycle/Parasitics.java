@@ -21,7 +21,6 @@
  */
 package nil.nadph.qnotified.lifecycle;
 
-import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
 import static nil.nadph.qnotified.util.Utils.log;
 import static nil.nadph.qnotified.util.Utils.logd;
 import static nil.nadph.qnotified.util.Utils.loge;
@@ -51,7 +50,6 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import androidx.annotation.Nullable;
 import cc.ioctl.H;
-import dalvik.system.BaseDexClassLoader;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
@@ -65,6 +63,7 @@ import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.ui.___WindowIsTranslucent;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.MainProcess;
+import nil.nadph.qnotified.util.Utils;
 
 /**
  * Inject module Activities into host process and resources injection. Deprecated, private, internal
@@ -74,7 +73,6 @@ import nil.nadph.qnotified.util.MainProcess;
  */
 public class Parasitics {
 
-    private static String sModulePath = null;
     private static boolean __stub_hooked = false;
     private static long sResInjectBeginTime = 0;
     private static long sResInjectEndTime = 0;
@@ -107,34 +105,10 @@ public class Parasitics {
         } catch (Resources.NotFoundException ignored) {
         }
         try {
+            String sModulePath = Utils.modulePath;
             if (sModulePath == null) {
-                if (sResInjectBeginTime == 0) {
-                    sResInjectBeginTime = System.currentTimeMillis();
-                }
-                String modulePath = null;
-                BaseDexClassLoader pcl = (BaseDexClassLoader) MainHook.class.getClassLoader();
-                Object pathList = iget_object_or_null(pcl, "pathList");
-                Object[] dexElements = (Object[]) iget_object_or_null(pathList, "dexElements");
-                for (Object element : dexElements) {
-                    File file = (File) iget_object_or_null(element, "path");
-                    if (file == null || file.isDirectory()) {
-                        file = (File) iget_object_or_null(element, "zip");
-                    }
-                    if (file == null || file.isDirectory()) {
-                        file = (File) iget_object_or_null(element, "file");
-                    }
-                    if (file != null && !file.isDirectory()) {
-                        String path = file.getPath();
-                        if (modulePath == null || !modulePath.contains("nil.nadph.qnotified")) {
-                            modulePath = path;
-                        }
-                    }
-                }
-                if (modulePath == null) {
-                    throw new RuntimeException(
-                        "get module path failed, loader=" + MainHook.class.getClassLoader());
-                }
-                sModulePath = modulePath;
+                throw new RuntimeException(
+                    "get module path failed, loader=" + MainHook.class.getClassLoader());
             }
             AssetManager assets = res.getAssets();
             @SuppressLint("DiscouragedPrivateApi")

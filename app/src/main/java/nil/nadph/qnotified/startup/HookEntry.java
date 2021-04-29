@@ -22,12 +22,14 @@
 package nil.nadph.qnotified.startup;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
+import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import me.singleneuron.util.HookStatue;
 import nil.nadph.qnotified.R;
+import nil.nadph.qnotified.util.Utils;
 
 /**
  * Xposed entry class DO NOT MODIFY ANY CODE HERE UNLESS NECESSARY. DO NOT INVOKE ANY METHOD THAT
@@ -37,7 +39,7 @@ import nil.nadph.qnotified.R;
  *
  * @author kinit
  */
-public class HookEntry implements IXposedHookLoadPackage {
+public class HookEntry implements IXposedHookLoadPackage, IXposedHookZygoteInit {
 
     public static final String PACKAGE_NAME_QQ = "com.tencent.mobileqq";
     public static final String PACKAGE_NAME_QQ_INTERNATIONAL = "com.tencent.mobileqqi";
@@ -72,5 +74,10 @@ public class HookEntry implements IXposedHookLoadPackage {
             default:
                 break;
         }
+    }
+
+    @Override
+    public void initZygote(StartupParam startupParam) throws Throwable {
+        Utils.modulePath = startupParam.modulePath;
     }
 }
