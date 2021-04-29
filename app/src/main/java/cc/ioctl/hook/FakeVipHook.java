@@ -21,12 +21,10 @@
  */
 package cc.ioctl.hook;
 
-import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.Utils.log;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
-import java.lang.reflect.Method;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
@@ -38,35 +36,26 @@ public class FakeVipHook extends CommonDelayableHook {
     public static final FakeVipHook INSTANCE = new FakeVipHook();
 
     private FakeVipHook() {
-        super("__NOT_USED__", new DexDeobfStep(DexKit.C_VIP_UTILS));
+        super("__NOT_USED__", new DexDeobfStep(DexKit.N_VIP_UTILS_getPrivilegeFlags));
     }
 
     @Override
     public boolean initOnce() {
         try {
-            Class clz = DexKit.doFindClass(DexKit.C_VIP_UTILS);
-            Method getPrivilegeFlags = null;
-            for (Method m : clz.getDeclaredMethods()) {
-                if (m.getReturnType().equals(int.class)) {
-                    Class<?>[] argt = m.getParameterTypes();
-                    if (argt.length == 2 && argt[0].equals(load("mqq/app/AppRuntime")) && argt[1]
-                        .equals(String.class)) {
-                        getPrivilegeFlags = m;
-                        break;
+            XposedBridge.hookMethod(
+                DexKit.doFindMethod(DexKit.N_VIP_UTILS_getPrivilegeFlags),
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        int ret;
+                        //null is self
+                        Object uin = param.args[param.args.length - 1];
+                        if (uin == null) {
+                            ret = (int) param.getResult();
+                            param.setResult(2 | 4 | 8 | ret);//vip + svip + 大会员
+                        }
                     }
-                }
-            }
-            XposedBridge.hookMethod(getPrivilegeFlags, new XC_MethodHook(-52) {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    int ret;
-                    //null is self
-                    if (param.args[1] == null) {
-                        ret = (int) param.getResult();
-                        param.setResult(4 | ret);//svip
-                    }
-                }
-            });
+                });
             return true;
         } catch (Throwable e) {
             log(e);

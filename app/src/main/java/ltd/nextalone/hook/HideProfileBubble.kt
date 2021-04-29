@@ -30,12 +30,18 @@ import me.singleneuron.qn_kernel.data.requireMinPlayQQVersion
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
+import nil.nadph.qnotified.step.DexDeobfStep
+import nil.nadph.qnotified.step.Step
 import nil.nadph.qnotified.util.DexKit
 
 @FunctionEntry
 object HideProfileBubble : BaseDelayableHighPerformanceConditionalHookAdapter("hideProfileBubble") {
 
     override val recordTime: Boolean = false
+
+    override fun getPreconditions(): Array<Step> {
+        return arrayOf(DexDeobfStep(DexKit.N_QQSettingMe_updateProfileBubble))
+    }
 
     override fun doInit() = tryOrFalse {
         DexKit.doFindMethod(DexKit.N_QQSettingMe_updateProfileBubble)?.replace(this, null)

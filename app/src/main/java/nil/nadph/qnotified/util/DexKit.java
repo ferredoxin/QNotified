@@ -23,6 +23,7 @@ package nil.nadph.qnotified.util;
 
 import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
 import static nil.nadph.qnotified.util.Initiator._QQAppInterface;
+import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
 import static nil.nadph.qnotified.util.Utils.log;
 import static nil.nadph.qnotified.util.Utils.logi;
@@ -63,7 +64,7 @@ public class DexKit {
     public static final int C_FAV_EMO_CONST = 9;
     public static final int C_MSG_REC_FAC = 10;
     public static final int C_CONTACT_UTILS = 11;
-    public static final int C_VIP_UTILS = 12;
+    //public static final int C_VIP_UTILS = 12;
     public static final int C_ARK_APP_ITEM_BUBBLE_BUILDER = 13;
     public static final int C_PNG_FRAME_UTIL = 14;
     public static final int C_PIC_EMOTICON_INFO = 15;
@@ -105,8 +106,9 @@ public class DexKit {
     public static final int N_ProfileCardUtil_getCard = 20010;
     public static final int N_VasProfileTemplateController_onCardUpdate = 20011;
     public static final int N_QQSettingMe_updateProfileBubble = 20012;
+    public static final int N_VIP_UTILS_getPrivilegeFlags = 20013;
 
-    public static final int DEOBF_NUM_N = 12;
+    public static final int DEOBF_NUM_N = 13;
 
 
     @Nullable
@@ -285,8 +287,6 @@ public class DexKit {
                 return "msg_rec_fac";
             case C_CONTACT_UTILS:
                 return "contact_utils";
-            case C_VIP_UTILS:
-                return "vip_utils";
             case C_ARK_APP_ITEM_BUBBLE_BUILDER:
                 return "ark_app_item_bubble_builder";
             case C_PNG_FRAME_UTIL:
@@ -359,6 +359,8 @@ public class DexKit {
                 return "vasProfileTemplateController_onCardUpdate";
             case N_QQSettingMe_updateProfileBubble:
                 return "qqsettingme_updateProfileBubble";
+            case N_VIP_UTILS_getPrivilegeFlags:
+                return "vip_utils_updateProfileBubble";
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
@@ -396,7 +398,7 @@ public class DexKit {
             case C_CONTACT_UTILS:
                 ret = "com/tencent/mobileqq/utils/ContactUtils";
                 break;
-            case C_VIP_UTILS:
+            case N_VIP_UTILS_getPrivilegeFlags:
                 ret = "com/tencent/mobileqq/utils/VipUtils";
                 break;
             case C_ARK_APP_ITEM_BUBBLE_BUILDER:
@@ -555,8 +557,6 @@ public class DexKit {
                         0x65, 0x73, 0x73, 0x61, 0x67, 0x65}};
             case C_CONTACT_UTILS:
                 return new byte[][]{new byte[]{0x07, 0x20, 0x2D, 0x20, 0x57, 0x69, 0x46, 0x69}};
-            case C_VIP_UTILS:
-                return new byte[][]{new byte[]{0x05, 0x6A, 0x68, 0x61, 0x6E, 0x5F}};
             case C_ARK_APP_ITEM_BUBBLE_BUILDER:
                 return new byte[][]{
                     new byte[]{0x0F, 0x64, 0x65, 0x62, 0x75, 0x67, 0x41, 0x72, 0x6B, 0x4D, 0x65,
@@ -717,6 +717,11 @@ public class DexKit {
                         0x69, 0x65, 0x77
                     }
                 };
+            case N_VIP_UTILS_getPrivilegeFlags:
+                return new byte[][]{
+                    new byte[]{0x21, 0x67, 0x65, 0x74, 0x50, 0x72, 0x69, 0x76, 0x69, 0x6C, 0x65,
+                        0x67, 0x65, 0x46, 0x6C, 0x61, 0x67, 0x73, 0x20, 0x46, 0x72, 0x69, 0x65,
+                        0x6E, 0x64, 0x73, 0x20, 0x69, 0x73, 0x20, 0x6E, 0x75, 0x6C, 0x6C}};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
@@ -743,8 +748,6 @@ public class DexKit {
                 return new int[]{4};
             case C_CONTACT_UTILS:
                 return new int[]{4};
-            case C_VIP_UTILS:
-                return new int[]{4, 2, 3};
             case C_ARK_APP_ITEM_BUBBLE_BUILDER:
                 return new int[]{2, 11, 6};
             case C_PNG_FRAME_UTIL:
@@ -813,6 +816,8 @@ public class DexKit {
                 return new int[]{7, 6};
             case N_QQSettingMe_updateProfileBubble:
                 return new int[]{4, 6, 8, 7};
+            case N_VIP_UTILS_getPrivilegeFlags:
+                return new int[]{4, 2, 3};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
@@ -825,7 +830,6 @@ public class DexKit {
             case C_AIO_UTILS:
             case C_CONTACT_UTILS:
             case C_MSG_REC_FAC:
-            case C_VIP_UTILS:
             case C_SIMPLE_UI_UTIL:
             case C_TROOP_GIFT_UTIL:
             case C_TEST_STRUCT_MSG:
@@ -1152,6 +1156,25 @@ public class DexKit {
                         continue;
                     }
                     return m;
+                }
+                break;
+            case N_VIP_UTILS_getPrivilegeFlags:
+                for (DexMethodDescriptor m : __methods) {
+                    Method method;
+                    try {
+                        method = m.getMethodInstance(Initiator.getHostClassLoader());
+                    } catch (Exception e) {
+                        continue;
+                    }
+                    if (method.getReturnType().equals(int.class)) {
+                        if (method.getName().equals("getPrivilegeFlags"))
+                            return m;
+                        Class<?>[] argt = method.getParameterTypes();
+                        if (argt.length == 2 && argt[0].equals(load("mqq/app/AppRuntime")) && argt[1]
+                            .equals(String.class)) {
+                            return m;
+                        }
+                    }
                 }
                 break;
         }
