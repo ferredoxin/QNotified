@@ -26,7 +26,6 @@ import static nil.nadph.qnotified.util.Utils.log;
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Handler;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -227,8 +226,8 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
             sb.append("\nmd5:").append(md5).append("\n");
             sb.append(desc);
             sb.append("\n下载地址:\n");
-            tmp = new SpannableString((String) download_url);
-            tmp.setSpan(new URLSpan((String) download_url), 0, tmp.length(),
+            tmp = new SpannableString(download_url);
+            tmp.setSpan(new URLSpan(download_url), 0, tmp.length(),
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             sb.append(tmp);
             sb.append("\n");
@@ -242,9 +241,7 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
                 tv.setFocusable(true);
                 try {
                     tv.setFocusableInTouchMode(true);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                        tv.setTextIsSelectable(true);
-                    }
+                    tv.setTextIsSelectable(true);
                     tv.setAutoLinkMask(Linkify.WEB_URLS);
                 } catch (NoSuchMethodError ignored) {
                 }
