@@ -354,6 +354,9 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
                     + HostInformationProviderKt.getHostInfo().getVersionCode() + ")"));
         ll.addView(newListItemDummy(this, "模块版本", null, Utils.QN_VERSION_NAME));
         UpdateCheck uc = new UpdateCheck();
+        ll.addView(_t = newListItemButton(this, "更新通道", "自定义更新通道",
+            uc.getCurrChannel(), null));
+        _t.setOnClickListener(uc.listener(_t));
         ll.addView(_t = newListItemButton(this, "检查更新", null, "点击检查", uc));
         uc.setVersionTip(_t);
         ll.addView(newListItemButton(this, "关于模块", null, null,

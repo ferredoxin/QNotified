@@ -25,6 +25,7 @@ import static cc.ioctl.util.DateTimeUtil.getRelTimeStrSec;
 import static nil.nadph.qnotified.util.Utils.log;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.graphics.Color;
 import android.os.Handler;
 import android.text.SpannableString;
@@ -44,15 +45,20 @@ import java.net.URL;
 import java.util.Calendar;
 import java.util.TimeZone;
 import javax.net.ssl.HttpsURLConnection;
+import me.ketal.data.ConfigData;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ViewBuilder;
 
 public class UpdateCheck implements View.OnClickListener, Runnable {
 
+    public static final String UPDATE_INFO_GET_CI = "https://api.appcenter.ms/v0.1/public/sdk/apps/ddf4b597-1833-45dd-af28-96ca504b8123/releases/latest";
     public static final String UPDATE_INFO_GET_WEEKLY = "https://api.appcenter.ms/v0.1/public/sdk/apps/ddf4b597-1833-45dd-af28-96ca504b8123/distribution_groups/8a11cc3e-47da-4e3b-84e7-ac306a128aaf/releases/latest";
     public static final String qn_update_info = "qn_update_info";
     public static final String qn_update_time = "qn_update_time";
+    private static final String[] channels = new String[] {"Alpha", "Canary"};
+    private final ConfigData<String> updateChannel = new ConfigData<>("qn_update_channel");
+    private final int RL_DONE = 0;
     private final int RL_LOAD = 1;
     private final int RL_SHOW_RET = 2;
     int currVerCode = Utils.QN_VERSION_CODE;
@@ -60,7 +66,7 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
     ViewGroup viewGroup;
     private boolean clicked = false;
     private PHPArray result;
-    private int runlevel;
+    private int runLevel;
 
     public UpdateCheck() {
     }
@@ -88,7 +94,15 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
         String content = null;
         int failed = 0;
         try {
-            URL reqURL = new URL(UPDATE_INFO_GET_WEEKLY);
+            URL reqURL = null;
+            switch (getCurrChannel()) {
+                case  "Canary":
+                    reqURL = new URL(UPDATE_INFO_GET_CI);
+                    break;
+                case "Alpha":
+                default:
+                    reqURL = new URL(UPDATE_INFO_GET_WEEKLY);
+            }
             HttpsURLConnection httpsConn = (HttpsURLConnection) reqURL.openConnection();
             InputStream in = httpsConn.getInputStream();
             ByteArrayOutputStream bais = new ByteArrayOutputStream();
@@ -107,7 +121,7 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
             return content;
         } catch (IOException e) {
             final IOException e2 = e;
-            runlevel = 0;
+            runLevel = RL_DONE;
             if (content == null) {
                 new Handler(viewGroup.getContext().getMainLooper()).post(new Runnable() {
                     @Override
@@ -169,19 +183,19 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
 
     @Override
     public void run() {
-        switch (runlevel) {
+        switch (runLevel) {
             case RL_LOAD:
                 String ret = doRefreshInfo();
                 if (ret == null) {
                     return;
                 }
-                runlevel = 2;
+                runLevel = RL_SHOW_RET;
                 result = PHPArray.fromJson(ret);
                 new Handler(viewGroup.getContext().getMainLooper()).post(this);
                 return;
             case RL_SHOW_RET:
                 doSetVersionTip(viewGroup, result);
-                runlevel = 0;
+                runLevel = RL_DONE;
                 if (clicked) {
                     doShowUpdateInfo();
                 }
@@ -256,11 +270,34 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
     public void onClick(View v) {
         viewGroup = (ViewGroup) v;
         clicked = true;
-        if (result == null) {
-            runlevel = 1;
+        if (result == null || runLevel == RL_LOAD) {
+            runLevel = RL_LOAD;
             new Thread(this).start();
         } else {
             doShowUpdateInfo();
         }
+    }
+
+    public String getCurrChannel() {
+        return updateChannel.getOrDefault("Alpha");
+    }
+
+    public void setCurrChannel(String channel) {
+        updateChannel.setValue(channel);
+    }
+
+    public View.OnClickListener listener(ViewGroup vg) {
+        return v -> new AlertDialog.Builder(v.getContext(),
+            CustomDialog.themeIdForDialog())
+            .setTitle("自定义更新通道")
+            .setItems(channels, (dialog, which) -> {
+                String channel = channels[which];
+                if (!getCurrChannel().equals(channel)) {
+                    runLevel = RL_LOAD;
+                    setCurrChannel(channels[which]);
+                    TextView tv = vg.findViewById(ViewBuilder.R_ID_VALUE);
+                    tv.setText(channels[which]);
+                }
+            }).show();
     }
 }
