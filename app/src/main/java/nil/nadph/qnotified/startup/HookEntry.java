@@ -29,7 +29,6 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import me.singleneuron.util.HookStatue;
 import nil.nadph.qnotified.R;
-import nil.nadph.qnotified.util.Utils;
 
 /**
  * Xposed entry class DO NOT MODIFY ANY CODE HERE UNLESS NECESSARY. DO NOT INVOKE ANY METHOD THAT
@@ -78,6 +77,6 @@ public class HookEntry implements IXposedHookLoadPackage, IXposedHookZygoteInit 
 
     @Override
     public void initZygote(StartupParam startupParam) throws Throwable {
-        Utils.modulePath = startupParam.modulePath;
+        StartupInfo.modulePath = startupParam.modulePath;
     }
 }

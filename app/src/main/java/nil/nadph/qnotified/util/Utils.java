@@ -78,7 +78,6 @@ public class Utils {
     public static final int TOAST_TYPE_ERROR = 1;
     public static final int TOAST_TYPE_SUCCESS = 2;
     public static boolean ENABLE_DUMP_LOG = false;
-    public static String modulePath = null;
     private static Handler mHandler;
     private static boolean sAppRuntimeInit = false;
     private static Field f_mAppRuntime = null;

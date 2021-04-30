@@ -60,10 +60,10 @@ import java.util.List;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.R;
+import nil.nadph.qnotified.startup.StartupInfo;
 import nil.nadph.qnotified.ui.___WindowIsTranslucent;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.MainProcess;
-import nil.nadph.qnotified.util.Utils;
 
 /**
  * Inject module Activities into host process and resources injection. Deprecated, private, internal
@@ -105,7 +105,7 @@ public class Parasitics {
         } catch (Resources.NotFoundException ignored) {
         }
         try {
-            String sModulePath = Utils.modulePath;
+            String sModulePath = StartupInfo.modulePath;
             if (sModulePath == null) {
                 throw new RuntimeException(
                     "get module path failed, loader=" + MainHook.class.getClassLoader());
