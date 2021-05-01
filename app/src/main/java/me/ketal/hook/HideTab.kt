@@ -60,7 +60,8 @@ object HideTab : CommonDelayableHook("ketal_HideTab") {
         "com.tencent.mobileqq.activity.QQSettingMe".clazz?.hookAfterAllConstructors {
             if (!isEnabled) return@hookAfterAllConstructors
             val linearLayout = if (requireMinQQVersion(QQVersion.QQ_8_6_5)) {
-                it.thisObject.get("c", LinearLayout::class.java)!!
+                val midcontentName = if (requireMinQQVersion(QQVersion.QQ_8_7_0)) "b" else "c"
+                it.thisObject.get(midcontentName, LinearLayout::class.java)!!
             } else {
                 val midcontentName = if (requireMinQQVersion(QQVersion.QQ_8_6_0)) "n" else "k"
                 it.thisObject.get(midcontentName, View::class.java) as LinearLayout
