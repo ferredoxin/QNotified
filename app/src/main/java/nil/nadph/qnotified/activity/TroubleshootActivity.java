@@ -56,7 +56,6 @@ import cc.ioctl.activity.MmkvTestActivity;
 import cc.ioctl.hook.InspectMessage;
 import ltd.nextalone.hook.EnableQLog;
 import me.singleneuron.activity.BugReportActivity;
-import me.singleneuron.activity.DatabaseTestActivity;
 import me.singleneuron.data.CardMsgCheckResult;
 import me.singleneuron.hook.DebugDump;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
@@ -295,8 +294,6 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                 }
             }
         }));
-        ll.addView(newListItemButton(this, "测试数据库", null, null,
-            clickToProxyActAction(DatabaseTestActivity.class)));
         ll.addView(newListItemButton(this, "测试 MMKV", null, null,
             clickToProxyActAction(MmkvTestActivity.class)));
         if (BuildConfig.DEBUG) {
