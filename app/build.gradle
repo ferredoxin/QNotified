@@ -33,6 +33,9 @@ android {
             }
         }
     }
+    lintOptions {
+        abortOnError false
+    }
     if (performSigning) {
         signingConfigs {
             release {
