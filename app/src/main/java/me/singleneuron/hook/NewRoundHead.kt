@@ -28,7 +28,7 @@ import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.qn_kernel.ui.base.UiDescription
-import me.singleneuron.util.QQVersion
+import nil.nadph.qnotified.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.step.Step

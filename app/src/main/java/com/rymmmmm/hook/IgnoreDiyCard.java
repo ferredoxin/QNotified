@@ -33,7 +33,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
-import me.singleneuron.util.QQVersion;
+import nil.nadph.qnotified.util.QQVersion;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.LicenseStatus;

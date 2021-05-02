@@ -25,10 +25,10 @@ import cc.ioctl.hook.ReplyNoAtHook
 import cc.ioctl.hook.VasProfileAntiCrash
 import ltd.nextalone.hook.HideProfileBubble
 import ltd.nextalone.hook.HideTotalNumber
-import me.ketal.util.PlayQQVersion.PlayQQ_8_2_9
-import me.ketal.util.PlayQQVersion.PlayQQ_8_2_9_1
-import me.ketal.util.PlayQQVersion.PlayQQ_8_2_10
-import me.ketal.util.PlayQQVersion.PlayQQ_8_2_11
+import nil.nadph.qnotified.util.PlayQQVersion.PlayQQ_8_2_9
+import nil.nadph.qnotified.util.PlayQQVersion.PlayQQ_8_2_9_1
+import nil.nadph.qnotified.util.PlayQQVersion.PlayQQ_8_2_10
+import nil.nadph.qnotified.util.PlayQQVersion.PlayQQ_8_2_11
 import me.kyuubiran.hook.AutoMosaicName
 
 class PlayQQConfigTable : ConfigTableInterface {

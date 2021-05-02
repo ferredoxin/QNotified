@@ -30,7 +30,7 @@ import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.decorator.BaseItemBuilderFactoryHookDecorator
 import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference
-import me.singleneuron.util.QQVersion
+import nil.nadph.qnotified.util.QQVersion
 import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.ReflexUtil
 import nil.nadph.qnotified.util.Utils

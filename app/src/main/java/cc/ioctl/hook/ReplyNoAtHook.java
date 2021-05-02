@@ -24,10 +24,10 @@ package cc.ioctl.hook;
 import java.lang.reflect.Method;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static me.ketal.util.PlayQQVersion.PlayQQ_8_2_9;
-import static me.ketal.util.TIMVersion.TIM_3_1_1;
-import static me.singleneuron.util.QQVersion.QQ_8_1_3;
-import static me.singleneuron.util.QQVersion.QQ_8_6_0;
+import static nil.nadph.qnotified.util.PlayQQVersion.PlayQQ_8_2_9;
+import static nil.nadph.qnotified.util.TIMVersion.TIM_3_1_1;
+import static nil.nadph.qnotified.util.QQVersion.QQ_8_1_3;
+import static nil.nadph.qnotified.util.QQVersion.QQ_8_6_0;
 import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
 import static nil.nadph.qnotified.util.Utils.log;
 

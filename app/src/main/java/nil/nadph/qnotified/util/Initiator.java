@@ -27,7 +27,6 @@ import static nil.nadph.qnotified.util.Utils.loge;
 import android.os.Parcelable;
 
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
-import me.singleneuron.util.QQVersion;
 import mqq.app.AppRuntime;
 
 @SuppressWarnings("rawtypes")

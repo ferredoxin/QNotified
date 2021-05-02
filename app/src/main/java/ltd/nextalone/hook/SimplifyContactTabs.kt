@@ -24,7 +24,7 @@ package ltd.nextalone.hook
 import ltd.nextalone.base.MultiItemDelayableHook
 import ltd.nextalone.util.*
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import me.singleneuron.util.QQVersion
+import nil.nadph.qnotified.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 
 @FunctionEntry

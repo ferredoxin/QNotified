@@ -21,7 +21,7 @@
  */
 package cc.ioctl.hook;
 
-import static me.singleneuron.util.QQVersion.QQ_8_2_0;
+import static nil.nadph.qnotified.util.QQVersion.QQ_8_2_0;
 import static nil.nadph.qnotified.util.Initiator._EmoAddedAuthCallback;
 import static nil.nadph.qnotified.util.Initiator._FavEmoRoamingHandler;
 import static nil.nadph.qnotified.util.ReflexUtil.iput_object;

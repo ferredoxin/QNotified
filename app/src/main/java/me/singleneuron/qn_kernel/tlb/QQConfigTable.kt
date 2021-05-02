@@ -26,7 +26,7 @@ import cc.ioctl.hook.VasProfileAntiCrash
 import ltd.nextalone.hook.ChatWordsCount
 import ltd.nextalone.hook.HideTotalNumber
 import me.kyuubiran.hook.AutoMosaicName
-import me.singleneuron.util.QQVersion.*
+import nil.nadph.qnotified.util.QQVersion.*
 
 class QQConfigTable : ConfigTableInterface {
 

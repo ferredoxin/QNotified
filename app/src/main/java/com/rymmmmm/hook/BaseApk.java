@@ -21,7 +21,7 @@
  */
 package com.rymmmmm.hook;
 
-import static me.singleneuron.util.QQVersion.QQ_8_6_0;
+import static nil.nadph.qnotified.util.QQVersion.QQ_8_6_0;
 import static nil.nadph.qnotified.util.Utils.log;
 
 import android.content.pm.ApplicationInfo;

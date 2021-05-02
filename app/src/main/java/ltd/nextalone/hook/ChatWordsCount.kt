@@ -34,7 +34,7 @@ import me.kyuubiran.util.getExFriendCfg
 import me.kyuubiran.util.showToastByTencent
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.qn_kernel.tlb.ConfigTable.getConfig
-import me.singleneuron.util.QQVersion
+import nil.nadph.qnotified.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.ui.CustomDialog

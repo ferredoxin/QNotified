@@ -23,7 +23,7 @@ package me.singleneuron.qn_kernel.tlb
 
 import cc.ioctl.hook.ReplyNoAtHook
 import me.ketal.hook.LeftSwipeReplyHook
-import me.ketal.util.TIMVersion.*
+import nil.nadph.qnotified.util.TIMVersion.*
 import nil.nadph.qnotified.bridge.QQMessageFacade
 
 class TIMConfigTable : ConfigTableInterface {

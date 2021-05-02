@@ -32,7 +32,7 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import java.lang.reflect.Method;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
-import me.singleneuron.util.QQVersion;
+import nil.nadph.qnotified.util.QQVersion;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
