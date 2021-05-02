@@ -1,6 +1,6 @@
 # QNotified
 
-![QNotified logo](https://github.com/ferredoxin/QNotified/blob/master/docs/title.png)
+![QNotified logo](https://raw.githubusercontent.com/ferredoxin/QNotified/master/docs/title.png)
 
 ---
 
