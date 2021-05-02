@@ -19,7 +19,7 @@
  * <https://www.gnu.org/licenses/>
  * <https://github.com/ferredoxin/QNotified/blob/master/LICENSE.md>.
  */
-package me.ketal.util;
+package nil.nadph.qnotified.util;
 
 public class PlayQQVersion {
 

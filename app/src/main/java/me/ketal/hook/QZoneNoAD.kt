@@ -27,9 +27,9 @@ import me.ketal.base.PluginDelayableHook
 import me.ketal.util.BaseUtil.tryVerbosely
 import me.ketal.util.HookUtil.getField
 import me.ketal.util.HookUtil.getMethod
-import me.ketal.util.TIMVersion
+import nil.nadph.qnotified.util.TIMVersion
 import me.singleneuron.qn_kernel.data.requireMinVersion
-import me.singleneuron.util.QQVersion
+import nil.nadph.qnotified.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.ReflexUtil
 

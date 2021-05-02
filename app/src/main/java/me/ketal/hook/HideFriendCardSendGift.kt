@@ -31,7 +31,7 @@ import ltd.nextalone.util.hookAfter
 import ltd.nextalone.util.method
 import me.ketal.util.BaseUtil.tryVerbosely
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import me.singleneuron.util.QQVersion
+import nil.nadph.qnotified.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.ReflexUtil

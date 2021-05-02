@@ -58,7 +58,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
-import me.singleneuron.util.QQVersion;
 import mqq.app.AppRuntime;
 import nil.nadph.qnotified.BuildConfig;
 

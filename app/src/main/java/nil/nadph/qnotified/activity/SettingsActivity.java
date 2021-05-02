@@ -23,9 +23,9 @@ package nil.nadph.qnotified.activity;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static me.ketal.util.PlayQQVersion.PlayQQ_8_2_9;
+import static nil.nadph.qnotified.util.PlayQQVersion.PlayQQ_8_2_9;
 import static me.singleneuron.util.KotlinUtilsKt.addViewConditionally;
-import static me.singleneuron.util.QQVersion.QQ_8_2_6;
+import static nil.nadph.qnotified.util.QQVersion.QQ_8_2_6;
 import static nil.nadph.qnotified.ui.ViewBuilder.R_ID_DESCRIPTION;
 import static nil.nadph.qnotified.ui.ViewBuilder.R_ID_TITLE;
 import static nil.nadph.qnotified.ui.ViewBuilder.R_ID_VALUE;

@@ -29,7 +29,7 @@ import me.kyuubiran.util.getObjectOrNull
 import me.kyuubiran.util.loadClass
 import me.kyuubiran.util.setViewZeroSize
 import me.singleneuron.qn_kernel.data.hostInfo
-import me.singleneuron.util.QQVersion
+import nil.nadph.qnotified.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.LicenseStatus

@@ -36,7 +36,7 @@ import java.lang.reflect.Modifier;
 
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import me.singleneuron.qn_kernel.tlb.ConfigTable;
-import me.singleneuron.util.QQVersion;
+import nil.nadph.qnotified.util.QQVersion;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Utils;
