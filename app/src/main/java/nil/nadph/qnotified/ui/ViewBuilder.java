@@ -21,6 +21,7 @@
  */
 package nil.nadph.qnotified.ui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -31,8 +32,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 
+import androidx.annotation.NonNull;
 import androidx.core.view.ViewCompat;
-
 import cc.ioctl.H;
 import ltd.nextalone.base.MultiItemDelayableHook;
 import ltd.nextalone.util.SystemServiceUtils;
@@ -593,7 +594,7 @@ public class ViewBuilder {
 
     public static RelativeLayout newListItemButtonIfValid(Context ctx, CharSequence title,
         CharSequence desc,
-        CharSequence value, BaseDelayableHook hook, Class<?> activity) {
+        CharSequence value, BaseDelayableHook hook, Class<? extends Activity> activity) {
         View.OnClickListener listener;
         if (hook.isValid()) {
             listener = clickToProxyActAction(activity);
@@ -650,7 +651,8 @@ public class ViewBuilder {
         tv.setTextIsSelectable(false);
         tv.setText(title);
         tv.setTextSize(dip2sp(ctx, 13));
-        tv.setTextColor(HostInformationProviderKt.getHostInfo().getApplication().getResources().getColor(R.color.colorPrimary));
+        tv.setTextColor(HostInformationProviderKt.getHostInfo().getApplication().getResources()
+            .getColor(R.color.colorPrimary));
         tv.setLayoutParams(new ViewGroup.LayoutParams(WRAP_CONTENT, WRAP_CONTENT));
         ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
         int m = dip2px(ctx, 14);
@@ -659,13 +661,11 @@ public class ViewBuilder {
         return ll;
     }
 
-    public static View.OnClickListener clickToProxyActAction(final Class<?> clz) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Context ctx = v.getContext();
-                ctx.startActivity(new Intent(ctx, clz));
-            }
+    public static View.OnClickListener clickToProxyActAction(
+        final @NonNull Class<? extends Activity> clz) {
+        return v -> {
+            Context ctx = v.getContext();
+            ctx.startActivity(new Intent(ctx, clz));
         };
     }
 

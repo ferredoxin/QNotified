@@ -23,7 +23,7 @@ package nil.nadph.qnotified.step;
 
 import nil.nadph.qnotified.util.DexKit;
 
-public class DexDeobfStep extends Step {
+public class DexDeobfStep implements Step {
 
     private final int id;
 

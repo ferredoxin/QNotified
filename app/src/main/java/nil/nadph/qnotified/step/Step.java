@@ -21,18 +21,21 @@
  */
 package nil.nadph.qnotified.step;
 
-public abstract class Step implements Comparable<Step> {
+import androidx.annotation.Nullable;
 
-    abstract public boolean step();
+public interface Step extends Comparable<Step> {
 
-    abstract public boolean isDone();
+    boolean step();
 
-    abstract public int getPriority();
+    boolean isDone();
 
-    abstract public String getDescription();
+    int getPriority();
+
+    @Nullable
+    String getDescription();
 
     @Override
-    public int compareTo(Step o) {
+    default int compareTo(Step o) {
         return this.getPriority() - o.getPriority();
     }
 }

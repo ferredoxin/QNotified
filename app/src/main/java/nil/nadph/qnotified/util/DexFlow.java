@@ -21,7 +21,9 @@
  */
 package nil.nadph.qnotified.util;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class DexFlow {
@@ -547,6 +549,18 @@ public class DexFlow {
             i += 2 * len;
         }
         return false;
+    }
+
+    @NonNull
+    public static byte[] packUtf8(@NonNull String string) {
+        if (string.length() > 127) {
+            throw new UnsupportedOperationException("not implemented");
+        }
+        byte[] tmp = string.getBytes(StandardCharsets.UTF_8);
+        byte[] result = new byte[tmp.length + 1];
+        result[0] = (byte) tmp.length;
+        System.arraycopy(tmp, 0, result, 1, tmp.length);
+        return result;
     }
 
 }

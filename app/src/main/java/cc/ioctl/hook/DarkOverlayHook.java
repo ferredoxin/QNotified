@@ -108,7 +108,7 @@ public class DarkOverlayHook extends CommonDelayableHook {
         return super.isEnabled();
     }
 
-    private static class FindNightMask extends Step {
+    private static class FindNightMask implements Step {
 
         public static DexFieldDescriptor getNightMaskField() {
             String fieldName = null;
