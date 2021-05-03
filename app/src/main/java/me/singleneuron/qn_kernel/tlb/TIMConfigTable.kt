@@ -22,7 +22,9 @@
 package me.singleneuron.qn_kernel.tlb
 
 import cc.ioctl.hook.ReplyNoAtHook
+import ltd.nextalone.hook.HideTotalNumber
 import me.ketal.hook.LeftSwipeReplyHook
+import me.kyuubiran.hook.AutoMosaicName
 import nil.nadph.qnotified.util.TIMVersion.*
 import nil.nadph.qnotified.bridge.QQMessageFacade
 
@@ -49,7 +51,21 @@ class TIMConfigTable : ConfigTableInterface {
 
         LeftSwipeReplyHook::class.java.simpleName to mapOf(
             TIM_3_1_1 to "Cg",
-            TIM_3_3_0 to "Cn"
+            TIM_3_3_0 to "Cn",
+        ),
+
+        HideTotalNumber::class.java.simpleName to mapOf(
+            TIM_3_1_1 to "cje",
+            TIM_3_2_0 to "cjd",
+            TIM_3_3_0 to "ciY",
+            TIM_3_3_1 to "ciW",
+            TIM_3_3_5 to "ciV",
+        ),
+
+        AutoMosaicName::class.java.simpleName to mapOf(
+            TIM_3_0_0 to "jU",
+            TIM_3_1_1 to "wm",
+            TIM_3_3_1 to "wq",
         ),
     )
 
