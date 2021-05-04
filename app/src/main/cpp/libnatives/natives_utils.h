@@ -47,4 +47,6 @@ inline int max(int a, int b) {
     return a < b ? b : a;
 }
 
+extern "C" jint MMKV_JNI_OnLoad(JavaVM *vm, void *reserved);
+
 #endif //NATIVES_NATIVES_UTILS_H
