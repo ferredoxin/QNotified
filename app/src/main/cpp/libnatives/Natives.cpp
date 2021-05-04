@@ -578,5 +578,5 @@ EXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
             return -1;
         }
     }
-    return JNI_VERSION_1_4;
+    return MMKV_JNI_OnLoad(vm, reserved);
 }

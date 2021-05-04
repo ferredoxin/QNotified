@@ -23,9 +23,7 @@ package nil.nadph.qnotified.activity;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.util.PlayQQVersion.PlayQQ_8_2_9;
 import static me.singleneuron.util.KotlinUtilsKt.addViewConditionally;
-import static nil.nadph.qnotified.util.QQVersion.QQ_8_2_6;
 import static nil.nadph.qnotified.ui.ViewBuilder.R_ID_DESCRIPTION;
 import static nil.nadph.qnotified.ui.ViewBuilder.R_ID_TITLE;
 import static nil.nadph.qnotified.ui.ViewBuilder.R_ID_VALUE;
@@ -42,6 +40,8 @@ import static nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit;
 import static nil.nadph.qnotified.ui.ViewBuilder.newListItemSwitchConfigNext;
 import static nil.nadph.qnotified.ui.ViewBuilder.newListItemSwitchStub;
 import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
+import static nil.nadph.qnotified.util.PlayQQVersion.PlayQQ_8_2_9;
+import static nil.nadph.qnotified.util.QQVersion.QQ_8_2_6;
 import static nil.nadph.qnotified.util.Utils.dip2px;
 import static nil.nadph.qnotified.util.Utils.log;
 
@@ -426,8 +426,8 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
             clickToProxyActAction(EulaActivity.class)));
         ll.addView(newListItemButton(this, "展望未来", "其实都还没写", null,
             clickToProxyActAction(PendingFuncActivity.class)));
-        ll.addView(newListItemButton(this, "特别鸣谢", "感谢卖动绘制图标", null,
-            clickToProxyActAction(LicenseActivity.class)));
+        ll.addView(newListItemButton(this, getString(de.psdev.licensesdialog.R.string.notices_title)
+            , "感谢卖动绘制图标", null, clickToProxyActAction(LicenseActivity.class)));
         ll.addView(subtitle(this, "调试"));
         ll.addView(newListItemButton(this, "故障排查", null, null,
             clickToProxyActAction(TroubleshootActivity.class)));

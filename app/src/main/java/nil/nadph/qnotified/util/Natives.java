@@ -110,19 +110,13 @@ public class Natives {
         } catch (UnsatisfiedLinkError ignored) {
         }
         System.load(extractNativeLibrary(ctx, "natives").getAbsolutePath());
-        extractNativeLibrary(ctx, "mmkv");
         getpagesize();
         File mmkvDir = new File(ctx.getFilesDir(), "qn_mmkv");
         if (!mmkvDir.exists()) {
             mmkvDir.mkdirs();
         }
         MMKV.initialize(mmkvDir.getAbsolutePath(), s -> {
-            try {
-                System.load(extractNativeLibrary(ctx, s).getAbsolutePath());
-            } catch (IOException e) {
-                throw (UnsatisfiedLinkError) new UnsatisfiedLinkError("extract lib failed: " + s)
-                    .initCause(e);
-            }
+            // nop, mmkv is attached with libnatives.so already
         });
         MMKV.mmkvWithID("global_config", MMKV.MULTI_PROCESS_MODE);
         MMKV.mmkvWithID("global_cache", MMKV.MULTI_PROCESS_MODE);
