@@ -426,8 +426,8 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
             clickToProxyActAction(EulaActivity.class)));
         ll.addView(newListItemButton(this, "展望未来", "其实都还没写", null,
             clickToProxyActAction(PendingFuncActivity.class)));
-        ll.addView(newListItemButton(this, getString(de.psdev.licensesdialog.R.string.notices_title)
-            , "感谢卖动绘制图标", null, clickToProxyActAction(LicenseActivity.class)));
+        ll.addView(newListItemButton(this, "开放源代码许可", "感谢卖动绘制图标",
+            null, clickToProxyActAction(LicenseActivity.class)));
         ll.addView(subtitle(this, "调试"));
         ll.addView(newListItemButton(this, "故障排查", null, null,
             clickToProxyActAction(TroubleshootActivity.class)));
