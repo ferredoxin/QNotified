@@ -123,6 +123,7 @@ public class CustomDialog {
             ref.failsafe = true;
             ref.mBuilder = new AlertDialog.Builder(ctx,
                 ResUtils.isInNightMode() ? THEME_DARK : THEME_LIGHT);
+            ref.mBuilder.setMessage("");
         }
         return ref;
     }
@@ -136,6 +137,7 @@ public class CustomDialog {
         ref.failsafe = true;
         ref.mBuilder = new AlertDialog.Builder(ctx,
             ResUtils.isInNightMode() ? THEME_DARK : THEME_LIGHT);
+        ref.mBuilder.setMessage("");
         return ref;
     }
 
