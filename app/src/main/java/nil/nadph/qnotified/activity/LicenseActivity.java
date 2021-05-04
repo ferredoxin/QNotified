@@ -31,6 +31,7 @@ import android.widget.TextView;
 import com.tencent.widget.XListView;
 import de.psdev.licensesdialog.LicensesDialog;
 import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
+import de.psdev.licensesdialog.licenses.BSD3ClauseLicense;
 import de.psdev.licensesdialog.licenses.GnuLesserGeneralPublicLicense3;
 import de.psdev.licensesdialog.licenses.MITLicense;
 import de.psdev.licensesdialog.model.Notice;
@@ -66,6 +67,9 @@ public class LicenseActivity extends IphoneTitleBarActivityCompat implements Vie
         notices.addNotice(
             new Notice("QQSpeciallyCare", "https://github.com/singleNeuron/QQSpeciallyCare",
                 "singleNeuron", new ApacheSoftwareLicense20()));
+        notices.addNotice(new Notice("MMKV", "https://github.com/Tencent/MMKV",
+            "Copyright (C) 2018 THL A29 Limited, a Tencent company. All rights reserved.",
+            new BSD3ClauseLicense()));
         notices.addNotice(flycoTabLayout);
         notices.addNotice(markwon);
         notices.addNotice(colorPicker);

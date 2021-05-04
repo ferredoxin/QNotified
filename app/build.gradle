@@ -73,7 +73,7 @@ android {
         // Encapsulates your CMake build configurations.
         cmake {
             // Provides a relative path to your CMake build script.
-            path "src/main/jni/CMakeLists.txt"
+            path "src/main/cpp/CMakeLists.txt"
             version "3.10.2"
         }
     }
@@ -88,6 +88,7 @@ android {
 dependencies {
     compileOnly fileTree(include: ['*.jar'], dir: 'lib')
     compileOnly project(":stub")
+    implementation project(":mmkv")
     implementation project(":annotations")
     compileOnly project(":compiler")
     kapt project(":compiler")
@@ -107,7 +108,6 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.afollestad.material-dialogs:core:3.3.0'
     implementation 'com.afollestad.material-dialogs:input:3.3.0'
-    implementation 'com.tencent:mmkv-static:1.2.7'
 }
 
 dependencies {
@@ -274,8 +274,8 @@ task checkTargetNativeLibsDebug {
             File f = new File(rootProject.projectDir, tmp_path)
             if (!f.exists()) {
                 throw new IllegalStateException("Native library missing for the target abi: " + abi
-                    +".\nPlease run gradle task ':app:externalNativeBuildDebug' manually to " +
-                        "force android gradle plugin to satisfy all required ABIs.")
+                    + ".\nPlease run gradle task ':app:externalNativeBuildDebug' manually to " +
+                    "force android gradle plugin to satisfy all required ABIs.")
             }
         }
     }
@@ -294,8 +294,8 @@ task checkTargetNativeLibsRelease {
             File f = new File(rootProject.projectDir, tmp_path)
             if (!f.exists()) {
                 throw new IllegalStateException("Native library missing for the target abi: " + abi
-                    +".\nPlease run gradle task ':app:externalNativeBuildRelease' manually to " +
-                        "force android gradle plugin to satisfy all required ABIs.")
+                    + ".\nPlease run gradle task ':app:externalNativeBuildRelease' manually to " +
+                    "force android gradle plugin to satisfy all required ABIs.")
             }
         }
     }
