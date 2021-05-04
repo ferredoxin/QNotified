@@ -1,9 +1,10 @@
-include ':app', ':stub', ':annotations', ':compiler', ':dex-ptm'
+include ':app', ':stub', ':annotations', ':compiler', ':dex-ptm', ':mmkv'
 File compilerLibsDir = new File(settingsDir, 'libs')
 project(':stub').projectDir = new File(compilerLibsDir, 'stub')
 project(':annotations').projectDir = new File(compilerLibsDir, 'annotations')
 project(':compiler').projectDir = new File(compilerLibsDir, 'compiler')
 project(':dex-ptm').projectDir = new File(compilerLibsDir, 'dex-ptm')
+project(':mmkv').projectDir = new File(compilerLibsDir, 'mmkv' + File.separator + 'Android')
 rootProject.name = 'QNotified'
 include 'annotations'
 include 'compiler'
