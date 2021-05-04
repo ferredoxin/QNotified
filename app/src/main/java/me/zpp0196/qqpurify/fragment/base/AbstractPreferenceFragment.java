@@ -130,7 +130,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
             keyName = __[1];
         }
         AbstractConfigItem _item = P2CUtils.findConfigByName(cfgName);
-        if (_item == null || !_item.isValid() && (preference instanceof TwoStatePreference
+        if ((_item == null || !_item.isValid()) && (preference instanceof TwoStatePreference
             || preference instanceof ListPreference
             || preference instanceof MultiSelectListPreference
             || preference instanceof EditTextPreference)) {
