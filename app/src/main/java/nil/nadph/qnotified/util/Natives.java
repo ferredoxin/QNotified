@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import nil.nadph.qnotified.BuildConfig;
+import nil.nadph.qnotified.startup.StartupInfo;
 
 public class Natives {
 
@@ -132,9 +133,27 @@ public class Natives {
             return;
         } catch (UnsatisfiedLinkError ignored) {
         }
-        File libnatives = extractNativeLibrary(ctx, "natives");
-        registerNativeLibEntry(libnatives.getName());
-        System.load(libnatives.getAbsolutePath());
+        try {
+            Class.forName("de.robv.android.xposed.XposedBridge");
+            // in host process
+            try {
+                if (StartupInfo.modulePath != null) {
+                    // try direct memory map
+                    System.load(StartupInfo.modulePath
+                        + "!/lib/" + Build.CPU_ABI + "/libnatives.so");
+                    Utils.logd("dlopen by mmap success");
+                }
+            } catch (UnsatisfiedLinkError e1) {
+                // direct memory map load failed, extract and dlopen
+                File libnatives = extractNativeLibrary(ctx, "natives");
+                registerNativeLibEntry(libnatives.getName());
+                System.load(libnatives.getAbsolutePath());
+                Utils.logd("dlopen by extract success");
+            }
+        } catch (ClassNotFoundException e) {
+            // not in host process, ignore
+            System.loadLibrary("natives");
+        }
         getpagesize();
         File mmkvDir = new File(ctx.getFilesDir(), "qn_mmkv");
         if (!mmkvDir.exists()) {

@@ -546,6 +546,9 @@ EXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     if (jniVersion == -1) {
         return -1;
     }
+    if (vm->GetEnv((void **) &env, JNI_VERSION_1_4) != JNI_OK) {
+        return -1;
+    }
     jclass clazz = env->FindClass("nil/nadph/qnotified/util/Utils");
     if (!clazz) {
         __android_log_print(ANDROID_LOG_ERROR, "QNdump",
