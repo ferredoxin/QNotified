@@ -24,9 +24,10 @@
 #ifndef NATIVES_NATIVES_UTILS_H
 #define NATIVES_NATIVES_UTILS_H
 
+#include <jni.h>
 #include <stdint.h>
 
-#define EXPORT extern "C"
+#define EXPORT extern "C" __attribute__((visibility("default")))
 //#define null nullptr
 typedef unsigned char uchar;
 
