@@ -31,9 +31,7 @@
 #include <android/log.h>
 
 #include "Natives.h"
-
-//jint JNI_OnLoad(JavaVM *jvm, void *resv) {
-//}
+#include "NativeMainHook.h"
 
 /*
  * Class:     nil_nadph_qnotified_util_Natives
@@ -297,7 +295,6 @@ static const int DEX_MAX_SIZE = 12 * 1024 * 1024;
 
 jlong doGetBuildTimestamp(JNIEnv *env, jclass clazz) {
     if (sBuildTimestamp != -2)return sBuildTimestamp;
-    __android_log_print(ANDROID_LOG_DEBUG, "QNdump", "ntGetBuildTimestamp invoked\n");
     jclass cl_Class = env->FindClass("java/lang/Class");
     jobject loader = env->CallObjectMethod(clazz,
                                            env->GetMethodID(cl_Class, "getClassLoader",
@@ -477,7 +474,7 @@ jboolean handleSendCardMsg(JNIEnv *env, jclass clazz, jobject rt, jobject sessio
     auto resultString = (jstring) env->CallObjectMethod(result,toString);
     jmethodID logd = env->GetStaticMethodID(utilsClass,"logd", "(Ljava/lang/String;)V");
     env->CallStaticVoidMethod(utilsClass,logd,resultString);
-    bool boolean = env->CallBooleanMethod(result,getAccepted);
+    bool boolean = env->CallBooleanMethod(result, getAccepted);
     if (!boolean) {
         jmethodID getReason = env->GetMethodID(cardMsgCheckResultClass,
                                                "getReason",
@@ -545,7 +542,8 @@ jboolean handleSendCardMsg(JNIEnv *env, jclass clazz, jobject rt, jobject sessio
 
 EXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     JNIEnv *env = nullptr;
-    if (vm->GetEnv((void **) &env, JNI_VERSION_1_4) != JNI_OK) {
+    jint jniVersion = MMKV_JNI_OnLoad(vm, reserved);
+    if (jniVersion == -1) {
         return -1;
     }
     jclass clazz = env->FindClass("nil/nadph/qnotified/util/Utils");
@@ -583,6 +581,7 @@ EXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
             __android_log_print(ANDROID_LOG_INFO, "QNdump", "register native method[2] failed!\n");
             return -1;
         }
+        NativeHook_initOnce();
     }
-    return MMKV_JNI_OnLoad(vm, reserved);
+    return jniVersion;
 }

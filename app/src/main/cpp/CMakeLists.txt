@@ -10,13 +10,14 @@ find_library( # Defines the name of the path variable that stores the
         # CMake needs to locate.
         log)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror=return-type -Wno-invalid-offsetof")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror=format-invalid-specifier -Werror=return-type -Wno-invalid-offsetof")
 #SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -nostdlib")
 #-DANDROID_STL=gnustl_shared
 
 add_subdirectory(../../../../libs/mmkv/Android mmkv)
 
-add_library(natives SHARED libnatives/Natives.cpp)
+add_library(natives SHARED libnatives/Natives.cpp
+        libnatives/NativeHookEntry.cc libnatives/NativeMainHook.cc)
 
 set_target_properties(natives PROPERTIES
         CXX_EXTENSIONS OFF
