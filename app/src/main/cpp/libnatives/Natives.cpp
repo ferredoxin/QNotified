@@ -479,10 +479,16 @@ jboolean handleSendCardMsg(JNIEnv *env, jclass clazz, jobject rt, jobject sessio
     env->CallStaticVoidMethod(utilsClass,logd,resultString);
     bool boolean = env->CallBooleanMethod(result,getAccepted);
     if (!boolean) {
-        jmethodID getReason = env->GetMethodID(cardMsgCheckResultClass,"getReason", "()Ljava/lang/String;");
-        auto reason = (jstring) env->CallObjectMethod(result,getReason);
-        jmethodID showErrorToastAnywhere = env->GetStaticMethodID(utilsClass,"showErrorToastAnywhere","(Ljava/lang/String;)V");
-        env->CallStaticVoidMethod(utilsClass,showErrorToastAnywhere,reason);
+        jmethodID getReason = env->GetMethodID(cardMsgCheckResultClass,
+                                               "getReason",
+                                               "()Ljava/lang/String;");
+        auto reason = (jstring) env->CallObjectMethod(result, getReason);
+        jclass cl_Toasts = env->FindClass("nil/nadph/qnotified/util/Toasts");
+        jmethodID showErrorToastAnywhere = env->GetStaticMethodID(
+            cl_Toasts, "error",
+            "(Landroid/content/Context;Ljava/lang/CharSequence;)V");
+        env->CallStaticVoidMethod(cl_Toasts, showErrorToastAnywhere,
+                                  (jobject) nullptr, reason);
         return true;
     }
 
