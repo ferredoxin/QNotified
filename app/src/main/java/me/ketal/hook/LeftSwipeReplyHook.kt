@@ -30,12 +30,9 @@ import ltd.nextalone.util.hookAfter
 import ltd.nextalone.util.hookBefore
 import me.ketal.data.ConfigData
 import me.ketal.util.BaseUtil.tryVerbosely
-import nil.nadph.qnotified.util.PlayQQVersion
-import nil.nadph.qnotified.util.TIMVersion
-import me.singleneuron.qn_kernel.data.hostInfo
+import me.singleneuron.qn_kernel.data.isTim
 import me.singleneuron.qn_kernel.data.requireMinVersion
 import me.singleneuron.qn_kernel.tlb.ConfigTable.getConfig
-import nil.nadph.qnotified.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.step.DexDeobfStep
@@ -79,7 +76,7 @@ object LeftSwipeReplyHook : CommonDelayableHook(
     override fun initOnce() = tryVerbosely(false) {
         val replyMethod = DexKit.doFindMethod(DexKit.N_LeftSwipeReply_Helper__reply)
         val hookClass = replyMethod!!.declaringClass
-        var methodName = if (hostInfo.isTim) "L" else "a"
+        var methodName = if (isTim()) "L" else "a"
         XposedHelpers.findMethodBestMatch(
             hookClass,
             methodName,
@@ -112,7 +109,7 @@ object LeftSwipeReplyHook : CommonDelayableHook(
             it.result = null
         }
         methodName =
-            if (hostInfo.isTim) getConfig(LeftSwipeReplyHook::class.java.simpleName) else "a"
+            if (isTim()) getConfig(LeftSwipeReplyHook::class.java.simpleName) else "a"
         ReflexUtil.hasMethod(hookClass, methodName, Int::class.java)
             .hookAfter(this) {
                 if (replyDistance <= 0) {

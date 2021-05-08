@@ -21,17 +21,19 @@
  */
 package cc.ioctl.hook;
 
-import static nil.nadph.qnotified.util.Utils.log;
-
 import android.app.Application;
+
+import java.lang.reflect.Method;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
-import java.lang.reflect.Method;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
+
+import static nil.nadph.qnotified.util.Utils.log;
 
 @FunctionEntry
 public class RoundAvatarHook extends CommonDelayableHook {
@@ -88,6 +90,6 @@ public class RoundAvatarHook extends CommonDelayableHook {
     @Override
     public boolean isValid() {
         Application app = HostInformationProviderKt.getHostInfo().getApplication();
-        return app == null || !HostInformationProviderKt.getHostInfo().isTim();
+        return app == null || !HostInformationProviderKt.isTim();
     }
 }

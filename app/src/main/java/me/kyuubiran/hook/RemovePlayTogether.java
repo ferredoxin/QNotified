@@ -22,17 +22,19 @@
 package me.kyuubiran.hook;
 
 import androidx.annotation.NonNull;
+
+import java.lang.reflect.Method;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
-import java.lang.reflect.Method;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
-import nil.nadph.qnotified.util.QQVersion;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.QQVersion;
 import nil.nadph.qnotified.util.Utils;
 
 //屏蔽群聊界面一起嗨
@@ -47,13 +49,13 @@ public class RemovePlayTogether extends CommonDelayableHook {
 
     @Override
     public boolean checkPreconditions() {
-        return !HostInformationProviderKt.getHostInfo().isPlayQQ() && super.checkPreconditions();
+        return !HostInformationProviderKt.isPlayQQ() && super.checkPreconditions();
     }
 
     @Override
     public boolean initOnce() {
         try {
-            if (HostInformationProviderKt.hostInfo.isPlayQQ()) {
+            if (HostInformationProviderKt.isPlayQQ()) {
                 return false;
             }
             String method = "h";
@@ -110,7 +112,7 @@ public class RemovePlayTogether extends CommonDelayableHook {
 
     @Override
     public boolean isValid() {
-        return !HostInformationProviderKt.getHostInfo().isPlayQQ();
+        return !HostInformationProviderKt.isPlayQQ();
     }
 
     @NonNull

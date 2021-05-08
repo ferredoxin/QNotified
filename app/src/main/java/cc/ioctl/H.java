@@ -22,7 +22,9 @@
 package cc.ioctl;
 
 import android.app.Application;
+
 import androidx.annotation.NonNull;
+
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.util.Utils;
 
@@ -64,7 +66,7 @@ public class H {
     }
 
     public static boolean isTIM() {
-        return HostInformationProviderKt.getHostInfo().isTim();
+        return HostInformationProviderKt.isTim();
     }
 
     public static boolean isQQLite() {
@@ -72,11 +74,11 @@ public class H {
     }
 
     public static boolean isPlayQQ() {
-        return !HostInformationProviderKt.getHostInfo().isPlayQQ();
+        return !HostInformationProviderKt.isPlayQQ();
     }
 
     public static boolean isQQ() {
         //Improve this method when supporting more clients.
-        return !HostInformationProviderKt.getHostInfo().isTim();
+        return !HostInformationProviderKt.isTim();
     }
 }

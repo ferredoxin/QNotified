@@ -22,6 +22,8 @@
 package me.singleneuron.qn_kernel.tlb
 
 import me.singleneuron.qn_kernel.data.hostInfo
+import me.singleneuron.qn_kernel.data.isPlayQQ
+import me.singleneuron.qn_kernel.data.isTim
 
 object ConfigTable {
 
@@ -29,8 +31,8 @@ object ConfigTable {
         val map: HashMap<String?, Any?> = HashMap()
         val versionCode = hostInfo.versionCode
         val table: ConfigTableInterface = when {
-            hostInfo.isTim -> TIMConfigTable()
-            hostInfo.isPlayQQ -> PlayQQConfigTable()
+            isTim() -> TIMConfigTable()
+            isPlayQQ() -> PlayQQConfigTable()
             else -> QQConfigTable()
         }
         for (pair in table.rangingConfigs) {
