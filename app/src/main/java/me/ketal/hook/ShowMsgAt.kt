@@ -36,7 +36,7 @@ import me.ketal.dispacher.OnBubbleBuilder
 import me.singleneuron.qn_kernel.data.MsgRecordData
 import me.singleneuron.qn_kernel.data.MsgRecordData.Companion.MSG_TYPE_REPLY_TEXT
 import me.singleneuron.qn_kernel.data.MsgRecordData.Companion.MSG_TYPE_TEXT
-import me.singleneuron.qn_kernel.data.hostInfo
+import me.singleneuron.qn_kernel.data.isTim
 import nil.nadph.qnotified.MainHook
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.Utils
@@ -45,7 +45,7 @@ import org.json.JSONObject
 
 object ShowMsgAt : CommonDelayableHook("Ketal_HideTroopLevel"), OnBubbleBuilder {
 
-    override fun initOnce() = !hostInfo.isTim
+    override fun initOnce() = !isTim()
 
     override fun onGetView(
         rootView: ViewGroup,

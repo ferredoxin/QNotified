@@ -23,16 +23,13 @@ package me.kyuubiran.hook
 
 import android.app.Activity
 import ltd.nextalone.util.*
-import ltd.nextalone.util.get
-import ltd.nextalone.util.hookBefore
-import ltd.nextalone.util.tryOrFalse
-import me.singleneuron.qn_kernel.data.hostInfo
+import me.singleneuron.qn_kernel.data.isTim
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import nil.nadph.qnotified.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.util.DexKit
+import nil.nadph.qnotified.util.QQVersion
 
 @FunctionEntry
 object RemoveDiyCard : CommonDelayableHook(
@@ -65,5 +62,5 @@ object RemoveDiyCard : CommonDelayableHook(
             card.set("lCurrentStyleId", 0)
     }
 
-    override fun isValid() = !hostInfo.isTim
+    override fun isValid() = !isTim()
 }

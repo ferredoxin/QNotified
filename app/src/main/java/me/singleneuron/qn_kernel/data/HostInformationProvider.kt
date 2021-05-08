@@ -6,8 +6,8 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.util.Log
 import androidx.core.content.pm.PackageInfoCompat
+import me.singleneuron.qn_kernel.data.HostSpecies.*
 import nil.nadph.qnotified.util.Utils
-
 
 data class HostInformationProvider(
     val application: Application,
@@ -16,8 +16,7 @@ data class HostInformationProvider(
     val versionCode: Long,
     val versionCode32: Int,
     val versionName: String,
-    val isTim: Boolean,
-    val isPlayQQ: Boolean
+    val hostSpecies: HostSpecies
 )
 
 
@@ -34,10 +33,21 @@ fun init(applicationContext: Application) {
         PackageInfoCompat.getLongVersionCode(packageInfo),
         PackageInfoCompat.getLongVersionCode(packageInfo).toInt(),
         packageInfo.versionName,
-        Utils.PACKAGE_NAME_TIM == packageName,
-        "GoogleMarket" in (packageInfo.applicationInfo.metaData["AppSetting_params"]
-            ?: "") as String
-    )
+        when (packageName) {
+            Utils.PACKAGE_NAME_QQ -> {
+                if ("GoogleMarket" in (packageInfo.applicationInfo.metaData["AppSetting_params"]
+                        ?: "") as String) {
+                    QQ_Play
+                } else QQ
+            }
+            Utils.PACKAGE_NAME_TIM -> TIM
+            Utils.PACKAGE_NAME_QQ_LITE -> QQ_Lite
+            Utils.PACKAGE_NAME_QQ_INTERNATIONAL -> QQ_International
+            Utils.PACKAGE_NAME_SELF -> QNotified
+            else -> Unknown
+        },
+
+        )
 }
 
 private fun getHostInfo(context: Context): PackageInfo {
@@ -49,16 +59,28 @@ private fun getHostInfo(context: Context): PackageInfo {
     }
 }
 
+fun isTim(): Boolean {
+    return hostInfo.hostSpecies == TIM
+}
+
+fun isPlayQQ(): Boolean {
+    return hostInfo.hostSpecies == QQ_Play
+}
+
 fun requireMinQQVersion(versionCode: Long): Boolean {
-    return !hostInfo.isTim && !hostInfo.isPlayQQ && hostInfo.versionCode >= versionCode
+    return requireMinVersion(versionCode, QQ)
 }
 
 fun requireMinPlayQQVersion(versionCode: Long): Boolean {
-    return hostInfo.isPlayQQ && hostInfo.versionCode >= versionCode
+    return requireMinVersion(versionCode, QQ_Play)
 }
 
 fun requireMinTimVersion(versionCode: Long): Boolean {
-    return hostInfo.isTim && hostInfo.versionCode >= versionCode
+    return requireMinVersion(versionCode, TIM)
+}
+
+fun requireMinVersion(versionCode: Long, hostSpecies: HostSpecies): Boolean {
+    return hostInfo.hostSpecies == hostSpecies && hostInfo.versionCode >= versionCode
 }
 
 fun requireMinVersion(
@@ -66,5 +88,5 @@ fun requireMinVersion(
     TimVersionCode: Long = Long.MAX_VALUE,
     PlayQQVersionCode: Long = Long.MAX_VALUE
 ): Boolean {
-    return requireMinQQVersion(QQVersionCode) or requireMinTimVersion(TimVersionCode) or requireMinPlayQQVersion(PlayQQVersionCode)
+    return requireMinQQVersion(QQVersionCode) || requireMinTimVersion(TimVersionCode) || requireMinPlayQQVersion(PlayQQVersionCode)
 }

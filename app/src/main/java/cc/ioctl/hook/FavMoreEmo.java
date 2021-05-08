@@ -21,22 +21,23 @@
  */
 package cc.ioctl.hook;
 
-import static nil.nadph.qnotified.util.QQVersion.QQ_8_2_0;
-import static nil.nadph.qnotified.util.Initiator._EmoAddedAuthCallback;
-import static nil.nadph.qnotified.util.Initiator._FavEmoRoamingHandler;
-import static nil.nadph.qnotified.util.ReflexUtil.iput_object;
-import static nil.nadph.qnotified.util.ReflexUtil.sput_object;
-import static nil.nadph.qnotified.util.Utils.log;
+import java.lang.reflect.Method;
+import java.util.List;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
-import java.lang.reflect.Method;
-import java.util.List;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
+
+import static nil.nadph.qnotified.util.Initiator._EmoAddedAuthCallback;
+import static nil.nadph.qnotified.util.Initiator._FavEmoRoamingHandler;
+import static nil.nadph.qnotified.util.QQVersion.QQ_8_2_0;
+import static nil.nadph.qnotified.util.ReflexUtil.iput_object;
+import static nil.nadph.qnotified.util.ReflexUtil.sput_object;
+import static nil.nadph.qnotified.util.Utils.log;
 
 @FunctionEntry
 public class FavMoreEmo extends CommonDelayableHook {
@@ -106,7 +107,7 @@ public class FavMoreEmo extends CommonDelayableHook {
 
     @Override
     public boolean isValid() {
-        return !HostInformationProviderKt.hostInfo.isTim()
+        return !HostInformationProviderKt.isTim()
             && HostInformationProviderKt.hostInfo.getVersionCode() < QQ_8_2_0;
     }
 }

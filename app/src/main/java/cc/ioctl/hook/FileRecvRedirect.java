@@ -21,13 +21,13 @@
  */
 package cc.ioctl.hook;
 
-import static nil.nadph.qnotified.util.Utils.log;
-
 import android.os.Environment;
+
 import androidx.annotation.Nullable;
+
 import java.lang.reflect.Field;
+
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
-import nil.nadph.qnotified.util.QQVersion;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.config.ConfigItems;
@@ -36,6 +36,9 @@ import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.QQVersion;
+
+import static nil.nadph.qnotified.util.Utils.log;
 
 @FunctionEntry
 public class FileRecvRedirect extends BaseDelayableHook {
@@ -94,7 +97,7 @@ public class FileRecvRedirect extends BaseDelayableHook {
     }
 
     public String getDefaultPath() {
-        if (HostInformationProviderKt.getHostInfo().isTim()) {
+        if (HostInformationProviderKt.isTim()) {
             return Environment.getExternalStorageDirectory().getAbsolutePath()
                 + "/Tencent/TIMfile_recv/";
         } else {
