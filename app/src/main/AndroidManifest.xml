@@ -3,14 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="nil.nadph.qnotified">
 
-    <!-- dummy permission, making LP report false positive "License verification found" -->
-    <uses-permission android:name="com.android.vending.CHECK_LICENSE" />
-
     <application
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:multiArch="true"
-        android:extractNativeLibs="false"
+        android:extractNativeLibs="true"
         android:resizeableActivity="true"
         android:theme="@style/AppThemeDummy"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning,UnusedAttribute">
