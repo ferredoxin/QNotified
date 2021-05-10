@@ -45,6 +45,7 @@
 }
 
 -dontobfuscate
+-dontoptimize
 
 -dontwarn javax.**
 -dontwarn java.awt.**

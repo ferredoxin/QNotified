@@ -542,9 +542,9 @@ jboolean handleSendCardMsg(JNIEnv *env, jclass clazz, jobject rt, jobject sessio
 
 EXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     JNIEnv *env = nullptr;
-    jint jniVersion = MMKV_JNI_OnLoad(vm, reserved);
-    if (jniVersion == -1) {
-        return -1;
+    jint retCode = MMKV_JNI_OnLoad(vm, reserved);
+    if (retCode < 0) {
+        return retCode;
     }
     if (vm->GetEnv((void **) &env, JNI_VERSION_1_4) != JNI_OK) {
         return -1;
@@ -586,5 +586,5 @@ EXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
         }
         NativeHook_initOnce();
     }
-    return jniVersion;
+    return retCode;
 }
