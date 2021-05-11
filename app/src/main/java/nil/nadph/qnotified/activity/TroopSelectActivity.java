@@ -300,13 +300,12 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
         }
         TroopInfo info = mTroopInfoList.get(position);
         convertView.setTag(info.troopuin);
+        TextView title = convertView.findViewById(R_ID_TRP_TITLE);
         if (searchMode) {
-            TextView title = convertView.findViewById(R_ID_TRP_TITLE);
             title.setText(info._troopname);
             TextView subtitle = convertView.findViewById(R_ID_TRP_SUBTITLE);
             subtitle.setText(info._troopuin);
         } else {
-            TextView title = convertView.findViewById(R_ID_TRP_TITLE);
             title.setText(info.troopname);
             TextView subtitle = convertView.findViewById(R_ID_TRP_SUBTITLE);
             subtitle.setText(info.troopuin);

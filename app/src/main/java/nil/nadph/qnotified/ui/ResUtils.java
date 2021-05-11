@@ -263,7 +263,7 @@ public class ResUtils {
         StateListDrawable sd = new StateListDrawable();
         sd.addState(new int[]{android.R.attr.state_pressed}, skin_list_item_pressed);
         sd.addState(new int[]{android.R.attr.state_selected}, skin_list_item_pressed);
-        sd.addState(new int[]{}, skin_list_item_normal);
+        sd.addState(new int[]{}, skin_list_item_normal.getConstantState().newDrawable());
         return sd;
     }
 
