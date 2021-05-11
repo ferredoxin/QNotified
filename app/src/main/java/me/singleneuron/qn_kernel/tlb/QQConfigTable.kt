@@ -43,6 +43,7 @@ class QQConfigTable : ConfigTableInterface {
             QQ_8_6_0 to "com.tencent.mobileqq.profilecard.vas.component.template.VasProfileTemplateComponent",
             QQ_8_6_5 to "com.tencent.mobileqq.profilecard.vas.component.template.VasProfileTemplateComponent",
             QQ_8_7_0 to "com.tencent.mobileqq.profilecard.vas.component.template.VasProfileTemplateComponent",
+            QQ_8_7_5 to "com.tencent.mobileqq.profilecard.vas.component.template.VasProfileTemplateComponent",
         ),
 
         //com.tencent.mobileqq.activity.aio.core.TroopChatPie中一般是包含R.id.blz的
@@ -58,6 +59,7 @@ class QQConfigTable : ConfigTableInterface {
             QQ_8_6_0 to "aE",
             QQ_8_6_5 to "aE",
             QQ_8_7_0 to "aE",
+            QQ_8_7_5 to "aE",
         ),
 
         AutoMosaicName::class.java.simpleName to mapOf(
@@ -72,6 +74,7 @@ class QQConfigTable : ConfigTableInterface {
             QQ_8_6_0 to "k",
             QQ_8_6_5 to "k",
             QQ_8_7_0 to "k",
+            QQ_8_7_5 to "k",
         ),
 
         )
