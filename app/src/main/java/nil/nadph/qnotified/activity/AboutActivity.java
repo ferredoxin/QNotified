@@ -80,20 +80,20 @@ public class AboutActivity extends IphoneTitleBarActivityCompat {
 
         ll.addView(subtitle(this, "声明:"));
         ll.addView(subtitle(this,
-            "此软件是开源免费软件，个人可以免费使用，请勿以任何方式商用本软件，如果喜欢我的作品请登录Github协助我们维护和开发! 任何形式或渠道包括预装手机售卖此软件​都是非法贩卖, 别上当受骗！欢迎举报贩卖者! ",
+            "此软件是开源免费软件，个人可以免费使用，请勿以任何方式商用本软件，如果喜欢此作品请登录Github协助我们维护和开发! 任何形式或渠道包括预装手机售卖此软件都是非法贩卖, 别上当受骗！欢迎举报贩卖者! ",
             Color.RED));
 
         ll.addView(subtitle(this, "特别声明:"));
-        ll.addView(subtitle(this, "QNotified模块属于个人作品! 没有售后! 没有客服! 您可以与我反馈和讨论问题, 但请文明交流尊重彼此!"));
+        ll.addView(subtitle(this, "QNotified模块依照AGPL协议发行! 没有售后! 没有客服! 您可以与开发者反馈和讨论问题, 但请文明交流尊重彼此!"));
 
         ll.addView(subtitle(this, "免责声明: 一切后果自负(包括但不限于群发导致的冻结封号)", Color.RED));
-        ll.addView(subtitle(this, "用户协议: The GNU General Public License v3.0"));
+        ll.addView(subtitle(this, "用户协议: The GNU Affero General Public License v3.0"));
         ll.addView(
             subtitle(this, "This program is distributed in the hope that it will be useful, " +
                 "but WITHOUT ANY WARRANTY; without even the implied warranty of " +
                 "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."));
 
-        ll.addView(subtitle(this, "请尊重我的劳动成果 请勿用于商业用途 严禁盗版贩卖", Color.RED));
+        ll.addView(subtitle(this, "请尊重开发者的劳动成果 请勿用于商业用途 严禁盗版贩卖", Color.RED));
         ll.addView(subtitle(this, "遇到 免费软件(包括但不限于本软件) 倒卖者请直接举报, 谢谢您的配合!"));
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         this.setContentView(bounceScrollView);
