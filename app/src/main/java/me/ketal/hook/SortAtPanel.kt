@@ -21,8 +21,8 @@
  */
 package me.ketal.hook
 
-import android.text.TextUtils
 import ltd.nextalone.data.TroopInfo
+import ltd.nextalone.util.get
 import ltd.nextalone.util.hookAfter
 import ltd.nextalone.util.hookBefore
 import me.ketal.util.BaseUtil.tryVerbosely
@@ -35,7 +35,7 @@ import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.util.DexKit
 import nil.nadph.qnotified.util.Initiator
-import nil.nadph.qnotified.util.ReflexUtil
+import nil.nadph.qnotified.util.ReflexUtil.getFirstByType
 
 @FunctionEntry
 object SortAtPanel : CommonDelayableHook(
@@ -43,50 +43,52 @@ object SortAtPanel : CommonDelayableHook(
     DexDeobfStep(DexKit.N_AtPanel__refreshUI),
     DexDeobfStep(DexKit.N_AtPanel__showDialogAtView)
 ) {
-    private var isSort = false
+    private var isSort: Boolean? = null
     override fun initOnce() = tryVerbosely(false) {
         DexKit.doFindMethod(DexKit.N_AtPanel__showDialogAtView)!!.hookAfter(this) {
-            val key = it.args[1] as String
-            isSort = TextUtils.isEmpty(key)
+            isSort = (it.args[1] as String?)?.isNotEmpty()
         }
         DexKit.doFindMethod(DexKit.N_AtPanel__refreshUI)!!.hookBefore(this) {
-            if (!isSort) return@hookBefore
-            val result = it.args[0]
-            val sessionInfo = ReflexUtil.getFirstByType(it.thisObject, Initiator._SessionInfo())
-            val troopUin =
-                ReflexUtil.iget_object_or_null(sessionInfo, "troopUin", String::class.java)
-                    ?: ReflexUtil.iget_object_or_null(sessionInfo, "a", String::class.java)
-            val troopInfo = TroopInfo(troopUin)
-            val ownerUin = troopInfo.troopOwnerUin
-            val admin = troopInfo.troopAdmin
-            val list =
-                ReflexUtil.getFirstByType(result, MutableList::class.java) as MutableList<Any>
-            var uin = getUin(list[0])
-            val isAdmin = "0" == uin
-            for (i in 1 until list.size) {
+            if (isSort == true) return@hookBefore
+            val sessionInfo = getFirstByType(it.thisObject, Initiator._SessionInfo())
+            val troopInfo = TroopInfo(getTroopUin(sessionInfo))
+            val list = getFirstByType(it.args[0], MutableList::class.java) as MutableList<Any>
+            val isAdmin = "0" == getMemberUin(list[0])
+            val admin = mutableListOf<Any>()
+            for (i in list.indices) {
                 val member = list[i]
-                uin = getUin(member) ?: throw NullPointerException("uin == null")
-                if (uin == ownerUin) {
-                    list.remove(member)
-                    list.add(if (isAdmin) 1 else 0, member)
-                } else if (admin?.contains(uin) == true) {
-                    list.remove(member)
-                    list.add(if (isAdmin) 2 else 1, member)
+                when (getMemberUin(member)) {
+                    "0" -> continue
+                    troopInfo.troopOwnerUin -> admin.add(0, member)
+                    in troopInfo.troopAdmin!! -> admin.add(member)
                 }
             }
+            list.removeAll(admin)
+            list.addAll(if(isAdmin) 1 else 0, admin)
         }
         true
     }
 
-    private fun getUin(member: Any): String? {
-        val uin = ReflexUtil.iget_object_or_null(member, "uin", String::class.java)
-            ?: ReflexUtil.iget_object_or_null(member, "a", String::class.java)
-        try {
+    private fun getTroopUin(sessionInfo: Any?): String? {
+        val uin = sessionInfo.get("troopUin", String::class.java)
+            ?: sessionInfo.get("a", String::class.java)
+        return try {
             uin!!.toLong()
+            uin
         } catch (e: Exception) {
-            return null
+            null
         }
-        return uin
+    }
+
+    private fun getMemberUin(member: Any?): String? {
+        val uin = member.get("uin", String::class.java)
+            ?: member.get("a", String::class.java)
+        return try {
+            uin!!.toLong()
+            uin
+        } catch (e: Exception) {
+            null
+        }
     }
 
     override fun isValid(): Boolean = requireMinVersion(QQVersion.QQ_8_1_3, TIMVersion.TIM_3_1_1, PlayQQVersion.PlayQQ_8_2_9)
