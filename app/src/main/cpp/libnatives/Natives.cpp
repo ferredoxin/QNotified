@@ -98,7 +98,9 @@ EXPORT jlong Java_nil_nadph_qnotified_util_Natives_malloc
  * Signature: (J)V
  */
 EXPORT void Java_nil_nadph_qnotified_util_Natives_free(JNIEnv *, jclass, jlong ptr) {
-    free((void *) ptr);
+    if (ptr != 0L) {
+        free((void *) ptr);
+    }
 }
 
 /*
@@ -213,9 +215,14 @@ EXPORT jint Java_nil_nadph_qnotified_util_Natives_getpagesize(JNIEnv *, jclass) 
  * Method:    call
  * Signature: (J)J
  */
-EXPORT jlong Java_nil_nadph_qnotified_util_Natives_call__J(JNIEnv *, jclass, jlong addr) {
+EXPORT jlong Java_nil_nadph_qnotified_util_Natives_call__J(JNIEnv *env, jclass, jlong addr) {
     void *(*fun)();
     fun = (void *(*)()) (addr);
+    if (fun == nullptr) {
+        env->ThrowNew(env->FindClass("java/lang/NullPointerException"),
+                      "address == null");
+        return 0L;
+    }
     void *ret = fun();
     return (jlong) ret;
 }
@@ -226,9 +233,14 @@ EXPORT jlong Java_nil_nadph_qnotified_util_Natives_call__J(JNIEnv *, jclass, jlo
  * Signature: (JJ)J
  */
 EXPORT jlong Java_nil_nadph_qnotified_util_Natives_call__JJ
-        (JNIEnv *, jclass, jlong addr, jlong arg) {
+        (JNIEnv *env, jclass, jlong addr, jlong arg) {
     void *(*fun)(void *);
     fun = (void *(*)(void *)) (addr);
+    if (fun == nullptr) {
+        env->ThrowNew(env->FindClass("java/lang/NullPointerException"),
+                      "address == null");
+        return 0L;
+    }
     void *ret = fun((void *) arg);
     return (jlong) ret;
 }

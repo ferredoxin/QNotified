@@ -27,6 +27,11 @@ android {
             abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
             //drop "mips" , 'armeabi',
         }
+        externalNativeBuild {
+            cmake {
+                arguments "-DQNOTIFIED_VERSION=" + versionName
+            }
+        }
     }
     lintOptions {
         abortOnError false
