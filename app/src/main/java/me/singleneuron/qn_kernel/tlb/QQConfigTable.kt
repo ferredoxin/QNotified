@@ -24,7 +24,6 @@ package me.singleneuron.qn_kernel.tlb
 import cc.ioctl.hook.ReplyNoAtHook
 import cc.ioctl.hook.VasProfileAntiCrash
 import ltd.nextalone.hook.ChatWordsCount
-import ltd.nextalone.hook.HideTotalNumber
 import me.kyuubiran.hook.AutoMosaicName
 import nil.nadph.qnotified.util.QQVersion.*
 
@@ -44,22 +43,6 @@ class QQConfigTable : ConfigTableInterface {
             QQ_8_6_5 to "com.tencent.mobileqq.profilecard.vas.component.template.VasProfileTemplateComponent",
             QQ_8_7_0 to "com.tencent.mobileqq.profilecard.vas.component.template.VasProfileTemplateComponent",
             QQ_8_7_5 to "com.tencent.mobileqq.profilecard.vas.component.template.VasProfileTemplateComponent",
-        ),
-
-        //com.tencent.mobileqq.activity.aio.core.TroopChatPie中一般是包含R.id.blz的
-        HideTotalNumber::class.java.simpleName to mapOf(
-            QQ_8_4_1 to "bE",
-            QQ_8_4_5 to "bE",
-            QQ_8_4_8 to "r",
-            QQ_8_4_10 to "t",
-            QQ_8_4_17 to "t",
-            QQ_8_4_18 to "t",
-            QQ_8_5_0 to "s",
-            QQ_8_5_5 to "bz",
-            QQ_8_6_0 to "aE",
-            QQ_8_6_5 to "aE",
-            QQ_8_7_0 to "aE",
-            QQ_8_7_5 to "aE",
         ),
 
         AutoMosaicName::class.java.simpleName to mapOf(

@@ -54,14 +54,6 @@ class TIMConfigTable : ConfigTableInterface {
             TIM_3_3_0 to "Cn",
         ),
 
-        HideTotalNumber::class.java.simpleName to mapOf(
-            TIM_3_1_1 to "cje",
-            TIM_3_2_0 to "cjd",
-            TIM_3_3_0 to "ciY",
-            TIM_3_3_1 to "ciW",
-            TIM_3_3_5 to "ciV",
-        ),
-
         AutoMosaicName::class.java.simpleName to mapOf(
             TIM_3_0_0 to "jU",
             TIM_3_1_1 to "wm",

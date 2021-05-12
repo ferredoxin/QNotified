@@ -23,6 +23,7 @@ package nil.nadph.qnotified.util;
 
 import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
 import static nil.nadph.qnotified.util.Initiator._QQAppInterface;
+import static nil.nadph.qnotified.util.Initiator._TroopChatPie;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
 import static nil.nadph.qnotified.util.Utils.log;
@@ -107,8 +108,9 @@ public class DexKit {
     public static final int N_VasProfileTemplateController_onCardUpdate = 20011;
     public static final int N_QQSettingMe_updateProfileBubble = 20012;
     public static final int N_VIP_UTILS_getPrivilegeFlags = 20013;
+    public static final int N_TroopChatPie_showNewTroopMemberCount = 20014;
 
-    public static final int DEOBF_NUM_N = 13;
+    public static final int DEOBF_NUM_N = 14;
 
 
     @Nullable
@@ -361,6 +363,8 @@ public class DexKit {
                 return "qqsettingme_updateProfileBubble";
             case N_VIP_UTILS_getPrivilegeFlags:
                 return "vip_utils_updateProfileBubble";
+            case N_TroopChatPie_showNewTroopMemberCount:
+                return "troopChatPie_showNewTroopMemberCount";
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
@@ -500,6 +504,9 @@ public class DexKit {
                 break;
             case N_QQSettingMe_updateProfileBubble:
                 ret = "com.tencent.mobileqq.activity.QQSettingMe";
+                break;
+            case N_TroopChatPie_showNewTroopMemberCount:
+                ret = "com.tencent.mobileqq.activity.aio.core.TroopChatPie";
                 break;
             default:
                 ret = null;
@@ -722,6 +729,12 @@ public class DexKit {
                     new byte[]{0x21, 0x67, 0x65, 0x74, 0x50, 0x72, 0x69, 0x76, 0x69, 0x6C, 0x65,
                         0x67, 0x65, 0x46, 0x6C, 0x61, 0x67, 0x73, 0x20, 0x46, 0x72, 0x69, 0x65,
                         0x6E, 0x64, 0x73, 0x20, 0x69, 0x73, 0x20, 0x6E, 0x75, 0x6C, 0x6C}};
+            case N_TroopChatPie_showNewTroopMemberCount:
+                return new byte[][]{
+                    new byte[]{0x24, 0x73, 0x68, 0x6F, 0x77, 0x4E, 0x65, 0x77, 0x54, 0x72, 0x6F,
+                        0x6F, 0x70, 0x4D, 0x65, 0x6D, 0x62, 0x65, 0x72, 0x43, 0x6F, 0x75, 0x6E,
+                        0x74, 0x20, 0x69, 0x6E, 0x66, 0x6F, 0x20, 0x69, 0x73, 0x20, 0x6E, 0x75,
+                        0x6C, 0x6C}};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
@@ -818,6 +831,8 @@ public class DexKit {
                 return new int[]{4, 6, 8, 7};
             case N_VIP_UTILS_getPrivilegeFlags:
                 return new int[]{4, 2, 3};
+            case N_TroopChatPie_showNewTroopMemberCount:
+                return new int[]{4, 8, 11, 6};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
@@ -1172,6 +1187,22 @@ public class DexKit {
                         Class<?>[] argt = method.getParameterTypes();
                         if (argt.length == 2 && argt[0].equals(load("mqq/app/AppRuntime")) && argt[1]
                             .equals(String.class)) {
+                            return m;
+                        }
+                    }
+                }
+                break;
+            case N_TroopChatPie_showNewTroopMemberCount:
+                for (DexMethodDescriptor m : __methods) {
+                    Method method;
+                    try {
+                        method = m.getMethodInstance(Initiator.getHostClassLoader());
+                    } catch (Exception e) {
+                        continue;
+                    }
+                    if (method.getClass().isAssignableFrom(_TroopChatPie())) {
+                        Class<?>[] argt = method.getParameterTypes();
+                        if (argt.length == 0) {
                             return m;
                         }
                     }
