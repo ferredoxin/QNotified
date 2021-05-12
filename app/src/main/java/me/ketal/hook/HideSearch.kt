@@ -51,8 +51,11 @@ object HideSearch : CommonDelayableHook("Ketal_HideSearch"){
 
     //处理首页
     private fun copeConversation() {
-        "Lcom/tencent/mobileqq/activity/home/Conversation;->c()V"
-            .method.hookAfter(this) {
+        if (requireMinQQVersion(QQVersion.QQ_8_7_5)) {
+            "Lcom/tencent/mobileqq/activity/home/Conversation;->D()V"
+        } else {
+            "Lcom/tencent/mobileqq/activity/home/Conversation;->c()V"
+        }.method.hookAfter(this) {
                 val relativeLayout = it.thisObject.get("b", RelativeLayout::class.java)
                 relativeLayout?.isVisible = false
                 //隐藏顶栏
@@ -108,9 +111,9 @@ object HideSearch : CommonDelayableHook("Ketal_HideSearch"){
 
     //处理联系人页
     private fun copeContacts() {
-        "Lcom/tencent/mobileqq/activity/contacts/base/Contacts;->l()V"
-            .method.hookAfter(this) {
-                val searchView = getFirstByType(it.thisObject, "com.tencent.mobileqq.activity.contacts.base.SearchBarAssistant".clazz)
+        "com.tencent.mobileqq.activity.contacts.base.SearchBarAssistant".clazz
+            ?.hookAfterAllConstructors {
+                val searchView = it.thisObject
                     .get("a", EditText::class.java)?.parent as View
                 searchView.hide()
             }
@@ -118,10 +121,16 @@ object HideSearch : CommonDelayableHook("Ketal_HideSearch"){
 
     //处理动态页
     private fun  copeLeba() {
-        "Lcom/tencent/mobileqq/leba/business/mainbiz/LebaSearchPart;->a(Landroid/view/View;)V"
-            .method.hookAfter(this) {
-                val searchView = getFirstByType(it.thisObject, RelativeLayout::class.java)
-                searchView.hide()
+        val clazz = "com/tencent/mobileqq/leba/business/mainbiz/LebaSearchPart".clazz
+            ?:return
+        for (m in clazz.declaredMethods) {
+            if (m.isPublic && m.returnType == Void.TYPE && m.parameterTypes.contentDeepEquals(
+                    arrayOf(View::class.java))) {
+                m.hookAfter(this) {
+                    val searchView = getFirstByType(it.thisObject, RelativeLayout::class.java)
+                    searchView.hide()
+                }
             }
+        }
     }
 }

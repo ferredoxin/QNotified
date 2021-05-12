@@ -23,22 +23,17 @@ package ltd.nextalone.hook
 
 import ltd.nextalone.util.replace
 import ltd.nextalone.util.tryOrFalse
-import me.singleneuron.qn_kernel.tlb.ConfigTable
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
-import nil.nadph.qnotified.util.Initiator
-import java.lang.reflect.Method
+import nil.nadph.qnotified.step.DexDeobfStep
+import nil.nadph.qnotified.util.DexKit
 
 @FunctionEntry
-object HideTotalNumber : CommonDelayableHook("na_hide_total_number") {
+object HideTotalNumber : CommonDelayableHook("na_hide_total_number",
+    DexDeobfStep(DexKit.N_TroopChatPie_showNewTroopMemberCount)) {
 
     override fun initOnce() = tryOrFalse {
-
-        for (m: Method in Initiator._TroopChatPie().methods) {
-            val argt = m.parameterTypes
-            if (m.name == ConfigTable.getConfig(HideTotalNumber::class.simpleName) && argt.isEmpty()) {
-                m.replace(this, false)
-            }
-        }
+        DexKit.doFindMethod(DexKit.N_TroopChatPie_showNewTroopMemberCount)
+            ?.replace(this, false)
     }
 }

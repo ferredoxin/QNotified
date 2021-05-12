@@ -49,16 +49,6 @@ class PlayQQConfigTable : ConfigTableInterface {
             PlayQQ_8_2_9 to "m",
         ),
 
-        // 字符串关键字 updateProfileBubbleMsgView
-        HideProfileBubble::class.simpleName to mapOf(
-            PlayQQ_8_2_9 to "U",
-        ),
-
-        //com.tencent.mobileqq.activity.aio.core.TroopChatPie中一般是包含R.id.blz的
-        HideTotalNumber::class.java.simpleName to mapOf(
-            PlayQQ_8_2_9 to "bE",
-        ),
-
         AutoMosaicName::class.java.simpleName to mapOf(
             PlayQQ_8_2_9 to "r",
         ),
