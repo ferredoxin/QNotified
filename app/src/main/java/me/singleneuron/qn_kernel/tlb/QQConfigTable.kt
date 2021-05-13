@@ -76,6 +76,7 @@ class QQConfigTable : ConfigTableInterface {
             QQ_8_5_0 to "ivc",
             QQ_8_6_5 to "mvm",
             QQ_8_7_0 to "mxh",
+            QQ_8_7_5 to "mxn",
         )
     )
 
