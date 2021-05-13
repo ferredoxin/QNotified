@@ -37,9 +37,7 @@ object TrimMessage : CommonDelayableHook("na_trim_message") {
             6,
             LongArray::class.java
         )?.hookBefore(this) {
-            var msg = it.args[3] as String
-            msg = msg.trim()
-            it.args[3] = msg
+            it.args[3] = (it.args[3] as String).trim()
         }
     }
 }
