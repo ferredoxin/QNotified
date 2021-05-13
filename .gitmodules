@@ -1,0 +1,3 @@
+[submodule "libs/xhook/xHook"]
+	path = libs/xhook/xHook
+	url = https://github.com/iqiyi/xHook

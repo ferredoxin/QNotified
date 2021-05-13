@@ -44,7 +44,6 @@ import android.widget.Toast;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tencent.mobileqq.widget.BounceScrollView;
-
 import java.io.File;
 import java.util.Date;
 import java.util.Iterator;
@@ -53,6 +52,7 @@ import java.util.Set;
 
 import cc.ioctl.activity.ExfriendListActivity;
 import cc.ioctl.activity.MmkvTestActivity;
+import cc.ioctl.activity.SecurityTestActivity;
 import cc.ioctl.hook.InspectMessage;
 import ltd.nextalone.hook.EnableQLog;
 import me.singleneuron.activity.BugReportActivity;
@@ -296,6 +296,8 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
         }));
         ll.addView(newListItemButton(this, "测试 MMKV", null, null,
             clickToProxyActAction(MmkvTestActivity.class)));
+        ll.addView(newListItemButton(this, "SecurityTestActivity", null, null,
+            clickToProxyActAction(SecurityTestActivity.class)));
         if (BuildConfig.DEBUG) {
             ll.addView(newListItemButton(this, "新界面", null, null,
                 clickToProxyActAction(MainActivity.class)));

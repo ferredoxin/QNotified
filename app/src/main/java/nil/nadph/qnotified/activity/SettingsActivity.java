@@ -380,13 +380,13 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         ll.addView(
             newListItemButton(this, "Github", "获取源代码 Bug -> Issue (star)", "ferredoxin/QNotified",
                 clickToUrl("https://github.com/ferredoxin/QNotified")));
-        ll.addView(subtitle(this, "本软件为免费软件,请尊重个人劳动成果,严禁倒卖\nLife feeds on negative entropy."));
+        ll.addView(subtitle(this, "本软件为免费软件,请尊重开发者劳动成果,严禁倒卖\nLife feeds on negative entropy."));
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         setContentView(bounceScrollView);
         LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);
         _lp_fat.weight = 1;
         setContentBackgroundDrawable(ResUtils.skin_background);
-        setRightButton("更多", new View.OnClickListener() {
+        setRightButton("搜索", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showOverflowPopupMenu();
@@ -647,7 +647,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
     }
 
     private void showOverflowPopupMenu() {
-        Toasts.info(this, "没有更多了");
+        Toasts.info(this, "Coming soon...");
     }
 
 }
