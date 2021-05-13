@@ -14,6 +14,8 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
+- checkout: self
+  submodules: true
 - task: Gradle@2
   inputs:
     workingDirectory: ''
