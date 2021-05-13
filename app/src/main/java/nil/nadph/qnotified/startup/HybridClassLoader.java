@@ -47,11 +47,12 @@ public class HybridClassLoader extends ClassLoader {
     public static boolean isConflictingClass(String name) {
         return name.startsWith("androidx.") || name.startsWith("android.support.v4.")
             || name.startsWith("kotlin.") || name.startsWith("kotlinx.")
+            || name.startsWith("com.tencent.mmkv.")
             || name.startsWith("com.android.tools.r8.")
-            || name.startsWith("com.google.android.material.") || name
-            .startsWith("com.google.gson.")
-            || name.startsWith("org.intellij.lang.annotations.") || name
-            .startsWith("org.jetbrains.annotations.");
+            || name.startsWith("com.google.android.material.")
+            || name.startsWith("com.google.gson.")
+            || name.startsWith("org.intellij.lang.annotations.")
+            || name.startsWith("org.jetbrains.annotations.");
     }
 
     @Override
