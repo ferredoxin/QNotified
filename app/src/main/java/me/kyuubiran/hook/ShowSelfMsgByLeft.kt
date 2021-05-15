@@ -25,7 +25,6 @@ import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
-import me.singleneuron.qn_kernel.ui.base.UiDescription
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.DexMethodDescriptor
 import nil.nadph.qnotified.util.Initiator
@@ -35,7 +34,7 @@ import nil.nadph.qnotified.util.Utils
 //自己的消息居左显示
 @FunctionEntry
 @UiItem
-object ShowSelfMsgByLeft : CommonDelayAbleHookBridge("kr_show_self_msg_by_left") {
+object ShowSelfMsgByLeft : CommonDelayAbleHookBridge() {
 
     override fun initOnce(): Boolean {
         return try {
@@ -56,7 +55,7 @@ object ShowSelfMsgByLeft : CommonDelayAbleHookBridge("kr_show_self_msg_by_left")
         }
     }
 
-    override val preference: UiDescription = uiSwitchPreference {
+    override val preference = uiSwitchPreference {
         title = "自己的消息和头像居左显示"
     }
     override val preferenceLocate: Array<String> = arrayOf("其他功能", "娱乐功能")

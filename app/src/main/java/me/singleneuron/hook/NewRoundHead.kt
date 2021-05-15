@@ -27,18 +27,17 @@ import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import me.singleneuron.qn_kernel.ui.base.UiDescription
-import nil.nadph.qnotified.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.step.Step
 import nil.nadph.qnotified.util.DexKit
 import nil.nadph.qnotified.util.LicenseStatus
+import nil.nadph.qnotified.util.QQVersion
 import nil.nadph.qnotified.util.Utils
 
 @FunctionEntry
 @UiItem
-object NewRoundHead : CommonDelayAbleHookBridge("newroundhead") {
+object NewRoundHead : CommonDelayAbleHookBridge() {
 
     override fun getPreconditions(): Array<Step> {
         //特征字符串："FaceManager"/"AvatarUtil"
@@ -101,7 +100,7 @@ object NewRoundHead : CommonDelayAbleHookBridge("newroundhead") {
         }
     }
 
-    override val preference: UiDescription = uiSwitchPreference {
+    override val preference = uiSwitchPreference {
         title = "新版简洁模式圆头像"
         summary = "From 花Q，支持8.3.6及更高，重启后生效"
     }

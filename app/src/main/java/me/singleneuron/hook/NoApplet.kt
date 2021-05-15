@@ -28,14 +28,13 @@ import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
-import me.singleneuron.qn_kernel.ui.base.UiDescription
 import me.singleneuron.util.NoAppletUtil
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.Utils
 
 @FunctionEntry
 @UiItem
-object NoApplet : CommonDelayAbleHookBridge("noapplet") {
+object NoApplet : CommonDelayAbleHookBridge() {
 
     override fun initOnce(): Boolean {
         try {
@@ -69,7 +68,7 @@ object NoApplet : CommonDelayAbleHookBridge("noapplet") {
         return true
     }
 
-    override val preference: UiDescription = uiSwitchPreference {
+    override val preference = uiSwitchPreference {
         title = "小程序分享转链接（发送）"
         summary = "感谢Alcatraz323开发的远离小程序，由神经元移植到Xposed"
     }

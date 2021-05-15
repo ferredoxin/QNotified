@@ -23,28 +23,60 @@
 package me.singleneuron.qn_kernel.base
 
 import android.content.Context
+import android.os.Looper
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ProcessLifecycleOwner
+import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.ui.base.UiItem
 import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference
+import nil.nadph.qnotified.SyncUtils
+import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.hook.CommonDelayableHook
+import nil.nadph.qnotified.util.Toasts
+import nil.nadph.qnotified.util.Utils
 
-abstract class CommonDelayAbleHookBridge(keyName: String): CommonDelayableHook(keyName), UiItem {
+abstract class CommonDelayAbleHookBridge : CommonDelayableHook(""), UiItem {
 
-    fun uiSwitchPreference(init: UiSwitchPreferenceItemFactory.()->Unit): UiSwitchPreference {
+    abstract override val preference: UiSwitchPreference
+
+    fun uiSwitchPreference(init: UiSwitchPreferenceItemFactory.() -> Unit): UiSwitchPreference {
         val uiSwitchPreferenceFactory = UiSwitchPreferenceItemFactory()
         uiSwitchPreferenceFactory.init()
         return uiSwitchPreferenceFactory
     }
 
-    open inner class UiSwitchPreferenceItemFactory: UiSwitchPreference {
+    override fun isEnabled(): Boolean {
+        return preference.value.value == true
+    }
+
+    override fun setEnabled(enabled: Boolean) {
+        preference.value.postValue(enabled)
+    }
+
+    open inner class UiSwitchPreferenceItemFactory : UiSwitchPreference {
         override lateinit var title: String
         override var summary: String? = null
         override val value: MutableLiveData<Boolean?> by lazy {
             MutableLiveData<Boolean?>().apply {
-                value = isEnabled
-                observe(ProcessLifecycleOwner.get()) {
-                    isEnabled = it ?: false
+                try {
+                    postValue(ConfigManager.getDefaultConfig().getBooleanOrDefault(this@CommonDelayAbleHookBridge::javaClass.name, false))
+                } catch (e: Exception) {
+                    Utils.log(e)
+                }
+                SyncUtils.post {
+                    observeForever {
+                        try {
+                            val mgr = ConfigManager.getDefaultConfig()
+                            mgr.allConfig[this@CommonDelayAbleHookBridge::javaClass.name] = it
+                            mgr.save()
+                        } catch (e: Exception) {
+                            Utils.log(e)
+                            if (Looper.myLooper() == Looper.getMainLooper()) {
+                                Toasts.error(hostInfo.application, e.toString() + "")
+                            } else {
+                                SyncUtils.post { Toasts.error(hostInfo.application, e.toString() + "") }
+                            }
+                        }
+                    }
                 }
             }
         }

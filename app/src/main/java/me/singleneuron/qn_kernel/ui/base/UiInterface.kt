@@ -24,9 +24,9 @@ package me.singleneuron.qn_kernel.ui.base
 
 import me.singleneuron.qn_kernel.tlb.UiMap
 
-interface UiDescription
+sealed interface UiDescription
 
-interface UiGroup : UiDescription {
+sealed interface UiGroup : UiDescription {
     var name: String
     var contains: UiMap
 }

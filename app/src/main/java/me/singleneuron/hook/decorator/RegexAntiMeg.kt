@@ -26,7 +26,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
-import androidx.lifecycle.ProcessLifecycleOwner
 import cn.lliiooll.msg.MessageReceiver
 import de.robv.android.xposed.XposedHelpers
 import me.kyuubiran.util.getExFriendCfg
@@ -124,7 +123,7 @@ object RegexAntiMeg : MessageReceiver, View.OnClickListener, UiItem {
         title = "万象屏蔽卡片消息"
         summary = "使用强大的正则表达式自由屏蔽卡片消息"
         SyncUtils.post {
-            value.observe(ProcessLifecycleOwner.get()) {
+            value.observeForever {
                 getExFriendCfg().putString(RegexAntiMeg::class.java.simpleName, it)
             }
         }

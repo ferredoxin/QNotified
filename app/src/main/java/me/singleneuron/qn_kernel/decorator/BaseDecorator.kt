@@ -24,7 +24,6 @@ package me.singleneuron.qn_kernel.decorator
 import android.content.Context
 import android.os.Looper
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ProcessLifecycleOwner
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.ui.base.UiSwitchItem
 import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference
@@ -58,7 +57,7 @@ abstract class BaseDecorator(val cfg: String) : UiSwitchItem {
                     Utils.log(e)
                     null
                 }
-                observe(ProcessLifecycleOwner.get()) {
+                observeForever {
                     try {
                         val mgr = ConfigManager.getDefaultConfig()
                         mgr.allConfig[cfg] = it
