@@ -36,6 +36,8 @@ import nil.nadph.qnotified.util.Utils
 
 abstract class CommonDelayAbleHookBridge : CommonDelayableHook(""), UiItem {
 
+    val configName: String = this::class.java.simpleName
+
     abstract override val preference: UiSwitchPreference
 
     fun uiSwitchPreference(init: UiSwitchPreferenceItemFactory.() -> Unit): UiSwitchPreference {
@@ -58,7 +60,7 @@ abstract class CommonDelayAbleHookBridge : CommonDelayableHook(""), UiItem {
         override val value: MutableLiveData<Boolean?> by lazy {
             MutableLiveData<Boolean?>().apply {
                 try {
-                    postValue(ConfigManager.getDefaultConfig().getBooleanOrDefault(this@CommonDelayAbleHookBridge::javaClass.name, false))
+                    postValue(ConfigManager.getDefaultConfig().getBooleanOrDefault(configName, false))
                 } catch (e: Exception) {
                     Utils.log(e)
                 }
@@ -66,7 +68,7 @@ abstract class CommonDelayAbleHookBridge : CommonDelayableHook(""), UiItem {
                     observeForever {
                         try {
                             val mgr = ConfigManager.getDefaultConfig()
-                            mgr.allConfig[this@CommonDelayAbleHookBridge::javaClass.name] = it
+                            mgr.allConfig[configName] = it
                             mgr.save()
                         } catch (e: Exception) {
                             Utils.log(e)
