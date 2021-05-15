@@ -22,7 +22,6 @@
 
 package me.singleneuron.qn_kernel.processors;
 
-import com.google.auto.service.AutoService;
 import com.squareup.javapoet.*;
 
 import java.io.IOException;
@@ -39,7 +38,6 @@ import javax.lang.model.type.TypeMirror;
 import cn.lliiooll.processors.BaseProcessor;
 import me.singleneuron.qn_kernel.annotation.UiItem;
 
-@AutoService(Processor.class)
 @SupportedAnnotationTypes("me.singleneuron.qn_kernel.annotation.UiItem")
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class UiDescriptionProcessor extends BaseProcessor {
