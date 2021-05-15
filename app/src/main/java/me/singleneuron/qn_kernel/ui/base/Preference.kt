@@ -25,13 +25,13 @@ package me.singleneuron.qn_kernel.ui.base
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 
-interface UiPreference : UiDescription {
+sealed interface UiPreference : UiDescription {
     var title: String
     var summary: String?
     var onClickListener: (Context) -> Boolean
 }
 
-interface UiChangeablePreference<T> : UiPreference {
+sealed interface UiChangeablePreference<T> : UiPreference {
     val value: MutableLiveData<T?>
 }
 

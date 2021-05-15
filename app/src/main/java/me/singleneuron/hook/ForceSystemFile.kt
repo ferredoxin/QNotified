@@ -29,17 +29,16 @@ import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import me.singleneuron.qn_kernel.ui.base.UiDescription
-import nil.nadph.qnotified.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.step.Step
 import nil.nadph.qnotified.util.DexKit
 import nil.nadph.qnotified.util.Initiator
+import nil.nadph.qnotified.util.QQVersion
 
 @FunctionEntry
 @UiItem
-object ForceSystemFile : CommonDelayAbleHookBridge("forceSystemFile") {
+object ForceSystemFile : CommonDelayAbleHookBridge() {
 
     override fun getPreconditions(): Array<Step> {
         return arrayOf(DexDeobfStep(DexKit.C_SmartDeviceProxyMgr))
@@ -79,7 +78,7 @@ object ForceSystemFile : CommonDelayAbleHookBridge("forceSystemFile") {
         return true
     }
 
-    override val preference: UiDescription = uiSwitchPreference {
+    override val preference = uiSwitchPreference {
         title = "强制使用系统文件"
         summary = "支持8.3.6及更高"
     }

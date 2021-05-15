@@ -28,12 +28,11 @@ import me.singleneuron.activity.ChooseAlbumAgentActivity
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.hostInfo
-import me.singleneuron.qn_kernel.ui.base.UiDescription
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 
 @FunctionEntry
 @UiItem
-object ForceSystemAlbum : CommonDelayAbleHookBridge("forceSystemAlbum") {
+object ForceSystemAlbum : CommonDelayAbleHookBridge() {
 
     override fun initOnce(): Boolean {
         //特征字符串:"onAlbumBtnClicked"
@@ -50,7 +49,7 @@ object ForceSystemAlbum : CommonDelayAbleHookBridge("forceSystemAlbum") {
         return true
     }
 
-    override val preference: UiDescription = uiSwitchPreference {
+    override val preference = uiSwitchPreference {
         title = "强制使用系统相机"
         summary = "支持8.3.6及更高"
     }
