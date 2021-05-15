@@ -4,7 +4,7 @@ buildscript {
     ext.kotlin_version = "1.5.0"
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
     dependencies {
         //noinspection GradleDependency
@@ -19,8 +19,9 @@ buildscript {
 allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
         maven { url 'https://jitpack.io' }
+        maven { url 'https://api.xposed.info/' }
     }
     tasks.withType(JavaCompile) {
         //options.compilerArgs <<"-Xlint:deprecation" //<<"-Xlint:unchecked"

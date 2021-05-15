@@ -1,7 +1,9 @@
 package me.zpp0196.qqpurify.activity;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.widget.TextView;
@@ -12,8 +14,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-import com.flyco.tablayout.SlidingTabLayout;
-import com.flyco.tablayout.listener.OnTabSelectListener;
+import com.google.android.material.tabs.TabLayout;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import me.zpp0196.qqpurify.fragment.AboutPreferenceFragment;
@@ -33,8 +35,7 @@ import nil.nadph.qnotified.activity.AppCompatTransferActivity;
  * Created by zpp0196 on 2019/5/15.
  */
 public class MainActivity extends AppCompatTransferActivity implements
-    ViewPager.OnPageChangeListener,
-    OnTabSelectListener, Constants {
+    ViewPager.OnPageChangeListener, Constants {
 
     public List<TabFragment> mRefreshedFragment = new ArrayList<>();
     private TextView mTitleTextView;
@@ -70,9 +71,18 @@ public class MainActivity extends AppCompatTransferActivity implements
         ViewPager viewPager = findViewById(R.id.viewPager);
         viewPager.setAdapter(new MainAdapter(getSupportFragmentManager(), mFragments));
         viewPager.addOnPageChangeListener(this);
-        SlidingTabLayout slidingTabLayout = findViewById(R.id.slidingTabLayout);
-        slidingTabLayout.setViewPager(viewPager);
-        slidingTabLayout.setOnTabSelectListener(this);
+        TabLayout tabLayout = findViewById(R.id.slidingTabLayout);
+        tabLayout.setupWithViewPager(viewPager);
+        try {
+            Method m = tabLayout.getClass().getDeclaredMethod("createColorStateList", int.class, int.class);
+            ColorStateList color = (ColorStateList) m.invoke(null,
+                Color.parseColor("#66FFFFFF"),
+                Color.parseColor("#FFFFFF"));
+            tabLayout.setTabTextColors(color);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void initToolbar() {
@@ -108,16 +118,6 @@ public class MainActivity extends AppCompatTransferActivity implements
 
     @Override
     public void onPageScrollStateChanged(int state) {
-    }
-
-    @Override
-    public void onTabSelect(int position) {
-        updateTitle(position);
-    }
-
-    @Override
-    public void onTabReselect(int position) {
-        updateTitle(position);
     }
 
     public interface TabFragment {
