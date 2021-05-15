@@ -22,12 +22,11 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    <com.flyco.tablayout.SlidingTabLayout
+    <com.google.android.material.tabs.TabLayout
             android:id="@+id/slidingTabLayout"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:background="?attr/themeColor"
-            app:tl_tab_space_equal="true"/>
+            android:background="?attr/themeColor" />
 
     <androidx.viewpager.widget.ViewPager
             android:id="@+id/viewPager"
