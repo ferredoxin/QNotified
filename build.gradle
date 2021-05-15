@@ -21,6 +21,7 @@ allprojects {
         google()
         mavenCentral()
         maven { url 'https://jitpack.io' }
+        maven { url 'https://api.xposed.info/' }
     }
     tasks.withType(JavaCompile) {
         //options.compilerArgs <<"-Xlint:deprecation" //<<"-Xlint:unchecked"
