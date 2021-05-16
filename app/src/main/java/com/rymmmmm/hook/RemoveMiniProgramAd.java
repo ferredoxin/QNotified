@@ -21,6 +21,8 @@
  */
 package com.rymmmmm.hook;
 
+import static me.singleneuron.qn_kernel.data.HostInformationProviderKt.requireMinQQVersion;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
 import static nil.nadph.qnotified.util.ReflexUtil.iput_object;
 
 import de.robv.android.xposed.XC_MethodHook;
@@ -31,6 +33,7 @@ import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.QQVersion;
 import nil.nadph.qnotified.util.Utils;
 
 //去除小程序广告 需要手动点关闭
@@ -61,6 +64,9 @@ public class RemoveMiniProgramAd extends CommonDelayableHook {
                                 return;
                             }
                             iput_object(param.thisObject, "c", Boolean.TYPE, true);
+                            if (requireMinQQVersion(QQVersion.QQ_8_4_1)) {
+                                invoke_virtual(param.thisObject, "e");
+                            }
                         }
                     });
                 }
