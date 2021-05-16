@@ -171,7 +171,7 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
             new RikkaBaseApkFormatDialog(this),
             RikkaConfigItem.create(this, "回赞界面一键20赞", OneTapTwentyLikes.INSTANCE),
             new RikkaCustomMsgTimeFormatDialog(this),
-            RikkaConfigItem.create(this, "免广告送免费礼物[仅限群聊送礼物]", RemoveSendGiftAd.INSTANCE),
+            RikkaConfigItem.create(this, "免广告送免费礼物[仅限群聊送礼物]\n若失效请使用屏蔽小程序广告", RemoveSendGiftAd.INSTANCE),
             new RikkaCustomDeviceModelDialog(this),
             new RikkaCustomSplash(this),
             new RikkaColorPickDialog(this),
