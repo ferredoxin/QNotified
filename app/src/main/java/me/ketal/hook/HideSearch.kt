@@ -115,14 +115,14 @@ object HideSearch : CommonDelayableHook("Ketal_HideSearch"){
             ?.hookAfterAllConstructors {
                 val searchView = it.thisObject
                     .get("a", EditText::class.java)?.parent as View
-                searchView.hide()
+                searchView.isVisible = !isEnabled
             }
     }
 
     //处理动态页
     private fun  copeLeba() {
         val clazz = "com/tencent/mobileqq/leba/business/mainbiz/LebaSearchPart".clazz
-            ?:return
+            ?: return
         for (m in clazz.declaredMethods) {
             if (m.isPublic && m.returnType == Void.TYPE && m.parameterTypes.contentDeepEquals(
                     arrayOf(View::class.java))) {
