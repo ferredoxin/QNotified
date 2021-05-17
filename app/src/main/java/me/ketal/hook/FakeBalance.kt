@@ -65,7 +65,6 @@ object FakeBalance : PluginDelayableHook("ketal_qwallet_fakebalance") {
         tryVerbosely(false) {
             val context = CommonContextWrapper(ctx, if (ResUtils.isInNightMode()) R.style.Theme_MaiTungTMDesignNight else R.style.Theme_MaiTungTMDesign)
             val vg = ConfigView(context)
-            vg.setText("启用自定义钱包余额")
             val dialog = MaterialDialog(context).show {
                 title(text = "自定义钱包余额")
                 input(hint = "请输入自定义金额...", prefill = money) { dialog, text ->
@@ -81,8 +80,8 @@ object FakeBalance : PluginDelayableHook("ketal_qwallet_fakebalance") {
                 positiveButton(text = "保存")
                 negativeButton(text = "取消")
             }
+            vg.setText("启用自定义钱包余额")
             vg.view = dialog.getCustomView()
-            vg.isVisible = isEnabled
             vg.isChecked = isEnabled
             dialog.view.contentLayout.customView = null
             dialog.customView(view = vg)
