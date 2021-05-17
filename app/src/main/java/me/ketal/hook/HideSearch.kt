@@ -33,15 +33,17 @@ import androidx.core.view.plusAssign
 import com.tencent.mobileqq.app.BaseActivity
 import ltd.nextalone.util.*
 import me.ketal.util.findViewByType
-import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import nil.nadph.qnotified.util.QQVersion
+import me.singleneuron.qn_kernel.data.isTim
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
+import nil.nadph.qnotified.step.DexDeobfStep
+import nil.nadph.qnotified.util.DexKit
 import nil.nadph.qnotified.util.ReflexUtil.getFirstByType
 
 @FunctionEntry
-object HideSearch : CommonDelayableHook("Ketal_HideSearch"){
-    override fun isValid() = requireMinQQVersion(QQVersion.QQ_8_6_0)
+object HideSearch : CommonDelayableHook("Ketal_HideSearch",
+    DexDeobfStep(DexKit.N_Conversation_onCreate)){
+    override fun isValid() = !isTim()
 
     override fun initOnce() = tryOrFalse {
         copeConversation()
@@ -51,11 +53,8 @@ object HideSearch : CommonDelayableHook("Ketal_HideSearch"){
 
     //处理首页
     private fun copeConversation() {
-        if (requireMinQQVersion(QQVersion.QQ_8_7_5)) {
-            "Lcom/tencent/mobileqq/activity/home/Conversation;->D()V"
-        } else {
-            "Lcom/tencent/mobileqq/activity/home/Conversation;->c()V"
-        }.method.hookAfter(this) {
+        DexKit.doFindMethod(DexKit.N_Conversation_onCreate)
+            ?.hookAfter(this) {
                 val relativeLayout = it.thisObject.get("b", RelativeLayout::class.java)
                 relativeLayout?.isVisible = false
                 //隐藏顶栏
