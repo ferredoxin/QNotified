@@ -63,6 +63,7 @@ class AuxFuncActivity : IphoneTitleBarActivityCompat() {
         ll += newListItemButton(this, "管理QQ组件", null, null, ManageComponent.listener)
         ll += newListItemHookSwitchInit(this, "伪装不处于多窗口模式", "用于分屏状态使用一些功能,例如扫码",
             FakeMultiWindowStatus)
+        ll += newListItemHookSwitchInit(this, "去除相册扫码登录检验", null, RemoveQRLoginAuth)
 
         setContentBackgroundDrawable(ResUtils.skin_background)
         title = "辅助功能"
