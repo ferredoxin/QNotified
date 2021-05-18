@@ -34,29 +34,33 @@ import androidx.core.view.plusAssign
 import ltd.nextalone.hook.SimplifyBottomQzone
 import ltd.nextalone.util.*
 import me.ketal.util.findViewByType
+import me.singleneuron.qn_kernel.data.isTim
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import nil.nadph.qnotified.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
-import nil.nadph.qnotified.util.ReflexUtil.getFirstByType
-import java.util.ArrayList
 
 @SuppressLint("StaticFieldLeak")
 @FunctionEntry
 object HideTab : CommonDelayableHook("ketal_HideTab") {
     private lateinit var tab: TabHost
 
-    override fun isValid() = requireMinQQVersion(QQVersion.QQ_8_6_0)
+    override fun isValid() = !isTim()
 
     override fun initOnce() = tryOrFalse {
-        "com.tencent.mobileqq.activity.home.impl.TabFrameControllerImpl".clazz?.method("addFrame")
-            ?.hookAfter(this) {
-                val frame = it.args[0]
-                tab = getFirstByType(frame, "com.tencent.mobileqq.widget.QQTabHost".clazz) as TabHost
-                val blur = tab.findViewByType("com.tencent.mobileqq.widget.QQBlurView".clazz!!) as View
-                tab.tabWidget.isVisible = !isEnabled
-                blur.hide()
+        val clazz= "com.tencent.mobileqq.widget.QQTabHost".clazz
+            ?: return@tryOrFalse
+        for (m in clazz.declaredMethods) {
+            if (m.name == "setOnTabSelectionListener") {
+                m.hookBefore(this) {
+                    tab = it.thisObject as TabHost
+                    val blur = tab.findViewByType("com.tencent.mobileqq.widget.QQBlurView".clazz!!) as View
+                    tab.tabWidget.isVisible = !isEnabled
+                    blur.hide()
+                }
             }
+        }
+
         "com.tencent.mobileqq.activity.QQSettingMe".clazz?.hookAfterAllConstructors {
             if (!isEnabled) return@hookAfterAllConstructors
             val linearLayout = if (requireMinQQVersion(QQVersion.QQ_8_6_5)) {
@@ -74,8 +78,7 @@ object HideTab : CommonDelayableHook("ketal_HideTab") {
             }
             if (!SimplifyBottomQzone.isEnabled) {
                 addSettingItem(linearLayout, "skin_tab_icon_plugin_normal", "动态") {
-                    val size = (tab.get("mTabSpecs") as ArrayList<*>).size
-                    tab.currentTab = if (size == 3) 2 else 3
+                    tab.currentTab = if (tab.childCount == 3) 2 else 3
                 }
             }
         }

@@ -109,8 +109,9 @@ public class DexKit {
     public static final int N_QQSettingMe_updateProfileBubble = 20012;
     public static final int N_VIP_UTILS_getPrivilegeFlags = 20013;
     public static final int N_TroopChatPie_showNewTroopMemberCount = 20014;
+    public static final int N_Conversation_onCreate = 20015;
 
-    public static final int DEOBF_NUM_N = 14;
+    public static final int DEOBF_NUM_N = 15;
 
 
     @Nullable
@@ -365,6 +366,8 @@ public class DexKit {
                 return "vip_utils_updateProfileBubble";
             case N_TroopChatPie_showNewTroopMemberCount:
                 return "troopChatPie_showNewTroopMemberCount";
+            case N_Conversation_onCreate:
+                return "conversation_onCreate";
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
@@ -507,6 +510,9 @@ public class DexKit {
                 break;
             case N_TroopChatPie_showNewTroopMemberCount:
                 ret = "com.tencent.mobileqq.activity.aio.core.TroopChatPie";
+                break;
+            case N_Conversation_onCreate:
+                ret = "com/tencent/mobileqq/activity/home/Conversation";
                 break;
             default:
                 ret = null;
@@ -735,6 +741,10 @@ public class DexKit {
                         0x6F, 0x70, 0x4D, 0x65, 0x6D, 0x62, 0x65, 0x72, 0x43, 0x6F, 0x75, 0x6E,
                         0x74, 0x20, 0x69, 0x6E, 0x66, 0x6F, 0x20, 0x69, 0x73, 0x20, 0x6E, 0x75,
                         0x6C, 0x6C}};
+            case N_Conversation_onCreate:
+                return new byte[][]{
+                    new byte[]{0x0F, 0x52, 0x65, 0x63, 0x65, 0x6E, 0x74, 0x5F, 0x4F, 0x6E, 0x43,
+                        0x72, 0x65, 0x61, 0x74, 0x65}};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
@@ -833,6 +843,8 @@ public class DexKit {
                 return new int[]{4, 2, 3};
             case N_TroopChatPie_showNewTroopMemberCount:
                 return new int[]{4, 8, 11, 6};
+            case N_Conversation_onCreate:
+                return new int[]{5, 7, 8, 6};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
@@ -1205,6 +1217,13 @@ public class DexKit {
                         if (argt.length == 0) {
                             return m;
                         }
+                    }
+                }
+                break;
+            case N_Conversation_onCreate:
+                for (DexMethodDescriptor m : __methods) {
+                    if (m.declaringClass.endsWith("Conversation")) {
+                        return m;
                     }
                 }
                 break;
