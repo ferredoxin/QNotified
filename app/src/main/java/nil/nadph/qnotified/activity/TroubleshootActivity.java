@@ -61,7 +61,6 @@ import me.singleneuron.hook.DebugDump;
 import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
 import me.singleneuron.qn_kernel.tlb.ConfigTable;
 import me.singleneuron.util.KotlinUtilsKt;
-import nil.nadph.qnotified.BuildConfig;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigManager;
@@ -298,10 +297,6 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
             clickToProxyActAction(MmkvTestActivity.class)));
         ll.addView(newListItemButton(this, "SecurityTestActivity", null, null,
             clickToProxyActAction(SecurityTestActivity.class)));
-        if (BuildConfig.DEBUG) {
-            ll.addView(newListItemButton(this, "新界面", null, null,
-                clickToProxyActAction(MainActivity.class)));
-        }
 
         ll.addView(subtitle(this, ""));
 
