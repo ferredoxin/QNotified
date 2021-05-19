@@ -39,26 +39,20 @@ class ConfigView @JvmOverloads constructor(
     val enable = CheckBox(context)
     var view: View? = null
         set(value) {
-            if (value != null && value.parent != null) {
-                // Make sure the view is detached from any former parents.
-                value.parent as ViewGroup -= value
+            value ?: return
+            value.parent?.let {
+                it as ViewGroup -= value
             }
-            if (value != null) {
-                this += value
-            }
+            field?.let { this -= field!! }
+            this += value
+            value.isVisible = isChecked
             field = value
-        }
-    var isVisible: Boolean?
-        get() = view?.isVisible
-        set(value) {
-            if (value != null) {
-                view?.isVisible = value
-            }
         }
     var isChecked: Boolean
         get() = enable.isChecked
         set(value) {
             enable.isChecked = value
+            view?.isVisible = isChecked
         }
 
     init {
@@ -68,7 +62,7 @@ class ConfigView @JvmOverloads constructor(
             addView(enable)
             setPadding(dip2px(context, 21f), 0, dip2px(context, 21f), 0)
         }
-        enable.setOnCheckedChangeListener { _, isChecked -> isVisible = isChecked }
+        enable.setOnCheckedChangeListener { _, isChecked -> view?.isVisible = isChecked }
     }
 
     fun setText(text: String) {
