@@ -48,9 +48,6 @@ public class LicenseActivity extends IphoneTitleBarActivityCompat implements Vie
         super.doOnCreate(bundle);
 
         final Notices notices = new Notices();
-        Notice flycoTabLayout = new Notice("FlycoTabLayout",
-            "https://github.com/H07000223/FlycoTabLayout", "Copyright (c) 2015 H07000223",
-            new MITLicense());
         Notice markwon = new Notice("Markwon", "https://github.com/noties/Markwon",
             "Copyright 2017 Dimitry Ivanov (mail@dimitryivanov.ru)", new ApacheSoftwareLicense20());
         Notice colorPicker = new Notice("ColorPicker",
@@ -70,7 +67,6 @@ public class LicenseActivity extends IphoneTitleBarActivityCompat implements Vie
         notices.addNotice(new Notice("MMKV", "https://github.com/Tencent/MMKV",
             "Copyright (C) 2018 THL A29 Limited, a Tencent company. All rights reserved.",
             new BSD3ClauseLicense()));
-        notices.addNotice(flycoTabLayout);
         notices.addNotice(markwon);
         notices.addNotice(colorPicker);
         notices.addNotice(LicensesDialog.LICENSES_DIALOG_NOTICE);
