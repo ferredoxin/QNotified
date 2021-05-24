@@ -248,9 +248,9 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
             newListItemButtonIfValid(this, "精简联系人页面", null, null, SimplifyContactTabs.INSTANCE));
         ll.addView(
             newListItemButtonIfValid(this, "精简主页对话框", null, null, SimplifyRecentDialog.INSTANCE));
-        ll.addView(newListItemConfigSwitchIfValid(this, "精简表情菜单", null, SimplifyEmoPanel.INSTANCE));
         ll.addView(
-            newListItemConfigSwitchIfValid(this, "精简底栏动态", null, SimplifyBottomQzone.INSTANCE));
+            newListItemButtonIfValid(this, "精简底栏", null, null, SimplifyBottomTab.INSTANCE));
+        ll.addView(newListItemConfigSwitchIfValid(this, "精简表情菜单", null, SimplifyEmoPanel.INSTANCE));
         ll.addView(
             newListItemConfigSwitchIfValid(this, "隐藏底栏小红点", null, RemoveBottomRedDots.INSTANCE));
         ll.addView(
