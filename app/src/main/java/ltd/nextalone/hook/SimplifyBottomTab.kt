@@ -51,6 +51,7 @@ object SimplifyBottomTab : MultiItemDelayableHook("na_simplify_bottom_tab_kt") {
             ?.hookBefore(this) {
                 val clzName = (it.args[it.args.size - 2] as Class<*>).name
                 val index = clzNames.values.indexOf(clzName)
+                if (index == -1) return@hookBefore
                 if (items[index] in activeItems ) {
                     it.result = null
                 }
