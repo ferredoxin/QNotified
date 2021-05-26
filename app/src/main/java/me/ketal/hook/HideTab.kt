@@ -31,7 +31,6 @@ import android.widget.TextView
 import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.core.view.plusAssign
-import ltd.nextalone.hook.SimplifyBottomQzone
 import ltd.nextalone.util.*
 import me.ketal.util.findViewByType
 import me.singleneuron.qn_kernel.data.isTim
@@ -76,10 +75,8 @@ object HideTab : CommonDelayableHook("ketal_HideTab") {
             addSettingItem(linearLayout, "skin_tab_icon_contact_normal", "联系人") {
                 tab.currentTab = 1
             }
-            if (!SimplifyBottomQzone.isEnabled) {
-                addSettingItem(linearLayout, "skin_tab_icon_plugin_normal", "动态") {
-                    tab.currentTab = if (tab.childCount == 3) 2 else 3
-                }
+            addSettingItem(linearLayout, "skin_tab_icon_plugin_normal", "动态") {
+                tab.currentTab = if (tab.childCount == 3) 2 else 3
             }
         }
     }

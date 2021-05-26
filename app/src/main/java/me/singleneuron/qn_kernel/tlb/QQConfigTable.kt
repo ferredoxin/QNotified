@@ -30,35 +30,6 @@ import nil.nadph.qnotified.util.QQVersion.*
 class QQConfigTable : ConfigTableInterface {
 
     override val configs: Map<String?, Map<Long, Any>> = mapOf(
-        VasProfileAntiCrash::class.java.simpleName to mapOf(
-            QQ_8_4_1 to "azfl",
-            QQ_8_4_5 to "azxy",
-            QQ_8_4_8 to "aymn",
-            QQ_8_4_10 to "Y",
-            QQ_8_4_17 to "Y",
-            QQ_8_4_18 to "Y",
-            QQ_8_5_0 to "com.tencent.mobileqq.profile.ProfileCardTemplate",
-            QQ_8_5_5 to "com.tencent.mobileqq.profile.ProfileCardTemplate",
-            QQ_8_6_0 to "com.tencent.mobileqq.profilecard.vas.component.template.VasProfileTemplateComponent",
-            QQ_8_6_5 to "com.tencent.mobileqq.profilecard.vas.component.template.VasProfileTemplateComponent",
-            QQ_8_7_0 to "com.tencent.mobileqq.profilecard.vas.component.template.VasProfileTemplateComponent",
-            QQ_8_7_5 to "com.tencent.mobileqq.profilecard.vas.component.template.VasProfileTemplateComponent",
-        ),
-
-        AutoMosaicName::class.java.simpleName to mapOf(
-            QQ_8_4_1 to "t",
-            QQ_8_4_5 to "t",
-            QQ_8_4_8 to "enableMosaicEffect",
-            QQ_8_4_10 to "enableMosaicEffect",
-            QQ_8_4_17 to "enableMosaicEffect",
-            QQ_8_4_18 to "enableMosaicEffect",
-            QQ_8_5_0 to "enableMosaicEffect",
-            QQ_8_5_5 to "r",
-            QQ_8_6_0 to "k",
-            QQ_8_6_5 to "k",
-            QQ_8_7_0 to "k",
-            QQ_8_7_5 to "k",
-        ),
 
         )
 
@@ -77,7 +48,23 @@ class QQConfigTable : ConfigTableInterface {
             QQ_8_6_5 to "mvm",
             QQ_8_7_0 to "mxh",
             QQ_8_7_5 to "mxn",
-        )
+        ),
+
+        VasProfileAntiCrash::class.java.simpleName to mapOf(
+            QQ_8_4_1 to "azfl",
+            QQ_8_4_5 to "azxy",
+            QQ_8_4_8 to "aymn",
+            QQ_8_4_10 to "Y",
+            QQ_8_5_0 to "com.tencent.mobileqq.profile.ProfileCardTemplate",
+            QQ_8_6_0 to "com.tencent.mobileqq.profilecard.vas.component.template.VasProfileTemplateComponent",
+        ),
+
+        AutoMosaicName::class.java.simpleName to mapOf(
+            QQ_8_4_1 to "t",
+            QQ_8_4_8 to "enableMosaicEffect",
+            QQ_8_5_5 to "r",
+            QQ_8_6_0 to "k",
+        ),
     )
 
 }
