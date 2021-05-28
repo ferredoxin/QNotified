@@ -23,7 +23,6 @@ package nil.nadph.qnotified.hook;
 
 import androidx.annotation.NonNull;
 import nil.nadph.qnotified.config.SwitchConfigItem;
-import nil.nadph.qnotified.controller.FunctionItemLoader;
 import nil.nadph.qnotified.step.Step;
 import nil.nadph.qnotified.util.Utils;
 
@@ -38,7 +37,8 @@ public abstract class AbsDelayableHook implements SwitchConfigItem {
 
     @NonNull
     public static AbsDelayableHook[] queryDelayableHooks() {
-        return FunctionItemLoader.enumerateFunctionItems();
+        return nil.nadph.qnotified.gen.AnnotatedFunctionItemList.getAnnotatedFunctionItemClassList()
+            .toArray(new AbsDelayableHook[0]);
     }
 
     public static void allowEarlyInit(@NonNull AbsDelayableHook hook) {
