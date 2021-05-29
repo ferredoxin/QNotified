@@ -68,7 +68,7 @@ class AmusementActivity : IphoneTitleBarActivityCompat() {
         if (HideSearch.isValid) {
             ll.addView(newListItemSwitchConfigNext(this, "隐藏搜索编辑框", "谨慎开启", HideSearch))
         }
-        if (HideSearch.isValid) {
+        if (Emoji2Sticker.isValid) {
             ll.addView(newListItemHookSwitchInit(this, "大号Emoji", "输入单个emoji后长按发送按钮，仅支持部分表情", Emoji2Sticker))
         }
 
