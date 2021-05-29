@@ -49,6 +49,7 @@ import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import ltd.nextalone.util.SystemServiceUtils;
+import me.ketal.hook.Emoji2Sticker;
 import me.singleneuron.hook.CopyCardMsg;
 import mqq.app.AppRuntime;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
@@ -169,8 +170,9 @@ public class InputButtonHook extends CommonDelayableHook {
                                     EditText input = aioRootView.findViewById(ctx.getResources()
                                         .getIdentifier("input", "id", ctx.getPackageName()));
                                     String text = input.getText().toString();
-                                    if (((TextView) v).length() == 0 || !CardMsgHook.INSTANCE
-                                        .isEnabled()) {
+                                    if (((TextView) v).length() == 0
+                                        //|| !CardMsgHook.INSTANCE.isEnabled()
+                                    ) {
                                         return false;
                                     } else if (text.contains("<?xml") || text.contains("{\"")) {
                                         new Thread(() -> {
@@ -218,6 +220,18 @@ public class InputButtonHook extends CommonDelayableHook {
                                             }
                                         }).start();
                                     } else {
+                                        Emoji2Sticker emoji2Sticker = Emoji2Sticker.INSTANCE;
+                                        if (emoji2Sticker.isEnabled()) {
+                                            Object stickerParse = emoji2Sticker.parseMsgForAniSticker(text, session);
+                                            boolean singleAniSticker = (boolean) iget_object_or_null(stickerParse, "singleAniSticker");
+                                            boolean sessionAvailable = (boolean) iget_object_or_null(stickerParse, "sessionAvailable");
+                                            boolean configAniSticker = (boolean) iget_object_or_null(stickerParse, "configAniSticker");
+                                            if (singleAniSticker && sessionAvailable && configAniSticker) {
+                                                emoji2Sticker.sendParseAticker(stickerParse, session);
+                                                input.getText().clear();
+                                                return true;
+                                            }
+                                        }
                                         if (!ChatTailHook.INSTANCE.isEnabled()) {
                                             return false;
                                         }

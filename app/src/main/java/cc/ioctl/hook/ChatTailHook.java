@@ -115,7 +115,7 @@ public class ChatTailHook extends CommonDelayableHook {
                 if (argt.length != 6) {
                     continue;
                 }
-                if (argt[1].equals(Context.class) && argt[2].equals(_SessionInfo())
+                if (argt[1].equals(Context.class)
                     && argt[3].equals(String.class) && argt[4].equals(ArrayList.class)) {
                     m = mi;
                     m.setAccessible(true);
