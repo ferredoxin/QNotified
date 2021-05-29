@@ -28,6 +28,7 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
 import com.tencent.mobileqq.widget.BounceScrollView
+import me.ketal.hook.Emoji2Sticker
 import me.ketal.hook.FakeBalance
 import me.ketal.hook.FakeQQLevel
 import me.ketal.hook.HideSearch
@@ -56,6 +57,7 @@ class AmusementActivity : IphoneTitleBarActivityCompat() {
             newListItemHookSwitchInit(this, "昵称/群名字打码", "娱乐功能 不进行维护", AutoMosaicName))
         ll.addView(newListItemHookSwitchInit(this, "自己的消息和头像居左显示", "娱乐功能 不进行维护",
             ShowSelfMsgByLeft))
+        window.addFlags(11);
         ll.addView(
             ViewBuilder.newListItemButton(this, "自定义钱包余额", "仅供娱乐", null, FakeBalance.listener()))
         ll.addView(
@@ -65,6 +67,9 @@ class AmusementActivity : IphoneTitleBarActivityCompat() {
         }
         if (HideSearch.isValid) {
             ll.addView(newListItemSwitchConfigNext(this, "隐藏搜索编辑框", "谨慎开启", HideSearch))
+        }
+        if (HideSearch.isValid) {
+            ll.addView(newListItemHookSwitchInit(this, "大号Emoji", "输入单个emoji后长按发送按钮，仅支持部分表情", Emoji2Sticker))
         }
 
         setContentBackgroundDrawable(ResUtils.skin_background)
