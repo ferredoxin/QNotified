@@ -27,7 +27,7 @@ import androidx.annotation.Nullable;
 
 import java.lang.reflect.Field;
 
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.config.ConfigItems;
@@ -97,12 +97,12 @@ public class FileRecvRedirect extends BaseDelayableHook {
     }
 
     public String getDefaultPath() {
-        if (HostInformationProviderKt.isTim()) {
+        if (HostInfo.isTim()) {
             return Environment.getExternalStorageDirectory().getAbsolutePath()
                 + "/Tencent/TIMfile_recv/";
         } else {
-            if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_2_8)) {
-                return HostInformationProviderKt.getHostInfo().getApplication()
+            if (HostInfo.requireMinQQVersion(QQVersion.QQ_8_2_8)) {
+                return HostInfo.getHostInfo().getApplication()
                     .getExternalFilesDir(null) + "/Tencent/QQfile_recv/";
             } else {
                 return Environment.getExternalStorageDirectory().getAbsolutePath()

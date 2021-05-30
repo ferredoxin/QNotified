@@ -26,7 +26,7 @@ import java.util.List;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
@@ -107,7 +107,7 @@ public class FavMoreEmo extends CommonDelayableHook {
 
     @Override
     public boolean isValid() {
-        return !HostInformationProviderKt.isTim()
-            && HostInformationProviderKt.hostInfo.getVersionCode() < QQ_8_2_0;
+        return !HostInfo.isTim()
+            && HostInfo.hostInfo.getVersionCode() < QQ_8_2_0;
     }
 }

@@ -21,17 +21,15 @@
  */
 package cc.ioctl.hook;
 
-import static nil.nadph.qnotified.util.Initiator._PicItemBuilder;
-import static nil.nadph.qnotified.util.ReflexUtil.findField;
-import static nil.nadph.qnotified.util.Utils.log;
-
 import android.os.Looper;
 import android.view.View;
 import android.widget.Toast;
+
+import java.lang.reflect.Field;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
-import java.lang.reflect.Field;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.bridge.AIOUtilsImpl;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
@@ -39,6 +37,10 @@ import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Toasts;
+
+import static nil.nadph.qnotified.util.Initiator._PicItemBuilder;
+import static nil.nadph.qnotified.util.ReflexUtil.findField;
+import static nil.nadph.qnotified.util.Utils.log;
 
 @FunctionEntry
 public class EmoPicHook extends CommonDelayableHook {
@@ -55,7 +57,7 @@ public class EmoPicHook extends CommonDelayableHook {
             boolean canInit = checkPreconditions();
             if (!canInit && isEnabled()) {
                 if (Looper.myLooper() != null) {
-                    Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(),
+                    Toasts.error(HostInfo.getHostInfo().getApplication(),
                         "QNotified:表情转图片功能初始化错误", Toast.LENGTH_LONG);
                 }
             }

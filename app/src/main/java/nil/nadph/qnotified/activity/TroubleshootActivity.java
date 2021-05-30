@@ -44,6 +44,7 @@ import android.widget.Toast;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tencent.mobileqq.widget.BounceScrollView;
+
 import java.io.File;
 import java.util.Date;
 import java.util.Iterator;
@@ -58,7 +59,7 @@ import ltd.nextalone.hook.EnableQLog;
 import me.singleneuron.activity.BugReportActivity;
 import me.singleneuron.data.CardMsgCheckResult;
 import me.singleneuron.hook.DebugDump;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import me.singleneuron.qn_kernel.data.HostInfo;
 import me.singleneuron.qn_kernel.tlb.ConfigTable;
 import me.singleneuron.util.KotlinUtilsKt;
 import nil.nadph.qnotified.ExfriendManager;
@@ -148,7 +149,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                     configManager.save();
                 } catch (Exception e) {
                     Utils.runOnUiThread(() -> Toast
-                        .makeText(HostInformationProviderKt.getHostInfo().getApplication(),
+                        .makeText(HostInfo.getHostInfo().getApplication(),
                             e.toString(), Toast.LENGTH_LONG).show());
                     Utils.log(e);
                 }
@@ -279,7 +280,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                         ActProxyMgr.STUB_DEFAULT_ACTIVITY);
                     wrapper.putExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT, inner);
                     PendingIntent pi = PendingIntent.getActivity(getApplication(), 0, wrapper, 0);
-                    NotificationManager nm = (NotificationManager) HostInformationProviderKt
+                    NotificationManager nm = (NotificationManager) HostInfo
                         .getHostInfo().getApplication()
                         .getSystemService(Context.NOTIFICATION_SERVICE);
                     Notification n = ExfriendManager.getCurrent()
@@ -460,7 +461,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                     try {
                         Long qq = Utils.getLongAccountUin();
                         new File(
-                            HostInformationProviderKt.getHostInfo().getApplication().getFilesDir()
+                            HostInfo.getHostInfo().getApplication().getFilesDir()
                                 .getAbsolutePath() + "/qnotified_" + qq + ".dat").delete();
                         ExfriendManager exm = ExfriendManager.getCurrent();
                         exm.getConfig().reinit();
@@ -488,7 +489,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                 public void onClick(DialogInterface dialog, int which) {
                     try {
                         new File(
-                            HostInformationProviderKt.getHostInfo().getApplication().getFilesDir()
+                            HostInfo.getHostInfo().getApplication().getFilesDir()
                                 .getAbsolutePath() + "/qnotified_cache.dat").delete();
                         ConfigManager cfg = ConfigManager.getCache();
                         cfg.getAllConfig().clear();
@@ -502,7 +503,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
             dialog.setNegativeButton("取消", new DummyCallback());
             dialog.setCancelable(true);
             dialog.setMessage(
-                "确认清除缓存,并重新计算适配数据?\n点击确认后请等待3秒后手动重启" + HostInformationProviderKt.getHostInfo()
+                "确认清除缓存,并重新计算适配数据?\n点击确认后请等待3秒后手动重启" + HostInfo.getHostInfo()
                     .getHostName() + ".");
             dialog.setTitle("确认操作");
             dialog.show();
@@ -517,7 +518,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                 dialog.setPositiveButton("确认", (dialog1, which) -> {
                     try {
                         new File(
-                            HostInformationProviderKt.getHostInfo().getApplication().getFilesDir()
+                            HostInfo.getHostInfo().getApplication().getFilesDir()
                                 .getAbsolutePath() + "/qnotified_config.dat").delete();
                         ConfigManager cfg = ConfigManager.getDefaultConfig();
                         cfg.getAllConfig().clear();
@@ -530,7 +531,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                 dialog.setNegativeButton("取消", new Utils.DummyCallback());
                 dialog.setCancelable(true);
                 dialog.setMessage("此操作将删除该模块的所有配置信息,包括屏蔽通知的群列表,但不包括历史好友列表.点击确认后请等待3秒后手动重启"
-                    + HostInformationProviderKt.getHostInfo().getHostName() + ".\n此操作不可恢复");
+                    + HostInfo.getHostInfo().getHostName() + ".\n此操作不可恢复");
                 dialog.setTitle("确认操作");
                 dialog.show();
             }

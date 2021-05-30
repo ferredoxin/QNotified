@@ -21,26 +21,8 @@
  */
 package nil.nadph.qnotified;
 
-import static cc.ioctl.util.DateTimeUtil.getRelTimeStrSec;
-import static nil.nadph.qnotified.config.Table.TYPE_INT;
-import static nil.nadph.qnotified.config.Table.TYPE_IUTF8;
-import static nil.nadph.qnotified.config.Table.TYPE_LONG;
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
-import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_any;
-import static nil.nadph.qnotified.util.Utils.ContactDescriptor;
-import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.logd;
-import static nil.nadph.qnotified.util.Utils.logi;
-import static nil.nadph.qnotified.util.Utils.logw;
-
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.Application;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
+import android.app.*;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -48,9 +30,9 @@ import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.view.View;
 import android.widget.TextView;
+
 import androidx.annotation.Nullable;
-import cc.ioctl.activity.ExfriendListActivity;
-import cc.ioctl.hook.DelDetectorHook;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -62,7 +44,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+
+import cc.ioctl.activity.ExfriendListActivity;
+import cc.ioctl.hook.DelDetectorHook;
+import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.bridge.FriendChunk;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.config.EventRecord;
@@ -72,6 +57,13 @@ import nil.nadph.qnotified.lifecycle.ActProxyMgr;
 import nil.nadph.qnotified.lifecycle.Parasitics;
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
+
+import static cc.ioctl.util.DateTimeUtil.getRelTimeStrSec;
+import static nil.nadph.qnotified.config.Table.*;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_any;
+import static nil.nadph.qnotified.util.Utils.*;
 
 /**
  * @deprecated 设计不合理 将陆续弃用并在重构中移除
@@ -244,7 +236,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
             try {
                 if (fileData == null) {
                     File f = new File(
-                        HostInformationProviderKt.getHostInfo().getApplication().getFilesDir()
+                        HostInfo.getHostInfo().getApplication().getFilesDir()
                             .getAbsolutePath() + "/qnotified_" + mUin + ".dat");
                     fileData = new ConfigManager(f, SyncUtils.FILE_UIN_DATA, mUin);
                     SyncUtils.addOnFileChangedListener(this);
@@ -485,7 +477,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
                     persons = new ConcurrentHashMap<Long, FriendRecord>();
                 }
                 File f = new File(
-                    HostInformationProviderKt.getHostInfo().getApplication().getFilesDir()
+                    HostInfo.getHostInfo().getApplication().getFilesDir()
                         .getAbsolutePath() + "/qnotified_" + mUin + ".dat");
                 if (dirtySerializedFlag) {
                     friendToTable();
@@ -637,7 +629,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
     public void clearUnreadFlag() {
         fileData.getAllConfig().put("unread", 0);
         try {
-            NotificationManager nm = (NotificationManager) HostInformationProviderKt.getHostInfo()
+            NotificationManager nm = (NotificationManager) HostInfo.getHostInfo()
                 .getApplication().getSystemService(Context.NOTIFICATION_SERVICE);
             nm.cancel(ID_EX_NOTIFY);
         } catch (Exception e) {
@@ -746,17 +738,17 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
         saveConfigure();
         try {
             if (isNotifyWhenDeleted() && ((int) ptr[0]) > 0) {
-                Intent inner = new Intent(HostInformationProviderKt.getHostInfo().getApplication(),
+                Intent inner = new Intent(HostInfo.getHostInfo().getApplication(),
                     ExfriendListActivity.class);
                 Intent wrapper = new Intent();
                 wrapper.setClassName(
-                    HostInformationProviderKt.getHostInfo().getApplication().getPackageName(),
+                    HostInfo.getHostInfo().getApplication().getPackageName(),
                     ActProxyMgr.STUB_DEFAULT_ACTIVITY);
                 wrapper.putExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT, inner);
                 PendingIntent pi = PendingIntent
-                    .getActivity(HostInformationProviderKt.getHostInfo().getApplication(), 0,
+                    .getActivity(HostInfo.getHostInfo().getApplication(), 0,
                         wrapper, 0);
-                NotificationManager nm = (NotificationManager) HostInformationProviderKt
+                NotificationManager nm = (NotificationManager) HostInfo
                     .getHostInfo().getApplication().getSystemService(Context.NOTIFICATION_SERVICE);
                 Notification n = createNotiComp(nm, (String) ptr[1], (String) ptr[2],
                     (String) ptr[3], new long[]{100, 200, 200, 100}, pi);
@@ -786,7 +778,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
     @SuppressWarnings("deprecation")
     public Notification createNotiComp(NotificationManager nm, String ticker, String title,
         String content, long[] vibration, PendingIntent pi) {
-        Application app = HostInformationProviderKt.getHostInfo().getApplication();
+        Application app = HostInfo.getHostInfo().getApplication();
         //Do not use NotificationCompat, NotificationCompat does NOT support setSmallIcon with Bitmap.
         Notification.Builder builder;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {

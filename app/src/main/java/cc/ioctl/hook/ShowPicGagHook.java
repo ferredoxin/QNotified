@@ -28,7 +28,7 @@ import java.lang.reflect.Method;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.LicenseStatus;
@@ -77,7 +77,7 @@ public class ShowPicGagHook extends CommonDelayableHook {
 
     @Override
     public boolean isValid() {
-        Application app = HostInformationProviderKt.getHostInfo().getApplication();
-        return app == null || !HostInformationProviderKt.isTim();
+        Application app = HostInfo.getHostInfo().getApplication();
+        return app == null || !HostInfo.isTim();
     }
 }

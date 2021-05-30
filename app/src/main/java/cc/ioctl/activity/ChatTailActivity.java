@@ -21,19 +21,6 @@
  */
 package cc.ioctl.activity;
 
-import static android.text.InputType.TYPE_CLASS_TEXT;
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.ui.ViewBuilder.R_ID_VALUE;
-import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
-import static nil.nadph.qnotified.ui.ViewBuilder.newListItemButton;
-import static nil.nadph.qnotified.ui.ViewBuilder.newListItemSwitchFriendConfigNext;
-import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
-import static nil.nadph.qnotified.util.Utils.dip2px;
-import static nil.nadph.qnotified.util.Utils.dip2sp;
-import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.logi;
-
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -44,21 +31,20 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
+
 import androidx.core.view.ViewCompat;
+
+import com.tencent.mobileqq.widget.BounceScrollView;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import cc.ioctl.dialog.RikkaCustomMsgTimeFormatDialog;
 import cc.ioctl.hook.ChatTailHook;
 import cc.ioctl.hook.FakeBatteryHook;
-import com.tencent.mobileqq.widget.BounceScrollView;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import me.kyuubiran.util.UtilsKt;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.activity.FriendSelectActivity;
@@ -70,6 +56,12 @@ import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
+
+import static android.text.InputType.TYPE_CLASS_TEXT;
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static nil.nadph.qnotified.ui.ViewBuilder.*;
+import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressLint("Registered")
 public class ChatTailActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener {
@@ -176,14 +168,14 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(pct,
             newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 2 * _5dp, _5dp, 2 * _5dp, _5dp));
         ll.addView(newListItemSwitchFriendConfigNext(this, "正则开关",
-            "通过正则表达式的消息不会携带小尾巴(无需重启" + HostInformationProviderKt.getHostInfo().getHostName() + ")",
+            "通过正则表达式的消息不会携带小尾巴(无需重启" + HostInfo.getHostInfo().getHostName() + ")",
             ConfigItems.qn_chat_tail_regex, false));
         ll.addView(createEditText(R_ID_REGEX_VALUE, _5dp, ChatTailHook.getTailRegex(),
             "需要有正则表达式相关知识(部分匹配)"),
             newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT,
                 2 * _5dp, _5dp, 2 * _5dp, _5dp));
         ll.addView(newListItemSwitchFriendConfigNext(this, "全局开关",
-            "开启将无视生效范围(无需重启" + HostInformationProviderKt.getHostInfo().getHostName() + ")",
+            "开启将无视生效范围(无需重启" + HostInfo.getHostInfo().getHostName() + ")",
             ConfigItems.qn_chat_tail_global, false));
         Button apply = new Button(ChatTailActivity.this);
         apply.setId(R_ID_APPLY);

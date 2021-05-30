@@ -21,13 +21,13 @@
  */
 package nil.nadph.qnotified.util;
 
-import static nil.nadph.qnotified.util.Utils.PACKAGE_NAME_QQ;
-import static nil.nadph.qnotified.util.Utils.loge;
-
 import android.os.Parcelable;
 
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import me.singleneuron.qn_kernel.data.HostInfo;
 import mqq.app.AppRuntime;
+
+import static nil.nadph.qnotified.util.Utils.PACKAGE_NAME_QQ;
+import static nil.nadph.qnotified.util.Utils.loge;
 
 @SuppressWarnings("rawtypes")
 public class Initiator {
@@ -165,7 +165,7 @@ public class Initiator {
     public static Class _GdtMvViewController() {
         Class tmp;
         String clzName = "com.tencent.gdtad.api.motivevideo.GdtMvViewController";
-        if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_6_0)) {
+        if (HostInfo.requireMinQQVersion(QQVersion.QQ_8_6_0)) {
             clzName = "com.tencent.gdtad.basics.motivevideo.GdtMvViewController";
         }
         Class mGdtMvViewController = load(clzName);

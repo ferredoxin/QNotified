@@ -21,9 +21,6 @@
  */
 package nil.nadph.qnotified;
 
-import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.loge;
-
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
@@ -32,18 +29,17 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Looper;
+
 import androidx.annotation.NonNull;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+
+import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.hook.AbsDelayableHook;
+
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.loge;
 
 
 @SuppressLint("PrivateApi")
@@ -110,7 +106,7 @@ public class SyncUtils {
 
     public static void sendGenericBroadcast(Context ctx, Intent intent) {
         if (ctx == null) {
-            ctx = HostInformationProviderKt.getHostInfo().getApplication();
+            ctx = HostInfo.getHostInfo().getApplication();
         }
         intent.putExtra(_REAL_INTENT, intent.getAction());
         intent.setAction(GENERIC_WRAPPER);
@@ -128,7 +124,7 @@ public class SyncUtils {
      * @param what 0 for unspecified
      */
     public static void onFileChanged(int file, long uin, int what) {
-        Context ctx = HostInformationProviderKt.getHostInfo().getApplication();
+        Context ctx = HostInfo.getHostInfo().getApplication();
         Intent changed = new Intent(SYNC_FILE_CHANGED);
         changed.setPackage(ctx.getPackageName());
         initId();
@@ -140,7 +136,7 @@ public class SyncUtils {
     }
 
     public static void requestInitHook(int hookId, int process) {
-        Context ctx = HostInformationProviderKt.getHostInfo().getApplication();
+        Context ctx = HostInfo.getHostInfo().getApplication();
         Intent changed = new Intent(HOOK_DO_INIT);
         changed.setPackage(ctx.getPackageName());
         initId();
@@ -208,7 +204,7 @@ public class SyncUtils {
         int retry = 0;
         do {
             try {
-                List<ActivityManager.RunningAppProcessInfo> runningAppProcesses = ((ActivityManager) HostInformationProviderKt
+                List<ActivityManager.RunningAppProcessInfo> runningAppProcesses = ((ActivityManager) HostInfo
                     .getHostInfo().getApplication().getSystemService(Context.ACTIVITY_SERVICE))
                     .getRunningAppProcesses();
                 if (runningAppProcesses != null) {

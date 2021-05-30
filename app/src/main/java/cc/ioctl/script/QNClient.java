@@ -21,7 +21,7 @@
  */
 package cc.ioctl.script;
 
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.bridge.ChatActivityFacade;
 import nil.nadph.qnotified.bridge.SessionInfoImpl;
 import nil.nadph.qnotified.util.LicenseStatus;
@@ -48,7 +48,7 @@ public class QNClient {
     public static void send(String uin, String content, int type) {
         // to do
         ChatActivityFacade.sendMessage(
-            Utils.getQQAppInterface(), HostInformationProviderKt.getHostInfo().getApplication(),
+            Utils.getQQAppInterface(), HostInfo.getHostInfo().getApplication(),
             SessionInfoImpl.createSessionInfo(uin, type), content
         );
     }

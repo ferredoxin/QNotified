@@ -21,12 +21,6 @@
  */
 package nil.nadph.qnotified.util;
 
-import static me.singleneuron.util.KotlinUtilsKt.readFromBufferedReader;
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
-import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
-import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_any;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -37,19 +31,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
+
 import androidx.annotation.Nullable;
-import de.robv.android.xposed.XposedBridge;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+
+import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Iterator;
@@ -57,9 +42,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+
+import de.robv.android.xposed.XposedBridge;
+import me.singleneuron.qn_kernel.data.HostInfo;
 import mqq.app.AppRuntime;
 import nil.nadph.qnotified.BuildConfig;
+
+import static me.singleneuron.util.KotlinUtilsKt.readFromBufferedReader;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.ReflexUtil.*;
 
 @SuppressLint("SimpleDateFormat")
 public class Utils {
@@ -231,7 +222,7 @@ public class Utils {
             // getAppRuntime/W invoked before NewRuntime.step
             return null;
         }
-        Object baseApplicationImpl = HostInformationProviderKt.getHostInfo().getApplication();
+        Object baseApplicationImpl = HostInfo.getHostInfo().getApplication();
         try {
             if (f_mAppRuntime == null) {
                 f_mAppRuntime = Class.forName("mqq.app.MobileQQ").getDeclaredField("mAppRuntime");
@@ -255,7 +246,7 @@ public class Utils {
     }
 
     public static Object getFriendListHandler() {
-        if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_5_0)) {
+        if (HostInfo.requireMinQQVersion(QQVersion.QQ_8_5_0)) {
             try {
                 Class cl_bh = load("com/tencent/mobileqq/app/BusinessHandler");
                 Class cl_flh = load("com/tencent/mobileqq/app/FriendListHandler");
@@ -698,7 +689,7 @@ public class Utils {
     public static long getBuildTimestamp() {
         Context ctx = null;
         try {
-            ctx = HostInformationProviderKt.getHostInfo().getApplication();
+            ctx = HostInfo.getHostInfo().getApplication();
         } catch (Throwable ignored) {
         }
         if (ctx == null) {

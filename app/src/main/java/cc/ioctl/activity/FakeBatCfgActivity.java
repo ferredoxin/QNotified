@@ -21,32 +21,20 @@
  */
 package cc.ioctl.activity;
 
-import static android.text.InputType.TYPE_CLASS_NUMBER;
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
-import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
-import static nil.nadph.qnotified.util.Utils.dip2px;
-import static nil.nadph.qnotified.util.Utils.dip2sp;
-import static nil.nadph.qnotified.util.Utils.log;
-
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
+
 import androidx.core.view.ViewCompat;
-import cc.ioctl.hook.FakeBatteryHook;
+
 import com.tencent.mobileqq.widget.BounceScrollView;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+
+import cc.ioctl.hook.FakeBatteryHook;
+import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat;
@@ -55,6 +43,13 @@ import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.Toasts;
+
+import static android.text.InputType.TYPE_CLASS_NUMBER;
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
+import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
+import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressLint("Registered")
 public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements
@@ -222,7 +217,7 @@ public class FakeBatCfgActivity extends IphoneTitleBarActivityCompat implements
                                         .setCancelable(true).setPositiveButton("确认", null)
                                         .setMessage("发生错误:\n" + getApplication().getPackageName()
                                             + ":MSF 进程响应超时\n" +
-                                            "如果您的" + HostInformationProviderKt.getHostInfo()
+                                            "如果您的" + HostInfo.getHostInfo()
                                             .getHostName() + "刚刚启动,您可以在十几秒后再试一次\n" +
                                             "如果您是太极(含无极)用户,请确认您的太极版本至少为 湛泸-6.0.2(1907) ,如低于此版本,请尽快升级")
                                         .show();

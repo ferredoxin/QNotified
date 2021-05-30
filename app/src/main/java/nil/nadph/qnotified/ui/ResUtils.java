@@ -42,7 +42,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.robv.android.xposed.XposedHelpers;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.util.ArscKit;
 
 import static nil.nadph.qnotified.util.Initiator._ThemeUtil;
@@ -70,7 +70,7 @@ public class ResUtils {
 
     public static void requireResourcesNonNull(Context ctx) {
         if (ctx == null) {
-            ctx = HostInformationProviderKt.getHostInfo().getApplication();
+            ctx = HostInfo.getHostInfo().getApplication();
         }
         if (!inited) {
             initTheme(ctx);
@@ -367,7 +367,7 @@ public class ResUtils {
                 "getUserCurrentThemeId", getAppRuntime(), load("mqq/app/AppRuntime"));
             return "1103".endsWith(themeId) || "2920".endsWith(themeId);
         } catch (Exception e) {
-            if (HostInformationProviderKt.isTim()) {
+            if (HostInfo.isTim()) {
                 return false;
             }
             log(e);

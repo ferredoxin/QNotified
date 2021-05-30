@@ -21,22 +21,24 @@
  */
 package com.rymmmmm.hook;
 
+import android.content.Intent;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
+import me.singleneuron.qn_kernel.data.HostInfo;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
+import nil.nadph.qnotified.hook.CommonDelayableHook;
+import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.QQVersion;
+
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
 import static nil.nadph.qnotified.util.Utils.log;
 import static nil.nadph.qnotified.util.Utils.loge;
-
-import android.content.Intent;
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
-import nil.nadph.qnotified.util.QQVersion;
-import nil.nadph.qnotified.base.annotation.FunctionEntry;
-import nil.nadph.qnotified.hook.CommonDelayableHook;
-import nil.nadph.qnotified.util.LicenseStatus;
 
 //屏蔽Diy卡片
 @FunctionEntry
@@ -54,7 +56,7 @@ public class IgnoreDiyCard extends CommonDelayableHook {
             for (Method m : load("com.tencent.mobileqq.activity.FriendProfileCardActivity")
                 .getDeclaredMethods()) {
                 Class<?>[] argt = m.getParameterTypes();
-                if (HostInformationProviderKt.getHostInfo().getVersionCode32()
+                if (HostInfo.getHostInfo().getVersionCode32()
                     <= QQVersion.QQ_8_3_6) {
                     if (m.getName().equals("a") && !Modifier.isStatic(m.getModifiers()) && m
                         .getReturnType().equals(void.class)) {

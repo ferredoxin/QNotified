@@ -21,15 +21,16 @@
  */
 package cc.ioctl.hook;
 
-import cc.ioctl.util.BugUtils;
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+
+import cc.ioctl.util.BugUtils;
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
+import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
@@ -78,7 +79,7 @@ public class InterceptZipBomb extends CommonDelayableHook {
                     zipFile.close();
                     if (sizeSum >= 104550400) {
                         param.setResult(null);
-                        Toasts.show(HostInformationProviderKt.getHostInfo().getApplication(),
+                        Toasts.show(HostInfo.getHostInfo().getApplication(),
                             String.format("已拦截 %s ,解压后大小异常: %s",
                                 file.getPath(), BugUtils.getSizeString(sizeSum)));
                     }

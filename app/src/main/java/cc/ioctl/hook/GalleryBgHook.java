@@ -21,21 +21,23 @@
  */
 package cc.ioctl.hook;
 
-import static nil.nadph.qnotified.util.Utils.log;
-
 import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import java.lang.reflect.Field;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
-import java.lang.reflect.Field;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Toasts;
+
+import static nil.nadph.qnotified.util.Utils.log;
 
 public class GalleryBgHook extends CommonDelayableHook {
 
@@ -55,7 +57,7 @@ public class GalleryBgHook extends CommonDelayableHook {
             boolean canInit = checkPreconditions();
             if (!canInit && isEnabled()) {
                 if (Looper.myLooper() != null) {
-                    Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(),
+                    Toasts.error(HostInfo.getHostInfo().getApplication(),
                         "QNotified:聊天图片背景功能初始化错误", Toast.LENGTH_LONG);
                 }
             }

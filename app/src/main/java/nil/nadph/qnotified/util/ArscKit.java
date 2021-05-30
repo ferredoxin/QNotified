@@ -21,11 +21,9 @@
  */
 package nil.nadph.qnotified.util;
 
-import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
-import static nil.nadph.qnotified.util.Utils.log;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,8 +32,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+
+import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.config.ConfigManager;
+
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
+import static nil.nadph.qnotified.util.Utils.log;
 
 @SuppressWarnings("CharsetObjectCanBeUsed")
 public class ArscKit {
@@ -142,7 +144,7 @@ public class ArscKit {
         } catch (NumberFormatException ignored) {
         }
         if (ctx == null) {
-            ctx = HostInformationProviderKt.getHostInfo().getApplication();
+            ctx = HostInfo.getHostInfo().getApplication();
         }
         String pkg = ctx.getPackageName();
         int ret = ctx.getResources().getIdentifier(name, type, pkg);
@@ -153,7 +155,7 @@ public class ArscKit {
         ConfigManager cache = ConfigManager.getCache();
         ret = cache.getIntOrDefault(CACHED_RES_ID_NAME_PREFIX + type + "/" + name, 0);
         int oldcode = cache.getIntOrDefault(CACHED_RES_ID_CODE_PREFIX + type + "/" + name, -1);
-        int currcode = HostInformationProviderKt.getHostInfo().getVersionCode32();
+        int currcode = HostInfo.getHostInfo().getVersionCode32();
         if (ret != 0 && (oldcode == currcode)) {
             return ret;
         }

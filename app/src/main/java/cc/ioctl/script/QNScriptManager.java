@@ -21,30 +21,23 @@
  */
 package cc.ioctl.script;
 
-import static nil.nadph.qnotified.util.Utils.isNullOrEmpty;
-import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.readByReader;
-
 import android.widget.CompoundButton;
-import bsh.EvalError;
-import bsh.Interpreter;
-import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+
+import bsh.EvalError;
+import bsh.Interpreter;
+import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
+
+import static nil.nadph.qnotified.util.Utils.*;
 
 public class QNScriptManager {
 
@@ -267,7 +260,7 @@ public class QNScriptManager {
             return;
         }
         scriptsPath =
-            HostInformationProviderKt.getHostInfo().getApplication().getFilesDir().getAbsolutePath()
+            HostInfo.getHostInfo().getApplication().getFilesDir().getAbsolutePath()
                 + "/qn_script/";
         for (String code : getScriptCodes()) {
             try {
@@ -337,7 +330,7 @@ public class QNScriptManager {
             disableAll();
         }
         Toasts.error(compoundButton.getContext(),
-            "重启" + HostInformationProviderKt.getHostInfo().getHostName() + "生效");
+            "重启" + HostInfo.getHostInfo().getHostName() + "生效");
     }
 
     public static boolean isEnableAll() {

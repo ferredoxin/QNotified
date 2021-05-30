@@ -23,7 +23,7 @@ package nil.nadph.qnotified.bridge;
 
 import java.lang.reflect.Modifier;
 
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import me.singleneuron.qn_kernel.data.HostInfo;
 import me.singleneuron.qn_kernel.tlb.ConfigTable;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Initiator;
@@ -47,7 +47,7 @@ public class QQMessageFacade {
 
     public static Object getMessageManager(int istroop) {
         try {
-            if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_6_0)) {
+            if (HostInfo.requireMinQQVersion(QQVersion.QQ_8_6_0)) {
                 return invoke_virtual_declared_fixed_modifier_ordinal(get(), Modifier.PUBLIC, 0,
                     Initiator._BaseQQMessageFacade(), 0, 1, true, istroop,
                     int.class, Initiator._BaseMessageManager());
@@ -76,11 +76,11 @@ public class QQMessageFacade {
             Object msgCache = invoke_virtual_any(getQQAppInterface(),
                 DexKit.doFindClass(DexKit.C_MessageCache));
             String methodName = "b"; //Default method name for QQ
-            if (HostInformationProviderKt.isTim()) {
+            if (HostInfo.isTim()) {
                 methodName = ConfigTable.INSTANCE.getConfig(QQMessageFacade.class.getSimpleName());
             }
             invoke_virtual(msgCache, methodName, true, boolean.class, void.class);
-            if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_6_0)) {
+            if (HostInfo.requireMinQQVersion(QQVersion.QQ_8_6_0)) {
                 invoke_virtual_declared_fixed_modifier_ordinal(mgr, Modifier.PUBLIC, 0,
                     Initiator._BaseMessageManager(), 4, 7, true, msg2, Initiator._MessageRecord(),
                     void.class);

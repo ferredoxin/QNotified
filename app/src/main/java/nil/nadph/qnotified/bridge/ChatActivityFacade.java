@@ -21,32 +21,30 @@
  */
 package nil.nadph.qnotified.bridge;
 
-import static nil.nadph.qnotified.util.Initiator._QQAppInterface;
-import static nil.nadph.qnotified.util.Initiator._SessionInfo;
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
-import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
-import static nil.nadph.qnotified.util.Utils.getQQAppInterface;
-import static nil.nadph.qnotified.util.Utils.getShort$Name;
-import static nil.nadph.qnotified.util.Utils.log;
-
 import android.content.Context;
 import android.os.Parcelable;
+
 import java.io.Externalizable;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+
+import me.singleneuron.qn_kernel.data.HostInfo;
 import mqq.app.AppRuntime;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Toasts;
 
+import static nil.nadph.qnotified.util.Initiator.*;
+import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
+import static nil.nadph.qnotified.util.Utils.*;
+
 public class ChatActivityFacade {
 
     public static long[] sendMessage(AppRuntime qqAppInterface, Context context,
-        Parcelable sessionInfo, String msg,
-        ArrayList<?> atInfo, Object sendMsgParams) {
+                                     Parcelable sessionInfo, String msg,
+                                     ArrayList<?> atInfo, Object sendMsgParams) {
         if (qqAppInterface == null) {
             throw new NullPointerException("qqAppInterface == null");
         }
@@ -240,11 +238,11 @@ public class ChatActivityFacade {
             case "MessageForLongTextMsg":
                 msgText = (String) iget_object_or_null(msg, "msg");
                 if (msgText.length() > 3000) {
-                    Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(),
+                    Toasts.error(HostInfo.getHostInfo().getApplication(),
                         "暂不支持发送长消息");
                     return;
                 }
-                sendMessage(app, HostInformationProviderKt.getHostInfo().getApplication(), session,
+                sendMessage(app, HostInfo.getHostInfo().getApplication(), session,
                     msgText);
                 break;
             case "MessageForPic":
@@ -271,7 +269,7 @@ public class ChatActivityFacade {
                         m.invoke(null, app, session, msg, 0);
                     }
                 } catch (Exception e) {
-                    Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(),
+                    Toasts.error(HostInfo.getHostInfo().getApplication(),
                         e.toString().replace("java.lang.", ""));
                     log(e);
                 }
@@ -281,19 +279,19 @@ public class ChatActivityFacade {
                     String url = (String) invoke_virtual(msg, "getLocalFilePath");
                     File file = new File(url);
                     if (!file.exists()) {
-                        Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(),
+                        Toasts.error(HostInfo.getHostInfo().getApplication(),
                             "未找到语音文件");
                         return;
                     }
                     sendPttMessage(getQQAppInterface(), session, url);
                 } catch (Exception e) {
-                    Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(),
+                    Toasts.error(HostInfo.getHostInfo().getApplication(),
                         e.toString().replace("java.lang.", ""));
                     log(e);
                 }
                 break;
             default:
-                Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(),
+                Toasts.error(HostInfo.getHostInfo().getApplication(),
                     "Unsupported msg type: " + getShort$Name(msg));
         }
     }

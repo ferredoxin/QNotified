@@ -27,7 +27,7 @@ import java.lang.reflect.Method;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
@@ -49,17 +49,17 @@ public class RemovePlayTogether extends CommonDelayableHook {
 
     @Override
     public boolean checkPreconditions() {
-        return !HostInformationProviderKt.isPlayQQ() && super.checkPreconditions();
+        return !HostInfo.isPlayQQ() && super.checkPreconditions();
     }
 
     @Override
     public boolean initOnce() {
         try {
-            if (HostInformationProviderKt.isPlayQQ()) {
+            if (HostInfo.isPlayQQ()) {
                 return false;
             }
             String method = "h";
-            if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_4_8)) {
+            if (HostInfo.requireMinQQVersion(QQVersion.QQ_8_4_8)) {
                 //QQ 8.4.8 除了一起嗨按钮，同一个位置还有一个群打卡按钮。默认显示群打卡，如果已经打卡就显示一起嗨，两个按钮点击之后都会打开同一个界面，但是要同时hook两个
                 String entryMethod = "d";
                 for (Method m : DexKit.doFindClass(DexKit.C_ClockInEntryHelper)
@@ -112,7 +112,7 @@ public class RemovePlayTogether extends CommonDelayableHook {
 
     @Override
     public boolean isValid() {
-        return !HostInformationProviderKt.isPlayQQ();
+        return !HostInfo.isPlayQQ();
     }
 
     @NonNull

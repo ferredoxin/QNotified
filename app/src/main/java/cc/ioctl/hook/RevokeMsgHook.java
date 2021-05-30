@@ -21,31 +21,19 @@
  */
 package cc.ioctl.hook;
 
-import static de.robv.android.xposed.XposedHelpers.callMethod;
-import static de.robv.android.xposed.XposedHelpers.setObjectField;
-import static nil.nadph.qnotified.util.Initiator._C2CMessageProcessor;
-import static nil.nadph.qnotified.util.Initiator._QQMessageFacade;
-import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
-import static nil.nadph.qnotified.util.ReflexUtil.invoke_static_declared_ordinal_modifier;
-import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
-import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_declared_ordinal;
-import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_declared_ordinal_modifier;
-import static nil.nadph.qnotified.util.Utils.getLongAccountUin;
-import static nil.nadph.qnotified.util.Utils.isCallingFrom;
-import static nil.nadph.qnotified.util.Utils.log;
-
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
-import nil.nadph.qnotified.util.QQVersion;
+
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
+import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.bridge.ContactUtils;
@@ -54,7 +42,15 @@ import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.QQVersion;
 import nil.nadph.qnotified.util.Utils;
+
+import static de.robv.android.xposed.XposedHelpers.callMethod;
+import static de.robv.android.xposed.XposedHelpers.setObjectField;
+import static nil.nadph.qnotified.util.Initiator._C2CMessageProcessor;
+import static nil.nadph.qnotified.util.Initiator._QQMessageFacade;
+import static nil.nadph.qnotified.util.ReflexUtil.*;
+import static nil.nadph.qnotified.util.Utils.*;
 
 /**
  * @author fkzhang Created by fkzhang on 1/20/2016. Changes by cinit: 2020/03/08 Sun.20:33 Minor
@@ -219,7 +215,7 @@ public class RevokeMsgHook extends CommonDelayableHook {
         List<Object> list = new ArrayList<>();
         list.add(revokeGreyTip);
         //todo fix 860+
-        if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_6_0)) {
+        if (HostInfo.requireMinQQVersion(QQVersion.QQ_8_6_0)) {
             invoke_virtual(mQQMsgFacade, "a", list, Utils.getAccount(), List.class, String.class,
                 void.class);
         } else {
@@ -277,7 +273,7 @@ public class RevokeMsgHook extends CommonDelayableHook {
         List list = null;
         try {
             //todo fix 860+
-            if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_6_0)) {
+            if (HostInfo.requireMinQQVersion(QQVersion.QQ_8_6_0)) {
                 list = (List) invoke_virtual(mQQMsgFacade, "a", uin, istroop, shmsgseq, msgUid,
                     String.class, int.class, long.class, long.class,
                     List.class);

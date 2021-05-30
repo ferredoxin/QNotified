@@ -21,14 +21,15 @@
  */
 package nil.nadph.qnotified.util;
 
-import static nil.nadph.qnotified.util.Utils.log;
+import java.io.IOException;
 
 import cc.ioctl.chiral.Molecule;
-import java.io.IOException;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.BuildConfig;
 import nil.nadph.qnotified.activity.EulaActivity;
 import nil.nadph.qnotified.config.ConfigManager;
+
+import static nil.nadph.qnotified.util.Utils.log;
 
 public class LicenseStatus {
 
@@ -52,7 +53,7 @@ public class LicenseStatus {
             ConfigManager.getDefaultConfig().save();
         } catch (IOException e) {
             log(e);
-            Toasts.error(HostInformationProviderKt.getHostInfo().getApplication(), e.toString());
+            Toasts.error(HostInfo.getHostInfo().getApplication(), e.toString());
         }
     }
 

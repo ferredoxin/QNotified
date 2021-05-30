@@ -21,13 +21,10 @@
  */
 package com.rymmmmm.hook;
 
-import static me.singleneuron.qn_kernel.data.HostInformationProviderKt.requireMinQQVersion;
-import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
-import static nil.nadph.qnotified.util.ReflexUtil.iput_object;
+import java.lang.reflect.Method;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
-import java.lang.reflect.Method;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
@@ -35,6 +32,10 @@ import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.QQVersion;
 import nil.nadph.qnotified.util.Utils;
+
+import static me.singleneuron.qn_kernel.data.HostInfo.requireMinQQVersion;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
+import static nil.nadph.qnotified.util.ReflexUtil.iput_object;
 
 //去除小程序广告 需要手动点关闭
 @FunctionEntry
