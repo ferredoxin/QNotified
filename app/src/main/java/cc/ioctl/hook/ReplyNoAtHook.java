@@ -23,23 +23,23 @@ package cc.ioctl.hook;
 
 import java.lang.reflect.Method;
 
-import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static nil.nadph.qnotified.util.PlayQQVersion.PlayQQ_8_2_9;
-import static nil.nadph.qnotified.util.TIMVersion.TIM_3_1_1;
-import static nil.nadph.qnotified.util.QQVersion.QQ_8_1_3;
-import static nil.nadph.qnotified.util.QQVersion.QQ_8_6_0;
-import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
-import static nil.nadph.qnotified.util.Utils.log;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import me.singleneuron.qn_kernel.data.HostInfo;
 import me.singleneuron.qn_kernel.tlb.ConfigTable;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.DexMethodDescriptor;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
+
+import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
+import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
+import static nil.nadph.qnotified.util.PlayQQVersion.PlayQQ_8_2_9;
+import static nil.nadph.qnotified.util.QQVersion.QQ_8_1_3;
+import static nil.nadph.qnotified.util.QQVersion.QQ_8_6_0;
+import static nil.nadph.qnotified.util.TIMVersion.TIM_3_1_1;
+import static nil.nadph.qnotified.util.Utils.log;
 
 @FunctionEntry
 public class ReplyNoAtHook extends CommonDelayableHook {
@@ -61,7 +61,7 @@ public class ReplyNoAtHook extends CommonDelayableHook {
             if (method == null) {
                 return false;
             }
-            if (HostInformationProviderKt.requireMinQQVersion(QQ_8_6_0)) {
+            if (HostInfo.requireMinQQVersion(QQ_8_6_0)) {
                 Method m = new DexMethodDescriptor("Lcom/tencent/mobileqq/activity/aio/rebuild/input/InputUIUtils;->a(Lcom/tencent/mobileqq/activity/aio/core/AIOContext;Lcom/tencent/mobileqq/activity/aio/BaseSessionInfo;Z)V").getMethodInstance(Initiator.getHostClassLoader());
                 XposedBridge.hookMethod(m, new XC_MethodHook(49) {
                     @Override
@@ -104,6 +104,6 @@ public class ReplyNoAtHook extends CommonDelayableHook {
 
     @Override
     public boolean isValid() {
-        return HostInformationProviderKt.requireMinVersion(QQ_8_1_3, TIM_3_1_1, PlayQQ_8_2_9);
+        return HostInfo.requireMinVersion(QQ_8_1_3, TIM_3_1_1, PlayQQ_8_2_9);
     }
 }

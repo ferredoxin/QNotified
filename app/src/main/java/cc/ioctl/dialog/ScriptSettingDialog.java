@@ -26,14 +26,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.Switch;
-import android.widget.TextView;
+import android.widget.*;
+
 import cc.ioctl.script.QNScript;
 import cc.ioctl.script.QNScriptManager;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.util.Toasts;
@@ -104,6 +101,6 @@ public class ScriptSettingDialog implements CompoundButton.OnCheckedChangeListen
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         script.setEnable(isChecked);
-        Toasts.error(ctx, "重启" + HostInformationProviderKt.getHostInfo().getHostName() + "生效");
+        Toasts.error(ctx, "重启" + HostInfo.getHostInfo().getHostName() + "生效");
     }
 }

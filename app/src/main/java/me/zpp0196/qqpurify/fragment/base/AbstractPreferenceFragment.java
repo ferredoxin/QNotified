@@ -3,18 +3,14 @@ package me.zpp0196.qqpurify.fragment.base;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Toast;
+
 import androidx.fragment.app.Fragment;
-import androidx.preference.EditTextPreference;
-import androidx.preference.ListPreference;
-import androidx.preference.MultiSelectListPreference;
-import androidx.preference.Preference;
-import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.PreferenceGroup;
-import androidx.preference.PreferenceScreen;
-import androidx.preference.TwoStatePreference;
+import androidx.preference.*;
+
 import java.util.HashSet;
 import java.util.Set;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+
+import me.singleneuron.qn_kernel.data.HostInfo;
 import me.zpp0196.qqpurify.activity.MainActivity;
 import me.zpp0196.qqpurify.hook.P2CUtils;
 import me.zpp0196.qqpurify.utils.Constants;
@@ -253,7 +249,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
             _item.sync();
             if (restartRequired) {
                 Toasts.info(mActivity,
-                    "重启" + HostInformationProviderKt.getHostInfo().getHostName() + "生效");
+                    "重启" + HostInfo.getHostInfo().getHostName() + "生效");
             }
             return true;
         } catch (Exception e) {

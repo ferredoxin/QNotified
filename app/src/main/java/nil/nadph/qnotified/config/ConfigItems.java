@@ -21,19 +21,22 @@
  */
 package nil.nadph.qnotified.config;
 
-import static nil.nadph.qnotified.util.Utils.QN_VERSION_CODE;
-import static nil.nadph.qnotified.util.Utils.log;
-
 import android.content.Context;
+
 import androidx.annotation.NonNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+
+import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.util.MainProcess;
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
+
+import static nil.nadph.qnotified.util.Utils.QN_VERSION_CODE;
+import static nil.nadph.qnotified.util.Utils.log;
 
 public class ConfigItems {
 
@@ -67,10 +70,10 @@ public class ConfigItems {
         @Override
         public boolean isEnabled() {
             try {
-                Context ctx = HostInformationProviderKt.getHostInfo().getApplication();
+                Context ctx = HostInfo.getHostInfo().getApplication();
                 return new File(ctx.getFilesDir(), "qn_disable_hot_patch").exists();
             } catch (Throwable e) {
-                Toasts.error(HostInformationProviderKt.hostInfo.getApplication(), e.toString());
+                Toasts.error(HostInfo.hostInfo.getApplication(), e.toString());
                 return false;
             }
         }
@@ -81,7 +84,7 @@ public class ConfigItems {
         }        @Override
         public void setEnabled(boolean enabled) {
             try {
-                Context ctx = HostInformationProviderKt.getHostInfo().getApplication();
+                Context ctx = HostInfo.getHostInfo().getApplication();
                 File f = new File(ctx.getFilesDir(), "qn_disable_hot_patch");
                 if (enabled != f.exists()) {
                     if (enabled) {
@@ -91,7 +94,7 @@ public class ConfigItems {
                     }
                 }
             } catch (Throwable e) {
-                Toasts.error(HostInformationProviderKt.hostInfo.getApplication(), e.toString());
+                Toasts.error(HostInfo.hostInfo.getApplication(), e.toString());
             }
         }
 

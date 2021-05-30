@@ -34,10 +34,11 @@ import android.widget.*;
 
 import androidx.annotation.NonNull;
 import androidx.core.view.ViewCompat;
+
 import cc.ioctl.H;
 import ltd.nextalone.base.MultiItemDelayableHook;
 import ltd.nextalone.util.SystemServiceUtils;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import me.singleneuron.qn_kernel.data.HostInfo;
 import me.singleneuron.qn_kernel.ui.base.UiSwitchItem;
 import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference;
 import nil.nadph.qnotified.ExfriendManager;
@@ -165,7 +166,7 @@ public class ViewBuilder {
                         mgr.getAllConfig().put(key, isChecked);
                         mgr.save();
                         Toasts.info(ctx,
-                            "重启" + HostInformationProviderKt.getHostInfo().getHostName() + "生效");
+                            "重启" + HostInfo.getHostInfo().getHostName() + "生效");
                     } catch (Throwable e) {
                         Utils.log(e);
                         Toasts.info(ctx, e.toString());
@@ -209,7 +210,7 @@ public class ViewBuilder {
                     try {
                         item.setEnabled(isChecked);
                         Toasts.info(ctx,
-                            "重启" + HostInformationProviderKt.getHostInfo().getHostName() + "生效");
+                            "重启" + HostInfo.getHostInfo().getHostName() + "生效");
                     } catch (Throwable e) {
                         Utils.log(e);
                         Toasts.info(ctx, e.toString());
@@ -651,7 +652,7 @@ public class ViewBuilder {
         tv.setTextIsSelectable(false);
         tv.setText(title);
         tv.setTextSize(dip2sp(ctx, 13));
-        tv.setTextColor(HostInformationProviderKt.getHostInfo().getApplication().getResources()
+        tv.setTextColor(HostInfo.getHostInfo().getApplication().getResources()
             .getColor(R.color.colorPrimary));
         tv.setLayoutParams(new ViewGroup.LayoutParams(WRAP_CONTENT, WRAP_CONTENT));
         ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));

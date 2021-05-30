@@ -1,3 +1,5 @@
+@file:JvmName("HostInfo")
+
 package me.singleneuron.qn_kernel.data
 
 import android.app.Application

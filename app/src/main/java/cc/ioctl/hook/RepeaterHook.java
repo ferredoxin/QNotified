@@ -41,7 +41,7 @@ import cc.ioctl.dialog.RepeaterIconSettingDialog;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import me.singleneuron.qn_kernel.data.HostInfo;
 import mqq.app.AppRuntime;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.bridge.ChatActivityFacade;
@@ -155,7 +155,7 @@ public class RepeaterHook extends CommonDelayableHook {
                             } catch (Throwable e) {
                                 log(e);
                                 Toasts
-                                    .error(HostInformationProviderKt.getHostInfo().getApplication(),
+                                    .error(HostInfo.getHostInfo().getApplication(),
                                         e.toString());
                             }
                         }
@@ -166,7 +166,7 @@ public class RepeaterHook extends CommonDelayableHook {
             });
             //end: pic
             //begin: text
-            if (HostInformationProviderKt.isTim()) {
+            if (HostInfo.isTim()) {
                 // TODO: 2020/5/17 Add MsgForText +1 for TIM
                 XposedHelpers
                     .findAndHookMethod(_TextItemBuilder(), "a", ChatMessage, itemHolder, View.class,
@@ -245,7 +245,7 @@ public class RepeaterHook extends CommonDelayableHook {
                                                 .repeatMessage(app, session, param.args[0]);
                                         } catch (Throwable e) {
                                             log(e);
-                                            Toasts.error(HostInformationProviderKt.getHostInfo()
+                                            Toasts.error(HostInfo.getHostInfo()
                                                 .getApplication(), e.toString());
                                         }
                                     }
@@ -360,7 +360,7 @@ public class RepeaterHook extends CommonDelayableHook {
                                             ChatActivityFacade.repeatMessage(app, session, msg);
                                         } catch (Throwable e) {
                                             log(e);
-                                            Toasts.error(HostInformationProviderKt.getHostInfo()
+                                            Toasts.error(HostInfo.getHostInfo()
                                                 .getApplication(), e.toString());
                                         }
                                     }
@@ -487,7 +487,7 @@ public class RepeaterHook extends CommonDelayableHook {
                                             .repeatMessage(app, session, param.args[0]);
                                     } catch (Throwable e) {
                                         log(e);
-                                        Toasts.error(HostInformationProviderKt.getHostInfo()
+                                        Toasts.error(HostInfo.getHostInfo()
                                             .getApplication(), e.toString());
                                     }
                                 }

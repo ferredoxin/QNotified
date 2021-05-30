@@ -29,7 +29,7 @@ import java.util.HashSet;
 
 import cc.ioctl.H;
 import de.robv.android.xposed.XC_MethodReplacement;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
@@ -56,7 +56,7 @@ public class HideMiniAppPullEntry extends CommonDelayableHook implements Step {
     @Override
     protected boolean initOnce() {
         try {
-            if (HostInformationProviderKt.isTim()) {
+            if (HostInfo.isTim()) {
                 return false;
             }
             if (isEnabled()) {

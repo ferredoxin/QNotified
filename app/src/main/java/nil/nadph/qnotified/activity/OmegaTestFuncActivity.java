@@ -21,14 +21,6 @@
  */
 package nil.nadph.qnotified.activity;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static cc.ioctl.util.SendBatchMsg.clickToBatchMsg;
-import static nil.nadph.qnotified.ui.ViewBuilder.newListItemButton;
-import static nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit;
-import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
-import static nil.nadph.qnotified.util.Utils.dip2px;
-
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -38,13 +30,21 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import cc.ioctl.hook.CardMsgHook;
+
 import com.tencent.mobileqq.widget.BounceScrollView;
+
+import cc.ioctl.hook.CardMsgHook;
 import me.kyuubiran.dialog.AutoRenewFireDialog;
 import me.singleneuron.hook.CopyCardMsg;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.LicenseStatus;
+
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static cc.ioctl.util.SendBatchMsg.clickToBatchMsg;
+import static nil.nadph.qnotified.ui.ViewBuilder.*;
+import static nil.nadph.qnotified.util.Utils.dip2px;
 
 @SuppressLint("Registered")
 public class OmegaTestFuncActivity extends IphoneTitleBarActivityCompat {
@@ -55,7 +55,7 @@ public class OmegaTestFuncActivity extends IphoneTitleBarActivityCompat {
     public boolean doOnCreate(Bundle bundle) {
         super.doOnCreate(bundle);
         RelativeLayout _t;
-        String _hostName = HostInformationProviderKt.getHostInfo().getHostName();
+        String _hostName = HostInfo.getHostInfo().getHostName();
         LinearLayout ll = new LinearLayout(this);
         ll.setOrientation(LinearLayout.VERTICAL);
         ViewGroup.LayoutParams mmlp = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);

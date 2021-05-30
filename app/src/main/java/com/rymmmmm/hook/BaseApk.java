@@ -21,26 +21,28 @@
  */
 package com.rymmmmm.hook;
 
-import static nil.nadph.qnotified.util.QQVersion.QQ_8_6_0;
-import static nil.nadph.qnotified.util.Utils.log;
-
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+
 import cc.ioctl.dialog.RikkaBaseApkFormatDialog;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
+
+import static nil.nadph.qnotified.util.QQVersion.QQ_8_6_0;
+import static nil.nadph.qnotified.util.Utils.log;
 
 //重命名base.apk
 @FunctionEntry
@@ -55,7 +57,7 @@ public class BaseApk extends CommonDelayableHook {
     @Override
     public boolean initOnce() {
         try {
-            if (HostInformationProviderKt.requireMinQQVersion(QQ_8_6_0)) {
+            if (HostInfo.requireMinQQVersion(QQ_8_6_0)) {
                 Class c = Initiator.load("com.tencent.mobileqq.utils.FileUtils");
                 XposedHelpers.findAndHookMethod(c, "getFileName", String.class, new XC_MethodHook() {
                     @Override
@@ -64,7 +66,7 @@ public class BaseApk extends CommonDelayableHook {
                             String fileName = (String) param.getResult();
                             String localFile = (String) param.args[0];
                             if (fileName.equals("base.apk")) {
-                                PackageManager packageManager = HostInformationProviderKt
+                                PackageManager packageManager = HostInfo
                                     .getHostInfo().getApplication().getPackageManager();
                                 PackageInfo packageArchiveInfo = packageManager
                                     .getPackageArchiveInfo(localFile,
@@ -81,7 +83,7 @@ public class BaseApk extends CommonDelayableHook {
                                         .replace("%p", applicationInfo.packageName)
                                         .replace("%v", packageArchiveInfo.versionName)
                                         .replace("%c", String.valueOf(
-                                            HostInformationProviderKt.getHostInfo()
+                                            HostInfo.getHostInfo()
                                                 .getApplication()));
                                     param.setResult(result);
                                 }
@@ -117,7 +119,7 @@ public class BaseApk extends CommonDelayableHook {
                                 Field fileName = XposedHelpers
                                     .findField(_ItemManagerClz, "FileName");
                                 if (fileName.get(item).equals("base.apk")) {
-                                    PackageManager packageManager = HostInformationProviderKt
+                                    PackageManager packageManager = HostInfo
                                         .getHostInfo().getApplication().getPackageManager();
                                     PackageInfo packageArchiveInfo = packageManager
                                         .getPackageArchiveInfo((String) localFile.get(item),
@@ -134,7 +136,7 @@ public class BaseApk extends CommonDelayableHook {
                                             .replace("%p", applicationInfo.packageName)
                                             .replace("%v", packageArchiveInfo.versionName)
                                             .replace("%c", String.valueOf(
-                                                HostInformationProviderKt.getHostInfo()
+                                                HostInfo.getHostInfo()
                                                     .getApplication()));
                                         fileName.set(item, result);
                                     }

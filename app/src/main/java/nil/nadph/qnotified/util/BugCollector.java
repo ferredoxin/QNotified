@@ -22,8 +22,10 @@
 package nil.nadph.qnotified.util;
 
 import android.app.Application;
+
 import com.microsoft.appcenter.crashes.Crashes;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+
+import me.singleneuron.qn_kernel.data.HostInfo;
 
 public class BugCollector {
 
@@ -32,7 +34,7 @@ public class BugCollector {
             if (Utils.isCallingFrom("BugCollector")) {
                 return;
             }
-            Application ctx = HostInformationProviderKt.getHostInfo().getApplication();
+            Application ctx = HostInfo.getHostInfo().getApplication();
             if (ctx != null) {
                 CliOper.__init__(ctx);
                 Crashes.trackError(th);

@@ -21,16 +21,17 @@
  */
 package nil.nadph.qnotified.startup;
 
-import static nil.nadph.qnotified.startup.LogUtil.log;
-import static nil.nadph.qnotified.util.Utils.checkLogFlag;
-import static nil.nadph.qnotified.util.Utils.getBuildTimestamp;
-
 import android.app.Application;
 import android.content.Context;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+
+import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Natives;
+
+import static nil.nadph.qnotified.startup.LogUtil.log;
+import static nil.nadph.qnotified.util.Utils.checkLogFlag;
+import static nil.nadph.qnotified.util.Utils.getBuildTimestamp;
 
 public class StartupRoutine {
 
@@ -49,7 +50,7 @@ public class StartupRoutine {
      */
     public static void execPostStartupInit(Context ctx, Object step, String lpwReserved,
         boolean bReserved) {
-        HostInformationProviderKt.init((Application) ctx);
+        HostInfo.init((Application) ctx);
         Initiator.init(ctx.getClassLoader());
         checkLogFlag();
         try {

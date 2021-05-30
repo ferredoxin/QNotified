@@ -21,8 +21,6 @@
  */
 package cc.ioctl.dialog;
 
-import static nil.nadph.qnotified.util.Utils.log;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -34,15 +32,21 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import com.rymmmmm.hook.CustomMsgTimeFormat;
+
 import java.io.IOException;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+
+import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.util.Toasts;
+
+import static nil.nadph.qnotified.util.Utils.log;
 
 public class RikkaCustomDeviceModelDialog extends RikkaDialog.RikkaConfigItem {
 
@@ -206,7 +210,7 @@ public class RikkaCustomDeviceModelDialog extends RikkaDialog.RikkaConfigItem {
                     try {
                         cfg.save();
                         Toasts.success(ctx,
-                            "重启" + HostInformationProviderKt.getHostInfo().getHostName() + "生效!");
+                            "重启" + HostInfo.getHostInfo().getHostName() + "生效!");
                     } catch (IOException e) {
                         log(e);
                     }
@@ -229,6 +233,6 @@ public class RikkaCustomDeviceModelDialog extends RikkaDialog.RikkaConfigItem {
 
     @Override
     public String getName() {
-        return "自定义机型[需要重启" + HostInformationProviderKt.getHostInfo().getHostName() + "]";
+        return "自定义机型[需要重启" + HostInfo.getHostInfo().getHostName() + "]";
     }
 }

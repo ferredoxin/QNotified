@@ -21,18 +21,10 @@
  */
 package nil.nadph.qnotified.util;
 
-import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
-import static nil.nadph.qnotified.util.Initiator._QQAppInterface;
-import static nil.nadph.qnotified.util.Initiator._TroopChatPie;
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
-import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.logi;
-
 import android.view.View;
+
 import androidx.annotation.Nullable;
-import dalvik.system.DexClassLoader;
-import dalvik.system.PathClassLoader;
+
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -45,8 +37,16 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.regex.Pattern;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+
+import dalvik.system.DexClassLoader;
+import dalvik.system.PathClassLoader;
+import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.config.ConfigManager;
+
+import static nil.nadph.qnotified.util.Initiator.*;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.logi;
 
 /**
  * I hadn't obfuscated the source code. I just don't want to name it, leaving it a()
@@ -208,7 +208,7 @@ public class DexKit {
         try {
             ConfigManager cache = ConfigManager.getCache();
             int lastVersion = cache.getIntOrDefault("cache_" + a(i) + "_code", 0);
-            if (HostInformationProviderKt.getHostInfo().getVersionCode32() != lastVersion) {
+            if (HostInfo.getHostInfo().getVersionCode32() != lastVersion) {
                 return null;
             }
             String name = cache.getString("cache_" + a(i) + "_method");
@@ -230,7 +230,7 @@ public class DexKit {
         }
         int ver = -1;
         try {
-            ver = HostInformationProviderKt.getHostInfo().getVersionCode32();
+            ver = HostInfo.getHostInfo().getVersionCode32();
         } catch (Throwable ignored) {
         }
         try {
@@ -259,7 +259,7 @@ public class DexKit {
             }
             cache.putString("cache_" + a(i) + "_method", ret.toString());
             cache.getAllConfig().put("cache_" + a(i) + "_code",
-                HostInformationProviderKt.getHostInfo().getVersionCode32());
+                HostInfo.getHostInfo().getVersionCode32());
             cache.save();
         } catch (Exception e) {
             log(e);

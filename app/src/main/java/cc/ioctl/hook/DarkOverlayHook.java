@@ -21,29 +21,23 @@
  */
 package cc.ioctl.hook;
 
-import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.loge;
-import static nil.nadph.qnotified.util.Utils.logi;
-
 import android.view.View;
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
+
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
-import nil.nadph.qnotified.util.QQVersion;
+
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
+import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.util.DexFieldDescriptor;
-import nil.nadph.qnotified.util.DexFlow;
-import nil.nadph.qnotified.util.DexKit;
-import nil.nadph.qnotified.util.DexMethodDescriptor;
-import nil.nadph.qnotified.util.Initiator;
-import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.*;
+
+import static nil.nadph.qnotified.util.Utils.*;
 
 @FunctionEntry
 public class DarkOverlayHook extends CommonDelayableHook {
@@ -102,7 +96,7 @@ public class DarkOverlayHook extends CommonDelayableHook {
 
     @Override
     public boolean isEnabled() {
-        if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_6_0)) {
+        if (HostInfo.requireMinQQVersion(QQVersion.QQ_8_6_0)) {
             return false;
         }
         return super.isEnabled();
@@ -114,7 +108,7 @@ public class DarkOverlayHook extends CommonDelayableHook {
             String fieldName = null;
             ConfigManager cache = ConfigManager.getCache();
             int lastVersion = cache.getIntOrDefault(cache_night_mask_field_version_code, 0);
-            int version = HostInformationProviderKt.getHostInfo().getVersionCode32();
+            int version = HostInfo.getHostInfo().getVersionCode32();
             if (version == lastVersion) {
                 String name = cache.getString(cache_night_mask_field);
                 if (name != null && name.length() > 0) {
@@ -166,7 +160,7 @@ public class DarkOverlayHook extends CommonDelayableHook {
             try {
                 ConfigManager cache = ConfigManager.getCache();
                 int lastVersion = cache.getIntOrDefault(cache_night_mask_field_version_code, 0);
-                if (HostInformationProviderKt.getHostInfo().getVersionCode32() != lastVersion) {
+                if (HostInfo.getHostInfo().getVersionCode32() != lastVersion) {
                     return false;
                 }
                 String name = cache.getString(cache_night_mask_field);

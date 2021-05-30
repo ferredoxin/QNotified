@@ -21,25 +21,25 @@
  */
 package cc.ioctl.hook;
 
-import static nil.nadph.qnotified.util.Initiator._BaseSessionInfo;
-import static nil.nadph.qnotified.util.Initiator._SessionInfo;
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.log;
-
 import android.app.AlertDialog;
 import android.content.Context;
+
+import java.util.Random;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
-import java.util.Random;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
-import nil.nadph.qnotified.util.QQVersion;
+import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.QQVersion;
+
+import static nil.nadph.qnotified.util.Initiator.*;
+import static nil.nadph.qnotified.util.Utils.log;
 
 @FunctionEntry
 public class CheatHook extends CommonDelayableHook {
@@ -111,17 +111,17 @@ public class CheatHook extends CommonDelayableHook {
             };
             String Method = "a";
 
-            if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_4_8)) {
+            if (HostInfo.requireMinQQVersion(QQVersion.QQ_8_4_8)) {
                 Method = "sendMagicEmoticon";
             }
-            if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_6_0)) {
+            if (HostInfo.requireMinQQVersion(QQVersion.QQ_8_6_0)) {
                 XposedHelpers.findAndHookMethod(Class.forName("com.tencent.mobileqq.emoticonview" +
                         ".sender.PicEmoticonInfoSender"),
                     Method, load("com.tencent.common.app.business.BaseQQAppInterface"),
                     Context.class, _BaseSessionInfo(),
                     load("com.tencent.mobileqq.data.Emoticon"),
                     load("com.tencent.mobileqq.emoticon.StickerInfo"), hook);
-            } else if (HostInformationProviderKt.requireMinQQVersion(QQVersion.QQ_8_5_0)) {
+            } else if (HostInfo.requireMinQQVersion(QQVersion.QQ_8_5_0)) {
                 XposedHelpers.findAndHookMethod(Class.forName("com.tencent.mobileqq.emoticonview" +
                         ".sender.PicEmoticonInfoSender"),
                     Method, load("com.tencent.mobileqq.app.QQAppInterface"),

@@ -21,38 +21,33 @@
  */
 package cc.ioctl.hook;
 
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.loge;
-import static nil.nadph.qnotified.util.Utils.logi;
-import static nil.nadph.qnotified.util.Utils.logw;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Parcelable;
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.XposedHelpers;
+
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
+import java.lang.reflect.*;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import me.singleneuron.qn_kernel.data.HostInformationProviderKt;
+
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
+import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.Initiator;
+
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Utils.*;
 
 @FunctionEntry
 public class FakeBatteryHook extends CommonDelayableHook implements InvocationHandler,
@@ -192,7 +187,7 @@ public class FakeBatteryHook extends CommonDelayableHook implements InvocationHa
             //接下去是UI stuff, 给自己看的
             //本来还想用反射魔改Binder/ActivityThread$ApplicationThread实现Xposed-less拦截广播onReceive的,太肝了,就不搞了
             if (Build.VERSION.SDK_INT >= 21) {
-                BatteryManager batmgr = (BatteryManager) HostInformationProviderKt.getHostInfo()
+                BatteryManager batmgr = (BatteryManager) HostInfo.getHostInfo()
                     .getApplication().getSystemService(Context.BATTERY_SERVICE);
                 if (batmgr == null) {
                     logi("Wtf, init FakeBatteryHook but BatteryManager is null!");
@@ -266,7 +261,7 @@ public class FakeBatteryHook extends CommonDelayableHook implements InvocationHa
             intent.putExtra(BatteryManager.EXTRA_STATUS, BatteryManager.BATTERY_STATUS_DISCHARGING);
             intent.putExtra(BatteryManager.EXTRA_PLUGGED, 0);
         }
-        doPostReceiveEvent(recv, HostInformationProviderKt.getHostInfo().getApplication(), intent);
+        doPostReceiveEvent(recv, HostInfo.getHostInfo().getApplication(), intent);
     }
 
     private void scheduleReceiveBatteryStatus() {
@@ -291,7 +286,7 @@ public class FakeBatteryHook extends CommonDelayableHook implements InvocationHa
             intent.putExtra(BatteryManager.EXTRA_STATUS, BatteryManager.BATTERY_STATUS_DISCHARGING);
             intent.putExtra(BatteryManager.EXTRA_PLUGGED, 0);
         }
-        doPostReceiveEvent(recv, HostInformationProviderKt.getHostInfo().getApplication(), intent);
+        doPostReceiveEvent(recv, HostInfo.getHostInfo().getApplication(), intent);
     }
 
     @Override
