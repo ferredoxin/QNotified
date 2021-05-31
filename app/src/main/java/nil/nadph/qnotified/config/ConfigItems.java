@@ -81,7 +81,8 @@ public class ConfigItems {
         @Override
         public boolean sync() {
             return true;
-        }        @Override
+        }
+        @Override
         public void setEnabled(boolean enabled) {
             try {
                 Context ctx = HostInfo.getHostInfo().getApplication();
