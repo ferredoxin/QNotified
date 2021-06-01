@@ -20,13 +20,13 @@
  * <https://github.com/ferredoxin/QNotified/blob/master/LICENSE.md>.
  */
 
-package me.ketal.ui.view
+package nil.nadph.qnotified.ui
 
 import android.content.Context
 import android.text.TextUtils
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.TextView
-import nil.nadph.qnotified.ui.ResUtils
+import me.ketal.ui.view.BViewGroup
 import nil.nadph.qnotified.ui.widget.Switch
 
 class FunctionSwitch(context: Context) : BViewGroup(context)  {

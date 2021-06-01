@@ -352,7 +352,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
                 }
             }));
         __jmp_ctl_cnt = _t.findViewById(R_ID_VALUE);
-        ll.addView(newListItemSwitchStub(this, "禁用特别关心长震动", "他女朋友都没了他也没开发这个功能", false));
+        ll.addView(newListItemSwitchStub(this, "禁用特别关心长震动", "他女朋友都没了他也没开发这个功能"));
         ll.addView(subtitle(this, "关于"));
         ll.addView(
             newListItemDummy(this, HostInfo.getHostInfo().getHostName(), null,
