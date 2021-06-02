@@ -60,8 +60,9 @@ class FunctionSwitch(context: Context) : BViewGroup(context)  {
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         switch.autoMeasure()
-        title.autoMeasure()
-        if (hasDesc) desc.autoMeasure()
+        val width = measuredWidth - switch.measuredWidth - 28.dp
+        title.measure(width.toExactlyMeasureSpec(), defaultHeightMeasureSpec(this))
+        if (hasDesc) desc.measure(width.toExactlyMeasureSpec(), defaultHeightMeasureSpec(this))
         setMeasuredDimension(measuredWidth, 48.dp)
     }
 
