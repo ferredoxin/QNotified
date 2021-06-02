@@ -52,6 +52,7 @@ import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat;
 import nil.nadph.qnotified.activity.TroopSelectActivity;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
+import nil.nadph.qnotified.ui.FunctionButton;
 import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.Toasts;
@@ -124,7 +125,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(subtitle(ChatTailActivity.this, "在这里设置然后每次聊天自动添加"));
         ChatTailHook ct = ChatTailHook.INSTANCE;
         boolean enabled = ct.isEnabled();
-        RelativeLayout _s;
+        ViewGroup _s;
         LinearLayout _t;
         ll.addView(_t = subtitle(ChatTailActivity.this, ""));
         tvStatus = (TextView) _t.getChildAt(0);
@@ -133,15 +134,15 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(_s = newListItemButton(this, "选择生效的群", "未选择的群将不展示小尾巴", "N/A",
             v -> TroopSelectActivity.startToSelectTroopsAndSaveToExfMgr(ChatTailActivity.this,
                 ConfigItems.qn_chat_tail_troops, "选择小尾巴生效群")));
-        __tv_chat_tail_groups = _s.findViewById(R_ID_VALUE);
+        __tv_chat_tail_groups = ((FunctionButton) _s).getValue();
         ll.addView(_s = newListItemButton(this, "选择生效的好友", "未选择的好友将不展示小尾巴", "N/A",
             v -> FriendSelectActivity.startToSelectFriendsAndSaveToExfMgr(ChatTailActivity.this,
                 ConfigItems.qn_chat_tail_friends, "选择小尾巴生效好友")));
-        __tv_chat_tail_friends = _s.findViewById(R_ID_VALUE);
+        __tv_chat_tail_friends = ((FunctionButton) _s).getValue();
         ll.addView(_s = newListItemButton(this, "设置日期格式", "请在QN内置花Q的\"聊天页自定义时间格式\"中设置",
             RikkaCustomMsgTimeFormatDialog.getTimeFormat(),
             view -> Toasts.info(ChatTailActivity.this, "请在QN内置花Q的\"聊天页自定义时间格式\"中设置")));
-        __tv_chat_tail_time_format = _s.findViewById(R_ID_VALUE);
+        __tv_chat_tail_time_format = ((FunctionButton) _s).getValue();
         ll.addView(subtitle(ChatTailActivity.this, "设置小尾巴"));
         ll.addView(subtitle(ChatTailActivity.this, "可用变量(点击自动输入): "));
         LinearLayout _a, _b, _c, _d, _e, _f, _g, _h;

@@ -69,6 +69,7 @@ import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.CustomDialog;
+import nil.nadph.qnotified.ui.FunctionButton;
 import nil.nadph.qnotified.ui.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.*;
@@ -124,7 +125,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         __lp_r.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         __lp_r.addRule(RelativeLayout.CENTER_VERTICAL);
         ColorStateList hiColor = ColorStateList.valueOf(Color.argb(255, 242, 140, 72));
-        RelativeLayout _t;
+        ViewGroup _t;
         try {
             LinearLayout nnn = subtitle(this, "");
             TextView t = (TextView) nnn.getChildAt(0);
@@ -145,33 +146,25 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
             .requireMinPlayQQVersion(PlayQQ_8_2_9)) {
             ll.addView(_t = newListItemButton(this, "自定义电量", "[QQ>=8.2.6]在线模式为我的电量时生效", "N/A",
                 clickToProxyActAction(FakeBatCfgActivity.class)));
-            __tv_fake_bat_status = _t.findViewById(R_ID_VALUE);
+            __tv_fake_bat_status = ((FunctionButton) _t).getValue();
         }
-        ViewGroup _tmp_vg = newListItemButton(this, "花Q", "若无另行说明, 所有功能开关都即时生效", null,
-            new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    RikkaDialog.showRikkaFuncDialog(SettingsActivity.this);
-                }
-            });
-        _tmp_vg.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                rgbEnabled = !rgbEnabled;
-                ConfigManager cfg = ConfigManager.getDefaultConfig();
-                cfg.putBoolean(qn_enable_fancy_rgb, rgbEnabled);
-                try {
-                    cfg.save();
-                } catch (IOException ignored) {
-                }
-                if (rgbEnabled) {
-                    startRgbIfEnabled();
-                }
-                return true;
+        FunctionButton _tmp_vg = (FunctionButton)newListItemButton(this, "花Q", "若无另行说明, 所有功能开关都即时生效", null,
+            v -> RikkaDialog.showRikkaFuncDialog(SettingsActivity.this));
+        _tmp_vg.setOnLongClickListener(v -> {
+            rgbEnabled = !rgbEnabled;
+            ConfigManager cfg = ConfigManager.getDefaultConfig();
+            cfg.putBoolean(qn_enable_fancy_rgb, rgbEnabled);
+            try {
+                cfg.save();
+            } catch (IOException ignored) {
             }
+            if (rgbEnabled) {
+                startRgbIfEnabled();
+            }
+            return true;
         });
-        mRikkaTitle = _tmp_vg.findViewById(R_ID_TITLE);
-        mRikkaDesc = _tmp_vg.findViewById(R_ID_DESCRIPTION);
+        mRikkaTitle = _tmp_vg.getTitle();
+        mRikkaDesc = _tmp_vg.getDesc();
         ll.addView(_tmp_vg);
         ll.addView(newListItemButton(this, "QQ净化[WIP]", "开发中...", null,
             clickToProxyActAction(me.zpp0196.qqpurify.activity.MainActivity.class)));
@@ -208,8 +201,8 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         ll.addView(
             _t = newListItemButton(this, "下载重定向", "N/A", "N/A", this::onFileRecvRedirectClick));
         _t.setId(R_ID_BTN_FILE_RECV);
-        __recv_desc = _t.findViewById(R_ID_DESCRIPTION);
-        __recv_status = _t.findViewById(R_ID_VALUE);
+        __recv_desc = ((FunctionButton) _t).getDesc();
+        __recv_status = ((FunctionButton) _t).getValue();
         ll.addView(newListItemButton(this, "添加账号", "需要手动登录, 核心代码由 JamGmilk 提供", null,
             this::onAddAccountClick));
         ll.addView(newListItemHookSwitchInit(this, "屏蔽小程序广告", "需要手动关闭广告, 请勿反馈此功能无效",
@@ -351,7 +344,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
                     }
                 }
             }));
-        __jmp_ctl_cnt = _t.findViewById(R_ID_VALUE);
+        __jmp_ctl_cnt = ((FunctionButton) _t).getValue();
         ll.addView(newListItemSwitchStub(this, "禁用特别关心长震动", "他女朋友都没了他也没开发这个功能"));
         ll.addView(subtitle(this, "关于"));
         ll.addView(
