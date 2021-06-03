@@ -34,7 +34,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import me.singleneuron.qn_kernel.ui.base.*
-import nil.nadph.qnotified.ui.FunctionButton
+import nil.nadph.qnotified.ui.widget.FunctionButton
 import nil.nadph.qnotified.ui.ViewBuilder.*
 import nil.nadph.qnotified.util.Utils
 

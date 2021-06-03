@@ -44,7 +44,7 @@ import me.kyuubiran.hook.RemovePokeGrayTips;
 import me.kyuubiran.hook.RemoveRedDot;
 import me.kyuubiran.hook.testhook.CutMessage;
 import me.singleneuron.qn_kernel.data.HostInfo;
-import nil.nadph.qnotified.ui.FunctionButton;
+import nil.nadph.qnotified.ui.widget.FunctionButton;
 import nil.nadph.qnotified.ui.ResUtils;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;

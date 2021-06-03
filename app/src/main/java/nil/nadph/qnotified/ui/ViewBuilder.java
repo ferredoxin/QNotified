@@ -48,6 +48,9 @@ import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.config.SwitchConfigItem;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.step.Step;
+import nil.nadph.qnotified.ui.widget.FunctionButton;
+import nil.nadph.qnotified.ui.widget.FunctionDummy;
+import nil.nadph.qnotified.ui.widget.FunctionSwitch;
 import nil.nadph.qnotified.util.NonUiThread;
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
@@ -59,14 +62,6 @@ import static nil.nadph.qnotified.util.Utils.dip2px;
 import static nil.nadph.qnotified.util.Utils.dip2sp;
 
 public class ViewBuilder {
-
-    public static final int R_ID_TITLE = 0x300AFF11;
-    public static final int R_ID_DESCRIPTION = 0x300AFF12;
-    public static final int R_ID_SWITCH = 0x300AFF13;
-    public static final int R_ID_VALUE = 0x300AFF14;
-    public static final int R_ID_ARROW = 0x300AFF15;
-
-    private static final int CONSTANT_LIST_ITEM_HEIGHT_DP = 48;
 
     public static ViewGroup newListItemSwitch(Context ctx, CharSequence title,
         CharSequence desc, boolean on, boolean enabled, CompoundButton.OnCheckedChangeListener listener) {
@@ -328,64 +323,17 @@ public class ViewBuilder {
             });
     }
 
-    public static RelativeLayout newListItemDummy(Context ctx, CharSequence title,
+    public static ViewGroup newListItemDummy(Context ctx, CharSequence title,
         CharSequence desc, CharSequence
         value) {
-        RelativeLayout root = new IsolatedStateRelativeLayout(ctx);
-        root.setLayoutParams(
-            new ViewGroup.LayoutParams(MATCH_PARENT, dip2px(ctx, CONSTANT_LIST_ITEM_HEIGHT_DP)));
-        ViewCompat.setBackground(root, ResUtils.getListItemBackground());
-        TextView tv = new TextView(ctx);
-        tv.setText(title);
-        tv.setId(R_ID_TITLE);
-        tv.setTextColor(ResUtils.skin_black);
-        tv.setTextSize(dip2sp(ctx, 18));
-        TextView st = new TextView(ctx);
-        st.setId(R_ID_VALUE);
-        st.setText(value);
-        st.setTextColor(ResUtils.skin_gray3);
-        st.setTextSize(dip2sp(ctx, 15));
-        RelativeLayout.LayoutParams lp_sw = new RelativeLayout.LayoutParams(WRAP_CONTENT,
-            WRAP_CONTENT);
-        int m = dip2px(ctx, 14);
-        lp_sw.setMargins(m, m, m, m);
-        lp_sw.addRule(RelativeLayout.CENTER_VERTICAL);
-        lp_sw.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        if (desc == null) {
-            RelativeLayout.LayoutParams lp_t = new RelativeLayout.LayoutParams(WRAP_CONTENT,
-                WRAP_CONTENT);
-            m = dip2px(ctx, 14);
-            lp_t.setMargins(m, m, 0, 0);
-            lp_t.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-            lp_t.addRule(RelativeLayout.CENTER_VERTICAL);
-            lp_t.addRule(RelativeLayout.LEFT_OF, R_ID_VALUE);
-            root.addView(tv, lp_t);
-        } else {
-            RelativeLayout.LayoutParams lp_t = new RelativeLayout.LayoutParams(WRAP_CONTENT,
-                WRAP_CONTENT);
-            m = dip2px(ctx, 14);
-            lp_t.setMargins(m, m / 2, 0, 0);
-            lp_t.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-            lp_t.addRule(RelativeLayout.LEFT_OF, R_ID_VALUE);
-            TextView des = new TextView(ctx);
-            des.setText(desc);
-            des.setId(R_ID_DESCRIPTION);
-            des.setTextColor(ResUtils.skin_gray3);
-            des.setTextSize(dip2sp(ctx, 13));
-            des.setSingleLine();
-            des.setEllipsize(TextUtils.TruncateAt.END);
-            RelativeLayout.LayoutParams lp_d = new RelativeLayout.LayoutParams(WRAP_CONTENT,
-                WRAP_CONTENT);
-            //m=(int)dip2px(ctx,6);
-            lp_d.setMargins(m, 0, 0, 0);
-            lp_d.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-            lp_d.addRule(RelativeLayout.BELOW, R_ID_TITLE);
-            lp_d.addRule(RelativeLayout.LEFT_OF, R_ID_VALUE);
-            root.addView(des, lp_d);
-            root.addView(tv, lp_t);
+        FunctionDummy root = new FunctionDummy(ctx);
+        root.getTitle().setText(title);
+        if (!TextUtils.isEmpty(desc)) {
+            root.getDesc().setText(desc);
         }
-        root.addView(st, lp_sw);
-        root.setId(title.toString().hashCode());
+        if (!TextUtils.isEmpty(value)) {
+            root.getValue().setText(value);
+        }
         return root;
     }
 

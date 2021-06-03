@@ -20,7 +20,7 @@
  * <https://github.com/ferredoxin/QNotified/blob/master/LICENSE.md>.
  */
 
-package nil.nadph.qnotified.ui
+package nil.nadph.qnotified.ui.widget
 
 import android.content.Context
 import android.text.TextUtils
@@ -28,6 +28,7 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.ImageView
 import android.widget.TextView
 import me.ketal.ui.view.BViewGroup
+import nil.nadph.qnotified.ui.ResUtils
 
 class FunctionButton(context: Context) : BViewGroup(context)  {
 

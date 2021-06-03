@@ -48,8 +48,7 @@ import javax.net.ssl.HttpsURLConnection;
 import me.ketal.data.ConfigData;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.CustomDialog;
-import nil.nadph.qnotified.ui.FunctionButton;
-import nil.nadph.qnotified.ui.ViewBuilder;
+import nil.nadph.qnotified.ui.widget.FunctionButton;
 
 public class UpdateCheck implements View.OnClickListener, Runnable {
 

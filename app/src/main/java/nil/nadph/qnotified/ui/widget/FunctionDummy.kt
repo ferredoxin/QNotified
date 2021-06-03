@@ -20,23 +20,19 @@
  * <https://github.com/ferredoxin/QNotified/blob/master/LICENSE.md>.
  */
 
-package nil.nadph.qnotified.ui
+package nil.nadph.qnotified.ui.widget
 
 import android.content.Context
 import android.text.TextUtils
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.TextView
 import me.ketal.ui.view.BViewGroup
-import nil.nadph.qnotified.ui.widget.Switch
+import nil.nadph.qnotified.ui.ResUtils
 
-class FunctionSwitch(context: Context) : BViewGroup(context)  {
+class FunctionDummy(context: Context) : BViewGroup(context)  {
 
     init {
         background = ResUtils.getListItemBackground()
-    }
-    val switch = Switch(context).apply {
-        layoutParams = LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
-        addView(this)
     }
     val title = TextView(context).apply {
         layoutParams = LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
@@ -56,11 +52,17 @@ class FunctionSwitch(context: Context) : BViewGroup(context)  {
             addView(this)
         }
     }
+    val value = TextView(context).apply {
+        layoutParams = LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
+        setTextColor(ResUtils.skin_gray3)
+        textSize = 15.dp2sp.toFloat()
+        addView(this)
+    }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        switch.autoMeasure()
-        val width = measuredWidth - switch.measuredWidth - 28.dp
+        value.autoMeasure()
+        val width = measuredWidth - value.measuredWidth - 28.dp
         title.measure(width.toExactlyMeasureSpec(), defaultHeightMeasureSpec(this))
         if (hasDesc) desc.measure(width.toExactlyMeasureSpec(), defaultHeightMeasureSpec(this))
         setMeasuredDimension(measuredWidth, 48.dp)
@@ -68,7 +70,7 @@ class FunctionSwitch(context: Context) : BViewGroup(context)  {
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         val margin = 14.dp
-        switch.layout(margin, switch.toVerticalCenter(this), true)
+        value.layout(margin, value.toVerticalCenter(this), true)
         if (hasDesc) {
             title.layout(margin, margin / 2)
             desc.layout(margin, title.bottom)
