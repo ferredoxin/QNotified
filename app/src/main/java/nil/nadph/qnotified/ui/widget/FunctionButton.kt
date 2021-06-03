@@ -69,9 +69,10 @@ class FunctionButton(context: Context) : BViewGroup(context)  {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         arrow.autoMeasure()
         value.autoMeasure()
-        val width = measuredWidth - value.measuredWidth- arrow.measuredWidth - (14 + 14 + 6).dp
-        title.measure(width.toExactlyMeasureSpec(), defaultHeightMeasureSpec(this))
-        if (hasDesc) desc.measure(width.toExactlyMeasureSpec(), defaultHeightMeasureSpec(this))
+        val descWidth = measuredWidth - arrow.measuredWidth - (14 + 14 + 6).dp
+        val titleWidth = descWidth - value.measuredWidth
+        title.measure(titleWidth.toExactlyMeasureSpec(), defaultHeightMeasureSpec(this))
+        if (hasDesc) desc.measure(descWidth.toExactlyMeasureSpec(), defaultHeightMeasureSpec(this))
         setMeasuredDimension(measuredWidth, 48.dp)
     }
 
