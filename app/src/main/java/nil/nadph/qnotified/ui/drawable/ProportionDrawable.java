@@ -19,48 +19,60 @@
  * <https://www.gnu.org/licenses/>
  * <https://github.com/ferredoxin/QNotified/blob/master/LICENSE.md>.
  */
-package nil.nadph.qnotified.ui;
+package nil.nadph.qnotified.ui.drawable;
 
+import android.annotation.SuppressLint;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.view.Gravity;
 
-public class HighContrastBorder extends Drawable {
+public class ProportionDrawable extends Drawable {
 
-    private final Paint mPaint;
+    private final int iGravity;
+    private final int iDoneColor;
+    private final int iUndoneColor;
+    private final Paint p;
+    private float fProportion;
 
-    public HighContrastBorder() {
-        mPaint = new Paint();
+    public ProportionDrawable(int doneColor, int undoneColor, int gravity, float prop) {
+        iGravity = gravity;
+        iDoneColor = doneColor;
+        iUndoneColor = undoneColor;
+        fProportion = prop;
+        p = new Paint();
     }
 
-    public Paint getPaint() {
-        return mPaint;
-    }
-
+    @SuppressLint("RtlHardcoded")
     @Override
     public void draw(Canvas canvas) {
-        int w = getBounds().width();
         int h = getBounds().height();
-        mPaint.setStrokeWidth(0);
-        mPaint.setAntiAlias(false);
-        mPaint.setColor(Color.WHITE);
-        canvas.drawLine(0.5f, 0.5f, w - 1.5f, 0.5f, mPaint);
-        mPaint.setColor(Color.BLACK);
-        canvas.drawLine(1.5f, 1.5f, w - 0.5f, 1.5f, mPaint);
-        mPaint.setColor(Color.WHITE);
-        canvas.drawLine(0.5f, 0.5f, 0.5f, h - 1.5f, mPaint);
-        mPaint.setColor(Color.BLACK);
-        canvas.drawLine(1.5f, 1.5f, 1.5f, h - 0.5f, mPaint);
-        mPaint.setColor(Color.WHITE);
-        canvas.drawLine(w - 1.5f, 0.5f, w - 1.5f, h - 1.5f, mPaint);
-        mPaint.setColor(Color.BLACK);
-        canvas.drawLine(w - 0.5f, 1.5f, w - 0.5f, h - 0.5f, mPaint);
-        mPaint.setColor(Color.WHITE);
-        canvas.drawLine(0.5f, h - 1.5f, w - 1.5f, h - 1.5f, mPaint);
-        mPaint.setColor(Color.BLACK);
-        canvas.drawLine(1.5f, h - 0.5f, w - 0.5f, h - 0.5f, mPaint);
+        int w = getBounds().width();
+        if (Gravity.LEFT == iGravity) {
+            int x = (int) (0.5f + fProportion * w);
+            p.setColor(iDoneColor);
+            canvas.drawRect(0, 0, x, h, p);
+            p.setColor(iUndoneColor);
+            canvas.drawRect(x, 0, w, h, p);
+        } else {
+            throw new UnsupportedOperationException("Only Gravity.LEFT is supported!");
+        }
+    }
+
+    public float getProportion() {
+        return fProportion;
+    }
+
+    public void setProportion(float p) {
+        if (p < 0f) {
+            p = 0f;
+        }
+        if (p > 1.0f) {
+            p = 1.0f;
+        }
+        fProportion = p;
+        invalidateSelf();
     }
 
     @Override
@@ -76,4 +88,6 @@ public class HighContrastBorder extends Drawable {
     public int getOpacity() {
         return android.graphics.PixelFormat.TRANSLUCENT;
     }
+
+
 }

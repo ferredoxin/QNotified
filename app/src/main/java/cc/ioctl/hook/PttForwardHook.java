@@ -72,7 +72,7 @@ import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.ui.CustomDialog;
-import nil.nadph.qnotified.ui.HighContrastBorder;
+import nil.nadph.qnotified.ui.drawable.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.CustomMenu;
 import nil.nadph.qnotified.util.DexKit;

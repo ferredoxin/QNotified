@@ -19,47 +19,48 @@
  * <https://www.gnu.org/licenses/>
  * <https://github.com/ferredoxin/QNotified/blob/master/LICENSE.md>.
  */
-package nil.nadph.qnotified.ui;
+package nil.nadph.qnotified.ui.drawable;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ColorFilter;
-import android.graphics.LinearGradient;
 import android.graphics.Paint;
-import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 
-public class DivDrawable extends Drawable {
+public class HighContrastBorder extends Drawable {
 
-    public static final int TYPE_HORIZONTAL = 1;
-    public static final int TYPE_VERTICAL = 2;
-    private final int iThickness;
-    private final int iType;
-    private final Paint p = new Paint();
+    private final Paint mPaint;
 
-    public DivDrawable(int type, int thickness) {
-        iType = type;
-        iThickness = thickness;
+    public HighContrastBorder() {
+        mPaint = new Paint();
+    }
+
+    public Paint getPaint() {
+        return mPaint;
     }
 
     @Override
     public void draw(Canvas canvas) {
-        int h = getBounds().height();
         int w = getBounds().width();
-        if (iType == TYPE_HORIZONTAL) {
-            float off = (h - iThickness) / 2f;
-            Shader s = new LinearGradient(0, off, 0, h / 2f, new int[]{0x00363636, 0x36363636},
-                new float[]{0f, 1f}, Shader.TileMode.CLAMP);
-            p.setShader(s);
-            //p.setColor(0x36000000);
-            canvas.drawRect(0, off, w, h / 2f, p);
-            s = new LinearGradient(0, h / 2f, 0, h / 2f + iThickness / 2f,
-                new int[]{0x36C8C8C8, 0x00C8C8C8}, new float[]{0f, 1f}, Shader.TileMode.CLAMP);
-            p.setShader(s);
-            //p.setColor(0x36FFFFFF);
-            canvas.drawRect(0, h / 2f, w, h / 2f + iThickness / 2f, p);
-        } else {
-            throw new UnsupportedOperationException("iType == " + iType);
-        }
+        int h = getBounds().height();
+        mPaint.setStrokeWidth(0);
+        mPaint.setAntiAlias(false);
+        mPaint.setColor(Color.WHITE);
+        canvas.drawLine(0.5f, 0.5f, w - 1.5f, 0.5f, mPaint);
+        mPaint.setColor(Color.BLACK);
+        canvas.drawLine(1.5f, 1.5f, w - 0.5f, 1.5f, mPaint);
+        mPaint.setColor(Color.WHITE);
+        canvas.drawLine(0.5f, 0.5f, 0.5f, h - 1.5f, mPaint);
+        mPaint.setColor(Color.BLACK);
+        canvas.drawLine(1.5f, 1.5f, 1.5f, h - 0.5f, mPaint);
+        mPaint.setColor(Color.WHITE);
+        canvas.drawLine(w - 1.5f, 0.5f, w - 1.5f, h - 1.5f, mPaint);
+        mPaint.setColor(Color.BLACK);
+        canvas.drawLine(w - 0.5f, 1.5f, w - 0.5f, h - 0.5f, mPaint);
+        mPaint.setColor(Color.WHITE);
+        canvas.drawLine(0.5f, h - 1.5f, w - 1.5f, h - 1.5f, mPaint);
+        mPaint.setColor(Color.BLACK);
+        canvas.drawLine(1.5f, h - 0.5f, w - 0.5f, h - 0.5f, mPaint);
     }
 
     @Override
@@ -75,5 +76,4 @@ public class DivDrawable extends Drawable {
     public int getOpacity() {
         return android.graphics.PixelFormat.TRANSLUCENT;
     }
-
 }

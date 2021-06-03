@@ -47,7 +47,7 @@ import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.bridge.ChatActivityFacade;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.ui.CustomDialog;
-import nil.nadph.qnotified.ui.HighContrastBorder;
+import nil.nadph.qnotified.ui.drawable.HighContrastBorder;
 import nil.nadph.qnotified.ui.widget.LinearLayoutDelegate;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.ReflexUtil;

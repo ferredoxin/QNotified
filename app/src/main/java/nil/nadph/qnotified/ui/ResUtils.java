@@ -43,6 +43,8 @@ import java.util.Map;
 
 import de.robv.android.xposed.XposedHelpers;
 import me.singleneuron.qn_kernel.data.HostInfo;
+import nil.nadph.qnotified.ui.drawable.DummyDrawable;
+import nil.nadph.qnotified.ui.drawable.HcbBackgroundDrawable;
 import nil.nadph.qnotified.util.ArscKit;
 
 import static nil.nadph.qnotified.util.Initiator._ThemeUtil;

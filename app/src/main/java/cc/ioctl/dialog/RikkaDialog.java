@@ -46,7 +46,7 @@ import com.rymmmmm.hook.RemoveSendGiftAd;
 import com.rymmmmm.hook.ShowMsgCount;
 import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
-import nil.nadph.qnotified.ui.DummyDrawable;
+import nil.nadph.qnotified.ui.drawable.DummyDrawable;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.ViewBuilder;
 import nil.nadph.qnotified.util.Toasts;
