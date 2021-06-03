@@ -47,7 +47,7 @@ import java.io.InputStream;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.CustomDialog;
-import nil.nadph.qnotified.ui.DebugDrawable;
+import nil.nadph.qnotified.ui.drawable.DebugDrawable;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;

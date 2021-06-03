@@ -48,7 +48,7 @@ import javax.net.ssl.HttpsURLConnection;
 import me.ketal.data.ConfigData;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.CustomDialog;
-import nil.nadph.qnotified.ui.ViewBuilder;
+import nil.nadph.qnotified.ui.widget.FunctionButton;
 
 public class UpdateCheck implements View.OnClickListener, Runnable {
 
@@ -63,7 +63,7 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
     private final int RL_SHOW_RET = 2;
     int currVerCode = Utils.QN_VERSION_CODE;
     String currVerName = Utils.QN_VERSION_NAME;
-    ViewGroup viewGroup;
+    FunctionButton viewGroup;
     private boolean clicked = false;
     private PHPArray result;
     private int runLevel;
@@ -156,10 +156,10 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
     }
 
     public void doSetVersionTip(ViewGroup vg, PHPArray json) {
-        viewGroup = vg;
+        viewGroup = (FunctionButton) vg;
         try {
-            TextView tv_v = viewGroup.findViewById(ViewBuilder.R_ID_VALUE);
-            TextView tv_t = viewGroup.findViewById(ViewBuilder.R_ID_TITLE);
+            TextView tv_v = viewGroup.getValue();
+            TextView tv_t = viewGroup.getTitle();
             long currBuildTime = Utils.getBuildTimestamp();
             long latestBuildTime;
             String latestName;
@@ -268,7 +268,7 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
 
     @Override
     public void onClick(View v) {
-        viewGroup = (ViewGroup) v;
+        viewGroup = (FunctionButton) v;
         clicked = true;
         if (result == null || runLevel == RL_LOAD) {
             runLevel = RL_LOAD;
@@ -295,7 +295,7 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
                 if (!getCurrChannel().equals(channel)) {
                     runLevel = RL_LOAD;
                     setCurrChannel(channels[which]);
-                    TextView tv = vg.findViewById(ViewBuilder.R_ID_VALUE);
+                    TextView tv = ((FunctionButton) vg).getValue();
                     tv.setText(channels[which]);
                 }
             }).show();

@@ -42,7 +42,7 @@ import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat;
 import nil.nadph.qnotified.ui.CustomDialog;
-import nil.nadph.qnotified.ui.HighContrastBorder;
+import nil.nadph.qnotified.ui.drawable.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.ViewBuilder;
 import nil.nadph.qnotified.util.UiThread;
@@ -72,7 +72,7 @@ public class JefsRulesActivity extends IphoneTitleBarActivityCompat implements
         bounceScrollView.addView(mainLayout, MATCH_PARENT, WRAP_CONTENT);
         mainLayout.setOrientation(LinearLayout.VERTICAL);
 
-        RelativeLayout _tmp = ViewBuilder
+        ViewGroup _tmp = ViewBuilder
             .newListItemHookSwitchInit(this, "总开关", "关闭后所有规则不生效", JumpController.INSTANCE);
         mainLayout.addView(_tmp, ViewBuilder.newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, 0));
 

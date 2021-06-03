@@ -30,11 +30,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import me.singleneuron.qn_kernel.ui.base.*
+import nil.nadph.qnotified.ui.widget.FunctionButton
 import nil.nadph.qnotified.ui.ViewBuilder.*
 import nil.nadph.qnotified.util.Utils
 
@@ -88,7 +88,7 @@ class SettingsFragment : Fragment(), LifecycleOwner {
                             }
                             viewGroup.addView(ll)
                             uiDescription.value.observe(this) {
-                                ll.findViewById<TextView>(R_ID_VALUE).text = it.toString()
+                                (ll as FunctionButton).value.text = it.toString()
                             }
                         }
                         is UiPreference -> {

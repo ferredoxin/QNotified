@@ -57,7 +57,6 @@ class AmusementActivity : IphoneTitleBarActivityCompat() {
             newListItemHookSwitchInit(this, "昵称/群名字打码", "娱乐功能 不进行维护", AutoMosaicName))
         ll.addView(newListItemHookSwitchInit(this, "自己的消息和头像居左显示", "娱乐功能 不进行维护",
             ShowSelfMsgByLeft))
-        window.addFlags(11);
         ll.addView(
             ViewBuilder.newListItemButton(this, "自定义钱包余额", "仅供娱乐", null, FakeBalance.listener()))
         ll.addView(

@@ -19,45 +19,47 @@
  * <https://www.gnu.org/licenses/>
  * <https://github.com/ferredoxin/QNotified/blob/master/LICENSE.md>.
  */
-package nil.nadph.qnotified.ui;
+package nil.nadph.qnotified.ui.drawable;
 
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
+import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 
-public class SimpleBgDrawable extends Drawable {
+public class DivDrawable extends Drawable {
 
-    private final int iColor;
-    private final int iEdgeColor;
-    private final int iEdgeWidth;
-    private final Paint mPaint;
+    public static final int TYPE_HORIZONTAL = 1;
+    public static final int TYPE_VERTICAL = 2;
+    private final int iThickness;
+    private final int iType;
+    private final Paint p = new Paint();
 
-    public SimpleBgDrawable(int color, int edgeColor, int edgeWidth) {
-        iColor = color;
-        iEdgeColor = edgeColor;
-        iEdgeWidth = edgeWidth;
-        mPaint = new Paint();
-    }
-
-    public Paint getPaint() {
-        return mPaint;
+    public DivDrawable(int type, int thickness) {
+        iType = type;
+        iThickness = thickness;
     }
 
     @Override
     public void draw(Canvas canvas) {
-        int i = iEdgeWidth;
-        int w = getBounds().width();
         int h = getBounds().height();
-        if (iEdgeWidth > 0) {
-            mPaint.setColor(iEdgeColor);
-            canvas.drawRect(0, 0, w, i, mPaint);
-            canvas.drawRect(0, h - i, w, h, mPaint);
-            canvas.drawRect(0, i, i, h - i, mPaint);
-            canvas.drawRect(w - i, i, w, h - i, mPaint);
+        int w = getBounds().width();
+        if (iType == TYPE_HORIZONTAL) {
+            float off = (h - iThickness) / 2f;
+            Shader s = new LinearGradient(0, off, 0, h / 2f, new int[]{0x00363636, 0x36363636},
+                new float[]{0f, 1f}, Shader.TileMode.CLAMP);
+            p.setShader(s);
+            //p.setColor(0x36000000);
+            canvas.drawRect(0, off, w, h / 2f, p);
+            s = new LinearGradient(0, h / 2f, 0, h / 2f + iThickness / 2f,
+                new int[]{0x36C8C8C8, 0x00C8C8C8}, new float[]{0f, 1f}, Shader.TileMode.CLAMP);
+            p.setShader(s);
+            //p.setColor(0x36FFFFFF);
+            canvas.drawRect(0, h / 2f, w, h / 2f + iThickness / 2f, p);
+        } else {
+            throw new UnsupportedOperationException("iType == " + iType);
         }
-        mPaint.setColor(iColor);
-        canvas.drawRect(i, i, w - i, h - i, mPaint);
     }
 
     @Override

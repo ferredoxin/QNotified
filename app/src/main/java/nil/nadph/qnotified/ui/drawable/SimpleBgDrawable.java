@@ -19,30 +19,25 @@
  * <https://www.gnu.org/licenses/>
  * <https://github.com/ferredoxin/QNotified/blob/master/LICENSE.md>.
  */
-package nil.nadph.qnotified.ui;
+package nil.nadph.qnotified.ui.drawable;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 
-public class HcbBackgroundDrawable extends Drawable {
+public class SimpleBgDrawable extends Drawable {
 
+    private final int iColor;
+    private final int iEdgeColor;
+    private final int iEdgeWidth;
     private final Paint mPaint;
-    private int color;
 
-    public HcbBackgroundDrawable(int c) {
+    public SimpleBgDrawable(int color, int edgeColor, int edgeWidth) {
+        iColor = color;
+        iEdgeColor = edgeColor;
+        iEdgeWidth = edgeWidth;
         mPaint = new Paint();
-        color = c;
-    }
-
-    public int getColor() {
-        return color;
-    }
-
-    public void setColor(int color) {
-        this.color = color;
     }
 
     public Paint getPaint() {
@@ -51,27 +46,18 @@ public class HcbBackgroundDrawable extends Drawable {
 
     @Override
     public void draw(Canvas canvas) {
+        int i = iEdgeWidth;
         int w = getBounds().width();
         int h = getBounds().height();
-        canvas.drawColor(color);
-        mPaint.setStrokeWidth(0);
-        mPaint.setAntiAlias(false);
-        mPaint.setColor(Color.WHITE);
-        canvas.drawLine(0.5f, 0.5f, w - 1.5f, 0.5f, mPaint);
-        mPaint.setColor(Color.BLACK);
-        canvas.drawLine(1.5f, 1.5f, w - 0.5f, 1.5f, mPaint);
-        mPaint.setColor(Color.WHITE);
-        canvas.drawLine(0.5f, 0.5f, 0.5f, h - 1.5f, mPaint);
-        mPaint.setColor(Color.BLACK);
-        canvas.drawLine(1.5f, 1.5f, 1.5f, h - 0.5f, mPaint);
-        mPaint.setColor(Color.WHITE);
-        canvas.drawLine(w - 1.5f, 0.5f, w - 1.5f, h - 1.5f, mPaint);
-        mPaint.setColor(Color.BLACK);
-        canvas.drawLine(w - 0.5f, 1.5f, w - 0.5f, h - 0.5f, mPaint);
-        mPaint.setColor(Color.WHITE);
-        canvas.drawLine(0.5f, h - 1.5f, w - 1.5f, h - 1.5f, mPaint);
-        mPaint.setColor(Color.BLACK);
-        canvas.drawLine(1.5f, h - 0.5f, w - 0.5f, h - 0.5f, mPaint);
+        if (iEdgeWidth > 0) {
+            mPaint.setColor(iEdgeColor);
+            canvas.drawRect(0, 0, w, i, mPaint);
+            canvas.drawRect(0, h - i, w, h, mPaint);
+            canvas.drawRect(0, i, i, h - i, mPaint);
+            canvas.drawRect(w - i, i, w, h - i, mPaint);
+        }
+        mPaint.setColor(iColor);
+        canvas.drawRect(i, i, w - i, h - i, mPaint);
     }
 
     @Override
@@ -87,4 +73,5 @@ public class HcbBackgroundDrawable extends Drawable {
     public int getOpacity() {
         return android.graphics.PixelFormat.TRANSLUCENT;
     }
+
 }

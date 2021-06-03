@@ -55,7 +55,7 @@ import mqq.app.AppRuntime;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
-import nil.nadph.qnotified.ui.InterceptLayout;
+import nil.nadph.qnotified.ui.widget.InterceptLayout;
 import nil.nadph.qnotified.ui.TouchEventToLongClickAdapter;
 import nil.nadph.qnotified.util.CliOper;
 import nil.nadph.qnotified.util.CustomMenu;

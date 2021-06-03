@@ -19,7 +19,7 @@
  * <https://www.gnu.org/licenses/>
  * <https://github.com/ferredoxin/QNotified/blob/master/LICENSE.md>.
  */
-package nil.nadph.qnotified.ui;
+package nil.nadph.qnotified.ui.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
