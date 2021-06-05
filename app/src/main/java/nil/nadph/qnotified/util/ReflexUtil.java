@@ -729,9 +729,14 @@ public class ReflexUtil {
         } catch (IllegalStateException e) {
             //For SandHook-EdXp: Method not hooked.
             needPatch = true;
-        } catch (InvocationTargetException e) {
+        } catch (InvocationTargetException | NullPointerException e) {
             //For TaiChi
-            Throwable cause = e.getCause();
+            Throwable cause;
+            if (e instanceof InvocationTargetException) {
+                cause = e.getCause();
+            } else {
+                cause = e;
+            }
             if (cause instanceof NullPointerException) {
                 String tr = android.util.Log.getStackTraceString(cause);
                 if (tr.indexOf("ExposedBridge.invokeOriginalMethod") != 0
