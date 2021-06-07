@@ -49,6 +49,7 @@ import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.lifecycle.JumpActivityEntryHook;
 import nil.nadph.qnotified.lifecycle.Parasitics;
 import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.util.HideVmStack;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.MainProcess;
@@ -230,6 +231,7 @@ public class MainHook {
             loge("NewRuntime/E hook failed: " + e);
             Utils.$access$set$sAppRuntimeInit(true);
         }
+        HideVmStack.init();
         injectLifecycleForProcess(ctx);
         BaseDelayableHook.allowEarlyInit(RevokeMsgHook.INSTANCE);
         BaseDelayableHook.allowEarlyInit(MuteQZoneThumbsUp.INSTANCE);

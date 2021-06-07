@@ -51,6 +51,9 @@ import nil.nadph.qnotified.util.Utils;
 @SuppressLint("Registered")
 public class SecurityTestActivity extends IphoneTitleBarActivityCompat {
 
+    StackTraceElement[] mStackThread;
+    StackTraceElement[] mStackThrowable;
+
     @Override
     public boolean doOnCreate(@Nullable Bundle bundle) {
         super.doOnCreate(bundle);
@@ -106,6 +109,30 @@ public class SecurityTestActivity extends IphoneTitleBarActivityCompat {
                     CustomDialog.createFailsafe(SecurityTestActivity.this)
                         .setTitle(result.trim().length() == 0 ? "测试通过" : "测试未通过")
                         .setMessage(withSmallMonospaceSpan(result)).ok().show();
+                } catch (Exception e) {
+                    CustomDialog.createFailsafe(SecurityTestActivity.this)
+                        .setTitle(Utils.getShort$Name(e)).setMessage(e.getMessage()).ok().show();
+                }
+            }));
+        // frame will appear in Instrumentation.callActivityOnCrete()
+        mStackThread = Thread.currentThread().getStackTrace();
+        mStackThrowable = new Throwable().getStackTrace();
+        ll.addView(newListItemButton(this, "测试 StackTraceElement", null, null,
+            v -> {
+                try {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("Thread.getStackTrace()\n");
+                    for (StackTraceElement frame : mStackThread) {
+                        sb.append(frame).append('\n');
+                    }
+                    sb.append("\nThread.getStackTrace()\n");
+                    for (StackTraceElement frame : mStackThrowable) {
+                        sb.append(frame).append('\n');
+                    }
+                    String msg = sb.toString();
+                    CustomDialog.createFailsafe(SecurityTestActivity.this)
+                        .setTitle(msg.contains("nil.nadph.qnotified") ? "测试未通过" : "测试通过")
+                        .setMessage(withSmallMonospaceSpan(msg)).ok().show();
                 } catch (Exception e) {
                     CustomDialog.createFailsafe(SecurityTestActivity.this)
                         .setTitle(Utils.getShort$Name(e)).setMessage(e.getMessage()).ok().show();
