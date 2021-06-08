@@ -68,7 +68,7 @@ abstract class CommonDelayAbleHookBridge : CommonDelayableHook(""), UiItem {
                     observeForever {
                         try {
                             val mgr = ConfigManager.getDefaultConfig()
-                            mgr.allConfig[configName] = it
+                            mgr.putBoolean(configName, it!!)
                             mgr.save()
                         } catch (e: Exception) {
                             Utils.log(e)

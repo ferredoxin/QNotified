@@ -60,7 +60,7 @@ abstract class BaseDecorator(val cfg: String) : UiSwitchItem {
                 observeForever {
                     try {
                         val mgr = ConfigManager.getDefaultConfig()
-                        mgr.allConfig[cfg] = it
+                        mgr.putBoolean(cfg, it!!)
                         mgr.save()
                     } catch (e: Exception) {
                         Utils.log(e)

@@ -21,490 +21,207 @@
  */
 package nil.nadph.qnotified.config;
 
+import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import java.io.*;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Iterator;
+import cc.ioctl.H;
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import me.singleneuron.qn_kernel.data.HostInfo;
-import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.util.Utils;
 
-import static nil.nadph.qnotified.config.Table.*;
-import static nil.nadph.qnotified.util.Utils.log;
+public abstract class ConfigManager implements SharedPreferences, SharedPreferences.Editor {
 
-public class ConfigManager implements SyncUtils.OnFileChangedListener, MultiConfigItem {
-
-    //DataOutputStream should be BIG_ENDIAN, as is.
-    public static final int BYTE_ORDER_STUB = 0x12345678;
     private static ConfigManager sDefConfig;
     private static ConfigManager sCache;
-    private final File file;
-    private final int mFileTypeId;
-    private final long mTargetUin;
-    private ConcurrentHashMap<String, Object> config;
-    private boolean dirty;
+    private static final ConcurrentHashMap<Long, ConfigManager> sUinConfig =
+        new ConcurrentHashMap<>(4);
 
-    public ConfigManager(File f, int fileTypeId, long uin) throws IOException {
-        file = f;
-        mFileTypeId = fileTypeId;
-        mTargetUin = uin;
-        reinit();
+    protected ConfigManager() {
     }
 
-    public static ConfigManager getDefaultConfig() {
-        try {
-            if (sDefConfig == null) {
-                sDefConfig = new ConfigManager(new File(
-                    HostInfo.getHostInfo().getApplication().getFilesDir()
-                        .getAbsolutePath() + "/qnotified_config.dat"),
-                    SyncUtils.FILE_DEFAULT_CONFIG, 0);
-                SyncUtils.addOnFileChangedListener(sDefConfig);
+    @NonNull
+    public static synchronized ConfigManager getDefaultConfig() {
+        if (sDefConfig == null) {
+            ConfigManager overlay = new MmkvConfigManagerImpl("global_config");
+            ConfigManager base = null;
+            File f = new File(H.getApplication().getFilesDir(), "qnotified_config.dat");
+            if (f.exists()) {
+                try {
+                    base = new LegacyRoConfigManager(f);
+                } catch (Exception | OutOfMemoryError e) {
+                    try {
+                        f.delete();
+                    } catch (Exception ignored) {
+                    }
+                }
             }
-            return sDefConfig;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static ConfigManager getCache() {
-        try {
-            if (sCache == null) {
-                sCache = new ConfigManager(new File(
-                    HostInfo.getHostInfo().getApplication().getFilesDir()
-                        .getAbsolutePath() + "/qnotified_cache.dat"), SyncUtils.FILE_CACHE, 0);
+            if (base == null) {
+                sDefConfig = overlay;
+            } else {
+                sDefConfig = new OverlayfsConfigManagerImpl(overlay, base);
             }
-            SyncUtils.addOnFileChangedListener(sCache);
-            return sCache;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
-    }
-
-    //default
-    @Override
-    public boolean onFileChanged(int type, long uin, int what) {
-        if (type == mFileTypeId) {
-            dirty = true;
-        }
-        return false;
-    }
-
-    public void reinit() throws IOException {
-        if (!file.exists()) {
-            file.createNewFile();
-        }
-        config = new ConcurrentHashMap<String, Object>();
-        reload();
-    }
-
-    public File getFile() {
-        return file;
-    }
-
-    public Object getOrDefault(String key, Object def) {
-        try {
-            if (dirty) {
-                reload();
-            }
-        } catch (Exception ignored) {
-        }
-        if (!config.containsKey(key)) {
-            return def;
-        }
-        return config.get(key);
-    }
-
-    public boolean getBooleanOrFalse(String key) {
-        try {
-            if (dirty) {
-                reload();
-            }
-        } catch (Exception ignored) {
-        }
-        if (!config.containsKey(key)) {
-            return false;
-        }
-        try {
-            Boolean z = (Boolean) config.get(key);
-            if (z == null) {
-                return false;
-            }
-            return z;
-        } catch (ClassCastException e) {
-            return false;
-        }
-    }
-
-    public boolean getBooleanOrDefault(String key, boolean def) {
-        try {
-            if (dirty) {
-                reload();
-            }
-        } catch (Exception ignored) {
-        }
-        if (!config.containsKey(key)) {
-            return def;
-        }
-        try {
-            Boolean z = (Boolean) config.get(key);
-            if (z == null) {
-                return def;
-            }
-            return z;
-        } catch (ClassCastException e) {
-            return def;
-        }
-    }
-
-    public int getIntOrDefault(String key, int def) {
-        try {
-            if (dirty) {
-                reload();
-            }
-        } catch (Exception ignored) {
-        }
-        if (!config.containsKey(key)) {
-            return def;
-        }
-        try {
-            Integer z = (Integer) config.get(key);
-            if (z == null) {
-                return def;
-            }
-            return z;
-        } catch (ClassCastException e) {
-            return def;
-        }
-    }
-
-    public String getString(String key) {
-        try {
-            if (dirty) {
-                reload();
-            }
-        } catch (Exception ignored) {
-        }
-        return (String) config.get(key);
-    }
-
-    public String getStringOrDefault(String key, String defVal) {
-        try {
-            if (dirty) {
-                reload();
-            }
-        } catch (Exception ignored) {
-        }
-        String val = (String) config.get(key);
-        if (val == null) {
-            val = defVal;
-        }
-        return val;
-    }
-
-    @Nullable
-    public Object getObject(@NonNull String key) {
-        try {
-            if (dirty) {
-                reload();
-            }
-        } catch (Exception ignored) {
-        }
-        return config.get(key);
-    }
-
-    public void putString(String key, String val) {
-        try {
-            if (dirty) {
-                reload();
-            }
-        } catch (Exception ignored) {
-        }
-        config.put(key, val);
-    }
-
-    public void putInt(String key, int val) {
-        try {
-            if (dirty) {
-                reload();
-            }
-        } catch (Exception ignored) {
-        }
-        config.put(key, val);
-    }
-
-    //@Deprecated
-    public ConcurrentHashMap<String, Object> getAllConfig() {
-        try {
-            if (dirty) {
-                reload();
-            }
-        } catch (Exception ignored) {
-        }
-        return config;
+        return sDefConfig;
     }
 
     /**
-     * ?(0xFE)QNC I_version I_size I_RAW_reserved 16_md5 DATA
+     * Get isolated config for a specified account
+     *
+     * @param uin account number
+     * @return config for raed/write
      */
-    public void reload() throws IOException {
-        synchronized (this) {
-            FileInputStream fin;
-            fin = new FileInputStream(file);
-            if (fin.available() == 0) {
-                return;
-            }
-            config.clear();
-            DataInputStream in = new DataInputStream(fin);
-            in.skip(4);//flag
-            int endian = in.readInt();
-            int file_size = in.readInt();
-            readIRaw(in);//ignore
-            byte[] md5 = new byte[16];
-            if (in.read(md5, 0, 16) < 16) {
-                throw new IOException("Failed to read md5");
-            }
-            String key;
-            a:
-            while (in.available() > 0) {
-                int _type = in.read();
-                if (_type < 0 || _type > 255) {
-                    throw new IOException("Unexpected type:" + _type + ",version:" + endian);
-                }
-                key = readIStr(in);
-                switch ((byte) _type) {
-                    case TYPE_VOID:
-                        log(new RuntimeException(
-                            "ConcurrentHashMap/reload: replace null with " + VOID_INSTANCE
-                                + " in [key=\"" + key + "\",type=TYPE_VOID] at " + file
-                                .getAbsolutePath()));
-                        config.put(key, VOID_INSTANCE);
-                        break;
-                    case TYPE_BYTE:
-                        config.put(key, (byte) in.read());
-                        break;
-                    case TYPE_BOOL:
-                        config.put(key, in.read() != 0);
-                        break;
-                    case TYPE_WCHAR32:
-                        config.put(key, in.readInt());
-                        break;
-                    case TYPE_INT:
-                        config.put(key, in.readInt());
-                        break;
-                    case TYPE_SHORT:
-                        config.put(key, in.readShort());
-                        break;
-                    case TYPE_LONG:
-                        config.put(key, in.readLong());
-                        break;
-                    case TYPE_FLOAT:
-                        config.put(key, in.readFloat());
-                        break;
-                    case TYPE_DOUBLE:
-                        config.put(key, in.readDouble());
-                        break;
-                    case TYPE_IUTF8:
-                        config.put(key, readIStr(in));
-                        break;
-                    case TYPE_IRAW:
-                        config.put(key, readIRaw(in));
-                        break;
-                    case TYPE_TABLE:
-                        config.put(key, readTable(in));
-                        break;
-                    case TYPE_ARRAY:
-                        config.put(key, readArray(in));
-                        break;
-                    case TYPE_EOF:
-                        break a;
-                    default:
-                        throw new IOException(
-                            "Unexpected type:" + _type + ",name:\"" + key + "\",version:" + endian);
-                }
-            }
-            dirty = false;
+    @NonNull
+    public static synchronized ConfigManager forAccount(long uin) {
+        if (uin < 10000) {
+            throw new IllegalArgumentException("uin must >= 10000");
         }
-    }
-
-    //@Deprecated
-    public void save() throws IOException {
-        saveAndNotify(0);
-    }
-
-    public void saveAndNotify(int what) throws IOException {
-        saveWithoutNotify();
-        SyncUtils.onFileChanged(mFileTypeId, mTargetUin, what);
-    }
-
-    public void saveWithoutNotify() throws IOException {
-        synchronized (this) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            DataOutputStream out = new DataOutputStream(baos);
-            Iterator<Map.Entry<String, Object>> it = config.entrySet().iterator();
-            Map.Entry<String, Object> record;
-            String fn;
-            Object val;
-            while (it.hasNext()) {
-                record = it.next();
-                fn = record.getKey();
-                val = record.getValue();
-                writeRecord(out, fn, val);
-            }
-            out.flush();
-            out.close();
-            baos.close();
-            byte[] dat = baos.toByteArray();
-            byte[] md5;
+        ConfigManager cfg = sUinConfig.get(uin);
+        if (cfg != null) {
+            return cfg;
+        }
+        ConfigManager overlay = new MmkvConfigManagerImpl("u_" + uin);
+        ConfigManager base = null;
+        File f = new File(H.getApplication().getFilesDir(), "qnotified_" + uin + ".dat");
+        if (f.exists()) {
             try {
-                MessageDigest md = MessageDigest.getInstance("MD5");
-                md.update(dat);
-                md5 = md.digest();
-            } catch (NoSuchAlgorithmException e) {
-                md5 = new byte[16];
+                base = new LegacyRoConfigManager(f);
+            } catch (Exception | OutOfMemoryError e) {
+                try {
+                    f.delete();
+                } catch (Exception ignored) {
+                }
             }
-            FileOutputStream fout = new FileOutputStream(file);
-            out = new DataOutputStream(fout);
-            out.write(new byte[]{(byte) 0xFE, 'Q', 'N', 'C'});
-            out.writeInt(BYTE_ORDER_STUB);
-            out.writeInt(dat.length);
-            out.writeInt(0);//reserved
-            out.write(md5, 0, 16);
-            out.write(dat, 0, dat.length);
-            out.flush();
-            fout.flush();
-            out.close();
-            fout.close();
-            dirty = false;
         }
+        if (base == null) {
+            cfg = overlay;
+        } else {
+            cfg = new OverlayfsConfigManagerImpl(overlay, base);
+        }
+        sUinConfig.put(uin, cfg);
+        return cfg;
     }
 
-    public long getLongOrDefault(String key, long i) {
-        try {
-            if (dirty) {
-                reload();
-            }
-        } catch (Exception ignored) {
+    /**
+     * Get isolated config for current account logged in. See {@link #forAccount(long)}
+     *
+     * @return if no account is logged in, {@code null} will be returned.
+     */
+    @Nullable
+    public static ConfigManager forCurrentAccount() {
+        long uin = Utils.getLongAccountUin();
+        if (uin >= 10000) {
+            return forAccount(uin);
         }
-        if (!config.containsKey(key)) {
-            return i;
-        }
-        try {
-            Long z = (Long) config.get(key);
-            if (z == null) {
-                return i;
-            }
-            return z;
-        } catch (ClassCastException e) {
-            return i;
-        }
+        return null;
     }
 
-    public void putBoolean(String key, boolean v) {
-        try {
-            if (dirty) {
-                reload();
-            }
-        } catch (Exception ignored) {
+    @NonNull
+    public static synchronized ConfigManager getCache() {
+        if (sCache == null) {
+            sCache = new MmkvConfigManagerImpl("global_cache");
         }
-        config.put(key, v);
+        return sCache;
     }
 
-    public void putLong(String key, long v) {
-        try {
-            if (dirty) {
-                reload();
-            }
-        } catch (Exception ignored) {
+    public abstract void reinit() throws IOException;
+
+    @Nullable
+    public abstract File getFile();
+
+    @Nullable
+    public Object getOrDefault(@NonNull String key, @Nullable Object def) {
+        if (!containsKey(key)) {
+            return def;
         }
-        config.put(key, v);
+        return getObject(key);
     }
 
-    public void putObject(@NonNull String key, Object v) {
-        try {
-            if (dirty) {
-                reload();
-            }
-        } catch (Exception ignored) {
-        }
-        config.put(key, v);
+    public boolean getBooleanOrFalse(@NonNull String key) {
+        return getBooleanOrDefault(key, false);
+    }
+
+    public boolean getBooleanOrDefault(@NonNull String key, boolean def) {
+        return getBoolean(key, def);
+    }
+
+    public int getIntOrDefault(@NonNull String key, int def) {
+        return getInt(key, def);
     }
 
     @Nullable
-    public Object remove(@NonNull String k) {
-        try {
-            if (dirty) {
-                reload();
-            }
-        } catch (Exception ignored) {
-        }
-        return config.remove(k);
+    public abstract String getString(@NonNull String key);
+
+    @NonNull
+    public String getStringOrDefault(@NonNull String key, @NonNull String defVal) {
+        return getString(key, defVal);
     }
 
     @Nullable
+    public abstract Object getObject(@NonNull String key);
+
+    @Nullable
+    public byte[] getBytes(@NonNull String key) {
+        return getBytes(key, null);
+    }
+
+    @Nullable
+    public abstract byte[] getBytes(@NonNull String key, @Nullable byte[] defValue);
+
+    @NonNull
+    public abstract byte[] getBytesOrDefault(@NonNull String key, @NonNull byte[] defValue);
+
+    @NonNull
+    public abstract ConfigManager putBytes(@NonNull String key, @NonNull byte[] value);
+
+    /**
+     * @return READ-ONLY all config
+     * @deprecated Avoid use getAll(), MMKV only have limited support for this.
+     */
+    @Override
+    @Deprecated
+    @NonNull
+    public abstract Map<String, ?> getAll();
+
+    public abstract void reload() throws IOException;
+
+    public abstract void save() throws IOException;
+
+    public abstract void saveAndNotify(int what) throws IOException;
+
+    public abstract void saveWithoutNotify() throws IOException;
+
+    public long getLongOrDefault(@Nullable String key, long i) {
+        return getLong(key, i);
+    }
+
+    @NonNull
+    public abstract ConfigManager putObject(@NonNull String key, @NonNull Object v);
+
     public boolean containsKey(@NonNull String k) {
-        try {
-            if (dirty) {
-                reload();
-            }
-        } catch (Exception ignored) {
-        }
-        return config.containsKey(k);
+        return contains(k);
+    }
+
+    @NonNull
+    @Override
+    public Editor edit() {
+        return this;
     }
 
     @Override
-    public boolean isValid() {
-        return true;
+    public void registerOnSharedPreferenceChangeListener(
+        @NonNull OnSharedPreferenceChangeListener listener) {
+        throw new UnsupportedOperationException("not implemented");
     }
 
     @Override
-    public boolean hasConfig(String name) {
-        return containsKey(name);
+    public void unregisterOnSharedPreferenceChangeListener(
+        @NonNull OnSharedPreferenceChangeListener listener) {
+        throw new UnsupportedOperationException("not implemented");
     }
 
-    @Override
-    public boolean getBooleanConfig(String name) {
-        return getBooleanOrDefault(name, false);
-    }
+    public abstract boolean isReadOnly();
 
-    @Override
-    public void setBooleanConfig(String name, boolean val) {
-        putBoolean(name, val);
-    }
-
-    @Override
-    public int getIntConfig(String name) {
-        return getIntOrDefault(name, -1);
-    }
-
-    @Override
-    public void setIntConfig(String name, int val) {
-        putInt(name, val);
-    }
-
-    @Override
-    public String getStringConfig(String name) {
-        return getString(name);
-    }
-
-    @Override
-    public void setStringConfig(String name, String val) {
-        putString(name, val);
-    }
-
-    @Override
-    public boolean sync() {
-        try {
-            save();
-            return true;
-        } catch (IOException e) {
-            Utils.log(e);
-            return false;
-        }
-    }
+    public abstract boolean isPersistent();
 }

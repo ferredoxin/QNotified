@@ -90,7 +90,7 @@ public class ViewBuilder {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     try {
                         ConfigManager mgr = ConfigManager.getDefaultConfig();
-                        mgr.getAllConfig().put(key, isChecked);
+                        mgr.putBoolean(key, isChecked);
                         mgr.save();
                     } catch (Exception e) {
                         Utils.log(e);
@@ -112,7 +112,7 @@ public class ViewBuilder {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     try {
                         ConfigManager mgr = ConfigManager.getDefaultConfig();
-                        mgr.getAllConfig().put(key, isChecked);
+                        mgr.putBoolean(key, isChecked);
                         mgr.save();
                         Toasts.info(ctx,
                             "重启" + HostInfo.getHostInfo().getHostName() + "生效");
@@ -136,7 +136,7 @@ public class ViewBuilder {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     try {
 
-                        mgr.getAllConfig().put(key, isChecked);
+                        mgr.putBoolean(key, isChecked);
                         mgr.save();
                         Toasts.info(ctx, "设置成功");
                     } catch (Throwable e) {

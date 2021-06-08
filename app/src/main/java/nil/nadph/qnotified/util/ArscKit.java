@@ -165,8 +165,8 @@ public class ArscKit {
         }
         ret = enumArsc(pkg, type, name);
         if (ret != 0) {
-            cache.getAllConfig().put(CACHED_RES_ID_NAME_PREFIX + type + "/" + name, ret);
-            cache.getAllConfig().put(CACHED_RES_ID_CODE_PREFIX + type + "/" + name, currcode);
+            cache.putInt(CACHED_RES_ID_NAME_PREFIX + type + "/" + name, ret);
+            cache.putInt(CACHED_RES_ID_CODE_PREFIX + type + "/" + name, currcode);
             try {
                 cache.save();
             } catch (IOException e) {

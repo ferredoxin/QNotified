@@ -63,7 +63,7 @@ public class ConfigData<T> {
 
     public void setValue(T value) {
         try {
-            mgr.getAllConfig().put(mKeyName, value);
+            mgr.putObject(mKeyName, value);
             mgr.save();
         } catch (Exception e) {
             Utils.log(e);

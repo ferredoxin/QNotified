@@ -116,7 +116,7 @@ public class UpdateCheck implements View.OnClickListener, Runnable {
             httpsConn.disconnect();
             ConfigManager cache = ConfigManager.getCache();
             cache.putString(qn_update_info, content);
-            cache.getAllConfig().put(qn_update_time, System.currentTimeMillis() / 1000L);
+            cache.putLong(qn_update_time, System.currentTimeMillis() / 1000L);
             cache.save();
             return content;
         } catch (IOException e) {

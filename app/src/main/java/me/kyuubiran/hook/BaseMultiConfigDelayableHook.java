@@ -37,7 +37,7 @@ public abstract class BaseMultiConfigDelayableHook extends BaseDelayableHook imp
             throw new NullPointerException("name == null");
         }
         ConfigManager cfg = ConfigManager.getDefaultConfig();
-        return cfg.hasConfig(_$shadow$ns$prefix + name);
+        return cfg.contains(_$shadow$ns$prefix + name);
     }
 
     public boolean getBooleanConfig(String name) {

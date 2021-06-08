@@ -413,7 +413,7 @@ object RevokeMsg : CommonDelayableHook(
 
     private fun getMsgRevokedTipsText(): String {
         return try {
-            getDefaultCfg().getString(kr_revoke_msg_tips_text)
+            getDefaultCfg().getString(kr_revoke_msg_tips_text) ?: ""
         } catch (t: Throwable) {
             logdt(t)
             ""
@@ -422,7 +422,7 @@ object RevokeMsg : CommonDelayableHook(
 
     private fun getUnreceivedMsgRevokedTipsText(): String {
         return try {
-            getDefaultCfg().getString(kr_revoke_unreceived_msg_tips_text)
+            getDefaultCfg().getString(kr_revoke_unreceived_msg_tips_text) ?: ""
         } catch (t: Throwable) {
             logdt(t)
             ""
