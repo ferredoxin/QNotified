@@ -21,7 +21,10 @@
  */
 package nil.nadph.qnotified.config;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -497,5 +500,18 @@ public class Table<K> implements Serializable, Cloneable {
                 keyType = TYPE_INT;
             }
         }
+    }
+
+    @NonNull
+    public static Table fromBytes(@Nullable byte[] bytes) throws IOException {
+        ByteArrayInputStream is = new ByteArrayInputStream(bytes);
+        return readTable(new DataInputStream(is));
+    }
+
+    @NonNull
+    public synchronized byte[] toBytes() throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        writeTable(new DataOutputStream(baos), this);
+        return baos.toByteArray();
     }
 }

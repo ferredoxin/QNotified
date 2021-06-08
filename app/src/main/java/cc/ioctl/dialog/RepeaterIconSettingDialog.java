@@ -111,7 +111,7 @@ public class RepeaterIconSettingDialog implements View.OnClickListener,
             return sCachedRepeaterIcon;
         }
         ConfigManager cfg = ConfigManager.getDefaultConfig();
-        byte[] data = (byte[]) cfg.getAllConfig().get(qn_repeat_icon_data);
+        byte[] data = (byte[]) cfg.getBytes(qn_repeat_icon_data);
         int dpi = cfg.getIntOrDefault(qn_repeat_icon_dpi, 0);
         if (data != null) {
             Bitmap bm = BitmapFactory.decodeByteArray(data, 0, data.length);
@@ -176,7 +176,7 @@ public class RepeaterIconSettingDialog implements View.OnClickListener,
         saveBtn.setOnClickListener(this);
         ConfigManager cfg = ConfigManager.getDefaultConfig();
         String lastPath = cfg.getString(qn_repeat_last_file);
-        byte[] data = (byte[]) cfg.getAllConfig().get(qn_repeat_icon_data);
+        byte[] data = (byte[]) cfg.getBytes(qn_repeat_icon_data);
         int dpi = cfg.getIntOrDefault(qn_repeat_icon_dpi, 0);
         if (lastPath != null) {
             pathInput.setText(lastPath);
@@ -292,7 +292,7 @@ public class RepeaterIconSettingDialog implements View.OnClickListener,
                     fin.close();
                     byte[] arr = bout.toByteArray();
                     ConfigManager cfg = ConfigManager.getDefaultConfig();
-                    cfg.getAllConfig().put(qn_repeat_icon_data, arr);
+                    cfg.putBytes(qn_repeat_icon_data, arr);
                     cfg.putInt(qn_repeat_icon_dpi, dpi);
                     cfg.putString(qn_repeat_last_file, targetIconPath);
                     cfg.save();
@@ -305,7 +305,7 @@ public class RepeaterIconSettingDialog implements View.OnClickListener,
                 if (useDefault) {
                     try {
                         ConfigManager cfg = ConfigManager.getDefaultConfig();
-                        cfg.getAllConfig().remove(qn_repeat_icon_data);
+                        cfg.remove(qn_repeat_icon_data);
                         cfg.remove(qn_repeat_icon_dpi);
                         cfg.remove(qn_repeat_last_file);
                         cfg.save();

@@ -108,15 +108,15 @@ object RevokeMsgDialog {
 
     fun save() {
         val cfg = getDefaultCfg()
-        currentEnable?.let { cfg.setBooleanConfig(RevokeMsg.kr_revoke_msg, it) }
+        currentEnable?.let { cfg.putBoolean(RevokeMsg.kr_revoke_msg, it) }
         currentMsgEnable?.let {
-            cfg.setBooleanConfig(
+            cfg.putBoolean(
                 RevokeMsg.kr_revoke_msg_show_msg_text_enabled,
                 it
             )
         }
-        cfg.setStringConfig(RevokeMsg.kr_revoke_msg_tips_text, currentRevokeTips)
-        cfg.setStringConfig(RevokeMsg.kr_revoke_unreceived_msg_tips_text, currentUnreceivedTips)
+        cfg.putString(RevokeMsg.kr_revoke_msg_tips_text, currentRevokeTips)
+        cfg.putString(RevokeMsg.kr_revoke_unreceived_msg_tips_text, currentUnreceivedTips)
         cfg.save()
     }
 }

@@ -92,21 +92,6 @@ public class ConfigV2Activity extends AppCompatActivity {
         }
         dbgInfo += str;
         HookStatue.Statue statue = HookStatue.INSTANCE.getStatue(this, false);
-        boolean isDynLoad = false;
-        InputStream in = ConfigV2Activity.class.getClassLoader()
-            .getResourceAsStream("assets/xposed_init");
-        byte[] buf = new byte[64];
-        String start;
-        try {
-            int len = in.read(buf);
-            in.close();
-            start = new String(buf, 0, len).replace("\n", "").replace("\r", "").replace(" ", "");
-        } catch (IOException e) {
-            start = e.toString();
-        }
-        if ("nil.nadph.qnotified.startup.HookLoader".equals(start)) {
-            isDynLoad = true;
-        }
         try {
             long delta = System.currentTimeMillis();
             Natives.load(this);

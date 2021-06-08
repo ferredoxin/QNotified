@@ -63,7 +63,7 @@ object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt") {
                 val textView =
                     (relativeLayout?.parent as FrameLayout).findViewById<TextView>(nil.nadph.qnotified.R.id.chat_words_count)
                 var str =
-                    getExFriendCfg().getStringOrDefault(strCfg, "今日已发送 %1 条消息，共 %2 字，表情包 %3 个")
+                    getExFriendCfg().getStringOrDefault(strCfg, "今日已发送 %1 条消息，共 %2 字，表情包 %3 个")!!
                 val msg = if (isToday) getExFriendCfg().getIntOrDefault(msgCfg, 0) else 0
                 val words = if (isToday) getExFriendCfg().getIntOrDefault(wordsCfg, 0) else 0
                 val emo = if (isToday) getExFriendCfg().getIntOrDefault(emoCfg, 0) else 0
@@ -81,7 +81,7 @@ object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt") {
             ) as ViewGroup).findHostView<RelativeLayout>(getConfig(ChatWordsCount::class.java.simpleName))
             relativeLayout!!.visibility = View.GONE
             val textView = TextView(activity)
-            var str = getExFriendCfg().getStringOrDefault(strCfg, "今日已发送 %1 条消息，共 %2 字，表情包 %3 个")
+            var str = getExFriendCfg().getStringOrDefault(strCfg, "今日已发送 %1 条消息，共 %2 字，表情包 %3 个")!!
             val msg = if (isToday) getExFriendCfg().getIntOrDefault(msgCfg, 0) else 0
             val words = if (isToday) getExFriendCfg().getIntOrDefault(wordsCfg, 0) else 0
             val emo = if (isToday) getExFriendCfg().getIntOrDefault(emoCfg, 0) else 0

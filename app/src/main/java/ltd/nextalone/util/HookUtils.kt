@@ -322,7 +322,7 @@ internal inline fun Class<*>.hookAfterAllConstructors(crossinline hooker: (XC_Me
 
 internal fun putValue(keyName: String, obj: Any, mgr: ConfigManager) {
     try {
-        mgr.allConfig[keyName] = obj
+        mgr.putObject(keyName, obj)
         mgr.save()
     } catch (e: Exception) {
         Utils.log(e)

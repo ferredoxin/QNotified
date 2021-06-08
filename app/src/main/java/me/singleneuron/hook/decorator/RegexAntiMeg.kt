@@ -50,7 +50,7 @@ object RegexAntiMeg : MessageReceiver, View.OnClickListener, UiItem {
         try {
             if (data == null) return false
             val regexString =
-                getExFriendCfg().getStringOrDefault(RegexAntiMeg::class.simpleName, "")
+                getExFriendCfg().getStringOrDefault(RegexAntiMeg::class.simpleName!!, "")
             if (regexString.isNullOrBlank()) return false
             return when {
                 Initiator.load("com.tencent.mobileqq.data.MessageForStructing")

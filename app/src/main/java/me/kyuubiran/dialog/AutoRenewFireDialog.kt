@@ -221,7 +221,7 @@ object AutoRenewFireDialog {
 
     fun save() {
         val cfg = getExFriendCfg()
-        currentEnable?.let { cfg.setBooleanConfig(AutoRenewFireMgr.ENABLE, it) }
+        currentEnable?.let { cfg.putBoolean(AutoRenewFireMgr.ENABLE, it) }
         cfg.putString(AutoRenewFireMgr.MESSAGE, replyMsg)
         cfg.putString(
             AutoRenewFireMgr.TIMEPRESET,

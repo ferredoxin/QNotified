@@ -229,8 +229,10 @@ public class ChatTailHook extends CommonDelayableHook {
     @Override
     public boolean isEnabled() {
         try {
-            return ExfriendManager.getCurrent().getBooleanOrDefault(qn_chat_tail_enable, false);
-        } catch (IllegalArgumentException e) {
+            ConfigManager cfg = ConfigManager.forCurrentAccount();
+            if (cfg != null) {
+                return cfg.getBoolean(qn_chat_tail_enable, false);
+            }
             return false;
         } catch (Exception e) {
             log(e);

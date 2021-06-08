@@ -141,7 +141,7 @@ public class ExfriendListActivity extends IphoneTitleBarActivityCompat {
         long uin = Utils.getLongAccountUin();
         ExfriendManager exm = ExfriendManager.get(uin);
         exm.clearUnreadFlag();
-        tv.setText("最后更新: " + getRelTimeStrSec(exm.lastUpdateTimeSec) + "\n长按列表可删除");
+        tv.setText("最后更新: " + getRelTimeStrSec(exm.getLastUpdateTimeSec()) + "\n长按列表可删除");
         ViewBuilder.listView_setAdapter(sdlv, adapter);
         setContentBackgroundDrawable(ResUtils.skin_background);
         ExfriendListActivity.this.getWindow().getDecorView().setTag(this);

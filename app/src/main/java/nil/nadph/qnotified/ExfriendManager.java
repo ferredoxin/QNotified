@@ -21,8 +21,22 @@
  */
 package nil.nadph.qnotified;
 
+import static cc.ioctl.util.DateTimeUtil.getRelTimeStrSec;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_any;
+import static nil.nadph.qnotified.util.Utils.ContactDescriptor;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.logi;
+import static nil.nadph.qnotified.util.Utils.logw;
+
 import android.annotation.SuppressLint;
-import android.app.*;
+import android.app.Activity;
+import android.app.Application;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -30,10 +44,9 @@ import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.view.View;
 import android.widget.TextView;
-
-import androidx.annotation.Nullable;
-
-import java.io.File;
+import androidx.annotation.NonNull;
+import cc.ioctl.activity.ExfriendListActivity;
+import cc.ioctl.hook.DelDetectorHook;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
@@ -44,9 +57,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import cc.ioctl.activity.ExfriendListActivity;
-import cc.ioctl.hook.DelDetectorHook;
 import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.bridge.FriendChunk;
 import nil.nadph.qnotified.config.ConfigManager;
@@ -58,41 +68,37 @@ import nil.nadph.qnotified.lifecycle.Parasitics;
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
-import static cc.ioctl.util.DateTimeUtil.getRelTimeStrSec;
-import static nil.nadph.qnotified.config.Table.*;
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
-import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_any;
-import static nil.nadph.qnotified.util.Utils.*;
-
 /**
  * @deprecated 设计不合理 将陆续弃用并在重构中移除
  */
 @Deprecated
-public class ExfriendManager implements SyncUtils.OnFileChangedListener {
+public class ExfriendManager {
 
-    static public final int ID_EX_NOTIFY = 65537;
+    public static final int ID_EX_NOTIFY = 65537;
     public static final int CHANGED_UNSPECIFIED = 0;
     public static final int CHANGED_GENERAL_SETTING = 16;
     public static final int CHANGED_PERSONS = 17;
     public static final int CHANGED_EX_EVENTS = 18;
     public static final int CHANGED_EVERYTHING = 64;
-    static private final int FL_UPDATE_INT_MIN = 10 * 60;//sec
-    static private final int FL_UPDATE_INT_MAX = 1 * 60 * 60;//sec
-    static private final HashMap<Long, ExfriendManager> instances = new HashMap<>();
-    static private ExecutorService tp;
-    public long lastUpdateTimeSec;
+    private static final String KET_LEGACY_FRIENDS = "friends";
+    private static final String KET_FRIENDS = "friends_impl";
+    private static final String KET_LEGACY_EVENTS = "events";
+    private static final String KET_EVENTS = "events_impl";
+    private static final int FL_UPDATE_INT_MIN = 10 * 60;//sec
+    private static final HashMap<Long, ExfriendManager> instances = new HashMap<>();
+    private static ExecutorService tp;
+    private volatile long lastUpdateTimeSec;
     private long mUin;
     private ConcurrentHashMap<Long, FriendRecord> persons;
     private ConcurrentHashMap<Integer, EventRecord> events;
-    private ConfigManager fileData;//Back compatibility
+    private ConfigManager mConfig;
     private ConcurrentHashMap mStdRemarks;
     private ArrayList<FriendChunk> cachedFriendChunks;
     private boolean dirtySerializedFlag = true;
 
     private ExfriendManager(long uin) {
-        persons = new ConcurrentHashMap<Long, FriendRecord>();
-        events = new ConcurrentHashMap<Integer, EventRecord>();
+        persons = new ConcurrentHashMap<>();
+        events = new ConcurrentHashMap<>();
         dirtySerializedFlag = true;
         if (tp == null) {
             int pt = SyncUtils.getProcessType();
@@ -162,19 +168,23 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
     }
 
     public void reinit() {
-        persons = new ConcurrentHashMap<Long, FriendRecord>();
-        events = new ConcurrentHashMap<Integer, EventRecord>();
+        persons = new ConcurrentHashMap<>();
+        events = new ConcurrentHashMap<>();
         dirtySerializedFlag = true;
         initForUin(mUin);
     }
 
     /**
-     * @return Do NOT edit the cfg!!!
-     * @hide
+     * Do not use this method for uin-isolated config anymore.<br/>
+     * <p>
+     * Use {@link ConfigManager#forCurrentAccount()} or {@link ConfigManager#forAccount(long)}
+     * directly instead.
+     *
+     * @return See {@link ConfigManager#forAccount(long)}
      */
-    //@Deprecated
+    @NonNull
     public ConfigManager getConfig() {
-        return fileData;
+        return ConfigManager.forAccount(mUin);
     }
 
     private void initForUin(long uin) {
@@ -230,82 +240,51 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
     }
 
     //TODO: Rename it
-    @Nullable
     private void loadAndParseConfigData() {
         synchronized (this) {
             try {
-                if (fileData == null) {
-                    File f = new File(
-                        HostInfo.getHostInfo().getApplication().getFilesDir()
-                            .getAbsolutePath() + "/qnotified_" + mUin + ".dat");
-                    fileData = new ConfigManager(f, SyncUtils.FILE_UIN_DATA, mUin);
-                    SyncUtils.addOnFileChangedListener(this);
+                if (mConfig == null) {
+                    mConfig = ConfigManager.forAccount(mUin);
                 }
-                updateFriendTableVersion();
-                initEventsTable();
-                tableToFriend();
-                tableToEvents();
-                lastUpdateTimeSec = (long) fileData.getAllConfig().get("lastUpdateFl");
-            } catch (IOException e) {
+                loadFriendsData();
+                loadEventsData();
+                lastUpdateTimeSec = mConfig.getLong("lastUpdateFl", 0L);
+            } catch (Exception e) {
                 log(e);
             }
         }
     }
 
-    /* We try to add some columns */
-    private void updateFriendTableVersion() {
-        Table<Long> fr = (Table<Long>) fileData.getAllConfig().get("friends");
+    private void loadFriendsData() {
+        // step.1 load table
+        Table<Long> fr = null;
+        byte[] friendsDat = mConfig.getBytes(KET_FRIENDS);
+        if (friendsDat != null) {
+            try {
+                fr = Table.fromBytes(friendsDat);
+            } catch (IOException e) {
+                Utils.log(e);
+            }
+        }
         if (fr == null) {
-            logd("damn! updateFriendTableVersion in null");
+            // try to load from legacy
+            fr = (Table<Long>) mConfig.getObject(KET_LEGACY_FRIENDS);
+        }
+        if (fr == null) {
+            Utils.loge("E/loadFriendsData table is null");
+            fr = new Table<>();
         }
         /* uin+"" is key */
         fr.keyName = "uin";
-        fr.keyType = TYPE_LONG;
-        fr.addField("nick", TYPE_IUTF8);
-        fr.addField("remark", TYPE_IUTF8);
-        fr.addField("friendStatus", TYPE_INT);
-        fr.addField("serverTime", TYPE_LONG);
-    }
-
-    private void friendToTable() {
-        Iterator<Map.Entry<Long, FriendRecord>> it =/*(Iterator<Map.Entry<Long, FriendRecord>>)*/persons
-            .entrySet().iterator();
-        Map.Entry<Long, FriendRecord> ent;
-        String suin;
-        Table<Long> t = (Table<Long>) fileData.getAllConfig().get("friends");
-        if (t == null) {
-            t = new Table<>();
-            t.init();
-            fileData.getAllConfig().put("friends", t);
-            updateFriendTableVersion();
-        }
-        long t_t;
-        FriendRecord f;
-        Long k;
-        while (it.hasNext()) {
-            ent = it.next();
-            f = ent.getValue();
-            t.insert(ent.getKey());
-            k = ent.getKey();
-            try {
-                t.set(k, "nick", f.nick);
-                t.set(k, "remark", f.remark);
-                t.set(k, "serverTime", f.serverTime);
-                t.set(k, "friendStatus", f.friendStatus);
-            } catch (NoSuchFieldException e) {
-                //shouldn't happen
-            }
-        }
-    }
-
-    private void tableToFriend() {
-        Table<Long> t = (Table<Long>) fileData.getAllConfig().get("friends");
-        if (t == null) {
-            logi("t_fr==null,aborting!");
-            return;
-        }
+        fr.keyType = Table.TYPE_LONG;
+        fr.addField("nick", Table.TYPE_IUTF8);
+        fr.addField("remark", Table.TYPE_IUTF8);
+        fr.addField("friendStatus", Table.TYPE_INT);
+        fr.addField("serverTime", Table.TYPE_LONG);
+        // step.2 fill map
+        Table<Long> t = fr;
         if (persons == null) {
-            persons = new ConcurrentHashMap<Long, FriendRecord>();
+            persons = new ConcurrentHashMap<>();
         }
         dirtySerializedFlag = true;
         Iterator<Map.Entry<Long, Object[]>> it = t.records.entrySet().iterator();
@@ -330,83 +309,83 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
         }
     }
 
-    /**
-     * We try to add some columns
-     */
-    private void initEventsTable() {
-        Table<Integer> ev = (Table<Integer>) fileData.getAllConfig().get("events");
-        if (ev == null) {
-            logd("damn! initEvT in null");
+    private void saveFriendsData() {
+        if (persons == null) {
             return;
         }
-        /** uin+"" is key */
-        ev.keyName = "id";
-        ev.keyType = TYPE_INT;
-        ev.addField("timeRangeEnd", TYPE_LONG);
-        ev.addField("timeRangeBegin", TYPE_LONG);
-        ev.addField("event", TYPE_INT);
-        ev.addField("operand", TYPE_LONG);
-        ev.addField("operator", TYPE_LONG);
-        ev.addField("executor", TYPE_LONG);
-        ev.addField("before", TYPE_IUTF8);
-        ev.addField("after", TYPE_IUTF8);
-        ev.addField("extra", TYPE_IUTF8);
-        ev.addField("_nick", TYPE_IUTF8);
-        ev.addField("_remark", TYPE_IUTF8);
-        ev.addField("_friendStatus", TYPE_INT);
-    }
-
-    private void eventsToTable() {
-        Iterator<Map.Entry<Integer, EventRecord>> it =/*(Iterator<Map.Entry<Long, FriendRecord>>)*/events
-            .entrySet().iterator();
-        Map.Entry<Integer, EventRecord> ent;
-        Table<Integer> t = (Table<Integer>) fileData.getAllConfig().get("events");
-        if (t == null) {
-            t = new Table<>();
-            t.init();
-            fileData.getAllConfig().put("events", t);
-            initEventsTable();
-        } else {
-            t.records.clear();
-        }
-        EventRecord ev;
-        int k;
+        // step.1 create table
+        Table<Long> fr = new Table<>();
+        /* uin+"" is key */
+        fr.keyName = "uin";
+        fr.keyType = Table.TYPE_LONG;
+        fr.addField("nick", Table.TYPE_IUTF8);
+        fr.addField("remark", Table.TYPE_IUTF8);
+        fr.addField("friendStatus", Table.TYPE_INT);
+        fr.addField("serverTime", Table.TYPE_LONG);
+        // step.2 fill table
+        Iterator<Map.Entry<Long, FriendRecord>> it = persons.entrySet().iterator();
+        Map.Entry<Long, FriendRecord> ent;
+        FriendRecord f;
+        Long k;
         while (it.hasNext()) {
             ent = it.next();
-            ev = ent.getValue();
-            t.insert(ent.getKey());
+            f = ent.getValue();
+            fr.insert(ent.getKey());
             k = ent.getKey();
             try {
-                t.set(k, "timeRangeEnd", ev.timeRangeEnd);
-                t.set(k, "timeRangeBegin", ev.timeRangeBegin);
-                t.set(k, "event", ev.event);
-                t.set(k, "operand", ev.operand);
-                //fallback
-                t.set(k, "operator", ev.operand);
-                t.set(k, "executor", ev.executor);
-                t.set(k, "before", ev.before);
-                t.set(k, "after", ev.after);
-                t.set(k, "extra", ev.extra);
-                t.set(k, "_nick", ev._nick);
-                t.set(k, "_remark", ev._remark);
-                t.set(k, "_friendStatus", ev._friendStatus);
-            } catch (Exception e) {
+                fr.set(k, "nick", f.nick);
+                fr.set(k, "remark", f.remark);
+                fr.set(k, "serverTime", f.serverTime);
+                fr.set(k, "friendStatus", f.friendStatus);
+            } catch (NoSuchFieldException e) {
                 log(e);
                 //shouldn't happen
             }
         }
+        // step.3 write out table
+        try {
+            mConfig.putBytes(KET_FRIENDS, fr.toBytes());
+        } catch (IOException e) {
+            log(e);
+            //shouldn't happen
+        }
     }
 
-    private void tableToEvents() {
-        Table<Integer> t = (Table<Integer>) fileData.getAllConfig().get("events");
+    private void loadEventsData() {
+        // step.1 load table
+        Table<Integer> t = null;
+        byte[] eventDat = mConfig.getBytes(KET_EVENTS);
+        if (eventDat != null) {
+            try {
+                t = Table.fromBytes(eventDat);
+            } catch (IOException e) {
+                Utils.log(e);
+            }
+        }
         if (t == null) {
-            logi("t_ev==null,aborting!");
+            // try to load from legacy
+            t = (Table<Integer>) mConfig.getObject(KET_LEGACY_EVENTS);
+        }
+        if (t == null) {
+            Utils.logd("damn! initEvT in null");
             return;
         }
-        if (events == null) {
-            events = new ConcurrentHashMap<Integer, EventRecord>();
-            dirtySerializedFlag = true;
-        }
+        /* `uin as string` is key */
+        t.keyName = "id";
+        t.keyType = Table.TYPE_INT;
+        t.addField("timeRangeEnd", Table.TYPE_LONG);
+        t.addField("timeRangeBegin", Table.TYPE_LONG);
+        t.addField("event", Table.TYPE_INT);
+        t.addField("operand", Table.TYPE_LONG);
+        t.addField("operator", Table.TYPE_LONG);
+        t.addField("executor", Table.TYPE_LONG);
+        t.addField("before", Table.TYPE_IUTF8);
+        t.addField("after", Table.TYPE_IUTF8);
+        t.addField("extra", Table.TYPE_IUTF8);
+        t.addField("_nick", Table.TYPE_IUTF8);
+        t.addField("_remark", Table.TYPE_IUTF8);
+        t.addField("_friendStatus", Table.TYPE_INT);
+        // step.2 fill map
         Iterator<Map.Entry<Integer, Object[]>> it = t.records.entrySet().iterator();
         Map.Entry<Integer, Object[]> entry;
         int __nick, __remark, __fs, _te, _tb, _ev, _op, _b, _a, _extra, _op_old, _exec;
@@ -470,22 +449,77 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
         }
     }
 
+    private void saveEventsData() {
+        if (events == null) {
+            return;
+        }
+        // 1. create table
+        Table<Integer> t = new Table<>();
+        t.keyName = "id";
+        t.keyType = Table.TYPE_INT;
+        t.addField("timeRangeEnd", Table.TYPE_LONG);
+        t.addField("timeRangeBegin", Table.TYPE_LONG);
+        t.addField("event", Table.TYPE_INT);
+        t.addField("operand", Table.TYPE_LONG);
+        t.addField("operator", Table.TYPE_LONG);
+        t.addField("executor", Table.TYPE_LONG);
+        t.addField("before", Table.TYPE_IUTF8);
+        t.addField("after", Table.TYPE_IUTF8);
+        t.addField("extra", Table.TYPE_IUTF8);
+        t.addField("_nick", Table.TYPE_IUTF8);
+        t.addField("_remark", Table.TYPE_IUTF8);
+        t.addField("_friendStatus", Table.TYPE_INT);
+        // 2. fill table
+        Iterator<Map.Entry<Integer, EventRecord>> it =/*(Iterator<Map.Entry<Long, FriendRecord>>)*/events
+            .entrySet().iterator();
+        Map.Entry<Integer, EventRecord> ent;
+        EventRecord ev;
+        int k;
+        while (it.hasNext()) {
+            ent = it.next();
+            ev = ent.getValue();
+            t.insert(ent.getKey());
+            k = ent.getKey();
+            try {
+                t.set(k, "timeRangeEnd", ev.timeRangeEnd);
+                t.set(k, "timeRangeBegin", ev.timeRangeBegin);
+                t.set(k, "event", ev.event);
+                t.set(k, "operand", ev.operand);
+                //fallback
+                t.set(k, "operator", ev.operand);
+                t.set(k, "executor", ev.executor);
+                t.set(k, "before", ev.before);
+                t.set(k, "after", ev.after);
+                t.set(k, "extra", ev.extra);
+                t.set(k, "_nick", ev._nick);
+                t.set(k, "_remark", ev._remark);
+                t.set(k, "_friendStatus", ev._friendStatus);
+            } catch (Exception e) {
+                log(e);
+                //shouldn't happen
+            }
+        }
+        // 3. write out
+        try {
+            mConfig.putBytes(KET_EVENTS, t.toBytes());
+        } catch (IOException e) {
+            Utils.log(e);
+        }
+    }
+
     public void saveConfigure() {
         synchronized (this) {
             try {
                 if (persons == null) {
-                    persons = new ConcurrentHashMap<Long, FriendRecord>();
+                    persons = new ConcurrentHashMap<>();
                 }
-                File f = new File(
-                    HostInfo.getHostInfo().getApplication().getFilesDir()
-                        .getAbsolutePath() + "/qnotified_" + mUin + ".dat");
                 if (dirtySerializedFlag) {
-                    friendToTable();
-                    eventsToTable();
+                    saveEventsData();
+                    saveFriendsData();
                     dirtySerializedFlag = false;
                 }
-                fileData.getAllConfig().put("uin", mUin);
-                fileData.save();
+                mConfig.putLong("uin", mUin);
+                mConfig.save();
             } catch (IOException e) {
                 log(e);
             }
@@ -569,21 +603,14 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
             logi("Red dot missing!");
             return;
         }
-        int m = 0;
-        try {
-            m = (int) fileData.getAllConfig().get("unread");
-        } catch (Exception e) {
-        }
+        int m = mConfig.getInt("unread", 0);
         final int n = m;
-        ((Activity) Utils.getContext(rd)).runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (n < 1) {
-                    rd.setVisibility(View.INVISIBLE);
-                } else {
-                    rd.setText("" + n);
-                    rd.setVisibility(View.VISIBLE);
-                }
+        ((Activity) Utils.getContext(rd)).runOnUiThread(() -> {
+            if (n < 1) {
+                rd.setVisibility(View.INVISIBLE);
+            } else {
+                rd.setText("" + n);
+                rd.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -598,12 +625,9 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
         if (out == null) {
             return;
         }
-        int unread = 0;
-        if (fileData.getAllConfig().containsKey("unread")) {
-            unread = (Integer) fileData.getAllConfig().get("unread");
-        }
+        int unread = mConfig.getInt("unread", 0);
         unread++;
-        fileData.getAllConfig().put("unread", unread);
+        mConfig.putInt("unread", unread);
         String title, ticker, tag, c;
         if (ev._remark != null && ev._remark.length() > 0) {
             tag = ev._remark + "(" + ev.operand + ")";
@@ -627,7 +651,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
     }
 
     public void clearUnreadFlag() {
-        fileData.getAllConfig().put("unread", 0);
+        mConfig.putInt("unread", 0);
         try {
             NotificationManager nm = (NotificationManager) HostInfo.getHostInfo()
                 .getApplication().getSystemService(Context.NOTIFICATION_SERVICE);
@@ -734,7 +758,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
     @SuppressLint("MissingPermission")
     public void doNotifyDelFlAndSave(Object[] ptr) {
         dirtySerializedFlag = true;
-        fileData.putLong("lastUpdateFl", lastUpdateTimeSec);
+        mConfig.putLong("lastUpdateFl", lastUpdateTimeSec);
         saveConfigure();
         try {
             if (isNotifyWhenDeleted() && ((int) ptr[0]) > 0) {
@@ -760,18 +784,13 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
         }
     }
 
-    @Override
-    public boolean onFileChanged(int type, long uin, int what) {
-        return false;
-    }
-
     //TODO: IPC notify
     public boolean isNotifyWhenDeleted() {
-        return getBooleanOrDefault("qn_notify_when_del", true);
+        return mConfig.getBoolean("qn_notify_when_del", true);
     }
 
     public void setNotifyWhenDeleted(boolean z) {
-        putObject("qn_notify_when_del", z);
+        mConfig.putBoolean("qn_notify_when_del", z);
         saveConfigure();
     }
 
@@ -805,11 +824,7 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
         builder.setContentText(content);
         builder.setContentIntent(pi);
         builder.setVibrate(vibration);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            return builder.build();
-        } else {
-            return builder.getNotification();
-        }
+        return builder.build();
     }
 
 
@@ -828,31 +843,14 @@ public class ExfriendManager implements SyncUtils.OnFileChangedListener {
         }
     }
 
+    public long getLastUpdateTimeSec() {
+        return lastUpdateTimeSec;
+    }
+
     public void timeToUpdateFl() {
         long t = System.currentTimeMillis() / 1000;
         if (t - lastUpdateTimeSec > FL_UPDATE_INT_MIN) {
             tp.execute(this::doRequestFlRefresh);
         }
     }
-
-    public long getLongOrDefault(String key, long i) {
-        return fileData.getLongOrDefault(key, i);
-    }
-
-    public int getIntOrDefault(String key, int i) {
-        return fileData.getIntOrDefault(key, i);
-    }
-
-    public boolean getBooleanOrDefault(String key, boolean defVal) {
-        return fileData.getBooleanOrDefault(key, defVal);
-    }
-
-    public String geStringOrNull(String key) {
-        return fileData.getString(key);
-    }
-
-    public void putObject(String key, Object val) {
-        fileData.putObject(key, val);
-    }
-
 }

@@ -258,8 +258,7 @@ public class DexKit {
                 return null;
             }
             cache.putString("cache_" + a(i) + "_method", ret.toString());
-            cache.getAllConfig().put("cache_" + a(i) + "_code",
-                HostInfo.getHostInfo().getVersionCode32());
+            cache.putInt("cache_" + a(i) + "_code", HostInfo.getHostInfo().getVersionCode32());
             cache.save();
         } catch (Exception e) {
             log(e);

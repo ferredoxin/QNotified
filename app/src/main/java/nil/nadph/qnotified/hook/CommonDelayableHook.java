@@ -97,7 +97,7 @@ public abstract class CommonDelayableHook extends BaseDelayableHook {
     public void setEnabled(boolean enabled) {
         try {
             ConfigManager mgr = ConfigManager.getDefaultConfig();
-            mgr.getAllConfig().put(mKeyName, enabled);
+            mgr.putBoolean(mKeyName, enabled);
             mgr.save();
         } catch (Exception e) {
             Utils.log(e);

@@ -22,13 +22,10 @@
 package nil.nadph.qnotified.config;
 
 import android.content.Context;
-
 import androidx.annotation.NonNull;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
-
 import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.util.MainProcess;
@@ -157,7 +154,12 @@ public class ConfigItems {
 
             @Override
             public boolean sync() {
-                return ConfigManager.getDefaultConfig().sync();
+                try {
+                    ConfigManager.getDefaultConfig().save();
+                    return true;
+                } catch (IOException e) {
+                    return false;
+                }
             }
 
             @Override

@@ -73,7 +73,7 @@ abstract class BaseDelayableHookAdapter @JvmOverloads protected constructor(
     override fun setEnabled(enabled: Boolean) {
         try {
             val mgr = ConfigManager.getDefaultConfig()
-            mgr.allConfig[cfgName] = enabled
+            mgr.putBoolean(cfgName, enabled)
             mgr.save()
         } catch (e: Exception) {
             Utils.log(e)

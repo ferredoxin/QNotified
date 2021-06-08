@@ -492,7 +492,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                             HostInfo.getHostInfo().getApplication().getFilesDir()
                                 .getAbsolutePath() + "/qnotified_cache.dat").delete();
                         ConfigManager cfg = ConfigManager.getCache();
-                        cfg.getAllConfig().clear();
+                        cfg.clear();
                         //cfg.getFile().delete();
                         System.exit(0);
                     } catch (Throwable e) {
@@ -521,7 +521,7 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
                             HostInfo.getHostInfo().getApplication().getFilesDir()
                                 .getAbsolutePath() + "/qnotified_config.dat").delete();
                         ConfigManager cfg = ConfigManager.getDefaultConfig();
-                        cfg.getAllConfig().clear();
+                        cfg.clear();
                         //cfg.getFile().delete();
                         System.exit(0);
                     } catch (Throwable e) {
