@@ -33,6 +33,8 @@ import nil.nadph.qnotified.util.Utils.dip2px
 import nil.nadph.qnotified.util.Utils.dip2sp
 
 abstract class BViewGroup(context: Context) : ViewGroup(context) {
+    private val MODE_SHIFT = 30
+    private val MODE_MASK = 0x3 shl MODE_SHIFT
     protected fun View.defaultWidthMeasureSpec(parentView: ViewGroup): Int {
         return when (layoutParams.width) {
             ViewGroup.LayoutParams.MATCH_PARENT -> parentView.measuredWidth.toExactlyMeasureSpec()
@@ -52,11 +54,11 @@ abstract class BViewGroup(context: Context) : ViewGroup(context) {
     }
 
     protected fun Int.toExactlyMeasureSpec(): Int {
-        return MeasureSpec.makeMeasureSpec(this, MeasureSpec.EXACTLY)
+        return makeMeasureSpec(this, MeasureSpec.EXACTLY)
     }
 
     protected fun Int.toAtMostMeasureSpec(): Int {
-        return MeasureSpec.makeMeasureSpec(this, MeasureSpec.AT_MOST)
+        return makeMeasureSpec(this, MeasureSpec.AT_MOST)
     }
 
     protected fun View.autoMeasure() {
@@ -94,6 +96,9 @@ abstract class BViewGroup(context: Context) : ViewGroup(context) {
     protected val Int.dp2sp: Int get() = dip2sp(context, this.toFloat())
     protected val View.measuredWidthWithMargins get() = (measuredWidth + marginLeft + marginRight)
     protected val View.measuredHeightWithMargins get() = (measuredHeight + marginTop + marginBottom)
+    protected fun makeMeasureSpec(size: Int, mode: Int): Int {
+        return size and MODE_MASK.inv() or (mode and MODE_MASK)
+    }
 
     protected class LayoutParams(width: Int, height: Int) : MarginLayoutParams(width, height)
 }
