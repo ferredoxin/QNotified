@@ -380,6 +380,8 @@ jlong doGetBuildTimestamp(JNIEnv *env, jclass clazz) {
             env->ExceptionClear();
             continue;
         }
+        env->CallVoidMethod(is, is_close);
+        env->ExceptionClear();
         {
             //parse [dex, dex+length]
             if (length < 128 * 1024) {
