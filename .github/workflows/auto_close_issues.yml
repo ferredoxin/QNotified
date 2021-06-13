@@ -1,17 +1,17 @@
+name: Check Issues
+
 on:
   issues:
-    types: [opened, edited]
-
+    types: [opened]
 jobs:
-  auto_close_issues:
+  check:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v1
-      - name: Automatically close issues that don't follow the issue template
-        uses: lucasbento/auto-close-issues@v1.0.2
+      - name: Check out
+        uses: actions/checkout@v2
+      - if: contains(github.event.issue.body) != true
+        id: close
+        name: Close Issue(template)
+        uses: peter-evans/close-issue@v1
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          issue-close-message: "@${issue.user.login}: hello! :wave:\n\nThis issue is being automatically closed because it does not follow the issue template." # optional property
-          closed-issues-label: "Invalid" # optional property
-
+          comment: This issue is being automatically closed because it does not follow the issue template.
