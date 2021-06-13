@@ -99,14 +99,14 @@ dependencies {
     implementation 'de.psdev.licensesdialog:licensesdialog:2.1.0'
     implementation 'io.noties.markwon:core:4.6.2'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0"
     // 脚本解析
     implementation 'org.apache-extras.beanshell:bsh:2.0b6'
     // androidx
     implementation 'androidx.preference:preference-ktx:1.1.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    implementation 'com.google.android.material:material:1.4.0-beta01'
-    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.google.android.material:material:1.4.0-rc01'
+    implementation 'com.google.code.gson:gson:2.8.7'
     implementation 'com.afollestad.material-dialogs:core:3.3.0'
     implementation 'com.afollestad.material-dialogs:input:3.3.0'
 }
@@ -118,7 +118,6 @@ dependencies {
 }
 
 dependencies {
-
     def lifecycle_version = "2.3.1"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
@@ -139,51 +138,51 @@ def _execDexTail = { String dexPath ->
 
 task dexTailDebug {
     doLast {
-        println("dexTailDebug.doLast invoked");
-        ArrayList<File> pathList = new ArrayList<>();
+        println("dexTailDebug.doLast invoked")
+        ArrayList<File> pathList = new ArrayList<>()
         //3.6.x, plain
-        String tmp_path = "intermediates/dex/debug/out/classes.dex";
-        if (!"/".equals(File.separator)) {
-            tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar);
+        String tmp_path = "intermediates/dex/debug/out/classes.dex"
+        if ("/" != File.separator) {
+            tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar)
         }
-        File tmp_f = new File(project.buildDir, tmp_path);
+        File tmp_f = new File(project.buildDir, tmp_path)
         if (tmp_f.exists()) {
-            pathList.add(tmp_f);
+            pathList.add(tmp_f)
         }
         //3.6.x, minify
-        tmp_path = "intermediates/dex/debug/shrunkDex/classes.dex";
-        if (!"/".equals(File.separator)) {
-            tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar);
+        tmp_path = "intermediates/dex/debug/shrunkDex/classes.dex"
+        if ("/" != File.separator) {
+            tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar)
         }
-        tmp_f = new File(project.buildDir, tmp_path);
+        tmp_f = new File(project.buildDir, tmp_path)
         if (tmp_f.exists()) {
-            pathList.add(tmp_f);
+            pathList.add(tmp_f)
         }
         //4.0.x single
-        tmp_path = "intermediates/dex/debug/mergeDexDebug/classes.dex";
-        if (!"/".equals(File.separator)) {
-            tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar);
+        tmp_path = "intermediates/dex/debug/mergeDexDebug/classes.dex"
+        if ("/" != File.separator) {
+            tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar)
         }
-        tmp_f = new File(project.buildDir, tmp_path);
+        tmp_f = new File(project.buildDir, tmp_path)
         if (tmp_f.exists()) {
-            pathList.add(tmp_f);
+            pathList.add(tmp_f)
         }
         //4.0.x minify
-        tmp_path = "intermediates/dex/debug/minifyDebugWithR8/classes.dex";
-        if (!"/".equals(File.separator)) {
-            tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar);
+        tmp_path = "intermediates/dex/debug/minifyDebugWithR8/classes.dex"
+        if ("/" != File.separator) {
+            tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar)
         }
-        tmp_f = new File(project.buildDir, tmp_path);
+        tmp_f = new File(project.buildDir, tmp_path)
         if (tmp_f.exists()) {
-            pathList.add(tmp_f);
+            pathList.add(tmp_f)
         }
         //end
         if (pathList.size() == 0) {
-            throw new RuntimeException("dex not found: we only support 3.6.x, 4.0.x and 4.1.x");
+            throw new RuntimeException("dex not found: we only support 3.6.x, 4.0.x and 4.1.x")
         }
         for (File f : pathList) {
             if (!_execDexTail(f.getAbsolutePath())) {
-                throw new RuntimeException("DedxTail returned false");
+                throw new RuntimeException("DedxTail returned false")
             }
         }
     }
@@ -192,50 +191,50 @@ task dexTailDebug {
 task dexTailRelease {
     doLast {
         println("dexTailRelease.doLast invoked")
-        ArrayList<File> pathList = new ArrayList<>();
+        ArrayList<File> pathList = new ArrayList<>()
         //3.6.x single?
-        String tmp_path = "intermediates/dex/release/out/classes.dex";
-        if (!"/".equals(File.separator)) {
-            tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar);
+        String tmp_path = "intermediates/dex/release/out/classes.dex"
+        if ("/" != File.separator) {
+            tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar)
         }
-        File tmp_f = new File(project.buildDir, tmp_path);
+        File tmp_f = new File(project.buildDir, tmp_path)
         if (tmp_f.exists()) {
-            pathList.add(tmp_f);
+            pathList.add(tmp_f)
         }
         //3.6.x, minify
-        tmp_path = "intermediates/dex/release/shrunkDex/classes.dex";
-        if (!"/".equals(File.separator)) {
-            tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar);
+        tmp_path = "intermediates/dex/release/shrunkDex/classes.dex"
+        if ("/" != File.separator) {
+            tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar)
         }
-        tmp_f = new File(project.buildDir, tmp_path);
+        tmp_f = new File(project.buildDir, tmp_path)
         if (tmp_f.exists()) {
-            pathList.add(tmp_f);
+            pathList.add(tmp_f)
         }
         //4.0.x single
-        tmp_path = "intermediates/dex/release/mergeDexRelease/classes.dex";
-        if (!"/".equals(File.separator)) {
-            tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar);
+        tmp_path = "intermediates/dex/release/mergeDexRelease/classes.dex"
+        if ("/" != File.separator) {
+            tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar)
         }
-        tmp_f = new File(project.buildDir, tmp_path);
+        tmp_f = new File(project.buildDir, tmp_path)
         if (tmp_f.exists()) {
-            pathList.add(tmp_f);
+            pathList.add(tmp_f)
         }
         //4.0.x minify
-        tmp_path = "intermediates/dex/release/minifyReleaseWithR8/classes.dex";
-        if (!"/".equals(File.separator)) {
-            tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar);
+        tmp_path = "intermediates/dex/release/minifyReleaseWithR8/classes.dex"
+        if ("/" != File.separator) {
+            tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar)
         }
-        tmp_f = new File(project.buildDir, tmp_path);
+        tmp_f = new File(project.buildDir, tmp_path)
         if (tmp_f.exists()) {
-            pathList.add(tmp_f);
+            pathList.add(tmp_f)
         }
         //end
         if (pathList.size() == 0) {
-            throw new RuntimeException("dex not found: we only support 3.6.x, 4.0.x and 4.1.x");
+            throw new RuntimeException("dex not found: we only support 3.6.x, 4.0.x and 4.1.x")
         }
         for (File f : pathList) {
             if (!_execDexTail(f.getAbsolutePath())) {
-                throw new RuntimeException("DedxTail returned false");
+                throw new RuntimeException("DedxTail returned false")
             }
         }
     }
@@ -263,11 +262,11 @@ task checkTargetNativeLibsDebug {
     doLast {
         String[] targetAbi = ["arm64-v8a", "armeabi-v7a"]
         String soName = "libnatives.so"
-        String libPath = "app/build/intermediates/cmake/debug/obj";
+        String libPath = "app/build/intermediates/cmake/debug/obj"
         for (String abi : targetAbi) {
             String tmp_path = libPath + "/" + abi + "/" + soName
             if ("/" != File.separator) {
-                tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar);
+                tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar)
             }
             File f = new File(rootProject.projectDir, tmp_path)
             if (!f.exists()) {
@@ -283,11 +282,11 @@ task checkTargetNativeLibsRelease {
     doLast {
         String[] targetAbi = ["arm64-v8a", "armeabi-v7a"]
         String soName = "libnatives.so"
-        String libPath = "app/build/intermediates/cmake/release/obj";
+        String libPath = "app/build/intermediates/cmake/release/obj"
         for (String abi : targetAbi) {
             String tmp_path = libPath + "/" + abi + "/" + soName
             if ("/" != File.separator) {
-                tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar);
+                tmp_path = tmp_path.replace('/'.charAt(0), File.separatorChar)
             }
             File f = new File(rootProject.projectDir, tmp_path)
             if (!f.exists()) {
