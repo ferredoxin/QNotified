@@ -22,6 +22,8 @@
 
 package me.ketal.hook
 
+import ltd.nextalone.util.clazz
+import ltd.nextalone.util.get
 import ltd.nextalone.util.method
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import nil.nadph.qnotified.hook.CommonDelayableHook
@@ -41,7 +43,18 @@ object Emoji2Sticker : CommonDelayableHook("Ketal_Emoji2Sticker") {
     }
 
     fun sendParseAticker(result: Any, session: Any) {
-        "Lcom/tencent/mobileqq/emoticonview/AniStickerSendMessageCallBack;->sendAniStickerMsg(Lcom/tencent/mobileqq/emoticonview/AniStickerSendMessageCallBack\$AniStickerTextParseResult;Lcom/tencent/mobileqq/activity/aio/BaseSessionInfo;)V"
-            .method(null, result, session)
+        val clazz = "com/tencent/mobileqq/emoticonview/AniStickerSendMessageCallBack".clazz
+            ?: return
+        for (m in clazz.declaredMethods) {
+            when(m.name) {
+                "sendAniStickerMsg" -> {
+                    m(null, result, session)
+                }
+                "sendAniSticker"  -> {
+                    val id = result.get("emoLocalId")
+                    m(null, id, session)
+                }
+            }
+        }
     }
 }
