@@ -24,12 +24,12 @@ package nil.nadph.qnotified.util.data;
 
 public class UserStatusConst {
     // 未刷新前的默认状态
-    public static int notExist = -1;
+    public static final int notExist = -1;
 
-    public static int blacklisted = 1;
+    public static final int blacklisted = 1;
 
-    public static int whitelisted = 2;
+    public static final int whitelisted = 2;
 
-    public static int developer = 3;
+    public static final int developer = 3;
 
 }

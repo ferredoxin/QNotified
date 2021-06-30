@@ -124,7 +124,7 @@ public class LicenseStatus {
             LicenseStatus.setUserCurrentStatus();
             currentStatus = ConfigManager.getDefaultConfig().getIntOrDefault(qn_user_auth_status, -1);
         }
-        if (currentStatus == UserStatusConst.whitelisted) {
+        if (currentStatus == UserStatusConst.whitelisted|currentStatus == UserStatusConst.developer) {
             return true;
         }
         return false;
