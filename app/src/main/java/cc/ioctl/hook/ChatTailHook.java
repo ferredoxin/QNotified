@@ -131,6 +131,7 @@ public class ChatTailHook extends CommonDelayableHook {
                         if (LicenseStatus.sDisableCommonHooks) {
                             return;
                         }
+                        if (LicenseStatus.isBlacklisted()) return;
                         String msg = (String) param.args[3];
                         String text = msg;
                         final Parcelable session = (Parcelable) param.args[2];

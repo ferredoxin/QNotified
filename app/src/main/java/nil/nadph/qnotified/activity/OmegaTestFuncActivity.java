@@ -54,6 +54,7 @@ public class OmegaTestFuncActivity extends IphoneTitleBarActivityCompat {
     @Override
     public boolean doOnCreate(Bundle bundle) {
         super.doOnCreate(bundle);
+        if(!LicenseStatus.isBlacklisted()){
         RelativeLayout _t;
         String _hostName = HostInfo.getHostInfo().getHostName();
         LinearLayout ll = new LinearLayout(this);
@@ -107,7 +108,7 @@ public class OmegaTestFuncActivity extends IphoneTitleBarActivityCompat {
 
         setContentBackgroundDrawable(ResUtils.skin_background);
         setTitle("Omega测试性功能");
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);}
         return true;
     }
 
