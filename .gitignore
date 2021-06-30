@@ -77,3 +77,4 @@ app/src/main/res/drawable/icon.png
 .classpath
 app/signing.gradle
 .vscode
+gradle.properties
