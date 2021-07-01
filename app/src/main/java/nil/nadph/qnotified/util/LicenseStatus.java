@@ -33,6 +33,7 @@ import nil.nadph.qnotified.activity.EulaActivity;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.remote.TransactionHelper;
 import nil.nadph.qnotified.util.data.UserStatusConst;
+import nil.nadph.qnotified.util.LicenseStatus;
 
 public class LicenseStatus {
 
@@ -90,9 +91,6 @@ public class LicenseStatus {
 
     }
 
-    public static boolean isAsserted() {
-        return BuildConfig.DEBUG;
-    }
 
     public static boolean isInsider() {
         int currentStatus = ConfigManager.getDefaultConfig().getIntOrDefault(qn_user_auth_status, -1);
@@ -120,6 +118,21 @@ public class LicenseStatus {
 
     public static boolean isWhitelisted() {
         int currentStatus = ConfigManager.getDefaultConfig().getIntOrDefault(qn_user_auth_status, -1);
+        if(currentStatus == UserStatusConst.notExist){
+            LicenseStatus.setUserCurrentStatus();
+            currentStatus = ConfigManager.getDefaultConfig().getIntOrDefault(qn_user_auth_status, -1);
+        }
+        if (currentStatus == UserStatusConst.whitelisted|currentStatus == UserStatusConst.developer) {
+            return true;
+        }
+        return false;
+    }
+    
+    public static boolean isAsserted() {
+        int currentStatus = ConfigManager.getDefaultConfig().getIntOrDefault(qn_user_auth_status, -1);
+        if(BuildConfig.DEBUG){
+            return true;
+        }
         if(currentStatus == UserStatusConst.notExist){
             LicenseStatus.setUserCurrentStatus();
             currentStatus = ConfigManager.getDefaultConfig().getIntOrDefault(qn_user_auth_status, -1);
