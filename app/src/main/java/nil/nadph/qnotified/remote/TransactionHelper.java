@@ -21,27 +21,73 @@
  */
 package nil.nadph.qnotified.remote;
 
+import static nil.nadph.qnotified.util.Utils.log;
+
 import com.qq.taf.jce.JceInputStream;
 import com.qq.taf.jce.JceOutputStream;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.net.URL;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.SecureRandom;
+import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
+import org.json.JSONObject;
 
 public class TransactionHelper {
 
     private static final String TAG = "TransactionHelper";
     private static final String TKS_PASSWORD = "NAuth-v1";
+    private static final String apiAddress = "https://api.qwq2333.top";
     private static SSLSocketFactory sslFactory;
+
+    private static String convertInputStreamToString(InputStream inputStream) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+        String line = "";
+        String result = "";
+        while((line = bufferedReader.readLine()) != null)
+            result += line;
+
+        inputStream.close();
+        return result;
+
+    }
+
+    public static int getUserStatus(long uin) {
+        try {
+            URL url = new URL(apiAddress+"/user/query");
+            HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json; utf-8");
+            conn.setRequestProperty("Accept", "application/json");
+            DataOutputStream os = new DataOutputStream(conn.getOutputStream());
+            os.writeBytes("{\"uin\":"+uin+"}");
+
+            os.flush();
+            os.close();
+
+            JSONObject resp = new JSONObject(convertInputStreamToString(conn.getInputStream()));
+            if (resp.getInt("code") == 200) {
+                return resp.getInt("status");
+            } else {
+                return -1;
+            }
+        } catch (Exception e) {
+            log(e);
+            return -1;
+        }
+    }
 
     public static void initSslContext() {
         if (sslFactory != null) {

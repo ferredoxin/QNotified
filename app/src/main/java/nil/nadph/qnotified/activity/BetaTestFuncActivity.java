@@ -46,6 +46,7 @@ import me.kyuubiran.hook.testhook.CutMessage;
 import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.ui.widget.FunctionButton;
 import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.util.LicenseStatus;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -59,6 +60,7 @@ public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
 
     @Override
     public boolean doOnCreate(Bundle bundle) {
+        if (!LicenseStatus.isBlacklisted()){
         super.doOnCreate(bundle);
         ViewGroup _t;
         String _hostName = HostInfo.getHostInfo().getHostName();
@@ -116,7 +118,7 @@ public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
         _lp_fat.weight = 1;
 
         setContentBackgroundDrawable(ResUtils.skin_background);
-        setTitle("Beta测试性功能");
+        setTitle("Beta测试性功能");}
         return true;
     }
 

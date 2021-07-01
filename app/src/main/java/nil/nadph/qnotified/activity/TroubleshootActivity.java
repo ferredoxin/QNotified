@@ -21,6 +21,21 @@
  */
 package nil.nadph.qnotified.activity;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static nil.nadph.qnotified.ui.ViewBuilder.clickToProxyActAction;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemButton;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit;
+import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
+import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
+import static nil.nadph.qnotified.util.ReflexUtil.iput_object;
+import static nil.nadph.qnotified.util.Utils.DummyCallback;
+import static nil.nadph.qnotified.util.Utils.dip2px;
+import static nil.nadph.qnotified.util.Utils.getLongAccountUin;
+import static nil.nadph.qnotified.util.Utils.getShort$Name;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.logi;
+
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -41,20 +56,17 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-
+import cc.ioctl.activity.ExfriendListActivity;
+import cc.ioctl.activity.MmkvTestActivity;
+import cc.ioctl.activity.SecurityTestActivity;
+import cc.ioctl.hook.InspectMessage;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tencent.mobileqq.widget.BounceScrollView;
-
 import java.io.File;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
-import cc.ioctl.activity.ExfriendListActivity;
-import cc.ioctl.activity.MmkvTestActivity;
-import cc.ioctl.activity.SecurityTestActivity;
-import cc.ioctl.hook.InspectMessage;
 import ltd.nextalone.hook.EnableQLog;
 import me.singleneuron.activity.BugReportActivity;
 import me.singleneuron.data.CardMsgCheckResult;
@@ -71,14 +83,13 @@ import nil.nadph.qnotified.lifecycle.ActProxyMgr;
 import nil.nadph.qnotified.lifecycle.Parasitics;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ResUtils;
-import nil.nadph.qnotified.util.*;
-
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.ui.ViewBuilder.*;
-import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
-import static nil.nadph.qnotified.util.ReflexUtil.iput_object;
-import static nil.nadph.qnotified.util.Utils.*;
+import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.DexMethodDescriptor;
+import nil.nadph.qnotified.util.Initiator;
+import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.Natives;
+import nil.nadph.qnotified.util.Toasts;
+import nil.nadph.qnotified.util.Utils;
 
 @SuppressLint("Registered")
 public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
@@ -414,13 +425,53 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
     }
 
     public View.OnClickListener clickToRefreshUserStatus() {
-        return view -> {
-            long uin = Utils.getLongAccountUin();
-            if (uin < 10000) {
-                return;
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                long uin = Utils.getLongAccountUin();
+                if (uin < 10000) {
+                    return;
+                }
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        StringBuilder sb;
+                        String msg;
+                        Throwable t = null;
+                        try {
+                            LicenseStatus.setUserCurrentStatus();
+                            sb = new StringBuilder();
+                            sb.append(uin).append(": ");
+                            if (LicenseStatus.isWhitelisted()) {
+                                sb.append("Whitelisted User");
+                            }
+                            if (LicenseStatus.isBlacklisted()) {
+                                sb.append("Blacklisted User");
+                            }
+                            if ((!LicenseStatus.isBlacklisted())
+                                && (!LicenseStatus.isWhitelisted())) {
+                                sb.append("Everything is ok");
+                            }
+
+                            msg = sb.toString();
+                        } catch (Exception e) {
+                            msg = e.toString();
+                            t = e;
+                        }
+                        Throwable finalT = t;
+                        String finalMsg = msg;
+                        view.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                CustomDialog.createFailsafe(view.getContext())
+                                    .setTitle(finalT == null ? "状态" : "失败")
+                                    .setCancelable(true).setMessage(finalMsg)
+                                    .setPositiveButton("确认", null).show();
+                            }
+                        });
+                    }
+                }).start();
             }
-            CustomDialog.createFailsafe(view.getContext()).setTitle("状态")
-                .setCancelable(true).setMessage("破解版没有黑白名单哦").setPositiveButton("确认", null).show();
         };
     }
 
