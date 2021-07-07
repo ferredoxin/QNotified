@@ -227,7 +227,7 @@ public class InputButtonHook extends CommonDelayableHook {
                                         }).start();
                                     } else {
                                         Emoji2Sticker emoji2Sticker = Emoji2Sticker.INSTANCE;
-                                        if (emoji2Sticker.isEnabled()) {
+                                        if (emoji2Sticker.superIsEnable()) {
                                             Object stickerParse = emoji2Sticker.parseMsgForAniSticker(
                                                 text, session);
                                             boolean singleAniSticker = (boolean) iget_object_or_null(
