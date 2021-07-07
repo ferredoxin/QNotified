@@ -22,14 +22,34 @@
 
 package me.ketal.hook
 
+import ltd.nextalone.util.clazz
+import ltd.nextalone.util.get
+import ltd.nextalone.util.hookAfter
 import ltd.nextalone.util.method
+import ltd.nextalone.util.set
+import ltd.nextalone.util.tryOrFalse
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
+import nil.nadph.qnotified.SyncUtils
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.QQVersion
 
-object Emoji2Sticker : CommonDelayableHook("Ketal_Emoji2Sticker") {
+@FunctionEntry
+object Emoji2Sticker : CommonDelayableHook("Ketal_Emoji2Sticker", SyncUtils.PROC_MAIN, true) {
     override fun isValid() = requireMinQQVersion(QQVersion.QQ_8_7_5)
-    override fun initOnce() = true
+
+    override fun initOnce() = tryOrFalse {
+        "Lcom/tencent/mobileqq/emoticonview/AniStickerSendMessageCallBack;->parseMsgForAniSticker(Ljava/lang/String;Lcom/tencent/mobileqq/activity/aio/BaseSessionInfo;)Lcom/tencent/mobileqq/emoticonview/AniStickerSendMessageCallBack\$AniStickerTextParseResult;"
+            .method.hookAfter(this) {
+                if (!superIsEnable()) {
+                    it.result.set("singleAniSticker", false)
+                }
+            }
+    }
+
+    fun superIsEnable() = super.isEnabled()
+
+    override fun isEnabled() = true
 
     fun parseMsgForAniSticker(str: String, session: Any) : Any? {
         return try {
@@ -41,7 +61,18 @@ object Emoji2Sticker : CommonDelayableHook("Ketal_Emoji2Sticker") {
     }
 
     fun sendParseAticker(result: Any, session: Any) {
-        "Lcom/tencent/mobileqq/emoticonview/AniStickerSendMessageCallBack;->sendAniStickerMsg(Lcom/tencent/mobileqq/emoticonview/AniStickerSendMessageCallBack\$AniStickerTextParseResult;Lcom/tencent/mobileqq/activity/aio/BaseSessionInfo;)V"
-            .method(null, result, session)
+        val clazz = "com/tencent/mobileqq/emoticonview/AniStickerSendMessageCallBack".clazz
+            ?: return
+        for (m in clazz.declaredMethods) {
+            when(m.name) {
+                "sendAniStickerMsg" -> {
+                    m(null, result, session)
+                }
+                "sendAniSticker"  -> {
+                    val id = result.get("emoLocalId")
+                    m(null, id, session)
+                }
+            }
+        }
     }
 }
