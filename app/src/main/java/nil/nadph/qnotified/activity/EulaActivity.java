@@ -43,9 +43,13 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import cc.ioctl.hook.FakeBatteryHook;
+
 import com.tencent.mobileqq.widget.BounceScrollView;
+
 import java.io.IOException;
+
+import cc.ioctl.hook.FakeBatteryHook;
+import me.singleneuron.qn_kernel.ui.NewSettingsActivity;
 import nil.nadph.qnotified.InjectDelayableHooks;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.ui.ResUtils;
@@ -179,7 +183,7 @@ public class EulaActivity extends IphoneTitleBarActivityCompat implements View.O
                 } else {
                     LicenseStatus.setEulaStatus(CURRENT_EULA_VERSION);
                     InjectDelayableHooks.doInitDelayableHooksMP();
-                    this.startActivity(new Intent(this, SettingsActivity.class));
+                    this.startActivity(new Intent(this, NewSettingsActivity.class));
                     finish();
                 }
                 break;

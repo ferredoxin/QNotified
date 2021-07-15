@@ -30,8 +30,9 @@ import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.decorator.BaseItemBuilderFactoryHookDecorator
 import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference
-import nil.nadph.qnotified.util.QQVersion
+import me.singleneuron.qn_kernel.ui.base.辅助功能
 import nil.nadph.qnotified.util.Initiator
+import nil.nadph.qnotified.util.QQVersion
 import nil.nadph.qnotified.util.ReflexUtil
 import nil.nadph.qnotified.util.Utils
 import org.json.JSONObject
@@ -71,6 +72,6 @@ object MiniAppToStruckMsg : BaseItemBuilderFactoryHookDecorator(MiniAppToStruckM
         title = "小程序转链接分享（接收）"
     }
 
-    override val preferenceLocate: Array<String> = arrayOf("辅助功能")
+    override val preferenceLocate: Array<String> = 辅助功能
 
 }

@@ -23,23 +23,42 @@ package cc.ioctl.hook;
 
 import static nil.nadph.qnotified.util.Utils.log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import java.lang.reflect.Method;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
-import java.lang.reflect.Method;
+import me.singleneuron.qn_kernel.annotation.UiItem;
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge;
+import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
-import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
 
 @FunctionEntry
-public class MuteQZoneThumbsUp extends CommonDelayableHook {
+@UiItem
+public class MuteQZoneThumbsUp extends CommonDelayAbleHookBridge {
+
+    @NonNull
+    @Override
+    public UiSwitchPreference getPreference() {
+        return this.new UiSwitchPreferenceItemFactory("被赞说说不提醒", "不影响评论,转发或击掌的通知");
+    }
+
+    @Nullable
+    @Override
+    public String[] getPreferenceLocate() {
+        return new String[]{"净化功能", "消息通知设置"};
+    }
 
     public static final MuteQZoneThumbsUp INSTANCE = new MuteQZoneThumbsUp();
     protected int MSG_INFO_OFFSET = -1;
 
     private MuteQZoneThumbsUp() {
-        super("qn_mute_thumb_up", new DexDeobfStep(DexKit.C_QZONE_MSG_NOTIFY));
+        super(new DexDeobfStep(DexKit.C_QZONE_MSG_NOTIFY));
     }
 
     @Override

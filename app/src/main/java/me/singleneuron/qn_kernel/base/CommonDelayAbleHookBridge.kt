@@ -31,17 +31,28 @@ import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.hook.CommonDelayableHook
+import nil.nadph.qnotified.step.Step
 import nil.nadph.qnotified.util.Toasts
 import nil.nadph.qnotified.util.Utils
 
-abstract class CommonDelayAbleHookBridge : CommonDelayableHook(""), UiItem {
+abstract class CommonDelayAbleHookBridge
+@JvmOverloads
+constructor(
+    targetProcess: Int = SyncUtils.PROC_MAIN,
+    vararg preconditions: Step = emptyArray(),
+) : CommonDelayableHook("", targetProcess, *preconditions), UiItem {
+
+    constructor(vararg preconditions: Step = emptyArray()) : this(
+        SyncUtils.PROC_MAIN,
+        *preconditions
+    )
 
     val configName: String = this::class.java.simpleName
 
     abstract override val preference: UiSwitchPreference
 
     fun uiSwitchPreference(init: UiSwitchPreferenceItemFactory.() -> Unit): UiSwitchPreference {
-        val uiSwitchPreferenceFactory = UiSwitchPreferenceItemFactory()
+        val uiSwitchPreferenceFactory = this.UiSwitchPreferenceItemFactory()
         uiSwitchPreferenceFactory.init()
         return uiSwitchPreferenceFactory
     }
@@ -54,13 +65,22 @@ abstract class CommonDelayAbleHookBridge : CommonDelayableHook(""), UiItem {
         preference.value.postValue(enabled)
     }
 
-    open inner class UiSwitchPreferenceItemFactory : UiSwitchPreference {
+    open inner class UiSwitchPreferenceItemFactory constructor() : UiSwitchPreference {
         override lateinit var title: String
         override var summary: String? = null
+
+        @JvmOverloads
+        constructor(title: String, summary: String? = null) : this() {
+            this.title = title
+            this.summary = summary
+        }
+
         override val value: MutableLiveData<Boolean?> by lazy {
             MutableLiveData<Boolean?>().apply {
                 try {
-                    postValue(ConfigManager.getDefaultConfig().getBooleanOrDefault(configName, false))
+                    postValue(
+                        ConfigManager.getDefaultConfig().getBooleanOrDefault(configName, false)
+                    )
                 } catch (e: Exception) {
                     Utils.log(e)
                 }

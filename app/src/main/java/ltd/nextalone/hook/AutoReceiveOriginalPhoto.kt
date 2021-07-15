@@ -25,22 +25,30 @@ import ltd.nextalone.util.invoke
 import ltd.nextalone.util.method
 import ltd.nextalone.util.replace
 import ltd.nextalone.util.tryOrFalse
+import me.singleneuron.qn_kernel.annotation.UiItem
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import nil.nadph.qnotified.util.QQVersion
+import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference
+import me.singleneuron.qn_kernel.ui.base.辅助功能
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.base.annotation.FunctionEntry
-import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.util.DexKit
+import nil.nadph.qnotified.util.QQVersion
 
 @FunctionEntry
-object AutoReceiveOriginalPhoto : CommonDelayableHook(
-    "na_auto_receive_origin_photo",
+@UiItem
+object AutoReceiveOriginalPhoto : CommonDelayAbleHookBridge(
     SyncUtils.PROC_PEAK,
-    false,
     DexDeobfStep(DexKit.C_AIOPictureView)
 ) {
+
+    override val preference: UiSwitchPreference = uiSwitchPreference {
+        title = "聊天自动接收原图"
+    }
+
+    override val preferenceLocate = 辅助功能
 
     override fun initOnce() = tryOrFalse {
         val method: String = when {

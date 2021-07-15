@@ -21,17 +21,6 @@
  */
 package cc.ioctl.hook;
 
-import java.lang.reflect.Method;
-import java.util.List;
-
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedHelpers;
-import me.singleneuron.qn_kernel.data.HostInfo;
-import nil.nadph.qnotified.base.annotation.FunctionEntry;
-import nil.nadph.qnotified.hook.CommonDelayableHook;
-import nil.nadph.qnotified.step.DexDeobfStep;
-import nil.nadph.qnotified.util.DexKit;
-
 import static nil.nadph.qnotified.util.Initiator._EmoAddedAuthCallback;
 import static nil.nadph.qnotified.util.Initiator._FavEmoRoamingHandler;
 import static nil.nadph.qnotified.util.QQVersion.QQ_8_2_0;
@@ -39,13 +28,42 @@ import static nil.nadph.qnotified.util.ReflexUtil.iput_object;
 import static nil.nadph.qnotified.util.ReflexUtil.sput_object;
 import static nil.nadph.qnotified.util.Utils.log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import java.lang.reflect.Method;
+import java.util.List;
+
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedHelpers;
+import me.singleneuron.qn_kernel.annotation.UiItem;
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge;
+import me.singleneuron.qn_kernel.data.HostInfo;
+import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
+import nil.nadph.qnotified.step.DexDeobfStep;
+import nil.nadph.qnotified.util.DexKit;
+
 @FunctionEntry
-public class FavMoreEmo extends CommonDelayableHook {
+@UiItem
+public class FavMoreEmo extends CommonDelayAbleHookBridge {
 
     public static final FavMoreEmo INSTANCE = new FavMoreEmo();
 
+    @NonNull
+    @Override
+    public UiSwitchPreference getPreference() {
+        return this.new UiSwitchPreferenceItemFactory("收藏更多表情", "[暂不支持>=8.2.0]保存在本地");
+    }
+
+    @Nullable
+    @Override
+    public String[] getPreferenceLocate() {
+        return new String[]{"增强功能"};
+    }
+
     FavMoreEmo() {
-        super("qqhelper_fav_more_emo", new DexDeobfStep(DexKit.C_FAV_EMO_CONST));
+        super(new DexDeobfStep(DexKit.C_FAV_EMO_CONST));
     }
 
     @Override

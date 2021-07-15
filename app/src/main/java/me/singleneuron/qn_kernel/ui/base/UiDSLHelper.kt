@@ -31,9 +31,16 @@ import me.singleneuron.qn_kernel.data.hostInfo
 import nil.nadph.qnotified.R
 import nil.nadph.qnotified.ui.CommonContextWrapper
 
+fun uiClickableItem(init: UiClickablePreferenceFactory.() -> Unit): Pair<String, UiPreference> {
+    val uiClickablePreferenceFactory = UiClickablePreferenceFactory()
+    uiClickablePreferenceFactory.init()
+    return Pair(uiClickablePreferenceFactory.title, uiClickablePreferenceFactory)
+}
+
 fun uiClickToActivityItem(init: UiClickToActivityPreferenceFactory.() -> Unit): Pair<String, UiPreference> {
     val uiClickToActivityItemFactory = UiClickToActivityPreferenceFactory()
     uiClickToActivityItemFactory.init()
+    uiClickToActivityItemFactory.create()
     return Pair(uiClickToActivityItemFactory.title, uiClickToActivityItemFactory)
 }
 

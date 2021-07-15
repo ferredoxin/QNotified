@@ -21,28 +21,48 @@
  */
 package cc.ioctl.hook;
 
+import static nil.nadph.qnotified.util.Initiator._BaseSessionInfo;
+import static nil.nadph.qnotified.util.Initiator._SessionInfo;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.app.AlertDialog;
 import android.content.Context;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.Random;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
+import me.singleneuron.qn_kernel.annotation.UiItem;
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge;
 import me.singleneuron.qn_kernel.data.HostInfo;
+import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
-import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.QQVersion;
 
-import static nil.nadph.qnotified.util.Initiator.*;
-import static nil.nadph.qnotified.util.Utils.log;
-
 @FunctionEntry
-public class CheatHook extends CommonDelayableHook {
+@UiItem
+public class CheatHook extends CommonDelayAbleHookBridge {
+
+    @NonNull
+    @Override
+    public UiSwitchPreference getPreference() {
+        return this.new UiSwitchPreferenceItemFactory("自定义猜拳骰子");
+    }
+
+    @Nullable
+    @Override
+    public String[] getPreferenceLocate() {
+        return new String[]{"自定义功能"};
+    }
 
     public static final CheatHook INSTANCE = new CheatHook();
     private final String[] diceItem = {"1", "2", "3", "4", "5", "6"};
@@ -52,7 +72,7 @@ public class CheatHook extends CommonDelayableHook {
     private int morraNum = -1;
 
     private CheatHook() {
-        super("qh_random_cheat", new DexDeobfStep(DexKit.C_PNG_FRAME_UTIL),
+        super(new DexDeobfStep(DexKit.C_PNG_FRAME_UTIL),
             new DexDeobfStep(DexKit.C_PIC_EMOTICON_INFO));
     }
 

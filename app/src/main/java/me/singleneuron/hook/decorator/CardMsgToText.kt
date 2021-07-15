@@ -27,6 +27,7 @@ import de.robv.android.xposed.XposedHelpers
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.decorator.BaseItemBuilderFactoryHookDecorator
 import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference
+import me.singleneuron.qn_kernel.ui.base.净化功能
 import nil.nadph.qnotified.BuildConfig
 import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.ReflexUtil
@@ -77,7 +78,7 @@ object CardMsgToText : BaseItemBuilderFactoryHookDecorator(CardMsgToText::class.
         title = "卡片消息文本化"
     }
 
-    override val preferenceLocate: Array<String> = arrayOf("净化功能")
+    override val preferenceLocate: Array<String> = 净化功能
 
 }
 

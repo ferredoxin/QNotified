@@ -53,9 +53,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -65,15 +67,21 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
+import me.singleneuron.qn_kernel.annotation.UiItem;
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge;
+import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference;
+import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.bridge.ChatActivityFacade;
 import nil.nadph.qnotified.bridge.SessionInfoImpl;
 import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.ui.CustomDialog;
-import nil.nadph.qnotified.ui.drawable.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.ui.drawable.HighContrastBorder;
 import nil.nadph.qnotified.util.CustomMenu;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.FaceImpl;
@@ -82,7 +90,8 @@ import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
 @FunctionEntry
-public class PttForwardHook extends CommonDelayableHook {
+@UiItem
+public class PttForwardHook extends CommonDelayAbleHookBridge {
 
     public static final int R_ID_PTT_FORWARD = 0x30EE77CB;
     public static final int R_ID_PTT_SAVE = 0x30EE77CC;
@@ -90,8 +99,20 @@ public class PttForwardHook extends CommonDelayableHook {
     public static final String qn_cache_ptt_save_last_parent_dir = "qn_cache_ptt_save_last_parent_dir";
     public static final PttForwardHook INSTANCE = new PttForwardHook();
 
+    @NonNull
+    @Override
+    public UiSwitchPreference getPreference() {
+        return this.new UiSwitchPreferenceItemFactory("语音转发", "长按语音消息");
+    }
+
+    @Nullable
+    @Override
+    public String[] getPreferenceLocate() {
+        return new String[]{"增强功能"};
+    }
+
     private PttForwardHook() {
-        super("qn_enable_ptt_forward", new DexDeobfStep(DexKit.C_FACADE));
+        super(SyncUtils.PROC_MAIN, new DexDeobfStep(DexKit.C_FACADE));
     }
 
     private static void showSavePttFileDialog(Activity context, final File ptt) {

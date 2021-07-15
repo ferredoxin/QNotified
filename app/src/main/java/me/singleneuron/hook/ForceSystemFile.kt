@@ -29,6 +29,7 @@ import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
+import me.singleneuron.qn_kernel.ui.base.辅助功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.step.Step
@@ -83,6 +84,6 @@ object ForceSystemFile : CommonDelayAbleHookBridge() {
         summary = "支持8.3.6及更高"
     }
 
-    override val preferenceLocate: Array<String> = arrayOf("增强功能")
+    override val preferenceLocate: Array<String> = 辅助功能
 
 }

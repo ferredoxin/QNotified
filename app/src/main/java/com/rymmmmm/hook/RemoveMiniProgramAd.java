@@ -21,30 +21,48 @@
  */
 package com.rymmmmm.hook;
 
+import static me.singleneuron.qn_kernel.data.HostInfo.requireMinQQVersion;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
+import static nil.nadph.qnotified.util.ReflexUtil.iput_object;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.lang.reflect.Method;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import me.singleneuron.qn_kernel.annotation.UiItem;
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge;
+import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
-import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.QQVersion;
 import nil.nadph.qnotified.util.Utils;
 
-import static me.singleneuron.qn_kernel.data.HostInfo.requireMinQQVersion;
-import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
-import static nil.nadph.qnotified.util.ReflexUtil.iput_object;
-
 //去除小程序广告 需要手动点关闭
 @FunctionEntry
-public class RemoveMiniProgramAd extends CommonDelayableHook {
+@UiItem
+public class RemoveMiniProgramAd extends CommonDelayAbleHookBridge {
+
+    @NonNull
+    @Override
+    public UiSwitchPreference getPreference() {
+        return this.new UiSwitchPreferenceItemFactory("屏蔽小程序广告", "需要手动关闭广告, 请勿反馈此功能无效");
+    }
+
+    @Nullable
+    @Override
+    public String[] getPreferenceLocate() {
+        return new String[]{"净化功能"};
+    }
 
     public static final RemoveMiniProgramAd INSTANCE = new RemoveMiniProgramAd();
 
     protected RemoveMiniProgramAd() {
-        super("rq_remove_mini_program_ad",
+        super(
             SyncUtils.PROC_ANY & ~(SyncUtils.PROC_MAIN | SyncUtils.PROC_MSF | SyncUtils.PROC_QZONE
                 | SyncUtils.PROC_PEAK | SyncUtils.PROC_VIDEO));
     }

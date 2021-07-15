@@ -34,18 +34,34 @@ import me.kyuubiran.util.getExFriendCfg
 import me.kyuubiran.util.showToastByTencent
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.qn_kernel.tlb.ConfigTable.getConfig
-import nil.nadph.qnotified.util.QQVersion
+import me.singleneuron.qn_kernel.ui.base.UiDescription
+import me.singleneuron.qn_kernel.ui.base.UiItem
+import me.singleneuron.qn_kernel.ui.base.uiClickableItem
+import me.singleneuron.qn_kernel.ui.base.增强功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.ui.CustomDialog
 import nil.nadph.qnotified.ui.ViewBuilder
 import nil.nadph.qnotified.util.Initiator
+import nil.nadph.qnotified.util.QQVersion
 import nil.nadph.qnotified.util.Toasts
 import nil.nadph.qnotified.util.Utils
 import java.util.*
 
 @FunctionEntry
-object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt") {
+@me.singleneuron.qn_kernel.annotation.UiItem
+object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt"), UiItem {
+
+    override val preference: UiDescription = uiClickableItem {
+        title = "聊天字数统计"
+        onClickListener = {
+            showChatWordsCountDialog(it)
+            true
+        }
+    }.second
+
+    override val preferenceLocate = 增强功能
+
     private const val msgCfg = "na_chat_words_count_kt_msg"
     private const val wordsCfg = "na_chat_words_count_kt_words"
     private const val emoCfg = "na_chat_words_count_kt_emo"

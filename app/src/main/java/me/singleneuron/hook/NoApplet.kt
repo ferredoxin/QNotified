@@ -28,6 +28,7 @@ import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
+import me.singleneuron.qn_kernel.ui.base.辅助功能
 import me.singleneuron.util.NoAppletUtil
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.Utils
@@ -73,6 +74,6 @@ object NoApplet : CommonDelayAbleHookBridge() {
         summary = "感谢Alcatraz323开发的远离小程序，由神经元移植到Xposed"
     }
 
-    override val preferenceLocate: Array<String> = arrayOf("辅助功能")
+    override val preferenceLocate: Array<String> = 辅助功能
 
 }

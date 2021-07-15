@@ -35,11 +35,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
+import me.singleneuron.qn_kernel.ui.NewSettingsActivity;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.activity.EulaActivity;
-import nil.nadph.qnotified.activity.SettingsActivity;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
@@ -110,7 +111,7 @@ public class SettingEntryHook extends CommonDelayableHook {
                                 item.setOnClickListener(v -> {
                                     if (LicenseStatus.hasUserAcceptEula()) {
                                         activity.startActivity(
-                                            new Intent(activity, SettingsActivity.class));
+                                            new Intent(activity, NewSettingsActivity.class));
                                     } else {
                                         activity.startActivity(
                                             new Intent(activity, EulaActivity.class));

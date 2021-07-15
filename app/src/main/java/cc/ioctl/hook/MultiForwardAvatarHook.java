@@ -36,13 +36,19 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import de.robv.android.xposed.XC_MethodHook;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+
+import de.robv.android.xposed.XC_MethodHook;
+import me.singleneuron.qn_kernel.annotation.UiItem;
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge;
+import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
-import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ViewBuilder;
@@ -52,13 +58,26 @@ import nil.nadph.qnotified.util.UiThread;
 import nil.nadph.qnotified.util.Utils;
 
 @FunctionEntry
-public class MultiForwardAvatarHook extends CommonDelayableHook {
+@UiItem
+public class MultiForwardAvatarHook extends CommonDelayAbleHookBridge {
+
+    @NonNull
+    @Override
+    public UiSwitchPreference getPreference() {
+        return this.new UiSwitchPreferenceItemFactory("转发消息点头像查看详细信息", "仅限合并转发的消息");
+    }
+
+    @Nullable
+    @Override
+    public String[] getPreferenceLocate() {
+        return new String[]{"增强功能"};
+    }
 
     public static final MultiForwardAvatarHook INSTANCE = new MultiForwardAvatarHook();
     private static Field mLeftCheckBoxVisible = null;
 
     private MultiForwardAvatarHook() {
-        super("qn_multi_forward_avatar_profile",
+        super(
             new DexDeobfStep(DexKit.C_AIO_UTILS)/*, new FindAvatarLongClickListener()*/);
     }
 

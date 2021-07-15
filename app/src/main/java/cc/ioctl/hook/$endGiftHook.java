@@ -24,24 +24,44 @@ package cc.ioctl.hook;
 import static nil.nadph.qnotified.util.Utils.log;
 
 import android.app.Activity;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import java.lang.reflect.Method;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
-import java.lang.reflect.Method;
+import me.singleneuron.qn_kernel.annotation.UiItem;
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge;
+import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
-import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 
 @FunctionEntry
-public class $endGiftHook extends CommonDelayableHook {
+@UiItem
+public class $endGiftHook extends CommonDelayAbleHookBridge {
+
+    @NonNull
+    @Override
+    public UiSwitchPreference getPreference() {
+        return this.new UiSwitchPreferenceItemFactory("禁用$打开送礼界面", "禁止聊天时输入$自动弹出[选择赠送对象]窗口");
+    }
+
+    @Nullable
+    @Override
+    public String[] getPreferenceLocate() {
+        return new String[]{"净化功能"};
+    }
 
     public static final $endGiftHook INSTANCE = new $endGiftHook();
 
     private $endGiftHook() {
-        super("qn_disable_$end_gift", SyncUtils.PROC_MAIN,
+        super(SyncUtils.PROC_MAIN,
             new DexDeobfStep(DexKit.C_TROOP_GIFT_UTIL));
     }
 

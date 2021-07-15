@@ -21,7 +21,14 @@
  */
 package cc.ioctl.hook;
 
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.loge;
+import static nil.nadph.qnotified.util.Utils.logi;
+
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -29,18 +36,37 @@ import java.lang.reflect.Method;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import me.singleneuron.qn_kernel.annotation.UiItem;
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge;
 import me.singleneuron.qn_kernel.data.HostInfo;
+import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.util.*;
-
-import static nil.nadph.qnotified.util.Utils.*;
+import nil.nadph.qnotified.util.DexFieldDescriptor;
+import nil.nadph.qnotified.util.DexFlow;
+import nil.nadph.qnotified.util.DexKit;
+import nil.nadph.qnotified.util.DexMethodDescriptor;
+import nil.nadph.qnotified.util.Initiator;
+import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.QQVersion;
 
 @FunctionEntry
-public class DarkOverlayHook extends CommonDelayableHook {
+@UiItem
+public class DarkOverlayHook extends CommonDelayAbleHookBridge {
+
+    @NonNull
+    @Override
+    public UiSwitchPreference getPreference() {
+        return this.new UiSwitchPreferenceItemFactory("禁用夜间模式遮罩", "移除夜间模式下聊天界面的深色遮罩");
+    }
+
+    @Nullable
+    @Override
+    public String[] getPreferenceLocate() {
+        return new String[]{"净化功能", "图片相关"};
+    }
 
     public static final DarkOverlayHook INSTANCE = new DarkOverlayHook();
     private static final String cache_night_mask_field = "cache_night_mask_field";
@@ -48,7 +74,7 @@ public class DarkOverlayHook extends CommonDelayableHook {
 
 
     DarkOverlayHook() {
-        super("qn_disable_dark_overlay", new DexDeobfStep(DexKit.N_BASE_CHAT_PIE__handleNightMask),
+        super(new DexDeobfStep(DexKit.N_BASE_CHAT_PIE__handleNightMask),
             new FindNightMask());
     }
 
