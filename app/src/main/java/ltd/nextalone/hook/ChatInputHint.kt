@@ -34,10 +34,11 @@ import ltd.nextalone.util.hookAfter
 import ltd.nextalone.util.putDefault
 import ltd.nextalone.util.tryOrFalse
 import me.kyuubiran.util.getDefaultCfg
-import me.singleneuron.hook.ForceSystemFile
-import me.singleneuron.qn_kernel.annotation.UiItem
-import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
+import me.singleneuron.qn_kernel.ui.base.UiItem
+import me.singleneuron.qn_kernel.ui.base.uiClickableItem
+import me.singleneuron.qn_kernel.ui.base.辅助功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
+import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.ui.CustomDialog
 import nil.nadph.qnotified.ui.ViewBuilder
 import nil.nadph.qnotified.util.DexKit
@@ -46,8 +47,9 @@ import nil.nadph.qnotified.util.Toasts
 import nil.nadph.qnotified.util.Utils
 
 @FunctionEntry
-@UiItem
-object ChatInputHint : CommonDelayAbleHookBridge() {
+@me.singleneuron.qn_kernel.annotation.UiItem
+object ChatInputHint : CommonDelayableHook("na_chat_input_hint_str"), UiItem {
+
     private const val strCfg = "na_chat_input_hint_str"
     override fun initOnce(): Boolean = tryOrFalse {
         DexKit.doFindMethod(DexKit.N_BASE_CHAT_PIE__INIT)?.hookAfter(this) {
@@ -55,7 +57,8 @@ object ChatInputHint : CommonDelayAbleHookBridge() {
             var aioRootView: ViewGroup? = null
             for (m in Initiator._BaseChatPie().declaredMethods) {
                 if (m.returnType == ViewGroup::class.java
-                    && m.parameterTypes.isEmpty()) {
+                    && m.parameterTypes.isEmpty()
+                ) {
                     aioRootView = m.invoke(chatPie) as ViewGroup
                     break
                 }
@@ -64,11 +67,15 @@ object ChatInputHint : CommonDelayAbleHookBridge() {
         }
     }
 
-    override val preference = ForceSystemFile.uiSwitchPreference {
+    override val preference = uiClickableItem {
         title = "输入框增加提示"
-    }
+        onClickListener = {
+            showInputHintDialog(it)
+            true
+        }
+    }.second
 
-    override val preferenceLocate: Array<String> = arrayOf("辅助功能")
+    override val preferenceLocate: Array<String> = 辅助功能
 
     fun showInputHintDialog(activity: Context) {
         val dialog = CustomDialog.createFailsafe(activity)

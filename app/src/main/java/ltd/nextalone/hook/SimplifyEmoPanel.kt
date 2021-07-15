@@ -24,14 +24,25 @@ package ltd.nextalone.hook
 import android.view.View
 import android.view.ViewGroup
 import ltd.nextalone.util.*
+import me.singleneuron.qn_kernel.annotation.UiItem
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import nil.nadph.qnotified.util.QQVersion
+import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference
+import me.singleneuron.qn_kernel.ui.base.净化功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
-import nil.nadph.qnotified.hook.CommonDelayableHook
+import nil.nadph.qnotified.util.QQVersion
 
 @FunctionEntry
-object SimplifyEmoPanel : CommonDelayableHook("na_simplify_emo_panel_kt") {
+@UiItem
+object SimplifyEmoPanel : CommonDelayAbleHookBridge() {
+
+    override val preference: UiSwitchPreference = uiSwitchPreference {
+        title = "精简表情菜单"
+    }
+
+    override val preferenceLocate = 净化功能
+
     // todo fix scroll
     override fun initOnce() = tryOrFalse {
         ("com.tencent.mobileqq.emoticonview.BasePanelView".clazz
@@ -40,7 +51,8 @@ object SimplifyEmoPanel : CommonDelayableHook("na_simplify_emo_panel_kt") {
                 this
             ) {
                 logBefore("initTabView")
-                val mutableList: MutableList<*> = if ("com.tencent.mobileqq.emoticonview.BasePanelModel".clazz != null) {
+                val mutableList: MutableList<*> =
+                    if ("com.tencent.mobileqq.emoticonview.BasePanelModel".clazz != null) {
                     it.thisObject.get("mPanelController").get("mBasePanelModel").get("panelDataList") as MutableList<*>
                 } else {
                     it.thisObject.get("panelDataList") as MutableList<*>

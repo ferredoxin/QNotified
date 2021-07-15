@@ -26,6 +26,7 @@ import de.robv.android.xposed.XposedHelpers
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.decorator.BaseItemBuilderFactoryHookDecorator
 import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference
+import me.singleneuron.qn_kernel.ui.base.净化功能
 import nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null
 
 @UiItem
@@ -56,6 +57,6 @@ object SimpleReceiptMessage : BaseItemBuilderFactoryHookDecorator("simpleReceipt
         title = "回执消息文本化"
     }
 
-    override val preferenceLocate: Array<String> = arrayOf("净化功能")
+    override val preferenceLocate: Array<String> = 净化功能
 
 }

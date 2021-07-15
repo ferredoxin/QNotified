@@ -33,6 +33,7 @@ import me.singleneuron.qn_kernel.data.MsgRecordData
 import me.singleneuron.qn_kernel.ui.base.UiDescription
 import me.singleneuron.qn_kernel.ui.base.UiItem
 import me.singleneuron.qn_kernel.ui.base.uiEditTextPreference
+import me.singleneuron.qn_kernel.ui.base.辅助功能
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.ui.CustomDialog
 import nil.nadph.qnotified.ui.ViewBuilder
@@ -132,6 +133,6 @@ object RegexAntiMeg : MessageReceiver, View.OnClickListener, UiItem {
         }
     }
 
-    override val preferenceLocate: Array<String> = arrayOf("辅助功能")
+    override val preferenceLocate: Array<String> = 辅助功能
 
 }

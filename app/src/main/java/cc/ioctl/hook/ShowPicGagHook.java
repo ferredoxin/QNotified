@@ -21,28 +21,46 @@
  */
 package cc.ioctl.hook;
 
+import static nil.nadph.qnotified.util.Initiator._TroopPicEffectsController;
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.app.Application;
 import android.graphics.Bitmap;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.lang.reflect.Method;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import me.singleneuron.qn_kernel.annotation.UiItem;
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge;
 import me.singleneuron.qn_kernel.data.HostInfo;
+import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
-import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.LicenseStatus;
 
-import static nil.nadph.qnotified.util.Initiator._TroopPicEffectsController;
-import static nil.nadph.qnotified.util.Utils.log;
-
 @FunctionEntry
-public class ShowPicGagHook extends CommonDelayableHook {
+@UiItem
+public class ShowPicGagHook extends CommonDelayAbleHookBridge {
+
+    @NonNull
+    @Override
+    public UiSwitchPreference getPreference() {
+        return this.new UiSwitchPreferenceItemFactory("禁止秀图自动展示");
+    }
+
+    @Nullable
+    @Override
+    public String[] getPreferenceLocate() {
+        return new String[]{"净化功能", "图片相关"};
+    }
 
     public static final ShowPicGagHook INSTANCE = new ShowPicGagHook();
 
     private ShowPicGagHook() {
-        super("qn_gag_show_pic");
+        super();
     }
 
     @Override

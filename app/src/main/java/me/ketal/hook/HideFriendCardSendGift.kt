@@ -30,14 +30,24 @@ import androidx.core.widget.doAfterTextChanged
 import ltd.nextalone.util.hookAfter
 import ltd.nextalone.util.method
 import me.ketal.util.BaseUtil.tryVerbosely
+import me.singleneuron.qn_kernel.annotation.UiItem
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import nil.nadph.qnotified.util.QQVersion
+import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference
+import me.singleneuron.qn_kernel.ui.base.净化功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
-import nil.nadph.qnotified.hook.CommonDelayableHook
+import nil.nadph.qnotified.util.QQVersion
 import nil.nadph.qnotified.util.ReflexUtil
 
 @FunctionEntry
-object HideFriendCardSendGift : CommonDelayableHook("ketal_HideFriendProfileCardSendGift") {
+@UiItem
+object HideFriendCardSendGift : CommonDelayAbleHookBridge() {
+
+    override val preference: UiSwitchPreference = uiSwitchPreference {
+        title = "隐藏空间好友热播和广告"
+    }
+
+    override val preferenceLocate = 净化功能
 
     override fun isValid() = requireMinQQVersion(QQVersion.QQ_8_0_0)
 
@@ -45,7 +55,8 @@ object HideFriendCardSendGift : CommonDelayableHook("ketal_HideFriendProfileCard
         if (requireMinQQVersion(QQVersion.QQ_8_6_0)) {
             "Lcom/tencent/mobileqq/profilecard/base/container/ProfileBottomContainer;->initViews()V"
                 .method.hookAfter(this) {
-                    val rootView = ReflexUtil.getFirstNSFByType(it.thisObject, LinearLayout::class.java)
+                    val rootView =
+                        ReflexUtil.getFirstNSFByType(it.thisObject, LinearLayout::class.java)
                     hideView(rootView)
                 }
             return true

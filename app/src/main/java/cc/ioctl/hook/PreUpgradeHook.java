@@ -24,20 +24,39 @@ package cc.ioctl.hook;
 import static nil.nadph.qnotified.util.Initiator._UpgradeController;
 import static nil.nadph.qnotified.util.Utils.log;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
+import me.singleneuron.qn_kernel.annotation.UiItem;
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge;
+import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
-import nil.nadph.qnotified.hook.CommonDelayableHook;
 
 @FunctionEntry
-public class PreUpgradeHook extends CommonDelayableHook {
+@UiItem
+public class PreUpgradeHook extends CommonDelayAbleHookBridge {
+
+    @NonNull
+    @Override
+    public UiSwitchPreference getPreference() {
+        return this.new UiSwitchPreferenceItemFactory("屏蔽更新提醒");
+    }
+
+    @Nullable
+    @Override
+    public String[] getPreferenceLocate() {
+        return new String[]{"其他功能"};
+    }
 
     public static final PreUpgradeHook INSTANCE = new PreUpgradeHook();
 
     private PreUpgradeHook() {
-        super("qh_pre_upgrade");
+
     }
 
     @Override

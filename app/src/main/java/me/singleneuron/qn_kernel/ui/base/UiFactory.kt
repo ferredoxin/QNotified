@@ -34,16 +34,19 @@ import me.singleneuron.qn_kernel.tlb.UiMap
 import nil.nadph.qnotified.R
 import nil.nadph.qnotified.ui.CommonContextWrapper
 
-class UiCategoryFactory: UiCategory{
+class UiCategoryFactory : UiCategory {
     override lateinit var name: String
     override var contains: UiMap = linkedMapOf()
 }
 
-class UiClickToActivityPreferenceFactory : UiPreference {
-
+open class UiClickablePreferenceFactory : UiPreference {
     override lateinit var title: String
     override var summary: String? = null
     override var onClickListener: (Context) -> Boolean = { true }
+}
+
+class UiClickToActivityPreferenceFactory : UiClickablePreferenceFactory() {
+
     lateinit var activity: Class<out Activity>
 
     fun create() {

@@ -28,15 +28,25 @@ import ltd.nextalone.util.findHostView
 import ltd.nextalone.util.hookAfter
 import ltd.nextalone.util.method
 import ltd.nextalone.util.tryOrFalse
+import me.singleneuron.qn_kernel.annotation.UiItem
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import nil.nadph.qnotified.util.QQVersion
+import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference
+import me.singleneuron.qn_kernel.ui.base.辅助功能
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.base.annotation.FunctionEntry
-import nil.nadph.qnotified.hook.CommonDelayableHook
+import nil.nadph.qnotified.util.QQVersion
 
 @FunctionEntry
+@UiItem
 object AutoSendOriginalPhoto :
-    CommonDelayableHook("na_auto_send_origin_photo", SyncUtils.PROC_MAIN or SyncUtils.PROC_PEAK) {
+    CommonDelayAbleHookBridge(SyncUtils.PROC_MAIN or SyncUtils.PROC_PEAK) {
+
+    override val preference: UiSwitchPreference = uiSwitchPreference {
+        title = "聊天自动发送原图"
+    }
+
+    override val preferenceLocate = 辅助功能
 
     override fun initOnce() = tryOrFalse {
         "Lcom.tencent.mobileqq.activity.aio.photo.PhotoListPanel;->a(Z)V".method.hookAfter(this) {

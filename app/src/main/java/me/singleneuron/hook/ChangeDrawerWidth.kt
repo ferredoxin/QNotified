@@ -34,6 +34,7 @@ import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.ui.base.MaterialAlertDialogPreferenceFactory
 import me.singleneuron.qn_kernel.ui.base.UiItem
 import me.singleneuron.qn_kernel.ui.base.uiDialogPreference
+import me.singleneuron.qn_kernel.ui.base.辅助功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.hook.CommonDelayableHook
@@ -106,6 +107,6 @@ object ChangeDrawerWidth : CommonDelayableHook("changeDrawerWidth"), UiItem {
         }
     }
 
-    override val preferenceLocate: Array<String> = arrayOf("辅助功能")
+    override val preferenceLocate: Array<String> = 辅助功能
 
 }

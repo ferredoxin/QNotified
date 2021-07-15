@@ -21,27 +21,45 @@
  */
 package cc.ioctl.hook;
 
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.app.Application;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.lang.reflect.Method;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import me.singleneuron.qn_kernel.annotation.UiItem;
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge;
 import me.singleneuron.qn_kernel.data.HostInfo;
+import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
-import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
 
-import static nil.nadph.qnotified.util.Utils.log;
-
 @FunctionEntry
-public class RoundAvatarHook extends CommonDelayableHook {
+@UiItem
+public class RoundAvatarHook extends CommonDelayAbleHookBridge {
+
+    @NonNull
+    @Override
+    public UiSwitchPreference getPreference() {
+        return this.new UiSwitchPreferenceItemFactory("简洁模式圆头像", "From Rikka");
+    }
+
+    @Nullable
+    @Override
+    public String[] getPreferenceLocate() {
+        return new String[]{"增强功能"};
+    }
 
     public static final RoundAvatarHook INSTANCE = new RoundAvatarHook();
 
     RoundAvatarHook() {
-        super("qn_round_avatar", new DexDeobfStep(DexKit.C_SIMPLE_UI_UTIL));
+        super(new DexDeobfStep(DexKit.C_SIMPLE_UI_UTIL));
     }
 
     @Override

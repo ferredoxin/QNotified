@@ -21,18 +21,6 @@
  */
 package cc.ioctl.hook;
 
-import java.lang.reflect.Method;
-
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import me.singleneuron.qn_kernel.data.HostInfo;
-import me.singleneuron.qn_kernel.tlb.ConfigTable;
-import nil.nadph.qnotified.base.annotation.FunctionEntry;
-import nil.nadph.qnotified.hook.CommonDelayableHook;
-import nil.nadph.qnotified.util.DexMethodDescriptor;
-import nil.nadph.qnotified.util.Initiator;
-import nil.nadph.qnotified.util.LicenseStatus;
-
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
 import static nil.nadph.qnotified.util.PlayQQVersion.PlayQQ_8_2_9;
@@ -41,13 +29,43 @@ import static nil.nadph.qnotified.util.QQVersion.QQ_8_6_0;
 import static nil.nadph.qnotified.util.TIMVersion.TIM_3_1_1;
 import static nil.nadph.qnotified.util.Utils.log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import java.lang.reflect.Method;
+
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
+import me.singleneuron.qn_kernel.annotation.UiItem;
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge;
+import me.singleneuron.qn_kernel.data.HostInfo;
+import me.singleneuron.qn_kernel.tlb.ConfigTable;
+import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference;
+import nil.nadph.qnotified.base.annotation.FunctionEntry;
+import nil.nadph.qnotified.util.DexMethodDescriptor;
+import nil.nadph.qnotified.util.Initiator;
+import nil.nadph.qnotified.util.LicenseStatus;
+
 @FunctionEntry
-public class ReplyNoAtHook extends CommonDelayableHook {
+@UiItem
+public class ReplyNoAtHook extends CommonDelayAbleHookBridge {
+
+    @NonNull
+    @Override
+    public UiSwitchPreference getPreference() {
+        return this.new UiSwitchPreferenceItemFactory("禁止回复自动@", "去除回复消息时自动@特性");
+    }
+
+    @Nullable
+    @Override
+    public String[] getPreferenceLocate() {
+        return new String[]{"净化功能"};
+    }
 
     public static final ReplyNoAtHook INSTANCE = new ReplyNoAtHook();
 
     private ReplyNoAtHook() {
-        super("qn_disable_auto_at");
+        super();
     }
 
     /**
