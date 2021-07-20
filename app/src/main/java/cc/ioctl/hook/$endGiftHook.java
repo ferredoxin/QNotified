@@ -46,10 +46,12 @@ import nil.nadph.qnotified.util.LicenseStatus;
 @UiItem
 public class $endGiftHook extends CommonDelayAbleHookBridge {
 
+    private final UiSwitchPreference mUiSwitchPreference = this.new UiSwitchPreferenceItemFactory("禁用$打开送礼界面", "禁止聊天时输入$自动弹出[选择赠送对象]窗口");
+
     @NonNull
     @Override
     public UiSwitchPreference getPreference() {
-        return this.new UiSwitchPreferenceItemFactory("禁用$打开送礼界面", "禁止聊天时输入$自动弹出[选择赠送对象]窗口");
+        return mUiSwitchPreference;
     }
 
     @Nullable

@@ -50,10 +50,12 @@ import nil.nadph.qnotified.util.LicenseStatus;
 @UiItem
 public class ReplyNoAtHook extends CommonDelayAbleHookBridge {
 
+    private final UiSwitchPreference mUiSwitchPreference = this.new UiSwitchPreferenceItemFactory("禁止回复自动@", "去除回复消息时自动@特性");
+
     @NonNull
     @Override
     public UiSwitchPreference getPreference() {
-        return this.new UiSwitchPreferenceItemFactory("禁止回复自动@", "去除回复消息时自动@特性");
+        return mUiSwitchPreference;
     }
 
     @Nullable

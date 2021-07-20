@@ -41,10 +41,12 @@ import nil.nadph.qnotified.base.annotation.FunctionEntry;
 @UiItem
 public class PreUpgradeHook extends CommonDelayAbleHookBridge {
 
+    private final UiSwitchPreference mUiSwitchPreference = this.new UiSwitchPreferenceItemFactory("屏蔽更新提醒");
+
     @NonNull
     @Override
     public UiSwitchPreference getPreference() {
-        return this.new UiSwitchPreferenceItemFactory("屏蔽更新提醒");
+        return mUiSwitchPreference;
     }
 
     @Nullable

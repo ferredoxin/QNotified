@@ -78,10 +78,12 @@ import nil.nadph.qnotified.util.Utils;
 @UiItem
 public class RepeaterHook extends CommonDelayAbleHookBridge {
 
+    private final UiSwitchPreference mUiSwitchPreference = this.new UiSwitchPreferenceItemFactory(" +1", "不是复读机");
+
     @NonNull
     @Override
     public UiSwitchPreference getPreference() {
-        return this.new UiSwitchPreferenceItemFactory(" +1", "不是复读机");
+        return mUiSwitchPreference;
     }
 
     @Nullable

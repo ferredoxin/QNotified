@@ -56,10 +56,12 @@ import nil.nadph.qnotified.util.QQVersion;
 @UiItem
 public class DarkOverlayHook extends CommonDelayAbleHookBridge {
 
+    private final UiSwitchPreference mUiSwitchPreference = this.new UiSwitchPreferenceItemFactory("禁用夜间模式遮罩", "移除夜间模式下聊天界面的深色遮罩");
+
     @NonNull
     @Override
     public UiSwitchPreference getPreference() {
-        return this.new UiSwitchPreferenceItemFactory("禁用夜间模式遮罩", "移除夜间模式下聊天界面的深色遮罩");
+        return mUiSwitchPreference;
     }
 
     @Nullable

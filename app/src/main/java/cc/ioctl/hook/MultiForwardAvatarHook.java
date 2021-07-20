@@ -61,10 +61,12 @@ import nil.nadph.qnotified.util.Utils;
 @UiItem
 public class MultiForwardAvatarHook extends CommonDelayAbleHookBridge {
 
+    private final UiSwitchPreference mUiSwitchPreference = this.new UiSwitchPreferenceItemFactory("转发消息点头像查看详细信息", "仅限合并转发的消息");
+
     @NonNull
     @Override
     public UiSwitchPreference getPreference() {
-        return this.new UiSwitchPreferenceItemFactory("转发消息点头像查看详细信息", "仅限合并转发的消息");
+        return mUiSwitchPreference;
     }
 
     @Nullable

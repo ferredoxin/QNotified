@@ -45,10 +45,12 @@ import nil.nadph.qnotified.util.LicenseStatus;
 @UiItem
 public class ShowPicGagHook extends CommonDelayAbleHookBridge {
 
+    private final UiSwitchPreference mUiSwitchPreference = this.new UiSwitchPreferenceItemFactory("禁止秀图自动展示");
+
     @NonNull
     @Override
     public UiSwitchPreference getPreference() {
-        return this.new UiSwitchPreferenceItemFactory("禁止秀图自动展示");
+        return mUiSwitchPreference;
     }
 
     @Nullable
