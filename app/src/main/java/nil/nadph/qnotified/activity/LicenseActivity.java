@@ -28,7 +28,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
 import com.tencent.widget.XListView;
+
+import java.util.List;
+
 import de.psdev.licensesdialog.LicensesDialog;
 import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
 import de.psdev.licensesdialog.licenses.BSD3ClauseLicense;
@@ -37,7 +41,6 @@ import de.psdev.licensesdialog.licenses.MITLicense;
 import de.psdev.licensesdialog.model.Notice;
 import de.psdev.licensesdialog.model.Notices;
 import io.noties.markwon.Markwon;
-import java.util.List;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.ui.ResUtils;
 
@@ -67,6 +70,9 @@ public class LicenseActivity extends IphoneTitleBarActivityCompat implements Vie
         notices.addNotice(new Notice("MMKV", "https://github.com/Tencent/MMKV",
             "Copyright (C) 2018 THL A29 Limited, a Tencent company. All rights reserved.",
             new BSD3ClauseLicense()));
+        notices.addNotice(
+            new Notice("QQHelper", "https://github.com/Qiwu2542284182/QQHelper", "祈无", new ApacheSoftwareLicense20())
+        );
         notices.addNotice(markwon);
         notices.addNotice(colorPicker);
         notices.addNotice(LicensesDialog.LICENSES_DIALOG_NOTICE);

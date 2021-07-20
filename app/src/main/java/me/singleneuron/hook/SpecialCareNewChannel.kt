@@ -37,12 +37,13 @@ import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.ui.base.增强功能
 import nil.nadph.qnotified.BuildConfig
+import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.Utils
 
 @FunctionEntry
 @UiItem
-object SpecialCareNewChannel : CommonDelayAbleHookBridge() {
+object SpecialCareNewChannel : CommonDelayAbleHookBridge(SyncUtils.PROC_ANY) {
 
     override fun isValid(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
 
