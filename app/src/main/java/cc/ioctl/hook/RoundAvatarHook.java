@@ -44,10 +44,12 @@ import nil.nadph.qnotified.util.DexKit;
 @UiItem
 public class RoundAvatarHook extends CommonDelayAbleHookBridge {
 
+    private final UiSwitchPreference mUiSwitchPreference = this.new UiSwitchPreferenceItemFactory("简洁模式圆头像", "From Rikka");
+
     @NonNull
     @Override
     public UiSwitchPreference getPreference() {
-        return this.new UiSwitchPreferenceItemFactory("简洁模式圆头像", "From Rikka");
+        return mUiSwitchPreference;
     }
 
     @Nullable

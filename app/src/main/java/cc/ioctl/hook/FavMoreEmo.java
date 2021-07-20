@@ -50,10 +50,12 @@ public class FavMoreEmo extends CommonDelayAbleHookBridge {
 
     public static final FavMoreEmo INSTANCE = new FavMoreEmo();
 
+    private final UiSwitchPreference mUiSwitchPreference = this.new UiSwitchPreferenceItemFactory("收藏更多表情", "[暂不支持>=8.2.0]保存在本地");
+
     @NonNull
     @Override
     public UiSwitchPreference getPreference() {
-        return this.new UiSwitchPreferenceItemFactory("收藏更多表情", "[暂不支持>=8.2.0]保存在本地");
+        return mUiSwitchPreference;
     }
 
     @Nullable

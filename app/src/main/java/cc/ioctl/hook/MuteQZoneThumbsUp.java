@@ -42,10 +42,12 @@ import nil.nadph.qnotified.util.LicenseStatus;
 @UiItem
 public class MuteQZoneThumbsUp extends CommonDelayAbleHookBridge {
 
+    private final UiSwitchPreference mUiSwitchPreference = this.new UiSwitchPreferenceItemFactory("被赞说说不提醒", "不影响评论,转发或击掌的通知");
+
     @NonNull
     @Override
     public UiSwitchPreference getPreference() {
-        return this.new UiSwitchPreferenceItemFactory("被赞说说不提醒", "不影响评论,转发或击掌的通知");
+        return mUiSwitchPreference;
     }
 
     @Nullable

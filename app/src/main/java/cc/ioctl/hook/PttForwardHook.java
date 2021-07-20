@@ -99,10 +99,12 @@ public class PttForwardHook extends CommonDelayAbleHookBridge {
     public static final String qn_cache_ptt_save_last_parent_dir = "qn_cache_ptt_save_last_parent_dir";
     public static final PttForwardHook INSTANCE = new PttForwardHook();
 
+    private final UiSwitchPreference mUiSwitchPreference = this.new UiSwitchPreferenceItemFactory("语音转发", "长按语音消息");
+
     @NonNull
     @Override
     public UiSwitchPreference getPreference() {
-        return this.new UiSwitchPreferenceItemFactory("语音转发", "长按语音消息");
+        return mUiSwitchPreference;
     }
 
     @Nullable

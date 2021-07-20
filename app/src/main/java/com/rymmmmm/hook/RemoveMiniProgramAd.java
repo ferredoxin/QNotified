@@ -47,10 +47,12 @@ import nil.nadph.qnotified.util.Utils;
 @UiItem
 public class RemoveMiniProgramAd extends CommonDelayAbleHookBridge {
 
+    private final UiSwitchPreference mUiSwitchPreference = this.new UiSwitchPreferenceItemFactory("屏蔽小程序广告", "需要手动关闭广告, 请勿反馈此功能无效");
+
     @NonNull
     @Override
     public UiSwitchPreference getPreference() {
-        return this.new UiSwitchPreferenceItemFactory("屏蔽小程序广告", "需要手动关闭广告, 请勿反馈此功能无效");
+        return mUiSwitchPreference;
     }
 
     @Nullable

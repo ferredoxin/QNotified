@@ -52,10 +52,12 @@ import nil.nadph.qnotified.util.QQVersion;
 @UiItem
 public class CheatHook extends CommonDelayAbleHookBridge {
 
+    private final UiSwitchPreference mUiSwitchPreference = this.new UiSwitchPreferenceItemFactory("自定义猜拳骰子");
+
     @NonNull
     @Override
     public UiSwitchPreference getPreference() {
-        return this.new UiSwitchPreferenceItemFactory("自定义猜拳骰子");
+        return mUiSwitchPreference;
     }
 
     @Nullable

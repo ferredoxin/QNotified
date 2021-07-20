@@ -56,10 +56,12 @@ import nil.nadph.qnotified.util.Utils;
 @UiItem
 public class GagInfoDisclosure extends CommonDelayAbleHookBridge {
 
+    private final UiSwitchPreference mUiSwitchPreference = this.new UiSwitchPreferenceItemFactory("显示设置禁言的管理", "即使你只是普通群成员");
+
     @NonNull
     @Override
     public UiSwitchPreference getPreference() {
-        return this.new UiSwitchPreferenceItemFactory("显示设置禁言的管理", "即使你只是普通群成员");
+        return mUiSwitchPreference;
     }
 
     @Nullable
