@@ -34,6 +34,8 @@ import nil.nadph.qnotified.step.Step
 import nil.nadph.qnotified.util.DexKit
 import nil.nadph.qnotified.util.LicenseStatus
 import nil.nadph.qnotified.util.QQVersion
+import nil.nadph.qnotified.util.QQVersion.QQ_8_3_6
+import nil.nadph.qnotified.util.QQVersion.QQ_8_8_5
 import nil.nadph.qnotified.util.Utils
 
 @FunctionEntry
@@ -104,6 +106,7 @@ object NewRoundHead : CommonDelayAbleHookBridge() {
     override val preference = uiSwitchPreference {
         title = "新版简洁模式圆头像"
         summary = "From 花Q，支持8.3.6及更高，重启后生效"
+        valid = hostInfo.versionCode in QQ_8_3_6..QQ_8_8_5
     }
 
     override val preferenceLocate: Array<String> = 辅助功能
