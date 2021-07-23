@@ -29,7 +29,6 @@ import me.singleneuron.data.StructMsgData
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.decorator.BaseItemBuilderFactoryHookDecorator
-import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference
 import me.singleneuron.qn_kernel.ui.base.辅助功能
 import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.QQVersion
@@ -68,7 +67,7 @@ object MiniAppToStruckMsg : BaseItemBuilderFactoryHookDecorator(MiniAppToStruckM
         }
     }
 
-    override val preference: UiSwitchPreference = uiSwitchPreference {
+    override val preference = uiSwitchPreference {
         title = "小程序转链接分享（接收）"
     }
 

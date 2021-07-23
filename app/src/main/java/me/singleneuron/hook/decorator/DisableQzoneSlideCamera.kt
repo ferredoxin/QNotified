@@ -25,7 +25,6 @@ import android.content.Intent
 import de.robv.android.xposed.XC_MethodHook
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.decorator.BaseStartActivityHookDecorator
-import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference
 import me.singleneuron.qn_kernel.ui.base.净化功能
 
 @UiItem
@@ -39,7 +38,7 @@ object DisableQzoneSlideCamera : BaseStartActivityHookDecorator("disableCameraOn
         return false
     }
 
-    override val preference: UiSwitchPreference = uiSwitchPreference {
+    override val preference = uiSwitchPreference {
         title = "屏蔽空间滑动相机"
     }
 

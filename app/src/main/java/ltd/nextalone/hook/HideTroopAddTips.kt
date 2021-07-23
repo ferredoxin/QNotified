@@ -28,7 +28,6 @@ import ltd.nextalone.util.replace
 import ltd.nextalone.util.tryOrFalse
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
-import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference
 import me.singleneuron.qn_kernel.ui.base.净化功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 
@@ -36,7 +35,7 @@ import nil.nadph.qnotified.base.annotation.FunctionEntry
 @UiItem
 object HideTroopAddTips : CommonDelayAbleHookBridge() {
 
-    override val preference: UiSwitchPreference = uiSwitchPreference {
+    override val preference = uiSwitchPreference {
         title = "隐藏群聊共同好友提醒"
     }
 

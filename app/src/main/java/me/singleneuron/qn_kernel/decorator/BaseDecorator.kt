@@ -25,12 +25,12 @@ import android.content.Context
 import android.os.Looper
 import androidx.lifecycle.MutableLiveData
 import me.singleneuron.qn_kernel.data.hostInfo
-import me.singleneuron.qn_kernel.ui.base.UiSwitchItem
-import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.util.Toasts
 import nil.nadph.qnotified.util.Utils
+import org.ferredoxin.ferredoxin_ui.base.UiSwitchItem
+import org.ferredoxin.ferredoxin_ui.base.UiSwitchPreference
 
 abstract class BaseDecorator(val cfg: String) : UiSwitchItem {
 
@@ -49,8 +49,8 @@ abstract class BaseDecorator(val cfg: String) : UiSwitchItem {
         override var onClickListener: (Context) -> Boolean = { true }
         override var valid: Boolean = true
 
-        override val value: MutableLiveData<Boolean?> by lazy {
-            MutableLiveData<Boolean?>().apply {
+        override val value: MutableLiveData<Boolean> by lazy {
+            MutableLiveData<Boolean>().apply {
                 value = try {
                     ConfigManager.getDefaultConfig().getBooleanOrDefault(cfg, false)
                 } catch (e: Exception) {

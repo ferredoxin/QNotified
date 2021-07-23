@@ -30,14 +30,13 @@ import me.ketal.util.findViewByType
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.MsgRecordData
-import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference
 import me.singleneuron.qn_kernel.ui.base.净化功能
 import nil.nadph.qnotified.util.Initiator._TroopMemberLevelView
 
 @UiItem
 object HideTroopLevel : CommonDelayAbleHookBridge(), OnBubbleBuilder {
 
-    override val preference: UiSwitchPreference = uiSwitchPreference {
+    override val preference = uiSwitchPreference {
         title = "隐藏群聊群成员头衔"
     }
 

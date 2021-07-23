@@ -53,6 +53,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
 
+import org.ferredoxin.ferredoxin_ui.base.UiSwitchPreference;
+
 import java.lang.reflect.Method;
 
 import cc.ioctl.dialog.RepeaterIconSettingDialog;
@@ -62,7 +64,6 @@ import de.robv.android.xposed.XposedHelpers;
 import me.singleneuron.qn_kernel.annotation.UiItem;
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge;
 import me.singleneuron.qn_kernel.data.HostInfo;
-import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference;
 import mqq.app.AppRuntime;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.bridge.ChatActivityFacade;

@@ -31,14 +31,14 @@ import com.google.android.material.slider.Slider
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 import me.singleneuron.qn_kernel.data.hostInfo
-import me.singleneuron.qn_kernel.ui.base.MaterialAlertDialogPreferenceFactory
-import me.singleneuron.qn_kernel.ui.base.UiItem
-import me.singleneuron.qn_kernel.ui.base.uiDialogPreference
 import me.singleneuron.qn_kernel.ui.base.辅助功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.Utils.PACKAGE_NAME_QQ
+import org.ferredoxin.ferredoxin_ui.base.MaterialAlertDialogPreferenceFactory
+import org.ferredoxin.ferredoxin_ui.base.UiItem
+import org.ferredoxin.ferredoxin_ui.base.uiDialogPreference
 
 @FunctionEntry
 @me.singleneuron.qn_kernel.annotation.UiItem
@@ -93,17 +93,20 @@ object ChangeDrawerWidth : CommonDelayableHook("changeDrawerWidth"), UiItem {
             title = "修改侧滑边距"
             summary = "感谢祈无，支持8.4.1及更高，重启后生效"
             value.value = "$width dp"
-            val slider = Slider(context)
+
+            val slider = Slider(hostInfo.application)
             slider.valueFrom = 0f
             slider.valueTo = getMaxWidth(hostInfo.application).toInt().toFloat()
             slider.stepSize = 1f
             slider.value = width.toFloat()
-            setPositiveButton("确定") { dialog: DialogInterface, _: Int ->
-                width = slider.value.toInt()
-                dialog.dismiss()
+            materialAlertDialogBuilder = {
+                setPositiveButton("确定") { dialog: DialogInterface, _: Int ->
+                    width = slider.value.toInt()
+                    dialog.dismiss()
+                }
+                setTitle("修改侧滑边距（设置为0dp以禁用）")
+                setView(slider)
             }
-            setTitle("修改侧滑边距（设置为0dp以禁用）")
-            setView(slider)
         }
     }
 

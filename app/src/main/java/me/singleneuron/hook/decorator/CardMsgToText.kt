@@ -26,7 +26,6 @@ import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.decorator.BaseItemBuilderFactoryHookDecorator
-import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference
 import me.singleneuron.qn_kernel.ui.base.净化功能
 import nil.nadph.qnotified.BuildConfig
 import nil.nadph.qnotified.util.Initiator
@@ -74,7 +73,7 @@ object CardMsgToText : BaseItemBuilderFactoryHookDecorator(CardMsgToText::class.
         }
     }
 
-    override val preference: UiSwitchPreference = uiSwitchPreference {
+    override val preference = uiSwitchPreference {
         title = "卡片消息文本化"
     }
 

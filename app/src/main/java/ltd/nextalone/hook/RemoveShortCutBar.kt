@@ -27,7 +27,6 @@ import ltd.nextalone.util.tryOrFalse
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference
 import me.singleneuron.qn_kernel.ui.base.净化功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.QQVersion
@@ -36,7 +35,7 @@ import nil.nadph.qnotified.util.QQVersion
 @UiItem
 object RemoveShortCutBar : CommonDelayAbleHookBridge() {
 
-    override val preference: UiSwitchPreference = uiSwitchPreference {
+    override val preference = uiSwitchPreference {
         title = "隐藏文本框上方快捷方式"
     }
 

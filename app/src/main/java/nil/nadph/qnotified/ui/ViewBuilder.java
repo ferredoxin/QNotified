@@ -21,6 +21,12 @@
  */
 package nil.nadph.qnotified.ui;
 
+import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
+import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Utils.dip2px;
+import static nil.nadph.qnotified.util.Utils.dip2sp;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -30,17 +36,22 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.view.ViewCompat;
+
+import org.ferredoxin.ferredoxin_ui.base.UiSwitchItem;
+import org.ferredoxin.ferredoxin_ui.base.UiSwitchPreference;
 
 import cc.ioctl.H;
 import ltd.nextalone.base.MultiItemDelayableHook;
 import ltd.nextalone.util.SystemServiceUtils;
 import me.singleneuron.qn_kernel.data.HostInfo;
-import me.singleneuron.qn_kernel.ui.base.UiSwitchItem;
-import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.SyncUtils;
@@ -54,12 +65,6 @@ import nil.nadph.qnotified.ui.widget.FunctionSwitch;
 import nil.nadph.qnotified.util.NonUiThread;
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
-
-import static android.widget.LinearLayout.LayoutParams.MATCH_PARENT;
-import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.dip2px;
-import static nil.nadph.qnotified.util.Utils.dip2sp;
 
 public class ViewBuilder {
 

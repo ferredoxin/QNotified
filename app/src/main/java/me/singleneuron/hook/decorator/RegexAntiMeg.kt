@@ -30,9 +30,6 @@ import cn.lliiooll.msg.MessageReceiver
 import de.robv.android.xposed.XposedHelpers
 import me.kyuubiran.util.getExFriendCfg
 import me.singleneuron.qn_kernel.data.MsgRecordData
-import me.singleneuron.qn_kernel.ui.base.UiDescription
-import me.singleneuron.qn_kernel.ui.base.UiItem
-import me.singleneuron.qn_kernel.ui.base.uiEditTextPreference
 import me.singleneuron.qn_kernel.ui.base.辅助功能
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.ui.CustomDialog
@@ -40,6 +37,8 @@ import nil.nadph.qnotified.ui.ViewBuilder
 import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.ReflexUtil
 import nil.nadph.qnotified.util.Utils
+import org.ferredoxin.ferredoxin_ui.base.UiItem
+import org.ferredoxin.ferredoxin_ui.base.uiEditTextPreference
 
 @me.singleneuron.qn_kernel.annotation.UiItem
 object RegexAntiMeg : MessageReceiver, View.OnClickListener, UiItem {
@@ -120,7 +119,7 @@ object RegexAntiMeg : MessageReceiver, View.OnClickListener, UiItem {
             .show()
     }
 
-    override val preference: UiDescription = uiEditTextPreference {
+    override val preference = uiEditTextPreference {
         title = "万象屏蔽卡片消息"
         summary = "使用强大的正则表达式自由屏蔽卡片消息"
         SyncUtils.post {
@@ -128,7 +127,7 @@ object RegexAntiMeg : MessageReceiver, View.OnClickListener, UiItem {
                 getExFriendCfg().putString(RegexAntiMeg::class.java.simpleName, it)
             }
         }
-        inputLayoutSetter = {
+        inputLayout = {
             helperText = "留空以禁用"
         }
     }

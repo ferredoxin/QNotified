@@ -92,6 +92,7 @@ dependencies {
     compileOnly project(":stub")
     implementation project(":mmkv")
     implementation project(":annotations")
+    implementation project(":FerredoxinUILib")
     compileOnly project(":compiler")
     kapt project(":compiler")
     compileOnly 'de.robv.android.xposed:api:82'
@@ -105,7 +106,7 @@ dependencies {
     // androidx
     implementation 'androidx.preference:preference-ktx:1.1.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    implementation 'com.google.android.material:material:1.4.0-rc01'
+    implementation 'com.google.android.material:material:1.4.0'
     implementation 'com.google.code.gson:gson:2.8.7'
     implementation 'com.afollestad.material-dialogs:core:3.3.0'
     implementation 'com.afollestad.material-dialogs:input:3.3.0'

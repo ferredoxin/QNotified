@@ -71,7 +71,12 @@ public class LicenseActivity extends IphoneTitleBarActivityCompat implements Vie
             "Copyright (C) 2018 THL A29 Limited, a Tencent company. All rights reserved.",
             new BSD3ClauseLicense()));
         notices.addNotice(
-            new Notice("QQHelper", "https://github.com/Qiwu2542284182/QQHelper", "祈无", new ApacheSoftwareLicense20())
+            new Notice("QQHelper", "https://github.com/Qiwu2542284182/QQHelper", "祈无",
+                new ApacheSoftwareLicense20())
+        );
+        notices.addNotice(
+            new Notice("Ferredoxin UI", "https://github.com/ferredoxin/FerredoxinUI", "ferredoxin",
+                null)
         );
         notices.addNotice(markwon);
         notices.addNotice(colorPicker);

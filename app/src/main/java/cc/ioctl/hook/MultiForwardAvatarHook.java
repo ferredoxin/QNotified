@@ -40,13 +40,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.ferredoxin.ferredoxin_ui.base.UiSwitchPreference;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import de.robv.android.xposed.XC_MethodHook;
 import me.singleneuron.qn_kernel.annotation.UiItem;
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge;
-import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.step.DexDeobfStep;

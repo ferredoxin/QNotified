@@ -26,14 +26,14 @@ import android.content.Context
 import android.os.Looper
 import androidx.lifecycle.MutableLiveData
 import me.singleneuron.qn_kernel.data.hostInfo
-import me.singleneuron.qn_kernel.ui.base.UiItem
-import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.step.Step
 import nil.nadph.qnotified.util.Toasts
 import nil.nadph.qnotified.util.Utils
+import org.ferredoxin.ferredoxin_ui.base.UiItem
+import org.ferredoxin.ferredoxin_ui.base.UiSwitchPreference
 
 abstract class CommonDelayAbleHookBridge
 @JvmOverloads
@@ -68,6 +68,7 @@ constructor(
     open inner class UiSwitchPreferenceItemFactory constructor() : UiSwitchPreference {
         override lateinit var title: String
         override var summary: String? = null
+        override var valid: Boolean = isValid
 
         @JvmOverloads
         constructor(title: String, summary: String? = null) : this() {
@@ -75,8 +76,8 @@ constructor(
             this.summary = summary
         }
 
-        override val value: MutableLiveData<Boolean?> by lazy {
-            MutableLiveData<Boolean?>().apply {
+        override val value: MutableLiveData<Boolean> by lazy {
+            MutableLiveData<Boolean>().apply {
                 try {
                     postValue(
                         ConfigManager.getDefaultConfig().getBooleanOrDefault(configName, false)
@@ -103,7 +104,6 @@ constructor(
             }
         }
         override var onClickListener: (Context) -> Boolean = { true }
-        override var valid: Boolean = isValid
     }
 
 }
