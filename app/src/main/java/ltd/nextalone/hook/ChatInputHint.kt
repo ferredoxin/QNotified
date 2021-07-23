@@ -34,8 +34,6 @@ import ltd.nextalone.util.hookAfter
 import ltd.nextalone.util.putDefault
 import ltd.nextalone.util.tryOrFalse
 import me.kyuubiran.util.getDefaultCfg
-import me.singleneuron.qn_kernel.ui.base.UiItem
-import me.singleneuron.qn_kernel.ui.base.uiClickableItem
 import me.singleneuron.qn_kernel.ui.base.辅助功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
@@ -45,6 +43,8 @@ import nil.nadph.qnotified.util.DexKit
 import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.Toasts
 import nil.nadph.qnotified.util.Utils
+import org.ferredoxin.ferredoxin_ui.base.UiItem
+import org.ferredoxin.ferredoxin_ui.base.uiClickableItem
 
 @FunctionEntry
 @me.singleneuron.qn_kernel.annotation.UiItem

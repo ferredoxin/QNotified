@@ -1,3 +1,6 @@
 [submodule "libs/xhook/xHook"]
 	path = libs/xhook/xHook
 	url = https://github.com/iqiyi/xHook
+[submodule "libs/FerredoxinUI"]
+	path = libs/FerredoxinUI
+	url = https://github.com/ferredoxin/FerredoxinUI

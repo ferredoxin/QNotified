@@ -34,9 +34,6 @@ import me.kyuubiran.util.getExFriendCfg
 import me.kyuubiran.util.showToastByTencent
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.qn_kernel.tlb.ConfigTable.getConfig
-import me.singleneuron.qn_kernel.ui.base.UiDescription
-import me.singleneuron.qn_kernel.ui.base.UiItem
-import me.singleneuron.qn_kernel.ui.base.uiClickableItem
 import me.singleneuron.qn_kernel.ui.base.增强功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
@@ -46,6 +43,9 @@ import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.QQVersion
 import nil.nadph.qnotified.util.Toasts
 import nil.nadph.qnotified.util.Utils
+import org.ferredoxin.ferredoxin_ui.base.UiDescription
+import org.ferredoxin.ferredoxin_ui.base.UiItem
+import org.ferredoxin.ferredoxin_ui.base.uiClickableItem
 import java.util.*
 
 @FunctionEntry

@@ -22,13 +22,20 @@
 
 package me.singleneuron.qn_kernel.processors;
 
-import com.squareup.javapoet.*;
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeSpec;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
 
-import javax.annotation.processing.*;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
@@ -55,7 +62,7 @@ public class UiDescriptionProcessor extends BaseProcessor {
         Set<? extends Element> annos = roundEnv.getElementsAnnotatedWith(UiItem.class);
         if (!annos.isEmpty()) {
             System.out.println(">>>> UiItem Processing <<<<");
-            ClassName absHook = ClassName.get("me.singleneuron.qn_kernel.ui.base", "UiItem");
+            ClassName absHook = ClassName.get("org.ferredoxin.ferredoxin_ui.base", "UiItem");
             ClassName list = ClassName.get("java.util", "List");
             MethodSpec.Builder beyond = MethodSpec
                 .methodBuilder("getAnnotatedUiItemClassList")

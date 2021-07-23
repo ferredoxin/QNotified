@@ -36,7 +36,6 @@ import ltd.nextalone.util.tryOrFalse
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.hostInfo
-import me.singleneuron.qn_kernel.ui.base.UiSwitchPreference
 import me.singleneuron.qn_kernel.ui.base.增强功能
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.base.annotation.FunctionEntry
@@ -46,7 +45,7 @@ import nil.nadph.qnotified.util.Utils
 @UiItem
 object MessageStyleNotification : CommonDelayAbleHookBridge(SyncUtils.PROC_ANY) {
 
-    override val preference: UiSwitchPreference = uiSwitchPreference {
+    override val preference = uiSwitchPreference {
         title = "MessageStyle通知"
         summary = "致敬QQ Helper"
     }

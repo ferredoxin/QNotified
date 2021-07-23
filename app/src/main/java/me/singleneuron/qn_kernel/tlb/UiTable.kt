@@ -32,12 +32,12 @@ import cc.ioctl.dialog.RikkaDialog
 import cc.ioctl.hook.AddAccount
 import cc.ioctl.hook.OpenProfileCard
 import me.singleneuron.qn_kernel.data.hostInfo
-import me.singleneuron.qn_kernel.ui.base.*
 import me.singleneuron.qn_kernel.ui.gen.AnnotatedUiItemList
 import nil.nadph.qnotified.activity.*
 import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.Toasts
 import nil.nadph.qnotified.util.Utils
+import org.ferredoxin.ferredoxin_ui.base.*
 
 typealias UiMap = MutableMap<String, UiDescription>
 
@@ -54,22 +54,22 @@ object UiTable : UiScreen {
 
     private val containsInternal: UiMap by lazy {
         val map: UiMap = linkedMapOf(
-            uiClickToActivityItem {
+            uiClickableItem {
                 title = "打开旧版设置界面"
-                activity = SettingsActivity::class.java
+                onClickListener = ClickToActivity(SettingsActivity::class.java)
             },
             uiCategory {
                 name = "希腊字母"
                 contains = linkedMapOf(
-                    uiClickToActivityItem {
+                    uiClickableItem {
                         title = "Beta测试"
                         summary = "仅用于测试稳定性"
-                        activity = BetaTestFuncActivity::class.java
+                        onClickListener = ClickToActivity(BetaTestFuncActivity::class.java)
                     },
-                    uiClickToActivityItem {
+                    uiClickableItem {
                         title = "Omega测试"
                         summary = "这是个不存在的功能"
-                        activity = OmegaTestFuncActivity::class.java
+                        onClickListener = ClickToActivity(OmegaTestFuncActivity::class.java)
                     }
                 )
             },
@@ -84,10 +84,11 @@ object UiTable : UiScreen {
                             true
                         }
                     },
-                    uiClickToActivityItem {
+                    uiClickableItem {
                         title = "QQ净化[WIP]"
                         summary = "开发中……"
-                        activity = me.zpp0196.qqpurify.activity.MainActivity::class.java
+                        onClickListener =
+                            ClickToActivity(me.zpp0196.qqpurify.activity.MainActivity::class.java)
                     }
                 )
             },
@@ -107,10 +108,10 @@ object UiTable : UiScreen {
             uiCategory {
                 name = "增强功能"
                 contains = linkedMapOf(
-                    uiClickToActivityItem {
+                    uiClickableItem {
                         title = "自定义电量"
                         summary = "[QQ>=8.2.6]在线模式为我的电量时生效"
-                        activity = FakeBatCfgActivity::class.java
+                        onClickListener = ClickToActivity(FakeBatCfgActivity::class.java)
                     }
                 )
             },
@@ -129,9 +130,9 @@ object UiTable : UiScreen {
             uiCategory {
                 name = "辅助功能"
                 contains = linkedMapOf(
-                    uiClickToActivityItem {
+                    uiClickableItem {
                         title = "更多辅助功能"
-                        activity = AuxFuncActivity::class.java
+                        onClickListener = ClickToActivity(AuxFuncActivity::class.java)
                     }
                 )
             },
@@ -146,23 +147,23 @@ object UiTable : UiScreen {
                             true
                         }
                     },
-                    uiClickToActivityItem {
+                    uiClickableItem {
                         title = "历史好友"
-                        activity = ExfriendListActivity::class.java
+                        onClickListener = ClickToActivity(ExfriendListActivity::class.java)
                     },
-                    uiClickToActivityItem {
+                    uiClickableItem {
                         title = "导出历史好友列表"
                         summary = "支持csv/json格式"
-                        activity = FriendlistExportActivity::class.java
+                        onClickListener = ClickToActivity(FriendlistExportActivity::class.java)
                     }
                 )
             },
             uiCategory {
                 name = "其他功能"
                 contains = linkedMapOf(
-                    uiClickToActivityItem {
+                    uiClickableItem {
                         title = "娱乐功能"
-                        activity = AmusementActivity::class.java
+                        onClickListener = ClickToActivity(AmusementActivity::class.java)
                     },
                     uiClickableItem {
                         title = "添加账号"
@@ -209,33 +210,33 @@ object UiTable : UiScreen {
                         title = "模块版本"
                         summary = Utils.QN_VERSION_NAME
                     },
-                    uiClickToActivityItem {
+                    uiClickableItem {
                         title = "关于模块"
-                        activity = AboutActivity::class.java
+                        onClickListener = ClickToActivity(AboutActivity::class.java)
                     },
-                    uiClickToActivityItem {
+                    uiClickableItem {
                         title = "用户协议"
                         summary = "《QNotified 最终用户许可协议》与《隐私条款》"
-                        activity = EulaActivity::class.java
+                        onClickListener = ClickToActivity(EulaActivity::class.java)
                     },
-                    uiClickToActivityItem {
+                    uiClickableItem {
                         title = "展望未来"
                         summary = "其实都还没写"
-                        activity = PendingFuncActivity::class.java
+                        onClickListener = ClickToActivity(PendingFuncActivity::class.java)
                     },
-                    uiClickToActivityItem {
+                    uiClickableItem {
                         title = "开放源代码许可"
                         summary = "感谢卖动绘制图标"
-                        activity = LicenseActivity::class.java
+                        onClickListener = ClickToActivity(LicenseActivity::class.java)
                     }
                 )
             },
             uiCategory {
                 name = "高级"
                 contains = linkedMapOf(
-                    uiClickToActivityItem {
+                    uiClickableItem {
                         title = "故障排查"
-                        activity = TroubleshootActivity::class.java
+                        onClickListener = ClickToActivity(TroubleshootActivity::class.java)
                     }
                 )
             },

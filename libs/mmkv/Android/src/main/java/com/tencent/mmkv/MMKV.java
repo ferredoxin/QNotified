@@ -20,6 +20,7 @@
 
 package com.tencent.mmkv;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -494,6 +495,7 @@ public class MMKV implements SharedPreferences, SharedPreferences.Editor {
 
     private static final HashMap<String, Parcelable.Creator<?>> mCreators = new HashMap<>();
 
+    @SuppressLint("WrongConstant")
     public boolean encode(String key, @Nullable Parcelable value) {
         if (value == null) {
             return encodeBytes(nativeHandle, key, null);

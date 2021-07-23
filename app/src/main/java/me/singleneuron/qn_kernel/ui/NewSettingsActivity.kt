@@ -27,11 +27,11 @@ package me.singleneuron.qn_kernel.ui
 import android.annotation.SuppressLint
 import android.os.Bundle
 import me.singleneuron.qn_kernel.tlb.UiTable
-import me.singleneuron.qn_kernel.ui.base.UiScreen
 import nil.nadph.qnotified.R
 import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat
 import nil.nadph.qnotified.databinding.ActivityNewSettingsBinding
 import nil.nadph.qnotified.ui.ResUtils
+import org.ferredoxin.ferredoxin_ui.base.UiScreen
 
 @SuppressLint("Registered")
 class NewSettingsActivity : IphoneTitleBarActivityCompat() {
