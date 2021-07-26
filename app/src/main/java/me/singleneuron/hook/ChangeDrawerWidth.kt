@@ -35,6 +35,7 @@ import me.singleneuron.qn_kernel.ui.base.辅助功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.hook.CommonDelayableHook
+import nil.nadph.qnotified.ui.CommonContextWrapper
 import nil.nadph.qnotified.util.Utils.PACKAGE_NAME_QQ
 import org.ferredoxin.ferredoxin_ui.base.MaterialAlertDialogPreferenceFactory
 import org.ferredoxin.ferredoxin_ui.base.UiItem
@@ -94,12 +95,19 @@ object ChangeDrawerWidth : CommonDelayableHook("changeDrawerWidth"), UiItem {
             summary = "感谢祈无，支持8.4.1及更高，重启后生效"
             value.value = "$width dp"
 
-            val slider = Slider(hostInfo.application)
-            slider.valueFrom = 0f
-            slider.valueTo = getMaxWidth(hostInfo.application).toInt().toFloat()
-            slider.stepSize = 1f
-            slider.value = width.toFloat()
+            contextWrapper = CommonContextWrapper::createMaterialDesignContext
+
             materialAlertDialogBuilder = {
+
+                val context = contextWrapper(this.context)
+                contextWrapper = CommonContextWrapper::createMaterialDesignContext
+
+                val slider = Slider(context)
+                slider.valueFrom = 0f
+                slider.valueTo = getMaxWidth(context).toInt().toFloat()
+                slider.stepSize = 1f
+                slider.value = width.toFloat()
+
                 setPositiveButton("确定") { dialog: DialogInterface, _: Int ->
                     width = slider.value.toInt()
                     dialog.dismiss()
