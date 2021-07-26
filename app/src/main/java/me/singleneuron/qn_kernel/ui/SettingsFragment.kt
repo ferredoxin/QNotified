@@ -85,7 +85,7 @@ class SettingsFragment : Fragment(), LifecycleOwner {
                         }
                         is UiChangeablePreference<*> -> {
                             val ll = newListItemButton(activity, uiDescription.title, uiDescription.summary, uiDescription.value.value.toString()) {
-                                uiDescription.onClickListener(activity as FragmentActivity)
+                                uiDescription.onClickListener(activity)
                             }
                             viewGroup.addView(ll)
                             uiDescription.value.observe(this) {
@@ -94,7 +94,7 @@ class SettingsFragment : Fragment(), LifecycleOwner {
                         }
                         is UiPreference -> {
                             viewGroup.addView(newListItemButton(activity, uiDescription.title, uiDescription.summary, null) {
-                                uiDescription.onClickListener(activity as FragmentActivity)
+                                uiDescription.onClickListener(activity)
                             })
                         }
                     }

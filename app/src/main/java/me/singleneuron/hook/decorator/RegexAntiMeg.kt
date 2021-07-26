@@ -32,6 +32,7 @@ import me.kyuubiran.util.getExFriendCfg
 import me.singleneuron.qn_kernel.data.MsgRecordData
 import me.singleneuron.qn_kernel.ui.base.辅助功能
 import nil.nadph.qnotified.SyncUtils
+import nil.nadph.qnotified.ui.CommonContextWrapper
 import nil.nadph.qnotified.ui.CustomDialog
 import nil.nadph.qnotified.ui.ViewBuilder
 import nil.nadph.qnotified.util.Initiator
@@ -130,6 +131,7 @@ object RegexAntiMeg : MessageReceiver, View.OnClickListener, UiItem {
         inputLayout = {
             helperText = "留空以禁用"
         }
+        contextWrapper = CommonContextWrapper::createMaterialDesignContext
     }
 
     override val preferenceLocate: Array<String> = 辅助功能

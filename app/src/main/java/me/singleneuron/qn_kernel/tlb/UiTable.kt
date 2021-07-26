@@ -244,42 +244,7 @@ object UiTable : UiScreen {
                 name = "本软件为免费软件,请尊重开发者劳动成果,严禁倒卖\nLife feeds on negative entropy."
             }
         )
-        initUiTable(map)
+        loadUiInList(map,AnnotatedUiItemList.getAnnotatedUiItemClassList())
         map
-    }
-}
-
-private fun initUiTable(map: UiMap) {
-    for (uiItem in AnnotatedUiItemList.getAnnotatedUiItemClassList()) {
-        addUiItemToUiGroup(uiItem.preference, map, uiItem.preferenceLocate, 0)
-    }
-}
-
-private fun addUiItemToUiGroup(uiDescription: UiDescription, container: UiMap, array: Array<String>?, point: Int) {
-    if (array == null || array.isEmpty()) {
-        if (uiDescription is UiPreference) {
-            val contains = container[uiDescription.title]
-            if (contains is UiGroup) {
-                contains.contains[uiDescription.title] = uiDescription
-            }
-        }
-    } else {
-        if (container.containsKey(array[point])) {
-            if (point == array.size - 1) {
-                val ui = container[array[point]]
-                if (ui != null && ui is UiGroup) {
-                    if (uiDescription is UiPreference) {
-                        ui.contains[uiDescription.title] = uiDescription
-                    } else if (uiDescription is UiGroup) {
-                        ui.contains[uiDescription.name] = uiDescription
-                    }
-                }
-            } else {
-                val ui = container[array[point]]
-                if (ui is UiGroup) {
-                    addUiItemToUiGroup(uiDescription, ui.contains, array, point + 1)
-                }
-            }
-        }
     }
 }
