@@ -273,7 +273,11 @@ public class RevokeMsgHook extends CommonDelayableHook {
         List list = null;
         try {
             //todo fix 860+
-            if (HostInfo.requireMinQQVersion(QQVersion.QQ_8_6_0)) {
+            if (HostInfo.requireMinQQVersion(QQVersion.QQ_8_8_11)) {
+                list = (List) invoke_virtual(mQQMsgFacade, "b", uin, istroop, shmsgseq, msgUid,
+                    String.class, int.class, long.class, long.class,
+                    List.class);
+            } else if (HostInfo.requireMinQQVersion(QQVersion.QQ_8_6_0)) {
                 list = (List) invoke_virtual(mQQMsgFacade, "a", uin, istroop, shmsgseq, msgUid,
                     String.class, int.class, long.class, long.class,
                     List.class);
