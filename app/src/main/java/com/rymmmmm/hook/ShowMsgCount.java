@@ -61,7 +61,7 @@ public class ShowMsgCount extends CommonDelayableHook {
                     // updateCustomNoteTxt(Landroid/widget/TextView;IIIILjava/lang/String;)V
                     XposedBridge.hookMethod(m, new XC_MethodHook() {
                         @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        protected void beforeHookedMethod(MethodHookParam param) {
                             if (LicenseStatus.sDisableCommonHooks) {
                                 return;
                             }
@@ -72,7 +72,13 @@ public class ShowMsgCount extends CommonDelayableHook {
                         }
 
                         @Override
-                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        protected void afterHookedMethod(MethodHookParam param) {
+                            if (LicenseStatus.sDisableCommonHooks) {
+                                return;
+                            }
+                            if (!isEnabled()) {
+                                return;
+                            }
                             if (HostInfo.requireMinQQVersion(QQVersion.QQ_8_8_11)) {
                                 TextView tv = (TextView) param.args[0];
                                 tv.setMaxWidth(Integer.MAX_VALUE);
