@@ -23,16 +23,20 @@ package com.rymmmmm.hook;
 
 import static nil.nadph.qnotified.util.Utils.log;
 
+import android.view.ViewGroup;
+import android.widget.TextView;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
+import nil.nadph.qnotified.util.QQVersion;
 
 //显示具体消息数量
 @FunctionEntry
@@ -57,7 +61,7 @@ public class ShowMsgCount extends CommonDelayableHook {
                     // updateCustomNoteTxt(Landroid/widget/TextView;IIIILjava/lang/String;)V
                     XposedBridge.hookMethod(m, new XC_MethodHook() {
                         @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        protected void beforeHookedMethod(MethodHookParam param) {
                             if (LicenseStatus.sDisableCommonHooks) {
                                 return;
                             }
@@ -65,6 +69,23 @@ public class ShowMsgCount extends CommonDelayableHook {
                                 return;
                             }
                             param.args[4] = Integer.MAX_VALUE;
+                        }
+
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) {
+                            if (LicenseStatus.sDisableCommonHooks) {
+                                return;
+                            }
+                            if (!isEnabled()) {
+                                return;
+                            }
+                            if (HostInfo.requireMinQQVersion(QQVersion.QQ_8_8_11)) {
+                                TextView tv = (TextView) param.args[0];
+                                tv.setMaxWidth(Integer.MAX_VALUE);
+                                ViewGroup.LayoutParams lp = tv.getLayoutParams();
+                                lp.width = -2;
+                                tv.setLayoutParams(lp);
+                            }
                         }
                     });
                     break;
