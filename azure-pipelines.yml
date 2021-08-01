@@ -23,11 +23,8 @@ steps:
     gradleOptions: '-Xmx3072m'
     publishJUnitResults: false
     testResultsFiles: '**/TEST-*.xml'
-    tasks: 'assembleRelease'
-- task: Bash@3
-  inputs:
-    targetType: 'inline'
-    script: rm app/build/outputs/apk/release/app-release-unsigned.apk.unaligned
+    tasks: ':app:assembleRelease'
+
 - task: AndroidSigning@3
   inputs:
     apkFiles: '**/*.apk'
