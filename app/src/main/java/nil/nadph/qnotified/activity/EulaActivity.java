@@ -127,7 +127,7 @@ public class EulaActivity extends IphoneTitleBarActivityCompat implements View.O
         tv.setGravity(Gravity.CENTER);
         tv.setTextColor(ResUtils.skin_black);
         tv.setText(
-            "\n注意: 本软件是免费软件!\nQNotified自始至终都是免费且非商业使用，如果有你发现有人在违反GPL和最终用户许可（主要为未明确指出本软件的作者以及免费获取的网址）的情况下商用本软件并牟取利润(群发,代发,引流,出售,贩卖等)，请拒绝并不遗余力地在一切平台举报投诉他！\n");
+            "\n注意: 本软件是免费软件!\nQNotified自始至终都是免费且非商业使用，如果有你发现有人在违反AGPL和Eula，请拒绝并不遗余力地在一切平台举报投诉他！\n");
         ll.addView(tv, stdlp);
 
         int _5dp = Utils.dip2px(this, 5);
