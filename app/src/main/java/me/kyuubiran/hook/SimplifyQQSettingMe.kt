@@ -102,7 +102,9 @@ object SimplifyQQSettingMe : BaseMultiConfigDelayableHook() {
                     try {
                         //中间部分(QQ会员 我的钱包等)
                         val midcontentListLayout = if (requireMinQQVersion(QQVersion.QQ_8_6_5)) {
-                            val midcontentName = if (requireMinQQVersion(QQVersion.QQ_8_7_0)) "b" else "c"
+                            val midcontentName = if (requireMinQQVersion(QQVersion.QQ_8_8_11)) "R"
+                            else if (requireMinQQVersion(QQVersion.QQ_8_7_0)) "b"
+                            else "c"
                             param.thisObject.get(midcontentName, LinearLayout::class.java)
                         } else {
                             val midcontentName = if (requireMinQQVersion(QQVersion.QQ_8_6_0)) "n" else "k"
