@@ -21,6 +21,7 @@
  */
 package nil.nadph.qnotified.activity;
 
+import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -28,19 +29,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-
 import com.tencent.widget.XListView;
-
-import java.util.List;
-
 import de.psdev.licensesdialog.LicensesDialog;
 import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
 import de.psdev.licensesdialog.licenses.BSD3ClauseLicense;
 import de.psdev.licensesdialog.licenses.GnuLesserGeneralPublicLicense3;
+import de.psdev.licensesdialog.licenses.License;
 import de.psdev.licensesdialog.licenses.MITLicense;
 import de.psdev.licensesdialog.model.Notice;
 import de.psdev.licensesdialog.model.Notices;
 import io.noties.markwon.Markwon;
+import java.util.List;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.ui.ResUtils;
 
@@ -76,7 +75,7 @@ public class LicenseActivity extends IphoneTitleBarActivityCompat implements Vie
         );
         notices.addNotice(
             new Notice("Ferredoxin UI", "https://github.com/ferredoxin/FerredoxinUI", "ferredoxin",
-                null)
+                new CustomLicense())
         );
         notices.addNotice(markwon);
         notices.addNotice(colorPicker);
@@ -142,5 +141,48 @@ public class LicenseActivity extends IphoneTitleBarActivityCompat implements Vie
     @Override
     public void onClick(View v) {
         finish();
+    }
+
+    /*
+     * Copyright 2014 Shaleen Jain <shaleen.jain95@gmail.com>
+     *
+     *    Licensed under the Apache License, Version 2.0 (the "License");
+     *    you may not use this file except in compliance with the License.
+     *    You may obtain a copy of the License at
+     *
+     *        http://www.apache.org/licenses/LICENSE-2.0
+     *
+     *    Unless required by applicable law or agreed to in writing, software
+     *    distributed under the License is distributed on an "AS IS" BASIS,
+     *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     *    See the License for the specific language governing permissions and
+     *    limitations under the License.
+     */
+    private class CustomLicense extends License {
+
+        @Override
+        public String getName() {
+            return "Affero GNU General Public License and eula";
+        }
+
+        @Override
+        public String readSummaryTextFromResources(final Context context) {
+            return getContent(context, R.raw.agpl_eula_license_summary);
+        }
+
+        @Override
+        public String readFullTextFromResources(final Context context) {
+            return getContent(context, R.raw.agpl_eula_license_full);
+        }
+
+        @Override
+        public String getVersion() {
+            return "2.0";
+        }
+
+        @Override
+        public String getUrl() {
+            return "https://www.gnu.org/licenses/";
+        }
     }
 }
