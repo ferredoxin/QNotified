@@ -807,8 +807,8 @@ public class ReflexUtil {
     }
 
     public static <T> T iget_object_or_null(Object obj, String name, Class<T> type) {
-        Class clazz = obj.getClass();
         try {
+            Class clazz = obj.getClass();
             Field f = findField(clazz, type, name);
             f.setAccessible(true);
             return (T) f.get(obj);
