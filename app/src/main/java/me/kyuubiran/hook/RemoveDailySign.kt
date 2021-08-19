@@ -29,6 +29,7 @@ import me.kyuubiran.util.getObjectOrNull
 import me.kyuubiran.util.loadClass
 import me.kyuubiran.util.setViewZeroSize
 import me.singleneuron.qn_kernel.data.hostInfo
+import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import nil.nadph.qnotified.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
@@ -47,9 +48,14 @@ object RemoveDailySign : CommonDelayableHook("kr_remove_daily_sign") {
                     override fun afterHookedMethod(param: MethodHookParam) {
                         if (LicenseStatus.sDisableCommonHooks) return
                         if (!isEnabled) return
+                        if (hostInfo.packageName != Utils.PACKAGE_NAME_QQ) return
                         try {
-                            val dailySignName = if (hostInfo.packageName == Utils.PACKAGE_NAME_QQ
-                                && hostInfo.versionCode == QQVersion.QQ_8_6_0) "b" else "a"
+                            val dailySignName = when {
+                                requireMinQQVersion(QQVersion.QQ_8_8_17) -> "O"
+                                requireMinQQVersion(QQVersion.QQ_8_8_11) -> "N"
+                                hostInfo.versionCode == QQVersion.QQ_8_6_0 -> "b"
+                                else -> "a"
+                            }
                             val dailySignLayout = getObjectOrNull(
                                 param.thisObject,
                                 dailySignName,

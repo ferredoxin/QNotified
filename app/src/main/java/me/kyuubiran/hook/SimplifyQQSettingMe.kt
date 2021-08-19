@@ -102,7 +102,12 @@ object SimplifyQQSettingMe : BaseMultiConfigDelayableHook() {
                     try {
                         //中间部分(QQ会员 我的钱包等)
                         val midcontentListLayout = if (requireMinQQVersion(QQVersion.QQ_8_6_5)) {
-                            val midcontentName = if (requireMinQQVersion(QQVersion.QQ_8_7_0)) "b" else "c"
+                            val midcontentName = when {
+                                requireMinQQVersion(QQVersion.QQ_8_8_17) -> "S"
+                                requireMinQQVersion(QQVersion.QQ_8_8_11) -> "R"
+                                requireMinQQVersion(QQVersion.QQ_8_7_0) -> "b"
+                                else -> "c"
+                            }
                             param.thisObject.get(midcontentName, LinearLayout::class.java)
                         } else {
                             val midcontentName = if (requireMinQQVersion(QQVersion.QQ_8_6_0)) "n" else "k"
@@ -154,7 +159,7 @@ object SimplifyQQSettingMe : BaseMultiConfigDelayableHook() {
                                 text.contains("世界") && getBooleanConfig(HIDE_XIAO_SHI_JIE) -> {
                                     child.setViewZeroSize()
                                 }
-                                (text.contains("会员") || text.toLowerCase(Locale.ROOT)
+                                (text.contains("会员") || text.lowercase(Locale.ROOT)
                                     .contains("vip")) && getBooleanConfig(HIDE_HUI_YUAN) -> {
                                     child.setViewZeroSize()
                                 }
