@@ -35,7 +35,7 @@ jobs:
     - name: Build project
       run: |
         if ${{ !!github.head_ref }}; then echo "::warning:: Gradle $WARN_ON_PR"; fi
-        ./gradlew build
+        ./gradlew :app:assemble
     
     - name: Upload articact
       uses: actions/upload-artifact@v2
