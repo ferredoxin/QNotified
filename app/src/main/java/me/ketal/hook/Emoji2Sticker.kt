@@ -35,7 +35,7 @@ import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.QQVersion
 
 @FunctionEntry
-object Emoji2Sticker : CommonDelayableHook("Ketal_Emoji2Sticker", SyncUtils.PROC_MAIN, true) {
+object Emoji2Sticker : CommonDelayableHook("Ketal_Emoji2Sticker", SyncUtils.PROC_MAIN, false) {
     override fun isValid() = requireMinQQVersion(QQVersion.QQ_8_7_5)
 
     override fun initOnce() = tryOrFalse {
@@ -47,9 +47,11 @@ object Emoji2Sticker : CommonDelayableHook("Ketal_Emoji2Sticker", SyncUtils.PROC
             }
     }
 
-    fun superIsEnable() = super.isEnabled()
+    fun superIsEnable(): Boolean {
+        return isValid && super.isEnabled()
+    }
 
-    override fun isEnabled() = true
+    override fun isEnabled() = isValid
 
     fun parseMsgForAniSticker(str: String, session: Any) : Any? {
         return try {
