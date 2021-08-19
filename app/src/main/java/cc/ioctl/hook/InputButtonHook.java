@@ -180,7 +180,10 @@ public class InputButtonHook extends CommonDelayableHook {
                                         //|| !CardMsgHook.INSTANCE.isEnabled()
                                     ) {
                                         return false;
-                                    } else if (text.contains("<?xml") || text.contains("{\"")) {
+                                    } else if (
+                                        CardMsgHook.INSTANCE.isEnabled()&&
+                                        (text.contains("<?xml") || text.contains("{\""))
+                                    ) {
                                         new Thread(() -> {
                                             if (text.contains("<?xml")) {
                                                 try {
