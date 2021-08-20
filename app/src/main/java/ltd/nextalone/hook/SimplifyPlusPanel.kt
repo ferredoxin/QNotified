@@ -28,8 +28,8 @@ import ltd.nextalone.util.method
 import ltd.nextalone.util.tryOrFalse
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import nil.nadph.qnotified.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
+import nil.nadph.qnotified.util.QQVersion
 
 @FunctionEntry
 object SimplifyPlusPanel : MultiItemDelayableHook("na_simplify_plus_panel_multi") {
@@ -43,22 +43,15 @@ object SimplifyPlusPanel : MultiItemDelayableHook("na_simplify_plus_panel_multi"
             while (list.hasNext()) {
                 val item = list.next()
                 if (item != null) {
-                    val str = (item.javaClass.getDeclaredField("a").get(item) as String).toString()
-                    if (activeItems.any { string ->
-                            string.isNotEmpty() && string in str
-                        }) {
-                        list.remove()
-                    }
-                }
-            }
-        }
-        val callback2: (XC_MethodHook.MethodHookParam) -> Unit = {
-            val list = (it.args[0] as MutableList<*>).listIterator()
-            while (list.hasNext()) {
-                val item = list.next()
-                if (item != null) {
-                    val str =
+                    val str = try {
                         (item.javaClass.getDeclaredField("name").get(item) as String).toString()
+                    } catch (t: Throwable) {
+                        try {
+                            (item.javaClass.getDeclaredField("a").get(item) as String).toString()
+                        } catch (t: Throwable) {
+                            (item.javaClass.getDeclaredField("d").get(item) as String).toString()
+                        }
+                    }
                     if (activeItems.any { string ->
                             string.isNotEmpty() && string in str
                         }) {
@@ -101,7 +94,7 @@ object SimplifyPlusPanel : MultiItemDelayableHook("na_simplify_plus_panel_multi"
             else -> {
                 "Lcom/tencent/mobileqq/activity/aio/PlusPanel;->a(Ljava/util/List;)V".method.hookBefore(
                     this,
-                    callback2
+                    callback
                 )
             }
         }
