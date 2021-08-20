@@ -25,11 +25,11 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import ltd.nextalone.util.*
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import nil.nadph.qnotified.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.util.DexKit
+import nil.nadph.qnotified.util.QQVersion
 
 @FunctionEntry
 object DisabledRedNick : CommonDelayableHook("na_disable_red_nick_kt", DexDeobfStep(DexKit.N_FriendChatPie_updateUITitle)) {
@@ -37,8 +37,7 @@ object DisabledRedNick : CommonDelayableHook("na_disable_red_nick_kt", DexDeobfS
     override fun initOnce() = tryOrFalse {
         if (!isSimpleUi) {
             DexKit.doFindMethod(DexKit.N_FriendChatPie_updateUITitle)?.hookBefore(this) {
-                val navAIO = it.thisObject.get(
-                    "a",
+                val navAIO = it.thisObject.getFirst(
                     "com.tencent.mobileqq.widget.navbar.NavBarAIO".clazz
                 ) as RelativeLayout
                 val linearLayout = navAIO.findHostView<LinearLayout>("e89")

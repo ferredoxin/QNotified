@@ -26,12 +26,18 @@ import ltd.nextalone.util.clazz
 import ltd.nextalone.util.hookBefore
 import ltd.nextalone.util.method
 import ltd.nextalone.util.tryOrFalse
+import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import nil.nadph.qnotified.util.QQVersion
+import me.singleneuron.qn_kernel.ui.base.净化功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
+import nil.nadph.qnotified.util.QQVersion
 
 @FunctionEntry
+@UiItem
 object SimplifyBottomTab : MultiItemDelayableHook("na_simplify_bottom_tab_kt") {
+    override val preferenceLocate: Array<String> = 净化功能
+    override val preferenceTitle = "精简底栏"
+
     val clzNames = mapOf(
         //"消息" to "com.tencent.mobileqq.activity.home.Conversation", //保留一个
         "联系人" to "com.tencent.mobileqq.activity.contacts.base.Contacts",
@@ -52,7 +58,7 @@ object SimplifyBottomTab : MultiItemDelayableHook("na_simplify_bottom_tab_kt") {
                 val clzName = (it.args[it.args.size - 2] as Class<*>).name
                 val index = clzNames.values.indexOf(clzName)
                 if (index == -1) return@hookBefore
-                if (items[index] in activeItems ) {
+                if (items[index] in activeItems) {
                     it.result = null
                 }
             }

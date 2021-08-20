@@ -170,19 +170,6 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         __recv_desc = ((FunctionButton) _t).getDesc();
         __recv_status = ((FunctionButton) _t).getValue();
         ll.addView(newListItemButtonIfValid(this, "静默指定类型消息通知", null, null, AntiMessage.INSTANCE));
-        ll.addView(
-            newListItemButtonIfValid(this, "精简聊天气泡长按菜单", null, null, SimplifyChatLongItem.INSTANCE,
-                SimplifyChatLongItem.INSTANCE.listener()));
-        ll.addView(
-            newListItemButtonIfValid(this, "精简加号菜单", null, null, SimplifyPlusPanel.INSTANCE));
-        ll.addView(
-            newListItemButtonIfValid(this, "精简设置菜单", null, null, SimplifyQQSettings.INSTANCE));
-        ll.addView(
-            newListItemButtonIfValid(this, "精简联系人页面", null, null, SimplifyContactTabs.INSTANCE));
-        ll.addView(
-            newListItemButtonIfValid(this, "精简主页对话框", null, null, SimplifyRecentDialog.INSTANCE));
-        ll.addView(
-            newListItemButtonIfValid(this, "精简底栏", null, null, SimplifyBottomTab.INSTANCE));
         ll.addView(newListItemConfigSwitchIfValid(this, "隐藏空间好友热播和广告", null, QZoneNoAD.INSTANCE));
         ll.addView(newListItemConfigSwitchIfValid(this, "隐藏QQ钱包超值精选", null, QWalletNoAD.INSTANCE));
         ll.addView(subtitle(this, "好友列表"));

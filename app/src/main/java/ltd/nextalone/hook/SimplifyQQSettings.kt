@@ -25,11 +25,16 @@ import android.app.Activity
 import android.view.View
 import ltd.nextalone.base.MultiItemDelayableHook
 import ltd.nextalone.util.*
+import me.singleneuron.qn_kernel.annotation.UiItem
+import me.singleneuron.qn_kernel.ui.base.净化功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 
 @FunctionEntry
+@UiItem
 object SimplifyQQSettings : MultiItemDelayableHook("na_simplify_qq_settings_multi") {
-    override val allItems = "手机号码|达人|安全|通知|记录|隐私|通用|辅助|免流量|关于"
+    override val preferenceLocate: Array<String> = 净化功能
+    override val preferenceTitle = "精简设置菜单"
+    override val allItems = "手机号码|达人|安全|模式选择|通知|记录|隐私|通用|辅助|免流量|关于"
     override val defaultItems = ""
 
     override fun initOnce() = tryOrFalse {
@@ -45,10 +50,18 @@ object SimplifyQQSettings : MultiItemDelayableHook("na_simplify_qq_settings_mult
                 view.hide()
             }
         }
-        if (activeItems.contains("免流量"))
-            "Lcom/tencent/mobileqq/activity/QQSettingSettingActivity;->a()V".method.replace(
-                this,
-                null
-            )
+        if (activeItems.contains("免流量")) {
+            try {
+                "Lcom/tencent/mobileqq/activity/QQSettingSettingActivity;->a()V".method.replace(
+                    this,
+                    null
+                )
+            } catch (t: Throwable) {
+                "Lcom/tencent/mobileqq/activity/QQSettingSettingActivity;->b()V".method.replace(
+                    this,
+                    null
+                )
+            }
+        }
     }
 }

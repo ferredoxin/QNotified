@@ -27,10 +27,15 @@ import ltd.nextalone.util.clazz
 import ltd.nextalone.util.hookBefore
 import ltd.nextalone.util.method
 import ltd.nextalone.util.tryOrFalse
+import me.singleneuron.qn_kernel.annotation.UiItem
+import me.singleneuron.qn_kernel.ui.base.净化功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 
 @FunctionEntry
+@UiItem
 object SimplifyChatLongItem : MultiItemDelayableHook("na_simplify_chat_long_item_multi") {
+    override val preferenceLocate: Array<String> = 净化功能
+    override val preferenceTitle = "精简聊天气泡长按菜单"
     override val allItems =
         "复制|转发|收藏|回复|多选|撤回|删除|一起写|设为精华|待办|私聊|截图|存表情|相关表情|复制链接|存微云|发给电脑|静音播放|复制文字|转发文字|免提播放|2X|保存"
     override val defaultItems = ""
