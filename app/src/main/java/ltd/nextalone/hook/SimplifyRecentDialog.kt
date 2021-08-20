@@ -23,12 +23,17 @@ package ltd.nextalone.hook
 
 import ltd.nextalone.base.MultiItemDelayableHook
 import ltd.nextalone.util.*
+import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import nil.nadph.qnotified.util.QQVersion
+import me.singleneuron.qn_kernel.ui.base.净化功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
+import nil.nadph.qnotified.util.QQVersion
 
 @FunctionEntry
+@UiItem
 object SimplifyRecentDialog : MultiItemDelayableHook("na_simplify_recent_dialog_multi") {
+    override val preferenceLocate: Array<String> = 净化功能
+    override val preferenceTitle = "精简主页对话框"
     override val allItems = "创建群聊|加好友/群|匹配聊天|一起派对|扫一扫|面对面快传|收付款"
     override val defaultItems = ""
     override fun initOnce() = tryOrFalse {
