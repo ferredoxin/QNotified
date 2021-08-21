@@ -126,7 +126,7 @@ internal fun Any?.get(objName: String): Any? = this.get(objName, null)
 internal fun <T> Any?.get(objName: String, clz: Class<T>? = null): T? =
     ReflexUtil.iget_object_or_null(this, objName, clz)
 
-internal fun <T> Any?.getFirst(clz: Class<T>? = null): T? =
+internal fun <T> Any?.get(clz: Class<T>? = null): T? =
     ReflexUtil.getFirstByType(this, clz)
 
 internal fun Any?.set(name: String, value: Any): Any = ReflexUtil.iput_object(this, name, value)

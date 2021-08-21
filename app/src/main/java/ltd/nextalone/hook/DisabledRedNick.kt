@@ -37,7 +37,7 @@ object DisabledRedNick : CommonDelayableHook("na_disable_red_nick_kt", DexDeobfS
     override fun initOnce() = tryOrFalse {
         if (!isSimpleUi) {
             DexKit.doFindMethod(DexKit.N_FriendChatPie_updateUITitle)?.hookBefore(this) {
-                val navAIO = it.thisObject.getFirst(
+                val navAIO = it.thisObject.get(
                     "com.tencent.mobileqq.widget.navbar.NavBarAIO".clazz
                 ) as RelativeLayout
                 val linearLayout = navAIO.findHostView<LinearLayout>("e89")
