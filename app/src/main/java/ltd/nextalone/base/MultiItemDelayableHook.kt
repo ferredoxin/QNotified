@@ -28,7 +28,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
-import ltd.nextalone.hook.SimplifyBottomTab
 import me.ketal.data.ConfigData
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.ui.CommonContextWrapper
@@ -57,8 +56,8 @@ abstract class MultiItemDelayableHook constructor(keyName: String) :
                 val cache = activeItems.toMutableList()
                 val context = contextWrapper(this.context)
                 contextWrapper = CommonContextWrapper::createMaterialDesignContext
-                setMultiChoiceItems(SimplifyBottomTab.items.toTypedArray(), getBoolAry()) { _: DialogInterface, i: Int, _: Boolean ->
-                    val item = SimplifyBottomTab.items[i]
+                setMultiChoiceItems(items.toTypedArray(), getBoolAry()) { _: DialogInterface, i: Int, _: Boolean ->
+                    val item = items[i]
                     if (!cache.contains(item)) cache.add(item)
                     else cache.remove(item)
                 }
