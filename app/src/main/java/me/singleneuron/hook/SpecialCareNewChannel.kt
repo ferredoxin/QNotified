@@ -36,7 +36,6 @@ import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.ui.base.增强功能
-import nil.nadph.qnotified.BuildConfig
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.Utils
@@ -62,15 +61,15 @@ object SpecialCareNewChannel : CommonDelayAbleHookBridge(SyncUtils.PROC_ANY) {
                                 notification.extras.get(Notification.EXTRA_TITLE).toString()
                             val text: String =
                                 notification.extras.get(Notification.EXTRA_TEXT).toString()
-                            if (BuildConfig.DEBUG) XposedBridge.log("QQ特别关心：$title$text")
+                            //if (BuildConfig.DEBUG) XposedBridge.log("QQ特别关心：$title$text")
                             if (title.contains("[特别关心]")) {
-                                Utils.logd("QQ特别关心：" + title + text + "true")
-                                Utils.logd(
+                                //Utils.logd("QQ特别关心：" + title + text + "true")
+                                /*Utils.logd(
                                     "QQ特别关心Channel：" + XposedHelpers.getObjectField(
                                         notification,
                                         "mChannelId"
                                     ).toString()
-                                )
+                                )*/
                                 val notificationChannel = NotificationChannel(
                                     "CHANNEL_ID_SPECIALLY_CARE",
                                     "特别关心",

@@ -65,42 +65,6 @@
         <item>4</item>
     </string-array>
 
-    <string-array name="sidebar_list_titles">
-        <item>开播啦鹅</item>
-        <item>我的小世界</item>
-        <item>我的会员</item>
-        <item>我的钱包</item>
-        <item>个性装扮</item>
-        <item>情侣空间</item>
-        <item>我的收藏</item>
-        <item>我的相册</item>
-        <item>我的文件</item>
-        <item>我的日程</item>
-        <item>我的视频</item>
-        <item>小游戏</item>
-        <item>腾讯文档</item>
-        <item>每日打卡</item>
-        <item>王卡免流量特权</item>
-    </string-array>
-
-    <string-array name="sidebar_list_values">
-        <item>hide_kai_bo_la_e</item>
-        <item>hide_xiao_shi_jie</item>
-        <item>hide_hui_yuan</item>
-        <item>hide_qian_bao</item>
-        <item>hide_zhuang_ban</item>
-        <item>hide_qing_lv</item>
-        <item>hide_shou_cang</item>
-        <item>hide_xiang_ce</item>
-        <item>hide_wen_jian</item>
-        <item>hide_ri_cheng</item>
-        <item>hide_shi_pin</item>
-        <item>hide_xiao_you_xi</item>
-        <item>hide_wen_dang</item>
-        <item>hide_da_ka</item>
-        <item>hide_wang_ka</item>
-    </string-array>
-
     <string-array name="sidebar_setting_list_titles">
         <item>手机号码</item>
         <item>帐号安全</item>
