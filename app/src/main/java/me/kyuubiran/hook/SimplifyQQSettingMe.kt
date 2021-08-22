@@ -34,12 +34,12 @@ import de.robv.android.xposed.XposedBridge
 import ltd.nextalone.util.get
 import me.kyuubiran.util.setViewZeroSize
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import nil.nadph.qnotified.util.QQVersion
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.step.Step
 import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.LicenseStatus
+import nil.nadph.qnotified.util.QQVersion
 import nil.nadph.qnotified.util.Utils
 import java.util.*
 
@@ -101,22 +101,22 @@ object SimplifyQQSettingMe : BaseMultiConfigDelayableHook() {
                     if (!isEnabled) return
                     try {
                         //中间部分(QQ会员 我的钱包等)
-                        val midcontentListLayout = if (requireMinQQVersion(QQVersion.QQ_8_6_5)) {
-                            val midcontentName = when {
+                        val midContentListLayout = if (requireMinQQVersion(QQVersion.QQ_8_6_5)) {
+                            val midContentName = when {
                                 requireMinQQVersion(QQVersion.QQ_8_8_17) -> "S"
                                 requireMinQQVersion(QQVersion.QQ_8_8_11) -> "R"
                                 requireMinQQVersion(QQVersion.QQ_8_7_0) -> "b"
                                 else -> "c"
                             }
-                            param.thisObject.get(midcontentName, LinearLayout::class.java)
+                            param.thisObject.get(midContentName, LinearLayout::class.java)
                         } else {
-                            val midcontentName = if (requireMinQQVersion(QQVersion.QQ_8_6_0)) "n" else "k"
-                            param.thisObject.get(midcontentName, View::class.java) as LinearLayout
+                            val midContentName = if (requireMinQQVersion(QQVersion.QQ_8_6_0)) "n" else "k"
+                            param.thisObject.get(midContentName, View::class.java) as LinearLayout
                         }
                         //底端部分 设置 夜间模式 达人 等
                         val underSettingsName = if (requireMinQQVersion(QQVersion.QQ_8_6_0)) "l" else "h"
                         val underSettingsLayout = if (requireMinQQVersion(QQVersion.QQ_8_6_5)) {
-                            val parent  = midcontentListLayout?.parent?.parent as ViewGroup
+                            val parent = midContentListLayout?.parent?.parent as ViewGroup
                             var ret: LinearLayout? = null
                             parent.forEach {
                                 if (it is LinearLayout && it[0] is LinearLayout) {
@@ -144,7 +144,8 @@ object SimplifyQQSettingMe : BaseMultiConfigDelayableHook() {
                                 }
                             }
                         }
-                        midcontentListLayout?.forEach {
+                        val midRemovedList: MutableList<Int> = mutableListOf()
+                        midContentListLayout?.forEach {
                             val child = it as LinearLayout
                             val tv = if (child.size == 1) {
                                 (child[0] as LinearLayout)[1]
@@ -153,55 +154,30 @@ object SimplifyQQSettingMe : BaseMultiConfigDelayableHook() {
                             } as TextView
                             val text = tv.text.toString()
                             when {
-                                text.contains("播") && getBooleanConfig(HIDE_KAI_BO_LA_E) -> {
-                                    child.setViewZeroSize()
-                                }
-                                text.contains("世界") && getBooleanConfig(HIDE_XIAO_SHI_JIE) -> {
-                                    child.setViewZeroSize()
-                                }
-                                (text.contains("会员") || text.lowercase(Locale.ROOT)
-                                    .contains("vip")) && getBooleanConfig(HIDE_HUI_YUAN) -> {
-                                    child.setViewZeroSize()
-                                }
-                                text.contains("钱包") && getBooleanConfig(HIDE_QIAN_BAO) -> {
-                                    child.setViewZeroSize()
-                                }
-                                text.contains("装扮") && getBooleanConfig(HIDE_ZHUANG_BAN) -> {
-                                    child.setViewZeroSize()
-                                }
-                                text.contains("情侣") && getBooleanConfig(HIDE_QING_LV) -> {
-                                    child.setViewZeroSize()
-                                }
-                                text.contains("相册") && getBooleanConfig(HIDE_XIANG_CE) -> {
-                                    child.setViewZeroSize()
-                                }
-                                text.contains("收藏") && getBooleanConfig(HIDE_SHOU_CANG) -> {
-                                    child.setViewZeroSize()
-                                }
-                                text.contains("文件") && getBooleanConfig(HIDE_WEN_JIAN) -> {
-                                    child.setViewZeroSize()
-                                }
-                                text.contains("日程") && getBooleanConfig(HIDE_RI_CHENG) -> {
-                                    child.setViewZeroSize()
-                                }
-                                text.contains("视频") && getBooleanConfig(HIDE_SHI_PIN) -> {
-                                    child.setViewZeroSize()
-                                }
-                                text.contains("游戏") && getBooleanConfig(HIDE_XIAO_YOU_XI) -> {
-                                    child.setViewZeroSize()
-                                }
-                                text.contains("文档") && getBooleanConfig(HIDE_WEN_DANG) -> {
-                                    child.setViewZeroSize()
-                                }
-                                text.contains("打卡") && getBooleanConfig(HIDE_DA_KA) -> {
-                                    child.setViewZeroSize()
-                                }
-                                (text.contains("王卡") || text.contains("流量") || text.contains("送12个月")) && getBooleanConfig(
-                                    HIDE_WANG_KA
+                                text.contains("播") && getBooleanConfig(HIDE_KAI_BO_LA_E) ||
+                                    text.contains("世界") && getBooleanConfig(HIDE_XIAO_SHI_JIE) ||
+                                    (text.contains("会员") || text.lowercase(Locale.ROOT)
+                                        .contains("vip")) && getBooleanConfig(HIDE_HUI_YUAN) ||
+                                    text.contains("钱包") && getBooleanConfig(HIDE_QIAN_BAO) ||
+                                    text.contains("装扮") && getBooleanConfig(HIDE_ZHUANG_BAN) ||
+                                    text.contains("情侣") && getBooleanConfig(HIDE_QING_LV) ||
+                                    text.contains("相册") && getBooleanConfig(HIDE_XIANG_CE) ||
+                                    text.contains("收藏") && getBooleanConfig(HIDE_SHOU_CANG) ||
+                                    text.contains("文件") && getBooleanConfig(HIDE_WEN_JIAN) ||
+                                    text.contains("日程") && getBooleanConfig(HIDE_RI_CHENG) ||
+                                    text.contains("视频") && getBooleanConfig(HIDE_SHI_PIN) ||
+                                    text.contains("游戏") && getBooleanConfig(HIDE_XIAO_YOU_XI) ||
+                                    text.contains("文档") && getBooleanConfig(HIDE_WEN_DANG) ||
+                                    text.contains("打卡") && getBooleanConfig(HIDE_DA_KA) ||
+                                    (text.contains("王卡") || text.contains("流量") || text.contains("送12个月"))
+                                    && getBooleanConfig(HIDE_WANG_KA
                                 ) -> {
-                                    child.setViewZeroSize()
+                                    midRemovedList.add(midContentListLayout.indexOfChild(child))
                                 }
                             }
+                        }
+                        midRemovedList.sorted().forEachIndexed { index, i ->
+                            midContentListLayout?.removeViewAt(i - index)
                         }
                     } catch (t: Throwable) {
                         Utils.log(t)
@@ -237,7 +213,6 @@ object SimplifyQQSettingMe : BaseMultiConfigDelayableHook() {
             HIDE_WEN_DU
         )
     }
-
     override fun getEffectiveProc(): Int {
         return SyncUtils.PROC_MAIN
     }
