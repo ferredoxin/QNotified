@@ -35,6 +35,7 @@ import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedBridge
 import ltd.nextalone.base.MultiItemDelayableHook
 import ltd.nextalone.util.get
+import ltd.nextalone.util.hide
 import me.kyuubiran.util.setViewZeroSize
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
@@ -169,7 +170,11 @@ object SimplifyQQSettingMe : MultiItemDelayableHook("SimplifyQQSettingMe") {
                             }
                         }
                         midRemovedList.sorted().forEachIndexed { index, i ->
-                            midContentListLayout?.removeViewAt(i - index)
+                            if (requireMinQQVersion(QQ_8_8_11)) {
+                                midContentListLayout?.removeViewAt(i - index)
+                            } else {
+                                midContentListLayout?.getChildAt(i)?.hide()
+                            }
                         }
                     } catch (t: Throwable) {
                         Utils.log(t)
