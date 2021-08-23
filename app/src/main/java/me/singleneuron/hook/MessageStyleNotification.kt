@@ -39,7 +39,6 @@ import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.ui.base.增强功能
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.base.annotation.FunctionEntry
-import nil.nadph.qnotified.util.Utils
 
 @FunctionEntry
 @UiItem
@@ -126,7 +125,7 @@ object MessageStyleNotification : CommonDelayAbleHookBridge(SyncUtils.PROC_ANY) 
                                 }
                                 historyMessage[notificationId]?.add(message)
 
-                                Utils.logd(historyMessage.toString())
+                                //Utils.logd(historyMessage.toString())
 
                                 param.result = NotificationCompat.Builder(
                                     hostInfo.application,

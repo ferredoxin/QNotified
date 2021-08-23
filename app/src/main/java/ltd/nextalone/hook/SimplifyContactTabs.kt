@@ -41,29 +41,39 @@ object SimplifyContactTabs : MultiItemDelayableHook("na_simplify_contact_tabs_mu
         "Lcom.tencent.mobileqq.activity.contacts.base.tabs.ContactsTabs;->a()V".method.hookAfter(
             this
         ) {
-            val list = it.thisObject.get("a", ArrayList::class.java) as ArrayList<Any>
+            val list = it.thisObject.get(ArrayList::class.java) as ArrayList<Any>
             val tabList = list.toMutableList()
             list.clear()
             val stringList: ArrayList<String> = arrayListOf()
             val intList: ArrayList<Int> = arrayListOf()
             val cls = "com.tencent.mobileqq.activity.contacts.base.tabs.TabInfo".clazz
             tabList.forEach { obj ->
-                val str = obj.get("f") as String
+                val str = obj.get(String::class.java) as String
                 if (str == "好友" && !activeItems.contains(str)) {
-                    val id = obj.get("d") as Int
+                    val id = obj.get(Int::class.java) as Int
                     list.add(obj)
                     stringList.add(str)
                     intList.add(id)
                 } else if (!activeItems.contains(str)) {
-                    val id = obj.get("d") as Int
+                    val id = obj.get(Int::class.java) as Int
                     val instance = cls.instance(items.indexOf(str), id, str)
                     list.add(instance)
                     stringList.add(str)
                     intList.add(id)
                 }
             }
-            it.thisObject.set("a", Array<String>::class.java, stringList.toTypedArray())
-            it.thisObject.set("a", IntArray::class.java, intList.toIntArray())
+            var arrayListName = "a"
+            var intListName = "a"
+            it.thisObject.javaClass.declaredFields.forEach { field ->
+                if (field.type == Array<String>::class.java) {
+                    arrayListName = field.name
+                }
+                if (field.type == IntArray::class.java) {
+                    intListName = field.name
+                }
+            }
+            it.thisObject.set(arrayListName, Array<String>::class.java, stringList.toTypedArray())
+            it.thisObject.set(intListName, IntArray::class.java, intList.toIntArray())
         }
     }
 

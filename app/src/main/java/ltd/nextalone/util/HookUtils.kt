@@ -57,8 +57,8 @@ internal fun Class<*>.method(name: String): Method? = this.declaredMethods.run {
     return null
 }
 
-internal fun Class<*>.method(name: String, vararg args: Class<*>?): Method? =
-    hasMethod(this, name, *args)
+internal fun Class<*>.method(name: String, vararg argsTypesAndReturnType: Class<*>?): Method? =
+    hasMethod(this, name, *argsTypesAndReturnType)
 
 internal fun Class<*>.method(
     condition: (method: Method) -> Boolean = { true }
@@ -121,13 +121,13 @@ internal inline fun <T : BaseDelayableHook> T.tryOrFalse(crossinline function: (
     }
 }
 
-internal fun Any?.get(objName: String): Any? = this.get(objName, null)
+internal fun Any?.get(name: String): Any? = this.get(name, null)
 
-internal fun <T> Any?.get(objName: String, clz: Class<T>? = null): T? =
-    ReflexUtil.iget_object_or_null(this, objName, clz)
+internal fun <T> Any?.get(name: String, type: Class<out T>? = null): T? =
+    ReflexUtil.iget_object_or_null(this, name, type)
 
-internal fun <T> Any?.get(clz: Class<T>? = null): T? =
-    ReflexUtil.getFirstByType(this, clz)
+internal fun <T> Any?.get(type: Class<out T>? = null): T? =
+    ReflexUtil.getFirstByType(this, type)
 
 internal fun Any?.set(name: String, value: Any): Any = ReflexUtil.iput_object(this, name, value)
 

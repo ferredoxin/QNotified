@@ -28,6 +28,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import me.ketal.data.ConfigData
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.ui.CommonContextWrapper
@@ -39,9 +40,10 @@ import org.ferredoxin.ferredoxin_ui.base.MaterialAlertDialogPreferenceFactory
 import org.ferredoxin.ferredoxin_ui.base.UiItem
 import org.ferredoxin.ferredoxin_ui.base.uiDialogPreference
 
+//Todo 好活，考虑移入FerredoxinUI
 abstract class MultiItemDelayableHook constructor(keyName: String) :
     CommonDelayableHook("__NOT_USED__"), UiItem {
-    open val preferenceTitle = "Title"
+    abstract val preferenceTitle: String
     open val preferenceSummary = ""
 
     override val preference: MaterialAlertDialogPreferenceFactory by lazy {
@@ -52,78 +54,14 @@ abstract class MultiItemDelayableHook constructor(keyName: String) :
 
             contextWrapper = CommonContextWrapper::createMaterialDesignContext
 
-            materialAlertDialogBuilder = {
-                val cache = activeItems.toMutableList()
-                val context = contextWrapper(this.context)
-                contextWrapper = CommonContextWrapper::createMaterialDesignContext
-                setMultiChoiceItems(items.toTypedArray(), getBoolAry()) { _: DialogInterface, i: Int, _: Boolean ->
-                    val item = items[i]
-                    if (!cache.contains(item)) cache.add(item)
-                    else cache.remove(item)
-                }
-                setNegativeButton("取消", null)
-                setPositiveButton("确定") { dialog: DialogInterface, _: Int ->
-                    Toasts.info(context, "已保存精简项目")
-                    activeItems = cache
-                }
-                setNeutralButton("自定义") { _: DialogInterface, _: Int ->
-                    val dialog = CustomDialog.createFailsafe(context)
-                    val context = dialog.context
-                    val editText = EditText(context)
-                    editText.textSize = 16f
-                    val _5 = Utils.dip2px(context, 5f)
-                    editText.setPadding(_5, _5, _5, _5 * 2)
-                    editText.setText(items.joinToString("|"))
-                    val linearLayout = LinearLayout(context)
-                    linearLayout.orientation = LinearLayout.VERTICAL
-                    linearLayout.addView(ViewBuilder.subtitle(context, "使用|分割，请确保格式正确！", Color.RED))
-                    linearLayout.addView(
-                        editText,
-                        ViewBuilder.newLinearLayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT,
-                            _5 * 2
-                        )
-                    )
-                    val alertDialog = dialog.setTitle("自定义精简项目")
-                        .setView(linearLayout)
-                        .setCancelable(true)
-                        .setPositiveButton("确认", null)
-                        .setNegativeButton("取消", null)
-                        .setNeutralButton("使用默认值", null)
-                        .create() as AlertDialog
-                    alertDialog.show()
-                    alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-                        val text = editText.text.toString()
-                        if (text.isEmpty()) {
-                            Toasts.error(context, "不可为空")
-                            return@setOnClickListener
-                        }
-                        text.split("|").forEach { item ->
-                            if (item.isEmpty()) {
-                                Toasts.error(context, "请确保格式正确！")
-                                return@setOnClickListener
-                            }
-                        }
-                        Toasts.info(context, "已保存自定义项目")
-                        allItemsConfigKeys.value = editText.text.toString()
-                        alertDialog.cancel()
-                    }
-                    alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener {
-                        allItemsConfigKeys.remove()
-                        Toasts.info(context, "已使用默认值")
-                        alertDialog.cancel()
-                    }
-                }
-                setTitle("选择要精简的条目")
-            }
+            materialAlertDialogBuilder = alertDialogDecorator
         }
     }
 
     private val itemsConfigKeys = ConfigData<String>(keyName)
     private val allItemsConfigKeys = ConfigData<String>("$keyName\\_All")
     abstract val allItems: String
-    abstract val defaultItems: String
+    open val defaultItems: String = ""
     internal open var items
         get() = allItemsConfigKeys.getOrDefault(allItems).split("|").toMutableList()
         set(value) {
@@ -137,73 +75,7 @@ abstract class MultiItemDelayableHook constructor(keyName: String) :
 
     open fun listener() = View.OnClickListener {
         try {
-            val cache = activeItems.toMutableList()
-            val ctx = it.context
-            AlertDialog.Builder(ctx, CustomDialog.themeIdForDialog())
-                .setTitle("选择要精简的条目")
-                .setMultiChoiceItems(
-                    items.toTypedArray(),
-                    getBoolAry()
-                ) { _: DialogInterface, i: Int, _: Boolean ->
-                    val item = items[i]
-                    if (!cache.contains(item)) cache.add(item)
-                    else cache.remove(item)
-                }
-                .setNegativeButton("取消", null)
-                .setPositiveButton("确定") { _: DialogInterface, _: Int ->
-                    Toasts.info(ctx, "已保存精简项目")
-                    activeItems = cache
-                }
-                .setNeutralButton("自定义") { _: DialogInterface, _: Int ->
-                    val dialog = CustomDialog.createFailsafe(ctx)
-                    val context = dialog.context
-                    val editText = EditText(context)
-                    editText.textSize = 16f
-                    val _5 = Utils.dip2px(context, 5f)
-                    editText.setPadding(_5, _5, _5, _5 * 2)
-                    editText.setText(items.joinToString("|"))
-                    val linearLayout = LinearLayout(ctx)
-                    linearLayout.orientation = LinearLayout.VERTICAL
-                    linearLayout.addView(ViewBuilder.subtitle(context, "使用|分割，请确保格式正确！", Color.RED))
-                    linearLayout.addView(
-                        editText,
-                        ViewBuilder.newLinearLayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT,
-                            _5 * 2
-                        )
-                    )
-                    val alertDialog = dialog.setTitle("自定义精简项目")
-                        .setView(linearLayout)
-                        .setCancelable(true)
-                        .setPositiveButton("确认", null)
-                        .setNegativeButton("取消", null)
-                        .setNeutralButton("使用默认值", null)
-                        .create() as AlertDialog
-                    alertDialog.show()
-                    alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-                        val text = editText.text.toString()
-                        if (text.isEmpty()) {
-                            Toasts.error(context, "不可为空")
-                            return@setOnClickListener
-                        }
-                        text.split("|").forEach { item ->
-                            if (item.isEmpty()) {
-                                Toasts.error(context, "请确保格式正确！")
-                                return@setOnClickListener
-                            }
-                        }
-                        Toasts.info(context, "已保存自定义项目")
-                        allItemsConfigKeys.value = editText.text.toString()
-                        alertDialog.cancel()
-                    }
-                    alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener {
-                        allItemsConfigKeys.remove()
-                        Toasts.info(context, "已使用默认值")
-                        alertDialog.cancel()
-                    }
-                }
-                .show()
+            MaterialAlertDialogBuilder(CommonContextWrapper.createMaterialDesignContext(it.context)).apply(alertDialogDecorator).show()
         } catch (e: Exception) {
             Utils.log(e)
         }
@@ -222,4 +94,70 @@ abstract class MultiItemDelayableHook constructor(keyName: String) :
     }
 
     override fun setEnabled(enabled: Boolean) = Unit
+
+    private val alertDialogDecorator: MaterialAlertDialogBuilder.() -> Unit = {
+        val cache = activeItems.toMutableList()
+        setMultiChoiceItems(items.toTypedArray(), getBoolAry()) { _: DialogInterface, i: Int, _: Boolean ->
+            val item = items[i]
+            if (!cache.contains(item)) cache.add(item)
+            else cache.remove(item)
+        }
+        setNegativeButton("取消", null)
+        setPositiveButton("确定") { _: DialogInterface, _: Int ->
+            Toasts.info(context, "已保存精简项目")
+            activeItems = cache
+        }
+        setNeutralButton("自定义") { _: DialogInterface, _: Int ->
+            val dialog = CustomDialog.createFailsafe(context)
+            val context = dialog.context
+            val editText = EditText(context)
+            editText.textSize = 16f
+            val _5 = Utils.dip2px(context, 5f)
+            editText.setPadding(_5, _5, _5, _5 * 2)
+            editText.setText(items.joinToString("|"))
+            val linearLayout = LinearLayout(context)
+            linearLayout.orientation = LinearLayout.VERTICAL
+            linearLayout.addView(ViewBuilder.subtitle(context, "使用|分割，请确保格式正确！", Color.RED))
+            linearLayout.addView(
+                editText,
+                ViewBuilder.newLinearLayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    _5 * 2
+                )
+            )
+            val alertDialog = dialog.setTitle("自定义精简项目")
+                .setView(linearLayout)
+                .setCancelable(true)
+                .setPositiveButton("确认", null)
+                .setNegativeButton("取消", null)
+                .setNeutralButton("使用默认值", null)
+                .create() as AlertDialog
+            alertDialog.show()
+            alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                val text = editText.text.toString()
+                if (text.isEmpty()) {
+                    Toasts.error(context, "不可为空")
+                    return@setOnClickListener
+                }
+                text.split("|").forEach { item ->
+                    if (item.isEmpty()) {
+                        Toasts.error(context, "请确保格式正确！")
+                        return@setOnClickListener
+                    }
+                }
+                Toasts.info(context, "已保存自定义项目")
+                allItemsConfigKeys.value = editText.text.toString()
+                alertDialog.cancel()
+            }
+            alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener {
+                allItemsConfigKeys.remove()
+                Toasts.info(context, "已使用默认值")
+                alertDialog.cancel()
+            }
+        }
+        setTitle("选择要精简的条目")
+    }
+
+
 }
