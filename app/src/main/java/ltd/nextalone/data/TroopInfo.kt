@@ -22,19 +22,16 @@
 
 package ltd.nextalone.data
 
+import ltd.nextalone.util.clazz
 import ltd.nextalone.util.get
-import nil.nadph.qnotified.util.Initiator
-import nil.nadph.qnotified.util.ReflexUtil
+import ltd.nextalone.util.method
 import nil.nadph.qnotified.util.Utils
 
 data class TroopInfo(val troopUin: String?) {
-    private val troopInfo = ReflexUtil.invoke_virtual(
-        Utils.getTroopManager(),
-        "b",
-        troopUin,
-        String::class.java,
-        Initiator._TroopInfo()
-    )
+    private val troopInfo =
+        "com.tencent.mobileqq.app.TroopManager".clazz?.method {
+            it.parameterTypes.contentEquals(arrayOf(String::class.java)) && it.returnType == "com.tencent.mobileqq.data.troop.TroopInfo".clazz
+        }?.invoke(Utils.getTroopManager(), troopUin)
 
     var troopName = troopInfo.get("troopname")
     var troopOwnerUin = troopInfo.get("troopowneruin", String::class.java)

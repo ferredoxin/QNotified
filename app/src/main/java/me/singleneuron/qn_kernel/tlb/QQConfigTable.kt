@@ -24,6 +24,7 @@ package me.singleneuron.qn_kernel.tlb
 import cc.ioctl.hook.ReplyNoAtHook
 import cc.ioctl.hook.VasProfileAntiCrash
 import ltd.nextalone.hook.ChatWordsCount
+import me.ketal.hook.SortAtPanel
 import me.kyuubiran.hook.AutoMosaicName
 import me.kyuubiran.hook.SimplifyQQSettingMe
 import nil.nadph.qnotified.util.QQVersion.*
@@ -76,7 +77,11 @@ class QQConfigTable : ConfigTableInterface {
             QQ_8_7_0 to "b",
             QQ_8_8_11 to "R",
             QQ_8_8_17 to "S"
+        ),
+
+        SortAtPanel.sessionInfoTroopUin to mapOf(
+            QQ_8_4_1 to "a",
+            QQ_8_8_20 to "b",
         )
     )
-
 }

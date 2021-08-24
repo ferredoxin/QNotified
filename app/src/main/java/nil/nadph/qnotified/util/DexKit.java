@@ -815,7 +815,7 @@ public class DexKit {
                 return new int[]{6, 2, 7, 3};
             case N_AtPanel__refreshUI:
             case N_AtPanel__showDialogAtView:
-                return new int[]{10, 4};
+                return new int[]{12, 10, 4};
             case C_CustomWidgetUtil:
                 return new int[]{5, 4, 9};
             case C_ClockInEntryHelper:
