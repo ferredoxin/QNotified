@@ -37,13 +37,14 @@ internal fun <T : BaseDelayableHook> T.logDetail(info: String?, vararg msg: Any?
     logd("${this.javaClass.simpleName}: $info, ${msg.joinToString(", ")}")
 }
 
-internal fun <T : BaseDelayableHook> T.logClass(msg: String? = "") {
-    logd("$this: Class, $msg")
+internal fun <T : BaseDelayableHook> T.logClass(clz: Class<*>? = null) {
+    logd("$this: Class, ${clz?.name}")
 }
 
 internal fun <T : BaseDelayableHook> T.logMethod(method: Method?) {
-    logDetail("$this: Method", "name", method?.name, "return", method?.returnType, "param", *method?.parameterTypes
-        ?: arrayOf("null"))
+    logDetail("$this: Method", "name", method?.name)
+    logd("declaringClass", method?.declaringClass, "return", method?.returnType)
+    logd("param", *method?.parameterTypes ?: arrayOf("null"))
 }
 
 internal fun <T : BaseDelayableHook> T.logStart() {
