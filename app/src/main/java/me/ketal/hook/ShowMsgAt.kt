@@ -60,7 +60,7 @@ object ShowMsgAt : CommonDelayableHook("Ketal_HideTroopLevel"), OnBubbleBuilder 
             when (chatMessage.msgType) {
                 MSG_TYPE_TEXT, // TODO MSG_TYPE_MIX,
                 MSG_TYPE_REPLY_TEXT -> {
-                    when (val content = rootView.findHostView<View>("chat_item_content_layout")!!) {
+                    when (val content = rootView.findHostView<View>("chat_item_content_layout")) {
                         is TextView -> {
                             copeAtInfo(content, at)
                         }
@@ -86,9 +86,13 @@ object ShowMsgAt : CommonDelayableHook("Ketal_HideTroopLevel"), OnBubbleBuilder 
 
     private fun copeAtInfo(textView: TextView, at: JSONArray) {
         val spannableString = SpannableString(textView.text)
+        val uinList = mutableListOf<Long>()
         for (i in 0 until at.length()) {
             val con = at[i] as JSONObject
             val uin = con["uin"].toString().toLong()
+            if (uinList.contains(uin))
+                continue
+            uinList.add(uin)
             val start = con["startPos"] as Int
             val length = con["textLen"] as Int
             spannableString.setSpan(OpenQQSpan(uin), start, start + length, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
