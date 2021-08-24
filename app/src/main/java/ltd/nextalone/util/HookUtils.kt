@@ -35,7 +35,6 @@ import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.hook.BaseDelayableHook
 import nil.nadph.qnotified.util.*
-import nil.nadph.qnotified.util.ReflexUtil.hasMethod
 import java.lang.reflect.Member
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
@@ -57,8 +56,14 @@ internal fun Class<*>.method(name: String): Method? = this.declaredMethods.run {
     return null
 }
 
-internal fun Class<*>.method(name: String, vararg argsTypesAndReturnType: Class<*>?): Method? =
-    hasMethod(this, name, *argsTypesAndReturnType)
+internal fun Class<*>.method(name: String, returnType: Class<*>?, vararg argsTypes: Class<*>?): Method? = this.declaredMethods.run {
+    this.forEach {
+        if (returnType == it.returnType && it.parameterTypes.contentEquals(argsTypes)) {
+            return it
+        }
+    }
+    return null
+}
 
 internal fun Class<*>.method(
     condition: (method: Method) -> Boolean = { true }
