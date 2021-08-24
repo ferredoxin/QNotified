@@ -185,15 +185,6 @@ public class MainHook {
         }
     }
 
-    private static void injectLifecycleForProcess(Context ctx) {
-        if (SyncUtils.isMainProcess()) {
-            Parasitics.injectModuleResources(ctx.getApplicationContext().getResources());
-        }
-        if (SyncUtils.isTargetProcess(SyncUtils.PROC_MAIN | SyncUtils.PROC_PEAK)) {
-            Parasitics.initForStubActivity(ctx);
-        }
-    }
-
     /**
      * dummy method, for development and test only
      */
@@ -232,7 +223,6 @@ public class MainHook {
             Utils.$access$set$sAppRuntimeInit(true);
         }
         HideVmStack.init();
-        injectLifecycleForProcess(ctx);
         BaseDelayableHook.allowEarlyInit(RevokeMsgHook.INSTANCE);
         BaseDelayableHook.allowEarlyInit(MuteQZoneThumbsUp.INSTANCE);
         BaseDelayableHook.allowEarlyInit(MuteAtAllAndRedPacket.INSTANCE);
@@ -292,6 +282,8 @@ public class MainHook {
 
     @MainProcess
     private void injectStartupHookForMain(Context ctx) {
+        Parasitics.injectModuleResources(ctx.getApplicationContext().getResources());
+        Parasitics.initForStubActivity(ctx);
         JumpActivityEntryHook.initForJumpActivityEntry(ctx);
     }
 
