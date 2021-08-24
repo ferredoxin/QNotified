@@ -21,20 +21,16 @@
  */
 package me.ketal.hook
 
+import android.view.View
 import ltd.nextalone.data.TroopInfo
-import ltd.nextalone.util.get
-import ltd.nextalone.util.hookAfter
-import ltd.nextalone.util.hookBefore
+import ltd.nextalone.util.*
 import me.ketal.util.BaseUtil.tryVerbosely
-import nil.nadph.qnotified.util.PlayQQVersion
-import nil.nadph.qnotified.util.TIMVersion
 import me.singleneuron.qn_kernel.data.requireMinVersion
-import nil.nadph.qnotified.util.QQVersion
+import me.singleneuron.qn_kernel.tlb.ConfigTable
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.step.DexDeobfStep
-import nil.nadph.qnotified.util.DexKit
-import nil.nadph.qnotified.util.Initiator
+import nil.nadph.qnotified.util.*
 import nil.nadph.qnotified.util.ReflexUtil.getFirstByType
 
 @FunctionEntry
@@ -43,12 +39,21 @@ object SortAtPanel : CommonDelayableHook(
     DexDeobfStep(DexKit.N_AtPanel__refreshUI),
     DexDeobfStep(DexKit.N_AtPanel__showDialogAtView)
 ) {
+    const val sessionInfoTroopUin = "SortAtPanel.sessionInfoTroopUin"
     private var isSort: Boolean? = null
     override fun initOnce() = tryVerbosely(false) {
-        DexKit.doFindMethod(DexKit.N_AtPanel__showDialogAtView)!!.hookAfter(this) {
+        val showDialogAtView = DexKit.doFindMethod(DexKit.N_AtPanel__showDialogAtView)
+            ?: DexKit.doFindClass(DexKit.N_AtPanel__showDialogAtView)?.method {
+                it.parameterTypes.contentEquals(arrayOf(View::class.java, String::class.java, Boolean::class.java))
+            }
+        showDialogAtView?.hookAfter(this) {
             isSort = (it.args[1] as String?)?.isNotEmpty()
         }
-        DexKit.doFindMethod(DexKit.N_AtPanel__refreshUI)!!.hookBefore(this) {
+        val refreshUI = DexKit.doFindMethod(DexKit.N_AtPanel__refreshUI)
+            ?: DexKit.doFindClass(DexKit.N_AtPanel__refreshUI)?.method {
+                it.parameterTypes.contentEquals(arrayOf("com.tencent.mobileqq.troop.quickat.ui.SearchTask\$SearchResult".clazz))
+            }
+        refreshUI?.hookBefore(this) {
             if (isSort == true) return@hookBefore
             val sessionInfo = getFirstByType(it.thisObject, Initiator._SessionInfo())
             val troopInfo = TroopInfo(getTroopUin(sessionInfo))
@@ -64,32 +69,19 @@ object SortAtPanel : CommonDelayableHook(
                 }
             }
             list.removeAll(admin)
-            list.addAll(if(isAdmin) 1 else 0, admin)
+            list.addAll(if (isAdmin) 1 else 0, admin)
         }
         true
     }
 
-    private fun getTroopUin(sessionInfo: Any?): String? {
-        val uin = sessionInfo.get("troopUin", String::class.java)
-            ?: sessionInfo.get("a", String::class.java)
-        return try {
-            uin!!.toLong()
-            uin
-        } catch (e: Exception) {
-            null
-        }
-    }
+    private fun getTroopUin(sessionInfo: Any?): String? =
+        sessionInfo.get("troopUin", String::class.java)
+            ?: sessionInfo.get(ConfigTable.getConfig(sessionInfoTroopUin), String::class.java)
 
-    private fun getMemberUin(member: Any?): String? {
-        val uin = member.get("uin", String::class.java)
+    private fun getMemberUin(member: Any?): String? =
+        member.get("uin", String::class.java)
             ?: member.get("a", String::class.java)
-        return try {
-            uin!!.toLong()
-            uin
-        } catch (e: Exception) {
-            null
-        }
-    }
+
 
     override fun isValid(): Boolean = requireMinVersion(QQVersion.QQ_8_1_3, TIMVersion.TIM_3_1_1, PlayQQVersion.PlayQQ_8_2_9)
 }
