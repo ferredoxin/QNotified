@@ -70,6 +70,7 @@ internal fun Class<*>.method(
 ): Method? = this.declaredMethods.run {
     this.forEach {
         if (condition(it)) {
+            it.isAccessible = true
             return it
         }
     }
@@ -83,6 +84,7 @@ internal fun Class<*>.method(
 ): Method? = this.declaredMethods.run {
     this.forEach {
         if (it.returnType == returnType && it.parameterTypes.size == size && condition(it)) {
+            it.isAccessible = true
             return it
         }
     }
@@ -96,10 +98,7 @@ internal fun Class<*>.method(
     condition: (method: Method) -> Boolean = { true }
 ): Method? = this.declaredMethods.run {
     this.forEach {
-        if (it.name == name && it.returnType == returnType && it.parameterTypes.size == size && condition(
-                it
-            )
-        ) {
+        if (it.name == name && it.returnType == returnType && it.parameterTypes.size == size && condition(it)) {
             return it
         }
     }
