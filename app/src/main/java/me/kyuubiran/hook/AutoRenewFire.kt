@@ -56,8 +56,7 @@ object AutoRenewFire : CommonDelayableHook("kr_auto_renew_fire") {
                 //如果未启用 不显示按钮
                 if (!getExFriendCfg().getBooleanOrFalse("kr_auto_renew_fire")) return@hookAfter
                 //获取 设为置顶 SwitchItem
-                val itemList = it.thisObject.getAll(FormSimpleItem)
-                val setToTopItem = itemList.first { item ->
+                val setToTopItem = it.thisObject.getAll(FormSimpleItem)?.first { item ->
                     item.get(TextView::class.java)?.text?.contains("置顶") ?: false
                 }
                 //如果SwitchItem不为空 说明为好友
