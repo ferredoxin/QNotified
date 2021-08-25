@@ -380,6 +380,11 @@ public class Parasitics {
         @Override
         public Activity newActivity(ClassLoader cl, String className, Intent intent)
             throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+            if (intent.hasExtra(ActProxyMgr.ACTIVITY_PROXY_INTENT)) {
+                Intent realIntent = intent.getParcelableExtra(
+                    ActProxyMgr.ACTIVITY_PROXY_INTENT);
+                className = realIntent.getComponent().getClassName();
+            }
             try {
                 return mBase.newActivity(cl, className, intent);
             } catch (Exception e) {
