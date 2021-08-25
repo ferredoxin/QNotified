@@ -32,7 +32,7 @@ object Common {
         if (headFile.exists()) {
             val string: String = headFile.readText(Charsets.UTF_8)
             val string1 = string.replace(Regex("""ref:|\s"""), "")
-            val result = if (string.isNotBlank()) {
+            val result = if (string1.isNotBlank() && string1.contains('/')) {
                 val refFilePath = ".git" + File.separator + string1
                 // 根据HEAD读取当前指向的hash值，路径示例为：".git/refs/heads/master"
                 val refFile = File(project.rootProject.projectDir, refFilePath)
