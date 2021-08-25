@@ -26,6 +26,7 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static nil.nadph.qnotified.ui.ViewBuilder.clickToProxyActAction;
 import static nil.nadph.qnotified.ui.ViewBuilder.newListItemButton;
 import static nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemSwitch;
 import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
 import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
 import static nil.nadph.qnotified.util.ReflexUtil.iput_object;
@@ -34,7 +35,6 @@ import static nil.nadph.qnotified.util.Utils.dip2px;
 import static nil.nadph.qnotified.util.Utils.getLongAccountUin;
 import static nil.nadph.qnotified.util.Utils.getShort$Name;
 import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.logi;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -63,6 +63,7 @@ import cc.ioctl.hook.InspectMessage;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tencent.mobileqq.widget.BounceScrollView;
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
@@ -85,6 +86,7 @@ import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.DexMethodDescriptor;
+import nil.nadph.qnotified.util.HideVmStack;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Natives;
@@ -147,6 +149,19 @@ public class TroubleshootActivity extends IphoneTitleBarActivityCompat {
         ll.addView(newListItemHookSwitchInit(this, DebugDump.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "检查消息", null, InspectMessage.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "开启QQ日志", "前缀NAdump", EnableQLog.INSTANCE));
+        ll.addView(newListItemSwitch(this, "在VMStack中隐藏QNotified", "平时建议打开, 抓log时务必关闭",
+            HideVmStack.isHideEnabled(), ((v, isChecked) -> {
+                HideVmStack.setHideEnabled(isChecked);
+                try {
+                    if (isChecked) {
+                        new File(TroubleshootActivity.this.getFilesDir(), "qn_disable_hide_vm_stack").delete();
+                    } else {
+                        new File(TroubleshootActivity.this.getFilesDir(), "qn_disable_hide_vm_stack").createNewFile();
+                    }
+                } catch (IOException e) {
+                    log(e);
+                }
+            })));
         ll.addView(newListItemButton(this, "强制重新生成日志历史记录", null, null, new View.OnClickListener() {
             final String LAST_TRACE_HASHCODE_CONFIG = "lastTraceHashcode";
             final String LAST_TRACE_DATA_CONFIG = "lastTraceDate";

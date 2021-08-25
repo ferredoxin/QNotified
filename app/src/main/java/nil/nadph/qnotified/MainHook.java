@@ -32,6 +32,7 @@ import android.widget.FrameLayout;
 
 import com.rymmmmm.hook.CustomSplash;
 
+import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
@@ -231,7 +232,7 @@ public class MainHook {
             loge("NewRuntime/E hook failed: " + e);
             Utils.$access$set$sAppRuntimeInit(true);
         }
-        HideVmStack.init();
+        HideVmStack.setHideEnabled(!new File(ctx.getFilesDir(), "qn_disable_hide_vm_stack").exists());
         injectLifecycleForProcess(ctx);
         BaseDelayableHook.allowEarlyInit(RevokeMsgHook.INSTANCE);
         BaseDelayableHook.allowEarlyInit(MuteQZoneThumbsUp.INSTANCE);

@@ -37,8 +37,20 @@ public class HideVmStack {
 
     private static volatile boolean inited = false;
     private static final StackTraceElement[] EMPTY_STACK_TRACE = new StackTraceElement[0];
+    static boolean sHideEnabled = false;
 
-    public static void init() {
+    public static void setHideEnabled(boolean enabled) {
+        HideVmStack.sHideEnabled = enabled;
+        if (enabled) {
+            init();
+        }
+    }
+
+    public static boolean isHideEnabled() {
+        return sHideEnabled;
+    }
+
+    private static void init() {
         if (inited) {
             return;
         }
@@ -47,6 +59,9 @@ public class HideVmStack {
             XposedBridge.hookMethod(m, new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) {
+                    if (!sHideEnabled) {
+                        return;
+                    }
                     // don't call Throwable.getStackTrace() here, it will cause StackOverflow
                     StackTraceElement[] ste = (StackTraceElement[]) param.getResult();
                     if (ste != null) {
@@ -69,6 +84,9 @@ public class HideVmStack {
             XposedBridge.hookMethod(m, new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) {
+                    if (!sHideEnabled) {
+                        return;
+                    }
                     // don't call Thread.getStackTrace() here, it will cause StackOverflow
                     StackTraceElement[] ste = (StackTraceElement[]) param.getResult();
                     if (ste != null) {
