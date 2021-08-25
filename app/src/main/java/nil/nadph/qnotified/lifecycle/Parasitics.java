@@ -350,6 +350,21 @@ public class Parasitics {
                                             Intent realIntent = wrapper.getParcelableExtra(
                                                 ActProxyMgr.ACTIVITY_PROXY_INTENT);
                                             fmIntent.set(item, realIntent);
+                                            if (Build.VERSION.SDK_INT >= 31) {
+                                                IBinder token = (IBinder) clientTransaction.getClass().getMethod("getActivityToken").invoke(clientTransaction);
+                                                Class<?> clazz_ActivityThread = Class.forName("android.app.ActivityThread");
+                                                Method currentActivityThread = clazz_ActivityThread.getDeclaredMethod("currentActivityThread");
+                                                currentActivityThread.setAccessible(true);
+                                                Object activityThread = currentActivityThread.invoke(null);
+                                                // Accessing hidden method Landroid/app/ClientTransactionHandler;->getLaunchingActivity(Landroid/os/IBinder;)Landroid/app/ActivityThread$ActivityClientRecord; (blocked, reflection, denied)
+                                                // Accessing hidden method Landroid/app/ActivityThread;->getLaunchingActivity(Landroid/os/IBinder;)Landroid/app/ActivityThread$ActivityClientRecord; (blocked, reflection, denied)
+                                                Object acr = activityThread.getClass().getMethod("getLaunchingActivity", IBinder.class).invoke(activityThread, token);
+                                                if (acr != null) {
+                                                    Field fAcrIntent = acr.getClass().getDeclaredField("intent");
+                                                    fAcrIntent.setAccessible(true);
+                                                    fAcrIntent.set(acr, realIntent);
+                                                }
+                                            }
                                         }
                                     }
                                 }
