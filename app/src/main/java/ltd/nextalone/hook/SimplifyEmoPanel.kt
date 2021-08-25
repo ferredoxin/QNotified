@@ -49,7 +49,6 @@ object SimplifyEmoPanel : CommonDelayAbleHookBridge() {
             )?.method("initTabView")?.hookBefore(
                 this
             ) {
-                logBefore("initTabView")
                 val mutableList: MutableList<*> =
                     if ("com.tencent.mobileqq.emoticonview.BasePanelModel".clazz != null) {
                     it.thisObject.get("mPanelController").get("mBasePanelModel").get("panelDataList") as MutableList<*>

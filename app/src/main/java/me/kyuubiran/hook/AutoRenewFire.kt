@@ -26,16 +26,17 @@ import android.content.Intent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
-import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XposedBridge
+import android.widget.TextView
+import ltd.nextalone.util.*
 import me.kyuubiran.dialog.AutoRenewFireDialog
-import me.kyuubiran.util.*
+import me.kyuubiran.util.AutoRenewFireMgr
+import me.kyuubiran.util.getExFriendCfg
+import me.kyuubiran.util.showToastByTencent
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.LicenseStatus
 import nil.nadph.qnotified.util.ReflexUtil.invoke_virtual
 import nil.nadph.qnotified.util.ReflexUtil.new_instance
-import java.lang.reflect.Method
 
 //自动续火
 @FunctionEntry
@@ -47,97 +48,84 @@ object AutoRenewFire : CommonDelayableHook("kr_auto_renew_fire") {
             AutoRenewFireMgr.doAutoSend()
             autoRenewFireStarted = true
         }
-        return try {
-            val FormSimpleItem: Class<*> = loadClass("com.tencent.mobileqq.widget.FormSwitchItem")
-            for (m: Method in getMethods("com.tencent.mobileqq.activity.ChatSettingActivity")) {
-                if (m.name == "doOnCreate") {
-                    XposedBridge.hookMethod(m, object : XC_MethodHook() {
-                        override fun afterHookedMethod(param: MethodHookParam) {
-                            if (LicenseStatus.sDisableCommonHooks) return
-                            if (!isEnabled) return
-                            //如果未启用 不显示按钮
-                            if (!getExFriendCfg().getBooleanOrFalse("kr_auto_renew_fire")) return
-                            //获取 设为置顶 SwitchItem
-                            val setToTopItem =
-                                getObjectOrNull(param.thisObject, "b", FormSimpleItem)
-                            //如果SwitchItem不为空 说明为好友
-                            if (setToTopItem != null) {
-                                //创建SwitchItem对象
-                                val autoRenewFireItem =
-                                    new_instance(
-                                        FormSimpleItem,
-                                        param.thisObject,
-                                        Context::class.java
-                                    )
-                                //拿到ViewGroup
-                                val listView = (setToTopItem as View).parent as ViewGroup
-                                //设置开关文本
-                                invoke_virtual(
-                                    autoRenewFireItem,
-                                    "setText",
-                                    "自动续火",
-                                    CharSequence::class.java
-                                )
-                                //添加View
-                                listView.addView(autoRenewFireItem as View, 7)
-                                //拿到好友相关信息
-                                val intent =
-                                    getObjectOrNull(
-                                        param.thisObject,
-                                        "a",
-                                        Intent::class.java
-                                    ) as Intent
-                                //QQ
-                                val uin = intent.getStringExtra("uin")
-                                //昵称
-                                val uinName = intent.getStringExtra("uinname")
-                                //设置按钮是否启用
-                                invoke_virtual(
-                                    autoRenewFireItem,
-                                    "setChecked",
-                                    AutoRenewFireMgr.hasEnabled(uin),
-                                    Boolean::class.java
-                                )
-                                //设置监听事件
-                                invoke_virtual(
-                                    autoRenewFireItem,
-                                    "setOnCheckedChangeListener",
-                                    object : CompoundButton.OnCheckedChangeListener {
-                                        override fun onCheckedChanged(
-                                            p0: CompoundButton?,
-                                            p1: Boolean
-                                        ) {
-                                            if (p1) {
-                                                AutoRenewFireMgr.add(uin)
-                                                (param.thisObject as Context).showToastByTencent("已开启与${uinName}的自动续火")
-                                            } else {
-                                                AutoRenewFireMgr.remove(uin)
-                                                (param.thisObject as Context).showToastByTencent("已关闭与${uinName}的自动续火")
-                                            }
-                                        }
-                                    },
-                                    CompoundButton.OnCheckedChangeListener::class.java
-                                )
-                                if (LicenseStatus.isInsider()) {
-                                    autoRenewFireItem.setOnLongClickListener {
-                                        AutoRenewFireDialog.showSetMsgDialog(
-                                            param.thisObject as Context,
-                                            uin
-                                        )
-                                        true
-                                    }
+        return tryOrFalse {
+            val FormSimpleItem = "com.tencent.mobileqq.widget.FormSwitchItem".clazz
+
+            "com.tencent.mobileqq.activity.ChatSettingActivity".clazz?.method("doOnCreate")?.hookAfter(this) {
+
+                //如果未启用 不显示按钮
+                if (!getExFriendCfg().getBooleanOrFalse("kr_auto_renew_fire")) return@hookAfter
+                //获取 设为置顶 SwitchItem
+                val setToTopItem = it.thisObject.getAll(FormSimpleItem)?.first { item ->
+                    item.get(TextView::class.java)?.text?.contains("置顶") ?: false
+                }
+                //如果SwitchItem不为空 说明为好友
+                if (setToTopItem != null) {
+                    //创建SwitchItem对象
+                    val autoRenewFireItem =
+                        new_instance(
+                            FormSimpleItem,
+                            it.thisObject,
+                            Context::class.java
+                        )
+                    //拿到ViewGroup
+                    val listView = (setToTopItem as View).parent as ViewGroup
+                    //设置开关文本
+                    invoke_virtual(
+                        autoRenewFireItem,
+                        "setText",
+                        "自动续火",
+                        CharSequence::class.java
+                    )
+                    //添加View
+                    listView.addView(autoRenewFireItem as View, 7)
+                    //拿到好友相关信息
+                    val intent =it.thisObject.get(Intent::class.java)
+                    //QQ
+                    val uin = intent?.getStringExtra("uin")
+                    //昵称
+                    val uinName = intent?.getStringExtra("uinname")
+                    //设置按钮是否启用
+                    invoke_virtual(
+                        autoRenewFireItem,
+                        "setChecked",
+                        AutoRenewFireMgr.hasEnabled(uin),
+                        Boolean::class.java
+                    )
+                    //设置监听事件
+                    invoke_virtual(
+                        autoRenewFireItem,
+                        "setOnCheckedChangeListener",
+                        object : CompoundButton.OnCheckedChangeListener {
+                            override fun onCheckedChanged(
+                                p0: CompoundButton?,
+                                p1: Boolean
+                            ) {
+                                if (p1) {
+                                    AutoRenewFireMgr.add(uin)
+                                    (it.thisObject as Context).showToastByTencent("已开启与${uinName}的自动续火")
+                                } else {
+                                    AutoRenewFireMgr.remove(uin)
+                                    (it.thisObject as Context).showToastByTencent("已关闭与${uinName}的自动续火")
                                 }
                             }
+                        },
+                        CompoundButton.OnCheckedChangeListener::class.java
+                    )
+                    if (LicenseStatus.isInsider()) {
+                        autoRenewFireItem.setOnLongClickListener { _ ->
+                            AutoRenewFireDialog.showSetMsgDialog(
+                                it.thisObject as Context,
+                                uin
+                            )
+                            true
                         }
-                    })
+                    }
                 }
             }
-            true
-        } catch (t: Throwable) {
-            logdt(t)
-            false
         }
     }
+
 
     override fun isEnabled(): Boolean {
         return try {
