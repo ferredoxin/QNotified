@@ -19,9 +19,9 @@ android {
         applicationId "nil.nadph.qnotified"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode(getTimeStamp.call() as int)
+        versionCode(Common.timeStamp)
         // versionName format: major.minor.accumulation.commit_id
-        versionName "0.8.20" + (getGitHeadRefsSuffix.call() as String)
+        versionName "0.8.20" + (Common.getGitHeadRefsSuffix(rootProject))
         multiDexEnabled false
         ndk {
             abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
@@ -64,11 +64,11 @@ android {
         additionalParameters '--allow-reserved-package-id', '--package-id', '0x75'
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility Version.java
+        targetCompatibility Version.java
     }
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+        jvmTarget = Version.java
     }
     // Encapsulates your external native build configurations.
     externalNativeBuild {
@@ -97,23 +97,23 @@ dependencies {
     kapt project(":compiler")
     compileOnly 'de.robv.android.xposed:api:82'
     implementation 'com.jaredrummler:colorpicker:1.1.0'
-    implementation 'de.psdev.licensesdialog:licensesdialog:2.1.0'
+    implementation 'de.psdev.licensesdialog:licensesdialog:2.2.0'
     implementation 'io.noties.markwon:core:4.6.2'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:${Version.kotlin}"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1-native-mt'
     // 脚本解析
     implementation 'org.apache-extras.beanshell:bsh:2.0b6'
     // androidx
     implementation 'androidx.preference:preference-ktx:1.1.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
     implementation 'com.google.android.material:material:1.4.0'
-    implementation 'com.google.code.gson:gson:2.8.7'
+    implementation 'com.google.code.gson:gson:2.8.8'
     implementation 'com.afollestad.material-dialogs:core:3.3.0'
     implementation 'com.afollestad.material-dialogs:input:3.3.0'
 }
 
 dependencies {
-    def appCenterSdkVersion = '3.3.0'
+    def appCenterSdkVersion = '4.2.0'
     implementation "com.microsoft.appcenter:appcenter-analytics:${appCenterSdkVersion}"
     implementation "com.microsoft.appcenter:appcenter-crashes:${appCenterSdkVersion}"
 }
@@ -244,21 +244,6 @@ task dexTailRelease {
 dexTailDebug.dependsOn(":dex-ptm:assemble")
 dexTailRelease.dependsOn(":dex-ptm:assemble")
 
-task replaceIcon(type: Copy) {
-    delete 'src/main/res/drawable.png'
-    def random = new Random()
-    def iconsFileDir = file("MiStyleIcons/")
-    def fileCount = iconsFileDir.listFiles().length
-    def number = random.nextInt(fileCount)
-    def iconFile = iconsFileDir.listFiles()[number]
-    println iconFile
-    from iconFile
-    into "src/main/res/drawable/"
-    rename { String fileName ->
-        "icon.png"
-    }
-}
-
 task checkTargetNativeLibsDebug {
     doLast {
         String[] targetAbi = ["arm64-v8a", "armeabi-v7a"]
@@ -300,6 +285,7 @@ task checkTargetNativeLibsRelease {
 }
 checkTargetNativeLibsRelease.dependsOn ":app:externalNativeBuildRelease"
 
+task replaceIcon(type: ReplaceIcon)
 preBuild.dependsOn replaceIcon
 
 tasks.whenTaskAdded { t ->

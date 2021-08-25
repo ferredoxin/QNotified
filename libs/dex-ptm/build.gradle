@@ -2,10 +2,7 @@ plugins {
     id 'java'
 }
 
-compileJava {
-    sourceCompatibility = '1.8'
-    targetCompatibility = '1.8'
-}
-
-dependencies {
+java {
+    sourceCompatibility = Version.java
+    targetCompatibility = Version.java
 }

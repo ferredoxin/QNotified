@@ -2,13 +2,12 @@ plugins {
     id 'java'
 }
 
-compileJava {
-    sourceCompatibility = '1.8'
-    targetCompatibility = '1.8'
+dependencies {
+    implementation 'com.squareup:javapoet:1.10.0'
+    implementation project(":annotations")
 }
 
-dependencies {
-    implementation 'com.squareup:javapoet:1.8.0'
-
-    implementation project(":annotations")
+java {
+    sourceCompatibility = Version.java
+    targetCompatibility = Version.java
 }
