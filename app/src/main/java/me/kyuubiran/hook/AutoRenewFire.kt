@@ -26,8 +26,11 @@ import android.content.Intent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import android.widget.TextView
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
+import ltd.nextalone.util.get
+import ltd.nextalone.util.getAll
 import me.kyuubiran.dialog.AutoRenewFireDialog
 import me.kyuubiran.util.*
 import nil.nadph.qnotified.base.annotation.FunctionEntry
@@ -58,8 +61,12 @@ object AutoRenewFire : CommonDelayableHook("kr_auto_renew_fire") {
                             //如果未启用 不显示按钮
                             if (!getExFriendCfg().getBooleanOrFalse("kr_auto_renew_fire")) return
                             //获取 设为置顶 SwitchItem
-                            val setToTopItem =
-                                getObjectOrNull(param.thisObject, "b", FormSimpleItem)
+
+                            val setToTopItem = param.thisObject.getAll(FormSimpleItem).first { item ->
+                                item.get(TextView::class.java)?.text?.contains("置顶") ?: false
+                            }
+//                            val setToTopItem =
+//                                getObjectOrNull(param.thisObject, "b", FormSimpleItem)
                             //如果SwitchItem不为空 说明为好友
                             if (setToTopItem != null) {
                                 //创建SwitchItem对象
