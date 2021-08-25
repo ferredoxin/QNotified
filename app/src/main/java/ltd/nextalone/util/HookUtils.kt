@@ -131,8 +131,44 @@ internal fun Any?.get(name: String): Any? = this.get(name, null)
 internal fun <T> Any?.get(name: String, type: Class<out T>? = null): T? =
     ReflexUtil.iget_object_or_null(this, name, type)
 
-internal fun <T> Any?.get(type: Class<out T>? = null): T? =
-    ReflexUtil.getFirstByType(this, type)
+internal fun <T> Any?.get(type: Class<out T>? = null): T? {
+    var clz = this?.javaClass
+    while (clz != null && clz != Any::class.java) {
+        for (f in clz.declaredFields) {
+            if (f.type != type) {
+                continue
+            }
+            f.isAccessible = true
+            try {
+                return f[this] as T
+            } catch (ignored: IllegalAccessException) {
+                //should not happen
+            }
+        }
+        clz = clz.superclass
+    }
+    return null
+}
+
+internal fun <T> Any?.getAll(type: Class<out T>? = null): MutableList<T>? {
+    var clz = this?.javaClass
+    val objMutableList = mutableListOf<T>()
+    while (clz != null && clz != Any::class.java) {
+        for (f in clz.declaredFields) {
+            if (f.type != type) {
+                continue
+            }
+            f.isAccessible = true
+            try {
+                objMutableList.add(f[this] as T)
+            } catch (ignored: IllegalAccessException) {
+                //should not happen
+            }
+        }
+        clz = clz.superclass
+    }
+    return objMutableList
+}
 
 internal fun Any?.set(name: String, value: Any): Any = ReflexUtil.iput_object(this, name, value)
 
