@@ -22,21 +22,19 @@
 package ltd.nextalone.hook
 
 import android.view.View
+import ltd.nextalone.util.method
 import ltd.nextalone.util.replace
 import ltd.nextalone.util.tryOrFalse
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.DexKit
-import java.lang.reflect.Method
 
 @FunctionEntry
 object RemoveIntimateDrawer : CommonDelayableHook("kr_remove_intimate_drawer") {
 
     override fun initOnce() = tryOrFalse {
-        for (m: Method in DexKit.doFindClass(DexKit.C_IntimateDrawer)!!.declaredMethods) {
-            if (m.name == "a" && m.returnType == View::class.java) {
-                m.replace(this, null)
-            }
-        }
+        DexKit.doFindClass(DexKit.C_IntimateDrawer)?.method{
+            it.returnType == View::class.java && it.parameterTypes.isEmpty()
+        }?.replace(this, null)
     }
 }
