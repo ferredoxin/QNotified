@@ -27,6 +27,7 @@ import nil.nadph.qnotified.util.Utils;
 import org.ferredoxin.ferredoxin_ui.base.UiDescription;
 import org.ferredoxin.ferredoxin_ui.base.UiItem;
 import org.ferredoxin.ferredoxin_ui.base.UiPreference;
+import org.ferredoxin.ferredoxin_ui.base.UiSwitchPreference;
 
 /**
  * Created by zpp0196 on 2019/2/9.
@@ -79,7 +80,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
             AbstractConfigItem _item = P2CUtils.findConfigByName(cfgName);
 
             //单独处理与FerredoxinUI的桥接
-            if (_item instanceof UiItem) {
+            if (_item instanceof UiItem && keyName == null) {
                 UiItem uiItem = (UiItem) _item;
                 UiDescription uiDescription = uiItem.getPreference();
                 if (uiDescription instanceof UiPreference) {
@@ -92,7 +93,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
             // 绑定Value
             bindPreferenceValue(preference, _item, keyName);
             // 绑定Summary
-            bindPreferenceSummary(preference, _item);
+            //bindPreferenceSummary(preference, _item);
             // 统一监听
             preference.setOnPreferenceChangeListener(this);
         }
@@ -103,16 +104,6 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
                 initPreference(preferenceGroup.getPreference(i));
             }
         }
-    }
-
-    private void bindPreferenceSummary(Preference preference, AbstractConfigItem _item) {
-
-        // 排除空值、多选、开关
-        if (preference instanceof MultiSelectListPreference ||
-            preference instanceof TwoStatePreference || _item == null) {
-            return;
-        }
-        //TODO
     }
 
     private void bindPreferenceValue(Preference preference, AbstractConfigItem _item,
@@ -149,7 +140,24 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
 
     //Todo 把这个函数移入FerredoxinUI
     private void bindUiItem(Preference preference, UiPreference uiPreference) {
-        if (preference instanceof Preference) {
+        if (uiPreference instanceof UiSwitchPreference
+            && preference instanceof TwoStatePreference) {
+            preference.setSummary(uiPreference.getSummary());
+            preference.setEnabled(uiPreference.getValid());
+            preference.setOnPreferenceChangeListener(
+                (preference12, newValue) -> {
+                    boolean value = (boolean) newValue;
+                    ((UiSwitchPreference) uiPreference).getValue().postValue(value);
+                    ((UiSwitchPreference) uiPreference).getValue().observe(getViewLifecycleOwner(),
+                        aBoolean -> {
+                            if (aBoolean.equals(((TwoStatePreference) preference).isChecked())) {
+                                return;
+                            }
+                            ((TwoStatePreference) preference).setChecked(aBoolean);
+                        });
+                    return true;
+                });
+        } else {
             preference.setSummary(uiPreference.getSummary());
             preference.setEnabled(uiPreference.getValid());
             preference.setOnPreferenceClickListener(
@@ -205,7 +213,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
                     throw new UnsupportedOperationException("" + newValue);
                 }
             }
-            bindPreferenceSummary(preference, _item);
+            //bindPreferenceSummary(preference, _item);
             if (_item instanceof BaseDelayableHook) {
                 BaseDelayableHook hook = (BaseDelayableHook) _item;
                 if (hook.isEnabled() && !hook.isInited()) {
