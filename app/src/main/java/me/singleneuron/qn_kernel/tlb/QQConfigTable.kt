@@ -26,6 +26,7 @@ import cc.ioctl.hook.VasProfileAntiCrash
 import ltd.nextalone.hook.ChatWordsCount
 import me.ketal.hook.SortAtPanel
 import me.kyuubiran.hook.AutoMosaicName
+import me.kyuubiran.hook.RemovePlayTogether
 import me.kyuubiran.hook.SimplifyQQSettingMe
 import nil.nadph.qnotified.util.QQVersion.*
 
@@ -82,6 +83,20 @@ class QQConfigTable : ConfigTableInterface {
         SortAtPanel.sessionInfoTroopUin to mapOf(
             QQ_8_4_1 to "a",
             QQ_8_8_20 to "b",
+        ),
+
+        // 打卡
+        RemovePlayTogether.ClockInEntryHelper to mapOf(
+            QQ_8_4_8 to "d",
+            QQ_8_8_20 to "f",
+        ),
+
+        // 一起嗨
+        RemovePlayTogether.TogetherControlHelper to mapOf(
+            QQ_8_4_1 to "h",
+            QQ_8_4_8 to "g",
+            QQ_8_8_20 to "n"
         )
     )
+
 }

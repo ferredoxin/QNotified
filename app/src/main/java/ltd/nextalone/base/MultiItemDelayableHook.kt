@@ -50,7 +50,9 @@ abstract class MultiItemDelayableHook constructor(keyName: String) :
         uiDialogPreference {
             title = preferenceTitle
             summary = preferenceSummary
-            value.value = ""
+            value.observeForever {
+                activeItems = it.split("|").toMutableList()
+            }
 
             contextWrapper = CommonContextWrapper::createMaterialDesignContext
 
@@ -67,10 +69,12 @@ abstract class MultiItemDelayableHook constructor(keyName: String) :
         set(value) {
             allItemsConfigKeys.value = value.joinToString("|")
         }
-    internal var activeItems
+    var activeItems
         get() = itemsConfigKeys.getOrDefault(defaultItems).split("|").toMutableList()
         set(value) {
-            itemsConfigKeys.value = value.joinToString("|")
+            val valueString = value.joinToString("|")
+            itemsConfigKeys.value = valueString
+            preference.value.postValue(valueString)
         }
 
     open fun listener() = View.OnClickListener {
