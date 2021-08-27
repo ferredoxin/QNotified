@@ -47,18 +47,16 @@ object FxxkQQBrowser : BaseStartActivityHookDecorator("fxxk_qq_browser") {
         val check1 = !url.isNullOrBlank()
         val check2 = url?.contains(Regex("http|https",RegexOption.IGNORE_CASE))
         val check3 = intent.component?.shortClassName?.contains("QQBrowserActivity")
-        val check4 = intent.getStringExtra("SourceActivityName")?.contains(Regex("ChatActivity|ChatFragment"))==true
         val check5 = !intent.getBooleanExtra("param_force_internal_browser",false)
-        Utils.logd("check1=$check1 check2=$check2 check3=$check3 check4=$check4 check5=$check5 ")
-        Utils.logd("check3: ${intent.component?.shortClassName}")
-        Utils.logd("check5: ${intent.getBooleanExtra("param_force_internal_browser",false)}")*/
+        Utils.logd("check1=$check1 check2=$check2 check3=$check3 check5=$check5 ")*/
         return if (!url.isNullOrBlank()
             && url.contains(Regex("http|https", RegexOption.IGNORE_CASE))
             && intent.component?.shortClassName?.contains("QQBrowserActivity") == true
-            && intent.getStringExtra("SourceActivityName")?.contains(Regex("ChatActivity|ChatFragment")) == true
-            && !intent.getBooleanExtra("param_force_internal_browser", false)
+            && (!intent.getBooleanExtra("param_force_internal_browser", false)
+                || intent.extras?.getString("forward_ark_app_name") == "com.tencent.structmsg"
+                || intent.extras?.getString("h5_ark_app_name") == "com.tencent.structmsg")
         ) {
-            CustomTabsIntent.Builder()
+            val customTabsIntent = CustomTabsIntent.Builder()
                 .apply {
                     try {
                         val color = getColorPrimary()
@@ -71,7 +69,8 @@ object FxxkQQBrowser : BaseStartActivityHookDecorator("fxxk_qq_browser") {
                 }
                 .setShowTitle(true)
                 .build()
-                .launchUrl(hostInfo.application, Uri.parse(url))
+            customTabsIntent.intent.putExtra("from_fqb", true)
+            customTabsIntent.launchUrl(hostInfo.application, Uri.parse(url))
             param.result = null
             true
         } else {
@@ -91,5 +90,9 @@ object FxxkQQBrowser : BaseStartActivityHookDecorator("fxxk_qq_browser") {
         title = "去你大爷的QQ浏览器"
     }
     override val preferenceLocate = 辅助功能
+
+    fun processJefs(intent: Intent): Boolean {
+        return preference.value.value ?: false && intent.getBooleanExtra("from_fqb", false) ?: false
+    }
 
 }
