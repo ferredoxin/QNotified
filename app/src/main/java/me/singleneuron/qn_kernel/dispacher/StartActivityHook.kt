@@ -28,6 +28,7 @@ import de.robv.android.xposed.XposedBridge
 import me.singleneuron.base.adapter.BaseDelayableHookAdapter
 import me.singleneuron.hook.DebugDump
 import me.singleneuron.hook.decorator.DisableQzoneSlideCamera
+import me.singleneuron.hook.decorator.FxxkQQBrowser
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 
@@ -37,7 +38,8 @@ object StartActivityHook :
 
     val decorators = arrayOf(
         DebugDump,
-        DisableQzoneSlideCamera
+        DisableQzoneSlideCamera,
+        FxxkQQBrowser
     )
 
     override fun doInit(): Boolean {

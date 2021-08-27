@@ -51,23 +51,24 @@ abstract class BaseDecorator(val cfg: String) : UiSwitchItem {
 
         override val value: MutableLiveData<Boolean> by lazy {
             MutableLiveData<Boolean>().apply {
-                value = try {
-                    ConfigManager.getDefaultConfig().getBooleanOrDefault(cfg, false)
-                } catch (e: Exception) {
-                    Utils.log(e)
-                    null
-                }
-                observeForever {
+                SyncUtils.post {
                     try {
-                        val mgr = ConfigManager.getDefaultConfig()
-                        mgr.putBoolean(cfg, it!!)
-                        mgr.save()
+                        value = ConfigManager.getDefaultConfig().getBooleanOrDefault(cfg, false)
                     } catch (e: Exception) {
                         Utils.log(e)
-                        if (Looper.myLooper() == Looper.getMainLooper()) {
-                            Toasts.error(hostInfo.application, e.toString() + "")
-                        } else {
-                            SyncUtils.post { Toasts.error(hostInfo.application, e.toString() + "") }
+                    }
+                    observeForever {
+                        try {
+                            val mgr = ConfigManager.getDefaultConfig()
+                            mgr.putBoolean(cfg, it)
+                            mgr.save()
+                        } catch (e: Exception) {
+                            Utils.log(e)
+                            if (Looper.myLooper() == Looper.getMainLooper()) {
+                                Toasts.error(hostInfo.application, e.toString() + "")
+                            } else {
+                                SyncUtils.post { Toasts.error(hostInfo.application, e.toString() + "") }
+                            }
                         }
                     }
                 }
