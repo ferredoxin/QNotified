@@ -51,6 +51,7 @@ object FxxkQQBrowser : BaseStartActivityHookDecorator("fxxk_qq_browser") {
         Utils.logd("check1=$check1 check2=$check2 check3=$check3 check5=$check5 ")*/
         return if (!url.isNullOrBlank()
             && url.contains(Regex("http|https", RegexOption.IGNORE_CASE))
+            && !url.contains("qq.com")
             && intent.component?.shortClassName?.contains("QQBrowserActivity") == true
             && (!intent.getBooleanExtra("param_force_internal_browser", false)
                 || intent.extras?.getString("forward_ark_app_name") == "com.tencent.structmsg"
@@ -88,11 +89,12 @@ object FxxkQQBrowser : BaseStartActivityHookDecorator("fxxk_qq_browser") {
 
     override val preference: UiSwitchPreference = uiSwitchPreference {
         title = "去你大爷的QQ浏览器"
+        summary = "致敬 “去你大爷的内置浏览器”"
     }
     override val preferenceLocate = 辅助功能
 
     fun processJefs(intent: Intent): Boolean {
-        return preference.value.value ?: false && intent.getBooleanExtra("from_fqb", false) ?: false
+        return preference.value.value ?: false && intent.getBooleanExtra("from_fqb", false)
     }
 
 }
