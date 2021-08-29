@@ -22,15 +22,13 @@
 package me.kyuubiran.hook
 
 import android.view.View
-import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XposedBridge
+import ltd.nextalone.util.method
+import ltd.nextalone.util.replace
+import ltd.nextalone.util.tryOrFalse
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.util.DexKit
-import nil.nadph.qnotified.util.LicenseStatus
-import nil.nadph.qnotified.util.Utils
-import java.lang.reflect.Method
 
 //移除傻屌右划群应用
 @FunctionEntry
@@ -38,22 +36,10 @@ object RemoveGroupApp :
     CommonDelayableHook("kr_remove_group_app", DexDeobfStep(DexKit.C_GroupAppActivity)) {
 
     override fun initOnce(): Boolean {
-        return try {
-            for (m: Method in DexKit.doFindClass(DexKit.C_GroupAppActivity)!!.declaredMethods) {
-                if (m.name == "a" && m.returnType == View::class.java) {
-                    XposedBridge.hookMethod(m, object : XC_MethodHook() {
-                        override fun beforeHookedMethod(param: MethodHookParam?) {
-                            if (LicenseStatus.sDisableCommonHooks) return
-                            if (!isEnabled) return
-                            param?.result = null
-                        }
-                    })
-                }
-            }
-            true
-        } catch (t: Throwable) {
-            Utils.log(t)
-            false
+        return tryOrFalse {
+            DexKit.doFindClass(DexKit.C_GroupAppActivity)?.method {
+                it.returnType == View::class.java && it.parameterTypes.isEmpty()
+            }?.replace(this, null)
         }
     }
 }

@@ -66,7 +66,7 @@ object CleanRecentChat : CommonDelayAbleHookBridge() {
                 val plusView = relativeLayout?.findHostView<ImageView>("ba3")
                 plusView?.setOnLongClickListener { view ->
                     val contextWrapper = CommonContextWrapper.createMaterialDesignContext(view.context)
-                    val list = listOf("清理群消息", "清理所有消息")// "消息全部已读",
+                    val list = listOf("清理群消息", "清理所有消息")
                     val materialDialog = MaterialDialog(contextWrapper).show {
                         title(text = "消息清理")
                         checkBoxPrompt(text = "包含置顶消息", isCheckedDefault = includeTopped) { checked ->
@@ -76,13 +76,11 @@ object CleanRecentChat : CommonDelayAbleHookBridge() {
                         listItems(items = list) { dialog, _, text ->
                             Toasts.showToast(dialog.context, Toasts.TYPE_INFO, text, Toasts.LENGTH_SHORT)
                             when (text) {
-//                                "消息全部已读" -> {
-//                                }
                                 "清理群消息" -> {
-                                    handler(recentAdapter, app, true, includeTopped)
+                                    handler(recentAdapter, app, false, includeTopped)
                                 }
                                 "清理所有消息" -> {
-                                    handler(recentAdapter, app, false, includeTopped)
+                                    handler(recentAdapter, app, true, includeTopped)
                                 }
                             }
                         }
@@ -106,17 +104,16 @@ object CleanRecentChat : CommonDelayAbleHookBridge() {
             var chatCurrentIndex = 0
 
             for (chatIndex in 0 until chatSize) {
-                val chatItem = list[chatCurrentIndex]!!
+                val chatItem = list[chatCurrentIndex]
                 val mUser = chatItem.get("mUser")
                 val uin = mUser.get("uin") as String
                 val type = (mUser.get("type") as Int).toInt()
                 val included = includeTopped || !isAtTop(app, uin, type)
-                if (included && (type == 1 || !all)) {
+                if (included && (type == 1 || all)) {
                     method?.invoke(recentAdapter, chatItem, "删除", "2")
-                } else {
-                    chatCurrentIndex++
+                    continue
                 }
-
+                chatCurrentIndex++
             }
         } catch (e: Throwable) {
             logThrowable(e)
