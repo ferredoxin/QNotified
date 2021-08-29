@@ -691,4 +691,12 @@ public class Initiator {
         }
         return clazz;
     }
+
+    public static Class _TroopAppShortcutDrawer() {
+        return load("com/tencent/mobileqq/activity/aio/drawer/TroopAppShortcutDrawer");
+    }
+
+    public static Class _IntimateInfoChatDrawer() {
+        return load("com/tencent/mobileqq/activity/aio/drawer/IntimateInfoChatDrawer");
+    }
 }

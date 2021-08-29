@@ -27,13 +27,13 @@ import ltd.nextalone.util.replace
 import ltd.nextalone.util.tryOrFalse
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
-import nil.nadph.qnotified.util.DexKit
+import nil.nadph.qnotified.util.Initiator
 
 @FunctionEntry
 object RemoveIntimateDrawer : CommonDelayableHook("kr_remove_intimate_drawer") {
 
     override fun initOnce() = tryOrFalse {
-        DexKit.doFindClass(DexKit.C_IntimateDrawer)?.method{
+        Initiator._IntimateInfoChatDrawer()?.method{
             it.returnType == View::class.java && it.parameterTypes.isEmpty()
         }?.replace(this, null)
     }

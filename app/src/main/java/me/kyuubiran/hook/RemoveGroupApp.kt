@@ -27,17 +27,16 @@ import ltd.nextalone.util.replace
 import ltd.nextalone.util.tryOrFalse
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
-import nil.nadph.qnotified.step.DexDeobfStep
-import nil.nadph.qnotified.util.DexKit
+import nil.nadph.qnotified.util.Initiator
 
 //移除傻屌右划群应用
 @FunctionEntry
 object RemoveGroupApp :
-    CommonDelayableHook("kr_remove_group_app", DexDeobfStep(DexKit.C_GroupAppActivity)) {
+    CommonDelayableHook("kr_remove_group_app") {
 
     override fun initOnce(): Boolean {
         return tryOrFalse {
-            DexKit.doFindClass(DexKit.C_GroupAppActivity)?.method {
+            Initiator._TroopAppShortcutDrawer()?.method {
                 it.returnType == View::class.java && it.parameterTypes.isEmpty()
             }?.replace(this, null)
         }
