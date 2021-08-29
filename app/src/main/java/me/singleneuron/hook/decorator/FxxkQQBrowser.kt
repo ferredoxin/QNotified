@@ -47,15 +47,11 @@ object FxxkQQBrowser : BaseStartActivityHookDecorator("fxxk_qq_browser") {
         val check1 = !url.isNullOrBlank()
         val check2 = url?.contains(Regex("http|https",RegexOption.IGNORE_CASE))
         val check3 = intent.component?.shortClassName?.contains("QQBrowserActivity")
-        val check5 = !intent.getBooleanExtra("param_force_internal_browser",false)
-        Utils.logd("check1=$check1 check2=$check2 check3=$check3 check5=$check5 ")*/
+        Utils.logd("check1=$check1 check2=$check2 check3=$check3")*/
         return if (!url.isNullOrBlank()
             && url.contains(Regex("http|https", RegexOption.IGNORE_CASE))
             && !url.contains("qq.com")
             && intent.component?.shortClassName?.contains("QQBrowserActivity") == true
-            && (!intent.getBooleanExtra("param_force_internal_browser", false)
-                || intent.extras?.getString("forward_ark_app_name") == "com.tencent.structmsg"
-                || intent.extras?.getString("h5_ark_app_name") == "com.tencent.structmsg")
         ) {
             val customTabsIntent = CustomTabsIntent.Builder()
                 .apply {
