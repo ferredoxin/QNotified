@@ -228,6 +228,9 @@ public class DexKit {
         if (ret != null) {
             return ret;
         }
+        if (StrictCheckMode.warnStrictModeIfUiThread()) {
+            return null;
+        }
         int ver = -1;
         try {
             ver = HostInfo.getHostInfo().getVersionCode32();
@@ -1193,8 +1196,9 @@ public class DexKit {
                         continue;
                     }
                     if (method.getReturnType().equals(int.class)) {
-                        if (method.getName().equals("getPrivilegeFlags"))
+                        if (method.getName().equals("getPrivilegeFlags")) {
                             return m;
+                        }
                         Class<?>[] argt = method.getParameterTypes();
                         if (argt.length == 2 && argt[0].equals(load("mqq/app/AppRuntime")) && argt[1]
                             .equals(String.class)) {
