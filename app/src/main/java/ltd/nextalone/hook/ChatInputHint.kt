@@ -48,7 +48,7 @@ import org.ferredoxin.ferredoxin_ui.base.uiClickableItem
 
 @FunctionEntry
 @me.singleneuron.qn_kernel.annotation.UiItem
-object ChatInputHint : CommonDelayableHook("na_chat_input_hint_str"), UiItem {
+object ChatInputHint : CommonDelayableHook("na_chat_input_hint"), UiItem {
 
     private const val strCfg = "na_chat_input_hint_str"
     override fun initOnce(): Boolean = tryOrFalse {
