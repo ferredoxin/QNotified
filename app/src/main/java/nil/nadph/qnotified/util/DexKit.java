@@ -1051,6 +1051,7 @@ public class DexKit {
             case N_LeftSwipeReply_Helper__reply:
             case N_FriendChatPie_updateUITitle:
             case N_QQSettingMe_updateProfileBubble:
+            case C_TogetherControlHelper:
                 //NOTICE: this must only has one result
 
                 return (DexMethodDescriptor) __methods.toArray()[0];
@@ -1144,7 +1145,6 @@ public class DexKit {
                     return m;
                 }
                 break;
-            case C_TogetherControlHelper:
             case C_ClockInEntryHelper:
             case C_FaceManager:
             case C_AvatarUtil:
