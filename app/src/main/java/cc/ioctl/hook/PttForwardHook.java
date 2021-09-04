@@ -27,6 +27,7 @@ import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
 import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.ReflexUtil.findField;
+import static nil.nadph.qnotified.util.ReflexUtil.getFirstByType;
 import static nil.nadph.qnotified.util.ReflexUtil.getFirstNSFFieldByType;
 import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
 import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
@@ -262,10 +263,7 @@ public class PttForwardHook extends CommonDelayAbleHookBridge {
                     }
                     param.setResult(null);
                     final String path = data.getString("ptt_forward_path");
-                    Activity ctx = iget_object_or_null(param.thisObject, "a", Activity.class);
-                    if (ctx == null) {
-                        ctx = iget_object_or_null(param.thisObject, "mActivity", Activity.class);
-                    }
+                    Activity ctx = getFirstByType(param.thisObject,  Activity.class);
                     if (path == null || !new File(path).exists()) {
                         Toasts.error(ctx, "Error: Invalid ptt file!");
                         return;
