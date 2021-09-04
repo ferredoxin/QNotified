@@ -21,45 +21,25 @@
  */
 package me.kyuubiran.hook
 
-import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XposedBridge
+import ltd.nextalone.util.hookBefore
+import ltd.nextalone.util.tryOrFalse
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
-import me.singleneuron.qn_kernel.tlb.ConfigTable
 import nil.nadph.qnotified.base.annotation.FunctionEntry
-import nil.nadph.qnotified.util.Initiator._BaseChatPie
-import nil.nadph.qnotified.util.LicenseStatus
-import nil.nadph.qnotified.util.Utils
-import java.lang.reflect.Method
+import nil.nadph.qnotified.step.DexDeobfStep
+import nil.nadph.qnotified.util.DexKit
 
 //聊天界面顶栏群名字/好友昵称自动打码
 @FunctionEntry
 @UiItem
-object AutoMosaicName : CommonDelayAbleHookBridge() {
+object AutoMosaicName : CommonDelayAbleHookBridge(DexDeobfStep(DexKit.N_BaseChatPie_mosaic)) {
 
-    override fun initOnce(): Boolean {
-        return try {
-            for (m: Method in _BaseChatPie().declaredMethods) {
-                val argt = m.parameterTypes
-                if (argt.size == 1 && argt[0] == Boolean::class.java && m.name == ConfigTable.getConfig(
-                        AutoMosaicName::class.java.simpleName
-                    )
-                ) {
-                    XposedBridge.hookMethod(m, object : XC_MethodHook() {
-                        override fun beforeHookedMethod(param: MethodHookParam) {
-                            if (LicenseStatus.sDisableCommonHooks) return
-                            if (!isEnabled) return
-                            param.args[0] = true
-                        }
-                    })
-                }
-            }
-            true
-        } catch (t: Throwable) {
-            Utils.log(t)
-            false
+    override fun initOnce()=tryOrFalse {
+        DexKit.getMethodFromCache(DexKit.N_BaseChatPie_mosaic)?.hookBefore(this){
+            it.args[0]=true
         }
     }
+
 
     override val preference = uiSwitchPreference {
         title = "昵称/群名片打码"
