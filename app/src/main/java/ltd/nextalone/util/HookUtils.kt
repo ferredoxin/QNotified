@@ -118,7 +118,7 @@ internal val Member.isFinal: Boolean
 internal val Class<*>.isAbstract: Boolean
     get() = Modifier.isAbstract(this.modifiers)
 
-internal inline fun <T : BaseDelayableHook> T.tryOrFalse(crossinline function: () -> Unit): Boolean {
+internal fun <T : BaseDelayableHook> T.tryOrFalse(function: () -> Unit): Boolean {
     return try {
         if (!this.isValid) return false
         function()
@@ -193,9 +193,9 @@ internal fun Member.hook(callback: NAMethodHook) = try {
     null
 }
 
-internal inline fun Member.hookBefore(
+internal fun Member.hookBefore(
     baseHook: BaseDelayableHook,
-    crossinline hooker: (XC_MethodHook.MethodHookParam) -> Unit
+    hooker: (XC_MethodHook.MethodHookParam) -> Unit
 ) = hook(object : NAMethodHook(baseHook) {
     override fun beforeMethod(param: MethodHookParam?) = try {
         hooker(param!!)
@@ -204,9 +204,9 @@ internal inline fun Member.hookBefore(
     }
 })
 
-internal inline fun Member.hookAfter(
+internal fun Member.hookAfter(
     baseHook: BaseDelayableHook,
-    crossinline hooker: (XC_MethodHook.MethodHookParam) -> Unit
+    hooker: (XC_MethodHook.MethodHookParam) -> Unit
 ) = hook(object : NAMethodHook(baseHook) {
     override fun afterMethod(param: MethodHookParam?) = try {
         hooker(param!!)
@@ -219,9 +219,9 @@ internal fun Member.replace(baseHook: BaseDelayableHook, result: Any?) = this.re
     result
 }
 
-internal inline fun <T : Any> Member.replace(
+internal fun <T : Any> Member.replace(
     baseHook: BaseDelayableHook,
-    crossinline hooker: (XC_MethodHook.MethodHookParam) -> T?
+    hooker: (XC_MethodHook.MethodHookParam) -> T?
 ) = hook(object : NAMethodReplacement(baseHook) {
     override fun replaceMethod(param: MethodHookParam?) = try {
         hooker(param!!)
@@ -244,11 +244,11 @@ internal fun Class<*>.hook(method: String?, vararg args: Any?) = try {
     null
 }
 
-internal inline fun Class<*>.hookBefore(
+internal fun Class<*>.hookBefore(
     baseHook: BaseDelayableHook,
     method: String?,
     vararg args: Any?,
-    crossinline hooker: (XC_MethodHook.MethodHookParam) -> Unit
+    hooker: (XC_MethodHook.MethodHookParam) -> Unit
 ) = hook(method, *args, object : NAMethodHook(baseHook) {
     override fun beforeMethod(param: MethodHookParam?) = try {
         hooker(param!!)
@@ -257,11 +257,11 @@ internal inline fun Class<*>.hookBefore(
     }
 })
 
-internal inline fun Class<*>.hookAfter(
+internal fun Class<*>.hookAfter(
     baseHook: BaseDelayableHook,
     method: String?,
     vararg args: Any?,
-    crossinline hooker: (XC_MethodHook.MethodHookParam) -> Unit
+    hooker: (XC_MethodHook.MethodHookParam) -> Unit
 ) = hook(method, *args, object : NAMethodHook(baseHook) {
     override fun afterMethod(param: MethodHookParam?) = try {
         hooker(param!!)
@@ -271,10 +271,10 @@ internal inline fun Class<*>.hookAfter(
 
 })
 
-internal inline fun Class<*>.replace(
+internal fun Class<*>.replace(
     method: String?,
     vararg args: Any?,
-    crossinline hooker: (XC_MethodHook.MethodHookParam) -> Any?
+    hooker: (XC_MethodHook.MethodHookParam) -> Any?
 ) = hook(method, *args, object : XC_MethodReplacement() {
     override fun replaceHookedMethod(param: MethodHookParam) = try {
         hooker(param)
@@ -300,10 +300,10 @@ internal fun Class<*>.hookAllMethods(
     emptySet()
 }
 
-internal inline fun Class<*>.hookBeforeAllMethods(
+internal fun Class<*>.hookBeforeAllMethods(
     baseHook: BaseDelayableHook,
     methodName: String?,
-    crossinline hooker: (XC_MethodHook.MethodHookParam) -> Unit
+    hooker: (XC_MethodHook.MethodHookParam) -> Unit
 ): Set<XC_MethodHook.Unhook> = hookAllMethods(methodName, object : NAMethodHook(baseHook) {
     override fun beforeMethod(param: MethodHookParam?) = try {
         hooker(param!!)
@@ -312,10 +312,10 @@ internal inline fun Class<*>.hookBeforeAllMethods(
     }
 })
 
-internal inline fun Class<*>.hookAfterAllMethods(
+internal fun Class<*>.hookAfterAllMethods(
     baseHook: BaseDelayableHook,
     methodName: String?,
-    crossinline hooker: (XC_MethodHook.MethodHookParam) -> Unit
+    hooker: (XC_MethodHook.MethodHookParam) -> Unit
 ): Set<XC_MethodHook.Unhook> = hookAllMethods(methodName, object : NAMethodHook(baseHook) {
     override fun afterMethod(param: MethodHookParam?) = try {
         hooker(param!!)
@@ -324,9 +324,9 @@ internal inline fun Class<*>.hookAfterAllMethods(
     }
 })
 
-internal inline fun Class<*>.replaceAfterAllMethods(
+internal fun Class<*>.replaceAfterAllMethods(
     methodName: String?,
-    crossinline hooker: (XC_MethodHook.MethodHookParam) -> Any?
+    hooker: (XC_MethodHook.MethodHookParam) -> Any?
 ): Set<XC_MethodHook.Unhook> = hookAllMethods(methodName, object : XC_MethodReplacement() {
     override fun replaceHookedMethod(param: MethodHookParam?) = try {
         hooker(param!!)
@@ -349,7 +349,7 @@ internal fun Class<*>.hookAllConstructors(hooker: XC_MethodHook): Set<XC_MethodH
     emptySet()
 }
 
-internal inline fun Class<*>.hookBeforeAllConstructors(crossinline hooker: (XC_MethodHook.MethodHookParam) -> Unit) =
+internal fun Class<*>.hookBeforeAllConstructors(hooker: (XC_MethodHook.MethodHookParam) -> Unit) =
     hookAllConstructors(object : XC_MethodHook() {
         override fun beforeHookedMethod(param: MethodHookParam) = try {
             hooker(param)
@@ -358,7 +358,7 @@ internal inline fun Class<*>.hookBeforeAllConstructors(crossinline hooker: (XC_M
         }
     })
 
-internal inline fun Class<*>.hookAfterAllConstructors(crossinline hooker: (XC_MethodHook.MethodHookParam) -> Unit) =
+internal fun Class<*>.hookAfterAllConstructors(hooker: (XC_MethodHook.MethodHookParam) -> Unit) =
     hookAllConstructors(object : XC_MethodHook() {
         override fun afterHookedMethod(param: MethodHookParam) = try {
             hooker(param)
