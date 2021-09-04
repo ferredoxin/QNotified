@@ -112,6 +112,12 @@ internal val Member.isPrivate: Boolean
 internal val Member.isPublic: Boolean
     get() = Modifier.isPublic(this.modifiers)
 
+internal val Member.isFinal: Boolean
+    get() = Modifier.isFinal(this.modifiers)
+
+internal val Class<*>.isAbstract: Boolean
+    get() = Modifier.isAbstract(this.modifiers)
+
 internal inline fun <T : BaseDelayableHook> T.tryOrFalse(crossinline function: () -> Unit): Boolean {
     return try {
         if (!this.isValid) return false
