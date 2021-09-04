@@ -81,7 +81,7 @@ object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt", DexDeobfSt
     override fun initOnce() = tryOrFalse {
         "com.tencent.mobileqq.activity.QQSettingMe".clazz?.hookBeforeAllConstructors {
             val viewGroup = it.args[2] as ViewGroup
-            DexKit.getMethodDescFromCache(DexKit.N_QQSettingMe_onResume)?.toString()?.method?.hookAfter(this) {
+            DexKit.getMethodFromCache(DexKit.N_QQSettingMe_onResume)?.hookAfter(this) {
                 val relativeLayout = viewGroup.findHostView<RelativeLayout>(getConfig(ChatWordsCount::class.java.simpleName))
                 val textView = (relativeLayout?.parent as FrameLayout).findViewById<TextView>(nil.nadph.qnotified.R.id.chat_words_count)
                 textView.text = getChatWords()
