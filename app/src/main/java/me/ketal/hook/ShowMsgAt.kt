@@ -95,7 +95,8 @@ object ShowMsgAt : CommonDelayableHook("Ketal_HideTroopLevel"), OnBubbleBuilder 
             uinList.add(uin)
             val start = con["startPos"] as Int
             val length = con["textLen"] as Int
-            spannableString.setSpan(OpenQQSpan(uin), start, start + length, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
+            if (spannableString[start] == '@')
+                spannableString.setSpan(OpenQQSpan(uin), start, start + length, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
         }
         textView.text = spannableString
         textView.movementMethod = LinkMovementMethod.getInstance()
