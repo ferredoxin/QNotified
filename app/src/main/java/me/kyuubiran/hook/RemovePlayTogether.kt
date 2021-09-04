@@ -31,15 +31,14 @@ import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.qn_kernel.tlb.ConfigTable
 import me.singleneuron.qn_kernel.ui.base.净化功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
-import nil.nadph.qnotified.step.DexDeobfStep
-import nil.nadph.qnotified.util.DexKit
+import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.QQVersion
 import org.ferredoxin.ferredoxin_ui.base.UiSwitchPreference
 
 //屏蔽群聊界面一起嗨
 @FunctionEntry
 @UiItem
-object RemovePlayTogether : CommonDelayAbleHookBridge(DexDeobfStep(DexKit.C_TogetherControlHelper), DexDeobfStep(DexKit.C_ClockInEntryHelper)) {
+object RemovePlayTogether : CommonDelayAbleHookBridge() {
     override val preferenceLocate = 净化功能
     override val preference: UiSwitchPreference = uiSwitchPreference {
         title = "移除群聊界面一起嗨"
@@ -50,9 +49,9 @@ object RemovePlayTogether : CommonDelayAbleHookBridge(DexDeobfStep(DexKit.C_Toge
     public override fun initOnce(): Boolean = tryOrFalse {
         if (requireMinQQVersion(QQVersion.QQ_8_4_8)) {
             //QQ 8.4.8 除了一起嗨按钮，同一个位置还有一个群打卡按钮。默认显示群打卡，如果已经打卡就显示一起嗨，两个按钮点击之后都会打开同一个界面，但是要同时hook两个
-            DexKit.doFindClass(DexKit.C_ClockInEntryHelper)?.method(ConfigTable.getConfig(ClockInEntryHelper), 0, Boolean::class.java)?.replace(this, result = false)
+            Initiator._ClockInEntryHelper()?.method(ConfigTable.getConfig(ClockInEntryHelper), 0, Boolean::class.java)?.replace(this, result = false)
         }
-        DexKit.doFindClass(DexKit.C_TogetherControlHelper)?.method(ConfigTable.getConfig(TogetherControlHelper), 0, Void.TYPE)?.replace(this, result = null)
+        Initiator._TogetherControlHelper()?.method(ConfigTable.getConfig(TogetherControlHelper), 0, Void.TYPE)?.replace(this, result = null)
     }
 
     override fun isValid(): Boolean = !isPlayQQ()

@@ -25,7 +25,6 @@ import cc.ioctl.hook.ReplyNoAtHook
 import cc.ioctl.hook.VasProfileAntiCrash
 import ltd.nextalone.hook.ChatWordsCount
 import me.ketal.hook.SortAtPanel
-import me.kyuubiran.hook.AutoMosaicName
 import me.kyuubiran.hook.RemovePlayTogether
 import me.kyuubiran.hook.SimplifyQQSettingMe
 import nil.nadph.qnotified.util.QQVersion.*
@@ -52,6 +51,8 @@ class QQConfigTable : ConfigTableInterface {
             QQ_8_7_5 to "mxn",
             QQ_8_8_0 to "mxz",
             QQ_8_8_3 to "myn",
+            QQ_8_8_20 to "n87",
+            QQ_8_8_23 to "n_d"
         ),
 
         VasProfileAntiCrash::class.java.simpleName to mapOf(
@@ -61,13 +62,6 @@ class QQConfigTable : ConfigTableInterface {
             QQ_8_4_10 to "Y",
             QQ_8_5_0 to "com.tencent.mobileqq.profile.ProfileCardTemplate",
             QQ_8_6_0 to "com.tencent.mobileqq.profilecard.vas.component.template.VasProfileTemplateComponent",
-        ),
-
-        AutoMosaicName::class.java.simpleName to mapOf(
-            QQ_8_4_1 to "t",
-            QQ_8_4_8 to "enableMosaicEffect",
-            QQ_8_5_5 to "r",
-            QQ_8_6_0 to "k",
         ),
 
         //中间部分(QQ会员 我的钱包等)

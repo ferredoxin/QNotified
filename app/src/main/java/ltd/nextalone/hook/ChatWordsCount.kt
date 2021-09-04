@@ -37,12 +37,10 @@ import me.singleneuron.qn_kernel.tlb.ConfigTable.getConfig
 import me.singleneuron.qn_kernel.ui.base.增强功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
+import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.ui.CustomDialog
 import nil.nadph.qnotified.ui.ViewBuilder
-import nil.nadph.qnotified.util.Initiator
-import nil.nadph.qnotified.util.QQVersion
-import nil.nadph.qnotified.util.Toasts
-import nil.nadph.qnotified.util.Utils
+import nil.nadph.qnotified.util.*
 import org.ferredoxin.ferredoxin_ui.base.UiDescription
 import org.ferredoxin.ferredoxin_ui.base.UiItem
 import org.ferredoxin.ferredoxin_ui.base.uiClickableItem
@@ -50,7 +48,7 @@ import java.util.*
 
 @FunctionEntry
 @me.singleneuron.qn_kernel.annotation.UiItem
-object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt"), UiItem {
+object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt", DexDeobfStep(DexKit.N_QQSettingMe_onResume)), UiItem {
 
     override val preference: UiDescription = uiClickableItem {
         title = "聊天字数统计"
@@ -68,42 +66,33 @@ object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt"), UiItem {
     private const val timeCfg = "na_chat_words_count_kt_time"
     private const val colorCfg = "na_chat_words_count_kt_color"
     private const val strCfg = "na_chat_words_count_kt_str"
+    private fun getChatWords(): String {
+        val isToday = Date().today == getExFriendCfg().getStringOrDefault(timeCfg, "")
+        val str =
+            getExFriendCfg().getStringOrDefault(strCfg, "今日已发送 %1 条消息，共 %2 字，表情包 %3 个")
+        val msg = if (isToday) getExFriendCfg().getIntOrDefault(msgCfg, 0) else 0
+        val words = if (isToday) getExFriendCfg().getIntOrDefault(wordsCfg, 0) else 0
+        val emo = if (isToday) getExFriendCfg().getIntOrDefault(emoCfg, 0) else 0
+        return str.replace("%1", msg.toString()).replace("%2", words.toString())
+            .replace("%3", emo.toString())
+
+    }
+
     override fun initOnce() = tryOrFalse {
         "com.tencent.mobileqq.activity.QQSettingMe".clazz?.hookBeforeAllConstructors {
-            "Lcom/tencent/mobileqq/activity/QQSettingMe;->a()V".method.hookAfter(this) {
-                val isToday = Date().today == getExFriendCfg().getStringOrDefault(timeCfg, "")
-                val relativeLayout = (it.thisObject.get(
-                    "a",
-                    ViewGroup::class.java
-                ) as ViewGroup).findHostView<RelativeLayout>(getConfig(ChatWordsCount::class.java.simpleName))
-                val textView =
-                    (relativeLayout?.parent as FrameLayout).findViewById<TextView>(nil.nadph.qnotified.R.id.chat_words_count)
-                var str =
-                    getExFriendCfg().getStringOrDefault(strCfg, "今日已发送 %1 条消息，共 %2 字，表情包 %3 个")!!
-                val msg = if (isToday) getExFriendCfg().getIntOrDefault(msgCfg, 0) else 0
-                val words = if (isToday) getExFriendCfg().getIntOrDefault(wordsCfg, 0) else 0
-                val emo = if (isToday) getExFriendCfg().getIntOrDefault(emoCfg, 0) else 0
-                str = str.replace("%1", msg.toString()).replace("%2", words.toString())
-                    .replace("%3", emo.toString())
-                textView.text = str
+            val viewGroup = it.args[2] as ViewGroup
+            DexKit.getMethodFromCache(DexKit.N_QQSettingMe_onResume)?.hookAfter(this) {
+                val relativeLayout = viewGroup.findHostView<RelativeLayout>(getConfig(ChatWordsCount::class.java.simpleName))
+                val textView = (relativeLayout?.parent as FrameLayout).findViewById<TextView>(nil.nadph.qnotified.R.id.chat_words_count)
+                textView.text = getChatWords()
             }
         }
         "com.tencent.mobileqq.activity.QQSettingMe".clazz?.hookAfterAllConstructors {
-            val isToday = Date().today == getExFriendCfg().getStringOrDefault(timeCfg, "")
-            val activity: Activity = it.args[0] as Activity
-            val relativeLayout = (it.thisObject.get(
-                "a",
-                ViewGroup::class.java
-            ) as ViewGroup).findHostView<RelativeLayout>(getConfig(ChatWordsCount::class.java.simpleName))
-            relativeLayout!!.visibility = View.GONE
+            val activity = it.args[0] as Activity
+            val relativeLayout = (it.args[2] as ViewGroup).findHostView<RelativeLayout>(getConfig(ChatWordsCount::class.java.simpleName))
+            relativeLayout?.visibility = View.GONE
             val textView = TextView(activity)
-            var str = getExFriendCfg().getStringOrDefault(strCfg, "今日已发送 %1 条消息，共 %2 字，表情包 %3 个")!!
-            val msg = if (isToday) getExFriendCfg().getIntOrDefault(msgCfg, 0) else 0
-            val words = if (isToday) getExFriendCfg().getIntOrDefault(wordsCfg, 0) else 0
-            val emo = if (isToday) getExFriendCfg().getIntOrDefault(emoCfg, 0) else 0
-            str = str.replace("%1", msg.toString()).replace("%2", words.toString())
-                .replace("%3", emo.toString())
-            textView.text = str
+            textView.text = getChatWords()
             textView.setTextColor(
                 Color.parseColor(
                     getExFriendCfg().getStringOrDefault(
@@ -180,7 +169,7 @@ object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt"), UiItem {
                     true
                 }
             }
-            (relativeLayout.parent as FrameLayout).addView(textView)
+            (relativeLayout?.parent as FrameLayout).addView(textView)
         }
         Initiator._ChatActivityFacade().method(
             "a",
@@ -227,7 +216,7 @@ object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt"), UiItem {
 
     override fun isValid(): Boolean = requireMinQQVersion(QQVersion.QQ_8_5_0)
 
-    fun showChatWordsCountDialog(activity: Context) {
+    private fun showChatWordsCountDialog(activity: Context) {
         val dialog = CustomDialog.createFailsafe(activity)
         val ctx = dialog.context
         val editText = EditText(ctx)

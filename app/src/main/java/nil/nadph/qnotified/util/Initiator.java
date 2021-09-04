@@ -691,4 +691,16 @@ public class Initiator {
         }
         return clazz;
     }
+
+    public static Class _TogetherControlHelper() {
+        Class<?> clazz = load("com.tencent.mobileqq.aio.helper.TogetherControlHelper");
+        if (clazz == null) {
+            clazz = load("com.tencent.mobileqq.activity.aio.helper.TogetherControlHelper");
+        }
+        return clazz;
+    }
+
+    public static Class _ClockInEntryHelper() {
+        return load("com/tencent/mobileqq/activity/aio/helper/ClockInEntryHelper");
+    }
 }

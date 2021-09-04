@@ -110,8 +110,9 @@ public class DexKit {
     public static final int N_VIP_UTILS_getPrivilegeFlags = 20013;
     public static final int N_TroopChatPie_showNewTroopMemberCount = 20014;
     public static final int N_Conversation_onCreate = 20015;
-
-    public static final int DEOBF_NUM_N = 15;
+    public static final int N_QQSettingMe_onResume = 20016;
+    public static final int N_BaseChatPie_mosaic = 20017;
+    public static final int DEOBF_NUM_N = 17;
 
 
     @Nullable
@@ -367,6 +368,10 @@ public class DexKit {
                 return "troopChatPie_showNewTroopMemberCount";
             case N_Conversation_onCreate:
                 return "conversation_onCreate";
+            case N_QQSettingMe_onResume:
+                return "qqsettingme_onresume";
+            case N_BaseChatPie_mosaic:
+                return "basechatpie_mosaic";
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
@@ -489,6 +494,7 @@ public class DexKit {
             case N_BASE_CHAT_PIE__updateSession:
             case N_BASE_CHAT_PIE__createMulti:
             case N_BASE_CHAT_PIE__chooseMsg:
+            case N_BaseChatPie_mosaic:
                 ret = _BaseChatPie().getName();
                 break;
             case N_AtPanel__refreshUI:
@@ -505,6 +511,7 @@ public class DexKit {
                 ret = "com.tencent.mobileqq.profilecard.vas.VasProfileTemplateController";
                 break;
             case N_QQSettingMe_updateProfileBubble:
+            case N_QQSettingMe_onResume:
                 ret = "com.tencent.mobileqq.activity.QQSettingMe";
                 break;
             case N_TroopChatPie_showNewTroopMemberCount:
@@ -744,6 +751,17 @@ public class DexKit {
                 return new byte[][]{
                     new byte[]{0x0F, 0x52, 0x65, 0x63, 0x65, 0x6E, 0x74, 0x5F, 0x4F, 0x6E, 0x43,
                         0x72, 0x65, 0x61, 0x74, 0x65}};
+            case N_QQSettingMe_onResume:
+                return new byte[][]{
+                    new byte[]{
+                        0x0C, 0x2d, 0x2d, 0x3e, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x75, 0x6d, 0x65, 0x21
+                    }};
+            case N_BaseChatPie_mosaic:
+                return new byte[][]{
+                    new byte[]{
+                        0x32, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x4d, 0x6f, 0x73, 0x61, 0x69, 0x63, 0x45, 0x66,
+                        0x66, 0x65, 0x63, 0x74
+                    }};
         }
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
@@ -810,7 +828,7 @@ public class DexKit {
             case N_BASE_CHAT_PIE__handleNightMask:
             case N_BASE_CHAT_PIE__updateSession:
             case N_BASE_CHAT_PIE__chooseMsg:
-                return new int[]{7, 6, 3};
+            case N_BaseChatPie_mosaic:
             case N_BASE_CHAT_PIE__createMulti:
                 return new int[]{6, 2, 7, 3};
             case N_AtPanel__refreshUI:
@@ -837,6 +855,7 @@ public class DexKit {
             case N_VasProfileTemplateController_onCardUpdate:
                 return new int[]{7, 6};
             case N_QQSettingMe_updateProfileBubble:
+            case N_QQSettingMe_onResume:
                 return new int[]{4, 6, 8, 7};
             case N_VIP_UTILS_getPrivilegeFlags:
                 return new int[]{4, 2, 3};
@@ -1042,6 +1061,7 @@ public class DexKit {
             case N_BASE_CHAT_PIE__INIT:
             case N_BASE_CHAT_PIE__handleNightMask:
             case N_BASE_CHAT_PIE__updateSession:
+            case N_BaseChatPie_mosaic:
                 for (DexMethodDescriptor m : __methods) {
                     if (m.declaringClass.replace('/', '.').contains(_BaseChatPie().getName())) {
                         return m;
@@ -1222,6 +1242,13 @@ public class DexKit {
             case N_Conversation_onCreate:
                 for (DexMethodDescriptor m : __methods) {
                     if (m.declaringClass.endsWith("Conversation")) {
+                        return m;
+                    }
+                }
+                break;
+            case N_QQSettingMe_onResume:
+                for (DexMethodDescriptor m : __methods) {
+                    if (m.declaringClass.endsWith("QQSettingMe")) {
                         return m;
                     }
                 }
