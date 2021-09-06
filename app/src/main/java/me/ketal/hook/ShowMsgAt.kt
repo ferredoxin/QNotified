@@ -86,13 +86,9 @@ object ShowMsgAt : CommonDelayableHook("Ketal_HideTroopLevel"), OnBubbleBuilder 
 
     private fun copeAtInfo(textView: TextView, at: JSONArray) {
         val spannableString = SpannableString(textView.text)
-        val uinList = mutableListOf<Long>()
         for (i in 0 until at.length()) {
             val con = at[i] as JSONObject
             val uin = con["uin"].toString().toLong()
-            if (uinList.contains(uin))
-                continue
-            uinList.add(uin)
             val start = con["startPos"] as Int
             val length = con["textLen"] as Int
             if (spannableString[start] == '@')
