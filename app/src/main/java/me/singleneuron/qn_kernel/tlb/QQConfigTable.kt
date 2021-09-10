@@ -76,7 +76,7 @@ class QQConfigTable : ConfigTableInterface {
 
         SortAtPanel.sessionInfoTroopUin to mapOf(
             QQ_8_4_1 to "a",
-            QQ_8_8_20 to "b",
+            QQ_8_8_11 to "b",
         ),
 
         // 打卡

@@ -33,8 +33,10 @@ import androidx.core.view.isVisible
 import androidx.core.view.plusAssign
 import ltd.nextalone.util.*
 import me.ketal.util.findViewByType
+import me.kyuubiran.hook.SimplifyQQSettingMe
 import me.singleneuron.qn_kernel.data.isTim
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
+import me.singleneuron.qn_kernel.tlb.ConfigTable
 import nil.nadph.qnotified.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
@@ -62,13 +64,12 @@ object HideTab : CommonDelayableHook("ketal_HideTab") {
 
         "com.tencent.mobileqq.activity.QQSettingMe".clazz?.hookAfterAllConstructors {
             if (!isEnabled) return@hookAfterAllConstructors
+            val midContentName = ConfigTable.getConfig<String>(SimplifyQQSettingMe.MidContentName)
             val linearLayout = if (requireMinQQVersion(QQVersion.QQ_8_6_5)) {
-                val midcontentName = if (requireMinQQVersion(QQVersion.QQ_8_7_0)) "b" else "c"
-                it.thisObject.get(midcontentName, LinearLayout::class.java)!!
+                it.thisObject.get(midContentName, LinearLayout::class.java)
             } else {
-                val midcontentName = if (requireMinQQVersion(QQVersion.QQ_8_6_0)) "n" else "k"
-                it.thisObject.get(midcontentName, View::class.java) as LinearLayout
-            }
+                it.thisObject.get(midContentName, View::class.java) as LinearLayout
+            } ?: return@hookAfterAllConstructors
             addSettingItem(linearLayout, "skin_tab_icon_conversation_normal", "消息") {
                 tab.currentTab = 0
             }
@@ -76,7 +77,7 @@ object HideTab : CommonDelayableHook("ketal_HideTab") {
                 tab.currentTab = 1
             }
             addSettingItem(linearLayout, "skin_tab_icon_plugin_normal", "动态") {
-                tab.currentTab = if (tab.childCount == 3) 2 else 3
+                tab.currentTab = tab.tabWidget.tabCount - 1
             }
         }
     }
