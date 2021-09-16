@@ -31,8 +31,10 @@ import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.view.isVisible
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import me.kyuubiran.util.AutoRenewFireMgr
+import me.kyuubiran.util.getDefaultCfg
 import me.kyuubiran.util.getExFriendCfg
 import me.kyuubiran.util.showToastByTencent
 import nil.nadph.qnotified.R
@@ -45,6 +47,7 @@ import java.util.regex.Pattern
 
 object AutoRenewFireDialog {
     private var currentEnable: Boolean? = null
+    private var currentEnableAuto = getDefaultCfg().getBooleanOrFalse(AutoRenewFireMgr.AUTO)
     private val allowMsg = arrayListOf("早安", "早", "晚安", "安", "续火", "🔥")
 
     var replyMsg: String = getExFriendCfg().getStringOrDefault(AutoRenewFireMgr.MESSAGE, "续火")
@@ -72,6 +75,7 @@ object AutoRenewFireDialog {
             override fun afterTextChanged(s: Editable?) =
                 Unit
         })
+        msgEditText.isVisible= !currentEnableAuto
         val timeEditText = EditText(ctx)
         timeEditText.textSize = 16f
         timeEditText.hint = "续火时间，默认 00:00:05，格式 HH:MM:SS"
@@ -104,6 +108,14 @@ object AutoRenewFireDialog {
                 false -> Toasts.showToast(ctx, Toasts.TYPE_INFO, "已关闭自动续火", Toasts.LENGTH_SHORT)
             }
         }
+        val checkBoxAuto = CheckBox(ctx)
+        checkBoxAuto.text = "每日一言"
+        checkBoxAuto.isChecked = currentEnableAuto
+        checkBoxAuto.setOnCheckedChangeListener { _, isChecked ->
+            currentEnableAuto = isChecked
+            msgEditText.isVisible= !currentEnableAuto
+            getDefaultCfg().putBoolean(AutoRenewFireMgr.AUTO, currentEnableAuto)
+        }
         val params = ViewBuilder.newLinearLayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -125,6 +137,7 @@ object AutoRenewFireDialog {
             )
         )
         linearLayout.addView(checkBox, params)
+        linearLayout.addView(checkBoxAuto, params)
         linearLayout.addView(msgEditText, params)
         linearLayout.addView(timeEditText, params)
         val alertDialog = dialog.setTitle("自动续火设置")
