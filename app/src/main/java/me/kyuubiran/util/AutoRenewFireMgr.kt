@@ -24,7 +24,9 @@ package me.kyuubiran.util
 import android.os.Handler
 import android.os.Looper
 import cc.ioctl.script.QNClient
+import com.google.gson.JsonParser
 import me.singleneuron.qn_kernel.data.hostInfo
+import java.net.URL
 import java.util.*
 import kotlin.concurrent.thread
 
@@ -33,6 +35,7 @@ object AutoRenewFireMgr {
     const val ENABLE = "kr_auto_renew_fire"
     const val LIST = "kr_auto_renew_fire_list"
     const val MESSAGE = "kr_auto_renew_fire_message"
+    const val AUTO = "kr_auto_renew_fire_auto"
     const val TIME = "kr_auto_renew_fire_time"
     const val TIMEPRESET = "kr_auto_renew_fire_time_preset"
     private val mHandler = Handler(Looper.getMainLooper())
@@ -72,7 +75,10 @@ object AutoRenewFireMgr {
             cfg.save()
         }
         get() {
-            return getExFriendCfg().getStringOrDefault(MESSAGE, "火")
+            return if (getDefaultCfg().getBooleanOrFalse(AUTO)) {
+                return JsonParser.parseString(URL("https://v1.hitokoto.cn/?c=a").readText()).asJsonObject.get("hitokoto")
+                    .toString().replace("\"", "")
+            } else getExFriendCfg().getStringOrDefault(MESSAGE, "火").split("|").random()
         }
 
     private fun strToArr(): ArrayList<AutoRenewFireItem> {
