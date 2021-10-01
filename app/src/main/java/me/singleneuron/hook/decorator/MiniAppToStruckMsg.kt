@@ -37,7 +37,7 @@ import nil.nadph.qnotified.util.Utils
 import org.json.JSONObject
 
 @UiItem
-object MiniAppToStruckMsg : BaseItemBuilderFactoryHookDecorator(MiniAppToStruckMsg::class.java.simpleName) {
+object MiniAppToStruckMsg : BaseItemBuilderFactoryHookDecorator() {
 
     override fun doDecorate(
         result: Int,

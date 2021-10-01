@@ -33,7 +33,7 @@ import nil.nadph.qnotified.util.ReflexUtil
 import nil.nadph.qnotified.util.Utils
 
 @UiItem
-object CardMsgToText : BaseItemBuilderFactoryHookDecorator(CardMsgToText::class.java.simpleName) {
+object CardMsgToText : BaseItemBuilderFactoryHookDecorator() {
     override fun doDecorate(
         result: Int,
         chatMessage: Any,

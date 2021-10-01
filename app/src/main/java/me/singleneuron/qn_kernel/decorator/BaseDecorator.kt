@@ -32,11 +32,12 @@ import nil.nadph.qnotified.util.Utils
 import org.ferredoxin.ferredoxin_ui.base.UiSwitchItem
 import org.ferredoxin.ferredoxin_ui.base.UiSwitchPreference
 
-abstract class BaseDecorator(val cfg: String) : UiSwitchItem {
+abstract class BaseDecorator() : UiSwitchItem {
 
+    val cfg: String = this::class.java.simpleName
     abstract override val preference: UiSwitchPreference
 
-    fun uiSwitchPreference(init: UiSwitchPreferenceItemFactory.()->Unit): UiSwitchPreference {
+    fun uiSwitchPreference(init: UiSwitchPreferenceItemFactory.() -> Unit): UiSwitchPreference {
         val uiSwitchPreferenceFactory = UiSwitchPreferenceItemFactory()
         uiSwitchPreferenceFactory.init()
         return uiSwitchPreferenceFactory

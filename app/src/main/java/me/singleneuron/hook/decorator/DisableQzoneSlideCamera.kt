@@ -28,7 +28,7 @@ import me.singleneuron.qn_kernel.decorator.BaseStartActivityHookDecorator
 import me.singleneuron.qn_kernel.ui.base.净化功能
 
 @UiItem
-object DisableQzoneSlideCamera : BaseStartActivityHookDecorator("disableCameraOnSweepingInQzone") {
+object DisableQzoneSlideCamera : BaseStartActivityHookDecorator() {
 
     override fun doDecorate(intent: Intent, param: XC_MethodHook.MethodHookParam): Boolean {
         if (intent.data?.toString()?.contains("qzoneSlideCamera") == true) {

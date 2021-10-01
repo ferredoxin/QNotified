@@ -29,7 +29,7 @@ import nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null
 import nil.nadph.qnotified.util.ReflexUtil.invoke_virtual
 
 @UiItem
-object SimpleCheckIn : BaseItemBuilderFactoryHookDecorator("qn_sign_in_as_text") {
+object SimpleCheckIn : BaseItemBuilderFactoryHookDecorator() {
 
     override fun doDecorate(
         result: Int,

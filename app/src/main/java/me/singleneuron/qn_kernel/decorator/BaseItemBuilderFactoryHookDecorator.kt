@@ -24,7 +24,7 @@ package me.singleneuron.qn_kernel.decorator
 import de.robv.android.xposed.XC_MethodHook
 import nil.nadph.qnotified.util.Utils
 
-abstract class BaseItemBuilderFactoryHookDecorator(cfg: String) : BaseDecorator(cfg) {
+abstract class BaseItemBuilderFactoryHookDecorator : BaseDecorator() {
 
     fun decorate(result: Int, chatMessage: Any, param: XC_MethodHook.MethodHookParam): Boolean {
         if (preference.value.value != true) return false

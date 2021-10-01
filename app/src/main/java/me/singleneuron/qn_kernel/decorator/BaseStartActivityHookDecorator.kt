@@ -25,7 +25,7 @@ import android.content.Intent
 import de.robv.android.xposed.XC_MethodHook
 import nil.nadph.qnotified.util.Utils
 
-abstract class BaseStartActivityHookDecorator(cfg: String) : BaseDecorator(cfg) {
+abstract class BaseStartActivityHookDecorator : BaseDecorator() {
 
     fun decorate(intent: Intent, param: XC_MethodHook.MethodHookParam): Boolean {
         if (preference.value.value != true) return false
