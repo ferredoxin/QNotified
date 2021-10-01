@@ -38,7 +38,7 @@ import nil.nadph.qnotified.util.Utils
 import org.ferredoxin.ferredoxin_ui.base.UiSwitchPreference
 
 @UiItem
-object FxxkQQBrowser : BaseStartActivityHookDecorator("fxxk_qq_browser") {
+object FxxkQQBrowser : BaseStartActivityHookDecorator() {
 
     @SuppressLint("ResourceType")
     override fun doDecorate(intent: Intent, param: XC_MethodHook.MethodHookParam): Boolean {

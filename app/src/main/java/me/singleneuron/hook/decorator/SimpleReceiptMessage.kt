@@ -29,7 +29,7 @@ import me.singleneuron.qn_kernel.ui.base.净化功能
 import nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null
 
 @UiItem
-object SimpleReceiptMessage : BaseItemBuilderFactoryHookDecorator("simpleReceiptMessage") {
+object SimpleReceiptMessage : BaseItemBuilderFactoryHookDecorator() {
 
     override fun doDecorate(
         result: Int,
