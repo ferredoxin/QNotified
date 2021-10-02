@@ -141,7 +141,7 @@ QNotified的版本号组成为`x.y.z.w`，正常情况下`x`位将一直保持�
 
 6. [Xposed仓库](https://repo.xposed.info/module/nil.nadph.qnotified) 将发布`Beta`版和`Alpha`版更新。其中`Beta`版更新将被标注为Stable，`Alpha`版更新将被标注为Beta。
 
-7. [LSPosed仓库](https://github.com/Xposed-Modules-Repo/nil.nadph.qnotified/release) 将发布所有版本更新，其中`CI`版本更新将被标注为Pre-release。
+7. [LSPosed仓库](https://github.com/Xposed-Modules-Repo/nil.nadph.qnotified/releases/) 将发布所有版本更新，其中`CI`版本更新将被标注为Pre-release。
 
 </details>
 
