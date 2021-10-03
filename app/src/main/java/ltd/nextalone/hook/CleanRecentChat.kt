@@ -58,12 +58,13 @@ object CleanRecentChat : CommonDelayAbleHookBridge() {
     private var includeTopped = getDefaultCfg().getBooleanOrDefault(INCLUDE_TOPPED, false)
 
     override fun initOnce(): Boolean = tryOrFalse {
-        DexKit.doFindMethod(DexKit.N_Conversation_onCreate)
+        DexKit.getMethodFromCache(DexKit.N_Conversation_onCreate)
             ?.hookAfter(this) {
                 val recentAdapter = it.thisObject.get(RecentAdapter.clazz)
                 val app = it.thisObject.get("mqq.app.AppRuntime".clazz)
                 val relativeLayout = it.thisObject.get(RelativeLayout::class.java)
                 val plusView = relativeLayout?.findHostView<ImageView>("ba3")
+                    ?: relativeLayout?.parent?.findHostView<ImageView>("ba3")
                 plusView?.setOnLongClickListener { view ->
                     val contextWrapper = CommonContextWrapper.createMaterialDesignContext(view.context)
                     val list = listOf("清理群消息", "清理所有消息")
