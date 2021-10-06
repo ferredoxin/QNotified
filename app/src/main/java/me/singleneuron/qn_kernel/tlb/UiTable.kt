@@ -121,7 +121,7 @@ object UiTable : UiScreen {
                     uiClickableItem {
                         title = "自定义+1图标"
                         onClickListener = {
-                            RepeaterIconSettingDialog.OnClickListener_createDialog(it)
+                            RepeaterIconSettingDialog.createAndShowDialog(it)
                             true
                         }
                     }
