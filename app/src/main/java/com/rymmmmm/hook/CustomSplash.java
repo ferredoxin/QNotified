@@ -77,7 +77,10 @@ public class CustomSplash extends CommonDelayableHook {
                         return;
                     }
                     String fileName = (String) param.args[0];
-                    if ("splash.jpg".equals(fileName) || "splash_big.jpg".equals(fileName)) {
+                    if ("splash.jpg".equals(fileName)
+                        || "splash_big.jpg".equals(fileName)
+                        || "splash/splash_simple.png".equals(fileName)
+                        || "splash/splash_big_simple.png".equals(fileName)) {
                         String customPath = RikkaCustomSplash.getCurrentSplashPath();
                         if (customPath == null) {
                             return;
