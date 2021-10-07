@@ -161,15 +161,6 @@ public class RepeaterIconSettingDialog implements View.OnClickListener,
         new RepeaterIconSettingDialog(ctx).show();
     }
 
-    public static View.OnClickListener OnClickListener_createDialog(final Context ctx) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new RepeaterIconSettingDialog(ctx).show();
-            }
-        };
-    }
-
     public AlertDialog show() {
         dialog.show();
         saveBtn = dialog.getButton(DialogInterface.BUTTON_POSITIVE);

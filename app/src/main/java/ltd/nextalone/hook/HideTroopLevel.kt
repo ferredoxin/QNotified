@@ -44,19 +44,19 @@ object HideTroopLevel : CommonDelayAbleHookBridge(), OnBubbleBuilder {
 
     private val levelClass = _TroopMemberLevelView()
 
-    override fun isValid() = levelClass != null
+    override fun isValid() = _TroopMemberLevelView() != null
 
     override fun initOnce() = isValid
 
     override fun onGetView(
         rootView: ViewGroup,
-        msg: MsgRecordData,
+        chatMessage: MsgRecordData,
         param: XC_MethodHook.MethodHookParam
     ) {
-        if (!isEnabled || 1 != msg.isTroop) return
+        if (!isEnabled || 1 != chatMessage.isTroop) return
         if (levelClass == null) return
-        val sendUin = msg.senderUin
-        val troopInfo = TroopInfo(msg.friendUin)
+        val sendUin = chatMessage.senderUin
+        val troopInfo = TroopInfo(chatMessage.friendUin)
         val ownerUin = troopInfo.troopOwnerUin
         val admin = troopInfo.troopAdmin
         val levelView = rootView.findViewByType(levelClass)
