@@ -21,7 +21,7 @@ android {
         targetSdkVersion 30
         versionCode(Common.timeStamp)
         // versionName format: major.minor.accumulation.commit_id
-        versionName "0.8.22" + (Common.getGitHeadRefsSuffix(rootProject))
+        versionName "0.8.23" + (Common.getGitHeadRefsSuffix(rootProject))
         multiDexEnabled false
         ndk {
             abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
