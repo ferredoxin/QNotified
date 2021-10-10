@@ -28,13 +28,13 @@ import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
 import static nil.nadph.qnotified.util.Utils.dip2px;
 
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
-import android.view.View;
+import android.content.Intent;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-
 import androidx.core.view.ViewCompat;
-
+import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.drawable.HighContrastBorder;
@@ -55,31 +55,64 @@ public class OpenProfileCard {
         AlertDialog alertDialog = (AlertDialog) dialog.setTitle("输入对方QQ号")
             .setView(linearLayout)
             .setCancelable(true)
-            .setPositiveButton("确认", null)
+            .setPositiveButton("打开QQ号", null)
+            .setNeutralButton("打开QQ群", null)
             .setNegativeButton("取消", null)
             .create();
         alertDialog.show();
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
-            .setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String text = editText.getText().toString();
-                    if (text.equals("")) {
-                        Toasts.error(ctx, "请输入QQ号");
-                        return;
-                    }
-                    long uin = 0;
-                    try {
-                        uin = Long.parseLong(text);
-                    } catch (NumberFormatException ignored) {
-                    }
-                    if (uin < 10000) {
-                        Toasts.error(ctx, "请输入有效的QQ号");
-                        return;
-                    }
-                    alertDialog.dismiss();
-                    MainHook.openProfileCard(ctx, uin);
+            .setOnClickListener(v -> {
+                String text = editText.getText().toString();
+                if (text.equals("")) {
+                    Toasts.error(ctx, "请输入QQ号");
+                    return;
                 }
+                long uin = 0;
+                try {
+                    uin = Long.parseLong(text);
+                } catch (NumberFormatException ignored) {
+                }
+                if (uin < 10000) {
+                    Toasts.error(ctx, "请输入有效的QQ号");
+                    return;
+                }
+                alertDialog.dismiss();
+                MainHook.openProfileCard(ctx, uin);
+            });
+        alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL)
+            .setOnClickListener(v -> {
+                String text = editText.getText().toString();
+                if (text.equals("")) {
+                    Toasts.error(ctx, "请输入QQ群号");
+                    return;
+                }
+                long uin = 0;
+                try {
+                    uin = Long.parseLong(text);
+                } catch (NumberFormatException ignored) {
+                }
+                if (uin < 10000) {
+                    Toasts.error(ctx, "请输入有效的QQ群号");
+                    return;
+                }
+                alertDialog.dismiss();
+                Intent intent = new Intent();
+                intent.setComponent(new ComponentName("com.tencent.mobileqq",
+                    "com.tencent.mobileqq.activity.PublicFragmentActivity"));
+                intent.setFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION);
+                intent.putExtra("fling_action_key", 2);
+                intent.putExtra("preAct", "QRJumpActivity");
+                intent.putExtra("leftViewText", "返回");
+                intent.putExtra("keyword", (String) null);
+                intent.putExtra("authKey", (String) null);
+                intent.putExtra("preAct_time", System.currentTimeMillis());
+                intent.putExtra("preAct_elapsedRealtime", System.nanoTime());
+                intent.putExtra("troop_info_from", 14);
+                intent.putExtra("troop_uin", Long.toString(uin));
+                intent.putExtra("vistor_type", 2);
+                intent.putExtra("public_fragment_class",
+                    "com.tencent.mobileqq.troop.troopCard.VisitorTroopCardFragment");
+                HostInfo.getHostInfo().getApplication().startActivity(intent);
             });
     }
 

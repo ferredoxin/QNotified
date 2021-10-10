@@ -33,7 +33,7 @@ import me.singleneuron.qn_kernel.ui.base.辅助功能
 object ForceSystemAlbum : BaseStartActivityHookDecorator() {
 
     override fun doDecorate(intent: Intent, param: XC_MethodHook.MethodHookParam): Boolean {
-        if (intent.component?.className?.contains("NewPhotoListActivity") == true && (!intent.getBooleanExtra("PhotoConst.IS_CALL_IN_PLUGIN", false))) {
+        if (intent.component?.className?.contains("NewPhotoListActivity") == true && intent.getIntExtra("uintype", -1) != -1 && (!intent.getBooleanExtra("PhotoConst.IS_CALL_IN_PLUGIN", false))) {
             val context = hostInfo.application
             val newIntent = Intent(context, ChooseAgentActivity::class.java)
             newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
