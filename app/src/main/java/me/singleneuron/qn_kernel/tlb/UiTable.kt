@@ -44,6 +44,8 @@ typealias UiMap = MutableMap<String, UiDescription>
 object UiTable : UiScreen {
     override var name: String = "QNotified"
     override var summary: String? = null
+
+    @Suppress("UNUSED_PARAMETER")
     override var contains: UiMap
         get() {
             return containsInternal
@@ -141,7 +143,7 @@ object UiTable : UiScreen {
                 contains = linkedMapOf(
                     uiClickableItem {
                         title = "打开资料卡"
-                        summary = "打开指定用户的资料卡"
+                        summary = "打开指定用户或群的资料卡"
                         onClickListener = {
                             OpenProfileCard.onClick(it)
                             true
