@@ -41,13 +41,8 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.core.view.ViewCompat;
-
-import org.ferredoxin.ferredoxin_ui.base.UiSwitchItem;
-import org.ferredoxin.ferredoxin_ui.base.UiSwitchPreference;
-
 import cc.ioctl.H;
 import ltd.nextalone.base.MultiItemDelayableHook;
 import ltd.nextalone.util.SystemServiceUtils;
@@ -65,6 +60,8 @@ import nil.nadph.qnotified.ui.widget.FunctionSwitch;
 import nil.nadph.qnotified.util.NonUiThread;
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
+import org.ferredoxin.ferredoxin_ui.base.UiSwitchItem;
+import org.ferredoxin.ferredoxin_ui.base.UiSwitchPreference;
 
 public class ViewBuilder {
 
@@ -90,17 +87,14 @@ public class ViewBuilder {
         CharSequence desc, final String key, boolean defVal) {
         boolean on = ConfigManager.getDefaultConfig().getBooleanOrDefault(key, defVal);
         ViewGroup root = newListItemSwitch(ctx, title, desc, on,
-            new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    try {
-                        ConfigManager mgr = ConfigManager.getDefaultConfig();
-                        mgr.putBoolean(key, isChecked);
-                        mgr.save();
-                    } catch (Exception e) {
-                        Utils.log(e);
-                        Toasts.info(ctx, e.toString());
-                    }
+            (buttonView, isChecked) -> {
+                try {
+                    ConfigManager mgr = ConfigManager.getDefaultConfig();
+                    mgr.putBoolean(key, isChecked);
+                    mgr.save();
+                } catch (Exception e) {
+                    Utils.log(e);
+                    Toasts.info(ctx, e.toString());
                 }
             });
         root.setId(key.hashCode());
@@ -112,19 +106,16 @@ public class ViewBuilder {
         CharSequence desc, final String key, boolean defVal) {
         boolean on = ConfigManager.getDefaultConfig().getBooleanOrDefault(key, defVal);
         ViewGroup root = newListItemSwitch(ctx, title, desc, on,
-            new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    try {
-                        ConfigManager mgr = ConfigManager.getDefaultConfig();
-                        mgr.putBoolean(key, isChecked);
-                        mgr.save();
-                        Toasts.info(ctx,
-                            "重启" + HostInfo.getHostInfo().getHostName() + "生效");
-                    } catch (Throwable e) {
-                        Utils.log(e);
-                        Toasts.info(ctx, e.toString());
-                    }
+            (buttonView, isChecked) -> {
+                try {
+                    ConfigManager mgr = ConfigManager.getDefaultConfig();
+                    mgr.putBoolean(key, isChecked);
+                    mgr.save();
+                    Toasts.info(ctx,
+                        "重启" + HostInfo.getHostInfo().getHostName() + "生效");
+                } catch (Throwable e) {
+                    Utils.log(e);
+                    Toasts.info(ctx, e.toString());
                 }
             });
         root.setId(key.hashCode());
@@ -136,18 +127,15 @@ public class ViewBuilder {
         ConfigManager mgr = ExfriendManager.getCurrent().getConfig();
         boolean on = mgr.getBooleanOrDefault(key, defVal);
         ViewGroup root = newListItemSwitch(ctx, title, desc, on,
-            new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    try {
+            (buttonView, isChecked) -> {
+                try {
 
-                        mgr.putBoolean(key, isChecked);
-                        mgr.save();
-                        Toasts.info(ctx, "设置成功");
-                    } catch (Throwable e) {
-                        Utils.log(e);
-                        Toasts.info(ctx, e.toString());
-                    }
+                    mgr.putBoolean(key, isChecked);
+                    mgr.save();
+                    Toasts.info(ctx, "设置成功");
+                } catch (Throwable e) {
+                    Utils.log(e);
+                    Toasts.info(ctx, e.toString());
                 }
             });
         root.setId(key.hashCode());
@@ -158,17 +146,14 @@ public class ViewBuilder {
         CharSequence desc, final SwitchConfigItem item) {
         boolean on = item.isEnabled();
         ViewGroup root = newListItemSwitch(ctx, title, desc, on,
-            new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    try {
-                        item.setEnabled(isChecked);
-                        Toasts.info(ctx,
-                            "重启" + HostInfo.getHostInfo().getHostName() + "生效");
-                    } catch (Throwable e) {
-                        Utils.log(e);
-                        Toasts.info(ctx, e.toString());
-                    }
+            (buttonView, isChecked) -> {
+                try {
+                    item.setEnabled(isChecked);
+                    Toasts.info(ctx,
+                        "重启" + HostInfo.getHostInfo().getHostName() + "生效");
+                } catch (Throwable e) {
+                    Utils.log(e);
+                    Toasts.info(ctx, e.toString());
                 }
             });
         root.setId(title.hashCode());
@@ -181,12 +166,9 @@ public class ViewBuilder {
         return newListItemSwitch(ctx, title, desc, on,
             (buttonView, isChecked) -> {
                 if (!hook.isInited() && isChecked) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            hook.setEnabled(true);
-                            doSetupAndInit(ctx, hook);
-                        }
+                    new Thread(() -> {
+                        hook.setEnabled(true);
+                        doSetupAndInit(ctx, hook);
                     }).start();
                 } else {
                     hook.setEnabled(isChecked);
@@ -197,7 +179,7 @@ public class ViewBuilder {
     public static ViewGroup newListItemHookSwitchInit(final Context ctx, UiSwitchItem uiSwitchItem) {
         UiSwitchPreference preference = uiSwitchItem.getPreference();
         Boolean on = preference.getValue().getValue();
-        on = on==null?false:on;
+        on = on != null && on;
         ViewGroup root = newListItemSwitch(ctx, preference.getTitle(), preference.getSummary(), on, preference.getValid(),
             (buttonView, isChecked) -> preference.getValue().setValue(isChecked));
         root.setId(uiSwitchItem.getClass().getName().hashCode());
@@ -224,18 +206,15 @@ public class ViewBuilder {
                     continue;
                 }
                 final String name = s.getDescription();
-                Utils.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (pDialog[0] == null) {
-                            pDialog[0] = CustomDialog.create(ctx);
-                            pDialog[0].setCancelable(false);
-                            pDialog[0].setTitle("请稍候");
-                            pDialog[0].show();
-                        }
-                        pDialog[0].setMessage("QNotified正在初始化:\n" + name + "\n每个类一般不会超过一分钟");
-
+                Utils.runOnUiThread(() -> {
+                    if (pDialog[0] == null) {
+                        pDialog[0] = CustomDialog.create(ctx);
+                        pDialog[0].setCancelable(false);
+                        pDialog[0].setTitle("请稍候");
+                        pDialog[0].show();
                     }
+                    pDialog[0].setMessage("QNotified正在初始化:\n" + name + "\n每个类一般不会超过一分钟");
+
                 });
                 s.step();
             }
@@ -251,27 +230,19 @@ public class ViewBuilder {
                     err = ex;
                 }
                 if (!success) {
-                    Utils.runOnUiThread(() -> {
-                        Toasts.error(ctx, "初始化失败");
-                    });
+                    Utils.runOnUiThread(() -> Toasts.error(ctx, "初始化失败"));
                 }
             }
             SyncUtils.requestInitHook(hook.getId(), hook.getEffectiveProc());
         }
         if (err != null) {
             Throwable finalErr = err;
-            Utils.runOnUiThread(() -> {
-                CustomDialog.createFailsafe(ctx).setTitle("发生错误").setMessage(finalErr.toString())
-                    .setCancelable(true).setPositiveButton(android.R.string.ok, null).show();
-            });
+            Utils.runOnUiThread(() -> CustomDialog.createFailsafe(ctx).setTitle("发生错误")
+                .setMessage(finalErr.toString())
+                .setCancelable(true).setPositiveButton(android.R.string.ok, null).show());
         }
         if (pDialog[0] != null) {
-            Utils.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    pDialog[0].dismiss();
-                }
-            });
+            Utils.runOnUiThread(() -> pDialog[0].dismiss());
         }
     }
 
@@ -285,17 +256,14 @@ public class ViewBuilder {
                     continue;
                 }
                 final String name = i.getDescription();
-                Utils.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (pDialog[0] == null) {
-                            pDialog[0] = CustomDialog.create(ctx);
-                            pDialog[0].setCancelable(false);
-                            pDialog[0].setTitle("请稍候");
-                            pDialog[0].show();
-                        }
-                        pDialog[0].setMessage("QNotified正在初始化:\n" + name + "\n每个类一般不会超过一分钟");
+                Utils.runOnUiThread(() -> {
+                    if (pDialog[0] == null) {
+                        pDialog[0] = CustomDialog.create(ctx);
+                        pDialog[0].setCancelable(false);
+                        pDialog[0].setTitle("请稍候");
+                        pDialog[0].show();
                     }
+                    pDialog[0].setMessage("QNotified正在初始化:\n" + name + "\n每个类一般不会超过一分钟");
                 });
                 i.step();
             }
@@ -304,18 +272,12 @@ public class ViewBuilder {
         }
         if (error != null) {
             Throwable finalErr = error;
-            Utils.runOnUiThread(() -> {
-                CustomDialog.createFailsafe(ctx).setTitle("发生错误").setMessage(finalErr.toString())
-                    .setCancelable(true).setPositiveButton(android.R.string.ok, null).show();
-            });
+            Utils.runOnUiThread(() -> CustomDialog.createFailsafe(ctx).setTitle("发生错误")
+                .setMessage(finalErr.toString())
+                .setCancelable(true).setPositiveButton(android.R.string.ok, null).show());
         }
         if (pDialog[0] != null) {
-            Utils.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    pDialog[0].dismiss();
-                }
-            });
+            Utils.runOnUiThread(() -> pDialog[0].dismiss());
         }
     }
 
@@ -447,46 +409,32 @@ public class ViewBuilder {
     }
 
     public static View.OnClickListener clickToUrl(final String url) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Uri uri = Uri.parse(url);
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                v.getContext().startActivity(intent);
-            }
+        return v -> {
+            Uri uri = Uri.parse(url);
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            v.getContext().startActivity(intent);
         };
     }
 
     public static View.OnClickListener clickToChat() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Uri uri = Uri.parse(
-                    "mqqwpa://im/chat?chat_type=wpa&uin=1041703712&version=1&src_type=web&web_src=null");
-                Intent intent = new Intent(v.getContext(),
-                    load("com/tencent/mobileqq/activity/JumpActivity"));
-                intent.setData(uri);
-                v.getContext().startActivity(intent);
-            }
+        return v -> {
+            Uri uri = Uri.parse(
+                "mqqwpa://im/chat?chat_type=wpa&uin=1041703712&version=1&src_type=web&web_src=null");
+            Intent intent = new Intent(v.getContext(),
+                load("com/tencent/mobileqq/activity/JumpActivity"));
+            intent.setData(uri);
+            v.getContext().startActivity(intent);
         };
     }
 
     public static View.OnClickListener clickTheComing() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toasts.info(v.getContext(), "对不起,此功能尚在开发中");
-            }
-        };
+        return v -> Toasts.info(v.getContext(), "对不起,此功能尚在开发中");
     }
 
     public static View.OnLongClickListener longClickToTest() {
-        return new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Toasts.info(v.getContext(), "TEST");
-                return false;
-            }
+        return v -> {
+            Toasts.info(v.getContext(), "TEST");
+            return false;
         };
     }
 
@@ -534,27 +482,25 @@ public class ViewBuilder {
             Class<?> clazz = v.getClass();
             clazz.getMethod("setAdapter", ListAdapter.class).invoke(v, adapter);
         } catch (Exception e) {
-            Utils.logi("tencent_ListView->setAdapter: " + e.toString());
+            Utils.logi("tencent_ListView->setAdapter: " + e);
         }
     }
 
     public static LinearLayout newDialogClickableItemClickToCopy(final Context ctx, String title,
-        String value, ViewGroup vg, boolean attach) {
-        return newDialogClickableItem(ctx, title, value, new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Context c = v.getContext();
-                String msg = ((TextView) v).getText().toString();
-                if (msg.length() > 0) {
-                    SystemServiceUtils.copyToClipboard(ctx, msg);
-                    Toasts.info(c, "已复制文本");
-                }
-                return true;
+        String value, ViewGroup vg, boolean attach, View.OnClickListener l) {
+        return newDialogClickableItem(ctx, title, value, l, v -> {
+            Context c = v.getContext();
+            String msg = ((TextView) v).getText().toString();
+            if (msg.length() > 0) {
+                SystemServiceUtils.copyToClipboard(ctx, msg);
+                Toasts.info(c, "已复制文本");
             }
+            return true;
         }, vg, attach);
     }
 
     public static LinearLayout newDialogClickableItem(final Context ctx, String title, String value,
+        View.OnClickListener l,
         View.OnLongClickListener ll, ViewGroup vg, boolean attach) {
         LinearLayout root = (LinearLayout) LayoutInflater.from(ctx)
             .inflate(R.layout.dialog_clickable_item, vg, false);
@@ -562,14 +508,24 @@ public class ViewBuilder {
         TextView v = root.findViewById(R.id.dialogClickableItemValue);
         t.setText(title);
         v.setText(value);
+        if (l != null) {
+            v.setOnClickListener(l);
+        }
         if (ll != null) {
             v.setOnLongClickListener(ll);
+        }
+        if (l != null || ll != null) {
             ViewCompat.setBackground(v, ResUtils.getDialogClickableItemBackground());
         }
         if (attach) {
             vg.addView(root);
         }
         return root;
+    }
+
+    public static LinearLayout newDialogClickableItem(final Context ctx, String title, String value,
+        View.OnLongClickListener ll, ViewGroup vg, boolean attach) {
+        return newDialogClickableItem(ctx, title, value, null, ll, vg, attach);
     }
 
 }

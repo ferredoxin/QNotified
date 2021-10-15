@@ -34,7 +34,6 @@ import android.content.Intent;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import androidx.core.view.ViewCompat;
-import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.ui.drawable.HighContrastBorder;
@@ -96,24 +95,28 @@ public class OpenProfileCard {
                     return;
                 }
                 alertDialog.dismiss();
-                Intent intent = new Intent();
-                intent.setComponent(new ComponentName("com.tencent.mobileqq",
-                    "com.tencent.mobileqq.activity.PublicFragmentActivity"));
-                intent.setFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION);
-                intent.putExtra("fling_action_key", 2);
-                intent.putExtra("preAct", "QRJumpActivity");
-                intent.putExtra("leftViewText", "返回");
-                intent.putExtra("keyword", (String) null);
-                intent.putExtra("authKey", (String) null);
-                intent.putExtra("preAct_time", System.currentTimeMillis());
-                intent.putExtra("preAct_elapsedRealtime", System.nanoTime());
-                intent.putExtra("troop_info_from", 14);
-                intent.putExtra("troop_uin", Long.toString(uin));
-                intent.putExtra("vistor_type", 2);
-                intent.putExtra("public_fragment_class",
-                    "com.tencent.mobileqq.troop.troopCard.VisitorTroopCardFragment");
-                HostInfo.getHostInfo().getApplication().startActivity(intent);
+                openTroopCard(ctx, Long.toString(uin));
             });
+    }
+
+    public static void openTroopCard(Context ctx, String troop) {
+        Intent intent = new Intent();
+        intent.setComponent(new ComponentName("com.tencent.mobileqq",
+            "com.tencent.mobileqq.activity.PublicFragmentActivity"));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION);
+        intent.putExtra("fling_action_key", 2);
+        intent.putExtra("preAct", "QRJumpActivity");
+        intent.putExtra("leftViewText", "返回");
+        intent.putExtra("keyword", (String) null);
+        intent.putExtra("authKey", (String) null);
+        intent.putExtra("preAct_time", System.currentTimeMillis());
+        intent.putExtra("preAct_elapsedRealtime", System.nanoTime());
+        intent.putExtra("troop_info_from", 14);
+        intent.putExtra("troop_uin", troop);
+        intent.putExtra("vistor_type", 2);
+        intent.putExtra("public_fragment_class",
+            "com.tencent.mobileqq.troop.troopCard.VisitorTroopCardFragment");
+        ctx.startActivity(intent);
     }
 
 }
