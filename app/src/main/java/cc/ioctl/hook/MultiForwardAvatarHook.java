@@ -31,21 +31,15 @@ import static nil.nadph.qnotified.util.Utils.log;
 import static nil.nadph.qnotified.util.Utils.loge;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import org.ferredoxin.ferredoxin_ui.base.UiSwitchPreference;
-
+import de.robv.android.xposed.XC_MethodHook;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-
-import de.robv.android.xposed.XC_MethodHook;
 import me.singleneuron.qn_kernel.annotation.UiItem;
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge;
 import nil.nadph.qnotified.MainHook;
@@ -57,6 +51,7 @@ import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.UiThread;
 import nil.nadph.qnotified.util.Utils;
+import org.ferredoxin.ferredoxin_ui.base.UiSwitchPreference;
 
 @FunctionEntry
 @UiItem
@@ -115,26 +110,8 @@ public class MultiForwardAvatarHook extends CommonDelayAbleHookBridge {
             return;
         }
         CustomDialog dialog = CustomDialog.createFailsafe(__ctx).setTitle(getShort$Name(msg))
-            .setNeutralButton("资料卡", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    try {
-                        String senderuin = (String) iget_object_or_null(msg, "senderuin");
-                        long uin = Long.parseLong(senderuin);
-                        if (uin > 10000) {
-                            MainHook.openProfileCard(__ctx, uin);
-                        }
-                    } catch (Exception e) {
-                        log(e);
-                    }
-                }
-            }).setPositiveButton("确认", null).setCancelable(true)
-            .setNegativeButton("详情", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    createAndShowDialogForDetail(__ctx, msg);
-                }
-            });
+            .setPositiveButton("确认", null).setCancelable(true)
+            .setNeutralButton("详情", (dialog1, which) -> createAndShowDialogForDetail(__ctx, msg));
         Context ctx = dialog.getContext();
         LinearLayout ll = new LinearLayout(ctx);
         ll.setOrientation(LinearLayout.VERTICAL);
@@ -142,10 +119,20 @@ public class MultiForwardAvatarHook extends CommonDelayAbleHookBridge {
         ll.setPadding(p, p / 3, p, p / 3);
         String senderuin = (String) iget_object_or_null(msg, "senderuin");
         String frienduin = (String) iget_object_or_null(msg, "frienduin");
-        ViewBuilder.newDialogClickableItemClickToCopy(ctx, "群号", frienduin, ll, true);
-        ViewBuilder.newDialogClickableItemClickToCopy(ctx, "成员", senderuin, ll, true);
+        ViewBuilder.newDialogClickableItemClickToCopy(ctx, "群号", frienduin, ll, true,
+            v -> OpenProfileCard.openTroopCard(__ctx, frienduin));
+        ViewBuilder.newDialogClickableItemClickToCopy(ctx, "成员", senderuin, ll, true, v -> {
+            try {
+                long uin = Long.parseLong(senderuin);
+                if (uin > 10000) {
+                    MainHook.openProfileCard(__ctx, uin);
+                }
+            } catch (Exception e) {
+                log(e);
+            }
+        });
         TextView tv = new TextView(ctx);
-        tv.setText("(长按可复制)");
+        tv.setText("(单击可打开，长按可复制)");
         ll.addView(tv);
         dialog.setView(ll);
         dialog.show();
@@ -158,35 +145,26 @@ public class MultiForwardAvatarHook extends CommonDelayAbleHookBridge {
             return;
         }
         CustomDialog dialog = CustomDialog.createFailsafe(__ctx).setTitle(getShort$Name(msg))
-            .setNeutralButton("资料卡", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    try {
-                        String senderuin = (String) iget_object_or_null(msg, "senderuin");
-                        long uin = Long.parseLong(senderuin);
-                        if (uin > 10000) {
-                            MainHook.openProfileCard(__ctx, uin);
-                        }
-                    } catch (Exception e) {
-                        log(e);
-                    }
-                }
-            }).setPositiveButton("确认", null).setCancelable(true)
-            .setNegativeButton("详情", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    createAndShowDialogForDetail(__ctx, msg);
-                }
-            });
+            .setPositiveButton("确认", null).setCancelable(true)
+            .setNeutralButton("详情", (dialog1, which) -> createAndShowDialogForDetail(__ctx, msg));
         Context ctx = dialog.getContext();
         LinearLayout ll = new LinearLayout(ctx);
         int p = Utils.dip2px(ctx, 10);
         ll.setPadding(p, p / 3, p, p / 3);
         ll.setOrientation(LinearLayout.VERTICAL);
         String senderuin = (String) iget_object_or_null(msg, "senderuin");
-        ViewBuilder.newDialogClickableItemClickToCopy(ctx, "发送者", senderuin, ll, true);
+        ViewBuilder.newDialogClickableItemClickToCopy(ctx, "发送者", senderuin, ll, true, v -> {
+            try {
+                long uin = Long.parseLong(senderuin);
+                if (uin > 10000) {
+                    MainHook.openProfileCard(__ctx, uin);
+                }
+            } catch (Exception e) {
+                log(e);
+            }
+        });
         TextView tv = new TextView(ctx);
-        tv.setText("(长按可复制)");
+        tv.setText("(单击可打开，长按可复制)");
         ll.addView(tv);
         dialog.setView(ll);
         dialog.show();
