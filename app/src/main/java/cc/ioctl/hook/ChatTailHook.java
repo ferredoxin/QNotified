@@ -21,47 +21,87 @@
  */
 package cc.ioctl.hook;
 
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.logi;
+
 import android.content.Context;
 import android.os.Build;
 import android.os.Looper;
 import android.os.Parcelable;
-
+import android.view.View;
+import android.widget.EditText;
+import androidx.annotation.NonNull;
+import cc.ioctl.activity.ChatTailActivity;
+import cc.ioctl.dialog.RikkaCustomMsgTimeFormatDialog;
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-
-import cc.ioctl.activity.ChatTailActivity;
-import cc.ioctl.dialog.RikkaCustomMsgTimeFormatDialog;
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
 import me.kyuubiran.util.UtilsKt;
 import me.singleneuron.qn_kernel.data.HostInfo;
+import me.singleneuron.qn_kernel.decorator.BaseInputButtonDecorator;
+import mqq.app.AppRuntime;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
-import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.logi;
-
 @FunctionEntry
-public class ChatTailHook extends CommonDelayableHook {
+public class ChatTailHook extends BaseInputButtonDecorator {
 
     public static final String qn_chat_tail_enable = "qn_chat_tail_enable";
     public static final ChatTailHook INSTANCE = new ChatTailHook();
     private static final String ACTION_UPDATE_CHAT_TAIL = "nil.nadph.qnotified.ACTION_UPDATE_CHAT_TAIL";
 
+    @Override
+    public boolean decorate(@NonNull String text, @NonNull Parcelable session,
+        @NonNull EditText input, @NonNull View sendBtn, @NonNull Context ctx1, @NonNull
+        AppRuntime qqApp) {
+        try {
+            if (!isEnabled()) {
+                return false;
+            }
+            if (!Utils.isNullOrEmpty(
+                ChatTailHook.INSTANCE.getTailCapacity())) {
+                int battery = FakeBatteryHook.INSTANCE.isEnabled() ?
+                    FakeBatteryHook.INSTANCE.getFakeBatteryStatus() < 1
+                        ? ChatTailActivity.getBattery()
+                        : FakeBatteryHook.INSTANCE
+                            .getFakeBatteryCapacity()
+                    : ChatTailActivity.getBattery();
+                String tc = ChatTailHook.INSTANCE.getTailCapacity().
+                    replace(ChatTailActivity.delimiter, input.getText())
+                    .replace("#model#", Build.MODEL)
+                    .replace("#brand#", Build.BRAND)
+                    .replace("#battery#", battery + "")
+                    .replace("#power#", ChatTailActivity.getPower())
+                    .replace("#time#", new SimpleDateFormat(
+                        RikkaCustomMsgTimeFormatDialog.getTimeFormat(), Locale.getDefault())
+                        .format(new Date()));
+                input.setText(tc);
+                sendBtn.callOnClick();
+                return true;
+            } else {
+                Toasts.error(ctx1, "你还没有设置小尾巴");
+                return false;
+            }
+        } catch (Exception e) {
+            Utils.log(e);
+            return false;
+        }
+    }
 
     ChatTailHook() {
         super(qn_chat_tail_enable);
@@ -152,8 +192,8 @@ public class ChatTailHook extends CommonDelayableHook {
                                 uin = (String) field.get(session);
                             }
                             ChatTailHook ct = ChatTailHook.INSTANCE;
-                            logi("isRegex:" + String.valueOf(ChatTailHook.isRegex()));
-                            logi("isPassRegex:" + String.valueOf(ChatTailHook.isPassRegex(msg)));
+                            logi("isRegex:" + ChatTailHook.isRegex());
+                            logi("isPassRegex:" + ChatTailHook.isPassRegex(msg));
                             logi("getTailRegex:" + ChatTailHook.getTailRegex());
                             if ((ct.isGlobal() || ct.containsTroop(uin) || ct.containsFriend(uin))
                                 && (!isRegex() || !isPassRegex(msg))) {
@@ -169,7 +209,8 @@ public class ChatTailHook extends CommonDelayableHook {
                                     .replace("#battery#", battery + "")
                                     .replace("#power#", ChatTailActivity.getPower())
                                     .replace("#time#", new SimpleDateFormat(
-                                        RikkaCustomMsgTimeFormatDialog.getTimeFormat())
+                                        RikkaCustomMsgTimeFormatDialog.getTimeFormat(),
+                                        Locale.getDefault())
                                         .format(new Date()));
                                 if (ct.getTailCapacity().contains("#Spacemsg#")) {
                                     text = text.replace("#Spacemsg#", "");
@@ -247,6 +288,7 @@ public class ChatTailHook extends CommonDelayableHook {
             ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
             cfg.putBoolean(qn_chat_tail_enable, enabled);
             cfg.save();
+            InputButtonHook.INSTANCE.setEnabled(enabled);
         } catch (final Exception e) {
             Utils.log(e);
             if (Looper.myLooper() == Looper.getMainLooper()) {
