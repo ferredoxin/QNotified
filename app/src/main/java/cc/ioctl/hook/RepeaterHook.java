@@ -36,7 +36,6 @@ import static nil.nadph.qnotified.util.ReflexUtil.iput_object;
 import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
 import static nil.nadph.qnotified.util.Utils.dip2px;
 import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.logd;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -48,8 +47,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -355,11 +352,11 @@ public class RepeaterHook extends CommonDelayAbleHookBridge {
                                     .contains("MultiForwardActivity"))) {
                                     return;
                                 }
-                                iput_object(methodHookParam.args[0], "isFlowMessage", false);
-//                                if (((int) iget_object_or_null(methodHookParam.args[0],
-//                                    "extraflag")) == 32768) {
-//                                    iput_object(methodHookParam.args[0], "extraflag", 0);
-//                                }
+                                iput_object(methodHookParam.args[0], "isFlowMessage", true);
+                                if (((int) iget_object_or_null(methodHookParam.args[0],
+                                    "extraflag")) == 32768) {
+                                    iput_object(methodHookParam.args[0], "extraflag", 0);
+                                }
                             }
 
                             @Override
@@ -371,73 +368,34 @@ public class RepeaterHook extends CommonDelayAbleHookBridge {
                                 if (!isEnabled()) {
                                     return;
                                 }
-                                RelativeLayout parent = (RelativeLayout) param.args[3];
-                                Context ctx = parent.getContext();
-                                if (parent.findViewById(101) == null) {
-                                    View childAt = parent.getChildAt(parent.getChildCount() - 2);
-                                    parent.removeView(childAt);
-                                    int __id = childAt.getId();
-                                    RelativeLayout relativeLayout = new RelativeLayout(ctx);
-                                    if (__id != -1) {
-                                        relativeLayout.setId(__id);
-                                    }
-                                    ImageView imageView = new ImageView(ctx);
-                                    imageView.setId(101);
-                                    imageView.setImageBitmap(RepeaterIconSettingDialog.getRepeaterIcon());
-                                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(-2,
-                                        -2);
-                                    layoutParams.rightMargin = dip2px(ctx, (float) 10);
-                                    relativeLayout.addView(imageView, layoutParams);
-                                    relativeLayout.addView(childAt, childAt.getLayoutParams());
-                                    parent.addView(relativeLayout, childAt.getLayoutParams());
-
-                                    childAt = parent.getChildAt(parent.getChildCount() - 2);
-                                    parent.removeView(childAt);
-                                    __id = childAt.getId();
-                                    RelativeLayout relativeLayout2 = new RelativeLayout(ctx);
-                                    if (__id != -1) {
-                                        relativeLayout2.setId(__id);
-                                    }
-                                    ImageView imageView2 = new ImageView(ctx);
-                                    imageView2.setId(102);
-                                    imageView2.setImageBitmap(RepeaterIconSettingDialog.getRepeaterIcon());
-                                    RelativeLayout.LayoutParams layoutParams2 = new RelativeLayout.LayoutParams(-2,
-                                        -2);
-                                    layoutParams2.leftMargin = dip2px(ctx, (float) 10);
-                                    relativeLayout2.addView(imageView2, layoutParams2);
-                                    relativeLayout2.addView(childAt, childAt.getLayoutParams());
-                                    parent.addView(relativeLayout2, childAt.getLayoutParams());
-                                }
-
-                                ImageView imageView3 = parent.findViewById(101);
-                                ImageView imageView4 = parent.findViewById(102);
-                                if ((Boolean) invoke_virtual(param.args[0], "isSend", boolean.class)) {
-                                    imageView3.setVisibility(0);
-                                    imageView4.setVisibility(8);
-                                } else {
-                                    imageView3.setVisibility(8);
-                                    imageView4.setVisibility(0);
-                                }
-
+                                ImageView imageView = iget_object_or_null(param.args[1], "b",
+                                    ImageView.class);
+                                ImageView imageView2 = iget_object_or_null(param.args[1], "c",
+                                    ImageView.class);
+                                ((Boolean) invoke_virtual(param.args[0], "isSend", boolean.class)
+                                    ? imageView : imageView2).setVisibility(0);
                                 Bitmap repeat = RepeaterIconSettingDialog.getRepeaterIcon();
-                                imageView3.setImageBitmap(repeat);
-                                imageView4.setImageBitmap(repeat);
+                                imageView.setImageBitmap(repeat);
+                                imageView2.setImageBitmap(repeat);
                                 final AppRuntime app = getFirstNSFByType(param.thisObject,
                                     _QQAppInterface());
                                 final Parcelable session = getFirstNSFByType(param.thisObject,
                                     _SessionInfo());
                                 final Object msg = param.args[0];
-                                View.OnClickListener r0 = v -> {
-                                    try {
-                                        ChatActivityFacade.repeatMessage(app, session, msg);
-                                    } catch (Throwable e) {
-                                        log(e);
-                                        Toasts.error(HostInfo.getHostInfo()
-                                            .getApplication(), e.toString());
+                                View.OnClickListener r0 = new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        try {
+                                            ChatActivityFacade.repeatMessage(app, session, msg);
+                                        } catch (Throwable e) {
+                                            log(e);
+                                            Toasts.error(HostInfo.getHostInfo()
+                                                .getApplication(), e.toString());
+                                        }
                                     }
                                 };
-                                imageView3.setOnClickListener(r0);
-                                imageView4.setOnClickListener(r0);
+                                imageView.setOnClickListener(r0);
+                                imageView2.setOnClickListener(r0);
                                 View.OnLongClickListener l0 = v -> {
                                     CustomDialog dialog = CustomDialog
                                         .createFailsafe(v.getContext());
@@ -484,8 +442,8 @@ public class RepeaterHook extends CommonDelayAbleHookBridge {
                                         });
                                     return true;
                                 };
-                                imageView3.setOnLongClickListener(l0);
-                                imageView4.setOnLongClickListener(l0);
+                                imageView.setOnLongClickListener(l0);
+                                imageView2.setOnLongClickListener(l0);
                             }
                         });
             }
