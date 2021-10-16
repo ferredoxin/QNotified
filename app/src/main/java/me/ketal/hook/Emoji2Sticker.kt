@@ -22,36 +22,55 @@
 
 package me.ketal.hook
 
-import ltd.nextalone.util.clazz
-import ltd.nextalone.util.get
-import ltd.nextalone.util.hookAfter
-import ltd.nextalone.util.method
-import ltd.nextalone.util.set
-import ltd.nextalone.util.tryOrFalse
+import android.content.Context
+import android.os.Parcelable
+import android.view.View
+import android.widget.EditText
+import ltd.nextalone.util.*
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import nil.nadph.qnotified.SyncUtils
+import me.singleneuron.qn_kernel.decorator.BaseInputButtonDecorator
+import mqq.app.AppRuntime
 import nil.nadph.qnotified.base.annotation.FunctionEntry
-import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.QQVersion
+import nil.nadph.qnotified.util.ReflexUtil
 
 @FunctionEntry
-object Emoji2Sticker : CommonDelayableHook("Ketal_Emoji2Sticker", SyncUtils.PROC_MAIN, false) {
+object Emoji2Sticker : BaseInputButtonDecorator("Ketal_Emoji2Sticker") {
+
     override fun isValid() = requireMinQQVersion(QQVersion.QQ_8_7_5)
+
+    override fun decorate(text: String, session: Parcelable, input: EditText, sendBtn: View, ctx1: Context, qqApp: AppRuntime): Boolean {
+        if (!isEnabled) {
+            return false
+        }
+        return tryOrFalse {
+            val stickerParse: Any? = parseMsgForAniSticker(text, session)
+            val singleAniSticker = ReflexUtil.iget_object_or_null(
+                stickerParse, "singleAniSticker") as Boolean
+            val sessionAvailable = ReflexUtil.iget_object_or_null(
+                stickerParse, "sessionAvailable") as Boolean
+            val configAniSticker = ReflexUtil.iget_object_or_null(
+                stickerParse, "configAniSticker") as Boolean
+            if (singleAniSticker && sessionAvailable
+                && configAniSticker) {
+                sendParseAticker(stickerParse, session)
+                input.text.clear()
+            }
+        }
+    }
 
     override fun initOnce() = tryOrFalse {
         "Lcom/tencent/mobileqq/emoticonview/AniStickerSendMessageCallBack;->parseMsgForAniSticker(Ljava/lang/String;Lcom/tencent/mobileqq/activity/aio/BaseSessionInfo;)Lcom/tencent/mobileqq/emoticonview/AniStickerSendMessageCallBack\$AniStickerTextParseResult;"
             .method.hookAfter(this) {
-                if (!superIsEnable()) {
+                if (!isEnabled) {
                     it.result.set("singleAniSticker", false)
                 }
             }
     }
 
-    fun superIsEnable(): Boolean {
+    override fun isEnabled(): Boolean {
         return isValid && super.isEnabled()
     }
-
-    override fun isEnabled() = isValid
 
     fun parseMsgForAniSticker(str: String, session: Any) : Any? {
         return try {
@@ -62,15 +81,15 @@ object Emoji2Sticker : CommonDelayableHook("Ketal_Emoji2Sticker", SyncUtils.PROC
         }
     }
 
-    fun sendParseAticker(result: Any, session: Any) {
+    fun sendParseAticker(result: Any?, session: Any) {
         val clazz = "com/tencent/mobileqq/emoticonview/AniStickerSendMessageCallBack".clazz
             ?: return
         for (m in clazz.declaredMethods) {
-            when(m.name) {
+            when (m.name) {
                 "sendAniStickerMsg" -> {
                     m(null, result, session)
                 }
-                "sendAniSticker"  -> {
+                "sendAniSticker" -> {
                     val id = result.get("emoLocalId")
                     m(null, id, session)
                 }
