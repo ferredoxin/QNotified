@@ -47,6 +47,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -368,12 +370,9 @@ public class RepeaterHook extends CommonDelayAbleHookBridge {
                                 if (!isEnabled()) {
                                     return;
                                 }
-                                ImageView imageView = iget_object_or_null(param.args[1], "b",
-                                    ImageView.class);
-                                ImageView imageView2 = iget_object_or_null(param.args[1], "c",
-                                    ImageView.class);
-                                ((Boolean) invoke_virtual(param.args[0], "isSend", boolean.class)
-                                    ? imageView : imageView2).setVisibility(0);
+                                RelativeLayout baseChatItemLayout = (RelativeLayout)param.args[3];
+                                ImageView imageView = baseChatItemLayout.findViewById(baseChatItemLayout.getResources().getIdentifier("cfx", "id",HostInfo.hostInfo.getPackageName()));
+                                ImageView imageView2 = baseChatItemLayout.findViewById(baseChatItemLayout.getResources().getIdentifier("cfw", "id",HostInfo.hostInfo.getPackageName()));
                                 Bitmap repeat = RepeaterIconSettingDialog.getRepeaterIcon();
                                 imageView.setImageBitmap(repeat);
                                 imageView2.setImageBitmap(repeat);
