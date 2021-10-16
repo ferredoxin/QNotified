@@ -89,6 +89,12 @@ public class InputButtonHook extends CommonDelayableHook {
                         if (LicenseStatus.sDisableCommonHooks) {
                             return;
                         }
+                        if (LicenseStatus.isBlacklisted()) {
+                            return ;
+                        }
+                        if (!CardMsgHook.INSTANCE.isEnabled()) {
+                            return;
+                        }
                         try {
                             Object chatPie = param.thisObject;
                             //Class cl_PatchedButton = load("com/tencent/widget/PatchedButton");
@@ -119,9 +125,6 @@ public class InputButtonHook extends CommonDelayableHook {
                                 layout.setTouchInterceptor(new TouchEventToLongClickAdapter() {
                                     @Override
                                     public boolean onTouch(View v, MotionEvent event) {
-                                        if (!CardMsgHook.INSTANCE.isEnabled()) {
-                                            return false;
-                                        }
                                         ViewGroup vg = (ViewGroup) v;
                                         if (event.getAction() == MotionEvent.ACTION_DOWN &&
                                             vg.getChildCount() != 0 && vg.getChildAt(0)
@@ -134,15 +137,6 @@ public class InputButtonHook extends CommonDelayableHook {
                                     @Override
                                     public boolean onLongClick(View v) {
                                         try {
-                                            if (LicenseStatus.sDisableCommonHooks) {
-                                                return false;
-                                            }
-                                            if (LicenseStatus.isBlacklisted()) {
-                                                return false;
-                                            }
-                                            if (!CardMsgHook.INSTANCE.isEnabled()) {
-                                                return false;
-                                            }
                                             ViewGroup vg = (ViewGroup) v;
                                             Context ctx = v.getContext();
                                             if (vg.getChildCount() != 0 && !vg.getChildAt(0)
@@ -166,12 +160,6 @@ public class InputButtonHook extends CommonDelayableHook {
                             sendBtn.setOnLongClickListener(new View.OnLongClickListener() {
                                 @Override
                                 public boolean onLongClick(View v) {
-                                    if (LicenseStatus.sDisableCommonHooks) {
-                                        return false;
-                                    }
-                                    if (LicenseStatus.isBlacklisted()) {
-                                        return false;
-                                    }
                                     Context ctx = v.getContext();
                                     EditText input = aioRootView.findViewById(ctx.getResources()
                                         .getIdentifier("input", "id", ctx.getPackageName()));
@@ -181,7 +169,6 @@ public class InputButtonHook extends CommonDelayableHook {
                                     ) {
                                         return false;
                                     } else if (
-                                        CardMsgHook.INSTANCE.isEnabled()&&
                                         (text.contains("<?xml") || text.contains("{\""))
                                     ) {
                                         new Thread(() -> {
