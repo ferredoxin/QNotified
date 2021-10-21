@@ -21,7 +21,7 @@
  */
 package com.rymmmmm.hook;
 
-import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
+import static nil.nadph.qnotified.util.ReflexUtil.getFirstByType;
 import static nil.nadph.qnotified.util.Utils.log;
 
 import android.view.View;
@@ -61,7 +61,7 @@ public class OneTapTwentyLikes extends CommonDelayableHook {
                             }
                             View view = (View) param.args[0];
                             Object tag = view.getTag();
-                            Object likeClickListener = iget_object_or_null(param.thisObject, "a",
+                            Object likeClickListener = getFirstByType(param.thisObject,
                                 Initiator._VoteHelper());
                             Method onClick = likeClickListener.getClass()
                                 .getDeclaredMethod("a", tag.getClass(), ImageView.class);
