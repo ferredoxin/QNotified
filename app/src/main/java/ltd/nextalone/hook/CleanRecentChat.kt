@@ -58,7 +58,7 @@ object CleanRecentChat : CommonDelayAbleHookBridge() {
     private var includeTopped = getDefaultCfg().getBooleanOrDefault(INCLUDE_TOPPED, false)
 
     override fun initOnce(): Boolean = tryOrFalse {
-        DexKit.getMethodFromCache(DexKit.N_Conversation_onCreate)
+        DexKit.doFindMethod(DexKit.N_Conversation_onCreate)
             ?.hookAfter(this) {
                 val recentAdapter = it.thisObject.get(RecentAdapter.clazz)
                 val app = it.thisObject.get("mqq.app.AppRuntime".clazz)
@@ -68,7 +68,7 @@ object CleanRecentChat : CommonDelayAbleHookBridge() {
                 plusView?.setOnLongClickListener { view ->
                     val contextWrapper = CommonContextWrapper.createMaterialDesignContext(view.context)
                     val list = listOf("清理群消息", "清理所有消息")
-                    val materialDialog = MaterialDialog(contextWrapper).show {
+                    MaterialDialog(contextWrapper).show {
                         title(text = "消息清理")
                         checkBoxPrompt(text = "包含置顶消息", isCheckedDefault = includeTopped) { checked ->
                             includeTopped = checked
