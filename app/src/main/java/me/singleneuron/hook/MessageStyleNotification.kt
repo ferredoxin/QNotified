@@ -31,8 +31,8 @@ import androidx.core.app.Person
 import androidx.core.graphics.drawable.IconCompat
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
-import ltd.nextalone.util.clazz
-import ltd.nextalone.util.tryOrFalse
+import xyz.nextalone.util.clazz
+import xyz.nextalone.util.tryOrFalse
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.hostInfo

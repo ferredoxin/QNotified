@@ -48,7 +48,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import ltd.nextalone.util.SystemServiceUtils;
+import xyz.nextalone.util.SystemServiceUtils;
 import me.ketal.hook.Emoji2Sticker;
 import me.singleneuron.hook.CopyCardMsg;
 import mqq.app.AppRuntime;

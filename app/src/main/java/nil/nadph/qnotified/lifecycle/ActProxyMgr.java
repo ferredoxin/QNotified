@@ -52,7 +52,7 @@ public class ActProxyMgr {
             || className.startsWith("me.ketal.ui.activity.")
             || className.startsWith("com.rymmmmm.activity.")
             || className.startsWith("cn.lliiooll.activity.")
-            || className.startsWith("ltd.nextalone.activity.");
+            || className.startsWith("xyz.nextalone.activity.");
     }
 
     public static boolean isModuleBundleClassLoaderRequired(@NonNull String className) {

@@ -22,9 +22,9 @@
 package me.kyuubiran.hook
 
 import android.view.View
-import ltd.nextalone.util.method
-import ltd.nextalone.util.replace
-import ltd.nextalone.util.tryOrFalse
+import xyz.nextalone.util.method
+import xyz.nextalone.util.replace
+import xyz.nextalone.util.tryOrFalse
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.step.DexDeobfStep

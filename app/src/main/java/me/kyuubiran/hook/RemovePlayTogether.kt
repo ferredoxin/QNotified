@@ -21,9 +21,9 @@
  */
 package me.kyuubiran.hook
 
-import ltd.nextalone.util.method
-import ltd.nextalone.util.replace
-import ltd.nextalone.util.tryOrFalse
+import xyz.nextalone.util.method
+import xyz.nextalone.util.replace
+import xyz.nextalone.util.tryOrFalse
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.isPlayQQ

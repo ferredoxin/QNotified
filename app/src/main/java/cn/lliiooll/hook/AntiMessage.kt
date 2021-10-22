@@ -26,7 +26,7 @@ import android.view.View
 import cn.lliiooll.msg.MessageReceiver
 import cn.lliiooll.util.MsgRecordUtil
 import de.robv.android.xposed.XposedHelpers
-import ltd.nextalone.base.MultiItemDelayableHook
+import xyz.nextalone.base.MultiItemDelayableHook
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.data.MsgRecordData
 import me.singleneuron.qn_kernel.data.requireMinQQVersion

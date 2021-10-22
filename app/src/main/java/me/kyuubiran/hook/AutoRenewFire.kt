@@ -27,7 +27,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.TextView
-import ltd.nextalone.util.*
+import xyz.nextalone.util.*
 import me.kyuubiran.dialog.AutoRenewFireDialog
 import me.kyuubiran.util.AutoRenewFireMgr
 import me.kyuubiran.util.getExFriendCfg

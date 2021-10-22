@@ -21,7 +21,7 @@
  */
 package me.ketal.hook
 
-import ltd.nextalone.util.replace
+import xyz.nextalone.util.replace
 import me.ketal.util.BaseUtil.tryVerbosely
 import me.ketal.util.HookUtil.getMethod
 import nil.nadph.qnotified.base.annotation.FunctionEntry

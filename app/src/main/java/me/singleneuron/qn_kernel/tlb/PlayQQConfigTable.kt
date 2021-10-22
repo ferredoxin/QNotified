@@ -23,8 +23,8 @@ package me.singleneuron.qn_kernel.tlb
 
 import cc.ioctl.hook.ReplyNoAtHook
 import cc.ioctl.hook.VasProfileAntiCrash
-import ltd.nextalone.hook.HideProfileBubble
-import ltd.nextalone.hook.HideTotalNumber
+import xyz.nextalone.hook.HideProfileBubble
+import xyz.nextalone.hook.HideTotalNumber
 import nil.nadph.qnotified.util.PlayQQVersion.PlayQQ_8_2_9
 import nil.nadph.qnotified.util.PlayQQVersion.PlayQQ_8_2_9_1
 import nil.nadph.qnotified.util.PlayQQVersion.PlayQQ_8_2_10

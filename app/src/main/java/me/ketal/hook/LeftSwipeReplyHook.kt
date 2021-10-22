@@ -26,8 +26,8 @@ import android.graphics.BitmapFactory
 import android.view.View
 import android.widget.ImageView
 import de.robv.android.xposed.XposedHelpers
-import ltd.nextalone.util.hookAfter
-import ltd.nextalone.util.hookBefore
+import xyz.nextalone.util.hookAfter
+import xyz.nextalone.util.hookBefore
 import me.ketal.data.ConfigData
 import me.ketal.util.BaseUtil.tryVerbosely
 import me.singleneuron.qn_kernel.data.isTim

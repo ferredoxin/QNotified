@@ -22,12 +22,12 @@
 
 package me.ketal.hook
 
-import ltd.nextalone.util.clazz
-import ltd.nextalone.util.get
-import ltd.nextalone.util.hookAfter
-import ltd.nextalone.util.method
-import ltd.nextalone.util.set
-import ltd.nextalone.util.tryOrFalse
+import xyz.nextalone.util.clazz
+import xyz.nextalone.util.get
+import xyz.nextalone.util.hookAfter
+import xyz.nextalone.util.method
+import xyz.nextalone.util.set
+import xyz.nextalone.util.tryOrFalse
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.base.annotation.FunctionEntry
