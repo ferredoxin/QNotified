@@ -40,7 +40,7 @@ object Emoji2Sticker : BaseInputButtonDecorator("Ketal_Emoji2Sticker") {
     override fun isValid() = requireMinQQVersion(QQVersion.QQ_8_7_5)
 
     override fun decorate(text: String, session: Parcelable, input: EditText, sendBtn: View, ctx1: Context, qqApp: AppRuntime): Boolean {
-        if (!isEnabled) {
+        if (!superIsEnable()) {
             return false
         }
         return tryOrFalse {
@@ -53,35 +53,35 @@ object Emoji2Sticker : BaseInputButtonDecorator("Ketal_Emoji2Sticker") {
                 stickerParse, "configAniSticker") as Boolean
             if (singleAniSticker && sessionAvailable
                 && configAniSticker) {
-                sendParseAticker(stickerParse, session)
+                sendParseAniSticker(stickerParse, session)
                 input.text.clear()
             }
         }
     }
 
     override fun initOnce() = tryOrFalse {
-        "Lcom/tencent/mobileqq/emoticonview/AniStickerSendMessageCallBack;->parseMsgForAniSticker(Ljava/lang/String;Lcom/tencent/mobileqq/activity/aio/BaseSessionInfo;)Lcom/tencent/mobileqq/emoticonview/AniStickerSendMessageCallBack\$AniStickerTextParseResult;"
-            .method.hookAfter(this) {
-                if (!isEnabled) {
-                    it.result.set("singleAniSticker", false)
-                }
+        "com.tencent.mobileqq.emoticonview.AniStickerSendMessageCallBack".clazz?.method("parseMsgForAniSticker")?.hookAfter(this) {
+            if (!superIsEnable()) {
+                it.result.set("singleAniSticker", false)
             }
+        }
     }
 
-    override fun isEnabled(): Boolean {
+    fun superIsEnable(): Boolean {
         return isValid && super.isEnabled()
     }
 
-    fun parseMsgForAniSticker(str: String, session: Any) : Any? {
+    override fun isEnabled() = isValid
+
+    fun parseMsgForAniSticker(str: String, session: Any): Any? {
         return try {
-            "Lcom/tencent/mobileqq/emoticonview/AniStickerSendMessageCallBack;->parseMsgForAniSticker(Ljava/lang/String;Lcom/tencent/mobileqq/activity/aio/BaseSessionInfo;)Lcom/tencent/mobileqq/emoticonview/AniStickerSendMessageCallBack\$AniStickerTextParseResult;"
-                .method(null, str, session)
+            "com.tencent.mobileqq.emoticonview.AniStickerSendMessageCallBack".clazz?.method("parseMsgForAniSticker")?.invoke(null, str, session)
         } catch (e: Exception) {
             null
         }
     }
 
-    fun sendParseAticker(result: Any?, session: Any) {
+    fun sendParseAniSticker(result: Any?, session: Any) {
         val clazz = "com/tencent/mobileqq/emoticonview/AniStickerSendMessageCallBack".clazz
             ?: return
         for (m in clazz.declaredMethods) {
@@ -91,7 +91,11 @@ object Emoji2Sticker : BaseInputButtonDecorator("Ketal_Emoji2Sticker") {
                 }
                 "sendAniSticker" -> {
                     val id = result.get("emoLocalId")
-                    m(null, id, session)
+                    try {
+                        m(null, id, session)
+                    } catch (ignored: Throwable) {
+                        m(null, id, session, 0)
+                    }
                 }
             }
         }
