@@ -23,6 +23,7 @@ package nil.nadph.qnotified.bridge;
 
 import static nil.nadph.qnotified.util.Initiator._QQAppInterface;
 import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
 import static nil.nadph.qnotified.util.ReflexUtil.invoke_static_declared_ordinal_modifier;
 import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_declared_ordinal;
 import static nil.nadph.qnotified.util.Utils.getQQAppInterface;
@@ -31,6 +32,8 @@ import static nil.nadph.qnotified.util.Utils.log;
 
 import de.robv.android.xposed.XposedHelpers;
 import java.lang.reflect.Modifier;
+import java.util.Objects;
+
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Initiator;
 
@@ -57,14 +60,22 @@ public class ContactUtils {
             }
             try {
                 String ret;//getDiscussionMemberShowName
-                String nickname = (String) invoke_static_declared_ordinal_modifier(
+                Object nickname = (Object) invoke_static_declared_ordinal_modifier(
                     DexKit.doFindClass(DexKit.C_CONTACT_UTILS),
                     2, 10, false, Modifier.PUBLIC, 0,
                     getQQAppInterface(), troopUin, memberUin, _QQAppInterface(), String.class,
                     String.class);
-                if (nickname != null
-                    && (ret = nickname.replaceAll("\\u202E", "")).trim().length() > 0) {
-                    return ret;
+                if (nickname instanceof String) {
+                    if (nickname != null
+                        && (ret = ((String) nickname).replaceAll("\\u202E", "")).trim().length() > 0) {
+                        return ret;
+                    }
+                } else {
+                    if (nickname != null
+                        && (ret = Objects.requireNonNull(iget_object_or_null(nickname, "a", String.class))
+                        .replaceAll("\\u202E", "")).trim().length() > 0) {
+                        return ret;
+                    }
                 }
             } catch (Throwable e) {
                 log(e);
