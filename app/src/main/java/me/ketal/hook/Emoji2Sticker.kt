@@ -22,82 +22,21 @@
 
 package me.ketal.hook
 
-import android.content.Context
-import android.os.Parcelable
-import android.view.View
-import android.widget.EditText
 import ltd.nextalone.util.*
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import me.singleneuron.qn_kernel.decorator.BaseInputButtonDecorator
-import mqq.app.AppRuntime
+import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.base.annotation.FunctionEntry
+import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.QQVersion
-import nil.nadph.qnotified.util.ReflexUtil
 
 @FunctionEntry
-object Emoji2Sticker : BaseInputButtonDecorator("Ketal_Emoji2Sticker") {
+object Emoji2Sticker : CommonDelayableHook("Ketal_Emoji2Sticker", SyncUtils.PROC_MAIN, false) {
 
     override fun isValid() = requireMinQQVersion(QQVersion.QQ_8_7_5)
 
-    override fun decorate(text: String, session: Parcelable, input: EditText, sendBtn: View, ctx1: Context, qqApp: AppRuntime): Boolean {
-        if (!superIsEnable()) {
-            return false
-        }
-        return tryOrFalse {
-            val stickerParse: Any? = parseMsgForAniSticker(text, session)
-            val singleAniSticker = ReflexUtil.iget_object_or_null(
-                stickerParse, "singleAniSticker") as Boolean
-            val sessionAvailable = ReflexUtil.iget_object_or_null(
-                stickerParse, "sessionAvailable") as Boolean
-            val configAniSticker = ReflexUtil.iget_object_or_null(
-                stickerParse, "configAniSticker") as Boolean
-            if (singleAniSticker && sessionAvailable
-                && configAniSticker) {
-                sendParseAniSticker(stickerParse, session)
-                input.text.clear()
-            }
-        }
-    }
-
     override fun initOnce() = tryOrFalse {
         "com.tencent.mobileqq.emoticonview.AniStickerSendMessageCallBack".clazz?.method("parseMsgForAniSticker")?.hookAfter(this) {
-            if (!superIsEnable()) {
-                it.result.set("singleAniSticker", false)
-            }
-        }
-    }
-
-    fun superIsEnable(): Boolean {
-        return isValid && super.isEnabled()
-    }
-
-    override fun isEnabled() = isValid
-
-    fun parseMsgForAniSticker(str: String, session: Any): Any? {
-        return try {
-            "com.tencent.mobileqq.emoticonview.AniStickerSendMessageCallBack".clazz?.method("parseMsgForAniSticker")?.invoke(null, str, session)
-        } catch (e: Exception) {
-            null
-        }
-    }
-
-    fun sendParseAniSticker(result: Any?, session: Any) {
-        val clazz = "com/tencent/mobileqq/emoticonview/AniStickerSendMessageCallBack".clazz
-            ?: return
-        for (m in clazz.declaredMethods) {
-            when (m.name) {
-                "sendAniStickerMsg" -> {
-                    m(null, result, session)
-                }
-                "sendAniSticker" -> {
-                    val id = result.get("emoLocalId")
-                    try {
-                        m(null, id, session)
-                    } catch (ignored: Throwable) {
-                        m(null, id, session, 0)
-                    }
-                }
-            }
+            it.result.set("singleAniSticker", false)
         }
     }
 }

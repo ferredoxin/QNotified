@@ -65,11 +65,8 @@ class AmusementActivity : IphoneTitleBarActivityCompat() {
         }
         if (Emoji2Sticker.isValid) {
             ll.addView(
-                ViewBuilder.newListItemSwitch(
-                    this, "大号Emoji", "输入单个emoji后长按发送按钮，仅支持部分表情", Emoji2Sticker.isEnabled()
-                ) { _, isChecked ->
-                    Emoji2Sticker.isEnabled = isChecked
-                })
+                newListItemSwitchConfigNext(this, "关闭大号Emoji", "关闭此功能，输入单个emoji后发送大表情，仅支持部分表情", Emoji2Sticker)
+            )
         }
 
         setContentBackgroundDrawable(ResUtils.skin_background)

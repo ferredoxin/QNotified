@@ -229,7 +229,7 @@ public class InputButtonHook extends CommonDelayableHook {
     }
 
     private static final BaseInputButtonDecorator[] decorators = {CardMsgHook.INSTANCE,
-        ChatTailHook.INSTANCE, Emoji2Sticker.INSTANCE};
+        ChatTailHook.INSTANCE};
 
     @Override
     public boolean isEnabled() {
