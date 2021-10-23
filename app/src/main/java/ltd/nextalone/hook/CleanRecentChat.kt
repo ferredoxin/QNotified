@@ -67,7 +67,7 @@ object CleanRecentChat : CommonDelayAbleHookBridge() {
                     ?: relativeLayout?.parent?.findHostView<ImageView>("ba3")
                 plusView?.setOnLongClickListener { view ->
                     val contextWrapper = CommonContextWrapper.createMaterialDesignContext(view.context)
-                    val list = listOf("清理群消息", "清理所有消息")
+                    val list = listOf("清理群消息","清理其他消息", "清理所有消息")
                     MaterialDialog(contextWrapper).show {
                         title(text = "消息清理")
                         checkBoxPrompt(text = "包含置顶消息", isCheckedDefault = includeTopped) { checked ->
@@ -78,10 +78,13 @@ object CleanRecentChat : CommonDelayAbleHookBridge() {
                             Toasts.showToast(dialog.context, Toasts.TYPE_INFO, text, Toasts.LENGTH_SHORT)
                             when (text) {
                                 "清理群消息" -> {
-                                    handler(recentAdapter, app, false, includeTopped)
+                                    handler(recentAdapter, app, all = false, other = false, includeTopped)
+                                }
+                                "清理其他消息" -> {
+                                    handler(recentAdapter, app, all = false, other = true, includeTopped)
                                 }
                                 "清理所有消息" -> {
-                                    handler(recentAdapter, app, true, includeTopped)
+                                    handler(recentAdapter, app, all = true, other = true, includeTopped)
                                 }
                             }
                         }
@@ -92,14 +95,26 @@ object CleanRecentChat : CommonDelayAbleHookBridge() {
     }
 
 
-    private fun handler(recentAdapter: Any?, app: Any?, all: Boolean, includeTopped: Boolean) {
+    private fun handler(recentAdapter: Any?, app: Any?, all: Boolean, other: Boolean, includeTopped: Boolean) {
         try {
             val list = recentAdapter.get(List::class.java) as List<*>
             val chatSize = list.size
             val method = try {
-                RecentAdapter.clazz?.method("b", Void.TYPE, RecentBaseData.clazz, String::class.java, String::class.java)
+                RecentAdapter.clazz?.method(
+                    "b",
+                    Void.TYPE,
+                    RecentBaseData.clazz,
+                    String::class.java,
+                    String::class.java
+                )
             } catch (t: Throwable) {
-                RecentAdapter.clazz?.method("b", Void.TYPE, RecentUserBaseData.clazz, String::class.java, String::class.java)
+                RecentAdapter.clazz?.method(
+                    "b",
+                    Void.TYPE,
+                    RecentUserBaseData.clazz,
+                    String::class.java,
+                    String::class.java
+                )
             }
             method?.isAccessible = true
             var chatCurrentIndex = 0
@@ -110,7 +125,7 @@ object CleanRecentChat : CommonDelayAbleHookBridge() {
                 val uin = mUser.get("uin") as String
                 val type = (mUser.get("type") as Int).toInt()
                 val included = includeTopped || !isAtTop(app, uin, type)
-                if (included && (type == 1 || all)) {
+                if (included && ((type == 1) && !other || (type !in arrayListOf(0, 1) && other) || all)) {
                     method?.invoke(recentAdapter, chatItem, "删除", "2")
                     continue
                 }
