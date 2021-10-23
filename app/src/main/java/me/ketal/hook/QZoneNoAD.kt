@@ -22,7 +22,7 @@
 
 package me.ketal.hook
 
-import ltd.nextalone.util.hookBefore
+import xyz.nextalone.util.hookBefore
 import me.ketal.base.PluginDelayableHook
 import me.ketal.util.BaseUtil.tryVerbosely
 import me.ketal.util.HookUtil.getField

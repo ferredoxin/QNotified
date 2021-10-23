@@ -24,7 +24,7 @@ package me.ketal.hook
 import android.app.Activity
 import android.view.View
 import android.widget.TextView
-import ltd.nextalone.util.hookAfter
+import xyz.nextalone.util.hookAfter
 import me.ketal.base.PluginDelayableHook
 import me.ketal.util.BaseUtil.tryVerbosely
 import me.ketal.util.HookUtil.findClass

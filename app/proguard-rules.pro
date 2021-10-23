@@ -7,7 +7,7 @@
 -keep class com.microsoft.** { *; }
 -keep class com.rymmmmm.** { *; }
 -keep class cn.lliiooll.** { *; }
--keep class ltd.nextalone.** { *; }
+-keep class xyz.nextalone.** { *; }
 -keep class cc.ioctl.** { *; }
 -keep class com.tencent.mmkv.** { *; }
 

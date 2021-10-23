@@ -26,12 +26,12 @@ import android.view.View
 import cn.lliiooll.msg.MessageReceiver
 import cn.lliiooll.util.MsgRecordUtil
 import de.robv.android.xposed.XposedHelpers
-import ltd.nextalone.base.MultiItemDelayableHook
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.data.MsgRecordData
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.qn_kernel.ui.base.净化功能
 import nil.nadph.qnotified.util.QQVersion
+import xyz.nextalone.base.MultiItemDelayableHook
 
 @UiItem
 object AntiMessage : MultiItemDelayableHook("qn_anti_message_items"), MessageReceiver {

@@ -23,7 +23,7 @@ package me.ketal.hook
 import android.view.View
 import android.view.ViewGroup
 import de.robv.android.xposed.XC_MethodHook
-import ltd.nextalone.util.method
+import xyz.nextalone.util.method
 import me.ketal.dispacher.OnBubbleBuilder
 import me.singleneuron.qn_kernel.data.MsgRecordData
 import nil.nadph.qnotified.hook.CommonDelayableHook

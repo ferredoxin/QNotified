@@ -31,7 +31,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.forEach
 import de.robv.android.xposed.XC_MethodHook
-import ltd.nextalone.util.findHostView
+import xyz.nextalone.util.findHostView
 import me.ketal.dispacher.OnBubbleBuilder
 import me.singleneuron.qn_kernel.data.MsgRecordData
 import me.singleneuron.qn_kernel.data.MsgRecordData.Companion.MSG_TYPE_REPLY_TEXT

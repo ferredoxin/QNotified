@@ -21,10 +21,10 @@
  */
 package com.rymmmmm.hook
 
-import ltd.nextalone.util.hookBefore
-import ltd.nextalone.util.isStatic
-import ltd.nextalone.util.set
-import ltd.nextalone.util.tryOrFalse
+import xyz.nextalone.util.hookBefore
+import xyz.nextalone.util.isStatic
+import xyz.nextalone.util.set
+import xyz.nextalone.util.tryOrFalse
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook

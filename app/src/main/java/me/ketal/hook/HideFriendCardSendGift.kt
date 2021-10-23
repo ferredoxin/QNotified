@@ -27,8 +27,8 @@ import android.widget.TextView
 import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
-import ltd.nextalone.util.hookAfter
-import ltd.nextalone.util.method
+import xyz.nextalone.util.hookAfter
+import xyz.nextalone.util.method
 import me.ketal.util.BaseUtil.tryVerbosely
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge

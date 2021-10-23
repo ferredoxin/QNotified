@@ -24,8 +24,8 @@ package me.ketal.hook
 
 import android.app.Activity
 import android.os.Build
-import ltd.nextalone.util.replace
-import ltd.nextalone.util.tryOrFalse
+import xyz.nextalone.util.replace
+import xyz.nextalone.util.tryOrFalse
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook

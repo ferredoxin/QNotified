@@ -30,10 +30,10 @@ import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import com.afollestad.materialdialogs.input.getInputField
 import com.afollestad.materialdialogs.input.input
-import ltd.nextalone.util.get
-import ltd.nextalone.util.hookAfter
-import ltd.nextalone.util.set
-import ltd.nextalone.util.tryOrFalse
+import xyz.nextalone.util.get
+import xyz.nextalone.util.hookAfter
+import xyz.nextalone.util.set
+import xyz.nextalone.util.tryOrFalse
 import me.ketal.data.ConfigData
 import me.ketal.ui.view.ConfigView
 import nil.nadph.qnotified.base.annotation.FunctionEntry

@@ -22,9 +22,9 @@
 
 package me.ketal.hook
 
-import ltd.nextalone.util.hookBefore
-import ltd.nextalone.util.method
-import ltd.nextalone.util.tryOrFalse
+import xyz.nextalone.util.hookBefore
+import xyz.nextalone.util.method
+import xyz.nextalone.util.tryOrFalse
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook

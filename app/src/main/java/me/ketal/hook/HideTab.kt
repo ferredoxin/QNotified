@@ -31,7 +31,7 @@ import android.widget.TextView
 import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.core.view.plusAssign
-import ltd.nextalone.util.*
+import xyz.nextalone.util.*
 import me.ketal.util.findViewByType
 import me.kyuubiran.hook.SimplifyQQSettingMe
 import me.singleneuron.qn_kernel.data.isTim

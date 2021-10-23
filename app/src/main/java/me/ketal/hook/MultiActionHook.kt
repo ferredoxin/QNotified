@@ -30,7 +30,7 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.tencent.mobileqq.app.BaseActivity
-import ltd.nextalone.util.hookAfter
+import xyz.nextalone.util.hookAfter
 import me.ketal.util.BaseUtil.tryVerbosely
 import nil.nadph.qnotified.R
 import nil.nadph.qnotified.base.annotation.FunctionEntry

@@ -37,7 +37,7 @@ import cc.ioctl.hook.ChatTailHook;
 import cc.ioctl.hook.MutePokePacket;
 import cc.ioctl.hook.PttForwardHook;
 import cc.ioctl.script.QNScriptManager;
-import ltd.nextalone.hook.CollapseTroopMessage;
+import xyz.nextalone.hook.CollapseTroopMessage;
 import me.kyuubiran.dialog.RevokeMsgDialog;
 import me.kyuubiran.hook.RemoveDiyCard;
 import me.kyuubiran.hook.RemovePokeGrayTips;
