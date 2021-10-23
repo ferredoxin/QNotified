@@ -33,9 +33,9 @@ import androidx.core.view.size
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedBridge
-import ltd.nextalone.base.MultiItemDelayableHook
-import ltd.nextalone.util.get
-import ltd.nextalone.util.hide
+import xyz.nextalone.base.MultiItemDelayableHook
+import xyz.nextalone.util.get
+import xyz.nextalone.util.hide
 import me.kyuubiran.util.setViewZeroSize
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.data.requireMinQQVersion

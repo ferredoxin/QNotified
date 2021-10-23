@@ -22,11 +22,10 @@
 package me.singleneuron.qn_kernel.tlb
 
 import cc.ioctl.hook.ReplyNoAtHook
-import ltd.nextalone.hook.HideTotalNumber
 import me.ketal.hook.LeftSwipeReplyHook
 import me.kyuubiran.hook.AutoMosaicName
-import nil.nadph.qnotified.util.TIMVersion.*
 import nil.nadph.qnotified.bridge.QQMessageFacade
+import nil.nadph.qnotified.util.TIMVersion.*
 
 class TIMConfigTable : ConfigTableInterface {
 

@@ -31,7 +31,7 @@ import android.widget.RelativeLayout
 import androidx.core.view.isVisible
 import androidx.core.view.plusAssign
 import com.tencent.mobileqq.app.BaseActivity
-import ltd.nextalone.util.*
+import xyz.nextalone.util.*
 import me.ketal.util.findViewByType
 import me.singleneuron.qn_kernel.data.isTim
 import nil.nadph.qnotified.base.annotation.FunctionEntry

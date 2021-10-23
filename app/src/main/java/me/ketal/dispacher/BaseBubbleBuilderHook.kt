@@ -25,11 +25,11 @@ package me.ketal.dispacher
 import android.view.View
 import android.view.ViewGroup
 import de.robv.android.xposed.XC_MethodHook
-import ltd.nextalone.hook.HideTroopLevel
-import ltd.nextalone.util.*
-import ltd.nextalone.util.clazz
-import ltd.nextalone.util.hookAfter
-import ltd.nextalone.util.tryOrFalse
+import xyz.nextalone.hook.HideTroopLevel
+import xyz.nextalone.util.*
+import xyz.nextalone.util.clazz
+import xyz.nextalone.util.hookAfter
+import xyz.nextalone.util.tryOrFalse
 import me.ketal.hook.ChatItemShowQQUin
 import me.ketal.hook.ShowMsgAt
 import me.singleneuron.qn_kernel.data.MsgRecordData

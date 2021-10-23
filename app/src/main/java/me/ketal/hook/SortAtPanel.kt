@@ -22,8 +22,8 @@
 package me.ketal.hook
 
 import android.view.View
-import ltd.nextalone.data.TroopInfo
-import ltd.nextalone.util.*
+import xyz.nextalone.data.TroopInfo
+import xyz.nextalone.util.*
 import me.ketal.util.BaseUtil.tryVerbosely
 import me.singleneuron.qn_kernel.data.requireMinVersion
 import me.singleneuron.qn_kernel.tlb.ConfigTable

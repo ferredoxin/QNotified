@@ -21,8 +21,8 @@
  */
 package me.kyuubiran.hook
 
-import ltd.nextalone.util.hookBefore
-import ltd.nextalone.util.tryOrFalse
+import xyz.nextalone.util.hookBefore
+import xyz.nextalone.util.tryOrFalse
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import nil.nadph.qnotified.base.annotation.FunctionEntry

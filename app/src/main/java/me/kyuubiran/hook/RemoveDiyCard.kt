@@ -22,7 +22,7 @@
 package me.kyuubiran.hook
 
 import android.app.Activity
-import ltd.nextalone.util.*
+import xyz.nextalone.util.*
 import me.singleneuron.qn_kernel.data.isTim
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry

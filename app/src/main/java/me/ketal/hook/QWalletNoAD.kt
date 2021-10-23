@@ -26,9 +26,9 @@ import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
-import ltd.nextalone.util.clazz
-import ltd.nextalone.util.hookAfter
-import ltd.nextalone.util.tryOrFalse
+import xyz.nextalone.util.clazz
+import xyz.nextalone.util.hookAfter
+import xyz.nextalone.util.tryOrFalse
 import me.ketal.base.PluginDelayableHook
 import me.ketal.util.HookUtil.getField
 import me.ketal.util.HookUtil.getMethod

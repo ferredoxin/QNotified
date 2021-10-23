@@ -32,8 +32,8 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import com.afollestad.materialdialogs.input.input
-import ltd.nextalone.util.clazz
-import ltd.nextalone.util.hookAfter
+import xyz.nextalone.util.clazz
+import xyz.nextalone.util.hookAfter
 import me.ketal.base.PluginDelayableHook
 import me.ketal.data.ConfigData
 import me.ketal.ui.view.ConfigView
