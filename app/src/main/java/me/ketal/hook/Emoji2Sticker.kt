@@ -23,14 +23,17 @@
 package me.ketal.hook
 
 import ltd.nextalone.util.*
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.base.annotation.FunctionEntry
-import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.QQVersion
+import org.ferredoxin.ferredoxin_ui.base.UiSwitchPreference
 
 @FunctionEntry
-object Emoji2Sticker : CommonDelayableHook("Ketal_Emoji2Sticker", SyncUtils.PROC_MAIN, false) {
+object Emoji2Sticker : CommonDelayAbleHookBridge() {
+    override val preference: UiSwitchPreference=uiSwitchPreference {
+        title="关闭大号emoji"
+    }
 
     override fun isValid() = requireMinQQVersion(QQVersion.QQ_8_7_5)
 
