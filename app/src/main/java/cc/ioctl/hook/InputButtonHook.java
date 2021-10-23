@@ -32,25 +32,20 @@ import static nil.nadph.qnotified.util.Utils.log;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Build;
 import android.os.Parcelable;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
-import cc.ioctl.activity.ChatTailActivity;
-import cc.ioctl.dialog.RikkaCustomMsgTimeFormatDialog;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import ltd.nextalone.util.SystemServiceUtils;
 import me.ketal.hook.Emoji2Sticker;
 import me.singleneuron.hook.CopyCardMsg;
+import me.singleneuron.qn_kernel.decorator.BaseInputButtonDecorator;
 import mqq.app.AppRuntime;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
@@ -89,6 +84,12 @@ public class InputButtonHook extends CommonDelayableHook {
                         if (LicenseStatus.sDisableCommonHooks) {
                             return;
                         }
+                        if (LicenseStatus.isBlacklisted()) {
+                            return;
+                        }
+                        if (!isEnabled()) {
+                            return;
+                        }
                         try {
                             Object chatPie = param.thisObject;
                             //Class cl_PatchedButton = load("com/tencent/widget/PatchedButton");
@@ -119,9 +120,6 @@ public class InputButtonHook extends CommonDelayableHook {
                                 layout.setTouchInterceptor(new TouchEventToLongClickAdapter() {
                                     @Override
                                     public boolean onTouch(View v, MotionEvent event) {
-                                        if (!CardMsgHook.INSTANCE.isEnabled()) {
-                                            return false;
-                                        }
                                         ViewGroup vg = (ViewGroup) v;
                                         if (event.getAction() == MotionEvent.ACTION_DOWN &&
                                             vg.getChildCount() != 0 && vg.getChildAt(0)
@@ -134,15 +132,6 @@ public class InputButtonHook extends CommonDelayableHook {
                                     @Override
                                     public boolean onLongClick(View v) {
                                         try {
-                                            if (LicenseStatus.sDisableCommonHooks) {
-                                                return false;
-                                            }
-                                            if (LicenseStatus.isBlacklisted()) {
-                                                return false;
-                                            }
-                                            if (!CardMsgHook.INSTANCE.isEnabled()) {
-                                                return false;
-                                            }
                                             ViewGroup vg = (ViewGroup) v;
                                             Context ctx = v.getContext();
                                             if (vg.getChildCount() != 0 && !vg.getChildAt(0)
@@ -163,118 +152,22 @@ public class InputButtonHook extends CommonDelayableHook {
                                     }
                                 }.setLongPressTimeoutFactor(1.5f));
                             }
-                            sendBtn.setOnLongClickListener(new View.OnLongClickListener() {
-                                @Override
-                                public boolean onLongClick(View v) {
-                                    if (LicenseStatus.sDisableCommonHooks) {
-                                        return false;
-                                    }
-                                    if (LicenseStatus.isBlacklisted()) {
-                                        return false;
-                                    }
-                                    Context ctx = v.getContext();
-                                    EditText input = aioRootView.findViewById(ctx.getResources()
-                                        .getIdentifier("input", "id", ctx.getPackageName()));
-                                    String text = input.getText().toString();
-                                    if (((TextView) v).length() == 0
-                                        //|| !CardMsgHook.INSTANCE.isEnabled()
-                                    ) {
-                                        return false;
-                                    } else if (
-                                        CardMsgHook.INSTANCE.isEnabled()&&
-                                        (text.contains("<?xml") || text.contains("{\""))
-                                    ) {
-                                        new Thread(() -> {
-                                            if (text.contains("<?xml")) {
-                                                try {
-                                                    if (CardMsgHook
-                                                        .ntSendCardMsg(qqApp, session, text)) {
-                                                        Utils
-                                                            .runOnUiThread(() -> input.setText(""));
-                                                        CliOper
-                                                            .sendCardMsg(Utils.getLongAccountUin(),
-                                                                text);
-                                                    } else {
-                                                        Toasts.error(ctx, "XML语法错误(代码有误)");
-                                                    }
-                                                } catch (Throwable e) {
-                                                    if (e instanceof InvocationTargetException) {
-                                                        e = e.getCause();
-                                                    }
-                                                    log(e);
-                                                    Toasts.error(ctx,
-                                                        e.toString().replace("java.lang.", ""));
-                                                }
-                                            } else if (text.contains("{\"")) {
-                                                try {
-                                                    // Object arkMsg = load("com.tencent.mobileqq.data.ArkAppMessage").newInstance();
-                                                    if (CardMsgHook
-                                                        .ntSendCardMsg(qqApp, session, text)) {
-                                                        Utils
-                                                            .runOnUiThread(() -> input.setText(""));
-                                                        CliOper
-                                                            .sendCardMsg(Utils.getLongAccountUin(),
-                                                                text);
-                                                    } else {
-                                                        Toasts.error(ctx, "JSON语法错误(代码有误)");
-                                                    }
-                                                } catch (Throwable e) {
-                                                    if (e instanceof InvocationTargetException) {
-                                                        e = e.getCause();
-                                                    }
-                                                    log(e);
-                                                    Toasts.error(ctx,
-                                                        e.toString().replace("java.lang.", ""));
-                                                }
-                                            }
-                                        }).start();
-                                    } else {
-                                        Emoji2Sticker emoji2Sticker = Emoji2Sticker.INSTANCE;
-                                        if (emoji2Sticker.superIsEnable()) {
-                                            Object stickerParse = emoji2Sticker.parseMsgForAniSticker(
-                                                text, session);
-                                            boolean singleAniSticker = (boolean) iget_object_or_null(
-                                                stickerParse, "singleAniSticker");
-                                            boolean sessionAvailable = (boolean) iget_object_or_null(
-                                                stickerParse, "sessionAvailable");
-                                            boolean configAniSticker = (boolean) iget_object_or_null(
-                                                stickerParse, "configAniSticker");
-                                            if (singleAniSticker && sessionAvailable
-                                                && configAniSticker) {
-                                                emoji2Sticker.sendParseAticker(stickerParse,
-                                                    session);
-                                                input.getText().clear();
-                                                return true;
-                                            }
-                                        }
-                                        if (!ChatTailHook.INSTANCE.isEnabled()) {
-                                            return false;
-                                        }
-                                        if (!Utils.isNullOrEmpty(
-                                            ChatTailHook.INSTANCE.getTailCapacity())) {
-                                            int battery = FakeBatteryHook.INSTANCE.isEnabled() ?
-                                                FakeBatteryHook.INSTANCE.getFakeBatteryStatus() < 1
-                                                    ? ChatTailActivity.getBattery()
-                                                    : FakeBatteryHook.INSTANCE
-                                                        .getFakeBatteryCapacity()
-                                                : ChatTailActivity.getBattery();
-                                            String tc = ChatTailHook.INSTANCE.getTailCapacity().
-                                                replace(ChatTailActivity.delimiter, input.getText())
-                                                .replace("#model#", Build.MODEL)
-                                                .replace("#brand#", Build.BRAND)
-                                                .replace("#battery#", battery + "")
-                                                .replace("#power#", ChatTailActivity.getPower())
-                                                .replace("#time#", new SimpleDateFormat(
-                                                    RikkaCustomMsgTimeFormatDialog.getTimeFormat())
-                                                    .format(new Date()));
-                                            input.setText(tc);
-                                            sendBtn.callOnClick();
-                                        } else {
-                                            Toasts.error(ctx, "你还没有设置小尾巴");
-                                        }
-                                    }
-                                    return true;
+                            sendBtn.setOnLongClickListener(v -> {
+                                Context ctx1 = v.getContext();
+                                EditText input = aioRootView.findViewById(ctx1.getResources()
+                                    .getIdentifier("input", "id", ctx1.getPackageName()));
+                                String text = input.getText().toString();
+                                if (((TextView) v).length()
+                                    == 0) { //|| !CardMsgHook.INSTANCE.isEnabled()
+                                    return false;
                                 }
+                                for (BaseInputButtonDecorator decorator : decorators) {
+                                    if (decorator
+                                        .decorate(text, session, input, sendBtn, ctx1, qqApp)) {
+                                        return true;
+                                    }
+                                }
+                                return true;
                             });
                         } catch (Throwable e) {
                             log(e);
@@ -335,13 +228,24 @@ public class InputButtonHook extends CommonDelayableHook {
         }
     }
 
+    private static final BaseInputButtonDecorator[] decorators = {CardMsgHook.INSTANCE,
+        ChatTailHook.INSTANCE};
+
     @Override
     public boolean isEnabled() {
-        return true;
+        for (BaseInputButtonDecorator decorator : decorators) {
+            if (decorator.isEnabled()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public void setEnabled(boolean enabled) {
+        if (enabled) {
+            init();
+        }
     }
 
     public static class GetMenuItemCallBack extends XC_MethodHook {

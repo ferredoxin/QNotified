@@ -28,11 +28,7 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
 import com.tencent.mobileqq.widget.BounceScrollView
-import me.ketal.hook.Emoji2Sticker
-import me.ketal.hook.FakeBalance
-import me.ketal.hook.FakeQQLevel
-import me.ketal.hook.HideSearch
-import me.ketal.hook.HideTab
+import me.ketal.hook.*
 import me.kyuubiran.hook.AutoMosaicName
 import me.kyuubiran.hook.ShowSelfMsgByLeft
 import nil.nadph.qnotified.ui.ResUtils
@@ -69,11 +65,8 @@ class AmusementActivity : IphoneTitleBarActivityCompat() {
         }
         if (Emoji2Sticker.isValid) {
             ll.addView(
-                ViewBuilder.newListItemSwitch(
-                    this, "大号Emoji", "输入单个emoji后长按发送按钮，仅支持部分表情", Emoji2Sticker.superIsEnable()
-                ) { _, isChecked ->
-                    Emoji2Sticker.isEnabled = isChecked
-                })
+                newListItemSwitchConfigNext(this, "关闭大号Emoji", "关闭此功能，输入单个emoji后发送大表情，仅支持部分表情", Emoji2Sticker)
+            )
         }
 
         setContentBackgroundDrawable(ResUtils.skin_background)

@@ -20,26 +20,26 @@
  * <https://github.com/ferredoxin/QNotified/blob/master/LICENSE.md>.
  */
 
-package me.ketal.hook
+package me.singleneuron.qn_kernel.decorator
 
-import ltd.nextalone.util.*
-import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
-import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import nil.nadph.qnotified.base.annotation.FunctionEntry
-import nil.nadph.qnotified.util.QQVersion
-import org.ferredoxin.ferredoxin_ui.base.UiSwitchPreference
+import android.content.Context
+import android.os.Parcelable
+import android.view.View
+import android.widget.EditText
+import cc.ioctl.hook.InputButtonHook
+import mqq.app.AppRuntime
+import nil.nadph.qnotified.SyncUtils
+import nil.nadph.qnotified.hook.CommonDelayableHook
+import nil.nadph.qnotified.step.Step
 
-@FunctionEntry
-object Emoji2Sticker : CommonDelayAbleHookBridge() {
-    override val preference: UiSwitchPreference=uiSwitchPreference {
-        title="关闭大号emoji"
+abstract class BaseInputButtonDecorator @JvmOverloads constructor(keyName: String, targetProcess: Int = SyncUtils.PROC_MAIN, defEnabled: Boolean = false, vararg preconditions: Step = emptyArray()) : CommonDelayableHook(keyName, targetProcess, defEnabled, *preconditions) {
+
+    abstract fun decorate(text: String, session: Parcelable, input: EditText, sendBtn: View, ctx1: Context, qqApp: AppRuntime): Boolean
+
+    override fun setEnabled(enabled: Boolean) {
+        super.setEnabled(enabled)
+        InputButtonHook.INSTANCE.isEnabled = enabled
     }
 
-    override fun isValid() = requireMinQQVersion(QQVersion.QQ_8_7_5)
 
-    override fun initOnce() = tryOrFalse {
-        "com.tencent.mobileqq.emoticonview.AniStickerSendMessageCallBack".clazz?.method("parseMsgForAniSticker")?.hookAfter(this) {
-            it.result.set("singleAniSticker", false)
-        }
-    }
 }
