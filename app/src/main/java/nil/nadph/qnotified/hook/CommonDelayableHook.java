@@ -56,9 +56,6 @@ public abstract class CommonDelayableHook extends BaseDelayableHook {
         mKeyName = keyName;
         mTargetProcess = targetProcess;
         mDefaultEnabled = defEnabled;
-        if (preconditions == null) {
-            preconditions = new Step[0];
-        }
         mPreconditions = preconditions;
     }
 
