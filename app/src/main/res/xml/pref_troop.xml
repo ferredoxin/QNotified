@@ -13,8 +13,8 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="头衔">
         <SwitchPreference
-                android:key="hideLevel"
-                android:title="隐藏群头衔"/>
+                android:key="HideTroopLevel"
+                android:title="隐藏群聊群成员头衔"/>
         <SwitchPreference
                 android:key="hideGlamourLevel"
                 android:title="隐藏魅力等级"/>
