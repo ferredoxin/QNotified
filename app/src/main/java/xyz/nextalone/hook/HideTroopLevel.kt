@@ -27,13 +27,13 @@ import de.robv.android.xposed.XC_MethodHook
 import xyz.nextalone.data.TroopInfo
 import me.ketal.dispacher.OnBubbleBuilder
 import me.ketal.util.findViewByType
-import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.MsgRecordData
 import me.singleneuron.qn_kernel.ui.base.净化功能
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.Initiator._TroopMemberLevelView
 
-@UiItem
+@FunctionEntry
 object HideTroopLevel : CommonDelayAbleHookBridge(), OnBubbleBuilder {
 
     override val preference = uiSwitchPreference {
@@ -42,9 +42,10 @@ object HideTroopLevel : CommonDelayAbleHookBridge(), OnBubbleBuilder {
 
     override val preferenceLocate = 净化功能
 
-    private val levelClass = _TroopMemberLevelView()
+    private val levelClass
+        get() = _TroopMemberLevelView()
 
-    override fun isValid() = _TroopMemberLevelView() != null
+    override fun isValid() = levelClass != null
 
     override fun initOnce() = isValid
 
