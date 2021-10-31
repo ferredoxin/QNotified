@@ -29,7 +29,6 @@ import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import xyz.nextalone.util.*
 import me.kyuubiran.util.getExFriendCfg
 import me.kyuubiran.util.showToastByTencent
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
@@ -44,6 +43,7 @@ import nil.nadph.qnotified.util.*
 import org.ferredoxin.ferredoxin_ui.base.UiDescription
 import org.ferredoxin.ferredoxin_ui.base.UiItem
 import org.ferredoxin.ferredoxin_ui.base.uiClickableItem
+import xyz.nextalone.util.*
 import java.util.*
 
 @FunctionEntry
@@ -81,7 +81,7 @@ object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt", DexDeobfSt
     override fun initOnce() = tryOrFalse {
         "com.tencent.mobileqq.activity.QQSettingMe".clazz?.hookBeforeAllConstructors {
             val viewGroup = it.args[2] as ViewGroup
-            DexKit.getMethodFromCache(DexKit.N_QQSettingMe_onResume)?.hookAfter(this) {
+            DexKit.doFindMethod(DexKit.N_QQSettingMe_onResume)?.hookAfter(this) {
                 val relativeLayout = viewGroup.findHostView<RelativeLayout>(getConfig(ChatWordsCount::class.java.simpleName))
                 val textView = (relativeLayout?.parent as FrameLayout).findViewById<TextView>(nil.nadph.qnotified.R.id.chat_words_count)
                 textView.text = getChatWords()

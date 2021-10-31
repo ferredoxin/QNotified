@@ -21,13 +21,13 @@
  */
 package me.kyuubiran.hook
 
-import xyz.nextalone.util.hookBefore
-import xyz.nextalone.util.tryOrFalse
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.util.DexKit
+import xyz.nextalone.util.hookBefore
+import xyz.nextalone.util.tryOrFalse
 
 //聊天界面顶栏群名字/好友昵称自动打码
 @FunctionEntry
@@ -35,7 +35,7 @@ import nil.nadph.qnotified.util.DexKit
 object AutoMosaicName : CommonDelayAbleHookBridge(DexDeobfStep(DexKit.N_BaseChatPie_mosaic)) {
 
     override fun initOnce()=tryOrFalse {
-        DexKit.getMethodFromCache(DexKit.N_BaseChatPie_mosaic)?.hookBefore(this){
+        DexKit.doFindMethod(DexKit.N_BaseChatPie_mosaic)?.hookBefore(this){
             it.args[0]=true
         }
     }

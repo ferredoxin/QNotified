@@ -55,6 +55,7 @@ class QQConfigTable : ConfigTableInterface {
             QQ_8_8_23 to "n_d",
             QQ_8_8_33 to "nbn",
             QQ_8_8_35 to "nci",
+            QQ_8_8_38 to "ncy",
         ),
 
         VasProfileAntiCrash::class.java.simpleName to mapOf(
