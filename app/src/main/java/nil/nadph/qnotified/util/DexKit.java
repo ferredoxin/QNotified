@@ -858,7 +858,7 @@ public class DexKit {
             case N_QQSettingMe_onResume:
                 return new int[]{4, 6, 8, 7};
             case N_VIP_UTILS_getPrivilegeFlags:
-                return new int[]{4, 2, 3};
+                return new int[]{14, 4, 2, 3};
             case N_TroopChatPie_showNewTroopMemberCount:
                 return new int[]{4, 8, 11, 6};
             case N_Conversation_onCreate:
