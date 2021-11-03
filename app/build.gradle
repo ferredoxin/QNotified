@@ -12,13 +12,13 @@ if (performSigning) {
 }
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.3"
+    compileSdkVersion 31
+    buildToolsVersion "31.0.0"
     ndkVersion "21.4.7075529"
     defaultConfig {
         applicationId "nil.nadph.qnotified"
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode(Common.timeStamp)
         // versionName format: major.minor.accumulation.commit_id
         versionName "0.8.23" + (Common.getGitHeadRefsSuffix(rootProject))
