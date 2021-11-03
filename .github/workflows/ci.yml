@@ -32,6 +32,11 @@ jobs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
         restore-keys: ${{ runner.os }}-gradle
 
+    - name: Prepare Build-tools
+      run: |
+        ln -s ${ANDROID_HOME}/build-tools/31.0.0/d8 ${ANDROID_HOME}/build-tools/31.0.0/dx
+        ln -s ${ANDROID_HOME}/build-tools/31.0.0/lib/d8.jar ${ANDROID_HOME}/build-tools/31.0.0/lib/dx.jar
+
     - name: Build project
       run: |
         if ${{ !!github.head_ref }}; then echo "::warning:: Gradle $WARN_ON_PR"; fi
