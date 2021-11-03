@@ -16,6 +16,13 @@ pool:
 steps:
 - checkout: self
   submodules: true
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      ln -s ${ANDROID_HOME}/build-tools/31.0.0/d8 ${ANDROID_HOME}/build-tools/31.0.0/dx
+      ln -s ${ANDROID_HOME}/build-tools/31.0.0/lib/d8.jar ${ANDROID_HOME}/build-tools/31.0.0/lib/dx.jar
+    failOnStderr: true
 - task: Gradle@2
   inputs:
     workingDirectory: ''
