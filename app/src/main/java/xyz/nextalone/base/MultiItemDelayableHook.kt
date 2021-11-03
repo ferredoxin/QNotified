@@ -50,10 +50,7 @@ abstract class MultiItemDelayableHook constructor(keyName: String) :
         uiDialogPreference {
             title = preferenceTitle
             summary = preferenceSummary
-            value.observeForever {
-                activeItems = it.split("|").toMutableList()
-            }
-
+            value.postValue("已选择" + (activeItems.size - 1) + "项")
             contextWrapper = CommonContextWrapper::createMaterialDesignContext
 
             materialAlertDialogBuilder = alertDialogDecorator
@@ -74,7 +71,7 @@ abstract class MultiItemDelayableHook constructor(keyName: String) :
         set(value) {
             val valueString = value.joinToString("|")
             itemsConfigKeys.value = valueString
-            preference.value.postValue(valueString)
+            preference.value.postValue("已选择" + (value.size - 1) + "项")
         }
 
     open fun listener() = View.OnClickListener {
