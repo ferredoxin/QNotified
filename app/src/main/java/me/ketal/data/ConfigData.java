@@ -56,6 +56,10 @@ public class ConfigData<T> {
         try {
             return (T) mgr.getObject(mKeyName);
         } catch (Exception e) {
+            try {
+                mgr.remove(mKeyName);
+            } catch (Exception ignored) {
+            }
             Utils.log(e);
             return null;
         }
@@ -66,12 +70,16 @@ public class ConfigData<T> {
             mgr.putObject(mKeyName, value);
             mgr.save();
         } catch (Exception e) {
+            try {
+                mgr.remove(mKeyName);
+            } catch (Exception ignored) {
+            }
             Utils.log(e);
             if (Looper.myLooper() == Looper.getMainLooper()) {
-                Toasts.error(HostInfo.getHostInfo().getApplication(), e + "");
+                Toasts.error(HostInfo.getHostInfo().getApplication(), "设置存储失败, 请重新设置" + e + "");
             } else {
                 SyncUtils.post(() -> Toasts
-                    .error(HostInfo.getHostInfo().getApplication(), e + ""));
+                    .error(HostInfo.getHostInfo().getApplication(), "设置存储失败, 请重新设置" + e + ""));
             }
         }
     }
