@@ -61,12 +61,22 @@ abstract class MultiItemDelayableHook constructor(keyName: String) :
     abstract val allItems: Set<String>
     open val defaultItems: Set<String> = setOf()
     internal open var items
-        get() = allItemsConfigKeys.getOrDefault(allItems).toMutableList()
+        get() = try {
+            allItemsConfigKeys.getOrDefault(allItems).toMutableList()
+        } catch (e: ClassCastException) {
+            allItemsConfigKeys.remove()
+            allItems.toMutableList()
+        }
         set(value) {
             allItemsConfigKeys.value = value.toSet()
         }
     var activeItems
-        get() = itemsConfigKeys.getOrDefault(defaultItems).toMutableList()
+        get() = try {
+            itemsConfigKeys.getOrDefault(defaultItems).toMutableList()
+        } catch (e: ClassCastException) {
+            itemsConfigKeys.remove()
+            defaultItems.toMutableList()
+        }
         set(value) {
             itemsConfigKeys.value = value.toSet()
             preference.value.postValue("已选择" + value.size + "项")
