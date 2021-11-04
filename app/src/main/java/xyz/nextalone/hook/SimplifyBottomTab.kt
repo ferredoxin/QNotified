@@ -38,7 +38,7 @@ object SimplifyBottomTab : MultiItemDelayableHook("na_simplify_bottom_tab_kt") {
     override val preferenceLocate: Array<String> = 净化功能
     override val preferenceTitle = "精简底栏"
 
-    val clzNames = mapOf(
+    private val clzNames = mapOf(
         //"消息" to "com.tencent.mobileqq.activity.home.Conversation", //保留一个
         "联系人" to "com.tencent.mobileqq.activity.contacts.base.Contacts",
         "快闪" to "com.tencent.mobileqq.activity.flashshow.FlashShowFrame",
@@ -46,7 +46,8 @@ object SimplifyBottomTab : MultiItemDelayableHook("na_simplify_bottom_tab_kt") {
         "空间" to "com.tencent.mobileqq.activity.leba.QzoneFrame",
         //"看点" to "com.tencent.mobileqq.kandian.biz.tab.ReadinjoyTabFrame",
         "看点" to "com.tencent.mobileqq.kandian.biz.xtab.RIJXTabFrame",
-        "小世界" to "com.tencent.mobileqq.activity.qcircle.QCircleFrame"
+        "小世界" to "com.tencent.mobileqq.activity.qcircle.QCircleFrame",
+        "频道" to "com.tencent.mobileqq.guild.mainframe.GuildMainFrame"
     )
     override val allItems = ""
     override val defaultItems = ""
