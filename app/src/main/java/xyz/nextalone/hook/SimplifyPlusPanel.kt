@@ -22,25 +22,58 @@
 package xyz.nextalone.hook
 
 import de.robv.android.xposed.XC_MethodHook
-import xyz.nextalone.base.MultiItemDelayableHook
-import xyz.nextalone.util.hookBefore
-import xyz.nextalone.util.method
-import xyz.nextalone.util.tryOrFalse
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.qn_kernel.ui.base.净化功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.QQVersion
+import xyz.nextalone.base.MultiItemDelayableHook
+import xyz.nextalone.util.hookBefore
+import xyz.nextalone.util.method
+import xyz.nextalone.util.tryOrFalse
 
 @FunctionEntry
 @UiItem
 object SimplifyPlusPanel : MultiItemDelayableHook("na_simplify_plus_panel_multi") {
     override val preferenceLocate: Array<String> = 净化功能
     override val preferenceTitle = "精简加号菜单"
-    override val allItems =
-        "图片|拍摄|语音通话|视频通话|一起派对|戳一戳|视频包厢|红包|位置|文件|一起听歌|分享屏幕|收藏|热图|一起玩|涂鸦|转账|名片|送礼物|腾讯文档|厘米秀|一起K歌|礼物|直播间|签到|匿名|群课堂|健康收集|一起看|投票|收钱|坦白说|超级粉丝团"
-    override val defaultItems = ""
+    override val allItems = setOf(
+        "图片",
+        "拍摄",
+        "语音通话",
+        "视频通话",
+        "一起派对",
+        "戳一戳",
+        "视频包厢",
+        "红包",
+        "位置",
+        "文件",
+        "一起听歌",
+        "分享屏幕",
+        "收藏",
+        "热图",
+        "一起玩",
+        "涂鸦",
+        "转账",
+        "名片",
+        "送礼物",
+        "腾讯文档",
+        "厘米秀",
+        "一起K歌",
+        "礼物",
+        "直播间",
+        "签到",
+        "匿名",
+        "群课堂",
+        "健康收集",
+        "一起看",
+        "投票",
+        "收钱",
+        "坦白说",
+        "超级粉丝团"
+    )
+    override val defaultItems = setOf<String>()
 
     override fun initOnce() = tryOrFalse {
         val callback: (XC_MethodHook.MethodHookParam) -> Unit = {

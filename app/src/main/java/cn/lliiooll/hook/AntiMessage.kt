@@ -35,8 +35,8 @@ import xyz.nextalone.base.MultiItemDelayableHook
 
 @UiItem
 object AntiMessage : MultiItemDelayableHook("qn_anti_message_items"), MessageReceiver {
-    override var allItems = ""
-    override val defaultItems = ""
+    override var allItems = setOf<String>()
+    override val defaultItems = setOf<String>()
     override var items: MutableList<String> = MsgRecordUtil.MSG.keys.sorted().toMutableList()
     override val preferenceTitle: String = "静默指定类型消息通知"
     override val preferenceLocate: Array<String> = 净化功能

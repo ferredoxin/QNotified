@@ -21,16 +21,16 @@
  */
 package xyz.nextalone.hook
 
-import xyz.nextalone.base.MultiItemDelayableHook
-import xyz.nextalone.util.clazz
-import xyz.nextalone.util.hookBefore
-import xyz.nextalone.util.method
-import xyz.nextalone.util.tryOrFalse
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.qn_kernel.ui.base.净化功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.QQVersion
+import xyz.nextalone.base.MultiItemDelayableHook
+import xyz.nextalone.util.clazz
+import xyz.nextalone.util.hookBefore
+import xyz.nextalone.util.method
+import xyz.nextalone.util.tryOrFalse
 
 @FunctionEntry
 @UiItem
@@ -48,8 +48,8 @@ object SimplifyBottomTab : MultiItemDelayableHook("na_simplify_bottom_tab_kt") {
         "看点" to "com.tencent.mobileqq.kandian.biz.xtab.RIJXTabFrame",
         "小世界" to "com.tencent.mobileqq.activity.qcircle.QCircleFrame"
     )
-    override val allItems = ""
-    override val defaultItems = ""
+    override val allItems = setOf<String>()
+    override val defaultItems = setOf<String>()
     override var items = clzNames.keys.toMutableList()
 
     override fun initOnce() = tryOrFalse {

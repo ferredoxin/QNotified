@@ -33,9 +33,6 @@ import androidx.core.view.size
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedBridge
-import xyz.nextalone.base.MultiItemDelayableHook
-import xyz.nextalone.util.get
-import xyz.nextalone.util.hide
 import me.kyuubiran.util.setViewZeroSize
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
@@ -47,6 +44,9 @@ import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.LicenseStatus
 import nil.nadph.qnotified.util.QQVersion.*
 import nil.nadph.qnotified.util.Utils
+import xyz.nextalone.base.MultiItemDelayableHook
+import xyz.nextalone.util.get
+import xyz.nextalone.util.hide
 import java.util.*
 
 
@@ -58,7 +58,7 @@ object SimplifyQQSettingMe : MultiItemDelayableHook("SimplifyQQSettingMe") {
     const val MidContentName = "SimplifyQQSettingMe::MidContentName"
 
     override val preferenceTitle: String = "侧滑栏精简"
-    override val allItems: String = ""
+    override val allItems = setOf<String>()
     override val preferenceLocate: Array<String> = 净化功能
     override fun isValid(): Boolean = requireMinQQVersion(QQ_8_4_1)
 

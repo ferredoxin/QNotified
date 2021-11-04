@@ -49,28 +49,27 @@ abstract class MultiItemDelayableHook constructor(keyName: String) :
         uiDialogPreference {
             title = preferenceTitle
             summary = preferenceSummary
-            value.postValue("已选择" + (activeItems.size - 1) + "项")
+            value.postValue("已选择" + activeItems.size + "项")
             contextWrapper = CommonContextWrapper::createMaterialDesignContext
 
             materialAlertDialogBuilder = alertDialogDecorator
         }
     }
 
-    private val itemsConfigKeys = ConfigData<String>(keyName)
-    private val allItemsConfigKeys = ConfigData<String>("$keyName\\_All")
-    abstract val allItems: String
-    open val defaultItems: String = ""
+    private val itemsConfigKeys = ConfigData<Set<String>>(keyName)
+    private val allItemsConfigKeys = ConfigData<Set<String>>("$keyName\\_All")
+    abstract val allItems: Set<String>
+    open val defaultItems: Set<String> = setOf()
     internal open var items
-        get() = allItemsConfigKeys.getOrDefault(allItems).split("|").toMutableList()
+        get() = allItemsConfigKeys.getOrDefault(allItems).toMutableList()
         set(value) {
-            allItemsConfigKeys.value = value.joinToString("|")
+            allItemsConfigKeys.value = value.toSet()
         }
     var activeItems
-        get() = itemsConfigKeys.getOrDefault(defaultItems).split("|").toMutableList()
+        get() = itemsConfigKeys.getOrDefault(defaultItems).toMutableList()
         set(value) {
-            val valueString = value.joinToString("|")
-            itemsConfigKeys.value = valueString
-            preference.value.postValue("已选择" + (value.size - 1) + "项")
+            itemsConfigKeys.value = value.toSet()
+            preference.value.postValue("已选择" + value.size + "项")
         }
 
     open fun listener() = View.OnClickListener {
@@ -148,7 +147,7 @@ abstract class MultiItemDelayableHook constructor(keyName: String) :
                         }
                     }
                     Toasts.info(context, "已保存自定义项目")
-                    allItemsConfigKeys.value = editText.text.toString()
+                    allItemsConfigKeys.value = editText.text.split("|").toSet()
                 }
                 .setNegativeButton("取消", null)
                 .setNeutralButton("使用默认值") { _: DialogInterface, _: Int ->
