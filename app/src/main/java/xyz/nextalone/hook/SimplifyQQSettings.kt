@@ -23,19 +23,20 @@ package xyz.nextalone.hook
 
 import android.app.Activity
 import android.view.View
-import xyz.nextalone.base.MultiItemDelayableHook
-import xyz.nextalone.util.*
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.ui.base.净化功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
+import xyz.nextalone.base.MultiItemDelayableHook
+import xyz.nextalone.util.*
 
 @FunctionEntry
 @UiItem
 object SimplifyQQSettings : MultiItemDelayableHook("na_simplify_qq_settings_multi") {
     override val preferenceLocate: Array<String> = 净化功能
     override val preferenceTitle = "精简设置菜单"
-    override val allItems = "手机号码|达人|安全|模式选择|通知|记录|隐私|通用|辅助|免流量|关于"
-    override val defaultItems = ""
+    override val allItems =
+        setOf("手机号码", "达人", "安全", "模式选择", "通知", "记录", "隐私", "通用", "辅助", "免流量", "关于")
+    override val defaultItems = setOf<String>()
 
     override fun initOnce() = tryOrFalse {
         "Lcom/tencent/mobileqq/activity/QQSettingSettingActivity;->a(IIII)V".method.hookAfter(this) {

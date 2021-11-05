@@ -22,23 +22,46 @@
 package xyz.nextalone.hook
 
 import de.robv.android.xposed.XC_MethodHook
+import me.singleneuron.qn_kernel.annotation.UiItem
+import me.singleneuron.qn_kernel.ui.base.净化功能
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import xyz.nextalone.base.MultiItemDelayableHook
 import xyz.nextalone.util.clazz
 import xyz.nextalone.util.hookBefore
 import xyz.nextalone.util.method
 import xyz.nextalone.util.tryOrFalse
-import me.singleneuron.qn_kernel.annotation.UiItem
-import me.singleneuron.qn_kernel.ui.base.净化功能
-import nil.nadph.qnotified.base.annotation.FunctionEntry
 
 @FunctionEntry
 @UiItem
 object SimplifyChatLongItem : MultiItemDelayableHook("na_simplify_chat_long_item_multi") {
     override val preferenceLocate: Array<String> = 净化功能
     override val preferenceTitle = "精简聊天气泡长按菜单"
-    override val allItems =
-        "复制|转发|收藏|回复|多选|撤回|删除|一起写|设为精华|待办|私聊|截图|存表情|相关表情|复制链接|存微云|发给电脑|静音播放|复制文字|转发文字|免提播放|2X|保存"
-    override val defaultItems = ""
+    override val allItems = setOf(
+        "复制",
+        "转发",
+        "收藏",
+        "回复",
+        "多选",
+        "撤回",
+        "删除",
+        "一起写",
+        "设为精华",
+        "待办",
+        "私聊",
+        "截图",
+        "存表情",
+        "相关表情",
+        "复制链接",
+        "存微云",
+        "发给电脑",
+        "静音播放",
+        "复制文字",
+        "转发文字",
+        "免提播放",
+        "2X",
+        "保存"
+    )
+    override val defaultItems = setOf<String>()
 
     override fun initOnce() = tryOrFalse {
         val callback: (XC_MethodHook.MethodHookParam) -> Unit = callback@{
