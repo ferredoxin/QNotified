@@ -24,8 +24,14 @@ package nil.nadph.qnotified.config;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.google.gson.Gson;
 import com.tencent.mmkv.MMKV;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,12 +41,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import nil.nadph.qnotified.util.Utils;
 
 public class MmkvConfigManagerImpl extends ConfigManager {
 
     final MMKV mmkv;
     final File file;
-    private static final String TYPE_SUFFIX = "$shadow$type";
+    public static final String TYPE_SUFFIX = "$shadow$type";
+    private static final String CLASS_SUFFIX = "$shadow$class";
     private static final int TYPE_BOOL = 0x80 + 2;
     private static final int TYPE_INT = 0x80 + 4;
     private static final int TYPE_LONG = 0x80 + 6;
@@ -48,6 +56,8 @@ public class MmkvConfigManagerImpl extends ConfigManager {
     private static final int TYPE_STRING = 0x80 + 31;
     private static final int TYPE_STRING_SET = 0x80 + 32;
     private static final int TYPE_BYTES = 0x80 + 33;
+    private static final int TYPE_SERIALIZABLE = 0x80 + 41;
+    public static final int TYPE_JSON = 0x80 + 42;
 
     HashMap<String, Entry<String, Object>> mCacheMap = new HashMap<>();
 
@@ -88,7 +98,7 @@ public class MmkvConfigManagerImpl extends ConfigManager {
         }
     }
 
-    final Set<Entry<String, Object>> mVirtEntrySet = new Set<Entry<String, Object>>() {
+    final Set<Entry<String, Object>> mVirtEntrySet = new Set<>() {
         @Override
         public int size() {
             return mShadowMap.size();
@@ -116,7 +126,7 @@ public class MmkvConfigManagerImpl extends ConfigManager {
         @NonNull
         @Override
         public Iterator<Entry<String, Object>> iterator() {
-            return new Iterator<Entry<String, Object>>() {
+            return new Iterator<>() {
                 final Iterator<String> iterator = mShadowMap.keySet().iterator();
 
                 @Override
@@ -192,7 +202,7 @@ public class MmkvConfigManagerImpl extends ConfigManager {
         }
     };
 
-    final Collection<Object> mVirtValues = new Collection<Object>() {
+    final Collection<Object> mVirtValues = new Collection<>() {
         @Override
         public int size() {
             return mShadowMap.size();
@@ -216,7 +226,7 @@ public class MmkvConfigManagerImpl extends ConfigManager {
         @NonNull
         @Override
         public Iterator<Object> iterator() {
-            return new Iterator<Object>() {
+            return new Iterator<>() {
                 final Iterator<String> iterator = mShadowMap.keySet().iterator();
 
                 @Override
@@ -283,7 +293,7 @@ public class MmkvConfigManagerImpl extends ConfigManager {
             throw new UnsupportedOperationException("entry set");
         }
     };
-    final Map<String, Object> mShadowMap = new Map<String, Object>() {
+    final Map<String, Object> mShadowMap = new Map<>() {
         @Override
         public int size() {
             return entrySet().size();
@@ -423,6 +433,34 @@ public class MmkvConfigManagerImpl extends ConfigManager {
                 return mmkv.getStringSet(key, null);
             case TYPE_BYTES:
                 return mmkv.getBytes(key, null);
+            case TYPE_SERIALIZABLE: {
+                byte[] bytes = mmkv.getBytes(key, null);
+                if (bytes == null) {
+                    return null;
+                }
+                ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
+                try {
+                    ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+                    return objectInputStream.readObject();
+                } catch (Exception e) {
+                    Utils.log(e);
+                    return null;
+                }
+            }
+            case TYPE_JSON: {
+                String string = mmkv.getString(key, null);
+                String clazz = mmkv.getString(key.concat(CLASS_SUFFIX), null);
+                if (string == null || clazz == null) {
+                    return null;
+                }
+                try {
+                    Class<?> clazz2 = Class.forName(clazz);
+                    return new Gson().fromJson(string, clazz2);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
             default:
                 return null;
         }
@@ -515,8 +553,20 @@ public class MmkvConfigManagerImpl extends ConfigManager {
             HashSet<String> set = new HashSet<>(((String[]) v).length);
             Collections.addAll(set, (String[]) v);
             putStringSet(key, set);
+        } else if (v instanceof Serializable) {
+            try {
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+                objectOutputStream.writeObject(v);
+                mmkv.putBytes(key, outputStream.toByteArray());
+                mmkv.putInt(key.concat(TYPE_SUFFIX), TYPE_SERIALIZABLE);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         } else {
-            throw new UnsupportedOperationException("unsupported type: " + v.getClass().getName());
+            mmkv.putString(key, new Gson().toJson(v));
+            mmkv.putInt(key.concat(TYPE_SUFFIX), TYPE_JSON);
+            mmkv.putString(key.concat(CLASS_SUFFIX), v.getClass().getName());
         }
         return this;
     }
