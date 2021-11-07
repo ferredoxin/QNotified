@@ -67,10 +67,13 @@ class UiDescriptionProcessor(private val codeGenerator: CodeGenerator, private v
             build()
         }
         logger.warn(">>>> UiItem Processed(total: " + symbols.size + ") <<<<")
+        val dependencies = Dependencies(true, *(symbols.map {
+            it.containingFile!!
+        }.toTypedArray()))
         FileSpec.builder("me.singleneuron.qn_kernel.ui.gen", "AnnotatedUiItemList")
             .addFunction(mGetApi)
             .build()
-            .writeTo(codeGenerator, Dependencies(false))
+            .writeTo(codeGenerator, dependencies)
         return emptyList()
     }
 }

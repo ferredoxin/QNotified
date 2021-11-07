@@ -72,11 +72,14 @@ class FunctionItemProcessor(private val codeGenerator: CodeGenerator, private va
             addMember("%S", "AnnotatedFunctionItemList")
             build()
         }
+        val dependencies = Dependencies(true, *(symbols.map {
+            it.containingFile!!
+        }.toTypedArray()))
         FileSpec.builder("nil.nadph.qnotified.gen", "AnnotatedFunctionItemList")
             .addAnnotation(annotationSpec)
             .addFunction(mGetApi)
             .build()
-            .writeTo(codeGenerator, Dependencies(false))
+            .writeTo(codeGenerator, dependencies)
         return emptyList()
     }
 }

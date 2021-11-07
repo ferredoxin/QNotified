@@ -67,10 +67,13 @@ class Dex2CProcessor(private val codeGenerator: CodeGenerator, private val logge
             build()
         }
         logger.warn(">>>> Dex2C Processed(total: " + symbols.size + ") <<<<")
+        val dependencies = Dependencies(true, *(symbols.map {
+            it.containingFile!!
+        }.toTypedArray()))
         FileSpec.builder("cn.lliiooll.utils", "GeneratedClass")
             .addFunction(mGetApi)
             .build()
-            .writeTo(codeGenerator, Dependencies(false))
+            .writeTo(codeGenerator, dependencies)
         return emptyList()
     }
 }
