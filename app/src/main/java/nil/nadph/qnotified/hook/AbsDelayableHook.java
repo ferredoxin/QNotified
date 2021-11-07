@@ -37,8 +37,7 @@ public abstract class AbsDelayableHook implements SwitchConfigItem {
 
     @NonNull
     public static AbsDelayableHook[] queryDelayableHooks() {
-        return nil.nadph.qnotified.gen.AnnotatedFunctionItemList.getAnnotatedFunctionItemClassList()
-            .toArray(new AbsDelayableHook[0]);
+        return nil.nadph.qnotified.gen.AnnotatedFunctionItemList.getAnnotatedFunctionItemClassList();
     }
 
     public static void allowEarlyInit(@NonNull AbsDelayableHook hook) {

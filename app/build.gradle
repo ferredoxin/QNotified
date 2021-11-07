@@ -1,9 +1,12 @@
 import java.lang.reflect.InvocationTargetException
 import java.nio.file.Paths
 
+plugins {
+    id 'com.google.devtools.ksp' version '1.5.31-1.0.0'
+}
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
 
 def signingFilePath = 'signing.gradle'
 def performSigning = file(signingFilePath).exists()
@@ -87,14 +90,21 @@ android {
     kotlinOptions.useIR = true
 }
 
+kotlin {
+    sourceSets.debug {
+        kotlin.srcDir("build/generated/ksp/debug/kotlin")
+    }
+    sourceSets.release {
+        kotlin.srcDir("build/generated/ksp/release/kotlin")
+    }
+}
+
 dependencies {
     compileOnly fileTree(include: ['*.jar'], dir: 'lib')
     compileOnly project(":stub")
     implementation project(":mmkv")
-    implementation project(":annotations")
     implementation project(":FerredoxinUILib")
-    compileOnly project(":compiler")
-    kapt project(":compiler")
+    ksp project(":compiler")
     compileOnly 'de.robv.android.xposed:api:82'
     implementation 'com.jaredrummler:colorpicker:1.1.0'
     implementation 'de.psdev.licensesdialog:licensesdialog:2.2.0'
