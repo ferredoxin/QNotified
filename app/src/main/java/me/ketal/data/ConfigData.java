@@ -22,8 +22,13 @@
 
 package me.ketal.data;
 
-import android.os.Looper;
+import static nil.nadph.qnotified.config.MmkvConfigManagerImpl.TYPE_JSON;
+import static nil.nadph.qnotified.config.MmkvConfigManagerImpl.TYPE_SUFFIX;
 
+import android.os.Looper;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
 import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
@@ -53,6 +58,15 @@ public class ConfigData<T> {
     }
 
     public T getValue() {
+        if (mgr.getInt(mKeyName.concat(TYPE_SUFFIX), 0) == TYPE_JSON) {
+            Type type = new TypeToken<T>() {
+            }.getType();
+            String json = mgr.getString(mKeyName);
+            if (json == null) {
+                return null;
+            }
+            return new Gson().fromJson(json, type);
+        }
         try {
             return (T) mgr.getObject(mKeyName);
         } catch (Exception e) {
@@ -86,6 +100,15 @@ public class ConfigData<T> {
 
     public T getOrDefault(T def) {
         try {
+            if (mgr.getInt(mKeyName.concat(TYPE_SUFFIX), 0) == TYPE_JSON) {
+                Type type = new TypeToken<T>() {
+                }.getType();
+                String json = mgr.getString(mKeyName);
+                if (json == null) {
+                    return def;
+                }
+                return new Gson().fromJson(json, type);
+            }
             return (T) mgr.getOrDefault(mKeyName, def);
         } catch (Exception e) {
             Utils.log(e);
