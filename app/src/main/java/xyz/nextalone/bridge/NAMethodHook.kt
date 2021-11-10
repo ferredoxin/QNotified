@@ -51,10 +51,10 @@ abstract class NAMethodHook(baseHook: BaseDelayableHook) : XC_MethodHook() {
     }
 
     @Throws(Throwable::class)
-    protected open fun beforeMethod(param: MethodHookParam?) {
+    protected open fun beforeMethod(param: MethodHookParam) {
     }
 
     @Throws(Throwable::class)
-    protected open fun afterMethod(param: MethodHookParam?) {
+    protected open fun afterMethod(param: MethodHookParam) {
     }
 }
