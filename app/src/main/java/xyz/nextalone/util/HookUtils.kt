@@ -197,8 +197,8 @@ internal fun Member.hookBefore(
     baseHook: BaseDelayableHook,
     hooker: (XC_MethodHook.MethodHookParam) -> Unit
 ) = hook(object : NAMethodHook(baseHook) {
-    override fun beforeMethod(param: MethodHookParam?) = try {
-        hooker(param!!)
+    override fun beforeMethod(param: MethodHookParam) = try {
+        hooker(param)
     } catch (e: Throwable) {
         logThrowable(e)
     }
@@ -208,8 +208,8 @@ internal fun Member.hookAfter(
     baseHook: BaseDelayableHook,
     hooker: (XC_MethodHook.MethodHookParam) -> Unit
 ) = hook(object : NAMethodHook(baseHook) {
-    override fun afterMethod(param: MethodHookParam?) = try {
-        hooker(param!!)
+    override fun afterMethod(param: MethodHookParam) = try {
+        hooker(param)
     } catch (e: Throwable) {
         logThrowable(e)
     }
@@ -223,8 +223,8 @@ internal fun <T : Any> Member.replace(
     baseHook: BaseDelayableHook,
     hooker: (XC_MethodHook.MethodHookParam) -> T?
 ) = hook(object : NAMethodReplacement(baseHook) {
-    override fun replaceMethod(param: MethodHookParam?) = try {
-        hooker(param!!)
+    override fun replaceMethod(param: MethodHookParam) = try {
+        hooker(param)
     } catch (e: Throwable) {
         logThrowable(e)
         null
@@ -250,8 +250,8 @@ internal fun Class<*>.hookBefore(
     vararg args: Any?,
     hooker: (XC_MethodHook.MethodHookParam) -> Unit
 ) = hook(method, *args, object : NAMethodHook(baseHook) {
-    override fun beforeMethod(param: MethodHookParam?) = try {
-        hooker(param!!)
+    override fun beforeMethod(param: MethodHookParam) = try {
+        hooker(param)
     } catch (e: Throwable) {
         logThrowable(e)
     }
@@ -263,8 +263,8 @@ internal fun Class<*>.hookAfter(
     vararg args: Any?,
     hooker: (XC_MethodHook.MethodHookParam) -> Unit
 ) = hook(method, *args, object : NAMethodHook(baseHook) {
-    override fun afterMethod(param: MethodHookParam?) = try {
-        hooker(param!!)
+    override fun afterMethod(param: MethodHookParam) = try {
+        hooker(param)
     } catch (e: Throwable) {
         logThrowable(e)
     }
@@ -305,8 +305,8 @@ internal fun Class<*>.hookBeforeAllMethods(
     methodName: String?,
     hooker: (XC_MethodHook.MethodHookParam) -> Unit
 ): Set<XC_MethodHook.Unhook> = hookAllMethods(methodName, object : NAMethodHook(baseHook) {
-    override fun beforeMethod(param: MethodHookParam?) = try {
-        hooker(param!!)
+    override fun beforeMethod(param: MethodHookParam) = try {
+        hooker(param)
     } catch (e: Throwable) {
         logThrowable(e)
     }
@@ -317,8 +317,8 @@ internal fun Class<*>.hookAfterAllMethods(
     methodName: String?,
     hooker: (XC_MethodHook.MethodHookParam) -> Unit
 ): Set<XC_MethodHook.Unhook> = hookAllMethods(methodName, object : NAMethodHook(baseHook) {
-    override fun afterMethod(param: MethodHookParam?) = try {
-        hooker(param!!)
+    override fun afterMethod(param: MethodHookParam) = try {
+        hooker(param)
     } catch (e: Throwable) {
         logThrowable(e)
     }
@@ -328,8 +328,8 @@ internal fun Class<*>.replaceAfterAllMethods(
     methodName: String?,
     hooker: (XC_MethodHook.MethodHookParam) -> Any?
 ): Set<XC_MethodHook.Unhook> = hookAllMethods(methodName, object : XC_MethodReplacement() {
-    override fun replaceHookedMethod(param: MethodHookParam?) = try {
-        hooker(param!!)
+    override fun replaceHookedMethod(param: MethodHookParam) = try {
+        hooker(param)
     } catch (e: Throwable) {
         logThrowable(e)
         null

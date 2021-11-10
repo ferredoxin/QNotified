@@ -44,13 +44,13 @@ abstract class NAMethodReplacement(baseHook: BaseDelayableHook) : NAMethodHook(b
     }
 
     @Throws(Throwable::class)
-    override fun beforeMethod(param: MethodHookParam?) {
+    override fun beforeMethod(param: MethodHookParam) {
     }
 
     @Throws(Throwable::class)
-    override fun afterMethod(param: MethodHookParam?) {
+    override fun afterMethod(param: MethodHookParam) {
     }
 
     @Throws(Throwable::class)
-    abstract fun replaceMethod(param: MethodHookParam?): Any?
+    abstract fun replaceMethod(param: MethodHookParam): Any?
 }
