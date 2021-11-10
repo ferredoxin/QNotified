@@ -25,3 +25,4 @@ package me.singleneuron.qn_kernel.ui.base
 val 净化功能 = arrayOf("净化功能")
 val 增强功能 = arrayOf("增强功能")
 val 辅助功能 = arrayOf("辅助功能")
+val 频道功能 = arrayOf("频道功能")

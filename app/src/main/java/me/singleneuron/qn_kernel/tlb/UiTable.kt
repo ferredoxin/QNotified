@@ -139,6 +139,9 @@ object UiTable : UiScreen {
                 )
             },
             uiCategory {
+                name = "频道功能"
+            },
+            uiCategory {
                 name = "好友列表"
                 contains = linkedMapOf(
                     uiClickableItem {
