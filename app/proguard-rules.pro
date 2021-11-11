@@ -53,3 +53,4 @@
 -dontwarn sun.misc.SignalHandler
 -dontwarn org.apache.bsf.util.BSFEngineImpl
 -dontwarn java.applet.Applet
+-dontwarn org.apache.bsf.*
