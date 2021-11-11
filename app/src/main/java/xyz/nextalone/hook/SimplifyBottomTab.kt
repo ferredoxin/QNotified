@@ -52,6 +52,7 @@ object SimplifyBottomTab : MultiItemDelayableHook("na_simplify_bottom_tab_kt") {
     override val allItems = setOf<String>()
     override val defaultItems = setOf<String>()
     override var items = clzNames.keys.toMutableList()
+    override val enableCustom = false
 
     override fun initOnce() = tryOrFalse {
         "com.tencent.mobileqq.activity.home.impl.TabFrameControllerImpl".clazz?.method("addFrame")
