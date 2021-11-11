@@ -60,6 +60,7 @@ abstract class MultiItemDelayableHook constructor(keyName: String) :
     private val allItemsConfigKeys = ConfigData<Set<String>>("$keyName\\_All")
     abstract val allItems: Set<String>
     open val defaultItems: Set<String> = setOf()
+    open val enableCustom = true
     internal open var items
         get() = try {
             allItemsConfigKeys.getOrDefault(allItems).toMutableList()
@@ -117,54 +118,55 @@ abstract class MultiItemDelayableHook constructor(keyName: String) :
             Toasts.info(context, "已保存精简项目")
             activeItems = cache
         }
-        setNeutralButton("自定义") { _: DialogInterface, _: Int ->
-            val editText = EditText(context)
-            editText.textSize = 16f
-            val _5 = Utils.dip2px(context, 5f)
-            editText.setPadding(_5 * 2, _5, _5 * 2, _5 * 2)
-            editText.setText(items.joinToString("|"))
-            val linearLayout = LinearLayout(context)
-            linearLayout.orientation = LinearLayout.VERTICAL
-            linearLayout.addView(
-                ViewBuilder.subtitle(context, "使用|分割，请确保格式正确！", Color.RED), ViewBuilder.newLinearLayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    _5 * 2, _5, _5 * 2, _5
+        if (enableCustom)
+            setNeutralButton("自定义") { _: DialogInterface, _: Int ->
+                val editText = EditText(context)
+                editText.textSize = 16f
+                val _5 = Utils.dip2px(context, 5f)
+                editText.setPadding(_5 * 2, _5, _5 * 2, _5 * 2)
+                editText.setText(items.joinToString("|"))
+                val linearLayout = LinearLayout(context)
+                linearLayout.orientation = LinearLayout.VERTICAL
+                linearLayout.addView(
+                    ViewBuilder.subtitle(context, "使用|分割，请确保格式正确！", Color.RED), ViewBuilder.newLinearLayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        _5 * 2, _5, _5 * 2, _5
+                    )
                 )
-            )
-            linearLayout.addView(
-                editText,
-                ViewBuilder.newLinearLayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    _5 * 2, _5, _5 * 2, _5
+                linearLayout.addView(
+                    editText,
+                    ViewBuilder.newLinearLayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        _5 * 2, _5, _5 * 2, _5
+                    )
                 )
-            )
-            MaterialAlertDialogBuilder(context, R.style.MaterialDialog)
-                .setTitle("自定义精简项目")
-                .setView(linearLayout)
-                .setCancelable(true)
-                .setPositiveButton("确认") { _: DialogInterface, _: Int ->
-                    val text = editText.text.toString()
-                    if (text.isEmpty()) {
-                        Toasts.error(context, "不可为空")
-                        return@setPositiveButton
-                    }
-                    text.split("|").forEach { item ->
-                        if (item.isEmpty()) {
-                            Toasts.error(context, "请确保格式正确！")
+                MaterialAlertDialogBuilder(context, R.style.MaterialDialog)
+                    .setTitle("自定义精简项目")
+                    .setView(linearLayout)
+                    .setCancelable(true)
+                    .setPositiveButton("确认") { _: DialogInterface, _: Int ->
+                        val text = editText.text.toString()
+                        if (text.isEmpty()) {
+                            Toasts.error(context, "不可为空")
                             return@setPositiveButton
                         }
+                        text.split("|").forEach { item ->
+                            if (item.isEmpty()) {
+                                Toasts.error(context, "请确保格式正确！")
+                                return@setPositiveButton
+                            }
+                        }
+                        Toasts.info(context, "已保存自定义项目")
+                        allItemsConfigKeys.value = editText.text.split("|").toSet()
                     }
-                    Toasts.info(context, "已保存自定义项目")
-                    allItemsConfigKeys.value = editText.text.split("|").toSet()
-                }
-                .setNegativeButton("取消", null)
-                .setNeutralButton("使用默认值") { _: DialogInterface, _: Int ->
-                    allItemsConfigKeys.remove()
-                    Toasts.info(context, "已使用默认值")
-                }
-                .show()
-        }
+                    .setNegativeButton("取消", null)
+                    .setNeutralButton("使用默认值") { _: DialogInterface, _: Int ->
+                        allItemsConfigKeys.remove()
+                        Toasts.info(context, "已使用默认值")
+                    }
+                    .show()
+            }
     }
 }
