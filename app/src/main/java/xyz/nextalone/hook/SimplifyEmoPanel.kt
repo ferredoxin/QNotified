@@ -21,28 +21,23 @@
  */
 package xyz.nextalone.hook
 
-import android.view.View
-import android.view.ViewGroup
-import xyz.nextalone.util.*
 import me.singleneuron.qn_kernel.annotation.UiItem
-import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
-import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.qn_kernel.ui.base.净化功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.QQVersion
+import xyz.nextalone.base.MultiItemDelayableHook
+import xyz.nextalone.util.*
 
 @FunctionEntry
 @UiItem
-object SimplifyEmoPanel : CommonDelayAbleHookBridge() {
-
-    override val preference = uiSwitchPreference {
-        title = "精简表情菜单"
-    }
-
+object SimplifyEmoPanel : MultiItemDelayableHook("na_simplify_emo_panel") {
+    override val preferenceTitle = "精简表情菜单"
     override val preferenceLocate = 净化功能
+    private val allItemsDict = mapOf(13 to "加号菜单", 7 to "默认表情", 4 to "收藏表情", 12 to "热门表情", 15 to "厘米秀", 11 to "DIY表情", 9 to "魔法表情", -1 to "表情包")
+    override val allItems: Set<String> = allItemsDict.values.toSet()
+    override val enableCustom = false
 
-    // todo fix scroll
     override fun initOnce() = tryOrFalse {
         ("com.tencent.mobileqq.emoticonview.BasePanelView".clazz
             ?: "com.tencent.mobileqq.emoticonview.EmoticonPanelController".clazz
@@ -51,7 +46,7 @@ object SimplifyEmoPanel : CommonDelayAbleHookBridge() {
             ) {
                 val mutableList: MutableList<*> =
                     if ("com.tencent.mobileqq.emoticonview.BasePanelModel".clazz != null) {
-                    it.thisObject.get("mPanelController").get("mBasePanelModel").get("panelDataList") as MutableList<*>
+                        it.thisObject.get("mPanelController").get("mBasePanelModel").get("panelDataList") as MutableList<*>
                 } else {
                     it.thisObject.get("panelDataList") as MutableList<*>
                 }
@@ -60,20 +55,21 @@ object SimplifyEmoPanel : CommonDelayAbleHookBridge() {
                     val item = list.next()
                     if (item != null) {
                         val i = item.javaClass.getDeclaredField("type").get(item) as Int
-                        if (i !in arrayListOf(4, 7)) {
+                        if (allItemsDict[i] in activeItems || i !in allItemsDict.keys && "表情包" in activeItems) {
                             list.remove()
                         }
                     }
                 }
-                "Lcom/tencent/mobileqq/emoticonview/EmoticonTabAdapter;->getView(ILandroid/view/View;Landroid/view/ViewGroup;)Landroid/view/View;".method.hookAfter(
-                    this@SimplifyEmoPanel
-                ) { it2 ->
-                    val view: View = it2.result as View
-                    val layoutParams: ViewGroup.LayoutParams = view.layoutParams
-                    layoutParams.width = hostInfo.application.resources.displayMetrics.widthPixels / 2
-                    view.layoutParams = layoutParams
-                    it2.result = view
-                }
+                // fixme unable to locate the slide method
+//                "Lcom/tencent/mobileqq/emoticonview/EmoticonTabAdapter;->getView(ILandroid/view/View;Landroid/view/ViewGroup;)Landroid/view/View;".method.hookAfter(
+//                    this@SimplifyEmoPanel
+//                ) { it2 ->
+//                    val view: View = it2.result as View
+//                    val layoutParams: ViewGroup.LayoutParams = view.layoutParams
+//                    layoutParams.width = hostInfo.application.resources.displayMetrics.widthPixels / mutableList.size
+//                    view.layoutParams = layoutParams
+//                    it2.result = view
+//                }
             }
     }
 
