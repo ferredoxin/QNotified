@@ -55,7 +55,7 @@ class FunctionItemProcessor(private val codeGenerator: CodeGenerator, private va
                 add("return arrayOf(«")
                 symbols.forEachIndexed { index, ksClassDeclaration ->
                     if (simpleNameMap.contains(ksClassDeclaration.simpleName.asString())) {
-                        logger.error("Duplicate name in FunctionEntry's simpleName: ${ksClassDeclaration.simpleName.asString()}, ${simpleNameMap[ksClassDeclaration.simpleName.asString()]}")
+                        logger.error("Duplicate name in FunctionEntry's simpleName: ${ksClassDeclaration.qualifiedName?.asString()?:"null"}, ${simpleNameMap[ksClassDeclaration.simpleName.asString()]}")
                     } else {
                         simpleNameMap[ksClassDeclaration.simpleName.asString()] = ksClassDeclaration.qualifiedName?.asString()
                             ?: "null"
