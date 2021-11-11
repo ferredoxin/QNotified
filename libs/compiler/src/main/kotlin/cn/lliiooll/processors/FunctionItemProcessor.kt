@@ -25,11 +25,13 @@ package cn.lliiooll.processors
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.squareup.kotlinpoet.*
+import com.squareup.kotlinpoet.AnnotationSpec
+import com.squareup.kotlinpoet.CodeBlock
+import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.ksp.KotlinPoetKspPreview
 import com.squareup.kotlinpoet.ksp.toTypeName
 import com.squareup.kotlinpoet.ksp.writeTo
-import java.lang.StringBuilder
 
 @KotlinPoetKspPreview
 class FunctionItemProcessor(private val codeGenerator: CodeGenerator, private val logger: KSPLogger) :
@@ -47,10 +49,17 @@ class FunctionItemProcessor(private val codeGenerator: CodeGenerator, private va
         }
 
         logger.warn(">>>> FunctionEntry Processing <<<<")
+        val simpleNameMap = HashMap<String, String>(symbols.size)
         val mGetApi = FunSpec.builder("getAnnotatedFunctionItemClassList").run {
             addCode(CodeBlock.Builder().run {
                 add("return arrayOf(«")
                 symbols.forEachIndexed { index, ksClassDeclaration ->
+                    if (simpleNameMap.contains(ksClassDeclaration.simpleName.asString())) {
+                        logger.error("Duplicate name in FunctionEntry's simpleName: ${ksClassDeclaration.qualifiedName?.asString()?:"null"}, ${simpleNameMap[ksClassDeclaration.simpleName.asString()]}")
+                    } else {
+                        simpleNameMap[ksClassDeclaration.simpleName.asString()] = ksClassDeclaration.qualifiedName?.asString()
+                            ?: "null"
+                    }
                     val isJava = ksClassDeclaration.containingFile?.filePath?.endsWith(".java") == true
                     // logger.warn("Processing >>> $ksClassDeclaration,isJava = $isJava")
                     val typeName = ksClassDeclaration.asStarProjectedType().toTypeName()
