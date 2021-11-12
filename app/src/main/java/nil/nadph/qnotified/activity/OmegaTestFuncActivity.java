@@ -34,6 +34,7 @@ import android.widget.TextView;
 import com.tencent.mobileqq.widget.BounceScrollView;
 
 import cc.ioctl.hook.CardMsgHook;
+import me.ketal.hook.guild.GuildCopyCardMsg;
 import me.kyuubiran.dialog.AutoRenewFireDialog;
 import me.singleneuron.hook.CopyCardMsg;
 import me.singleneuron.qn_kernel.data.HostInfo;
@@ -49,14 +50,10 @@ import static nil.nadph.qnotified.util.Utils.dip2px;
 @SuppressLint("Registered")
 public class OmegaTestFuncActivity extends IphoneTitleBarActivityCompat {
 
-    TextView __tv_chat_tail_status;
-
     @Override
     public boolean doOnCreate(Bundle bundle) {
         super.doOnCreate(bundle);
-        if(!LicenseStatus.isBlacklisted()){
-        RelativeLayout _t;
-        String _hostName = HostInfo.getHostInfo().getHostName();
+        if(LicenseStatus.isBlacklisted()) return true;
         LinearLayout ll = new LinearLayout(this);
         ll.setOrientation(LinearLayout.VERTICAL);
         ViewGroup.LayoutParams mmlp = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
@@ -65,8 +62,6 @@ public class OmegaTestFuncActivity extends IphoneTitleBarActivityCompat {
         ViewGroup bounceScrollView = new BounceScrollView(this, null);
         bounceScrollView.setLayoutParams(mmlp);
         bounceScrollView.addView(ll, new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-        LinearLayout.LayoutParams fixlp = new LinearLayout.LayoutParams(MATCH_PARENT,
-            dip2px(this, 48));
         RelativeLayout.LayoutParams __lp_l = new RelativeLayout.LayoutParams(WRAP_CONTENT,
             WRAP_CONTENT);
         int mar = (int) (dip2px(this, 12) + 0.5f);
@@ -91,6 +86,8 @@ public class OmegaTestFuncActivity extends IphoneTitleBarActivityCompat {
         ll.addView(newListItemHookSwitchInit(this, "复制卡片消息", "", CopyCardMsg.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "发送卡片消息", "ArkAppMsg(json)+StructMsg(xml)",
             CardMsgHook.INSTANCE));
+        ll.addView(subtitle(this, "频道功能"));
+        ll.addView(newListItemHookSwitchInit(this, "复制卡片消息", "", GuildCopyCardMsg.INSTANCE));
         ll.addView(subtitle(this, "卡片消息使用说明:先输入卡片代码(聊天界面),后长按发送按钮\n勿滥用此功能! 频繁使用此功能被举报可能封号"));
         ll.addView(
             newListItemButton(this, "群发文本消息" + (LicenseStatus.isAsserted() ? "" : "（仅限五个字以内）"),
@@ -103,12 +100,10 @@ public class OmegaTestFuncActivity extends IphoneTitleBarActivityCompat {
         ll.addView(subtitle(this, "如果您看不懂, 或无法理解以上内容, 请勿使用 群发 或 卡片消息 功能!", Color.RED));
         __ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         setContentView(bounceScrollView);
-        LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);
-        _lp_fat.weight = 1;
 
         setContentBackgroundDrawable(ResUtils.skin_background);
         setTitle("Omega测试性功能");
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);}
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         return true;
     }
 
