@@ -11,7 +11,7 @@ dependencyResolutionManagement  {
     }
 }
 
-include ':app', ':stub', ':annotations', ':compiler', ':dex-ptm', ':mmkv' , ':FerredoxinUILib'
+include ':app', ':stub', ':compiler', ':dex-ptm', ':mmkv' , ':FerredoxinUILib'
 File compilerLibsDir = new File(settingsDir, 'libs')
 project(':stub').projectDir = new File(compilerLibsDir, 'stub')
 project(':compiler').projectDir = new File(compilerLibsDir, 'compiler')
