@@ -64,13 +64,12 @@ public class ChatActivityFacade {
                 continue;
             }
             if (argt[1].equals(Context.class)
+                && (argt[2].equals(_SessionInfo()) || argt[2].equals(_BaseSessionInfo()))
                 && argt[3].equals(String.class) && argt[4].equals(ArrayList.class)) {
-                if (argt[2].equals(_SessionInfo()) || argt[2].equals(load("com/tencent/mobileqq/activity/aio/BaseSessionInfo"))) {
-                    m = mi;
-                    m.setAccessible(true);
-                    SendMsgParams = argt[5];
-                    break;
-                }
+                m = mi;
+                m.setAccessible(true);
+                SendMsgParams = argt[5];
+                break;
             }
         }
         try {
@@ -108,13 +107,12 @@ public class ChatActivityFacade {
                 continue;
             }
             if (argt[1].equals(Context.class)
+                && (argt[2].equals(_SessionInfo()) || argt[2].equals(_BaseSessionInfo()))
                 && argt[3].equals(String.class) && argt[4].equals(ArrayList.class)) {
-                if (argt[2].equals(_SessionInfo()) || argt[2].equals(load("com/tencent/mobileqq/activity/aio/BaseSessionInfo"))) {
-                    m = mi;
-                    m.setAccessible(true);
-                    SendMsgParams = argt[5];
-                    break;
-                }
+                m = mi;
+                m.setAccessible(true);
+                SendMsgParams = argt[5];
+                break;
             }
         }
         try {
