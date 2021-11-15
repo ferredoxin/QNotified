@@ -33,6 +33,7 @@ import me.singleneuron.qn_kernel.data.HostInfo;
 import mqq.app.AppRuntime;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Initiator;
+import nil.nadph.qnotified.util.ReflexUtil;
 import nil.nadph.qnotified.util.Toasts;
 
 import static nil.nadph.qnotified.util.Initiator.*;
@@ -62,7 +63,8 @@ public class ChatActivityFacade {
             if (argt.length != 6) {
                 continue;
             }
-            if (argt[1].equals(Context.class) && argt[2].equals(_SessionInfo())
+            if (argt[1].equals(Context.class)
+                && (argt[2].equals(_SessionInfo()) || argt[2].equals(_BaseSessionInfo()))
                 && argt[3].equals(String.class) && argt[4].equals(ArrayList.class)) {
                 m = mi;
                 m.setAccessible(true);
@@ -71,6 +73,9 @@ public class ChatActivityFacade {
             }
         }
         try {
+            if (sendMsgParams == null) {
+                sendMsgParams = SendMsgParams.newInstance();
+            }
             return (long[]) m
                 .invoke(null, qqAppInterface, context, sessionInfo, msg, atInfo, sendMsgParams);
         } catch (Exception e) {
@@ -102,13 +107,12 @@ public class ChatActivityFacade {
                 continue;
             }
             if (argt[1].equals(Context.class)
+                && (argt[2].equals(_SessionInfo()) || argt[2].equals(_BaseSessionInfo()))
                 && argt[3].equals(String.class) && argt[4].equals(ArrayList.class)) {
-                if (argt[2].equals(_SessionInfo()) || argt[2].equals(load("com/tencent/mobileqq/activity/aio/BaseSessionInfo"))) {
-                    m = mi;
-                    m.setAccessible(true);
-                    SendMsgParams = argt[5];
-                    break;
-                }
+                m = mi;
+                m.setAccessible(true);
+                SendMsgParams = argt[5];
+                break;
             }
         }
         try {
@@ -242,8 +246,20 @@ public class ChatActivityFacade {
                         "暂不支持发送长消息");
                     return;
                 }
-                sendMessage(app, HostInfo.getHostInfo().getApplication(), session,
-                    msgText);
+                ArrayList<?> atInfo = null;
+                try {
+                    String extStr = (String) ReflexUtil.invoke_virtual(msg, "getExtInfoFromExtStr", "troop_at_info_list", String.class);
+                    atInfo = (ArrayList) ReflexUtil.invoke_virtual(msg, "getTroopMemberInfoFromExtrJson", extStr, String.class);
+                } catch (Exception e) {
+                   // ignore
+                }
+                if (atInfo == null) {
+                    sendMessage(app, HostInfo.getHostInfo().getApplication(), session,
+                        msgText);
+                } else {
+                    sendMessage(app, HostInfo.getHostInfo().getApplication(), session,
+                        msgText, atInfo, null);
+                }
                 break;
             case "MessageForPic":
                 try {
