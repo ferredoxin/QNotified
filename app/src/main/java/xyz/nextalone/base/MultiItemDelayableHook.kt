@@ -63,7 +63,7 @@ abstract class MultiItemDelayableHook constructor(keyName: String) :
     open val enableCustom = true
     internal open var items
         get() = try {
-            allItemsConfigKeys.getOrDefault(allItems).toMutableList()
+            allItemsConfigKeys.getOrDefault(allItems)?.toMutableList() ?: mutableListOf()
         } catch (e: ClassCastException) {
             allItemsConfigKeys.remove()
             allItems.toMutableList()
@@ -73,7 +73,7 @@ abstract class MultiItemDelayableHook constructor(keyName: String) :
         }
     var activeItems
         get() = try {
-            itemsConfigKeys.getOrDefault(defaultItems).toMutableList()
+            itemsConfigKeys.getOrDefault(defaultItems)?.toMutableList() ?: mutableListOf()
         } catch (e: ClassCastException) {
             itemsConfigKeys.remove()
             defaultItems.toMutableList()
