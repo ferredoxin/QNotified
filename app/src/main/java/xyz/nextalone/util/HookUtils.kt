@@ -26,8 +26,6 @@ import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
-import xyz.nextalone.bridge.NAMethodHook
-import xyz.nextalone.bridge.NAMethodReplacement
 import me.kyuubiran.util.getDefaultCfg
 import me.kyuubiran.util.getExFriendCfg
 import me.singleneuron.qn_kernel.data.hostInfo
@@ -35,6 +33,8 @@ import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.hook.BaseDelayableHook
 import nil.nadph.qnotified.util.*
+import xyz.nextalone.bridge.NAMethodHook
+import xyz.nextalone.bridge.NAMethodReplacement
 import java.lang.reflect.Member
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
@@ -58,7 +58,7 @@ internal fun Class<*>.method(name: String): Method? = this.declaredMethods.run {
 
 internal fun Class<*>.method(name: String, returnType: Class<*>?, vararg argsTypes: Class<*>?): Method? = this.declaredMethods.run {
     this.forEach {
-        if (returnType == it.returnType && it.parameterTypes.contentEquals(argsTypes)) {
+        if (name == it.name && returnType == it.returnType && it.parameterTypes.contentEquals(argsTypes)) {
             return it
         }
     }
