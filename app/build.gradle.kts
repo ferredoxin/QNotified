@@ -55,6 +55,12 @@ android {
             if (performSigning) {
                 signingConfig = signingConfigs.getByName("release")
             }
+            tasks.forEach {
+                if (it.name.contains("lint")) {
+                    it.enabled = false
+                }
+            }
+            kotlinOptions.suppressWarnings = true
         }
         getByName("debug") {
             isShrinkResources = true
