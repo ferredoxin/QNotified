@@ -61,8 +61,25 @@ android {
             isMinifyEnabled = true
             setProguardFiles(listOf(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"))
         }
+        create("CI") {
+            initWith(getByName("debug"))
+            isShrinkResources = false
+            isMinifyEnabled = false
+            signingConfig = null
+            ndk {
+                abiFilters.clear()
+                abiFilters.add("arm64-v8a")
+            }
+            matchingFallbacks += listOf("debug")
+            tasks.forEach {
+                if (it.name.contains("lint")) {
+                    it.enabled = false
+                }
+            }
+            kotlinOptions.suppressWarnings = true
+        }
     }
-    aaptOptions {
+    androidResources {
         additionalParameters("--allow-reserved-package-id", "--package-id", "0x75")
     }
     compileOptions {
@@ -110,7 +127,7 @@ dependencies {
     implementation("org.apache-extras.beanshell:bsh:2.0b6")
     // androidx
     implementation("androidx.preference:preference-ktx:1.1.1")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.1")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.2")
     implementation("androidx.browser:browser:1.4.0")
     implementation("com.google.android.material:material:1.4.0")
     implementation("com.google.code.gson:gson:2.8.9")
@@ -205,7 +222,7 @@ tasks.register("dexTailRelease") {
         if ("/" != File.separator) {
             tmp_path = tmp_path.replace('/', File.separatorChar)
         }
-        var tmp_f: File = File(project.buildDir, tmp_path)
+        var tmp_f = File(project.buildDir, tmp_path)
         if (tmp_f.exists()) {
             pathList.add(tmp_f)
         }
