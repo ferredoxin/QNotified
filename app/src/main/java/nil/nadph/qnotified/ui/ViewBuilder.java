@@ -44,8 +44,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.view.ViewCompat;
 import cc.ioctl.H;
-import xyz.nextalone.base.MultiItemDelayableHook;
-import xyz.nextalone.util.SystemServiceUtils;
 import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.R;
@@ -62,11 +60,14 @@ import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 import org.ferredoxin.ferredoxin_ui.base.UiSwitchItem;
 import org.ferredoxin.ferredoxin_ui.base.UiSwitchPreference;
+import xyz.nextalone.base.MultiItemDelayableHook;
+import xyz.nextalone.util.SystemServiceUtils;
 
 public class ViewBuilder {
 
-    public static ViewGroup newListItemSwitch(Context ctx, CharSequence title,
-        CharSequence desc, boolean on, boolean enabled, CompoundButton.OnCheckedChangeListener listener) {
+    public static FunctionSwitch newListItemSwitch(Context ctx, CharSequence title,
+        CharSequence desc, boolean on, boolean enabled,
+        CompoundButton.OnCheckedChangeListener listener) {
         FunctionSwitch root = new FunctionSwitch(ctx);
         root.getTitle().setText(title);
         CompoundButton sw = root.getSwitch();
@@ -304,7 +305,7 @@ public class ViewBuilder {
         return root;
     }
 
-    public static ViewGroup newListItemButton(Context ctx, CharSequence title,
+    public static FunctionButton newListItemButton(Context ctx, CharSequence title,
         CharSequence desc, CharSequence
         value, View.OnClickListener listener) {
         FunctionButton root = new FunctionButton(ctx);

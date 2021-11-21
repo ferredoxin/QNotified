@@ -30,12 +30,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import nil.nadph.qnotified.ui.ViewBuilder.*
-import nil.nadph.qnotified.ui.widget.FunctionButton
 import nil.nadph.qnotified.util.Utils
 import org.ferredoxin.ferredoxin_ui.base.*
 
@@ -80,8 +78,12 @@ class SettingsFragment : Fragment(), LifecycleOwner {
                 uiDescription is UiPreference -> {
                     when (uiDescription) {
                         is UiSwitchPreference -> {
-                            viewGroup.addView(newListItemSwitch(activity, uiDescription.title, uiDescription.summary, uiDescription.value.value
-                                ?: false, uiDescription.valid) { _, isChecked -> uiDescription.value.value = isChecked })
+                            val switch = newListItemSwitch(activity, uiDescription.title, uiDescription.summary, uiDescription.value.value
+                                ?: false, uiDescription.valid) { _, isChecked -> uiDescription.value.value = isChecked }
+                            uiDescription.value.observe(this) {
+                                switch.switch.isChecked = it
+                            }
+                            viewGroup.addView(switch)
                         }
                         is UiChangeablePreference<*> -> {
                             val ll = newListItemButton(activity, uiDescription.title, uiDescription.summary, uiDescription.value.value.toString()) {
@@ -89,10 +91,10 @@ class SettingsFragment : Fragment(), LifecycleOwner {
                             }
                             viewGroup.addView(ll)
                             uiDescription.value.observe(this) {
-                                (ll as FunctionButton).value.text = it.toString()
+                                ll.value.text = it.toString()
                             }
                         }
-                        is UiPreference -> {
+                        else -> {
                             viewGroup.addView(newListItemButton(activity, uiDescription.title, uiDescription.summary, null) {
                                 uiDescription.onClickListener(activity)
                             })
