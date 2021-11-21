@@ -24,6 +24,7 @@ package me.singleneuron.qn_kernel.decorator
 import android.content.Context
 import android.os.Looper
 import androidx.lifecycle.MutableLiveData
+import me.ketal.data.ConfigData
 import me.singleneuron.qn_kernel.data.hostInfo
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.config.ConfigManager
@@ -32,7 +33,7 @@ import nil.nadph.qnotified.util.Utils
 import org.ferredoxin.ferredoxin_ui.base.UiSwitchItem
 import org.ferredoxin.ferredoxin_ui.base.UiSwitchPreference
 
-abstract class BaseDecorator() : UiSwitchItem {
+abstract class BaseDecorator : UiSwitchItem {
 
     val cfg: String = this::class.java.simpleName
     abstract override val preference: UiSwitchPreference
@@ -49,28 +50,20 @@ abstract class BaseDecorator() : UiSwitchItem {
         override var summary: String? = null
         override var onClickListener: (Context) -> Boolean = { true }
         override var valid: Boolean = true
+        private val configData = ConfigData<Boolean>(cfg)
 
         override val value: MutableLiveData<Boolean> by lazy {
             MutableLiveData<Boolean>().apply {
                 SyncUtils.post {
                     try {
-                        value = ConfigManager.getDefaultConfig().getBooleanOrDefault(cfg, false)
+                        postValue(configData.getOrDefault(false))
                     } catch (e: Exception) {
                         Utils.log(e)
                     }
                     observeForever {
-                        try {
-                            val mgr = ConfigManager.getDefaultConfig()
-                            mgr.putBoolean(cfg, it)
-                            mgr.save()
-                        } catch (e: Exception) {
-                            Utils.log(e)
-                            if (Looper.myLooper() == Looper.getMainLooper()) {
-                                Toasts.error(hostInfo.application, e.toString() + "")
-                            } else {
-                                SyncUtils.post { Toasts.error(hostInfo.application, e.toString() + "") }
-                            }
-                        }
+                        Utils.logd("Config will change: $title=$it, now $title is ${configData.value}")
+                        configData.value = it
+                        Utils.logd("Config changed: $title=${configData.value}")
                     }
                 }
             }

@@ -25,6 +25,7 @@ package me.singleneuron.qn_kernel.base
 import android.content.Context
 import android.os.Looper
 import androidx.lifecycle.MutableLiveData
+import me.ketal.data.ConfigData
 import me.singleneuron.qn_kernel.data.hostInfo
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.config.ConfigManager
@@ -69,6 +70,7 @@ constructor(
         override lateinit var title: String
         override var summary: String? = null
         override var valid: Boolean = isValid
+        private val configData: ConfigData<Boolean> = ConfigData(configName)
 
         @JvmOverloads
         constructor(title: String, summary: String? = null) : this() {
@@ -78,27 +80,14 @@ constructor(
 
         override val value: MutableLiveData<Boolean> by lazy {
             MutableLiveData<Boolean>().apply {
-                try {
-                    postValue(
-                        ConfigManager.getDefaultConfig().getBooleanOrDefault(configName, false)
-                    )
-                } catch (e: Exception) {
-                    Utils.log(e)
-                }
                 SyncUtils.post {
+                    try {
+                        postValue(configData.getOrDefault(false))
+                    } catch (e: Exception) {
+                        Utils.log(e)
+                    }
                     observeForever {
-                        try {
-                            val mgr = ConfigManager.getDefaultConfig()
-                            mgr.putBoolean(configName, it!!)
-                            mgr.save()
-                        } catch (e: Exception) {
-                            Utils.log(e)
-                            if (Looper.myLooper() == Looper.getMainLooper()) {
-                                Toasts.error(hostInfo.application, e.toString() + "")
-                            } else {
-                                SyncUtils.post { Toasts.error(hostInfo.application, e.toString() + "") }
-                            }
-                        }
+                        configData.value = it
                     }
                 }
             }
