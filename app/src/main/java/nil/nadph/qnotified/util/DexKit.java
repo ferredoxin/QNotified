@@ -145,10 +145,10 @@ public class DexKit {
                 return true;
             }
             DexMethodDescriptor desc = getMethodDescFromCache(i);
-            return desc != null && NO_SUCH_CLASS.equals(desc.declaringClass);
+            return desc != null;
         } else {
             DexMethodDescriptor desc = getMethodDescFromCache(i);
-            return desc != null && NO_SUCH_CLASS.equals(desc.declaringClass);
+            return desc != null;
         }
     }
 
