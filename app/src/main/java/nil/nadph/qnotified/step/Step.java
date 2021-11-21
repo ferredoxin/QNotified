@@ -25,6 +25,12 @@ import androidx.annotation.Nullable;
 
 public interface Step extends Comparable<Step> {
 
+    /**
+     * Execute this step, de-obfuscate the dex file. This method takes a long time, so it should not be called in the
+     * main thread.
+     *
+     * @return true if the step is done successfully, false otherwise
+     */
     boolean step();
 
     boolean isDone();
