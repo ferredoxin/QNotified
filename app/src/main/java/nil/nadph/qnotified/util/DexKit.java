@@ -23,6 +23,7 @@ package nil.nadph.qnotified.util;
 
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.io.ByteArrayOutputStream;
@@ -52,6 +53,9 @@ import static nil.nadph.qnotified.util.Utils.logi;
  * I hadn't obfuscated the source code. I just don't want to name it, leaving it a()
  */
 public class DexKit {
+
+    static final String NO_SUCH_CLASS = "Lnil/nadph/qnotified/util/DexKit$NoSuchClass;";
+    static final DexMethodDescriptor NO_SUCH_METHOD = new DexMethodDescriptor(NO_SUCH_CLASS, "a", "()V");
 
     //WARN: NEVER change the index!
     public static final int C_DIALOG_UTIL = 1;
@@ -114,8 +118,12 @@ public class DexKit {
     public static final int N_BaseChatPie_mosaic = 20017;
     public static final int DEOBF_NUM_N = 17;
 
-
-    @Nullable
+    /**
+     * Run the dex deobfuscation.
+     *
+     * @param i the dex class index
+     * @return true if the dex class is deobfuscated successfully.
+     */
     public static boolean prepareFor(int i) {
         if (i / 10000 == 0) {
             return doFindClass(i) != null;
@@ -124,18 +132,36 @@ public class DexKit {
         }
     }
 
-    @Nullable
+    /**
+     * Test whether we should run the dex deobfuscation. Note that if a dex class is tried to deobfuscate before, but
+     * failed, its failed result will be cached, which means that the same dex class will not be deobfuscated again.
+     *
+     * @param i the dex class index
+     * @return true if the dex class is deobfuscated and cached(regardless of success or failure) or not.
+     */
     public static boolean checkFor(int i) {
         if (i / 10000 == 0) {
-            return loadClassFromCache(i) != null;
+            if (loadClassFromCache(i) != null) {
+                return true;
+            }
+            DexMethodDescriptor desc = getMethodDescFromCache(i);
+            return desc != null && NO_SUCH_CLASS.equals(desc.declaringClass);
         } else {
-            return getMethodDescFromCache(i) != null;
+            DexMethodDescriptor desc = getMethodDescFromCache(i);
+            return desc != null && NO_SUCH_CLASS.equals(desc.declaringClass);
         }
     }
 
+    /**
+     * Try to load the obfuscated class from deobfuscation cache. This method does not take much time and may be called
+     * in main thread.
+     *
+     * @param i the dex class index
+     * @return null if the dex class is not in deobfuscation cache, otherwise the target class object.
+     */
     @Nullable
-    public static Class loadClassFromCache(int i) {
-        Class ret = Initiator.load(c(i));
+    public static Class<?> loadClassFromCache(int i) {
+        Class<?> ret = Initiator.load(c(i));
         if (ret != null) {
             return ret;
         }
@@ -146,9 +172,15 @@ public class DexKit {
         return Initiator.load(m.declaringClass);
     }
 
+    /**
+     * Run the dex deobfuscation. This method may take a long time and should only be called in background thread.
+     *
+     * @param i the dex class index
+     * @return the target class object, null if the dex class is not found.
+     */
     @Nullable
     public static Class doFindClass(int i) {
-        Class ret = Initiator.load(c(i));
+        Class<?> ret = Initiator.load(c(i));
         if (ret != null) {
             return ret;
         }
@@ -162,6 +194,13 @@ public class DexKit {
         return Initiator.load(m.declaringClass);
     }
 
+    /**
+     * Try to load the obfuscated method from deobfuscation cache. This method does not take much time and may be called
+     * in main thread.
+     *
+     * @param i the dex method index
+     * @return the target method descriptor, null if the target is not found.
+     */
     @Nullable
     public static Method getMethodFromCache(int i) {
         if (i / 10000 == 0) {
@@ -172,6 +211,7 @@ public class DexKit {
             return null;
         }
         if (m.name.equals("<init>") || m.name.equals("<clinit>")) {
+            // TODO: support constructors
             logi("getMethodFromCache(" + i + ") methodName == " + m.name + " , return null");
             return null;
         }
@@ -183,6 +223,12 @@ public class DexKit {
         }
     }
 
+    /**
+     * Run the dex deobfuscation. This method may take a long time and should only be called in background thread.
+     *
+     * @param i the dex method index
+     * @return target method descriptor, null if the target is not found.
+     */
     @Nullable
     public static Method doFindMethod(int i) {
         if (i / 10000 == 0) {
@@ -204,6 +250,13 @@ public class DexKit {
         }
     }
 
+    /**
+     * Try to load the obfuscated method from deobfuscation cache. This method does not take much time and may be called
+     * in main thread.
+     *
+     * @param i the dex method index
+     * @return the target method descriptor, null if the target is not in deobfuscation cache.
+     */
     @Nullable
     public static DexMethodDescriptor getMethodDescFromCache(int i) {
         try {
@@ -223,6 +276,14 @@ public class DexKit {
         }
     }
 
+    /**
+     * Run the dex deobfuscation. This method may take a long time and should only be called in background thread. Note
+     * that if a method is not found, its failed state will be cached.
+     *
+     * @param i the dex method index
+     * @return the target method descriptor, null if the target is not found.
+     * @see #checkFor(int)
+     */
     @Nullable
     public static DexMethodDescriptor doFindMethodDesc(int i) {
         DexMethodDescriptor ret = getMethodDescFromCache(i);
@@ -244,6 +305,10 @@ public class DexKit {
             if (methods == null || methods.size() == 0) {
                 report.v("No method candidate found.");
                 logi("Unable to deobf: " + c(i));
+                // save failed state
+                cache.putString("cache_" + a(i) + "_method", NO_SUCH_METHOD.toString());
+                cache.putInt("cache_" + a(i) + "_code", HostInfo.getHostInfo().getVersionCode32());
+                cache.save();
                 return null;
             }
             report.v(methods.size() + " method(s) found: " + methods);
@@ -256,6 +321,10 @@ public class DexKit {
             cache.putString("deobf_log_" + a(i), report.toString());
             if (ret == null) {
                 logi("Multiple classes candidates found, none satisfactory.");
+                // save failed state
+                cache.putString("cache_" + a(i) + "_method", NO_SUCH_METHOD.toString());
+                cache.putInt("cache_" + a(i) + "_code", HostInfo.getHostInfo().getVersionCode32());
+                cache.save();
                 return null;
             }
             cache.putString("cache_" + a(i) + "_method", ret.toString());
@@ -376,6 +445,12 @@ public class DexKit {
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
 
+    /**
+     * Get the original class name for a class index.
+     *
+     * @param i The class index.
+     * @return The original class name.
+     */
     public static String c(int i) {
         String ret;
         switch (i) {
@@ -529,6 +604,12 @@ public class DexKit {
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
 
+    /**
+     * Get the keywords of the obfuscated class.
+     *
+     * @param i The class index.
+     * @return The keywords of the class index.
+     */
     public static byte[][] b(int i) {
         switch (i) {
             case C_DIALOG_UTIL:
@@ -766,6 +847,12 @@ public class DexKit {
         throw new IndexOutOfBoundsException("No class index for " + i + ",max = " + DEOBF_NUM_C);
     }
 
+    /**
+     * Get the dex index where the target dex class belongs to. Note that this dex index is only used as a hint.
+     *
+     * @param i the dex index
+     * @return the dex indexes where the target class belongs to
+     */
     public static int[] d(int i) {
         switch (i) {
             case C_DIALOG_UTIL:
@@ -1213,8 +1300,9 @@ public class DexKit {
                         continue;
                     }
                     if (method.getReturnType().equals(int.class)) {
-                        if (method.getName().equals("getPrivilegeFlags"))
+                        if (method.getName().equals("getPrivilegeFlags")) {
                             return m;
+                        }
                         Class<?>[] argt = method.getParameterTypes();
                         if (argt.length == 2 && argt[0].equals(load("mqq/app/AppRuntime")) && argt[1]
                             .equals(String.class)) {
@@ -1602,6 +1690,7 @@ public class DexKit {
             }
         }
 
+        @NonNull
         @Override
         public String toString() {
             return "Deobf target: " + target + '\n' +
