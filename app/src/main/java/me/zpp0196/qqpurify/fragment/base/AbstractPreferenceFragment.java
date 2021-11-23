@@ -150,7 +150,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompa
                     ((UiSwitchPreference) uiPreference).getValue().postValue(value);
                     return true;
                 });
-            ((UiSwitchPreference) uiPreference).getValue().observe(getViewLifecycleOwner(),
+            ((UiSwitchPreference) uiPreference).getValue().observe(requireActivity(),
                 aBoolean -> {
                     if (aBoolean.equals(((TwoStatePreference) preference).isChecked())) {
                         return;
