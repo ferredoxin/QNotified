@@ -16,65 +16,78 @@ pool:
 variables:
   GRADLE_USER_HOME: $(Pipeline.Workspace)/.gradle
 
-steps:
-- checkout: self
-  submodules: true
+jobs:
 
-- task: Cache@2
-  inputs:
-      key: 'gradle | "$(Agent.OS)" | **/build.gradle.kts | **/build.gradle' # Swap build.gradle.kts for build.gradle when using Groovy
-      restoreKeys: |
-          gradle | "$(Agent.OS)"
-          gradle
-      path: $(GRADLE_USER_HOME)
-  displayName: Configure gradle caching
+- job: Build
+  steps:
+  - checkout: self
+    submodules: true
+  - task: Cache@2
+    inputs:
+        key: 'gradle | "$(Agent.OS)" | **/build.gradle.kts | **/build.gradle' # Swap build.gradle.kts for build.gradle when using Groovy
+        restoreKeys: |
+            gradle | "$(Agent.OS)"
+            gradle
+        path: $(GRADLE_USER_HOME)
+    displayName: Configure gradle caching
+  - task: Gradle@2
+    inputs:
+      workingDirectory: ''
+      gradleWrapperFile: 'gradlew'
+      gradleOptions: '-Xmx3072m'
+      publishJUnitResults: false
+      testResultsFiles: '**/TEST-*.xml'
+      tasks: ':app:assembleRelease'
+      options: '--build-cache'
+  - script: |   
+      # stop the Gradle daemon to ensure no files are left open (impacting the save cache operation later)
+      ./gradlew --stop    
+    displayName: Build
+  - task: AndroidSigning@3
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+    inputs:
+      apkFiles: '**/*.apk'
+      apksignerKeystoreFile: 'en-YCH.jks'
+      apksignerKeystorePassword: '$(keyStorePassword)'
+      apksignerKeystoreAlias: '$(keyAlias)'
+      apksignerKeyPassword: '$(keyPassword)'
 
-- task: Gradle@2
-  inputs:
-    workingDirectory: ''
-    gradleWrapperFile: 'gradlew'
-    gradleOptions: '-Xmx3072m'
-    publishJUnitResults: false
-    testResultsFiles: '**/TEST-*.xml'
-    tasks: ':app:assembleRelease'
-    options: '--build-cache'
-
-- script: |   
-    # stop the Gradle daemon to ensure no files are left open (impacting the save cache operation later)
-    ./gradlew --stop    
-  displayName: Build
-
-- task: AndroidSigning@3
-  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
-  inputs:
-    apkFiles: '**/*.apk'
-    apksignerKeystoreFile: 'en-YCH.jks'
-    apksignerKeystorePassword: '$(keyStorePassword)'
-    apksignerKeystoreAlias: '$(keyAlias)'
-    apksignerKeyPassword: '$(keyPassword)'
-
-- task: AppCenterDistribute@3
-  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
-  inputs:
-    serverEndpoint: 'QNotified'
-    appSlug: 'QNotifiedDev/QNotified'
-    appFile: '**/*.apk'
-    symbolsOption: 'Android'
-    releaseNotesOption: 'input'
-    releaseNotesInput: '$(Build.SourceVersionMessage)'
-    destinationType: 'groups'
-    distributionGroupId: 'c7a5954e-6861-438f-ad02-fb765d4d889f'
-    
-- task: GitHubRelease@1
-  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
-  inputs:
-    gitHubConnection: 'github.com_singleNeuron'
-    repositoryName: 'Xposed-Modules-Repo/nil.nadph.qnotified'
-    action: 'create'
-    target: '$(Build.SourceVersion)'
-    tagSource: 'gitTag'
-    releaseNotesSource: 'inline'
-    releaseNotesInline: '$(Build.SourceVersionMessage)'
-    assets: '**/*.apk'
-    isPreRelease: true
-    addChangeLog: false
+- job: Distribute
+  dependsOn: Build
+  condition: and(succeeded('Build'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  steps:
+  - task: AppCenterDistribute@3
+    displayName: AppCenter Canary
+    inputs:
+      serverEndpoint: 'QNotified'
+      appSlug: 'QNotifiedDev/QNotified'
+      appFile: '**/*.apk'
+      symbolsOption: 'Android'
+      releaseNotesOption: 'input'
+      releaseNotesInput: '$(Build.SourceVersionMessage)'
+      destinationType: 'groups'
+      distributionGroupId: 'c7a5954e-6861-438f-ad02-fb765d4d889f'
+  - task: AppCenterDistribute@3
+    displayName: AppCenter Weekly
+    condition: contains(variables['Build.SourceVersionMessage'], 'release')
+    inputs:
+      serverEndpoint: 'QNotified'
+      appSlug: 'QNotifiedDev/QNotified'
+      appFile: '**/*.apk'
+      symbolsOption: 'Android'
+      releaseNotesOption: 'input'
+      releaseNotesInput: '$(Build.SourceVersionMessage)'
+      destinationType: 'groups'
+      distributionGroupId: '8a11cc3e-47da-4e3b-84e7-ac306a128aaf'
+  - task: GitHubRelease@1
+    displayName: Github Release Weekly
+    condition: contains(variables['Build.SourceVersionMessage'], 'release')
+    inputs:
+      gitHubConnection: 'github.com_singleNeuron'
+      repositoryName: 'ferredoxin/QNotified'
+      action: 'create'
+      target: '$(Build.SourceVersion)'
+      tagSource: 'gitTag'
+      title: '$(Build.SourceVersionMessage)'
+      assets: '**/*.apk'
+      addChangeLog: false
