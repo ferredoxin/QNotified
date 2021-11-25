@@ -78,3 +78,15 @@ steps:
     assets: '**/*.apk'
     isPreRelease: true
     addChangeLog: false
+
+- task: GitHubRelease@1
+  condition: contains(variables['Build.SourceVersionMessage'], 'release')
+  inputs:
+    gitHubConnection: 'github.com_singleNeuron'
+    repositoryName: 'Xposed-Modules-Repo/nil.nadph.qnotified'
+    action: 'create'
+    target: '$(Build.SourceVersion)'
+    tagSource: 'gitTag'
+    title: '$(Build.SourceVersionMessage)'
+    assets: '**/*.apk'
+    addChangeLog: false
