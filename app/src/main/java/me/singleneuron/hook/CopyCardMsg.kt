@@ -21,8 +21,65 @@
  */
 package me.singleneuron.hook
 
+import android.content.Context
+import android.view.View
+import cc.ioctl.hook.InputButtonHook
+import de.robv.android.xposed.XposedBridge
+import de.robv.android.xposed.XposedHelpers
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
+import nil.nadph.qnotified.util.DexKit
+import nil.nadph.qnotified.util.Initiator
+import xyz.nextalone.util.tryOrFalse
 
+@FunctionEntry
 object CopyCardMsg : CommonDelayableHook("copyCardMsg") {
-    override fun initOnce(): Boolean = true
+    override fun initOnce() = tryOrFalse {
+        //Begin: ArkApp
+        val cl_ArkAppItemBuilder = DexKit.doFindClass(DexKit.C_ARK_APP_ITEM_BUBBLE_BUILDER)
+        XposedHelpers.findAndHookMethod(cl_ArkAppItemBuilder, "a", Int::class.javaPrimitiveType, Context::class.java,
+            Initiator.load("com/tencent/mobileqq/data/ChatMessage"), InputButtonHook.MenuItemClickCallback())
+        for (m in cl_ArkAppItemBuilder!!.declaredMethods) {
+            if (!m.returnType.isArray) {
+                continue
+            }
+            val ps = m.parameterTypes
+            if (ps.size == 1 && ps[0] == View::class.java) {
+                XposedBridge.hookMethod(m, InputButtonHook.GetMenuItemCallBack())
+                break
+            }
+        }
+        //End: ArkApp
+        //Begin: StructMsg
+        val cl_StructingMsgItemBuilder = Initiator.load(
+            "com/tencent/mobileqq/activity/aio/item/StructingMsgItemBuilder")
+        XposedHelpers.findAndHookMethod(cl_StructingMsgItemBuilder, "a", Int::class.javaPrimitiveType, Context::class.java,
+            Initiator.load("com/tencent/mobileqq/data/ChatMessage"), InputButtonHook.MenuItemClickCallback())
+        for (m in cl_StructingMsgItemBuilder.declaredMethods) {
+            if (!m.returnType.isArray) {
+                continue
+            }
+            val ps = m.parameterTypes
+            if (ps.size == 1 && ps[0] == View::class.java) {
+                XposedBridge.hookMethod(m, InputButtonHook.GetMenuItemCallBack())
+                break
+            }
+        }
+        //End: StructMsg
+//            for (Method m : load("com.tencent.mobileqq.structmsg.StructMsgForGeneralShare").getMethods()) {
+//                if (m.getName().equals("getView")) {
+//                    XposedBridge.hookMethod(m, new XC_MethodHook() {
+//                        @Override
+//                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+//                            View v = (View) param.getResult();
+//                            View.OnLongClickListener l = getBubbleLongClickListener((Activity) param.args[0]);
+//                            if (v != null && l != null) {
+//                                //v.setOnLongClickListener(l);
+//                            }
+//                        }
+//                    });
+//                    break;
+//                }
+//            }
+    }
 }
