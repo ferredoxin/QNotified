@@ -52,5 +52,5 @@ fun getBlackListExample(): String {
 }
 
 fun getBlackList(): String {
-    return URL("https://ioctl.cc/QN/BlackList").readText()
+    return "{}"
 }
