@@ -43,7 +43,7 @@ import nil.nadph.qnotified.util.ReflexUtil
 object HideFriendCardSendGift : CommonDelayAbleHookBridge() {
 
     override val preference = uiSwitchPreference {
-        title = "隐藏空间好友热播和广告"
+        title = "屏蔽好友资料页送礼物按钮"
     }
 
     override val preferenceLocate = 净化功能
