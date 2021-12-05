@@ -28,13 +28,13 @@ import java.util.*
 abstract class ReplaceIcon : DefaultTask() {
     @TaskAction
     fun run() {
-        val projectDir: File = project.projectDir
+        val iconsDir = File(project.projectDir, "icons")
         val iconFileDirs = listOf(
-            File(projectDir, "MiStyleIcons"),
-            File(projectDir, "icons"),
+            File(iconsDir, "MiStyleIcons"),
+            File(iconsDir, "classic"),
             //File(projectDir ,"ChineseNewYearIcons")
         )
-        val fileCount = iconFileDirs.fold(0) { i: kotlin.Int, file: File ->
+        val fileCount = iconFileDirs.fold(0) { i: Int, file: File ->
             i + file.listFiles()!!.size
         }
         var number = Random().nextInt(fileCount)
@@ -50,7 +50,7 @@ abstract class ReplaceIcon : DefaultTask() {
             number -= iconFileDir.listFiles()!!.size
         }
         println("Select Icon: $iconFile")
-        iconFile!!.copyTo(File(projectDir, "src/main/res/drawable/icon.png"), true)
+        iconFile!!.copyTo(File(project.projectDir, "src/main/res/drawable/icon.png"), true)
         //}
     }
 }
