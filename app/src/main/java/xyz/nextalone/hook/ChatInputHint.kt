@@ -29,10 +29,6 @@ import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
-import xyz.nextalone.util.findHostView
-import xyz.nextalone.util.hookAfter
-import xyz.nextalone.util.putDefault
-import xyz.nextalone.util.tryOrFalse
 import me.kyuubiran.util.getDefaultCfg
 import me.singleneuron.qn_kernel.ui.base.辅助功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
@@ -43,8 +39,12 @@ import nil.nadph.qnotified.util.DexKit
 import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.Toasts
 import nil.nadph.qnotified.util.Utils
-import org.ferredoxin.ferredoxin_ui.base.UiItem
-import org.ferredoxin.ferredoxin_ui.base.uiClickableItem
+import org.ferredoxin.ferredoxinui.common.base.UiItem
+import org.ferredoxin.ferredoxinui.common.base.uiClickableItem
+import xyz.nextalone.util.findHostView
+import xyz.nextalone.util.hookAfter
+import xyz.nextalone.util.putDefault
+import xyz.nextalone.util.tryOrFalse
 
 @FunctionEntry
 @me.singleneuron.qn_kernel.annotation.UiItem

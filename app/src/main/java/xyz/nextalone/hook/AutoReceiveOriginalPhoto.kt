@@ -21,10 +21,6 @@
  */
 package xyz.nextalone.hook
 
-import xyz.nextalone.util.invoke
-import xyz.nextalone.util.method
-import xyz.nextalone.util.replace
-import xyz.nextalone.util.tryOrFalse
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.hostInfo
@@ -35,7 +31,11 @@ import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.util.DexKit
 import nil.nadph.qnotified.util.QQVersion
-import org.ferredoxin.ferredoxin_ui.base.UiSwitchPreference
+import org.ferredoxin.ferredoxinui.common.base.UiSwitchPreference
+import xyz.nextalone.util.invoke
+import xyz.nextalone.util.method
+import xyz.nextalone.util.replace
+import xyz.nextalone.util.tryOrFalse
 
 @FunctionEntry
 @UiItem

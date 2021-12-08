@@ -33,16 +33,15 @@ import me.kyuubiran.util.getExFriendCfg
 import me.kyuubiran.util.showToastByTencent
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.qn_kernel.tlb.ConfigTable.getConfig
-import me.singleneuron.qn_kernel.ui.base.增强功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.ui.CustomDialog
 import nil.nadph.qnotified.ui.ViewBuilder
 import nil.nadph.qnotified.util.*
-import org.ferredoxin.ferredoxin_ui.base.UiDescription
-import org.ferredoxin.ferredoxin_ui.base.UiItem
-import org.ferredoxin.ferredoxin_ui.base.uiClickableItem
+import org.ferredoxin.ferredoxinui.common.base.UiDescription
+import org.ferredoxin.ferredoxinui.common.base.UiItem
+import org.ferredoxin.ferredoxinui.common.base.uiClickableItem
 import xyz.nextalone.util.*
 import java.util.*
 
@@ -58,7 +57,7 @@ object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt", DexDeobfSt
         }
     }.second
 
-    override val preferenceLocate = 增强功能
+    override val preferenceLocate = arrayOf("主页", "示例")
 
     private const val msgCfg = "na_chat_words_count_kt_msg"
     private const val wordsCfg = "na_chat_words_count_kt_words"

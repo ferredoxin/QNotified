@@ -37,9 +37,9 @@ import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.ui.CommonContextWrapper
 import nil.nadph.qnotified.util.Utils.PACKAGE_NAME_QQ
-import org.ferredoxin.ferredoxin_ui.base.MaterialAlertDialogPreferenceFactory
-import org.ferredoxin.ferredoxin_ui.base.UiItem
-import org.ferredoxin.ferredoxin_ui.base.uiDialogPreference
+import org.ferredoxin.ferredoxinui.common.base.MaterialAlertDialogPreferenceFactory
+import org.ferredoxin.ferredoxinui.common.base.UiItem
+import org.ferredoxin.ferredoxinui.common.base.uiDialogPreference
 
 @FunctionEntry
 @me.singleneuron.qn_kernel.annotation.UiItem

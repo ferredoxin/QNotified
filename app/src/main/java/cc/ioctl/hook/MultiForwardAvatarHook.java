@@ -51,7 +51,7 @@ import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.UiThread;
 import nil.nadph.qnotified.util.Utils;
-import org.ferredoxin.ferredoxin_ui.base.UiSwitchPreference;
+import org.ferredoxin.ferredoxinui.common.base.UiSwitchPreference;
 
 @FunctionEntry
 @UiItem

@@ -26,13 +26,13 @@ import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.QQVersion
-import org.ferredoxin.ferredoxin_ui.base.UiSwitchPreference
+import org.ferredoxin.ferredoxinui.common.base.UiSwitchPreference
 import xyz.nextalone.util.*
 
 @FunctionEntry
 object Emoji2Sticker : CommonDelayAbleHookBridge() {
-    override val preference: UiSwitchPreference=uiSwitchPreference {
-        title="关闭大号emoji"
+    override val preference: UiSwitchPreference = uiSwitchPreference {
+        title = "关闭大号emoji"
     }
 
     override fun isValid() = requireMinQQVersion(QQVersion.QQ_8_7_5)

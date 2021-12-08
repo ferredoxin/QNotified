@@ -35,7 +35,7 @@ import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.decorator.BaseStartActivityHookDecorator
 import me.singleneuron.qn_kernel.ui.base.辅助功能
 import nil.nadph.qnotified.util.Utils
-import org.ferredoxin.ferredoxin_ui.base.UiSwitchPreference
+import org.ferredoxin.ferredoxinui.common.base.UiSwitchPreference
 
 @UiItem
 object FxxkQQBrowser : BaseStartActivityHookDecorator() {

@@ -27,7 +27,7 @@ import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.decorator.BaseStartActivityHookDecorator
 import me.singleneuron.util.dump
 import nil.nadph.qnotified.util.Utils
-import org.ferredoxin.ferredoxin_ui.base.UiSwitchPreference
+import org.ferredoxin.ferredoxinui.common.base.UiSwitchPreference
 
 @UiItem
 object DebugDump : BaseStartActivityHookDecorator() {
