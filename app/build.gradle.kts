@@ -94,6 +94,9 @@ android {
     }
     kotlinOptions {
         jvmTarget = Version.java.toString()
+        compileOptions {
+            kotlinOptions.freeCompilerArgs += "-Xmulti-platform"
+        }
     }
     // Encapsulates your external native build configurations.
     externalNativeBuild {
@@ -121,7 +124,8 @@ dependencies {
     compileOnly(fileTree(mapOf("dir" to "lib", "include" to listOf("*.jar"))))
     compileOnly(project(":stub"))
     implementation(project(":mmkv"))
-    implementation(project(":FerredoxinUILib"))
+    implementation(project(":common"))
+    implementation(project(":qnotified_style"))
     ksp(project(":compiler"))
     compileOnly("de.robv.android.xposed:api:82")
     implementation("com.jaredrummler:colorpicker:1.1.0")

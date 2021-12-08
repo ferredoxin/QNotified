@@ -9,11 +9,12 @@ dependencyResolutionManagement {
     }
 }
 
-include(":app", ":stub", ":compiler", ":dex-ptm", ":mmkv", ":FerredoxinUILib")
+include(":app", ":stub", ":compiler", ":dex-ptm", ":mmkv", ":common", ":qnotified_style")
 val compilerLibsDir: File = File(settingsDir, "libs")
 project(":stub").projectDir = File(compilerLibsDir, "stub")
 project(":compiler").projectDir = File(compilerLibsDir, "compiler")
 project(":dex-ptm").projectDir = File(compilerLibsDir, "dex-ptm")
 project(":mmkv").projectDir = File(compilerLibsDir, "mmkv" + File.separator + "Android")
-project(":FerredoxinUILib").projectDir = File(compilerLibsDir, "FerredoxinUI" + File.separator + "FerredoxinUILib")
+project(":common").projectDir = File(compilerLibsDir, "FerredoxinUI" + File.separator + "common")
+project(":qnotified_style").projectDir = File(compilerLibsDir, "FerredoxinUI" + File.separator + "qnotified_style")
 rootProject.name = "QNotified"
