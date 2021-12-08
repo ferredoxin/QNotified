@@ -1,7 +1,7 @@
 import org.gradle.api.JavaVersion
 
 object Version {
-    val kotlin = "1.6.0"
-    val ksp = "1.0.1"
+    const val kotlin = "1.5.31"
+    const val ksp = "1.0.1"
     val java = JavaVersion.VERSION_11
 }
