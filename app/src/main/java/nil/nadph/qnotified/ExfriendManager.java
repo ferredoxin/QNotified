@@ -128,15 +128,6 @@ public class ExfriendManager {
         }
     }
 
-    public static ExfriendManager getOrNull(long uin) {
-        if (uin < 10000) {
-            throw new IllegalArgumentException("uin must >= 10000 ");
-        }
-        synchronized (instances) {
-            return instances.get(uin);
-        }
-    }
-
     public static Object getFriendsManager() throws Exception {
         Object qqAppInterface = Utils.getAppRuntime();
         return invoke_virtual(qqAppInterface, "getManager", 50, int.class);
@@ -547,7 +538,7 @@ public class ExfriendManager {
     }
 
     /**
-     * @hide
+     * @hidden
      */
     //@Deprecated
     public ConcurrentHashMap<Long, FriendRecord> getPersons() {
@@ -556,7 +547,7 @@ public class ExfriendManager {
     }
 
     /**
-     * @hide
+     * @hidden
      */
     //@Deprecated
     public ConcurrentHashMap<Integer, EventRecord> getEvents() {
@@ -565,7 +556,7 @@ public class ExfriendManager {
     }
 
     /**
-     * @method getRemark: return remark if it's a friend,or one's nickname if not
+     * @return remark if it's a friend,or one's nickname if not
      */
     public String getRemark(long uin) {
         return (String) mStdRemarks.get("" + uin);
@@ -761,7 +752,8 @@ public class ExfriendManager {
         mConfig.putLong("lastUpdateFl", lastUpdateTimeSec);
         saveConfigure();
         try {
-            if (isNotifyWhenDeleted() && ((int) ptr[0]) > 0) {
+            if (ConfigManager.getDefaultConfig().getBooleanOrFalse("qn_notify_when_del")
+                && ((int) ptr[0]) > 0) {
                 Intent inner = new Intent(HostInfo.getHostInfo().getApplication(),
                     ExfriendListActivity.class);
                 Intent wrapper = new Intent();
@@ -782,16 +774,6 @@ public class ExfriendManager {
         } catch (Exception e) {
             log(e);
         }
-    }
-
-    //TODO: IPC notify
-    public boolean isNotifyWhenDeleted() {
-        return mConfig.getBoolean("qn_notify_when_del", true);
-    }
-
-    public void setNotifyWhenDeleted(boolean z) {
-        mConfig.putBoolean("qn_notify_when_del", z);
-        saveConfigure();
     }
 
     @SuppressWarnings("deprecation")

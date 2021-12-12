@@ -43,6 +43,7 @@ import java.util.Date;
 import cc.ioctl.dialog.RikkaCustomMsgTimeFormatDialog;
 import cc.ioctl.hook.ChatTailHook;
 import cc.ioctl.hook.FakeBatteryHook;
+import java.util.Objects;
 import me.kyuubiran.util.UtilsKt;
 import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.ExfriendManager;
@@ -219,7 +220,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
     @Override
     public void doOnResume() {
         super.doOnResume();
-        ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
+        ConfigManager cfg = Objects.requireNonNull(ConfigManager.forCurrentAccount());
         String str = cfg.getString(ConfigItems.qn_chat_tail_troops);
         int n = 0;
         if (str != null && str.length() > 4) {
@@ -277,7 +278,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
 
     @Override
     public void onClick(View v) {
-        ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
+        ConfigManager cfg = Objects.requireNonNull(ConfigManager.forCurrentAccount());
         switch (v.getId()) {
             case R_ID_APPLY:
                 doUpdateTailCfg();
@@ -299,7 +300,7 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
 
     private void doUpdateTailCfg() {
         ChatTailHook ct = ChatTailHook.INSTANCE;
-        ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
+        ConfigManager cfg = Objects.requireNonNull(ConfigManager.forCurrentAccount());
         EditText pct;
         pct = ChatTailActivity.this.findViewById(R_ID_PERCENT_VALUE);
         String val = pct.getText().toString();

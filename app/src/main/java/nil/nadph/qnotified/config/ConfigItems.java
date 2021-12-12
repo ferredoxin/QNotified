@@ -103,9 +103,9 @@ public class ConfigItems {
         @Override
         public boolean isValid() {
             try {
-                ExfriendManager.getCurrent();
+                Objects.requireNonNull(ConfigManager.forCurrentAccount());
                 return true;
-            } catch (IllegalArgumentException e) {
+            } catch (NullPointerException e) {
                 //not login
                 return false;
             }
@@ -114,9 +114,8 @@ public class ConfigItems {
         @Override
         public boolean isEnabled() {
             try {
-                ExfriendManager mgr = ExfriendManager.getCurrent();
-                return mgr.isNotifyWhenDeleted();
-            } catch (IllegalArgumentException e) {
+                return ConfigManager.getDefaultConfig().getBooleanOrFalse("qn_notify_when_del");
+            } catch (Exception e) {
                 //not login
                 return false;
             }
@@ -128,9 +127,10 @@ public class ConfigItems {
         }        @Override
         public void setEnabled(boolean enabled) {
             try {
-                ExfriendManager mgr = ExfriendManager.getCurrent();
-                mgr.setNotifyWhenDeleted(enabled);
-            } catch (IllegalArgumentException e) {
+                ConfigManager mgr = ConfigManager.getDefaultConfig();
+                mgr.putBoolean("qn_notify_when_del", enabled);
+                mgr.save();
+            } catch (IOException e) {
                 log(e);
             }
         }

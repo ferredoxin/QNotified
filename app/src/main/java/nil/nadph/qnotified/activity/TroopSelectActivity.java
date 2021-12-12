@@ -244,7 +244,7 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
                 ret = sb.substring(1);
             }
             try {
-                ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
+                ConfigManager cfg = Objects.requireNonNull(ConfigManager.forCurrentAccount());
                 cfg.putString(targetDataSaveKey, ret);
                 cfg.save();
                 this.finish();
@@ -416,7 +416,7 @@ public class TroopSelectActivity extends IphoneTitleBarActivityCompat implements
         sdlv.setAdapter(mAdapter);
         muted = new HashSet<>();
         String list = null;
-        list = ExfriendManager.getCurrent().getConfig().getString(targetDataSaveKey);
+        list = Objects.requireNonNull(ConfigManager.forCurrentAccount()).getString(targetDataSaveKey);
         if (list != null) {
             for (String s : list.split(",")) {
                 if (s.length() > 4) {

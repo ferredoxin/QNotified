@@ -26,11 +26,13 @@ import java.lang.reflect.Method;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
+import java.util.Objects;
 import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.config.ConfigItems;
+import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.QQVersion;
@@ -77,7 +79,8 @@ public class MuteAtAllAndRedPacket extends CommonDelayableHook {
                                     if (ret != at_all_type) {
                                         return;
                                     }
-                                    String muted = "," + ExfriendManager.getCurrent().getConfig()
+                                    String muted = "," + Objects.requireNonNull(
+                                            ConfigManager.forCurrentAccount())
                                         .getString(ConfigItems.qn_muted_at_all) + ",";
                                     if (muted.contains("," + troopuin + ",")) {
                                         param.setResult(0);
@@ -107,8 +110,9 @@ public class MuteAtAllAndRedPacket extends CommonDelayableHook {
                         }
                         String troopuin = (String) iget_object_or_null(param.thisObject,
                             "frienduin");
-                        String muted = "," + ExfriendManager.getCurrent().getConfig()
-                            .getString(ConfigItems.qn_muted_red_packet) + ",";
+                        String muted =
+                            "," + Objects.requireNonNull(ConfigManager.forCurrentAccount())
+                                .getString(ConfigItems.qn_muted_red_packet) + ",";
                         if (muted.contains("," + troopuin + ",")) {
                             mute = true;
                         }

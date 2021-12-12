@@ -42,6 +42,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import me.kyuubiran.util.UtilsKt;
@@ -108,7 +109,7 @@ public class ChatTailHook extends BaseInputButtonDecorator {
     }
 
     public static boolean isRegex() {
-        return ExfriendManager.getCurrent().getConfig()
+        return Objects.requireNonNull(ConfigManager.forCurrentAccount())
             .getBooleanOrFalse(ConfigItems.qn_chat_tail_regex);
     }
 
@@ -129,13 +130,13 @@ public class ChatTailHook extends BaseInputButtonDecorator {
 
     public static String getTailRegex() {
         // (?:(?![A-Za-z0-9])(?:[\x21-\x7e？！]))$
-        return ExfriendManager.getCurrent().getConfig()
+        return Objects.requireNonNull(ConfigManager.forCurrentAccount())
             .getStringOrDefault(ConfigItems.qn_chat_tail_regex_text, "");
     }
 
     public static void setTailRegex(String regex) {
         try {
-            ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
+            ConfigManager cfg = Objects.requireNonNull(ConfigManager.forCurrentAccount());
             cfg.putString(ConfigItems.qn_chat_tail_regex_text, regex);
             cfg.save();
         } catch (IOException e) {
@@ -233,25 +234,25 @@ public class ChatTailHook extends BaseInputButtonDecorator {
     }
 
     private boolean containsFriend(String uin) {
-        String muted = "," + ExfriendManager.getCurrent().getConfig()
+        String muted = "," + Objects.requireNonNull(ConfigManager.forCurrentAccount())
             .getString(ConfigItems.qn_chat_tail_friends) + ",";
         return muted.contains("," + uin + ",");
     }
 
     private boolean isGlobal() {
-        return ExfriendManager.getCurrent().getConfig()
+        return Objects.requireNonNull(ConfigManager.forCurrentAccount())
             .getBooleanOrFalse(ConfigItems.qn_chat_tail_global);
     }
 
     private boolean containsTroop(String uin) {
-        String muted = "," + ExfriendManager.getCurrent().getConfig()
+        String muted = "," + Objects.requireNonNull(ConfigManager.forCurrentAccount())
             .getString(ConfigItems.qn_chat_tail_troops) + ",";
         return muted.contains("," + uin + ",");
     }
 
     public void setTail(String tail) {
         try {
-            ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
+            ConfigManager cfg = Objects.requireNonNull(ConfigManager.forCurrentAccount());
             cfg.putString(ConfigItems.qn_chat_tail, tail);
             cfg.save();
         } catch (IOException e) {
@@ -260,7 +261,7 @@ public class ChatTailHook extends BaseInputButtonDecorator {
     }
 
     public String getTailStatus() {
-        return ExfriendManager.getCurrent().getConfig()
+        return Objects.requireNonNull(ConfigManager.forCurrentAccount())
             .getStringOrDefault(ConfigItems.qn_chat_tail, "");
     }
 
@@ -285,7 +286,7 @@ public class ChatTailHook extends BaseInputButtonDecorator {
     @Override
     public void setEnabled(boolean enabled) {
         try {
-            ConfigManager cfg = ExfriendManager.getCurrent().getConfig();
+            ConfigManager cfg = Objects.requireNonNull(ConfigManager.forCurrentAccount());
             cfg.putBoolean(qn_chat_tail_enable, enabled);
             cfg.save();
             InputButtonHook.INSTANCE.setEnabled(enabled);
