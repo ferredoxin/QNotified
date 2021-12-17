@@ -5,10 +5,10 @@ import me.singleneuron.qn_kernel.ui.fragment.QNFragment
 import me.singleneuron.qn_kernel.ui.fragment.QNViewPagerFragment
 import org.ferredoxin.ferredoxinui.common.base.*
 
-object UiTable : UiScreen {
-    override var name: String = "QNotified"
-    override var summary: String? = null
-    override var contains: UiMap = linkedMapOf(
+val UiTable = uiScreen {
+    name = "QNotified"
+    summary = null
+    contains = linkedMapOf(
         uiCategory {
             name = "模块设置"
             contains = linkedMapOf(

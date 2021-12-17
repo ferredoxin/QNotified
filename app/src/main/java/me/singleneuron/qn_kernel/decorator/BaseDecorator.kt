@@ -22,12 +22,15 @@
 package me.singleneuron.qn_kernel.decorator
 
 import android.content.Context
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.launch
 import me.ketal.data.ConfigData
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.util.Utils
+import org.ferredoxin.ferredoxinui.common.base.DirectResourceProvider
+import org.ferredoxin.ferredoxinui.common.base.ResourceProvider
 import org.ferredoxin.ferredoxinui.common.base.UiSwitchItem
 import org.ferredoxin.ferredoxinui.common.base.UiSwitchPreference
 
@@ -45,6 +48,30 @@ abstract class BaseDecorator : UiSwitchItem {
     inner class UiSwitchPreferenceItemFactory() : UiSwitchPreference {
         override lateinit var title: String
         override var summary: String? = null
+        private lateinit var titleProviderCache: ResourceProvider<String>
+        override var titleProvider: ResourceProvider<String>
+            get() {
+                if (this::titleProviderCache.isInitialized) {
+                    return titleProviderCache
+                } else {
+                    return DirectResourceProvider(title)
+                }
+            }
+            set(value) {
+                titleProviderCache = value
+            }
+        private lateinit var summaryProviderCache: ResourceProvider<String?>
+        override var summaryProvider: ResourceProvider<String?>
+            get() {
+                if (this::summaryProviderCache.isInitialized) {
+                    return summaryProviderCache
+                } else {
+                    return DirectResourceProvider(summary)
+                }
+            }
+            set(value) {
+                summaryProviderCache = value
+            }
         override val subSummary: String? = null
         override val clickAble: Boolean = true
         override var onClickListener: (Context) -> Boolean = { true }
@@ -59,7 +86,7 @@ abstract class BaseDecorator : UiSwitchItem {
                     } catch (e: Exception) {
                         Utils.log(e)
                     }
-                    runBlocking {
+                    GlobalScope.launch {
                         collect {
                             configData.value = it
                         }

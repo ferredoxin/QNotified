@@ -8,6 +8,6 @@ import org.ferredoxin.ferredoxinui.qnotified_style.fragment.MaiTungTMSettingFrag
 
 class QNActivity<T> : MaiTungTMStyleActivity<T>() where T : Fragment, T : TitleAble {
 
-    override val fragment: T = MaiTungTMSettingFragment().setUiScreen(UiTable) as T
+    override val fragment: T = MaiTungTMSettingFragment().setUiScreen(UiTable.second) as T
 
 }

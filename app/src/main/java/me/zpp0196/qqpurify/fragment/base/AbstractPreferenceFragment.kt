@@ -146,7 +146,7 @@ abstract class AbstractPreferenceFragment : PreferenceFragmentCompat(), Constant
     }
 
     override fun onPreferenceChange(preference: Preference, newValue: Any): Boolean {
-        return try {
+        try {
             var pref_key = preference.key ?: return false
             var restartRequired = false
             if (pref_key.contains("!")) {
@@ -180,40 +180,38 @@ abstract class AbstractPreferenceFragment : PreferenceFragmentCompat(), Constant
                     for (`val` in vals) {
                         val __fullName = if (keyName == null) "" else "$keyName$$`val`"
                         val kval = `val`.toString()
-                        item.setBooleanConfig(__fullName, selected.contains(kval))
+                        _item.setBooleanConfig(__fullName, selected.contains(kval))
                     }
                 } else {
                     throw UnsupportedOperationException("" + newValue)
                 }
-        }
-        //bindPreferenceSummary(preference, _item);
-        if (_item is BaseDelayableHook) {
-            val hook = _item
-            if (hook.isEnabled && !hook.isInited) {
-                Thread { ViewBuilder.doSetupAndInit(mActivity, hook) }.start()
+            //bindPreferenceSummary(preference, _item);
+            if (_item is BaseDelayableHook) {
+                val hook = _item
+                if (hook.isEnabled && !hook.isInited) {
+                    Thread { ViewBuilder.doSetupAndInit(mActivity, hook) }.start()
+                }
             }
+            _item.sync()
+            if (restartRequired) {
+                Toasts.info(mActivity,
+                    "重启" + hostInfo.hostName + "生效")
+            }
+            return true
+        } catch (e: Exception) {
+            Utils.log(e)
+            Toast.makeText(mActivity, "保存失败: " + e.message, Toast.LENGTH_LONG).show()
+            return false
         }
-        _item.sync()
-        if (restartRequired) {
-            Toasts.info(mActivity,
-                "重启" + hostInfo.hostName + "生效")
-        }
-        true
-    } catch (e: Exception)
-    {
-        Utils.log(e)
-        Toast.makeText(mActivity, "保存失败: " + e.message, Toast.LENGTH_LONG).show()
-        false
     }
-}
 
-override fun onResume() {
-    super.onResume()
-    initPreferences()
-}
+    override fun onResume() {
+        super.onResume()
+        initPreferences()
+    }
 
-abstract val prefRes: Int
-override fun getFragment(): Fragment {
-    return this
-}
+    abstract val prefRes: Int
+    override fun getFragment(): Fragment {
+        return this
+    }
 }

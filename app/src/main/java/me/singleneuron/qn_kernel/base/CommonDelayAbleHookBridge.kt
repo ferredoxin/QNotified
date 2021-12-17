@@ -23,17 +23,21 @@
 package me.singleneuron.qn_kernel.base
 
 import android.content.Context
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.launch
 import me.ketal.data.ConfigData
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.step.Step
 import nil.nadph.qnotified.util.Utils
+import org.ferredoxin.ferredoxinui.common.base.DirectResourceProvider
+import org.ferredoxin.ferredoxinui.common.base.ResourceProvider
 import org.ferredoxin.ferredoxinui.common.base.UiItem
 import org.ferredoxin.ferredoxinui.common.base.UiSwitchPreference
+
 abstract class CommonDelayAbleHookBridge
 @JvmOverloads
 constructor(
@@ -74,6 +78,31 @@ constructor(
         override val subSummary: String? = null
         private val configData: ConfigData<Boolean> = ConfigData(configName)
 
+        private lateinit var titleProviderCache: ResourceProvider<String>
+        override var titleProvider: ResourceProvider<String>
+            get() {
+                if (this::titleProviderCache.isInitialized) {
+                    return titleProviderCache
+                } else {
+                    return DirectResourceProvider(title)
+                }
+            }
+            set(value) {
+                titleProviderCache = value
+            }
+        private lateinit var summaryProviderCache: ResourceProvider<String?>
+        override var summaryProvider: ResourceProvider<String?>
+            get() {
+                if (this::summaryProviderCache.isInitialized) {
+                    return summaryProviderCache
+                } else {
+                    return DirectResourceProvider(summary)
+                }
+            }
+            set(value) {
+                summaryProviderCache = value
+            }
+
         @JvmOverloads
         constructor(title: String, summary: String? = null) : this() {
             this.title = title
@@ -88,7 +117,7 @@ constructor(
                     } catch (e: Exception) {
                         Utils.log(e)
                     }
-                    runBlocking {
+                    GlobalScope.launch {
                         collect {
                             configData.value = it
                         }

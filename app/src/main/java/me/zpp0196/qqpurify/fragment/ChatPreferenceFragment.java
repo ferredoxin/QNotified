@@ -9,7 +9,7 @@ import nil.nadph.qnotified.R;
 public class ChatPreferenceFragment extends AbstractPreferenceFragment {
 
     @Override
-    protected int getPrefRes() {
+    public int getPrefRes() {
         return R.xml.pref_chat;
     }
 

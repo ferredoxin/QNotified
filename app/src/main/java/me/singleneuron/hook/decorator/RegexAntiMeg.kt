@@ -24,10 +24,12 @@ package me.singleneuron.hook.decorator
 
 import cn.lliiooll.msg.MessageReceiver
 import de.robv.android.xposed.XposedHelpers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import me.kyuubiran.util.getExFriendCfg
 import me.singleneuron.qn_kernel.data.MsgRecordData
 import me.singleneuron.qn_kernel.ui.base.辅助功能
-import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.ui.CommonContextWrapper
 import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.ReflexUtil
@@ -90,10 +92,10 @@ object RegexAntiMeg : MessageReceiver, UiItem {
     override val preference = uiEditTextPreference {
         title = "万象屏蔽卡片消息"
         summary = "使用强大的正则表达式自由屏蔽卡片消息"
-        SyncUtils.post {
-//            value.observeForever {
-//                getExFriendCfg().putString(RegexAntiMeg::class.java.simpleName, it)
-//            }
+        GlobalScope.launch {
+            value.collect {
+                getExFriendCfg().putString(RegexAntiMeg::class.java.simpleName, it)
+            }
         }
         inputLayout = {
             helperText = "留空以禁用"
