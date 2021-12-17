@@ -29,7 +29,7 @@ import org.ferredoxin.ferredoxinui.common.base.observeStateFlow
 abstract class AbstractPreferenceFragment : PreferenceFragmentCompat(), Constants, Preference.OnPreferenceChangeListener, TabFragment, ISetting {
     @JvmField
     protected var mActivity: MainActivity? = null
-    override fun onCreatePreferences(savedInstanceState: Bundle, rootKey: String) {
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String) {
         setPreferencesFromResource(prefRes, rootKey)
         mActivity = activity as MainActivity?
         initPreferences()

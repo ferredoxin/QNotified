@@ -31,6 +31,7 @@ import de.robv.android.xposed.XposedBridge;
 import java.lang.reflect.Method;
 import me.singleneuron.qn_kernel.annotation.UiItem;
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge;
+import me.singleneuron.qn_kernel.ui.base.UiRoutineKt;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.step.DexDeobfStep;
@@ -54,7 +55,7 @@ public class $endGiftHook extends CommonDelayAbleHookBridge {
     @Nullable
     @Override
     public String[] getPreferenceLocate() {
-        return new String[]{"净化功能"};
+        return UiRoutineKt.get净化_聊天();
     }
 
     public static final $endGiftHook INSTANCE = new $endGiftHook();

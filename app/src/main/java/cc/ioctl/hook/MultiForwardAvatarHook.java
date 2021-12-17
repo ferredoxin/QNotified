@@ -42,6 +42,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import me.singleneuron.qn_kernel.annotation.UiItem;
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge;
+import me.singleneuron.qn_kernel.ui.base.UiRoutineKt;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.step.DexDeobfStep;
@@ -68,7 +69,7 @@ public class MultiForwardAvatarHook extends CommonDelayAbleHookBridge {
     @Nullable
     @Override
     public String[] getPreferenceLocate() {
-        return new String[]{"增强功能"};
+        return UiRoutineKt.get增强功能();
     }
 
     public static final MultiForwardAvatarHook INSTANCE = new MultiForwardAvatarHook();

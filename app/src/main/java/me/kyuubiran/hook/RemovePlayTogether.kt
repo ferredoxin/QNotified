@@ -26,7 +26,7 @@ import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.isPlayQQ
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.qn_kernel.tlb.ConfigTable
-import me.singleneuron.qn_kernel.ui.base.净化功能
+import me.singleneuron.qn_kernel.ui.base.净化_群聊
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.QQVersion
@@ -39,7 +39,7 @@ import xyz.nextalone.util.tryOrFalse
 @FunctionEntry
 @UiItem
 object RemovePlayTogether : CommonDelayAbleHookBridge() {
-    override val preferenceLocate = 净化功能
+    override val preferenceLocate = 净化_群聊
     override val preference: UiSwitchPreference = uiSwitchPreference {
         title = "移除群聊界面一起嗨"
     }

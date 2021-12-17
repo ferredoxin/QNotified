@@ -75,7 +75,7 @@ object ChatInputHint : CommonDelayableHook("na_chat_input_hint"), UiItem {
         }
     }.second
 
-    override val preferenceLocate: Array<String> = 辅助功能
+    override val preferenceLocate = 辅助功能
 
     fun showInputHintDialog(activity: Context) {
         val dialog = CustomDialog.createFailsafe(activity)

@@ -27,7 +27,7 @@ import android.widget.CheckBox
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import me.singleneuron.qn_kernel.ui.base.辅助功能
+import me.singleneuron.qn_kernel.ui.base.增强功能
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.QQVersion
@@ -46,7 +46,7 @@ object AutoSendOriginalPhoto :
         title = "聊天自动发送原图"
     }
 
-    override val preferenceLocate = 辅助功能
+    override val preferenceLocate = 增强功能
 
     override fun initOnce() = tryOrFalse {
         "Lcom.tencent.mobileqq.activity.aio.photo.PhotoListPanel;->a(Z)V".method.hookAfter(this) {

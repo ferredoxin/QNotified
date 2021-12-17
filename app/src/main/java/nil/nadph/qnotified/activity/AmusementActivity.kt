@@ -54,9 +54,9 @@ class AmusementActivity : IphoneTitleBarActivityCompat() {
         ll.addView(newListItemHookSwitchInit(this, "自己的消息和头像居左显示", "娱乐功能 不进行维护",
             ShowSelfMsgByLeft))
         ll.addView(
-            ViewBuilder.newListItemButton(this, "自定义钱包余额", "仅供娱乐", null, FakeBalance.listener()))
+            ViewBuilder.newListItemButton(this, "自定义钱包余额", "仅供娱乐", null, FakeBalance.listener(this)))
         ll.addView(
-            ViewBuilder.newListItemButton(this, "自定义QQ等级", "仅本地生效", null, FakeQQLevel.listener()))
+            ViewBuilder.newListItemButton(this, "自定义QQ等级", "仅本地生效", null, FakeQQLevel.listener(this)))
         if (HideTab.isValid) {
             ll.addView(newListItemSwitchConfigNext(this, "隐藏底栏", "底栏项目移到侧滑", HideTab))
         }

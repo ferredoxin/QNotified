@@ -126,6 +126,7 @@ dependencies {
     implementation(project(":mmkv"))
     implementation(project(":common"))
     implementation(project(":qnotified_style"))
+    //add("kspAndroid", project(":compiler"))
     ksp(project(":compiler"))
     compileOnly("de.robv.android.xposed:api:82")
     implementation("com.jaredrummler:colorpicker:1.1.0")
