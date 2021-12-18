@@ -27,16 +27,16 @@ import org.ferredoxin.ferredoxinui.common.base.observeStateFlow
  * Created by zpp0196 on 2019/2/9.
  */
 abstract class AbstractPreferenceFragment : PreferenceFragmentCompat(), Constants, Preference.OnPreferenceChangeListener, TabFragment, ISetting {
-    @JvmField
-    protected var mActivity: MainActivity? = null
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String) {
+    protected lateinit var mActivity: MainActivity
+
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(prefRes, rootKey)
-        mActivity = activity as MainActivity?
+        mActivity = activity as MainActivity
         initPreferences()
     }
 
     protected open fun initPreferences() {
-        if (mActivity!!.mRefreshedFragment.contains(this)) {
+        if (mActivity.mRefreshedFragment.contains(this)) {
             return
         }
         val preferenceScreen = preferenceScreen
@@ -44,7 +44,7 @@ abstract class AbstractPreferenceFragment : PreferenceFragmentCompat(), Constant
             val preference = preferenceScreen.getPreference(i)
             initPreference(preference)
         }
-        mActivity!!.mRefreshedFragment.add(this)
+        mActivity.mRefreshedFragment.add(this)
     }
 
     private fun initPreference(preference: Preference) {
