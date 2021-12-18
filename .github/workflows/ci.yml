@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-      name: Clone repository
-
-    - name: Checkout submodules
-      run: git submodule update --init --recursive
+    - name: Clone repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        submodules: 'recursive'
 
     - name: Prepare Java 11
       uses: actions/setup-java@v1
