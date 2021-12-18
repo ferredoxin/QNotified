@@ -6,7 +6,7 @@ import org.ferredoxin.ferredoxinui.common.base.loadUiInList
 import org.ferredoxin.ferredoxinui.common.base.uiCategory
 import org.ferredoxin.ferredoxinui.common.base.uiScreen
 
-val QNPurify: ViewMap = listOf(
+val Purify: ViewMap = listOf(
     uiScreen {
         name = "主页"
         contains = linkedMapOf(

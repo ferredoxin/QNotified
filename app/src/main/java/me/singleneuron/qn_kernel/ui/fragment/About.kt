@@ -8,7 +8,7 @@ import org.ferredoxin.ferredoxinui.common.base.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-val QNAbout: UiScreen = uiScreen {
+val About: UiScreen = uiScreen {
     name = "关于"
     contains = linkedMapOf(uiAboutItem {
         title = "QNotified"

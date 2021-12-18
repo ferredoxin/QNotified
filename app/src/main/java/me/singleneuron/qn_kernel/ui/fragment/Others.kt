@@ -8,7 +8,7 @@ import cc.ioctl.hook.OpenProfileCard
 import me.singleneuron.qn_kernel.ui.gen.getAnnotatedUiItemClassList
 import org.ferredoxin.ferredoxinui.common.base.*
 
-val QNOthers = uiScreen {
+val Others = uiScreen {
     name = "其他功能"
     contains = linkedMapOf(
         uiCategory {

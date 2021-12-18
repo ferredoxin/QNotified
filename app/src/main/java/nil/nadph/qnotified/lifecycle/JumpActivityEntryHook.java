@@ -35,7 +35,7 @@ import android.text.TextUtils;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import java.lang.reflect.Method;
-import me.singleneuron.qn_kernel.ui.activity.QNActivity;
+import me.singleneuron.qn_kernel.ui.activity.SettingActivity;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.MainProcess;
 
@@ -80,7 +80,7 @@ public class JumpActivityEntryHook {
                         } else {
                             Intent realIntent = new Intent(intent);
                             realIntent
-                                .setComponent(new ComponentName(activity, QNActivity.class));
+                                .setComponent(new ComponentName(activity, SettingActivity.class));
                             activity.startActivity(realIntent);
                         }
                     } else if (JUMP_ACTION_START_ACTIVITY.equals(cmd)) {

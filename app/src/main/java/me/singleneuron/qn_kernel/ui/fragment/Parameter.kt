@@ -7,7 +7,7 @@ import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.Toasts
 import org.ferredoxin.ferredoxinui.common.base.*
 
-val QNConfig: UiScreen = uiScreen {
+val Config: UiScreen = uiScreen {
     name = "参数设定"
     contains = linkedMapOf(
         uiCategory {

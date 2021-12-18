@@ -8,7 +8,7 @@ import org.ferredoxin.ferredoxinui.common.base.TitleAble
 import org.ferredoxin.ferredoxinui.qnotified_style.activity.MaiTungTMStyleActivity
 import org.ferredoxin.ferredoxinui.qnotified_style.fragment.MaiTungTMSettingFragment
 
-class QNActivity<T> : MaiTungTMStyleActivity<T>() where T : Fragment, T : TitleAble {
+class SettingActivity<T> : MaiTungTMStyleActivity<T>() where T : Fragment, T : TitleAble {
 
     override val fragment: T = MaiTungTMSettingFragment().setUiScreen(UiTable.second) as T
 

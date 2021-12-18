@@ -26,19 +26,19 @@ val UiTable = uiScreen {
                 },
                 uiClickableItem {
                     title = "净化功能"
-                    onClickListener = ClickToNewPages(QNPurify)
+                    onClickListener = ClickToNewPages(Purify)
                 },
                 uiClickableItem {
                     title = "增强功能"
-                    onClickListener = ClickToNewSetting(QNEnhance)
+                    onClickListener = ClickToNewSetting(Enhance)
                 },
                 uiClickableItem {
                     title = "辅助功能"
-                    onClickListener = ClickToNewSetting(QNAssist)
+                    onClickListener = ClickToNewSetting(Assist)
                 },
                 uiClickableItem {
                     title = "其他功能"
-                    onClickListener = ClickToNewSetting(QNOthers)
+                    onClickListener = ClickToNewSetting(Others)
                 }
             )
         },
@@ -47,7 +47,7 @@ val UiTable = uiScreen {
             contains = linkedMapOf(
                 uiClickableItem {
                     title = "参数设定"
-                    onClickListener = ClickToNewSetting(QNConfig)
+                    onClickListener = ClickToNewSetting(Config)
                 },
                 uiClickableItem {
                     title = "故障排查"
@@ -60,11 +60,11 @@ val UiTable = uiScreen {
             contains = linkedMapOf(
                 uiClickableItem {
                     title = "鸽子画饼"
-                    onClickListener = ClickToNewSetting(QNForesee)
+                    onClickListener = ClickToNewSetting(Foresee)
                 },
                 uiClickableItem {
                     title = "关于"
-                    onClickListener = ClickToNewSetting(QNAbout)
+                    onClickListener = ClickToNewSetting(About)
                 }
             )
         }

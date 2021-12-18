@@ -6,12 +6,12 @@ import org.ferredoxin.ferredoxinui.common.base.loadUiInList
 import org.ferredoxin.ferredoxinui.common.base.uiCategory
 import org.ferredoxin.ferredoxinui.common.base.uiScreen
 
-val QNAssist: UiScreen = uiScreen {
-    name = "辅助功能"
+val Enhance: UiScreen = uiScreen {
+    name = "增强功能"
     contains = linkedMapOf(
         uiCategory {
-            name = "辅助功能"
             noTitle = true
+            name = "增强功能"
         }
     )
     loadUiInList(contains, getAnnotatedUiItemClassList())

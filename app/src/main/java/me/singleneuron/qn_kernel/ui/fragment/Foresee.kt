@@ -3,7 +3,7 @@ package me.singleneuron.qn_kernel.ui.fragment
 import me.singleneuron.qn_kernel.ui.gen.getAnnotatedUiItemClassList
 import org.ferredoxin.ferredoxinui.common.base.*
 
-val QNForesee: UiScreen = uiScreen {
+val Foresee: UiScreen = uiScreen {
     name = "鸽子画饼"
     contains = linkedMapOf(
         uiCategory {
