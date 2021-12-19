@@ -3,6 +3,7 @@ package me.singleneuron.qn_kernel.ui.fragment
 import me.singleneuron.qn_kernel.data.hostInfo
 import nil.nadph.qnotified.activity.EulaActivity
 import nil.nadph.qnotified.activity.LicenseActivity
+import nil.nadph.qnotified.util.UpdateCheck
 import nil.nadph.qnotified.util.Utils
 import org.ferredoxin.ferredoxinui.common.base.*
 import java.text.SimpleDateFormat
@@ -40,6 +41,12 @@ val About: UiScreen = uiScreen {
         }, uiClickableItem {
             title = "检查更新"
             clickAble = true
+            onClickListener = {
+                // fixme
+                val uc = UpdateCheck()
+                uc.onClick(it.currentFocus)
+                true
+            }
         })
     })
 }.second

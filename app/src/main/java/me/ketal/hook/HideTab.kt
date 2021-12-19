@@ -41,20 +41,17 @@ import me.singleneuron.qn_kernel.tlb.ConfigTable
 import me.singleneuron.qn_kernel.tlb.娱乐功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.QQVersion
-import org.ferredoxin.ferredoxinui.common.base.UiSwitchPreference
 import xyz.nextalone.util.*
 
 @SuppressLint("StaticFieldLeak")
 @FunctionEntry
 @UiItem
 object HideTab : CommonDelayAbleHookBridge() {
-    override val preferenceLocate: Array<String>?
-        get() = 娱乐功能
-    override val preference: UiSwitchPreference
-        get() = uiSwitchPreference {
-            title = "隐藏底栏"
-            summary = "底栏项目移到侧滑"
-        }
+    override val preferenceLocate = 娱乐功能
+    override val preference = uiSwitchPreference {
+        title = "隐藏底栏"
+        summary = "底栏项目移到侧滑"
+    }
     private lateinit var tab: TabHost
 
     override fun isValid() = !isTim()

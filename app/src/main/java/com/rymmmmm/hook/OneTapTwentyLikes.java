@@ -29,20 +29,22 @@ import android.widget.ImageView;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import java.lang.reflect.Method;
+import me.singleneuron.qn_kernel.annotation.UiItem;
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge;
+import me.singleneuron.qn_kernel.tlb.UiRoutineKt;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
-import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
+import org.ferredoxin.ferredoxinui.common.base.UiSwitchPreference;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 //回赞界面一键20赞
 @FunctionEntry
-public class OneTapTwentyLikes extends CommonDelayableHook {
+@UiItem
+public class OneTapTwentyLikes extends CommonDelayAbleHookBridge {
 
     public static final OneTapTwentyLikes INSTANCE = new OneTapTwentyLikes();
-
-    protected OneTapTwentyLikes() {
-        super("rq_one_tap_twenty_likes");
-    }
 
     @Override
     public boolean initOnce() {
@@ -77,5 +79,20 @@ public class OneTapTwentyLikes extends CommonDelayableHook {
             log(e);
             return false;
         }
+    }
+
+    private final UiSwitchPreference mUiSwitchPreference = this.new UiSwitchPreferenceItemFactory(
+        "回赞界面一键20赞");
+
+    @NotNull
+    @Override
+    public UiSwitchPreference getPreference() {
+        return mUiSwitchPreference;
+    }
+
+    @Nullable
+    @Override
+    public String[] getPreferenceLocate() {
+        return UiRoutineKt.get花Q();
     }
 }
