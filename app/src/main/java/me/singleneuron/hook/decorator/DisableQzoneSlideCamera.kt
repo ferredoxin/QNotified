@@ -25,7 +25,7 @@ import android.content.Intent
 import de.robv.android.xposed.XC_MethodHook
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.decorator.BaseStartActivityHookDecorator
-import me.singleneuron.qn_kernel.ui.base.净化_扩展
+import me.singleneuron.qn_kernel.tlb.净化_扩展
 
 @UiItem
 object DisableQzoneSlideCamera : BaseStartActivityHookDecorator() {

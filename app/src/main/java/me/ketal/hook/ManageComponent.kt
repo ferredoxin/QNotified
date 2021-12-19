@@ -35,7 +35,7 @@ import me.ketal.util.getEnable
 import me.ketal.util.setEnable
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.data.hostInfo
-import me.singleneuron.qn_kernel.ui.base.增强功能
+import me.singleneuron.qn_kernel.tlb.增强功能
 import nil.nadph.qnotified.BuildConfig
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook

@@ -28,7 +28,7 @@ import me.ketal.util.HookUtil.getField
 import me.ketal.util.HookUtil.getMethod
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.data.requireMinVersion
-import me.singleneuron.qn_kernel.ui.base.净化_扩展
+import me.singleneuron.qn_kernel.tlb.净化_扩展
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.QQVersion
 import nil.nadph.qnotified.util.ReflexUtil

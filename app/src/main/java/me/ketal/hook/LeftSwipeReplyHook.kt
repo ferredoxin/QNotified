@@ -32,7 +32,7 @@ import me.ketal.util.BaseUtil.tryVerbosely
 import me.singleneuron.qn_kernel.data.isTim
 import me.singleneuron.qn_kernel.data.requireMinVersion
 import me.singleneuron.qn_kernel.tlb.ConfigTable.getConfig
-import me.singleneuron.qn_kernel.ui.base.增强功能
+import me.singleneuron.qn_kernel.tlb.增强功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.step.DexDeobfStep

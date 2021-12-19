@@ -24,7 +24,7 @@ package xyz.nextalone.hook
 import android.app.Activity
 import android.view.View
 import me.singleneuron.qn_kernel.annotation.UiItem
-import me.singleneuron.qn_kernel.ui.base.净化_主页
+import me.singleneuron.qn_kernel.tlb.净化_主页
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import xyz.nextalone.base.MultiItemDelayableHook
 import xyz.nextalone.util.*

@@ -40,7 +40,7 @@ import me.ketal.util.HookUtil.findClass
 import me.ketal.util.HookUtil.getMethod
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.data.hostInfo
-import me.singleneuron.qn_kernel.ui.base.娱乐功能
+import me.singleneuron.qn_kernel.tlb.娱乐功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.ReflexUtil
 import org.ferredoxin.ferredoxinui.common.base.UiDescription

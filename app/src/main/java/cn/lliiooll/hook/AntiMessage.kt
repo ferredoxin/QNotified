@@ -29,7 +29,7 @@ import de.robv.android.xposed.XposedHelpers
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.data.MsgRecordData
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import me.singleneuron.qn_kernel.ui.base.净化_扩展
+import me.singleneuron.qn_kernel.tlb.净化_扩展
 import nil.nadph.qnotified.util.QQVersion
 import xyz.nextalone.base.MultiItemDelayableHook
 

@@ -29,7 +29,7 @@ import me.ketal.util.findViewByType
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.MsgRecordData
-import me.singleneuron.qn_kernel.ui.base.净化_群聊
+import me.singleneuron.qn_kernel.tlb.净化_群聊
 import nil.nadph.qnotified.util.Initiator._TroopMemberLevelView
 import xyz.nextalone.data.TroopInfo
 

@@ -35,7 +35,7 @@ import com.afollestad.materialdialogs.input.input
 import me.ketal.data.ConfigData
 import me.ketal.ui.view.ConfigView
 import me.ketal.util.BaseUtil.tryVerbosely
-import me.singleneuron.qn_kernel.ui.base.娱乐功能
+import me.singleneuron.qn_kernel.tlb.娱乐功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.step.DexDeobfStep

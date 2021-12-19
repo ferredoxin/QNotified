@@ -25,7 +25,7 @@ import android.content.Intent
 import de.robv.android.xposed.XC_MethodHook
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.decorator.BaseStartActivityHookDecorator
-import me.singleneuron.qn_kernel.ui.base.实验性功能
+import me.singleneuron.qn_kernel.tlb.实验性功能
 import me.singleneuron.util.dump
 import nil.nadph.qnotified.util.Utils
 import org.ferredoxin.ferredoxinui.common.base.UiSwitchPreference

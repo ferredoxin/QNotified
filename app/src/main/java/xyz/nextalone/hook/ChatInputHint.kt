@@ -30,7 +30,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
 import me.kyuubiran.util.getDefaultCfg
-import me.singleneuron.qn_kernel.ui.base.辅助功能
+import me.singleneuron.qn_kernel.tlb.辅助功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.ui.CustomDialog

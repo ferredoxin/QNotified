@@ -23,7 +23,7 @@ package xyz.nextalone.hook
 
 import de.robv.android.xposed.XC_MethodHook
 import me.singleneuron.qn_kernel.annotation.UiItem
-import me.singleneuron.qn_kernel.ui.base.净化_聊天
+import me.singleneuron.qn_kernel.tlb.净化_聊天
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import xyz.nextalone.base.MultiItemDelayableHook
 import xyz.nextalone.util.clazz

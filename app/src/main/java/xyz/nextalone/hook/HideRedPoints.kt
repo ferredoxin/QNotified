@@ -26,7 +26,7 @@ import android.widget.ImageView
 import androidx.core.view.isVisible
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
-import me.singleneuron.qn_kernel.ui.base.净化_主页
+import me.singleneuron.qn_kernel.tlb.净化_主页
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import xyz.nextalone.util.clazz
 import xyz.nextalone.util.hookAfter

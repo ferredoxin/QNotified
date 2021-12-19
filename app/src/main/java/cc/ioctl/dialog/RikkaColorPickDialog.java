@@ -74,7 +74,11 @@ public class RikkaColorPickDialog extends RikkaDialog.RikkaConfigItem {
     @SuppressLint("InflateParams")
     @Override
     public void onClick(View v) {
-        dialog = (AlertDialog) CustomDialog.createFailsafe(v.getContext()).setTitle("花Q主题")
+        showDialog(v.getContext());
+    }
+
+    public void showDialog(Context context) {
+        dialog = (AlertDialog) CustomDialog.createFailsafe(context).setTitle("花Q主题")
             .setNegativeButton("取消", null)
             .setPositiveButton("保存", null).create();
         dialog.setCancelable(true);

@@ -33,7 +33,7 @@ import com.tencent.mobileqq.app.BaseActivity
 import me.ketal.util.BaseUtil.tryVerbosely
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
-import me.singleneuron.qn_kernel.ui.base.增强功能
+import me.singleneuron.qn_kernel.tlb.增强功能
 import nil.nadph.qnotified.R
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.bridge.QQMessageFacade

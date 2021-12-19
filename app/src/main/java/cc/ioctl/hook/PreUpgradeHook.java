@@ -32,7 +32,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import me.singleneuron.qn_kernel.annotation.UiItem;
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge;
-import me.singleneuron.qn_kernel.ui.base.UiRoutineKt;
+import me.singleneuron.qn_kernel.tlb.UiRoutineKt;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import org.ferredoxin.ferredoxinui.common.base.UiSwitchPreference;
 

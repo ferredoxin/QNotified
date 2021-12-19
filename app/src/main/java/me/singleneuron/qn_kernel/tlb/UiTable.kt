@@ -1,6 +1,5 @@
 package me.singleneuron.qn_kernel.tlb
 
-import cc.ioctl.dialog.RikkaDialog
 import me.singleneuron.qn_kernel.ui.fragment.*
 import nil.nadph.qnotified.activity.TroubleshootActivity
 import org.ferredoxin.ferredoxinui.common.base.*
@@ -18,11 +17,7 @@ val UiTable = uiScreen {
                 },
                 uiClickableItem {
                     title = "花Q"
-                    summary = "若无另行说明, 所有功能开关都即时生效"
-                    onClickListener = {
-                        RikkaDialog.showRikkaFuncDialog(it)
-                        true
-                    }
+                    onClickListener = ClickToNewSetting(RikkaQ)
                 },
                 uiClickableItem {
                     title = "净化功能"
@@ -34,7 +29,7 @@ val UiTable = uiScreen {
                 },
                 uiClickableItem {
                     title = "辅助功能"
-                    onClickListener = ClickToNewSetting(Assist)
+                    onClickListener = ClickToNewSetting(Auxiliary)
                 },
                 uiClickableItem {
                     title = "其他功能"

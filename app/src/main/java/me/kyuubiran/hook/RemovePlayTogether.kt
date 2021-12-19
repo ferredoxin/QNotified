@@ -26,7 +26,7 @@ import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.isPlayQQ
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.qn_kernel.tlb.ConfigTable
-import me.singleneuron.qn_kernel.ui.base.净化_群聊
+import me.singleneuron.qn_kernel.tlb.净化_群聊
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.QQVersion
