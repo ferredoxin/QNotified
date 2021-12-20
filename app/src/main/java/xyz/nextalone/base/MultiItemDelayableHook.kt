@@ -38,7 +38,7 @@ import nil.nadph.qnotified.util.Toasts
 import nil.nadph.qnotified.util.Utils
 import org.ferredoxin.ferredoxinui.common.base.MaterialAlertDialogPreferenceFactory
 import org.ferredoxin.ferredoxinui.common.base.UiItem
-import org.ferredoxin.ferredoxinui.common.base.uiDialogPreference
+import org.ferredoxin.ferredoxinui.qnotified_style.base.uiDialogPreference
 
 //Todo 好活，考虑移入FerredoxinUI
 abstract class MultiItemDelayableHook constructor(keyName: String) :
@@ -54,9 +54,8 @@ abstract class MultiItemDelayableHook constructor(keyName: String) :
                 "已选择" + activeItems.size + "项"
             }
             contextWrapper = CommonContextWrapper::createMaterialDesignContext
-
             materialAlertDialogBuilder = alertDialogDecorator
-        }
+        }.second
     }
 
     private val itemsConfigKeys = ConfigData<Set<String>>(keyName)

@@ -39,7 +39,7 @@ import nil.nadph.qnotified.ui.CommonContextWrapper
 import nil.nadph.qnotified.util.Utils.PACKAGE_NAME_QQ
 import org.ferredoxin.ferredoxinui.common.base.MaterialAlertDialogPreferenceFactory
 import org.ferredoxin.ferredoxinui.common.base.UiItem
-import org.ferredoxin.ferredoxinui.common.base.uiDialogPreference
+import org.ferredoxin.ferredoxinui.qnotified_style.base.uiDialogPreference
 
 @FunctionEntry
 @me.singleneuron.qn_kernel.annotation.UiItem
@@ -115,9 +115,7 @@ object ChangeDrawerWidth : CommonDelayableHook("changeDrawerWidth"), UiItem {
                 setTitle("修改侧滑边距（设置为0dp以禁用）")
                 setView(slider)
             }
-        }
+        }.second
     }
-
     override val preferenceLocate: Array<String> = 辅助功能
-
 }

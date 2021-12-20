@@ -35,7 +35,7 @@ import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.ReflexUtil
 import nil.nadph.qnotified.util.Utils
 import org.ferredoxin.ferredoxinui.common.base.UiItem
-import org.ferredoxin.ferredoxinui.common.base.uiEditTextPreference
+import org.ferredoxin.ferredoxinui.qnotified_style.base.uiEditTextPreference
 
 @me.singleneuron.qn_kernel.annotation.UiItem
 object RegexAntiMeg : MessageReceiver, UiItem {
@@ -101,7 +101,7 @@ object RegexAntiMeg : MessageReceiver, UiItem {
             helperText = "留空以禁用"
         }
         contextWrapper = CommonContextWrapper::createMaterialDesignContext
-    }
+    }.second
 
     override val preferenceLocate: Array<String> = 辅助功能
 
