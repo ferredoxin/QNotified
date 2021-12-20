@@ -41,14 +41,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.view.ViewCompat;
-import com.rymmmmm.hook.OneTapTwentyLikes;
-import com.rymmmmm.hook.RemoveSendGiftAd;
-import com.rymmmmm.hook.ShowMsgCount;
 import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
-import nil.nadph.qnotified.ui.drawable.DummyDrawable;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.ui.ViewBuilder;
+import nil.nadph.qnotified.ui.drawable.DummyDrawable;
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 
@@ -167,11 +164,11 @@ public class RikkaDialog extends Dialog implements View.OnClickListener {
 
     private RikkaConfigItem[] queryRikkaHooks() {
         return new RikkaConfigItem[]{
-            RikkaConfigItem.create(this, "显示具体消息数量", ShowMsgCount.INSTANCE),
+//            RikkaConfigItem.create(this, "显示具体消息数量", ShowMsgCount.INSTANCE),
             new RikkaBaseApkFormatDialog(this),
-            RikkaConfigItem.create(this, "回赞界面一键20赞", OneTapTwentyLikes.INSTANCE),
+//            RikkaConfigItem.create(this, "回赞界面一键20赞", OneTapTwentyLikes.INSTANCE),
             new RikkaCustomMsgTimeFormatDialog(this),
-            RikkaConfigItem.create(this, "免广告送免费礼物[仅限群聊送礼物]\n若失效请使用屏蔽小程序广告", RemoveSendGiftAd.INSTANCE),
+//            RikkaConfigItem.create(this, "免广告送免费礼物[仅限群聊送礼物]\n若失效请使用屏蔽小程序广告", RemoveSendGiftAd.INSTANCE),
             new RikkaCustomDeviceModelDialog(this),
             new RikkaCustomSplash(this),
             new RikkaColorPickDialog(this),

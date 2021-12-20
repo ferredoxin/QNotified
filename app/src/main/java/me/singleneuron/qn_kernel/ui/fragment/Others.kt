@@ -6,6 +6,8 @@ import cc.ioctl.dialog.RepeaterIconSettingDialog
 import cc.ioctl.hook.AddAccount
 import cc.ioctl.hook.OpenProfileCard
 import me.singleneuron.qn_kernel.ui.gen.getAnnotatedUiItemClassList
+import nil.nadph.qnotified.activity.BetaTestFuncActivity
+import nil.nadph.qnotified.activity.OmegaTestFuncActivity
 import org.ferredoxin.ferredoxinui.common.base.*
 
 val Others = uiScreen {
@@ -61,6 +63,18 @@ val Others = uiScreen {
         },
         uiCategory {
             name = "实验性功能"
+            contains = linkedMapOf(
+                uiClickableItem {
+                    title = "Beta测试"
+                    summary = "仅用于测试稳定性"
+                    onClickListener = ClickToActivity(BetaTestFuncActivity::class.java)
+                },
+                uiClickableItem {
+                    title = "Omega测试"
+                    summary = "这是个不存在的功能"
+                    onClickListener = ClickToActivity(OmegaTestFuncActivity::class.java)
+                }
+            )
         },
     )
     loadUiInList(contains, getAnnotatedUiItemClassList())
