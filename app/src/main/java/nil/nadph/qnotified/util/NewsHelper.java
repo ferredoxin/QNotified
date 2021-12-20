@@ -30,11 +30,12 @@ import android.text.util.Linkify;
 import android.view.View;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
-import java.math.BigDecimal;
 import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 import nil.nadph.qnotified.config.ConfigManager;
@@ -59,7 +60,7 @@ public class NewsHelper implements Runnable {
         ConfigManager cfg = ConfigManager.getCache();
         try {
             String old = cfg.getString(QN_CACHED_NEWS);
-            News news = null;
+            News news;
             if (old != null) {
                 try {
                     news = News.formJson(old);
@@ -79,7 +80,6 @@ public class NewsHelper implements Runnable {
     }
 
 
-    @Nullable
     public static void getCachedNews(TextView tv) {
         ConfigManager cfg = ConfigManager.getCache();
         String ret = cfg.getString(QN_CACHED_NEWS);
@@ -164,12 +164,7 @@ public class NewsHelper implements Runnable {
         }
         final TextView textView;
         if (content != null && ptv != null && (textView = ptv.get()) != null) {
-            ((Activity) textView.getContext()).runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    getCachedNews(textView);
-                }
-            });
+            ((Activity) textView.getContext()).runOnUiThread(() -> getCachedNews(textView));
         }
     }
 
@@ -184,40 +179,40 @@ public class NewsHelper implements Runnable {
         public boolean persist = false;
 
         public static News formJson(String str) {
-            @SuppressWarnings("deprecation") PHPArray json = PHPArray.fromJson(str);
+            JsonObject json = JsonParser.parseString(str).getAsJsonObject();
             News ret = new News();
             try {
-                ret.text = (String) json.__("text")._$();
+                ret.text = json.get("text").toString();
             } catch (Exception e) {
                 log(e);
             }
             try {
-                ret.color = (String) json.__("color")._$();
+                ret.color = json.get("color").toString();
             } catch (Exception e) {
                 log(e);
             }
             try {
-                ret.time = ((BigDecimal) json.__("time")._$()).longValue();
+                ret.time = json.get("time").getAsLong();
             } catch (Exception e) {
                 log(e);
             }
             try {
-                ret.ttl = ((BigDecimal) json.__("ttl")._$()).intValue();
+                ret.ttl = json.get("ttl").getAsInt();
             } catch (Exception e) {
                 log(e);
             }
             try {
-                ret.persist = json.__("persist")._$b();
+                ret.persist = json.get("persist").getAsBoolean();
             } catch (Exception e) {
                 log(e);
             }
             try {
-                ret.link = json.__("link")._$b();
+                ret.link = json.get("link").getAsBoolean();
             } catch (Exception e) {
                 log(e);
             }
             try {
-                ret.select = json.__("select")._$b();
+                ret.select = json.get("select").getAsBoolean();
             } catch (Exception e) {
                 log(e);
             }

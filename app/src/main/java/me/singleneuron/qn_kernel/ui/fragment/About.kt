@@ -38,13 +38,12 @@ val About: UiScreen = uiScreen {
             title = "QQ版本"
             clickAble = false
             subSummary = "${hostInfo.versionName}(${hostInfo.versionCode})"
-        }, uiClickableItem {
+        }, uiChangeableItem<String?> {
             title = "检查更新"
             clickAble = true
             onClickListener = {
-                // fixme
                 val uc = UpdateCheck()
-                uc.onClick(it.currentFocus)
+                uc.onClick(it, value)
                 true
             }
         })
