@@ -119,10 +119,8 @@ class UpdateCheck : Runnable {
     fun doSetVersionTip(json: JsonObject) {
         try {
             val currBuildTime = Utils.getBuildTimestamp()
-            val latestBuildTime: Long
-            val latestName: String
-            latestBuildTime = iso8601ToTimestampMs(json.get("uploaded_at").toString())
-            latestName = json.get("short_version").toString()
+            val latestBuildTime: Long = iso8601ToTimestampMs(json.get("uploaded_at").asString)
+            val latestName: String = json.get("short_version").asString
             if (latestBuildTime - currBuildTime > 10 * 60 * 1000L) {
                 //has newer
                 flow?.value = latestName
@@ -166,12 +164,12 @@ class UpdateCheck : Runnable {
             dialog.setNegativeButton("关闭", DummyCallback())
             val sb = SpannableStringBuilder()
             val ver = result
-            val vn = ver.get("short_version").toString()
-            val vc: Int = (ver.get("version").toString()).toInt()
+            val vn = ver.get("short_version").asString
+            val vc: Int = ver.get("version").asString.toInt()
             val desc = "" + ver.get("release_notes")
-            val md5 = ver.get("fingerprint").toString()
-            val download_url = ver.get("download_url").toString()
-            val time = iso8601ToTimestampMs(ver.get("uploaded_at").toString())
+            val md5 = ver.get("fingerprint").asString
+            val download_url = ver.get("download_url").asString
+            val time = iso8601ToTimestampMs(ver.get("uploaded_at").asString)
             val date = DateTimeUtil.getRelTimeStrSec(time / 1000L)
             var tmp = SpannableString("$vn ($vc)")
             tmp.setSpan(RelativeSizeSpan(1.8f), 0, tmp.length,
@@ -217,7 +215,7 @@ class UpdateCheck : Runnable {
         context = ctx
         flow = stateFlow
         clicked = true
-        if (runLevel == RL_LOAD) {
+        if (!::result.isInitialized || runLevel == RL_LOAD) {
             runLevel = RL_LOAD
             Thread(this).start()
         } else {
