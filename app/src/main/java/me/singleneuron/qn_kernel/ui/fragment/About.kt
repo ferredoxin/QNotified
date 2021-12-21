@@ -1,5 +1,6 @@
 package me.singleneuron.qn_kernel.ui.fragment
 
+import me.ketal.data.ConfigData
 import me.singleneuron.qn_kernel.data.hostInfo
 import nil.nadph.qnotified.activity.EulaActivity
 import nil.nadph.qnotified.activity.LicenseActivity
@@ -44,6 +45,13 @@ val About: UiScreen = uiScreen {
             onClickListener = {
                 val uc = UpdateCheck()
                 uc.onClick(it, value)
+                true
+            }
+        }, uiChangeableItem<String?> {
+            title = "更新通道"
+            value.value = ConfigData<String>("qn_update_channel").getOrDefault("Alpha")
+            onClickListener = {
+                UpdateCheck().showChannelDialog(it,value)
                 true
             }
         })

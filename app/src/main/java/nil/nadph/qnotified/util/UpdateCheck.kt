@@ -244,6 +244,20 @@ class UpdateCheck : Runnable {
         }
     }
 
+    fun showChannelDialog(context: Context, stateFlow: MutableStateFlow<String?>){
+        AlertDialog.Builder(context,
+            CustomDialog.themeIdForDialog())
+            .setTitle("自定义更新通道")
+            .setItems(channels) { _: DialogInterface?, which: Int ->
+                val channel = channels[which]
+                if (currChannel != channel) {
+                    runLevel = RL_LOAD
+                    currChannel = channels[which]
+                    stateFlow.value = channels[which]
+                }
+            }.show()
+    }
+
     companion object {
         const val UPDATE_INFO_GET_CI = "https://api.appcenter.ms/v0.1/public/sdk/apps/ddf4b597-1833-45dd-af28-96ca504b8123/releases/latest"
         const val UPDATE_INFO_GET_WEEKLY = "https://api.appcenter.ms/v0.1/public/sdk/apps/ddf4b597-1833-45dd-af28-96ca504b8123/distribution_groups/8a11cc3e-47da-4e3b-84e7-ac306a128aaf/releases/latest"
