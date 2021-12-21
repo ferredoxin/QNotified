@@ -46,7 +46,6 @@ import nil.nadph.qnotified.util.Utils.DummyCallback
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.net.URL
-import java.util.*
 import javax.net.ssl.HttpsURLConnection
 
 class UpdateCheck : Runnable {
@@ -61,11 +60,10 @@ class UpdateCheck : Runnable {
     private var clicked = false
     private lateinit var result: JsonObject
     private var runLevel = 0
-    fun doRefreshInfo(): String? {
+    private fun doRefreshInfo(): String? {
         var content: String? = null
         try {
-            var reqURL: URL?
-            reqURL = when (currChannel) {
+            val reqURL: URL = when (currChannel) {
                 "Canary" -> URL(UPDATE_INFO_GET_CI)
                 "Alpha" -> URL(UPDATE_INFO_GET_WEEKLY)
                 else -> URL(UPDATE_INFO_GET_WEEKLY)
@@ -116,10 +114,10 @@ class UpdateCheck : Runnable {
         }
     }
 
-    fun doSetVersionTip(json: JsonObject) {
+    private fun doSetVersionTip(json: JsonObject) {
         try {
             val currBuildTime = Utils.getBuildTimestamp()
-            val latestBuildTime: Long = iso8601ToTimestampMs(json.get("uploaded_at").asString)
+            val latestBuildTime: Long = json.get("version").asString.toInt() * 1000L
             val latestName: String = json.get("short_version").asString
             if (latestBuildTime - currBuildTime > 10 * 60 * 1000L) {
                 //has newer
@@ -166,10 +164,10 @@ class UpdateCheck : Runnable {
             val ver = result
             val vn = ver.get("short_version").asString
             val vc: Int = ver.get("version").asString.toInt()
-            val desc = "" + ver.get("release_notes")
+            val desc = ver.get("release_notes").asString
             val md5 = ver.get("fingerprint").asString
             val download_url = ver.get("download_url").asString
-            val time = iso8601ToTimestampMs(ver.get("uploaded_at").asString)
+            val time = ver.get("version").asString.toInt() * 1000L
             val date = DateTimeUtil.getRelTimeStrSec(time / 1000L)
             var tmp = SpannableString("$vn ($vc)")
             tmp.setSpan(RelativeSizeSpan(1.8f), 0, tmp.length,
@@ -234,7 +232,7 @@ class UpdateCheck : Runnable {
             AlertDialog.Builder(v.context,
                 CustomDialog.themeIdForDialog())
                 .setTitle("自定义更新通道")
-                .setItems(channels) { dialog: DialogInterface?, which: Int ->
+                .setItems(channels) { _: DialogInterface?, which: Int ->
                     val channel = channels[which]
                     if (currChannel != channel) {
                         runLevel = RL_LOAD
@@ -252,21 +250,5 @@ class UpdateCheck : Runnable {
         const val qn_update_info = "qn_update_info"
         const val qn_update_time = "qn_update_time"
         private val channels = arrayOf("Alpha", "Canary")
-        fun iso8601ToTimestampMs(expr: String): Long {
-            require(expr.endsWith("Z")) { "reject, not UTC" }
-            val arr = expr.replace("Z", "").split("T").toTypedArray()
-            val p1 = arr[0].split("-").toTypedArray()
-            val yyyy = p1[0].toInt()
-            val MM = p1[1].toInt()
-            val dd = p1[2].toInt()
-            val p2 = arr[1].split("[:.]").toTypedArray()
-            val HH = p2[0].toInt()
-            val mm = p2[1].toInt()
-            val ss = p2[2].toInt()
-            val ms = p2[3].toInt()
-            val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-            calendar[yyyy, MM - 1, dd, HH, mm] = ss
-            return calendar.time.time + ms
-        }
     }
 }

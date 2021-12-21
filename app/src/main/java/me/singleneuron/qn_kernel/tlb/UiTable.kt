@@ -8,6 +8,7 @@ val UiTable = uiScreen {
     name = "QNotified"
     summary = null
     contains = linkedMapOf(
+        ActivityRouter.title to ActivityRouter,
         uiCategory {
             name = "模块设置"
             contains = linkedMapOf(

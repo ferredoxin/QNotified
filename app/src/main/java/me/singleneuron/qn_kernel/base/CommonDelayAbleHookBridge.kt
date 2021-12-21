@@ -32,7 +32,6 @@ import me.ketal.data.ConfigData
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.step.Step
-import nil.nadph.qnotified.util.Utils
 import org.ferredoxin.ferredoxinui.common.base.DirectResourceProvider
 import org.ferredoxin.ferredoxinui.common.base.ResourceProvider
 import org.ferredoxin.ferredoxinui.common.base.UiItem
@@ -110,13 +109,8 @@ constructor(
         }
 
         override val value: MutableStateFlow<Boolean?> by lazy {
-            MutableStateFlow<Boolean?>(true).apply {
+            MutableStateFlow<Boolean?>(configData.getOrDefault(false)).apply {
                 SyncUtils.post {
-                    try {
-                        this.value = configData.getOrDefault(false)
-                    } catch (e: Exception) {
-                        Utils.log(e)
-                    }
                     GlobalScope.launch {
                         collect {
                             configData.value = it
