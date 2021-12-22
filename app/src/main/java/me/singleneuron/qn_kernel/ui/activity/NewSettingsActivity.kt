@@ -32,7 +32,10 @@ import nil.nadph.qnotified.R
 import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat
 import nil.nadph.qnotified.databinding.ActivityNewSettingsBinding
 import nil.nadph.qnotified.ui.ResUtils
+import org.ferredoxin.ferredoxinui.common.base.UiDescription
 import org.ferredoxin.ferredoxinui.common.base.UiScreen
+import org.ferredoxin.ferredoxinui.common.base.ViewMap
+import org.ferredoxin.ferredoxinui.common.base.uiScreen
 
 @SuppressLint("Registered")
 class NewSettingsActivity : IphoneTitleBarActivityCompat() {
@@ -57,6 +60,20 @@ class NewSettingsActivity : IphoneTitleBarActivityCompat() {
     }
 
     fun changeFragment(uiScreen: UiScreen) {
+        val rootFragment = SettingsFragment().setUiScreen(uiScreen)
+        fragmentManager.beginTransaction().replace(R.id.new_setting_container, rootFragment).addToBackStack(uiScreen.name).commit()
+        setTitle(uiScreen.name)
+    }
+
+    fun changeFragment(viewMap: ViewMap, string: String) {
+        val uiScreen = uiScreen {
+            title = string
+            contains = mutableMapOf<String, UiDescription>().apply {
+                for (pair in viewMap) {
+                    this[pair.first] = pair.second
+                }
+            }
+        }.second
         val rootFragment = SettingsFragment().setUiScreen(uiScreen)
         fragmentManager.beginTransaction().replace(R.id.new_setting_container, rootFragment).addToBackStack(uiScreen.name).commit()
         setTitle(uiScreen.name)
