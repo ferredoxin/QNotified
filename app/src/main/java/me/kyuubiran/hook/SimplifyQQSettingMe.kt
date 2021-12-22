@@ -37,7 +37,7 @@ import me.kyuubiran.util.setViewZeroSize
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.qn_kernel.tlb.ConfigTable
-import me.singleneuron.qn_kernel.tlb.净化功能
+import me.singleneuron.qn_kernel.tlb.净化_侧滑
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.util.Initiator
@@ -59,7 +59,7 @@ object SimplifyQQSettingMe : MultiItemDelayableHook("SimplifyQQSettingMe") {
 
     override val preferenceTitle: String = "侧滑栏精简"
     override val allItems = setOf<String>()
-    override val preferenceLocate: Array<String> = 净化功能
+    override val preferenceLocate: Array<String> = 净化_侧滑
     override fun isValid(): Boolean = requireMinQQVersion(QQ_8_4_1)
 
     //Form 8.4.1
