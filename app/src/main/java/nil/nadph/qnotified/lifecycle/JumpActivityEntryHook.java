@@ -32,12 +32,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-
-import java.lang.reflect.Method;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
-import me.singleneuron.qn_kernel.ui.NewSettingsActivity;
+import java.lang.reflect.Method;
+import me.singleneuron.qn_kernel.tlb.ActivityRouter;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.MainProcess;
 
@@ -70,7 +68,7 @@ public class JumpActivityEntryHook {
             Method doOnCreate = clz.getDeclaredMethod("doOnCreate", Bundle.class);
             XposedBridge.hookMethod(doOnCreate, new XC_MethodHook() {
                 @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                protected void afterHookedMethod(MethodHookParam param) {
                     final Activity activity = (Activity) param.thisObject;
                     Intent intent = activity.getIntent();
                     String cmd;
@@ -82,7 +80,8 @@ public class JumpActivityEntryHook {
                         } else {
                             Intent realIntent = new Intent(intent);
                             realIntent
-                                .setComponent(new ComponentName(activity, NewSettingsActivity.class));
+                                .setComponent(new ComponentName(activity,
+                                    ActivityRouter.INSTANCE.getActivityClass()));
                             activity.startActivity(realIntent);
                         }
                     } else if (JUMP_ACTION_START_ACTIVITY.equals(cmd)) {
@@ -94,7 +93,7 @@ public class JumpActivityEntryHook {
                                 realIntent.setComponent(new ComponentName(activity, activityClass));
                                 activity.startActivity(realIntent);
                             } catch (Exception e) {
-                                logi("Unable to start Activity: " + e.toString());
+                                logi("Unable to start Activity: " + e);
                             }
                         }
                     }

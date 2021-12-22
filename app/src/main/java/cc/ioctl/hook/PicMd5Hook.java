@@ -28,28 +28,33 @@ import static nil.nadph.qnotified.util.Utils.log;
 import android.app.Activity;
 import android.content.Context;
 import android.view.View;
+import androidx.annotation.NonNull;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
-import xyz.nextalone.util.SystemServiceUtils;
+import me.singleneuron.qn_kernel.annotation.UiItem;
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge;
+import me.singleneuron.qn_kernel.tlb.UiRoutineKt;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
-import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.util.CustomMenu;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Toasts;
+import org.ferredoxin.ferredoxinui.common.base.UiSwitchPreference;
+import org.jetbrains.annotations.Nullable;
+import xyz.nextalone.util.SystemServiceUtils;
 
 @FunctionEntry
-public class PicMd5Hook extends CommonDelayableHook {
+@UiItem
+public class PicMd5Hook extends CommonDelayAbleHookBridge {
 
     public static final PicMd5Hook INSTANCE = new PicMd5Hook();
 
     PicMd5Hook() {
-        super("qn_show_pic_md5");
     }
 
     @Override
@@ -86,6 +91,21 @@ public class PicMd5Hook extends CommonDelayableHook {
             log(e);
             return false;
         }
+    }
+
+    private final UiSwitchPreference mUiSwitchPreference = this.new UiSwitchPreferenceItemFactory(
+        "显示图片MD5", "长按图片消息点击MD5");
+
+    @NonNull
+    @Override
+    public UiSwitchPreference getPreference() {
+        return mUiSwitchPreference;
+    }
+
+    @Nullable
+    @Override
+    public String[] getPreferenceLocate() {
+        return UiRoutineKt.get增强功能();
     }
 
     public static class GetMenuItemCallBack extends XC_MethodHook {

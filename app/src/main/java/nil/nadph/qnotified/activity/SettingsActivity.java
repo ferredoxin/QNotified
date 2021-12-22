@@ -41,7 +41,6 @@ import static nil.nadph.qnotified.util.Utils.log;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -53,20 +52,16 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import androidx.core.view.ViewCompat;
-
-import com.tencent.mobileqq.widget.BounceScrollView;
-
-import java.io.File;
-import java.io.IOException;
-
 import cc.ioctl.activity.FakeBatCfgActivity;
 import cc.ioctl.dialog.RikkaDialog;
 import cc.ioctl.hook.FakeBatteryHook;
 import cc.ioctl.hook.FileRecvRedirect;
 import cc.ioctl.hook.JumpController;
 import cn.lliiooll.hook.AntiMessage;
+import com.tencent.mobileqq.widget.BounceScrollView;
+import java.io.File;
+import java.io.IOException;
 import me.ketal.hook.QWalletNoAD;
 import me.ketal.hook.QZoneNoAD;
 import me.singleneuron.qn_kernel.data.HostInfo;
@@ -93,7 +88,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
     private boolean isVisible = false;
     private boolean rgbEnabled = false;
     private TextView mRikkaTitle, mRikkaDesc;
-    private Looper mainLooper = Looper.getMainLooper();
+    private final Looper mainLooper = Looper.getMainLooper();
 
     @Override
     public boolean doOnCreate(Bundle bundle) {
@@ -123,7 +118,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         __lp_r.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         __lp_r.addRule(RelativeLayout.CENTER_VERTICAL);
         ColorStateList hiColor = ColorStateList.valueOf(Color.argb(255, 242, 140, 72));
-        ViewGroup _t;
+        FunctionButton _t;
         try {
             LinearLayout nnn = subtitle(this, "");
             TextView t = (TextView) nnn.getChildAt(0);
@@ -138,9 +133,9 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
             .requireMinPlayQQVersion(PlayQQ_8_2_9)) {
             ll.addView(_t = newListItemButton(this, "自定义电量", "[QQ>=8.2.6]在线模式为我的电量时生效", "N/A",
                 clickToProxyActAction(FakeBatCfgActivity.class)));
-            __tv_fake_bat_status = ((FunctionButton) _t).getValue();
+            __tv_fake_bat_status = _t.getValue();
         }
-        FunctionButton _tmp_vg = (FunctionButton) newListItemButton(this, "花Q", "若无另行说明, 所有功能开关都即时生效", null,
+        FunctionButton _tmp_vg = newListItemButton(this, "花Q", "若无另行说明, 所有功能开关都即时生效", null,
             v -> RikkaDialog.showRikkaFuncDialog(SettingsActivity.this));
         _tmp_vg.setOnLongClickListener(v -> {
             rgbEnabled = !rgbEnabled;
@@ -161,8 +156,8 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         ll.addView(
             _t = newListItemButton(this, "下载重定向", "N/A", "N/A", this::onFileRecvRedirectClick));
         _t.setId(R_ID_BTN_FILE_RECV);
-        __recv_desc = ((FunctionButton) _t).getDesc();
-        __recv_status = ((FunctionButton) _t).getValue();
+        __recv_desc = _t.getDesc();
+        __recv_status = _t.getValue();
         ll.addView(newListItemButtonIfValid(this, "静默指定类型消息通知", null, null, AntiMessage.INSTANCE));
         ll.addView(newListItemConfigSwitchIfValid(this, "隐藏空间好友热播和广告", null, QZoneNoAD.INSTANCE));
         ll.addView(newListItemConfigSwitchIfValid(this, "隐藏QQ钱包超值精选", null, QWalletNoAD.INSTANCE));
@@ -176,14 +171,14 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         ll.addView(newListItemSwitchConfigNext(this, "禁用" + _hostName + "热补丁", "一般无需开启",
             ConfigItems.qn_disable_hot_patch));
         ll.addView(subtitle(this, "参数设定"));
-        __jmp_ctl_cnt = ((FunctionButton) _t).getValue();
+        __jmp_ctl_cnt = _t.getValue();
         ll.addView(subtitle(this, "关于"));
         UpdateCheck uc = new UpdateCheck();
         ll.addView(_t = newListItemButton(this, "更新通道", "自定义更新通道",
             uc.getCurrChannel(), null));
         _t.setOnClickListener(uc.listener(_t));
-        ll.addView(_t = newListItemButton(this, "检查更新", null, "点击检查", uc));
-        uc.setVersionTip(_t);
+        //ll.addView(_t = newListItemButton(this, "检查更新", null, "点击检查", uc));
+        uc.setVersionTip();
         ll.addView(subtitle(this, "调试"));
         ll.addView(newListItemButton(this, "Shell.exec", "正常情况下无需使用此功能", null, clickTheComing()));
         ll.addView(
@@ -194,18 +189,13 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
         LinearLayout.LayoutParams _lp_fat = new LinearLayout.LayoutParams(MATCH_PARENT, 0);
         _lp_fat.weight = 1;
         setContentBackgroundDrawable(ResUtils.skin_background);
-        setRightButton("搜索", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showOverflowPopupMenu();
-            }
-        });
+        setRightButton("搜索", v -> showOverflowPopupMenu());
         setTitle("高级");
         try {
             getString(R.string.res_inject_success);
         } catch (Resources.NotFoundException e) {
             CustomDialog.createFailsafe(this).setTitle("FATAL Exception").setCancelable(true)
-                .setPositiveButton(getString(android.R.string.yes), null)
+                .setPositiveButton(getString(android.R.string.ok), null)
                 .setNeutralButton("重启" + HostInfo.getHostInfo().getHostName(),
                     (dialog, which) -> {
                         try {
@@ -215,7 +205,7 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
                         }
                     })
                 .setMessage(
-                    "Resources injection failure!\nApplication may misbehave.\n" + e.toString()
+                    "Resources injection failure!\nApplication may misbehave.\n" + e
                         + "\n如果您刚刚更新了插件, 您可能需要重启" + HostInfo.getHostInfo()
                         .getHostName()
                         + "(太/无极阴,应用转生,天鉴等虚拟框架)或者重启手机(EdXp, Xposed, 太极阳), 如果重启手机后问题仍然存在, 请向作者反馈, 并提供详细日志")
@@ -355,44 +345,38 @@ public class SettingsActivity extends IphoneTitleBarActivityCompat implements Ru
             .setView(linearLayout)
             .setPositiveButton("确认并激活", null)
             .setNegativeButton("取消", null)
-            .setNeutralButton("使用默认值", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    recv.setEnabled(false);
-                    updateRecvRedirectStatus();
-                }
+            .setNeutralButton("使用默认值", (dialog1, which) -> {
+                recv.setEnabled(false);
+                updateRecvRedirectStatus();
             })
             .create();
         alertDialog.show();
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
-            .setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String path = editText.getText().toString();
-                    if (path.equals("")) {
-                        Toasts.error(SettingsActivity.this, "请输入路径");
-                        return;
-                    }
-                    if (!path.startsWith("/")) {
-                        Toasts.error(SettingsActivity.this, "请输入完整路径(以\"/\"开头)");
-                        return;
-                    }
-                    File f = new File(path);
-                    if (!f.exists() || !f.isDirectory()) {
-                        Toasts.error(SettingsActivity.this, "文件夹不存在");
-                        return;
-                    }
-                    if (!f.canWrite()) {
-                        Toasts.error(SettingsActivity.this, "文件夹无访问权限");
-                        return;
-                    }
-                    if (!path.endsWith("/")) {
-                        path += "/";
-                    }
-                    recv.setRedirectPathAndEnable(path);
-                    updateRecvRedirectStatus();
-                    alertDialog.dismiss();
+            .setOnClickListener(v -> {
+                String path = editText.getText().toString();
+                if (path.equals("")) {
+                    Toasts.error(SettingsActivity.this, "请输入路径");
+                    return;
                 }
+                if (!path.startsWith("/")) {
+                    Toasts.error(SettingsActivity.this, "请输入完整路径(以\"/\"开头)");
+                    return;
+                }
+                File f = new File(path);
+                if (!f.exists() || !f.isDirectory()) {
+                    Toasts.error(SettingsActivity.this, "文件夹不存在");
+                    return;
+                }
+                if (!f.canWrite()) {
+                    Toasts.error(SettingsActivity.this, "文件夹无访问权限");
+                    return;
+                }
+                if (!path.endsWith("/")) {
+                    path += "/";
+                }
+                recv.setRedirectPathAndEnable(path);
+                updateRecvRedirectStatus();
+                alertDialog.dismiss();
             });
     }
 

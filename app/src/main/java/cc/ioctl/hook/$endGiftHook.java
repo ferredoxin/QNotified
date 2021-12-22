@@ -24,24 +24,21 @@ package cc.ioctl.hook;
 import static nil.nadph.qnotified.util.Utils.log;
 
 import android.app.Activity;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import org.ferredoxin.ferredoxin_ui.base.UiSwitchPreference;
-
-import java.lang.reflect.Method;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import java.lang.reflect.Method;
 import me.singleneuron.qn_kernel.annotation.UiItem;
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge;
+import me.singleneuron.qn_kernel.tlb.UiRoutineKt;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
+import org.ferredoxin.ferredoxinui.common.base.UiSwitchPreference;
 
 @FunctionEntry
 @UiItem
@@ -58,7 +55,7 @@ public class $endGiftHook extends CommonDelayAbleHookBridge {
     @Nullable
     @Override
     public String[] getPreferenceLocate() {
-        return new String[]{"净化功能"};
+        return UiRoutineKt.get净化_聊天();
     }
 
     public static final $endGiftHook INSTANCE = new $endGiftHook();

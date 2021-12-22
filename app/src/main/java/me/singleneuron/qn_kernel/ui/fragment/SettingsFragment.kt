@@ -22,8 +22,9 @@
 
 @file:Suppress("DEPRECATION")
 
-package me.singleneuron.qn_kernel.ui
+package me.singleneuron.qn_kernel.ui.fragment
 
+import android.app.Activity
 import android.app.Fragment
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -33,9 +34,10 @@ import android.widget.LinearLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
+import me.singleneuron.qn_kernel.data.hostInfo
+import me.singleneuron.qn_kernel.ui.activity.NewSettingsActivity
 import nil.nadph.qnotified.ui.ViewBuilder.*
-import nil.nadph.qnotified.util.Utils
-import org.ferredoxin.ferredoxin_ui.base.*
+import org.ferredoxin.ferredoxinui.common.base.*
 
 class SettingsFragment : Fragment(), LifecycleOwner {
 
@@ -64,42 +66,67 @@ class SettingsFragment : Fragment(), LifecycleOwner {
     }
 
     private fun addViewInUiGroup(uiGroup: UiGroup, viewGroup: ViewGroup) {
-        Utils.logd("Adding: "+uiGroup.name +" = " + uiGroup.contains.toString())
+        //Utils.logd("Adding: " + uiGroup.name + " = " + uiGroup.contains.toString())
         for (uiDescription in uiGroup.contains.values) {
-            Utils.logd("Adding: $uiDescription")
+            //Utils.logd("Adding: $uiDescription")
             when {
                 uiDescription is UiCategory && uiDescription.contains.isNotEmpty() -> {
                     viewGroup.addView(largeSubtitle(activity, uiDescription.name))
                     addViewInUiGroup(uiDescription, viewGroup)
                 }
                 uiDescription is UiScreen -> {
-                    viewGroup.addView(newListItemButton(activity, uiDescription.name, uiDescription.summary, null) { (activity as NewSettingsActivity).changeFragment(uiDescription) })
+                    viewGroup.addView(newListItemButton(activity, uiDescription.name, uiDescription.summaryProvider.getValue(hostInfo.application), null) { (activity as NewSettingsActivity).changeFragment(uiDescription) })
                 }
                 uiDescription is UiPreference -> {
                     when (uiDescription) {
                         is UiSwitchPreference -> {
                             val switch = newListItemSwitch(activity, uiDescription.title, uiDescription.summary, uiDescription.value.value
                                 ?: false, uiDescription.valid) { _, isChecked -> uiDescription.value.value = isChecked }
-                            uiDescription.value.observe(this) {
+                            observeStateFlow(uiDescription.value) {
+                                if (it == null) return@observeStateFlow
                                 switch.switch.isChecked = it
                             }
                             viewGroup.addView(switch)
                         }
                         is UiChangeablePreference<*> -> {
-                            val ll = newListItemButton(activity, uiDescription.title, uiDescription.summary, uiDescription.value.value.toString()) {
-                                uiDescription.onClickListener(activity)
-                            }
+                            val ll = newListItemButton(activity, uiDescription.title, uiDescription.summary, uiDescription.value.value.toString(),
+                                getOnClickListener(uiDescription.onClickListener, uiDescription.title)
+                            )
                             viewGroup.addView(ll)
-                            uiDescription.value.observe(this) {
+                            observeStateFlow(uiDescription.value) {
                                 ll.value.text = it.toString()
                             }
                         }
                         else -> {
-                            viewGroup.addView(newListItemButton(activity, uiDescription.title, uiDescription.summary, null) {
-                                uiDescription.onClickListener(activity)
-                            })
+                            viewGroup.addView(newListItemButton(activity, uiDescription.title, uiDescription.summary, null,
+                                getOnClickListener(uiDescription.onClickListener, uiDescription.title)
+                            ))
                         }
                     }
+                }
+            }
+        }
+    }
+
+    private fun getOnClickListener(
+        listener: (Activity) -> Boolean,
+        title: String
+    ): View.OnClickListener {
+        return when (listener) {
+            is ClickToNewSetting -> {
+                View.OnClickListener {
+                    (activity!! as NewSettingsActivity).changeFragment(listener.uiScreen)
+                }
+            }
+            is ClickToNewPages -> {
+                View.OnClickListener {
+                    (activity!! as NewSettingsActivity).changeFragment(listener.viewMap, title)
+                }
+
+            }
+            else -> {
+                View.OnClickListener {
+                    listener.invoke(activity!!)
                 }
             }
         }

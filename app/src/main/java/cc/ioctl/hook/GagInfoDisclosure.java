@@ -29,19 +29,16 @@ import static nil.nadph.qnotified.util.Utils.log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import org.ferredoxin.ferredoxin_ui.base.UiSwitchPreference;
-
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
 import me.singleneuron.qn_kernel.annotation.UiItem;
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge;
 import me.singleneuron.qn_kernel.data.HostInfo;
+import me.singleneuron.qn_kernel.tlb.UiRoutineKt;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.bridge.ContactUtils;
@@ -52,6 +49,7 @@ import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.QQVersion;
 import nil.nadph.qnotified.util.Utils;
+import org.ferredoxin.ferredoxinui.common.base.UiSwitchPreference;
 
 @FunctionEntry
 @UiItem
@@ -68,7 +66,7 @@ public class GagInfoDisclosure extends CommonDelayAbleHookBridge {
     @Nullable
     @Override
     public String[] getPreferenceLocate() {
-        return new String[]{"净化功能"};
+        return UiRoutineKt.get增强功能();
     }
 
     public static final GagInfoDisclosure INSTANCE = new GagInfoDisclosure();

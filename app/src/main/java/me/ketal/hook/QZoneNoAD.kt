@@ -22,19 +22,26 @@
 
 package me.ketal.hook
 
-import xyz.nextalone.util.hookBefore
 import me.ketal.base.PluginDelayableHook
 import me.ketal.util.BaseUtil.tryVerbosely
 import me.ketal.util.HookUtil.getField
 import me.ketal.util.HookUtil.getMethod
-import nil.nadph.qnotified.util.TIMVersion
+import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.data.requireMinVersion
-import nil.nadph.qnotified.util.QQVersion
+import me.singleneuron.qn_kernel.tlb.净化_扩展
 import nil.nadph.qnotified.base.annotation.FunctionEntry
+import nil.nadph.qnotified.util.QQVersion
 import nil.nadph.qnotified.util.ReflexUtil
+import nil.nadph.qnotified.util.TIMVersion
+import xyz.nextalone.util.hookBefore
 
 @FunctionEntry
+@UiItem
 object QZoneNoAD : PluginDelayableHook("ketal_qzone_hook") {
+    override val preference = uiSwitchPreference {
+        title = "隐藏空间好友热播和广告"
+    }
+    override val preferenceLocate = 净化_扩展
     override fun isValid(): Boolean = requireMinVersion(QQVersion.QQ_8_0_0, TIMVersion.TIM_1_0_0)
 
     override val pluginID = "qzone_plugin.apk"

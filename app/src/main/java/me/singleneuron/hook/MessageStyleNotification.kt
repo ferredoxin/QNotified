@@ -31,14 +31,14 @@ import androidx.core.app.Person
 import androidx.core.graphics.drawable.IconCompat
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
-import xyz.nextalone.util.clazz
-import xyz.nextalone.util.tryOrFalse
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.hostInfo
-import me.singleneuron.qn_kernel.ui.base.增强功能
+import me.singleneuron.qn_kernel.tlb.增强功能
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.base.annotation.FunctionEntry
+import xyz.nextalone.util.clazz
+import xyz.nextalone.util.tryOrFalse
 
 @FunctionEntry
 @UiItem

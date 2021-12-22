@@ -23,17 +23,23 @@ package me.ketal.hook
 import android.view.View
 import android.view.ViewGroup
 import de.robv.android.xposed.XC_MethodHook
-import xyz.nextalone.util.method
 import me.ketal.dispacher.OnBubbleBuilder
+import me.singleneuron.qn_kernel.annotation.UiItem
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.MsgRecordData
-import nil.nadph.qnotified.hook.CommonDelayableHook
+import me.singleneuron.qn_kernel.tlb.辅助功能
 import nil.nadph.qnotified.ui.CustomDialog
 import nil.nadph.qnotified.util.Utils
+import xyz.nextalone.util.method
 import java.text.SimpleDateFormat
 import java.util.*
 
-object ChatItemShowQQUin : CommonDelayableHook("ketal_ChatItem_ShowQQUin"), OnBubbleBuilder {
-
+@UiItem
+object ChatItemShowQQUin : CommonDelayAbleHookBridge(), OnBubbleBuilder {
+    override val preference = uiSwitchPreference {
+        title = "消息显示发送者QQ号和时间"
+    }
+    override val preferenceLocate = 辅助功能
     override fun initOnce() = isValid
 
     override fun onGetView(rootView: ViewGroup, chatMessage: MsgRecordData, param: XC_MethodHook.MethodHookParam) {

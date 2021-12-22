@@ -24,18 +24,25 @@ package me.ketal.hook
 import android.app.Activity
 import android.view.View
 import android.widget.TextView
-import xyz.nextalone.util.hookAfter
 import me.ketal.base.PluginDelayableHook
 import me.ketal.util.BaseUtil.tryVerbosely
 import me.ketal.util.HookUtil.findClass
 import me.ketal.util.HookUtil.getMethod
+import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import nil.nadph.qnotified.util.QQVersion
+import me.singleneuron.qn_kernel.tlb.增强功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
+import nil.nadph.qnotified.util.QQVersion
 import nil.nadph.qnotified.util.ReflexUtil
+import xyz.nextalone.util.hookAfter
 
 @FunctionEntry
+@UiItem
 object SendFavoriteHook : PluginDelayableHook("ketal_send_favorite") {
+    override val preference = uiSwitchPreference {
+        title = "发送收藏消息添加分组"
+    }
+    override val preferenceLocate = 增强功能
     override fun isValid(): Boolean = requireMinQQVersion(QQVersion.QQ_8_0_0)
 
     override val pluginID = "qqfav.apk"

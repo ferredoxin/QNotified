@@ -24,14 +24,14 @@ package xyz.nextalone.hook
 
 import android.widget.ImageView
 import androidx.core.view.isVisible
+import me.singleneuron.qn_kernel.annotation.UiItem
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
+import me.singleneuron.qn_kernel.tlb.净化_主页
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import xyz.nextalone.util.clazz
 import xyz.nextalone.util.hookAfter
 import xyz.nextalone.util.method
 import xyz.nextalone.util.tryOrFalse
-import me.singleneuron.qn_kernel.annotation.UiItem
-import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
-import me.singleneuron.qn_kernel.ui.base.净化功能
-import nil.nadph.qnotified.base.annotation.FunctionEntry
 
 @FunctionEntry
 @UiItem
@@ -41,7 +41,7 @@ object HideRedPoints : CommonDelayAbleHookBridge() {
         title = "隐藏部分小红点"
     }
 
-    override val preferenceLocate = 净化功能
+    override val preferenceLocate = 净化_主页
 
     override fun initOnce(): Boolean = tryOrFalse {
         "com.tencent.mobileqq.tianshu.ui.RedTouch".clazz?.method("a", 1, ImageView::class.java) {

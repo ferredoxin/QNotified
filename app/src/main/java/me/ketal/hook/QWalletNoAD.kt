@@ -26,29 +26,34 @@ import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
-import xyz.nextalone.util.clazz
-import xyz.nextalone.util.hookAfter
-import xyz.nextalone.util.tryOrFalse
 import me.ketal.base.PluginDelayableHook
 import me.ketal.util.HookUtil.getField
 import me.ketal.util.HookUtil.getMethod
+import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import nil.nadph.qnotified.util.QQVersion
+import me.singleneuron.qn_kernel.tlb.净化_扩展
 import nil.nadph.qnotified.base.annotation.FunctionEntry
+import nil.nadph.qnotified.util.QQVersion
 import nil.nadph.qnotified.util.ReflexUtil.getFirstByType
 import nil.nadph.qnotified.util.Utils
+import xyz.nextalone.util.clazz
+import xyz.nextalone.util.hookAfter
+import xyz.nextalone.util.tryOrFalse
 
 @FunctionEntry
+@UiItem
 object QWalletNoAD : PluginDelayableHook("ketal_qwallet_noad") {
+    override val preference = uiSwitchPreference {
+        title = "隐藏QQ钱包超值精选"
+    }
+    override val preferenceLocate = 净化_扩展
+
     override val pluginID = "qwallet_plugin.apk"
 
     override fun isValid(): Boolean = requireMinQQVersion(QQVersion.QQ_8_0_0)
 
     override fun startHook(classLoader: ClassLoader) = tryOrFalse {
-        arrayOf(
-            "Lcom/qwallet/activity/QWalletHomeActivity;->onCreate(Landroid/os/Bundle;)V",
-            "Lcom/qwallet/activity/QvipPayWalletActivity;->onCreate(Landroid/os/Bundle;)V"
-        ).getMethod(classLoader)
+        arrayOf("Lcom/qwallet/activity/QWalletHomeActivity;->onCreate(Landroid/os/Bundle;)V", "Lcom/qwallet/activity/QvipPayWalletActivity;->onCreate(Landroid/os/Bundle;)V").getMethod(classLoader)
             ?.hookAfter(this) {
                 val ctx = it.thisObject as Activity
                 val id = ctx.resources.getIdentifier("root", "id", Utils.PACKAGE_NAME_QQ)

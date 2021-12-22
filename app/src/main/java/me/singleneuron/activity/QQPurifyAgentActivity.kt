@@ -21,19 +21,19 @@
  */
 package me.singleneuron.activity
 
-import android.R
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import nil.nadph.qnotified.R
 import nil.nadph.qnotified.lifecycle.JumpActivityEntryHook
 import nil.nadph.qnotified.startup.HookEntry
 
 class QQPurifyAgentActivity : AppCompatActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.Theme_MaiTungTMUI)
         super.onCreate(savedInstanceState)
         var pkg: String? = null
         pkg = HookEntry.PACKAGE_NAME_QQ
@@ -52,7 +52,7 @@ class QQPurifyAgentActivity : AppCompatActivity() {
         } catch (e: ActivityNotFoundException) {
             AlertDialog.Builder(this).setTitle("出错啦")
                 .setMessage("拉起模块设置失败, 请确认 $pkg 已安装并启用(没有被关冰箱或被冻结停用)\n$e")
-                .setCancelable(true).setPositiveButton(R.string.ok, null).show()
+                .setCancelable(true).setPositiveButton(android.R.string.ok, null).show()
         }
     }
 

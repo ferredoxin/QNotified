@@ -23,6 +23,7 @@ package cc.ioctl.hook;
 
 import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
 
+import androidx.annotation.NonNull;
 import cc.ioctl.util.BugUtils;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -33,24 +34,28 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import me.singleneuron.qn_kernel.annotation.UiItem;
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge;
+import me.singleneuron.qn_kernel.tlb.UiRoutineKt;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
-import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.ReflexUtil;
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
+import org.ferredoxin.ferredoxinui.common.base.UiSwitchPreference;
+import org.jetbrains.annotations.Nullable;
 
 @FunctionEntry
-public class BlockFluxThief extends CommonDelayableHook {
+@UiItem
+public class BlockFluxThief extends CommonDelayAbleHookBridge {
 
     public static final BlockFluxThief INSTANCE = new BlockFluxThief();
 
     private BlockFluxThief() {
-        super("bug_block_flux_thief", SyncUtils.PROC_ANY, true,
-            new DexDeobfStep(DexKit.C_ZipUtils_biz));
+        super(SyncUtils.PROC_ANY, new DexDeobfStep(DexKit.C_ZipUtils_biz));
     }
 
     static long requestUrlSizeBlocked(String url) throws IOException {
@@ -126,5 +131,20 @@ public class BlockFluxThief extends CommonDelayableHook {
             Utils.log(e);
             return false;
         }
+    }
+
+    private final UiSwitchPreference mUiSwitchPreference = this.new UiSwitchPreferenceItemFactory(
+        "拦截异常体积图片加载");
+
+    @NonNull
+    @Override
+    public UiSwitchPreference getPreference() {
+        return mUiSwitchPreference;
+    }
+
+    @Nullable
+    @Override
+    public String[] getPreferenceLocate() {
+        return UiRoutineKt.get增强功能();
     }
 }

@@ -58,8 +58,8 @@ import nil.nadph.qnotified.ui.widget.FunctionSwitch;
 import nil.nadph.qnotified.util.NonUiThread;
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
-import org.ferredoxin.ferredoxin_ui.base.UiSwitchItem;
-import org.ferredoxin.ferredoxin_ui.base.UiSwitchPreference;
+import org.ferredoxin.ferredoxinui.common.base.UiSwitchItem;
+import org.ferredoxin.ferredoxinui.common.base.UiSwitchPreference;
 import xyz.nextalone.base.MultiItemDelayableHook;
 import xyz.nextalone.util.SystemServiceUtils;
 

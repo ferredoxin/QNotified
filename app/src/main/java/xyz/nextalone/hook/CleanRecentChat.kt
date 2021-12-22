@@ -27,16 +27,16 @@ import android.widget.RelativeLayout
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.checkbox.checkBoxPrompt
 import com.afollestad.materialdialogs.list.listItems
-import xyz.nextalone.util.*
 import me.kyuubiran.util.getDefaultCfg
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
-import me.singleneuron.qn_kernel.ui.base.增强功能
+import me.singleneuron.qn_kernel.tlb.辅助功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.ui.CommonContextWrapper
 import nil.nadph.qnotified.util.DexKit
 import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.Toasts
+import xyz.nextalone.util.*
 
 
 @FunctionEntry
@@ -48,7 +48,7 @@ object CleanRecentChat : CommonDelayAbleHookBridge() {
         summary = "长按右上角加号"
     }
 
-    override val preferenceLocate = 增强功能
+    override val preferenceLocate = 辅助功能
 
     private const val RecentAdapter = "com.tencent.mobileqq.activity.recent.RecentAdapter"
     private const val RecentUserBaseData = "com.tencent.mobileqq.activity.recent.RecentUserBaseData"

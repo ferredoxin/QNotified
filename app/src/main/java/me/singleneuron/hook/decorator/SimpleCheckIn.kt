@@ -24,7 +24,7 @@ package me.singleneuron.hook.decorator
 import de.robv.android.xposed.XC_MethodHook
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.decorator.BaseItemBuilderFactoryHookDecorator
-import me.singleneuron.qn_kernel.ui.base.净化功能
+import me.singleneuron.qn_kernel.tlb.净化_扩展
 import nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null
 import nil.nadph.qnotified.util.ReflexUtil.invoke_virtual
 
@@ -58,6 +58,6 @@ object SimpleCheckIn : BaseItemBuilderFactoryHookDecorator() {
         title = "签到文本化"
     }
 
-    override val preferenceLocate: Array<String> = 净化功能
+    override val preferenceLocate: Array<String> = 净化_扩展
 
 }

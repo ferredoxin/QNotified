@@ -24,18 +24,18 @@ package xyz.nextalone.hook
 import android.app.Activity
 import android.view.View
 import android.widget.CheckBox
+import me.singleneuron.qn_kernel.annotation.UiItem
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
+import me.singleneuron.qn_kernel.data.requireMinQQVersion
+import me.singleneuron.qn_kernel.tlb.增强功能
+import nil.nadph.qnotified.SyncUtils
+import nil.nadph.qnotified.base.annotation.FunctionEntry
+import nil.nadph.qnotified.util.QQVersion
+import org.ferredoxin.ferredoxinui.common.base.UiSwitchPreference
 import xyz.nextalone.util.findHostView
 import xyz.nextalone.util.hookAfter
 import xyz.nextalone.util.method
 import xyz.nextalone.util.tryOrFalse
-import me.singleneuron.qn_kernel.annotation.UiItem
-import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
-import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import me.singleneuron.qn_kernel.ui.base.辅助功能
-import nil.nadph.qnotified.SyncUtils
-import nil.nadph.qnotified.base.annotation.FunctionEntry
-import nil.nadph.qnotified.util.QQVersion
-import org.ferredoxin.ferredoxin_ui.base.UiSwitchPreference
 
 @FunctionEntry
 @UiItem
@@ -46,7 +46,7 @@ object AutoSendOriginalPhoto :
         title = "聊天自动发送原图"
     }
 
-    override val preferenceLocate = 辅助功能
+    override val preferenceLocate = 增强功能
 
     override fun initOnce() = tryOrFalse {
         "Lcom.tencent.mobileqq.activity.aio.photo.PhotoListPanel;->a(Z)V".method.hookAfter(this) {

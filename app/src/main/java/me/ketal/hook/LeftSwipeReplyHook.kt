@@ -26,25 +26,36 @@ import android.graphics.BitmapFactory
 import android.view.View
 import android.widget.ImageView
 import de.robv.android.xposed.XposedHelpers
-import xyz.nextalone.util.hookAfter
-import xyz.nextalone.util.hookBefore
 import me.ketal.data.ConfigData
+import me.ketal.ui.activity.ModifyLeftSwipeReplyActivity
 import me.ketal.util.BaseUtil.tryVerbosely
 import me.singleneuron.qn_kernel.data.isTim
 import me.singleneuron.qn_kernel.data.requireMinVersion
 import me.singleneuron.qn_kernel.tlb.ConfigTable.getConfig
+import me.singleneuron.qn_kernel.tlb.增强功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.ui.ResUtils
 import nil.nadph.qnotified.util.*
+import org.ferredoxin.ferredoxinui.common.base.ClickToActivity
+import org.ferredoxin.ferredoxinui.common.base.UiItem
+import org.ferredoxin.ferredoxinui.common.base.uiClickableItem
+import xyz.nextalone.util.hookAfter
+import xyz.nextalone.util.hookBefore
 
 @FunctionEntry
+@me.singleneuron.qn_kernel.annotation.UiItem
 object LeftSwipeReplyHook : CommonDelayableHook(
     "ketal_left_swipe_action",
     DexDeobfStep(DexKit.N_LeftSwipeReply_Helper__reply),
     DexDeobfStep(DexKit.N_BASE_CHAT_PIE__chooseMsg)
-) {
+), UiItem {
+    override val preference = uiClickableItem {
+        title = "修改消息左滑动作"
+        onClickListener = ClickToActivity(ModifyLeftSwipeReplyActivity::class.java)
+    }.second
+    override val preferenceLocate = 增强功能
     private val LEFT_SWIPE_NO_ACTION = ConfigData<Boolean>("ketal_left_swipe_noAction")
     private val LEFT_SWIPE_MULTI_CHOOSE = ConfigData<Boolean>("ketal_left_swipe_multiChoose")
     private val LEFT_SWIPE_REPLY_DISTANCE = ConfigData<Int>("ketal_left_swipe_replyDistance")

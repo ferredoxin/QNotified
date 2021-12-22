@@ -24,9 +24,7 @@ package nil.nadph.qnotified.hook;
 import static nil.nadph.qnotified.util.Utils.log;
 
 import android.os.Looper;
-
 import androidx.annotation.NonNull;
-
 import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.config.ConfigManager;
@@ -101,13 +99,7 @@ public abstract class CommonDelayableHook extends BaseDelayableHook {
             if (Looper.myLooper() == Looper.getMainLooper()) {
                 Toasts.error(HostInfo.getHostInfo().getApplication(), e + "");
             } else {
-                SyncUtils.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toasts.error(HostInfo.getHostInfo().getApplication(),
-                            e + "");
-                    }
-                });
+                SyncUtils.post(() -> Toasts.error(HostInfo.getHostInfo().getApplication(), e + ""));
             }
         }
     }

@@ -24,17 +24,25 @@ package me.ketal.hook
 
 import android.app.Activity
 import android.os.Build
-import xyz.nextalone.util.replace
-import xyz.nextalone.util.tryOrFalse
+import me.singleneuron.qn_kernel.annotation.UiItem
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
+import me.singleneuron.qn_kernel.tlb.辅助功能
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.base.annotation.FunctionEntry
-import nil.nadph.qnotified.hook.CommonDelayableHook
+import xyz.nextalone.util.replace
+import xyz.nextalone.util.tryOrFalse
 
 @FunctionEntry
-object FakeMultiWindowStatus : CommonDelayableHook(
-    "Ketal_Ketal_RemoveQRLoginAuth",
+@UiItem
+object FakeMultiWindowStatus : CommonDelayAbleHookBridge(
     SyncUtils.PROC_ANY
 ) {
+    override val preference = uiSwitchPreference {
+        title = "伪装处于非多窗口模式"
+        summary = "用于分屏状态使用一些功能,例如扫码"
+    }
+    override val preferenceLocate = 辅助功能
+
     override fun isValid() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
     override fun initOnce() = tryOrFalse {
         Activity::class.java.getDeclaredMethod("isInMultiWindowMode")

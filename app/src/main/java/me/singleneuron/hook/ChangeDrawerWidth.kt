@@ -31,15 +31,15 @@ import com.google.android.material.slider.Slider
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 import me.singleneuron.qn_kernel.data.hostInfo
-import me.singleneuron.qn_kernel.ui.base.辅助功能
+import me.singleneuron.qn_kernel.tlb.辅助功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.ui.CommonContextWrapper
 import nil.nadph.qnotified.util.Utils.PACKAGE_NAME_QQ
-import org.ferredoxin.ferredoxin_ui.base.MaterialAlertDialogPreferenceFactory
-import org.ferredoxin.ferredoxin_ui.base.UiItem
-import org.ferredoxin.ferredoxin_ui.base.uiDialogPreference
+import org.ferredoxin.ferredoxinui.common.base.MaterialAlertDialogPreferenceFactory
+import org.ferredoxin.ferredoxinui.common.base.UiItem
+import org.ferredoxin.ferredoxinui.qnotified_style.base.uiDialogPreference
 
 @FunctionEntry
 @me.singleneuron.qn_kernel.annotation.UiItem
@@ -115,9 +115,7 @@ object ChangeDrawerWidth : CommonDelayableHook("changeDrawerWidth"), UiItem {
                 setTitle("修改侧滑边距（设置为0dp以禁用）")
                 setView(slider)
             }
-        }
+        }.second
     }
-
     override val preferenceLocate: Array<String> = 辅助功能
-
 }

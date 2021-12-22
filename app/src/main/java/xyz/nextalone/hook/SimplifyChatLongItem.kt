@@ -23,7 +23,7 @@ package xyz.nextalone.hook
 
 import de.robv.android.xposed.XC_MethodHook
 import me.singleneuron.qn_kernel.annotation.UiItem
-import me.singleneuron.qn_kernel.ui.base.净化功能
+import me.singleneuron.qn_kernel.tlb.净化_聊天
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import xyz.nextalone.base.MultiItemDelayableHook
 import xyz.nextalone.util.clazz
@@ -34,7 +34,7 @@ import xyz.nextalone.util.tryOrFalse
 @FunctionEntry
 @UiItem
 object SimplifyChatLongItem : MultiItemDelayableHook("na_simplify_chat_long_item_multi") {
-    override val preferenceLocate: Array<String> = 净化功能
+    override val preferenceLocate = 净化_聊天
     override val preferenceTitle = "精简聊天气泡长按菜单"
     override val allItems = setOf(
         "复制",

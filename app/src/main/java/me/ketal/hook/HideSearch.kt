@@ -31,18 +31,27 @@ import android.widget.RelativeLayout
 import androidx.core.view.isVisible
 import androidx.core.view.plusAssign
 import com.tencent.mobileqq.app.BaseActivity
-import xyz.nextalone.util.*
 import me.ketal.util.findViewByType
+import me.singleneuron.qn_kernel.annotation.UiItem
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.isTim
+import me.singleneuron.qn_kernel.tlb.娱乐功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
-import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.util.DexKit
 import nil.nadph.qnotified.util.ReflexUtil.getFirstByType
+import xyz.nextalone.util.*
 
 @FunctionEntry
-object HideSearch : CommonDelayableHook("Ketal_HideSearch",
-    DexDeobfStep(DexKit.N_Conversation_onCreate)){
+@UiItem
+object HideSearch : CommonDelayAbleHookBridge(
+    DexDeobfStep(DexKit.N_Conversation_onCreate)) {
+    override val preferenceLocate = 娱乐功能
+    override val preference = uiSwitchPreference {
+        title = "隐藏搜索编辑框"
+        summary = "谨慎开启"
+    }
+
     override fun isValid() = !isTim()
 
     override fun initOnce() = tryOrFalse {

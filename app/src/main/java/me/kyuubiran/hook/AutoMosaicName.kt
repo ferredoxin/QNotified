@@ -23,6 +23,7 @@ package me.kyuubiran.hook
 
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
+import me.singleneuron.qn_kernel.tlb.娱乐功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.util.DexKit
@@ -44,6 +45,6 @@ object AutoMosaicName : CommonDelayAbleHookBridge(DexDeobfStep(DexKit.N_BaseChat
     override val preference = uiSwitchPreference {
         title = "昵称/群名片打码"
     }
-    override val preferenceLocate: Array<String> = arrayOf("其他功能", "娱乐功能")
+    override val preferenceLocate: Array<String> = 娱乐功能
 
 }

@@ -29,7 +29,6 @@ import static nil.nadph.qnotified.util.Initiator.load;
 import static nil.nadph.qnotified.util.ReflexUtil.findField;
 import static nil.nadph.qnotified.util.ReflexUtil.getFirstByType;
 import static nil.nadph.qnotified.util.ReflexUtil.getFirstNSFFieldByType;
-import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
 import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
 import static nil.nadph.qnotified.util.Utils.dip2px;
 import static nil.nadph.qnotified.util.Utils.dip2sp;
@@ -54,13 +53,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
-
-import org.ferredoxin.ferredoxin_ui.base.UiSwitchPreference;
-
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -70,11 +67,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
 import me.singleneuron.qn_kernel.annotation.UiItem;
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge;
+import me.singleneuron.qn_kernel.tlb.UiRoutineKt;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.bridge.ChatActivityFacade;
@@ -90,6 +85,7 @@ import nil.nadph.qnotified.util.FaceImpl;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
+import org.ferredoxin.ferredoxinui.common.base.UiSwitchPreference;
 
 @FunctionEntry
 @UiItem
@@ -112,7 +108,7 @@ public class PttForwardHook extends CommonDelayAbleHookBridge {
     @Nullable
     @Override
     public String[] getPreferenceLocate() {
-        return new String[]{"增强功能"};
+        return UiRoutineKt.get增强功能();
     }
 
     private PttForwardHook() {

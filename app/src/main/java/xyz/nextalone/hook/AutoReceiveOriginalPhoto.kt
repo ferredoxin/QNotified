@@ -21,21 +21,21 @@
  */
 package xyz.nextalone.hook
 
-import xyz.nextalone.util.invoke
-import xyz.nextalone.util.method
-import xyz.nextalone.util.replace
-import xyz.nextalone.util.tryOrFalse
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import me.singleneuron.qn_kernel.ui.base.辅助功能
+import me.singleneuron.qn_kernel.tlb.增强功能
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.util.DexKit
 import nil.nadph.qnotified.util.QQVersion
-import org.ferredoxin.ferredoxin_ui.base.UiSwitchPreference
+import org.ferredoxin.ferredoxinui.common.base.UiSwitchPreference
+import xyz.nextalone.util.invoke
+import xyz.nextalone.util.method
+import xyz.nextalone.util.replace
+import xyz.nextalone.util.tryOrFalse
 
 @FunctionEntry
 @UiItem
@@ -48,7 +48,7 @@ object AutoReceiveOriginalPhoto : CommonDelayAbleHookBridge(
         title = "聊天自动接收原图"
     }
 
-    override val preferenceLocate = 辅助功能
+    override val preferenceLocate = 增强功能
 
     override fun initOnce() = tryOrFalse {
         val method: String = when {

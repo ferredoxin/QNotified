@@ -24,23 +24,23 @@ package xyz.nextalone.hook
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import de.robv.android.xposed.XC_MethodHook
-import xyz.nextalone.data.TroopInfo
 import me.ketal.dispacher.OnBubbleBuilder
 import me.ketal.util.findViewByType
+import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.MsgRecordData
-import me.singleneuron.qn_kernel.ui.base.净化功能
-import nil.nadph.qnotified.base.annotation.FunctionEntry
+import me.singleneuron.qn_kernel.tlb.净化_群聊
 import nil.nadph.qnotified.util.Initiator._TroopMemberLevelView
+import xyz.nextalone.data.TroopInfo
 
-@FunctionEntry
+@UiItem
 object HideTroopLevel : CommonDelayAbleHookBridge(), OnBubbleBuilder {
 
     override val preference = uiSwitchPreference {
         title = "隐藏群聊群成员头衔"
     }
 
-    override val preferenceLocate = 净化功能
+    override val preferenceLocate = 净化_群聊
 
     private val levelClass
         get() = _TroopMemberLevelView()

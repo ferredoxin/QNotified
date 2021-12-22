@@ -21,33 +21,37 @@
  */
 package cc.ioctl.hook;
 
+import androidx.annotation.NonNull;
+import cc.ioctl.util.BugUtils;
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
-import cc.ioctl.util.BugUtils;
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
+import me.singleneuron.qn_kernel.annotation.UiItem;
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge;
 import me.singleneuron.qn_kernel.data.HostInfo;
+import me.singleneuron.qn_kernel.tlb.UiRoutineKt;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
-import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
+import org.ferredoxin.ferredoxinui.common.base.UiSwitchPreference;
+import org.jetbrains.annotations.Nullable;
 
 @FunctionEntry
-public class InterceptZipBomb extends CommonDelayableHook {
+@UiItem
+public class InterceptZipBomb extends CommonDelayAbleHookBridge {
 
     public static final InterceptZipBomb INSTANCE = new InterceptZipBomb();
 
     private InterceptZipBomb() {
-        super("bug_intercept_zip_bomb", SyncUtils.PROC_MAIN, true,
-            new DexDeobfStep(DexKit.C_ZipUtils_biz));
+        super(SyncUtils.PROC_MAIN, new DexDeobfStep(DexKit.C_ZipUtils_biz));
     }
 
     @Override
@@ -90,5 +94,20 @@ public class InterceptZipBomb extends CommonDelayableHook {
             Utils.log(e);
             return false;
         }
+    }
+
+    private final UiSwitchPreference mUiSwitchPreference = this.new UiSwitchPreferenceItemFactory(
+        "拦截异常体积图片加载");
+
+    @NonNull
+    @Override
+    public UiSwitchPreference getPreference() {
+        return mUiSwitchPreference;
+    }
+
+    @Nullable
+    @Override
+    public String[] getPreferenceLocate() {
+        return UiRoutineKt.get增强功能();
     }
 }

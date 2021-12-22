@@ -22,16 +22,23 @@
 
 package me.ketal.hook
 
+import me.singleneuron.qn_kernel.annotation.UiItem
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
+import me.singleneuron.qn_kernel.data.requireMinQQVersion
+import me.singleneuron.qn_kernel.tlb.辅助功能
+import nil.nadph.qnotified.base.annotation.FunctionEntry
+import nil.nadph.qnotified.util.QQVersion
 import xyz.nextalone.util.hookBefore
 import xyz.nextalone.util.method
 import xyz.nextalone.util.tryOrFalse
-import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import nil.nadph.qnotified.base.annotation.FunctionEntry
-import nil.nadph.qnotified.hook.CommonDelayableHook
-import nil.nadph.qnotified.util.QQVersion
 
 @FunctionEntry
-object RemoveQRLoginAuth : CommonDelayableHook("Ketal_RemoveQRLoginAuth") {
+@UiItem
+object RemoveQRLoginAuth : CommonDelayAbleHookBridge() {
+    override val preference = uiSwitchPreference {
+        title = "去除相册扫码登录检验"
+    }
+    override val preferenceLocate = 辅助功能
 
     override fun isValid() = requireMinQQVersion(QQVersion.QQ_8_5_0)
 

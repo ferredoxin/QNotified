@@ -33,16 +33,16 @@ import me.kyuubiran.util.getExFriendCfg
 import me.kyuubiran.util.showToastByTencent
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import me.singleneuron.qn_kernel.tlb.ConfigTable.getConfig
-import me.singleneuron.qn_kernel.ui.base.增强功能
+import me.singleneuron.qn_kernel.tlb.辅助功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.ui.CustomDialog
 import nil.nadph.qnotified.ui.ViewBuilder
 import nil.nadph.qnotified.util.*
-import org.ferredoxin.ferredoxin_ui.base.UiDescription
-import org.ferredoxin.ferredoxin_ui.base.UiItem
-import org.ferredoxin.ferredoxin_ui.base.uiClickableItem
+import org.ferredoxin.ferredoxinui.common.base.UiDescription
+import org.ferredoxin.ferredoxinui.common.base.UiItem
+import org.ferredoxin.ferredoxinui.common.base.uiClickableItem
 import xyz.nextalone.util.*
 import java.util.*
 
@@ -58,7 +58,7 @@ object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt", DexDeobfSt
         }
     }.second
 
-    override val preferenceLocate = 增强功能
+    override val preferenceLocate = 辅助功能
 
     private const val msgCfg = "na_chat_words_count_kt_msg"
     private const val wordsCfg = "na_chat_words_count_kt_words"
@@ -239,21 +239,13 @@ object ChatWordsCount : CommonDelayableHook("na_chat_words_count_kt", DexDeobfSt
                 false -> Toasts.showToast(ctx, Toasts.TYPE_INFO, "已关闭聊天字数统计", Toasts.LENGTH_SHORT)
             }
         }
+        val textView = TextView(ctx)
+        textView.text = "替换侧滑栏个性签名为聊天字数统计，点击可更换字体颜色。\n%1表示发送消息总数，%2表示发送字数，%3表示发送表情包个数。"
+        textView.setPadding(_5 * 2, _5, _5 * 2, _5)
         val linearLayout = LinearLayout(ctx)
         linearLayout.orientation = LinearLayout.VERTICAL
         linearLayout.addView(
-            ViewBuilder.subtitle(activity, "替换侧滑栏个性签名为聊天字数统计，点击可更换字体颜色。"),
-            ViewBuilder.newLinearLayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                _5,
-                0,
-                _5,
-                0
-            )
-        )
-        linearLayout.addView(
-            ViewBuilder.subtitle(activity, "%1表示发送消息总数，%2表示发送字数，%3表示发送表情包个数。"),
+            textView,
             ViewBuilder.newLinearLayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,

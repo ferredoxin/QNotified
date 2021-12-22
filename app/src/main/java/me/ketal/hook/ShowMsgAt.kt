@@ -32,19 +32,21 @@ import android.widget.TextView
 import androidx.core.view.forEach
 import de.robv.android.xposed.XC_MethodHook
 import me.ketal.dispacher.OnBubbleBuilder
+import me.singleneuron.qn_kernel.annotation.UiItem
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.MsgRecordData
 import me.singleneuron.qn_kernel.data.isTim
+import me.singleneuron.qn_kernel.tlb.辅助功能
 import nil.nadph.qnotified.MainHook
-import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.Utils
-import xyz.nextalone.util.clazz
-import xyz.nextalone.util.findHostView
-import xyz.nextalone.util.get
-import xyz.nextalone.util.invoke
-import xyz.nextalone.util.method
+import xyz.nextalone.util.*
 
-object ShowMsgAt : CommonDelayableHook("Ketal_HideTroopLevel"), OnBubbleBuilder {
-
+@UiItem
+object ShowMsgAt : CommonDelayAbleHookBridge(), OnBubbleBuilder {
+    override val preference = uiSwitchPreference {
+        title = "消息显示At对象"
+    }
+    override val preferenceLocate = 辅助功能
     override fun initOnce() = !isTim()
 
     override fun onGetView(

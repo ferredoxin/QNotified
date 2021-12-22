@@ -28,16 +28,17 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.flow.update
 import me.ketal.data.ConfigData
+import nil.nadph.qnotified.R
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.ui.CommonContextWrapper
 import nil.nadph.qnotified.ui.ViewBuilder
 import nil.nadph.qnotified.util.Toasts
 import nil.nadph.qnotified.util.Utils
-import org.ferredoxin.ferredoxin_ui.R
-import org.ferredoxin.ferredoxin_ui.base.MaterialAlertDialogPreferenceFactory
-import org.ferredoxin.ferredoxin_ui.base.UiItem
-import org.ferredoxin.ferredoxin_ui.base.uiDialogPreference
+import org.ferredoxin.ferredoxinui.common.base.MaterialAlertDialogPreferenceFactory
+import org.ferredoxin.ferredoxinui.common.base.UiItem
+import org.ferredoxin.ferredoxinui.qnotified_style.base.uiDialogPreference
 
 //Todo 好活，考虑移入FerredoxinUI
 abstract class MultiItemDelayableHook constructor(keyName: String) :
@@ -49,11 +50,12 @@ abstract class MultiItemDelayableHook constructor(keyName: String) :
         uiDialogPreference {
             title = preferenceTitle
             summary = preferenceSummary
-            value.postValue("已选择" + activeItems.size + "项")
+            value.update {
+                "已选择" + activeItems.size + "项"
+            }
             contextWrapper = CommonContextWrapper::createMaterialDesignContext
-
             materialAlertDialogBuilder = alertDialogDecorator
-        }
+        }.second
     }
 
     private val itemsConfigKeys = ConfigData<Set<String>>(keyName)
@@ -80,7 +82,7 @@ abstract class MultiItemDelayableHook constructor(keyName: String) :
         }
         set(value) {
             itemsConfigKeys.value = value.toSet()
-            preference.value.postValue("已选择" + value.size + "项")
+            preference.value.update { "已选择" + value.size + "项" }
         }
 
     open fun listener() = View.OnClickListener {

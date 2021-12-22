@@ -22,14 +22,14 @@
 
 package xyz.nextalone.hook
 
+import me.singleneuron.qn_kernel.annotation.UiItem
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
+import me.singleneuron.qn_kernel.tlb.净化_聊天
+import nil.nadph.qnotified.base.annotation.FunctionEntry
+import nil.nadph.qnotified.util.Initiator
 import xyz.nextalone.util.hookBefore
 import xyz.nextalone.util.method
 import xyz.nextalone.util.tryOrFalse
-import me.singleneuron.qn_kernel.annotation.UiItem
-import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
-import me.singleneuron.qn_kernel.ui.base.净化功能
-import nil.nadph.qnotified.base.annotation.FunctionEntry
-import nil.nadph.qnotified.util.Initiator
 
 @FunctionEntry
 @UiItem
@@ -39,7 +39,7 @@ object TrimMessage : CommonDelayAbleHookBridge() {
         title = "移除消息前后的空格"
     }
 
-    override val preferenceLocate = 净化功能
+    override val preferenceLocate = 净化_聊天
 
     override fun initOnce(): Boolean = tryOrFalse {
         Initiator._ChatActivityFacade().method(

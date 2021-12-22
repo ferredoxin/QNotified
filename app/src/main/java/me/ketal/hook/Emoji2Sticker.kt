@@ -22,18 +22,22 @@
 
 package me.ketal.hook
 
+import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
+import me.singleneuron.qn_kernel.tlb.娱乐功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.QQVersion
-import org.ferredoxin.ferredoxin_ui.base.UiSwitchPreference
 import xyz.nextalone.util.*
 
 @FunctionEntry
+@UiItem
 object Emoji2Sticker : CommonDelayAbleHookBridge() {
-    override val preference: UiSwitchPreference=uiSwitchPreference {
-        title="关闭大号emoji"
+    override val preference = uiSwitchPreference {
+        title = "关闭大号emoji"
+        summary = "关闭此功能，输入单个emoji后发送大表情，仅支持部分表情"
     }
+    override val preferenceLocate = 娱乐功能
 
     override fun isValid() = requireMinQQVersion(QQVersion.QQ_8_7_5)
 

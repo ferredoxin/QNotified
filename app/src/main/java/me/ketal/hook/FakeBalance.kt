@@ -32,23 +32,34 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import com.afollestad.materialdialogs.input.input
-import xyz.nextalone.util.clazz
-import xyz.nextalone.util.hookAfter
 import me.ketal.base.PluginDelayableHook
 import me.ketal.data.ConfigData
 import me.ketal.ui.view.ConfigView
 import me.ketal.util.BaseUtil.tryVerbosely
 import me.ketal.util.HookUtil.findClass
 import me.ketal.util.HookUtil.getMethod
+import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.data.hostInfo
-import nil.nadph.qnotified.R
+import me.singleneuron.qn_kernel.tlb.娱乐功能
 import nil.nadph.qnotified.base.annotation.FunctionEntry
-import nil.nadph.qnotified.ui.CommonContextWrapper
-import nil.nadph.qnotified.ui.ResUtils
 import nil.nadph.qnotified.util.ReflexUtil
+import org.ferredoxin.ferredoxinui.common.base.UiDescription
+import org.ferredoxin.ferredoxinui.common.base.uiClickableItem
+import xyz.nextalone.util.clazz
+import xyz.nextalone.util.hookAfter
 
 @FunctionEntry
+@UiItem
 object FakeBalance : PluginDelayableHook("ketal_qwallet_fakebalance") {
+    override val preferenceLocate = 娱乐功能
+    override val preference: UiDescription = uiClickableItem {
+        title = "自定义钱包余额"
+        summary = "仅供娱乐"
+        onClickListener = {
+            showDialog(it, null)
+            true
+        }
+    }.second
     override val pluginID = "qwallet_plugin.apk"
     private val moneyKey = ConfigData<String>("ketal_qwallet_fakebalance_money")
     private var money
@@ -57,15 +68,14 @@ object FakeBalance : PluginDelayableHook("ketal_qwallet_fakebalance") {
             moneyKey.value = value
         }
 
-    fun listener() = View.OnClickListener {
-        showDialog(it.context, null)
+    fun listener(activity: Activity) = View.OnClickListener {
+        showDialog(activity, null)
     }
 
     private fun showDialog(ctx: Context, textView: TextView?) {
         tryVerbosely(false) {
-            val context = CommonContextWrapper(ctx, if (ResUtils.isInNightMode()) R.style.Theme_MaiTungTMDesignNight else R.style.Theme_MaiTungTMDesign)
-            val vg = ConfigView(context)
-            val dialog = MaterialDialog(context).show {
+            val vg = ConfigView(ctx)
+            val dialog = MaterialDialog(ctx).show {
                 title(text = "自定义钱包余额")
                 input(hint = "请输入自定义金额...", prefill = money) { dialog, text ->
                     val enableFake = vg.isChecked

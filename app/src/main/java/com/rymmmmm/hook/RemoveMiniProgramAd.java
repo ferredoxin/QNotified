@@ -27,21 +27,19 @@ import static nil.nadph.qnotified.util.ReflexUtil.iput_object;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import org.ferredoxin.ferredoxin_ui.base.UiSwitchPreference;
-
-import java.lang.reflect.Method;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import java.lang.reflect.Method;
 import me.singleneuron.qn_kernel.annotation.UiItem;
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge;
+import me.singleneuron.qn_kernel.tlb.UiRoutineKt;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.QQVersion;
 import nil.nadph.qnotified.util.Utils;
+import org.ferredoxin.ferredoxinui.common.base.UiSwitchPreference;
 
 //去除小程序广告 需要手动点关闭
 @FunctionEntry
@@ -59,7 +57,7 @@ public class RemoveMiniProgramAd extends CommonDelayAbleHookBridge {
     @Nullable
     @Override
     public String[] getPreferenceLocate() {
-        return new String[]{"净化功能"};
+        return UiRoutineKt.get净化_扩展();
     }
 
     public static final RemoveMiniProgramAd INSTANCE = new RemoveMiniProgramAd();

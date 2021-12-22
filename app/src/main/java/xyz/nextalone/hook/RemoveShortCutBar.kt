@@ -21,15 +21,15 @@
  */
 package xyz.nextalone.hook
 
-import xyz.nextalone.util.method
-import xyz.nextalone.util.replace
-import xyz.nextalone.util.tryOrFalse
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import me.singleneuron.qn_kernel.ui.base.净化功能
+import me.singleneuron.qn_kernel.tlb.净化_聊天
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.QQVersion
+import xyz.nextalone.util.method
+import xyz.nextalone.util.replace
+import xyz.nextalone.util.tryOrFalse
 
 @FunctionEntry
 @UiItem
@@ -39,7 +39,7 @@ object RemoveShortCutBar : CommonDelayAbleHookBridge() {
         title = "隐藏文本框上方快捷方式"
     }
 
-    override val preferenceLocate = 净化功能
+    override val preferenceLocate = 净化_聊天
 
     override fun initOnce() = tryOrFalse {
         val methodName = if (requireMinQQVersion(QQVersion.QQ_8_6_0))

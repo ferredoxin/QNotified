@@ -27,6 +27,8 @@ import de.robv.android.xposed.XC_MethodHook
 import me.ketal.base.PluginDelayableHook
 import me.ketal.util.HookUtil.findClass
 import me.ketal.util.HookUtil.hookMethod
+import me.singleneuron.qn_kernel.annotation.UiItem
+import me.singleneuron.qn_kernel.tlb.辅助功能
 import nil.nadph.qnotified.SyncUtils.PROC_MAIN
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.LicenseStatus
@@ -36,7 +38,12 @@ import xyz.nextalone.util.tryOrFalse
 import java.lang.reflect.Field
 
 @FunctionEntry
+@UiItem
 object TroopFileSaveLasting : PluginDelayableHook("ketal_TroopFileSaveLasting") {
+    override val preference = uiSwitchPreference {
+        title = "群文件长按转存永久"
+    }
+    override val preferenceLocate = 辅助功能
     override val pluginID = "troop_plugin.apk"
     override fun getEffectiveProc() = PROC_MAIN
 

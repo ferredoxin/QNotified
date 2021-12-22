@@ -23,7 +23,7 @@ package xyz.nextalone.hook
 
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import me.singleneuron.qn_kernel.ui.base.净化功能
+import me.singleneuron.qn_kernel.tlb.净化_聊天
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.QQVersion
 import xyz.nextalone.base.MultiItemDelayableHook
@@ -33,7 +33,7 @@ import xyz.nextalone.util.*
 @UiItem
 object SimplifyEmoPanel : MultiItemDelayableHook("na_simplify_emo_panel") {
     override val preferenceTitle = "精简表情菜单"
-    override val preferenceLocate = 净化功能
+    override val preferenceLocate = 净化_聊天
     private val allItemsDict = mapOf(13 to "加号菜单", 7 to "默认表情", 4 to "收藏表情", 12 to "热门表情", 15 to "厘米秀", 11 to "DIY表情", 9 to "魔法表情", -1 to "表情包")
     override val allItems: Set<String> = allItemsDict.values.toSet()
     override val enableCustom = false

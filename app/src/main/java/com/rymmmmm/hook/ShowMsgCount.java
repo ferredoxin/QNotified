@@ -29,24 +29,28 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import me.singleneuron.qn_kernel.annotation.UiItem;
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge;
 import me.singleneuron.qn_kernel.data.HostInfo;
-import nil.nadph.qnotified.SyncUtils;
+import me.singleneuron.qn_kernel.tlb.UiRoutineKt;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
-import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.QQVersion;
+import org.ferredoxin.ferredoxinui.common.base.UiSwitchPreference;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 //显示具体消息数量
 @FunctionEntry
-public class ShowMsgCount extends CommonDelayableHook {
+@UiItem
+public class ShowMsgCount extends CommonDelayAbleHookBridge {
 
     public static final ShowMsgCount INSTANCE = new ShowMsgCount();
 
     private ShowMsgCount() {
-        super("rq_show_msg_count", SyncUtils.PROC_MAIN,
-            new DexDeobfStep(DexKit.C_CustomWidgetUtil));
+        super(new DexDeobfStep(DexKit.C_CustomWidgetUtil));
     }
 
     @Override
@@ -96,6 +100,21 @@ public class ShowMsgCount extends CommonDelayableHook {
             log(e);
             return false;
         }
+    }
+
+    private final UiSwitchPreference mUiSwitchPreference = this.new UiSwitchPreferenceItemFactory(
+        "显示具体消息数量");
+
+    @NotNull
+    @Override
+    public UiSwitchPreference getPreference() {
+        return mUiSwitchPreference;
+    }
+
+    @Nullable
+    @Override
+    public String[] getPreferenceLocate() {
+        return UiRoutineKt.get花Q();
     }
 }
 

@@ -24,6 +24,7 @@ package me.ketal.hook
 
 import android.app.AlertDialog
 import android.content.ComponentName
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.view.View
@@ -32,14 +33,28 @@ import me.ketal.ui.activity.QFileShareToIpadActivity.Companion.ENABLE_SEND_TO_IP
 import me.ketal.ui.activity.QFileShareToIpadActivity.Companion.SEND_TO_IPAD_CMD
 import me.ketal.util.getEnable
 import me.ketal.util.setEnable
+import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.data.hostInfo
+import me.singleneuron.qn_kernel.tlb.增强功能
 import nil.nadph.qnotified.BuildConfig
+import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.startup.HookEntry
 import nil.nadph.qnotified.ui.CustomDialog
 import nil.nadph.qnotified.util.Toasts
+import org.ferredoxin.ferredoxinui.common.base.uiClickableItem
 
-object ManageComponent : CommonDelayableHook("Ketal_ManageComponent") {
+@FunctionEntry
+@UiItem
+object ManageComponent : CommonDelayableHook("Ketal_ManageComponent"), org.ferredoxin.ferredoxinui.common.base.UiItem {
+    override val preference = uiClickableItem {
+        title = "管理QQ组件"
+        onClickListener = {
+            showDialog(it)
+            true
+        }
+    }.second
+    override val preferenceLocate = 增强功能
     override fun initOnce() = true
     private val components = mapOf(
         "发送到我的电脑" to ComponentName(hostInfo.packageName, "com.tencent.mobileqq.activity.qfileJumpActivity"),
@@ -49,17 +64,20 @@ object ManageComponent : CommonDelayableHook("Ketal_ManageComponent") {
     )
 
     val listener = View.OnClickListener {
-        val ctx = it.context
+        showDialog(it.context)
+    }
+
+    private fun showDialog(context: Context) {
         val keys = components.keys.toTypedArray()
         val enable = keys.run {
             val ary = BooleanArray(size)
             forEachIndexed { i, k ->
-                ary[i] = components[k]?.getEnable(ctx) == true
+                ary[i] = components[k]?.getEnable(context) == true
             }
             ary
         }
         val cache = enable.clone()
-        AlertDialog.Builder(ctx, CustomDialog.themeIdForDialog())
+        AlertDialog.Builder(context, CustomDialog.themeIdForDialog())
             .setTitle("选择要启用的组件")
             .setMultiChoiceItems(keys, enable) { _: DialogInterface, i: Int, _: Boolean ->
                 cache[i] = !cache[i]
@@ -68,24 +86,24 @@ object ManageComponent : CommonDelayableHook("Ketal_ManageComponent") {
             .setPositiveButton("确定") { _: DialogInterface, _: Int ->
                 cache.forEachIndexed { i, b ->
                     if (!cache[keys.indexOf("发送到我的电脑")] && cache[keys.indexOf("发送到我的iPad")]) {
-                        Toasts.error(ctx, "启用发送到iPad需启用发送到电脑")
-                        it.performClick()
+                        Toasts.error(context, "启用发送到iPad需启用发送到电脑")
+//                        view.performClick()
                         return@setPositiveButton
                     }
                     val k = keys[i]
-                    if (k == "发送到我的iPad" && b != components[k]?.getEnable(ctx)) {
+                    if (k == "发送到我的iPad" && b != components[k]?.getEnable(context)) {
                         val intent = Intent().apply {
                             component = ComponentName(BuildConfig.APPLICATION_ID, "nil.nadph.qnotified.activity.ConfigV2Activity")
                             putExtra(SEND_TO_IPAD_CMD, ENABLE_SEND_TO_IPAD)
                             putExtra(ENABLE_SEND_TO_IPAD_STATUS, b)
                         }
-                        Toasts.info(ctx, "已保存组件状态")
-                        ctx.startActivity(intent)
+                        Toasts.info(context, "已保存组件状态")
+                        context.startActivity(intent)
                         return@setPositiveButton
                     }
-                    components[k]?.setEnable(ctx, b)
+                    components[k]?.setEnable(context, b)
                 }
-                Toasts.info(ctx, "已保存组件状态")
+                Toasts.info(context, "已保存组件状态")
             }
             .show()
     }

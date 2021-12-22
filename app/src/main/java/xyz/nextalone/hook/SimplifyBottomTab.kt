@@ -23,7 +23,7 @@ package xyz.nextalone.hook
 
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import me.singleneuron.qn_kernel.ui.base.净化功能
+import me.singleneuron.qn_kernel.tlb.净化_主页
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.QQVersion
 import xyz.nextalone.base.MultiItemDelayableHook
@@ -35,7 +35,7 @@ import xyz.nextalone.util.tryOrFalse
 @FunctionEntry
 @UiItem
 object SimplifyBottomTab : MultiItemDelayableHook("na_simplify_bottom_tab_kt") {
-    override val preferenceLocate: Array<String> = 净化功能
+    override val preferenceLocate: Array<String> = 净化_主页
     override val preferenceTitle = "精简底栏"
 
     private val clzNames = mapOf(

@@ -25,7 +25,7 @@ package me.ketal.hook.guild
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
 import me.singleneuron.qn_kernel.data.MsgRecordData
-import me.singleneuron.qn_kernel.ui.base.频道功能
+import me.singleneuron.qn_kernel.tlb.频道功能
 import mqq.app.AppRuntime
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.base.annotation.FunctionEntry

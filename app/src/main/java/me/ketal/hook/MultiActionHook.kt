@@ -30,26 +30,33 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.tencent.mobileqq.app.BaseActivity
-import xyz.nextalone.util.hookAfter
 import me.ketal.util.BaseUtil.tryVerbosely
+import me.singleneuron.qn_kernel.annotation.UiItem
+import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
+import me.singleneuron.qn_kernel.tlb.增强功能
 import nil.nadph.qnotified.R
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.bridge.QQMessageFacade
-import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.ui.ResUtils
 import nil.nadph.qnotified.util.DexKit
 import nil.nadph.qnotified.util.Initiator
 import nil.nadph.qnotified.util.ReflexUtil
+import xyz.nextalone.util.hookAfter
 
 @FunctionEntry
-object MultiActionHook : CommonDelayableHook(
-    "qn_multi_action",
+@UiItem
+object MultiActionHook : CommonDelayAbleHookBridge(
     DexDeobfStep(DexKit.C_MessageCache),
     DexDeobfStep(DexKit.C_MSG_REC_FAC),
     DexDeobfStep(DexKit.N_BASE_CHAT_PIE__createMulti),
     DexDeobfStep(DexKit.C_MultiMsg_Manager)
 ) {
+    override val preference = uiSwitchPreference {
+        title = "批量撤回消息"
+        summary = "多选消息后撤回"
+    }
+    override val preferenceLocate = 增强功能
     private var baseChatPie: Any? = null
     private var img: Bitmap? = null
     private val recallBitmap: Bitmap?

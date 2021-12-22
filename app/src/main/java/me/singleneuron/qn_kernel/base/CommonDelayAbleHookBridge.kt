@@ -23,18 +23,19 @@
 package me.singleneuron.qn_kernel.base
 
 import android.content.Context
-import android.os.Looper
-import androidx.lifecycle.MutableLiveData
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import me.ketal.data.ConfigData
-import me.singleneuron.qn_kernel.data.hostInfo
 import nil.nadph.qnotified.SyncUtils
-import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.step.Step
-import nil.nadph.qnotified.util.Toasts
-import nil.nadph.qnotified.util.Utils
-import org.ferredoxin.ferredoxin_ui.base.UiItem
-import org.ferredoxin.ferredoxin_ui.base.UiSwitchPreference
+import org.ferredoxin.ferredoxinui.common.base.DirectResourceProvider
+import org.ferredoxin.ferredoxinui.common.base.ResourceProvider
+import org.ferredoxin.ferredoxinui.common.base.UiItem
+import org.ferredoxin.ferredoxinui.common.base.UiSwitchPreference
 
 abstract class CommonDelayAbleHookBridge
 @JvmOverloads
@@ -63,14 +64,43 @@ constructor(
     }
 
     override fun setEnabled(enabled: Boolean) {
-        preference.value.postValue(enabled)
+        preference.value.update {
+            enabled
+        }
     }
 
     open inner class UiSwitchPreferenceItemFactory constructor() : UiSwitchPreference {
         override lateinit var title: String
         override var summary: String? = null
         override var valid: Boolean = isValid
+        override val clickAble: Boolean = true
+        override val subSummary: String? = null
         private val configData: ConfigData<Boolean> = ConfigData(configName)
+
+        private lateinit var titleProviderCache: ResourceProvider<String>
+        override var titleProvider: ResourceProvider<String>
+            get() {
+                if (this::titleProviderCache.isInitialized) {
+                    return titleProviderCache
+                } else {
+                    return DirectResourceProvider(title)
+                }
+            }
+            set(value) {
+                titleProviderCache = value
+            }
+        private lateinit var summaryProviderCache: ResourceProvider<String?>
+        override var summaryProvider: ResourceProvider<String?>
+            get() {
+                if (this::summaryProviderCache.isInitialized) {
+                    return summaryProviderCache
+                } else {
+                    return DirectResourceProvider(summary)
+                }
+            }
+            set(value) {
+                summaryProviderCache = value
+            }
 
         @JvmOverloads
         constructor(title: String, summary: String? = null) : this() {
@@ -78,16 +108,13 @@ constructor(
             this.summary = summary
         }
 
-        override val value: MutableLiveData<Boolean> by lazy {
-            MutableLiveData<Boolean>().apply {
+        override val value: MutableStateFlow<Boolean?> by lazy {
+            MutableStateFlow<Boolean?>(configData.getOrDefault(false)).apply {
                 SyncUtils.post {
-                    try {
-                        postValue(configData.getOrDefault(false))
-                    } catch (e: Exception) {
-                        Utils.log(e)
-                    }
-                    observeForever {
-                        configData.value = it
+                    GlobalScope.launch {
+                        collect {
+                            configData.value = it
+                        }
                     }
                 }
             }
