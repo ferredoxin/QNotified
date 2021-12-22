@@ -23,7 +23,7 @@ android {
         targetSdk = 31
         versionCode = Common.getTimeStamp()
         // versionName = major.minor.accumulation.commit_id
-        versionName = "0.9" + (Common.getGitHeadRefsSuffix(rootProject))
+        versionName = "0.9.0" + (Common.getGitHeadRefsSuffix(rootProject))
         multiDexEnabled = false
         ndk {
             abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64"))
