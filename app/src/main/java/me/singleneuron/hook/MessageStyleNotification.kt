@@ -102,6 +102,7 @@ object MessageStyleNotification : CommonDelayAbleHookBridge(SyncUtils.PROC_ANY) 
                                         //.setIcon(IconCompat.createWithBitmap(bitmap))
                                         .build()
                                     messageStyle.conversationTitle = title
+                                    messageStyle.isGroupConversation = true
                                 } else {
                                     val personInCache = personCache[notificationId]
                                     if (personInCache == null) {
@@ -127,14 +128,18 @@ object MessageStyleNotification : CommonDelayAbleHookBridge(SyncUtils.PROC_ANY) 
 
                                 //Utils.logd(historyMessage.toString())
 
-                                param.result = NotificationCompat.Builder(
+                                val builder = NotificationCompat.Builder(
                                     hostInfo.application,
                                     oldNotification
                                 )
                                     .setContentTitle(null)
                                     .setContentText(null)
                                     .setLargeIcon(null)
-                                    .setStyle(messageStyle).build()
+                                    .setStyle(messageStyle)
+                                if (isTroop == 1) {
+                                    builder.setLargeIcon(bitmap)
+                                }
+                                param.result = builder.build()
                             }
                         }
                     }
