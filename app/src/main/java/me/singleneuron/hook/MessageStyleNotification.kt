@@ -23,11 +23,18 @@
 package me.singleneuron.hook
 
 import android.app.Notification
+import android.app.PendingIntent
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.MessagingStyle.Message
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.Person
+import androidx.core.content.pm.ShortcutInfoCompat
+import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
@@ -68,77 +75,122 @@ object MessageStyleNotification : CommonDelayAbleHookBridge(SyncUtils.PROC_ANY) 
                 String::class.java,
                 object : XC_MethodHook() {
                     override fun afterHookedMethod(param: MethodHookParam) {
-                        tryOrFalse {
+                        runCatching {
                             val intent = param.args[0] as Intent
-                            val isTroop = if (intent.getIntExtra("uintype", -1) == -1)
+                            val context = hostInfo.application as Context
+                            val uin = intent.getStringExtra("uin")
+                                ?: intent.getStringExtra("param_uin")!!
+                            val isTroop = intent.getIntExtra(
+                                "uintype",
                                 intent.getIntExtra("param_uinType", -1)
-                            else
-                                intent.getIntExtra("uintype", -1)
-                            if (isTroop == 0 || isTroop == 1 || isTroop == 3000) {
-                                var bitmap = param.args[1] as Bitmap?
-                                var title = param.args[3] as String
-                                var text = param.args[4] as String
-                                val oldNotification = param.result as Notification
-                                val notificationId =
-                                    intent.getIntExtra("KEY_NOTIFY_ID_FROM_PROCESSOR", -113)
-                                val messageStyle = NotificationCompat.MessagingStyle("我")
-                                historyMessage[notificationId]?.forEach { it ->
-                                    messageStyle.addMessage(it)
-                                }
+                            )
+                            if (isTroop != 0 && isTroop != 1 && isTroop != 3000) return@runCatching
+                            val bitmap = param.args[1] as Bitmap?
+                            var title = param.args[3] as String
+                            var text = param.args[4] as String
+                            val oldNotification = param.result as Notification
+                            val notificationId =
+                                intent.getIntExtra("KEY_NOTIFY_ID_FROM_PROCESSOR", -113)
+                            val messageStyle = NotificationCompat.MessagingStyle(
+                                Person.Builder().setName("我").build()
+                            )
+                            historyMessage[notificationId]?.forEach { it ->
+                                messageStyle.addMessage(it)
+                            }
 
-                                title = numRegex.replace(title, "")
+                            title = numRegex.replace(title, "")
 
-                                val person: Person
+                            val person: Person
 
-                                if (isTroop == 1) {
-                                    val sender = senderName.find(text)?.value?.replace(": ", "")
-                                    text = senderName.replace(text, "")
-                                    /*tryOrFalse {
-                                        val senderUin = intent.getStringExtra("param_fromuin")
-                                        bitmap = face.getBitmapFromCache(TYPE_USER,senderUin)
-                                    }*/
-                                    person = Person.Builder()
-                                        .setName(sender)
-                                        //.setIcon(IconCompat.createWithBitmap(bitmap))
-                                        .build()
-                                    messageStyle.conversationTitle = title
-                                    messageStyle.isGroupConversation = true
-                                } else {
-                                    val personInCache = personCache[notificationId]
-                                    if (personInCache == null) {
-                                        val builder = Person.Builder()
-                                            .setName(title)
-                                            .setIcon(IconCompat.createWithBitmap(bitmap))
-                                        if (title.contains("[特别关心]")) {
-                                            builder.setImportant(true)
-                                        }
-                                        person = builder.build()
-                                        personCache[notificationId] = person
-                                    } else {
-                                        person = personInCache
+                            if (isTroop == 1) {
+                                val sender = senderName.find(text)?.value?.replace(": ", "")
+                                text = senderName.replace(text, "")
+                                /*tryOrFalse {
+                                    val senderUin = intent.getStringExtra("param_fromuin")
+                                    bitmap = face.getBitmapFromCache(TYPE_USER,senderUin)
+                                }*/
+                                person = Person.Builder()
+                                    .setName(sender)
+                                    //.setIcon(IconCompat.createWithBitmap(bitmap))
+                                    .build()
+                                messageStyle.conversationTitle = title
+                                messageStyle.isGroupConversation = true
+                            } else {
+                                val personInCache = personCache[notificationId]
+                                if (personInCache == null) {
+                                    val builder = Person.Builder()
+                                        .setName(title)
+                                        .setIcon(IconCompat.createWithBitmap(bitmap))
+                                    if (title.contains("[特别关心]")) {
+                                        builder.setImportant(true)
                                     }
+                                    person = builder.build()
+                                    personCache[notificationId] = person
+                                } else {
+                                    person = personInCache
                                 }
+                            }
 
-                                val message = Message(text, oldNotification.`when`, person)
-                                messageStyle.addMessage(message)
-                                if (historyMessage[notificationId] == null) {
-                                    historyMessage[notificationId] = ArrayList()
-                                }
-                                historyMessage[notificationId]?.add(message)
+                            val message = Message(text, oldNotification.`when`, person)
+                            messageStyle.addMessage(message)
+                            if (historyMessage[notificationId] == null) {
+                                historyMessage[notificationId] = ArrayList()
+                            }
+                            historyMessage[notificationId]?.add(message)
 
-                                //Utils.logd(historyMessage.toString())
-
-                                val builder = NotificationCompat.Builder(
-                                    hostInfo.application,
-                                    oldNotification
+                            //Utils.logd(historyMessage.toString())
+                            val builder = NotificationCompat.Builder(
+                                context,
+                                oldNotification
+                            )
+                                .setContentTitle(null)
+                                .setContentText(null)
+                                .setLargeIcon(null)
+                                .setStyle(messageStyle)
+                            if (isTroop == 1) {
+                                builder.setLargeIcon(bitmap)
+                            }
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                val newIntent = intent.clone() as Intent
+                                newIntent.component = ComponentName(
+                                    context,
+                                    "com.tencent.mobileqq.activity.ChatActivity".clazz!!
                                 )
-                                    .setContentTitle(null)
-                                    .setContentText(null)
-                                    .setLargeIcon(null)
-                                    .setStyle(messageStyle)
-                                if (isTroop == 1) {
-                                    builder.setLargeIcon(bitmap)
+                                val bubbleIntent = PendingIntent.getActivity(
+                                    context,
+                                    0,
+                                    newIntent,
+                                    PendingIntent.FLAG_MUTABLE
+                                )
+
+                                val bubbleData = NotificationCompat.BubbleMetadata.Builder(
+                                    bubbleIntent,
+                                    person.icon ?: IconCompat.createWithBitmap(bitmap)
+                                )
+                                    .setDesiredHeight(600)
+                                    .build()
+
+                                val shortcut =
+                                    ShortcutInfoCompat.Builder(context, uin)
+                                        .setIntent(newIntent)
+                                        .setLongLived(true)
+                                        .setShortLabel(title)
+                                        .setIcon(bubbleData.icon!!)
+                                        .build()
+
+                                ShortcutManagerCompat.addDynamicShortcuts(
+                                    context,
+                                    arrayListOf(shortcut)
+                                )
+                                builder.apply {
+                                    setShortcutInfo(shortcut)
+                                    bubbleMetadata = bubbleData
                                 }
+                                // notify by ourself to change notification id
+                                param.result = null
+                                NotificationManagerCompat.from(context)
+                                    .notify(uin.toInt(), builder.build())
+                            } else {
                                 param.result = builder.build()
                             }
                         }

@@ -129,30 +129,30 @@ public class Natives {
     @SuppressLint("UnsafeDynamicallyLoadedCode")
     public static void load(Context ctx) throws Throwable {
         try {
-            getpagesize();
-            return;
-        } catch (UnsatisfiedLinkError ignored) {
-        }
-        try {
-            Class.forName("de.robv.android.xposed.XposedBridge");
-            // in host process
-            try {
-                if (StartupInfo.modulePath != null) {
-                    // try direct memory map
-                    System.load(StartupInfo.modulePath
-                        + "!/lib/" + Build.CPU_ABI + "/libnatives.so");
-                    Utils.logd("dlopen by mmap success");
-                }
-            } catch (UnsatisfiedLinkError e1) {
-                // direct memory map load failed, extract and dlopen
-                File libnatives = extractNativeLibrary(ctx, "natives");
-                registerNativeLibEntry(libnatives.getName());
-                System.load(libnatives.getAbsolutePath());
-                Utils.logd("dlopen by extract success");
-            }
-        } catch (ClassNotFoundException e) {
-            // not in host process, ignore
             System.loadLibrary("natives");
+            getpagesize();
+        } catch (UnsatisfiedLinkError ignored) {
+            try {
+                Class.forName("de.robv.android.xposed.XposedBridge");
+                // in host process
+                try {
+                    if (StartupInfo.modulePath != null) {
+                        // try direct memory map
+                        System.load(StartupInfo.modulePath
+                            + "!/lib/" + Build.CPU_ABI + "/libnatives.so");
+                        Utils.logd("dlopen by mmap success");
+                    }
+                } catch (UnsatisfiedLinkError e1) {
+                    // direct memory map load failed, extract and dlopen
+                    File libnatives = extractNativeLibrary(ctx, "natives");
+                    registerNativeLibEntry(libnatives.getName());
+                    System.load(libnatives.getAbsolutePath());
+                    Utils.logd("dlopen by extract success");
+                }
+            } catch (ClassNotFoundException e) {
+                // not in host process, ignore
+                System.loadLibrary("natives");
+            }
         }
         getpagesize();
         File mmkvDir = new File(ctx.getFilesDir(), "qn_mmkv");
