@@ -25,7 +25,7 @@ import de.robv.android.xposed.XC_MethodHook
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import me.singleneuron.qn_kernel.tlb.净化功能
+import me.singleneuron.qn_kernel.tlb.净化_聊天
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.QQVersion
 import xyz.nextalone.base.MultiItemDelayableHook
@@ -36,7 +36,7 @@ import xyz.nextalone.util.tryOrFalse
 @FunctionEntry
 @UiItem
 object SimplifyPlusPanel : MultiItemDelayableHook("na_simplify_plus_panel_multi") {
-    override val preferenceLocate: Array<String> = 净化功能
+    override val preferenceLocate: Array<String> = 净化_聊天
     override val preferenceTitle = "精简加号菜单"
     override val allItems = setOf(
         "图片",

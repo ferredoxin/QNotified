@@ -40,7 +40,7 @@ object ActivityRouter : UiChangeableItemFactory<String>() {
     override var title: String = "设置界面样式"
     val configData = ConfigData<String>(title)
     override val value: MutableStateFlow<String?> by lazy {
-        MutableStateFlow(configData.getOrDefault("MaiTungTM")).apply {
+        MutableStateFlow(configData.getOrDefault("关怀模式")).apply {
             GlobalScope.launch {
                 collect {
                     configData.value = it
@@ -51,14 +51,14 @@ object ActivityRouter : UiChangeableItemFactory<String>() {
     override var onClickListener: (Activity) -> Boolean = {
         MaterialAlertDialogBuilder(it, R.style.MaterialDialog)
             .setTitle("选择设置界面样式")
-            .setItems(arrayOf("QQ主题", "MaiTungTM")) { _: DialogInterface, i: Int ->
+            .setItems(arrayOf("QQ主题", "关怀模式")) { _: DialogInterface, i: Int ->
                 when (i) {
                     0 -> {
                         value.value = "QQ主题"
                         it.startActivity(Intent(it, NewSettingsActivity::class.java))
                     }
                     1 -> {
-                        value.value = "MaiTungTM"
+                        value.value = "关怀模式"
                         it.startActivity(Intent(it, SettingActivity::class.java))
                     }
                 }
@@ -71,7 +71,7 @@ object ActivityRouter : UiChangeableItemFactory<String>() {
     fun getActivityClass(): Class<*> {
         return when (value.value) {
             "QQ主题" -> NewSettingsActivity::class.java
-            "MaiTungTM" -> SettingActivity::class.java
+            "关怀模式" -> SettingActivity::class.java
             else -> NewSettingsActivity::class.java
         }
     }
