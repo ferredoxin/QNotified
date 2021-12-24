@@ -158,7 +158,7 @@ object MessageStyleNotification : CommonDelayAbleHookBridge(SyncUtils.PROC_ANY) 
                                 )
                                 val bubbleIntent = PendingIntent.getActivity(
                                     context,
-                                    0,
+                                    uin.toInt(),
                                     newIntent,
                                     PendingIntent.FLAG_MUTABLE
                                 )
@@ -172,7 +172,7 @@ object MessageStyleNotification : CommonDelayAbleHookBridge(SyncUtils.PROC_ANY) 
 
                                 val shortcut =
                                     ShortcutInfoCompat.Builder(context, uin)
-                                        .setIntent(newIntent)
+                                        .setIntent(intent)
                                         .setLongLived(true)
                                         .setShortLabel(title)
                                         .setIcon(bubbleData.icon!!)
