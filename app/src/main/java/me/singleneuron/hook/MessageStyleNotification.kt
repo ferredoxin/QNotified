@@ -242,7 +242,7 @@ object MessageStyleNotification : CommonDelayAbleHookBridge(SyncUtils.PROC_ANY) 
                     Activity::class.java,
                     Boolean::class.javaPrimitiveType,
                     object : XC_MethodReplacement() {
-                        override fun replaceHookedMethod(param: MethodHookParam): Any {
+                        override fun replaceHookedMethod(param: MethodHookParam): Any? {
                             val id = Thread.currentThread().id
                             val unhook = if (param.args[1] as Boolean &&
                                 (param.args[0] as Activity).isLaunchedFromBubble

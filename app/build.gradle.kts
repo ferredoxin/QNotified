@@ -352,3 +352,15 @@ tasks.whenTaskAdded {
         this.dependsOn(tasks.getByName("checkTargetNativeLibsRelease"))
     }
 }
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().all {
+    if (name.contains("release", true)) {
+        kotlinOptions {
+            freeCompilerArgs = freeCompilerArgs + listOf(
+                "-Xno-call-assertions",
+                "-Xno-receiver-assertions",
+                "-Xno-param-assertions",
+            )
+        }
+    }
+}
