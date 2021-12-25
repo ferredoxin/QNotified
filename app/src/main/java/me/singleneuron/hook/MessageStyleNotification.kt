@@ -22,6 +22,7 @@
 
 package me.singleneuron.hook
 
+import android.app.Activity
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.ComponentName
@@ -31,12 +32,13 @@ import android.graphics.Bitmap
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.MessagingStyle.Message
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.Person
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import de.robv.android.xposed.XC_MethodHook
+import de.robv.android.xposed.XC_MethodReplacement
+import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.base.CommonDelayAbleHookBridge
@@ -154,13 +156,20 @@ object MessageStyleNotification : CommonDelayAbleHookBridge(SyncUtils.PROC_ANY) 
                                 val newIntent = intent.clone() as Intent
                                 newIntent.component = ComponentName(
                                     context,
-                                    "com.tencent.mobileqq.activity.ChatActivity".clazz!!
+                                    "com.tencent.mobileqq.activity.miniaio.MiniChatActivity".clazz!!
+                                )
+                                newIntent.putExtra("key_mini_from", 2)
+                                newIntent.putExtra("minaio_height_ration", 1f)
+                                newIntent.putExtra("minaio_scaled_ration", 1f)
+                                newIntent.putExtra(
+                                    "public_fragment_class",
+                                    "com.tencent.mobileqq.activity.miniaio.MiniChatFragment"
                                 )
                                 val bubbleIntent = PendingIntent.getActivity(
                                     context,
                                     uin.toInt(),
                                     newIntent,
-                                    PendingIntent.FLAG_MUTABLE
+                                    PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
                                 )
 
                                 val bubbleData = NotificationCompat.BubbleMetadata.Builder(
@@ -186,13 +195,8 @@ object MessageStyleNotification : CommonDelayAbleHookBridge(SyncUtils.PROC_ANY) 
                                     setShortcutInfo(shortcut)
                                     bubbleMetadata = bubbleData
                                 }
-                                // notify by ourself to change notification id
-                                param.result = null
-                                NotificationManagerCompat.from(context)
-                                    .notify(uin.toInt(), builder.build())
-                            } else {
-                                param.result = builder.build()
                             }
+                            param.result = builder.build()
                         }
                     }
                 }
@@ -219,6 +223,50 @@ object MessageStyleNotification : CommonDelayAbleHookBridge(SyncUtils.PROC_ANY) 
                     }
                 }
             )
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                // Fix the height of launch from bubble
+                XposedHelpers.findAndHookMethod(
+                    "com.tencent.widget.immersive.ImmersiveUtils".clazz,
+                    "getStatusBarHeight",
+                    Context::class.java,
+                    object : XC_MethodHook() {
+                        override fun afterHookedMethod(param: MethodHookParam) {
+                            if ((param.args[0] as? Activity)?.isLaunchedFromBubble == true)
+                                param.result = 0
+                        }
+                    })
+                // Don't clear notification when launching from bubble
+                XposedHelpers.findAndHookMethod("com.tencent.mobileqq.app.lifecycle.BaseActivityLifecycleCallbackImpl".clazz,
+                    "doOnWindowFocusChanged",
+                    Activity::class.java,
+                    Boolean::class.javaPrimitiveType,
+                    object : XC_MethodReplacement() {
+                        override fun replaceHookedMethod(param: MethodHookParam): Any {
+                            val id = Thread.currentThread().id
+                            val unhook = if (param.args[1] as Boolean &&
+                                (param.args[0] as Activity).isLaunchedFromBubble
+                            )
+                                XposedHelpers.findAndHookMethod("com.tencent.mobileqq.app.QQAppInterface".clazz,
+                                    "removeNotification",
+                                    object : XC_MethodHook() {
+                                        override fun beforeHookedMethod(param: MethodHookParam) {
+                                            if (id == Thread.currentThread().id) param.result =
+                                                null
+                                        }
+                                    }
+                                ) else null
+                            val result = XposedBridge.invokeOriginalMethod(
+                                param.method,
+                                param.thisObject,
+                                param.args
+                            )
+                            unhook?.unhook()
+                            return result
+                        }
+                    }
+                )
+            }
         }
     }
 
