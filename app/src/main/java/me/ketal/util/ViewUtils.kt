@@ -36,7 +36,7 @@ fun ViewGroup.findViewByText(text: String, contains: Boolean = false) =
 
 fun ViewGroup.findViewByType(clazz: Class<*>) =
     this.findViewByCondition {
-        it.javaClass == clazz
+        it.javaClass.isAssignableFrom(clazz)
     }
 
 fun ViewGroup.findViewByCondition(condition: (view: View) -> Boolean): View? {
