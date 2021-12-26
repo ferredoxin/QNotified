@@ -30,6 +30,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Build
+import android.view.WindowInsets
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.MessagingStyle.Message
 import androidx.core.app.Person
@@ -46,7 +47,10 @@ import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.tlb.增强功能
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.base.annotation.FunctionEntry
+import nil.nadph.qnotified.util.LicenseStatus
 import xyz.nextalone.util.clazz
+import xyz.nextalone.util.hookAfter
+import xyz.nextalone.util.method
 import xyz.nextalone.util.tryOrFalse
 
 @FunctionEntry
@@ -62,9 +66,11 @@ object MessageStyleNotification : CommonDelayAbleHookBridge(SyncUtils.PROC_ANY) 
 
     private val numRegex = Regex("""\((\d+)\S{1,3}新消息\)?$""")
     private val senderName = Regex("""^.*?: """)
+    private const val activityName = "com.tencent.mobileqq.activity.miniaio.MiniChatActivity"
 
     private val historyMessage: HashMap<Int, MutableList<Message>> = HashMap()
     private val personCache: HashMap<Int, Person> = HashMap()
+    var windowHeight = -1
 
     override fun initOnce(): Boolean {
         return tryOrFalse {
@@ -77,6 +83,7 @@ object MessageStyleNotification : CommonDelayAbleHookBridge(SyncUtils.PROC_ANY) 
                 String::class.java,
                 object : XC_MethodHook() {
                     override fun afterHookedMethod(param: MethodHookParam) {
+                        if (!isEnabled or LicenseStatus.sDisableCommonHooks) return
                         runCatching {
                             val intent = param.args[0] as Intent
                             val context = hostInfo.application as Context
@@ -156,7 +163,7 @@ object MessageStyleNotification : CommonDelayAbleHookBridge(SyncUtils.PROC_ANY) 
                                 val newIntent = intent.clone() as Intent
                                 newIntent.component = ComponentName(
                                     context,
-                                    "com.tencent.mobileqq.activity.miniaio.MiniChatActivity".clazz!!
+                                    activityName.clazz!!
                                 )
                                 newIntent.putExtra("key_mini_from", 2)
                                 newIntent.putExtra("minaio_height_ration", 1f)
@@ -206,6 +213,7 @@ object MessageStyleNotification : CommonDelayAbleHookBridge(SyncUtils.PROC_ANY) 
                 "cancel", String::class.java, Int::class.javaPrimitiveType,
                 object : XC_MethodHook() {
                     override fun beforeHookedMethod(param: MethodHookParam) {
+                        if (!isEnabled or LicenseStatus.sDisableCommonHooks) return
                         if (param.args[0] as String != "MobileQQServiceWrapper.showMsgNotification") {
                             historyMessage.remove(param.args[1] as Int)
                             personCache.remove(param.args[1] as Int)
@@ -218,6 +226,7 @@ object MessageStyleNotification : CommonDelayAbleHookBridge(SyncUtils.PROC_ANY) 
                 "cancelAll",
                 object : XC_MethodHook() {
                     override fun beforeHookedMethod(param: MethodHookParam) {
+                        if (!isEnabled or LicenseStatus.sDisableCommonHooks) return
                         historyMessage.clear()
                         personCache.clear()
                     }
@@ -232,6 +241,7 @@ object MessageStyleNotification : CommonDelayAbleHookBridge(SyncUtils.PROC_ANY) 
                     Context::class.java,
                     object : XC_MethodHook() {
                         override fun afterHookedMethod(param: MethodHookParam) {
+                            if (!isEnabled or LicenseStatus.sDisableCommonHooks) return
                             if ((param.args[0] as? Activity)?.isLaunchedFromBubble == true)
                                 param.result = 0
                         }
@@ -244,7 +254,8 @@ object MessageStyleNotification : CommonDelayAbleHookBridge(SyncUtils.PROC_ANY) 
                     object : XC_MethodReplacement() {
                         override fun replaceHookedMethod(param: MethodHookParam): Any? {
                             val id = Thread.currentThread().id
-                            val unhook = if (param.args[1] as Boolean &&
+                            val unhook = if (isEnabled && !LicenseStatus.sDisableCommonHooks &&
+                                param.args[1] as Boolean &&
                                 (param.args[0] as Activity).isLaunchedFromBubble
                             )
                                 XposedHelpers.findAndHookMethod("com.tencent.mobileqq.app.QQAppInterface".clazz,
@@ -266,6 +277,22 @@ object MessageStyleNotification : CommonDelayAbleHookBridge(SyncUtils.PROC_ANY) 
                         }
                     }
                 )
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                activityName.clazz!!.method("doOnStart")!!.hookAfter(this) {
+                    val activity = it.thisObject as Activity
+                    val rootView = activity.window.decorView
+                    windowHeight = activity.window.attributes.height
+                    rootView.setOnApplyWindowInsetsListener { _, insets ->
+                        val attr = activity.window.attributes
+                        if (insets.isVisible(WindowInsets.Type.ime()) && attr.height != windowHeight) {
+                            attr.height = windowHeight
+                            activity.window.attributes = attr
+                        }
+                        insets
+                    }
+                }
             }
         }
     }
