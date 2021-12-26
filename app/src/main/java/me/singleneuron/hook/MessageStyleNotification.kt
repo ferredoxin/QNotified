@@ -30,6 +30,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Build
+import android.view.WindowInsets
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.MessagingStyle.Message
 import androidx.core.app.Person
@@ -48,6 +49,8 @@ import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.LicenseStatus
 import xyz.nextalone.util.clazz
+import xyz.nextalone.util.hookAfter
+import xyz.nextalone.util.method
 import xyz.nextalone.util.tryOrFalse
 
 @FunctionEntry
@@ -63,9 +66,11 @@ object MessageStyleNotification : CommonDelayAbleHookBridge(SyncUtils.PROC_ANY) 
 
     private val numRegex = Regex("""\((\d+)\S{1,3}新消息\)?$""")
     private val senderName = Regex("""^.*?: """)
+    private const val activityName = "com.tencent.mobileqq.activity.miniaio.MiniChatActivity"
 
     private val historyMessage: HashMap<Int, MutableList<Message>> = HashMap()
     private val personCache: HashMap<Int, Person> = HashMap()
+    var windowHeight = -1
 
     override fun initOnce(): Boolean {
         return tryOrFalse {
@@ -158,7 +163,7 @@ object MessageStyleNotification : CommonDelayAbleHookBridge(SyncUtils.PROC_ANY) 
                                 val newIntent = intent.clone() as Intent
                                 newIntent.component = ComponentName(
                                     context,
-                                    "com.tencent.mobileqq.activity.miniaio.MiniChatActivity".clazz!!
+                                    activityName.clazz!!
                                 )
                                 newIntent.putExtra("key_mini_from", 2)
                                 newIntent.putExtra("minaio_height_ration", 1f)
@@ -272,6 +277,22 @@ object MessageStyleNotification : CommonDelayAbleHookBridge(SyncUtils.PROC_ANY) 
                         }
                     }
                 )
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                activityName.clazz!!.method("doOnStart")!!.hookAfter(this) {
+                    val activity = it.thisObject as Activity
+                    val rootView = activity.window.decorView
+                    windowHeight = activity.window.attributes.height
+                    rootView.setOnApplyWindowInsetsListener { _, insets ->
+                        val attr = activity.window.attributes
+                        if (insets.isVisible(WindowInsets.Type.ime()) && attr.height != windowHeight) {
+                            attr.height = windowHeight
+                            activity.window.attributes = attr
+                        }
+                        insets
+                    }
+                }
             }
         }
     }
