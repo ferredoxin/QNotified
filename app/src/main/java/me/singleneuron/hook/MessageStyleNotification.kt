@@ -46,6 +46,7 @@ import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.tlb.增强功能
 import nil.nadph.qnotified.SyncUtils
 import nil.nadph.qnotified.base.annotation.FunctionEntry
+import nil.nadph.qnotified.util.LicenseStatus
 import xyz.nextalone.util.clazz
 import xyz.nextalone.util.tryOrFalse
 
@@ -77,6 +78,7 @@ object MessageStyleNotification : CommonDelayAbleHookBridge(SyncUtils.PROC_ANY) 
                 String::class.java,
                 object : XC_MethodHook() {
                     override fun afterHookedMethod(param: MethodHookParam) {
+                        if (!isEnabled or LicenseStatus.sDisableCommonHooks) return
                         runCatching {
                             val intent = param.args[0] as Intent
                             val context = hostInfo.application as Context
@@ -206,6 +208,7 @@ object MessageStyleNotification : CommonDelayAbleHookBridge(SyncUtils.PROC_ANY) 
                 "cancel", String::class.java, Int::class.javaPrimitiveType,
                 object : XC_MethodHook() {
                     override fun beforeHookedMethod(param: MethodHookParam) {
+                        if (!isEnabled or LicenseStatus.sDisableCommonHooks) return
                         if (param.args[0] as String != "MobileQQServiceWrapper.showMsgNotification") {
                             historyMessage.remove(param.args[1] as Int)
                             personCache.remove(param.args[1] as Int)
@@ -218,6 +221,7 @@ object MessageStyleNotification : CommonDelayAbleHookBridge(SyncUtils.PROC_ANY) 
                 "cancelAll",
                 object : XC_MethodHook() {
                     override fun beforeHookedMethod(param: MethodHookParam) {
+                        if (!isEnabled or LicenseStatus.sDisableCommonHooks) return
                         historyMessage.clear()
                         personCache.clear()
                     }
@@ -232,6 +236,7 @@ object MessageStyleNotification : CommonDelayAbleHookBridge(SyncUtils.PROC_ANY) 
                     Context::class.java,
                     object : XC_MethodHook() {
                         override fun afterHookedMethod(param: MethodHookParam) {
+                            if (!isEnabled or LicenseStatus.sDisableCommonHooks) return
                             if ((param.args[0] as? Activity)?.isLaunchedFromBubble == true)
                                 param.result = 0
                         }
@@ -244,7 +249,8 @@ object MessageStyleNotification : CommonDelayAbleHookBridge(SyncUtils.PROC_ANY) 
                     object : XC_MethodReplacement() {
                         override fun replaceHookedMethod(param: MethodHookParam): Any? {
                             val id = Thread.currentThread().id
-                            val unhook = if (param.args[1] as Boolean &&
+                            val unhook = if (isEnabled && !LicenseStatus.sDisableCommonHooks &&
+                                param.args[1] as Boolean &&
                                 (param.args[0] as Activity).isLaunchedFromBubble
                             )
                                 XposedHelpers.findAndHookMethod("com.tencent.mobileqq.app.QQAppInterface".clazz,
