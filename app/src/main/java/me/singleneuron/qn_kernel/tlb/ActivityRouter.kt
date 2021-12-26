@@ -31,6 +31,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import me.ketal.data.ConfigData
+import me.singleneuron.qn_kernel.ui.activity.Material3Activity
+import me.singleneuron.qn_kernel.ui.activity.MaterialActivity
 import me.singleneuron.qn_kernel.ui.activity.NewSettingsActivity
 import me.singleneuron.qn_kernel.ui.activity.SettingActivity
 import nil.nadph.qnotified.R
@@ -51,7 +53,7 @@ object ActivityRouter : UiChangeableItemFactory<String>() {
     override var onClickListener: (Activity) -> Boolean = {
         MaterialAlertDialogBuilder(it, R.style.MaterialDialog)
             .setTitle("选择设置界面样式")
-            .setItems(arrayOf("QQ主题", "关怀模式")) { _: DialogInterface, i: Int ->
+            .setItems(arrayOf("QQ主题", "关怀模式", "Android Classic", "Material You")) { _: DialogInterface, i: Int ->
                 when (i) {
                     0 -> {
                         value.value = "QQ主题"
@@ -60,6 +62,14 @@ object ActivityRouter : UiChangeableItemFactory<String>() {
                     1 -> {
                         value.value = "关怀模式"
                         it.startActivity(Intent(it, SettingActivity::class.java))
+                    }
+                    2 -> {
+                        value.value = "Android Classic"
+                        it.startActivity(Intent(it, MaterialActivity::class.java))
+                    }
+                    3 -> {
+                        value.value = "Material You"
+                        it.startActivity(Intent(it, Material3Activity::class.java))
                     }
                 }
             }
@@ -72,6 +82,8 @@ object ActivityRouter : UiChangeableItemFactory<String>() {
         return when (value.value) {
             "QQ主题" -> NewSettingsActivity::class.java
             "关怀模式" -> SettingActivity::class.java
+            "Android Classic" -> MaterialActivity::class.java
+            "Material You" -> Material3Activity::class.java
             else -> NewSettingsActivity::class.java
         }
     }
