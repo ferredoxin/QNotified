@@ -93,7 +93,7 @@ abstract class BViewGroup(context: Context) : ViewGroup(context) {
     }
 
     protected val Int.dp: Int get() = dip2px(context, this.toFloat())
-    protected val Int.dp2sp: Int get() = dip2sp(context, this.toFloat())
+    protected val Int.dp2sp: Float get() = dip2sp(context, this.toFloat())
     protected val View.measuredWidthWithMargins get() = (measuredWidth + marginLeft + marginRight)
     protected val View.measuredHeightWithMargins get() = (measuredHeight + marginTop + marginBottom)
     protected fun makeMeasureSpec(size: Int, mode: Int): Int {

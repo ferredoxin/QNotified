@@ -21,6 +21,18 @@
  */
 package cc.ioctl.activity;
 
+import static android.text.InputType.TYPE_CLASS_TEXT;
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemButton;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemSwitchFriendConfigNext;
+import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
+import static nil.nadph.qnotified.util.Utils.dip2px;
+import static nil.nadph.qnotified.util.Utils.dip2sp;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.logi;
+
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -31,18 +43,19 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
-
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 import androidx.core.view.ViewCompat;
-
-import com.tencent.mobileqq.widget.BounceScrollView;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import cc.ioctl.dialog.RikkaCustomMsgTimeFormatDialog;
 import cc.ioctl.hook.ChatTailHook;
 import cc.ioctl.hook.FakeBatteryHook;
+import com.tencent.mobileqq.widget.BounceScrollView;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import me.kyuubiran.util.UtilsKt;
 import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.ExfriendManager;
@@ -52,17 +65,10 @@ import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat;
 import nil.nadph.qnotified.activity.TroopSelectActivity;
 import nil.nadph.qnotified.config.ConfigItems;
 import nil.nadph.qnotified.config.ConfigManager;
-import nil.nadph.qnotified.ui.widget.FunctionButton;
-import nil.nadph.qnotified.ui.drawable.HighContrastBorder;
 import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.ui.drawable.HighContrastBorder;
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
-
-import static android.text.InputType.TYPE_CLASS_TEXT;
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.ui.ViewBuilder.*;
-import static nil.nadph.qnotified.util.Utils.*;
 
 @SuppressLint("Registered")
 public class ChatTailActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener {
@@ -134,15 +140,12 @@ public class ChatTailActivity extends IphoneTitleBarActivityCompat implements Vi
         ll.addView(_s = newListItemButton(this, "选择生效的群", "未选择的群将不展示小尾巴", "N/A",
             v -> TroopSelectActivity.startToSelectTroopsAndSaveToExfMgr(ChatTailActivity.this,
                 ConfigItems.qn_chat_tail_troops, "选择小尾巴生效群")));
-        __tv_chat_tail_groups = ((FunctionButton) _s).getValue();
         ll.addView(_s = newListItemButton(this, "选择生效的好友", "未选择的好友将不展示小尾巴", "N/A",
             v -> FriendSelectActivity.startToSelectFriendsAndSaveToExfMgr(ChatTailActivity.this,
                 ConfigItems.qn_chat_tail_friends, "选择小尾巴生效好友")));
-        __tv_chat_tail_friends = ((FunctionButton) _s).getValue();
         ll.addView(_s = newListItemButton(this, "设置日期格式", "请在QN内置花Q的\"聊天页自定义时间格式\"中设置",
             RikkaCustomMsgTimeFormatDialog.getTimeFormat(),
             view -> Toasts.info(ChatTailActivity.this, "请在QN内置花Q的\"聊天页自定义时间格式\"中设置")));
-        __tv_chat_tail_time_format = ((FunctionButton) _s).getValue();
         ll.addView(subtitle(ChatTailActivity.this, "设置小尾巴"));
         ll.addView(subtitle(ChatTailActivity.this, "可用变量(点击自动输入): "));
         LinearLayout _a, _b, _c, _d, _e, _f, _g, _h;

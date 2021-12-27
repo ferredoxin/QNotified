@@ -30,13 +30,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import android.widget.LinearLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
-import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.ui.activity.NewSettingsActivity
-import nil.nadph.qnotified.ui.ViewBuilder.*
+import me.singleneuron.qn_kernel.ui.qq_item.LargeSubtitle
+import me.singleneuron.qn_kernel.ui.qq_item.ListItemButton
+import me.singleneuron.qn_kernel.ui.qq_item.ListItemSwitch
 import org.ferredoxin.ferredoxinui.common.base.*
 
 class SettingsFragment : Fragment(), LifecycleOwner {
@@ -71,36 +73,55 @@ class SettingsFragment : Fragment(), LifecycleOwner {
             //Utils.logd("Adding: $uiDescription")
             when {
                 uiDescription is UiCategory && uiDescription.contains.isNotEmpty() -> {
-                    viewGroup.addView(largeSubtitle(activity, uiDescription.name))
+                    viewGroup.addView(LargeSubtitle(activity).apply {
+                        title = uiDescription.name
+                    })
                     addViewInUiGroup(uiDescription, viewGroup)
                 }
                 uiDescription is UiScreen -> {
-                    viewGroup.addView(newListItemButton(activity, uiDescription.name, uiDescription.summaryProvider.getValue(hostInfo.application), null) { (activity as NewSettingsActivity).changeFragment(uiDescription) })
+                    viewGroup.addView(ListItemButton(activity).apply {
+                        title = uiDescription.nameProvider.getValue(activity)
+                        summary = uiDescription.summaryProvider.getValue(activity)
+                        setOnClickListener {
+                            (activity as NewSettingsActivity).changeFragment(uiDescription)
+                        }
+                    })
                 }
                 uiDescription is UiPreference -> {
                     when (uiDescription) {
                         is UiSwitchPreference -> {
-                            val switch = newListItemSwitch(activity, uiDescription.title, uiDescription.summary, uiDescription.value.value
-                                ?: false, uiDescription.valid) { _, isChecked -> uiDescription.value.value = isChecked }
+                            val switch = ListItemSwitch(activity).apply {
+                                title = uiDescription.titleProvider.getValue(activity)
+                                summary = uiDescription.summaryProvider.getValue(activity)
+                                isChecked = uiDescription.value.value ?: false
+                                isEnabled = uiDescription.valid
+                                onCheckedChangeListener = CompoundButton.OnCheckedChangeListener { _, value ->
+                                    uiDescription.value.value = value
+                                }
+                            }
                             observeStateFlow(uiDescription.value) {
                                 if (it == null) return@observeStateFlow
-                                switch.switch.isChecked = it
+                                switch.isChecked = it
                             }
                             viewGroup.addView(switch)
                         }
                         is UiChangeablePreference<*> -> {
-                            val ll = newListItemButton(activity, uiDescription.title, uiDescription.summary, uiDescription.value.value.toString(),
-                                getOnClickListener(uiDescription.onClickListener, uiDescription.title)
-                            )
-                            viewGroup.addView(ll)
+                            val view = ListItemButton(activity).apply {
+                                title = uiDescription.titleProvider.getValue(activity)
+                                summary = uiDescription.summaryProvider.getValue(activity)
+                                setOnClickListener(getOnClickListener(uiDescription.onClickListener, uiDescription.title))
+                            }
+                            viewGroup.addView(view)
                             observeStateFlow(uiDescription.value) {
-                                ll.value.text = it.toString()
+                                view.value = it.toString()
                             }
                         }
                         else -> {
-                            viewGroup.addView(newListItemButton(activity, uiDescription.title, uiDescription.summary, null,
-                                getOnClickListener(uiDescription.onClickListener, uiDescription.title)
-                            ))
+                            viewGroup.addView(ListItemButton(activity).apply {
+                                title = uiDescription.titleProvider.getValue(activity)
+                                summary = uiDescription.summaryProvider.getValue(activity)
+                                setOnClickListener(getOnClickListener(uiDescription.onClickListener, uiDescription.title))
+                            })
                         }
                     }
                 }
