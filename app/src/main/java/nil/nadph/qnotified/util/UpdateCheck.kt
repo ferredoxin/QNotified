@@ -39,9 +39,9 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import kotlinx.coroutines.flow.MutableStateFlow
 import me.ketal.data.ConfigData
+import me.singleneuron.qn_kernel.ui.qq_item.ListItemButton
 import nil.nadph.qnotified.config.ConfigManager
 import nil.nadph.qnotified.ui.CustomDialog
-import nil.nadph.qnotified.ui.widget.FunctionButton
 import nil.nadph.qnotified.util.Utils.DummyCallback
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -237,8 +237,7 @@ class UpdateCheck : Runnable {
                     if (currChannel != channel) {
                         runLevel = RL_LOAD
                         currChannel = channels[which]
-                        val tv = (vg as FunctionButton).value
-                        tv.text = channels[which]
+                        (vg as ListItemButton).value = channels[which]
                     }
                 }.show()
         }

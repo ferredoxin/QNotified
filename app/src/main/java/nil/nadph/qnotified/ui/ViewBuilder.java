@@ -45,6 +45,8 @@ import androidx.annotation.NonNull;
 import androidx.core.view.ViewCompat;
 import cc.ioctl.H;
 import me.singleneuron.qn_kernel.data.HostInfo;
+import me.singleneuron.qn_kernel.ui.qq_item.ListItemButton;
+import me.singleneuron.qn_kernel.ui.qq_item.ListItemSwitch;
 import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.SyncUtils;
@@ -52,40 +54,40 @@ import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.config.SwitchConfigItem;
 import nil.nadph.qnotified.hook.BaseDelayableHook;
 import nil.nadph.qnotified.step.Step;
-import nil.nadph.qnotified.ui.widget.FunctionButton;
 import nil.nadph.qnotified.ui.widget.FunctionDummy;
-import nil.nadph.qnotified.ui.widget.FunctionSwitch;
 import nil.nadph.qnotified.util.NonUiThread;
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 import org.ferredoxin.ferredoxinui.common.base.UiSwitchItem;
 import org.ferredoxin.ferredoxinui.common.base.UiSwitchPreference;
-import xyz.nextalone.base.MultiItemDelayableHook;
 import xyz.nextalone.util.SystemServiceUtils;
 
 public class ViewBuilder {
 
-    public static FunctionSwitch newListItemSwitch(Context ctx, CharSequence title,
-        CharSequence desc, boolean on, boolean enabled,
+    @Deprecated
+    public static ListItemSwitch newListItemSwitch(Context ctx, String title,
+        String desc, boolean on, boolean enabled,
         CompoundButton.OnCheckedChangeListener listener) {
-        FunctionSwitch root = new FunctionSwitch(ctx);
-        root.getTitle().setText(title);
-        CompoundButton sw = root.getSwitch();
-        sw.setChecked(on);
-        sw.setEnabled(enabled);
-        sw.setOnCheckedChangeListener(listener);
+        ListItemSwitch root = new ListItemSwitch(ctx);
+        root.setTitle(title);
+        root.setChecked(on);
+        root.setEnabled(enabled);
+        root.setOnCheckedChangeListener(listener);
         if (!TextUtils.isEmpty(desc)) {
-            root.getDesc().setText(desc);
+            root.setSummary(desc);
         }
         return root;
     }
 
-    public static ViewGroup newListItemSwitch(Context ctx, CharSequence title, CharSequence desc, boolean on, CompoundButton.OnCheckedChangeListener listener){
+    @Deprecated
+    public static ViewGroup newListItemSwitch(Context ctx, String title, String desc, boolean on,
+        CompoundButton.OnCheckedChangeListener listener) {
         return newListItemSwitch(ctx, title, desc, on, true, listener);
     }
 
-    public static ViewGroup newListItemSwitchConfig(Context ctx, CharSequence title,
-        CharSequence desc, final String key, boolean defVal) {
+    @Deprecated
+    public static ViewGroup newListItemSwitchConfig(Context ctx, String title,
+        String desc, final String key, boolean defVal) {
         boolean on = ConfigManager.getDefaultConfig().getBooleanOrDefault(key, defVal);
         ViewGroup root = newListItemSwitch(ctx, title, desc, on,
             (buttonView, isChecked) -> {
@@ -103,8 +105,9 @@ public class ViewBuilder {
     }
 
 
-    public static ViewGroup newListItemSwitchConfigNext(Context ctx, CharSequence title,
-        CharSequence desc, final String key, boolean defVal) {
+    @Deprecated
+    public static ViewGroup newListItemSwitchConfigNext(Context ctx, String title,
+        String desc, final String key, boolean defVal) {
         boolean on = ConfigManager.getDefaultConfig().getBooleanOrDefault(key, defVal);
         ViewGroup root = newListItemSwitch(ctx, title, desc, on,
             (buttonView, isChecked) -> {
@@ -123,8 +126,9 @@ public class ViewBuilder {
         return root;
     }
 
-    public static ViewGroup newListItemSwitchFriendConfigNext(Context ctx, CharSequence title,
-        CharSequence desc, final String key, boolean defVal) {
+    @Deprecated
+    public static ViewGroup newListItemSwitchFriendConfigNext(Context ctx, String title,
+        String desc, final String key, boolean defVal) {
         ConfigManager mgr = ExfriendManager.getCurrent().getConfig();
         boolean on = mgr.getBooleanOrDefault(key, defVal);
         ViewGroup root = newListItemSwitch(ctx, title, desc, on,
@@ -143,8 +147,9 @@ public class ViewBuilder {
         return root;
     }
 
-    public static ViewGroup newListItemSwitchConfigNext(Context ctx, CharSequence title,
-        CharSequence desc, final SwitchConfigItem item) {
+    @Deprecated
+    public static ViewGroup newListItemSwitchConfigNext(Context ctx, String title,
+        String desc, final SwitchConfigItem item) {
         boolean on = item.isEnabled();
         ViewGroup root = newListItemSwitch(ctx, title, desc, on,
             (buttonView, isChecked) -> {
@@ -161,8 +166,9 @@ public class ViewBuilder {
         return root;
     }
 
-    public static ViewGroup newListItemHookSwitchInit(final Context ctx, CharSequence title,
-        CharSequence desc, final BaseDelayableHook hook) {
+    @Deprecated
+    public static ViewGroup newListItemHookSwitchInit(final Context ctx, String title,
+        String desc, final BaseDelayableHook hook) {
         boolean on = hook.isEnabled();
         return newListItemSwitch(ctx, title, desc, on,
             (buttonView, isChecked) -> {
@@ -177,6 +183,7 @@ public class ViewBuilder {
             });
     }
 
+    @Deprecated
     public static ViewGroup newListItemHookSwitchInit(final Context ctx, UiSwitchItem uiSwitchItem) {
         UiSwitchPreference preference = uiSwitchItem.getPreference();
         Boolean on = preference.getValue().getValue();
@@ -187,12 +194,13 @@ public class ViewBuilder {
         return root;
     }
 
+    @Deprecated
     public static ViewGroup newListItemConfigSwitchIfValid(final Context ctx,
-        CharSequence title, CharSequence desc, final SwitchConfigItem item) {
+        String title, String desc, final SwitchConfigItem item) {
         boolean on = item.isEnabled();
-        FunctionSwitch root = (FunctionSwitch) newListItemSwitch(ctx, title, desc, on,
+        ListItemSwitch root = (ListItemSwitch) newListItemSwitch(ctx, title, desc, on,
             (buttonView, isChecked) -> item.setEnabled(isChecked));
-        root.getSwitch().setEnabled(item.isValid());
+        root.setEnabled(item.isValid());
         root.setId(item.hashCode());
         return root;
     }
@@ -282,8 +290,9 @@ public class ViewBuilder {
         }
     }
 
-    public static ViewGroup newListItemSwitchStub(Context ctx, CharSequence title,
-        CharSequence desc) {
+    @Deprecated
+    public static ViewGroup newListItemSwitchStub(Context ctx, String title,
+        String desc) {
         return newListItemSwitch(ctx, title, desc, false,
             (buttonView, isChecked) -> {
                 buttonView.setChecked(false);
@@ -305,49 +314,30 @@ public class ViewBuilder {
         return root;
     }
 
-    public static FunctionButton newListItemButton(Context ctx, CharSequence title,
-        CharSequence desc, CharSequence
+    @Deprecated
+    public static ListItemButton newListItemButton(Context ctx, String title,
+        String desc, String
         value, View.OnClickListener listener) {
-        FunctionButton root = new FunctionButton(ctx);
-        root.getTitle().setText(title);
+        ListItemButton root = new ListItemButton(ctx);
+        root.setTitle(title);
         root.setOnClickListener(listener);
         if (!TextUtils.isEmpty(desc)) {
-            root.getDesc().setText(desc);
+            root.setSummary(desc);
         }
         if (!TextUtils.isEmpty(value)) {
-            root.getValue().setText(value);
+            root.setValue(value);
         }
         return root;
     }
 
-    public static ViewGroup newListItemButtonIfValid(Context ctx, CharSequence title,
-        CharSequence desc,
-        CharSequence value, MultiItemDelayableHook hook) {
-        View.OnClickListener listener;
-        if (hook.isValid()) {
-            listener = hook.listener();
-        } else {
-            listener = (v -> Toasts.error(v.getContext(), "此功能暂不支持当前版本" + H.getAppName()));
-        }
-        return newListItemButton(ctx, title, desc, value, listener);
-    }
-
-    public static ViewGroup newListItemButtonIfValid(Context ctx, CharSequence title,
-        CharSequence desc,
-        CharSequence value, BaseDelayableHook hook, Class<? extends Activity> activity) {
+    @Deprecated
+    public static ViewGroup newListItemButtonIfValid(Context ctx, String title,
+        String desc,
+        String value, BaseDelayableHook hook, Class<? extends Activity> activity) {
         View.OnClickListener listener;
         if (hook.isValid()) {
             listener = clickToProxyActAction(activity);
         } else {
-            listener = (v -> Toasts.error(v.getContext(), "此功能暂不支持当前版本" + H.getAppName()));
-        }
-        return newListItemButton(ctx, title, desc, value, listener);
-    }
-
-    public static ViewGroup newListItemButtonIfValid(Context ctx, CharSequence title,
-        CharSequence desc,
-        CharSequence value, BaseDelayableHook hook, View.OnClickListener listener) {
-        if (!hook.isValid()) {
             listener = (v -> Toasts.error(v.getContext(), "此功能暂不支持当前版本" + H.getAppName()));
         }
         return newListItemButton(ctx, title, desc, value, listener);
@@ -379,24 +369,6 @@ public class ViewBuilder {
         ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
         int m = dip2px(ctx, 14);
         tv.setPadding(m, m / 5, m / 5, m / 5);
-        ll.addView(tv);
-        return ll;
-    }
-
-    public static LinearLayout largeSubtitle(Context ctx, CharSequence title) {
-        LinearLayout ll = new LinearLayout(ctx);
-        ll.setOrientation(LinearLayout.HORIZONTAL);
-        ll.setGravity(Gravity.CENTER_VERTICAL);
-        TextView tv = new TextView(ctx);
-        tv.setTextIsSelectable(false);
-        tv.setText(title);
-        tv.setTextSize(dip2sp(ctx, 13));
-        tv.setTextColor(HostInfo.getHostInfo().getApplication().getResources()
-            .getColor(R.color.colorPrimary));
-        tv.setLayoutParams(new ViewGroup.LayoutParams(WRAP_CONTENT, WRAP_CONTENT));
-        ll.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-        int m = dip2px(ctx, 14);
-        tv.setPadding(m, m, m / 5, m / 5);
         ll.addView(tv);
         return ll;
     }

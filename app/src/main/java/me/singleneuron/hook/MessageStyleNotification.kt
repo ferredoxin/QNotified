@@ -187,16 +187,16 @@ object MessageStyleNotification : CommonDelayAbleHookBridge(SyncUtils.PROC_ANY) 
                                     .build()
 
                                 val shortcut =
-                                    ShortcutInfoCompat.Builder(context, uin)
+                                    ShortcutInfoCompat.Builder(context, notificationId.toString())
                                         .setIntent(intent)
                                         .setLongLived(true)
                                         .setShortLabel(title)
                                         .setIcon(bubbleData.icon!!)
                                         .build()
 
-                                ShortcutManagerCompat.addDynamicShortcuts(
+                                ShortcutManagerCompat.pushDynamicShortcut(
                                     context,
-                                    arrayListOf(shortcut)
+                                    shortcut
                                 )
                                 builder.apply {
                                     setShortcutInfo(shortcut)
@@ -217,6 +217,7 @@ object MessageStyleNotification : CommonDelayAbleHookBridge(SyncUtils.PROC_ANY) 
                         if (param.args[0] as String != "MobileQQServiceWrapper.showMsgNotification") {
                             historyMessage.remove(param.args[1] as Int)
                             personCache.remove(param.args[1] as Int)
+                            ShortcutManagerCompat.removeDynamicShortcuts(hostInfo.application, arrayListOf((param.args[1] as Int).toString()))
                         }
                     }
                 }
@@ -229,6 +230,7 @@ object MessageStyleNotification : CommonDelayAbleHookBridge(SyncUtils.PROC_ANY) 
                         if (!isEnabled or LicenseStatus.sDisableCommonHooks) return
                         historyMessage.clear()
                         personCache.clear()
+                        ShortcutManagerCompat.removeAllDynamicShortcuts(hostInfo.application)
                     }
                 }
             )

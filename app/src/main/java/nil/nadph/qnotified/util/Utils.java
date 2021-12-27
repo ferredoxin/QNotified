@@ -21,6 +21,12 @@
  */
 package nil.nadph.qnotified.util;
 
+import static me.singleneuron.util.KotlinUtilsKt.readFromBufferedReader;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_any;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -31,10 +37,19 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
-
 import androidx.annotation.Nullable;
-
-import java.io.*;
+import de.robv.android.xposed.XposedBridge;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Iterator;
@@ -42,15 +57,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import de.robv.android.xposed.XposedBridge;
 import me.singleneuron.qn_kernel.data.HostInfo;
 import mqq.app.AppRuntime;
 import nil.nadph.qnotified.BuildConfig;
-
-import static me.singleneuron.util.KotlinUtilsKt.readFromBufferedReader;
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.ReflexUtil.*;
 
 @SuppressLint("SimpleDateFormat")
 public class Utils {
@@ -615,10 +624,10 @@ public class Utils {
         return (int) (dpValue * scale + 0.5f);
     }
 
-    public static int dip2sp(Context context, float dpValue) {
+    public static float dip2sp(Context context, float dpValue) {
         float scale = context.getResources().getDisplayMetrics().density /
             context.getResources().getDisplayMetrics().scaledDensity;
-        return (int) (dpValue * scale + 0.5f);
+        return dpValue * scale + 0.5f;
     }
 
     /**

@@ -21,6 +21,16 @@
  */
 package nil.nadph.qnotified.activity;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static nil.nadph.qnotified.ui.ViewBuilder.clickToProxyActAction;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemButton;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemConfigSwitchIfValid;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemHookSwitchInit;
+import static nil.nadph.qnotified.ui.ViewBuilder.newListItemSwitchConfig;
+import static nil.nadph.qnotified.ui.ViewBuilder.subtitle;
+import static nil.nadph.qnotified.util.Utils.dip2px;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
@@ -28,30 +38,22 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.tencent.mobileqq.widget.BounceScrollView;
-
 import cc.ioctl.activity.ChatTailActivity;
 import cc.ioctl.activity.ManageScriptsActivity;
 import cc.ioctl.hook.ChatTailHook;
 import cc.ioctl.hook.MutePokePacket;
 import cc.ioctl.hook.PttForwardHook;
 import cc.ioctl.script.QNScriptManager;
-import xyz.nextalone.hook.CollapseTroopMessage;
+import com.tencent.mobileqq.widget.BounceScrollView;
 import me.kyuubiran.dialog.RevokeMsgDialog;
 import me.kyuubiran.hook.RemoveDiyCard;
 import me.kyuubiran.hook.RemovePokeGrayTips;
 import me.kyuubiran.hook.RemoveRedDot;
 import me.kyuubiran.hook.testhook.CutMessage;
 import me.singleneuron.qn_kernel.data.HostInfo;
-import nil.nadph.qnotified.ui.widget.FunctionButton;
 import nil.nadph.qnotified.ui.ResUtils;
 import nil.nadph.qnotified.util.LicenseStatus;
-
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.ui.ViewBuilder.*;
-import static nil.nadph.qnotified.util.Utils.dip2px;
+import xyz.nextalone.hook.CollapseTroopMessage;
 @SuppressLint("Registered")
 public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
 
@@ -95,14 +97,12 @@ public class BetaTestFuncActivity extends IphoneTitleBarActivityCompat {
         ll.addView(newListItemHookSwitchInit(this, "移除小红点", "仅供测试", RemoveRedDot.INSTANCE));
         ll.addView(_t = newListItemButton(this, "自定义聊天小尾巴", "回车发送不生效", "N/A",
             clickToProxyActAction(ChatTailActivity.class)));
-        __tv_chat_tail_status = ((FunctionButton) _t).getValue();
         ll.addView(newListItemHookSwitchInit(this, "屏蔽戳一戳", "OvO", MutePokePacket.INSTANCE));
         ll.addView(newListItemHookSwitchInit(this, "在LogCat输出所有接收的消息", "[Debug]无关人士请不要打开 没有任何作用",
             CutMessage.INSTANCE));
         ViewGroup __t;
         ll.addView(__t = newListItemButton(this, "管理脚本(.java)", "请注意安全, 合理使用", "N/A",
             clickToProxyActAction(ManageScriptsActivity.class)));
-        __js_status = ((FunctionButton) __t).getValue();
 
         View v = subtitle(this, "狐狸狸测试功能");
         v.setOnClickListener(v1 -> RevokeMsgDialog.INSTANCE.onShow(this));
