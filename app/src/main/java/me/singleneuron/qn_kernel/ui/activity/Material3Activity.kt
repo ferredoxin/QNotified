@@ -22,9 +22,12 @@
 
 package me.singleneuron.qn_kernel.ui.activity
 
+import android.graphics.Color
 import android.os.Bundle
+import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceFragmentCompat
+import com.google.android.material.color.DynamicColors
 import me.singleneuron.qn_kernel.tlb.UiTable
 import nil.nadph.qnotified.ui.ResUtils
 import nil.nadph.qnotified.util.Utils
@@ -49,6 +52,16 @@ class Material3Activity<T> : MaterialSettingActivity<T>() where T : PreferenceFr
             Utils.log(it)
         }
         super.onCreate(savedInstanceState)
+        DynamicColors.applyIfAvailable(this)
+        kotlin.runCatching {
+            val typedArray = getTheme().obtainStyledAttributes(intArrayOf(
+                android.R.attr.colorBackground
+            ))
+            @ColorInt var backgroundColor = if (ResUtils.isInNightMode()) Color.BLACK else Color.WHITE
+            backgroundColor = typedArray.getColor(0, backgroundColor)
+            window.statusBarColor = backgroundColor
+            typedArray.recycle()
+        }
     }
 
 }

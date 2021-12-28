@@ -50,7 +50,7 @@ class LargeSubtitle @JvmOverloads constructor(val ctx: Context, attr: AttributeS
             val typedArray = context.theme.obtainStyledAttributes(intArrayOf(
                 android.R.attr.colorPrimary
             ))
-            //themeColor = typedArray.getColor(0,themeColor)
+            themeColor = typedArray.getColor(0, themeColor)
             typedArray.recycle()
         }
         textView.apply {
