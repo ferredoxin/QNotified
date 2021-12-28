@@ -77,7 +77,9 @@ class ListItemSwitch(context: Context) : BViewGroup(context) {
     @ColorInt
     var themeColor = ContextCompat.getColor(hostInfo.application, R.color.colorPrimary)
 
-    //@ColorInt var firstColor: Int = ResUtils.skin_black.defaultColor
+    @ColorInt
+    var firstColor: Int = ResUtils.skin_black.defaultColor
+
     @ColorInt
     var secondColor: Int = ResUtils.skin_black.defaultColor
 
@@ -87,17 +89,22 @@ class ListItemSwitch(context: Context) : BViewGroup(context) {
     init {
         ResUtils.initTheme(context)
         kotlin.runCatching {
-            val typedArray = hostInfo.application.theme.obtainStyledAttributes(intArrayOf(
+            val typedArray = context.theme.obtainStyledAttributes(intArrayOf(
                 android.R.attr.textColor,
                 android.R.attr.textColorSecondary,
                 android.R.attr.textColorTertiary,
                 android.R.attr.colorPrimary
             ))
-            //firstColor = typedArray.getColor(0,firstColor)
+            firstColor = typedArray.getColor(0, firstColor)
             secondColor = typedArray.getColor(1, secondColor)
             thirdColor = typedArray.getColor(2, thirdColor)
             themeColor = typedArray.getColor(3, themeColor)
             typedArray.recycle()
+            if (ResUtils.isInNightMode()) {
+                firstColor = 0x00FFFFFF xor firstColor
+                secondColor = 0x00FFFFFF xor secondColor
+                thirdColor = 0x00FFFFFF xor thirdColor
+            }
         }
     }
 
@@ -115,8 +122,7 @@ class ListItemSwitch(context: Context) : BViewGroup(context) {
 
     private val titleTextView = TextView(context).apply {
         layoutParams = LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
-        setTextColor(ResUtils.skin_gray3)
-        //setTextColor(firstColor)
+        setTextColor(firstColor)
         textSize = 18.dp2sp
         addView(this)
     }
@@ -126,7 +132,7 @@ class ListItemSwitch(context: Context) : BViewGroup(context) {
     private val descTextView by lazy {
         TextView(context).apply {
             layoutParams = LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
-            //setTextColor(secondColor)
+            setTextColor(secondColor)
             textSize = 13.dp2sp
             isSingleLine = true
             ellipsize = TextUtils.TruncateAt.END

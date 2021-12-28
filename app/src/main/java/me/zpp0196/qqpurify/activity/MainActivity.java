@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+import com.google.android.material.color.DynamicColors;
 import com.google.android.material.tabs.TabLayout;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatTransferActivity implements
 
     public List<TabFragment> mRefreshedFragment = new ArrayList<>();
     private TextView mTitleTextView;
-    private List<TabFragment> mFragments = new ArrayList<>();
+    private final List<TabFragment> mFragments = new ArrayList<>();
 
     public static boolean hasAppCompatAttr(Context ctx) {
         TypedArray a = ctx.obtainStyledAttributes(R.styleable.AppCompatTheme);
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatTransferActivity implements
         super.onCreate(savedInstanceState);
         setTheme(ThemeUtils.getStyleId(this));
         setContentView(R.layout.activity_main);
+        DynamicColors.applyIfAvailable(this);
         initTabLayout();
         initToolbar();
     }
@@ -132,7 +134,7 @@ public class MainActivity extends AppCompatTransferActivity implements
 
     public static class MainAdapter extends FragmentPagerAdapter {
 
-        private List<TabFragment> mFragmentList;
+        private final List<TabFragment> mFragmentList;
 
         MainAdapter(@NonNull FragmentManager fm, List<TabFragment> fragmentList) {
             super(fm, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
