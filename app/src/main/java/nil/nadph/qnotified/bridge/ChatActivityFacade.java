@@ -1,6 +1,6 @@
 /*
  * QNotified - An Xposed module for QQ/TIM
- * Copyright (C) 2019-2021 dmca@ioctl.cc
+ * Copyright (C) 2019-2022 dmca@ioctl.cc
  * https://github.com/ferredoxin/QNotified
  *
  * This software is non-free but opensource software: you can redistribute it
@@ -21,25 +21,27 @@
  */
 package nil.nadph.qnotified.bridge;
 
+import static nil.nadph.qnotified.util.Initiator._BaseSessionInfo;
+import static nil.nadph.qnotified.util.Initiator._QQAppInterface;
+import static nil.nadph.qnotified.util.Initiator._SessionInfo;
+import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
+import static nil.nadph.qnotified.util.Utils.getQQAppInterface;
+import static nil.nadph.qnotified.util.Utils.getShort$Name;
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.content.Context;
 import android.os.Parcelable;
-
 import java.io.Externalizable;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-
 import me.singleneuron.qn_kernel.data.HostInfo;
 import mqq.app.AppRuntime;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.ReflexUtil;
 import nil.nadph.qnotified.util.Toasts;
-
-import static nil.nadph.qnotified.util.Initiator.*;
-import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
-import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
-import static nil.nadph.qnotified.util.Utils.*;
 
 public class ChatActivityFacade {
 

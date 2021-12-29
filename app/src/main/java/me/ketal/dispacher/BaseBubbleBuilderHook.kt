@@ -1,6 +1,6 @@
 /*
  * QNotified - An Xposed module for QQ/TIM
- * Copyright (C) 2019-2021 dmca@ioctl.cc
+ * Copyright (C) 2019-2022 dmca@ioctl.cc
  * https://github.com/ferredoxin/QNotified
  *
  * This software is non-free but opensource software: you can redistribute it
@@ -25,17 +25,17 @@ package me.ketal.dispacher
 import android.view.View
 import android.view.ViewGroup
 import de.robv.android.xposed.XC_MethodHook
-import xyz.nextalone.hook.HideTroopLevel
-import xyz.nextalone.util.*
-import xyz.nextalone.util.clazz
-import xyz.nextalone.util.hookAfter
-import xyz.nextalone.util.tryOrFalse
 import me.ketal.hook.ChatItemShowQQUin
 import me.ketal.hook.ShowMsgAt
 import me.singleneuron.qn_kernel.data.MsgRecordData
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.Utils
+import xyz.nextalone.hook.HideTroopLevel
+import xyz.nextalone.util.clazz
+import xyz.nextalone.util.hookAfter
+import xyz.nextalone.util.isPublic
+import xyz.nextalone.util.tryOrFalse
 
 @FunctionEntry
 object BaseBubbleBuilderHook : CommonDelayableHook("__NOT_USED__") {

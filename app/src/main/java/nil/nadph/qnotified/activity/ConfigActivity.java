@@ -1,6 +1,6 @@
 /*
  * QNotified - An Xposed module for QQ/TIM
- * Copyright (C) 2019-2021 dmca@ioctl.cc
+ * Copyright (C) 2019-2022 dmca@ioctl.cc
  * https://github.com/ferredoxin/QNotified
  *
  * This software is non-free but opensource software: you can redistribute it
@@ -33,12 +33,10 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.view.View;
 import android.widget.TextView;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Date;
-
 import me.singleneuron.util.HookStatue;
 import nil.nadph.qnotified.BuildConfig;
 import nil.nadph.qnotified.R;

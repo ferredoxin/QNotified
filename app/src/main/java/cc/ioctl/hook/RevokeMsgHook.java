@@ -1,6 +1,6 @@
 /*
  * QNotified - An Xposed module for QQ/TIM
- * Copyright (C) 2019-2021 dmca@ioctl.cc
+ * Copyright (C) 2019-2022 dmca@ioctl.cc
  * https://github.com/ferredoxin/QNotified
  *
  * This software is non-free but opensource software: you can redistribute it
@@ -21,18 +21,29 @@
  */
 package cc.ioctl.hook;
 
+import static de.robv.android.xposed.XposedHelpers.callMethod;
+import static de.robv.android.xposed.XposedHelpers.setObjectField;
+import static nil.nadph.qnotified.util.Initiator._C2CMessageProcessor;
+import static nil.nadph.qnotified.util.Initiator._QQMessageFacade;
+import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_static_declared_ordinal_modifier;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_declared_ordinal;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual_declared_ordinal_modifier;
+import static nil.nadph.qnotified.util.Utils.getLongAccountUin;
+import static nil.nadph.qnotified.util.Utils.isCallingFrom;
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
-
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
 import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.SyncUtils;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
@@ -44,13 +55,6 @@ import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.QQVersion;
 import nil.nadph.qnotified.util.Utils;
-
-import static de.robv.android.xposed.XposedHelpers.callMethod;
-import static de.robv.android.xposed.XposedHelpers.setObjectField;
-import static nil.nadph.qnotified.util.Initiator._C2CMessageProcessor;
-import static nil.nadph.qnotified.util.Initiator._QQMessageFacade;
-import static nil.nadph.qnotified.util.ReflexUtil.*;
-import static nil.nadph.qnotified.util.Utils.*;
 
 /**
  * @author fkzhang Created by fkzhang on 1/20/2016. Changes by cinit: 2020/03/08 Sun.20:33 Minor

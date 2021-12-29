@@ -1,6 +1,6 @@
 /*
  * QNotified - An Xposed module for QQ/TIM
- * Copyright (C) 2019-2021 dmca@ioctl.cc
+ * Copyright (C) 2019-2022 dmca@ioctl.cc
  * https://github.com/ferredoxin/QNotified
  *
  * This software is non-free but opensource software: you can redistribute it
@@ -21,14 +21,16 @@
  */
 package cc.ioctl.hook;
 
+import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.loge;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-
 import cc.ioctl.H;
 import de.robv.android.xposed.XC_MethodReplacement;
+import java.util.ArrayList;
+import java.util.HashSet;
 import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.config.ConfigItems;
@@ -39,10 +41,6 @@ import nil.nadph.qnotified.util.DexFlow;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.DexMethodDescriptor;
 import nil.nadph.qnotified.util.Initiator;
-
-import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.loge;
 
 @FunctionEntry
 public class HideMiniAppPullEntry extends CommonDelayableHook implements Step {
