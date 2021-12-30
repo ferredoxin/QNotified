@@ -1,6 +1,6 @@
 /*
  * QNotified - An Xposed module for QQ/TIM
- * Copyright (C) 2019-2021 dmca@ioctl.cc
+ * Copyright (C) 2019-2022 dmca@ioctl.cc
  * https://github.com/ferredoxin/QNotified
  *
  * This software is non-free but opensource software: you can redistribute it
@@ -40,7 +40,6 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
-import xyz.nextalone.util.SystemServiceUtils;
 import me.singleneuron.hook.CopyCardMsg;
 import me.singleneuron.qn_kernel.decorator.BaseInputButtonDecorator;
 import mqq.app.AppRuntime;
@@ -56,6 +55,7 @@ import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
+import xyz.nextalone.util.SystemServiceUtils;
 
 @FunctionEntry
 public class InputButtonHook extends CommonDelayableHook {

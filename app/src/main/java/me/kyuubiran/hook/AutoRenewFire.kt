@@ -1,6 +1,6 @@
 /*
  * QNotified - An Xposed module for QQ/TIM
- * Copyright (C) 2019-2021 dmca@ioctl.cc
+ * Copyright (C) 2019-2022 dmca@ioctl.cc
  * https://github.com/ferredoxin/QNotified
  *
  * This software is non-free but opensource software: you can redistribute it
@@ -27,7 +27,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.TextView
-import xyz.nextalone.util.*
 import me.kyuubiran.dialog.AutoRenewFireDialog
 import me.kyuubiran.util.AutoRenewFireMgr
 import me.kyuubiran.util.getExFriendCfg
@@ -37,6 +36,7 @@ import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.LicenseStatus
 import nil.nadph.qnotified.util.ReflexUtil.invoke_virtual
 import nil.nadph.qnotified.util.ReflexUtil.new_instance
+import xyz.nextalone.util.*
 
 //自动续火
 @FunctionEntry

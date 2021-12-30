@@ -1,6 +1,6 @@
 /*
  * QNotified - An Xposed module for QQ/TIM
- * Copyright (C) 2019-2021 dmca@ioctl.cc
+ * Copyright (C) 2019-2022 dmca@ioctl.cc
  * https://github.com/ferredoxin/QNotified
  *
  * This software is non-free but opensource software: you can redistribute it
@@ -21,6 +21,9 @@
  */
 package nil.nadph.qnotified.config;
 
+import static nil.nadph.qnotified.util.Utils.QN_VERSION_CODE;
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.content.Context;
 import androidx.annotation.NonNull;
 import java.io.File;
@@ -31,9 +34,6 @@ import nil.nadph.qnotified.ExfriendManager;
 import nil.nadph.qnotified.util.MainProcess;
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
-
-import static nil.nadph.qnotified.util.Utils.QN_VERSION_CODE;
-import static nil.nadph.qnotified.util.Utils.log;
 
 public class ConfigItems {
 

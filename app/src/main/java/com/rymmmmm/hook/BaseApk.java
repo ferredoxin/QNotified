@@ -1,6 +1,6 @@
 /*
  * QNotified - An Xposed module for QQ/TIM
- * Copyright (C) 2019-2021 dmca@ioctl.cc
+ * Copyright (C) 2019-2022 dmca@ioctl.cc
  * https://github.com/ferredoxin/QNotified
  *
  * This software is non-free but opensource software: you can redistribute it
@@ -21,28 +21,26 @@
  */
 package com.rymmmmm.hook;
 
+import static nil.nadph.qnotified.util.QQVersion.QQ_8_6_0;
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-
 import cc.ioctl.dialog.RikkaBaseApkFormatDialog;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Utils;
-
-import static nil.nadph.qnotified.util.QQVersion.QQ_8_6_0;
-import static nil.nadph.qnotified.util.Utils.log;
 
 //重命名base.apk
 @FunctionEntry

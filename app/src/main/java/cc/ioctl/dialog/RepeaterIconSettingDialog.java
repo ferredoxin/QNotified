@@ -1,6 +1,6 @@
 /*
  * QNotified - An Xposed module for QQ/TIM
- * Copyright (C) 2019-2021 dmca@ioctl.cc
+ * Copyright (C) 2019-2022 dmca@ioctl.cc
  * https://github.com/ferredoxin/QNotified
  *
  * This software is non-free but opensource software: you can redistribute it
@@ -47,8 +47,8 @@ import java.io.InputStream;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.CustomDialog;
-import nil.nadph.qnotified.ui.drawable.DebugDrawable;
 import nil.nadph.qnotified.ui.ResUtils;
+import nil.nadph.qnotified.ui.drawable.DebugDrawable;
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 

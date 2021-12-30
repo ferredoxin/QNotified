@@ -1,6 +1,6 @@
 /*
  * QNotified - An Xposed module for QQ/TIM
- * Copyright (C) 2019-2021 dmca@ioctl.cc
+ * Copyright (C) 2019-2022 dmca@ioctl.cc
  * https://github.com/ferredoxin/QNotified
  *
  * This software is non-free but opensource software: you can redistribute it
@@ -21,21 +21,18 @@
  */
 package nil.nadph.qnotified.util;
 
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.content.Context;
 import android.view.View;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Objects;
-
 import me.singleneuron.qn_kernel.data.HostInfo;
-
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.log;
 
 /**
  * Use custom toast anywhere

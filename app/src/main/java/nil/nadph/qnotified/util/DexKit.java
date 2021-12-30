@@ -1,6 +1,6 @@
 /*
  * QNotified - An Xposed module for QQ/TIM
- * Copyright (C) 2019-2021 dmca@ioctl.cc
+ * Copyright (C) 2019-2022 dmca@ioctl.cc
  * https://github.com/ferredoxin/QNotified
  *
  * This software is non-free but opensource software: you can redistribute it
@@ -21,11 +21,19 @@
  */
 package nil.nadph.qnotified.util;
 
-import android.view.View;
+import static nil.nadph.qnotified.util.Initiator._BaseChatPie;
+import static nil.nadph.qnotified.util.Initiator._QQAppInterface;
+import static nil.nadph.qnotified.util.Initiator._TroopChatPie;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
+import static nil.nadph.qnotified.util.Utils.log;
+import static nil.nadph.qnotified.util.Utils.logi;
 
+import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
+import dalvik.system.DexClassLoader;
+import dalvik.system.PathClassLoader;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -38,16 +46,8 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.regex.Pattern;
-
-import dalvik.system.DexClassLoader;
-import dalvik.system.PathClassLoader;
 import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.config.ConfigManager;
-
-import static nil.nadph.qnotified.util.Initiator.*;
-import static nil.nadph.qnotified.util.ReflexUtil.invoke_virtual;
-import static nil.nadph.qnotified.util.Utils.log;
-import static nil.nadph.qnotified.util.Utils.logi;
 
 /**
  * I hadn't obfuscated the source code. I just don't want to name it, leaving it a()

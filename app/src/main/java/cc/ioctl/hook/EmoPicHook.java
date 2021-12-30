@@ -1,6 +1,6 @@
 /*
  * QNotified - An Xposed module for QQ/TIM
- * Copyright (C) 2019-2021 dmca@ioctl.cc
+ * Copyright (C) 2019-2022 dmca@ioctl.cc
  * https://github.com/ferredoxin/QNotified
  *
  * This software is non-free but opensource software: you can redistribute it
@@ -21,14 +21,16 @@
  */
 package cc.ioctl.hook;
 
+import static nil.nadph.qnotified.util.Initiator._PicItemBuilder;
+import static nil.nadph.qnotified.util.ReflexUtil.findField;
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.os.Looper;
 import android.view.View;
 import android.widget.Toast;
-
-import java.lang.reflect.Field;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
+import java.lang.reflect.Field;
 import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.bridge.AIOUtilsImpl;
@@ -37,10 +39,6 @@ import nil.nadph.qnotified.step.DexDeobfStep;
 import nil.nadph.qnotified.util.DexKit;
 import nil.nadph.qnotified.util.LicenseStatus;
 import nil.nadph.qnotified.util.Toasts;
-
-import static nil.nadph.qnotified.util.Initiator._PicItemBuilder;
-import static nil.nadph.qnotified.util.ReflexUtil.findField;
-import static nil.nadph.qnotified.util.Utils.log;
 
 @FunctionEntry
 public class EmoPicHook extends CommonDelayableHook {

@@ -1,6 +1,6 @@
 /*
  * QNotified - An Xposed module for QQ/TIM
- * Copyright (C) 2019-2021 dmca@ioctl.cc
+ * Copyright (C) 2019-2022 dmca@ioctl.cc
  * https://github.com/ferredoxin/QNotified
  *
  * This software is non-free but opensource software: you can redistribute it
@@ -21,18 +21,17 @@
  */
 package cc.ioctl.hook;
 
-import android.app.Application;
+import static nil.nadph.qnotified.util.Initiator._TroopGiftAnimationController;
+import static nil.nadph.qnotified.util.Initiator.load;
+import static nil.nadph.qnotified.util.Utils.log;
 
+import android.app.Application;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.hook.CommonDelayableHook;
 import nil.nadph.qnotified.util.LicenseStatus;
-
-import static nil.nadph.qnotified.util.Initiator._TroopGiftAnimationController;
-import static nil.nadph.qnotified.util.Initiator.load;
-import static nil.nadph.qnotified.util.Utils.log;
 
 @FunctionEntry
 public class HideGiftAnim extends CommonDelayableHook {

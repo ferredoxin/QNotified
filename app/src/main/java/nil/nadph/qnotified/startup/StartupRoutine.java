@@ -1,6 +1,6 @@
 /*
  * QNotified - An Xposed module for QQ/TIM
- * Copyright (C) 2019-2021 dmca@ioctl.cc
+ * Copyright (C) 2019-2022 dmca@ioctl.cc
  * https://github.com/ferredoxin/QNotified
  *
  * This software is non-free but opensource software: you can redistribute it
@@ -21,17 +21,16 @@
  */
 package nil.nadph.qnotified.startup;
 
+import static nil.nadph.qnotified.startup.LogUtil.log;
+import static nil.nadph.qnotified.util.Utils.checkLogFlag;
+import static nil.nadph.qnotified.util.Utils.getBuildTimestamp;
+
 import android.app.Application;
 import android.content.Context;
-
 import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.MainHook;
 import nil.nadph.qnotified.util.Initiator;
 import nil.nadph.qnotified.util.Natives;
-
-import static nil.nadph.qnotified.startup.LogUtil.log;
-import static nil.nadph.qnotified.util.Utils.checkLogFlag;
-import static nil.nadph.qnotified.util.Utils.getBuildTimestamp;
 
 public class StartupRoutine {
 

@@ -1,6 +1,6 @@
 /*
  * QNotified - An Xposed module for QQ/TIM
- * Copyright (C) 2019-2021 dmca@ioctl.cc
+ * Copyright (C) 2019-2022 dmca@ioctl.cc
  * https://github.com/ferredoxin/QNotified
  *
  * This software is non-free but opensource software: you can redistribute it
@@ -23,17 +23,16 @@ package me.kyuubiran.hook
 
 import android.widget.LinearLayout
 import de.robv.android.xposed.XC_MethodHook
-
 import de.robv.android.xposed.XposedBridge
 import me.kyuubiran.util.getObjectOrNull
 import me.kyuubiran.util.loadClass
 import me.kyuubiran.util.setViewZeroSize
 import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import nil.nadph.qnotified.util.QQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.util.LicenseStatus
+import nil.nadph.qnotified.util.QQVersion
 import nil.nadph.qnotified.util.Utils
 
 //移除侧滑栏左上角打卡

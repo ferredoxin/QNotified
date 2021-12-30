@@ -1,6 +1,6 @@
 /*
  * QNotified - An Xposed module for QQ/TIM
- * Copyright (C) 2019-2021 dmca@ioctl.cc
+ * Copyright (C) 2019-2022 dmca@ioctl.cc
  * https://github.com/ferredoxin/QNotified
  *
  * This software is non-free but opensource software: you can redistribute it
@@ -44,11 +44,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Date;
-
 import me.ketal.ui.activity.QFileShareToIpadActivity;
 import me.ketal.util.ComponentUtilKt;
 import me.singleneuron.util.HookStatue;

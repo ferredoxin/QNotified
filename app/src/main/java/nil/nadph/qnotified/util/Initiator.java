@@ -1,6 +1,6 @@
 /*
  * QNotified - An Xposed module for QQ/TIM
- * Copyright (C) 2019-2021 dmca@ioctl.cc
+ * Copyright (C) 2019-2022 dmca@ioctl.cc
  * https://github.com/ferredoxin/QNotified
  *
  * This software is non-free but opensource software: you can redistribute it
@@ -21,13 +21,12 @@
  */
 package nil.nadph.qnotified.util;
 
-import android.os.Parcelable;
-
-import me.singleneuron.qn_kernel.data.HostInfo;
-import mqq.app.AppRuntime;
-
 import static nil.nadph.qnotified.util.Utils.PACKAGE_NAME_QQ;
 import static nil.nadph.qnotified.util.Utils.loge;
+
+import android.os.Parcelable;
+import me.singleneuron.qn_kernel.data.HostInfo;
+import mqq.app.AppRuntime;
 
 @SuppressWarnings("rawtypes")
 public class Initiator {

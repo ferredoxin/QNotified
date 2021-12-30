@@ -1,6 +1,6 @@
 /*
  * QNotified - An Xposed module for QQ/TIM
- * Copyright (C) 2019-2021 dmca@ioctl.cc
+ * Copyright (C) 2019-2022 dmca@ioctl.cc
  * https://github.com/ferredoxin/QNotified
  *
  * This software is non-free but opensource software: you can redistribute it
@@ -21,6 +21,8 @@
  */
 package cc.ioctl.dialog;
 
+import static nil.nadph.qnotified.util.Utils.log;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -32,21 +34,15 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.rymmmmm.hook.CustomMsgTimeFormat;
-
 import java.io.IOException;
-
 import me.singleneuron.qn_kernel.data.HostInfo;
 import nil.nadph.qnotified.R;
 import nil.nadph.qnotified.config.ConfigManager;
 import nil.nadph.qnotified.ui.CustomDialog;
 import nil.nadph.qnotified.util.Toasts;
-
-import static nil.nadph.qnotified.util.Utils.log;
 
 public class RikkaCustomDeviceModelDialog extends RikkaDialog.RikkaConfigItem {
 

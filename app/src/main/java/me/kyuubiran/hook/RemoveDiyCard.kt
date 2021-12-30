@@ -1,6 +1,6 @@
 /*
  * QNotified - An Xposed module for QQ/TIM
- * Copyright (C) 2019-2021 dmca@ioctl.cc
+ * Copyright (C) 2019-2022 dmca@ioctl.cc
  * https://github.com/ferredoxin/QNotified
  *
  * This software is non-free but opensource software: you can redistribute it
@@ -22,7 +22,6 @@
 package me.kyuubiran.hook
 
 import android.app.Activity
-import xyz.nextalone.util.*
 import me.singleneuron.qn_kernel.data.isTim
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
 import nil.nadph.qnotified.base.annotation.FunctionEntry
@@ -30,6 +29,10 @@ import nil.nadph.qnotified.hook.CommonDelayableHook
 import nil.nadph.qnotified.step.DexDeobfStep
 import nil.nadph.qnotified.util.DexKit
 import nil.nadph.qnotified.util.QQVersion
+import xyz.nextalone.util.get
+import xyz.nextalone.util.hookBefore
+import xyz.nextalone.util.set
+import xyz.nextalone.util.tryOrFalse
 
 @FunctionEntry
 object RemoveDiyCard : CommonDelayableHook(
