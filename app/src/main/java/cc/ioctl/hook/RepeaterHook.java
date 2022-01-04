@@ -21,9 +21,6 @@
  */
 package cc.ioctl.hook;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static nil.nadph.qnotified.ui.ViewBuilder.newLinearLayoutParams;
 import static nil.nadph.qnotified.util.Initiator._PicItemBuilder;
 import static nil.nadph.qnotified.util.Initiator._PttItemBuilder;
 import static nil.nadph.qnotified.util.Initiator._QQAppInterface;
@@ -32,25 +29,20 @@ import static nil.nadph.qnotified.util.Initiator._TextItemBuilder;
 import static nil.nadph.qnotified.util.ReflexUtil.getFirstNSFByType;
 import static nil.nadph.qnotified.util.ReflexUtil.iget_object_or_null;
 import static nil.nadph.qnotified.util.ReflexUtil.iput_object;
-import static nil.nadph.qnotified.util.Utils.TOAST_TYPE_ERROR;
 import static nil.nadph.qnotified.util.Utils.dip2px;
 import static nil.nadph.qnotified.util.Utils.log;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Parcelable;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.view.ViewCompat;
 import cc.ioctl.dialog.RepeaterIconSettingDialog;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -63,11 +55,8 @@ import me.singleneuron.qn_kernel.tlb.UiRoutineKt;
 import mqq.app.AppRuntime;
 import nil.nadph.qnotified.base.annotation.FunctionEntry;
 import nil.nadph.qnotified.bridge.ChatActivityFacade;
-import nil.nadph.qnotified.ui.CustomDialog;
-import nil.nadph.qnotified.ui.drawable.HighContrastBorder;
 import nil.nadph.qnotified.ui.widget.LinearLayoutDelegate;
 import nil.nadph.qnotified.util.LicenseStatus;
-import nil.nadph.qnotified.util.ReflexUtil;
 import nil.nadph.qnotified.util.Toasts;
 import nil.nadph.qnotified.util.Utils;
 import org.ferredoxin.ferredoxinui.common.base.UiSwitchPreference;
@@ -120,7 +109,7 @@ public class RepeaterHook extends CommonDelayAbleHookBridge {
             }
             XposedBridge.hookMethod(getView, new XC_MethodHook(50) {
                 @Override
-                public void afterHookedMethod(final MethodHookParam param) throws Throwable {
+                public void afterHookedMethod(final MethodHookParam param) {
                     if (LicenseStatus.sDisableCommonHooks) {
                         return;
                     }
@@ -173,17 +162,14 @@ public class RepeaterHook extends CommonDelayAbleHookBridge {
                         imageView3.setVisibility(8);
                         imageView4.setVisibility(0);
                     }
-                    View.OnClickListener r0 = new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            try {
-                                ChatActivityFacade.repeatMessage(app, session, param.args[0]);
-                            } catch (Throwable e) {
-                                log(e);
-                                Toasts
-                                    .error(HostInfo.getHostInfo().getApplication(),
-                                        e.toString());
-                            }
+                    View.OnClickListener r0 = view -> {
+                        try {
+                            ChatActivityFacade.repeatMessage(app, session, param.args[0]);
+                        } catch (Throwable e) {
+                            log(e);
+                            Toasts
+                                .error(HostInfo.getHostInfo().getApplication(),
+                                    e.toString());
                         }
                     };
                     imageView3.setOnClickListener(r0);
@@ -199,8 +185,7 @@ public class RepeaterHook extends CommonDelayAbleHookBridge {
                         BaseChatItemLayout, listener2,
                         new XC_MethodHook(51) {
                             @Override
-                            public void afterHookedMethod(final MethodHookParam param)
-                                throws Throwable {
+                            public void afterHookedMethod(final MethodHookParam param) {
                                 if (LicenseStatus.sDisableCommonHooks) {
                                     return;
                                 }
@@ -263,70 +248,18 @@ public class RepeaterHook extends CommonDelayAbleHookBridge {
                                     imageView3.setVisibility(8);
                                     imageView4.setVisibility(0);
                                 }
-                                View.OnClickListener r0 = new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        try {
-                                            ChatActivityFacade
-                                                .repeatMessage(app, session, param.args[0]);
-                                        } catch (Throwable e) {
-                                            log(e);
-                                            Toasts.error(HostInfo.getHostInfo()
-                                                .getApplication(), e.toString());
-                                        }
+                                View.OnClickListener r0 = view1 -> {
+                                    try {
+                                        ChatActivityFacade
+                                            .repeatMessage(app, session, param.args[0]);
+                                    } catch (Throwable e) {
+                                        log(e);
+                                        Toasts.error(HostInfo.getHostInfo()
+                                            .getApplication(), e.toString());
                                     }
                                 };
                                 imageView3.setOnClickListener(r0);
                                 imageView4.setOnClickListener(r0);
-                                View.OnLongClickListener l0 = v -> {
-                                    CustomDialog dialog = CustomDialog
-                                        .createFailsafe(v.getContext());
-                                    Context context = dialog.getContext();
-                                    final EditText editText = new EditText(ctx);
-                                    editText.setTextSize(16);
-                                    int _5 = dip2px(context, 5);
-                                    editText.setPadding(_5, _5, _5, _5);
-                                    Object msg = param.args[0];
-                                    String msgText = (String) iget_object_or_null(msg, "msg");
-                                    editText.setText(msgText);
-                                    ViewCompat.setBackground(editText, new HighContrastBorder());
-                                    LinearLayout linearLayout = new LinearLayout(ctx);
-                                    linearLayout.setOrientation(LinearLayout.VERTICAL);
-                                    linearLayout.addView(editText,
-                                        newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, _5 * 2));
-                                    final AlertDialog alertDialog = (AlertDialog) dialog
-                                        .setTitle("修改消息内容")
-                                        .setView(linearLayout)
-                                        .setCancelable(true)
-                                        .setPositiveButton("确认", null)
-                                        .setNegativeButton("取消", null)
-                                        .create();
-                                    alertDialog.show();
-                                    alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                                        .setOnClickListener(v1 -> {
-                                            try {
-
-                                                String text = editText.getText().toString();
-                                                if (text.equals("")) {
-                                                    Toasts.showToast(v1.getContext(),
-                                                        TOAST_TYPE_ERROR, "请输入消息",
-                                                        Toast.LENGTH_SHORT);
-                                                    return;
-                                                }
-                                                iput_object(msg, "msg", text);
-                                                iput_object(msg, "sb", null);
-                                                iput_object(msg, "sb2", null);
-                                                ReflexUtil.invoke_virtual(msg, "doParse");
-                                                ReflexUtil.invoke_virtual(msg, "prewrite");
-                                            } catch (Exception e) {
-                                                Utils.log(e);
-                                            }
-                                            alertDialog.dismiss();
-                                        });
-                                    return true;
-                                };
-                                imageView3.setOnLongClickListener(l0);
-                                imageView4.setOnLongClickListener(l0);
                             }
                         });
             } else {
@@ -334,8 +267,7 @@ public class RepeaterHook extends CommonDelayAbleHookBridge {
                     .findAndHookMethod(_TextItemBuilder(), "a", ChatMessage, itemHolder, View.class,
                         BaseChatItemLayout, listener2, new XC_MethodHook() {
                             @Override
-                            public void beforeHookedMethod(MethodHookParam methodHookParam)
-                                throws Throwable {
+                            public void beforeHookedMethod(MethodHookParam methodHookParam) {
                                 if (LicenseStatus.sDisableCommonHooks) {
                                     return;
                                 }
@@ -357,17 +289,20 @@ public class RepeaterHook extends CommonDelayAbleHookBridge {
                             }
 
                             @Override
-                            protected void afterHookedMethod(MethodHookParam param)
-                                throws Throwable {
+                            protected void afterHookedMethod(MethodHookParam param) {
                                 if (LicenseStatus.sDisableCommonHooks) {
                                     return;
                                 }
                                 if (!isEnabled()) {
                                     return;
                                 }
-                                RelativeLayout baseChatItemLayout = (RelativeLayout)param.args[3];
-                                ImageView imageView = baseChatItemLayout.findViewById(baseChatItemLayout.getResources().getIdentifier("cfx", "id",HostInfo.hostInfo.getPackageName()));
-                                ImageView imageView2 = baseChatItemLayout.findViewById(baseChatItemLayout.getResources().getIdentifier("cfw", "id",HostInfo.hostInfo.getPackageName()));
+                                RelativeLayout baseChatItemLayout = (RelativeLayout) param.args[3];
+                                ImageView imageView = baseChatItemLayout.findViewById(
+                                    baseChatItemLayout.getResources().getIdentifier("cfx", "id",
+                                        HostInfo.hostInfo.getPackageName()));
+                                ImageView imageView2 = baseChatItemLayout.findViewById(
+                                    baseChatItemLayout.getResources().getIdentifier("cfw", "id",
+                                        HostInfo.hostInfo.getPackageName()));
                                 Bitmap repeat = RepeaterIconSettingDialog.getRepeaterIcon();
                                 imageView.setImageBitmap(repeat);
                                 imageView2.setImageBitmap(repeat);
@@ -376,68 +311,17 @@ public class RepeaterHook extends CommonDelayAbleHookBridge {
                                 final Parcelable session = getFirstNSFByType(param.thisObject,
                                     _SessionInfo());
                                 final Object msg = param.args[0];
-                                View.OnClickListener r0 = new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        try {
-                                            ChatActivityFacade.repeatMessage(app, session, msg);
-                                        } catch (Throwable e) {
-                                            log(e);
-                                            Toasts.error(HostInfo.getHostInfo()
-                                                .getApplication(), e.toString());
-                                        }
+                                View.OnClickListener r0 = v -> {
+                                    try {
+                                        ChatActivityFacade.repeatMessage(app, session, msg);
+                                    } catch (Throwable e) {
+                                        log(e);
+                                        Toasts.error(HostInfo.getHostInfo()
+                                            .getApplication(), e.toString());
                                     }
                                 };
                                 imageView.setOnClickListener(r0);
                                 imageView2.setOnClickListener(r0);
-                                View.OnLongClickListener l0 = v -> {
-                                    CustomDialog dialog = CustomDialog
-                                        .createFailsafe(v.getContext());
-                                    Context context = dialog.getContext();
-                                    final EditText editText = new EditText(context);
-                                    editText.setTextSize(16);
-                                    int _5 = dip2px(context, 5);
-                                    editText.setPadding(_5, _5, _5, _5);
-                                    String msgText = (String) iget_object_or_null(msg, "msg");
-                                    editText.setText(msgText);
-                                    ViewCompat.setBackground(editText, new HighContrastBorder());
-                                    LinearLayout linearLayout = new LinearLayout(context);
-                                    linearLayout.setOrientation(LinearLayout.VERTICAL);
-                                    linearLayout.addView(editText,
-                                        newLinearLayoutParams(MATCH_PARENT, WRAP_CONTENT, _5 * 2));
-                                    final AlertDialog alertDialog = (AlertDialog) dialog
-                                        .setTitle("修改消息内容")
-                                        .setView(linearLayout)
-                                        .setCancelable(true)
-                                        .setPositiveButton("确认", null)
-                                        .setNegativeButton("取消", null)
-                                        .create();
-                                    alertDialog.show();
-                                    alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                                        .setOnClickListener(v1 -> {
-                                            try {
-
-                                                String text = editText.getText().toString();
-                                                if (text.equals("")) {
-                                                    Toasts.showToast(v1.getContext(),
-                                                        TOAST_TYPE_ERROR, "请输入消息",
-                                                        Toast.LENGTH_SHORT);
-                                                    return;
-                                                }
-                                                iput_object(msg, "msg", text);
-                                                iput_object(msg, "sb", null);
-                                                iput_object(msg, "sb2", null);
-                                                ReflexUtil.invoke_virtual(msg, "doParse");
-                                                ReflexUtil.invoke_virtual(msg, "prewrite");
-                                            } catch (Exception e) {
-                                                Utils.log(e);
-                                            }
-                                            alertDialog.dismiss();
-                                        });
-                                    return true;
-                                };
-                                imageView.setOnLongClickListener(l0);
-                                imageView2.setOnLongClickListener(l0);
                             }
                         });
             }
@@ -448,8 +332,7 @@ public class RepeaterHook extends CommonDelayAbleHookBridge {
                     BaseChatItemLayout, listener2,
                     new XC_MethodHook(51) {
                         @Override
-                        public void afterHookedMethod(final MethodHookParam param)
-                            throws Throwable {
+                        public void afterHookedMethod(final MethodHookParam param) {
                             if (LicenseStatus.sDisableCommonHooks) {
                                 return;
                             }
@@ -502,17 +385,14 @@ public class RepeaterHook extends CommonDelayAbleHookBridge {
                                 leftIcon.setVisibility(8);
                                 rightIcon.setVisibility(0);
                             }
-                            View.OnClickListener l = new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    try {
-                                        ChatActivityFacade
-                                            .repeatMessage(app, session, param.args[0]);
-                                    } catch (Throwable e) {
-                                        log(e);
-                                        Toasts.error(HostInfo.getHostInfo()
-                                            .getApplication(), e.toString());
-                                    }
+                            View.OnClickListener l = view -> {
+                                try {
+                                    ChatActivityFacade
+                                        .repeatMessage(app, session, param.args[0]);
+                                } catch (Throwable e) {
+                                    log(e);
+                                    Toasts.error(HostInfo.getHostInfo()
+                                        .getApplication(), e.toString());
                                 }
                             };
                             leftIcon.setOnClickListener(l);
