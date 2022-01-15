@@ -26,6 +26,7 @@ import cc.ioctl.activity.ExfriendListActivity
 import cc.ioctl.activity.FriendlistExportActivity
 import cc.ioctl.dialog.RepeaterIconSettingDialog
 import cc.ioctl.hook.AddAccount
+import cc.ioctl.hook.CheckCommonGroup
 import cc.ioctl.hook.OpenProfileCard
 import me.singleneuron.qn_kernel.ui.gen.getAnnotatedUiItemClassList
 import nil.nadph.qnotified.activity.BetaTestFuncActivity
@@ -61,6 +62,14 @@ val Others = uiScreen {
                     summary = "打开指定用户或群的资料卡"
                     onClickListener = {
                         OpenProfileCard.onClick(it)
+                        true
+                    }
+                },
+                uiClickableItem {
+                    title = "查看共同群聊"
+                    summary = "查看指定用户与你的共同群聊 无需为好友"
+                    onClickListener = {
+                        CheckCommonGroup.onClick(it)
                         true
                     }
                 },
