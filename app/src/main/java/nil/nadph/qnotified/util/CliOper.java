@@ -24,7 +24,9 @@ package nil.nadph.qnotified.util;
 import android.app.Application;
 import com.microsoft.appcenter.AppCenter;
 import com.microsoft.appcenter.analytics.Analytics;
+import com.microsoft.appcenter.crashes.AbstractCrashesListener;
 import com.microsoft.appcenter.crashes.Crashes;
+import com.microsoft.appcenter.crashes.model.ErrorReport;
 import java.util.HashMap;
 import java.util.Map;
 import me.singleneuron.qn_kernel.data.HostInfo;
@@ -50,8 +52,41 @@ public class CliOper {
         if (longAccount != -1) {
             AppCenter.setUserId(String.valueOf(longAccount));
         }
+        Crashes.setListener(new CrashesFilter());
         AppCenter.start(app, appCenterToken, Analytics.class, Crashes.class);
         appCenterInit = true;
+
+    }
+
+    public static class CrashesFilter extends AbstractCrashesListener {
+
+        @Override
+        public boolean shouldProcess(ErrorReport report) {
+            return containsQN(
+                report.getStackTrace().replace("nil.nadph.qnotified.lifecycle.Parasitics", ""));
+        }
+
+        private boolean containsQN(String string) {
+            for (String name : qnPackageName) {
+                if (string.contains(name)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private String[] qnPackageName = new String[]{
+            "cc.ioctl",
+            "cn.lliiooll",
+            "com.rymmmmm",
+            "me.ketal",
+            "me.kyuubiran",
+            "me.singleneuron",
+            "me.zpp0196",
+            "nil.nadph",
+            "xyz.nextalone",
+            "org.ferredoxin"
+        };
 
     }
 
