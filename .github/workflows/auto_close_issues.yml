@@ -15,3 +15,9 @@ jobs:
         uses: peter-evans/close-issue@v1
         with:
           comment: This issue is being automatically closed because it does not follow the issue template.
+      - if: contains(github.event.issue.body, '最新版' ) 
+        id: close-latest-version
+        name: Close Issue(template)
+        uses: peter-evans/close-issue@v1
+        with:
+          comment: 我不知道什么是最新版捏，具体版本号pls
