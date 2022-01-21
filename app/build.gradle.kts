@@ -103,7 +103,7 @@ android {
         }
     }
     androidResources {
-        additionalParameters("--allow-reserved-package-id", "--package-id", "0x75")
+        additionalParameters("--allow-reserved-package-id", "--package-id", "0x37")
     }
     compileOptions {
         sourceCompatibility = Version.java
@@ -155,9 +155,9 @@ dependencies {
     implementation("org.apache-extras.beanshell:bsh:2.0b6")
     // androidx
     implementation("androidx.preference:preference-ktx:1.1.1")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.2")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.3")
     implementation("androidx.browser:browser:1.4.0")
-    implementation("com.google.android.material:material:1.4.0")
+    implementation("com.google.android.material:material:1.5.0")
     implementation("com.google.code.gson:gson:2.8.9")
     implementation("com.afollestad.material-dialogs:core:3.3.0")
     implementation("com.afollestad.material-dialogs:input:3.3.0")
