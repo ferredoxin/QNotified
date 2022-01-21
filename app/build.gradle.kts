@@ -103,7 +103,7 @@ android {
         }
     }
     androidResources {
-        additionalParameters("--allow-reserved-package-id", "--package-id", "0x75")
+        additionalParameters("--allow-reserved-package-id", "--package-id", "0x37")
     }
     compileOptions {
         sourceCompatibility = Version.java
