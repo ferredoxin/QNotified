@@ -40,11 +40,13 @@ class ChooseAgentActivity : AbstractChooseActivity() {
         setTheme(R.style.noDisplay)
         super.onCreate(savedInstanceState)
         bundle = intent.extras
-        val intent = if (intent.type == "image/*") Intent(ACTION_PICK).apply {
-            type = "image/*"
-            putExtra(EXTRA_ALLOW_MULTIPLE, false)
-        } else Intent(ACTION_GET_CONTENT).apply {
-            type = "*/*"
+        val intent = if (intent.getBooleanExtra("use_ACTION_PICK", false))
+            Intent(ACTION_PICK).apply {
+                type = "image/*"
+                putExtra(EXTRA_ALLOW_MULTIPLE, false)
+            }
+        else Intent(ACTION_GET_CONTENT).apply {
+            type = intent.type ?: "*/*"
             putExtra(EXTRA_ALLOW_MULTIPLE, false)
         }
         startActivityForResult(intent, REQUEST_CODE)

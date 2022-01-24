@@ -47,6 +47,12 @@ object ForceSystemAlbum : BaseStartActivityHookDecorator() {
             val activityMap = mapOf(
                 "系统相册" to Intent(context, ChooseAgentActivity::class.java).apply {
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    putExtra("use_ACTION_PICK", true)
+                    putExtras(intent)
+                    type = "image/*"
+                },
+                "系统文档" to Intent(context, ChooseAgentActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     putExtras(intent)
                     type = "image/*"
                 },
