@@ -61,6 +61,7 @@ object SimplifyQQSettingMe : MultiItemDelayableHook("SimplifyQQSettingMe") {
     override val allItems = setOf<String>()
     override val preferenceLocate: Array<String> = 净化_侧滑
     override fun isValid(): Boolean = requireMinQQVersion(QQ_8_4_1)
+    override val enableCustom = false
 
     //Form 8.4.1
     //Body = [0,1,0,0,0,1,4] || [0,1,0,0,0,1,4,0]
@@ -79,7 +80,8 @@ object SimplifyQQSettingMe : MultiItemDelayableHook("SimplifyQQSettingMe") {
         "小游戏",      //小游戏 [0,1,0,0,0,1,4,0,12] || [0,1,0,0,0,1,4,0,1,12,1]
         "腾讯文档",     //腾讯文档 [0,1,0,0,0,1,4,0,13] || [0,1,0,0,0,1,4,0,1,13,1]
         "每日打卡",     //每日打卡 [0,1,0,0,0,1,4,0,14] || [0,1,0,0,0,1,4,0,1,14,1]
-        "王卡免流量特权"   //开通王卡 [0,1,0,0,0,1,4,0,15] || [0,1,0,0,0,1,4,0,1,15,1]
+        "王卡免流量特权",   //开通王卡 [0,1,0,0,0,1,4,0,15] || [0,1,0,0,0,1,4,0,1,15,1]
+        "厘米秀",
     )
 
     private val keyWords: SortedMap<String, String> = sortedMapOf(
@@ -101,7 +103,8 @@ object SimplifyQQSettingMe : MultiItemDelayableHook("SimplifyQQSettingMe") {
         "打卡" to "每日打卡",
         "王卡" to "王卡免流量特权",
         "流量" to "王卡免流量特权",
-        "送12个月" to "王卡免流量特权"
+        "送12个月" to "王卡免流量特权",
+        "厘米" to "厘米秀",
     )
 
     //Body = [0,1,0,0,0,1,6]
