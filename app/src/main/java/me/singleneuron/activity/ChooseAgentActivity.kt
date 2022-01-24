@@ -25,8 +25,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ComponentName
 import android.content.Intent
-import android.content.Intent.ACTION_OPEN_DOCUMENT
-import android.content.Intent.EXTRA_ALLOW_MULTIPLE
+import android.content.Intent.*
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
@@ -41,8 +40,11 @@ class ChooseAgentActivity : AbstractChooseActivity() {
         setTheme(R.style.noDisplay)
         super.onCreate(savedInstanceState)
         bundle = intent.extras
-        val intent = Intent(ACTION_OPEN_DOCUMENT).apply {
-            type = intent.type ?: "*/*"
+        val intent = if (intent.type == "image/*") Intent(ACTION_PICK).apply {
+            type = "image/*"
+            putExtra(EXTRA_ALLOW_MULTIPLE, false)
+        } else Intent(ACTION_GET_CONTENT).apply {
+            type = "*/*"
             putExtra(EXTRA_ALLOW_MULTIPLE, false)
         }
         startActivityForResult(intent, REQUEST_CODE)
