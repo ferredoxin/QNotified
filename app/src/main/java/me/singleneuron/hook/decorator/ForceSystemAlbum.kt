@@ -76,7 +76,7 @@ object ForceSystemAlbum : BaseStartActivityHookDecorator() {
     }
 
     override val preference = uiSwitchPreference {
-        title = "强制使用系统相册"
+        title = "可选使用系统相册"
         summary = "支持8.3.6及更高"
     }
 
