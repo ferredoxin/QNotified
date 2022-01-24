@@ -67,6 +67,10 @@ public class LicenseStatus {
     public static void setUserCurrentStatus() {
         new Thread(() -> {
             int currentStatus = TransactionHelper.getUserStatus(Utils.getLongAccountUin());
+            // 如果获取不到就放弃更新状态
+            if (currentStatus == UserStatusConst.notExist) {
+                return;
+            }
             logi("User Current Status: "
                 + "" + currentStatus);
             ConfigManager.getDefaultConfig().putInt(qn_user_auth_status, currentStatus);
