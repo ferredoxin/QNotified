@@ -21,25 +21,54 @@
  */
 package me.singleneuron.hook.decorator
 
+import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import de.robv.android.xposed.XC_MethodHook
 import me.singleneuron.activity.ChooseAgentActivity
 import me.singleneuron.qn_kernel.annotation.UiItem
-import me.singleneuron.qn_kernel.data.hostInfo
 import me.singleneuron.qn_kernel.decorator.BaseStartActivityHookDecorator
 import me.singleneuron.qn_kernel.tlb.增强功能
+import nil.nadph.qnotified.ui.CommonContextWrapper
+import nil.nadph.qnotified.util.Utils
 
 @UiItem
 object ForceSystemAlbum : BaseStartActivityHookDecorator() {
 
     override fun doDecorate(intent: Intent, param: XC_MethodHook.MethodHookParam): Boolean {
-        if (intent.component?.className?.contains("NewPhotoListActivity") == true && intent.getIntExtra("uintype", -1) != -1 && (!intent.getBooleanExtra("PhotoConst.IS_CALL_IN_PLUGIN", false))) {
-            val context = hostInfo.application
-            val newIntent = Intent(context, ChooseAgentActivity::class.java)
-            newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            newIntent.putExtras(intent)
-            newIntent.type = "image/*"
-            context.startActivity(newIntent)
+        if (intent.component?.className?.contains("NewPhotoListActivity") == true &&
+            intent.getIntExtra("uintype", -1) != -1 &&
+            (!intent.getBooleanExtra("PhotoConst.IS_CALL_IN_PLUGIN", false)) &&
+            (!intent.getBooleanExtra("is_decorated", false))) {
+            // must use Activity context as base context to show dialog window
+            val context = param.thisObject as Context
+            Utils.logd("context: ${context.javaClass.name}")
+            val activityMap = mapOf(
+                "系统相册" to Intent(context, ChooseAgentActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    putExtra("use_ACTION_PICK", true)
+                    putExtras(intent)
+                    type = "image/*"
+                },
+                "系统文档" to Intent(context, ChooseAgentActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    putExtras(intent)
+                    type = "image/*"
+                },
+                "QQ 相册" to intent.apply {
+                    putExtra("is_decorated", true)
+                }
+            )
+            val materialContext = CommonContextWrapper.createMaterialDesignContext(context)
+            MaterialAlertDialogBuilder(materialContext)
+                .setTitle("选择相册")
+                .setItems(activityMap.keys.toTypedArray()) { _: DialogInterface, i: Int ->
+                    // recursion here
+                    context.startActivity(activityMap[activityMap.keys.toTypedArray()[i]])
+                }
+                .create()
+                .show()
             param.result = null
             return true
         }
@@ -47,7 +76,7 @@ object ForceSystemAlbum : BaseStartActivityHookDecorator() {
     }
 
     override val preference = uiSwitchPreference {
-        title = "强制使用系统相册"
+        title = "可选使用系统相册"
         summary = "支持8.3.6及更高"
     }
 
