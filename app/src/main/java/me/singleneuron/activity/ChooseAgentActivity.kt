@@ -33,6 +33,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.singleneuron.base.AbstractChooseActivity
 import nil.nadph.qnotified.R
+import nil.nadph.qnotified.util.Utils
 
 class ChooseAgentActivity : AbstractChooseActivity() {
 
@@ -57,16 +58,14 @@ class ChooseAgentActivity : AbstractChooseActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         lifecycleScope.launch {
             withContext(Dispatchers.IO) {
-                if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+                if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK && data?.data != null) {
                     val intent = Intent().apply {
                         component = ComponentName(
                             "com.tencent.mobileqq",
                             "com.tencent.mobileqq.activity.SplashActivity"
                         )
                         flags = 0x14000000
-                        if (data != null) {
-                            putExtras(data)
-                        }
+                        putExtras(data)
                         putExtra("open_chatfragment", true)
                         putExtra("isBack2Root", true)
                         putExtra("forward_from_jump", true)
@@ -100,15 +99,12 @@ class ChooseAgentActivity : AbstractChooseActivity() {
                         putExtra("selection_mode", 2)
                     }
                     initSendCacheDir()
-                    if (data != null) {
-                        val uri = data.data
-                        if (uri != null) {
-                            convertUriToPath(uri)?.let {
-                                intent.putExtra("forward_filepath", it)
-                            }
-                            intent.putExtra("sendMultiple", false)
-                        }
+                    val uri = data.data!!
+                    Utils.logd(uri.toString())
+                    convertUriToPath(uri)?.let {
+                        intent.putExtra("forward_filepath", it)
                     }
+                    intent.putExtra("sendMultiple", false)
                     startActivity(intent)
                 }
                 finish()
