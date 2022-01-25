@@ -70,7 +70,12 @@ public class RemoveQbossAD extends CommonDelayableHook {
                     "handleMessage", new XC_MethodReplacement() {
                         @Override
                         protected Object replaceHookedMethod(MethodHookParam param) {
-                            return null;
+                            try {
+                                return XposedBridge.invokeOriginalMethod(param.method,
+                                    param.thisObject, param.args);
+                            } catch (Exception e) {
+                                return null;
+                            }
                         }
                     });
             } catch (Exception e) {
