@@ -21,6 +21,7 @@
  */
 package me.singleneuron.base
 
+import android.content.ClipData
 import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
@@ -28,6 +29,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import nil.nadph.qnotified.activity.AppCompatTransferActivity
 import nil.nadph.qnotified.ui.___WindowIsTranslucent
+import nil.nadph.qnotified.util.Utils
 import java.io.File
 
 abstract class AbstractChooseActivity : AppCompatTransferActivity(), ___WindowIsTranslucent {
@@ -76,6 +78,30 @@ abstract class AbstractChooseActivity : AppCompatTransferActivity(), ___WindowIs
                 return@withContext file.absolutePath
             }
         }
+    }
+
+    fun convertClipDataToPath(clipData: ClipData): Array<String> {
+        val result = Array(clipData.itemCount) { "" }
+        for (i in 0 until clipData.itemCount) {
+            val uri = clipData.getItemAt(i).uri
+            contentResolver.openInputStream(uri)?.use { input ->
+                val displayName: String? = contentResolver.query(uri, null, null, null, null, null)?.run {
+                    if (moveToFirst()) {
+                        getString(getColumnIndex(OpenableColumns.DISPLAY_NAME))
+                    } else {
+                        null
+                    }
+                }
+                val file = File(sendCacheDir, System.currentTimeMillis().toString() + displayName)
+                file.createNewFile()
+                file.outputStream().use { output ->
+                    input.copyTo(output)
+                }
+                result[i] = file.absolutePath
+                Utils.logd(file.absolutePath)
+            }
+        }
+        return result
     }
 
 }
