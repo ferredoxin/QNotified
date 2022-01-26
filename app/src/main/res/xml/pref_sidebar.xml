@@ -38,17 +38,5 @@
         <SwitchPreference
             android:key="hideMineStory"
             android:title="隐藏我的状态" />
-        <SwitchPreference
-            android:key="SimplifyQQSettingMe$hide_ye_jian!"
-            android:title="隐藏夜间模式" />
-        <SwitchPreference
-            android:key="SimplifyQQSettingMe$hide_da_ren!"
-            android:title="隐藏登录达人" />
-        <SwitchPreference
-            android:key="SimplifyQQSettingMe$hide_wen_du!"
-            android:title="隐藏城市天气" />
-        <Preference
-            android:key="SimplifyQQSettingMe"
-            android:title="隐藏侧滑栏列表" />
     </PreferenceCategory>
 </PreferenceScreen>
