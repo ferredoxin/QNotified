@@ -23,7 +23,7 @@ package xyz.nextalone.hook
 
 import me.singleneuron.qn_kernel.annotation.UiItem
 import me.singleneuron.qn_kernel.data.requireMinQQVersion
-import me.singleneuron.qn_kernel.tlb.净化功能
+import me.singleneuron.qn_kernel.tlb.净化_主页
 import nil.nadph.qnotified.base.annotation.FunctionEntry
 import nil.nadph.qnotified.util.QQVersion
 import xyz.nextalone.base.MultiItemDelayableHook
@@ -32,7 +32,7 @@ import xyz.nextalone.util.*
 @FunctionEntry
 @UiItem
 object SimplifyContactTabs : MultiItemDelayableHook("na_simplify_contact_tabs_multi") {
-    override val preferenceLocate: Array<String> = 净化功能
+    override val preferenceLocate: Array<String> = 净化_主页
     override val preferenceTitle = "精简联系人页面"
     override val allItems = setOf("好友", "分组", "群聊", "设备", "通讯录", "订阅号")
     override val defaultItems = setOf<String>()
