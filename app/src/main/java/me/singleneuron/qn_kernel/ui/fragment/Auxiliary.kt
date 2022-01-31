@@ -35,7 +35,7 @@ val Auxiliary: UiScreen = uiScreen {
         uiCategory {
             name = "辅助功能"
             noTitle = true
-            contains = {
+            contains = linkedMapOf {
                 uiClickableItem {
                     title = "自定义电量"
                     summary = "[QQ>=8.2.6]在线模式为我的电量时生效"
