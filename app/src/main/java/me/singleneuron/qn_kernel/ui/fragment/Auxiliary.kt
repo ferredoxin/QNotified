@@ -22,6 +22,7 @@
 
 package me.singleneuron.qn_kernel.ui.fragment
 
+import cc.ioctl.activity.FakeBatCfgActivity
 import me.singleneuron.qn_kernel.ui.gen.getAnnotatedUiItemClassList
 import org.ferredoxin.ferredoxinui.common.base.UiScreen
 import org.ferredoxin.ferredoxinui.common.base.loadUiInList
