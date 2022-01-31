@@ -24,10 +24,7 @@ package me.singleneuron.qn_kernel.ui.fragment
 
 import cc.ioctl.activity.FakeBatCfgActivity
 import me.singleneuron.qn_kernel.ui.gen.getAnnotatedUiItemClassList
-import org.ferredoxin.ferredoxinui.common.base.UiScreen
-import org.ferredoxin.ferredoxinui.common.base.loadUiInList
-import org.ferredoxin.ferredoxinui.common.base.uiCategory
-import org.ferredoxin.ferredoxinui.common.base.uiScreen
+import org.ferredoxin.ferredoxinui.common.base.*
 
 val Auxiliary: UiScreen = uiScreen {
     name = "辅助功能"
