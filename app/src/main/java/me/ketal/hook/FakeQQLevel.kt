@@ -82,7 +82,11 @@ object FakeQQLevel : CommonDelayableHook("Ketal_FakeQQLevel", DexDeobfStep(DexKi
                 input(hint = "自定义QQ等级...", prefill = level, waitForPositiveButton = false) { dialog, text ->
                     val inputField = dialog.getInputField()
                     dialog.setActionButtonEnabled(WhichButton.POSITIVE, try {
-                        text.toString().toInt()
+                        val level = text.toString().toInt()
+					    if(level < 1 || level > 1000){
+					      inputField.error = "无效数值，仅可以输入1-1000范围内的数字"
+						  false
+					    }
                         inputField.error = null
                         true
                     } catch (e: NumberFormatException) {
