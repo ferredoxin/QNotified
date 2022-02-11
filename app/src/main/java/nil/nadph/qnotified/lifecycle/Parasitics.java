@@ -793,7 +793,7 @@ public class Parasitics {
                         return ai;
                     }
                     ComponentName component = (ComponentName) args[0];
-                    int flags = (Integer) args[1];
+                    long flags = ((Number) args[1]).longValue();
                     if (H.getPackageName().equals(component.getPackageName())
                         && ActProxyMgr.isModuleProxyActivity(component.getClassName())) {
                         return CounterfeitActivityInfoFactory

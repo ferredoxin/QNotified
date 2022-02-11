@@ -36,14 +36,15 @@ import nil.nadph.qnotified.activity.IphoneTitleBarActivityCompat;
 public class CounterfeitActivityInfoFactory {
 
     @Nullable
-    public static ActivityInfo makeProxyActivityInfo(@NonNull String className, int flags) {
+    public static ActivityInfo makeProxyActivityInfo(@NonNull String className, long flags) {
         try {
             Context ctx = H.getApplication();
             Class<?> cl = Class.forName(className);
             try {
                 ActivityInfo proto = ctx.getPackageManager().getActivityInfo(new ComponentName(
-                        ctx.getPackageName(), "com.tencent.mobileqq.activity.QQSettingSettingActivity"),
-                    flags);
+                        ctx.getPackageName(),
+                        "com.tencent.mobileqq.activity.QQSettingSettingActivity"),
+                    (int) flags);
                 if (!IphoneTitleBarActivityCompat.class.isAssignableFrom(cl)) {
                     // init style here, comment it out if it crashes on Android >= 10
                     proto.theme = R.style.Theme_MaiTungTMDesign;
