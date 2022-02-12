@@ -28,7 +28,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import me.ketal.data.ConfigData
 import nil.nadph.qnotified.SyncUtils
-import nil.nadph.qnotified.util.Utils
 import org.ferredoxin.ferredoxinui.common.base.DirectResourceProvider
 import org.ferredoxin.ferredoxinui.common.base.ResourceProvider
 import org.ferredoxin.ferredoxinui.common.base.UiSwitchItem
@@ -79,13 +78,8 @@ abstract class BaseDecorator : UiSwitchItem {
         private val configData = ConfigData<Boolean>(cfg)
 
         override val value: MutableStateFlow<Boolean?> by lazy {
-            MutableStateFlow<Boolean?>(true).apply {
+            MutableStateFlow<Boolean?>(configData.getOrDefault(false)).apply {
                 SyncUtils.post {
-                    try {
-                        this.value = configData.getOrDefault(false)
-                    } catch (e: Exception) {
-                        Utils.log(e)
-                    }
                     GlobalScope.launch {
                         collect {
                             configData.value = it
