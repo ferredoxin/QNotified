@@ -25,39 +25,28 @@ package cn.lliiooll.hook
 import cn.lliiooll.msg.MessageManager
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
-import me.singleneuron.qn_kernel.data.MsgRecordData
-import nil.nadph.qnotified.base.annotation.FunctionEntry
-import nil.nadph.qnotified.hook.CommonDelayableHook
-import nil.nadph.qnotified.util.Initiator
-import nil.nadph.qnotified.util.Initiator._MessageRecord
-import nil.nadph.qnotified.util.Utils
+import io.github.qauxv.base.annotation.FunctionHookEntry
+import io.github.qauxv.hook.BasePersistBackgroundHook
+import io.github.qauxv.util.Initiator
+import me.singleneuron.data.MsgRecordData
 
-@FunctionEntry
-object MessageInterception : CommonDelayableHook("qn_message_interception") {
+@FunctionHookEntry
+object MessageInterception : BasePersistBackgroundHook() {
 
+    @Throws(Exception::class)
     override fun initOnce(): Boolean {
-        return try {
-            val clazz = Initiator._QQMessageFacade()
-            for (m in clazz.declaredMethods) {
-                val argt = m.parameterTypes
-                if (argt.size == 1 && argt[0] == _MessageRecord()) {
-                    XposedBridge.hookMethod(m, object : XC_MethodHook() {
-                        override fun afterHookedMethod(param: MethodHookParam) {
-                            val msgRecord = param.args[0]
-                            val msgRecordData = MsgRecordData(msgRecord)
-                            MessageManager.call(msgRecordData)
-                        }
-                    })
-                }
+        val clazz = Initiator._C2CMessageManager()
+        for (m in clazz.declaredMethods) {
+            if (m.parameterTypes.size == 2 && m.returnType == MessageManager.booleanType && m.parameterTypes[1] == MessageManager.intType) {
+                XposedBridge.hookMethod(m, object : XC_MethodHook() {
+                    override fun afterHookedMethod(param: MethodHookParam) {
+                        val msgRecord = param.args[0]
+                        val msgRecordData = MsgRecordData(msgRecord)
+                        MessageManager.call(msgRecordData)
+                    }
+                })
             }
-            true
-        } catch (t: Throwable) {
-            Utils.log(t)
-            false
         }
-    }
-
-    override fun isEnabled(): Boolean {
         return true
     }
 }

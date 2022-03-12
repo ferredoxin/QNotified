@@ -631,6 +631,10 @@ public class Initiator {
         return null;
     }
 
+    public static Class _C2CMessageManager() {
+        return load("com/tencent/imcore/message/C2CMessageManager");
+    }
+
     public static Class _AllInOne() {
         Class<?> clazz = load("com/tencent/mobileqq/activity/ProfileActivity$AllInOne");
         if (clazz == null) {
