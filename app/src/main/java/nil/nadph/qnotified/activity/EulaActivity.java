@@ -57,7 +57,7 @@ import nil.nadph.qnotified.util.Utils;
 @SuppressLint("Registered")
 public class EulaActivity extends IphoneTitleBarActivityCompat implements View.OnClickListener {
 
-    public static final int CURRENT_EULA_VERSION = 8;
+    public static final int CURRENT_EULA_VERSION = 9;
     private static final int R_ID_I_HAVE_READ = 0x300AFF91;
     private static final int R_ID_I_AGREE = 0x300AFF92;
     private static final int R_ID_I_DENY = 0x300AFF93;
